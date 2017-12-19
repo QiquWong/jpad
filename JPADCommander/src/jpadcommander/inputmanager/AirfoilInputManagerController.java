@@ -2369,7 +2369,7 @@ public class AirfoilInputManagerController {
 		
 		double xMax = MyArrayUtils.getMax(cl) + 0.1*Math.abs(MyArrayUtils.getMax(cl));
 		double xMin = MyArrayUtils.getMin(cl) - 0.1*Math.abs(MyArrayUtils.getMin(cl));
-		double yMax = MyArrayUtils.getMax(cm) + 0.1*Math.abs(MyArrayUtils.getMax(cm));
+		double yMax = 0.0;
 		double yMin = MyArrayUtils.getMin(cm) - 0.1*Math.abs(MyArrayUtils.getMin(cm));
 		
 		int WIDTH = 350;

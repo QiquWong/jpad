@@ -5,6 +5,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
@@ -224,153 +225,25 @@
                                                                   <ChoiceBox id="canardRiggingAngleUnitChoiceBox" fx:id="canardRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
-                                                            <Separator layoutX="-12.0" layoutY="1224.0" prefHeight="2.0" prefWidth="1431.0" />
+                                                            <Separator layoutX="-12.0" layoutY="1215.0" prefHeight="2.0" prefWidth="1431.0" />
                                                             <Label layoutX="8.0" layoutY="1228.0" text="Power Plant:">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <GridPane layoutX="25.0" layoutY="1249.0" prefHeight="220.0" prefWidth="474.0">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="89.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="50.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="67.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="496.0" minWidth="10.0" prefWidth="67.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="511.0" minWidth="10.0" prefWidth="65.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="518.0" minWidth="10.0" prefWidth="67.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="515.0" minWidth="10.0" prefWidth="63.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="515.0" minWidth="1.0" prefWidth="61.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <TextField id="textFieldAircraftEngineFile1" fx:id="textFieldAircraftEngineFile1" GridPane.columnIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineX1" fx:id="textFieldAircraftEngineX1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineZ1" fx:id="textFieldAircraftEngineZ1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEngineY1" fx:id="textFieldAircraftEngineY1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineFile2" fx:id="textFieldAircraftEngineFile2" GridPane.columnIndex="3" />
-                                                                  <TextField id="textFieldAircraftEngineX2" fx:id="textFieldAircraftEngineX2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineY2" fx:id="textFieldAircraftEngineY2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineZ2" fx:id="textFieldAircraftEngineZ2" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEngineFile3" fx:id="textFieldAircraftEngineFile3" GridPane.columnIndex="4" />
-                                                                  <TextField id="textFieldAircraftEngineY3" fx:id="textFieldAircraftEngineY3" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineZ3" fx:id="textFieldAircraftEngineZ3" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEngineFile4" fx:id="textFieldAircraftEngineFile4" GridPane.columnIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineX4" fx:id="textFieldAircraftEngineX4" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineFile5" fx:id="textFieldAircraftEngineFile5" GridPane.columnIndex="6" />
-                                                                  <TextField id="textFieldAircraftEngineY4" fx:id="textFieldAircraftEngineY4" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineZ4" fx:id="textFieldAircraftEngineZ4" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEngineX3" fx:id="textFieldAircraftEngineX3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineY5" fx:id="textFieldAircraftEngineY5" GridPane.columnIndex="6" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineX5" fx:id="textFieldAircraftEngineX5" GridPane.columnIndex="6" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineZ5" fx:id="textFieldAircraftEngineZ5" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-                                                                  <Label text="File:" />
-                                                                  <Label text="X:" GridPane.rowIndex="1" />
-                                                                  <Label text="Y:" GridPane.rowIndex="2" />
-                                                                  <Label text="Z:" GridPane.rowIndex="3" />
-                                                                  <Label text="Position:" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftEngineFile6" fx:id="textFieldAircraftEngineFile6" GridPane.columnIndex="7" />
-                                                                  <TextField id="textFieldAircraftEngineX6" fx:id="textFieldAircraftEngineX6" GridPane.columnIndex="7" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineY6" fx:id="textFieldAircraftEngineY6" GridPane.columnIndex="7" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineZ6" fx:id="textFieldAircraftEngineZ6" GridPane.columnIndex="7" GridPane.rowIndex="3" />
-                                                                  <Label text="Tilting Angle:" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt1" fx:id="textFieldAircraftEngineTilt1" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt2" fx:id="textFieldAircraftEngineTilt2" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt3" fx:id="textFieldAircraftEngineTilt3" GridPane.columnIndex="4" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt4" fx:id="textFieldAircraftEngineTilt4" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt5" fx:id="textFieldAircraftEngineTilt5" GridPane.columnIndex="6" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt6" fx:id="textFieldAircraftEngineTilt6" GridPane.columnIndex="7" GridPane.rowIndex="5" />
-                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition6" fx:id="powerPlantMountingPositionTypeChoiceBox6" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="powerPlantXUnitChoiceBox" fx:id="powerPlantXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="powerPlantYUnitChoiceBox" fx:id="powerPlantYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="powerPlantZUnitChoiceBox" fx:id="powerPlantZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox id="powerPlantTiltingAngleUnitChoiceBox" fx:id="powerPlantTiltAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition1" fx:id="powerPlantMountingPositionTypeChoiceBox1" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition2" fx:id="powerPlantMountingPositionTypeChoiceBox2" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition3" fx:id="powerPlantMountingPositionTypeChoiceBox3" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition4" fx:id="powerPlantMountingPositionTypeChoiceBox4" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition5" fx:id="powerPlantMountingPositionTypeChoiceBox5" prefWidth="150.0" GridPane.columnIndex="6" GridPane.rowIndex="4" />
-                                                               </children>
-                                                            </GridPane>
-                                                            <Separator layoutX="-4.0" layoutY="1477.0" prefHeight="0.0" prefWidth="1372.0" />
-                                                            <Label layoutX="7.0" layoutY="1489.0" text="Nacelles:">
+                                                            <Separator layoutX="-4.0" layoutY="1614.0" prefHeight="0.0" prefWidth="1372.0" />
+                                                            <Label layoutX="7.0" layoutY="1626.0" text="Nacelles:">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <GridPane layoutX="25.0" layoutY="1515.0" prefHeight="181.0" prefWidth="474.0">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="89.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="50.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="62.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="496.0" minWidth="10.0" prefWidth="58.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="511.0" minWidth="10.0" prefWidth="65.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="518.0" minWidth="10.0" prefWidth="67.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="515.0" minWidth="10.0" prefWidth="63.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="515.0" minWidth="1.0" prefWidth="61.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <TextField id="textFieldAircraftNacelleFile1" fx:id="textFieldAircraftNacelleFile1" GridPane.columnIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleX1" fx:id="textFieldAircraftNacelleX1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleZ1" fx:id="textFieldAircraftNacelleZ1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacelleY1" fx:id="textFieldAircraftNacelleY1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleFile2" fx:id="textFieldAircraftNacelleFile2" GridPane.columnIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacelleX2" fx:id="textFieldAircraftNacelleX2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleY2" fx:id="textFieldAircraftNacelleY2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleZ2" fx:id="textFieldAircraftNacelleZ2" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacelleFile3" fx:id="textFieldAircraftNacelleFile3" GridPane.columnIndex="4" />
-                                                                  <TextField id="textFieldAircraftNacelleY3" fx:id="textFieldAircraftNacelleY3" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleZ3" fx:id="textFieldAircraftNacelleZ3" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacelleFile4" fx:id="textFieldAircraftNacelleFile4" GridPane.columnIndex="5" />
-                                                                  <TextField id="textFieldAircraftNacelleX4" fx:id="textFieldAircraftNacelleX4" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleFile5" fx:id="textFieldAircraftNacelleFile5" GridPane.columnIndex="6" />
-                                                                  <TextField id="textFieldAircraftNacelleY4" fx:id="textFieldAircraftNacelleY4" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleZ4" fx:id="textFieldAircraftNacelleZ4" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacelleX3" fx:id="textFieldAircraftNacelleX3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleY5" fx:id="textFieldAircraftNacelleY5" GridPane.columnIndex="6" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleX5" fx:id="textFieldAircraftNacelleX5" GridPane.columnIndex="6" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleZ5" fx:id="textFieldAircraftNacelleZ5" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-                                                                  <Label text="File:" />
-                                                                  <Label text="X:" GridPane.rowIndex="1" />
-                                                                  <Label text="Y:" GridPane.rowIndex="2" />
-                                                                  <Label text="Z:" GridPane.rowIndex="3" />
-                                                                  <Label text="Position:" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftNacelleFile6" fx:id="textFieldAircraftNacelleFile6" GridPane.columnIndex="7" />
-                                                                  <TextField id="textFieldAircraftNacelleX6" fx:id="textFieldAircraftNacelleX6" GridPane.columnIndex="7" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleY6" fx:id="textFieldAircraftNacelleY6" GridPane.columnIndex="7" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleZ6" fx:id="textFieldAircraftNacelleZ6" GridPane.columnIndex="7" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox id="nacellesXUnitChoiceBox" fx:id="nacelleXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="nacellesYUnitChoiceBox" fx:id="nacelleYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="nacellesZUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox id="nacelleZUnitChoiceBox" fx:id="nacelleZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition6" fx:id="nacellesMountingPositionTypeChoiceBox6" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition1" fx:id="nacellesMountingPositionTypeChoiceBox1" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition2" fx:id="nacellesMountingPositionTypeChoiceBox2" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition3" fx:id="nacellesMountingPositionTypeChoiceBox3" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition4" fx:id="nacellesMountingPositionTypeChoiceBox4" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition5" fx:id="nacellesMountingPositionTypeChoiceBox5" prefWidth="150.0" GridPane.columnIndex="6" GridPane.rowIndex="4" />
-                                                               </children>
-                                                            </GridPane>
-                                                            <Separator layoutX="-4.0" layoutY="1707.0" prefHeight="0.0" prefWidth="1369.0" />
-                                                            <Label layoutX="8.0" layoutY="1716.0" text="Landing Gears:">
+                                                            <Separator layoutX="-2.0" layoutY="1954.0" prefHeight="0.0" prefWidth="1369.0" />
+                                                            <Label layoutX="10.0" layoutY="1963.0" text="Landing Gears:">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <GridPane layoutX="5.0" layoutY="1753.0" prefHeight="174.0" prefWidth="383.0">
+                                                            <GridPane layoutX="7.0" layoutY="2000.0" prefHeight="174.0" prefWidth="383.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="78.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="262.0" />
@@ -399,13 +272,13 @@
                                                                   <ChoiceBox id="choiceBoxAircraftLandingGearsPosition" fx:id="landingGearsMountingPositionTypeChoiceBox" prefHeight="25.0" prefWidth="261.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
-                                                            <Separator layoutX="-40.0" layoutY="1942.0" prefHeight="0.0" prefWidth="1604.0" />
-                                                            <Label layoutX="7.0" layoutY="1948.0" text="Systems:">
+                                                            <Separator layoutX="-46.0" layoutY="2186.0" prefHeight="0.0" prefWidth="1604.0" />
+                                                            <Label layoutX="9.0" layoutY="2195.0" text="Systems:">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <GridPane layoutX="4.0" layoutY="1973.0" prefHeight="148.0" prefWidth="383.0">
+                                                            <GridPane layoutX="6.0" layoutY="2220.0" prefHeight="148.0" prefWidth="383.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="293.0" />
@@ -445,6 +318,105 @@
                                                             </Label>
                                                             <Separator layoutX="-20.0" layoutY="129.0" prefHeight="0.0" prefWidth="1345.0" />
                                                             <ChoiceBox id="choiceBoxRegulationsType" fx:id="regulationsTypeChoiceBox" layoutX="5.0" layoutY="89.0" prefHeight="31.0" prefWidth="384.0" />
+                                                            <TabPane fx:id="tabPaneFuselageSpoilers1" layoutY="1260.0" prefHeight="353.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                               <tabs>
+                                                                  <Tab text="Engine 1 ">
+                                                                     <content>
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="1072.0">
+                                                                           <children>
+                                                                              <Label layoutX="6.0" prefHeight="21.0" prefWidth="220.0" text="File:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerYin11" layoutX="6.0" layoutY="21.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                              <Label layoutX="6.0" layoutY="52.0" prefHeight="21.0" prefWidth="237.0" text="X:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerYout11" layoutX="6.0" layoutY="73.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                              <Label layoutX="6.0" layoutY="104.0" prefHeight="21.0" prefWidth="252.0" text="Y:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerXin11" layoutX="6.0" layoutY="125.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                              <Label layoutX="7.0" layoutY="156.0" prefHeight="21.0" prefWidth="252.0" text="Z:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerXout11" layoutX="7.0" layoutY="177.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                              <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageSpoiler1DeltaMinUnitChoiceBox1" layoutX="348.0" layoutY="230.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                              <Label layoutX="7.0" layoutY="208.0" prefHeight="21.0" prefWidth="197.0" text="Tilting Angle:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerMinDeflection11" layoutX="7.0" layoutY="229.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                              <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageSpoiler1DeltaMaxUnitChoiceBox1" layoutX="6.0" layoutY="282.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                              <Label layoutX="7.0" layoutY="260.0" prefHeight="21.0" prefWidth="219.0" text="Position:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageSpoiler1DeltaMinUnitChoiceBox11" layoutX="348.0" layoutY="178.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                              <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageSpoiler1DeltaMinUnitChoiceBox12" layoutX="348.0" layoutY="126.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                              <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageSpoiler1DeltaMinUnitChoiceBox13" layoutX="348.0" layoutY="74.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                     </content>
+                                                                  </Tab>
+                                                               </tabs>
+                                                            </TabPane>
+                                                            <TabPane fx:id="tabPaneFuselageSpoilers11" layoutY="1655.0" prefHeight="306.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                               <tabs>
+                                                                  <Tab text="Nacelle 1">
+                                                                     <content>
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="317.0" prefWidth="1072.0">
+                                                                           <children>
+                                                                              <Label layoutX="6.0" prefHeight="21.0" prefWidth="220.0" text="File:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerYin111" layoutX="6.0" layoutY="21.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                              <Label layoutX="6.0" layoutY="52.0" prefHeight="21.0" prefWidth="237.0" text="X:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerYout111" layoutX="6.0" layoutY="73.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                              <Label layoutX="6.0" layoutY="104.0" prefHeight="21.0" prefWidth="252.0" text="Y:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerXin111" layoutX="6.0" layoutY="125.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                              <Label layoutX="7.0" layoutY="156.0" prefHeight="21.0" prefWidth="252.0" text="Z:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerXout111" layoutX="7.0" layoutY="177.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                              <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageSpoiler1DeltaMaxUnitChoiceBox11" layoutX="6.0" layoutY="230.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                              <Label layoutX="6.0" layoutY="208.0" prefHeight="21.0" prefWidth="219.0" text="Position:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageSpoiler1DeltaMinUnitChoiceBox111" layoutX="348.0" layoutY="178.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                              <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageSpoiler1DeltaMinUnitChoiceBox121" layoutX="348.0" layoutY="126.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                              <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageSpoiler1DeltaMinUnitChoiceBox131" layoutX="348.0" layoutY="74.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                     </content>
+                                                                  </Tab>
+                                                               </tabs>
+                                                            </TabPane>
+                                                            <Button layoutX="79.0" layoutY="1624.0" mnemonicParsing="false" text="Add Nacelle" />
+                                                            <Button layoutX="108.0" layoutY="1226.0" mnemonicParsing="false" text="Add Engine" />
                                                          </children>
                                                       </AnchorPane>
                                                    </content>
@@ -541,7 +513,7 @@
                                        <children>
                                           <ScrollPane prefHeight="674.0" prefWidth="635.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <content>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2097.0" prefWidth="1335.0">
                                                    <children>
                                                       <Label layoutX="5.0" layoutY="108.0" text="Deck number:">
                                                          <font>
@@ -727,83 +699,7 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Separator layoutX="-25.0" layoutY="1610.0" prefHeight="3.0" prefWidth="1345.0" />
-                                                      <GridPane layoutX="4.0" layoutY="1618.0" prefHeight="212.0" prefWidth="383.0">
-                                                         <columnConstraints>
-                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="120.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="52.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="56.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="54.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="55.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="56.0" />
-                                                         </columnConstraints>
-                                                         <rowConstraints>
-                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                         </rowConstraints>
-                                                         <children>
-                                                            <Label text="X out:" GridPane.rowIndex="1">
-                                                               <font>
-                                                                  <Font name="System Bold" size="15.0" />
-                                                               </font>
-                                                            </Label>
-                                                            <Label text="Y in:" GridPane.rowIndex="2">
-                                                               <font>
-                                                                  <Font name="System Bold" size="15.0" />
-                                                               </font>
-                                                            </Label>
-                                                            <Label text="Y out:" GridPane.rowIndex="3">
-                                                               <font>
-                                                                  <Font name="System Bold" size="15.0" />
-                                                               </font>
-                                                            </Label>
-                                                            <Label text="X in:">
-                                                               <font>
-                                                                  <Font name="System Bold" size="15.0" />
-                                                               </font>
-                                                            </Label>
-                                                            <TextField id="textFieldFuselageSpoilerXin1" fx:id="textFieldFuselageSpoilerXin1" GridPane.columnIndex="2" />
-                                                            <TextField id="textFieldFuselageSpoilerXout1" fx:id="textFieldFuselageSpoilerXout1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                            <TextField id="textFieldFuselageSpoilerYout1" fx:id="textFieldFuselageSpoilerYout1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                            <TextField id="textFieldFuselageSpoilerYin1" fx:id="textFieldFuselageSpoilerYin1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                            <TextField id="textFieldFuselageSpoilerXin2" fx:id="textFieldFuselageSpoilerXin2" GridPane.columnIndex="3" />
-                                                            <TextField id="textFieldFuselageSpoilerXout2" fx:id="textFieldFuselageSpoilerXout2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                            <TextField id="textFieldFuselageSpoilerYin2" fx:id="textFieldFuselageSpoilerYin2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                            <TextField id="textFieldFuselageSpoilerYout2" fx:id="textFieldFuselageSpoilerYout2" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                            <TextField id="textFieldFuselageSpoilerXin3" fx:id="textFieldFuselageSpoilerXin3" GridPane.columnIndex="4" />
-                                                            <TextField id="textFieldFuselageSpoilerXout3" fx:id="textFieldFuselageSpoilerXout3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                            <TextField id="textFieldFuselageSpoilerYin3" fx:id="textFieldFuselageSpoilerYin3" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                            <TextField id="textFieldFuselageSpoilerYout3" fx:id="textFieldFuselageSpoilerYout3" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                            <TextField id="textFieldFuselageSpoilerXout4" fx:id="textFieldFuselageSpoilerXout4" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                                                            <TextField id="textFieldFuselageSpoilerXin4" fx:id="textFieldFuselageSpoilerXin4" GridPane.columnIndex="5" />
-                                                            <TextField id="textFieldFuselageSpoilerYin4" fx:id="textFieldFuselageSpoilerYin4" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                            <TextField id="textFieldFuselageSpoilerYout4" fx:id="textFieldFuselageSpoilerYout4" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMin1" fx:id="textFieldFuselageSpoilerMinDeflection1" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMin2" fx:id="textFieldFuselageSpoilerMinDeflection2" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMin3" fx:id="textFieldFuselageSpoilerMinDeflection3" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMin4" fx:id="textFieldFuselageSpoilerMinDeflection4" GridPane.columnIndex="5" GridPane.rowIndex="4" />
-                                                            <Label text="Deflection min:" GridPane.rowIndex="4">
-                                                               <font>
-                                                                  <Font name="System Bold" size="15.0" />
-                                                               </font>
-                                                            </Label>
-                                                            <Label text="Deflection max:" GridPane.rowIndex="5">
-                                                               <font>
-                                                                  <Font name="System Bold" size="15.0" />
-                                                               </font>
-                                                            </Label>
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMax1" fx:id="textFieldFuselageSpoilerMaxDeflection1" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMax2" fx:id="textFieldFuselageSpoilerMaxDeflection2" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMax3" fx:id="textFieldFuselageSpoilerMaxDeflection3" GridPane.columnIndex="4" GridPane.rowIndex="5" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMax4" fx:id="textFieldFuselageSpoilerMaxDeflection4" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-                                                            <ChoiceBox id="fuselageSpoilersDeltaMinUnitChoiceBox" fx:id="fuselageSpoilersDeltaMinUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                            <ChoiceBox id="fuselageSpoilersDeltaMaxUnitChoiceBox" fx:id="fuselageSpoilersDeltaMaxUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                         </children>
-                                                      </GridPane>
+                                                      <Separator layoutX="-25.0" layoutY="1615.0" prefHeight="3.0" prefWidth="1345.0" />
                                                       <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageLengthUnitChoiceBox" layoutX="345.0" layoutY="182.0" prefHeight="30.0" prefWidth="47.0" />
                                                       <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox" layoutX="346.0" layoutY="392.0" prefHeight="30.0" prefWidth="47.0" />
                                                       <ChoiceBox id="fuselageWindshieldWidthUnitChoiceBox" fx:id="fuselageWindshieldWidthUnitChoiceBox" layoutX="348.0" layoutY="560.0" prefHeight="30.0" prefWidth="47.0" />
@@ -820,6 +716,57 @@
                                                       </Label>
                                                       <ChoiceBox id="fuselageAdjustCriterionChoiceBox" fx:id="fuselageAdjustCriterionChoiceBox" disable="true" layoutX="123.0" layoutY="12.0" prefHeight="25.0" prefWidth="270.0" />
                                                       <ChoiceBox id="fuselageRoughnessUnitChoiceBox" fx:id="fuselageRoughnessUnitChoiceBox" layoutX="347.0" layoutY="237.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Button fx:id="fuselageAddSpoilerButton" layoutX="215.0" layoutY="1587.0" mnemonicParsing="false" onAction="#addFuselageSpoiler" text="Add spolier" />
+                                                      <TabPane fx:id="tabPaneFuselageSpoilers" layoutY="1615.0" prefHeight="353.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                         <tabs>
+                                                            <Tab text="Spoiler 1 ">
+                                                               <content>
+                                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="1072.0">
+                                                                     <children>
+                                                                        <Label layoutX="6.0" prefHeight="21.0" prefWidth="220.0" text="Inner Y position (% semispan):">
+                                                                           <font>
+                                                                              <Font name="System Bold" size="15.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerYin1" layoutX="6.0" layoutY="21.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <Label layoutX="6.0" layoutY="52.0" prefHeight="21.0" prefWidth="237.0" text="Outer Y position (% semispan):">
+                                                                           <font>
+                                                                              <Font name="System Bold" size="15.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerYout1" layoutX="6.0" layoutY="73.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <Label layoutX="6.0" layoutY="104.0" prefHeight="21.0" prefWidth="252.0" text="Inner X position (% local chord):">
+                                                                           <font>
+                                                                              <Font name="System Bold" size="15.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerXin1" layoutX="6.0" layoutY="125.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <Label layoutX="7.0" layoutY="156.0" prefHeight="21.0" prefWidth="252.0" text="Outer X position (% local chord):">
+                                                                           <font>
+                                                                              <Font name="System Bold" size="15.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerXout1" layoutX="7.0" layoutY="177.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageSpoiler1DeltaMinUnitChoiceBox" layoutX="348.0" layoutY="230.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <Label layoutX="7.0" layoutY="208.0" prefHeight="21.0" prefWidth="197.0" text="Minimum deflection angle:">
+                                                                           <font>
+                                                                              <Font name="System Bold" size="15.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerMinDeflection1" layoutX="7.0" layoutY="229.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageSpoiler1DeltaMaxUnitChoiceBox" layoutX="348.0" layoutY="282.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <Label layoutX="7.0" layoutY="260.0" prefHeight="21.0" prefWidth="219.0" text="Maximum deflection angle:">
+                                                                           <font>
+                                                                              <Font name="System Bold" size="15.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldFuselageSpoilerMaxDeflection1" layoutX="7.0" layoutY="281.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                               </content>
+                                                            </Tab>
+                                                         </tabs>
+                                                      </TabPane>
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -1786,7 +1733,6 @@
                                                          </tabs>
                                                       </TabPane>
                                                       <Button fx:id="wingAddSpoilerButton" layoutX="85.0" layoutY="2937.0" mnemonicParsing="false" onAction="#addSpoiler" text="Add spolier" />
-                                                      <Button fx:id="equivalentWingChooseAirfoilRootButton" layoutX="350.0" layoutY="906.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
                                                       <Button fx:id="equivalentWingChooseAirfoilKinkButton" layoutX="350.0" layoutY="958.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
                                                       <Button fx:id="equivalentWingChooseAirfoilTipButton" layoutX="350.0" layoutY="1010.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
                                                    </children>
@@ -2150,7 +2096,7 @@
                      <children>
                         <BorderPane prefHeight="681.0" prefWidth="1072.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <center>
-                              <SplitPane dividerPositions="0.3751" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                              <SplitPane dividerPositions="0.375" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                  <items>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
                                        <children>
@@ -2169,21 +2115,21 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="103.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailCompositeMassCorrectionFactor" layoutX="6.0" layoutY="103.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Separator layoutX="-10.0" layoutY="43.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Label layoutX="5.0" layoutY="14.0" text="Adjust Criterion:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <ChoiceBox id="fuselageAdjustCriterionChoiceBox" disable="true" layoutX="123.0" layoutY="12.0" prefHeight="25.0" prefWidth="270.0" />
+                                                      <ChoiceBox id="fuselageAdjustCriterionChoiceBox" fx:id="vTailAdjustCriterionChoiceBox" disable="true" layoutX="123.0" layoutY="12.0" prefHeight="25.0" prefWidth="270.0" />
                                                       <Label layoutX="6.0" layoutY="134.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="155.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="155.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailRoughness" layoutX="6.0" layoutY="155.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailRoughnessUnitChoiceBox" layoutX="347.0" layoutY="155.0" prefHeight="30.0" prefWidth="47.0" />
                                                       <Separator layoutX="-2.0" layoutY="193.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Separator layoutX="-2.0" layoutY="1079.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Label layoutX="6.0" layoutY="198.0" text="PANELS" textFill="#0400ff">
@@ -2191,7 +2137,7 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TabPane layoutY="223.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <TabPane fx:id="tabPaneVTailPanels" layoutY="223.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Panel 1 ">
                                                                <content>
@@ -2202,22 +2148,22 @@
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="21.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="22.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailSpanPanel1" layoutX="6.0" layoutY="21.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailSpanPanel1UnitChoiceBox" layoutX="347.0" layoutY="22.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="6.0" layoutY="52.0" prefHeight="21.0" prefWidth="128.0" text="Sweep L.E.:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="73.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="74.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailSweepLeadingEdgePanel1" layoutX="6.0" layoutY="73.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailSweepLEPanel1UnitChoiceBox" layoutX="347.0" layoutY="74.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="6.0" layoutY="104.0" prefHeight="21.0" prefWidth="128.0" text="Dihedral angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="125.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="126.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailDihedralPanel1" layoutX="6.0" layoutY="125.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailDihedralPanel1UnitChoiceBox" layoutX="347.0" layoutY="126.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Separator layoutX="-2.0" layoutY="164.0" prefHeight="0.0" prefWidth="1345.0" />
                                                                         <Label layoutX="6.0" layoutY="164.0" text="Inner section" textFill="#0400ff">
                                                                            <font>
@@ -2230,22 +2176,22 @@
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="7.0" layoutY="205.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="348.0" layoutY="206.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailChordInnerSectionPanel1" layoutX="7.0" layoutY="205.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailInnerSectionChordPanel1UnitChoiceBox" layoutX="348.0" layoutY="206.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="7.0" layoutY="236.0" prefHeight="21.0" prefWidth="128.0" text="Twist angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="7.0" layoutY="257.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="348.0" layoutY="258.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailTwistInnerSectionPanel1" layoutX="7.0" layoutY="257.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailInnerSectionTwistTipPanel1UnitChoiceBox" layoutX="348.0" layoutY="258.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="7.0" layoutY="288.0" prefHeight="21.0" prefWidth="128.0" text="Airfoil:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="309.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Button layoutX="348.0" layoutY="309.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailAirfoilPathInnerSectionPanel1" layoutX="6.0" layoutY="309.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <Button fx:id="vTailInnerSectionAirfoilDetailsPanel1Button" layoutX="380.0" layoutY="309.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                                            <font>
                                                                               <Font name="System Bold" size="12.0" />
                                                                            </font>
@@ -2262,26 +2208,28 @@
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="404.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="348.0" layoutY="405.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailChordOuterSectionPanel1" layoutX="6.0" layoutY="404.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailOuterSectionChordPanel1UnitChoiceBox" layoutX="348.0" layoutY="405.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="6.0" layoutY="435.0" prefHeight="21.0" prefWidth="128.0" text="Twist angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="456.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="348.0" layoutY="457.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailTwistOuterSectionPanel1" layoutX="6.0" layoutY="456.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailOuterSectionTwistTipPanel1UnitChoiceBox" layoutX="348.0" layoutY="457.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="6.0" layoutY="487.0" prefHeight="21.0" prefWidth="128.0" text="Airfoil:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="508.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Button layoutX="348.0" layoutY="508.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailAirfoilPathOuterSectionPanel1" layoutX="6.0" layoutY="508.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <Button fx:id="vTailOuterSectionAirfoilDetailsPanel1Button" layoutX="380.0" layoutY="508.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                                            <font>
                                                                               <Font name="System Bold" size="12.0" />
                                                                            </font>
                                                                         </Button>
+                                                                        <Button fx:id="vTailChooseInnerAirfoilPanel1Button" layoutX="350.0" layoutY="309.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
+                                                                        <Button fx:id="vTailChooseOuterAirfoilPanel1Button" layoutX="350.0" layoutY="508.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
                                                                      </children>
                                                                   </AnchorPane>
                                                                </content>
@@ -2294,8 +2242,8 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Button layoutX="79.0" layoutY="196.0" mnemonicParsing="false" text="Add panel" />
-                                                      <TabPane layoutY="894.0" prefHeight="352.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <Button fx:id="vTailAddPanelButton" layoutX="79.0" layoutY="196.0" mnemonicParsing="false" text="Add panel" />
+                                                      <TabPane fx:id="tabPaneVTailRudders" layoutY="894.0" prefHeight="352.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Rudder 1">
                                                                <content>
@@ -2306,46 +2254,46 @@
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="21.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailInnerPositionRudder1" layoutX="6.0" layoutY="21.0" prefHeight="31.0" prefWidth="340.0" />
                                                                         <Label layoutX="6.0" layoutY="52.0" prefHeight="21.0" prefWidth="216.0" text="Outer position (% semispan):">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="73.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailOuterPositionRudder1" layoutX="6.0" layoutY="73.0" prefHeight="31.0" prefWidth="340.0" />
                                                                         <Label layoutX="6.0" layoutY="104.0" prefHeight="21.0" prefWidth="252.0" text="Inner chord ratio:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="125.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailInnerChordRatioRudder1" layoutX="6.0" layoutY="125.0" prefHeight="31.0" prefWidth="340.0" />
                                                                         <Label layoutX="7.0" layoutY="156.0" prefHeight="21.0" prefWidth="128.0" text="Outer chord ratio:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="7.0" layoutY="177.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="230.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailOuterChordRatioRudder1" layoutX="7.0" layoutY="177.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailMinimumDeflectionAngleRudder1UnitChoiceBox" layoutX="347.0" layoutY="230.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="7.0" layoutY="208.0" prefHeight="21.0" prefWidth="197.0" text="Minimum deflection angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="229.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="282.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailMinimumDeflectionAngleRudder1" layoutX="6.0" layoutY="229.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailMaximumDeflectionAngleRudder1UnitChoiceBox" layoutX="347.0" layoutY="282.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="7.0" layoutY="260.0" prefHeight="21.0" prefWidth="219.0" text="Maximum deflection angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="281.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailMaximumDeflectionAngleRudder1" layoutX="6.0" layoutY="281.0" prefHeight="31.0" prefWidth="340.0" />
                                                                      </children>
                                                                   </AnchorPane>
                                                                </content>
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Button layoutX="82.0" layoutY="865.0" mnemonicParsing="false" text="Add rudder" />
+                                                      <Button fx:id="vTailAddRudderButton" layoutX="82.0" layoutY="865.0" mnemonicParsing="false" text="Add rudder" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -2360,7 +2308,7 @@
                                                    <items>
                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0">
                                                          <children>
-                                                            <TabPane onMouseClicked="#zoomViewsVTail" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <TabPane fx:id="tabPaneVTailViewAndAirfoils" onMouseClicked="#zoomViewsVTail" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <tabs>
                                                                   <Tab id="FuselageTopView" text="Planform">
                                                                      <content>
@@ -2425,7 +2373,7 @@
                      <children>
                         <BorderPane prefHeight="681.0" prefWidth="1072.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <center>
-                              <SplitPane dividerPositions="0.3751" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                              <SplitPane dividerPositions="0.375" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                  <items>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
                                        <children>
@@ -2444,21 +2392,21 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="103.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardCompositeMassCorrectionFactor" layoutX="6.0" layoutY="103.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Separator layoutX="-10.0" layoutY="43.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Label layoutX="5.0" layoutY="14.0" text="Adjust Criterion:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <ChoiceBox id="fuselageAdjustCriterionChoiceBox" disable="true" layoutX="123.0" layoutY="12.0" prefHeight="25.0" prefWidth="270.0" />
+                                                      <ChoiceBox id="fuselageAdjustCriterionChoiceBox" fx:id="canardAdjustCriterionChoiceBox" disable="true" layoutX="123.0" layoutY="12.0" prefHeight="25.0" prefWidth="270.0" />
                                                       <Label layoutX="6.0" layoutY="134.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="155.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="155.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardRoughness" layoutX="6.0" layoutY="155.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardRoughnessUnitChoiceBox" layoutX="347.0" layoutY="155.0" prefHeight="30.0" prefWidth="47.0" />
                                                       <Separator layoutX="-2.0" layoutY="193.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Separator layoutX="-2.0" layoutY="1079.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Label layoutX="6.0" layoutY="198.0" text="PANELS" textFill="#0400ff">
@@ -2466,7 +2414,7 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TabPane layoutY="223.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <TabPane fx:id="tabPaneCanardPanels" layoutY="223.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Panel 1 ">
                                                                <content>
@@ -2477,22 +2425,22 @@
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="21.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="22.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardSpanPanel1" layoutX="6.0" layoutY="21.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardSpanPanel1UnitChoiceBox" layoutX="347.0" layoutY="22.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="6.0" layoutY="52.0" prefHeight="21.0" prefWidth="128.0" text="Sweep L.E.:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="73.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="74.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardSweepLeadingEdgePanel1" layoutX="6.0" layoutY="73.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardSweepLEPanel1UnitChoiceBox" layoutX="347.0" layoutY="74.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="6.0" layoutY="104.0" prefHeight="21.0" prefWidth="128.0" text="Dihedral angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="125.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="126.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardDihedralPanel1" layoutX="6.0" layoutY="125.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardDihedralPanel1UnitChoiceBox" layoutX="347.0" layoutY="126.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Separator layoutX="-2.0" layoutY="164.0" prefHeight="0.0" prefWidth="1345.0" />
                                                                         <Label layoutX="6.0" layoutY="164.0" text="Inner section" textFill="#0400ff">
                                                                            <font>
@@ -2505,22 +2453,22 @@
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="7.0" layoutY="205.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="348.0" layoutY="206.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardChordInnerSectionPanel1" layoutX="7.0" layoutY="205.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardInnerSectionChordPanel1UnitChoiceBox" layoutX="348.0" layoutY="206.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="7.0" layoutY="236.0" prefHeight="21.0" prefWidth="128.0" text="Twist angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="7.0" layoutY="257.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="348.0" layoutY="258.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardTwistInnerSectionPanel1" layoutX="7.0" layoutY="257.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardInnerSectionTwistTipPanel1UnitChoiceBox" layoutX="348.0" layoutY="258.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="7.0" layoutY="288.0" prefHeight="21.0" prefWidth="128.0" text="Airfoil:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="309.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Button layoutX="348.0" layoutY="309.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardAirfoilPathInnerSectionPanel1" layoutX="6.0" layoutY="309.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <Button fx:id="canardInnerSectionAirfoilDetailsPanel1Button" layoutX="380.0" layoutY="309.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                                            <font>
                                                                               <Font name="System Bold" size="12.0" />
                                                                            </font>
@@ -2537,26 +2485,28 @@
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="404.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="348.0" layoutY="405.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardChordOuterSectionPanel1" layoutX="6.0" layoutY="404.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardOuterSectionChordPanel1UnitChoiceBox" layoutX="348.0" layoutY="405.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="6.0" layoutY="435.0" prefHeight="21.0" prefWidth="128.0" text="Twist angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="456.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="348.0" layoutY="457.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardTwistOuterSectionPanel1" layoutX="6.0" layoutY="456.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardOuterSectionTwistTipPanel1UnitChoiceBox" layoutX="348.0" layoutY="457.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="6.0" layoutY="487.0" prefHeight="21.0" prefWidth="128.0" text="Airfoil:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="508.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Button layoutX="348.0" layoutY="508.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardAirfoilPathOuterSectionPanel1" layoutX="6.0" layoutY="508.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <Button fx:id="canardOuterSectionAirfoilDetailsPanel1Button" layoutX="380.0" layoutY="508.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                                            <font>
                                                                               <Font name="System Bold" size="12.0" />
                                                                            </font>
                                                                         </Button>
+                                                                        <Button fx:id="canardChooseInnerAirfoilPanel1Button" layoutX="350.0" layoutY="309.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
+                                                                        <Button fx:id="canardChooseOuterAirfoilPanel1Button" layoutX="350.0" layoutY="508.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
                                                                      </children>
                                                                   </AnchorPane>
                                                                </content>
@@ -2569,8 +2519,8 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Button layoutX="79.0" layoutY="196.0" mnemonicParsing="false" text="Add panel" />
-                                                      <TabPane layoutY="894.0" prefHeight="352.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <Button fx:id="canardAddPanelButton" layoutX="79.0" layoutY="196.0" mnemonicParsing="false" text="Add panel" />
+                                                      <TabPane fx:id="tabPaneCanardControlSurfaces" layoutY="894.0" prefHeight="352.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Control Surface 1">
                                                                <content>
@@ -2581,46 +2531,46 @@
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="21.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardInnerPositionControlSurface1" layoutX="6.0" layoutY="21.0" prefHeight="31.0" prefWidth="340.0" />
                                                                         <Label layoutX="6.0" layoutY="52.0" prefHeight="21.0" prefWidth="216.0" text="Outer position (% semispan):">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="73.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardOuterPositionControlSurface1" layoutX="6.0" layoutY="73.0" prefHeight="31.0" prefWidth="340.0" />
                                                                         <Label layoutX="6.0" layoutY="104.0" prefHeight="21.0" prefWidth="252.0" text="Inner chord ratio:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="125.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardInnerChordRatioControlSurface1" layoutX="6.0" layoutY="125.0" prefHeight="31.0" prefWidth="340.0" />
                                                                         <Label layoutX="7.0" layoutY="156.0" prefHeight="21.0" prefWidth="128.0" text="Outer chord ratio:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="7.0" layoutY="177.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="230.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardOuterChordRatioControlSurface1" layoutX="7.0" layoutY="177.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardMinimumDeflectionAngleControlSurface1UnitChoiceBox" layoutX="347.0" layoutY="230.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="7.0" layoutY="208.0" prefHeight="21.0" prefWidth="197.0" text="Minimum deflection angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="229.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" layoutX="347.0" layoutY="282.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardMinimumDeflectionAngleControlSurface1" layoutX="6.0" layoutY="229.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardMaximumDeflectionAngleControlSurface1UnitChoiceBox" layoutX="347.0" layoutY="282.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="7.0" layoutY="260.0" prefHeight="21.0" prefWidth="219.0" text="Maximum deflection angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="281.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardMaximumDeflectionAngleControlSurface1" layoutX="6.0" layoutY="281.0" prefHeight="31.0" prefWidth="340.0" />
                                                                      </children>
                                                                   </AnchorPane>
                                                                </content>
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Button layoutX="160.0" layoutY="865.0" mnemonicParsing="false" text="Add control surface" />
+                                                      <Button fx:id="canardAddControlSurfaceButton" layoutX="160.0" layoutY="865.0" mnemonicParsing="false" text="Add control surface" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -2635,7 +2585,7 @@
                                                    <items>
                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0">
                                                          <children>
-                                                            <TabPane onMouseClicked="#zoomViewsCanard" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <TabPane fx:id="tabPaneCanardViewAndAirfoils" onMouseClicked="#zoomViewsCanard" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <tabs>
                                                                   <Tab id="FuselageTopView" text="Planform">
                                                                      <content>
@@ -2695,18 +2645,407 @@
                </content>
           </Tab>
           <Tab text="Nacelles">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="4649.0" prefWidth="1072.0">
+                     <children>
+                        <BorderPane prefHeight="4651.0" prefWidth="1072.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <center>
+                              <SplitPane dividerPositions="0.3751" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
+                                       <children>
+                                          <ScrollPane prefHeight="674.0" prefWidth="635.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="559.0" prefWidth="1325.0">
+                                                   <children>
+                                                      <Label layoutX="5.0" layoutY="29.0" text="Roughness:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldFuselageDeckNumber1" layoutX="4.0" layoutY="52.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Separator layoutX="-4.0" layoutY="95.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Separator layoutX="-20.0" layoutY="26.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                      <Label layoutX="6.0" layoutY="6.0" text="GLOBAL DATA" textFill="#0400ff">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutX="5.0" layoutY="103.0" prefHeight="21.0" prefWidth="156.0" text="GEOMETRY" textFill="#0400ff">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Separator layoutX="-28.0" layoutY="131.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <Label layoutX="6.0" layoutY="135.0" text="Length:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseLengthRatio" fx:id="textFieldFuselageNoseLengthRatio1" layoutX="6.0" layoutY="158.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="189.0" prefHeight="21.0" prefWidth="389.0" text="Maximum diameter:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseTipOffset" fx:id="textFieldFuselageNoseTipOffset1" layoutX="6.0" layoutY="210.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="8.0" layoutY="245.0" prefHeight="21.0" prefWidth="163.0" text="k inlet:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseDxCap" fx:id="textFieldFuselageNoseDxCap1" layoutX="6.0" layoutY="266.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="7.0" layoutY="304.0" text="k outlet:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutX="7.0" layoutY="369.0" prefHeight="21.0" prefWidth="146.0" text="k length:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseWindshieldWidth" fx:id="textFieldFuselageNoseWindshieldWidth1" layoutX="6.0" layoutY="389.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="7.0" layoutY="430.0" prefHeight="21.0" prefWidth="164.0" text="k diameter outlet:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox1" layoutX="348.0" layoutY="210.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageLengthUnitChoiceBox11" layoutX="345.0" layoutY="52.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox11" layoutX="348.0" layoutY="158.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <TextField id="textFieldFuselageNoseDxCap" fx:id="textFieldFuselageNoseDxCap11" layoutX="6.0" layoutY="327.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldFuselageNoseWindshieldWidth" fx:id="textFieldFuselageNoseWindshieldWidth11" layoutX="6.0" layoutY="452.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Button fx:id="equivalentWingRootXOffsetLEInfoButton1" layoutX="63.0" layoutY="245.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                         <font>
+                                                            <Font name="System Bold" size="8.0" />
+                                                         </font>
+                                                      </Button>
+                                                      <Button fx:id="equivalentWingRootXOffsetLEInfoButton11" layoutX="71.0" layoutY="306.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                         <font>
+                                                            <Font name="System Bold" size="8.0" />
+                                                         </font>
+                                                      </Button>
+                                                      <Button fx:id="equivalentWingRootXOffsetLEInfoButton12" layoutX="71.0" layoutY="369.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                         <font>
+                                                            <Font name="System Bold" size="8.0" />
+                                                         </font>
+                                                      </Button>
+                                                      <Button fx:id="equivalentWingRootXOffsetLEInfoButton13" layoutX="137.0" layoutY="432.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                         <font>
+                                                            <Font name="System Bold" size="8.0" />
+                                                         </font>
+                                                      </Button>
+                                                      <Button layoutX="100.0" layoutY="101.0" mnemonicParsing="false" text="Estimate" />
+                                                   </children>
+                                                </AnchorPane>
+                                             </content>
+                                          </ScrollPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                       <children>
+                                          <BorderPane layoutX="386.0" layoutY="181.0" prefHeight="678.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <center>
+                                                <TabPane onMouseClicked="#zoomDataLogAndMessagesFuselage" prefHeight="977.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                                                   <tabs>
+                                                      <Tab text="Data log">
+                                                         <content>
+                                                            <ScrollPane prefHeight="977.0" prefWidth="797.0">
+                                                               <content>
+                                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
+                                                                     <children>
+                                                                        <TextArea id="FuselageOutput" fx:id="textAreaFuselageConsoleOutput1" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                               </content>
+                                                            </ScrollPane>
+                                                         </content>
+                                                      </Tab>
+                                                      <Tab text="Messages">
+                                                         <content>
+                                                            <ScrollPane prefHeight="977.0" prefWidth="797.0">
+                                                               <content>
+                                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
+                                                                     <children>
+                                                                        <TextArea id="FuselageMessages" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                               </content>
+                                                            </ScrollPane>
+                                                         </content>
+                                                      </Tab>
+                                                   </tabs>
+                                                </TabPane>
+                                             </center>
+                                          </BorderPane>
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </center>
+                        </BorderPane>
+                     </children>
+                  </AnchorPane>
+               </content>
           </Tab>
             <Tab text="Power Plant">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="4649.0" prefWidth="1072.0">
+                     <children>
+                        <Pane id="fuselageTopViewPane" fx:id="fuselageTopViewPane11" />
+                        <BorderPane prefHeight="4651.0" prefWidth="1072.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <center>
+                              <SplitPane dividerPositions="0.3751" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0" />
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                       <children>
+                                          <BorderPane layoutX="386.0" layoutY="181.0" prefHeight="678.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <center>
+                                                <TabPane onMouseClicked="#zoomDataLogAndMessagesFuselage" prefHeight="977.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                                                   <tabs>
+                                                      <Tab text="Data log">
+                                                         <content>
+                                                            <ScrollPane prefHeight="977.0" prefWidth="797.0">
+                                                               <content>
+                                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
+                                                                     <children>
+                                                                        <TextArea id="FuselageOutput" fx:id="textAreaFuselageConsoleOutput11" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                               </content>
+                                                            </ScrollPane>
+                                                         </content>
+                                                      </Tab>
+                                                      <Tab text="Messages">
+                                                         <content>
+                                                            <ScrollPane prefHeight="977.0" prefWidth="797.0">
+                                                               <content>
+                                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
+                                                                     <children>
+                                                                        <TextArea id="FuselageMessages" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                               </content>
+                                                            </ScrollPane>
+                                                         </content>
+                                                      </Tab>
+                                                   </tabs>
+                                                </TabPane>
+                                             </center>
+                                          </BorderPane>
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </center>
+                           <top>
+                              <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <items>
+                                    <RadioButton mnemonicParsing="false" text="Tubofan/Turbojet">
+                                       <padding>
+                                          <Insets right="30.0" />
+                                       </padding>
+                                    </RadioButton>
+                                    <RadioButton mnemonicParsing="false" text="Turboprop">
+                                       <padding>
+                                          <Insets right="30.0" />
+                                       </padding>
+                                    </RadioButton>
+                                    <RadioButton mnemonicParsing="false" text="Piston">
+                                       <padding>
+                                          <Insets right="30.0" />
+                                       </padding>
+                                    </RadioButton>
+                                 </items>
+                              </ToolBar>
+                           </top>
+                        </BorderPane>
+                     </children>
+                  </AnchorPane>
                </content>
             </Tab>
             <Tab text="Landing Gears">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="4649.0" prefWidth="1072.0">
+                     <children>
+                        <BorderPane prefHeight="4651.0" prefWidth="1072.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <center>
+                              <SplitPane dividerPositions="0.3751" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
+                                       <children>
+                                          <ScrollPane prefHeight="674.0" prefWidth="635.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="626.0" prefWidth="1325.0">
+                                                   <children>
+                                                      <Label layoutX="5.0" layoutY="29.0" text="Main Leg Length:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldFuselageDeckNumber11" layoutX="4.0" layoutY="52.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Separator layoutY="305.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Separator layoutX="-20.0" layoutY="26.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                      <Label layoutX="6.0" layoutY="6.0" text="GLOBAL DATA" textFill="#0400ff">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutX="6.0" layoutY="312.0" prefHeight="21.0" prefWidth="263.0" text="FRONTAL WHEELS DATA" textFill="#0400ff">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Separator layoutY="336.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <Label layoutX="6.0" layoutY="340.0" text="Height:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseLengthRatio" fx:id="textFieldFuselageNoseLengthRatio11" layoutX="6.0" layoutY="363.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="394.0" prefHeight="21.0" prefWidth="389.0" text="Width:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseTipOffset" fx:id="textFieldFuselageNoseTipOffset11" layoutX="6.0" layoutY="415.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox11" layoutX="348.0" layoutY="415.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageLengthUnitChoiceBox111" layoutX="348.0" layoutY="52.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox111" layoutX="348.0" layoutY="363.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Separator layoutY="457.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="6.0" layoutY="465.0" prefHeight="21.0" prefWidth="263.0" text="REAR WHEELS DATA" textFill="#0400ff">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Separator layoutY="493.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <Label layoutX="6.0" layoutY="497.0" text="Height:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseLengthRatio" fx:id="textFieldFuselageNoseLengthRatio111" layoutX="6.0" layoutY="520.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="551.0" prefHeight="21.0" prefWidth="389.0" text="Width:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseTipOffset" fx:id="textFieldFuselageNoseTipOffset111" layoutX="6.0" layoutY="572.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox112" layoutX="348.0" layoutY="572.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox1111" layoutX="348.0" layoutY="520.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Label layoutX="6.0" layoutY="83.0" text="k Main Landing Gear Length:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldFuselageDeckNumber111" layoutX="6.0" layoutY="106.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="137.0" text="Distance between wheels">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldFuselageDeckNumber112" layoutX="5.0" layoutY="160.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageLengthUnitChoiceBox1111" layoutX="349.0" layoutY="160.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Button fx:id="equivalentWingRootXOffsetLEInfoButton14" layoutX="217.0" layoutY="84.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                         <font>
+                                                            <Font name="System Bold" size="8.0" />
+                                                         </font>
+                                                      </Button>
+                                                      <Label layoutX="6.0" layoutY="191.0" text="Number Of Frontal Wheels:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldFuselageDeckNumber1111" layoutX="6.0" layoutY="214.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="245.0" text="Number Of Rear Wheels:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldFuselageDeckNumber11111" layoutX="6.0" layoutY="268.0" prefHeight="31.0" prefWidth="340.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                             </content>
+                                          </ScrollPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                       <children>
+                                          <BorderPane layoutX="386.0" layoutY="181.0" prefHeight="678.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <center>
+                                                <SplitPane id="fuselageViewsAndDataLogSplitPane" fx:id="fuselageViewsAndDataLogSplitPane11" dividerPositions="0.9" focusTraversable="false" orientation="VERTICAL" prefHeight="1268.0" prefWidth="666.0" BorderPane.alignment="CENTER">
+                                                   <items>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0">
+                                                         <children>
+                                                            <TabPane onMouseClicked="#zoomViewsFuselage" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <tabs>
+                                                                  <Tab id="FuselageTopView" text="Top view">
+                                                                     <content>
+                                                                        <Pane id="fuselageTopViewPane" fx:id="fuselageTopViewPane21" />
+                                                                     </content>
+                                                                  </Tab>
+                                                                  <Tab id="FuselageSideView" text="Side view">
+                                                                     <content>
+                                                                        <Pane id="fuselageSideViewPane" fx:id="fuselageSideViewPane11" />
+                                                                     </content>
+                                                                  </Tab>
+                                                                  <Tab id="fuselageFrontView" text="Front view">
+                                                                     <content>
+                                                                        <Pane id="fuselageFrontViewPane" fx:id="fuselageFrontViewPane11" />
+                                                                     </content>
+                                                                  </Tab>
+                                                               </tabs>
+                                                            </TabPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                         <children>
+                                                            <TabPane onMouseClicked="#zoomDataLogAndMessagesFuselage" prefHeight="977.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <tabs>
+                                                                  <Tab text="Data log">
+                                                                     <content>
+                                                                        <ScrollPane prefHeight="977.0" prefWidth="797.0">
+                                                                           <content>
+                                                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
+                                                                                 <children>
+                                                                                    <TextArea id="FuselageOutput" fx:id="textAreaFuselageConsoleOutput12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                                 </children>
+                                                                              </AnchorPane>
+                                                                           </content>
+                                                                        </ScrollPane>
+                                                                     </content>
+                                                                  </Tab>
+                                                                  <Tab text="Messages">
+                                                                     <content>
+                                                                        <ScrollPane prefHeight="977.0" prefWidth="797.0">
+                                                                           <content>
+                                                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
+                                                                                 <children>
+                                                                                    <TextArea id="FuselageMessages" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                                 </children>
+                                                                              </AnchorPane>
+                                                                           </content>
+                                                                        </ScrollPane>
+                                                                     </content>
+                                                                  </Tab>
+                                                               </tabs>
+                                                            </TabPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </items>
+                                                </SplitPane>
+                                             </center>
+                                          </BorderPane>
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </center>
+                        </BorderPane>
+                     </children>
+                  </AnchorPane>
                </content>
             </Tab>
             <Tab disable="true" text="Systems">

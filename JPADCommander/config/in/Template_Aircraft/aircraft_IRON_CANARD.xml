@@ -29,6 +29,14 @@
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>
+			<canard file="canard_IRON.xml">
+                <position>
+                    <x unit="m">6.0</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">1.8</z>
+                </position>
+                <rigging_angle unit="deg">0.0</rigging_angle>
+            </canard>
         </lifting_surfaces>
         <fuselages>
             <fuselage file="fuselage_IRON.xml">
@@ -62,17 +70,17 @@
 		<nacelles>
             <nacelle file="nacelle_IRON.xml">
                 <position>
-                    <x unit="m">18.50</x>
-                    <y unit="m">6.035</y>
-                    <z unit="m">-1.32</z>
+                    <x unit="m">31.22</x>
+                    <y unit="m">4.4375</y>
+                    <z unit="m">1.65</z>
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
             <nacelle file="nacelle_IRON.xml">
                 <position>
-                    <x unit="m">18.50</x>
-                    <y unit="m">-6.035</y>
-                    <z unit="m">-1.32</z>
+                   <x unit="m">31.22</x>
+                   <y unit="m">-4.4375</y>
+                   <z unit="m">1.65</z>
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
