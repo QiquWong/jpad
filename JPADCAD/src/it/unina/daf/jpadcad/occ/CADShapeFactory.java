@@ -152,6 +152,30 @@ public abstract class CADShapeFactory {
 	public abstract CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled);
 	
 	/**
+	 * Create a new CADFace as a planar triangle connecting three vertices 
+	 * @param The three vertices v0, v1, v2 
+	 * @return The created CADFace
+	 */
+	public abstract CADFace newFacePlanar(double[] v0, double[] v1, double[] v2);
+	public abstract CADFace newFacePlanar(CADVertex v0, CADVertex v1, CADVertex v2);
+
+	/**
+	 * Create a shell from adjacent faces
+	 * @param cadFaces adjacent faces
+	 * @return the created CADShell
+	 */
+	public abstract CADShell newShellFromAdjacentFaces(CADFace ... cadFaces);
+	public abstract CADShell newShellFromAdjacentFaces(List<CADFace> cadFaces);
+	
+	/**
+	 * Create a solid from adjacent faces
+	 * @param cadFaces adjacent faces
+	 * @return the created CADSolid
+	 */
+	public abstract CADSolid newSolidFromAdjacentFaces(CADFace ... cadFaces);
+	public abstract CADSolid newSolidFromAdjacentFaces(List<CADFace> cadFaces);
+	
+	/**
 	 * Create a new CADVertex from a triplet of coordinates
 	 * @param x, y, z the cartesian coordinates
 	 * @return The created CADVertex

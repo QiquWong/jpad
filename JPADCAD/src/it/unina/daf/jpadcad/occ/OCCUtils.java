@@ -79,30 +79,30 @@ public final class OCCUtils {
 		BRep_Builder builder = new BRep_Builder();
 		TopoDS_Compound compound = new TopoDS_Compound();
 		builder.MakeCompound(compound);
-		// loop through the shapes and add to compound
+		// loop through the shapes (not passed in a list) and add to compound
 		for(int k = 0; k < nonNullShapes.length; k++)
 			builder.Add(compound, nonNullShapes[k].getShape());
 		// loop through the shapes grabbed from lists and add to compound
 		listShapes.stream()
 			.forEach(s -> builder.Add(compound, s.getShape()));
 		
-//		TopoDS_CompSolid compsolid = new TopoDS_CompSolid();
-//		builder.MakeCompSolid(compsolid);
-//		
-//		// === Experimental, trying to write solids, TODO: fixme 
-//		listShapes.stream()
-//			.filter(s -> s instanceof OCCSolid)
-//			.forEach(s -> {
-//				System.out.println(">>>>>> Solid");
-//				builder.Add(compsolid, s.getShape());
-//			});
+		// === Experimental, trying to write solids, TODO: fixme
+		/*
+		BRep_Builder builder1 = new BRep_Builder();
+		TopoDS_Compound compound1 = new TopoDS_Compound();
+		builder1.MakeCompound(compound1);
+		Arrays.asList(nonNullShapes).stream()
+			.filter(s -> s instanceof CADSolid)
+			.forEach(s -> {
+				System.out.println(">>>>>> Solid");
+				builder1.Add(compound1, s.getShape());
+			});
+		String fileNameSolids = fileName.replace(".brep", "_solids.brep");
+		long resultSolids = BRepTools.Write(compound1, fileNameSolids);
+		if (resultSolids == 1)
+			System.out.println("========== [OCCUtils::write] Solids written on file: " + fileNameSolids);
+		 */
 		
-		
-//		String fileNameSolids = fileName.replace(".brep", "_solids.brep");
-//		long resultSolids = BRepTools.Write(compsolid, fileNameSolids);
-//		if (resultSolids == 1)
-//			System.out.println("========== [OCCUtils::write] Solids written on file: " + fileNameSolids);
-
 		// ====================
 		// write on file
 		long result = BRepTools.Write(compound, fileName);		
