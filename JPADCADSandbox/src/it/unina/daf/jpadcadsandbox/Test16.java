@@ -54,7 +54,6 @@ public class Test16 {
 		
 		if (OCCUtils.write(fileName, fuselageShapes))
 			System.out.println("========== [main] Output written on file: " + fileName);
-		
 
 		// === Experimental, extract solids from fuselage shapes
 		String fileNameSolids = fileName.replace(".brep", "_solids.brep");
