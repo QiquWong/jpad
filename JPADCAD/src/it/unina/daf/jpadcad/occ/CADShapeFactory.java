@@ -165,7 +165,7 @@ public abstract class CADShapeFactory {
 	 * @return the created CADShell
 	 */
 	public abstract CADShell newShellFromAdjacentFaces(CADFace ... cadFaces);
-	public abstract CADShell newShellFromAdjacentFaces(List<CADFace> cadFaces);
+	public abstract CADShell newShellFromAdjacentFaces(List<CADFace> cadFaces);	
 	
 	/**
 	 * Create a solid from adjacent faces

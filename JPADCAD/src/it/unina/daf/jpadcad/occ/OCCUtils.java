@@ -86,23 +86,6 @@ public final class OCCUtils {
 		listShapes.stream()
 			.forEach(s -> builder.Add(compound, s.getShape()));
 		
-		// === Experimental, trying to write solids, TODO: fixme
-		/*
-		BRep_Builder builder1 = new BRep_Builder();
-		TopoDS_Compound compound1 = new TopoDS_Compound();
-		builder1.MakeCompound(compound1);
-		Arrays.asList(nonNullShapes).stream()
-			.filter(s -> s instanceof CADSolid)
-			.forEach(s -> {
-				System.out.println(">>>>>> Solid");
-				builder1.Add(compound1, s.getShape());
-			});
-		String fileNameSolids = fileName.replace(".brep", "_solids.brep");
-		long resultSolids = BRepTools.Write(compound1, fileNameSolids);
-		if (resultSolids == 1)
-			System.out.println("========== [OCCUtils::write] Solids written on file: " + fileNameSolids);
-		 */
-		
 		// ====================
 		// write on file
 		long result = BRepTools.Write(compound, fileName);		

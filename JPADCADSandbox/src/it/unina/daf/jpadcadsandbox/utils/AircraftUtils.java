@@ -36,6 +36,7 @@ import it.unina.daf.jpadcad.occ.CADShape;
 import it.unina.daf.jpadcad.occ.CADShapeFactory;
 import it.unina.daf.jpadcad.occ.CADShapeTypes;
 import it.unina.daf.jpadcad.occ.CADShell;
+import it.unina.daf.jpadcad.occ.CADSolid;
 import it.unina.daf.jpadcad.occ.CADVertex;
 import it.unina.daf.jpadcad.occ.OCCDiscretizeCurve3D;
 import it.unina.daf.jpadcad.occ.OCCEdge;
@@ -43,8 +44,10 @@ import it.unina.daf.jpadcad.occ.OCCFace;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShapeFactory;
+import it.unina.daf.jpadcad.occ.OCCShell;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCVertex;
+import opencascade.BRepBuilderAPI_MakeSolid;
 import opencascade.BRepBuilderAPI_Sewing;
 import opencascade.BRepBuilderAPI_Transform;
 import opencascade.GeomPlate_BuildPlateSurface;
@@ -56,6 +59,7 @@ import opencascade.gp_Pnt;
 import opencascade.gp_Trsf;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
+import opencascade.TopoDS;
 import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
 import writers.JPADStaticWriteUtils;
@@ -531,24 +535,28 @@ public final class AircraftUtils {
 			patch5 = OCCUtils.makePatchThruSections(cadCurvesTailCapTrunk, vertexTailTip);
 		}
 		
+		// TODO: make this as a parameter
+		boolean exporSolid = true;
+		
+		BRepBuilderAPI_Sewing sewMaker = new BRepBuilderAPI_Sewing();
+		
 		if (exporLoft) {
 			// Sewing the lofts
-			BRepBuilderAPI_Sewing shellMaker = new BRepBuilderAPI_Sewing();
-			shellMaker.Init();
-			shellMaker.Add(patch1.getShape());
-			shellMaker.Add(patch2.getShape());
-			shellMaker.Add(patch3.getShape());
-			shellMaker.Add(patch4.getShape());
-			shellMaker.Add(patch5.getShape());
-			shellMaker.Perform(); // actually compute sewing. Never forget this step!
+			sewMaker.Init();
+			sewMaker.Add(patch1.getShape());
+			sewMaker.Add(patch2.getShape());
+			sewMaker.Add(patch3.getShape());
+			sewMaker.Add(patch4.getShape());
+			sewMaker.Add(patch5.getShape());
+			sewMaker.Perform(); // actually compute sewing. Never forget this step!
 			
-			System.out.println("========== [AircraftUtils::getFuselageCAD] Sewing step successful? " + !shellMaker.IsNull());
+			System.out.println("========== [AircraftUtils::getFuselageCAD] Sewing step successful? " + !sewMaker.IsNull());
 
-			if (!shellMaker.IsNull()) {
-				TopoDS_Shape tds_shape = shellMaker.SewedShape();
+			if (!sewMaker.IsNull()) {
+				TopoDS_Shape tds_shape = sewMaker.SewedShape();
 				// The resulting shape may consist of multiple shapes!
 				// Use TopExp_Explorer to iterate through shells
-				System.out.println(OCCUtils.reportOnShape(tds_shape, "Fuselage sewed surface"));
+				System.out.println(OCCUtils.reportOnShape(tds_shape, "Fuselage sewed surface (Right side)"));
 				
 				List<OCCShape> sewedShapes = new ArrayList<>();
 				TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
@@ -585,6 +593,34 @@ public final class AircraftUtils {
 				System.out.println("========== [AircraftUtils::getFuselageCAD] Exporting mirrored sewed loft.");
 				ret.addAll(mirroredShapes);
 				
+				// TODO: make a solid from the two halves (right/left)
+				if (exporSolid) {
+					System.out.println("========== [AircraftUtils::getFuselageCAD] Experimental: build a solid ...");
+					CADSolid solidFuselage = null;
+					BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
+					sewedShapes.stream()
+						.forEach( sh -> {
+							TopoDS_Shape tds_shape1 = sh.getShape();
+							TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
+							solidMaker.Add(TopoDS.ToShell(exp1.Current()));					
+						});
+					mirroredShapes.stream()
+					.forEach( sh -> {
+						TopoDS_Shape tds_shape2 = sh.getShape();
+						TopExp_Explorer exp2 = new TopExp_Explorer(tds_shape2, TopAbs_ShapeEnum.TopAbs_SHELL);
+						solidMaker.Add(TopoDS.ToShell(exp2.Current()));					
+					});
+					solidMaker.Build();
+					System.out.println("Solid is done? " + (solidMaker.IsDone() == 1));
+					if (solidMaker.IsDone() == 1) {
+						solidFuselage = (CADSolid) OCCUtils.theFactory.newShape(solidMaker.Solid());
+						ret.add((OCCShape) solidFuselage);
+						
+						System.out.println(OCCUtils.reportOnShape(((OCCShape) solidFuselage).getShape(), "Fuselage solid (Right + Left)"));
+
+					}
+				}				
+				
 			} else {
 				// add patches one by one
 				ret.add(patch1); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-1, loft: nose cap
@@ -593,6 +629,8 @@ public final class AircraftUtils {
 				ret.add(patch4); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-4, loft: tail
 				ret.add(patch5); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap				
 				System.out.println("========== [AircraftUtils::getFuselageCAD] Exporting un-sewed lofts.");
+				if (exporSolid)
+					System.out.println("========== [AircraftUtils::getFuselageCAD] Sewing failed, solid not created.");
 			}
 		}
 		
@@ -870,113 +908,6 @@ public final class AircraftUtils {
 				.newCurve3D(pointsTailCapSideRight, false);
 
 		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXYRight).edge());
-		
-		// TODO: fixme and OCCSolid
-		boolean exporSolid = false;
-		if (exporSolid) {
-			System.out.println("========== [AircraftUtils::getFuselageCAD] Experimental: build a solid ...");
-
-//			OCCSolid solid3 = new OCCSolid(patch3);
-//			System.out.println("Solid volume = " + solid3.getVolume());
-//			ret.add(solid3);
-			
-			
-			// ==================== Fuselage as a Solid
-
-			// Nose solid
-
-			// front
-			// Edge 0, A curve, B straight
-			CADGeomCurve3D c0A = cadCrvNoseCapTerminalSection;
-			CADEdge e0A = c0A.edge();
-			System.out.println("e0A >>>>> length: " + c0A.length());
-			Arrays.asList(e0A.vertices()).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
-			CADGeomCurve3D c0B = OCCUtils.theFactory.newCurve3D(
-					e0A.vertices()[0].pnt(), e0A.vertices()[1].pnt()  // order unimportant
-					);
-			System.out.println("e0B >>>>> length: " + c0B.length());
-			CADShape faceSolidNose0 = OCCUtils.makeFilledFace(c0A, c0B);
-			ret.add((OCCShape)faceSolidNose0);
-			
-			// rear
-			// Edge 1, A curve, B straight
-			CADGeomCurve3D c1A = cadCrvCylinderInitialSection;
-			CADEdge e1A =   c1A.edge();
-			System.out.println("e1A >>>>> length: " + c1A.length());
-			Arrays.asList(e1A.vertices()).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
-			CADGeomCurve3D c1B = OCCUtils.theFactory.newCurve3D(
-					e1A.vertices()[0].pnt(), e1A.vertices()[1].pnt()  // order unimportant
-					);
-			System.out.println("e1B >>>>> length: " + c1B.length());
-			CADShape faceSolidNose2 = OCCUtils.makeFilledFace(c1A, c1B);
-			ret.add((OCCShape)faceSolidNose2);
-			
-			// symmetry plane, up
-
-			CADGeomCurve3D c2 = cadCrvNoseXZUpper;
-			System.out.println("e2 >>>>> length: " + c2.length());
-			Arrays.asList(c2.edge().vertices()).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
-			
-			CADGeomCurve3D c3 = cadCrvNoseXZLower;
-			System.out.println("e3 >>>>> length: " + c3.length());
-			Arrays.asList(c3.edge().vertices()).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
-
-			// TODO: fix me! doesn't seem to build the plate
-//			CADShape faceSolidNose3 = 
-//					OCCUtils.makeFilledFace(c0B, c2, c1B, c3);
-//			ret.add((OCCShape)faceSolidNose3);
-			
-			
-			/*
-			 * int Degree = 3,
-			 * int NbPtsOnCur = 10,
-			 * int NbIter = 3,
-			 * double Tol2d = 0.00001,
-			 * double Tol3d = 0.0001,
-			 * double TolAng = 0.01,
-			 * double TolCurv = 0.1,
-			 * long Anisotropie = 0 // false 
-			 * 
-			 * You can add one later by using the method LoadInitSurface. If no initial surface is loaded, 
-			 * one will automatically be computed. The curve and point constraints will be defined by using the method Add. 
-			 * Before the call to the algorithm, the curve constraints will be transformed into sequences of discrete points. 
-			 * Each curve defined as a constraint will be given the value of NbPtsOnCur as the average number of points on it. 
-			 * Several arguments serve to improve performance of the algorithm. NbIter, for example, expresses the number of 
-			 * iterations allowed and is used to control the duration of computation. 
-			 * To optimize resolution, Degree will have the default value of 3. 
-			 * The surface generated must respect several tolerance values: 
-			 * 
-			 * - 2d tolerance given by Tol2d, with a default value of 0.00001
-			 * - 3d tolerance expressed by Tol3d, with a default value of 0.0001
-			 * - angular tolerance given by TolAng, with a default value of 0.01, defining the greatest angle allowed
-			 *   between the constraint and the target surface. 
-			 *   
-			 *   Exceptions Standard_ConstructionError if NbIter is less than 1 or Degree is less than 3.
-			 * 
-			 */
-			GeomPlate_BuildPlateSurface geomPlateBuilder = new GeomPlate_BuildPlateSurface(3, 2, 10000, 1.e-4, 1.e-5, 1.e-2, 1.e-1, 0); 
-			
-			/*
-			 * As usual there are two levels - geometry and topology. BRepFill_Filling works on the latter and uses GeomPlate underneath.
-			 */
-			
-			c2.discretize(20);
-			System.out.println("c2, n pts: " + c2.nbPoints());
-			List<double[]> ptsC2 = new ArrayList<>();
-			
-			for (int k = 1; k <= c2.nbPoints(); k++) { // MIND the INDEX! OCCT STYLE, 1-BASED
-				double u = c2.parameter(k);
-				ptsC2.add(c2.value(u));
-			}
-			ptsC2.stream().forEach(p -> System.out.println(">> " + Arrays.toString(p)));
-			
-//			GeomPlate_CurveConstraint crvConstraint = new GeomPlate_CurveConstraint(
-//					(CADShape)((OCCEdge)c2.edge()).getShape(). ;
-
-			
-		}
-		
-		
 		
 		if (exportSupportShapes) {
 			System.out.println("========== [AircraftUtils::getFuselageCAD] adding support cad entities");
