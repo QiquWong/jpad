@@ -212,7 +212,8 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<MethodEnum, List<Tuple2<Double, List<Double>>>> _cNTotal = new HashMap<>();
 	private Map<MethodEnum, Map<Amount<Angle>, List<Tuple2<Double, List<Double>>>>> _cNDueToDeltaRudder = new HashMap<>();
 	private Map<MethodEnum, Map<Double, List<Tuple2<Amount<Angle>, Amount<Angle>>>>> _betaOfEquilibrium = new HashMap<>();
-
+	private List<Amount<Angle>> deltaRudderForEquilibrium = new ArrayList<>();
+	
 	//Longitudinal Static Stability Output
 
 	private Map<Double, Map<Amount<Angle>, List<Double>>> _totalMomentCoefficient = new HashMap<>(); //xcg, delta e , CM
@@ -238,6 +239,8 @@ public class ACAerodynamicAndStabilityManager {
 	private String fuselagePlotFolderPath = new String();
 	private String nacellePlotFolderPath = new String();
 	private String aircraftPlotFolderPath = new String();
+	
+	
 	
 	//------------------------------------------------------------------------------
 	// METHODS:
@@ -9103,7 +9106,7 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
 					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
 
-				if(!_theAerodynamicBuilderInterface.getDeltaElevatorList().isEmpty()) {
+				if(!(_theAerodynamicBuilderInterface.getDeltaElevatorList().size()==1) & !(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(0).doubleValue(NonSI.DEGREE_ANGLE)== 0.0)) {
 					
 				xVectorMatrix = new ArrayList<Double[]>();
 				yVectorMatrix = new ArrayList<Double[]>();
@@ -9165,6 +9168,26 @@ public class ACAerodynamicAndStabilityManager {
 				}
 				
 			}
+				if(_theAerodynamicBuilderInterface.getDeltaElevatorList().isEmpty() &  _theAerodynamicBuilderInterface.getElevatorDeflectionForAnalysis()!= null) {
+					
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean()
+							));
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray()
+							));
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.HORIZONTAL_TAIL)
+							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.HORIZONTAL_TAIL)
+							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
+	
+					legend.add("Clean configuration");
+					legend.add("Configuration with elevator at " + _theAerodynamicBuilderInterface.getElevatorDeflectionForAnalysis().doubleValue(NonSI.DEGREE_ANGLE) + " deg");
+				}
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL LIFT CURVES (WITH AND WITHOUT ELEVATOR) HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL LIFT CURVE WITH ELEVATOR");
@@ -9178,7 +9201,7 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
 					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)) {
 
-				if(!_theAerodynamicBuilderInterface.getDeltaElevatorList().isEmpty()) {
+				if(!(_theAerodynamicBuilderInterface.getDeltaElevatorList().size()==1) & !(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(0).doubleValue(NonSI.DEGREE_ANGLE)== 0.0)) {
 				
 					xVectorMatrix = new ArrayList<Double[]>();
 					yVectorMatrix = new ArrayList<Double[]>();
@@ -9241,6 +9264,30 @@ public class ACAerodynamicAndStabilityManager {
 				}
 
 				}
+				if(_theAerodynamicBuilderInterface.getDeltaElevatorList().isEmpty() &  _theAerodynamicBuilderInterface.getElevatorDeflectionForAnalysis()!= null) {
+					
+					xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getPolar3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.HORIZONTAL_TAIL)
+							.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+							));
+					xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getPolar3DCurveHighLift().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.HORIZONTAL_TAIL)
+							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)
+							));
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.HORIZONTAL_TAIL)
+							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.HORIZONTAL_TAIL)
+							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
+	
+					legend.add("Clean configuration");
+					legend.add("Configuration with elevator at " + _theAerodynamicBuilderInterface.getElevatorDeflectionForAnalysis().doubleValue(NonSI.DEGREE_ANGLE) + " deg");
+				}
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL DRAG POLAR CURVES (WITH AND WITHOUT ELEVATOR) HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL DRAG POLAR CURVE WITH ELEVATOR");
@@ -9254,6 +9301,8 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
 					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)) {
 
+				if(!(_theAerodynamicBuilderInterface.getDeltaElevatorList().size()==1) & !(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(0).doubleValue(NonSI.DEGREE_ANGLE)== 0.0)) {
+					
 				xVectorMatrix = new ArrayList<Double[]>();
 				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
@@ -9313,7 +9362,27 @@ public class ACAerodynamicAndStabilityManager {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
+				if(_theAerodynamicBuilderInterface.getDeltaElevatorList().isEmpty() &  _theAerodynamicBuilderInterface.getElevatorDeflectionForAnalysis()!= null) {
+					
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean()
+							));
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray()
+							));
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.HORIZONTAL_TAIL)
+							.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)));
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentCoefficient3DCurveHighLift().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.HORIZONTAL_TAIL)
+							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)));
+	
+					legend.add("Clean configuration");
+					legend.add("Configuration with elevator at " + _theAerodynamicBuilderInterface.getElevatorDeflectionForAnalysis().doubleValue(NonSI.DEGREE_ANGLE) + " deg");
+				}
+				}
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL PITCHING MOMENT CURVES (WITH AND WITHOUT ELEVATOR) HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL PITCHING MOMENT CURVE WITH ELEVATOR");
@@ -9955,28 +10024,9 @@ public class ACAerodynamicAndStabilityManager {
 				xVectorMatrix = new ArrayList<Double[]>();
 				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
-
-//				//---
-//				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
-//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean()
-//						));
-//				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
-//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray()
-//						));
-//				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
-//						_theAerodynamicBuilderInterface.getComponentTaskList()
-//						.get(ComponentEnum.VERTICAL_TAIL)
-//						.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
-//				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
-//						_theAerodynamicBuilderInterface.getComponentTaskList()
-//						.get(ComponentEnum.VERTICAL_TAIL)
-//						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
-//
-//				legend.add("Clean configuration");
-//				legend.add("Configuration with elevator at " + _theAerodynamicBuilderInterface.getRudderDeflectionForAnalysis().doubleValue(NonSI.DEGREE_ANGLE) + " deg");
-				//----
 				
-				if(!_theAerodynamicBuilderInterface.getDeltaRudderList().isEmpty()) {
+				if(!(_theAerodynamicBuilderInterface.getDeltaRudderList().size()==1) & !(_theAerodynamicBuilderInterface.getDeltaRudderList().get(0).doubleValue(NonSI.DEGREE_ANGLE)== 0.0)) {
+					
 					
 					xVectorMatrix = new ArrayList<Double[]>();
 					yVectorMatrix = new ArrayList<Double[]>();
@@ -10039,159 +10089,31 @@ public class ACAerodynamicAndStabilityManager {
 				}
 				
 			}
+				if(_theAerodynamicBuilderInterface.getDeltaRudderList().isEmpty() &  _theAerodynamicBuilderInterface.getRudderDeflectionForAnalysis()!= null) {
+				
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean()
+							));
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray()
+							));
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.VERTICAL_TAIL)
+							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.VERTICAL_TAIL)
+							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
+	
+					legend.add("Clean configuration");
+					legend.add("Configuration with elevator at " + _theAerodynamicBuilderInterface.getRudderDeflectionForAnalysis().doubleValue(NonSI.DEGREE_ANGLE) + " deg");
+				}
+		}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL LIFT CURVES (WITH AND WITHOUT RUDDER) HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL LIFT CURVE WITH RUDDER");
 		}
-		}
-		
-		//-----------------------------------------------------------------------------------------------------------------------
-		// DRAG POLAR CURVE WITH RUDDER
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.VERTICAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.VTAIL_POLAR_CURVE_RUDDER)) {
-
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
-					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)) {
-
-				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatrix = new ArrayList<Double[]>();
-				legend  = new ArrayList<>(); 
-
-				xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getPolar3DCurve().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
-						));
-				xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getPolar3DCurveHighLift().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)
-						));
-				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
-				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
-
-				legend.add("Clean configuration");
-				legend.add("Configuration with elevator at " + _theAerodynamicBuilderInterface.getRudderDeflectionForAnalysis().doubleValue(NonSI.DEGREE_ANGLE) + " deg");
-
-
-				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				legendString = new String[xVectorMatrix.size()];
-
-				for(int i=0; i <xVectorMatrix.size(); i++){
-					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
-					legendString [i] = legend.get(i);
-				}
-
-
-				try {
-					MyChartToFileUtils.plot(
-							xVectorMatrix,
-							yVectorMatrix,
-							"Polar_Curve_Rudder",
-							"CD",
-							"CL", 
-							null, 
-							null, 
-							null, 
-							null,
-							"", 
-							"", 
-							true,
-							legend,
-							verticalTailPlotFolderPath,
-							"Polar_Curve_Rudder"+ legendStringCondition,
-							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
-							);
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		
-			}
-			else
-				System.err.println("WARNING!! THE VERTICAL TAIL DRAG POLAR CURVES (WITH AND WITHOUT RUDDER) HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL DRAG POLAR CURVE WITH RUDDER");
-		}
-
-		//-----------------------------------------------------------------------------------------------------------------------
-		// PITCHING MOMENT CURVE WITH RUDDER 
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.VERTICAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.VTAIL_MOMENT_CURVE_RUDDER)) {
-
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
-					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)) {
-
-				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatrix = new ArrayList<Double[]>();
-				legend  = new ArrayList<>(); 
-
-				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean()
-						));
-				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray()
-						));
-				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMoment3DCurve().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)));
-				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentCoefficient3DCurveHighLift().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)));
-
-				legend.add("Clean configuration");
-				legend.add("Configuration with elevator at " + _theAerodynamicBuilderInterface.getRudderDeflectionForAnalysis().doubleValue(NonSI.DEGREE_ANGLE) + " deg");
-
-
-				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				legendString = new String[xVectorMatrix.size()];
-
-				for(int i=0; i <xVectorMatrix.size(); i++){
-					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
-					legendString [i] = legend.get(i);
-				}
-
-				try {
-					MyChartToFileUtils.plot(
-							xVectorMatrix,
-							yVectorMatrix,
-							"Moment_Coefficient_Curve_Rudder",
-							"alpha",
-							"CM", 
-							null, 
-							null, 
-							null, 
-							null,
-							"deg", 
-							"", 
-							true,
-							legend,
-							verticalTailPlotFolderPath,
-							"Moment_Coefficient_Curve_Rudder"+ legendStringCondition,
-							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
-							);
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-			else
-				System.err.println("WARNING!! THE VERTICAL TAIL PITCHING MOMENT CURVES (WITH AND WITHOUT RUDDER) HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL PITCHING MOMENT CURVE WITH RUDDER");
-		}
+	
 		
 		//-----------------------------------------------------------------------------------------------------------------------
 		// FUSELAGE
@@ -12236,6 +12158,9 @@ public class ACAerodynamicAndStabilityManager {
 		String deltaRudderListProperty = reader.getXMLPropertyByPath("//global_data/delta_rudder_array");
 		if(deltaRudderListProperty != null)
 			deltaRudderList = reader.readArrayofAmountFromXML("//global_data/delta_rudder_array");
+		
+		if(!deltaRudderList.contains(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)))
+			deltaRudderList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		
 		//---------------------------------------------------------------
 		// WING MOMENTUM POLE
@@ -24079,8 +24004,9 @@ public class ACAerodynamicAndStabilityManager {
 	//............................................................................
 	public class CalcLongitudinalStability {
 
-		public void fromForceBalanceEquation() { 
 
+		public void fromForceBalanceEquation() { 
+			
 			//=======================================================================================
 			// Calculating horizontal tail equilibrium lift coefficient ... CLh_e
 			//=======================================================================================
@@ -24488,6 +24414,13 @@ public class ACAerodynamicAndStabilityManager {
 
 		public void vedscSimplifiedWing(Double mach) {
 
+			deltaRudderForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(
+					5,
+					25, 
+					5
+					)),
+					NonSI.DEGREE_ANGLE);
+			
 			//=======================================================================================
 			// Calculating stability derivatives for each component ...
 			//=======================================================================================
@@ -24785,22 +24718,65 @@ public class ACAerodynamicAndStabilityManager {
 					);	
 
 			_cNDueToDeltaRudder.put(MethodEnum.VEDSC_SIMPLIFIED_WING, cNDueToDeltaRudderMap);
-
 			//=======================================================================================
 			// Calculating dr_equilibrium for each beta ...
 			//=======================================================================================
 			Map<Double, List<Tuple2<Amount<Angle>, Amount<Angle>>>> betaOfEquilibriumListAtCG = new HashMap<>();
+			
+			//Calculating new tau
+			List<Double> tauRudderListForEquilibrium = new ArrayList<>();
+			if(_theAerodynamicBuilderInterface.getTauRudderFunction() == null)
+				deltaRudderForEquilibrium.stream()
+				.forEach(dr -> tauRudderListForEquilibrium.add(
+						StabilityCalculators.calculateTauIndex(
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getAspectRatio(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getAerodynamicDatabaseReader(), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getHighLiftDatabaseReader(), 
+								dr
+								)
+						));
+			else
+				deltaRudderForEquilibrium.stream()
+				.forEach(dr -> tauRudderListForEquilibrium.add(
+						_theAerodynamicBuilderInterface.getTauRudderFunction().value(dr.doubleValue(NonSI.DEGREE_ANGLE))
+						));
+			//-----------------------------
+			
+			//Calcultaing new cn array
+			Map<Amount<Angle>, List<Tuple2<Double, List<Double>>>> cNDueToDeltaRudderMapForEquilibrium = new HashMap<>();
+
+			deltaRudderForEquilibrium.stream().forEach(
+					dr -> cNDueToDeltaRudderMapForEquilibrium.put(
+							dr,
+							_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
+									x -> Tuple.of(
+											x,
+											MomentCalc.calcCNDueToDeltaRudder(
+													_betaList,
+													_cNVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													dr, 
+													tauRudderListForEquilibrium.get(deltaRudderForEquilibrium.indexOf(dr))
+													)
+											)
+									)
+							.collect(Collectors.toList())
+							)
+					);	
+			//------------------------
+			
 
 			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(
 					x -> betaOfEquilibriumListAtCG.put(
 							x, 
-							_theAerodynamicBuilderInterface.getDeltaRudderList().stream().map(
+							deltaRudderForEquilibrium.stream().map(
 									dr -> Tuple.of( 
 											Amount.valueOf(
 													MyMathUtils.getIntersectionXAndY(
 															MyArrayUtils.convertListOfAmountTodoubleArray(_betaList),
 															MyArrayUtils.convertToDoublePrimitive(
-																	_cNDueToDeltaRudder.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
+																	cNDueToDeltaRudderMapForEquilibrium
 																	.get(dr)
 																	.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 																	._2()
@@ -24819,13 +24795,21 @@ public class ACAerodynamicAndStabilityManager {
 					);
 
 			_betaOfEquilibrium.put(
-					MethodEnum.VEDSC_SIMPLIFIED_WING, 
+					MethodEnum.VEDSC_USAFDATCOM_WING, 
 					betaOfEquilibriumListAtCG
 					);
 		}
 
+
 		public void vedscUsafDatcomWing(Double mach) {
 
+			deltaRudderForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(
+					0,
+					25, 
+					10
+					)),
+					NonSI.DEGREE_ANGLE);
+			
 			//=======================================================================================
 			// Calculating stability derivatives for each component ...
 			//=======================================================================================
@@ -25140,17 +25124,60 @@ public class ACAerodynamicAndStabilityManager {
 			// Calculating dr_equilibrium for each beta ...
 			//=======================================================================================
 			Map<Double, List<Tuple2<Amount<Angle>, Amount<Angle>>>> betaOfEquilibriumListAtCG = new HashMap<>();
+			
+			//Calculating new tau
+			List<Double> tauRudderListForEquilibrium = new ArrayList<>();
+			if(_theAerodynamicBuilderInterface.getTauRudderFunction() == null)
+				deltaRudderForEquilibrium.stream()
+				.forEach(dr -> tauRudderListForEquilibrium.add(
+						StabilityCalculators.calculateTauIndex(
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getAspectRatio(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getAerodynamicDatabaseReader(), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getHighLiftDatabaseReader(), 
+								dr
+								)
+						));
+			else
+				deltaRudderForEquilibrium.stream()
+				.forEach(dr -> tauRudderListForEquilibrium.add(
+						_theAerodynamicBuilderInterface.getTauRudderFunction().value(dr.doubleValue(NonSI.DEGREE_ANGLE))
+						));
+			//-----------------------------
+			
+			//Calcultaing new cn array
+			Map<Amount<Angle>, List<Tuple2<Double, List<Double>>>> cNDueToDeltaRudderMapForEquilibrium = new HashMap<>();
+
+			deltaRudderForEquilibrium.stream().forEach(
+					dr -> cNDueToDeltaRudderMapForEquilibrium.put(
+							dr,
+							_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
+									x -> Tuple.of(
+											x,
+											MomentCalc.calcCNDueToDeltaRudder(
+													_betaList,
+													_cNVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													dr, 
+													tauRudderListForEquilibrium.get(deltaRudderForEquilibrium.indexOf(dr))
+													)
+											)
+									)
+							.collect(Collectors.toList())
+							)
+					);	
+			//------------------------
 
 			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(
 					x -> betaOfEquilibriumListAtCG.put(
 							x, 
-							_theAerodynamicBuilderInterface.getDeltaRudderList().stream().map(
+							deltaRudderForEquilibrium.stream().map(
 									dr -> Tuple.of( 
 											Amount.valueOf(
 													MyMathUtils.getIntersectionXAndY(
 															MyArrayUtils.convertListOfAmountTodoubleArray(_betaList),
 															MyArrayUtils.convertToDoublePrimitive(
-																	_cNDueToDeltaRudder.get(MethodEnum.VEDSC_USAFDATCOM_WING)
+																	cNDueToDeltaRudderMapForEquilibrium
 																	.get(dr)
 																	.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 																	._2()
@@ -25175,6 +25202,7 @@ public class ACAerodynamicAndStabilityManager {
 		}
 
 	}
+
 	//............................................................................
 	// END Directional Stability INNER CLASS
 	//............................................................................
