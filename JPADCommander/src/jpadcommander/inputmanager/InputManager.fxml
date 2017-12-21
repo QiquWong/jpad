@@ -2745,7 +2745,7 @@
                                                                                     <Font name="System Bold" size="8.0" />
                                                                                  </font>
                                                                               </Button>
-                                                                              <Button fx:id="nacelleEstimateGeometryButton1" layoutX="100.0" layoutY="101.0" mnemonicParsing="false" onAction="#estimateNacelleGeometry" text="Estimate" />
+                                                                              <Button fx:id="nacelleEstimateGeometryButton1" layoutX="100.0" layoutY="101.0" mnemonicParsing="false" text="Estimate" />
                                                                            </children>
                                                                         </AnchorPane>
                                                                      </content>
@@ -2889,7 +2889,55 @@
                            <center>
                               <SplitPane dividerPositions="0.3751" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                  <items>
-                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0" />
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
+                                       <children>
+                                          <BorderPane prefHeight="4649.0" prefWidth="398.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <top>
+                                                <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                                  <items>
+                                                    <Button mnemonicParsing="false" text="Add Engine" />
+                                                  </items>
+                                                </ToolBar>
+                                             </top>
+                                             <center>
+                                                <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                                                  <tabs>
+                                                    <Tab text="Engine 1">
+                                                      <content>
+                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                               <children>
+                                                                  <BorderPane prefHeight="4580.0" prefWidth="398.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                     <top>
+                                                                        <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                                                           <items>
+                                                                              <RadioButton fx:id="powerPlantJetRadioButton1" mnemonicParsing="false" text="Tubofan/Turbojet">
+                                                                                 <padding>
+                                                                                    <Insets right="30.0" />
+                                                                                 </padding>
+                                                                              </RadioButton>
+                                                                              <RadioButton fx:id="powerPlantTurbopropRadioButton1" mnemonicParsing="false" text="Turboprop">
+                                                                                 <padding>
+                                                                                    <Insets right="30.0" />
+                                                                                 </padding>
+                                                                              </RadioButton>
+                                                                              <RadioButton fx:id="powerPlantPistonRadioButton1" mnemonicParsing="false" text="Piston">
+                                                                                 <padding>
+                                                                                    <Insets right="30.0" />
+                                                                                 </padding>
+                                                                              </RadioButton>
+                                                                           </items>
+                                                                        </ToolBar>
+                                                                     </top>
+                                                                  </BorderPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                      </content>
+                                                    </Tab>
+                                                  </tabs>
+                                                </TabPane>
+                                             </center>
+                                          </BorderPane>
+                                       </children></AnchorPane>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                        <children>
                                           <BorderPane layoutX="386.0" layoutY="181.0" prefHeight="678.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -2931,27 +2979,6 @@
                                  </items>
                               </SplitPane>
                            </center>
-                           <top>
-                              <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                 <items>
-                                    <RadioButton mnemonicParsing="false" text="Tubofan/Turbojet">
-                                       <padding>
-                                          <Insets right="30.0" />
-                                       </padding>
-                                    </RadioButton>
-                                    <RadioButton mnemonicParsing="false" text="Turboprop">
-                                       <padding>
-                                          <Insets right="30.0" />
-                                       </padding>
-                                    </RadioButton>
-                                    <RadioButton mnemonicParsing="false" text="Piston">
-                                       <padding>
-                                          <Insets right="30.0" />
-                                       </padding>
-                                    </RadioButton>
-                                 </items>
-                              </ToolBar>
-                           </top>
                         </BorderPane>
                      </children>
                   </AnchorPane>
@@ -2976,7 +3003,7 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldFuselageDeckNumber11" layoutX="4.0" layoutY="52.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldLandingGearsMainLegLength" layoutX="4.0" layoutY="52.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Separator layoutY="305.0" prefHeight="0.0" prefWidth="1312.0" />
                                                       <Separator layoutX="-20.0" layoutY="26.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Label layoutX="6.0" layoutY="6.0" text="GLOBAL DATA" textFill="#0400ff">
@@ -2995,16 +3022,16 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseLengthRatio" fx:id="textFieldFuselageNoseLengthRatio11" layoutX="6.0" layoutY="363.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldFuselageNoseLengthRatio" fx:id="textFieldLandingGearsFrontalWheelsHeight" layoutX="6.0" layoutY="363.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="6.0" layoutY="394.0" prefHeight="21.0" prefWidth="389.0" text="Width:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseTipOffset" fx:id="textFieldFuselageNoseTipOffset11" layoutX="6.0" layoutY="415.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox11" layoutX="348.0" layoutY="415.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageLengthUnitChoiceBox111" layoutX="348.0" layoutY="52.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox111" layoutX="348.0" layoutY="363.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <TextField id="textFieldFuselageNoseTipOffset" fx:id="textFieldLandingGearsFrontalWheelsWidth" layoutX="6.0" layoutY="415.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="landingGearsFrontalWheelsWidthUnitChoiceBox" layoutX="348.0" layoutY="415.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="landingGearsMainLegLengthUnitChoiceBox" layoutX="348.0" layoutY="52.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="landingGearsFrontalWheelsHeigthUnitChoiceBox" layoutX="348.0" layoutY="363.0" prefHeight="30.0" prefWidth="47.0" />
                                                       <Separator layoutY="457.0" prefHeight="0.0" prefWidth="1312.0" />
                                                       <Label layoutX="6.0" layoutY="465.0" prefHeight="21.0" prefWidth="263.0" text="REAR WHEELS DATA" textFill="#0400ff">
                                                          <font>
@@ -3017,29 +3044,29 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseLengthRatio" fx:id="textFieldFuselageNoseLengthRatio111" layoutX="6.0" layoutY="520.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldFuselageNoseLengthRatio" fx:id="textFieldLandingGearsRearWheelsHeight" layoutX="6.0" layoutY="520.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="6.0" layoutY="551.0" prefHeight="21.0" prefWidth="389.0" text="Width:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseTipOffset" fx:id="textFieldFuselageNoseTipOffset111" layoutX="6.0" layoutY="572.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox112" layoutX="348.0" layoutY="572.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox1111" layoutX="348.0" layoutY="520.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <TextField id="textFieldFuselageNoseTipOffset" fx:id="textFieldLandingGearsRearWheelsWidth" layoutX="6.0" layoutY="572.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="landingGearsRearWheelsWidthUnitChoiceBox" layoutX="348.0" layoutY="572.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="landingGearsRearWheelsHeigthUnitChoiceBox" layoutX="348.0" layoutY="520.0" prefHeight="30.0" prefWidth="47.0" />
                                                       <Label layoutX="6.0" layoutY="83.0" text="k Main Landing Gear Length:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldFuselageDeckNumber111" layoutX="6.0" layoutY="106.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldLandingGearsKMainLegLength" layoutX="6.0" layoutY="106.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="6.0" layoutY="137.0" text="Distance between wheels">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldFuselageDeckNumber112" layoutX="5.0" layoutY="160.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageLengthUnitChoiceBox1111" layoutX="349.0" layoutY="160.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <Button fx:id="equivalentWingRootXOffsetLEInfoButton14" layoutX="217.0" layoutY="84.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldLandingGearsDistanceBetweenWheels" layoutX="5.0" layoutY="160.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="landingGearsDistanceBetweenWheelsUnitChoiceBox" layoutX="349.0" layoutY="160.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Button fx:id="landingGearsKMainLegLengthInfoButton" layoutX="217.0" layoutY="84.0" mnemonicParsing="false" onAction="#showLandingGearsKMainLegLengthInfo" prefHeight="0.0" prefWidth="0.0" text="?">
                                                          <font>
                                                             <Font name="System Bold" size="8.0" />
                                                          </font>
@@ -3049,13 +3076,13 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldFuselageDeckNumber1111" layoutX="6.0" layoutY="214.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldLandingGearsNumberOfFrontalWheels" layoutX="6.0" layoutY="214.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="6.0" layoutY="245.0" text="Number Of Rear Wheels:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldFuselageDeckNumber11111" layoutX="6.0" layoutY="268.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldFuselageDeckNumber" fx:id="textFieldLandingGearsNumberOfRearWheels" layoutX="6.0" layoutY="268.0" prefHeight="31.0" prefWidth="340.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -3074,7 +3101,7 @@
                                                                <content>
                                                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
                                                                      <children>
-                                                                        <TextArea id="FuselageOutput" fx:id="textAreaFuselageConsoleOutput111" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                        <TextArea id="FuselageOutput" fx:id="textAreaLandingGearsConsoleOutput" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                      </children>
                                                                   </AnchorPane>
                                                                </content>

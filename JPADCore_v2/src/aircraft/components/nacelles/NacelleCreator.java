@@ -375,7 +375,7 @@ public class NacelleCreator implements INacelleCreator {
 				|| (theEngine.getEngineType() == EngineTypeEnum.TURBOJET)) {
 			
 			if (theEngine.getT0().doubleValue(NonSI.POUND_FORCE) > 100000) {
-				System.err.println("WARNING (DIMENSIONS CALCULATION (JET DRIVEN) - NACELLE) THE THRUST VALUE IS OVER THE STATISTICAL RANGE ... RETURNING");
+				System.err.println("WARNING (DIMENSIONS CALCULATION (JET DRIVEN) - NACELLE) THE STATIC THRUST VALUE IS OVER THE STATISTICAL RANGE ... RETURNING");
 				return;
 			}
 			
@@ -392,7 +392,7 @@ public class NacelleCreator implements INacelleCreator {
 		else if(theEngine.getEngineType() == EngineTypeEnum.PISTON) {
 			
 			if (theEngine.getP0().doubleValue(NonSI.HORSEPOWER) > 1200) {
-				System.err.println("WARNING (DIMENSIONS CALCULATION (PISTON) - NACELLE) THE THRUST VALUE IS OVER THE STATISTICAL RANGE ... RETURNING");
+				System.err.println("WARNING (DIMENSIONS CALCULATION (PISTON) - NACELLE) THE STATIC POWER VALUE IS OVER THE STATISTICAL RANGE ... RETURNING");
 				return;
 			}	
 			
@@ -437,11 +437,9 @@ public class NacelleCreator implements INacelleCreator {
 		else if(theEngine.getEngineType() == EngineTypeEnum.TURBOPROP) {
 			
 			if (theEngine.getP0().doubleValue(NonSI.HORSEPOWER) > 5000) {
-				System.err.println("WARNING (DIMENSIONS CALCULATION (TURBOPROP) - NACELLE) THE THRUST VALUE IS OVER THE STATISTICAL RANGE ... RETURNING");
+				System.err.println("WARNING (DIMENSIONS CALCULATION (TURBOPROP) - NACELLE) THE STATIC POWER VALUE IS OVER THE STATISTICAL RANGE ... RETURNING");
 				return;
 			}	
-			
-			System.out.println("P0(hp) = " + theEngine.getP0().doubleValue(NonSI.HORSEPOWER));
 			
 			_length = Amount.valueOf(
 					-(1.28*0.00001*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2))

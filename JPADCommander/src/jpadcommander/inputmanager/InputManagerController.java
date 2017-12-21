@@ -85,6 +85,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -92,6 +93,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -183,6 +185,8 @@ public class InputManagerController {
 	private TextArea textAreaCanardConsoleOutput;
 	@FXML
 	private TextArea textAreaNacelleConsoleOutput;
+	@FXML
+	private TextArea textAreaLandingGearsConsoleOutput;
 	@FXML
 	private TabPane tabPaneAircraftEngines;
 	@FXML
@@ -327,6 +331,8 @@ public class InputManagerController {
 	private Button nacelleKLengthInfoButton1;
 	@FXML
 	private Button nacelleKDiameterOutletInfoButton1;
+	@FXML
+	private Button landingGearsKMainLegLengthInfoButton;
 	
 	//...........................................................................................
 	// BUTTON MAP:
@@ -1402,6 +1408,61 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> nacelleMaximumDiameterUnitChoiceBox1;
 	
+	//...........................................................................................
+	// POWER PLANT (RADIO BUTTONS):
+	//...........................................................................................
+	@FXML
+	private RadioButton powerPlantJetRadioButton1;
+	@FXML
+	private RadioButton powerPlantTurbopropRadioButton1;
+	@FXML
+	private RadioButton powerPlantPistonRadioButton1;
+	
+	private List<RadioButton> powerPlantJetRadioButtonList;
+	private List<RadioButton> powerPlantTurbopropRadioButtonList;
+	private List<RadioButton> powerPlantPistonRadioButtonList;
+	private List<ToggleGroup> powerPlantToggleGropuList;
+	
+	// TODO: CONTINUE FROM HERE ... 
+	
+	//...........................................................................................
+	// LANDING GEARS TAB (DATA):
+	//...........................................................................................
+	@FXML
+	private TextField textFieldLandingGearsMainLegLength;
+	@FXML
+	private TextField textFieldLandingGearsKMainLegLength;
+	@FXML
+	private TextField textFieldLandingGearsDistanceBetweenWheels;
+	@FXML
+	private TextField textFieldLandingGearsNumberOfFrontalWheels;
+	@FXML
+	private TextField textFieldLandingGearsNumberOfRearWheels;
+	@FXML
+	private TextField textFieldLandingGearsFrontalWheelsHeight;
+	@FXML
+	private TextField textFieldLandingGearsFrontalWheelsWidth;
+	@FXML
+	private TextField textFieldLandingGearsRearWheelsHeight;
+	@FXML
+	private TextField textFieldLandingGearsRearWheelsWidth;
+	
+	//...........................................................................................
+	// LANDING GEARS TAB (UNITS):
+	//...........................................................................................
+	@FXML
+	private ChoiceBox<String> landingGearsMainLegLengthUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> landingGearsDistanceBetweenWheelsUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> landingGearsFrontalWheelsHeigthUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> landingGearsFrontalWheelsWidthUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> landingGearsRearWheelsHeigthUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> landingGearsRearWheelsWidthUnitChoiceBox;
+	
 	//-------------------------------------------------------------------------------------------
 	// METHODS
 	//-------------------------------------------------------------------------------------------
@@ -2194,6 +2255,7 @@ public class InputManagerController {
 		linkedToDisableCheck(ComponentEnum.HORIZONTAL_TAIL);
 		linkedToDisableCheck(ComponentEnum.VERTICAL_TAIL);
 		linkedToDisableCheck(ComponentEnum.CANARD);
+		setEstimateNacelleGeometryAction(nacelleEstimateGeometryButton1, tabPaneNacelles.getTabs().get(0));
 		
 	}
 	
@@ -5720,12 +5782,7 @@ public class InputManagerController {
 		nacelleEstimateGeometryButton.setLayoutY(101);
 		nacelleEstimateGeometryButton.setPrefWidth(61);
 		nacelleEstimateGeometryButton.setPrefHeight(25);
-		nacelleEstimateGeometryButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				estimateNacelleGeometry();
-			}
-		});
+		setEstimateNacelleGeometryAction(nacelleEstimateGeometryButton, newNacelleTab);
 		contentPane.getChildren().add(nacelleEstimateGeometryButton);
 		
 		Separator geometryLowerSeparator = new Separator();
@@ -5910,33 +5967,40 @@ public class InputManagerController {
 	}
 	
 	@FXML
-	private void estimateNacelleGeometry () {
+	private void setEstimateNacelleGeometryAction (Button estimateButton, Tab currentTab) {
 		
-		for (int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
-			
-			NacelleCreator currentNacelle = Main.getTheAircraft().getNacelles().getNacellesList().get(i);
-			
-			currentNacelle.estimateDimensions(currentNacelle.getTheEngine());
-			
-			textFieldNacelleLengthList.get(i).clear();
-			textFieldNacelleLengthList.get(i).setText(
-					String.valueOf(currentNacelle.getLength().getEstimatedValue()));
+		estimateButton.setOnAction(new EventHandler<ActionEvent>() {
 
-			if(currentNacelle.getLength().getUnit().toString().equalsIgnoreCase("m"))
-				choiceBoxNacelleLengthUnitList.get(i).getSelectionModel().select(0);
-			else if(currentNacelle.getLength().getUnit().toString().equalsIgnoreCase("ft"))
-				choiceBoxNacelleLengthUnitList.get(i).getSelectionModel().select(1);
-			
-			textFieldNacelleMaximumDiameterList.get(i).clear();
-			textFieldNacelleMaximumDiameterList.get(i).setText(
-					String.valueOf(currentNacelle.getDiameterMax().getEstimatedValue()));
+			@Override
+			public void handle(ActionEvent event) {
+				
+				int tabIndex = tabPaneNacelles.getTabs().indexOf(currentTab);	
+				
+				NacelleCreator currentNacelle = Main.getTheAircraft().getNacelles().getNacellesList().get(tabIndex);
 
-			if(currentNacelle.getDiameterMax().getUnit().toString().equalsIgnoreCase("m"))
-				choiceBoxNacelleMaximumDiameterUnitList.get(i).getSelectionModel().select(0);
-			else if(currentNacelle.getDiameterMax().getUnit().toString().equalsIgnoreCase("ft"))
-				choiceBoxNacelleMaximumDiameterUnitList.get(i).getSelectionModel().select(1);
+				currentNacelle.estimateDimensions(currentNacelle.getTheEngine());
+
+				textFieldNacelleLengthList.get(tabIndex).clear();
+				textFieldNacelleLengthList.get(tabIndex).setText(
+						String.valueOf(currentNacelle.getLength().getEstimatedValue()));
+
+				if(currentNacelle.getLength().getUnit().toString().equalsIgnoreCase("m"))
+					choiceBoxNacelleLengthUnitList.get(tabIndex).getSelectionModel().select(0);
+				else if(currentNacelle.getLength().getUnit().toString().equalsIgnoreCase("ft"))
+					choiceBoxNacelleLengthUnitList.get(tabIndex).getSelectionModel().select(1);
+
+				textFieldNacelleMaximumDiameterList.get(tabIndex).clear();
+				textFieldNacelleMaximumDiameterList.get(tabIndex).setText(
+						String.valueOf(currentNacelle.getDiameterMax().getEstimatedValue()));
+
+				if(currentNacelle.getDiameterMax().getUnit().toString().equalsIgnoreCase("m"))
+					choiceBoxNacelleMaximumDiameterUnitList.get(tabIndex).getSelectionModel().select(0);
+				else if(currentNacelle.getDiameterMax().getUnit().toString().equalsIgnoreCase("ft"))
+					choiceBoxNacelleMaximumDiameterUnitList.get(tabIndex).getSelectionModel().select(1);
+				
+			}
+		});
 			
-		}
 	}
 	
 	@FXML
@@ -6928,6 +6992,28 @@ public class InputManagerController {
 		
 		// TODO: CONTINUE WITH WING, etc ...
 		
+		//..................................................................................
+		// LANDING GEARS
+		textAreaLandingGearsConsoleOutput.clear();
+		
+		textFieldLandingGearsMainLegLength.clear();
+		textFieldLandingGearsKMainLegLength.clear();
+		textFieldLandingGearsNumberOfFrontalWheels.clear();
+		textFieldLandingGearsNumberOfRearWheels.clear();
+		textFieldLandingGearsDistanceBetweenWheels.clear();
+		textFieldLandingGearsFrontalWheelsHeight.clear();
+		textFieldLandingGearsFrontalWheelsWidth.clear();
+		textFieldLandingGearsRearWheelsHeight.clear();
+		textFieldLandingGearsRearWheelsWidth.clear();
+		
+		landingGearsMainLegLengthUnitChoiceBox.getSelectionModel().clearSelection();
+		landingGearsDistanceBetweenWheelsUnitChoiceBox.getSelectionModel().clearSelection();
+		landingGearsFrontalWheelsHeigthUnitChoiceBox.getSelectionModel().clearSelection();
+		landingGearsFrontalWheelsWidthUnitChoiceBox.getSelectionModel().clearSelection();
+		landingGearsRearWheelsHeigthUnitChoiceBox.getSelectionModel().clearSelection();
+		landingGearsRearWheelsWidthUnitChoiceBox.getSelectionModel().clearSelection();
+		
+		
 		Main.setTheAircraft(null);
 
 		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
@@ -7083,6 +7169,11 @@ public class InputManagerController {
 			logNacelleFromFileToInterface();
 			Main.getProgressBar().setProgress(progressBarIncrement*5);
 			Main.getStatusBar().setText("Logging Nacelle Object Data...");
+		}
+		if (Main.getTheAircraft().getLandingGears() != null) {
+			logLandingGearsFromFileToInterface();
+			Main.getProgressBar().setProgress(progressBarIncrement*5);
+			Main.getStatusBar().setText("Logging Landing Gears Object Data...");
 		}
 		//............................
 		// COMPONENTS 3 VIEW CREATION
@@ -15926,6 +16017,222 @@ public class InputManagerController {
 		}
 	}
 	
+	private void logLandingGearsFromFileToInterface() {
+
+		// print the toString method of the aircraft inside the text area of the GUI ...
+		textAreaLandingGearsConsoleOutput.setText(
+				Main.getTheAircraft().getLandingGears().toString()
+				);
+
+		//---------------------------------------------------------------------------------
+		// MAIN LEG LENGTH
+		if(Main.getTheAircraft().getLandingGears().getMainLegsLenght() != null) {
+			
+			textFieldLandingGearsMainLegLength.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getMainLegsLenght()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getMainLegsLenght()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsMainLegLengthUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getMainLegsLenght()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsMainLegLengthUnitChoiceBox.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldLandingGearsMainLegLength.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// K MAIN LEG LENGTH
+		if(Main.getTheAircraft().getLandingGears().getKMainLegsLength() != null) {
+			
+			textFieldLandingGearsKMainLegLength.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getKMainLegsLength()
+							)
+					);
+		}
+		else
+			textFieldLandingGearsKMainLegLength.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// DISTANCE BETWEEN WHEELS
+		if(Main.getTheAircraft().getLandingGears().getDistanceBetweenWheels() != null) {
+			
+			textFieldLandingGearsDistanceBetweenWheels.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getDistanceBetweenWheels()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getDistanceBetweenWheels()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsDistanceBetweenWheelsUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getDistanceBetweenWheels()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsDistanceBetweenWheelsUnitChoiceBox.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldLandingGearsDistanceBetweenWheels.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// NUMBER OF FRONTAL WHEELS 
+		if((Integer) Main.getTheAircraft().getLandingGears().getNumberOfFrontalWheels() != null) {
+			
+			textFieldLandingGearsNumberOfFrontalWheels.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getNumberOfFrontalWheels()
+							)
+					);
+		}
+		else
+			textFieldLandingGearsNumberOfFrontalWheels.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// NUMBER OF REAR WHEELS 
+		if((Integer) Main.getTheAircraft().getLandingGears().getNumberOfRearWheels() != null) {
+			
+			textFieldLandingGearsNumberOfRearWheels.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getNumberOfRearWheels()
+							)
+					);
+		}
+		else
+			textFieldLandingGearsNumberOfRearWheels.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// FRONTAL WHEELS HEIGHT
+		if(Main.getTheAircraft().getLandingGears().getFrontalWheelsHeight() != null) {
+			
+			textFieldLandingGearsFrontalWheelsHeight.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getFrontalWheelsHeight()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getFrontalWheelsHeight()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsFrontalWheelsHeigthUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getFrontalWheelsHeight()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsFrontalWheelsHeigthUnitChoiceBox.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldLandingGearsFrontalWheelsHeight.setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// FRONTAL WHEELS WIDTH
+		if(Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth() != null) {
+			
+			textFieldLandingGearsFrontalWheelsWidth.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getFrontalWheelsWidth()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsFrontalWheelsWidthUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsFrontalWheelsWidthUnitChoiceBox.getSelectionModel().select(1);
+
+		}
+		else
+			textFieldLandingGearsFrontalWheelsWidth.setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// Rear WHEELS HEIGHT
+		if(Main.getTheAircraft().getLandingGears().getRearWheelsHeight() != null) {
+
+			textFieldLandingGearsRearWheelsHeight.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getRearWheelsHeight()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getRearWheelsHeight()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsRearWheelsHeigthUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getRearWheelsHeight()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsRearWheelsHeigthUnitChoiceBox.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldLandingGearsRearWheelsHeight.setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// Rear WHEELS WIDTH
+		if(Main.getTheAircraft().getLandingGears().getRearWheelsWidth() != null) {
+			
+			textFieldLandingGearsRearWheelsWidth.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getRearWheelsWidth()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getRearWheelsWidth()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsRearWheelsWidthUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getRearWheelsWidth()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsRearWheelsWidthUnitChoiceBox.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldLandingGearsRearWheelsWidth.setText(
+					"NOT INITIALIZED"
+					);
+		
+	}
+	
 	//...........................................................................................
 	// INFO ACTIONS:
 	//...........................................................................................
@@ -15988,6 +16295,13 @@ public class InputManagerController {
 	
 	@FXML
 	private void showNacelleKDiameterOutletInfo() {
+		
+		// TODO
+		
+	};
+	
+	@FXML
+	private void showLandingGearsKMainLegLengthInfo() {
 		
 		// TODO
 		
