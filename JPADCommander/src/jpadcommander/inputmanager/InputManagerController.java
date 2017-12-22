@@ -1417,6 +1417,8 @@ public class InputManagerController {
 	private RadioButton powerPlantTurbopropRadioButton1;
 	@FXML
 	private RadioButton powerPlantPistonRadioButton1;
+	@FXML
+	private ToggleGroup powerPlantToggleGroup1;
 	
 	private List<RadioButton> powerPlantJetRadioButtonList;
 	private List<RadioButton> powerPlantTurbopropRadioButtonList;
@@ -2224,6 +2226,25 @@ public class InputManagerController {
 		
 		nacelleFrontViewPaneList = new ArrayList<>();
 		nacelleFrontViewPaneList.add(nacelle1FrontViewPane);
+		
+		//.......................................................................................
+		// POWER PLANT LISTS INITIALIZATION
+		powerPlantToggleGroup1 = new ToggleGroup();
+		powerPlantJetRadioButton1.setToggleGroup(powerPlantToggleGroup1);
+		powerPlantTurbopropRadioButton1.setToggleGroup(powerPlantToggleGroup1);
+		powerPlantPistonRadioButton1.setToggleGroup(powerPlantToggleGroup1);
+		
+		powerPlantJetRadioButtonList = new ArrayList<>();
+		powerPlantJetRadioButtonList.add(powerPlantJetRadioButton1);
+		
+		powerPlantTurbopropRadioButtonList = new ArrayList<>();
+		powerPlantTurbopropRadioButtonList.add(powerPlantTurbopropRadioButton1);
+		
+		powerPlantPistonRadioButtonList = new ArrayList<>();
+		powerPlantPistonRadioButtonList.add(powerPlantPistonRadioButton1);
+		
+		powerPlantToggleGropuList = new ArrayList<>();
+		powerPlantToggleGropuList.add(powerPlantToggleGroup1);
 		
 		aircraftLoadButtonDisableCheck();
 		cabinConfigurationClassesNumberDisableCheck();
@@ -5779,9 +5800,9 @@ public class InputManagerController {
 		
 		Button nacelleEstimateGeometryButton = new Button("Estimate");
 		nacelleEstimateGeometryButton.setLayoutX(100);
-		nacelleEstimateGeometryButton.setLayoutY(101);
-		nacelleEstimateGeometryButton.setPrefWidth(61);
-		nacelleEstimateGeometryButton.setPrefHeight(25);
+		nacelleEstimateGeometryButton.setLayoutY(98);
+		nacelleEstimateGeometryButton.setPrefWidth(77);
+		nacelleEstimateGeometryButton.setPrefHeight(31);
 		setEstimateNacelleGeometryAction(nacelleEstimateGeometryButton, newNacelleTab);
 		contentPane.getChildren().add(nacelleEstimateGeometryButton);
 		
@@ -5963,6 +5984,13 @@ public class InputManagerController {
 		
 		newNacelleTab.setContent(contentPane);
 		tabPaneNacelles.getTabs().add(newNacelleTab);
+		
+	}
+	
+	@FXML
+	private void addEngine() {
+		
+		// TODO
 		
 	}
 	

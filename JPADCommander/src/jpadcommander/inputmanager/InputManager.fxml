@@ -2745,7 +2745,7 @@
                                                                                     <Font name="System Bold" size="8.0" />
                                                                                  </font>
                                                                               </Button>
-                                                                              <Button fx:id="nacelleEstimateGeometryButton1" layoutX="100.0" layoutY="101.0" mnemonicParsing="false" text="Estimate" />
+                                                                              <Button fx:id="nacelleEstimateGeometryButton1" layoutX="100.0" layoutY="98.0" mnemonicParsing="false" text="Estimate" />
                                                                            </children>
                                                                         </AnchorPane>
                                                                      </content>
