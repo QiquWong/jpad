@@ -33,7 +33,6 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.xy.XYAreaRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.util.ShapeUtils;
@@ -54,11 +53,12 @@ import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
-import aircraft.components.powerplant.Engine;
+import aircraft.components.nacelles.NacelleCreator;
 import calculators.geometry.FusNacGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.ClassTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.RelativePositionEnum;
 import configuration.enumerations.WindshieldTypeEnum;
@@ -85,6 +85,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -92,6 +93,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -136,6 +138,8 @@ public class InputManagerController {
 	@FXML
 	private SplitPane canardViewsAndDataLogSplitPane;
 	@FXML
+	private SplitPane nacelleViewsAndDataLogSplitPane;
+	@FXML
 	private Pane aircraftFrontViewPane;
 	@FXML
 	private Pane aircraftSideViewPane;
@@ -160,6 +164,12 @@ public class InputManagerController {
 	@FXML
 	private Pane canardPlanformPane;
 	@FXML
+	private Pane nacelle1FrontViewPane;
+	@FXML
+	private Pane nacelle1SideViewPane;
+	@FXML
+	private Pane nacelle1TopViewPane;
+	@FXML
 	private TextArea textAreaAircraftConsoleOutput;
 	@FXML
 	private TextArea textAreaFuselageConsoleOutput;
@@ -173,6 +183,10 @@ public class InputManagerController {
 	private TextArea textAreaVTailConsoleOutput;
 	@FXML
 	private TextArea textAreaCanardConsoleOutput;
+	@FXML
+	private TextArea textAreaNacelleConsoleOutput;
+	@FXML
+	private TextArea textAreaLandingGearsConsoleOutput;
 	@FXML
 	private TabPane tabPaneAircraftEngines;
 	@FXML
@@ -207,6 +221,14 @@ public class InputManagerController {
 	private TabPane tabPaneCanardControlSurfaces;
 	@FXML
 	private TabPane tabPaneCanardViewAndAirfoils;	
+	@FXML
+	private TabPane tabPaneNacelles;	
+	@FXML
+	private TabPane tabPaneNacellesTopViews;
+	@FXML
+	private TabPane tabPaneNacellesSideViews;
+	@FXML
+	private TabPane tabPaneNacellesFrontViews;
 	
 	//...........................................................................................
 	// BUTTONS:
@@ -299,6 +321,18 @@ public class InputManagerController {
 	private Button canardChooseInnerAirfoilPanel1Button;
 	@FXML
 	private Button canardChooseOuterAirfoilPanel1Button;
+	@FXML
+	private Button nacelleEstimateGeometryButton1;
+	@FXML
+	private Button nacelleKInletInfoButton1;
+	@FXML
+	private Button nacelleKOutletInfoButton1;
+	@FXML
+	private Button nacelleKLengthInfoButton1;
+	@FXML
+	private Button nacelleKDiameterOutletInfoButton1;
+	@FXML
+	private Button landingGearsKMainLegLengthInfoButton;
 	
 	//...........................................................................................
 	// BUTTON MAP:
@@ -1327,6 +1361,109 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> canardMaximumDeflectionAngleControlSurface1UnitChoiceBox;
 	
+	//...........................................................................................
+	// NACELLE TAB (DATA):
+	//...........................................................................................
+	@FXML
+	private TextField textFieldNacelleRoughness1;
+	@FXML
+	private TextField textFieldNacelleLength1;
+	@FXML
+	private TextField textFieldNacelleMaximumDiameter1;
+	@FXML
+	private TextField textFieldNacelleKInlet1;
+	@FXML
+	private TextField textFieldNacelleKOutlet1;
+	@FXML
+	private TextField textFieldNacelleKLength1;
+	@FXML
+	private TextField textFieldNacelleKDiameterOutlet1;
+	
+	private List<TextField> textFieldNacelleRoughnessList;
+	private List<TextField> textFieldNacelleLengthList;
+	private List<TextField> textFieldNacelleMaximumDiameterList;
+	private List<TextField> textFieldNacelleKInletList;
+	private List<TextField> textFieldNacelleKOutletList;
+	private List<TextField> textFieldNacelleKLengthList;
+	private List<TextField> textFieldNacelleKDiameterOutletList;
+	private List<ChoiceBox<String>> choiceBoxNacelleRoughnessUnitList;
+	private List<ChoiceBox<String>> choiceBoxNacelleLengthUnitList;
+	private List<ChoiceBox<String>> choiceBoxNacelleMaximumDiameterUnitList;
+	private List<Button> nacelleEstimateDimesnsionButtonList;
+	private List<Button> nacelleKInletInfoButtonList;
+	private List<Button> nacelleKOutletInfoButtonList;
+	private List<Button> nacelleKLengthInfoButtonList;
+	private List<Button> nacelleKDiameterOutletInfoButtonList;
+	private List<Pane> nacelleTopViewPaneList;
+	private List<Pane> nacelleSideViewPaneList;
+	private List<Pane> nacelleFrontViewPaneList;
+	
+	//...........................................................................................
+	// NACELLE TAB (UNITS):
+	//...........................................................................................
+	@FXML
+	private ChoiceBox<String> nacelleRoughnessUnitChoiceBox1;
+	@FXML
+	private ChoiceBox<String> nacelleLengthUnitChoiceBox1;
+	@FXML
+	private ChoiceBox<String> nacelleMaximumDiameterUnitChoiceBox1;
+	
+	//...........................................................................................
+	// POWER PLANT (RADIO BUTTONS):
+	//...........................................................................................
+	@FXML
+	private RadioButton powerPlantJetRadioButton1;
+	@FXML
+	private RadioButton powerPlantTurbopropRadioButton1;
+	@FXML
+	private RadioButton powerPlantPistonRadioButton1;
+	@FXML
+	private ToggleGroup powerPlantToggleGroup1;
+	
+	private List<RadioButton> powerPlantJetRadioButtonList;
+	private List<RadioButton> powerPlantTurbopropRadioButtonList;
+	private List<RadioButton> powerPlantPistonRadioButtonList;
+	private List<ToggleGroup> powerPlantToggleGropuList;
+	
+	// TODO: CONTINUE FROM HERE ... 
+	
+	//...........................................................................................
+	// LANDING GEARS TAB (DATA):
+	//...........................................................................................
+	@FXML
+	private TextField textFieldLandingGearsMainLegLength;
+	@FXML
+	private TextField textFieldLandingGearsKMainLegLength;
+	@FXML
+	private TextField textFieldLandingGearsDistanceBetweenWheels;
+	@FXML
+	private TextField textFieldLandingGearsNumberOfFrontalWheels;
+	@FXML
+	private TextField textFieldLandingGearsNumberOfRearWheels;
+	@FXML
+	private TextField textFieldLandingGearsFrontalWheelsHeight;
+	@FXML
+	private TextField textFieldLandingGearsFrontalWheelsWidth;
+	@FXML
+	private TextField textFieldLandingGearsRearWheelsHeight;
+	@FXML
+	private TextField textFieldLandingGearsRearWheelsWidth;
+	
+	//...........................................................................................
+	// LANDING GEARS TAB (UNITS):
+	//...........................................................................................
+	@FXML
+	private ChoiceBox<String> landingGearsMainLegLengthUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> landingGearsDistanceBetweenWheelsUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> landingGearsFrontalWheelsHeigthUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> landingGearsFrontalWheelsWidthUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> landingGearsRearWheelsHeigthUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> landingGearsRearWheelsWidthUnitChoiceBox;
 	
 	//-------------------------------------------------------------------------------------------
 	// METHODS
@@ -1351,11 +1488,11 @@ public class InputManagerController {
 		
 		tabPaneAircraftEngines.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		for(int i=0; i<tabPaneAircraftEngines.getTabs().size(); i++)
-			removeContentOnEngineTabClose(tabPaneAircraftEngines.getTabs().get(i));
+			removeContentOnAircraftEngineTabClose(tabPaneAircraftEngines.getTabs().get(i));
 		
 		tabPaneAircraftNacelles.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		for(int i=0; i<tabPaneAircraftNacelles.getTabs().size(); i++)
-			removeContentOnNacelleTabClose(tabPaneAircraftNacelles.getTabs().get(i));
+			removeContentOnAircraftNacelleTabClose(tabPaneAircraftNacelles.getTabs().get(i));
 		
 		tabPaneWingPanels.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingFlaps.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
@@ -1403,6 +1540,10 @@ public class InputManagerController {
 			removeContentOnPanelTabClose(tabPaneCanardPanels.getTabs().get(i), ComponentEnum.CANARD);
 		for(int i=0; i<tabPaneCanardControlSurfaces.getTabs().size(); i++)
 			removeContentOnFlapTabClose(tabPaneCanardControlSurfaces.getTabs().get(i), ComponentEnum.CANARD);
+		
+		tabPaneNacelles.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		for(int i=0; i<tabPaneNacelles.getTabs().size(); i++)
+			removeContentOnNacelleTabClose(tabPaneAircraftNacelles.getTabs().get(i));
 		
 		//.......................................................................................
 		// CHOICE BOX INITIALIZATION
@@ -1528,9 +1669,12 @@ public class InputManagerController {
 		canardOuterSectionTwistTipPanel1UnitChoiceBox.setItems(angleUnitsList);
 		canardMinimumDeflectionAngleControlSurface1UnitChoiceBox.setItems(angleUnitsList);
 		canardMaximumDeflectionAngleControlSurface1UnitChoiceBox.setItems(angleUnitsList);
+		nacelleRoughnessUnitChoiceBox1.setItems(lengthUnitsList);
+		nacelleLengthUnitChoiceBox1.setItems(lengthUnitsList);
+		nacelleMaximumDiameterUnitChoiceBox1.setItems(lengthUnitsList);
 		
 		//.......................................................................................
-		// ENGINE LISTS INITIALIZATION
+		// AIRCRAFT ENGINE LISTS INITIALIZATION
 		textFieldsAircraftEngineFileList = new ArrayList<>();
 		textFieldsAircraftEngineFileList.add(textFieldAircraftEngineFile1);
 		
@@ -1562,7 +1706,7 @@ public class InputManagerController {
 		choiceBoxAircraftEngineTiltUnitList.add(engineTilt1AngleUnitChoiceBox);
 		
 		//.......................................................................................
-		// NACELLE LISTS INITIALIZATION
+		// AIRCRAFT NACELLE LISTS INITIALIZATION
 		textFieldsAircraftNacelleFileList = new ArrayList<>();
 		textFieldsAircraftNacelleFileList.add(textFieldAircraftNacelleFile1);
 		
@@ -2027,6 +2171,81 @@ public class InputManagerController {
 		choiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList = new ArrayList<>();
 		choiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList.add(canardMaximumDeflectionAngleControlSurface1UnitChoiceBox);
 		
+		//.......................................................................................
+		// NACELLE LISTS INITIALIZATION
+		textFieldNacelleRoughnessList = new ArrayList<>();
+		textFieldNacelleRoughnessList.add(textFieldNacelleRoughness1);
+		
+		textFieldNacelleLengthList = new ArrayList<>();
+		textFieldNacelleLengthList.add(textFieldNacelleLength1);
+		
+		textFieldNacelleMaximumDiameterList = new ArrayList<>();
+		textFieldNacelleMaximumDiameterList.add(textFieldNacelleMaximumDiameter1);
+		
+		textFieldNacelleKInletList = new ArrayList<>();
+		textFieldNacelleKInletList.add(textFieldNacelleKInlet1);
+		
+		textFieldNacelleKOutletList = new ArrayList<>();
+		textFieldNacelleKOutletList.add(textFieldNacelleKOutlet1);
+		
+		textFieldNacelleKLengthList = new ArrayList<>();
+		textFieldNacelleKLengthList.add(textFieldNacelleKLength1);
+		
+		textFieldNacelleKDiameterOutletList = new ArrayList<>();
+		textFieldNacelleKDiameterOutletList.add(textFieldNacelleKDiameterOutlet1);
+		
+		choiceBoxNacelleRoughnessUnitList = new ArrayList<>();
+		choiceBoxNacelleRoughnessUnitList.add(nacelleRoughnessUnitChoiceBox1);
+		
+		choiceBoxNacelleLengthUnitList = new ArrayList<>();
+		choiceBoxNacelleLengthUnitList.add(nacelleLengthUnitChoiceBox1);
+		
+		choiceBoxNacelleMaximumDiameterUnitList = new ArrayList<>();
+		choiceBoxNacelleMaximumDiameterUnitList.add(nacelleMaximumDiameterUnitChoiceBox1);
+		
+		nacelleEstimateDimesnsionButtonList = new ArrayList<>();
+		nacelleEstimateDimesnsionButtonList.add(nacelleEstimateGeometryButton1);
+		
+		nacelleKInletInfoButtonList = new ArrayList<>();
+		nacelleKInletInfoButtonList.add(nacelleKInletInfoButton1);
+		
+		nacelleKOutletInfoButtonList = new ArrayList<>();
+		nacelleKOutletInfoButtonList.add(nacelleKOutletInfoButton1);
+		
+		nacelleKLengthInfoButtonList = new ArrayList<>();
+		nacelleKLengthInfoButtonList.add(nacelleKLengthInfoButton1);
+		
+		nacelleKDiameterOutletInfoButtonList = new ArrayList<>();
+		nacelleKDiameterOutletInfoButtonList.add(nacelleKDiameterOutletInfoButton1);
+		
+		nacelleTopViewPaneList = new ArrayList<>();
+		nacelleTopViewPaneList.add(nacelle1TopViewPane);
+		
+		nacelleSideViewPaneList = new ArrayList<>();
+		nacelleSideViewPaneList.add(nacelle1SideViewPane);
+		
+		nacelleFrontViewPaneList = new ArrayList<>();
+		nacelleFrontViewPaneList.add(nacelle1FrontViewPane);
+		
+		//.......................................................................................
+		// POWER PLANT LISTS INITIALIZATION
+		powerPlantToggleGroup1 = new ToggleGroup();
+		powerPlantJetRadioButton1.setToggleGroup(powerPlantToggleGroup1);
+		powerPlantTurbopropRadioButton1.setToggleGroup(powerPlantToggleGroup1);
+		powerPlantPistonRadioButton1.setToggleGroup(powerPlantToggleGroup1);
+		
+		powerPlantJetRadioButtonList = new ArrayList<>();
+		powerPlantJetRadioButtonList.add(powerPlantJetRadioButton1);
+		
+		powerPlantTurbopropRadioButtonList = new ArrayList<>();
+		powerPlantTurbopropRadioButtonList.add(powerPlantTurbopropRadioButton1);
+		
+		powerPlantPistonRadioButtonList = new ArrayList<>();
+		powerPlantPistonRadioButtonList.add(powerPlantPistonRadioButton1);
+		
+		powerPlantToggleGropuList = new ArrayList<>();
+		powerPlantToggleGropuList.add(powerPlantToggleGroup1);
+		
 		aircraftLoadButtonDisableCheck();
 		cabinConfigurationClassesNumberDisableCheck();
 		checkCabinConfigurationClassesNumber();
@@ -2057,41 +2276,88 @@ public class InputManagerController {
 		linkedToDisableCheck(ComponentEnum.HORIZONTAL_TAIL);
 		linkedToDisableCheck(ComponentEnum.VERTICAL_TAIL);
 		linkedToDisableCheck(ComponentEnum.CANARD);
+		setEstimateNacelleGeometryAction(nacelleEstimateGeometryButton1, tabPaneNacelles.getTabs().get(0));
 		
 	}
 	
-	private void removeContentOnEngineTabClose (Tab tab) {
+	private void removeContentOnAircraftEngineTabClose (Tab tab) {
 
-		int indexEngine = tabPaneAircraftEngines.getTabs().indexOf(tab);
+		tab.setOnCloseRequest(new EventHandler<Event>() {
 
-		textFieldsAircraftEngineFileList.remove(indexEngine);
-		textFieldAircraftEngineXList.remove(indexEngine);
-		textFieldAircraftEngineYList.remove(indexEngine);
-		textFieldAircraftEngineZList.remove(indexEngine);
-		textFieldAircraftEngineTiltList.remove(indexEngine);
-		choiceBoxesAircraftEnginePositonList.remove(indexEngine);
+			@Override
+			public void handle(Event event) {
 
-		choiceBoxAircraftEngineXUnitList.remove(indexEngine);
-		choiceBoxAircraftEngineYUnitList.remove(indexEngine);
-		choiceBoxAircraftEngineZUnitList.remove(indexEngine);
-		choiceBoxAircraftEngineTiltUnitList.remove(indexEngine);
+				int indexEngine = tabPaneAircraftEngines.getTabs().indexOf(tab);
+
+				textFieldsAircraftEngineFileList.remove(indexEngine);
+				textFieldAircraftEngineXList.remove(indexEngine);
+				textFieldAircraftEngineYList.remove(indexEngine);
+				textFieldAircraftEngineZList.remove(indexEngine);
+				textFieldAircraftEngineTiltList.remove(indexEngine);
+				choiceBoxesAircraftEnginePositonList.remove(indexEngine);
+
+				choiceBoxAircraftEngineXUnitList.remove(indexEngine);
+				choiceBoxAircraftEngineYUnitList.remove(indexEngine);
+				choiceBoxAircraftEngineZUnitList.remove(indexEngine);
+				choiceBoxAircraftEngineTiltUnitList.remove(indexEngine);
+				
+			}
+		});
+	}
+	
+	private void removeContentOnAircraftNacelleTabClose (Tab tab) {
 		
+		tab.setOnCloseRequest(new EventHandler<Event>() {
+
+			@Override
+			public void handle(Event event) {
+		
+				int indexNacelle = tabPaneAircraftNacelles.getTabs().indexOf(tab);
+
+				textFieldsAircraftNacelleFileList.remove(indexNacelle);
+				textFieldAircraftNacelleXList.remove(indexNacelle);
+				textFieldAircraftNacelleYList.remove(indexNacelle);
+				textFieldAircraftNacelleZList.remove(indexNacelle);
+				choiceBoxesAircraftNacellePositonList.remove(indexNacelle);
+
+				choiceBoxAircraftNacelleXUnitList.remove(indexNacelle);
+				choiceBoxAircraftNacelleYUnitList.remove(indexNacelle);
+				choiceBoxAircraftNacelleZUnitList.remove(indexNacelle);
+				
+			}
+		});
 	}
 	
 	private void removeContentOnNacelleTabClose (Tab tab) {
 		
-		int indexNacelle = tabPaneAircraftNacelles.getTabs().indexOf(tab);
+		tab.setOnCloseRequest(new EventHandler<Event>() {
+
+			@Override
+			public void handle(Event event) {
 		
-		textFieldsAircraftNacelleFileList.remove(indexNacelle);
-		textFieldAircraftNacelleXList.remove(indexNacelle);
-		textFieldAircraftNacelleYList.remove(indexNacelle);
-		textFieldAircraftNacelleZList.remove(indexNacelle);
-		choiceBoxesAircraftNacellePositonList.remove(indexNacelle);
-		
-		choiceBoxAircraftNacelleXUnitList.remove(indexNacelle);
-		choiceBoxAircraftNacelleYUnitList.remove(indexNacelle);
-		choiceBoxAircraftNacelleZUnitList.remove(indexNacelle);
-		
+				int indexNacelle = tabPaneNacelles.getTabs().indexOf(tab);
+
+				textFieldNacelleRoughnessList.remove(indexNacelle);
+				textFieldNacelleLengthList.remove(indexNacelle);
+				textFieldNacelleMaximumDiameterList.remove(indexNacelle);
+				textFieldNacelleRoughnessList.remove(indexNacelle);
+				textFieldNacelleKInletList.remove(indexNacelle);
+				textFieldNacelleKOutletList.remove(indexNacelle);
+				textFieldNacelleKLengthList.remove(indexNacelle);
+				textFieldNacelleKDiameterOutletList.remove(indexNacelle);
+				
+				choiceBoxNacelleRoughnessUnitList.remove(indexNacelle);
+				choiceBoxNacelleLengthUnitList.remove(indexNacelle);
+				choiceBoxNacelleMaximumDiameterUnitList.remove(indexNacelle);
+				
+				nacelleEstimateDimesnsionButtonList.remove(indexNacelle);
+				nacelleKInletInfoButtonList.remove(indexNacelle);
+				nacelleKOutletInfoButtonList.remove(indexNacelle);
+				nacelleKLengthInfoButtonList.remove(indexNacelle);
+				nacelleKDiameterOutletInfoButtonList.remove(indexNacelle);
+				
+			}
+		});
 	}
 	
 	private void removeAirfoilDetailsButtonFromMapOnTabClose(Tab tab, ComponentEnum type) {
@@ -2833,7 +3099,7 @@ public class InputManagerController {
 		Pane contentPane = new Pane();
 		
 		Label engineFileLabel = new Label("File:");
-		engineFileLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineFileLabel.setFont(Font.font("System", 15));
 		engineFileLabel.setLayoutX(6.0);
 		engineFileLabel.setLayoutY(0.0);
 		contentPane.getChildren().add(engineFileLabel);
@@ -2846,7 +3112,7 @@ public class InputManagerController {
 		contentPane.getChildren().add(engineFileTextField);
 		
 		Label engineXPositionLabel = new Label("X:");
-		engineXPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineXPositionLabel.setFont(Font.font("System", 15));
 		engineXPositionLabel.setLayoutX(6.0);
 		engineXPositionLabel.setLayoutY(52.0);
 		contentPane.getChildren().add(engineXPositionLabel);
@@ -2867,7 +3133,7 @@ public class InputManagerController {
 		contentPane.getChildren().add(engineXChoiceBox);
 		
 		Label engineYPositionLabel = new Label("Y:");
-		engineYPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineYPositionLabel.setFont(Font.font("System", 15));
 		engineYPositionLabel.setLayoutX(6.0);
 		engineYPositionLabel.setLayoutY(104.0);
 		contentPane.getChildren().add(engineYPositionLabel);
@@ -2888,7 +3154,7 @@ public class InputManagerController {
 		contentPane.getChildren().add(engineYChoiceBox);
 		
 		Label engineZPositionLabel = new Label("Z:");
-		engineZPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineZPositionLabel.setFont(Font.font("System", 15));
 		engineZPositionLabel.setLayoutX(7.0);
 		engineZPositionLabel.setLayoutY(156.0);
 		contentPane.getChildren().add(engineZPositionLabel);
@@ -2909,7 +3175,7 @@ public class InputManagerController {
 		contentPane.getChildren().add(engineZChoiceBox);
 		
 		Label engineTiltAngleLabel = new Label("Tilting Angle:");
-		engineTiltAngleLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineTiltAngleLabel.setFont(Font.font("System", 15));
 		engineTiltAngleLabel.setLayoutX(7.0);
 		engineTiltAngleLabel.setLayoutY(208.0);
 		contentPane.getChildren().add(engineTiltAngleLabel);
@@ -2930,7 +3196,7 @@ public class InputManagerController {
 		contentPane.getChildren().add(engineTiltAngleChoiceBox);
 		
 		Label engineMountingPositionLabel = new Label("Position:");
-		engineMountingPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineMountingPositionLabel.setFont(Font.font("System", 15));
 		engineMountingPositionLabel.setLayoutX(7.0);
 		engineMountingPositionLabel.setLayoutY(260.0);
 		contentPane.getChildren().add(engineMountingPositionLabel);
@@ -2967,7 +3233,7 @@ public class InputManagerController {
 		Pane contentPane = new Pane();
 		
 		Label nacelleFileLabel = new Label("File:");
-		nacelleFileLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleFileLabel.setFont(Font.font("System", 15));
 		nacelleFileLabel.setLayoutX(6.0);
 		nacelleFileLabel.setLayoutY(0.0);
 		contentPane.getChildren().add(nacelleFileLabel);
@@ -2980,7 +3246,7 @@ public class InputManagerController {
 		contentPane.getChildren().add(nacelleFileTextField);
 		
 		Label nacelleXPositionLabel = new Label("X:");
-		nacelleXPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleXPositionLabel.setFont(Font.font("System", 15));
 		nacelleXPositionLabel.setLayoutX(6.0);
 		nacelleXPositionLabel.setLayoutY(52.0);
 		contentPane.getChildren().add(nacelleXPositionLabel);
@@ -3001,7 +3267,7 @@ public class InputManagerController {
 		contentPane.getChildren().add(nacelleXChoiceBox);
 		
 		Label nacelleYPositionLabel = new Label("Y:");
-		nacelleYPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleYPositionLabel.setFont(Font.font("System", 15));
 		nacelleYPositionLabel.setLayoutX(6.0);
 		nacelleYPositionLabel.setLayoutY(104.0);
 		contentPane.getChildren().add(nacelleYPositionLabel);
@@ -3022,7 +3288,7 @@ public class InputManagerController {
 		contentPane.getChildren().add(nacelleYChoiceBox);
 		
 		Label nacelleZPositionLabel = new Label("Z:");
-		nacelleZPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleZPositionLabel.setFont(Font.font("System", 15));
 		nacelleZPositionLabel.setLayoutX(7.0);
 		nacelleZPositionLabel.setLayoutY(156.0);
 		contentPane.getChildren().add(nacelleZPositionLabel);
@@ -3043,7 +3309,7 @@ public class InputManagerController {
 		contentPane.getChildren().add(nacelleZChoiceBox);
 		
 		Label nacelleMountingPositionLabel = new Label("Position:");
-		nacelleMountingPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleMountingPositionLabel.setFont(Font.font("System", 15));
 		nacelleMountingPositionLabel.setLayoutX(6.0);
 		nacelleMountingPositionLabel.setLayoutY(208.0);
 		contentPane.getChildren().add(nacelleMountingPositionLabel);
@@ -5480,6 +5746,292 @@ public class InputManagerController {
 	}
 	
 	@FXML
+	private void addNacelle() {
+		
+		Tab newNacelleTab = new Tab("Nacelle " + (tabPaneNacelles.getTabs().size()+1));
+		Pane contentPane = new Pane();
+		
+		Label nacelleGlobalDataLabel = new Label("GLOBAL DATA:");
+		nacelleGlobalDataLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleGlobalDataLabel.setTextFill(Paint.valueOf("#0400ff"));
+		nacelleGlobalDataLabel.setLayoutX(6.0);
+		nacelleGlobalDataLabel.setLayoutY(6.0);
+		contentPane.getChildren().add(nacelleGlobalDataLabel);
+		
+		Separator globalDataLowerSeparator = new Separator();
+		globalDataLowerSeparator.setLayoutX(-20);
+		globalDataLowerSeparator.setLayoutY(33);
+		globalDataLowerSeparator.setPrefWidth(1312);
+		contentPane.getChildren().add(globalDataLowerSeparator);
+		
+		Label nacelleRoughnessLabel = new Label("Roughness:");
+		nacelleRoughnessLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleRoughnessLabel.setLayoutX(6.0);
+		nacelleRoughnessLabel.setLayoutY(34.0);
+		contentPane.getChildren().add(nacelleRoughnessLabel);
+		
+		TextField nacelleRoughnessTextField = new TextField();
+		nacelleRoughnessTextField.setLayoutX(6.0);
+		nacelleRoughnessTextField.setLayoutY(55);
+		nacelleRoughnessTextField.setPrefWidth(340);
+		nacelleRoughnessTextField.setPrefHeight(31);
+		contentPane.getChildren().add(nacelleRoughnessTextField);
+		
+		ChoiceBox<String> nacelleRoughnessChoiceBox = new ChoiceBox<String>();
+		nacelleRoughnessChoiceBox.setLayoutX(348.0);
+		nacelleRoughnessChoiceBox.setLayoutY(56);
+		nacelleRoughnessChoiceBox.setPrefWidth(47);
+		nacelleRoughnessChoiceBox.setPrefHeight(30);
+		nacelleRoughnessChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(nacelleRoughnessChoiceBox);
+		
+		Separator roughnessLowerSeparator = new Separator();
+		roughnessLowerSeparator.setLayoutX(0);
+		roughnessLowerSeparator.setLayoutY(95);
+		roughnessLowerSeparator.setPrefWidth(1345);
+		contentPane.getChildren().add(roughnessLowerSeparator);
+		
+		Label nacelleGeometryLabel = new Label("GEOMETRY:");
+		nacelleGeometryLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleGeometryLabel.setTextFill(Paint.valueOf("#0400ff"));
+		nacelleGeometryLabel.setLayoutX(6.0);
+		nacelleGeometryLabel.setLayoutY(103.0);
+		contentPane.getChildren().add(nacelleGeometryLabel);
+		
+		Button nacelleEstimateGeometryButton = new Button("Estimate");
+		nacelleEstimateGeometryButton.setLayoutX(100);
+		nacelleEstimateGeometryButton.setLayoutY(98);
+		nacelleEstimateGeometryButton.setPrefWidth(77);
+		nacelleEstimateGeometryButton.setPrefHeight(31);
+		setEstimateNacelleGeometryAction(nacelleEstimateGeometryButton, newNacelleTab);
+		contentPane.getChildren().add(nacelleEstimateGeometryButton);
+		
+		Separator geometryLowerSeparator = new Separator();
+		geometryLowerSeparator.setLayoutX(-28);
+		geometryLowerSeparator.setLayoutY(131);
+		geometryLowerSeparator.setPrefWidth(1345);
+		contentPane.getChildren().add(geometryLowerSeparator);
+		
+		Label nacelleLengthLabel = new Label("Length:");
+		nacelleLengthLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleLengthLabel.setLayoutX(6.0);
+		nacelleLengthLabel.setLayoutY(135.0);
+		contentPane.getChildren().add(nacelleLengthLabel);
+		
+		TextField nacelleLengthTextField = new TextField();
+		nacelleLengthTextField.setLayoutX(6.0);
+		nacelleLengthTextField.setLayoutY(158);
+		nacelleLengthTextField.setPrefWidth(340);
+		nacelleLengthTextField.setPrefHeight(31);
+		contentPane.getChildren().add(nacelleLengthTextField);
+		
+		ChoiceBox<String> nacelleLengthChoiceBox = new ChoiceBox<String>();
+		nacelleLengthChoiceBox.setLayoutX(348.0);
+		nacelleLengthChoiceBox.setLayoutY(158);
+		nacelleLengthChoiceBox.setPrefWidth(47);
+		nacelleLengthChoiceBox.setPrefHeight(30);
+		nacelleLengthChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(nacelleLengthChoiceBox);
+		
+		Label nacelleMaximumDiameterLabel = new Label("Maximum Diameter:");
+		nacelleMaximumDiameterLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleMaximumDiameterLabel.setLayoutX(6.0);
+		nacelleMaximumDiameterLabel.setLayoutY(189.0);
+		contentPane.getChildren().add(nacelleMaximumDiameterLabel);
+		
+		TextField nacelleMaximumDiameterTextField = new TextField();
+		nacelleMaximumDiameterTextField.setLayoutX(6.0);
+		nacelleMaximumDiameterTextField.setLayoutY(210);
+		nacelleMaximumDiameterTextField.setPrefWidth(340);
+		nacelleMaximumDiameterTextField.setPrefHeight(31);
+		contentPane.getChildren().add(nacelleMaximumDiameterTextField);
+		
+		ChoiceBox<String> nacelleMaximumDiameterChoiceBox = new ChoiceBox<String>();
+		nacelleMaximumDiameterChoiceBox.setLayoutX(348.0);
+		nacelleMaximumDiameterChoiceBox.setLayoutY(211);
+		nacelleMaximumDiameterChoiceBox.setPrefWidth(47);
+		nacelleMaximumDiameterChoiceBox.setPrefHeight(30);
+		nacelleMaximumDiameterChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(nacelleMaximumDiameterChoiceBox);
+		
+		Label nacelleKInletLabel = new Label("k Inlet:");
+		nacelleKInletLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleKInletLabel.setLayoutX(6.0);
+		nacelleKInletLabel.setLayoutY(245.0);
+		contentPane.getChildren().add(nacelleKInletLabel);
+		
+		TextField nacelleKInletTextField = new TextField();
+		nacelleKInletTextField.setLayoutX(6.0);
+		nacelleKInletTextField.setLayoutY(266);
+		nacelleKInletTextField.setPrefWidth(340);
+		nacelleKInletTextField.setPrefHeight(31);
+		contentPane.getChildren().add(nacelleKInletTextField);
+		
+		Button nacelleKInletInfoButton = new Button("?");
+		nacelleKInletInfoButton.setStyle("-fx-font-size: 8;");
+		nacelleKInletInfoButton.setStyle("-fx-font-weight: bold;");
+		nacelleKInletInfoButton.setLayoutX(63);
+		nacelleKInletInfoButton.setLayoutY(245);
+		nacelleKInletInfoButton.setPrefWidth(16);
+		nacelleKInletInfoButton.setPrefHeight(18);
+		nacelleKInletInfoButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				showNacelleKInletInfo();
+			}
+		});
+		contentPane.getChildren().add(nacelleKInletInfoButton);
+		
+		Label nacelleKOutletLabel = new Label("k Outlet:");
+		nacelleKOutletLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleKOutletLabel.setLayoutX(6.0); 
+		nacelleKOutletLabel.setLayoutY(304.0);
+		contentPane.getChildren().add(nacelleKOutletLabel);
+		
+		TextField nacelleKOutletTextField = new TextField();
+		nacelleKOutletTextField.setLayoutX(6.0);
+		nacelleKOutletTextField.setLayoutY(327);
+		nacelleKOutletTextField.setPrefWidth(340);
+		nacelleKOutletTextField.setPrefHeight(31);
+		contentPane.getChildren().add(nacelleKOutletTextField);
+		
+		Button nacelleKOutletInfoButton = new Button("?");
+		nacelleKOutletInfoButton.setStyle("-fx-font-size: 8;");
+		nacelleKOutletInfoButton.setStyle("-fx-font-weight: bold;");
+		nacelleKOutletInfoButton.setLayoutX(71);
+		nacelleKOutletInfoButton.setLayoutY(304);
+		nacelleKOutletInfoButton.setPrefWidth(16);
+		nacelleKOutletInfoButton.setPrefHeight(18);
+		nacelleKOutletInfoButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				showNacelleKOutletInfo();
+			}
+		});
+		contentPane.getChildren().add(nacelleKOutletInfoButton);
+		
+		Label nacelleKLengthLabel = new Label("k Length:");
+		nacelleKLengthLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleKLengthLabel.setLayoutX(6.0);
+		nacelleKLengthLabel.setLayoutY(364.0);
+		contentPane.getChildren().add(nacelleKLengthLabel);
+		
+		TextField nacelleKLengthTextField = new TextField();
+		nacelleKLengthTextField.setLayoutX(6.0);
+		nacelleKLengthTextField.setLayoutY(389);
+		nacelleKLengthTextField.setPrefWidth(340);
+		nacelleKLengthTextField.setPrefHeight(31);
+		contentPane.getChildren().add(nacelleKLengthTextField);
+		
+		Button nacelleKLengthInfoButton = new Button("?");
+		nacelleKLengthInfoButton.setStyle("-fx-font-size: 8;");
+		nacelleKLengthInfoButton.setStyle("-fx-font-weight: bold;");
+		nacelleKLengthInfoButton.setLayoutX(75);
+		nacelleKLengthInfoButton.setLayoutY(365);
+		nacelleKLengthInfoButton.setPrefWidth(16);
+		nacelleKLengthInfoButton.setPrefHeight(18);
+		nacelleKLengthInfoButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				showNacelleKLengthInfo();
+			}
+		});
+		contentPane.getChildren().add(nacelleKLengthInfoButton);
+		
+		Label nacelleKDiameterOutletLabel = new Label("k Diameter Outlet:");
+		nacelleKDiameterOutletLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleKDiameterOutletLabel.setLayoutX(6.0);
+		nacelleKDiameterOutletLabel.setLayoutY(430.0);
+		contentPane.getChildren().add(nacelleKDiameterOutletLabel);
+		
+		TextField nacelleKDiameterOutletTextField = new TextField();
+		nacelleKDiameterOutletTextField.setLayoutX(6.0);
+		nacelleKDiameterOutletTextField.setLayoutY(452);
+		nacelleKDiameterOutletTextField.setPrefWidth(340);
+		nacelleKDiameterOutletTextField.setPrefHeight(31);
+		contentPane.getChildren().add(nacelleKDiameterOutletTextField);
+		
+		Button nacelleKDiameterOutletInfoButton = new Button("?");
+		nacelleKDiameterOutletInfoButton.setStyle("-fx-font-size: 8;");
+		nacelleKDiameterOutletInfoButton.setStyle("-fx-font-weight: bold;");
+		nacelleKDiameterOutletInfoButton.setLayoutX(137);
+		nacelleKDiameterOutletInfoButton.setLayoutY(432);
+		nacelleKDiameterOutletInfoButton.setPrefWidth(16);
+		nacelleKDiameterOutletInfoButton.setPrefHeight(18);
+		nacelleKDiameterOutletInfoButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				showNacelleKDiameterOutletInfo();
+			}
+		});
+		contentPane.getChildren().add(nacelleKDiameterOutletInfoButton);
+		
+		textFieldNacelleRoughnessList.add(nacelleRoughnessTextField);
+		textFieldNacelleLengthList.add(nacelleLengthTextField);
+		textFieldNacelleMaximumDiameterList.add(nacelleMaximumDiameterTextField);
+		textFieldNacelleKInletList.add(nacelleKInletTextField);
+		textFieldNacelleKOutletList.add(nacelleKOutletTextField);
+		textFieldNacelleKLengthList.add(nacelleKLengthTextField);
+		textFieldNacelleKDiameterOutletList.add(nacelleKDiameterOutletTextField);
+		choiceBoxNacelleRoughnessUnitList.add(nacelleRoughnessChoiceBox);
+		choiceBoxNacelleLengthUnitList.add(nacelleLengthChoiceBox);
+		choiceBoxNacelleMaximumDiameterUnitList.add(nacelleMaximumDiameterChoiceBox);
+		nacelleEstimateDimesnsionButtonList.add(nacelleEstimateGeometryButton);
+		nacelleKInletInfoButtonList.add(nacelleKInletInfoButton);
+		nacelleKOutletInfoButtonList.add(nacelleKOutletInfoButton);
+		nacelleKLengthInfoButtonList.add(nacelleKLengthInfoButton);
+		nacelleKDiameterOutletInfoButtonList.add(nacelleKDiameterOutletInfoButton);
+		
+		newNacelleTab.setContent(contentPane);
+		tabPaneNacelles.getTabs().add(newNacelleTab);
+		
+	}
+	
+	@FXML
+	private void addEngine() {
+		
+		// TODO
+		
+	}
+	
+	@FXML
+	private void setEstimateNacelleGeometryAction (Button estimateButton, Tab currentTab) {
+		
+		estimateButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				
+				int tabIndex = tabPaneNacelles.getTabs().indexOf(currentTab);	
+				
+				NacelleCreator currentNacelle = Main.getTheAircraft().getNacelles().getNacellesList().get(tabIndex);
+
+				currentNacelle.estimateDimensions(currentNacelle.getTheEngine());
+
+				textFieldNacelleLengthList.get(tabIndex).clear();
+				textFieldNacelleLengthList.get(tabIndex).setText(
+						String.valueOf(currentNacelle.getLength().getEstimatedValue()));
+
+				if(currentNacelle.getLength().getUnit().toString().equalsIgnoreCase("m"))
+					choiceBoxNacelleLengthUnitList.get(tabIndex).getSelectionModel().select(0);
+				else if(currentNacelle.getLength().getUnit().toString().equalsIgnoreCase("ft"))
+					choiceBoxNacelleLengthUnitList.get(tabIndex).getSelectionModel().select(1);
+
+				textFieldNacelleMaximumDiameterList.get(tabIndex).clear();
+				textFieldNacelleMaximumDiameterList.get(tabIndex).setText(
+						String.valueOf(currentNacelle.getDiameterMax().getEstimatedValue()));
+
+				if(currentNacelle.getDiameterMax().getUnit().toString().equalsIgnoreCase("m"))
+					choiceBoxNacelleMaximumDiameterUnitList.get(tabIndex).getSelectionModel().select(0);
+				else if(currentNacelle.getDiameterMax().getUnit().toString().equalsIgnoreCase("ft"))
+					choiceBoxNacelleMaximumDiameterUnitList.get(tabIndex).getSelectionModel().select(1);
+				
+			}
+		});
+			
+	}
+	
+	@FXML
 	private void showAirfoilData(String airfoilFileName, Button detailButton, ComponentEnum type) throws IOException {
 		
 		Tab airfoilTab = new Tab("Airfoil: " + airfoilFileName);
@@ -6422,7 +6974,73 @@ public class InputManagerController {
 			choiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList.subList(1, choiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList.size()).clear();
 		tabPaneCanardControlSurfaces.getTabs().remove(1, tabPaneCanardControlSurfaces.getTabs().size());
 		
+		//..................................................................................
+		// NACELLE
+		textFieldNacelleRoughness1.clear();
+		nacelleRoughnessUnitChoiceBox1.getSelectionModel().clearSelection();
+		textFieldNacelleLength1.clear();
+		nacelleLengthUnitChoiceBox1.getSelectionModel().clearSelection();
+		textFieldNacelleMaximumDiameter1.clear();
+		nacelleMaximumDiameterUnitChoiceBox1.getSelectionModel().clearSelection();
+		textFieldNacelleKInlet1.clear();
+		textFieldNacelleKOutlet1.clear();
+		textFieldNacelleKLength1.clear();
+		textFieldNacelleKDiameterOutlet1.clear();
+		
+		textFieldNacelleRoughnessList.subList(1, textFieldNacelleRoughnessList.size()).clear();
+		textFieldNacelleLengthList.subList(1, textFieldNacelleLengthList.size()).clear();
+		textFieldNacelleMaximumDiameterList.subList(1, textFieldNacelleMaximumDiameterList.size()).clear();
+		textFieldNacelleKInletList.subList(1, textFieldNacelleKInletList.size()).clear();
+		textFieldNacelleKOutletList.subList(1, textFieldNacelleKOutletList.size()).clear();
+		textFieldNacelleKLengthList.subList(1, textFieldNacelleKLengthList.size()).clear();
+		textFieldNacelleKDiameterOutletList.subList(1, textFieldNacelleKDiameterOutletList.size()).clear();
+		choiceBoxNacelleRoughnessUnitList.subList(1, choiceBoxNacelleRoughnessUnitList.size()).clear();
+		choiceBoxNacelleLengthUnitList.subList(1, choiceBoxNacelleLengthUnitList.size()).clear();
+		choiceBoxNacelleMaximumDiameterUnitList.subList(1, choiceBoxNacelleMaximumDiameterUnitList.size()).clear();
+		nacelleEstimateDimesnsionButtonList.subList(1, nacelleEstimateDimesnsionButtonList.size()).clear();
+		nacelleKInletInfoButtonList.subList(1, nacelleKInletInfoButtonList.size()).clear();
+		nacelleKOutletInfoButtonList.subList(1, nacelleKOutletInfoButtonList.size()).clear();
+		nacelleKLengthInfoButtonList.subList(1, nacelleKLengthInfoButtonList.size()).clear();
+		nacelleKDiameterOutletInfoButtonList.subList(1, nacelleKDiameterOutletInfoButtonList.size()).clear();
+		
+		tabPaneNacelles.getTabs().remove(1, tabPaneNacelles.getTabs().size());
+		
+		// View and TextArea
+		textAreaNacelleConsoleOutput.clear();
+		nacelle1TopViewPane.getChildren().clear();
+		nacelle1SideViewPane.getChildren().clear();
+		nacelle1FrontViewPane.getChildren().clear();
+		nacelleTopViewPaneList.subList(1, nacelleTopViewPaneList.size()).clear();
+		nacelleSideViewPaneList.subList(1, nacelleSideViewPaneList.size()).clear();
+		nacelleFrontViewPaneList.subList(1, nacelleFrontViewPaneList.size()).clear();
+		tabPaneNacellesTopViews.getTabs().remove(1, tabPaneNacellesTopViews.getTabs().size());
+		tabPaneNacellesSideViews.getTabs().remove(1, tabPaneNacellesSideViews.getTabs().size());
+		tabPaneNacellesFrontViews.getTabs().remove(1, tabPaneNacellesFrontViews.getTabs().size());
+		
+		
 		// TODO: CONTINUE WITH WING, etc ...
+		
+		//..................................................................................
+		// LANDING GEARS
+		textAreaLandingGearsConsoleOutput.clear();
+		
+		textFieldLandingGearsMainLegLength.clear();
+		textFieldLandingGearsKMainLegLength.clear();
+		textFieldLandingGearsNumberOfFrontalWheels.clear();
+		textFieldLandingGearsNumberOfRearWheels.clear();
+		textFieldLandingGearsDistanceBetweenWheels.clear();
+		textFieldLandingGearsFrontalWheelsHeight.clear();
+		textFieldLandingGearsFrontalWheelsWidth.clear();
+		textFieldLandingGearsRearWheelsHeight.clear();
+		textFieldLandingGearsRearWheelsWidth.clear();
+		
+		landingGearsMainLegLengthUnitChoiceBox.getSelectionModel().clearSelection();
+		landingGearsDistanceBetweenWheelsUnitChoiceBox.getSelectionModel().clearSelection();
+		landingGearsFrontalWheelsHeigthUnitChoiceBox.getSelectionModel().clearSelection();
+		landingGearsFrontalWheelsWidthUnitChoiceBox.getSelectionModel().clearSelection();
+		landingGearsRearWheelsHeigthUnitChoiceBox.getSelectionModel().clearSelection();
+		landingGearsRearWheelsWidthUnitChoiceBox.getSelectionModel().clearSelection();
+		
 		
 		Main.setTheAircraft(null);
 
@@ -6573,7 +7191,17 @@ public class InputManagerController {
 		if (Main.getTheAircraft().getCanard() != null) {
 			logCanardFromFileToInterface();
 			Main.getProgressBar().setProgress(progressBarIncrement*5);
-			Main.getStatusBar().setText("Logging Canard Tail Object Data...");
+			Main.getStatusBar().setText("Logging Canard Object Data...");
+		}
+		if (Main.getTheAircraft().getNacelles() != null) {
+			logNacelleFromFileToInterface();
+			Main.getProgressBar().setProgress(progressBarIncrement*5);
+			Main.getStatusBar().setText("Logging Nacelle Object Data...");
+		}
+		if (Main.getTheAircraft().getLandingGears() != null) {
+			logLandingGearsFromFileToInterface();
+			Main.getProgressBar().setProgress(progressBarIncrement*5);
+			Main.getStatusBar().setText("Logging Landing Gears Object Data...");
 		}
 		//............................
 		// COMPONENTS 3 VIEW CREATION
@@ -6639,6 +7267,20 @@ public class InputManagerController {
 			Main.getProgressBar().setProgress(progressBarIncrement*12);
 			Main.getStatusBar().setText("Creating Canard Planform View...");
 		}
+		//............................
+		// nacelle
+		if (Main.getTheAircraft().getNacelles() != null) {
+			createNacelleTopView();
+			Main.getProgressBar().setProgress(progressBarIncrement*12);
+			Main.getStatusBar().setText("Creating Nacelles Top View...");
+			createNacelleSideView();
+			Main.getProgressBar().setProgress(progressBarIncrement*12);
+			Main.getStatusBar().setText("Creating Nacelles Side View...");
+			createNacelleFrontView();
+			Main.getProgressBar().setProgress(progressBarIncrement*12);
+			Main.getStatusBar().setText("Creating Nacelles Front View...");
+		}
+
 		
 		// write again
 		System.setOut(originalOut);
@@ -6833,8 +7475,37 @@ public class InputManagerController {
 							dataOutlineXZCurveNacelleY.get(j).doubleValue(SI.METER)
 							);
 				});
-
+				
 				seriesNacelleCruvesTopViewList.add(seriesNacelleCruvesTopView);
+
+			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// get data vectors from power plant propellers (only for PISTON and TURBOPROP)
+		//-------------------------------------------------------------------------------
+		List<XYSeries> seriesPropellerTopViewList = new ArrayList<>();
+		
+		if(Main.getTheAircraft().getPowerPlant() != null) {
+			for(int i=0; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++) {
+
+				if (Main.getTheAircraft().getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
+						|| Main.getTheAircraft().getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+
+					XYSeries seriesPropellerCruvesTopView = new XYSeries("Propeller " + i, false);
+					seriesPropellerCruvesTopView.add(
+							Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER),
+							Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getYApexConstructionAxes().doubleValue(SI.METER)
+							+ Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getPropellerDiameter().divide(2).doubleValue(SI.METER)
+							);
+					seriesPropellerCruvesTopView.add(
+							Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER),
+							Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getYApexConstructionAxes().doubleValue(SI.METER)
+							- Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getPropellerDiameter().divide(2).doubleValue(SI.METER)
+							);
+
+					seriesPropellerTopViewList.add(seriesPropellerCruvesTopView);
+				}
 			}
 		}
 		
@@ -6893,6 +7564,17 @@ public class InputManagerController {
 							+ 0.001
 							+ seriesNacelleCruvesTopViewList.indexOf(nac)*0.001, 
 							Tuple.of(nac, Color.decode("#FF7F50"))
+							)
+					);
+		if (Main.getTheAircraft().getPowerPlant() != null) 
+			seriesPropellerTopViewList.stream().forEach(
+					prop -> componentZList.put(
+							Main.getTheAircraft().getPowerPlant().getEngineList().get(
+									seriesPropellerTopViewList.indexOf(prop)
+									).getZApexConstructionAxes().doubleValue(SI.METER)
+							+ 0.0015
+							+ seriesPropellerTopViewList.indexOf(prop)*0.001, 
+							Tuple.of(prop, Color.BLACK)
 							)
 					);
 		
@@ -7196,6 +7878,33 @@ public class InputManagerController {
 
 			}
 		}
+		//-------------------------------------------------------------------------------
+		// get data vectors from power plant propellers (only for PISTON and TURBOPROP)
+		//-------------------------------------------------------------------------------
+		List<XYSeries> seriesPropellerSideViewList = new ArrayList<>();
+		
+		if(Main.getTheAircraft().getPowerPlant() != null) {
+			for(int i=0; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++) {
+
+				if (Main.getTheAircraft().getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
+						|| Main.getTheAircraft().getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+
+					XYSeries seriesPropellerCruvesSideView = new XYSeries("Propeller " + i, false);
+					seriesPropellerCruvesSideView.add(
+							Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER),
+							1.0015*Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getZApexConstructionAxes().doubleValue(SI.METER)
+							+ Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getPropellerDiameter().divide(2).doubleValue(SI.METER)
+							);
+					seriesPropellerCruvesSideView.add(
+							Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER),
+							1.0015*Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getZApexConstructionAxes().doubleValue(SI.METER)
+							- Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getPropellerDiameter().divide(2).doubleValue(SI.METER)
+							);
+
+					seriesPropellerSideViewList.add(seriesPropellerCruvesSideView);
+				}
+			}
+		}		
 		//--------------------------------------------------
 		// get data vectors from landing gears 
 		//--------------------------------------------------
@@ -7231,6 +7940,10 @@ public class InputManagerController {
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+		if (Main.getTheAircraft().getPowerPlant() != null)
+			seriesPropellerSideViewList.stream().forEach(
+					prop -> seriesAndColorList.add(Tuple.of(prop, Color.BLACK))
+					);
 		if (Main.getTheAircraft().getNacelles() != null)
 			seriesNacelleCruvesSideViewList.stream().forEach(
 					nac -> seriesAndColorList.add(Tuple.of(nac, Color.decode("#FF7F50")))
@@ -7297,6 +8010,23 @@ public class InputManagerController {
 					seriesAndColorList.get(i)._2()
 					);
 		}
+		XYLineAndShapeRenderer xyLineAndShapePropRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapePropRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapePropRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapePropRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			if (i < Main.getTheAircraft().getPowerPlant().getEngineNumber()) {
+				xyLineAndShapePropRenderer.setSeriesVisible(i, true);
+				xyLineAndShapePropRenderer.setSeriesPaint(i, Color.BLACK);
+				xyLineAndShapePropRenderer.setSeriesStroke(
+						i, 
+						new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+						false
+						);
+			}
+			else
+				xyLineAndShapePropRenderer.setSeriesVisible(i, false);
+		}
 		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
 		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
 		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
@@ -7309,11 +8039,22 @@ public class InputManagerController {
 					false
 					);
 		}
-		
-		plot.setRenderer(0, xyAreaRenderer);
-		plot.setDataset(0, dataset);
-		plot.setRenderer(1, xyLineAndShapeRenderer);
-		plot.setDataset(1, dataset);
+
+		if (Main.getTheAircraft().getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
+				|| Main.getTheAircraft().getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+			plot.setRenderer(2, xyLineAndShapeRenderer);
+			plot.setDataset(2, dataset);
+			plot.setRenderer(1, xyAreaRenderer);
+			plot.setDataset(1, dataset);
+			plot.setRenderer(0, xyLineAndShapePropRenderer);
+			plot.setDataset(0, dataset);
+		}
+		else {
+			plot.setRenderer(1, xyLineAndShapeRenderer);
+			plot.setDataset(1, dataset);
+			plot.setRenderer(0, xyAreaRenderer);
+			plot.setDataset(0, dataset);
+		}
 
 		//-------------------------------------------------------------------------------------
 		// EXPORT TO SVG
@@ -7673,6 +8414,38 @@ public class InputManagerController {
 				seriesNacelleCruvesFrontViewList.add(seriesNacelleCruvesFrontView);
 			}
 		}
+		//-------------------------------------------------------------------------------
+		// get data vectors from power plant propellers (only for PISTON and TURBOPROP)
+		//-------------------------------------------------------------------------------
+		List<XYSeries> seriesPropellerFrontViewList = new ArrayList<>();
+		
+		if(Main.getTheAircraft().getPowerPlant() != null) {
+			for(int i=0; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++) {
+
+				if (Main.getTheAircraft().getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
+						|| Main.getTheAircraft().getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+					
+					Amount<Length> radius = Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getPropellerDiameter().divide(2);
+					Double[] centerPosition = new Double[] {
+							Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getYApexConstructionAxes().doubleValue(SI.METER),
+							Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getZApexConstructionAxes().doubleValue(SI.METER)
+					};
+					Double[] thetaArray = MyArrayUtils.linspaceDouble(0, 2*Math.PI, 360);
+					
+					XYSeries seriesPropellerCruvesFrontView = new XYSeries("Propeller " + i, false);
+					IntStream.range(0, thetaArray.length)
+					.forEach(j -> {
+						seriesPropellerCruvesFrontView.add(
+								radius.doubleValue(SI.METER)*Math.cos(thetaArray[j]) + centerPosition[0],
+								radius.doubleValue(SI.METER)*Math.sin(thetaArray[j]) + centerPosition[1]
+								);
+					});
+
+					seriesPropellerFrontViewList.add(seriesPropellerCruvesFrontView);
+					
+				}
+			}
+		}
 		//--------------------------------------------------
 		// get data vectors from landing gears
 		//--------------------------------------------------
@@ -7778,9 +8551,15 @@ public class InputManagerController {
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
+		Color propellerColor = new Color(255, 255, 255, 0);
+		
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
 		if (Main.getTheAircraft().getFuselage() != null)
 			seriesAndColorList.add(Tuple.of(seriesFuselageCurve, Color.WHITE));
+		if (Main.getTheAircraft().getPowerPlant() != null)
+			seriesPropellerFrontViewList.stream().forEach(
+					prop -> seriesAndColorList.add(Tuple.of(prop, propellerColor))
+					);
 		if (Main.getTheAircraft().getNacelles() != null)
 			seriesNacelleCruvesFrontViewList.stream().forEach(
 					nac -> seriesAndColorList.add(Tuple.of(nac, Color.decode("#FF7F50")))
@@ -8574,361 +9353,272 @@ public class InputManagerController {
 			
 		}
 		
-//		//---------------------------------------------------------------------------------
-//		// LOOP OVER ENGINES:
-//		for (int i=0; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++) {
-//			
-//			Engine currentEngine = Main.getTheAircraft().getPowerPlant().getEngineList().get(i);
-//			
-//			//---------------------------------------------------------------------------------
-//			// FILE:
-//			if(currentEngine.getFilePath() != null) {
-//				textFieldFuselageInnerSpanwisePositionSpoilerList.get(i).setText(
-//						String.valueOf(currentSpoiler.getInnerStationSpanwisePosition())
-//						);
-//			}
-//			else
-//				textFieldFuselageInnerSpanwisePositionSpoilerList.get(i).setText(
-//						"NOT INITIALIZED"
-//						);
-//			
-//			//---------------------------------------------------------------------------------
-//			// OUTER SPANWISE POSITION:
-//			if(currentSpoiler.getOuterStationSpanwisePosition() != null) {
-//				textFieldFuselageOuterSpanwisePositionSpoilerList.get(i).setText(
-//						String.valueOf(currentSpoiler.getOuterStationSpanwisePosition())
-//						);
-//			}
-//			else
-//				textFieldFuselageOuterSpanwisePositionSpoilerList.get(i).setText(
-//						"NOT INITIALIZED"
-//						);
-//			
-//			//---------------------------------------------------------------------------------
-//			// INNER CHORDWISE POSITION:
-//			if(currentSpoiler.getInnerStationChordwisePosition() != null) {
-//				textFieldFuselageInnerChordwisePositionSpoilerList.get(i).setText(
-//						String.valueOf(currentSpoiler.getInnerStationChordwisePosition())
-//						);
-//			}
-//			else
-//				textFieldFuselageInnerChordwisePositionSpoilerList.get(i).setText(
-//						"NOT INITIALIZED"
-//						);
-//			
-//			//---------------------------------------------------------------------------------
-//			// OUTER CHORDWISE POSITION:
-//			if(currentSpoiler.getOuterStationChordwisePosition() != null) {
-//				textFieldFuselageOuterChordwisePositionSpoilerList.get(i).setText(
-//						String.valueOf(currentSpoiler.getOuterStationChordwisePosition())
-//						);
-//			}
-//			else
-//				textFieldFuselageOuterChordwisePositionSpoilerList.get(i).setText(
-//						"NOT INITIALIZED"
-//						);
-//			
-//			//---------------------------------------------------------------------------------
-//			// MINIMUM DEFLECTION:
-//			if(currentSpoiler.getMinimumDeflection() != null) {
-//				
-//				textFieldFuselageMinimumDeflectionAngleSpoilerList.get(i).setText(
-//						String.valueOf(currentSpoiler.getMinimumDeflection().getEstimatedValue())
-//						);
-//				
-//				if(currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("°")
-//						|| currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
-//					choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList.get(i).getSelectionModel().select(0);
-//				else if(currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
-//					choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList.get(i).getSelectionModel().select(1);
-//				
-//			}
-//			else
-//				textFieldFuselageMinimumDeflectionAngleSpoilerList.get(i).setText(
-//						"NOT INITIALIZED"
-//						);
-//			
-//			//---------------------------------------------------------------------------------
-//			// MAXIMUM DEFLECTION:
-//			if(currentSpoiler.getMaximumDeflection() != null) {
-//				
-//				textFieldFuselageMaximumDeflectionAngleSpoilerList.get(i).setText(
-//						String.valueOf(currentSpoiler.getMaximumDeflection().getEstimatedValue())
-//						);
-//				
-//				if(currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("°")
-//						|| currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
-//					choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList.get(i).getSelectionModel().select(0);
-//				else if(currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
-//					choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList.get(i).getSelectionModel().select(1);
-//				
-//			}
-//			else
-//				textFieldFuselageMaximumDeflectionAngleSpoilerList.get(i).setText(
-//						"NOT INITIALIZED"
-//						);
-//			
-//		}
-//		
-//		
-//		
-//		//---------------------------------------------------------------------------------
-//		// POWER PLANT:
-//		if(Main.getTheAircraft()
-//				.getPowerPlant().getEngineList().get(0)
-//				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-//			powerPlantXUnitChoiceBox.getSelectionModel().select(0);
-//		else if(Main.getTheAircraft()
-//				.getPowerPlant().getEngineList().get(0)
-//				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-//			powerPlantXUnitChoiceBox.getSelectionModel().select(1);
-//
-//
-//		if(Main.getTheAircraft()
-//				.getPowerPlant().getEngineList().get(0)
-//				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-//			powerPlantYUnitChoiceBox.getSelectionModel().select(0);
-//		else if(Main.getTheAircraft()
-//				.getPowerPlant().getEngineList().get(0)
-//				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-//			powerPlantYUnitChoiceBox.getSelectionModel().select(1);
-//
-//
-//		if(Main.getTheAircraft()
-//				.getPowerPlant().getEngineList().get(0)
-//				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-//			powerPlantZUnitChoiceBox.getSelectionModel().select(0);
-//		else if(Main.getTheAircraft()
-//				.getPowerPlant().getEngineList().get(0)
-//				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-//			powerPlantZUnitChoiceBox.getSelectionModel().select(1);
-//
-//
-//		if(Main.getTheAircraft()
-//				.getPowerPlant().getEngineList().get(0)
-//				.getTiltingAngle().getUnit().toString().equalsIgnoreCase("°")
-//				|| Main.getTheAircraft()
-//				.getPowerPlant().getEngineList().get(0)
-//				.getTiltingAngle().getUnit().toString().equalsIgnoreCase("deg"))
-//			powerPlantTiltAngleUnitChoiceBox.getSelectionModel().select(0);
-//		else if(Main.getTheAircraft()
-//				.getPowerPlant().getEngineList().get(0)
-//				.getTiltingAngle().getUnit().toString().equalsIgnoreCase("rad"))
-//			powerPlantTiltAngleUnitChoiceBox.getSelectionModel().select(1);
-//
-//		//..........................................................................................................
-//		NodeList nodelistEngines = MyXMLReaderUtils
-//				.getXMLNodeListByPath(reader.getXmlDoc(), "//power_plant/engine");
-//		if(nodelistEngines != null) {
-//			for (int i = 0; i < nodelistEngines.getLength(); i++) {
-//				//..........................................................................................................
-//				Node nodeEngine  = nodelistEngines.item(i); 
-//				Element elementEngine = (Element) nodeEngine;
-//				if(elementEngine.getAttribute("file") != null)
-//					textFieldsAircraftEngineFileList.get(i).setText(
-//							dirEngines 
-//							+ File.separator
-//							+ elementEngine.getAttribute("file")	
-//							);
-//				else
-//					textFieldsAircraftEngineFileList.get(i).setText(
-//							"NOT INITIALIZED"
-//							);
-//				//..........................................................................................................
-//				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null) 
-//					textFieldAircraftEngineXList.get(i).setText(
-//							String.valueOf(
-//									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-//									.getXApexConstructionAxes()
-//									.getEstimatedValue()
-//									)
-//							);
-//				else
-//					textFieldAircraftEngineXList.get(i).setText(
-//							"NOT INITIALIZED"
-//							);
-//				//..........................................................................................................
-//				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
-//					textFieldAircraftEngineYList.get(i).setText(
-//							String.valueOf(
-//									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-//									.getYApexConstructionAxes()
-//									.getEstimatedValue()
-//									)
-//							);
-//				else
-//					textFieldAircraftEngineYList.get(i).setText(
-//							"NOT INITIALIZED"
-//							);
-//				//..........................................................................................................
-//				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
-//					textFieldAircraftEngineZList.get(i).setText(
-//							String.valueOf(
-//									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-//									.getZApexConstructionAxes()
-//									.getEstimatedValue()
-//									)
-//							);
-//				else
-//					textFieldAircraftEngineZList.get(i).setText(
-//							"NOT INITIALIZED"
-//							);
-//				//..........................................................................................................
-//				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
-//
-//					if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-//							.getMountingPosition().toString()
-//							.equalsIgnoreCase("BURIED")
-//							)
-//						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(0);
-//					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-//							.getMountingPosition().toString()
-//							.equalsIgnoreCase("WING")
-//							)
-//						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(1);
-//					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-//							.getMountingPosition().toString()
-//							.equalsIgnoreCase("AFT_FUSELAGE")
-//							)
-//						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(2);
-//					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-//							.getMountingPosition().toString()
-//							.equalsIgnoreCase("HTAIL")
-//							)
-//						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(3);
-//					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-//							.getMountingPosition().toString()
-//							.equalsIgnoreCase("REAR_FUSELAGE")
-//							)
-//						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(4);
-//
-//				//..........................................................................................................
-//				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
-//					textFieldAircraftEngineTiltList.get(i).setText(
-//							String.valueOf(
-//									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-//									.getTiltingAngle()
-//									.getEstimatedValue()
-//									)
-//							);
-//				else
-//					textFieldAircraftEngineTiltList.get(i).setText(
-//							"NOT INITIALIZED"
-//							);
-//			}
-//		}
-//		//---------------------------------------------------------------------------------
-//		// NACELLES:
-//		if(Main.getTheAircraft()
-//				.getNacelles().getNacellesList().get(0)
-//				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-//			nacelleXUnitChoiceBox.getSelectionModel().select(0);
-//		else if(Main.getTheAircraft()
-//				.getNacelles().getNacellesList().get(0)
-//				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-//			nacelleXUnitChoiceBox.getSelectionModel().select(1);
-//
-//		if(Main.getTheAircraft()
-//				.getNacelles().getNacellesList().get(0)
-//				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-//			nacelleYUnitChoiceBox.getSelectionModel().select(0);
-//		else if(Main.getTheAircraft()
-//				.getNacelles().getNacellesList().get(0)
-//				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-//			nacelleYUnitChoiceBox.getSelectionModel().select(1);
-//
-//		if(Main.getTheAircraft()
-//				.getNacelles().getNacellesList().get(0)
-//				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-//			nacelleZUnitChoiceBox.getSelectionModel().select(0);
-//		else if(Main.getTheAircraft()
-//				.getNacelles().getNacellesList().get(0)
-//				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-//			nacelleZUnitChoiceBox.getSelectionModel().select(1);
-//
-//		//..........................................................................................................
-//		NodeList nodelistNacelles = MyXMLReaderUtils
-//				.getXMLNodeListByPath(reader.getXmlDoc(), "//nacelles/nacelle");
-//		if(nodelistNacelles != null) {
-//			for (int i = 0; i < nodelistNacelles.getLength(); i++) {
-//				//..........................................................................................................
-//				Node nodeNacelle  = nodelistNacelles.item(i); 
-//				Element elementNacelle = (Element) nodeNacelle;
-//				if(elementNacelle.getAttribute("file") != null)
-//					textFieldsAircraftNacelleFileList.get(i).setText(
-//							dirEngines 
-//							+ File.separator
-//							+ elementNacelle.getAttribute("file")	
-//							);
-//				else
-//					textFieldsAircraftNacelleFileList.get(i).setText(
-//							"NOT INITIALIZED"
-//							);
-//				//..........................................................................................................
-//				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
-//					textFieldAircraftNacelleXList.get(i).setText(
-//							String.valueOf(
-//									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-//									.getXApexConstructionAxes()
-//									.getEstimatedValue()
-//									)
-//							);
-//				else
-//					textFieldAircraftNacelleXList.get(i).setText(
-//							"NOT INITIALIZED"
-//							);
-//				//..........................................................................................................
-//				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
-//					textFieldAircraftNacelleYList.get(i).setText(
-//							String.valueOf(
-//									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-//									.getYApexConstructionAxes()
-//									.getEstimatedValue()
-//									)
-//							);
-//				else
-//					textFieldAircraftNacelleYList.get(i).setText(
-//							"NOT INITIALIZED"
-//							);
-//				//..........................................................................................................
-//				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
-//					textFieldAircraftNacelleZList.get(i).setText(
-//							String.valueOf(
-//									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-//									.getZApexConstructionAxes()
-//									.getEstimatedValue()
-//									)
-//							);
-//				else
-//					textFieldAircraftNacelleZList.get(i).setText(
-//							"NOT INITIALIZED"
-//							);
-//				//..........................................................................................................
-//				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
-//
-//					if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-//							.getMountingPosition().toString()
-//							.equalsIgnoreCase("WING")
-//							)
-//						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(0);
-//					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-//							.getMountingPosition().toString()
-//							.equalsIgnoreCase("FUSELAGE")
-//							)
-//						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(1);
-//					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-//							.getMountingPosition().toString()
-//							.equalsIgnoreCase("HTAIL")
-//							)
-//						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(2);
-//					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-//							.getMountingPosition().toString()
-//							.equalsIgnoreCase("UNDERCARRIAGE_HOUSING")
-//							)
-//						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(3);
-//
-//			}
-//		}
+		//---------------------------------------------------------------------------------
+		// LOOP OVER ENGINES:
+		//---------------------------------------------------------------------------------
+		NodeList nodelistEngines = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//power_plant/engine");
+		if(nodelistEngines != null) {
+			for (int i = 0; i < nodelistEngines.getLength(); i++) {
+				//..........................................................................................................
+				Node nodeEngine  = nodelistEngines.item(i); 
+				Element elementEngine = (Element) nodeEngine;
+				if(elementEngine.getAttribute("file") != null)
+					textFieldsAircraftEngineFileList.get(i).setText(
+							dirEngines 
+							+ File.separator
+							+ elementEngine.getAttribute("file")	
+							);
+				else
+					textFieldsAircraftEngineFileList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null) {
+					textFieldAircraftEngineXList.get(i).setText(
+							String.valueOf(
+									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+									.getXApexConstructionAxes()
+									.getEstimatedValue()
+									)
+							);
+					if(Main.getTheAircraft()
+							.getPowerPlant().getEngineList().get(i)
+							.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxAircraftEngineXUnitList.get(i).getSelectionModel().select(0);
+					else if(Main.getTheAircraft()
+							.getPowerPlant().getEngineList().get(i)
+							.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxAircraftEngineXUnitList.get(i).getSelectionModel().select(1);
+				}
+				else
+					textFieldAircraftEngineXList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null) {
+					textFieldAircraftEngineYList.get(i).setText(
+							String.valueOf(
+									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+									.getYApexConstructionAxes()
+									.getEstimatedValue()
+									)
+							);
+					if(Main.getTheAircraft()
+							.getPowerPlant().getEngineList().get(i)
+							.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxAircraftEngineYUnitList.get(i).getSelectionModel().select(0);
+					else if(Main.getTheAircraft()
+							.getPowerPlant().getEngineList().get(i)
+							.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxAircraftEngineYUnitList.get(i).getSelectionModel().select(1);
+				}
+				else
+					textFieldAircraftEngineYList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null) {
+					textFieldAircraftEngineZList.get(i).setText(
+							String.valueOf(
+									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+									.getZApexConstructionAxes()
+									.getEstimatedValue()
+									)
+							);
+					if(Main.getTheAircraft()
+							.getPowerPlant().getEngineList().get(i)
+							.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxAircraftEngineZUnitList.get(i).getSelectionModel().select(0);
+					else if(Main.getTheAircraft()
+							.getPowerPlant().getEngineList().get(i)
+							.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxAircraftEngineZUnitList.get(i).getSelectionModel().select(1);
+				}
+				else
+					textFieldAircraftEngineZList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
+
+					if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("BURIED")
+							)
+						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(0);
+					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("WING")
+							)
+						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(1);
+					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("AFT_FUSELAGE")
+							)
+						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(2);
+					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("HTAIL")
+							)
+						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(3);
+					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("REAR_FUSELAGE")
+							)
+						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(4);
+
+				//..........................................................................................................
+				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null) {
+					textFieldAircraftEngineTiltList.get(i).setText(
+							String.valueOf(
+									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+									.getTiltingAngle()
+									.getEstimatedValue()
+									)
+							);
+					if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getTiltingAngle().getUnit().toString().equalsIgnoreCase("°")
+							|| Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getTiltingAngle().getUnit().toString().equalsIgnoreCase("deg"))
+						choiceBoxAircraftEngineTiltUnitList.get(i).getSelectionModel().select(0);
+					else if(Main.getTheAircraft()
+							.getPowerPlant().getEngineList().get(i)
+							.getTiltingAngle().getUnit().toString().equalsIgnoreCase("rad"))
+						choiceBoxAircraftEngineTiltUnitList.get(i).getSelectionModel().select(1);
+				}
+				else
+					textFieldAircraftEngineTiltList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+			}
+		}
+
+		//---------------------------------------------------------------------------------
+		// NACELLE NUMBER CHECK:
+		if (Main.getTheAircraft().getNacelles().getNacellesList().size() >= 
+				tabPaneAircraftNacelles.getTabs().size()) {
+			
+			int iStart = tabPaneAircraftNacelles.getTabs().size();
+			
+			for(int i=iStart; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++)
+				addAircraftNacelle();
+			
+		}
+		
+		//---------------------------------------------------------------------------------
+		// LOOP OVER ENGINES:
+		//---------------------------------------------------------------------------------
+		NodeList nodelistNacelles = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//nacelles/nacelle");
+		if(nodelistNacelles != null) {
+			for (int i = 0; i < nodelistNacelles.getLength(); i++) {
+				//..........................................................................................................
+				Node nodeNacelle  = nodelistNacelles.item(i); 
+				Element elementNacelle = (Element) nodeNacelle;
+				if(elementNacelle.getAttribute("file") != null)
+					textFieldsAircraftNacelleFileList.get(i).setText(
+							dirEngines 
+							+ File.separator
+							+ elementNacelle.getAttribute("file")	
+							);
+				else
+					textFieldsAircraftNacelleFileList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null) {
+					textFieldAircraftNacelleXList.get(i).setText(
+							String.valueOf(
+									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+									.getXApexConstructionAxes()
+									.getEstimatedValue()
+									)
+							);
+					if(Main.getTheAircraft()
+							.getNacelles().getNacellesList().get(i)
+							.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxAircraftNacelleXUnitList.get(i).getSelectionModel().select(0);
+					else if(Main.getTheAircraft()
+							.getNacelles().getNacellesList().get(i)
+							.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxAircraftNacelleXUnitList.get(i).getSelectionModel().select(1);
+				}
+				else
+					textFieldAircraftNacelleXList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null) {
+					textFieldAircraftNacelleYList.get(i).setText(
+							String.valueOf(
+									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+									.getYApexConstructionAxes()
+									.getEstimatedValue()
+									)
+							);
+					if(Main.getTheAircraft()
+							.getNacelles().getNacellesList().get(i)
+							.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxAircraftNacelleYUnitList.get(i).getSelectionModel().select(0);
+					else if(Main.getTheAircraft()
+							.getNacelles().getNacellesList().get(i)
+							.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxAircraftNacelleYUnitList.get(i).getSelectionModel().select(1);
+				}
+				else
+					textFieldAircraftNacelleYList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null) {
+					textFieldAircraftNacelleZList.get(i).setText(
+							String.valueOf(
+									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+									.getZApexConstructionAxes()
+									.getEstimatedValue()
+									)
+							);
+					if(Main.getTheAircraft()
+							.getNacelles().getNacellesList().get(i)
+							.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxAircraftNacelleZUnitList.get(i).getSelectionModel().select(0);
+					else if(Main.getTheAircraft()
+							.getNacelles().getNacellesList().get(i)
+							.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxAircraftNacelleZUnitList.get(i).getSelectionModel().select(1);
+				}
+				else
+					textFieldAircraftNacelleZList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
+
+					if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("WING")
+							)
+						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(0);
+					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("FUSELAGE")
+							)
+						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(1);
+					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("HTAIL")
+							)
+						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(2);
+					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("UNDERCARRIAGE_HOUSING")
+							)
+						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(3);
+
+			}
+		}
+
 		//---------------------------------------------------------------------------------
 		// LANDING GEARS:
 		String landingGearsFileName =
@@ -14139,11 +14829,6 @@ public class InputManagerController {
 	
 	private void createCanardPlanformView() {
 		
-//		if (Main.getTheAircraft().getCanard() == null) {
-//			System.err.println("WARNING (CANARD CREATION): THE LOADED AIRCRAFT DOES NOT HAVE A CANARD");
-//			return;
-//		}
-		
 		//--------------------------------------------------
 		// get data vectors from Canard discretization
 		//--------------------------------------------------
@@ -14724,16 +15409,935 @@ public class InputManagerController {
 						choiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList.get(i).getSelectionModel().select(0);
 					else if(currentControlSurface.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
 						choiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList.get(i).getSelectionModel().select(1);
-					
+
 				}
 				else
 					textFieldCanardMaximumDeflectionAngleControlSurfaceList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+
+			}
+		}
+	}
+
+	private void createNacelleTopView() {
+
+		//---------------------------------------------------------------------------------
+		// NACELLES NUMBER CHECK:
+		if (Main.getTheAircraft().getNacelles().getNacellesList().size() >= 
+				tabPaneNacellesTopViews.getTabs().size()) {
+			
+			int iStart = tabPaneNacellesTopViews.getTabs().size();
+			
+			for(int i=iStart; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
+				
+				Tab nacelleTab = new Tab("Nacelle " + (i+1));
+				Pane topView = new Pane();
+				nacelleTopViewPaneList.add(topView);
+				nacelleTab.setContent(topView);
+				tabPaneNacellesTopViews.getTabs().add(nacelleTab);
+				
+			}
+		}
+		
+		//---------------------------------------------------------------------------------
+		// LOOP OVER NACELLES:
+		for (int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
+
+			//--------------------------------------------------
+			// get data vectors from nacelle discretization
+			//--------------------------------------------------
+
+			// upper curve, sideview
+			List<Amount<Length>> nacelleCurveX = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline();
+			int nacelleCurveXPoints = nacelleCurveX.size();
+			List<Amount<Length>> nacelleCurveUpperY = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYRight();
+
+			// lower curve, sideview
+			List<Amount<Length>> nacelleCurveLowerY = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYLeft();
+
+			List<Amount<Length>> dataOutlineXZCurveNacelleX = new ArrayList<>();
+			List<Amount<Length>> dataOutlineXZCurveNacelleY = new ArrayList<>();
+
+			for(int j=0; j<nacelleCurveXPoints; j++) {
+				dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(j));
+				dataOutlineXZCurveNacelleY.add(nacelleCurveUpperY.get(j));
+			}
+
+			for(int j=0; j<nacelleCurveXPoints; j++) {
+				dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(nacelleCurveXPoints-j-1) );
+				dataOutlineXZCurveNacelleY.add(nacelleCurveLowerY.get(nacelleCurveXPoints-j-1));
+			}
+
+			dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(0));
+			dataOutlineXZCurveNacelleY.add(nacelleCurveUpperY.get(0));
+
+			XYSeries seriesNacelleCruvesTopView = new XYSeries("Nacelle " + i + " XZ Curve - Top View", false);
+			IntStream.range(0, dataOutlineXZCurveNacelleX.size())
+			.forEach(k -> {
+				seriesNacelleCruvesTopView.add(
+						dataOutlineXZCurveNacelleX.get(k).doubleValue(SI.METER),
+						dataOutlineXZCurveNacelleY.get(k).doubleValue(SI.METER)
+						);
+			});
+
+			double xMaxTopView = 1.40*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().divide(2).doubleValue(SI.METRE);
+			double xMinTopView = -1.40*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().divide(2).doubleValue(SI.METRE);
+			double yMaxTopView = 1.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
+			double yMinTopView = -0.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
+
+			int WIDTH = 700;
+			int HEIGHT = 600;
+
+			//-------------------------------------------------------------------------------------
+			// DATASET CRATION
+			List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+			seriesAndColorList.add(Tuple.of(seriesNacelleCruvesTopView, Color.decode("#FF7F50")));
+
+			XYSeriesCollection dataset = new XYSeriesCollection();
+			seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+
+			//-------------------------------------------------------------------------------------
+			// CHART CRATION
+			JFreeChart chart = ChartFactory.createXYAreaChart(
+					"Nacelle data representation - Top View", 
+					"y (m)", 
+					"x (m)",
+					(XYDataset) dataset,
+					PlotOrientation.HORIZONTAL,
+					false, // legend
+					true,  // tooltips
+					false  // urls
+					);
+
+			chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+			chart.setAntiAlias(true);
+
+			XYPlot plot = (XYPlot) chart.getPlot();
+			plot.setBackgroundAlpha(0.0f);
+			plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+			plot.setDomainGridlinesVisible(true);
+			plot.setDomainGridlinePaint(Color.GRAY);
+			plot.setRangeGridlinesVisible(true);
+			plot.setRangeGridlinePaint(Color.GRAY);
+			plot.setDomainPannable(true);
+			plot.setRangePannable(true);
+
+			NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+			domain.setRange(yMinTopView, yMaxTopView);
+			domain.setInverted(Boolean.TRUE);
+			NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+			range.setRange(xMinTopView, xMaxTopView);
+			range.setInverted(Boolean.FALSE);
+
+			XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+			xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+			xyAreaRenderer.setDefaultEntityRadius(6);
+			for(int j=0; j<dataset.getSeries().size(); j++) {
+				xyAreaRenderer.setSeriesPaint(
+						j,
+						seriesAndColorList.get(j)._2()
+						);
+			}
+			XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+			xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+			xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+			xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+			for(int j=0; j<dataset.getSeries().size(); j++) {
+				xyLineAndShapeRenderer.setSeriesPaint(j, Color.BLACK);
+				xyLineAndShapeRenderer.setSeriesStroke(
+						j, 
+						new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+						false
+						);
+			}
+
+			plot.setRenderer(0, xyAreaRenderer);
+			plot.setDataset(0, dataset);
+			plot.setRenderer(1, xyLineAndShapeRenderer);
+			plot.setDataset(1, dataset);
+
+			//-------------------------------------------------------------------------------------
+			// EXPORT TO SVG
+			String outputFilePathTopView = Main.getOutputDirectoryPath() 
+					+ File.separator 
+					+ "Nacelle_" + (i+1) + "_TopView.svg";
+			File outputFile = new File(outputFilePathTopView);
+			if(outputFile.exists()) outputFile.delete();
+			SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+			Rectangle r = new Rectangle(WIDTH, HEIGHT);
+			chart.draw(g2, r);
+			try {
+				SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			//-------------------------------------------------------------------------------------
+			// PLOT TO PANE
+			ChartCanvas canvas = new ChartCanvas(chart);
+			StackPane stackPane = new StackPane(); 
+			stackPane.getChildren().add(canvas);  
+
+			// Bind canvas size to stack pane size. 
+			canvas.widthProperty().bind(stackPane.widthProperty()); 
+			canvas.heightProperty().bind(stackPane.heightProperty());  
+
+			Scene sceneTopView = new Scene(stackPane, WIDTH+10, HEIGHT+10);
+			nacelleTopViewPaneList.get(i).getChildren().add(sceneTopView.getRoot());
+
+		}
+	}
+	
+	private void createNacelleSideView() {
+
+		//---------------------------------------------------------------------------------
+		// NACELLES NUMBER CHECK:
+		if (Main.getTheAircraft().getNacelles().getNacellesList().size() >= 
+				tabPaneNacellesSideViews.getTabs().size()) {
+			
+			int iStart = tabPaneNacellesSideViews.getTabs().size();
+			
+			for(int i=iStart; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
+				
+				Tab nacelleTab = new Tab("Nacelle " + (i+1));
+				Pane sideView = new Pane();
+				nacelleSideViewPaneList.add(sideView);
+				nacelleTab.setContent(sideView);
+				tabPaneNacellesSideViews.getTabs().add(nacelleTab);
+				
+			}
+		}
+		
+		//---------------------------------------------------------------------------------
+		// LOOP OVER NACELLES:
+		for (int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
+
+			//--------------------------------------------------
+			// get data vectors from nacelle discretization
+			//--------------------------------------------------
+
+			// upper curve, sideview
+			List<Amount<Length>> nacelleCurveX = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline();
+			int nacelleCurveXPoints = nacelleCurveX.size();
+			List<Amount<Length>> nacelleCurveUpperZ = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZUpper();
+
+			// lower curve, sideview
+			List<Amount<Length>> nacelleCurveLowerZ = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZLower();
+
+			List<Amount<Length>> dataOutlineXZCurveNacelleX = new ArrayList<>();
+			List<Amount<Length>> dataOutlineXZCurveNacelleZ = new ArrayList<>();
+
+			for(int j=0; j<nacelleCurveXPoints; j++) {
+				dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(j));
+				dataOutlineXZCurveNacelleZ.add(nacelleCurveUpperZ.get(j));
+			}
+
+			for(int j=0; j<nacelleCurveXPoints; j++) {
+				dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(nacelleCurveXPoints-j-1));
+				dataOutlineXZCurveNacelleZ.add(nacelleCurveLowerZ.get(nacelleCurveXPoints-j-1));
+			}
+
+			dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(0));
+			dataOutlineXZCurveNacelleZ.add(nacelleCurveUpperZ.get(0));
+
+			XYSeries seriesNacelleCruvesSideView = new XYSeries("Nacelle " + i + " XY Curve - Side View", false);
+			IntStream.range(0, dataOutlineXZCurveNacelleX.size())
+			.forEach(j -> {
+				seriesNacelleCruvesSideView.add(
+						dataOutlineXZCurveNacelleZ.get(j).doubleValue(SI.METER),
+						dataOutlineXZCurveNacelleX.get(j).doubleValue(SI.METER)
+						);
+			});
+
+			double xMaxSideView = 1.40*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().divide(2).doubleValue(SI.METRE);
+			double xMinSideView = -1.40*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().divide(2).doubleValue(SI.METRE);
+			double yMaxSideView = 1.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
+			double yMinSideView = -0.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
+
+			int WIDTH = 700;
+			int HEIGHT = 600;
+
+			//-------------------------------------------------------------------------------------
+			// DATASET CRATION
+			List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+			seriesAndColorList.add(Tuple.of(seriesNacelleCruvesSideView, Color.decode("#FF7F50")));
+
+			XYSeriesCollection dataset = new XYSeriesCollection();
+			seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+
+			//-------------------------------------------------------------------------------------
+			// CHART CRATION
+			JFreeChart chart = ChartFactory.createXYAreaChart(
+					"Nacelle data representation - Side View", 
+					"z (m)", 
+					"x (m)",
+					(XYDataset) dataset,
+					PlotOrientation.HORIZONTAL,
+					false, // legend
+					true,  // tooltips
+					false  // urls
+					);
+
+			chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+			chart.setAntiAlias(true);
+
+			XYPlot plot = (XYPlot) chart.getPlot();
+			plot.setBackgroundAlpha(0.0f);
+			plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+			plot.setDomainGridlinesVisible(true);
+			plot.setDomainGridlinePaint(Color.GRAY);
+			plot.setRangeGridlinesVisible(true);
+			plot.setRangeGridlinePaint(Color.GRAY);
+			plot.setDomainPannable(true);
+			plot.setRangePannable(true);
+
+			NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+			domain.setRange(xMinSideView, xMaxSideView);
+			domain.setInverted(Boolean.FALSE);
+			NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+			range.setRange(yMinSideView, yMaxSideView);
+			range.setInverted(Boolean.FALSE);
+
+			XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+			xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+			xyAreaRenderer.setDefaultEntityRadius(6);
+			for(int j=0; j<dataset.getSeries().size(); j++) {
+				xyAreaRenderer.setSeriesPaint(
+						j,
+						seriesAndColorList.get(j)._2()
+						);
+			}
+			XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+			xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+			xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+			xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+			for(int j=0; j<dataset.getSeries().size(); j++) {
+				xyLineAndShapeRenderer.setSeriesPaint(j, Color.BLACK);
+				xyLineAndShapeRenderer.setSeriesStroke(
+						j, 
+						new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+						false
+						);
+			}
+
+			plot.setRenderer(0, xyAreaRenderer);
+			plot.setDataset(0, dataset);
+			plot.setRenderer(1, xyLineAndShapeRenderer);
+			plot.setDataset(1, dataset);
+
+			//-------------------------------------------------------------------------------------
+			// EXPORT TO SVG
+			String outputFilePathTopView = Main.getOutputDirectoryPath() 
+					+ File.separator 
+					+ "Nacelle_" + (i+1) + "_SideView.svg";
+			File outputFile = new File(outputFilePathTopView);
+			if(outputFile.exists()) outputFile.delete();
+			SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+			Rectangle r = new Rectangle(WIDTH, HEIGHT);
+			chart.draw(g2, r);
+			try {
+				SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			//-------------------------------------------------------------------------------------
+			// PLOT TO PANE
+			ChartCanvas canvas = new ChartCanvas(chart);
+			StackPane stackPane = new StackPane(); 
+			stackPane.getChildren().add(canvas);  
+
+			// Bind canvas size to stack pane size. 
+			canvas.widthProperty().bind(stackPane.widthProperty()); 
+			canvas.heightProperty().bind(stackPane.heightProperty());  
+
+			Scene sceneSideView = new Scene(stackPane, WIDTH+10, HEIGHT+10);
+			nacelleSideViewPaneList.get(i).getChildren().add(sceneSideView.getRoot());
+
+		}
+	}
+	
+	private void createNacelleFrontView() {
+
+		//---------------------------------------------------------------------------------
+		// NACELLES NUMBER CHECK:
+		if (Main.getTheAircraft().getNacelles().getNacellesList().size() >= 
+				tabPaneNacellesFrontViews.getTabs().size()) {
+			
+			int iStart = tabPaneNacellesFrontViews.getTabs().size();
+			
+			for(int i=iStart; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
+				
+				Tab nacelleTab = new Tab("Nacelle " + (i+1));
+				Pane frontView = new Pane();
+				nacelleFrontViewPaneList.add(frontView);
+				nacelleTab.setContent(frontView);
+				tabPaneNacellesFrontViews.getTabs().add(nacelleTab);
+				
+			}
+		}
+		
+		//---------------------------------------------------------------------------------
+		// LOOP OVER NACELLES:
+		for (int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
+
+			//--------------------------------------------------
+			// get data vectors from nacelle discretization
+			//--------------------------------------------------
+			double[] angleArray = MyArrayUtils.linspace(0.0, 2*Math.PI, 100);
+			double[] yCoordinate = new double[angleArray.length];
+			double[] zCoordinate = new double[angleArray.length];
+
+			double radius = Main.getTheAircraft().getNacelles()
+					.getNacellesList().get(i)
+					.getDiameterMax()
+					.divide(2)
+					.doubleValue(SI.METER);
+			double y0 = 0.0;
+			double z0 = 0.0;
+
+			for(int j=0; j<angleArray.length; j++) {
+				yCoordinate[j] = radius*Math.cos(angleArray[j]);
+				zCoordinate[j] = radius*Math.sin(angleArray[j]);
+			}
+
+			XYSeries seriesNacelleCruvesFrontView = new XYSeries("Nacelle " + i + " - Front View", false);
+			IntStream.range(0, yCoordinate.length)
+			.forEach(j -> {
+				seriesNacelleCruvesFrontView.add(
+						yCoordinate[j] + y0,
+						zCoordinate[j] + z0
+						);
+			});
+
+			double yMaxFrontView = 1.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getDiameterMax().doubleValue(SI.METRE);
+			double yMinFrontView = -1.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getDiameterMax().doubleValue(SI.METRE);
+			double xMaxFrontView = yMaxFrontView;
+			double xMinFrontView = yMinFrontView;
+
+			int WIDTH = 700;
+			int HEIGHT = 600;
+
+			//-------------------------------------------------------------------------------------
+			// DATASET CRATION
+			List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+			seriesAndColorList.add(Tuple.of(seriesNacelleCruvesFrontView, Color.decode("#FF7F50")));
+
+			XYSeriesCollection dataset = new XYSeriesCollection();
+			seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+
+			//-------------------------------------------------------------------------------------
+			// CHART CRATION
+			JFreeChart chart = ChartFactory.createXYAreaChart(
+					"Nacelle data representation - Front View", 
+					"x (m)", 
+					"z (m)",
+					(XYDataset) dataset,
+					PlotOrientation.HORIZONTAL,
+					false, // legend
+					true,  // tooltips
+					false  // urls
+					);
+
+			chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+			chart.setAntiAlias(true);
+
+			XYPlot plot = (XYPlot) chart.getPlot();
+			plot.setBackgroundAlpha(0.0f);
+			plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+			plot.setDomainGridlinesVisible(true);
+			plot.setDomainGridlinePaint(Color.GRAY);
+			plot.setRangeGridlinesVisible(true);
+			plot.setRangeGridlinePaint(Color.GRAY);
+			plot.setDomainPannable(true);
+			plot.setRangePannable(true);
+
+			NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+			domain.setRange(xMinFrontView, xMaxFrontView);
+			domain.setInverted(Boolean.TRUE);
+			NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+			range.setRange(yMinFrontView, yMaxFrontView);
+			range.setInverted(Boolean.FALSE);
+
+			XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+			xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+			xyAreaRenderer.setDefaultEntityRadius(6);
+			for(int j=0; j<dataset.getSeries().size(); j++) {
+				xyAreaRenderer.setSeriesPaint(
+						j,
+						seriesAndColorList.get(j)._2()
+						);
+			}
+			XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+			xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+			xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+			xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+			for(int j=0; j<dataset.getSeries().size(); j++) {
+				xyLineAndShapeRenderer.setSeriesPaint(j, Color.BLACK);
+				xyLineAndShapeRenderer.setSeriesStroke(
+						j, 
+						new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+						false
+						);
+			}
+
+			plot.setRenderer(0, xyAreaRenderer);
+			plot.setDataset(0, dataset);
+			plot.setRenderer(1, xyLineAndShapeRenderer);
+			plot.setDataset(1, dataset);
+
+			//-------------------------------------------------------------------------------------
+			// EXPORT TO SVG
+			String outputFilePathTopView = Main.getOutputDirectoryPath() 
+					+ File.separator 
+					+ "Nacelle_" + (i+1) + "_FrontView.svg";
+			File outputFile = new File(outputFilePathTopView);
+			if(outputFile.exists()) outputFile.delete();
+			SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+			Rectangle r = new Rectangle(WIDTH, HEIGHT);
+			chart.draw(g2, r);
+			try {
+				SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			//-------------------------------------------------------------------------------------
+			// PLOT TO PANE
+			ChartCanvas canvas = new ChartCanvas(chart);
+			StackPane stackPane = new StackPane(); 
+			stackPane.getChildren().add(canvas);  
+
+			// Bind canvas size to stack pane size. 
+			canvas.widthProperty().bind(stackPane.widthProperty()); 
+			canvas.heightProperty().bind(stackPane.heightProperty());  
+
+			Scene sceneFrontView = new Scene(stackPane, WIDTH+10, HEIGHT+10);
+			nacelleFrontViewPaneList.get(i).getChildren().add(sceneFrontView.getRoot());
+
+		}
+	}
+	
+	private void logNacelleFromFileToInterface() {
+
+		// print the toString method of the aircraft inside the text area of the GUI ...
+		textAreaNacelleConsoleOutput.setText(
+				Main.getTheAircraft().getNacelles().toString()
+				);
+
+		if(Main.getTheAircraft().getNacelles() != null) {
+
+			//---------------------------------------------------------------------------------
+			// NACELLES NUMBER CHECK:
+			if (Main.getTheAircraft().getNacelles().getNacellesList().size() >= 
+					tabPaneNacelles.getTabs().size()) {
+
+				int iStart = tabPaneNacelles.getTabs().size();
+
+				for(int i=iStart; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++)
+					addNacelle();
+
+			}
+
+			//---------------------------------------------------------------------------------
+			// LOOP OVER NACELLES:
+			for (int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
+
+				NacelleCreator currentNacelle = Main.getTheAircraft().getNacelles().getNacellesList().get(i);
+
+				//---------------------------------------------------------------------------------
+				// ROUGHNESS:
+				if(currentNacelle.getRoughness() != null) {
+					textFieldNacelleRoughnessList.get(i).setText(
+							String.valueOf(currentNacelle.getRoughness().getEstimatedValue()));
+
+					if(currentNacelle.getRoughness().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxNacelleRoughnessUnitList.get(i).getSelectionModel().select(0);
+					else if(currentNacelle.getRoughness().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxNacelleRoughnessUnitList.get(i).getSelectionModel().select(1);
+
+				}
+				else
+					textFieldNacelleRoughnessList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// LENGTH:
+				if(currentNacelle.getLength() != null) {
+					textFieldNacelleLengthList.get(i).setText(
+							String.valueOf(currentNacelle.getLength().getEstimatedValue()));
+
+					if(currentNacelle.getLength().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxNacelleLengthUnitList.get(i).getSelectionModel().select(0);
+					else if(currentNacelle.getLength().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxNacelleLengthUnitList.get(i).getSelectionModel().select(1);
+
+				}
+				else
+					textFieldNacelleLengthList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// MAXIMUM DIAMETER:
+				if(currentNacelle.getDiameterMax() != null) {
+					textFieldNacelleMaximumDiameterList.get(i).setText(
+							String.valueOf(currentNacelle.getDiameterMax().getEstimatedValue()));
+
+					if(currentNacelle.getDiameterMax().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxNacelleMaximumDiameterUnitList.get(i).getSelectionModel().select(0);
+					else if(currentNacelle.getDiameterMax().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxNacelleMaximumDiameterUnitList.get(i).getSelectionModel().select(1);
+
+				}
+				else
+					textFieldNacelleLengthList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+
+				//---------------------------------------------------------------------------------
+				// K INLET:
+				if(currentNacelle.getKInlet() != null) {
+					textFieldNacelleKInletList.get(i).setText(
+							String.valueOf(currentNacelle.getKInlet()));
+				}
+				else
+					textFieldNacelleKInletList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// K OULET:
+				if(currentNacelle.getKOutlet() != null) {
+					textFieldNacelleKOutletList.get(i).setText(
+							String.valueOf(currentNacelle.getKOutlet()));
+				}
+				else
+					textFieldNacelleKOutletList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// K LENGTH:
+				if(currentNacelle.getKLength() != null) {
+					textFieldNacelleKLengthList.get(i).setText(
+							String.valueOf(currentNacelle.getKLength()));
+				}
+				else
+					textFieldNacelleKLengthList.get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// K DIAMETER OUTLET:
+				if(currentNacelle.getKDiameterOutlet() != null) {
+					textFieldNacelleKDiameterOutletList.get(i).setText(
+							String.valueOf(currentNacelle.getKDiameterOutlet()));
+				}
+				else
+					textFieldNacelleKDiameterOutletList.get(i).setText(
 							"NOT INITIALIZED"
 							);
 				
 			}
 		}
 	}
+	
+	private void logLandingGearsFromFileToInterface() {
+
+		// print the toString method of the aircraft inside the text area of the GUI ...
+		textAreaLandingGearsConsoleOutput.setText(
+				Main.getTheAircraft().getLandingGears().toString()
+				);
+
+		//---------------------------------------------------------------------------------
+		// MAIN LEG LENGTH
+		if(Main.getTheAircraft().getLandingGears().getMainLegsLenght() != null) {
+			
+			textFieldLandingGearsMainLegLength.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getMainLegsLenght()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getMainLegsLenght()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsMainLegLengthUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getMainLegsLenght()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsMainLegLengthUnitChoiceBox.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldLandingGearsMainLegLength.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// K MAIN LEG LENGTH
+		if(Main.getTheAircraft().getLandingGears().getKMainLegsLength() != null) {
+			
+			textFieldLandingGearsKMainLegLength.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getKMainLegsLength()
+							)
+					);
+		}
+		else
+			textFieldLandingGearsKMainLegLength.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// DISTANCE BETWEEN WHEELS
+		if(Main.getTheAircraft().getLandingGears().getDistanceBetweenWheels() != null) {
+			
+			textFieldLandingGearsDistanceBetweenWheels.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getDistanceBetweenWheels()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getDistanceBetweenWheels()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsDistanceBetweenWheelsUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getDistanceBetweenWheels()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsDistanceBetweenWheelsUnitChoiceBox.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldLandingGearsDistanceBetweenWheels.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// NUMBER OF FRONTAL WHEELS 
+		if((Integer) Main.getTheAircraft().getLandingGears().getNumberOfFrontalWheels() != null) {
+			
+			textFieldLandingGearsNumberOfFrontalWheels.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getNumberOfFrontalWheels()
+							)
+					);
+		}
+		else
+			textFieldLandingGearsNumberOfFrontalWheels.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// NUMBER OF REAR WHEELS 
+		if((Integer) Main.getTheAircraft().getLandingGears().getNumberOfRearWheels() != null) {
+			
+			textFieldLandingGearsNumberOfRearWheels.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getNumberOfRearWheels()
+							)
+					);
+		}
+		else
+			textFieldLandingGearsNumberOfRearWheels.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// FRONTAL WHEELS HEIGHT
+		if(Main.getTheAircraft().getLandingGears().getFrontalWheelsHeight() != null) {
+			
+			textFieldLandingGearsFrontalWheelsHeight.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getFrontalWheelsHeight()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getFrontalWheelsHeight()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsFrontalWheelsHeigthUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getFrontalWheelsHeight()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsFrontalWheelsHeigthUnitChoiceBox.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldLandingGearsFrontalWheelsHeight.setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// FRONTAL WHEELS WIDTH
+		if(Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth() != null) {
+			
+			textFieldLandingGearsFrontalWheelsWidth.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getFrontalWheelsWidth()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsFrontalWheelsWidthUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsFrontalWheelsWidthUnitChoiceBox.getSelectionModel().select(1);
+
+		}
+		else
+			textFieldLandingGearsFrontalWheelsWidth.setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// Rear WHEELS HEIGHT
+		if(Main.getTheAircraft().getLandingGears().getRearWheelsHeight() != null) {
+
+			textFieldLandingGearsRearWheelsHeight.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getRearWheelsHeight()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getRearWheelsHeight()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsRearWheelsHeigthUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getRearWheelsHeight()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsRearWheelsHeigthUnitChoiceBox.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldLandingGearsRearWheelsHeight.setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// Rear WHEELS WIDTH
+		if(Main.getTheAircraft().getLandingGears().getRearWheelsWidth() != null) {
+			
+			textFieldLandingGearsRearWheelsWidth.setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getRearWheelsWidth()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft().getLandingGears().getRearWheelsWidth()
+					.getUnit().toString().equalsIgnoreCase("m"))
+				landingGearsRearWheelsWidthUnitChoiceBox.getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears().getRearWheelsWidth()
+					.getUnit().toString().equalsIgnoreCase("ft"))
+				landingGearsRearWheelsWidthUnitChoiceBox.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldLandingGearsRearWheelsWidth.setText(
+					"NOT INITIALIZED"
+					);
+		
+	}
+	
+	//...........................................................................................
+	// INFO ACTIONS:
+	//...........................................................................................
+	
+	@FXML
+	private void showMissingSeatRowInfo() {
+		
+		// TODO
+		
+	};
+	
+	@FXML
+	private void showCabinConfigurationReferenceMassInfo() {
+		
+		// TODO
+		
+	};
+	
+	@FXML
+	private void showEquivalentWingInfo() {
+		
+		// TODO
+		
+	};
+	
+	@FXML
+	private void showEquivalentWingXOffsetLEInfo() {
+		
+		// TODO
+		
+	};
+	
+	@FXML
+	private void showEquivalentWingXOffsetTEInfo() {
+		
+		// TODO
+		
+	};
+	
+	@FXML
+	private void showNacelleKInletInfo() {
+		
+		// TODO
+		
+	};
+	
+	@FXML
+	private void showNacelleKOutletInfo() {
+		
+		// TODO
+		
+	};
+	
+	@FXML
+	private void showNacelleKLengthInfo() {
+		
+		// TODO
+		
+	};
+	
+	@FXML
+	private void showNacelleKDiameterOutletInfo() {
+		
+		// TODO
+		
+	};
+	
+	@FXML
+	private void showLandingGearsKMainLegLengthInfo() {
+		
+		// TODO
+		
+	};
+	
+	//...........................................................................................
+	// LAYOUT ADJUST ACTIONS:
+	//...........................................................................................
 	
 	@FXML
 	private void zoomDataLogAndMessagesAircraft() {
@@ -14803,6 +16407,16 @@ public class InputManagerController {
 	@FXML
 	private void zoomViewsCanard() {
 		canardViewsAndDataLogSplitPane.setDividerPositions(0.9);
+	};
+	
+	@FXML
+	private void zoomDataLogAndMessagesNacelle() {
+		nacelleViewsAndDataLogSplitPane.setDividerPositions(0.5);
+	};
+	
+	@FXML
+	private void zoomViewsNacelle() {
+		nacelleViewsAndDataLogSplitPane.setDividerPositions(0.9);
 	};
 	
 }

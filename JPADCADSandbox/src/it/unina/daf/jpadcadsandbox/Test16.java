@@ -4,10 +4,14 @@ import java.util.List;
 
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
+import it.unina.daf.jpadcad.occ.CADSolid;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShell;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
+import opencascade.BRepTools;
+import opencascade.BRep_Builder;
+import opencascade.TopoDS_Compound;
 
 public class Test16 {
 
@@ -50,6 +54,22 @@ public class Test16 {
 		
 		if (OCCUtils.write(fileName, fuselageShapes))
 			System.out.println("========== [main] Output written on file: " + fileName);
+
+		// === Experimental, extract solids from fuselage shapes
+		String fileNameSolids = fileName.replace(".brep", "_solids.brep");
+		System.out.println("========== [main] Exporting solids in : " + fileNameSolids);
+		BRep_Builder builder = new BRep_Builder();
+		TopoDS_Compound compound = new TopoDS_Compound();
+		builder.MakeCompound(compound);
+		fuselageShapes.stream()
+			.filter(s -> s instanceof CADSolid)
+			.forEach(s -> {
+				System.out.println(">>>>>> Solid");
+				builder.Add(compound, s.getShape());
+			});
+		long resultSolids = BRepTools.Write(compound, fileNameSolids);
+		if (resultSolids == 1)
+			System.out.println("========== [OCCUtils::write] Solids written on file: " + fileNameSolids);
 		
 	}
 

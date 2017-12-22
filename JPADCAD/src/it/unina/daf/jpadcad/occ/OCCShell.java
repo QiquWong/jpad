@@ -47,59 +47,59 @@ public class OCCShell extends OCCShape implements CADShell
 	}	
 
 	public OCCShell(List<CADGeomCurve3D> cadGeomCurveList) {
-		myShape = OCCShellImpl(null, cadGeomCurveList, null, defaultMakeSolid, defaultMakeRuled, defaultPrec3D);
+		myShape = OCCShellThruSections(null, cadGeomCurveList, null, defaultMakeSolid, defaultMakeRuled, defaultPrec3D);
 	}
 
 	public OCCShell(List<CADGeomCurve3D> cadGeomCurveList, long solid, long ruled, double pres3d) {
-		myShape = OCCShellImpl(null, cadGeomCurveList, null, solid, ruled, pres3d);
+		myShape = OCCShellThruSections(null, cadGeomCurveList, null, solid, ruled, pres3d);
 	}
 
 	public OCCShell(List<CADGeomCurve3D> cadGeomCurveList, long solid, long ruled) {
-		myShape = OCCShellImpl(null, cadGeomCurveList, null, solid, ruled, defaultPrec3D);
+		myShape = OCCShellThruSections(null, cadGeomCurveList, null, solid, ruled, defaultPrec3D);
 	}
 
 	// passing the initial vertex
 	public OCCShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList) {
-		myShape = OCCShellImpl(v0, cadGeomCurveList, null, defaultMakeSolid, defaultMakeRuled, defaultPrec3D);
+		myShape = OCCShellThruSections(v0, cadGeomCurveList, null, defaultMakeSolid, defaultMakeRuled, defaultPrec3D);
 	}
 
 	public OCCShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, long solid, long ruled) {
-		myShape = OCCShellImpl(v0, cadGeomCurveList, null, solid, ruled, defaultPrec3D);
+		myShape = OCCShellThruSections(v0, cadGeomCurveList, null, solid, ruled, defaultPrec3D);
 	}
 
 	public OCCShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, long solid, long ruled, double pres3d) {
-		myShape = OCCShellImpl(v0, cadGeomCurveList, null, solid, ruled, pres3d);
+		myShape = OCCShellThruSections(v0, cadGeomCurveList, null, solid, ruled, pres3d);
 	}
 
 	// passing the final vertex
 	public OCCShell(List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1) {
-		myShape = OCCShellImpl(null, cadGeomCurveList, v1, defaultMakeSolid, defaultMakeRuled, defaultPrec3D);
+		myShape = OCCShellThruSections(null, cadGeomCurveList, v1, defaultMakeSolid, defaultMakeRuled, defaultPrec3D);
 	}
 
 	public OCCShell(List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long solid, long ruled) {
-		myShape = OCCShellImpl(null, cadGeomCurveList, v1, solid, ruled, defaultPrec3D);
+		myShape = OCCShellThruSections(null, cadGeomCurveList, v1, solid, ruled, defaultPrec3D);
 	}
 
 	public OCCShell(List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long solid, long ruled, double pres3d) {
-		myShape = OCCShellImpl(null, cadGeomCurveList, v1, solid, ruled, pres3d);
+		myShape = OCCShellThruSections(null, cadGeomCurveList, v1, solid, ruled, pres3d);
 	}
 	
 	// passing the initial and final vertices
 	public OCCShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1) {
-		myShape = OCCShellImpl(v0, cadGeomCurveList, v1, defaultMakeSolid, defaultMakeRuled, defaultPrec3D);
+		myShape = OCCShellThruSections(v0, cadGeomCurveList, v1, defaultMakeSolid, defaultMakeRuled, defaultPrec3D);
 	}
 
 	public OCCShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long solid, long ruled) {
-		myShape = OCCShellImpl(v0, cadGeomCurveList, v1, solid, ruled, defaultPrec3D);
+		myShape = OCCShellThruSections(v0, cadGeomCurveList, v1, solid, ruled, defaultPrec3D);
 	}
 
 	public OCCShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long solid, long ruled, double pres3d) {
-		myShape = OCCShellImpl(v0, cadGeomCurveList, v1, solid, ruled, pres3d);
+		myShape = OCCShellThruSections(v0, cadGeomCurveList, v1, solid, ruled, pres3d);
 	}
 
 	// accepts a first and final vertex
 	// https://www.opencascade.com/doc/occt-7.0.0/refman/html/class_b_rep_offset_a_p_i___thru_sections.html
-	private TopoDS_Shape OCCShellImpl(
+	private TopoDS_Shape OCCShellThruSections(
 			OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1,
 			long solid, long ruled, double pres3d) {
 		
