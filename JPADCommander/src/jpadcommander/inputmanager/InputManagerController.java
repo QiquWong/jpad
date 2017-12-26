@@ -21,6 +21,7 @@ import java.util.stream.IntStream;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +55,7 @@ import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import aircraft.components.nacelles.NacelleCreator;
+import aircraft.components.powerplant.Engine;
 import calculators.geometry.FusNacGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.ClassTypeEnum;
@@ -79,6 +81,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -94,6 +97,7 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -114,6 +118,7 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMapUtils;
 import standaloneutils.MyXMLReaderUtils;
+import standaloneutils.atmosphere.AtmosphereCalc;
 
 public class InputManagerController {
 
@@ -170,6 +175,8 @@ public class InputManagerController {
 	@FXML
 	private Pane nacelle1TopViewPane;
 	@FXML
+	private Pane engine1DataPane;
+	@FXML	
 	private TextArea textAreaAircraftConsoleOutput;
 	@FXML
 	private TextArea textAreaFuselageConsoleOutput;
@@ -229,7 +236,8 @@ public class InputManagerController {
 	private TabPane tabPaneNacellesSideViews;
 	@FXML
 	private TabPane tabPaneNacellesFrontViews;
-	
+	@FXML
+	private TabPane tabPaneEngines;	
 	//...........................................................................................
 	// BUTTONS:
 	//...........................................................................................
@@ -348,7 +356,7 @@ public class InputManagerController {
 	private FileChooser aircraftFileChooser;
 	@SuppressWarnings("unused")
 	private FileChooser airfoilFileChooser;
-	
+	private FileChooser engineDatabaseFileChooser;
 	//...........................................................................................
 	// VALIDATIONS (ControlsFX):
 	//...........................................................................................
@@ -434,6 +442,12 @@ public class InputManagerController {
 			"BUSINESS",
 			"FIRST"
 			);
+	ObservableList<String> engineTypeList = FXCollections.observableArrayList(
+			"PISTON",
+			"TURBOPROP",
+			"TURBOFAN",
+			"TURBOJET"
+			);
 	ObservableList<String> lengthUnitsList = FXCollections.observableArrayList(
 			"m",
 			"ft"
@@ -449,6 +463,14 @@ public class InputManagerController {
 	ObservableList<String> areaUnitsList = FXCollections.observableArrayList(
 			"m²",
 			"ft²" 
+			);
+	ObservableList<String> forceUnitsList = FXCollections.observableArrayList(
+			"N",
+			"lbf" 
+			);
+	ObservableList<String> powerUnitsList = FXCollections.observableArrayList(
+			"W",
+			"hp" 
 			);
 	
 	//...........................................................................................
@@ -1417,15 +1439,23 @@ public class InputManagerController {
 	private RadioButton powerPlantTurbopropRadioButton1;
 	@FXML
 	private RadioButton powerPlantPistonRadioButton1;
-	@FXML
+	
 	private ToggleGroup powerPlantToggleGroup1;
 	
 	private List<RadioButton> powerPlantJetRadioButtonList;
 	private List<RadioButton> powerPlantTurbopropRadioButtonList;
 	private List<RadioButton> powerPlantPistonRadioButtonList;
 	private List<ToggleGroup> powerPlantToggleGropuList;
+	private List<Pane> powerPlantEngineDataPaneList;
 	
-	// TODO: CONTINUE FROM HERE ... 
+	/*
+	 * TODO: CONTINUE FROM HERE ... 
+	 * - ADD ALL THE DATA LISTS FOR EACH ENGINE TYPE
+	 * - AVOID DATA OVERWRITE ON RADIO BUTTON SWITCH
+	 * - LOAD POWER PLANT DATA
+	 * - CLEAR POWER PLANT DATA (NEW AIRCRAFT)
+	 * - SEE HOW TO SHOW THE DATABASE CURVE (LATER ... ALL ENGINES SHOULD HAVE A SIMILAR DATABASE STRUCTURE)
+	 */
 	
 	//...........................................................................................
 	// LANDING GEARS TAB (DATA):
@@ -1544,6 +1574,10 @@ public class InputManagerController {
 		tabPaneNacelles.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		for(int i=0; i<tabPaneNacelles.getTabs().size(); i++)
 			removeContentOnNacelleTabClose(tabPaneAircraftNacelles.getTabs().get(i));
+		
+		tabPaneEngines.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		for(int i=0; i<tabPaneEngines.getTabs().size(); i++)
+			removeContentOnEngineTabClose(tabPaneAircraftEngines.getTabs().get(i));
 		
 		//.......................................................................................
 		// CHOICE BOX INITIALIZATION
@@ -2246,6 +2280,9 @@ public class InputManagerController {
 		powerPlantToggleGropuList = new ArrayList<>();
 		powerPlantToggleGropuList.add(powerPlantToggleGroup1);
 		
+		powerPlantEngineDataPaneList = new ArrayList<>();
+		powerPlantEngineDataPaneList.add(engine1DataPane);
+		
 		aircraftLoadButtonDisableCheck();
 		cabinConfigurationClassesNumberDisableCheck();
 		checkCabinConfigurationClassesNumber();
@@ -2277,6 +2314,9 @@ public class InputManagerController {
 		linkedToDisableCheck(ComponentEnum.VERTICAL_TAIL);
 		linkedToDisableCheck(ComponentEnum.CANARD);
 		setEstimateNacelleGeometryAction(nacelleEstimateGeometryButton1, tabPaneNacelles.getTabs().get(0));
+		setShowTurbofaTurbojetDataAction(powerPlantJetRadioButton1, 0);
+		setShowTurbopropDataAction(powerPlantTurbopropRadioButton1, 0);
+		setShowPistonDataAction(powerPlantPistonRadioButton1, 0);
 		
 	}
 	
@@ -2355,6 +2395,21 @@ public class InputManagerController {
 				nacelleKOutletInfoButtonList.remove(indexNacelle);
 				nacelleKLengthInfoButtonList.remove(indexNacelle);
 				nacelleKDiameterOutletInfoButtonList.remove(indexNacelle);
+				
+			}
+		});
+	}
+	
+	private void removeContentOnEngineTabClose (Tab tab) {
+		
+		tab.setOnCloseRequest(new EventHandler<Event>() {
+
+			@Override
+			public void handle(Event event) {
+		
+				int indexEngine = tabPaneEngines.getTabs().indexOf(tab);
+
+				// TODO 
 				
 			}
 		});
@@ -2965,6 +3020,42 @@ public class InputManagerController {
 		detailsButton.disableProperty().bind(
 				Bindings.isEmpty(airfoilPathTextField.textProperty())
 				);	
+		
+	}
+	
+	private void setShowTurbofaTurbojetDataAction (RadioButton radioButton, int indexOfEngineTab) {
+		
+		radioButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				showTurbojetTurboFanDataRadioButton(indexOfEngineTab);
+			}
+		});
+		
+	}
+	
+	private void setShowTurbopropDataAction (RadioButton radioButton, int indexOfEngineTab) {
+		
+		radioButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				showTurbopropDataRadioButton(indexOfEngineTab);
+			}
+		});
+		
+	}
+	
+	private void setShowPistonDataAction (RadioButton radioButton, int indexOfEngineTab) {
+		
+		radioButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				showPistonDataRadioButton(indexOfEngineTab);
+			}
+		});
 		
 	}
 	
@@ -5990,7 +6081,597 @@ public class InputManagerController {
 	@FXML
 	private void addEngine() {
 		
-		// TODO
+		int indexOfEngineTab = tabPaneEngines.getTabs().size();
+		
+		Tab newEngineTab = new Tab("Engine" + (tabPaneEngines.getTabs().size()+1));
+		BorderPane contentPane = new BorderPane();
+		
+		ToggleGroup enigneToggleGroup = new ToggleGroup();
+		powerPlantToggleGropuList.add(enigneToggleGroup);
+		
+		RadioButton turbojetTurbofanRadioButton = new RadioButton("Turbofan/Turbojet");
+		turbojetTurbofanRadioButton.setPadding(new Insets(0, 30, 0, 0));
+		turbojetTurbofanRadioButton.setToggleGroup(enigneToggleGroup);
+		powerPlantJetRadioButtonList.add(turbojetTurbofanRadioButton);
+		setShowTurbofaTurbojetDataAction(turbojetTurbofanRadioButton, indexOfEngineTab);
+		
+		RadioButton turbopropRadioButton = new RadioButton("Turboprop");
+		turbopropRadioButton.setPadding(new Insets(0, 30, 0, 0));
+		turbopropRadioButton.setToggleGroup(enigneToggleGroup);
+		powerPlantTurbopropRadioButtonList.add(turbopropRadioButton);
+		setShowTurbopropDataAction(turbopropRadioButton, indexOfEngineTab);
+		
+		RadioButton pistonRadioButton = new RadioButton("Piston");
+		pistonRadioButton.setPadding(new Insets(0, 30, 0, 0));
+		pistonRadioButton.setToggleGroup(enigneToggleGroup);
+		powerPlantPistonRadioButtonList.add(pistonRadioButton);
+		setShowPistonDataAction(pistonRadioButton, indexOfEngineTab);
+		
+		ToolBar engineTypeToolBar = new ToolBar();
+		engineTypeToolBar.setPrefWidth(200);
+		engineTypeToolBar.setPrefHeight(40);
+		engineTypeToolBar.getItems().add(turbojetTurbofanRadioButton);
+		engineTypeToolBar.getItems().add(turbopropRadioButton);
+		engineTypeToolBar.getItems().add(pistonRadioButton);
+		
+		Pane engineDataPane = new Pane();
+		powerPlantEngineDataPaneList.add(engineDataPane);
+		
+		contentPane.setTop(engineTypeToolBar);
+		contentPane.setCenter(engineDataPane);
+		newEngineTab.setContent(contentPane);
+		tabPaneEngines.getTabs().add(newEngineTab);
+		
+	}
+	
+	@FXML
+	private void showTurbojetTurboFanDataRadioButton (int indexOfEngineTab) {
+		
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().clear();
+		
+		Label engineTypeLabel = new Label("Type:");
+		engineTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineTypeLabel.setLayoutX(6.0);
+		engineTypeLabel.setLayoutY(0.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineTypeLabel);
+		
+		ChoiceBox<String> engineTypeChoiceBox = new ChoiceBox<String>();
+		engineTypeChoiceBox.setLayoutX(6.0);
+		engineTypeChoiceBox.setLayoutY(21.0);
+		engineTypeChoiceBox.setPrefWidth(340);
+		engineTypeChoiceBox.setPrefHeight(31);
+		engineTypeChoiceBox.setItems(engineTypeList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineTypeChoiceBox);
+		
+		Label engineDatabaseLabel = new Label("Database:");
+		engineDatabaseLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineDatabaseLabel.setLayoutX(6.0);
+		engineDatabaseLabel.setLayoutY(52.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDatabaseLabel);
+		
+		TextField engineDatabasePathTextField = new TextField();
+		engineDatabasePathTextField.setLayoutX(6.0);
+		engineDatabasePathTextField.setLayoutY(73);
+		engineDatabasePathTextField.setPrefWidth(340);
+		engineDatabasePathTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDatabasePathTextField);
+		
+		Button engineDatabasePathChooseButton = new Button("...");
+		engineDatabasePathChooseButton.setLayoutX(350.0);
+		engineDatabasePathChooseButton.setLayoutY(73);
+		engineDatabasePathChooseButton.setPrefWidth(24);
+		engineDatabasePathChooseButton.setPrefHeight(31);
+		engineDatabasePathChooseButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				chooseEngineDatabase(engineDatabasePathTextField);
+			}
+		});
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDatabasePathChooseButton);
+		
+		Label engineLengthLabel = new Label("Length:");
+		engineLengthLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineLengthLabel.setLayoutX(6.0);
+		engineLengthLabel.setLayoutY(104.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineLengthLabel);
+		
+		TextField engineLengthTextField = new TextField();
+		engineLengthTextField.setLayoutX(6.0);
+		engineLengthTextField.setLayoutY(125);
+		engineLengthTextField.setPrefWidth(340);
+		engineLengthTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineLengthTextField);
+		
+		ChoiceBox<String> engineLengthChoiceBox = new ChoiceBox<String>();
+		engineLengthChoiceBox.setLayoutX(348.0);
+		engineLengthChoiceBox.setLayoutY(125);
+		engineLengthChoiceBox.setPrefWidth(47);
+		engineLengthChoiceBox.setPrefHeight(30);
+		engineLengthChoiceBox.setItems(lengthUnitsList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineLengthChoiceBox);
+		
+		Label engineStaticThrustLabel = new Label("Static Thrust:");
+		engineStaticThrustLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineStaticThrustLabel.setLayoutX(6.0);
+		engineStaticThrustLabel.setLayoutY(159.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineStaticThrustLabel);
+		
+		TextField engineStaticThrustTextField = new TextField();
+		engineStaticThrustTextField.setLayoutX(6.0);
+		engineStaticThrustTextField.setLayoutY(180);
+		engineStaticThrustTextField.setPrefWidth(340);
+		engineStaticThrustTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineStaticThrustTextField);
+		
+		ChoiceBox<String> engineStaticThrustChoiceBox = new ChoiceBox<String>();
+		engineStaticThrustChoiceBox.setLayoutX(348.0);
+		engineStaticThrustChoiceBox.setLayoutY(180);
+		engineStaticThrustChoiceBox.setPrefWidth(47);
+		engineStaticThrustChoiceBox.setPrefHeight(30);
+		engineStaticThrustChoiceBox.setItems(forceUnitsList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineStaticThrustChoiceBox);
+		
+		Label engineDryMassLabel = new Label("Dry Mass:");
+		engineDryMassLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineDryMassLabel.setLayoutX(6.0);
+		engineDryMassLabel.setLayoutY(213.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassLabel);
+		
+		TextField engineDryMassTextField = new TextField();
+		engineDryMassTextField.setLayoutX(6.0);
+		engineDryMassTextField.setLayoutY(234);
+		engineDryMassTextField.setPrefWidth(340);
+		engineDryMassTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassTextField);
+		
+		ChoiceBox<String> engineDryMassChoiceBox = new ChoiceBox<String>();
+		engineDryMassChoiceBox.setLayoutX(348.0);
+		engineDryMassChoiceBox.setLayoutY(234);
+		engineDryMassChoiceBox.setPrefWidth(47);
+		engineDryMassChoiceBox.setPrefHeight(30);
+		engineDryMassChoiceBox.setItems(massUnitsList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassChoiceBox);
+		
+		Button engineDryMassCalculateButton = new Button("Calculate");
+		engineDryMassCalculateButton.setLayoutX(397.0);
+		engineDryMassCalculateButton.setLayoutY(234);
+		engineDryMassCalculateButton.setPrefHeight(31);
+		engineDryMassCalculateButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				calculateEngineDryMass(engineDryMassTextField, engineDryMassChoiceBox, indexOfEngineTab);
+			}
+		});
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassCalculateButton);
+		
+		Label engineBPRLabel = new Label("BPR:");
+		engineBPRLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineBPRLabel.setLayoutX(6.0);
+		engineBPRLabel.setLayoutY(268.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineBPRLabel);
+		
+		TextField engineBPRTextField = new TextField();
+		engineBPRTextField.setLayoutX(6.0);
+		engineBPRTextField.setLayoutY(289);
+		engineBPRTextField.setPrefWidth(340);
+		engineBPRTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineBPRTextField);
+		
+		Label engineNumberOfCompressorStagesLabel = new Label("Number Of Compressor Stages:");
+		engineNumberOfCompressorStagesLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineNumberOfCompressorStagesLabel.setLayoutX(6.0);
+		engineNumberOfCompressorStagesLabel.setLayoutY(323.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfCompressorStagesLabel);
+		
+		TextField engineNumberOfCompressorStagesTextField = new TextField();
+		engineNumberOfCompressorStagesTextField.setLayoutX(6.0);
+		engineNumberOfCompressorStagesTextField.setLayoutY(344);
+		engineNumberOfCompressorStagesTextField.setPrefWidth(340);
+		engineNumberOfCompressorStagesTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfCompressorStagesTextField);
+		
+		Label engineNumberOfShaftsLabel = new Label("Number Of Shafts:");
+		engineNumberOfShaftsLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineNumberOfShaftsLabel.setLayoutX(6.0);
+		engineNumberOfShaftsLabel.setLayoutY(378.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfShaftsLabel);
+		
+		TextField engineNumberOfShaftsTextField = new TextField();
+		engineNumberOfShaftsTextField.setLayoutX(6.0);
+		engineNumberOfShaftsTextField.setLayoutY(399);
+		engineNumberOfShaftsTextField.setPrefWidth(340);
+		engineNumberOfShaftsTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfShaftsTextField);
+		
+		Label engineOverallPressureRatioLabel = new Label("Overall Pressure Ratio:");
+		engineOverallPressureRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineOverallPressureRatioLabel.setLayoutX(6.0);
+		engineOverallPressureRatioLabel.setLayoutY(433.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineOverallPressureRatioLabel);
+		
+		TextField engineOverallPressureRatioTextField = new TextField();
+		engineOverallPressureRatioTextField.setLayoutX(6.0);
+		engineOverallPressureRatioTextField.setLayoutY(454);
+		engineOverallPressureRatioTextField.setPrefWidth(340);
+		engineOverallPressureRatioTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineOverallPressureRatioTextField);
+		
+	}
+
+	@FXML
+	private void showTurbopropDataRadioButton (int indexOfEngineTab) {
+		
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().clear();
+		
+		Label engineTypeLabel = new Label("Type:");
+		engineTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineTypeLabel.setLayoutX(6.0);
+		engineTypeLabel.setLayoutY(0.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineTypeLabel);
+		
+		ChoiceBox<String> engineTypeChoiceBox = new ChoiceBox<String>();
+		engineTypeChoiceBox.setLayoutX(6.0);
+		engineTypeChoiceBox.setLayoutY(21.0);
+		engineTypeChoiceBox.setPrefWidth(340);
+		engineTypeChoiceBox.setPrefHeight(31);
+		engineTypeChoiceBox.setItems(engineTypeList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineTypeChoiceBox);
+		
+		Label engineDatabaseLabel = new Label("Database:");
+		engineDatabaseLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineDatabaseLabel.setLayoutX(6.0);
+		engineDatabaseLabel.setLayoutY(52.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDatabaseLabel);
+		
+		TextField engineDatabasePathTextField = new TextField();
+		engineDatabasePathTextField.setLayoutX(6.0);
+		engineDatabasePathTextField.setLayoutY(73);
+		engineDatabasePathTextField.setPrefWidth(340);
+		engineDatabasePathTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDatabasePathTextField);
+		
+		Button engineDatabasePathChooseButton = new Button("...");
+		engineDatabasePathChooseButton.setLayoutX(350.0);
+		engineDatabasePathChooseButton.setLayoutY(73);
+		engineDatabasePathChooseButton.setPrefWidth(24);
+		engineDatabasePathChooseButton.setPrefHeight(31);
+		engineDatabasePathChooseButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				chooseEngineDatabase(engineDatabasePathTextField);
+			}
+		});
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDatabasePathChooseButton);
+		
+		Label engineLengthLabel = new Label("Length:");
+		engineLengthLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineLengthLabel.setLayoutX(6.0);
+		engineLengthLabel.setLayoutY(104.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineLengthLabel);
+		
+		TextField engineLengthTextField = new TextField();
+		engineLengthTextField.setLayoutX(6.0);
+		engineLengthTextField.setLayoutY(125);
+		engineLengthTextField.setPrefWidth(340);
+		engineLengthTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineLengthTextField);
+		
+		ChoiceBox<String> engineLengthChoiceBox = new ChoiceBox<String>();
+		engineLengthChoiceBox.setLayoutX(348.0);
+		engineLengthChoiceBox.setLayoutY(125);
+		engineLengthChoiceBox.setPrefWidth(47);
+		engineLengthChoiceBox.setPrefHeight(30);
+		engineLengthChoiceBox.setItems(lengthUnitsList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineLengthChoiceBox);
+		
+		Label engineStaticPowerLabel = new Label("Static Power:");
+		engineStaticPowerLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineStaticPowerLabel.setLayoutX(6.0);
+		engineStaticPowerLabel.setLayoutY(159.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineStaticPowerLabel);
+		
+		TextField engineStaticPowerTextField = new TextField();
+		engineStaticPowerTextField.setLayoutX(6.0);
+		engineStaticPowerTextField.setLayoutY(180);
+		engineStaticPowerTextField.setPrefWidth(340);
+		engineStaticPowerTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineStaticPowerTextField);
+		
+		ChoiceBox<String> engineStaticPowerChoiceBox = new ChoiceBox<String>();
+		engineStaticPowerChoiceBox.setLayoutX(348.0);
+		engineStaticPowerChoiceBox.setLayoutY(180);
+		engineStaticPowerChoiceBox.setPrefWidth(47);
+		engineStaticPowerChoiceBox.setPrefHeight(30);
+		engineStaticPowerChoiceBox.setItems(powerUnitsList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineStaticPowerChoiceBox);
+		
+		Label engineDryMassLabel = new Label("Dry Mass:");
+		engineDryMassLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineDryMassLabel.setLayoutX(6.0);
+		engineDryMassLabel.setLayoutY(213.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassLabel);
+		
+		TextField engineDryMassTextField = new TextField();
+		engineDryMassTextField.setLayoutX(6.0);
+		engineDryMassTextField.setLayoutY(234);
+		engineDryMassTextField.setPrefWidth(340);
+		engineDryMassTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassTextField);
+		
+		ChoiceBox<String> engineDryMassChoiceBox = new ChoiceBox<String>();
+		engineDryMassChoiceBox.setLayoutX(348.0);
+		engineDryMassChoiceBox.setLayoutY(234);
+		engineDryMassChoiceBox.setPrefWidth(47);
+		engineDryMassChoiceBox.setPrefHeight(30);
+		engineDryMassChoiceBox.setItems(massUnitsList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassChoiceBox);
+		
+		Button engineDryMassCalculateButton = new Button("Calculate");
+		engineDryMassCalculateButton.setLayoutX(397.0);
+		engineDryMassCalculateButton.setLayoutY(234);
+		engineDryMassCalculateButton.setPrefHeight(31);
+		engineDryMassCalculateButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				calculateEngineDryMass(engineDryMassTextField, engineDryMassChoiceBox, indexOfEngineTab);
+			}
+		});
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassCalculateButton);
+		
+		Label enginePropellerDiameterLabel = new Label("Propeller Diameter:");
+		enginePropellerDiameterLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		enginePropellerDiameterLabel.setLayoutX(6.0);
+		enginePropellerDiameterLabel.setLayoutY(268.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(enginePropellerDiameterLabel);
+		
+		TextField enginePropellerDiameterTextField = new TextField();
+		enginePropellerDiameterTextField.setLayoutX(6.0);
+		enginePropellerDiameterTextField.setLayoutY(289);
+		enginePropellerDiameterTextField.setPrefWidth(340);
+		enginePropellerDiameterTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(enginePropellerDiameterTextField);
+		
+		ChoiceBox<String> enginePropellerDiameterChoiceBox = new ChoiceBox<String>();
+		enginePropellerDiameterChoiceBox.setLayoutX(348.0);
+		enginePropellerDiameterChoiceBox.setLayoutY(289);
+		enginePropellerDiameterChoiceBox.setPrefWidth(47);
+		enginePropellerDiameterChoiceBox.setPrefHeight(30);
+		enginePropellerDiameterChoiceBox.setItems(lengthUnitsList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(enginePropellerDiameterChoiceBox);
+		
+		Label engineNumberOfBladesLabel = new Label("Number Of Blades:");
+		engineNumberOfBladesLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineNumberOfBladesLabel.setLayoutX(6.0);
+		engineNumberOfBladesLabel.setLayoutY(323.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfBladesLabel);
+		
+		TextField engineNumberOfBladesTextField = new TextField();
+		engineNumberOfBladesTextField.setLayoutX(6.0);
+		engineNumberOfBladesTextField.setLayoutY(344);
+		engineNumberOfBladesTextField.setPrefWidth(340);
+		engineNumberOfBladesTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfBladesTextField);
+		
+		Label enginePropellerEfficiencyLabel = new Label("Propeller Efficiency:");
+		enginePropellerEfficiencyLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		enginePropellerEfficiencyLabel.setLayoutX(6.0);
+		enginePropellerEfficiencyLabel.setLayoutY(378.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(enginePropellerEfficiencyLabel);
+		
+		TextField enginePropellerEfficiencyTextField = new TextField();
+		enginePropellerEfficiencyTextField.setLayoutX(6.0);
+		enginePropellerEfficiencyTextField.setLayoutY(399);
+		enginePropellerEfficiencyTextField.setPrefWidth(340);
+		enginePropellerEfficiencyTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(enginePropellerEfficiencyTextField);
+		
+		Label engineNumberOfCompressorStagesLabel = new Label("Number Of Compressor Stages:");
+		engineNumberOfCompressorStagesLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineNumberOfCompressorStagesLabel.setLayoutX(6.0);
+		engineNumberOfCompressorStagesLabel.setLayoutY(433.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfCompressorStagesLabel);
+		
+		TextField engineNumberOfCompressorStagesTextField = new TextField();
+		engineNumberOfCompressorStagesTextField.setLayoutX(6.0);
+		engineNumberOfCompressorStagesTextField.setLayoutY(454);
+		engineNumberOfCompressorStagesTextField.setPrefWidth(340);
+		engineNumberOfCompressorStagesTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfCompressorStagesTextField);
+		
+		Label engineNumberOfShaftsLabel = new Label("Number Of Shafts:");
+		engineNumberOfShaftsLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineNumberOfShaftsLabel.setLayoutX(6.0);
+		engineNumberOfShaftsLabel.setLayoutY(487.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfShaftsLabel);
+		
+		TextField engineNumberOfShaftsTextField = new TextField();
+		engineNumberOfShaftsTextField.setLayoutX(6.0);
+		engineNumberOfShaftsTextField.setLayoutY(508);
+		engineNumberOfShaftsTextField.setPrefWidth(340);
+		engineNumberOfShaftsTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfShaftsTextField);
+		
+		Label engineOverallPressureRatioLabel = new Label("Overall Pressure Ratio:");
+		engineOverallPressureRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineOverallPressureRatioLabel.setLayoutX(6.0);
+		engineOverallPressureRatioLabel.setLayoutY(542.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineOverallPressureRatioLabel);
+		
+		TextField engineOverallPressureRatioTextField = new TextField();
+		engineOverallPressureRatioTextField.setLayoutX(6.0);
+		engineOverallPressureRatioTextField.setLayoutY(563);
+		engineOverallPressureRatioTextField.setPrefWidth(340);
+		engineOverallPressureRatioTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineOverallPressureRatioTextField);
+		
+	}
+	
+	@FXML
+	private void showPistonDataRadioButton (int indexOfEngineTab) {
+		
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().clear();
+		
+		Label engineTypeLabel = new Label("Type:");
+		engineTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineTypeLabel.setLayoutX(6.0);
+		engineTypeLabel.setLayoutY(0.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineTypeLabel);
+		
+		ChoiceBox<String> engineTypeChoiceBox = new ChoiceBox<String>();
+		engineTypeChoiceBox.setLayoutX(6.0);
+		engineTypeChoiceBox.setLayoutY(21.0);
+		engineTypeChoiceBox.setPrefWidth(340);
+		engineTypeChoiceBox.setPrefHeight(31);
+		engineTypeChoiceBox.setItems(engineTypeList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineTypeChoiceBox);
+		
+		Label engineDatabaseLabel = new Label("Database:");
+		engineDatabaseLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineDatabaseLabel.setLayoutX(6.0);
+		engineDatabaseLabel.setLayoutY(52.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDatabaseLabel);
+		
+		TextField engineDatabasePathTextField = new TextField();
+		engineDatabasePathTextField.setLayoutX(6.0);
+		engineDatabasePathTextField.setLayoutY(73);
+		engineDatabasePathTextField.setPrefWidth(340);
+		engineDatabasePathTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDatabasePathTextField);
+		
+		Button engineDatabasePathChooseButton = new Button("...");
+		engineDatabasePathChooseButton.setLayoutX(350.0);
+		engineDatabasePathChooseButton.setLayoutY(73);
+		engineDatabasePathChooseButton.setPrefWidth(24);
+		engineDatabasePathChooseButton.setPrefHeight(31);
+		engineDatabasePathChooseButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				chooseEngineDatabase(engineDatabasePathTextField);
+			}
+		});
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDatabasePathChooseButton);
+		
+		Label engineLengthLabel = new Label("Length:");
+		engineLengthLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineLengthLabel.setLayoutX(6.0);
+		engineLengthLabel.setLayoutY(104.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineLengthLabel);
+		
+		TextField engineLengthTextField = new TextField();
+		engineLengthTextField.setLayoutX(6.0);
+		engineLengthTextField.setLayoutY(125);
+		engineLengthTextField.setPrefWidth(340);
+		engineLengthTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineLengthTextField);
+		
+		ChoiceBox<String> engineLengthChoiceBox = new ChoiceBox<String>();
+		engineLengthChoiceBox.setLayoutX(348.0);
+		engineLengthChoiceBox.setLayoutY(125);
+		engineLengthChoiceBox.setPrefWidth(47);
+		engineLengthChoiceBox.setPrefHeight(30);
+		engineLengthChoiceBox.setItems(lengthUnitsList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineLengthChoiceBox);
+		
+		Label engineStaticPowerLabel = new Label("Static Power:");
+		engineStaticPowerLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineStaticPowerLabel.setLayoutX(6.0);
+		engineStaticPowerLabel.setLayoutY(159.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineStaticPowerLabel);
+		
+		TextField engineStaticPowerTextField = new TextField();
+		engineStaticPowerTextField.setLayoutX(6.0);
+		engineStaticPowerTextField.setLayoutY(180);
+		engineStaticPowerTextField.setPrefWidth(340);
+		engineStaticPowerTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineStaticPowerTextField);
+		
+		ChoiceBox<String> engineStaticPowerChoiceBox = new ChoiceBox<String>();
+		engineStaticPowerChoiceBox.setLayoutX(348.0);
+		engineStaticPowerChoiceBox.setLayoutY(180);
+		engineStaticPowerChoiceBox.setPrefWidth(47);
+		engineStaticPowerChoiceBox.setPrefHeight(30);
+		engineStaticPowerChoiceBox.setItems(powerUnitsList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineStaticPowerChoiceBox);
+		
+		Label engineDryMassLabel = new Label("Dry Mass:");
+		engineDryMassLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineDryMassLabel.setLayoutX(6.0);
+		engineDryMassLabel.setLayoutY(213.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassLabel);
+		
+		TextField engineDryMassTextField = new TextField();
+		engineDryMassTextField.setLayoutX(6.0);
+		engineDryMassTextField.setLayoutY(234);
+		engineDryMassTextField.setPrefWidth(340);
+		engineDryMassTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassTextField);
+		
+		ChoiceBox<String> engineDryMassChoiceBox = new ChoiceBox<String>();
+		engineDryMassChoiceBox.setLayoutX(348.0);
+		engineDryMassChoiceBox.setLayoutY(234);
+		engineDryMassChoiceBox.setPrefWidth(47);
+		engineDryMassChoiceBox.setPrefHeight(30);
+		engineDryMassChoiceBox.setItems(massUnitsList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassChoiceBox);
+		
+		Button engineDryMassCalculateButton = new Button("Calculate");
+		engineDryMassCalculateButton.setLayoutX(397.0);
+		engineDryMassCalculateButton.setLayoutY(234);
+		engineDryMassCalculateButton.setPrefHeight(31);
+		engineDryMassCalculateButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				calculateEngineDryMass(engineDryMassTextField, engineDryMassChoiceBox, indexOfEngineTab);
+			}
+		});
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineDryMassCalculateButton);
+		
+		Label enginePropellerDiameterLabel = new Label("Propeller Diameter:");
+		enginePropellerDiameterLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		enginePropellerDiameterLabel.setLayoutX(6.0);
+		enginePropellerDiameterLabel.setLayoutY(268.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(enginePropellerDiameterLabel);
+		
+		TextField enginePropellerDiameterTextField = new TextField();
+		enginePropellerDiameterTextField.setLayoutX(6.0);
+		enginePropellerDiameterTextField.setLayoutY(289);
+		enginePropellerDiameterTextField.setPrefWidth(340);
+		enginePropellerDiameterTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(enginePropellerDiameterTextField);
+		
+		ChoiceBox<String> enginePropellerDiameterChoiceBox = new ChoiceBox<String>();
+		enginePropellerDiameterChoiceBox.setLayoutX(348.0);
+		enginePropellerDiameterChoiceBox.setLayoutY(289);
+		enginePropellerDiameterChoiceBox.setPrefWidth(47);
+		enginePropellerDiameterChoiceBox.setPrefHeight(30);
+		enginePropellerDiameterChoiceBox.setItems(lengthUnitsList);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(enginePropellerDiameterChoiceBox);
+		
+		Label engineNumberOfBladesLabel = new Label("Number Of Blades:");
+		engineNumberOfBladesLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineNumberOfBladesLabel.setLayoutX(6.0);
+		engineNumberOfBladesLabel.setLayoutY(323.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfBladesLabel);
+		
+		TextField engineNumberOfBladesTextField = new TextField();
+		engineNumberOfBladesTextField.setLayoutX(6.0);
+		engineNumberOfBladesTextField.setLayoutY(344);
+		engineNumberOfBladesTextField.setPrefWidth(340);
+		engineNumberOfBladesTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(engineNumberOfBladesTextField);
+		
+		Label enginePropellerEfficiencyLabel = new Label("Propeller Efficiency:");
+		enginePropellerEfficiencyLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		enginePropellerEfficiencyLabel.setLayoutX(6.0);
+		enginePropellerEfficiencyLabel.setLayoutY(378.0);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(enginePropellerEfficiencyLabel);
+		
+		TextField enginePropellerEfficiencyTextField = new TextField();
+		enginePropellerEfficiencyTextField.setLayoutX(6.0);
+		enginePropellerEfficiencyTextField.setLayoutY(399);
+		enginePropellerEfficiencyTextField.setPrefWidth(340);
+		enginePropellerEfficiencyTextField.setPrefHeight(31);
+		powerPlantEngineDataPaneList.get(indexOfEngineTab).getChildren().add(enginePropellerEfficiencyTextField);
 		
 	}
 	
@@ -6025,10 +6706,175 @@ public class InputManagerController {
 					choiceBoxNacelleMaximumDiameterUnitList.get(tabIndex).getSelectionModel().select(0);
 				else if(currentNacelle.getDiameterMax().getUnit().toString().equalsIgnoreCase("ft"))
 					choiceBoxNacelleMaximumDiameterUnitList.get(tabIndex).getSelectionModel().select(1);
-				
+
 			}
 		});
-			
+
+	}
+
+	@FXML
+	private void calculateEngineDryMass (TextField dryMassTextField, ChoiceBox<String> dryMassChoiceBox, int indexOfEngineTab) {
+
+		if (Main.getTheAircraft() != null) {
+			if (Main.getTheAircraft().getPowerPlant() != null) {
+				if (Main.getTheAircraft().getPowerPlant().getEngineList().get(indexOfEngineTab) != null) {
+
+					Engine currentEngine = Main.getTheAircraft().getPowerPlant().getEngineList().get(indexOfEngineTab);
+
+					if (currentEngine.getEngineType().equals(EngineTypeEnum.TURBOFAN)
+							|| currentEngine.getEngineType().equals(EngineTypeEnum.TURBOJET)) {
+
+						if (currentEngine.getT0() != null) {
+							if (currentEngine.getT0().doubleValue(NonSI.POUND_FORCE) < 10000) {
+								currentEngine.setDryMassPublicDomain(
+										Amount.valueOf(
+												Amount.valueOf(
+														Math.pow(
+																0.4054*currentEngine.getT0().doubleValue(NonSI.POUND_FORCE),
+																0.9255
+																),
+														NonSI.POUND_FORCE)
+												.to(SI.NEWTON)
+												.divide(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+												.getEstimatedValue(),
+												SI.KILOGRAM
+												)
+										);
+								if (currentEngine.getDryMassPublicDomain() != null) {
+									dryMassTextField.setText(
+											String.valueOf(
+													currentEngine.getDryMassPublicDomain().getEstimatedValue()
+													)
+											);
+
+									if (currentEngine.getDryMassPublicDomain().getUnit().toString().equalsIgnoreCase("kg"))
+										dryMassChoiceBox.getSelectionModel().select(0);
+									else if (currentEngine.getDryMassPublicDomain().getUnit().toString().equalsIgnoreCase("lb"))
+										dryMassChoiceBox.getSelectionModel().select(1);
+
+								}
+								else
+									dryMassTextField.setText("INVALID VALUE");
+							}
+							else {
+								currentEngine.setDryMassPublicDomain(
+										Amount.valueOf(
+												Amount.valueOf(
+														Math.pow(
+																0.616*currentEngine.getT0().doubleValue(NonSI.POUND_FORCE),
+																0.886
+																),
+														NonSI.POUND_FORCE)
+												.to(SI.NEWTON)
+												.divide(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+												.getEstimatedValue(),
+												SI.KILOGRAM
+												)
+										);
+								if(currentEngine.getDryMassPublicDomain() != null) {
+									dryMassTextField.setText(
+											String.valueOf(
+													currentEngine.getDryMassPublicDomain().getEstimatedValue()
+													)
+											);
+
+									if(currentEngine.getDryMassPublicDomain().getUnit().toString().equalsIgnoreCase("kg"))
+										dryMassChoiceBox.getSelectionModel().select(0);
+									else if(currentEngine.getDryMassPublicDomain().getUnit().toString().equalsIgnoreCase("lb"))
+										dryMassChoiceBox.getSelectionModel().select(1);
+
+								}
+								else
+									dryMassTextField.setText("INVALID VALUE");
+							}
+						}
+						else {
+							dryMassTextField.setText("INVALID VALUE. T0 IS SET TO NULL");
+						}
+					}
+					else if (currentEngine.getEngineType().equals(EngineTypeEnum.TURBOPROP)
+							|| currentEngine.getEngineType().equals(EngineTypeEnum.PISTON)) {
+
+						if (currentEngine.getP0() != null) {
+							if (currentEngine.getP0().doubleValue(NonSI.HORSEPOWER)*2.8 < 10000) {
+								currentEngine.setDryMassPublicDomain(
+										Amount.valueOf(
+												Amount.valueOf(
+														Math.pow(
+																0.4054*currentEngine.getP0().doubleValue(NonSI.HORSEPOWER)*2.8,
+																0.9255
+																),
+														NonSI.POUND_FORCE)
+												.to(SI.NEWTON)
+												.divide(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+												.getEstimatedValue(),
+												SI.KILOGRAM
+												)
+										);
+								if (currentEngine.getDryMassPublicDomain() != null) {
+									dryMassTextField.setText(
+											String.valueOf(
+													currentEngine.getDryMassPublicDomain().getEstimatedValue()
+													)
+											);
+
+									if (currentEngine.getDryMassPublicDomain().getUnit().toString().equalsIgnoreCase("kg"))
+										dryMassChoiceBox.getSelectionModel().select(0);
+									else if (currentEngine.getDryMassPublicDomain().getUnit().toString().equalsIgnoreCase("lb"))
+										dryMassChoiceBox.getSelectionModel().select(1);
+
+								}
+								else
+									dryMassTextField.setText("INVALID VALUE");
+							}
+							else {
+								currentEngine.setDryMassPublicDomain(
+										Amount.valueOf(
+												Amount.valueOf(
+														Math.pow(
+																0.616*currentEngine.getP0().doubleValue(NonSI.HORSEPOWER)*2.8,
+																0.886
+																),
+														NonSI.POUND_FORCE)
+												.to(SI.NEWTON)
+												.divide(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+												.getEstimatedValue(),
+												SI.KILOGRAM
+												)
+										);
+								if(currentEngine.getDryMassPublicDomain() != null) {
+									dryMassTextField.setText(
+											String.valueOf(
+													currentEngine.getDryMassPublicDomain().getEstimatedValue()
+													)
+											);
+
+									if(currentEngine.getDryMassPublicDomain().getUnit().toString().equalsIgnoreCase("kg"))
+										dryMassChoiceBox.getSelectionModel().select(0);
+									else if(currentEngine.getDryMassPublicDomain().getUnit().toString().equalsIgnoreCase("lb"))
+										dryMassChoiceBox.getSelectionModel().select(1);
+
+								}
+								else
+									dryMassTextField.setText("INVALID VALUE");
+							}
+						}
+						else {
+							dryMassTextField.setText("INVALID VALUE. P0 IS SET TO NULL");
+						}
+					}
+				}
+				else {
+					dryMassTextField.setText("INVALID VALUE. THE ENGINE IS NULL");
+				}
+			}
+			else {
+				dryMassTextField.setText("INVALID VALUE. THE POWER PLANT IS NULL");
+			}
+		}
+		else {
+			dryMassTextField.setText("INVALID VALUE. THE AIRCRAFT IS NULL");
+		}
 	}
 	
 	@FXML
@@ -6158,6 +7004,21 @@ public class InputManagerController {
 		File file = aircraftFileChooser.showOpenDialog(null);
 		if (file != null) {
 			panelInnerSectionAirfoilPathTextField.setText(file.getAbsolutePath());
+		}
+		
+	}
+	
+	@FXML
+	private void chooseEngineDatabase(TextField engineDatabasePathTextField) {
+		
+		engineDatabaseFileChooser = new FileChooser();
+		engineDatabaseFileChooser.setTitle("Open File");
+		engineDatabaseFileChooser.setInitialDirectory(
+				new File(Main.getDatabaseDirectoryPath())
+				);
+		File file = engineDatabaseFileChooser.showOpenDialog(null);
+		if (file != null) {
+			engineDatabasePathTextField.setText(Paths.get(file.getAbsolutePath()).getFileName().toString());
 		}
 		
 	}
@@ -16045,6 +16906,7 @@ public class InputManagerController {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void logLandingGearsFromFileToInterface() {
 
 		// print the toString method of the aircraft inside the text area of the GUI ...

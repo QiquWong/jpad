@@ -2895,12 +2895,12 @@
                                              <top>
                                                 <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                                   <items>
-                                                    <Button mnemonicParsing="false" text="Add Engine" />
+                                                    <Button mnemonicParsing="false" onAction="#addEngine" text="Add Engine" />
                                                   </items>
                                                 </ToolBar>
                                              </top>
                                              <center>
-                                                <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                                                <TabPane fx:id="tabPaneEngines" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
                                                   <tabs>
                                                     <Tab text="Engine 1">
                                                       <content>
@@ -2910,7 +2910,7 @@
                                                                      <top>
                                                                         <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                                                            <items>
-                                                                              <RadioButton fx:id="powerPlantJetRadioButton1" mnemonicParsing="false" text="Tubofan/Turbojet">
+                                                                              <RadioButton fx:id="powerPlantJetRadioButton1" mnemonicParsing="false" text="Turbofan/Turbojet">
                                                                                  <padding>
                                                                                     <Insets right="30.0" />
                                                                                  </padding>
@@ -2928,6 +2928,9 @@
                                                                            </items>
                                                                         </ToolBar>
                                                                      </top>
+                                                                     <center>
+                                                                        <Pane fx:id="engine1DataPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                                                                     </center>
                                                                   </BorderPane>
                                                                </children>
                                                             </AnchorPane>
