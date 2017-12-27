@@ -965,14 +965,13 @@ public final class AircraftUtils {
 		double zbp = zApex.doubleValue(SI.METER);
 		// calculate breakpoints coordinates
 		for (int kBP = 1; kBP < liftingSurface.getLiftingSurfaceCreator().getXLEBreakPoints().size(); kBP++) {
+			double xbp = liftingSurface.getLiftingSurfaceCreator().getXLEBreakPoints().get(kBP).plus(xApex).doubleValue(SI.METER);
 			double ybp = liftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(kBP).doubleValue(SI.METER);
-			double xbp = liftingSurface.getLiftingSurfaceCreator().getXLEAtYActual(ybp).plus(xApex).doubleValue(SI.METER);   //getXLEBreakPoints().get(kBP).plus(xApex).doubleValue(SI.METER);
 			double semiSpanPanel = liftingSurface.getLiftingSurfaceCreator().getPanels().get(kBP - 1).getSpan().times(0.5).doubleValue(SI.METER);
 			double dihedralPanel = liftingSurface.getLiftingSurfaceCreator().getPanels().get(kBP - 1).getDihedral().doubleValue(SI.RADIAN);
 			zbp = zbp + semiSpanPanel*Math.tan(dihedralPanel);
 			ptsLE.add(new double[] {xbp, ybp, zbp});
-		}
-		
+		}		
 		
 		// make a wire for the leading edge
 		List<TopoDS_Edge> tdsEdgesLE = new ArrayList<>();
@@ -999,23 +998,25 @@ public final class AircraftUtils {
 		List<Double> twists = new ArrayList<>();
 		for (int kPts = 0; kPts < ptsLE.size(); kPts++) {
 			double ybp = liftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(kPts).doubleValue(SI.METER); 
-			double chord = liftingSurface.getLiftingSurfaceCreator().getChordAtYActual(ybp);
+			double chord = liftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints().get(kPts).doubleValue(SI.METER);    
 			chords.add(chord);
-//			double twist = liftingSurface.getLiftingSurfaceCreator().getTwistsBreakPoints().get(kPts).doubleValue(SI.RADIAN);
-			double twist = MyMathUtils.getInterpolatedValue1DLinear(
-					MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getLiftingSurfaceCreator().getDiscretizedYs()),
-					MyArrayUtils.convertToDoublePrimitive(
-							liftingSurface.getLiftingSurfaceCreator().getDiscretizedTwists().stream()
-							.map(t -> t.doubleValue(SI.RADIAN))
-							.collect(Collectors.toList())),							
-					ybp
-					);
+			double twist = liftingSurface.getLiftingSurfaceCreator().getTwistsBreakPoints().get(kPts).doubleValue(SI.RADIAN);
+//			double twist = MyMathUtils.getInterpolatedValue1DLinear(
+//					MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getLiftingSurfaceCreator().getDiscretizedYs()),
+//					MyArrayUtils.convertToDoublePrimitive(
+//							liftingSurface.getLiftingSurfaceCreator().getDiscretizedTwists().stream()
+//							.map(t -> t.doubleValue(SI.RADIAN))
+//							.collect(Collectors.toList())),							
+//					ybp
+//					);
 			twists.add(twist);
 			System.out.println(">>> ybp:   " + ybp);
 			System.out.println(">>> chord: " + chord);
 			System.out.println(">>> twist: " + twist);
 			ptsTE.add(new double[] {
-					ptsLE.get(kPts)[0] + chord*Math.cos(twist + riggingAngle.doubleValue(SI.RADIAN)), ybp, ptsLE.get(kPts)[2] - chord*Math.sin(twist + riggingAngle.doubleValue(SI.RADIAN)) 
+					ptsLE.get(kPts)[0] + chord*Math.cos(twist + riggingAngle.doubleValue(SI.RADIAN)), 
+					ybp, 
+					ptsLE.get(kPts)[2] - chord*Math.sin(twist + riggingAngle.doubleValue(SI.RADIAN)) 
 			});
 			System.out.println(">>> ptsLE: " + Arrays.toString(ptsLE.get(kPts)) );
 			System.out.println(">>> ptsTE: " + Arrays.toString(ptsTE.get(kPts)) );
@@ -1123,22 +1124,48 @@ public final class AircraftUtils {
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCurveKinkAirfoil).edge());
 				
 		// mid sections between kink and tip
-		AirfoilCreator airfoilMidKT1 = liftingSurface.getAirfoilList().get(1).getAirfoilCreator();
-		AirfoilCreator airfoilMidKT2 = liftingSurface.getAirfoilList().get(1).getAirfoilCreator();
-		AirfoilCreator airfoilMidKT3 = liftingSurface.getAirfoilList().get(1).getAirfoilCreator();
+		int nSec = 5;
+		List<CADGeomCurve3D> airfoilMidKTList = new ArrayList<>();
+		AirfoilCreator airfoilMidKT = liftingSurface.getAirfoilList().get(1).getAirfoilCreator();
+		Double[] secVec = new Double[nSec];
+		secVec = MyArrayUtils.halfCosine1SpaceDouble(
+				liftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(1).doubleValue(SI.METER), 
+				liftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(2).doubleValue(SI.METER), 
+				nSec
+				);
+		for(int i = 1; i < nSec-1; i++) {
+			CADGeomCurve3D cadCurveMidKTAirfoil = OCCUtils.theFactory.newCurve3D(
+					AircraftUtils.populateCoordinateList(secVec[i], airfoilMidKT, liftingSurface), 
+					false
+					);
+			airfoilMidKTList.add(cadCurveMidKTAirfoil);
+			extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCurveMidKTAirfoil).edge());
+		}
+		
+		airfoilMidKTList.add(0, cadCurveKinkAirfoil);
+		
+//		AirfoilCreator airfoilMidKT1 = liftingSurface.getAirfoilList().get(1).getAirfoilCreator();
+//		AirfoilCreator airfoilMidKT2 = liftingSurface.getAirfoilList().get(2).getAirfoilCreator();
+		
+//		AirfoilCreator airfoilMidKT3 = liftingSurface.getAirfoilList().get(1).getAirfoilCreator();
 
+		
 //		double midAirfoilKTXCoord = ptsLE.get(1)[0] + (ptsLE.get(2)[0] - ptsLE.get(1)[0])/2;
-		double midAirfoilKT1YCoord = ptsLE.get(1)[1] + (ptsLE.get(2)[1] - ptsLE.get(1)[1])/4;
-		double midAirfoilKT2YCoord = ptsLE.get(1)[1] + (ptsLE.get(2)[1] - ptsLE.get(1)[1])/2;
-		double midAirfoilKT3YCoord = ptsLE.get(1)[1] + 3*(ptsLE.get(2)[1] - ptsLE.get(1)[1])/4;
+		
+//		double midAirfoilKT1YCoord = ptsLE.get(1)[1] + (ptsLE.get(2)[1] - ptsLE.get(1)[1])/5;
+//		double midAirfoilKT2YCoord = ptsLE.get(1)[1] + (ptsLE.get(2)[1] - ptsLE.get(1)[1])/3;
+//		double midAirfoilKT3YCoord = ptsLE.get(2)[1] - (ptsLE.get(2)[1] - ptsLE.get(1)[1])/10;
+		
 		
 //		double midAirfoilKTZCoord = ptsLE.get(1)[2] + (ptsLE.get(2)[2] - ptsLE.get(1)[2])/2;
 //		double midAirfoilKTTwist = MyMathUtils.getInterpolatedValue1DLinear(new double[] {ptsLE.get(1)[1], ptsLE.get(2)[1]}, new double[] {twists.get(1), twists.get(2)}, midAirfoilKTYCoord);
 //		Double midAirfoilKTChord = MyMathUtils.getInterpolatedValue1DLinear(new double[] {ptsLE.get(1)[1], ptsLE.get(2)[1]}, new double[] {chords.get(1), chords.get(2)}, midAirfoilKTYCoord);
-		List<double[]> ptsAirfoilMidKT1 = AircraftUtils.populateCoordinateList(midAirfoilKT1YCoord, airfoilMidKT1, liftingSurface);
-		List<double[]> ptsAirfoilMidKT2 = AircraftUtils.populateCoordinateList(midAirfoilKT2YCoord, airfoilMidKT2, liftingSurface);
-		List<double[]> ptsAirfoilMidKT3 = AircraftUtils.populateCoordinateList(midAirfoilKT3YCoord, airfoilMidKT3, liftingSurface);
+		
+//		List<double[]> ptsAirfoilMidKT1 = AircraftUtils.populateCoordinateList(midAirfoilKT1YCoord, airfoilMidKT1, liftingSurface);
+//		List<double[]> ptsAirfoilMidKT2 = AircraftUtils.populateCoordinateList(midAirfoilKT2YCoord, airfoilMidKT1, liftingSurface);
+//		List<double[]> ptsAirfoilMidKT3 = AircraftUtils.populateCoordinateList(midAirfoilKT3YCoord, airfoilMidKT2, liftingSurface);
 	
+		
 //		Double[] wingMidKTXCoordinates = midAirfoilKT.getXCoords();
 //		Double[] wingMidKTZCoordinates = midAirfoilKT.getZCoords();
 		
@@ -1153,14 +1180,13 @@ public final class AircraftUtils {
 //				 );
 		
 		// mid(kink-tip) section cad curve
-		CADGeomCurve3D cadCurveMidKT1Airfoil = OCCUtils.theFactory.newCurve3D(ptsAirfoilMidKT1, false);
-		CADGeomCurve3D cadCurveMidKT2Airfoil = OCCUtils.theFactory.newCurve3D(ptsAirfoilMidKT2, false);
-		CADGeomCurve3D cadCurveMidKT3Airfoil = OCCUtils.theFactory.newCurve3D(ptsAirfoilMidKT3, false);
-
-		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCurveMidKT1Airfoil).edge());
-		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCurveMidKT2Airfoil).edge());
-		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCurveMidKT3Airfoil).edge());
-
+//		CADGeomCurve3D cadCurveMidKT1Airfoil = OCCUtils.theFactory.newCurve3D(ptsAirfoilMidKT1, false);
+//		CADGeomCurve3D cadCurveMidKT2Airfoil = OCCUtils.theFactory.newCurve3D(ptsAirfoilMidKT2, false);
+//		CADGeomCurve3D cadCurveMidKT3Airfoil = OCCUtils.theFactory.newCurve3D(ptsAirfoilMidKT3, false);
+//
+//		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCurveMidKT1Airfoil).edge());
+//		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCurveMidKT2Airfoil).edge());
+//		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCurveMidKT3Airfoil).edge());
 		
 		//tip
 //		Double[] wingTipXCoordinates = liftingSurface.getAirfoilList().get(2).getAirfoilCreator().getXCoords();
@@ -1183,25 +1209,29 @@ public final class AircraftUtils {
 		
 		//tip CAD curve
 		CADGeomCurve3D cadCurveTipAirfoil = OCCUtils.theFactory.newCurve3D(ptsAirfoilTip, false);
+		airfoilMidKTList.add(cadCurveTipAirfoil);
 		
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCurveTipAirfoil).edge());
-		
-        		
-		
+				
 		if (exportSupportShapes) {
 			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] adding support cad entities");
 			result.addAll(extraShapes);
 		}
-		
-		OCCShape patch1 = OCCUtils.makePatchThruSections(cadCurveRootAirfoil, cadCurveMidRKAirfoil, cadCurveKinkAirfoil);
-		OCCShape patch2 = OCCUtils.makePatchThruSections(cadCurveKinkAirfoil, cadCurveMidKT1Airfoil);
-		OCCShape patch3 = OCCUtils.makePatchThruSections(cadCurveMidKT1Airfoil, cadCurveTipAirfoil);
+				
+		OCCShape patch1 = OCCUtils.makePatchThruSections(cadCurveRootAirfoil, cadCurveKinkAirfoil);
+		OCCShape patch2 = OCCUtils.makePatchThruSections(airfoilMidKTList);
+//		OCCShape patch3 = OCCUtils.makePatchThruSections(cadCurveMidKT1Airfoil, cadCurveMidKT2Airfoil);
+//		OCCShape patch4 = OCCUtils.makePatchThruSections(cadCurveMidKT2Airfoil, cadCurveMidKT3Airfoil);
+//		OCCShape patch5 = OCCUtils.makePatchThruSections(cadCurveMidKT3Airfoil, cadCurveTipAirfoil);
+
 
 		if (exportLofts) {
 			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] adding loft surfaces");
             result.add(patch1);
             result.add(patch2);
-            result.add(patch3);
+//            result.add(patch3);
+//            result.add(patch4);
+//            result.add(patch5);
 		}
 		
 		
@@ -1215,8 +1245,27 @@ public final class AircraftUtils {
 			) {
 		
 		List<double[]> actualAirfoilCoordinates = new ArrayList<>();
-
-		double c = theLiftingSurface.getChordAtYActual(yStation);
+		
+//		double c = theLiftingSurface.getChordAtYActual(yStation);
+		double c = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints()), 
+				yStation
+				);
+		double twist = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()), 
+				MyArrayUtils.convertToDoublePrimitive(
+						theLiftingSurface.getLiftingSurfaceCreator().getTwistsBreakPoints().stream()
+																						   .map(t -> t.doubleValue(SI.RADIAN))
+																						   .collect(Collectors.toList())
+						),
+				yStation
+				);
+		double xLE = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getLiftingSurfaceCreator().getXLEBreakPoints()), 
+				yStation
+				);
 		double x, y, z;
 
 		for (int i=0; i<theCreator.getXCoords().length; i++) {
@@ -1226,25 +1275,26 @@ public final class AircraftUtils {
 			y = 0.0;
 			z = theCreator.getZCoords()[i].doubleValue()*c;
 
-			double twistAtY = MyMathUtils.getInterpolatedValue1DLinear(
-					MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedYs()),
-					MyArrayUtils.convertToDoublePrimitive(
-							theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedTwists().stream()
-							.map(t -> t.doubleValue(SI.RADIAN))
-							.collect(Collectors.toList())),							
-					yStation
-					);
+//			double twistAtY = MyMathUtils.getInterpolatedValue1DLinear(
+//					MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedYs()),
+//					MyArrayUtils.convertToDoublePrimitive(
+//							theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedTwists().stream()
+//							.map(t -> t.doubleValue(SI.RADIAN))
+//							.collect(Collectors.toList())),							
+//					yStation
+//					);
 
 			// Rotation due to twist
 			if (theLiftingSurface.getType().equals(ComponentEnum.WING)) {
 				double r = Math.sqrt(x*x + z*z);
-				x = (x - r*(1-Math.cos(-twistAtY - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN))));
-				z = (z + r*Math.sin(-twistAtY - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));
+				x = (x - r*(1-Math.cos(-twist - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN))));
+				z = (z + r*Math.sin(-twist - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));				
 			}
 
 			// Actual location
-			x = x + theLiftingSurface.getLiftingSurfaceCreator().getXLEAtYActual(yStation).doubleValue(SI.METER)
-				  + theLiftingSurface.getXApexConstructionAxes().doubleValue(SI.METER);
+//			x = x + theLiftingSurface.getLiftingSurfaceCreator().getXLEAtYActual(yStation).doubleValue(SI.METER)
+//				  + theLiftingSurface.getXApexConstructionAxes().doubleValue(SI.METER);
+			x = x + xLE + theLiftingSurface.getXApexConstructionAxes().doubleValue(SI.METER);
 			y = yStation;
 			z = z + theLiftingSurface.getZApexConstructionAxes().doubleValue(SI.METER)
 				  + (yStation
@@ -1261,9 +1311,7 @@ public final class AircraftUtils {
 			} else {
 				actualAirfoilCoordinates.add(new double[] {x, y, z});
 			}
-
-		}
-		
+		}		
 		return actualAirfoilCoordinates;
 	}
 	
@@ -1283,12 +1331,11 @@ public final class AircraftUtils {
 
 		for(int i=1; i<theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().size(); i++) {
 
-			if(yStation <= theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(i).getEstimatedValue()
-					&& yStation > theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(i-1).getEstimatedValue()
+			if(yStation < theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(i).getEstimatedValue()
+					&& yStation >= theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(i-1).getEstimatedValue()
 					)
 				dihedralAtY = theLiftingSurface.getLiftingSurfaceCreator().getPanels().get(i-1).getDihedral();
 		}
-
 		return dihedralAtY;
 	}
 }
