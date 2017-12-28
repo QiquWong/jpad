@@ -16,10 +16,16 @@ import opencascade.BRepAdaptor_Curve;
 import opencascade.BRepAdaptor_HCurve;
 import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRep_Tool;
+import opencascade.GeomAbs_Shape;
 import opencascade.GeomPlate_BuildPlateSurface;
 import opencascade.GeomPlate_CurveConstraint;
 import opencascade.Geom_Surface;
+import opencascade.TopAbs_ShapeEnum;
+import opencascade.TopExp_Explorer;
 import opencascade.TopoDS;
+import opencascade.TopoDS_Edge;
+import opencascade.TopoDS_Face;
+import opencascade.gp_Pnt;
 import processing.core.PVector;
 
 public class Test19 {
@@ -70,17 +76,18 @@ public class Test19 {
 		ptsGC1.add(new double[]{ 0.00, 0.00, 0.00});
 		ptsGC1.add(ptsSec1.get(0));
 		ptsGC1.add(ptsSec2.get(0));
-		ptsGC1.add(new double[]{ 
+		double[] vX0 = new double[]{ 
 				0.1*ptsSec2.get(0)[0] + 0.9*ptsSec3.get(0)[0], // pick an X-station between sec-2 & sec-3
 				0.00, 
-				0.98*ptsSec3.get(0)[2]}); // tweak the Z
+				0.98*ptsSec3.get(0)[2]};
+		ptsGC1.add(vX0); // tweak the Z
 		ptsGC1.add(ptsSec3.get(0));		
 		CADGeomCurve3D cadGC1 = OCCUtils.theFactory.newCurve3D(ptsGC1, false);
 		
 		// plating: constrain patch-1 to guide-curve-1
 
 		System.out.println("========== [main] Preparing the plate surface to deform Patch-1");
-
+/*
 		// plate maker
 		GeomPlate_BuildPlateSurface plateMaker = new GeomPlate_BuildPlateSurface(
 				BRep_Tool.Surface(
@@ -100,15 +107,56 @@ public class Test19 {
 				);
 		// add the constraint curve to the plate maker
 		plateMaker.Add(crvConstraint1);
-
+		
 //		plateMaker.Perform(); // FIXME: crashes
+
+*/
+		
+		BRepOffsetAPI_MakeFilling fillMaker = new BRepOffsetAPI_MakeFilling();
+		TopoDS_Face loftFace = TopoDS.ToFace( patch1.getShape() );
+		
+		// finds Edges in Face
+		TopExp_Explorer _edgeExplorer = new TopExp_Explorer(loftFace, TopAbs_ShapeEnum.TopAbs_EDGE);
+		for ( ; _edgeExplorer.More()!=0; _edgeExplorer.Next()) {
+			TopoDS_Edge _anEdge = TopoDS.ToEdge(_edgeExplorer.Current());
+			if (BRep_Tool.Degenerated(_anEdge) == 0) {
+				System.out.println("REGULAR Edge!");
+				fillMaker.Add(_anEdge, GeomAbs_Shape.GeomAbs_C0);
+			}
+			else {
+				System.out.println("DEGENERATE Edge!");				
+			}
+		}
+		
+		fillMaker.Add(new gp_Pnt(vX0[0], vX0[1]+1.0, vX0[2]+2.0));
+//		fillMaker.Add(
+//				( (OCCEdge)((OCCGeomCurve3D)cadGC1).edge() ).getShape(),
+//				GeomAbs_Shape.GeomAbs_C0
+//				);
+//		fillMaker.Add(
+//				( (OCCEdge)((OCCGeomCurve3D)cadSec1).edge() ).getShape(),
+//				GeomAbs_Shape.GeomAbs_C0
+//				);
+//		fillMaker.Add(
+//				( (OCCEdge)((OCCGeomCurve3D)cadSec2).edge() ).getShape(),
+//				GeomAbs_Shape.GeomAbs_C0
+//				);
+//		fillMaker.Add(
+//				( (OCCEdge)((OCCGeomCurve3D)cadSec3).edge() ).getShape(),
+//				GeomAbs_Shape.GeomAbs_C0
+//				);
+		fillMaker.LoadInitSurface(loftFace);
+		fillMaker.Build();
+		System.out.println("Deformed surface is done? = " + fillMaker.IsDone());
+		System.out.println("Deformed surface shape  type: " + fillMaker.Shape().ShapeType());
 		
 		// Export shapes
 		List<OCCShape> shapes = new ArrayList<>();
 		cadSections.stream()
 			.forEach(s -> shapes.add((OCCEdge)((OCCGeomCurve3D)s).edge()));
 		shapes.add((OCCEdge)((OCCGeomCurve3D)cadGC1).edge());
-		shapes.add(patch1);
+		//shapes.add(patch1);
+		shapes.add((OCCShape)OCCUtils.theFactory.newShape(fillMaker.Shape()));
 		
 		// Write to a file
 		String fileName = "test19.brep";
