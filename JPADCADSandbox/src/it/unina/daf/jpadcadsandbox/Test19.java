@@ -115,14 +115,22 @@ public class Test19 {
 		ptsGCm.add(new double[]{ 0.00, 0.00, 0.00});
 		ptsGCm.add(vPntS1b);
 		ptsGCm.add(vPntS2b);
-//		double[] vXm = new double[]{ 
-//				0.1*vPnt3b[0] + 0.9*vPnt2b[0],
-//				1.00*ptsSec3.get(2)[1], 
-//				0.00};
+		double[] vPntS3m = new double[]{ // extra-point on mid-guide-curve
+				0.8*vPntS3b[0] + 0.2*vPntS2b[0] + 0.0,
+				0.8*vPntS3b[1] + 0.2*vPntS2b[1] + 0.5, 
+				0.8*vPntS3b[2] + 0.2*vPntS2b[2] + 0.5};
+		ptsGCm.add(vPntS3m);
 		ptsGCm.add(vPntS3b);
 
 		CADGeomCurve3D cadGCm = OCCUtils.theFactory.newCurve3D(ptsGCm, false);
-		System.out.println(">> Guide-Curve-M, connecting (0,0,0) and middle points on sections 1-2-3.");
+		System.out.println(">> Guide-Curve-M, connecting (0,0,0) and middle points on sections 1-2-3 plus an extra-point betewen sec-2 & -3.");
+		
+		double[] rangeGCm = cadGCm.getRange();
+		System.out.println(">> Guide-Curve-M range: " + Arrays.toString(rangeGCm));		
+		double[] vPntGCMa = ((OCCGeomCurve3D)cadGCm).value(0.50*(rangeGCm[1] - rangeGCm[0]));
+		double[] vPntGCMb = ((OCCGeomCurve3D)cadGCm).value(0.70*(rangeGCm[1] - rangeGCm[0]));
+		double[] vPntGCMc = ((OCCGeomCurve3D)cadGCm).value(0.90*(rangeGCm[1] - rangeGCm[0]));
+
 		
 		System.out.println("========== [main] Preparing the filler surface to deform Patch-1");
 		
@@ -194,7 +202,13 @@ public class Test19 {
 
 		System.out.println(">> constraining filler surface to 3 points along section 2.");
 		
-//		fillMaker.LoadInitSurface(loftFace);
+		fillMaker.Add(new gp_Pnt(vPntGCMa[0], vPntGCMa[1], vPntGCMa[2]));
+		fillMaker.Add(new gp_Pnt(vPntGCMb[0], vPntGCMb[1], vPntGCMb[2]));
+		fillMaker.Add(new gp_Pnt(vPntGCMc[0], vPntGCMc[1], vPntGCMc[2]));
+		System.out.println(">> constraining filler surface to 3 points along Guide-Curve-M.");
+		
+		
+		// fillMaker.LoadInitSurface(loftFace);
 		// DO NOT init, let OCC initialize the fillMaker surface automatically
 		
 		fillMaker.Build();
