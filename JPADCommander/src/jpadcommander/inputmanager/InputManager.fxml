@@ -2884,7 +2884,6 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="4649.0" prefWidth="1072.0">
                      <children>
-                        <Pane id="fuselageTopViewPane" fx:id="fuselageTopViewPane11" />
                         <BorderPane prefHeight="4651.0" prefWidth="1072.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <center>
                               <SplitPane dividerPositions="0.3751" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
@@ -2906,7 +2905,7 @@
                                                       <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                <children>
-                                                                  <BorderPane prefHeight="4580.0" prefWidth="398.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                  <BorderPane fx:id="engine1BorderPane" prefHeight="4580.0" prefWidth="398.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <top>
                                                                         <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                                                            <items>
@@ -2928,9 +2927,6 @@
                                                                            </items>
                                                                         </ToolBar>
                                                                      </top>
-                                                                     <center>
-                                                                        <Pane fx:id="engine1DataPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-                                                                     </center>
                                                                   </BorderPane>
                                                                </children>
                                                             </AnchorPane>
@@ -2953,7 +2949,7 @@
                                                                <content>
                                                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
                                                                      <children>
-                                                                        <TextArea id="FuselageOutput" fx:id="textAreaFuselageConsoleOutput11" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                        <TextArea id="FuselageOutput" fx:id="textAreaPowerPlantConsoleOutput" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                      </children>
                                                                   </AnchorPane>
                                                                </content>
@@ -3156,8 +3152,8 @@
         <items>
             <Button fx:id="newAircraftButton" mnemonicParsing="false" onAction="#newAircraft" text="New Aircraft" />
             <Region prefWidth="50.0" />
-            <Button id="updateAllButton" fx:id="updateGeometryButton" mnemonicParsing="false" text="Update Geometry" />
-            <Button id="saveAircraftButton" fx:id="saveAircraftButton" mnemonicParsing="false" text="Save Aircraft" />
+            <Button id="updateAllButton" fx:id="updateGeometryButton" mnemonicParsing="false" onAction="#setUpdateAircraftData" text="Set/Update Aircraft Data" />
+            <Button id="saveAircraftButton" fx:id="saveAircraftButton" mnemonicParsing="false" onAction="#saveAircraftToFile" text="Save Aircraft" />
         </items>
       </ToolBar>
    </top>
