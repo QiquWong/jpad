@@ -9,10 +9,17 @@ import it.unina.daf.jpadcad.occ.OCCEdge;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
+import opencascade.BOPAlgo_PaveFiller;
+import opencascade.BOPDS_DS;
+import opencascade.BRepAlgoAPI_Cut;
+import opencascade.BRepBuilderAPI_MakeVertex;
 import opencascade.BRep_Builder;
 import opencascade.GeomAPI_ProjectPointOnCurve;
 import opencascade.ShapeFix_SplitTool;
+import opencascade.TopAbs_ShapeEnum;
+import opencascade.TopTools_ListOfShape;
 import opencascade.TopoDS_Edge;
+import opencascade.TopoDS_Shape;
 import opencascade.TopoDS_Vertex;
 import opencascade.gp_Pnt;
 
@@ -133,7 +140,8 @@ public class Test19a {
 		TopoDS_Edge eGC1 = null;
 		TopoDS_Edge eGC2 = null;
 		TopoDS_Vertex vtxS1Ap_1 = null;
-		ShapeFix_SplitTool sfixtool = new ShapeFix_SplitTool(); 
+		List<OCCEdge> subEdgesGC1 = new ArrayList<>();		
+		// check if at least one projection occurred
 		if (poc.NbPoints() > 0) {			
 			ptS1Ap_1 = poc.Point(1);
 			System.out.println(">> Projected point (" + ptS1Ap_1.X() +", "+ ptS1Ap_1.Y() +", "+ ptS1Ap_1.Z() + ")" );
@@ -143,14 +151,54 @@ public class Test19a {
 			System.out.println(">> Projected point parameter: " + parS1Ap_1);
 			
 			System.out.println(">> Split Guide-Curve-1 ... TBD");
-
-//			BRep_Builder brepBuilder = new BRep_Builder();
-//			brepBuilder.MakeVertex(vtxS1Ap_1, ptS1Ap_1, 0.0000001);
 			
-//			sfixtool.SplitEdge(
-//					((OCCGeomCurve3D)cadGC1).edge(), parS1Ap_1, vtxS1Ap_1, ,
-//					eGC1, eGC2, 
-//					0.0001, 0.0001);
+			// https://www.opencascade.com/doc/occt-7.0.0/overview/html/occt_user_guides__boolean_operations.html
+			// https://github.com/DLR-SC/tigl/src/boolean_operations/CCutShape.cpp
+			// http://www.algotopia.com/contents/opencascade/opencascade_basic
+			
+			// prepare filler
+			TopTools_ListOfShape listOfArguments = new TopTools_ListOfShape();
+			
+			BRepBuilderAPI_MakeVertex vertexBuilder = new BRepBuilderAPI_MakeVertex(ptS1Ap_1);
+			vtxS1Ap_1 = vertexBuilder.Vertex();
+			
+			listOfArguments.Append(vtxS1Ap_1);
+			
+			TopoDS_Shape tds_edgeS1 =
+					((OCCEdge)
+							((OCCGeomCurve3D)cadGC1).edge()
+							).getShape();
+
+			listOfArguments.Append(tds_edgeS1);
+			
+			BOPAlgo_PaveFiller paveFiller = new BOPAlgo_PaveFiller();
+			paveFiller.SetArguments(listOfArguments);
+			paveFiller.Perform();
+			
+			BOPDS_DS bopds_ds = paveFiller.DS();
+			System.out.println(">> BOPDS_DS is null? " + (bopds_ds == null));
+			System.out.println(">> BOPDS_DS NShapes " + bopds_ds.NbShapes());
+			for (int k = 0; k < bopds_ds.NbShapes(); k++) {
+				System.out.println(">> BOPDS_DS shape " + k + " type: " + bopds_ds.ShapeInfo(k).ShapeType());
+				if (k > 1) {
+					if (bopds_ds.ShapeInfo(k).ShapeType() == TopAbs_ShapeEnum.TopAbs_EDGE) {
+						subEdgesGC1.add((OCCEdge) OCCUtils.theFactory.newShape(bopds_ds.Shape(k)));
+						System.out.println(">> Paves -> edge, has reference? " + bopds_ds.ShapeInfo(k).HasReference());
+					}
+				}
+			}
+			
+			
+			
+			
+//			// BRepAlgoAPI_Cut cutter(_source->Shape(), _tool->Shape(), *_dsfiller, Standard_True);
+//			BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(tds_edgeS1, vtxS1Ap_1, paveFiller, 1);
+//			cutter.Build();
+//			System.out.println(">> BRepAlgoAPI_Cut build error status: " + cutter.ErrorStatus());
+//			
+//			TopoDS_Shape tds_shape = cutter.Shape();
+//			System.out.println(">> BRepAlgoAPI_Cut shape is null? " + tds_shape.IsNull());
+			
 		}
 		
 		// Export shapes
@@ -158,7 +206,8 @@ public class Test19a {
 		shapes.add((OCCEdge)((OCCGeomCurve3D)cadSec1).edge());
 		shapes.add((OCCEdge)((OCCGeomCurve3D)cadSec2).edge());
 		shapes.add((OCCEdge)((OCCGeomCurve3D)cadSec3).edge());
-		shapes.add((OCCEdge)((OCCGeomCurve3D)cadGC1).edge());
+		//shapes.add((OCCEdge)((OCCGeomCurve3D)cadGC1).edge());
+		shapes.add(subEdgesGC1.get(0));
 		shapes.add((OCCEdge)((OCCGeomCurve3D)cadGC2).edge());
 		shapes.add((OCCEdge)((OCCGeomCurve3D)cadGCm).edge());
 		
