@@ -174,5 +174,10 @@ public class OCCGeomCurve3D implements CADGeomCurve3D
 	public CADEdge edge() {
 		return cadEdge;
 	}
+	
+	public GeomAdaptor_Curve getAdaptorCurve() {
+		return myCurve;
+	}
+
 
 }
