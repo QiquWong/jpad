@@ -128,79 +128,15 @@ public class Test19a {
 		double[] vPntGCMc = ((OCCGeomCurve3D)cadGCm).value(0.90*(rangeGCm[1] - rangeGCm[0]));
 
 		System.out.println("========== [main] Splitting curves");
-		
-		GeomAPI_ProjectPointOnCurve poc = new GeomAPI_ProjectPointOnCurve();
-		gp_Pnt ptS1A = new gp_Pnt(ptsSec1.get(0)[0], ptsSec1.get(0)[1], ptsSec1.get(0)[2]);
-		poc.Init(ptS1A, ((OCCGeomCurve3D)cadGC1).getAdaptorCurve().Curve());
-		poc.Perform(ptS1A);
-		System.out.println(">> Projecting point (" + ptS1A.X() +", "+ ptS1A.Y() +", "+ ptS1A.Z() + ") onto Guide-Curve-1");
-		System.out.println(">> N. projections: " + poc.NbPoints());
-		gp_Pnt ptS1Ap_1 = null;
-		double parS1Ap_1;
-		TopoDS_Edge eGC1 = null;
-		TopoDS_Edge eGC2 = null;
-		TopoDS_Vertex vtxS1Ap_1 = null;
-		List<OCCEdge> subEdgesGC1 = new ArrayList<>();		
-		// check if at least one projection occurred
-		if (poc.NbPoints() > 0) {			
-			ptS1Ap_1 = poc.Point(1);
-			System.out.println(">> Projected point (" + ptS1Ap_1.X() +", "+ ptS1Ap_1.Y() +", "+ ptS1Ap_1.Z() + ")" );
-//			gp_Pnt ptS1Ap_2 = poc.Point(2);
-//			System.out.println(">> Projected point (" + ptS1Ap_2.X() +", "+ ptS1Ap_2.Y() +", "+ ptS1Ap_2.Z() + ")" );
-			parS1Ap_1 = poc.Parameter(1);
-			System.out.println(">> Projected point parameter: " + parS1Ap_1);
-			
-			System.out.println(">> Split Guide-Curve-1 ... TBD");
-			
-			// https://www.opencascade.com/doc/occt-7.0.0/overview/html/occt_user_guides__boolean_operations.html
-			// https://github.com/DLR-SC/tigl/src/boolean_operations/CCutShape.cpp
-			// http://www.algotopia.com/contents/opencascade/opencascade_basic
-			
-			// prepare filler
-			TopTools_ListOfShape listOfArguments = new TopTools_ListOfShape();
-			
-			BRepBuilderAPI_MakeVertex vertexBuilder = new BRepBuilderAPI_MakeVertex(ptS1Ap_1);
-			vtxS1Ap_1 = vertexBuilder.Vertex();
-			
-			listOfArguments.Append(vtxS1Ap_1);
-			
-			TopoDS_Shape tds_edgeS1 =
-					((OCCEdge)
-							((OCCGeomCurve3D)cadGC1).edge()
-							).getShape();
+				
+		System.out.println(">> Split Guide-Curve-1 ...");
+		List<OCCEdge> subEdgesGC1 = OCCUtils.splitEdge(cadGC1, ptsSec1.get(0));
+		System.out.println(">> Subedges: " + subEdgesGC1.size());
 
-			listOfArguments.Append(tds_edgeS1);
-			
-			BOPAlgo_PaveFiller paveFiller = new BOPAlgo_PaveFiller();
-			paveFiller.SetArguments(listOfArguments);
-			paveFiller.Perform();
-			
-			BOPDS_DS bopds_ds = paveFiller.DS();
-			System.out.println(">> BOPDS_DS is null? " + (bopds_ds == null));
-			System.out.println(">> BOPDS_DS NShapes " + bopds_ds.NbShapes());
-			for (int k = 0; k < bopds_ds.NbShapes(); k++) {
-				System.out.println(">> BOPDS_DS shape " + k + " type: " + bopds_ds.ShapeInfo(k).ShapeType());
-				if (k > 1) {
-					if (bopds_ds.ShapeInfo(k).ShapeType() == TopAbs_ShapeEnum.TopAbs_EDGE) {
-						subEdgesGC1.add((OCCEdge) OCCUtils.theFactory.newShape(bopds_ds.Shape(k)));
-						System.out.println(">> Paves -> edge, has reference? " + bopds_ds.ShapeInfo(k).HasReference());
-					}
-				}
-			}
-			
-			
-			
-			
-//			// BRepAlgoAPI_Cut cutter(_source->Shape(), _tool->Shape(), *_dsfiller, Standard_True);
-//			BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(tds_edgeS1, vtxS1Ap_1, paveFiller, 1);
-//			cutter.Build();
-//			System.out.println(">> BRepAlgoAPI_Cut build error status: " + cutter.ErrorStatus());
-//			
-//			TopoDS_Shape tds_shape = cutter.Shape();
-//			System.out.println(">> BRepAlgoAPI_Cut shape is null? " + tds_shape.IsNull());
-			
-		}
-		
+		System.out.println(">> Split Guide-Curve-2 ...");
+		List<OCCEdge> subEdgesGC2 = OCCUtils.splitEdge(cadGC2, ptsSec1.get(2));
+		System.out.println(">> Subedges: " + subEdgesGC2.size());
+
 		// Export shapes
 		List<OCCShape> shapes = new ArrayList<>();
 		shapes.add((OCCEdge)((OCCGeomCurve3D)cadSec1).edge());
@@ -208,7 +144,8 @@ public class Test19a {
 		shapes.add((OCCEdge)((OCCGeomCurve3D)cadSec3).edge());
 		//shapes.add((OCCEdge)((OCCGeomCurve3D)cadGC1).edge());
 		shapes.add(subEdgesGC1.get(0));
-		shapes.add((OCCEdge)((OCCGeomCurve3D)cadGC2).edge());
+		//shapes.add((OCCEdge)((OCCGeomCurve3D)cadGC2).edge());
+		shapes.add(subEdgesGC2.get(0));
 		shapes.add((OCCEdge)((OCCGeomCurve3D)cadGCm).edge());
 		
 		
