@@ -268,6 +268,23 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 
 	@Override
+	public CADGeomCurve3D newCurve3DGP(List<gp_Pnt> pointList, boolean isPeriodic) {
+		CADGeomCurve3D curve = null;
+		try
+		{
+			curve = new OCCGeomCurve3D(
+					pointList.stream()
+							 .map(p -> new double[]{p.X(), p.Y(), p.Z()})
+							 .collect(Collectors.toList()),
+					isPeriodic);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		return curve;		
+	}
+	
+	@Override
 	public CADGeomCurve3D newCurve3DP(List<PVector> pointList, boolean isPeriodic) {
 		CADGeomCurve3D curve = null;
 		try

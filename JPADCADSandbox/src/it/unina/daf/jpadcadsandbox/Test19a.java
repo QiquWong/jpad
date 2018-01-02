@@ -3,22 +3,31 @@ package it.unina.daf.jpadcadsandbox;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
+import it.unina.daf.jpadcad.occ.CADShell;
 import it.unina.daf.jpadcad.occ.OCCEdge;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
+import it.unina.daf.jpadcad.occ.OCCVertex;
 import opencascade.BOPAlgo_PaveFiller;
 import opencascade.BOPDS_DS;
 import opencascade.BRepAlgoAPI_Cut;
 import opencascade.BRepBuilderAPI_MakeVertex;
+import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRep_Builder;
+import opencascade.BRep_Tool;
 import opencascade.GeomAPI_ProjectPointOnCurve;
+import opencascade.GeomAbs_Shape;
 import opencascade.ShapeFix_SplitTool;
 import opencascade.TopAbs_ShapeEnum;
+import opencascade.TopExp_Explorer;
 import opencascade.TopTools_ListOfShape;
+import opencascade.TopoDS;
 import opencascade.TopoDS_Edge;
+import opencascade.TopoDS_Face;
 import opencascade.TopoDS_Shape;
 import opencascade.TopoDS_Vertex;
 import opencascade.gp_Pnt;
@@ -148,6 +157,76 @@ public class Test19a {
 		shapes.add(subEdgesGC2.get(0));
 		shapes.add((OCCEdge)((OCCGeomCurve3D)cadGCm).edge());
 		
+		System.out.println("========== [main] Discretizing section-1");
+		int nPointsSec1d = 10;
+		cadSec1.discretize(nPointsSec1d);
+		System.out.println(">> N. points: " + cadSec1.nbPoints());
+		List<gp_Pnt> gpPntSec1 = ((OCCGeomCurve3D)cadSec1).getDiscretizedCurve().getPoints();
+		gpPntSec1.stream()
+			.forEach(gpPnt ->
+				System.out.println(">> (" + gpPnt.X() +", "+ gpPnt.Y() +", "+ gpPnt.Z() + ")")
+				);
+
+		System.out.println("========== [main] Loft filling sub-edges of guide-curves 1-2 and points on section-1");
+		// Filler approach, that works
+		BRepOffsetAPI_MakeFilling fillMaker = new BRepOffsetAPI_MakeFilling();
+		
+		fillMaker.Add(
+				subEdgesGC1.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillMaker.Add(
+				subEdgesGC2.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+
+		// adjust first and last point of discretized section-1
+		TopoDS_Edge eGC1 = TopoDS.ToEdge(subEdgesGC1.get(0).getShape());
+		List<OCCVertex> listVtx = new ArrayList<>();
+		TopExp_Explorer exp = new TopExp_Explorer(eGC1, TopAbs_ShapeEnum.TopAbs_VERTEX);
+		while (exp.More() > 0) {
+			listVtx.add(
+					(OCCVertex) OCCUtils.theFactory.newShape(exp.Current())
+					);
+			exp.Next();
+		}
+		// tweak first point
+		gpPntSec1.set(0, BRep_Tool.Pnt(listVtx.get(1).getShape()));
+		
+		listVtx.clear();
+		TopoDS_Edge eGC2 = TopoDS.ToEdge(subEdgesGC2.get(0).getShape());
+		exp = new TopExp_Explorer(eGC2, TopAbs_ShapeEnum.TopAbs_VERTEX);
+		while (exp.More() > 0) {
+			listVtx.add(
+					(OCCVertex) OCCUtils.theFactory.newShape(exp.Current())
+					);
+			exp.Next();
+		}
+		// tweak last point
+		gpPntSec1.set(nPointsSec1d - 1, BRep_Tool.Pnt(listVtx.get(1).getShape()));
+		
+		System.out.println(">> Points on section-curve-1 (re-discretized):");
+		gpPntSec1.stream()
+			.forEach(gpPnt ->
+				System.out.println(">> (" + gpPnt.X() +", "+ gpPnt.Y() +", "+ gpPnt.Z() + ")")
+			);
+		
+		CADGeomCurve3D cadSec1d = OCCUtils.theFactory.newCurve3DGP(
+				gpPntSec1, 
+				false);
+		// third boundary curve for filling
+		fillMaker.Add(
+				((OCCEdge)((OCCGeomCurve3D)cadSec1d).edge()).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		
+		fillMaker.Build();
+		System.out.println("Deformed surface is done? = " + fillMaker.IsDone());
+		System.out.println("Deformed surface shape  type: " + fillMaker.Shape().ShapeType());
+		
+		// Add loft to the export list
+		shapes.add((OCCShape)OCCUtils.theFactory.newShape(fillMaker.Shape()));
+
 		
 		// Write to a file
 		String fileName = "test19a.brep";

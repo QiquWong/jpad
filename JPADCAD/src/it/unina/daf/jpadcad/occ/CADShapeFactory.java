@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import opencascade.gp_Pnt;
 import processing.core.PVector;
 
 /**
@@ -130,6 +131,13 @@ public abstract class CADShapeFactory {
 	 */
 	public abstract CADGeomCurve3D newCurve3D(List<double[]> pointList, boolean isPeriodic);
 
+	/**
+	 * Create a new CADGeomCurve3D
+	 * @param pointList The list of points belonging to the curve (a BSpline)
+	 * @return The created CADGeomCurve3D
+	 */
+	public abstract CADGeomCurve3D newCurve3DGP(List<gp_Pnt> pointList, boolean isPeriodic);
+	
 	/**
 	 * Create a new CADGeomCurve3D
 	 * @param pointList The list of PVector points belonging to the curve (a BSpline)
