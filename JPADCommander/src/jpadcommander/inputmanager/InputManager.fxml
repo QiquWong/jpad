@@ -79,6 +79,7 @@
                                                                   <ChoiceBox id="fuselageXUnitChoiceBox" fx:id="fuselageXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                   <ChoiceBox id="fuselageYUnitChoiceBox" fx:id="fuselageYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                   <ChoiceBox id="fuselageZUnitChoiceBox" fx:id="fuselageZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <Button fx:id="aircraftChooseFuselageFileButton" mnemonicParsing="false" onAction="#chooseAircraftFuslegeFile" prefHeight="31.0" prefWidth="44.0" text="..." GridPane.columnIndex="2" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="374.0" prefHeight="0.0" prefWidth="1312.0" />
@@ -115,6 +116,7 @@
                                                                   <ChoiceBox id="wingYUnitChoiceBox" fx:id="wingYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                   <ChoiceBox id="wingZUnitChoiceBox" fx:id="wingZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                   <ChoiceBox id="wingRiggingAngleUnitChoiceBox" fx:id="wingRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <Button fx:id="aircraftChooseWingFileButton" mnemonicParsing="false" onAction="#chooseAircraftWingFile" prefHeight="31.0" prefWidth="44.0" text="..." GridPane.columnIndex="2" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-46.0" layoutY="587.0" prefHeight="0.0" prefWidth="1345.0" />
@@ -151,6 +153,7 @@
                                                                   <ChoiceBox id="hTailYUnitChoiceBox" fx:id="hTailYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                   <ChoiceBox id="hTailZUnitChoiceBox" fx:id="htailZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                   <ChoiceBox id="hTailRiggingAngleUnitChoiceBox" fx:id="hTailRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <Button fx:id="aircraftChooseHTailFileButton" mnemonicParsing="false" onAction="#chooseAircraftHTailFile" prefHeight="31.0" prefWidth="44.0" text="..." GridPane.columnIndex="2" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="4.0" layoutY="792.0" prefHeight="0.0" prefWidth="1346.0" />
@@ -187,6 +190,7 @@
                                                                   <ChoiceBox id="vTailYUnitChoiceBox" fx:id="vTailYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                   <ChoiceBox id="vTailZUnitChoiceBox" fx:id="vTailZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                   <ChoiceBox id="vTailRiggingAngleUnitChoiceBox" fx:id="vTailRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <Button fx:id="aircraftChooseVTailFileButton" mnemonicParsing="false" onAction="#chooseAircraftVTailFile" prefHeight="31.0" prefWidth="44.0" text="..." GridPane.columnIndex="2" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="1005.0" prefHeight="0.0" prefWidth="1435.0" />
@@ -223,6 +227,7 @@
                                                                   <ChoiceBox id="canardYUnitChoiceBox" fx:id="canardYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                   <ChoiceBox id="canardZUnitChoiceBox" fx:id="canardZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                   <ChoiceBox id="canardRiggingAngleUnitChoiceBox" fx:id="canardRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <Button fx:id="aircraftChooseCanardFileButton" mnemonicParsing="false" onAction="#chooseAircraftCanardFile" prefHeight="31.0" prefWidth="44.0" text="..." GridPane.columnIndex="2" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-12.0" layoutY="1215.0" prefHeight="2.0" prefWidth="1431.0" />
@@ -270,6 +275,7 @@
                                                                   <ChoiceBox id="landingGearsYUnitChoiceBox" fx:id="landingGearsYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                   <ChoiceBox id="landingGearsZUnitChoiceBox" fx:id="landingGearsZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                   <ChoiceBox id="choiceBoxAircraftLandingGearsPosition" fx:id="landingGearsMountingPositionTypeChoiceBox" prefHeight="25.0" prefWidth="261.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <Button fx:id="aircraftChooseLandingGearsFileButton" mnemonicParsing="false" onAction="#chooseAircraftLandingGearsFile" prefHeight="31.0" prefWidth="44.0" text="..." GridPane.columnIndex="2" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-46.0" layoutY="2186.0" prefHeight="0.0" prefWidth="1604.0" />
@@ -302,6 +308,7 @@
                                                                   <ChoiceBox id="systemsXUnitChoiceBox" fx:id="systemsXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                   <ChoiceBox id="systemsYUnitChoiceBox" fx:id="systemsYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                   <ChoiceBox id="systemsZUnitChoiceBox" fx:id="systemsZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <Button fx:id="aircraftChooseSystemsFileButton" mnemonicParsing="false" onAction="#chooseAircraftSystemsFile" prefHeight="31.0" prefWidth="44.0" text="..." GridPane.columnIndex="2" />
                                                                </children>
                                                             </GridPane>
                                                             <Label layoutX="5.0" layoutY="4.0" text="Aircraft type:">
@@ -364,6 +371,7 @@
                                                                               <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="engineZ1UnitChoiceBox" layoutX="348.0" layoutY="178.0" prefHeight="30.0" prefWidth="47.0" />
                                                                               <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="engineY1UnitChoiceBox" layoutX="348.0" layoutY="126.0" prefHeight="30.0" prefWidth="47.0" />
                                                                               <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="engineX1UnitChoiceBox" layoutX="348.0" layoutY="74.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                              <Button fx:id="aircraftChooseEngine1FileButton" layoutX="348.0" layoutY="21.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="44.0" text="..." />
                                                                            </children>
                                                                         </AnchorPane>
                                                                      </content>
@@ -409,6 +417,7 @@
                                                                               <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="nacelleZ1UnitChoiceBox" layoutX="348.0" layoutY="178.0" prefHeight="30.0" prefWidth="47.0" />
                                                                               <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="nacelleY1UnitChoiceBox" layoutX="348.0" layoutY="126.0" prefHeight="30.0" prefWidth="47.0" />
                                                                               <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="nacelleX1UnitChoiceBox" layoutX="348.0" layoutY="74.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                              <Button fx:id="aircraftChooseNacelle1FileButton" layoutX="348.0" layoutY="21.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="44.0" text="..." />
                                                                            </children>
                                                                         </AnchorPane>
                                                                      </content>
@@ -3152,7 +3161,7 @@
         <items>
             <Button fx:id="newAircraftButton" mnemonicParsing="false" onAction="#newAircraft" text="New Aircraft" />
             <Region prefWidth="50.0" />
-            <Button id="updateAllButton" fx:id="updateGeometryButton" mnemonicParsing="false" onAction="#setUpdateAircraftData" text="Set/Update Aircraft Data" />
+            <Button id="updateAllButton" fx:id="updateGeometryButton" mnemonicParsing="false" onAction="#setOrUpdateAircraftData" text="Set/Update Aircraft Data" />
             <Button id="saveAircraftButton" fx:id="saveAircraftButton" mnemonicParsing="false" onAction="#saveAircraftToFile" text="Save Aircraft" />
         </items>
       </ToolBar>

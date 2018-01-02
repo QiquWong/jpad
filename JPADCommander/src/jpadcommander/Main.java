@@ -13,6 +13,7 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Main extends Application {
 
@@ -37,6 +38,8 @@ public class Main extends Application {
 	//...........................................................................................
 	// AIRCRAFT OBJECT
 	private static Aircraft _theAircraft;
+	private static Boolean _aircraftSaved;
+	private static Boolean _aircraftUpdated;
 	
 	//-------------------------------------------------------------------------------------------
 	// METHODS
@@ -54,6 +57,7 @@ public class Main extends Application {
 		Stage dialogConfig = new DialogConfig(primaryStage);
 		dialogConfig.setTitle("JPADCommander Configuration - UniNa - DAF");
 		dialogConfig.sizeToScene();
+		dialogConfig.initStyle(StageStyle.UNDECORATED);
 		dialogConfig.show();
 		
 		showMainItems();
@@ -204,6 +208,22 @@ public class Main extends Application {
 
 	public static void setTaskPercentage(StatusBar _taskPercentage) {
 		Main._taskPercentage = _taskPercentage;
+	}
+
+	public static Boolean getAircraftSaved() {
+		return _aircraftSaved;
+	}
+
+	public static void setAircraftSaved(Boolean _aircraftSaved) {
+		Main._aircraftSaved = _aircraftSaved;
+	}
+
+	public static Boolean getAircraftUpdated() {
+		return _aircraftUpdated;
+	}
+
+	public static void setAircraftUpdated(Boolean _aircraftUpdated) {
+		Main._aircraftUpdated = _aircraftUpdated;
 	}
 
 }

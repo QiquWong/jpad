@@ -113,6 +113,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import jpadcommander.Main;
@@ -122,6 +123,8 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMapUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import writers.AircraftSaveDirectives;
+import writers.JPADStaticWriteUtils;
 
 public class InputManagerController {
 
@@ -255,6 +258,24 @@ public class InputManagerController {
 	@FXML
 	private Button saveAircraftButton;
 	@FXML
+	private Button aircraftChooseFuselageFileButton;
+	@FXML
+	private Button aircraftChooseWingFileButton;
+	@FXML
+	private Button aircraftChooseHTailFileButton;
+	@FXML
+	private Button aircraftChooseVTailFileButton;
+	@FXML
+	private Button aircraftChooseCanardFileButton;
+	@FXML
+	private Button aircraftChooseEngine1FileButton;
+	@FXML
+	private Button aircraftChooseNacelle1FileButton;
+	@FXML
+	private Button aircraftChooseLandingGearsFileButton;
+	@FXML
+	private Button aircraftChooseSystemsFileButton;
+	@FXML
 	private Button aircraftAddEngineButton;
 	@FXML
 	private Button aircraftAddNacelleButton;
@@ -362,6 +383,17 @@ public class InputManagerController {
 	@SuppressWarnings("unused")
 	private FileChooser airfoilFileChooser;
 	private FileChooser engineDatabaseFileChooser;
+	private FileChooser saveAircraftFileChooser;
+	private FileChooser fuselageFileChooser;
+	private FileChooser wingFileChooser;
+	private FileChooser hTailFileChooser;
+	private FileChooser vTailFileChooser;
+	private FileChooser canardFileChooser;
+	private FileChooser engineFileChooser;
+	private FileChooser nacelleFileChooser;
+	private FileChooser landingGearsFileChooser;
+	private FileChooser systemsFileChooser;
+	
 	//...........................................................................................
 	// VALIDATIONS (ControlsFX):
 	//...........................................................................................
@@ -503,6 +535,7 @@ public class InputManagerController {
 	private List<ChoiceBox<String>> choiceBoxAircraftEngineYUnitList;
 	private List<ChoiceBox<String>> choiceBoxAircraftEngineZUnitList;
 	private List<ChoiceBox<String>> choiceBoxAircraftEngineTiltUnitList;
+	private List<Button> chooseEngineFileButtonList = new ArrayList<>();
 	
 	private List<TextField> textFieldsAircraftNacelleFileList = new ArrayList<>();
 	private List<TextField> textFieldAircraftNacelleXList = new ArrayList<>();
@@ -512,6 +545,7 @@ public class InputManagerController {
 	private List<ChoiceBox<String>> choiceBoxAircraftNacelleXUnitList;
 	private List<ChoiceBox<String>> choiceBoxAircraftNacelleYUnitList;
 	private List<ChoiceBox<String>> choiceBoxAircraftNacelleZUnitList;
+	private List<Button> chooseNacelleFileButtonList = new ArrayList<>();
 	
 	//...........................................................................................
 	// AIRCRAFT TAB (DATA):
@@ -1545,6 +1579,31 @@ public class InputManagerController {
 	@FXML
 	private void initialize() {
 		
+		Main.setAircraftSaved(false);
+		Main.setAircraftUpdated(false);
+		
+		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
+
+		try {
+			aircraftSavedFlag.set(Main.getAircraftSaved());
+			saveAircraftButton.disableProperty().bind(
+					Bindings.equal(aircraftSavedFlag, true)
+					);
+		} catch (Exception e) {
+			saveAircraftButton.setDisable(true);
+		}
+		
+		ObjectProperty<Boolean> aircraftUpdatedFlag = new SimpleObjectProperty<>();
+
+		try {
+			aircraftUpdatedFlag.set(Main.getAircraftUpdated());
+			updateGeometryButton.disableProperty().bind(
+					Bindings.equal(aircraftUpdatedFlag, true)
+					);
+		} catch (Exception e) {
+			updateGeometryButton.setDisable(true);
+		}
+		
 		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
 
 		try {
@@ -1756,6 +1815,9 @@ public class InputManagerController {
 		textFieldsAircraftEngineFileList = new ArrayList<>();
 		textFieldsAircraftEngineFileList.add(textFieldAircraftEngineFile1);
 		
+		chooseEngineFileButtonList = new ArrayList<>();
+		chooseEngineFileButtonList.add(aircraftChooseEngine1FileButton);
+		
 		textFieldAircraftEngineXList = new ArrayList<>();
 		textFieldAircraftEngineXList.add(textFieldAircraftEngineX1);
 		
@@ -1787,6 +1849,9 @@ public class InputManagerController {
 		// AIRCRAFT NACELLE LISTS INITIALIZATION
 		textFieldsAircraftNacelleFileList = new ArrayList<>();
 		textFieldsAircraftNacelleFileList.add(textFieldAircraftNacelleFile1);
+		
+		chooseNacelleFileButtonList = new ArrayList<>();
+		chooseNacelleFileButtonList.add(aircraftChooseNacelle1FileButton);
 		
 		textFieldAircraftNacelleXList = new ArrayList<>();
 		textFieldAircraftNacelleXList.add(textFieldAircraftNacelleX1);
@@ -2371,6 +2436,8 @@ public class InputManagerController {
 		enginePistonPropellerEfficiencyTextFieldMap = new HashMap<>();
 		
 		aircraftLoadButtonDisableCheck();
+		setChooseNacelleFileAction();
+		setChooseEngineFileAction();
 		cabinConfigurationClassesNumberDisableCheck();
 		checkCabinConfigurationClassesNumber();
 		setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilRootDetailButton, textFieldEquivalentWingAirfoilRootPath, ComponentEnum.WING);
@@ -2957,6 +3024,44 @@ public class InputManagerController {
 		
 	}
 	
+	private void setChooseNacelleFileAction() {
+		
+		for(int i=0; i<tabPaneAircraftNacelles.getTabs().size(); i++) {
+			
+			int indexOfNacelle = i;
+			chooseNacelleFileButtonList.get(i).setOnAction(new EventHandler<ActionEvent>() {
+				
+				@Override
+				public void handle(ActionEvent event) {
+					try {
+						chooseAircraftNacelleFile(indexOfNacelle);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}					
+				}
+			});
+		}
+	}
+	
+	private void setChooseEngineFileAction() {
+		
+		for(int i=0; i<tabPaneAircraftEngines.getTabs().size(); i++) {
+			
+			int indexOfEngine = i;
+			chooseEngineFileButtonList.get(i).setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					try {
+						chooseAircraftEngineFile(indexOfEngine);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}					
+				}
+			});
+		}
+	}
+	
 	private void setAirfoilDetailsActionAndDisableCheck (Button detailsButton, TextField airfoilPathTextField, ComponentEnum type) {
 
 		detailsButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -3309,6 +3414,26 @@ public class InputManagerController {
 		engineFileTextField.setPrefHeight(31);
 		contentPane.getChildren().add(engineFileTextField);
 		
+		Button engineChooseFileButton = new Button("...");
+		engineChooseFileButton.setLayoutX(348);
+		engineChooseFileButton.setLayoutY(21);
+		engineChooseFileButton.setPrefWidth(44);
+		engineChooseFileButton.setPrefHeight(31);
+		engineChooseFileButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				
+				try {
+					chooseAircraftEngineFile(tabPaneAircraftEngines.getTabs().size()-1);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		contentPane.getChildren().add(engineChooseFileButton);
+		
 		Label engineXPositionLabel = new Label("X:");
 		engineXPositionLabel.setFont(Font.font("System", 15));
 		engineXPositionLabel.setLayoutX(6.0);
@@ -3442,6 +3567,26 @@ public class InputManagerController {
 		nacelleFileTextField.setPrefWidth(340);
 		nacelleFileTextField.setPrefHeight(31);
 		contentPane.getChildren().add(nacelleFileTextField);
+		
+		Button nacelleChooseFileButton = new Button("...");
+		nacelleChooseFileButton.setLayoutX(348);
+		nacelleChooseFileButton.setLayoutY(21);
+		nacelleChooseFileButton.setPrefWidth(44);
+		nacelleChooseFileButton.setPrefHeight(31);
+		nacelleChooseFileButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				
+				try {
+					chooseAircraftNacelleFile(tabPaneAircraftNacelles.getTabs().size()-1);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		contentPane.getChildren().add(nacelleChooseFileButton);
 		
 		Label nacelleXPositionLabel = new Label("X:");
 		nacelleXPositionLabel.setFont(Font.font("System", 15));
@@ -7184,6 +7329,207 @@ public class InputManagerController {
 		
 	}
 	
+	@FXML
+	private void chooseAircraftFile() throws IOException {
+
+		aircraftFileChooser = new FileChooser();
+		aircraftFileChooser.setTitle("Open File");
+		aircraftFileChooser.setInitialDirectory(new File(Main.getInputDirectoryPath() + File.separator + "Template_Aircraft"));
+		File file = aircraftFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			textFieldAircraftInputFile.setText(file.getAbsolutePath());
+			Main.setInputFileAbsolutePath(file.getAbsolutePath());
+		}
+	}
+	
+	@FXML
+	private void chooseAircraftFuslegeFile() throws IOException {
+
+		fuselageFileChooser = new FileChooser();
+		fuselageFileChooser.setTitle("Open File");
+		fuselageFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_Aircraft" 
+						+ File.separator 
+						+ "fuselages"
+						)
+				);
+		File file = fuselageFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			textFieldAircraftFuselageFile.setText(file.getAbsolutePath());
+		}
+	}
+	
+	@FXML
+	private void chooseAircraftWingFile() throws IOException {
+
+		wingFileChooser = new FileChooser();
+		wingFileChooser.setTitle("Open File");
+		wingFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_Aircraft" 
+						+ File.separator 
+						+ "lifting_surfaces"
+						)
+				);
+		File file = wingFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			textFieldAircraftWingFile.setText(file.getAbsolutePath());
+		}
+	}
+	
+	@FXML
+	private void chooseAircraftHTailFile() throws IOException {
+
+		hTailFileChooser = new FileChooser();
+		hTailFileChooser.setTitle("Open File");
+		hTailFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_Aircraft" 
+						+ File.separator 
+						+ "lifting_surfaces"
+						)
+				);
+		File file = hTailFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			textFieldAircraftHTailFile.setText(file.getAbsolutePath());
+		}
+	}
+	
+	@FXML
+	private void chooseAircraftVTailFile() throws IOException {
+
+		vTailFileChooser = new FileChooser();
+		vTailFileChooser.setTitle("Open File");
+		vTailFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_Aircraft" 
+						+ File.separator 
+						+ "lifting_surfaces"
+						)
+				);
+		File file = vTailFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			textFieldAircraftVTailFile.setText(file.getAbsolutePath());
+		}
+	}
+	
+	@FXML
+	private void chooseAircraftCanardFile() throws IOException {
+
+		canardFileChooser = new FileChooser();
+		canardFileChooser.setTitle("Open File");
+		canardFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_Aircraft" 
+						+ File.separator 
+						+ "lifting_surfaces"
+						)
+				);
+		File file = canardFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			textFieldAircraftCanardFile.setText(file.getAbsolutePath());
+		}
+	}
+	
+	private void chooseAircraftEngineFile(int indexOfEngine) throws IOException {
+
+		engineFileChooser = new FileChooser();
+		engineFileChooser.setTitle("Open File");
+		engineFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_Aircraft" 
+						+ File.separator 
+						+ "engines"
+						)
+				);
+		File file = engineFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			textFieldsAircraftEngineFileList.get(indexOfEngine).setText(file.getAbsolutePath());
+		}
+	}
+	
+	private void chooseAircraftNacelleFile(int indexOfNacelle) throws IOException {
+
+		nacelleFileChooser = new FileChooser();
+		nacelleFileChooser.setTitle("Open File");
+		nacelleFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_Aircraft" 
+						+ File.separator 
+						+ "nacelles"
+						)
+				);
+		File file = nacelleFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			textFieldsAircraftNacelleFileList.get(indexOfNacelle).setText(file.getAbsolutePath());
+		}
+	}
+	
+	@FXML
+	private void chooseAircraftLandingGearsFile() throws IOException {
+
+		landingGearsFileChooser = new FileChooser();
+		landingGearsFileChooser.setTitle("Open File");
+		landingGearsFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_Aircraft" 
+						+ File.separator 
+						+ "landing_gears"
+						)
+				);
+		File file = landingGearsFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			textFieldAircraftLandingGearsFile.setText(file.getAbsolutePath());
+		}
+	}
+	
+	@FXML
+	private void chooseAircraftSystemsFile() throws IOException {
+
+		systemsFileChooser = new FileChooser();
+		systemsFileChooser.setTitle("Open File");
+		systemsFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_Aircraft" 
+						+ File.separator 
+						+ "systems"
+						)
+				);
+		File file = systemsFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			textFieldAircraftSystemsFile.setText(file.getAbsolutePath());
+		}
+	}
+	
 	private boolean isAircraftFile(String pathToAircraftXML) {
 
 		boolean isAircraftFile = false;
@@ -7219,6 +7565,7 @@ public class InputManagerController {
 		
 		inputDataWarning.setTitle("New Aircraft Warning");
 		inputDataWarning.initModality(Modality.WINDOW_MODAL);
+		inputDataWarning.initStyle(StageStyle.UNDECORATED);
 		inputDataWarning.initOwner(Main.getPrimaryStage());
 
 		FXMLLoader loader = new FXMLLoader();
@@ -8150,20 +8497,6 @@ public class InputManagerController {
 	}
 	
 	@FXML
-	private void chooseAircraftFile() throws IOException {
-
-		aircraftFileChooser = new FileChooser();
-		aircraftFileChooser.setTitle("Open File");
-		aircraftFileChooser.setInitialDirectory(new File(Main.getInputDirectoryPath() + File.separator + "Template_Aircraft"));
-		File file = aircraftFileChooser.showOpenDialog(null);
-		if (file != null) {
-			// get full path and populate the text box
-			textFieldAircraftInputFile.setText(file.getAbsolutePath());
-			Main.setInputFileAbsolutePath(file.getAbsolutePath());
-		}
-	}
-	
-	@FXML
 	private void loadAircraftFile() throws IOException, InterruptedException {
 	
 		if(isAircraftFile(textFieldAircraftInputFile.getText()))
@@ -8595,7 +8928,7 @@ public class InputManagerController {
 						}
 
 						updateProgress(28, numberOfOperations);
-						updateMessage("Task Complete!");
+						updateMessage("Aircraft Loaded!");
 						updateTitle(String.valueOf(100) + "%");
 						
 						//Block the thread for a short time, but be sure
@@ -8630,6 +8963,11 @@ public class InputManagerController {
 				};
 			}
 		}; 
+		
+		Main.getProgressBar().progressProperty().unbind();
+		Main.getStatusBar().textProperty().unbind();
+		Main.getTaskPercentage().textProperty().unbind();
+		
 		Main.getProgressBar().progressProperty().bind(loadAircraftService.progressProperty());
 		Main.getStatusBar().textProperty().bind(loadAircraftService.messageProperty());
 		Main.getTaskPercentage().textProperty().bind(loadAircraftService.titleProperty());
@@ -8642,19 +8980,248 @@ public class InputManagerController {
 	}
 	
 	@FXML
-	private void setUpdateAircraftData() {
+	private void setOrUpdateAircraftData() {
 		
-		// TODO
+		/*
+		 *  TODO: REMEMBER TO SET SAVE AIRCRAFT FLAG TO FALSE 
+		 *  AT THE END OF THE SERVICE AND TO PERFORM THE CHECK 
+		 *  FOR THE UPDATE STATUS AFTER SETTING THE RELATED FLAG TO TRUE 
+		 */
 		
 	}
 	
 	@FXML
-	private void saveAircraftToFile() {
+	private void saveAircraftToFile() throws IOException {
 		
-		// TODO
+		if (Main.getTheAircraft() != null) {
+			
+			if (Main.getAircraftUpdated()) {
+				
+				saveAircraftToFileImplementation();
+				
+			}
+			else {
+				
+				//..................................................................................
+				// NOT UPDATED AIRCRAFT DATA WARNING
+				Stage saveAircraftDataWarning = new Stage();
+				
+				saveAircraftDataWarning.setTitle("Not Updated Aircraft Warning");
+				saveAircraftDataWarning.initModality(Modality.WINDOW_MODAL);
+				saveAircraftDataWarning.initStyle(StageStyle.UNDECORATED);
+				saveAircraftDataWarning.initOwner(Main.getPrimaryStage());
+
+				FXMLLoader loader = new FXMLLoader();
+				loader.setLocation(Main.class.getResource("inputmanager/SaveAircraftDataWarningNoUpdate.fxml"));
+				BorderPane saveAircraftDataWarningBorderPane = loader.load();
+				
+				Button continueButton = (Button) saveAircraftDataWarningBorderPane.lookup("#warningContinueButton");
+				continueButton.setOnAction(new EventHandler<ActionEvent>() {
+					
+					@Override
+					public void handle(ActionEvent arg0) {
+						saveAircraftDataWarning.close();
+					}
+					
+				});
+				
+				Button ignoreButton = (Button) saveAircraftDataWarningBorderPane.lookup("#warningIgnoreButton");
+				ignoreButton.setOnAction(new EventHandler<ActionEvent>() {
+					
+					@Override
+					public void handle(ActionEvent arg0) {
+						saveAircraftDataWarning.close();
+						try {
+							saveAircraftToFileImplementation();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					
+				});
+				
+				Scene scene = new Scene(saveAircraftDataWarningBorderPane);
+				saveAircraftDataWarning.setScene(scene);
+				saveAircraftDataWarning.sizeToScene();
+		        saveAircraftDataWarning.show();
+				
+			}
+		}
+		else {
+			
+			//..................................................................................
+			// NULL AIRCRAFT DATA WARNING
+			Stage saveAircraftDataWarning = new Stage();
+			
+			saveAircraftDataWarning.setTitle("Null Aircraft Warning");
+			saveAircraftDataWarning.initModality(Modality.WINDOW_MODAL);
+			saveAircraftDataWarning.initStyle(StageStyle.UNDECORATED);
+			saveAircraftDataWarning.initOwner(Main.getPrimaryStage());
+
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Main.class.getResource("inputmanager/SaveAircraftDataWarningNoAircraft.fxml"));
+			BorderPane saveAircraftDataWarningBorderPane = loader.load();
+			
+			Button continueButton = (Button) saveAircraftDataWarningBorderPane.lookup("#warningContinueButton");
+			continueButton.setOnAction(new EventHandler<ActionEvent>() {
+				
+				@Override
+				public void handle(ActionEvent arg0) {
+					saveAircraftDataWarning.close();
+				}
+				
+			});
+			
+			Scene scene = new Scene(saveAircraftDataWarningBorderPane);
+			saveAircraftDataWarning.setScene(scene);
+			saveAircraftDataWarning.sizeToScene();
+	        saveAircraftDataWarning.show();
+			
+		}
 		
 	}
 	
+	@SuppressWarnings("rawtypes")
+	private void saveAircraftToFileImplementation() throws IOException {
+		
+		saveAircraftFileChooser = new FileChooser();
+		saveAircraftFileChooser.setTitle("Save as ...");
+		saveAircraftFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_Aircraft"
+						+ File.separator 
+						)
+				);
+
+		File file = saveAircraftFileChooser.showSaveDialog(null);
+		
+		Service saveAircraftService = new Service() {
+
+			@Override
+			protected Task createTask() {
+				return new Task() {
+
+					@Override
+					protected Object call() throws Exception {
+
+						updateProgress(1, 4);
+						updateMessage("Saving Aircraft to File ...");
+						updateTitle(String.valueOf(25) + "%");
+
+						if (file != null) {
+
+							List<String> wingAirfoilsName = new ArrayList<>();
+							List<String> hTailAirfoilsName = new ArrayList<>();
+							List<String> vTailAirfoilsName = new ArrayList<>();
+							List<String> canardAirfoilsName = new ArrayList<>();
+
+							if(Main.getTheAircraft().getWing() != null) 
+								wingAirfoilsName.addAll(
+										Main.getTheAircraft().getWing().getAirfoilList().stream()
+										.map(a -> a.getAirfoilCreator().getName() + ".xml")
+										.collect(Collectors.toList())
+										);
+							if(Main.getTheAircraft().getHTail() != null) 
+								hTailAirfoilsName.addAll(
+										Main.getTheAircraft().getHTail().getAirfoilList().stream()
+										.map(a -> a.getAirfoilCreator().getName() + ".xml")
+										.collect(Collectors.toList())
+										);
+							if(Main.getTheAircraft().getVTail() != null) 
+								vTailAirfoilsName.addAll(
+										Main.getTheAircraft().getVTail().getAirfoilList().stream()
+										.map(a -> a.getAirfoilCreator().getName() + ".xml")
+										.collect(Collectors.toList())
+										);
+							if(Main.getTheAircraft().getCanard() != null) 
+								canardAirfoilsName.addAll(
+										Main.getTheAircraft().getCanard().getAirfoilList().stream()
+										.map(a -> a.getAirfoilCreator().getName() + ".xml")
+										.collect(Collectors.toList())
+										);
+
+							updateProgress(2, 4);
+							updateMessage("Creating airfoil file name lists ...");
+							updateTitle(String.valueOf(50) + "%");
+							
+							AircraftSaveDirectives asd = new AircraftSaveDirectives
+									.Builder("_" + file.getName())
+									.setAircraftFileName("aircraft_" + file.getName() + ".xml")
+									.addAllWingAirfoilFileNames(wingAirfoilsName)
+									.addAllHTailAirfoilFileNames(hTailAirfoilsName)
+									.addAllVTailAirfoilFileNames(vTailAirfoilsName)
+									.addAllCanardAirfoilFileNames(canardAirfoilsName)
+									.build();
+
+							updateProgress(3, 4);
+							updateMessage("Creating Aircraft Save Directives ...");
+							updateTitle(String.valueOf(75) + "%");
+							
+							JPADStaticWriteUtils.saveAircraftToXML(
+									Main.getTheAircraft(), 
+									file.getParent() + File.separator, 
+									file.getName(), 
+									asd);
+
+							updateProgress(4, 4);
+							updateMessage("Aircraft saved!");
+							updateTitle(String.valueOf(100) + "%");
+							
+							Main.setAircraftSaved(true);
+							
+							ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
+
+							try {
+								aircraftSavedFlag.set(Main.getAircraftSaved());
+								saveAircraftButton.disableProperty().bind(
+										Bindings.equal(aircraftSavedFlag, true)
+										);
+							} catch (Exception e) {
+								saveAircraftButton.setDisable(true);
+							}
+						}
+						else 
+							cancel();
+						
+						//Block the thread for a short time, but be sure
+			            //to check the InterruptedException for cancellation
+			            try {
+			                Thread.sleep(100);
+			            } catch (InterruptedException interrupted) {
+			                if (isCancelled()) {
+			                    updateMessage("Cancelled");
+			                    updateProgress(0, 4);
+								updateTitle(String.valueOf(0) + "%");
+			                    return null;
+			                }
+			                else {
+			                	updateMessage("Terminated");
+			                	updateProgress(0, 4);
+								updateTitle(String.valueOf(0) + "%");
+			                    return null;
+			                }
+			            }
+						
+						return null;
+					}
+				};
+			}
+		};
+		
+		Main.getProgressBar().progressProperty().unbind();
+		Main.getStatusBar().textProperty().unbind();
+		Main.getTaskPercentage().textProperty().unbind();
+		
+		Main.getProgressBar().progressProperty().bind(saveAircraftService.progressProperty());
+		Main.getStatusBar().textProperty().bind(saveAircraftService.messageProperty());
+		Main.getTaskPercentage().textProperty().bind(saveAircraftService.titleProperty());
+		
+		saveAircraftService.start();
+		
+	}
+
 	private void createAircraftTopView() {
 		
 		//--------------------------------------------------

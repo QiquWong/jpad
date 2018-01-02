@@ -1211,22 +1211,24 @@ public class AirfoilInputManagerController {
 						+ "lifting_surfaces" + File.separator
 						+ "airfoils"  + File.separator
 						+ "coordiantesAndCurvePoints"));
-		File file = airfoilClCurveExportCSVFileChooser.showSaveDialog(null);
-		alphaList.add(alpha);
-		clList.add(cl);
-		fileNameList.add(file.getName());
-		xLabelNameList.add("Alpha (deg)");
-		yLabelNameList.add("Cl");
-
-		JPADStaticWriteUtils.exportToCSV(
-				alphaList,
-				clList,
-				fileNameList,
-				xLabelNameList,
-				yLabelNameList,
-				file.getParent()
-				);
 		
+		File file = airfoilClCurveExportCSVFileChooser.showSaveDialog(null);
+		if(file != null) {
+			alphaList.add(alpha);
+			clList.add(cl);
+			fileNameList.add(file.getName());
+			xLabelNameList.add("Alpha (deg)");
+			yLabelNameList.add("Cl");
+
+			JPADStaticWriteUtils.exportToCSV(
+					alphaList,
+					clList,
+					fileNameList,
+					xLabelNameList,
+					yLabelNameList,
+					file.getParent()
+					);
+		}
 	}
 	
 	@FXML
@@ -1274,21 +1276,22 @@ public class AirfoilInputManagerController {
 						+ "airfoils"  + File.separator
 						+ "coordiantesAndCurvePoints"));
 		File file = airfoilCdCurveExportCSVFileChooser.showSaveDialog(null);
-		clList.add(cl);
-		cdList.add(cd);
-		fileNameList.add(file.getName());
-		xLabelNameList.add("Cl");
-		yLabelNameList.add("Cd");
+		if(file != null) {
+			clList.add(cl);
+			cdList.add(cd);
+			fileNameList.add(file.getName());
+			xLabelNameList.add("Cl");
+			yLabelNameList.add("Cd");
 
-		JPADStaticWriteUtils.exportToCSV(
-				clList,
-				cdList,
-				fileNameList,
-				xLabelNameList,
-				yLabelNameList,
-				file.getParent()
-				);
-		
+			JPADStaticWriteUtils.exportToCSV(
+					clList,
+					cdList,
+					fileNameList,
+					xLabelNameList,
+					yLabelNameList,
+					file.getParent()
+					);
+		}
 	}
 	
 	@FXML
@@ -1336,21 +1339,22 @@ public class AirfoilInputManagerController {
 						+ "airfoils"  + File.separator
 						+ "coordiantesAndCurvePoints"));
 		File file = airfoilCmCurveExportCSVFileChooser.showSaveDialog(null);
-		clList.add(cl);
-		cmList.add(cm);
-		fileNameList.add(file.getName());
-		xLabelNameList.add("Cl");
-		yLabelNameList.add("Cd");
+		if(file != null) {
+			clList.add(cl);
+			cmList.add(cm);
+			fileNameList.add(file.getName());
+			xLabelNameList.add("Cl");
+			yLabelNameList.add("Cd");
 
-		JPADStaticWriteUtils.exportToCSV(
-				clList,
-				cmList,
-				fileNameList,
-				xLabelNameList,
-				yLabelNameList,
-				file.getParent()
-				);
-		
+			JPADStaticWriteUtils.exportToCSV(
+					clList,
+					cmList,
+					fileNameList,
+					xLabelNameList,
+					yLabelNameList,
+					file.getParent()
+					);
+		}
 	}
 	
 	public void loadAirfoilData(AirfoilCreator airfoil) {

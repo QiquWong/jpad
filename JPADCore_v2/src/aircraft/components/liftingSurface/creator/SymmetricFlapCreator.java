@@ -156,6 +156,15 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 
 		}
 		
+		if(type.equals(ComponentEnum.CANARD)) {
+
+		    if(flapTypeProperty.equalsIgnoreCase("PLAIN"))
+				flapType = FlapTypeEnum.PLAIN;
+			else
+				System.err.println("INVALID CONTROL SURFACE TYPE !!");
+
+		}
+		
 		String innerStationSpanwisePositionProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
