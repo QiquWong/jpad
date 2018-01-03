@@ -76,6 +76,20 @@ public class Aircraft implements IAircraft {
 	private Systems _theSystems;
 	private CabinConfiguration _theCabinConfiguration;
 
+	//--------------------------------------------------------------------------
+	// THIS ARE USED TO STORE THE FILE PATHS FOR THE GUI
+	private String _fuselageFilePath;
+	private String _cabinConfigurationFilePath;
+	private String _wingFilePath;
+	private String _hTailFilePath;
+	private String _vTailFilePath;
+	private String _canardFilePath;
+	private List<String> _engineFilePathList;
+	private List<String> _nacelleFilePathList;
+	private String _landingGearsFilePath;
+	private String _systemsFilePath;
+	//--------------------------------------------------------------------------
+	
 	private List<Object> _componentsList;
 	
 	private Amount<Area> _sWetTotal = Amount.valueOf(0.0, SI.SQUARE_METRE);
@@ -1964,6 +1978,86 @@ public class Aircraft implements IAircraft {
 	@Override
 	public void setWingACToCGDistance(Amount<Length> _wingACToCGDistance) {
 		this._wingACToCGDistance = _wingACToCGDistance;
+	}
+
+	public String getFuselageFilePath() {
+		return _fuselageFilePath;
+	}
+
+	public void setFuselageFilePath(String _fuselageFilePath) {
+		this._fuselageFilePath = _fuselageFilePath;
+	}
+
+	public String getCabinConfigurationFilePath() {
+		return _cabinConfigurationFilePath;
+	}
+
+	public void setCabinConfigurationFilePath(String _cabinConfigurationFilePath) {
+		this._cabinConfigurationFilePath = _cabinConfigurationFilePath;
+	}
+
+	public String getWingFilePath() {
+		return _wingFilePath;
+	}
+
+	public void setWingFilePath(String _wingFilePath) {
+		this._wingFilePath = _wingFilePath;
+	}
+
+	public String getHTailFilePath() {
+		return _hTailFilePath;
+	}
+
+	public void setHTailFilePath(String _hTailFilePath) {
+		this._hTailFilePath = _hTailFilePath;
+	}
+
+	public String getVTailFilePath() {
+		return _vTailFilePath;
+	}
+
+	public void setVTailFilePath(String _vTailFilePath) {
+		this._vTailFilePath = _vTailFilePath;
+	}
+
+	public String getCanardFilePath() {
+		return _canardFilePath;
+	}
+
+	public void setCanardFilePath(String _canardFilePath) {
+		this._canardFilePath = _canardFilePath;
+	}
+
+	public List<String> getEngineFilePathList() {
+		return _engineFilePathList;
+	}
+
+	public void setEngineFilePathList(List<String> _engineFilePathList) {
+		this._engineFilePathList = _engineFilePathList;
+	}
+
+	public List<String> getNacelleFilePathList() {
+		return _nacelleFilePathList;
+	}
+
+	public void setNacelleFilePathList(List<String> _nacelleFilePathList) {
+		this._nacelleFilePathList = _nacelleFilePathList;
+	}
+
+	public String getLandingGearsFilePath() {
+		return _landingGearsFilePath;
+	}
+
+	public void setLandingGearsFilePath(String _landingGearsFilePath) {
+		this._landingGearsFilePath = _landingGearsFilePath;
+	}
+
+	public String getSystemsFilePath() {
+		return _systemsFilePath;
+	}
+
+	public void setSystemsFilePath(String _systemsFilePath) {
+		this._systemsFilePath = _systemsFilePath;
 	}
 	
 } // end of class

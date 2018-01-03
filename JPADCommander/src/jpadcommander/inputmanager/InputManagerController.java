@@ -23,6 +23,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.Severity;
@@ -55,13 +56,18 @@ import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import aircraft.components.nacelles.NacelleCreator;
+import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.powerplant.Engine;
 import calculators.geometry.FusNacGeometryCalc;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.ClassTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
+import configuration.enumerations.RegulationsEnum;
 import configuration.enumerations.RelativePositionEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import database.DatabaseManager;
@@ -258,6 +264,8 @@ public class InputManagerController {
 	@FXML
 	private Button saveAircraftButton;
 	@FXML
+	private Button aircraftChooseCabinConfigurationFileButton;
+	@FXML
 	private Button aircraftChooseFuselageFileButton;
 	@FXML
 	private Button aircraftChooseWingFileButton;
@@ -384,6 +392,7 @@ public class InputManagerController {
 	private FileChooser airfoilFileChooser;
 	private FileChooser engineDatabaseFileChooser;
 	private FileChooser saveAircraftFileChooser;
+	private FileChooser cabinConfigurationFileChooser;
 	private FileChooser fuselageFileChooser;
 	private FileChooser wingFileChooser;
 	private FileChooser hTailFileChooser;
@@ -442,37 +451,37 @@ public class InputManagerController {
 			);
 	ObservableList<String> fuselageAdjustCriteriaTypeList = FXCollections.observableArrayList(
 			"NONE",
-			"ADJUST TOTAL LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS",
-			"ADJUST TOTAL LENGTH, CONSTANT FINENESS-RATIOS",	
-			"ADJUST CYLINDER LENGTH (streching)",                            
-			"ADJUST NOSE LENGTH, CONSTANT TOTAL LENGTH AND DIAMETERS",
-			"ADJUST NOSE LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS",
-			"ADJUST NOSE LENGTH, CONSTANT FINENESS-RATIOS",
-			"ADJUST TAILCONE LENGTH, CONSTANT TOTAL LENGTH AND DIAMETERS",
-			"ADJUST TAILCONE LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS",
-			"ADJUST TAILCONE LENGTH, CONSTANT FINENESS-RATIOS",
-			"ADJUST FUSELAGE LENGTH, CONSTANT FINENESS-RATIOS"
+			"MODIFY TOTAL LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS",
+			"MODIFY TOTAL LENGTH, CONSTANT FINENESS-RATIOS",	
+			"MODIFY CYLINDER LENGTH (streching)",                            
+			"MODIFY NOSE LENGTH, CONSTANT TOTAL LENGTH AND DIAMETERS",
+			"MODIFY NOSE LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS",
+			"MODIFY NOSE LENGTH, CONSTANT FINENESS-RATIOS",
+			"MODIFY TAILCONE LENGTH, CONSTANT TOTAL LENGTH AND DIAMETERS",
+			"MODIFY TAILCONE LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS",
+			"MODIFY TAILCONE LENGTH, CONSTANT FINENESS-RATIOS",
+			"MODIFY FUSELAGE DIAMETER, CONSTANT FINENESS-RATIOS"
 			);
 	ObservableList<String> liftingSurfaceAdjustCriteriaTypeList = FXCollections.observableArrayList(
 			"NONE",
-			"FIXED AR, SPAN AND ROOT CHORD",
-			"FIXED AR, SPAN AND TIP CHORD",
-			"FIXED AR, SPAN AND TAPER-RATIO",
-			"FIXED AR, AREA AND ROOT CHORD",
-			"FIXED AR, AREA AND TIP CHORD",
-			"FIXED AR, AREA AND TAPER-RATIO", 
-			"FIXED AR, ROOT CHORD AND TIP CHORD",
-			"FIXED AR, ROOT CHORD AND TAPER-RATIO",
-			"FIXED AR, TIP CHORD AND TAPER-RATIO",
-			"FIXED SPAN, AREA AND ROOT CHORD",
-			"FIXED SPAN, AREA AND TIP CHORD",
-			"FIXED SPAN, AREA AND TAPER-RATIO",
-			"FIXED SPAN, ROOT CHORD AND TIP CHORD", 
-			"FIXED SPAN, ROOT CHORD AND TAPER-RATIO",
-			"FIXED SPAN, TIP CHORD AND TAPER-RATIO",
-			"FIXED AREA, ROOT CHORD AND TIP CHORD",
-			"FIXED AREA, ROOT CHORD AND TAPER-RATIO",
-			"FIXED AREA, TIP CHORD AND TAPER-RATIO"
+			"MODIFY AR, SPAN AND ROOT CHORD",
+			"MODIFY AR, SPAN AND TIP CHORD",
+			"MODIFY AR, SPAN AND TAPER-RATIO",
+			"MODIFY AR, AREA AND ROOT CHORD",
+			"MODIFY AR, AREA AND TIP CHORD",
+			"MODIFY AR, AREA AND TAPER-RATIO", 
+			"MODIFY AR, ROOT CHORD AND TIP CHORD",
+			"MODIFY AR, ROOT CHORD AND TAPER-RATIO",
+			"MODIFY AR, TIP CHORD AND TAPER-RATIO",
+			"MODIFY SPAN, AREA AND ROOT CHORD",
+			"MODIFY SPAN, AREA AND TIP CHORD",
+			"MODIFY SPAN, AREA AND TAPER-RATIO",
+			"MODIFY SPAN, ROOT CHORD AND TIP CHORD", 
+			"MODIFY SPAN, ROOT CHORD AND TAPER-RATIO",
+			"MODIFY SPAN, TIP CHORD AND TAPER-RATIO",
+			"MODIFY AREA, ROOT CHORD AND TIP CHORD",
+			"MODIFY AREA, ROOT CHORD AND TAPER-RATIO",
+			"MODIFY AREA, TIP CHORD AND TAPER-RATIO"
 			);
 	ObservableList<String> cabinConfigurationClassesTypeList = FXCollections.observableArrayList(
 			"ECONOMY",
@@ -484,6 +493,26 @@ public class InputManagerController {
 			"TURBOPROP",
 			"TURBOFAN",
 			"TURBOJET"
+			);
+	ObservableList<String> flapTypeList = FXCollections.observableArrayList(
+			"SINGLE_SLOTTED",
+			"DOUBLE_SLOTTED",
+			"PLAIN",
+			"FOWLER",
+			"OPTIMIZED_FOWLER",
+			"TRIPLE_SLOTTED"
+			);
+	ObservableList<String> aileronTypeList = FXCollections.observableArrayList(
+			"PLAIN"
+			);
+	ObservableList<String> elevatorTypeList = FXCollections.observableArrayList(
+			"PLAIN"
+			);
+	ObservableList<String> rudderTypeList = FXCollections.observableArrayList(
+			"PLAIN"
+			);
+	ObservableList<String> canardSurfaceTypeList = FXCollections.observableArrayList(
+			"PLAIN"
 			);
 	ObservableList<String> lengthUnitsList = FXCollections.observableArrayList(
 			"m",
@@ -525,27 +554,27 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> landingGearsMountingPositionTypeChoiceBox;
 	
-	private List<TextField> textFieldsAircraftEngineFileList = new ArrayList<>();
-	private List<TextField> textFieldAircraftEngineXList = new ArrayList<>();
-	private List<TextField> textFieldAircraftEngineYList = new ArrayList<>();
-	private List<TextField> textFieldAircraftEngineZList = new ArrayList<>();
-	private List<ChoiceBox<String>> choiceBoxesAircraftEnginePositonList = new ArrayList<>();
-	private List<TextField> textFieldAircraftEngineTiltList = new ArrayList<>();
+	private List<TextField> textFieldsAircraftEngineFileList;
+	private List<TextField> textFieldAircraftEngineXList;
+	private List<TextField> textFieldAircraftEngineYList;
+	private List<TextField> textFieldAircraftEngineZList;
+	private List<ChoiceBox<String>> choiceBoxesAircraftEnginePositonList;
+	private List<TextField> textFieldAircraftEngineTiltList;
 	private List<ChoiceBox<String>> choiceBoxAircraftEngineXUnitList;
 	private List<ChoiceBox<String>> choiceBoxAircraftEngineYUnitList;
 	private List<ChoiceBox<String>> choiceBoxAircraftEngineZUnitList;
 	private List<ChoiceBox<String>> choiceBoxAircraftEngineTiltUnitList;
-	private List<Button> chooseEngineFileButtonList = new ArrayList<>();
+	private List<Button> chooseEngineFileButtonList;
 	
-	private List<TextField> textFieldsAircraftNacelleFileList = new ArrayList<>();
-	private List<TextField> textFieldAircraftNacelleXList = new ArrayList<>();
-	private List<TextField> textFieldAircraftNacelleYList = new ArrayList<>();
-	private List<TextField> textFieldAircraftNacelleZList = new ArrayList<>();
-	private List<ChoiceBox<String>> choiceBoxesAircraftNacellePositonList = new ArrayList<>();
+	private List<TextField> textFieldsAircraftNacelleFileList;
+	private List<TextField> textFieldAircraftNacelleXList;
+	private List<TextField> textFieldAircraftNacelleYList;
+	private List<TextField> textFieldAircraftNacelleZList;
+	private List<ChoiceBox<String>> choiceBoxesAircraftNacellePositonList;
 	private List<ChoiceBox<String>> choiceBoxAircraftNacelleXUnitList;
 	private List<ChoiceBox<String>> choiceBoxAircraftNacelleYUnitList;
 	private List<ChoiceBox<String>> choiceBoxAircraftNacelleZUnitList;
-	private List<Button> chooseNacelleFileButtonList = new ArrayList<>();
+	private List<Button> chooseNacelleFileButtonList;
 	
 	//...........................................................................................
 	// AIRCRAFT TAB (DATA):
@@ -961,6 +990,8 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldWingAirfoilPathOuterSectionPanel1;
 	@FXML
+	private ChoiceBox<String> wingFlap1TypeChoichBox;
+	@FXML
 	private TextField textFieldWingInnerPositionFlap1;
 	@FXML
 	private TextField textFieldWingOuterPositionFlap1;
@@ -987,6 +1018,8 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldWingMaximumDeflectionAngleSlat1;
 	@FXML
+	private ChoiceBox<String> wingLeftAileronTypeChoichBox;
+	@FXML
 	private TextField textFieldWingInnerPositionAileronLeft;
 	@FXML
 	private TextField textFieldWingOuterPositionAileronLeft;
@@ -998,6 +1031,8 @@ public class InputManagerController {
 	private TextField textFieldWingMinimumDeflectionAngleAileronLeft;
 	@FXML
 	private TextField textFieldWingMaximumDeflectionAngleAileronLeft;
+	@FXML
+	private ChoiceBox<String> wingRightAileronTypeChoichBox;
 	@FXML
 	private TextField textFieldWingInnerPositionAileronRight;
 	@FXML
@@ -1048,6 +1083,7 @@ public class InputManagerController {
 	private List<Button> chooseOuterWingAirfoilFileButtonList;
 	
 	// flaps
+	private List<ChoiceBox<String>> choiceBoxWingFlapTypeList;
 	private List<TextField> textFieldWingInnerPositionFlapList;
 	private List<TextField> textFieldWingOuterPositionFlapList;
 	private List<TextField> textFieldWingInnerChordRatioFlapList;
@@ -1156,6 +1192,8 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldHTailAirfoilPathOuterSectionPanel1;
 	@FXML
+	private ChoiceBox<String> hTailElevator1TypeChoiceBox;
+	@FXML
 	private TextField textFieldHTailInnerPositionElevator1;
 	@FXML
 	private TextField textFieldHTailOuterPositionElevator1;
@@ -1193,6 +1231,7 @@ public class InputManagerController {
 	private List<Button> chooseOuterHTailAirfoilFileButtonList;
 	
 	// elevators
+	private List<ChoiceBox<String>> choiceBoxHTailElevatorTypeList;
 	private List<TextField> textFieldHTailInnerPositionElevatorList;
 	private List<TextField> textFieldHTailOuterPositionElevatorList;
 	private List<TextField> textFieldHTailInnerChordRatioElevatorList;
@@ -1254,6 +1293,8 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldVTailAirfoilPathOuterSectionPanel1;
 	@FXML
+	private ChoiceBox<String> vTailRudder1TypeChoiceBox;
+	@FXML
 	private TextField textFieldVTailInnerPositionRudder1;
 	@FXML
 	private TextField textFieldVTailOuterPositionRudder1;
@@ -1291,6 +1332,7 @@ public class InputManagerController {
 	private List<Button> chooseOuterVTailAirfoilFileButtonList;
 	
 	// rudders
+	private List<ChoiceBox<String>> choiceBoxVTailRudderTypeList;
 	private List<TextField> textFieldVTailInnerPositionRudderList;
 	private List<TextField> textFieldVTailOuterPositionRudderList;
 	private List<TextField> textFieldVTailInnerChordRatioRudderList;
@@ -1352,6 +1394,8 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldCanardAirfoilPathOuterSectionPanel1;
 	@FXML
+	private ChoiceBox<String> canardControlSurface1TypeChoiceBox;
+	@FXML
 	private TextField textFieldCanardInnerPositionControlSurface1;
 	@FXML
 	private TextField textFieldCanardOuterPositionControlSurface1;
@@ -1389,6 +1433,7 @@ public class InputManagerController {
 	private List<Button> chooseOuterCanardAirfoilFileButtonList;
 	
 	// control surfaces
+	private List<ChoiceBox<String>> choiceBoxCanardControlSurfaceTypeList;
 	private List<TextField> textFieldCanardInnerPositionControlSurfaceList;
 	private List<TextField> textFieldCanardOuterPositionControlSurfaceList;
 	private List<TextField> textFieldCanardInnerChordRatioControlSurfaceList;
@@ -1581,6 +1626,7 @@ public class InputManagerController {
 		
 		Main.setAircraftSaved(false);
 		Main.setAircraftUpdated(false);
+		Platform.setImplicitExit(false);
 		
 		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
 
@@ -1591,17 +1637,6 @@ public class InputManagerController {
 					);
 		} catch (Exception e) {
 			saveAircraftButton.setDisable(true);
-		}
-		
-		ObjectProperty<Boolean> aircraftUpdatedFlag = new SimpleObjectProperty<>();
-
-		try {
-			aircraftUpdatedFlag.set(Main.getAircraftUpdated());
-			updateGeometryButton.disableProperty().bind(
-					Bindings.equal(aircraftUpdatedFlag, true)
-					);
-		} catch (Exception e) {
-			updateGeometryButton.setDisable(true);
 		}
 		
 		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
@@ -1697,6 +1732,13 @@ public class InputManagerController {
 		wingAdjustCriterionChoiceBox.setItems(liftingSurfaceAdjustCriteriaTypeList);
 		hTailAdjustCriterionChoiceBox.setItems(liftingSurfaceAdjustCriteriaTypeList);
 		vTailAdjustCriterionChoiceBox.setItems(liftingSurfaceAdjustCriteriaTypeList);
+		canardAdjustCriterionChoiceBox.setItems(liftingSurfaceAdjustCriteriaTypeList);
+		wingFlap1TypeChoichBox.setItems(flapTypeList);
+		wingLeftAileronTypeChoichBox.setItems(aileronTypeList);
+		wingRightAileronTypeChoichBox.setItems(aileronTypeList);
+		hTailElevator1TypeChoiceBox.setItems(elevatorTypeList);
+		vTailRudder1TypeChoiceBox.setItems(rudderTypeList);
+		canardControlSurface1TypeChoiceBox.setItems(canardSurfaceTypeList);
 		
 		// Units 
 		fuselageXUnitChoiceBox.setItems(lengthUnitsList);
@@ -1967,6 +2009,9 @@ public class InputManagerController {
 		detailButtonWingOuterAirfoilList.add(wingOuterSectionAirfoilDetailsPanel1Button);
 		
 		// flaps
+		choiceBoxWingFlapTypeList= new ArrayList<>();
+		choiceBoxWingFlapTypeList.add(wingFlap1TypeChoichBox);
+		
 		textFieldWingInnerPositionFlapList = new ArrayList<>();
 		textFieldWingInnerPositionFlapList.add(textFieldWingInnerPositionFlap1);
 		
@@ -2110,6 +2155,9 @@ public class InputManagerController {
 		detailButtonHTailOuterAirfoilList.add(hTailOuterSectionAirfoilDetailsPanel1Button);
 
 		// elevators
+		choiceBoxHTailElevatorTypeList= new ArrayList<>();
+		choiceBoxHTailElevatorTypeList.add(hTailElevator1TypeChoiceBox);
+		
 		textFieldHTailInnerPositionElevatorList = new ArrayList<>();
 		textFieldHTailInnerPositionElevatorList.add(textFieldHTailInnerPositionElevator1);
 
@@ -2200,6 +2248,9 @@ public class InputManagerController {
 		detailButtonVTailOuterAirfoilList.add(vTailOuterSectionAirfoilDetailsPanel1Button);
 
 		// rudders
+		choiceBoxVTailRudderTypeList= new ArrayList<>();
+		choiceBoxVTailRudderTypeList.add(vTailRudder1TypeChoiceBox);
+		
 		textFieldVTailInnerPositionRudderList = new ArrayList<>();
 		textFieldVTailInnerPositionRudderList.add(textFieldVTailInnerPositionRudder1);
 
@@ -2290,6 +2341,9 @@ public class InputManagerController {
 		detailButtonCanardOuterAirfoilList.add(canardOuterSectionAirfoilDetailsPanel1Button);
 
 		// control surfaces
+		choiceBoxCanardControlSurfaceTypeList= new ArrayList<>();
+		choiceBoxCanardControlSurfaceTypeList.add(canardControlSurface1TypeChoiceBox);
+		
 		textFieldCanardInnerPositionControlSurfaceList = new ArrayList<>();
 		textFieldCanardInnerPositionControlSurfaceList.add(textFieldCanardInnerPositionControlSurface1);
 
@@ -2471,6 +2525,11 @@ public class InputManagerController {
 		setShowEngineDataAction(powerPlantJetRadioButton1, 0, EngineTypeEnum.TURBOFAN);
 		setShowEngineDataAction(powerPlantTurbopropRadioButton1, 0, EngineTypeEnum.TURBOPROP);
 		setShowEngineDataAction(powerPlantPistonRadioButton1, 0, EngineTypeEnum.PISTON);
+		fuselageAdjustCriterionDisableCheck();
+		wingAdjustCriterionDisableCheck();
+		hTailAdjustCriterionDisableCheck();
+		vTailAdjustCriterionDisableCheck();
+		canardAdjustCriterionDisableCheck();
 		
 	}
 	
@@ -3395,6 +3454,36 @@ public class InputManagerController {
 		
 	}
 	
+	private void fuselageAdjustCriterionDisableCheck() {
+		
+		// TODO: SEE HOW TO MATCH THE DATA MODEL WITH THE ADJUST CRITERIONS
+		
+	}
+	
+	private void wingAdjustCriterionDisableCheck() {
+		
+		// TODO: SEE HOW TO MATCH THE DATA MODEL WITH THE ADJUST CRITERIONS
+		
+	}
+	
+	private void hTailAdjustCriterionDisableCheck() {
+		
+		// TODO: SEE HOW TO MATCH THE DATA MODEL WITH THE ADJUST CRITERIONS
+		
+	}
+	
+	private void vTailAdjustCriterionDisableCheck() {
+		
+		// TODO: SEE HOW TO MATCH THE DATA MODEL WITH THE ADJUST CRITERIONS
+		
+	}
+	
+	private void canardAdjustCriterionDisableCheck() {
+		
+		// TODO: SEE HOW TO MATCH THE DATA MODEL WITH THE ADJUST CRITERIONS
+		
+	}
+	
 	@FXML
 	private void addAircraftEngine() {
 		
@@ -4199,15 +4288,29 @@ public class InputManagerController {
 		Tab newFlapTab = new Tab("Flap " + (tabPaneWingFlaps.getTabs().size()+1));
 		Pane contentPane = new Pane();
 		
+		Label flapTypeLabel = new Label("Type:");
+		flapTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		flapTypeLabel.setLayoutX(6.0);
+		flapTypeLabel.setLayoutY(0.0);
+		contentPane.getChildren().add(flapTypeLabel);
+		
+		ChoiceBox<String> flapTypeChoiceBox = new ChoiceBox<String>();
+		flapTypeChoiceBox.setLayoutX(6.0);
+		flapTypeChoiceBox.setLayoutY(21);
+		flapTypeChoiceBox.setPrefWidth(340);
+		flapTypeChoiceBox.setPrefHeight(31);
+		flapTypeChoiceBox.setItems(flapTypeList);
+		contentPane.getChildren().add(flapTypeChoiceBox);
+		
 		Label flapInnerPositionLabel = new Label("Inner position (% semispan):");
 		flapInnerPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		flapInnerPositionLabel.setLayoutX(6.0);
-		flapInnerPositionLabel.setLayoutY(0.0);
+		flapInnerPositionLabel.setLayoutY(50.0);
 		contentPane.getChildren().add(flapInnerPositionLabel);
 		
 		TextField flapInnerPositionTextField = new TextField();
 		flapInnerPositionTextField.setLayoutX(6.0);
-		flapInnerPositionTextField.setLayoutY(21);
+		flapInnerPositionTextField.setLayoutY(71);
 		flapInnerPositionTextField.setPrefWidth(340);
 		flapInnerPositionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(flapInnerPositionTextField);
@@ -4215,12 +4318,12 @@ public class InputManagerController {
 		Label flapOuterPositionLabel = new Label("Outer position (% semispan):");
 		flapOuterPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		flapOuterPositionLabel.setLayoutX(6.0);
-		flapOuterPositionLabel.setLayoutY(52.0);
+		flapOuterPositionLabel.setLayoutY(102.0);
 		contentPane.getChildren().add(flapOuterPositionLabel);
 		
 		TextField flapOuterPositionTextField = new TextField();
 		flapOuterPositionTextField.setLayoutX(6.0);
-		flapOuterPositionTextField.setLayoutY(73);
+		flapOuterPositionTextField.setLayoutY(123);
 		flapOuterPositionTextField.setPrefWidth(340);
 		flapOuterPositionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(flapOuterPositionTextField);
@@ -4228,45 +4331,45 @@ public class InputManagerController {
 		Label flapInnerChordRatioLabel = new Label("Inner chord ratio:");
 		flapInnerChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		flapInnerChordRatioLabel.setLayoutX(6.0);
-		flapInnerChordRatioLabel.setLayoutY(104.0);
+		flapInnerChordRatioLabel.setLayoutY(154.0);
 		contentPane.getChildren().add(flapInnerChordRatioLabel);
 		
 		TextField flapInnerChordRatioTextField = new TextField();
 		flapInnerChordRatioTextField.setLayoutX(6.0);
-		flapInnerChordRatioTextField.setLayoutY(125);
+		flapInnerChordRatioTextField.setLayoutY(175);
 		flapInnerChordRatioTextField.setPrefWidth(340);
 		flapInnerChordRatioTextField.setPrefHeight(31);
 		contentPane.getChildren().add(flapInnerChordRatioTextField);
 		
 		Label flapOuterChordRatioLabel = new Label("Outer chord ratio:");
 		flapOuterChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		flapOuterChordRatioLabel.setLayoutX(7.0);
-		flapOuterChordRatioLabel.setLayoutY(156.0);
+		flapOuterChordRatioLabel.setLayoutX(6.0);
+		flapOuterChordRatioLabel.setLayoutY(206.0);
 		contentPane.getChildren().add(flapOuterChordRatioLabel);
 		
 		TextField flapOuterChordRatioTextField = new TextField();
-		flapOuterChordRatioTextField.setLayoutX(7.0);
-		flapOuterChordRatioTextField.setLayoutY(177);
+		flapOuterChordRatioTextField.setLayoutX(6.0);
+		flapOuterChordRatioTextField.setLayoutY(227);
 		flapOuterChordRatioTextField.setPrefWidth(340);
 		flapOuterChordRatioTextField.setPrefHeight(31);
 		contentPane.getChildren().add(flapOuterChordRatioTextField);
 		
 		Label flapMinimumDeflectionLabel = new Label("Minimum deflection angle:");
 		flapMinimumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		flapMinimumDeflectionLabel.setLayoutX(7.0);
-		flapMinimumDeflectionLabel.setLayoutY(208.0);
+		flapMinimumDeflectionLabel.setLayoutX(6.0);
+		flapMinimumDeflectionLabel.setLayoutY(258.0);
 		contentPane.getChildren().add(flapMinimumDeflectionLabel);
 		
 		TextField flapMinimumDeflectionTextField = new TextField();
 		flapMinimumDeflectionTextField.setLayoutX(6.0);
-		flapMinimumDeflectionTextField.setLayoutY(229);
+		flapMinimumDeflectionTextField.setLayoutY(279);
 		flapMinimumDeflectionTextField.setPrefWidth(340);
 		flapMinimumDeflectionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(flapMinimumDeflectionTextField);
 		
 		ChoiceBox<String> flapMinimumDeflectionChoiceBox = new ChoiceBox<String>();
-		flapMinimumDeflectionChoiceBox.setLayoutX(347.0);
-		flapMinimumDeflectionChoiceBox.setLayoutY(230);
+		flapMinimumDeflectionChoiceBox.setLayoutX(348.0);
+		flapMinimumDeflectionChoiceBox.setLayoutY(279);
 		flapMinimumDeflectionChoiceBox.setPrefWidth(47);
 		flapMinimumDeflectionChoiceBox.setPrefHeight(30);
 		flapMinimumDeflectionChoiceBox.setItems(angleUnitsList);
@@ -4274,25 +4377,26 @@ public class InputManagerController {
 		
 		Label flapMaximumDeflectionLabel = new Label("Maximum deflection angle:");
 		flapMaximumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		flapMaximumDeflectionLabel.setLayoutX(7.0);
-		flapMaximumDeflectionLabel.setLayoutY(260.0);
+		flapMaximumDeflectionLabel.setLayoutX(6.0);
+		flapMaximumDeflectionLabel.setLayoutY(310.0);
 		contentPane.getChildren().add(flapMaximumDeflectionLabel);
 		
 		TextField flapMaximumDeflectionTextField = new TextField();
 		flapMaximumDeflectionTextField.setLayoutX(6.0);
 		flapMaximumDeflectionTextField.setLayoutY(281);
-		flapMaximumDeflectionTextField.setPrefWidth(340);
+		flapMaximumDeflectionTextField.setPrefWidth(331);
 		flapMaximumDeflectionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(flapMaximumDeflectionTextField);
 		
 		ChoiceBox<String> flapMaximumDeflectionChoiceBox = new ChoiceBox<String>();
-		flapMaximumDeflectionChoiceBox.setLayoutX(347.0);
-		flapMaximumDeflectionChoiceBox.setLayoutY(282);
+		flapMaximumDeflectionChoiceBox.setLayoutX(348.0);
+		flapMaximumDeflectionChoiceBox.setLayoutY(331);
 		flapMaximumDeflectionChoiceBox.setPrefWidth(47);
 		flapMaximumDeflectionChoiceBox.setPrefHeight(30);
 		flapMaximumDeflectionChoiceBox.setItems(angleUnitsList);
 		contentPane.getChildren().add(flapMaximumDeflectionChoiceBox);
 		
+		choiceBoxWingFlapTypeList.add(flapTypeChoiceBox);
 		textFieldWingInnerPositionFlapList.add(flapInnerPositionTextField);
 		textFieldWingOuterPositionFlapList.add(flapOuterPositionTextField);
 		textFieldWingInnerChordRatioFlapList.add(flapInnerChordRatioTextField);
@@ -4954,15 +5058,29 @@ public class InputManagerController {
 		Tab newElevatorTab = new Tab("Elevator " + (tabPaneHTailElevators.getTabs().size()+1));
 		Pane contentPane = new Pane();
 		
+		Label elevatorTypeLabel = new Label("Type:");
+		elevatorTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		elevatorTypeLabel.setLayoutX(6.0);
+		elevatorTypeLabel.setLayoutY(0.0);
+		contentPane.getChildren().add(elevatorTypeLabel);
+		
+		ChoiceBox<String> elevatorTypeChoiceBox = new ChoiceBox<String>();
+		elevatorTypeChoiceBox.setLayoutX(6.0);
+		elevatorTypeChoiceBox.setLayoutY(21);
+		elevatorTypeChoiceBox.setPrefWidth(340);
+		elevatorTypeChoiceBox.setPrefHeight(31);
+		elevatorTypeChoiceBox.setItems(elevatorTypeList);
+		contentPane.getChildren().add(elevatorTypeChoiceBox);
+		
 		Label elevatorInnerPositionLabel = new Label("Inner position (% semispan):");
 		elevatorInnerPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		elevatorInnerPositionLabel.setLayoutX(6.0);
-		elevatorInnerPositionLabel.setLayoutY(0.0);
+		elevatorInnerPositionLabel.setLayoutY(50.0);
 		contentPane.getChildren().add(elevatorInnerPositionLabel);
 		
 		TextField elevatorInnerPositionTextField = new TextField();
 		elevatorInnerPositionTextField.setLayoutX(6.0);
-		elevatorInnerPositionTextField.setLayoutY(21);
+		elevatorInnerPositionTextField.setLayoutY(71);
 		elevatorInnerPositionTextField.setPrefWidth(340);
 		elevatorInnerPositionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(elevatorInnerPositionTextField);
@@ -4970,12 +5088,12 @@ public class InputManagerController {
 		Label elevatorOuterPositionLabel = new Label("Outer position (% semispan):");
 		elevatorOuterPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		elevatorOuterPositionLabel.setLayoutX(6.0);
-		elevatorOuterPositionLabel.setLayoutY(52.0);
+		elevatorOuterPositionLabel.setLayoutY(102.0);
 		contentPane.getChildren().add(elevatorOuterPositionLabel);
 		
 		TextField elevatorOuterPositionTextField = new TextField();
 		elevatorOuterPositionTextField.setLayoutX(6.0);
-		elevatorOuterPositionTextField.setLayoutY(73);
+		elevatorOuterPositionTextField.setLayoutY(123);
 		elevatorOuterPositionTextField.setPrefWidth(340);
 		elevatorOuterPositionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(elevatorOuterPositionTextField);
@@ -4983,45 +5101,45 @@ public class InputManagerController {
 		Label elevatorInnerChordRatioLabel = new Label("Inner chord ratio:");
 		elevatorInnerChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		elevatorInnerChordRatioLabel.setLayoutX(6.0);
-		elevatorInnerChordRatioLabel.setLayoutY(104.0);
+		elevatorInnerChordRatioLabel.setLayoutY(154.0);
 		contentPane.getChildren().add(elevatorInnerChordRatioLabel);
 		
 		TextField elevatorInnerChordRatioTextField = new TextField();
 		elevatorInnerChordRatioTextField.setLayoutX(6.0);
-		elevatorInnerChordRatioTextField.setLayoutY(125);
+		elevatorInnerChordRatioTextField.setLayoutY(175);
 		elevatorInnerChordRatioTextField.setPrefWidth(340);
 		elevatorInnerChordRatioTextField.setPrefHeight(31);
 		contentPane.getChildren().add(elevatorInnerChordRatioTextField);
 		
 		Label elevatorOuterChordRatioLabel = new Label("Outer chord ratio:");
 		elevatorOuterChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		elevatorOuterChordRatioLabel.setLayoutX(7.0);
-		elevatorOuterChordRatioLabel.setLayoutY(156.0);
+		elevatorOuterChordRatioLabel.setLayoutX(6.0);
+		elevatorOuterChordRatioLabel.setLayoutY(206.0);
 		contentPane.getChildren().add(elevatorOuterChordRatioLabel);
 		
 		TextField elevatorOuterChordRatioTextField = new TextField();
-		elevatorOuterChordRatioTextField.setLayoutX(7.0);
-		elevatorOuterChordRatioTextField.setLayoutY(177);
+		elevatorOuterChordRatioTextField.setLayoutX(6.0);
+		elevatorOuterChordRatioTextField.setLayoutY(227);
 		elevatorOuterChordRatioTextField.setPrefWidth(340);
 		elevatorOuterChordRatioTextField.setPrefHeight(31);
 		contentPane.getChildren().add(elevatorOuterChordRatioTextField);
 		
 		Label elevatorMinimumDeflectionLabel = new Label("Minimum deflection angle:");
 		elevatorMinimumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		elevatorMinimumDeflectionLabel.setLayoutX(7.0);
-		elevatorMinimumDeflectionLabel.setLayoutY(208.0);
+		elevatorMinimumDeflectionLabel.setLayoutX(6.0);
+		elevatorMinimumDeflectionLabel.setLayoutY(258.0);
 		contentPane.getChildren().add(elevatorMinimumDeflectionLabel);
 		
 		TextField elevatorMinimumDeflectionTextField = new TextField();
 		elevatorMinimumDeflectionTextField.setLayoutX(6.0);
-		elevatorMinimumDeflectionTextField.setLayoutY(229);
+		elevatorMinimumDeflectionTextField.setLayoutY(279);
 		elevatorMinimumDeflectionTextField.setPrefWidth(340);
 		elevatorMinimumDeflectionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(elevatorMinimumDeflectionTextField);
 		
 		ChoiceBox<String> elevatorMinimumDeflectionChoiceBox = new ChoiceBox<String>();
-		elevatorMinimumDeflectionChoiceBox.setLayoutX(347.0);
-		elevatorMinimumDeflectionChoiceBox.setLayoutY(230);
+		elevatorMinimumDeflectionChoiceBox.setLayoutX(348.0);
+		elevatorMinimumDeflectionChoiceBox.setLayoutY(279);
 		elevatorMinimumDeflectionChoiceBox.setPrefWidth(47);
 		elevatorMinimumDeflectionChoiceBox.setPrefHeight(30);
 		elevatorMinimumDeflectionChoiceBox.setItems(angleUnitsList);
@@ -5029,25 +5147,26 @@ public class InputManagerController {
 		
 		Label elevatorMaximumDeflectionLabel = new Label("Maximum deflection angle:");
 		elevatorMaximumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		elevatorMaximumDeflectionLabel.setLayoutX(7.0);
-		elevatorMaximumDeflectionLabel.setLayoutY(260.0);
+		elevatorMaximumDeflectionLabel.setLayoutX(6.0);
+		elevatorMaximumDeflectionLabel.setLayoutY(310.0);
 		contentPane.getChildren().add(elevatorMaximumDeflectionLabel);
 		
 		TextField elevatorMaximumDeflectionTextField = new TextField();
 		elevatorMaximumDeflectionTextField.setLayoutX(6.0);
-		elevatorMaximumDeflectionTextField.setLayoutY(281);
+		elevatorMaximumDeflectionTextField.setLayoutY(331);
 		elevatorMaximumDeflectionTextField.setPrefWidth(340);
 		elevatorMaximumDeflectionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(elevatorMaximumDeflectionTextField);
 		
 		ChoiceBox<String> elevatorMaximumDeflectionChoiceBox = new ChoiceBox<String>();
-		elevatorMaximumDeflectionChoiceBox.setLayoutX(347.0);
-		elevatorMaximumDeflectionChoiceBox.setLayoutY(282);
+		elevatorMaximumDeflectionChoiceBox.setLayoutX(348.0);
+		elevatorMaximumDeflectionChoiceBox.setLayoutY(331);
 		elevatorMaximumDeflectionChoiceBox.setPrefWidth(47);
 		elevatorMaximumDeflectionChoiceBox.setPrefHeight(30);
 		elevatorMaximumDeflectionChoiceBox.setItems(angleUnitsList);
 		contentPane.getChildren().add(elevatorMaximumDeflectionChoiceBox);
 		
+		choiceBoxHTailElevatorTypeList.add(elevatorTypeChoiceBox);
 		textFieldHTailInnerPositionElevatorList.add(elevatorInnerPositionTextField);
 		textFieldHTailOuterPositionElevatorList.add(elevatorOuterPositionTextField);
 		textFieldHTailInnerChordRatioElevatorList.add(elevatorInnerChordRatioTextField);
@@ -5467,15 +5586,29 @@ public class InputManagerController {
 		Tab newRudderTab = new Tab("Rudder " + (tabPaneVTailRudders.getTabs().size()+1));
 		Pane contentPane = new Pane();
 		
+		Label rudderTypeLabel = new Label("Type:");
+		rudderTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		rudderTypeLabel.setLayoutX(6.0);
+		rudderTypeLabel.setLayoutY(0.0);
+		contentPane.getChildren().add(rudderTypeLabel);
+		
+		ChoiceBox<String> rudderTypeChoiceBox = new ChoiceBox<String>();
+		rudderTypeChoiceBox.setLayoutX(6.0);
+		rudderTypeChoiceBox.setLayoutY(21);
+		rudderTypeChoiceBox.setPrefWidth(340);
+		rudderTypeChoiceBox.setPrefHeight(31);
+		rudderTypeChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(rudderTypeChoiceBox);
+		
 		Label rudderInnerPositionLabel = new Label("Inner position (% semispan):");
 		rudderInnerPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		rudderInnerPositionLabel.setLayoutX(6.0);
-		rudderInnerPositionLabel.setLayoutY(0.0);
+		rudderInnerPositionLabel.setLayoutY(52.0);
 		contentPane.getChildren().add(rudderInnerPositionLabel);
 		
 		TextField rudderInnerPositionTextField = new TextField();
 		rudderInnerPositionTextField.setLayoutX(6.0);
-		rudderInnerPositionTextField.setLayoutY(21);
+		rudderInnerPositionTextField.setLayoutY(73);
 		rudderInnerPositionTextField.setPrefWidth(340);
 		rudderInnerPositionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(rudderInnerPositionTextField);
@@ -5483,12 +5616,12 @@ public class InputManagerController {
 		Label rudderOuterPositionLabel = new Label("Outer position (% semispan):");
 		rudderOuterPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		rudderOuterPositionLabel.setLayoutX(6.0);
-		rudderOuterPositionLabel.setLayoutY(52.0);
+		rudderOuterPositionLabel.setLayoutY(104.0);
 		contentPane.getChildren().add(rudderOuterPositionLabel);
 		
 		TextField rudderOuterPositionTextField = new TextField();
 		rudderOuterPositionTextField.setLayoutX(6.0);
-		rudderOuterPositionTextField.setLayoutY(73);
+		rudderOuterPositionTextField.setLayoutY(125);
 		rudderOuterPositionTextField.setPrefWidth(340);
 		rudderOuterPositionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(rudderOuterPositionTextField);
@@ -5496,45 +5629,45 @@ public class InputManagerController {
 		Label rudderInnerChordRatioLabel = new Label("Inner chord ratio:");
 		rudderInnerChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		rudderInnerChordRatioLabel.setLayoutX(6.0);
-		rudderInnerChordRatioLabel.setLayoutY(104.0);
+		rudderInnerChordRatioLabel.setLayoutY(156.0);
 		contentPane.getChildren().add(rudderInnerChordRatioLabel);
 		
 		TextField rudderInnerChordRatioTextField = new TextField();
 		rudderInnerChordRatioTextField.setLayoutX(6.0);
-		rudderInnerChordRatioTextField.setLayoutY(125);
+		rudderInnerChordRatioTextField.setLayoutY(177);
 		rudderInnerChordRatioTextField.setPrefWidth(340);
 		rudderInnerChordRatioTextField.setPrefHeight(31);
 		contentPane.getChildren().add(rudderInnerChordRatioTextField);
 		
 		Label rudderOuterChordRatioLabel = new Label("Outer chord ratio:");
 		rudderOuterChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		rudderOuterChordRatioLabel.setLayoutX(7.0);
-		rudderOuterChordRatioLabel.setLayoutY(156.0);
+		rudderOuterChordRatioLabel.setLayoutX(6.0);
+		rudderOuterChordRatioLabel.setLayoutY(208.0);
 		contentPane.getChildren().add(rudderOuterChordRatioLabel);
 		
 		TextField rudderOuterChordRatioTextField = new TextField();
-		rudderOuterChordRatioTextField.setLayoutX(7.0);
-		rudderOuterChordRatioTextField.setLayoutY(177);
+		rudderOuterChordRatioTextField.setLayoutX(6.0);
+		rudderOuterChordRatioTextField.setLayoutY(229);
 		rudderOuterChordRatioTextField.setPrefWidth(340);
 		rudderOuterChordRatioTextField.setPrefHeight(31);
 		contentPane.getChildren().add(rudderOuterChordRatioTextField);
 		
 		Label rudderMinimumDeflectionLabel = new Label("Minimum deflection angle:");
 		rudderMinimumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		rudderMinimumDeflectionLabel.setLayoutX(7.0);
-		rudderMinimumDeflectionLabel.setLayoutY(208.0);
+		rudderMinimumDeflectionLabel.setLayoutX(6.0);
+		rudderMinimumDeflectionLabel.setLayoutY(260.0);
 		contentPane.getChildren().add(rudderMinimumDeflectionLabel);
 		
 		TextField rudderMinimumDeflectionTextField = new TextField();
 		rudderMinimumDeflectionTextField.setLayoutX(6.0);
-		rudderMinimumDeflectionTextField.setLayoutY(229);
+		rudderMinimumDeflectionTextField.setLayoutY(281);
 		rudderMinimumDeflectionTextField.setPrefWidth(340);
 		rudderMinimumDeflectionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(rudderMinimumDeflectionTextField);
 		
 		ChoiceBox<String> rudderMinimumDeflectionChoiceBox = new ChoiceBox<String>();
-		rudderMinimumDeflectionChoiceBox.setLayoutX(347.0);
-		rudderMinimumDeflectionChoiceBox.setLayoutY(230);
+		rudderMinimumDeflectionChoiceBox.setLayoutX(348.0);
+		rudderMinimumDeflectionChoiceBox.setLayoutY(281);
 		rudderMinimumDeflectionChoiceBox.setPrefWidth(47);
 		rudderMinimumDeflectionChoiceBox.setPrefHeight(30);
 		rudderMinimumDeflectionChoiceBox.setItems(angleUnitsList);
@@ -5542,25 +5675,26 @@ public class InputManagerController {
 		
 		Label rudderMaximumDeflectionLabel = new Label("Maximum deflection angle:");
 		rudderMaximumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		rudderMaximumDeflectionLabel.setLayoutX(7.0);
-		rudderMaximumDeflectionLabel.setLayoutY(260.0);
+		rudderMaximumDeflectionLabel.setLayoutX(6.0);
+		rudderMaximumDeflectionLabel.setLayoutY(312.0);
 		contentPane.getChildren().add(rudderMaximumDeflectionLabel);
 		
 		TextField rudderMaximumDeflectionTextField = new TextField();
 		rudderMaximumDeflectionTextField.setLayoutX(6.0);
-		rudderMaximumDeflectionTextField.setLayoutY(281);
+		rudderMaximumDeflectionTextField.setLayoutY(333);
 		rudderMaximumDeflectionTextField.setPrefWidth(340);
 		rudderMaximumDeflectionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(rudderMaximumDeflectionTextField);
 		
 		ChoiceBox<String> rudderMaximumDeflectionChoiceBox = new ChoiceBox<String>();
-		rudderMaximumDeflectionChoiceBox.setLayoutX(347.0);
-		rudderMaximumDeflectionChoiceBox.setLayoutY(282);
+		rudderMaximumDeflectionChoiceBox.setLayoutX(348.0);
+		rudderMaximumDeflectionChoiceBox.setLayoutY(333);
 		rudderMaximumDeflectionChoiceBox.setPrefWidth(47);
 		rudderMaximumDeflectionChoiceBox.setPrefHeight(30);
 		rudderMaximumDeflectionChoiceBox.setItems(angleUnitsList);
 		contentPane.getChildren().add(rudderMaximumDeflectionChoiceBox);
 		
+		choiceBoxVTailRudderTypeList.add(rudderTypeChoiceBox);
 		textFieldVTailInnerPositionRudderList.add(rudderInnerPositionTextField);
 		textFieldVTailOuterPositionRudderList.add(rudderOuterPositionTextField);
 		textFieldVTailInnerChordRatioRudderList.add(rudderInnerChordRatioTextField);
@@ -5980,15 +6114,29 @@ public class InputManagerController {
 		Tab newControlSurfaceTab = new Tab("Control Surface " + (tabPaneCanardControlSurfaces.getTabs().size()+1));
 		Pane contentPane = new Pane();
 		
+		Label controlSurfaceTypeLabel = new Label("Type:");
+		controlSurfaceTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		controlSurfaceTypeLabel.setLayoutX(6.0);
+		controlSurfaceTypeLabel.setLayoutY(0.0);
+		contentPane.getChildren().add(controlSurfaceTypeLabel);
+		
+		ChoiceBox<String> controlSurfaceTypeChoiceBox = new ChoiceBox<String>();
+		controlSurfaceTypeChoiceBox.setLayoutX(6.0);
+		controlSurfaceTypeChoiceBox.setLayoutY(21.0);
+		controlSurfaceTypeChoiceBox.setPrefWidth(340);
+		controlSurfaceTypeChoiceBox.setPrefHeight(31);
+		controlSurfaceTypeChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(controlSurfaceTypeChoiceBox);
+		
 		Label controlSurfaceInnerPositionLabel = new Label("Inner position (% semispan):");
 		controlSurfaceInnerPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		controlSurfaceInnerPositionLabel.setLayoutX(6.0);
-		controlSurfaceInnerPositionLabel.setLayoutY(0.0);
+		controlSurfaceInnerPositionLabel.setLayoutY(52.0);
 		contentPane.getChildren().add(controlSurfaceInnerPositionLabel);
 		
 		TextField controlSurfaceInnerPositionTextField = new TextField();
 		controlSurfaceInnerPositionTextField.setLayoutX(6.0);
-		controlSurfaceInnerPositionTextField.setLayoutY(21);
+		controlSurfaceInnerPositionTextField.setLayoutY(73);
 		controlSurfaceInnerPositionTextField.setPrefWidth(340);
 		controlSurfaceInnerPositionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(controlSurfaceInnerPositionTextField);
@@ -5996,12 +6144,12 @@ public class InputManagerController {
 		Label controlSurfaceOuterPositionLabel = new Label("Outer position (% semispan):");
 		controlSurfaceOuterPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		controlSurfaceOuterPositionLabel.setLayoutX(6.0);
-		controlSurfaceOuterPositionLabel.setLayoutY(52.0);
+		controlSurfaceOuterPositionLabel.setLayoutY(104.0);
 		contentPane.getChildren().add(controlSurfaceOuterPositionLabel);
 		
 		TextField controlSurfaceOuterPositionTextField = new TextField();
 		controlSurfaceOuterPositionTextField.setLayoutX(6.0);
-		controlSurfaceOuterPositionTextField.setLayoutY(73);
+		controlSurfaceOuterPositionTextField.setLayoutY(125);
 		controlSurfaceOuterPositionTextField.setPrefWidth(340);
 		controlSurfaceOuterPositionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(controlSurfaceOuterPositionTextField);
@@ -6009,45 +6157,45 @@ public class InputManagerController {
 		Label controlSurfaceInnerChordRatioLabel = new Label("Inner chord ratio:");
 		controlSurfaceInnerChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
 		controlSurfaceInnerChordRatioLabel.setLayoutX(6.0);
-		controlSurfaceInnerChordRatioLabel.setLayoutY(104.0);
+		controlSurfaceInnerChordRatioLabel.setLayoutY(156.0);
 		contentPane.getChildren().add(controlSurfaceInnerChordRatioLabel);
 		
 		TextField controlSurfaceInnerChordRatioTextField = new TextField();
 		controlSurfaceInnerChordRatioTextField.setLayoutX(6.0);
-		controlSurfaceInnerChordRatioTextField.setLayoutY(125);
+		controlSurfaceInnerChordRatioTextField.setLayoutY(177);
 		controlSurfaceInnerChordRatioTextField.setPrefWidth(340);
 		controlSurfaceInnerChordRatioTextField.setPrefHeight(31);
 		contentPane.getChildren().add(controlSurfaceInnerChordRatioTextField);
 		
 		Label controlSurfaceOuterChordRatioLabel = new Label("Outer chord ratio:");
 		controlSurfaceOuterChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		controlSurfaceOuterChordRatioLabel.setLayoutX(7.0);
-		controlSurfaceOuterChordRatioLabel.setLayoutY(156.0);
+		controlSurfaceOuterChordRatioLabel.setLayoutX(6.0);
+		controlSurfaceOuterChordRatioLabel.setLayoutY(208.0);
 		contentPane.getChildren().add(controlSurfaceOuterChordRatioLabel);
 		
 		TextField controlSurfaceOuterChordRatioTextField = new TextField();
-		controlSurfaceOuterChordRatioTextField.setLayoutX(7.0);
-		controlSurfaceOuterChordRatioTextField.setLayoutY(177);
+		controlSurfaceOuterChordRatioTextField.setLayoutX(6.0);
+		controlSurfaceOuterChordRatioTextField.setLayoutY(229);
 		controlSurfaceOuterChordRatioTextField.setPrefWidth(340);
 		controlSurfaceOuterChordRatioTextField.setPrefHeight(31);
 		contentPane.getChildren().add(controlSurfaceOuterChordRatioTextField);
 		
 		Label controlSurfaceMinimumDeflectionLabel = new Label("Minimum deflection angle:");
 		controlSurfaceMinimumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		controlSurfaceMinimumDeflectionLabel.setLayoutX(7.0);
-		controlSurfaceMinimumDeflectionLabel.setLayoutY(208.0);
+		controlSurfaceMinimumDeflectionLabel.setLayoutX(6.0);
+		controlSurfaceMinimumDeflectionLabel.setLayoutY(260.0);
 		contentPane.getChildren().add(controlSurfaceMinimumDeflectionLabel);
 		
 		TextField controlSurfaceMinimumDeflectionTextField = new TextField();
 		controlSurfaceMinimumDeflectionTextField.setLayoutX(6.0);
-		controlSurfaceMinimumDeflectionTextField.setLayoutY(229);
+		controlSurfaceMinimumDeflectionTextField.setLayoutY(281);
 		controlSurfaceMinimumDeflectionTextField.setPrefWidth(340);
 		controlSurfaceMinimumDeflectionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(controlSurfaceMinimumDeflectionTextField);
 		
 		ChoiceBox<String> controlSurfaceMinimumDeflectionChoiceBox = new ChoiceBox<String>();
-		controlSurfaceMinimumDeflectionChoiceBox.setLayoutX(347.0);
-		controlSurfaceMinimumDeflectionChoiceBox.setLayoutY(230);
+		controlSurfaceMinimumDeflectionChoiceBox.setLayoutX(348.0);
+		controlSurfaceMinimumDeflectionChoiceBox.setLayoutY(281);
 		controlSurfaceMinimumDeflectionChoiceBox.setPrefWidth(47);
 		controlSurfaceMinimumDeflectionChoiceBox.setPrefHeight(30);
 		controlSurfaceMinimumDeflectionChoiceBox.setItems(angleUnitsList);
@@ -6055,25 +6203,26 @@ public class InputManagerController {
 		
 		Label controlSurfaceMaximumDeflectionLabel = new Label("Maximum deflection angle:");
 		controlSurfaceMaximumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		controlSurfaceMaximumDeflectionLabel.setLayoutX(7.0);
-		controlSurfaceMaximumDeflectionLabel.setLayoutY(260.0);
+		controlSurfaceMaximumDeflectionLabel.setLayoutX(6.0);
+		controlSurfaceMaximumDeflectionLabel.setLayoutY(312.0);
 		contentPane.getChildren().add(controlSurfaceMaximumDeflectionLabel);
 		
 		TextField controlSurfaceMaximumDeflectionTextField = new TextField();
 		controlSurfaceMaximumDeflectionTextField.setLayoutX(6.0);
-		controlSurfaceMaximumDeflectionTextField.setLayoutY(281);
+		controlSurfaceMaximumDeflectionTextField.setLayoutY(333);
 		controlSurfaceMaximumDeflectionTextField.setPrefWidth(340);
 		controlSurfaceMaximumDeflectionTextField.setPrefHeight(31);
 		contentPane.getChildren().add(controlSurfaceMaximumDeflectionTextField);
 		
 		ChoiceBox<String> controlSurfaceMaximumDeflectionChoiceBox = new ChoiceBox<String>();
-		controlSurfaceMaximumDeflectionChoiceBox.setLayoutX(347.0);
-		controlSurfaceMaximumDeflectionChoiceBox.setLayoutY(282);
+		controlSurfaceMaximumDeflectionChoiceBox.setLayoutX(348.0);
+		controlSurfaceMaximumDeflectionChoiceBox.setLayoutY(333);
 		controlSurfaceMaximumDeflectionChoiceBox.setPrefWidth(47);
 		controlSurfaceMaximumDeflectionChoiceBox.setPrefHeight(30);
 		controlSurfaceMaximumDeflectionChoiceBox.setItems(angleUnitsList);
 		contentPane.getChildren().add(controlSurfaceMaximumDeflectionChoiceBox);
 		
+		choiceBoxCanardControlSurfaceTypeList.add(controlSurfaceTypeChoiceBox);
 		textFieldCanardInnerPositionControlSurfaceList.add(controlSurfaceInnerPositionTextField);
 		textFieldCanardOuterPositionControlSurfaceList.add(controlSurfaceOuterPositionTextField);
 		textFieldCanardInnerChordRatioControlSurfaceList.add(controlSurfaceInnerChordRatioTextField);
@@ -7340,6 +7489,27 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftInputFile.setText(file.getAbsolutePath());
 			Main.setInputFileAbsolutePath(file.getAbsolutePath());
+		}
+	}
+	
+	@FXML
+	private void chooseAircraftCabinConfigurationFile() throws IOException {
+
+		cabinConfigurationFileChooser = new FileChooser();
+		cabinConfigurationFileChooser.setTitle("Open File");
+		cabinConfigurationFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_Aircraft" 
+						+ File.separator 
+						+ "cabin_configurations"
+						)
+				);
+		File file = cabinConfigurationFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			textFieldAircraftCabinConfigurationFile.setText(file.getAbsolutePath());
 		}
 	}
 	
@@ -8938,10 +9108,14 @@ public class InputManagerController {
 			            } catch (InterruptedException interrupted) {
 			                if (isCancelled()) {
 			                    updateMessage("Cancelled");
+			                    updateProgress(0, 4);
+								updateTitle(String.valueOf(0) + "%");
 			                    return null;
 			                }
 			                else {
 			                	updateMessage("Terminated");
+			                	updateProgress(0, 4);
+								updateTitle(String.valueOf(0) + "%");
 			                    return null;
 			                }
 			            }
@@ -8980,12 +9154,1119 @@ public class InputManagerController {
 	}
 	
 	@FXML
-	private void setOrUpdateAircraftData() {
+	private void updateAircraftData() throws IOException {
+		
+		if (Main.getTheAircraft() != null) {
+			
+			boolean adjustCrtiterionCheck = false;
+			boolean fuselageCheck = true;
+			boolean wingCheck = true;
+			boolean hTailCheck = true;
+			boolean vTailCheck = true;
+			boolean canardCheck = true;
+			
+			if(Main.getTheAircraft().getFuselage() != null)
+				if(fuselageAdjustCriterionChoiceBox.getSelectionModel().isEmpty())
+					fuselageCheck = false;
+			if(Main.getTheAircraft().getWing() != null)
+				if(wingAdjustCriterionChoiceBox.getSelectionModel().isEmpty())
+					wingCheck = false;
+			if(Main.getTheAircraft().getHTail() != null)
+				if(hTailAdjustCriterionChoiceBox.getSelectionModel().isEmpty())
+					hTailCheck = false;
+			if(Main.getTheAircraft().getVTail() != null)
+				if(vTailAdjustCriterionChoiceBox.getSelectionModel().isEmpty())
+					vTailCheck = false;
+			if(Main.getTheAircraft().getCanard() != null)
+				if(canardAdjustCriterionChoiceBox.getSelectionModel().isEmpty())
+					canardCheck = false;
+			
+			if(fuselageCheck && wingCheck && hTailCheck && vTailCheck && canardCheck)
+				adjustCrtiterionCheck = true;
+			
+			if(!adjustCrtiterionCheck) {
+				
+				//..................................................................................
+				// ADJUST CRITERION AIRCRAFT COMPONENTS WARNING
+				Stage adjustCriterionAircraftWarning = new Stage();
+				
+				adjustCriterionAircraftWarning.setTitle("No Adjust Criterion For Some Aircraft Components");
+				adjustCriterionAircraftWarning.initModality(Modality.WINDOW_MODAL);
+				adjustCriterionAircraftWarning.initStyle(StageStyle.UNDECORATED);
+				adjustCriterionAircraftWarning.initOwner(Main.getPrimaryStage());
+
+				FXMLLoader loader = new FXMLLoader();
+				loader.setLocation(Main.class.getResource("inputmanager/AdjustCriterionAircraftWarning.fxml"));
+				BorderPane adjustCriterionAircraftWarningBorderPane = loader.load();
+				
+				Button continueButton = (Button) adjustCriterionAircraftWarningBorderPane.lookup("#warningContinueButton");
+				continueButton.setOnAction(new EventHandler<ActionEvent>() {
+					
+					@Override
+					public void handle(ActionEvent arg0) {
+						adjustCriterionAircraftWarning.close();
+						return;
+					}
+					
+				});
+				
+				Button continueAndSetToNoneButton = (Button) adjustCriterionAircraftWarningBorderPane.lookup("#warningContinueNoneButton");
+				continueAndSetToNoneButton.setOnAction(new EventHandler<ActionEvent>() {
+					
+					@Override
+					public void handle(ActionEvent arg0) {
+						adjustCriterionAircraftWarning.close();
+						if(Main.getTheAircraft().getFuselage() != null)
+							fuselageAdjustCriterionChoiceBox.getSelectionModel().select(0);
+						if(Main.getTheAircraft().getWing() != null)
+							wingAdjustCriterionChoiceBox.getSelectionModel().select(0);
+						if(Main.getTheAircraft().getHTail() != null)
+							hTailAdjustCriterionChoiceBox.getSelectionModel().select(0);
+						if(Main.getTheAircraft().getVTail() != null)
+							vTailAdjustCriterionChoiceBox.getSelectionModel().select(0);
+						if(Main.getTheAircraft().getCanard() != null)
+							canardAdjustCriterionChoiceBox.getSelectionModel().select(0);
+						
+						updateAircraftDataImplementation();
+					}
+					
+				});
+				
+				Scene scene = new Scene(adjustCriterionAircraftWarningBorderPane);
+				adjustCriterionAircraftWarning.setScene(scene);
+				adjustCriterionAircraftWarning.sizeToScene();
+				adjustCriterionAircraftWarning.show();
+				
+			}
+			else 
+				updateAircraftDataImplementation();
+			
+		}
+		else {
+			
+			//..................................................................................
+			// NULL AIRCRAFT DATA WARNING
+			Stage saveAircraftDataWarning = new Stage();
+			
+			saveAircraftDataWarning.setTitle("Null Aircraft Warning");
+			saveAircraftDataWarning.initModality(Modality.WINDOW_MODAL);
+			saveAircraftDataWarning.initStyle(StageStyle.UNDECORATED);
+			saveAircraftDataWarning.initOwner(Main.getPrimaryStage());
+
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Main.class.getResource("inputmanager/SaveAircraftDataWarningNoAircraft.fxml"));
+			BorderPane saveAircraftDataWarningBorderPane = loader.load();
+			
+			Button continueButton = (Button) saveAircraftDataWarningBorderPane.lookup("#warningContinueButton");
+			continueButton.setOnAction(new EventHandler<ActionEvent>() {
+				
+				@Override
+				public void handle(ActionEvent arg0) {
+					saveAircraftDataWarning.close();
+				}
+				
+			});
+			
+			Scene scene = new Scene(saveAircraftDataWarningBorderPane);
+			saveAircraftDataWarning.setScene(scene);
+			saveAircraftDataWarning.sizeToScene();
+	        saveAircraftDataWarning.show();
+			
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private void updateAircraftDataImplementation() {
+		
+		Service updateAircraftDataService = new Service() {
+
+			@Override
+			protected Task createTask() {
+				return new Task() {
+
+					@Override
+					protected Object call() throws Exception {
+						
+						int numberOfOperations = 37;
+						int progressIncrement = 100/numberOfOperations;
+						
+						// DATA UPDATE
+						updateProgress(0, numberOfOperations);
+						updateMessage("Start Updating Aircraft Data ...");
+						updateTitle(String.valueOf(0) + "%");
+						
+						updateProgress(1, numberOfOperations);
+						updateMessage("Updating Fuselage Tab Data ...");
+						updateTitle(String.valueOf(progressIncrement) + "%");
+						updateFuselageTabData();
+						
+						updateProgress(2, numberOfOperations);
+						updateMessage("Updating Cabin Configuration Tab Data ...");
+						updateTitle(String.valueOf(progressIncrement*2) + "%");
+						updateCabinConfigurationTabData();
+						
+						updateProgress(3, numberOfOperations);
+						updateMessage("Updating Wing Tab Data ...");
+						updateTitle(String.valueOf(progressIncrement*3) + "%");
+						updateWingTabData();
+						
+						updateProgress(4, numberOfOperations);
+						updateMessage("Updating Horizontal Tail Tab Data ...");
+						updateTitle(String.valueOf(progressIncrement*4) + "%");
+						updateHTailTabData();
+						
+						updateProgress(5, numberOfOperations);
+						updateMessage("Updating Vertical Tail Tab Data ...");
+						updateTitle(String.valueOf(progressIncrement*5) + "%");
+						updateVTailTabData();
+						
+						updateProgress(6, numberOfOperations);
+						updateMessage("Updating Canard Tab Data ...");
+						updateTitle(String.valueOf(progressIncrement*6)+ "%");
+						updateCanardTabData();
+						
+						updateProgress(7, numberOfOperations);
+						updateMessage("Updating Nacelles Tab Data ...");
+						updateTitle(String.valueOf(progressIncrement*7) + "%");
+						updateNacelleTabData();
+						
+						updateProgress(8, numberOfOperations);
+						updateMessage("Updating Power Plant Tab Data ...");
+						updateTitle(String.valueOf(progressIncrement*8) + "%");
+						updatePowerPlantTabData();
+						
+						updateProgress(9, numberOfOperations);
+						updateMessage("Updating Landing Gears Tab Data ...");
+						updateTitle(String.valueOf(progressIncrement*9) + "%");
+						updateLandingGearsTabData();
+						
+						updateProgress(10, numberOfOperations);
+						updateMessage("Updating Aircraft Tab Data ...");
+						updateTitle(String.valueOf(progressIncrement*10) + "%");
+						updateAircraftTabData();
+						
+						updateProgress(11, numberOfOperations);
+						updateMessage("Creating the Aircraft Object ...");
+						updateTitle(String.valueOf(progressIncrement*11) + "%");
+						createAircraftObjectFromData();
+						
+						// COMPONENTS LOG TO INTERFACE
+						if (Main.getTheAircraft() != null) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									textAreaAircraftConsoleOutput.setText(Main.getTheAircraft().toString());
+									
+								}
+							});
+							updateProgress(12, numberOfOperations);
+							updateMessage("Logging Aircraft Object Data...");
+							updateTitle(String.valueOf(progressIncrement*12) + "%");
+						}
+						if (Main.getTheAircraft().getFuselage() != null) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									textAreaFuselageConsoleOutput.setText(
+											Main.getTheAircraft().getFuselage().getFuselageCreator().toString()
+											);
+									
+								}
+							});							
+							updateProgress(13, numberOfOperations);
+							updateMessage("Logging Fuselage Object Data...");
+							updateTitle(String.valueOf(progressIncrement*13) + "%");
+						}
+						if (Main.getTheAircraft().getCabinConfiguration() != null) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									textAreaCabinConfigurationConsoleOutput.setText(
+											Main.getTheAircraft().getCabinConfiguration().toString()
+											);
+									
+								}
+							});				
+							updateProgress(14, numberOfOperations);
+							updateMessage("Logging Cabin Configuration Object Data...");
+							updateTitle(String.valueOf(progressIncrement*14) + "%");
+						}
+						if (Main.getTheAircraft().getWing() != null) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									textAreaWingConsoleOutput.setText(
+											Main.getTheAircraft().getWing().getLiftingSurfaceCreator().toString()
+											);
+									
+								}
+							});				
+							updateProgress(15, numberOfOperations);
+							updateMessage("Logging Wing Object Data...");
+							updateTitle(String.valueOf(progressIncrement*15) + "%");
+						}
+						if (Main.getTheAircraft().getHTail() != null) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									textAreaHTailConsoleOutput.setText(
+											Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().toString()
+											);
+									
+								}
+							});		
+							updateProgress(16, numberOfOperations);
+							updateMessage("Logging Horizontal Tail Object Data...");
+							updateTitle(String.valueOf(progressIncrement*16) + "%");
+						}
+						if (Main.getTheAircraft().getVTail() != null) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									textAreaVTailConsoleOutput.setText(
+											Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().toString()
+											);
+									
+								}
+							});		
+							updateProgress(17, numberOfOperations);
+							updateMessage("Logging Vertical Tail Object Data...");
+							updateTitle(String.valueOf(progressIncrement*17) + "%");
+						}
+						if (Main.getTheAircraft().getCanard() != null) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									textAreaCanardConsoleOutput.setText(
+											Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().toString()
+											);
+									
+								}
+							});		
+							updateProgress(18, numberOfOperations);
+							updateMessage("Logging Canard Object Data...");
+							updateTitle(String.valueOf(progressIncrement*18) + "%");
+						}
+						if (Main.getTheAircraft().getNacelles() != null) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									textAreaNacelleConsoleOutput.setText(
+											Main.getTheAircraft().getNacelles().toString()
+											);
+									
+								}
+							});	
+							updateProgress(19, numberOfOperations);
+							updateMessage("Logging Nacelle Object Data...");
+							updateTitle(String.valueOf(progressIncrement*19) + "%");
+						}
+						if (Main.getTheAircraft().getPowerPlant() != null) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									textAreaPowerPlantConsoleOutput.setText(
+											Main.getTheAircraft().getPowerPlant().toString()
+											);
+									
+								}
+							});	
+							updateProgress(20, numberOfOperations);
+							updateMessage("Logging Power Plant Object Data...");
+							updateTitle(String.valueOf(progressIncrement*20) + "%");
+						}
+						if (Main.getTheAircraft().getLandingGears() != null) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									textAreaLandingGearsConsoleOutput.setText(
+											Main.getTheAircraft().getLandingGears().toString()
+											);
+									
+								}
+							});	
+							updateProgress(21, numberOfOperations);
+							updateMessage("Logging Landing Gears Object Data...");
+							updateTitle(String.valueOf(progressIncrement*21) + "%");
+						}
+						//............................
+						// COMPONENTS 3 VIEW CREATION
+						//............................
+						// aircraft
+						Platform.runLater(new Runnable() {
+							
+							@Override
+							public void run() {
+								createAircraftTopView();
+								
+							}
+						});	
+						updateProgress(22, numberOfOperations);
+						updateMessage("Creating Aircraft Top View...");
+						updateTitle(String.valueOf(progressIncrement*22) + "%");
+						Platform.runLater(new Runnable() {
+							
+							@Override
+							public void run() {
+								createAircraftSideView();
+								
+							}
+						});	
+						updateProgress(23, numberOfOperations);
+						updateMessage("Creating Aircraft Side View...");
+						updateTitle(String.valueOf(progressIncrement*23) + "%");
+						Platform.runLater(new Runnable() {
+							
+							@Override
+							public void run() {
+								createAircraftFrontView();
+								
+							}
+						});	
+						updateProgress(24, numberOfOperations);
+						updateMessage("Creating Aircraft Front View...");
+						updateTitle(String.valueOf(progressIncrement*24) + "%");
+						
+						//............................
+						// fuselage
+						if (Main.getTheAircraft().getFuselage() != null) {
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createFuselageTopView();
+
+								}
+							});	
+							updateProgress(25, numberOfOperations);
+							updateMessage("Creating Fuselage Top View...");
+							updateTitle(String.valueOf(progressIncrement*25) + "%");
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createFuselageSideView();
+
+								}
+							});	
+							updateProgress(26, numberOfOperations);
+							updateMessage("Creating Fuselage Side View...");
+							updateTitle(String.valueOf(progressIncrement*26) + "%");
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createFuselageFrontView();
+
+								}
+							});	
+							updateProgress(27, numberOfOperations);
+							updateMessage("Creating Fuselage Front View...");
+							updateTitle(String.valueOf(progressIncrement*27) + "%");
+						}
+						//............................
+						// cabin configuration
+						if (Main.getTheAircraft().getCabinConfiguration() != null) {
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createSeatMap();
+
+								}
+							});	
+							updateProgress(28, numberOfOperations);
+							updateMessage("Creating Seat Map...");
+							updateTitle(String.valueOf(progressIncrement*28) + "%");
+						}
+						//............................
+						// wing
+						if (Main.getTheAircraft().getWing() != null) {
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createWingPlanformView();
+
+								}
+							});	
+							updateProgress(29, numberOfOperations);
+							updateMessage("Creating Wing Planform View...");
+							updateTitle(String.valueOf(progressIncrement*29) + "%");
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createEquivalentWingView();
+
+								}
+							});	
+							updateProgress(30, numberOfOperations);
+							updateMessage("Creating Equivalent Wing View...");
+							updateTitle(String.valueOf(progressIncrement*30) + "%");
+						}
+						//............................
+						// hTail
+						if (Main.getTheAircraft().getHTail() != null) {
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createHTailPlanformView();
+
+								}
+							});	
+							updateProgress(31, numberOfOperations);
+							updateMessage("Creating HTail Planform View...");
+							updateTitle(String.valueOf(progressIncrement*31) + "%");
+						}
+						//............................
+						// vTail
+						if (Main.getTheAircraft().getVTail() != null) {
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createVTailPlanformView();
+
+								}
+							});	
+							updateProgress(32, numberOfOperations);
+							updateMessage("Creating VTail Planform View...");
+							updateTitle(String.valueOf(progressIncrement*32) + "%");
+						}
+						//............................
+						// canard
+						if (Main.getTheAircraft().getCanard() != null) {
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createCanardPlanformView();
+
+								}
+							});	
+							updateProgress(33, numberOfOperations);
+							updateMessage("Creating Canard Planform View...");
+							updateTitle(String.valueOf(progressIncrement*33) + "%");
+						}
+						//............................
+						// nacelle
+						if (Main.getTheAircraft().getNacelles() != null) {
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createNacelleTopView();
+
+								}
+							});	
+							updateProgress(34, numberOfOperations);
+							updateMessage("Creating Nacelles Top View...");
+							updateTitle(String.valueOf(progressIncrement*34) + "%");
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createNacelleSideView();
+
+								}
+							});	
+							updateProgress(35, numberOfOperations);
+							updateMessage("Creating Nacelles Side View...");
+							updateTitle(String.valueOf(progressIncrement*35) + "%");
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									createNacelleFrontView();
+
+								}
+							});	
+							updateProgress(36, numberOfOperations);
+							updateMessage("Creating Nacelles FrontView...");
+							updateTitle(String.valueOf(progressIncrement*36) + "%");	
+						}
+
+						updateProgress(37, numberOfOperations);
+						updateMessage("Aircraft Updated!");
+						updateTitle(String.valueOf(100) + "%");
+
+						//Block the thread for a short time, but be sure
+						//to check the InterruptedException for cancellation
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException interrupted) {
+							if (isCancelled()) {
+								updateMessage("Cancelled");
+								updateProgress(0, 4);
+								updateTitle(String.valueOf(0) + "%");
+								return null;
+							}
+							else {
+								updateMessage("Terminated");
+								updateProgress(0, 4);
+								updateTitle(String.valueOf(0) + "%");
+								return null;
+							}
+						}
+
+			            Main.setAircraftSaved(false);
+						Main.setAircraftUpdated(true);
+			            
+						ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
+
+						try {
+							aircraftSavedFlag.set(Main.getAircraftSaved());
+							saveAircraftButton.disableProperty().bind(
+									Bindings.equal(aircraftSavedFlag, true)
+									);
+						} catch (Exception e) {
+							saveAircraftButton.setDisable(true);
+						}
+			            
+						return null;
+					}
+				};
+			}
+		};
+		
+		Main.getProgressBar().progressProperty().unbind();
+		Main.getStatusBar().textProperty().unbind();
+		Main.getTaskPercentage().textProperty().unbind();
+		
+		Main.getProgressBar().progressProperty().bind(updateAircraftDataService.progressProperty());
+		Main.getStatusBar().textProperty().bind(updateAircraftDataService.messageProperty());
+		Main.getTaskPercentage().textProperty().bind(updateAircraftDataService.titleProperty());
+		
+		updateAircraftDataService.start();
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void updateAircraftTabData() {
+		
+		//.................................................................................................
+		// DATA INITIALIZATION
+		//.................................................................................................
+		String aircraftType = "";
+		String aircraftRegulation = "";
+		//.................................................................................................
+		String cabinConfigurationFilePath = "";
+		//.................................................................................................
+		String fuselageFilePath = "";
+		String fuselageXPosition = "";
+		String fuselageXPositionUnit = "";
+		String fuselageYPosition = "";
+		String fuselageYPositionUnit = "";
+		String fuselageZPosition = "";
+		String fuselageZPositionUnit = "";
+		//.................................................................................................
+		String wingFilePath = "";
+		String wingXPosition = "";
+		String wingXPositionUnit = "";
+		String wingYPosition = "";
+		String wingYPositionUnit = "";
+		String wingZPosition = "";
+		String wingZPositionUnit = "";
+		String wingRiggingAngle = "";
+		String wingRiggingAngleUnit = "";
+		//.................................................................................................
+		String hTailFilePath = "";
+		String hTailXPosition = "";
+		String hTailXPositionUnit = "";
+		String hTailYPosition = "";
+		String hTailYPositionUnit = "";
+		String hTailZPosition = "";
+		String hTailZPositionUnit = "";
+		String hTailRiggingAngle = "";
+		String hTailRiggingAngleUnit = "";
+		//.................................................................................................
+		String vTailFilePath = "";
+		String vTailXPosition = "";
+		String vTailXPositionUnit = "";
+		String vTailYPosition = "";
+		String vTailYPositionUnit = "";
+		String vTailZPosition = "";
+		String vTailZPositionUnit = "";
+		String vTailRiggingAngle = "";
+		String vTailRiggingAngleUnit = "";
+		//.................................................................................................
+		String canardFilePath = "";
+		String canardXPosition = "";
+		String canardXPositionUnit = "";
+		String canardYPosition = "";
+		String canardYPositionUnit = "";
+		String canardZPosition = "";
+		String canardZPositionUnit = "";
+		String canardRiggingAngle = "";
+		String canardRiggingAngleUnit = "";
+		//.................................................................................................
+		List<String> engineFilePathList = new ArrayList<>();
+		List<String> engineXPositionList = new ArrayList<>();
+		List<String> engineXPositionUnitList = new ArrayList<>();
+		List<String> engineYPositionList = new ArrayList<>();
+		List<String> engineYPositionUnitList = new ArrayList<>();
+		List<String> engineZPositionList = new ArrayList<>();
+		List<String> engineZPositionUnitList = new ArrayList<>();
+		List<String> engineTiltAngleList = new ArrayList<>();
+		List<String> engineTiltAngleUnitList = new ArrayList<>();
+		List<String> engineMountinPositionList = new ArrayList<>();
+		//.................................................................................................
+		List<String> nacelleFilePathList = new ArrayList<>();
+		List<String> nacelleXPositionList = new ArrayList<>();
+		List<String> nacelleXPositionUnitList = new ArrayList<>();
+		List<String> nacelleYPositionList = new ArrayList<>();
+		List<String> nacelleYPositionUnitList = new ArrayList<>();
+		List<String> nacelleZPositionList = new ArrayList<>();
+		List<String> nacelleZPositionUnitList = new ArrayList<>();
+		List<String> nacelleMountinPositionList = new ArrayList<>();
+		//.................................................................................................
+		String landingGearsFilePath = "";
+		String landingGearsXPosition = "";
+		String landingGearsXPositionUnit = "";
+		String landingGearsYPosition = "";
+		String landingGearsYPositionUnit = "";
+		String landingGearsZPosition = "";
+		String landingGearsZPositionUnit = "";
+		String landingGearsMountinPosition = "";
+		//.................................................................................................
+		String systemsFilePath = "";
+		String systemsXPosition = "";
+		String systemsXPositionUnit = "";
+		String systemsYPosition = "";
+		String systemsYPositionUnit = "";
+		String systemsZPosition = "";
+		String systemsZPositionUnit = "";
+		
+		//.................................................................................................
+		// FETCHING DATA FROM GUI FIELDS ...
+		//.................................................................................................
+		if(!aircraftTypeChoiceBox.getSelectionModel().isEmpty())
+			aircraftType = aircraftTypeChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(!regulationsTypeChoiceBox.getSelectionModel().isEmpty())
+			aircraftRegulation = regulationsTypeChoiceBox.getSelectionModel().getSelectedItem().toString().replace('-', '_');
+		//.................................................................................................
+		if(textFieldAircraftCabinConfigurationFile.getText() != null)
+			cabinConfigurationFilePath = textFieldAircraftCabinConfigurationFile.getText();
+		//.................................................................................................
+		if(textFieldAircraftFuselageFile.getText() != null)
+			fuselageFilePath = textFieldAircraftFuselageFile.getText();
+		if(textFieldAircraftFuselageX.getText() != null)
+			fuselageXPosition = textFieldAircraftFuselageX.getText();
+		if(!fuselageXUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageXPositionUnit = fuselageXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftFuselageY.getText() != null)
+			fuselageYPosition = textFieldAircraftFuselageY.getText();
+		if(!fuselageYUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageYPositionUnit = fuselageYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftFuselageZ.getText() != null)
+			fuselageZPosition = textFieldAircraftFuselageZ.getText();
+		if(!fuselageZUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageZPositionUnit = fuselageZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(textFieldAircraftWingFile.getText() != null)
+			wingFilePath = textFieldAircraftWingFile.getText();
+		if(textFieldAircraftWingX.getText() != null)
+			wingXPosition = textFieldAircraftWingX.getText();
+		if(!wingXUnitChoiceBox.getSelectionModel().isEmpty())
+			wingXPositionUnit = wingXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftWingY.getText() != null)
+			wingYPosition = textFieldAircraftWingY.getText();
+		if(!wingYUnitChoiceBox.getSelectionModel().isEmpty())
+			wingYPositionUnit = wingYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftWingZ.getText() != null)
+			wingZPosition = textFieldAircraftWingZ.getText();
+		if(!wingZUnitChoiceBox.getSelectionModel().isEmpty())
+			wingZPositionUnit = wingZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftWingRiggingAngle.getText() != null)
+			wingRiggingAngle = textFieldAircraftWingRiggingAngle.getText();
+		if(!wingRiggingAngleUnitChoiceBox.getSelectionModel().isEmpty())
+			wingRiggingAngleUnit = wingRiggingAngleUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(textFieldAircraftHTailFile.getText() != null)
+			hTailFilePath = textFieldAircraftHTailFile.getText();
+		if(textFieldAircraftHTailX.getText() != null)
+			hTailXPosition = textFieldAircraftHTailX.getText();
+		if(!hTailXUnitChoiceBox.getSelectionModel().isEmpty())
+			hTailXPositionUnit = hTailXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftHTailY.getText() != null)
+			hTailYPosition = textFieldAircraftHTailY.getText();
+		if(!hTailYUnitChoiceBox.getSelectionModel().isEmpty())
+			hTailYPositionUnit = hTailYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftHTailZ.getText() != null)
+			hTailZPosition = textFieldAircraftHTailZ.getText();
+		if(!htailZUnitChoiceBox.getSelectionModel().isEmpty())
+			hTailZPositionUnit = htailZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftHTailRiggingAngle.getText() != null)
+			hTailRiggingAngle = textFieldAircraftHTailRiggingAngle.getText();
+		if(!hTailRiggingAngleUnitChoiceBox.getSelectionModel().isEmpty())
+			hTailRiggingAngleUnit = hTailRiggingAngleUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(textFieldAircraftVTailFile.getText() != null)
+			vTailFilePath = textFieldAircraftVTailFile.getText();
+		if(textFieldAircraftVTailX.getText() != null)
+			vTailXPosition = textFieldAircraftVTailX.getText();
+		if(!vTailXUnitChoiceBox.getSelectionModel().isEmpty())
+			vTailXPositionUnit = vTailXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftVTailY.getText() != null)
+			vTailYPosition = textFieldAircraftVTailY.getText();
+		if(!vTailYUnitChoiceBox.getSelectionModel().isEmpty())
+			vTailYPositionUnit = vTailYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftVTailZ.getText() != null)
+			vTailZPosition = textFieldAircraftVTailZ.getText();
+		if(!vTailZUnitChoiceBox.getSelectionModel().isEmpty())
+			vTailZPositionUnit = vTailZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftVTailRiggingAngle.getText() != null)
+			vTailRiggingAngle = textFieldAircraftVTailRiggingAngle.getText();
+		if(!vTailRiggingAngleUnitChoiceBox.getSelectionModel().isEmpty())
+			vTailRiggingAngleUnit = vTailRiggingAngleUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(textFieldAircraftCanardFile.getText() != null)
+			canardFilePath = textFieldAircraftCanardFile.getText();
+		if(textFieldAircraftCanardX.getText() != null)
+			canardXPosition = textFieldAircraftCanardX.getText();
+		if(!canardXUnitChoiceBox.getSelectionModel().isEmpty())
+			canardXPositionUnit = canardXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftCanardY.getText() != null)
+			canardYPosition = textFieldAircraftCanardY.getText();
+		if(!canardYUnitChoiceBox.getSelectionModel().isEmpty())
+			canardYPositionUnit = canardYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftCanardZ.getText() != null)
+			canardZPosition = textFieldAircraftCanardZ.getText();
+		if(!canardZUnitChoiceBox.getSelectionModel().isEmpty())
+			canardZPositionUnit = canardZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftCanardRiggingAngle.getText() != null)
+			canardRiggingAngle = textFieldAircraftCanardRiggingAngle.getText();
+		if(!canardRiggingAngleUnitChoiceBox.getSelectionModel().isEmpty())
+			canardRiggingAngleUnit = canardRiggingAngleUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(!textFieldsAircraftEngineFileList.isEmpty())
+			textFieldsAircraftEngineFileList.stream().forEach(tf -> engineFilePathList.add(tf.getText()));
+		if(!textFieldAircraftEngineXList.isEmpty())
+			textFieldAircraftEngineXList.stream().forEach(tf -> engineXPositionList.add(tf.getText()));
+		if(!choiceBoxAircraftEngineXUnitList.isEmpty())
+			choiceBoxAircraftEngineXUnitList.stream().forEach(cb -> engineXPositionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!textFieldAircraftEngineYList.isEmpty())
+			textFieldAircraftEngineYList.stream().forEach(tf -> engineYPositionList.add(tf.getText()));
+		if(!choiceBoxAircraftEngineYUnitList.isEmpty())
+			choiceBoxAircraftEngineYUnitList.stream().forEach(cb -> engineYPositionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!textFieldAircraftEngineZList.isEmpty())
+			textFieldAircraftEngineZList.stream().forEach(tf -> engineZPositionList.add(tf.getText()));
+		if(!choiceBoxAircraftEngineZUnitList.isEmpty())
+			choiceBoxAircraftEngineZUnitList.stream().forEach(cb -> engineZPositionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!textFieldAircraftEngineTiltList.isEmpty())
+			textFieldAircraftEngineTiltList.stream().forEach(tf -> engineTiltAngleList.add(tf.getText()));
+		if(!choiceBoxAircraftEngineTiltUnitList.isEmpty())
+			choiceBoxAircraftEngineTiltUnitList.stream().forEach(cb -> engineTiltAngleUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!choiceBoxesAircraftEnginePositonList.isEmpty())
+			choiceBoxesAircraftEnginePositonList.stream().forEach(cb -> engineMountinPositionList.add(cb.getSelectionModel().getSelectedItem()));
+		//.................................................................................................
+		if(!textFieldsAircraftNacelleFileList.isEmpty())
+			textFieldsAircraftNacelleFileList.stream().forEach(tf -> nacelleFilePathList.add(tf.getText()));
+		if(!textFieldAircraftNacelleXList.isEmpty())
+			textFieldAircraftNacelleXList.stream().forEach(tf -> nacelleXPositionList.add(tf.getText()));
+		if(!choiceBoxAircraftNacelleXUnitList.isEmpty())
+			choiceBoxAircraftNacelleXUnitList.stream().forEach(cb -> nacelleXPositionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!textFieldAircraftNacelleYList.isEmpty())
+			textFieldAircraftNacelleYList.stream().forEach(tf -> nacelleYPositionList.add(tf.getText()));
+		if(!choiceBoxAircraftNacelleYUnitList.isEmpty())
+			choiceBoxAircraftNacelleYUnitList.stream().forEach(cb -> nacelleYPositionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!textFieldAircraftNacelleZList.isEmpty())
+			textFieldAircraftNacelleZList.stream().forEach(tf -> nacelleZPositionList.add(tf.getText()));
+		if(!choiceBoxAircraftNacelleZUnitList.isEmpty())
+			choiceBoxAircraftNacelleZUnitList.stream().forEach(cb -> nacelleZPositionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!choiceBoxesAircraftNacellePositonList.isEmpty())
+			choiceBoxesAircraftNacellePositonList.stream().forEach(cb -> nacelleMountinPositionList.add(cb.getSelectionModel().getSelectedItem()));
+		//.................................................................................................
+		if(textFieldAircraftLandingGearsFile.getText() != null)
+			landingGearsFilePath = textFieldAircraftLandingGearsFile.getText();
+		if(textFieldAircraftLandingGearsX.getText() != null)
+			landingGearsXPosition = textFieldAircraftLandingGearsX.getText();
+		if(!landingGearsXUnitChoiceBox.getSelectionModel().isEmpty())
+			landingGearsXPositionUnit = landingGearsXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftLandingGearsY.getText() != null)
+			landingGearsYPosition = textFieldAircraftLandingGearsY.getText();
+		if(!landingGearsYUnitChoiceBox.getSelectionModel().isEmpty())
+			landingGearsYPositionUnit = landingGearsYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftLandingGearsZ.getText() != null)
+			landingGearsZPosition = textFieldAircraftLandingGearsZ.getText();
+		if(!landingGearsZUnitChoiceBox.getSelectionModel().isEmpty())
+			landingGearsZPositionUnit = landingGearsZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(!landingGearsMountingPositionTypeChoiceBox.getSelectionModel().isEmpty())
+			landingGearsMountinPosition = landingGearsMountingPositionTypeChoiceBox.getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(textFieldAircraftSystemsFile.getText() != null)
+			systemsFilePath = textFieldAircraftSystemsFile.getText();
+		if(textFieldAircraftSystemsX.getText() != null)
+			systemsXPosition = textFieldAircraftSystemsX.getText();
+		if(!systemsXUnitChoiceBox.getSelectionModel().isEmpty())
+			systemsXPositionUnit = systemsXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftSystemsY.getText() != null)
+			systemsYPosition = textFieldAircraftSystemsY.getText();
+		if(!systemsYUnitChoiceBox.getSelectionModel().isEmpty())
+			systemsYPositionUnit = systemsYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftSystemsZ.getText() != null)
+			systemsZPosition = textFieldAircraftSystemsZ.getText();
+		if(!systemsZUnitChoiceBox.getSelectionModel().isEmpty())
+			systemsZPositionUnit = systemsZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		
+		//.................................................................................................
+		// SETTING ALL DATA INSIDE THE AIRCRAFT OBJECT ...
+		//.................................................................................................
+		Main.getTheAircraft().setTypeVehicle(AircraftTypeEnum.valueOf(aircraftType));
+		Main.getTheAircraft().setRegulations(RegulationsEnum.valueOf(aircraftRegulation));
+		//.................................................................................................
+		Main.getTheAircraft().setCabinConfigurationFilePath(cabinConfigurationFilePath);
+		//.................................................................................................
+		if(Main.getTheAircraft().getFuselage() != null) {
+			Main.getTheAircraft().setFuselageFilePath(fuselageFilePath);
+			Main.getTheAircraft().getFuselage().setXApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(fuselageXPosition), Unit.valueOf(fuselageXPositionUnit))
+					);
+			Main.getTheAircraft().getFuselage().setYApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(fuselageYPosition), Unit.valueOf(fuselageYPositionUnit))
+					);
+			Main.getTheAircraft().getFuselage().setZApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(fuselageZPosition), Unit.valueOf(fuselageZPositionUnit))
+					);
+		}
+		//.................................................................................................
+		if(Main.getTheAircraft().getWing() != null) {
+			Main.getTheAircraft().setWingFilePath(wingFilePath);
+			Main.getTheAircraft().getWing().setXApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(wingXPosition), Unit.valueOf(wingXPositionUnit))
+					);
+			Main.getTheAircraft().getWing().setYApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(wingYPosition), Unit.valueOf(wingYPositionUnit))
+					);
+			Main.getTheAircraft().getWing().setZApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(wingZPosition), Unit.valueOf(wingZPositionUnit))
+					);
+			Main.getTheAircraft().getWing().setRiggingAngle(
+					(Amount<Angle>) Amount.valueOf(Double.valueOf(wingRiggingAngle), Unit.valueOf(wingRiggingAngleUnit))
+					);
+		}
+		//.................................................................................................
+		if(Main.getTheAircraft().getHTail() != null) {
+			Main.getTheAircraft().setHTailFilePath(hTailFilePath);
+			Main.getTheAircraft().getHTail().setXApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(hTailXPosition), Unit.valueOf(hTailXPositionUnit))
+					);
+			Main.getTheAircraft().getHTail().setYApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(hTailYPosition), Unit.valueOf(hTailYPositionUnit))
+					);
+			Main.getTheAircraft().getHTail().setZApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(hTailZPosition), Unit.valueOf(hTailZPositionUnit))
+					);
+			Main.getTheAircraft().getHTail().setRiggingAngle(
+					(Amount<Angle>) Amount.valueOf(Double.valueOf(hTailRiggingAngle), Unit.valueOf(hTailRiggingAngleUnit))
+					);
+		}
+		//.................................................................................................
+		if(Main.getTheAircraft().getVTail() != null) {
+			Main.getTheAircraft().setVTailFilePath(vTailFilePath);
+			Main.getTheAircraft().getVTail().setXApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(vTailXPosition), Unit.valueOf(vTailXPositionUnit))
+					);
+			Main.getTheAircraft().getVTail().setYApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(vTailYPosition), Unit.valueOf(vTailYPositionUnit))
+					);
+			Main.getTheAircraft().getVTail().setZApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(vTailZPosition), Unit.valueOf(vTailZPositionUnit))
+					);
+			Main.getTheAircraft().getVTail().setRiggingAngle(
+					(Amount<Angle>) Amount.valueOf(Double.valueOf(vTailRiggingAngle), Unit.valueOf(vTailRiggingAngleUnit))
+					);
+		}
+		//.................................................................................................
+		if(Main.getTheAircraft().getCanard() != null) {
+			
+			/*
+			 * TODO: IF THE CANARD HAS BEEN SET BUT NOT ITS POSITIONS, SUBSTITUTE "NOT INITIALIZED" WITH
+			 *       "0.0" (AND "m" OR "deg") - THE SAME CHECK SHOULD BE DONE ALSO FOR OTHER COMPONENTS
+			 *       (THE USER MAY HAVE CREATED SOME COMPONENTS FORGETTING TO SET THEIR POSITIONS IN THE 
+			 *       AIRCRAFT TAB)   
+			 *       
+			 *       OTHERWISE THE "NOT INITIALIZED" STRING MAY BE REPLACED DURING THE LOG OF THE AIRCRAFT TAB
+			 */
+			
+			Main.getTheAircraft().setCanardFilePath(canardFilePath);
+			Main.getTheAircraft().getCanard().setXApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(canardXPosition), Unit.valueOf(canardXPositionUnit))
+					);
+			Main.getTheAircraft().getCanard().setYApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(canardYPosition), Unit.valueOf(canardYPositionUnit))
+					);
+			Main.getTheAircraft().getCanard().setZApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(canardZPosition), Unit.valueOf(canardZPositionUnit))
+					);
+			Main.getTheAircraft().getCanard().setRiggingAngle(
+					(Amount<Angle>) Amount.valueOf(Double.valueOf(canardRiggingAngle), Unit.valueOf(canardRiggingAngleUnit))
+					);
+		}
+		//.................................................................................................
+		if(Main.getTheAircraft().getPowerPlant() != null) {
+			Main.getTheAircraft().setEngineFilePathList(new ArrayList<>());
+			Main.getTheAircraft().getEngineFilePathList().addAll(engineFilePathList);
+			for(int i=0; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++) {
+
+				Engine currentEngine = Main.getTheAircraft().getPowerPlant().getEngineList().get(i);
+
+				currentEngine.setXApexConstructionAxes(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(engineXPositionList.get(i)), 
+								Unit.valueOf(engineXPositionUnitList.get(i))
+								)
+						);
+				currentEngine.setYApexConstructionAxes(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(engineYPositionList.get(i)), 
+								Unit.valueOf(engineYPositionUnitList.get(i))
+								)
+						);
+				currentEngine.setZApexConstructionAxes(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(engineZPositionList.get(i)), 
+								Unit.valueOf(engineZPositionUnitList.get(i))
+								)
+						);
+				currentEngine.setTiltingAngle(
+						(Amount<Angle>) Amount.valueOf(
+								Double.valueOf(engineTiltAngleList.get(i)), 
+								Unit.valueOf(engineTiltAngleUnitList.get(i))
+								)
+						);
+				currentEngine.setMountingPosition(EngineMountingPositionEnum.valueOf(engineMountinPositionList.get(i)));
+			}
+		}
+		//.................................................................................................
+		if(Main.getTheAircraft().getNacelles() != null) {
+			Main.getTheAircraft().setNacelleFilePathList(new ArrayList<>());
+			Main.getTheAircraft().getNacelleFilePathList().addAll(nacelleFilePathList);
+			for(int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
+
+				NacelleCreator currentNacelle = Main.getTheAircraft().getNacelles().getNacellesList().get(i);
+
+				currentNacelle.setXApexConstructionAxes(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(nacelleXPositionList.get(i)), 
+								Unit.valueOf(nacelleXPositionUnitList.get(i))
+								)
+						);
+				currentNacelle.setYApexConstructionAxes(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(nacelleYPositionList.get(i)), 
+								Unit.valueOf(nacelleYPositionUnitList.get(i))
+								)
+						);
+				currentNacelle.setZApexConstructionAxes(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(nacelleZPositionList.get(i)), 
+								Unit.valueOf(nacelleZPositionUnitList.get(i))
+								)
+						);
+				currentNacelle.setMountingPosition(MountingPosition.valueOf(nacelleMountinPositionList.get(i)));
+			}
+		}
+		//.................................................................................................
+		if(Main.getTheAircraft().getLandingGears() != null) {
+			Main.getTheAircraft().setLandingGearsFilePath(landingGearsFilePath);
+			Main.getTheAircraft().getLandingGears().setXApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsXPosition), Unit.valueOf(landingGearsXPositionUnit))
+					);
+			Main.getTheAircraft().getLandingGears().setYApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsYPosition), Unit.valueOf(landingGearsYPositionUnit))
+					);
+			Main.getTheAircraft().getLandingGears().setZApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsZPosition), Unit.valueOf(landingGearsZPositionUnit))
+					);
+			Main.getTheAircraft().getLandingGears().setMountingPosition(aircraft.components.LandingGears.MountingPosition.valueOf(landingGearsMountinPosition));
+		}
+		//.................................................................................................
+		if(Main.getTheAircraft().getSystems() != null) {
+			Main.getTheAircraft().setSystemsFilePath(systemsFilePath);
+			Main.getTheAircraft().getSystems().setXApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsXPosition), Unit.valueOf(systemsXPositionUnit))
+					);
+			Main.getTheAircraft().getSystems().setYApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsYPosition), Unit.valueOf(systemsYPositionUnit))
+					);
+			Main.getTheAircraft().getSystems().setZApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsZPosition), Unit.valueOf(systemsZPositionUnit))
+					);
+		}
+	}
+	
+	private void updateFuselageTabData() {
+		
+		
+		
+	}
+	
+	private void updateCabinConfigurationTabData() {
+		
+		
+		
+	}
+	
+	private void updateWingTabData() {
+		
+		
+		
+	}
+	
+	private void updateHTailTabData() {
+		
+		
+		
+	}
+	
+	private void updateVTailTabData() {
+		
+		
+		
+	}
+	
+	private void updateCanardTabData() {
+		
+		
+		
+	}
+	
+	private void updateNacelleTabData() {
+		
+		
+		
+	}
+	
+	private void updatePowerPlantTabData() {
+		
+		
+		
+	}
+	
+	private void updateLandingGearsTabData() {
+		
+		
+		
+	}
+	
+	private void createAircraftObjectFromData() {
 		
 		/*
-		 *  TODO: REMEMBER TO SET SAVE AIRCRAFT FLAG TO FALSE 
-		 *  AT THE END OF THE SERVICE AND TO PERFORM THE CHECK 
-		 *  FOR THE UPDATE STATUS AFTER SETTING THE RELATED FLAG TO TRUE 
+		 * TODO: IF THE FILE PATH ARE FILLED, OPEN A DIALOG TO ASK THE USER TO CHOOSE BETWEEN FILE DATA AND 
+		 *       TEXTFIELDS DATA FOR EACH COMPONENTS (USE CHECKBOXES) 
 		 */
 		
 	}
@@ -9231,14 +10512,18 @@ public class InputManagerController {
 		
 		if(Main.getTheAircraft().getFuselage() != null) {
 			// left curve, upperview
-			List<Amount<Length>> vX1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountX();
+			List<Amount<Length>> vX1Left = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountX().stream().forEach(x -> vX1Left.add(x));
 			int nX1Left = vX1Left.size();
-			List<Amount<Length>> vY1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountY();
+			List<Amount<Length>> vY1Left = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountY().stream().forEach(y -> vY1Left.add(y));
 
 			// right curve, upperview
-			List<Amount<Length>> vX2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountX();
+			List<Amount<Length>> vX2Right = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountX().stream().forEach(x -> vX2Right.add(x));;
 			int nX2Right = vX2Right.size();
-			List<Amount<Length>> vY2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountY();
+			List<Amount<Length>> vY2Right = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountY().stream().forEach(y -> vY2Right.add(y));;
 
 			IntStream.range(0, nX1Left)
 			.forEach(i -> {
@@ -9359,12 +10644,15 @@ public class InputManagerController {
 			for(int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
 
 				// upper curve, sideview
-				List<Amount<Length>> nacelleCurveX = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline();
+				List<Amount<Length>> nacelleCurveX = new ArrayList<>(); 
+				Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline().stream().forEach(x -> nacelleCurveX.add(x));
 				int nacelleCurveXPoints = nacelleCurveX.size();
-				List<Amount<Length>> nacelleCurveUpperY = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYRight();
+				List<Amount<Length>> nacelleCurveUpperY = new ArrayList<>(); 
+				Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYRight().stream().forEach(y -> nacelleCurveUpperY.add(y));
 
 				// lower curve, sideview
-				List<Amount<Length>> nacelleCurveLowerY = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYLeft();
+				List<Amount<Length>> nacelleCurveLowerY = new ArrayList<>(); 
+				Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYLeft().stream().forEach(y -> nacelleCurveLowerY.add(y));;
 
 				List<Amount<Length>> dataOutlineXZCurveNacelleX = new ArrayList<>();
 				List<Amount<Length>> dataOutlineXZCurveNacelleY = new ArrayList<>();
@@ -9610,14 +10898,18 @@ public class InputManagerController {
 		
 		if (Main.getTheAircraft().getFuselage() != null) {
 			// upper curve, sideview
-			List<Amount<Length>> vX1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountX();
+			List<Amount<Length>> vX1Upper = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountX().stream().forEach(x -> vX1Upper.add(x));
 			int nX1Upper = vX1Upper.size();
-			List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+			List<Amount<Length>> vZ1Upper = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ().stream().forEach(z -> vZ1Upper.add(z));
 
 			// lower curve, sideview
-			List<Amount<Length>> vX2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountX();
+			List<Amount<Length>> vX2Lower = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountX().stream().forEach(x -> vX2Lower.add(x));
 			int nX2Lower = vX2Lower.size();
-			List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ();
+			List<Amount<Length>> vZ2Lower = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ().stream().forEach(z -> vZ2Lower.add(z));
 
 			IntStream.range(0, nX1Upper)
 			.forEach(i -> {
@@ -9756,12 +11048,15 @@ public class InputManagerController {
 			for(int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
 
 				// upper curve, sideview
-				List<Amount<Length>> nacelleCurveX = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline();
+				List<Amount<Length>> nacelleCurveX = new ArrayList<>(); 
+				Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline().stream().forEach(x -> nacelleCurveX.add(x));
 				int nacelleCurveXPoints = nacelleCurveX.size();
-				List<Amount<Length>> nacelleCurveUpperZ = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZUpper();
+				List<Amount<Length>> nacelleCurveUpperZ = new ArrayList<>(); 
+				Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZUpper().stream().forEach(z -> nacelleCurveUpperZ.add(z));
 
 				// lower curve, sideview
-				List<Amount<Length>> nacelleCurveLowerZ = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZLower();
+				List<Amount<Length>> nacelleCurveLowerZ = new ArrayList<>(); 
+				Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZLower().stream().forEach(z -> nacelleCurveLowerZ.add(z));;
 
 				List<Amount<Length>> dataOutlineXZCurveNacelleX = new ArrayList<>();
 				List<Amount<Length>> dataOutlineXZCurveNacelleZ = new ArrayList<>();
@@ -10018,14 +11313,18 @@ public class InputManagerController {
 		
 		if (Main.getTheAircraft().getFuselage() != null) {
 			// section upper curve
-			List<Amount<Length>> vY1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountY();
+			List<Amount<Length>> vY1Upper = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountY().stream().forEach(y -> vY1Upper.add(y));
 			int nY1Upper = vY1Upper.size();
-			List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountZ();
+			List<Amount<Length>> vZ1Upper = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountZ().stream().forEach(z -> vZ1Upper.add(z));
 
 			// section lower curve
-			List<Amount<Length>> vY2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountY();
+			List<Amount<Length>> vY2Lower = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountY().stream().forEach(y -> vY2Lower.add(y));
 			int nY2Lower = vY2Lower.size();
-			List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountZ();
+			List<Amount<Length>> vZ2Lower = new ArrayList<>(); 
+			Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountZ().stream().forEach(z -> vZ2Lower.add(z));
 
 			IntStream.range(0, nY1Upper)
 			.forEach(i -> {
@@ -10042,7 +11341,8 @@ public class InputManagerController {
 		XYSeries seriesWingFrontView = new XYSeries("Wing - Front View", false);
 
 		if (Main.getTheAircraft().getWing() != null) {
-			List<Amount<Length>> wingBreakPointsYCoordinates = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getYBreakPoints();
+			List<Amount<Length>> wingBreakPointsYCoordinates = new ArrayList<>(); 
+			Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getYBreakPoints().stream().forEach(y -> wingBreakPointsYCoordinates.add(y));
 			int nYPointsWingTemp = wingBreakPointsYCoordinates.size();
 			for(int i=0; i<nYPointsWingTemp; i++)
 				wingBreakPointsYCoordinates.add(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getYBreakPoints().get(nYPointsWingTemp-i-1));
@@ -10115,7 +11415,8 @@ public class InputManagerController {
 		XYSeries seriesHTailFrontView = new XYSeries("HTail - Front View", false);
 
 		if (Main.getTheAircraft().getHTail() != null) {
-			List<Amount<Length>> hTailBreakPointsYCoordinates = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getYBreakPoints();
+			List<Amount<Length>> hTailBreakPointsYCoordinates = new ArrayList<>(); 
+			Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getYBreakPoints().stream().forEach(y -> hTailBreakPointsYCoordinates.add(y));
 			int nYPointsHTailTemp = hTailBreakPointsYCoordinates.size();
 			for(int i=0; i<nYPointsHTailTemp; i++)
 				hTailBreakPointsYCoordinates.add(Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getYBreakPoints().get(nYPointsHTailTemp-i-1));
@@ -10187,7 +11488,8 @@ public class InputManagerController {
 		XYSeries seriesCanardFrontView = new XYSeries("Canard - Front View", false);
 
 		if (Main.getTheAircraft().getCanard() != null) {
-			List<Amount<Length>> canardBreakPointsYCoordinates = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getYBreakPoints();
+			List<Amount<Length>> canardBreakPointsYCoordinates = new ArrayList<>(); 
+			Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getYBreakPoints().stream().forEach(y -> canardBreakPointsYCoordinates.add(y));
 			int nYPointsCanardTemp = canardBreakPointsYCoordinates.size();
 			for(int i=0; i<nYPointsCanardTemp; i++)
 				canardBreakPointsYCoordinates.add(Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getYBreakPoints().get(nYPointsCanardTemp-i-1));
@@ -10259,7 +11561,8 @@ public class InputManagerController {
 		XYSeries seriesVTailFrontView = new XYSeries("VTail - Front View", false);
 
 		if (Main.getTheAircraft().getVTail() != null) {
-			List<Amount<Length>> vTailBreakPointsYCoordinates = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getYBreakPoints();
+			List<Amount<Length>> vTailBreakPointsYCoordinates = new ArrayList<>(); 
+			Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getYBreakPoints().stream().forEach(y -> vTailBreakPointsYCoordinates.add(y));
 			int nYPointsVTailTemp = vTailBreakPointsYCoordinates.size();
 			for(int i=0; i<nYPointsVTailTemp; i++)
 				vTailBreakPointsYCoordinates.add(Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getYBreakPoints().get(nYPointsVTailTemp-i-1));
@@ -11757,14 +13060,18 @@ public class InputManagerController {
 		// get data vectors from fuselage discretization
 		//--------------------------------------------------
 		// left curve, upperview
-		List<Amount<Length>> vX1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountX();
+		List<Amount<Length>> vX1Left = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountX().stream().forEach(x -> vX1Left.add(x));
 		int nX1Left = vX1Left.size();
-		List<Amount<Length>> vY1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountY();
+		List<Amount<Length>> vY1Left = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountY().stream().forEach(y -> vY1Left.add(y));
 
 		// right curve, upperview
-		List<Amount<Length>> vX2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountX();
+		List<Amount<Length>> vX2Right = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountX().stream().forEach(x -> vX2Right.add(x));
 		int nX2Right = vX2Right.size();
-		List<Amount<Length>> vY2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountY();
+		List<Amount<Length>> vY2Right = new ArrayList<>();
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountY().stream().forEach(y -> vY2Right.add(y));
 
 		XYSeries seriesFuselageCurve = new XYSeries("Fuselage - Top View", false);
 		IntStream.range(0, nX1Left)
@@ -11888,14 +13195,18 @@ public class InputManagerController {
 		// get data vectors from fuselage discretization
 		//--------------------------------------------------
 		// upper curve, sideview
-		List<Amount<Length>> vX1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountX();
+		List<Amount<Length>> vX1Upper = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountX().stream().forEach(x -> vX1Upper.add(x));
 		int nX1Upper = vX1Upper.size();
-		List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+		List<Amount<Length>> vZ1Upper = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ().stream().forEach(z -> vZ1Upper.add(z));
 
 		// lower curve, sideview
-		List<Amount<Length>> vX2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountX();
+		List<Amount<Length>> vX2Lower = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountX().stream().forEach(x -> vX2Lower.add(x));
 		int nX2Lower = vX2Lower.size();
-		List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ();
+		List<Amount<Length>> vZ2Lower = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ().stream().forEach(z -> vZ2Lower.add(z));
 
 		XYSeries seriesFuselageCurve = new XYSeries("Fuselage - Top View", false);
 		IntStream.range(0, nX1Upper)
@@ -12019,14 +13330,18 @@ public class InputManagerController {
 		// get data vectors from fuselage discretization
 		//--------------------------------------------------
 		// section upper curve
-		List<Amount<Length>> vY1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountY();
+		List<Amount<Length>> vY1Upper = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountY().stream().forEach(y -> vY1Upper.add(y));
 		int nY1Upper = vY1Upper.size();
-		List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountZ();
+		List<Amount<Length>> vZ1Upper = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountZ().stream().forEach(z -> vZ1Upper.add(z));
 
 		// section lower curve
-		List<Amount<Length>> vY2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountY();
+		List<Amount<Length>> vY2Lower = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountY().stream().forEach(y -> vY2Lower.add(y));
 		int nY2Lower = vY2Lower.size();
-		List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountZ();
+		List<Amount<Length>> vZ2Lower = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountZ().stream().forEach(z -> vZ2Lower.add(z));
 		
 		XYSeries seriesFuselageCurve = new XYSeries("Fuselage - Front View", false);
 		IntStream.range(0, nY1Upper)
@@ -12766,14 +14081,18 @@ public class InputManagerController {
 		// get data vectors from fuselage discretization
 		//--------------------------------------------------
 		// left curve, upperview
-		List<Amount<Length>> vX1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountX();
+		List<Amount<Length>> vX1Left = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountX().stream().forEach(x -> vX1Left.add(x));
 		int nX1Left = vX1Left.size();
-		List<Amount<Length>> vY1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountY();
+		List<Amount<Length>> vY1Left = new ArrayList<>();
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountY().stream().forEach(y -> vY1Left.add(y));
 
 		// right curve, upperview
-		List<Amount<Length>> vX2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountX();
+		List<Amount<Length>> vX2Right = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountX().stream().forEach(x -> vX2Right.add(x));
 		int nX2Right = vX2Right.size();
-		List<Amount<Length>> vY2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountY();
+		List<Amount<Length>> vY2Right = new ArrayList<>(); 
+		Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountY().stream().forEach(y -> vY2Right.add(y));
 
 		XYSeries seriesFuselageCurve = new XYSeries("Fuselage - Top View", false);
 		IntStream.range(0, nX1Left)
@@ -14531,26 +15850,24 @@ public class InputManagerController {
 			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING AREA:
-			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSurfacePlanform() != null) {
+			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSurfacePlanform() != null) {
 				
 				textFieldEquivalentWingArea.setText(
 						String.valueOf(
 								Main.getTheAircraft()
 								.getWing()
 								.getLiftingSurfaceCreator()
-								.getEquivalentWing()
-								.getPanels().get(0)
 								.getSurfacePlanform()
 								.getEstimatedValue()
 								)
 						);
 				
 				if(Main.getTheAircraft()
-						.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0)
+						.getWing().getLiftingSurfaceCreator()
 						.getSurfacePlanform().getUnit().toString().equalsIgnoreCase("m²"))
 					equivalentWingAreaUnitChoiceBox.getSelectionModel().select(0);
 				else if(Main.getTheAircraft()
-						.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0)
+						.getWing().getLiftingSurfaceCreator()
 						.getSurfacePlanform().getUnit().toString().equalsIgnoreCase("ft²"))
 					equivalentWingAreaUnitChoiceBox.getSelectionModel().select(1);
 				
@@ -14562,15 +15879,13 @@ public class InputManagerController {
 			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING ASPECT RATIO:
-			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getAspectRatio() != null) {
+			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAspectRatio() != null) {
 				
 				textFieldEquivalentWingAspectRatio.setText(
 						String.valueOf(
 								Main.getTheAircraft()
 								.getWing()
 								.getLiftingSurfaceCreator()
-								.getEquivalentWing()
-								.getPanels().get(0)
 								.getAspectRatio()
 								)
 						);
@@ -15055,6 +16370,23 @@ public class InputManagerController {
 				SymmetricFlapCreator currentFlap = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().get(i);
 				
 				//---------------------------------------------------------------------------------
+				// TYPE:
+				if(currentFlap.getType() != null) {
+					if(currentFlap.getType().equals(FlapTypeEnum.SINGLE_SLOTTED))
+						choiceBoxWingFlapTypeList.get(i).getSelectionModel().select(0);
+					else if(currentFlap.getType().equals(FlapTypeEnum.DOUBLE_SLOTTED))
+						choiceBoxWingFlapTypeList.get(i).getSelectionModel().select(1);
+					else if(currentFlap.getType().equals(FlapTypeEnum.PLAIN))
+						choiceBoxWingFlapTypeList.get(i).getSelectionModel().select(2);
+					else if(currentFlap.getType().equals(FlapTypeEnum.FOWLER))
+						choiceBoxWingFlapTypeList.get(i).getSelectionModel().select(3);
+					else if(currentFlap.getType().equals(FlapTypeEnum.OPTIMIZED_FOWLER))
+						choiceBoxWingFlapTypeList.get(i).getSelectionModel().select(4);
+					else if(currentFlap.getType().equals(FlapTypeEnum.TRIPLE_SLOTTED))
+						choiceBoxWingFlapTypeList.get(i).getSelectionModel().select(5);
+				}
+				
+				//---------------------------------------------------------------------------------
 				// INNER POSITION:
 				if(currentFlap.getInnerStationSpanwisePosition() != null) {
 					textFieldWingInnerPositionFlapList.get(i).setText(
@@ -15271,6 +16603,13 @@ public class InputManagerController {
 			AsymmetricFlapCreator leftAileron = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().get(0);
 
 			//---------------------------------------------------------------------------------
+			// TYPE:
+			if(leftAileron.getType() != null) {
+				if(leftAileron.getType().equals(FlapTypeEnum.PLAIN))
+					wingLeftAileronTypeChoichBox.getSelectionModel().select(0);
+			}
+			
+			//---------------------------------------------------------------------------------
 			// INNER POSITION:
 			if(leftAileron.getInnerStationSpanwisePosition() != null) {
 				textFieldWingInnerPositionAileronLeft.setText(
@@ -15363,6 +16702,13 @@ public class InputManagerController {
 
 			AsymmetricFlapCreator rightAileron = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().get(1);
 
+			//---------------------------------------------------------------------------------
+			// TYPE:
+			if(rightAileron.getType() != null) {
+				if(rightAileron.getType().equals(FlapTypeEnum.PLAIN))
+					wingRightAileronTypeChoichBox.getSelectionModel().select(0);
+			}
+			
 			//---------------------------------------------------------------------------------
 			// INNER POSITION:
 			if(rightAileron.getInnerStationSpanwisePosition() != null) {
@@ -16064,6 +17410,13 @@ public class InputManagerController {
 				SymmetricFlapCreator currentElevator = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(i);
 				
 				//---------------------------------------------------------------------------------
+				// TYPE:
+				if(currentElevator.getType() != null) {
+					if(currentElevator.getType().equals(FlapTypeEnum.PLAIN))
+						choiceBoxHTailElevatorTypeList.get(i).getSelectionModel().select(0);
+				}
+				
+				//---------------------------------------------------------------------------------
 				// INNER POSITION:
 				if(currentElevator.getInnerStationSpanwisePosition() != null) {
 					textFieldHTailInnerPositionElevatorList.get(i).setText(
@@ -16655,6 +18008,13 @@ public class InputManagerController {
 			for (int i=0; i<Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().size(); i++) {
 				
 				SymmetricFlapCreator currentRudder = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(i);
+				
+				//---------------------------------------------------------------------------------
+				// TYPE:
+				if(currentRudder.getType() != null) {
+					if(currentRudder.getType().equals(FlapTypeEnum.PLAIN))
+						choiceBoxVTailRudderTypeList.get(i).getSelectionModel().select(0);
+				}
 				
 				//---------------------------------------------------------------------------------
 				// INNER POSITION:
@@ -17250,6 +18610,13 @@ public class InputManagerController {
 				SymmetricFlapCreator currentControlSurface = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSymmetricFlaps().get(i);
 				
 				//---------------------------------------------------------------------------------
+				// TYPE:
+				if(currentControlSurface.getType() != null) {
+					if(currentControlSurface.getType().equals(FlapTypeEnum.PLAIN))
+						choiceBoxCanardControlSurfaceTypeList.get(i).getSelectionModel().select(0);
+				}
+				
+				//---------------------------------------------------------------------------------
 				// INNER POSITION:
 				if(currentControlSurface.getInnerStationSpanwisePosition() != null) {
 					textFieldCanardInnerPositionControlSurfaceList.get(i).setText(
@@ -17370,12 +18737,15 @@ public class InputManagerController {
 			//--------------------------------------------------
 
 			// upper curve, sideview
-			List<Amount<Length>> nacelleCurveX = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline();
+			List<Amount<Length>> nacelleCurveX = new ArrayList<>(); 
+			Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline().stream().forEach(x -> nacelleCurveX.add(x));
 			int nacelleCurveXPoints = nacelleCurveX.size();
-			List<Amount<Length>> nacelleCurveUpperY = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYRight();
+			List<Amount<Length>> nacelleCurveUpperY = new ArrayList<>(); 
+			Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYRight().stream().forEach(y -> nacelleCurveUpperY.add(y));
 
 			// lower curve, sideview
-			List<Amount<Length>> nacelleCurveLowerY = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYLeft();
+			List<Amount<Length>> nacelleCurveLowerY = new ArrayList<>(); 
+			Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYLeft().stream().forEach(y -> nacelleCurveLowerY.add(y));
 
 			List<Amount<Length>> dataOutlineXZCurveNacelleX = new ArrayList<>();
 			List<Amount<Length>> dataOutlineXZCurveNacelleY = new ArrayList<>();
@@ -17539,12 +18909,15 @@ public class InputManagerController {
 			//--------------------------------------------------
 
 			// upper curve, sideview
-			List<Amount<Length>> nacelleCurveX = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline();
+			List<Amount<Length>> nacelleCurveX = new ArrayList<>(); 
+			Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline().stream().forEach(x -> nacelleCurveX.add(x));
 			int nacelleCurveXPoints = nacelleCurveX.size();
-			List<Amount<Length>> nacelleCurveUpperZ = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZUpper();
+			List<Amount<Length>> nacelleCurveUpperZ = new ArrayList<>(); 
+			Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZUpper().stream().forEach(z -> nacelleCurveUpperZ.add(z));
 
 			// lower curve, sideview
-			List<Amount<Length>> nacelleCurveLowerZ = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZLower();
+			List<Amount<Length>> nacelleCurveLowerZ = new ArrayList<>(); 
+			Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZLower().stream().forEach(z -> nacelleCurveLowerZ.add(z));;
 
 			List<Amount<Length>> dataOutlineXZCurveNacelleX = new ArrayList<>();
 			List<Amount<Length>> dataOutlineXZCurveNacelleZ = new ArrayList<>();
