@@ -18,6 +18,7 @@ import opencascade.GeomAbs_Shape;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
 import opencascade.TopTools_ListOfShape;
+import opencascade.TopoDS;
 import opencascade.TopoDS_CompSolid;
 import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
@@ -372,4 +373,21 @@ public final class OCCUtils {
 //	TopoDS_Shape tds_shape = cutter.Shape();
 //	System.out.println(">> BRepAlgoAPI_Cut shape is null? " + tds_shape.IsNull());
 
+	public static OCCVertex getVertexFromEdge(OCCEdge occEdge, int idx) {
+		OCCVertex result = null;
+		if ((idx == 0) || (idx == 1)) {
+			TopoDS_Edge e = TopoDS.ToEdge(occEdge.getShape());
+			List<OCCVertex> listVtx = new ArrayList<>();
+			TopExp_Explorer exp = new TopExp_Explorer(e, TopAbs_ShapeEnum.TopAbs_VERTEX);
+			while (exp.More() > 0) {
+				listVtx.add(
+						(OCCVertex) OCCUtils.theFactory.newShape(exp.Current())
+						);
+				exp.Next();
+			}
+			result = listVtx.get(idx);
+		}
+		return result;
+	}
+	
 }

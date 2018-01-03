@@ -134,12 +134,23 @@ public abstract class CADShapeFactory {
 	/**
 	 * Create a new CADGeomCurve3D
 	 * @param pointList The list of points belonging to the curve (a BSpline)
+	 * @param isPeriodic Is the curve closed or not
+	 * @param initialTangent The tangent vector at the initial point
+	 * @param finalTangent The tangent vector at the final point
+	 * @param doScale Normalize the given tangent vectors
+	 * @return The created CADGeomCurve3D
+	 */
+	public abstract CADGeomCurve3D newCurve3D(List<double[]> pointList, boolean isPeriodic, double[] initialTangent, double[] finalTangent, boolean doScale);
+	
+	/**
+	 * Create a new CADGeomCurve3DGP
+	 * @param pointList The list of points belonging to the curve (a BSpline)
 	 * @return The created CADGeomCurve3D
 	 */
 	public abstract CADGeomCurve3D newCurve3DGP(List<gp_Pnt> pointList, boolean isPeriodic);
 	
 	/**
-	 * Create a new CADGeomCurve3D
+	 * Create a new CADGeomCurve3DP
 	 * @param pointList The list of PVector points belonging to the curve (a BSpline)
 	 * @return The created CADGeomCurve3D
 	 */
