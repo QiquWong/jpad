@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<runscript initialize="initialCondition" name="D150_JSBSim">
+   <decription>CPACS simulation with JSBSim through JPAD software</decription>
+   <use aircraft="D150_JSBSim" initialize="initialCondition"/>
+   <run dt="0.01" end="7" start="0">
+      <property>simulation/notify-time-trigger</property>
+      <property value="1">simulation/run_id</property>
+      <property value="1">fcs/left-brake-cmd-norm</property>
+      <property value="1">fcs/right-brake-cmd-norm</property>
+      <event name="engine start">
+         <description>Start the engine</description>
+         <condition> simulation/sim-time-sec GE 0.02</condition>
+         <set name="fcs/throttle-cmd-norm" value="1.0"/>
+         <notify>
+            <property> position/h-agl-ft</property>
+            <property> velocities/vc-kts</property>
+         </notify>
+      </event>
+      <event name="begin roll">
+         <description>Release brakes and get rolling with flaps at 30 degrees.</description>
+         <condition> simulation/sim-time-sec GE 200000.5</condition>
+         <set name="fcs/left-brake-cmd-norm" value="0"/>
+         <set name="fcs/right-brake-cmd-norm" value="0"/>
+         <set name="fcs/flap-cmd-norm" value="0.66"/>
+         <notify>
+            <property> position/h-agl-ft</property>
+            <property> velocities/vc-kts</property>
+         </notify>
+      </event>
+      <event name="Remove flap">
+         <description>at 1000 feet remove flap</description>
+         <condition> position/h-agl-ft GE 1000</condition>
+         <set name="fcs/flap-cmd-norm" value="0.0"/>
+         <notify>
+		  <property>propulsion/engine[0]/n2</property>
+          <property>propulsion/engine[1]/n2</property>
+          <property>propulsion/engine[0]/thrust-lbs</property>
+          <property>propulsion/engine[1]/thrust-lbs</property>
+          <property>position/h-agl-ft</property>
+          <property>velocities/vc-kts</property>
+          <property>velocities/vc-fps</property>
+          <property>velocities/vt-fps</property>
+          <property>attitude/phi-deg</property>
+          <property>attitude/theta-rad</property>
+          <property>attitude/psi-rad</property>
+		  <property>fcs/elevator-pos-deg</property>
+		  <property>fcs/elevator-cmd-norm</property>		  
+          <property>fcs/flap-pos-deg</property>
+		  <property>fcs/rudder-pos-deg</property>
+		  <property>fcs/right-aileron-pos-deg</property>
+		  <property>fcs/throttle-cmd-norm</property> 	 
+		  <property>aero/function/drag_coeff_basic_Mach</property>
+		  <property>aero/function/aileron_drag_coeff_basic_Mach</property>
+		  <property>aero/function/elevator_drag_coeff_basic_Mach</property>
+		  <property>aero/function/rudder_drag_coeff_basic_Mach</property>
+		  <property>aero/function/elevator_drag_coeff_basic_Mach</property>
+		  <property>aero/function/lift_coeff_basic_Mach</property>
+
+         </notify>
+      </event>
+   </run>
+</runscript>

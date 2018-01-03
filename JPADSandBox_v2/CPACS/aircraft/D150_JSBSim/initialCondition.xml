@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<initialize name="initialCondition">
+   <ubody unit="M/SEC">0.000</ubody>
+   <vbody unit="M/SEC">0.000000</vbody>
+   <wbody unit="M/SEC">0.000000</wbody>
+   <longitude unit="DEG">20.000</longitude>
+   <latitude unit="DEG">30.000</latitude>
+   <phi unit="DEG">0.000000</phi>
+   <theta unit="DEG">0.000</theta>
+   <psi unit="DEG">30.000</psi>
+   <altitude unit="M">0.6500</altitude>
+   <elevation unit="M">0.650</elevation>
+   <hwind>0.000000</hwind>
+</initialize>

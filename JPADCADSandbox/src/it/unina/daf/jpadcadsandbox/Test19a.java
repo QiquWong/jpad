@@ -1,4 +1,4 @@
-package it.unina.daf.jpadcadsandbox;
+ package it.unina.daf.jpadcadsandbox;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -153,9 +153,10 @@ public class Test19a {
 		shapes.add((OCCEdge)((OCCGeomCurve3D)cadSec3).edge());
 		//shapes.add((OCCEdge)((OCCGeomCurve3D)cadGC1).edge());
 		shapes.add(subEdgesGC1.get(0));
+		shapes.add(subEdgesGC1.get(1));
 		//shapes.add((OCCEdge)((OCCGeomCurve3D)cadGC2).edge());
 		shapes.add(subEdgesGC2.get(0));
-		shapes.add((OCCEdge)((OCCGeomCurve3D)cadGCm).edge());
+		//shapes.add((OCCEdge)((OCCGeomCurve3D)cadGCm).edge());
 		
 		System.out.println("========== [main] Discretizing section-1");
 		int nPointsSec1d = 10;
@@ -181,29 +182,13 @@ public class Test19a {
 				);
 
 		// adjust first and last point of discretized section-1
-		TopoDS_Edge eGC1 = TopoDS.ToEdge(subEdgesGC1.get(0).getShape());
-		List<OCCVertex> listVtx = new ArrayList<>();
-		TopExp_Explorer exp = new TopExp_Explorer(eGC1, TopAbs_ShapeEnum.TopAbs_VERTEX);
-		while (exp.More() > 0) {
-			listVtx.add(
-					(OCCVertex) OCCUtils.theFactory.newShape(exp.Current())
-					);
-			exp.Next();
-		}
+		OCCVertex vtxGC1 = OCCUtils.getVertexFromEdge((OCCEdge)subEdgesGC1.get(0), 1);
 		// tweak first point
-		gpPntSec1.set(0, BRep_Tool.Pnt(listVtx.get(1).getShape()));
+		gpPntSec1.set(0, BRep_Tool.Pnt(vtxGC1.getShape()));
 		
-		listVtx.clear();
-		TopoDS_Edge eGC2 = TopoDS.ToEdge(subEdgesGC2.get(0).getShape());
-		exp = new TopExp_Explorer(eGC2, TopAbs_ShapeEnum.TopAbs_VERTEX);
-		while (exp.More() > 0) {
-			listVtx.add(
-					(OCCVertex) OCCUtils.theFactory.newShape(exp.Current())
-					);
-			exp.Next();
-		}
+		OCCVertex vtxGC2 = OCCUtils.getVertexFromEdge((OCCEdge)subEdgesGC2.get(0), 1);
 		// tweak last point
-		gpPntSec1.set(nPointsSec1d - 1, BRep_Tool.Pnt(listVtx.get(1).getShape()));
+		gpPntSec1.set(nPointsSec1d - 1, BRep_Tool.Pnt(vtxGC2.getShape()));
 		
 		System.out.println(">> Points on section-curve-1 (re-discretized):");
 		gpPntSec1.stream()
@@ -220,13 +205,47 @@ public class Test19a {
 				GeomAbs_Shape.GeomAbs_C0
 				);
 		
+		System.out.println("========== [main] Additional constraints to filling loft");
+		
+		System.out.println(">> Split Guide-Curve-M ...");
+		List<OCCEdge> subEdgesGCm = OCCUtils.splitEdge(cadGCm, vPntS1b);
+		System.out.println(">> Subedges: " + subEdgesGCm.size());
+
+		// export first sub-edge
+		shapes.add(subEdgesGCm.get(0));
+
+		// get a point on the new cadedge
+		CADGeomCurve3D cadGCms = OCCUtils.theFactory.newCurve3D(subEdgesGCm.get(0));
+		double[] rangeGCms = cadGCms.getRange();
+		double[] vPntGCM_1 = ((OCCGeomCurve3D)cadGCms).value(0.50*(rangeGCms[1] - rangeGCms[0]));
+		
+		// constrain loft to this point
+		System.out.println(">> constraining filler surface to point (" + vPntGCM_1[0] +", "+ vPntGCM_1[1] +", "+ vPntGCM_1[2] + ")");
+		
+		fillMaker.Add(new gp_Pnt(vPntGCM_1[0], vPntGCM_1[1], vPntGCM_1[2]));
+		
+		// finally, build the filling loft
 		fillMaker.Build();
 		System.out.println("Deformed surface is done? = " + fillMaker.IsDone());
 		System.out.println("Deformed surface shape  type: " + fillMaker.Shape().ShapeType());
 		
 		// Add loft to the export list
 		shapes.add((OCCShape)OCCUtils.theFactory.newShape(fillMaker.Shape()));
+		
+		System.out.println("========== [main] Try a curve with tangency constraints");
 
+		List<double[]> ptsGC2t = new ArrayList<double[]>();
+		ptsGC2t.add(new double[]{ 0.00, 0.00, 0.00});
+		ptsGC2t.add(ptsSec1.get(2));
+		ptsGC2t.add(ptsSec2.get(2));
+		CADGeomCurve3D cadGC2t = OCCUtils.theFactory.newCurve3D(
+				ptsGC2t, false, // closed curve?
+				new double[] {0.0, 4.0, 0.0}, // initial tangent vector
+				new double[] {1.0, 0.0, 0.0}, // initial tangent vector
+				true // scale tangents?
+				);
+		System.out.println(">> Guide-Curve-1-T, in plane XY.");
+		shapes.add((OCCEdge)((OCCGeomCurve3D)cadGC2t).edge());
 		
 		// Write to a file
 		String fileName = "test19a.brep";
