@@ -545,8 +545,8 @@ public class JSBSimUtils {
 		org.w3c.dom.Element productForceElement = 
 				doc.createElement("product");
 		forceFunctionElement.appendChild(productForceElement);
-		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-psf",productForceElement,doc);
-		JPADStaticWriteUtils.writeSingleNode("property","metrics/Sw-sqft",productForceElement,doc);
+//		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-psf",productForceElement,doc);
+//		JPADStaticWriteUtils.writeSingleNode("property","metrics/Sw-sqft",productForceElement,doc);
 		JPADStaticWriteUtils.writeSingleNode("property","aero/coefficient/"+axis+"_basic_Mach",outputElement,doc);
 		if ((axis.equals("roll"))||(axis.equals("yaw"))) {
 			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
@@ -659,7 +659,8 @@ public class JSBSimUtils {
 				doc.createElement("product");
 		forceFunctionElement.appendChild(productForceElement);
 		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-psf",productForceElement,doc);
-		JPADStaticWriteUtils.writeSingleNode("property","metrics/Sw-sqft",productForceElement,doc);		if ((axis.equals("roll"))||(axis.equals("yaw"))) {
+		JPADStaticWriteUtils.writeSingleNode("property","metrics/Sw-sqft",productForceElement,doc);
+		if ((axis.equals("roll"))||(axis.equals("yaw"))) {
 			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
 		}
 		if (axis.equals("pitch")) {

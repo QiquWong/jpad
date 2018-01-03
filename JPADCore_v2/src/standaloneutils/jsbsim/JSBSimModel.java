@@ -1551,21 +1551,30 @@ propulsion/engine/thrust-lbs (R)
 				"Output message at fixed time intervals (" + deltaTimeNotify + " s)", 
 				eventElem, docScript);
 		notifyElem = docScript.createElement("notify");
-		eventElem.appendChild(notifyElem);
+		
 		JPADStaticWriteUtils.writeSingleNode("property", "position/h-agl-ft", notifyElem, docScript);
 		JPADStaticWriteUtils.writeSingleNode("property", "velocities/vt-fps", notifyElem, docScript);
 		JPADStaticWriteUtils.writeSingleNode("property", "velocities/h-dot-fps", notifyElem, docScript);
 		JPADStaticWriteUtils.writeSingleNode("property", "aero/alpha-deg", notifyElem, docScript);
 		JPADStaticWriteUtils.writeSingleNode("property", "aero/beta-deg", notifyElem, docScript);
+		JPADStaticWriteUtils.writeSingleNode("property", "aero/Re", notifyElem, docScript);
+		JPADStaticWriteUtils.writeSingleNode("property", "velocities/mach", notifyElem, docScript);
 		JPADStaticWriteUtils.writeSingleNode("property", "attitude/phi-deg", notifyElem, docScript);
 		JPADStaticWriteUtils.writeSingleNode("property", "attitude/theta-deg", notifyElem, docScript);
 		JPADStaticWriteUtils.writeSingleNode("property", "attitude/psi-deg", notifyElem, docScript);
 		JPADStaticWriteUtils.writeSingleNode("property", "velocities/p-rad_sec", notifyElem, docScript);
 		JPADStaticWriteUtils.writeSingleNode("property", "velocities/q-rad_sec", notifyElem, docScript);
 		JPADStaticWriteUtils.writeSingleNode("property", "velocities/r-rad_sec", notifyElem, docScript);
-
+		JPADStaticWriteUtils.writeSingleNode("property", "propulsion/engine[0]/n2", notifyElem, docScript);
+		JPADStaticWriteUtils.writeSingleNode("property", "propulsion/engine[1]/n2", notifyElem, docScript);
+		JPADStaticWriteUtils.writeSingleNode("property", "propulsion/engine[0]/thrust-lbs", notifyElem, docScript);
+		JPADStaticWriteUtils.writeSingleNode("property", "propulsion/engine[1]/thrust-lbs", notifyElem, docScript);
+		JPADStaticWriteUtils.writeSingleNode("property", "fcs/elevator-pos-deg", notifyElem, docScript);
+		JPADStaticWriteUtils.writeSingleNode("property", "fcs/flap-pos-deg", notifyElem, docScript);
+		JPADStaticWriteUtils.writeSingleNode("property", "fcs/rudder-pos-deg", notifyElem, docScript);
+		JPADStaticWriteUtils.writeSingleNode("property", "fcs/right-aileron-pos-deg", notifyElem, docScript);
 		JPADStaticWriteUtils.writeSingleNode("condition","simulation/sim-time-sec GE simulation/notify-time-trigger", eventElem, docScript);
-		
+		eventElem.appendChild(notifyElem);
 		setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
 				docScript,"set",
 				Tuple.of("name", "simulation/notify-time-trigger"), 
