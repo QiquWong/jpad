@@ -235,7 +235,7 @@ public class CPACSReaderTest2 {
 
 					jsbsimModel.exportToXML(outputFile,dirPath);
 					//Initial condition are given as double value
-					double ubody = 0.0;
+					double ubody = 250.0;
 					double vbody = 0.0;
 					double wbody = 0.0;
 					double longitude = 20.0;
@@ -243,8 +243,8 @@ public class CPACSReaderTest2 {
 					double phi = 0.0;
 					double theta = 1.0;
 					double psi = 30.0;
-					double altitude = 2.5;
-					double elevation = 2.0;
+					double altitude = 2000.5;
+					double elevation = 2000.0;
 					double hwind = 0.0;
 					String icFilePath = outputDirPath + "/" + icFileNameBase + ".xml";
 					jsbsimModel.writeInitialConditionsFile(icFilePath, ubody, vbody, wbody,

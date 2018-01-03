@@ -32,8 +32,30 @@
          <condition> position/h-agl-ft &gt;= 1000</condition>
          <set name="fcs/flap-cmd-norm" value="0.0"/>
          <notify>
-            <property> position/h-agl-ft</property>
-            <property> velocities/vc-kts</property>
+		  <property>propulsion/engine[0]/n2</property>
+          <property>propulsion/engine[1]/n2</property>
+          <property>propulsion/engine[0]/thrust-lbs</property>
+          <property>propulsion/engine[1]/thrust-lbs</property>
+          <property>position/h-agl-ft</property>
+          <property>velocities/vc-kts</property>
+          <property>velocities/vc-fps</property>
+          <property>velocities/vt-fps</property>
+          <property>attitude/phi-deg</property>
+          <property>attitude/theta-rad</property>
+          <property>attitude/psi-rad</property>
+		  <property>fcs/elevator-pos-deg</property>
+		  <property>fcs/elevator-cmd-norm</property>		  
+          <property>fcs/flap-pos-deg</property>
+		  <property>fcs/rudder-pos-deg</property>
+		  <property>fcs/right-aileron-pos-deg</property>
+		  <property>fcs/throttle-cmd-norm</property> 	 
+		  <property>aero/function/drag_coeff_basic_Mach</property>
+		  <property>aero/function/aileron_drag_coeff_basic_Mach</property>
+		  <property>aero/function/elevator_drag_coeff_basic_Mach</property>
+		  <property>aero/function/rudder_drag_coeff_basic_Mach</property>
+		  <property>aero/function/elevator_drag_coeff_basic_Mach</property>
+		  <property>aero/function/lift_coeff_basic_Mach</property>
+
          </notify>
       </event>
    </run>
