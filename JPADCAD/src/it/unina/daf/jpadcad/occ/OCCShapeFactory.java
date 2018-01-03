@@ -1,8 +1,10 @@
 package it.unina.daf.jpadcad.occ;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -10,11 +12,25 @@ import opencascade.BRepAlgoAPI_BooleanOperation;
 import opencascade.BRepAlgoAPI_Common;
 import opencascade.BRepAlgoAPI_Cut;
 import opencascade.BRepAlgoAPI_Fuse;
+import opencascade.BRepBuilderAPI_MakeEdge;
+import opencascade.BRepBuilderAPI_MakeFace;
+import opencascade.BRepBuilderAPI_MakeSolid;
+import opencascade.BRepBuilderAPI_MakeWire;
+import opencascade.BRepBuilderAPI_Sewing;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
+import opencascade.BRep_Tool;
 import opencascade.IGESControl_Reader;
 import opencascade.STEPControl_Reader;
+import opencascade.TopAbs_ShapeEnum;
+import opencascade.TopExp;
+import opencascade.TopExp_Explorer;
+import opencascade.TopTools_IndexedMapOfShape;
+import opencascade.TopoDS;
+import opencascade.TopoDS_Face;
 import opencascade.TopoDS_Shape;
+import opencascade.TopoDS_Shell;
+import opencascade.gp_Pnt;
 import processing.core.PVector;
 
 /*
@@ -30,6 +46,7 @@ public class OCCShapeFactory extends CADShapeFactory
 	{
 		if (!(o instanceof TopoDS_Shape))
 			throw new IllegalArgumentException();
+
 		TopoDS_Shape ts = (TopoDS_Shape) o;
 		OCCShape shape;
 		switch (ts.ShapeType())
@@ -251,6 +268,23 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 
 	@Override
+	public CADGeomCurve3D newCurve3DGP(List<gp_Pnt> pointList, boolean isPeriodic) {
+		CADGeomCurve3D curve = null;
+		try
+		{
+			curve = new OCCGeomCurve3D(
+					pointList.stream()
+							 .map(p -> new double[]{p.X(), p.Y(), p.Z()})
+							 .collect(Collectors.toList()),
+					isPeriodic);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		return curve;		
+	}
+	
+	@Override
 	public CADGeomCurve3D newCurve3DP(List<PVector> pointList, boolean isPeriodic) {
 		CADGeomCurve3D curve = null;
 		try
@@ -350,7 +384,84 @@ public class OCCShapeFactory extends CADShapeFactory
 		
 		return shell;
 	}
+
+	@Override
+	public CADFace newFacePlanar(double[] v0, double[] v1, double[] v2) {
+		BRepBuilderAPI_MakeEdge em0 = new BRepBuilderAPI_MakeEdge(
+				 new gp_Pnt(v0[0], v0[1], v0[2]),
+				 new gp_Pnt(v1[0], v1[1], v1[2])
+		);
+		em0.Build();
+		BRepBuilderAPI_MakeEdge em1 = new BRepBuilderAPI_MakeEdge(
+				 new gp_Pnt(v1[0], v1[1], v1[2]),
+				 new gp_Pnt(v2[0], v2[1], v2[2])
+		);
+		em1.Build();
+		BRepBuilderAPI_MakeEdge em2 = new BRepBuilderAPI_MakeEdge(
+				 new gp_Pnt(v2[0], v2[1], v2[2]),
+				 new gp_Pnt(v0[0], v0[1], v0[2])
+		);
+		em2.Build();
+		BRepBuilderAPI_MakeWire wm = new BRepBuilderAPI_MakeWire();
+		wm.Add(em0.Edge());
+		wm.Add(em1.Edge());
+		wm.Add(em2.Edge());
+		wm.Build();
+		BRepBuilderAPI_MakeFace mf = new BRepBuilderAPI_MakeFace(wm.Wire(), 1);
+		mf.Build();
+		TopoDS_Face tds_f = mf.Face();
+
+		return (CADFace) newShape(tds_f);
+	}
 	
+	@Override
+	public CADFace newFacePlanar(CADVertex v0, CADVertex v1, CADVertex v2) {
+		return newFacePlanar(v0.pnt(), v1.pnt(), v2.pnt());		
+	}
+	
+	@Override
+	public CADShell newShellFromAdjacentFaces(CADFace ... cadFaces) {
+		return newShellFromAdjacentFaces(Arrays.asList(cadFaces));
+	}
+
+	@Override
+	public CADShell newShellFromAdjacentFaces(List<CADFace> cadFaces) {
+		CADShell ret = null;
+		BRepBuilderAPI_Sewing sewedObj = new BRepBuilderAPI_Sewing();
+		cadFaces.stream()
+			.forEach(f -> sewedObj.Add(((OCCFace)f).getShape()));
+		sewedObj.Perform();
+		TopoDS_Shape tds_shape = sewedObj.SewedShape();		
+
+		TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
+		if (exp.More() == 1) {
+			System.out.println("========== [OCCShapeFactory::newShellFromAdjacentFaces] exploring shells in sewed object ...");
+			ret = (CADShell) newShape(exp.Current());
+		}
+		return ret;
+	}
+	
+	@Override
+	public CADSolid newSolidFromAdjacentFaces(CADFace ... cadFaces) {
+		return newSolidFromAdjacentFaces(Arrays.asList(cadFaces));
+	}
+	
+	@Override
+	public CADSolid newSolidFromAdjacentFaces(List<CADFace> cadFaces) {
+		CADSolid ret = null;
+		CADShell shell = newShellFromAdjacentFaces(cadFaces);
+		TopoDS_Shape tds_shape = ((OCCShell)shell).getShape();
+		TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
+		if (exp.More() == 1) {
+			System.out.println("========== [OCCShapeFactory::newSolidFromAdjacentFaces] from shell to solid ...");
+			BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
+			solidMaker.Add(TopoDS.ToShell(exp.Current()));
+			solidMaker.Build();
+			ret = (CADSolid) newShape(solidMaker.Solid());
+		}
+		return ret;
+	}
+
 	@Override
 	public CADVertex newVertex(double x, double y, double z) {
 		CADVertex vertex = null;

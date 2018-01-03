@@ -6,17 +6,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import opencascade.BOPAlgo_PaveFiller;
+import opencascade.BOPDS_DS;
+import opencascade.BRepBuilderAPI_MakeVertex;
 import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
 import opencascade.BRep_Tool;
+import opencascade.GeomAPI_ProjectPointOnCurve;
 import opencascade.GeomAbs_Shape;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
+import opencascade.TopTools_ListOfShape;
 import opencascade.TopoDS_CompSolid;
 import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
 import opencascade.TopoDS_Shape;
+import opencascade.TopoDS_Vertex;
+import opencascade.gp_Pnt;
 import processing.core.PVector;
 
 public final class OCCUtils {
@@ -79,30 +86,13 @@ public final class OCCUtils {
 		BRep_Builder builder = new BRep_Builder();
 		TopoDS_Compound compound = new TopoDS_Compound();
 		builder.MakeCompound(compound);
-		// loop through the shapes and add to compound
+		// loop through the shapes (not passed in a list) and add to compound
 		for(int k = 0; k < nonNullShapes.length; k++)
 			builder.Add(compound, nonNullShapes[k].getShape());
 		// loop through the shapes grabbed from lists and add to compound
 		listShapes.stream()
 			.forEach(s -> builder.Add(compound, s.getShape()));
 		
-//		TopoDS_CompSolid compsolid = new TopoDS_CompSolid();
-//		builder.MakeCompSolid(compsolid);
-//		
-//		// === Experimental, trying to write solids, TODO: fixme 
-//		listShapes.stream()
-//			.filter(s -> s instanceof OCCSolid)
-//			.forEach(s -> {
-//				System.out.println(">>>>>> Solid");
-//				builder.Add(compsolid, s.getShape());
-//			});
-		
-		
-//		String fileNameSolids = fileName.replace(".brep", "_solids.brep");
-//		long resultSolids = BRepTools.Write(compsolid, fileNameSolids);
-//		if (resultSolids == 1)
-//			System.out.println("========== [OCCUtils::write] Solids written on file: " + fileNameSolids);
-
 		// ====================
 		// write on file
 		long result = BRepTools.Write(compound, fileName);		
@@ -312,4 +302,74 @@ public final class OCCUtils {
 		return sb.toString();
 	}
 	
+	public static List<OCCEdge> splitEdge(CADGeomCurve3D cadCurve, double[] pnt) {
+		List<OCCEdge> result = new ArrayList<>();
+		
+		GeomAPI_ProjectPointOnCurve poc = new GeomAPI_ProjectPointOnCurve();
+		gp_Pnt gpPnt = new gp_Pnt(pnt[0], pnt[1], pnt[2]);
+		poc.Init(gpPnt, ((OCCGeomCurve3D)cadCurve).getAdaptorCurve().Curve());
+		poc.Perform(gpPnt);
+		System.out.println("[OCCUtils.splitEdge]>> Projecting point (" + gpPnt.X() +", "+ gpPnt.Y() +", "+ gpPnt.Z() + ") onto Guide-Curve-1");
+		System.out.println("[OCCUtils.splitEdge]>> N. projections: " + poc.NbPoints());
+		gp_Pnt gpPnt_1 = null;
+		double par_1;
+		TopoDS_Edge e1 = null;
+		TopoDS_Edge e2 = null;
+		TopoDS_Vertex vtx_1 = null;
+		// check if at least one projection occurred
+		if (poc.NbPoints() > 0) {			
+			gpPnt_1 = poc.Point(1);
+			System.out.println("[OCCUtils.splitEdge]>> Projected point (" + gpPnt_1.X() +", "+ gpPnt_1.Y() +", "+ gpPnt_1.Z() + ")" );
+			par_1 = poc.Parameter(1);
+			System.out.println("[OCCUtils.splitEdge]>> Projected point parameter: " + par_1);
+			
+			// https://www.opencascade.com/doc/occt-7.0.0/overview/html/occt_user_guides__boolean_operations.html
+			// https://github.com/DLR-SC/tigl/src/boolean_operations/CCutShape.cpp
+			// http://www.algotopia.com/contents/opencascade/opencascade_basic
+			
+			// prepare filler
+			TopTools_ListOfShape listOfArguments = new TopTools_ListOfShape();
+			
+			BRepBuilderAPI_MakeVertex vertexBuilder = new BRepBuilderAPI_MakeVertex(gpPnt_1);
+			vtx_1 = vertexBuilder.Vertex();
+			
+			listOfArguments.Append(vtx_1);
+			
+			TopoDS_Shape tds_edge =
+					((OCCEdge)
+							((OCCGeomCurve3D)cadCurve).edge()
+							).getShape();
+
+			listOfArguments.Append(tds_edge);
+			
+			BOPAlgo_PaveFiller paveFiller = new BOPAlgo_PaveFiller();
+			paveFiller.SetArguments(listOfArguments);
+			paveFiller.Perform();
+			
+			BOPDS_DS bopds_ds = paveFiller.DS();
+			System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS is null? " + (bopds_ds == null));
+			System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS NShapes " + bopds_ds.NbShapes());
+			for (int k = 0; k < bopds_ds.NbShapes(); k++) {
+				System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS shape " + k + " type: " + bopds_ds.ShapeInfo(k).ShapeType());
+				if (k > 1) {
+					if (bopds_ds.ShapeInfo(k).ShapeType() == TopAbs_ShapeEnum.TopAbs_EDGE) {
+						result.add((OCCEdge) OCCUtils.theFactory.newShape(bopds_ds.Shape(k)));
+						System.out.println(
+								"[OCCUtils.splitEdge]>> Paves -> edge, has BRep? " + bopds_ds.ShapeInfo(k).HasBRep()
+						);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+//	// BRepAlgoAPI_Cut cutter(_source->Shape(), _tool->Shape(), *_dsfiller, Standard_True);
+//	BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(tds_edgeS1, vtxS1Ap_1, paveFiller, 1);
+//	cutter.Build();
+//	System.out.println(">> BRepAlgoAPI_Cut build error status: " + cutter.ErrorStatus());
+//	
+//	TopoDS_Shape tds_shape = cutter.Shape();
+//	System.out.println(">> BRepAlgoAPI_Cut shape is null? " + tds_shape.IsNull());
+
 }

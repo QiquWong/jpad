@@ -1991,6 +1991,11 @@ public class MissionProfileCalc {
 								.plus(_alternateCruiseLength).to(NonSI.NAUTICAL_MILE))
 						.minus(_totalMissionRange).to(NonSI.NAUTICAL_MILE)
 						);
+				if(cruiseLength.doubleValue(NonSI.NAUTICAL_MILE) <= 0.0) {
+					_missionProfileStopped = Boolean.TRUE;
+					System.err.println("WARNING: (NEW CRUISE LENGTH EVALUATION - MISSION PROFILE) THE NEW CRUISE LENGTH IS LESS OR EQUAL TO ZERO, RETURNING ... ");
+					return;
+				}
 			}
 			
 			//.....................................................................

@@ -1,6 +1,7 @@
 package calculators.aerodynamics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -324,9 +325,45 @@ public class AirfoilCalc {
 
 	}	
 
+	// POLAR
+	//-------------------------------------------------------
+	public static void extractPolarCharacteristicsfromCurve(
+			Double[] cdCurve,
+			List<Double> clArrayforCdCurve,
+			AirfoilCreator theAirfoilCreator
+			){
+
+		double clAtCdMin;
+		double cdMin;
+		double KFactorDragPolar;
+		
+		// FIXME: SEE HOW TO DERIVE THESE DATA FROM THE CURVE (not necessary for analyses)
+		Double laminarBucketSemiExtension = 0.0;
+		Double laminarBucketDepth = 0.0;
+		
+		// cmd Min
+		cdMin = MyArrayUtils.getMin(cdCurve);
+		
+		// cl At Cd Min
+		int indexOfCdMin = MyArrayUtils.getIndexOfMin(cdCurve);
+		clAtCdMin = clArrayforCdCurve.get(indexOfCdMin);
+		
+		// k Factor Drag Polar
+		KFactorDragPolar = MyMathUtils.calculateFirstDerivative3Points(
+				MyArrayUtils.convertToDoublePrimitive(clArrayforCdCurve.stream().map(cl -> Math.pow(cl, 2)).collect(Collectors.toList())),
+				MyArrayUtils.convertToDoublePrimitive(cdCurve)
+				);
+
+		theAirfoilCreator.setClAtCdMin(clAtCdMin);
+		theAirfoilCreator.setCdMin(cdMin);
+		theAirfoilCreator.setKFactorDragPolar(KFactorDragPolar);
+		theAirfoilCreator.setLaminarBucketSemiExtension(laminarBucketSemiExtension);
+		theAirfoilCreator.setLaminarBucketDepth(laminarBucketDepth);
+
+	}
+	
 	//MOMENT
 	//-------------------------------------------------------
-
 	public static void extractMomentCharacteristicsfromCurve(
 			Double[] cmCurve,
 			List<Double> clArrayforCmCurve,
@@ -334,16 +371,28 @@ public class AirfoilCalc {
 			){
 
 		double cmAC;
+		double cmAlpha;
+		double cmACStall;
 		
 		// cm0
-		
 		cmAC = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertToDoublePrimitive(clArrayforCmCurve),
 				MyArrayUtils.convertToDoublePrimitive(cmCurve),
 				0.0
 				);
+		
+		// cmAlpha
+		cmAlpha = MyMathUtils.calculateFirstDerivative3Points(
+				MyArrayUtils.convertToDoublePrimitive(cmCurve),
+				MyArrayUtils.convertToDoublePrimitive(clArrayforCmCurve)
+				);
+		
+		// cmACStall
+		cmACStall = cmCurve[cmCurve.length-1];
 
-		theAirfoilCreator.setCmAC(cmAC);		
+		theAirfoilCreator.setCmAC(cmAC);
+		theAirfoilCreator.setCmAlphaQuarterChord(Amount.valueOf(cmAlpha, NonSI.DEGREE_ANGLE.inverse()));
+		theAirfoilCreator.setCmACAtStall(cmACStall);
 
 	}
 

@@ -10,7 +10,7 @@
     <analysis>
         <aerodynamics_and_stability 
 			id="JPAD Test analysis - AERODYNAMICS PROTOTYPE"
-			balance_from_previous_analysis="true"
+			balance_from_previous_analysis="false"
 			>
 			<balance>
 			<!-- 
@@ -30,7 +30,7 @@
 			<global_data dynamic_pressure_ratio_from_file="FALSE" tau_elevator_from_file="FALSE" tau_rudder_from_file="FALSE">
 				<alpha_body_initial unit="deg">-10</alpha_body_initial>
 				<alpha_body_final unit="deg">20</alpha_body_final>
-				<number_of_alpha_body>34</number_of_alpha_body>
+				<number_of_alpha_body>31</number_of_alpha_body>
 				<beta_initial unit="deg">0</beta_initial>
 				<beta_final unit="deg">30</beta_final>
 				<number_of_beta>21</number_of_beta>

@@ -1,6 +1,10 @@
 package it.unina.daf.jpadcad.occ;
 
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import gnu.trove.list.array.TIntArrayList;
 import opencascade.Adaptor3d_Curve;
 import opencascade.gp_Pnt;
@@ -473,4 +477,11 @@ public class OCCDiscretizeCurve3D
 			  (xyz[i-1] - xyz[i+2]) * (xyz[i-1] - xyz[i+2]));
 		return length;
 	}
+
+    public List<gp_Pnt> getPoints() {
+    	return IntStream.range(0, nr)
+    			.mapToObj(i -> curve.Value(a[i]))
+    			.collect(Collectors.toList());
+	}
+
 }

@@ -74,6 +74,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.google.common.collect.Multimap;
+import com.sun.org.apache.xerces.internal.impl.dv.dtd.NMTOKENDatatypeValidator;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -90,7 +91,9 @@ import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator.Lif
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
+import aircraft.components.nacelles.NacelleCreator;
 import aircraft.components.nacelles.NacelleCreator.MountingPosition;
+import aircraft.components.powerplant.Engine;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
@@ -854,6 +857,9 @@ public class JPADStaticWriteUtils {
 			Element father,
 			Document doc) {
 
+		if(valueToWrite == null)
+			valueToWrite = "";
+		
 		return writeSingleNode(tagName, valueToWrite, father, doc, false);
 	}
 	
@@ -1470,7 +1476,7 @@ public class JPADStaticWriteUtils {
 		
 		// main out folder
 		String aircraftDirPath = 
-				JPADStaticWriteUtils.createNewFolder(outputFolderPath + aircraftDirName);
+				JPADStaticWriteUtils.createNewFolder(outputFolderPath);
 		
 		// subfolders names
 		List<String> subfolders = new ArrayList<String>(
@@ -1607,21 +1613,37 @@ public class JPADStaticWriteUtils {
 								)
 						);
 			if (theAircraft.getNacelles() != null)
-				listDocNameType.add(
-						Tuple.of(
-								docBuilder.newDocument(),
-								aircraftDirPath + File.separator + "nacelles" + File.separator,
-								aircraftSaveDirectives.getNacelleFileName(), 
-								ComponentEnum.NACELLE
+				theAircraft.getNacelles().getNacellesList().stream().forEach(
+						nacelle -> listDocNameType.add(
+								Tuple.of(
+										docBuilder.newDocument(),
+										aircraftDirPath + File.separator + "nacelles" + File.separator,
+										aircraftSaveDirectives.getNacelleFileName().substring(
+												0,
+												aircraftSaveDirectives.getNacelleFileName().length()-4
+												) 
+										+ "_" 
+										+ theAircraft.getNacelles().getNacellesList().indexOf(nacelle)
+										+ ".xml", 
+										ComponentEnum.NACELLE
+										)
 								)
 						);
 			if (theAircraft.getPowerPlant() != null)
-				listDocNameType.add(
-						Tuple.of(
-								docBuilder.newDocument(),
-								aircraftDirPath + File.separator + "engines" + File.separator, 
-								aircraftSaveDirectives.getEngineFileName(), 
-								ComponentEnum.ENGINE
+				theAircraft.getPowerPlant().getEngineList().forEach(
+						engine -> listDocNameType.add(
+								Tuple.of(
+										docBuilder.newDocument(),
+										aircraftDirPath + File.separator + "engines" + File.separator, 
+										aircraftSaveDirectives.getEngineFileName().substring(
+												0,
+												aircraftSaveDirectives.getEngineFileName().length()-4
+												)
+										+ "_"
+										+ theAircraft.getPowerPlant().getEngineList().indexOf(engine)
+										+ ".xml", 
+										ComponentEnum.ENGINE
+										)
 								)
 						);
 			if (theAircraft.getLandingGears() != null)
@@ -1786,12 +1808,32 @@ public class JPADStaticWriteUtils {
 				makeXmlTreeFuselage(aircraft, docNameType._1());
 			break;
 		case NACELLE:
-			if (aircraft.getNacelles() != null)
-				makeXmlTreeNacelle(aircraft, docNameType._1(), aircraftSaveDirectives);
+			if (aircraft.getNacelles() != null) {
+				
+				String nacelleFileName = aircraftSaveDirectives.getNacelleFileName().substring(
+						0,
+						aircraftSaveDirectives.getNacelleFileName().length()-4
+						) + "_";
+				
+				int nacelleIndexString = nacelleFileName.length();
+				int indexOfNacelle = Integer.valueOf(String.valueOf(docNameType._3().charAt(nacelleIndexString)));
+				
+				makeXmlTreeNacelle(aircraft, docNameType._1(), aircraftSaveDirectives, indexOfNacelle);
+			}
 			break;
 		case ENGINE:
-			if (aircraft.getPowerPlant() != null)
-				makeXmlTreeEngine(aircraft, docNameType._1());
+			if (aircraft.getPowerPlant() != null) {
+				
+				String engineFileName = aircraftSaveDirectives.getEngineFileName().substring(
+						0,
+						aircraftSaveDirectives.getEngineFileName().length()-4
+						) + "_";
+				
+				int engineIndexString = engineFileName.length();
+				int indexOfEngine = Integer.valueOf(String.valueOf(docNameType._3().charAt(engineIndexString)));
+				
+				makeXmlTreeEngine(aircraft, docNameType._1(), indexOfEngine);
+			}
 			break;
 		case LANDING_GEAR:
 			if (aircraft.getLandingGears() != null)
@@ -2627,18 +2669,33 @@ public class JPADStaticWriteUtils {
 				detailedDataElement, doc);
 		
 		// detailed_data - number_of_columns_economy_class
+		List<Integer> numberOfColumnsEconomyClass = new ArrayList<>();
+		if(aircraft.getCabinConfiguration().getNumberOfColumnsEconomyClass() != null)
+			numberOfColumnsEconomyClass = Arrays.asList(aircraft.getCabinConfiguration().getNumberOfColumnsEconomyClass());
+		else
+			numberOfColumnsEconomyClass.add(0);
 		JPADStaticWriteUtils.writeSingleNode("number_of_columns_economy_class", 
-				Arrays.asList(aircraft.getCabinConfiguration().getNumberOfColumnsEconomyClass()), 
+				numberOfColumnsEconomyClass, 
 				detailedDataElement, doc);
 		
 		// detailed_data - number_of_columns_business_class
+		List<Integer> numberOfColumnsBusinessClass = new ArrayList<>();
+		if(aircraft.getCabinConfiguration().getNumberOfColumnsBusinessClass() != null)
+			numberOfColumnsBusinessClass = Arrays.asList(aircraft.getCabinConfiguration().getNumberOfColumnsBusinessClass());
+		else
+			numberOfColumnsBusinessClass.add(0);
 		JPADStaticWriteUtils.writeSingleNode("number_of_columns_business_class", 
-				Arrays.asList(aircraft.getCabinConfiguration().getNumberOfColumnsBusinessClass()), 
+				numberOfColumnsBusinessClass, 
 				detailedDataElement, doc);
 		
 		// detailed_data - number_of_columns_first_class
+		List<Integer> numberOfColumnsFirstClass = new ArrayList<>();
+		if(aircraft.getCabinConfiguration().getNumberOfColumnsFirstClass() != null)
+			numberOfColumnsFirstClass = Arrays.asList(aircraft.getCabinConfiguration().getNumberOfColumnsFirstClass());
+		else
+			numberOfColumnsFirstClass.add(0);
 		JPADStaticWriteUtils.writeSingleNode("number_of_columns_first_class", 
-				Arrays.asList(aircraft.getCabinConfiguration().getNumberOfColumnsFirstClass()), 
+				numberOfColumnsFirstClass, 
 				detailedDataElement, doc);
 		
 		// detailed_data - pitch_economy_class
@@ -2902,14 +2959,16 @@ public class JPADStaticWriteUtils {
 		}
 	} 
 	
-	private static void makeXmlTreeNacelle(Aircraft aircraft, Document doc, AircraftSaveDirectives aircraftSaveDirectives) {
+	private static void makeXmlTreeNacelle(Aircraft aircraft, Document doc, AircraftSaveDirectives aircraftSaveDirectives, int indexOfNacelle) {
+		
+		NacelleCreator nacelle = aircraft.getNacelles().getNacellesList().get(indexOfNacelle);
 		
 		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
 		doc.appendChild(rootElement);
 		
 		// nacelle
 		org.w3c.dom.Element nacelleElement = createXMLElementWithAttributes(doc, "nacelle", 
-				Tuple.of("id", aircraft.getNacelles().getNacellesList().get(0).getId()),
+				Tuple.of("id", nacelle.getId()),
 				Tuple.of("engine", aircraftSaveDirectives.getEngineFileName())
 				);
 		rootElement.appendChild(nacelleElement);
@@ -2921,7 +2980,7 @@ public class JPADStaticWriteUtils {
 		// global_data - roughness
 		globalDataElement.appendChild(
 			createXMLElementWithValueAndAttributes(doc, "roughness",
-					aircraft.getNacelles().getNacellesList().get(0).getRoughness(),
+					nacelle.getRoughness(),
 					8, 6  // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
 			)
 		);
@@ -2932,48 +2991,50 @@ public class JPADStaticWriteUtils {
 		
 		// geometry - length
 		JPADStaticWriteUtils.writeSingleNode("length", 
-				aircraft.getNacelles().getNacellesList().get(0).getLength(), 
+				nacelle.getLength(), 
 				geometryElement, doc);
 		
 		// geometry - maximum_diameter
 		JPADStaticWriteUtils.writeSingleNode("maximum_diameter", 
-				aircraft.getNacelles().getNacellesList().get(0).getDiameterMax(), 
+				nacelle.getDiameterMax(), 
 				geometryElement, doc);
 		
 		// geometry - k_inlet
 		JPADStaticWriteUtils.writeSingleNode("k_inlet", 
-				aircraft.getNacelles().getNacellesList().get(0).getKInlet(), 
+				nacelle.getKInlet(), 
 				geometryElement, doc);
 		
 		// geometry - k_outlet
 		JPADStaticWriteUtils.writeSingleNode("k_outlet", 
-				aircraft.getNacelles().getNacellesList().get(0).getKOutlet(), 
+				nacelle.getKOutlet(), 
 				geometryElement, doc);
 		
 		// geometry - k_outlet
 		JPADStaticWriteUtils.writeSingleNode("k_length", 
-				aircraft.getNacelles().getNacellesList().get(0).getKLength(), 
+				nacelle.getKLength(), 
 				geometryElement, doc);
 		
 		// geometry - k_diameter_outlet
 		JPADStaticWriteUtils.writeSingleNode("k_diameter_outlet", 
-				aircraft.getNacelles().getNacellesList().get(0).getKDiameterOutlet(), 
+				nacelle.getKDiameterOutlet(), 
 				geometryElement, doc);
 		
 	}
 	
-	private static void makeXmlTreeEngine(Aircraft aircraft, Document doc) {
+	private static void makeXmlTreeEngine(Aircraft aircraft, Document doc, int indexOfEngine) {
 		
-		EngineTypeEnum engineType = aircraft.getPowerPlant().getEngineList().get(0).getEngineType();
+		Engine engine = aircraft.getPowerPlant().getEngineList().get(indexOfEngine);
+		
+		EngineTypeEnum engineType = engine.getEngineType();
 		
 		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
 		doc.appendChild(rootElement);
 		
 		// engine
 		org.w3c.dom.Element engineElement = createXMLElementWithAttributes(doc, "engine", 
-				Tuple.of("id", aircraft.getPowerPlant().getEngineList().get(0).getId()),
-				Tuple.of("type", aircraft.getPowerPlant().getEngineList().get(0).getEngineType().toString()),
-				Tuple.of("database", aircraft.getPowerPlant().getEngineList().get(0).getEngineDatabaseName())
+				Tuple.of("id", engine.getId()),
+				Tuple.of("type", engine.getEngineType().toString()),
+				Tuple.of("database", engine.getEngineDatabaseName())
 				);
 		rootElement.appendChild(engineElement);
 		
@@ -2983,14 +3044,14 @@ public class JPADStaticWriteUtils {
 		
 		// dimensions - length
 		JPADStaticWriteUtils.writeSingleNode("length", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
+				engine.getLength(), 
 				dimensionsElement, doc);
 		
 		 if(engineType == EngineTypeEnum.TURBOPROP || engineType == EngineTypeEnum.PISTON) {
 
 			 // dimensions - propeller_diameter
 			 JPADStaticWriteUtils.writeSingleNode("propeller_diameter", 
-					 aircraft.getPowerPlant().getEngineList().get(0).getPropellerDiameter(), 
+					 engine.getPropellerDiameter(), 
 					 dimensionsElement, doc);
 
 		 }
@@ -3004,9 +3065,9 @@ public class JPADStaticWriteUtils {
 				 JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
 						 doc,
 						 "dry_mass",
-						 aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain(),
+						 engine.getDryMassPublicDomain(),
 						 3, 6,  // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
-						 Tuple.of("calculate", aircraft.getPowerPlant().getEngineList().get(0).getCalculateDryMass().toString())
+						 Tuple.of("calculate", "FALSE")
 						 )
 				 );
 		 
@@ -3014,12 +3075,12 @@ public class JPADStaticWriteUtils {
 			
 			 // specifications - static_thrust
 			 JPADStaticWriteUtils.writeSingleNode("static_thrust", 
-					 aircraft.getPowerPlant().getEngineList().get(0).getT0(), 
+					 engine.getT0(), 
 					 specificationsElement, doc);
 			 
 			 // specifications - by_pass_ratio
 			 JPADStaticWriteUtils.writeSingleNode("by_pass_ratio", 
-					 aircraft.getPowerPlant().getEngineList().get(0).getBPR(), 
+					 engine.getBPR(), 
 					 specificationsElement, doc);
 			 
 		 }
@@ -3028,17 +3089,17 @@ public class JPADStaticWriteUtils {
 		
 			 // specifications - number_of_compressor_stages
 			 JPADStaticWriteUtils.writeSingleNode("number_of_compressor_stages", 
-					 aircraft.getPowerPlant().getEngineList().get(0).getNumberOfCompressorStages(), 
+					 engine.getNumberOfCompressorStages(), 
 					 specificationsElement, doc);
 			 
 			 // specifications - number_of_shafts
 			 JPADStaticWriteUtils.writeSingleNode("number_of_shafts", 
-					 aircraft.getPowerPlant().getEngineList().get(0).getNumberOfShafts(), 
+					 engine.getNumberOfShafts(), 
 					 specificationsElement, doc);
 			 
 			 // specifications - number_of_shafts
 			 JPADStaticWriteUtils.writeSingleNode("overall_pressure_ratio", 
-					 aircraft.getPowerPlant().getEngineList().get(0).getOverallPressureRatio(), 
+					 engine.getOverallPressureRatio(), 
 					 specificationsElement, doc);
 			 
 		 }
@@ -3048,17 +3109,17 @@ public class JPADStaticWriteUtils {
 			 
 			 // specifications - static_power
 			 JPADStaticWriteUtils.writeSingleNode("static_power", 
-					 aircraft.getPowerPlant().getEngineList().get(0).getP0(), 
+					 engine.getP0(), 
 					 specificationsElement, doc);
 			 
 			 // specifications - number_of_propeller_blades
 			 JPADStaticWriteUtils.writeSingleNode("number_of_propeller_blades", 
-					 aircraft.getPowerPlant().getEngineList().get(0).getNumberOfBlades(), 
+					 engine.getNumberOfBlades(), 
 					 specificationsElement, doc);
 			 
 			 // specifications - eta_propeller
 			 JPADStaticWriteUtils.writeSingleNode("eta_propeller", 
-					 aircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller(), 
+					 engine.getEtaPropeller(), 
 					 specificationsElement, doc);
 			 
 			 

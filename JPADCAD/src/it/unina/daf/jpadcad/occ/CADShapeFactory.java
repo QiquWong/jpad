@@ -5,23 +5,21 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import opencascade.gp_Pnt;
 import processing.core.PVector;
 
 /**
  * Class to provide factory methods
  */
-public abstract class CADShapeFactory
-{
+public abstract class CADShapeFactory {
 	private static final Logger LOGGER=Logger.getLogger(CADShapeFactory.class.getName());
 	private static CADShapeFactory factory;
 	
-	protected CADShapeFactory()
-	{
+	protected CADShapeFactory() {
 	}
 
-	public static void setFactory(CADShapeFactory f)
-	{
-		if(factory == null)
+	public static void setFactory(CADShapeFactory f) {
+		if (factory == null)
 			factory = f;
 		else
 			throw new IllegalStateException("Factory already set to "+factory+".");
@@ -31,22 +29,17 @@ public abstract class CADShapeFactory
 	 * Return factory instance
 	 * @return factory instance
 	 */
-	public static CADShapeFactory getFactory()
-	{
-		if(factory == null)
-		{
-			String cadType = System.getProperty("it.unina.it.daf.jpadcad.occ");
-			if (cadType == null)
-			{
-				cadType = "it.unina.it.daf.jpadcad.occ.OCCShapeFactory";
-				System.setProperty("it.unina.it.daf.jpadcad.occ", cadType);
+	public static CADShapeFactory getFactory() {
+		if (factory == null) {
+			String cadType = System.getProperty("it.unina.daf.jpadcad.occ");
+			if (cadType == null) {
+				cadType = "it.unina.daf.jpadcad.occ.OCCShapeFactory";
+				System.setProperty("it.unina.daf.jpadcad.occ", cadType);
 			}
-			try
-			{
+			try {
 				factory = (CADShapeFactory) Class.forName(cadType).newInstance();
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 				LOGGER.severe("Class "+cadType+" not found");
 				LOGGER.log(Level.SEVERE, null, e);
 				System.exit(1);
@@ -140,6 +133,13 @@ public abstract class CADShapeFactory
 
 	/**
 	 * Create a new CADGeomCurve3D
+	 * @param pointList The list of points belonging to the curve (a BSpline)
+	 * @return The created CADGeomCurve3D
+	 */
+	public abstract CADGeomCurve3D newCurve3DGP(List<gp_Pnt> pointList, boolean isPeriodic);
+	
+	/**
+	 * Create a new CADGeomCurve3D
 	 * @param pointList The list of PVector points belonging to the curve (a BSpline)
 	 * @return The created CADGeomCurve3D
 	 */
@@ -158,6 +158,30 @@ public abstract class CADShapeFactory
 	public abstract CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1);
 	public abstract CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled, double pres3d);
 	public abstract CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled);
+	
+	/**
+	 * Create a new CADFace as a planar triangle connecting three vertices 
+	 * @param The three vertices v0, v1, v2 
+	 * @return The created CADFace
+	 */
+	public abstract CADFace newFacePlanar(double[] v0, double[] v1, double[] v2);
+	public abstract CADFace newFacePlanar(CADVertex v0, CADVertex v1, CADVertex v2);
+
+	/**
+	 * Create a shell from adjacent faces
+	 * @param cadFaces adjacent faces
+	 * @return the created CADShell
+	 */
+	public abstract CADShell newShellFromAdjacentFaces(CADFace ... cadFaces);
+	public abstract CADShell newShellFromAdjacentFaces(List<CADFace> cadFaces);	
+	
+	/**
+	 * Create a solid from adjacent faces
+	 * @param cadFaces adjacent faces
+	 * @return the created CADSolid
+	 */
+	public abstract CADSolid newSolidFromAdjacentFaces(CADFace ... cadFaces);
+	public abstract CADSolid newSolidFromAdjacentFaces(List<CADFace> cadFaces);
 	
 	/**
 	 * Create a new CADVertex from a triplet of coordinates

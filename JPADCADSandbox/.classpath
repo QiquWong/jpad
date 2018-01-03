@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_151"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JPADCAD"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/args4j/args4j-2.0.21.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/v3.3.6/library/core.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64/OCCJavaWrapper.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" path="src" />
+	<classpathentry combineaccessrules="false" kind="src"
+		path="/JPADCAD" />
+	<classpathentry combineaccessrules="false" kind="src"
+		path="/JPADConfigs" />
+	<classpathentry combineaccessrules="false" kind="src"
+		path="/JPADCore_v2" />
+	<classpathentry kind="var"
+		path="LIBRARY_FOLDER/args4j/args4j-2.0.21.jar" />
+	<classpathentry kind="var"
+		path="LIBRARY_FOLDER/jscience-4.3/jscience.jar" />
+	<classpathentry kind="var"
+		path="LIBRARY_FOLDER/processing/v3.3.6/library/core.jar" />
+	<classpathentry kind="var"
+		path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64/OCCJavaWrapper.jar" />
+	<classpathentry kind="con"
+		path="org.eclipse.jdt.launching.JRE_CONTAINER" />
+	<classpathentry kind="output" path="bin" />
 </classpath>

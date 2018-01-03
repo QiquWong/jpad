@@ -1,6 +1,7 @@
 package aircraft.components.liftingSurface.creator;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1305,12 +1306,20 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				}
 			}
 
-			// Update _panels' internal geometry variables
-			// wing.calculateGeometry(); // shouldn't care about discretization
-			// for now the user calculates the geometry from the outside of the class
-			// via the wing object:
-			//
-			//     theWing.calculateGeometry(30);
+			// SYMMETRIC FLAPS
+			NodeList nodelistFlaps = MyXMLReaderUtils
+					.getXMLNodeListByPath(reader.getXmlDoc(), "//symmetric_flaps/symmetric_flap");
+
+			System.out.println("Symmetric flaps found: " + nodelistFlaps.getLength());
+
+			for (int i = 0; i < nodelistFlaps.getLength(); i++) {
+				Node nodeFlap  = nodelistFlaps.item(i); // .getNodeValue();
+				Element elementFlap = (Element) nodeFlap;
+				System.out.println("[" + i + "]\nFlap id: " + elementFlap.getAttribute("id"));
+
+				liftingSurface.addSymmetricFlaps(SymmetricFlapCreator.importFromSymmetricFlapNode(nodeFlap, type));
+
+			}
 
 		}
 
@@ -3358,25 +3367,32 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	}
 
-	@SuppressWarnings("unused")
-	private void reportDiscretizedVariables(){
+	private void reportDiscretizedVariables(StringBuilder sb){
 
-		System.out.println("=====================================================");
-		System.out.println("Spanwise discretized " + this._type + ", size " + _spanwiseDiscretizedVariables.size());
-
-		System.out.println("Y, chord, Xle, Zle, twist");
-
-		StringBuilder sb = new StringBuilder();
-
+		DecimalFormat numberFormat = new DecimalFormat("0.000");
+		
+		sb.append("\t=====================================================\n");
+		sb.append("\tSpanwise discretized " + this._type + ", size " + _spanwiseDiscretizedVariables.size() + "\n");
+		sb.append("\t........................................................................................................................\n");
+		sb.append("\tY(m),\tchord(m),\t\tXle(m),\tZle(m),\ttwist(deg)\n");
+		sb.append("\t........................................................................................................................\n");
 		_spanwiseDiscretizedVariables.stream()
-			.forEach( t5 ->
+			.forEach( t5 ->	{
+				double y = t5._1().doubleValue(SI.METER);
+				double c = t5._2().doubleValue(SI.METER);
+				double xLE = t5._3().doubleValue(SI.METER);
+				double zLE = t5._4().doubleValue(SI.METER);
+				double t = t5._5().doubleValue(NonSI.DEGREE_ANGLE);
+				
 				sb.append(
-						t5.toString() + "\n"
-				)
-			);
-		// spit out the string
-		System.out.println(sb.toString());
-
+						"\t" + numberFormat.format(y) 
+						+ "\t" + numberFormat.format(c) 
+						+ "\t" + numberFormat.format(xLE) 
+						+ "\t" + numberFormat.format(zLE) 
+						+ "\t" + numberFormat.format(t) 
+						+"\n");	
+			});
+		
 	}
 
 	@Override
@@ -3630,7 +3646,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				}
 			}
 
-//			reportDiscretizedVariables();
+			reportDiscretizedVariables(sb);
 
 			sb
 			.append("\t=====================================\n")
@@ -3667,7 +3683,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				}
 			}
 			
-//			reportDiscretizedVariables();
+			reportDiscretizedVariables(sb);
 
 			sb
 			.append("\t=====================================\n")
@@ -3704,7 +3720,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					sb.append(symmetricFlap.toString());
 				}
 			}
-//			reportDiscretizedVariables();
+			reportDiscretizedVariables(sb);
 
 			sb
 			.append("\t=====================================\n")
@@ -3741,7 +3757,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					sb.append(symmetricFlap.toString());
 				}
 			}
-//			reportDiscretizedVariables();
+			reportDiscretizedVariables(sb);
 
 			sb
 			.append("\t=====================================\n")

@@ -217,7 +217,6 @@ public class DescentCalc {
 		
 		//---------------------------------------------------------------------------------------
 		// SFC INTERPOLATION BETWEEN CRUISE AND IDLE:
-		
 		_cruiseThrustFromDatabase.add(
 				Amount.valueOf(
 						ThrustCalc.calculateThrustDatabase(
@@ -288,7 +287,7 @@ public class DescentCalc {
 				) {
 			
 			if(iter > maxIterationNumber) {
-				System.err.println("WARNING: THE ITERATIVE LOOP ON THE RATE OF DESCENT HAS BEEN STOPPED. (" +
+				System.err.println("WARNING: (ITERATIVE LOOP CRUISE/IDLE - DESCENT) THE ITERATIVE LOOP ON THE RATE OF DESCENT HAS BEEN STOPPED. (" +
 						iter + " > " + maxIterationNumber 
 						+ "). THE LAST CALCULATED WEIGHTS FOR CRUISE AND IDLE WILL BE CONSIDERED ... ");
 				break;
@@ -299,19 +298,19 @@ public class DescentCalc {
 					(-_rateOfDescent.doubleValue(SI.METERS_PER_SECOND))
 					);
 			
-			if(rateOfDescentRatio < 1) {
+			if (rateOfDescentRatio < 1) {
 				double weightCruiseTemp = weightCruise.get(0);
 				weightCruise.remove(0);
 				weightCruise.add(weightCruiseTemp*rateOfDescentRatio);
-				
+
 				weightFlightIdle.remove(0);
 				weightFlightIdle.add(1-weightCruise.get(0));
 			}
 			else {
 				double weightCruiseTemp = weightCruise.get(0);
 				weightCruise.remove(0);
-				weightCruise.add(weightCruiseTemp*rateOfDescentRatio);
-				
+				weightCruise.add(weightCruiseTemp*(1/rateOfDescentRatio));
+
 				weightFlightIdle.remove(0);
 				weightFlightIdle.add(1-weightCruise.get(0));
 			}
@@ -394,7 +393,6 @@ public class DescentCalc {
 				);
 		
 		//---------------------------------------------------------------------------------------
-		
 		_fuelUsedPerStep.add(
 				Amount.valueOf(
 						_interpolatedFuelFlowList.get(0)
@@ -496,7 +494,6 @@ public class DescentCalc {
 			
 			//---------------------------------------------------------------------------------------
 			// SFC INTERPOLATION BETWEEN CRUISE AND IDLE:
-			
 			_cruiseThrustFromDatabase.add(
 					i,
 					Amount.valueOf(
@@ -571,41 +568,41 @@ public class DescentCalc {
 					) {
 				
 				if(iter > maxIterationNumber) {
-					System.err.println("WARNING: THE ITERATIVE LOOP ON THE RATE OF DESCENT HAS BEEN STOPPED. (" +
+					System.err.println("WARNING: (ITERATIVE LOOP CRUISE/IDLE - DESCENT) THE ITERATIVE LOOP ON THE RATE OF DESCENT HAS BEEN STOPPED. (" +
 							iter + " > " + maxIterationNumber 
 							+ "). THE LAST CALCULATED WEIGHTS FOR CRUISE AND IDLE WILL BE CONSIDERED ... ");
 					break;
 				}
-				
+
 				double rateOfDescentRatio = Math.abs(
 						rateOfDescentList.get(i).doubleValue(SI.METERS_PER_SECOND)/
 						(-_rateOfDescent.doubleValue(SI.METERS_PER_SECOND))
 						);
-				
-				if(rateOfDescentRatio < 1) {
+
+				if (rateOfDescentRatio < 1) {
 					double weightCruiseTemp = weightCruise.get(i);
 					weightCruise.remove(i);
 					weightCruise.add(i, weightCruiseTemp*rateOfDescentRatio);
-					
+
 					weightFlightIdle.remove(i);
-					weightFlightIdle.add(i, 1-weightCruise.get(0));
+					weightFlightIdle.add(i, 1-weightCruise.get(i));
 				}
 				else {
 					double weightCruiseTemp = weightCruise.get(i);
 					weightCruise.remove(i);
-					weightCruise.add(i, weightCruiseTemp*rateOfDescentRatio);
-					
+					weightCruise.add(i, weightCruiseTemp*(1/rateOfDescentRatio));
+
 					weightFlightIdle.remove(i);
 					weightFlightIdle.add(i, 1-weightCruise.get(i));
 				}
-				
+
 				interpolatedThrustList.remove(i);
 				interpolatedThrustList.add(
 						i,
 						(_cruiseThrustFromDatabase.get(i).times(weightCruise.get(i)))
 						.plus(_flightIdleThrustFromDatabase.get(i).times(weightFlightIdle.get(i)))
 						);
-				
+
 				rateOfDescentList.remove(i);
 				rateOfDescentList.add(
 						i,

@@ -13,6 +13,7 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Main extends Application {
 
@@ -33,9 +34,12 @@ public class Main extends Application {
 	// STATUS BAR
 	private static StatusBar _statusBar;
 	private static ProgressBar _progressBar;
+	private static StatusBar _taskPercentage;
 	//...........................................................................................
 	// AIRCRAFT OBJECT
 	private static Aircraft _theAircraft;
+	private static Boolean _aircraftSaved;
+	private static Boolean _aircraftUpdated;
 	
 	//-------------------------------------------------------------------------------------------
 	// METHODS
@@ -53,6 +57,7 @@ public class Main extends Application {
 		Stage dialogConfig = new DialogConfig(primaryStage);
 		dialogConfig.setTitle("JPADCommander Configuration - UniNa - DAF");
 		dialogConfig.sizeToScene();
+		dialogConfig.initStyle(StageStyle.UNDECORATED);
 		dialogConfig.show();
 		
 		showMainItems();
@@ -78,15 +83,18 @@ public class Main extends Application {
 		_mainLayout.setMinHeight(900);
 		_mainLayout.setMaxHeight(900);
 		_statusBar = new StatusBar();
-		_progressBar = new ProgressBar();
-		_progressBar.setProgress(0.0);
+		_taskPercentage = new StatusBar();
+		_progressBar = new ProgressBar(0.0);
 		ToolBar statusToolbar = new ToolBar();
 		statusToolbar.getItems().add(_statusBar);
 		statusToolbar.getItems().add(_progressBar);
+		statusToolbar.getItems().add(_taskPercentage);
 		_progressBar.setPrefHeight(statusToolbar.getPrefHeight());
-		_progressBar.setPrefWidth(_mainLayout.getPrefWidth()*0.6);
-		_statusBar.setPrefWidth(_mainLayout.getPrefWidth()*0.2);
+		_progressBar.setPrefWidth(_mainLayout.getPrefWidth()*0.5);
+		_statusBar.setPrefWidth(_mainLayout.getPrefWidth()*0.25);
 		_statusBar.setText("Welcome to JPADCommander!");
+		_taskPercentage.setPrefWidth(_mainLayout.getPrefWidth()*0.2);
+		_taskPercentage.setText("");
 		_mainLayout.setBottom(statusToolbar);
 		Scene scene = new Scene(_mainLayout);
 		_primaryStage.setScene(scene);
@@ -104,7 +112,7 @@ public class Main extends Application {
 			_mainInputManagerLayout = loader.load();
 		}
 		
-		_progressBar.setProgress(0.0);
+		_statusBar.textProperty().unbind();
 		_statusBar.setText("Ready!");
 		_mainLayout.setCenter(_mainInputManagerLayout);
 		
@@ -192,6 +200,30 @@ public class Main extends Application {
 
 	public static void setInputFileAbsolutePath(String inputFileAbsolutePath) {
 		Main._inputFileAbsolutePath = inputFileAbsolutePath;
+	}
+
+	public static StatusBar getTaskPercentage() {
+		return _taskPercentage;
+	}
+
+	public static void setTaskPercentage(StatusBar _taskPercentage) {
+		Main._taskPercentage = _taskPercentage;
+	}
+
+	public static Boolean getAircraftSaved() {
+		return _aircraftSaved;
+	}
+
+	public static void setAircraftSaved(Boolean _aircraftSaved) {
+		Main._aircraftSaved = _aircraftSaved;
+	}
+
+	public static Boolean getAircraftUpdated() {
+		return _aircraftUpdated;
+	}
+
+	public static void setAircraftUpdated(Boolean _aircraftUpdated) {
+		Main._aircraftUpdated = _aircraftUpdated;
 	}
 
 }

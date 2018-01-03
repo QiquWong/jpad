@@ -90,6 +90,11 @@ public class Airfoil {
 					_theAirfoilCreator
 					);
 		}
+		else
+			AirfoilCalc.extractPolarCharacteristicsfromCurve(
+					MyArrayUtils.convertListOfDoubleToDoubleArray(_theAirfoilCreator.getCdCurve()),
+					_theAirfoilCreator.getClForCdCurve(),
+					_theAirfoilCreator);
 		//........................................................................
 	}
 	

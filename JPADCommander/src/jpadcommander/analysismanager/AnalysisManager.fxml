@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="4720.0" prefWidth="1072.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="4720.0" prefWidth="1072.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jpadcommander.analysismanager.AnalysisManagerController">
    <center>
       <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
@@ -32,13 +32,13 @@
                            <top>
                               <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                  <items>
-                                    <CheckBox mnemonicParsing="false" text="Import from file">
+                                    <CheckBox fx:id="importFromFileAnalysisCheckBox" mnemonicParsing="false" text="Import from file">
                                        <padding>
                                           <Insets right="50.0" />
                                        </padding>
                                     </CheckBox>
                                     <Label text="File:" />
-                                    <TextField id="textFieldAircraftFuselageFile" disable="true" prefHeight="25.0" prefWidth="646.0" />
+                                    <TextField id="textFieldAircraftFuselageFile" fx:id="fileAnalysisTextField" disable="true" prefHeight="25.0" prefWidth="646.0" />
                                     <Button disable="true" mnemonicParsing="false" text="..." />
                                     <Button disable="true" mnemonicParsing="false" text="Load" />
                                  </items>
@@ -79,18 +79,18 @@
                                                                   <Label text="Fuselage method:" GridPane.rowIndex="1" />
                                                                   <Label text="Wing method:" GridPane.rowIndex="2" />
                                                                   <Label text="Horizontal Tail method:" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftFuselageFile" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageFile" fx:id="fileWeightsTextField" GridPane.columnIndex="1" />
                                                                   <Label text="Vertical Tail method:" GridPane.rowIndex="4" />
                                                                   <Label text="Nacelles method:" GridPane.rowIndex="5" />
                                                                   <Label text="Landing Gears method:" GridPane.rowIndex="6" />
                                                                   <Label text="Systems method:" GridPane.rowIndex="7" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="444.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="433.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="460.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="454.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="445.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="471.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="457.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                                  <ChoiceBox fx:id="fuselageWeightsMethodChoiceBox" prefHeight="25.0" prefWidth="444.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox fx:id="wingWeightsMethodChoiceBox" prefHeight="25.0" prefWidth="433.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox fx:id="horizontalWeightsMethodChoiceBox" prefHeight="25.0" prefWidth="460.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox fx:id="verticalWeightsMethodChoiceBox" prefHeight="25.0" prefWidth="454.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox fx:id="nacellesWeightsMethodChoiceBox" prefHeight="25.0" prefWidth="445.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <ChoiceBox fx:id="landingGearsWeightsMethodChoiceBox" prefHeight="25.0" prefWidth="471.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                  <ChoiceBox fx:id="systemsWeightsMethodChoiceBox" prefHeight="25.0" prefWidth="457.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                                                   <Label text="File:" />
                                                                </children>
                                                             </GridPane>
@@ -118,12 +118,12 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <CheckBox layoutX="345.0" layoutY="109.0" mnemonicParsing="false" text="Calculate" />
-                                                            <CheckBox layoutX="420.0" layoutY="109.0" mnemonicParsing="false" text="Plot" />
-                                                            <Button layoutX="470.0" layoutY="106.0" mnemonicParsing="false" text="Details" />
-                                                            <CheckBox layoutX="345.0" layoutY="396.0" mnemonicParsing="false" text="Calculate" />
-                                                            <CheckBox layoutX="420.0" layoutY="396.0" mnemonicParsing="false" text="Plot" />
-                                                            <Button layoutX="470.0" layoutY="392.0" mnemonicParsing="false" text="Details" />
+                                                            <CheckBox fx:id="calculateWeightsCheckBox" layoutX="345.0" layoutY="109.0" mnemonicParsing="false" text="Calculate" />
+                                                            <CheckBox fx:id="plotWeightsCheckBox" layoutX="420.0" layoutY="109.0" mnemonicParsing="false" text="Plot" />
+                                                            <Button fx:id="weightsDetailsButton" layoutX="470.0" layoutY="106.0" mnemonicParsing="false" text="Details" />
+                                                            <CheckBox fx:id="calculateBalanceCheckBox" layoutX="345.0" layoutY="396.0" mnemonicParsing="false" text="Calculate" />
+                                                            <CheckBox fx:id="plotBalanceCheckBox" layoutX="420.0" layoutY="396.0" mnemonicParsing="false" text="Plot" />
+                                                            <Button fx:id="balanceDetailsButton" layoutX="470.0" layoutY="392.0" mnemonicParsing="false" text="Details" />
                                                             <GridPane layoutX="4.0" layoutY="422.0" prefHeight="159.0" prefWidth="527.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="277.0" minWidth="10.0" prefWidth="153.0" />
@@ -141,17 +141,17 @@
                                                                   <Label text="Wing method:" GridPane.rowIndex="2" />
                                                                   <Label text="Horizontal Tail method:" GridPane.rowIndex="3" />
                                                                   <Label text="File:" />
-                                                                  <TextField id="textFieldAircraftFuselageFile" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageFile" fx:id="FileBalanceTextField" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" />
                                                                   <Label text="Vertical Tail method:" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="434.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="420.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="409.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="422.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox fx:id="fuselageBalanceMethodChoiceBox" prefHeight="25.0" prefWidth="434.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox fx:id="wingBalanceMethodChoiceBox" prefHeight="25.0" prefWidth="420.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox fx:id="horizontalBalanceMethodChoiceBox" prefHeight="25.0" prefWidth="409.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox fx:id="verticalBalanceMethodChoiceBox" prefHeight="25.0" prefWidth="422.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
-                                                            <CheckBox layoutX="345.0" layoutY="592.0" mnemonicParsing="false" text="Calculate" />
-                                                            <CheckBox layoutX="420.0" layoutY="592.0" mnemonicParsing="false" text="Plot" />
-                                                            <Button layoutX="470.0" layoutY="588.0" mnemonicParsing="false" text="Details" />
+                                                            <CheckBox fx:id="calculateAeroTOCheckBox" layoutX="345.0" layoutY="592.0" mnemonicParsing="false" text="Calculate" />
+                                                            <CheckBox fx:id="plotAeroTOCheckBox" layoutX="420.0" layoutY="592.0" mnemonicParsing="false" text="Plot" />
+                                                            <Button fx:id="aeroTODetailsButton" layoutX="470.0" layoutY="588.0" mnemonicParsing="false" text="Details" />
                                                             <GridPane layoutX="4.0" layoutY="616.0" prefHeight="37.0" prefWidth="527.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="277.0" minWidth="10.0" prefWidth="153.0" />
@@ -162,7 +162,7 @@
                                                                </rowConstraints>
                                                                <children>
                                                                   <Label text="File:" />
-                                                                  <TextField id="textFieldAircraftFuselageFile" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageFile" fx:id="FileAeroTOTextField" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" />
                                                                </children>
                                                             </GridPane>
                                                             <Label layoutX="5.0" layoutY="664.0" text="Aerodynamic and Stability - CLIMB">
@@ -171,9 +171,9 @@
                                                                </font>
                                                             </Label>
                                                             <Separator layoutX="-4.0" layoutY="726.0" prefHeight="0.0" prefWidth="1346.0" />
-                                                            <CheckBox layoutX="345.0" layoutY="666.0" mnemonicParsing="false" text="Calculate" />
-                                                            <CheckBox layoutX="420.0" layoutY="666.0" mnemonicParsing="false" text="Plot" />
-                                                            <Button layoutX="470.0" layoutY="662.0" mnemonicParsing="false" text="Details" />
+                                                            <CheckBox fx:id="calculateAeroCLCheckBox" layoutX="345.0" layoutY="666.0" mnemonicParsing="false" text="Calculate" />
+                                                            <CheckBox fx:id="plotAeroCLCheckBox" layoutX="420.0" layoutY="666.0" mnemonicParsing="false" text="Plot" />
+                                                            <Button fx:id="aeroCLDetailsButton" layoutX="470.0" layoutY="662.0" mnemonicParsing="false" text="Details" />
                                                             <GridPane layoutX="4.0" layoutY="685.0" prefHeight="37.0" prefWidth="527.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="277.0" minWidth="10.0" prefWidth="153.0" />
@@ -184,7 +184,7 @@
                                                                </rowConstraints>
                                                                <children>
                                                                   <Label text="File:" />
-                                                                  <TextField id="textFieldAircraftFuselageFile" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageFile" fx:id="FileAeroCLTextField" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" />
                                                                </children>
                                                             </GridPane>
                                                             <Label layoutX="5.0" layoutY="731.0" text="Aerodynamic and Stability - CRUISE">
@@ -192,9 +192,9 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <CheckBox layoutX="345.0" layoutY="733.0" mnemonicParsing="false" text="Calculate" />
-                                                            <CheckBox layoutX="420.0" layoutY="733.0" mnemonicParsing="false" text="Plot" />
-                                                            <Button layoutX="470.0" layoutY="729.0" mnemonicParsing="false" text="Details" />
+                                                            <CheckBox fx:id="calculateAeroCRCheckBox" layoutX="345.0" layoutY="733.0" mnemonicParsing="false" text="Calculate" />
+                                                            <CheckBox fx:id="plotAeroCRCheckBox" layoutX="420.0" layoutY="733.0" mnemonicParsing="false" text="Plot" />
+                                                            <Button fx:id="aeroCRDetailsButton" layoutX="470.0" layoutY="729.0" mnemonicParsing="false" text="Details" />
                                                             <GridPane layoutX="4.0" layoutY="752.0" prefHeight="37.0" prefWidth="527.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="277.0" minWidth="10.0" prefWidth="153.0" />
@@ -205,7 +205,7 @@
                                                                </rowConstraints>
                                                                <children>
                                                                   <Label text="File:" />
-                                                                  <TextField id="textFieldAircraftFuselageFile" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageFile" fx:id="FileAeroCRTextField" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="793.0" prefHeight="0.0" prefWidth="1346.0" />
@@ -214,10 +214,10 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <CheckBox layoutX="345.0" layoutY="803.0" mnemonicParsing="false" text="Calculate" />
-                                                            <CheckBox layoutX="420.0" layoutY="803.0" mnemonicParsing="false" text="Plot" />
-                                                            <Button layoutX="470.0" layoutY="799.0" mnemonicParsing="false" text="Details" />
-                                                            <GridPane layoutX="5.0" layoutY="822.0" prefHeight="37.0" prefWidth="527.0">
+                                                            <CheckBox fx:id="calculateAeroLNDCheckBox" layoutX="345.0" layoutY="803.0" mnemonicParsing="false" text="Calculate" />
+                                                            <CheckBox fx:id="plotAeroLNDCheckBox" layoutX="420.0" layoutY="803.0" mnemonicParsing="false" text="Plot" />
+                                                            <Button fx:id="aeroLNDDetailsButton" layoutX="470.0" layoutY="799.0" mnemonicParsing="false" text="Details" />
+                                                            <GridPane fx:id="FileAeroLNDTextField" layoutX="5.0" layoutY="822.0" prefHeight="37.0" prefWidth="527.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="277.0" minWidth="10.0" prefWidth="153.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="432.0" minWidth="10.0" prefWidth="374.0" />
@@ -249,7 +249,7 @@
                                                                </rowConstraints>
                                                                <children>
                                                                   <Label text="File:" />
-                                                                  <TextField id="textFieldAircraftFuselageFile" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageFile" fx:id="FilePerformanceTextField" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" />
                                                                   <Label text="Take-Off Analysis" GridPane.rowIndex="1" />
                                                                   <Label text="Climb Analysis" GridPane.rowIndex="2" />
                                                                   <Label text="Cruise Analysis" GridPane.rowIndex="3" />
@@ -258,22 +258,22 @@
                                                                   <Label text="Mission Profile Analysis" GridPane.rowIndex="6" />
                                                                   <Label text="Payload-Range Analysis" GridPane.rowIndex="7" />
                                                                   <Label text="V-n Diagram Analysis" GridPane.rowIndex="8" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                                  <CheckBox fx:id="performTakeOffAnalysisPerformanceCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <CheckBox fx:id="performClimbAnalysisPerformanceCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <CheckBox fx:id="performCruiseAnalysisPerformanceCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <CheckBox fx:id="performDescentAnalysisPerformanceCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <CheckBox fx:id="performLandingAnalysisPerformanceCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <CheckBox fx:id="performMissionProfileAnalysisPerformanceCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                  <CheckBox fx:id="performPayloadRangeAnalysisPerformanceCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                                  <CheckBox fx:id="performVnDiagramAnalysisPerformanceCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                                                                </children>
                                                             </GridPane>
-                                                            <CheckBox layoutX="345.0" layoutY="873.0" mnemonicParsing="false" text="Calculate" />
-                                                            <CheckBox layoutX="420.0" layoutY="873.0" mnemonicParsing="false" text="Plot" />
-                                                            <Button layoutX="470.0" layoutY="869.0" mnemonicParsing="false" text="Details" />
-                                                            <CheckBox layoutX="345.0" layoutY="1195.0" mnemonicParsing="false" text="Calculate" />
-                                                            <CheckBox layoutX="420.0" layoutY="1195.0" mnemonicParsing="false" text="Plot" />
-                                                            <Button layoutX="470.0" layoutY="1191.0" mnemonicParsing="false" text="Details" />
+                                                            <CheckBox fx:id="calculatePerformanceCheckBox" layoutX="345.0" layoutY="873.0" mnemonicParsing="false" text="Calculate" />
+                                                            <CheckBox fx:id="plotPerformanceCheckBox" layoutX="420.0" layoutY="873.0" mnemonicParsing="false" text="Plot" />
+                                                            <Button fx:id="performanceDetailsButton" layoutX="470.0" layoutY="869.0" mnemonicParsing="false" text="Details" />
+                                                            <CheckBox fx:id="calculateCostsCheckBox" layoutX="345.0" layoutY="1195.0" mnemonicParsing="false" text="Calculate" />
+                                                            <CheckBox fx:id="plotCostsCheckBox" layoutX="420.0" layoutY="1195.0" mnemonicParsing="false" text="Plot" />
+                                                            <Button fx:id="costsDetailsButton" layoutX="470.0" layoutY="1191.0" mnemonicParsing="false" text="Details" />
                                                             <GridPane layoutX="4.0" layoutY="1227.0" prefHeight="173.0" prefWidth="527.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="277.0" minWidth="10.0" prefWidth="153.0" />
@@ -290,23 +290,23 @@
                                                                </rowConstraints>
                                                                <children>
                                                                   <Label text="File:" />
-                                                                  <TextField id="textFieldAircraftFuselageFile" prefHeight="25.0" prefWidth="283.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageFile" fx:id="FileCostsTextField" prefHeight="25.0" prefWidth="283.0" GridPane.columnIndex="1" />
                                                                   <Label text="Capital D.O.C." GridPane.rowIndex="1" />
                                                                   <Label text="Crew D.O.C." GridPane.rowIndex="2" />
                                                                   <Label text="Fuel D.O.C." GridPane.rowIndex="3" />
                                                                   <Label text="Charges D.O.C." GridPane.rowIndex="4" />
                                                                   <Label text="Maintenance D.O.C." GridPane.rowIndex="5" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                  <CheckBox mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                                  <ChoiceBox mouseTransparent="true" prefHeight="25.0" prefWidth="310.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <CheckBox fx:id="performCapitalDocAnalysisCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <CheckBox fx:id="performCrewDocAnalysisCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <CheckBox fx:id="performFuelDocAnalysisCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <CheckBox fx:id="performChargesDocAnalysisCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <CheckBox fx:id="performMaintenanceDocAnalysisCheckBox" mnemonicParsing="false" text="Perform" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <ChoiceBox fx:id="capitalDocMethodChoiceBox" mouseTransparent="true" prefHeight="25.0" prefWidth="310.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                   <Label text="Methods:" GridPane.columnIndex="2" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="267.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="258.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="274.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="305.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                                  <ChoiceBox fx:id="crewDocMethodChoiceBox" prefHeight="25.0" prefWidth="267.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox fx:id="fuelDocMethodChoiceBox" prefHeight="25.0" prefWidth="258.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox fx:id="chargesDocMethodChoiceBox" prefHeight="25.0" prefWidth="274.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox fx:id="maintananceDocMethodChoiceBox" prefHeight="25.0" prefWidth="305.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="95.0" prefHeight="0.0" prefWidth="1312.0" />
@@ -326,9 +326,9 @@
                                                                </rowConstraints>
                                                                <children>
                                                                   <Label text="Positive limit load factor" />
-                                                                  <TextField id="textFieldAircraftFuselageFile" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageFile" fx:id="negativeLimitLoadFactorTextField" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                   <Label text="Negative limit load factor" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftFuselageFile" prefHeight="25.0" prefWidth="17.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageFile" fx:id="positiveLimitLoadFactorTextField" prefHeight="25.0" prefWidth="17.0" GridPane.columnIndex="1" />
                                                                </children>
                                                             </GridPane>
                                                          </children>
@@ -339,7 +339,7 @@
                                           </AnchorPane>
                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                              <children>
-                                                <BorderPane layoutX="386.0" layoutY="181.0" prefHeight="678.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                <BorderPane fx:id="analysisManagerViewsAndDataLogSplitPane" layoutX="386.0" layoutY="181.0" prefHeight="678.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                              </children>
                                           </AnchorPane>
                                        </items>
@@ -358,10 +358,10 @@
    <top>
       <ToolBar id="actionButtonsToolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-            <Button id="newAircraftButton" mnemonicParsing="false" onAction="#newAircraft" text="New Analysis" />
+            <Button id="newAircraftButton" fx:id="newAnalysisButton" mnemonicParsing="false" onAction="#newAircraft" text="New Analysis" />
             <Region prefWidth="50.0" />
-            <Button id="updateAllButton" mnemonicParsing="false" text="Save Analysis" />
-            <Button id="saveAircraftButton" mnemonicParsing="false" text="Run" />
+            <Button id="updateAllButton" fx:id="saveAnalysisButton" mnemonicParsing="false" text="Save Analysis" />
+            <Button id="saveAircraftButton" fx:id="runAnalysisButton" mnemonicParsing="false" text="Run" />
         </items>
       </ToolBar>
    </top>
