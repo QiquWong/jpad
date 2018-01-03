@@ -2,14 +2,14 @@
 <runscript initialize="initialCondition" name="D150_JSBSim">
    <decription>CPACS simulation with JSBSim through JPAD software</decription>
    <use aircraft="D150_JSBSim" initialize="initialCondition"/>
-   <run dt="0.1" end="100" start="0">
+   <run dt="0.01" end="7" start="0">
       <property>simulation/notify-time-trigger</property>
       <property value="1">simulation/run_id</property>
       <property value="1">fcs/left-brake-cmd-norm</property>
       <property value="1">fcs/right-brake-cmd-norm</property>
       <event name="engine start">
          <description>Start the engine</description>
-         <condition> simulation/sim-time-sec &gt;= 0.2</condition>
+         <condition> simulation/sim-time-sec GE 0.02</condition>
          <set name="fcs/throttle-cmd-norm" value="1.0"/>
          <notify>
             <property> position/h-agl-ft</property>
@@ -18,7 +18,7 @@
       </event>
       <event name="begin roll">
          <description>Release brakes and get rolling with flaps at 30 degrees.</description>
-         <condition> simulation/sim-time-sec &gt;= 2.5</condition>
+         <condition> simulation/sim-time-sec GE 200000.5</condition>
          <set name="fcs/left-brake-cmd-norm" value="0"/>
          <set name="fcs/right-brake-cmd-norm" value="0"/>
          <set name="fcs/flap-cmd-norm" value="0.66"/>
@@ -29,7 +29,7 @@
       </event>
       <event name="Remove flap">
          <description>at 1000 feet remove flap</description>
-         <condition> position/h-agl-ft &gt;= 1000</condition>
+         <condition> position/h-agl-ft GE 1000</condition>
          <set name="fcs/flap-cmd-norm" value="0.0"/>
          <notify>
 		  <property>propulsion/engine[0]/n2</property>

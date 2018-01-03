@@ -41945,15 +41945,15 @@ Use this model for development purposes ONLY!!!
   Output data set: 0  
 
 Script: "D150_JSBSim"
-  begins at 0.0000 seconds and runs to 100.0083 seconds with dt = 0.100000 (10.000000 Hz)
+  begins at 0.0000 seconds and runs to 7.0083 seconds with dt = 0.010000 (100.000000 Hz)
 
-Local property: right-brake-cmd-norm = 1.000000
 Local property: left-brake-cmd-norm = 1.000000
-Local property: notify-time-trigger = 0.000000
+Local property: right-brake-cmd-norm = 1.000000
 Local property: run_id = 1.000000
+Local property: notify-time-trigger = 0.000000
 Event 0 (engine start):
   When first triggered, executes once  if all of the following are true: {
-    sim-time-sec >= 0.200000
+    sim-time-sec GE 0.020000
   }
   Actions taken:
     {
@@ -41967,7 +41967,7 @@ Event 0 (engine start):
 
 Event 1 (begin roll):
   When first triggered, executes once  if all of the following are true: {
-    sim-time-sec >= 2.500000
+    sim-time-sec GE 200000.500000
   }
   Actions taken:
     {
@@ -41983,7 +41983,7 @@ Event 1 (begin roll):
 
 Event 2 (Remove flap):
   When first triggered, executes once  if all of the following are true: {
-    h-agl-ft >= 1000.000000
+    h-agl-ft GE 1000.000000
   }
   Actions taken:
     {
@@ -42130,60 +42130,43 @@ Propulsion Model:
 ------------------------------------------------------------------
 State Report at sim time: 0.000000 seconds
   Position
-    ECI:   17039923.55498034, 6202024.968184373, 10469385.66273998 (x,y,z, in ft)
-    ECEF:  17039923.554980 , 6202024.968184 , 10469385.662740 (x,y,z, in ft)
-    Local: 30.166678, 20.000000, 13125.000020 (geodetic lat, lon, alt ASL in deg and ft)
+    ECI:   17029245.93131827, 6198138.630998683, 10462825.29527594 (x,y,z, in ft)
+    ECEF:  17029245.931318 , 6198138.630999 , 10462825.295276 (x,y,z, in ft)
+    Local: 30.166783, 20.000000, 4.265092 (geodetic lat, lon, alt ASL in deg and ft)
 
   Orientation
-    ECI:   -138.3486563587723, -49.34198496467406, 149.8886193631694 (phi, theta, psi in deg)
-    Local: -5.865040968095764e-15, 0.999999999999998, 29.99999999999999 (phi, theta, psi in deg)
+    ECI:   -139.1066053508691, -48.59037789072916, 150.8933946491309 (phi, theta, psi in deg)
+    Local: 7.951386703658791e-16, -2.13056764595294e-16, 30 (phi, theta, psi in deg)
 
   Velocity
-    ECI:   -914.5440349502196, 1510.67089623072, 622.2211087098304 (x,y,z in ft/s)
-    ECEF:  -462.2852419415017, 268.1000746894658, 622.2211087098306 (x,y,z in ft/s)
-    Local: 710.214489 , 410.042527 , -14.314638 (n,e,d in ft/sec)
-    Body:  820.209975 , 0.000000 , 0.000000 (u,v,w in ft/sec)
+    ECI:   -451.9753968318496, 1241.792196944549, 0 (x,y,z in ft/s)
+    ECEF:  0, 0, 0 (x,y,z in ft/s)
+    Local: 0.000000 , 0.000000 , 0.000000 (n,e,d in ft/sec)
+    Body:  0.000000 , 0.000000 , -0.000000 (u,v,w in ft/sec)
 
   Body Rates (relative to given frame, expressed in body frame)
-    ECI:   0.003180842704249765, -0.004053197830337777, -0.002681730309630086 (p,q,r in deg/s)
-    ECEF:  1.130563682445427e-05, -0.002244038661630371, -0.0006476994998842533 (p,q,r in deg/s)
+    ECI:   0.003133555599180303, -0.001809159168707406, -0.002089037066120201 (p,q,r in deg/s)
+    ECEF:  0, 0, 0 (p,q,r in deg/s)
 
 ---- JSBSim Execution beginning ... --------------------------------------------
 
+Start: Wednesday January 03 2018 16:17:12 (HH:MM:SS)
+0: GEAR_CONTACT: 0 seconds: Nose Gear 1
+1: GEAR_CONTACT: 0 seconds: Right Main Gear 1
+2: GEAR_CONTACT: 0 seconds: Left Main Gear 1
 
-Remove flap (Event 2) executed at time: 0.100000
-    propulsion/engine[0]/n2 = 0.000000
-    propulsion/engine[1]/n2 = 0.000000
-    propulsion/engine[0]/thrust-lbs = 704.978544
-    propulsion/engine[1]/thrust-lbs = 704.978544
-    position/h-agl-ft = 6563.320220
-    velocities/vc-kts = 407.875940
-    velocities/vc-fps = 688.417091
-    velocities/vt-fps = 820.209975
-    attitude/phi-deg = -0.000000
-    attitude/theta-rad = 0.017453
-    attitude/psi-rad = 0.523599
-    fcs/elevator-pos-deg = 0.000000
-    fcs/elevator-cmd-norm = 0.000000
-    fcs/flap-pos-deg = 0.000000
-    fcs/rudder-pos-deg = 0.000000
-    fcs/right-aileron-pos-deg = 0.000000
-    fcs/throttle-cmd-norm = 0.000000
-    aero/function/drag_coeff_basic_Mach = 0.004087
-    aero/function/aileron_drag_coeff_basic_Mach = 0.000127
-    aero/function/elevator_drag_coeff_basic_Mach = 0.000307
-    aero/function/rudder_drag_coeff_basic_Mach = 0.000279
-    aero/function/elevator_drag_coeff_basic_Mach = 0.000307
-    aero/function/lift_coeff_basic_Mach = 0.438040
+engine start (Event 0) executed at time: 0.020000
+    position/h-agl-ft = 2.132550
+    velocities/vc-kts = 0.000000
 
-Start: Wednesday January 03 2018 10:23:15 (HH:MM:SS)
-
-engine start (Event 0) executed at time: 0.200000
-    position/h-agl-ft = 6564.752521
-    velocities/vc-kts = 407.795461
-
-
-begin roll (Event 1) executed at time: 2.500000
-    position/h-agl-ft = 6644.315326
-    velocities/vc-kts = 404.025426
-
+3: GEAR_CONTACT: 0.19 seconds: Nose Gear 0
+4: GEAR_CONTACT: 3.66 seconds: Right Main Gear 0
+5: GEAR_CONTACT: 3.66 seconds: Left Main Gear 0
+6: GEAR_CONTACT: 3.67 seconds: Right Main Gear 1
+7: GEAR_CONTACT: 3.67 seconds: Left Main Gear 1
+8: GEAR_CONTACT: 3.69 seconds: Right Main Gear 0
+9: GEAR_CONTACT: 3.69 seconds: Left Main Gear 0
+10: GEAR_CONTACT: 3.8 seconds: Right Main Gear 1
+11: GEAR_CONTACT: 3.8 seconds: Left Main Gear 1
+12: GEAR_CONTACT: 4.97 seconds: Nose Gear 1
+End: Wednesday January 03 2018 16:17:13 (HH:MM:SS)

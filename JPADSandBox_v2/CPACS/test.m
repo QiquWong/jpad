@@ -4,6 +4,17 @@ filename = 'D150 AGILE.csv';
 
 dataTable = importJSBSimCSV(filename);
 
+%% Treat only the first lastElementIdx elements in data
+
+lastElementIdx = 100;
+fnames = fieldnames(dataTable);
+for k = 1:length(fnames)-3
+    F = getfield(dataTable,fnames{k});
+    F(lastElementIdx+1:end) = [];
+    dataTable0.(fnames{k}) = F;
+end
+dataTable = dataTable0;
+
 %% Plot
 subplot(3,1,1)
 plot( ...
@@ -19,6 +30,13 @@ plot( ...
     )
 xlabel('t (s)');
 ylabel('Thrust (lbs)');
+
+subplot(3,1,3)
+plot( ...
+    dataTable.Time, dataTable.fdmjsbsimpositionhslmeters ...
+    )
+xlabel('t (s)');
+ylabel('Altitude (m)');
 
 figure()
 plot( ...

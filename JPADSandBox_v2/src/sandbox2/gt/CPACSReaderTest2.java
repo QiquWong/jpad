@@ -171,7 +171,7 @@ public class CPACSReaderTest2 {
 						);
 				runElement.appendChild(eventElem);	
 				JPADStaticWriteUtils.writeSingleNode("description","Start the engine",eventElem,docScript);
-				JPADStaticWriteUtils.writeSingleNode("condition"," simulation/sim-time-sec >= 0.2",eventElem,docScript);
+				JPADStaticWriteUtils.writeSingleNode("condition"," simulation/sim-time-sec GE 0.2",eventElem,docScript);
 				org.w3c.dom.Element setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
 						docScript,"set",
 						Tuple.of("name", "fcs/throttle-cmd-norm"), 
@@ -189,7 +189,7 @@ public class CPACSReaderTest2 {
 						);
 				runElement.appendChild(eventElem);	
 				JPADStaticWriteUtils.writeSingleNode("description","Release brakes and get rolling with flaps at 30 degrees.",eventElem,docScript);
-				JPADStaticWriteUtils.writeSingleNode("condition"," simulation/sim-time-sec >= 2.5",eventElem,docScript);
+				JPADStaticWriteUtils.writeSingleNode("condition"," simulation/sim-time-sec GE 2.5",eventElem,docScript);
 				setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
 						docScript,"set",
 						Tuple.of("name", "fcs/left-brake-cmd-norm"), 
@@ -217,7 +217,7 @@ public class CPACSReaderTest2 {
 						);
 				runElement.appendChild(eventElem);	
 				JPADStaticWriteUtils.writeSingleNode("description","at 1000 feet remove flap",eventElem,docScript);
-				JPADStaticWriteUtils.writeSingleNode("condition"," position/h-agl-ft >= 1000",eventElem,docScript);
+				JPADStaticWriteUtils.writeSingleNode("condition"," position/h-agl-ft GE 1000",eventElem,docScript);
 				setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
 						docScript,"set",
 						Tuple.of("name", "fcs/flap-cmd-norm"), 
