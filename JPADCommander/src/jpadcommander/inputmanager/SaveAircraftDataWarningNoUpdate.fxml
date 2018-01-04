@@ -28,7 +28,7 @@
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="27.0" prefWidth="473.0" text="please Set/Update data">
+                  <Label alignment="CENTER" prefHeight="27.0" prefWidth="473.0" text="please UPDATE AIRCRAFT DATA">
                      <font>
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
@@ -36,13 +36,13 @@
                   <Label />
                   <HBox alignment="CENTER" prefHeight="59.0" prefWidth="329.0">
                      <children>
-                        <Button id="warningContinueButton" mnemonicParsing="false" text="Continue">
+                        <Button id="warningContinueButton" mnemonicParsing="false" text="OK">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Button>
-                        <Region prefHeight="56.0" prefWidth="124.0" />
-                        <Button id="warningIgnoreButton" mnemonicParsing="false" text="Ignore">
+                        <Region prefHeight="56.0" prefWidth="100.0" />
+                        <Button id="warningIgnoreButton" mnemonicParsing="false" text="Ignore And Continue">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>

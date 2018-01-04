@@ -6,14 +6,20 @@ import org.controlsfx.control.StatusBar;
 
 import aircraft.components.Aircraft;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
@@ -59,6 +65,73 @@ public class Main extends Application {
 		dialogConfig.sizeToScene();
 		dialogConfig.initStyle(StageStyle.UNDECORATED);
 		dialogConfig.show();
+		Platform.setImplicitExit(false);
+		
+		_primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			
+			@Override
+			public void handle(WindowEvent event) {
+				
+				event.consume();
+				
+				if(_aircraftSaved != null) {
+					if(!_aircraftSaved) {
+
+						//..................................................................................
+						// AIRCRAFT DATA NOT SAVED WARNING
+						Stage inputDataWarning = new Stage();
+
+						inputDataWarning.setTitle("Aircraft Not Saved Warning");
+						inputDataWarning.initModality(Modality.WINDOW_MODAL);
+						inputDataWarning.initStyle(StageStyle.UNDECORATED);
+						inputDataWarning.initOwner(Main.getPrimaryStage());
+
+						FXMLLoader loader = new FXMLLoader();
+						loader.setLocation(Main.class.getResource("inputmanager/InputManagerWarning.fxml"));
+						BorderPane inputDataWarningBorderPane = null;
+						try {
+							inputDataWarningBorderPane = loader.load();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						Scene scene = new Scene(inputDataWarningBorderPane);
+						inputDataWarning.setScene(scene);
+						inputDataWarning.sizeToScene();
+						inputDataWarning.show();
+
+						Button yesButton = (Button) inputDataWarningBorderPane.lookup("#warningYesButton");
+						yesButton.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(ActionEvent arg0) {
+								_primaryStage.close();
+								inputDataWarning.close();
+								System.exit(1);
+							}
+
+						});
+						Button noButton = (Button) inputDataWarningBorderPane.lookup("#warningNoButton");
+						noButton.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(ActionEvent arg0) {
+								inputDataWarning.close();
+							}
+
+						});
+					}
+					else {
+						_primaryStage.close();
+						System.exit(1);
+					}
+				}
+				else {
+					_primaryStage.close();
+					System.exit(1);
+				}
+			}
+		});
 		
 		showMainItems();
 		

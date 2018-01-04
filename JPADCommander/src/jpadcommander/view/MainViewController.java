@@ -12,6 +12,14 @@ public class MainViewController {
 		
 		Main.showMainItems();
 		
+		Main.getProgressBar().progressProperty().unbind();
+		Main.getStatusBar().textProperty().unbind();
+		Main.getTaskPercentage().textProperty().unbind();
+		
+		Main.getProgressBar().setProgress(0);
+		Main.getStatusBar().setText("Welcome to JPADCommander!");
+		Main.getTaskPercentage().setText("");
+		
 	}
 	
 }
