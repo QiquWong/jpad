@@ -21,6 +21,7 @@ import java.util.stream.IntStream;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
@@ -50,6 +51,8 @@ import org.w3c.dom.NodeList;
 
 import aircraft.auxiliary.SeatsBlock;
 import aircraft.components.Aircraft;
+import aircraft.components.CabinConfiguration;
+import aircraft.components.CabinConfiguration.ConfigurationBuilder;
 import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.SlatCreator;
@@ -2531,6 +2534,8 @@ public class InputManagerController {
 		vTailAdjustCriterionDisableCheck();
 		canardAdjustCriterionDisableCheck();
 		
+		System.gc();
+		
 	}
 	
 	private void removeContentOnAircraftEngineTabClose (Tab tab) {
@@ -3635,6 +3640,8 @@ public class InputManagerController {
 		
 		newEngineTab.setContent(contentPane);
 		tabPaneAircraftEngines.getTabs().add(newEngineTab);
+	
+		System.gc();
 		
 	}
 	
@@ -3766,6 +3773,8 @@ public class InputManagerController {
 		
 		newNacelleTab.setContent(contentPane);
 		tabPaneAircraftNacelles.getTabs().add(newNacelleTab);
+		
+		System.gc();
 		
 	}
 	
@@ -4280,6 +4289,8 @@ public class InputManagerController {
 		newPanelTab.setContent(contentPane);
 		tabPaneWingPanels.getTabs().add(newPanelTab);
 		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -4409,6 +4420,8 @@ public class InputManagerController {
 		newFlapTab.setContent(contentPane);
 		tabPaneWingFlaps.getTabs().add(newFlapTab);
 		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -4537,6 +4550,8 @@ public class InputManagerController {
 		newSlatTab.setContent(contentPane);
 		tabPaneWingSlats.getTabs().add(newSlatTab);
 		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -4650,6 +4665,8 @@ public class InputManagerController {
 		
 		newSpoilerTab.setContent(contentPane);
 		tabPaneWingSpoilers.getTabs().add(newSpoilerTab);
+		
+		System.gc();
 		
 	}
 	
@@ -5050,6 +5067,8 @@ public class InputManagerController {
 		newPanelTab.setContent(contentPane);
 		tabPaneHTailPanels.getTabs().add(newPanelTab);
 		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -5178,6 +5197,8 @@ public class InputManagerController {
 		
 		newElevatorTab.setContent(contentPane);
 		tabPaneHTailElevators.getTabs().add(newElevatorTab);
+		
+		System.gc();
 		
 	}
 	
@@ -5577,6 +5598,8 @@ public class InputManagerController {
 		
 		newPanelTab.setContent(contentPane);
 		tabPaneVTailPanels.getTabs().add(newPanelTab);
+	
+		System.gc();
 		
 	}
 	
@@ -5706,6 +5729,8 @@ public class InputManagerController {
 		
 		newRudderTab.setContent(contentPane);
 		tabPaneVTailRudders.getTabs().add(newRudderTab);
+		
+		System.gc();
 		
 	}
 	
@@ -6106,6 +6131,8 @@ public class InputManagerController {
 		newPanelTab.setContent(contentPane);
 		tabPaneCanardPanels.getTabs().add(newPanelTab);
 		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -6234,6 +6261,8 @@ public class InputManagerController {
 		
 		newControlSurfaceTab.setContent(contentPane);
 		tabPaneCanardControlSurfaces.getTabs().add(newControlSurfaceTab);
+		
+		System.gc();
 		
 	}
 	
@@ -6477,6 +6506,8 @@ public class InputManagerController {
 		newNacelleTab.setContent(contentPane);
 		tabPaneNacelles.getTabs().add(newNacelleTab);
 		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -6522,6 +6553,8 @@ public class InputManagerController {
 		powerPlantBorderPaneMap.put(indexOfEngineTab, contentBorderPane);
 		newEngineTab.setContent(contentBorderPane);
 		tabPaneEngines.getTabs().add(newEngineTab);
+		
+		System.gc();
 		
 	}
 	
@@ -6713,6 +6746,8 @@ public class InputManagerController {
 		enginePaneMap.put(EngineTypeEnum.TURBOFAN, engineDataPane);
 		powerPlantPaneMap.put(indexOfEngineTab, enginePaneMap);
 		powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(engineDataPane);
+	
+		System.gc();
 		
 	}
 
@@ -6942,6 +6977,8 @@ public class InputManagerController {
 		powerPlantPaneMap.put(indexOfEngineTab, enginePaneMap);
 		powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(engineDataPane);
 		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7128,6 +7165,8 @@ public class InputManagerController {
 		powerPlantPaneMap.put(indexOfEngineTab, enginePaneMap);
 		powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(engineDataPane);
 		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7165,6 +7204,8 @@ public class InputManagerController {
 			}
 		});
 
+		System.gc();
+		
 	}
 
 	@FXML
@@ -7330,6 +7371,9 @@ public class InputManagerController {
 		else {
 			dryMassTextField.setText("INVALID VALUE. THE AIRCRAFT IS NULL");
 		}
+		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7443,6 +7487,8 @@ public class InputManagerController {
 			break;
 		}
 		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7461,6 +7507,8 @@ public class InputManagerController {
 			panelInnerSectionAirfoilPathTextField.setText(file.getAbsolutePath());
 		}
 		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7476,6 +7524,8 @@ public class InputManagerController {
 			engineDatabasePathTextField.setText(Paths.get(file.getAbsolutePath()).getFileName().toString());
 		}
 		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7490,6 +7540,9 @@ public class InputManagerController {
 			textFieldAircraftInputFile.setText(file.getAbsolutePath());
 			Main.setInputFileAbsolutePath(file.getAbsolutePath());
 		}
+		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7511,6 +7564,9 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftCabinConfigurationFile.setText(file.getAbsolutePath());
 		}
+		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7532,6 +7588,9 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftFuselageFile.setText(file.getAbsolutePath());
 		}
+		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7553,6 +7612,9 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftWingFile.setText(file.getAbsolutePath());
 		}
+		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7574,6 +7636,9 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftHTailFile.setText(file.getAbsolutePath());
 		}
+		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7595,6 +7660,9 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftVTailFile.setText(file.getAbsolutePath());
 		}
+		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7616,6 +7684,9 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftCanardFile.setText(file.getAbsolutePath());
 		}
+		
+		System.gc();
+		
 	}
 	
 	private void chooseAircraftEngineFile(int indexOfEngine) throws IOException {
@@ -7636,6 +7707,9 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldsAircraftEngineFileList.get(indexOfEngine).setText(file.getAbsolutePath());
 		}
+		
+		System.gc();
+		
 	}
 	
 	private void chooseAircraftNacelleFile(int indexOfNacelle) throws IOException {
@@ -7656,6 +7730,9 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldsAircraftNacelleFileList.get(indexOfNacelle).setText(file.getAbsolutePath());
 		}
+		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7677,6 +7754,9 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftLandingGearsFile.setText(file.getAbsolutePath());
 		}
+		
+		System.gc();
+		
 	}
 	
 	@FXML
@@ -7698,6 +7778,9 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftSystemsFile.setText(file.getAbsolutePath());
 		}
+		
+		System.gc();
+		
 	}
 	
 	private boolean isAircraftFile(String pathToAircraftXML) {
@@ -7766,6 +7849,8 @@ public class InputManagerController {
 			}
         	
 		});
+        
+        System.gc();
         
 	}
 	
@@ -8675,6 +8760,9 @@ public class InputManagerController {
 			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();
 			}
+		
+		System.gc();
+		
 	}
 
 	@SuppressWarnings({ "rawtypes" })
@@ -9130,7 +9218,7 @@ public class InputManagerController {
 			    		} catch (Exception e) {
 			    			newAircraftButton.setDisable(true);
 			    		}
-			            
+			    		
 						return null;
 					}
 					
@@ -9273,6 +9361,9 @@ public class InputManagerController {
 	        saveAircraftDataWarning.show();
 			
 		}
+		
+		System.gc();
+		
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -10092,15 +10183,6 @@ public class InputManagerController {
 		//.................................................................................................
 		if(Main.getTheAircraft().getCanard() != null) {
 			
-			/*
-			 * TODO: IF THE CANARD HAS BEEN SET BUT NOT ITS POSITIONS, SUBSTITUTE "NOT INITIALIZED" WITH
-			 *       "0.0" (AND "m" OR "deg") - THE SAME CHECK SHOULD BE DONE ALSO FOR OTHER COMPONENTS
-			 *       (THE USER MAY HAVE CREATED SOME COMPONENTS FORGETTING TO SET THEIR POSITIONS IN THE 
-			 *       AIRCRAFT TAB)   
-			 *       
-			 *       OTHERWISE THE "NOT INITIALIZED" STRING MAY BE REPLACED DURING THE LOG OF THE AIRCRAFT TAB
-			 */
-			
 			Main.getTheAircraft().setCanardFilePath(canardFilePath);
 			Main.getTheAircraft().getCanard().setXApexConstructionAxes(
 					(Amount<Length>) Amount.valueOf(Double.valueOf(canardXPosition), Unit.valueOf(canardXPositionUnit))
@@ -10210,43 +10292,318 @@ public class InputManagerController {
 	
 	private void updateFuselageTabData() {
 		
-		
+		// TODO: AFTER MATHCING ADJUST CRITERION WITH THE DATA MODEL
 		
 	}
 	
+	@SuppressWarnings({ "unchecked" })
 	private void updateCabinConfigurationTabData() {
 		
+		//.................................................................................................
+		// DATA INITIALIZATION
+		//.................................................................................................
+		String actualPassengerNumber = "";
+		String maximumPassengerNumber = "";
+		String flightCrewNumber = "";
+		String classesNumber = "";
+		List<String> classesType = new ArrayList<>();
+		String aislesNumber = "";
+		String xCoordinateFirstRow = "";
+		String xCoordinateFirstRowUnit = "";
+		List<String> missingSeaRows = new ArrayList<>();
+		//.................................................................................................
+		String numberOfBrakesEconomyClass = "";
+		String numberOfBrakesBusinessClass = "";
+		String numberOfBrakesFirstClass = "";
+		String numberOfRowsEconomyClass = "";
+		String numberOfRowsBusinessClass = "";
+		String numberOfRowsFirstClass = "";
+		String numberOfColumnsEconomyClass = "";
+		String numberOfColumnsBusinessClass = "";
+		String numberOfColumnsFirstClass = "";
+		String seatsPitchEconomyClass = "";
+		String seatsPitchBusinessClass = "";
+		String seatsPitchFirstClass = "";
+		String seatsPitchEconomyClassUnit = "";
+		String seatsPitchBusinessClassUnit = "";
+		String seatsPitchFirstClassUnit = "";
+		String seatsWidthEconomyClass = "";
+		String seatsWidthBusinessClass = "";
+		String seatsWidthFirstClass = "";
+		String seatsWidthEconomyClassUnit = "";
+		String seatsWidthBusinessClassUnit = "";
+		String seatsWidthFirstClassUnit = "";
+		String distanceFromWallEconomyClass = "";
+		String distanceFromWallBusinessClass = "";
+		String distanceFromWallFirstClass = "";
+		String distanceFromWallEconomyClassUnit = "";
+		String distanceFromWallBusinessClassUnit = "";
+		String distanceFromWallFirstClassUnit = "";
+		//.................................................................................................
+		String referenceMassFurnishingsAndEquipments = "";
+		String referenceMassFurnishingsAndEquipmentsUnit = "";
 		
+		//.................................................................................................
+		// FETCHING DATA FROM GUI FIELDS ...
+		//.................................................................................................
+		if(textFieldActualPassengersNumber.getText() != null)
+			actualPassengerNumber = textFieldActualPassengersNumber.getText();
+		if(textFieldMaximumPassengersNumber.getText() != null)
+			maximumPassengerNumber = textFieldMaximumPassengersNumber.getText();
+		if(textFieldFlightCrewNumber.getText() != null)
+			flightCrewNumber = textFieldFlightCrewNumber.getText();
+		if(textFieldClassesNumber.getText() != null)
+			classesNumber = textFieldClassesNumber.getText();
+		if(!cabinConfigurationClassesTypeChoiceBox1.getSelectionModel().isEmpty())
+			classesType.add(cabinConfigurationClassesTypeChoiceBox1.getSelectionModel().getSelectedItem().toString());
+		if(!cabinConfigurationClassesTypeChoiceBox2.getSelectionModel().isEmpty())
+			classesType.add(cabinConfigurationClassesTypeChoiceBox2.getSelectionModel().getSelectedItem().toString());
+		if(!cabinConfigurationClassesTypeChoiceBox3.getSelectionModel().isEmpty())
+			classesType.add(cabinConfigurationClassesTypeChoiceBox3.getSelectionModel().getSelectedItem().toString());
+		if(textFieldAislesNumber.getText() != null)
+			aislesNumber = textFieldAislesNumber.getText();
+		if(textFieldXCoordinateFirstRow.getText() != null)
+			xCoordinateFirstRow = textFieldXCoordinateFirstRow.getText();
+		if(!cabinConfigurationXCoordinateFirstRowUnitChoiceBox.getSelectionModel().isEmpty())
+			xCoordinateFirstRowUnit = cabinConfigurationXCoordinateFirstRowUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldMissingSeatRow1.getText() != null)
+			missingSeaRows.add(textFieldMissingSeatRow1.getText());
+		if(textFieldMissingSeatRow2.getText() != null)
+			missingSeaRows.add(textFieldMissingSeatRow2.getText());
+		if(textFieldMissingSeatRow3.getText() != null)
+			missingSeaRows.add(textFieldMissingSeatRow3.getText());
+		//.................................................................................................
+		if(textFieldNumberOfBrakesEconomy.getText() != null)
+			numberOfBrakesEconomyClass = textFieldNumberOfBrakesEconomy.getText();
+		if(textFieldNumberOfBrakesBusiness.getText() != null)
+			numberOfBrakesBusinessClass = textFieldNumberOfBrakesBusiness.getText();
+		if(textFieldNumberOfBrakesFirst.getText() != null)
+			numberOfBrakesFirstClass = textFieldNumberOfBrakesFirst.getText();
+		if(textFieldNumberOfRowsEconomy.getText() != null)
+			numberOfRowsEconomyClass = textFieldNumberOfRowsEconomy.getText();
+		if(textFieldNumberOfRowsBusiness.getText() != null)
+			numberOfRowsBusinessClass = textFieldNumberOfRowsBusiness.getText();
+		if(textFieldNumberOfRowsFirst.getText() != null)
+			numberOfRowsFirstClass = textFieldNumberOfRowsFirst.getText();
+		if(textFieldNumberOfColumnsEconomy.getText() != null)
+			numberOfColumnsEconomyClass = textFieldNumberOfColumnsEconomy.getText();
+		if(textFieldNumberOfColumnsBusiness.getText() != null)
+			numberOfColumnsBusinessClass = textFieldNumberOfColumnsBusiness.getText();
+		if(textFieldNumberOfColumnsFirst.getText() != null)
+			numberOfColumnsFirstClass = textFieldNumberOfColumnsFirst.getText();
+		if(textFieldSeatsPitchEconomy.getText() != null)
+			seatsPitchEconomyClass = textFieldSeatsPitchEconomy.getText();
+		if(textFieldSeatsPitchBusiness.getText() != null)
+			seatsPitchBusinessClass = textFieldSeatsPitchBusiness.getText();
+		if(textFieldSeatsPitchFirst.getText() != null)
+			seatsPitchFirstClass = textFieldSeatsPitchFirst.getText();
+		if(!cabinConfigurationSeatsPitchEconomyUnitChoiceBox.getSelectionModel().isEmpty())
+			seatsPitchEconomyClassUnit = cabinConfigurationSeatsPitchEconomyUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(!cabinConfigurationSeatsPitchBusinessUnitChoiceBox.getSelectionModel().isEmpty())
+			seatsPitchBusinessClassUnit = cabinConfigurationSeatsPitchBusinessUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(!cabinConfigurationSeatsPitchFirstUnitChoiceBox.getSelectionModel().isEmpty())
+			seatsPitchFirstClassUnit = cabinConfigurationSeatsPitchFirstUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldSeatsWidthEconomy.getText() != null)
+			seatsWidthEconomyClass = textFieldSeatsWidthEconomy.getText();
+		if(textFieldSeatsWidthBusiness.getText() != null)
+			seatsWidthBusinessClass = textFieldSeatsWidthBusiness.getText();
+		if(textFieldSeatsWidthFirst.getText() != null)
+			seatsWidthFirstClass = textFieldSeatsWidthFirst.getText();
+		if(!cabinConfigurationSeatsWidthEconomyUnitChoiceBox.getSelectionModel().isEmpty())
+			seatsWidthEconomyClassUnit = cabinConfigurationSeatsWidthEconomyUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(!cabinConfigurationSeatsWidthBusinessUnitChoiceBox.getSelectionModel().isEmpty())
+			seatsWidthBusinessClassUnit = cabinConfigurationSeatsWidthBusinessUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(!cabinConfigurationSeatsWidthFirstUnitChoiceBox.getSelectionModel().isEmpty())
+			seatsWidthFirstClassUnit = cabinConfigurationSeatsWidthFirstUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldDistanceFromWallEconomy.getText() != null)
+			distanceFromWallEconomyClass = textFieldDistanceFromWallEconomy.getText();
+		if(textFieldDistanceFromWallBusiness.getText() != null)
+			distanceFromWallBusinessClass = textFieldDistanceFromWallBusiness.getText();
+		if(textFieldDistanceFromWallFirst.getText() != null)
+			distanceFromWallFirstClass = textFieldDistanceFromWallFirst.getText();
+		if(!cabinConfigurationDistanceFromWallEconomyUnitChoiceBox.getSelectionModel().isEmpty())
+			distanceFromWallEconomyClassUnit = cabinConfigurationDistanceFromWallEconomyUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(!cabinConfigurationDistanceFromWallBusinessUnitChoiceBox.getSelectionModel().isEmpty())
+			distanceFromWallBusinessClassUnit = cabinConfigurationDistanceFromWallBusinessUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(!cabinConfigurationDistanceFromWallFirstUnitChoiceBox.getSelectionModel().isEmpty())
+			distanceFromWallFirstClassUnit = cabinConfigurationDistanceFromWallFirstUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(textFieldMassFurnishingsAndEquipment.getText() != null)
+			referenceMassFurnishingsAndEquipments = textFieldMassFurnishingsAndEquipment.getText();
+		if(!cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox.getSelectionModel().isEmpty())
+			referenceMassFurnishingsAndEquipmentsUnit = cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+
+		//.................................................................................................
+		// SETTING ALL DATA INSIDE THE AIRCRAFT OBJECT ...
+		//.................................................................................................
+		List<List<String>> missingSeatsRowSplitList = new ArrayList<>(); 
+		missingSeaRows.stream()
+		.filter(str -> !str.isEmpty())
+		.forEach(str -> {
+			String currentString = str.trim();
+			currentString = currentString.replace("[", "");
+			currentString = currentString.replace("]", "");
+			currentString = currentString.replace(",", ";");
+			missingSeatsRowSplitList.add(Arrays.asList(currentString.split(";")));
+		});
+		List<Integer[]> missingSeatsRowsFinal = new ArrayList<>();
+		missingSeatsRowSplitList.stream().forEach(list -> {
+			
+			List<Integer> integerList = new ArrayList<>();
+			list.stream().forEach(element -> integerList.add(Integer.valueOf(element.trim())));
+			missingSeatsRowsFinal.add(MyArrayUtils.convertListOfIntegerToIntegerArray(integerList));
+			
+		});
 		
+		List<String> numberOfColumnsEconomyClassSplitList = new ArrayList<>(); 
+		String numberOfColumnsEconomyClassString = numberOfColumnsEconomyClass.trim();
+		numberOfColumnsEconomyClassString = numberOfColumnsEconomyClassString.replace("[", "");
+		numberOfColumnsEconomyClassString = numberOfColumnsEconomyClassString.replace("]", "");
+		numberOfColumnsEconomyClassString = numberOfColumnsEconomyClassString.replace(",", ";");
+		numberOfColumnsEconomyClassSplitList = Arrays.asList(numberOfColumnsEconomyClassString.split(";"));
+		Integer[] numberOfColumnsEconomyClassArray = new Integer[numberOfColumnsEconomyClassSplitList.size()];
+		for (int i=0; i<numberOfColumnsEconomyClassSplitList.size(); i++)
+			numberOfColumnsEconomyClassArray[i] = Integer.valueOf(numberOfColumnsEconomyClassSplitList.get(i).trim());
+		
+		List<String> numberOfColumnsBusinessClassSplitList = new ArrayList<>();
+		String numberOfColumnsBusinessClassString = numberOfColumnsBusinessClass.trim();
+		numberOfColumnsBusinessClassString = numberOfColumnsBusinessClassString.replace("[", "");
+		numberOfColumnsBusinessClassString = numberOfColumnsBusinessClassString.replace("]", "");
+		numberOfColumnsBusinessClassString = numberOfColumnsBusinessClassString.replace(",", ";");
+		numberOfColumnsBusinessClassSplitList = Arrays.asList(numberOfColumnsBusinessClassString.split(";"));
+		Integer[] numberOfColumnsBusinessClassArray = new Integer[numberOfColumnsBusinessClassSplitList.size()];
+		for (int i=0; i<numberOfColumnsBusinessClassSplitList.size(); i++)
+			numberOfColumnsBusinessClassArray[i] = Integer.valueOf(numberOfColumnsBusinessClassSplitList.get(i).trim());
+		
+		List<String> numberOfColumnsFirstClassSplitList = new ArrayList<>();
+		String numberOfColumnsFirstClassString = numberOfColumnsFirstClass.trim();
+		numberOfColumnsFirstClassString = numberOfColumnsFirstClassString.replace("[", "");
+		numberOfColumnsFirstClassString = numberOfColumnsFirstClassString.replace("]", "");
+		numberOfColumnsFirstClassString = numberOfColumnsFirstClassString.replace(",", ";");
+		numberOfColumnsFirstClassSplitList = Arrays.asList(numberOfColumnsFirstClassString.split(";"));
+		Integer[] numberOfColumnsFirstClassArray = new Integer[numberOfColumnsFirstClassSplitList.size()];
+		for (int i=0; i<numberOfColumnsFirstClassSplitList.size(); i++)
+			numberOfColumnsFirstClassArray[i] = Integer.valueOf(numberOfColumnsFirstClassSplitList.get(i).trim());
+		
+		CabinConfiguration aircraftCabinConfiguration = new ConfigurationBuilder("Cabin Configuration - " + Main.getTheAircraft().getId())
+				.nPax(Integer.valueOf(actualPassengerNumber))
+				.maxPax(Integer.valueOf(maximumPassengerNumber))
+				.flightCrewNumber(Integer.valueOf(flightCrewNumber))
+				.classesNumber(Integer.valueOf(classesNumber))
+				.typeList(classesType.stream()
+						.map(string -> ClassTypeEnum.valueOf(string))
+						.collect(Collectors.toList())
+						)
+				.aislesNumber(Integer.valueOf(aislesNumber))
+				.xCoordinateFirstRow(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(xCoordinateFirstRow),
+								Unit.valueOf(xCoordinateFirstRowUnit)
+								)
+						)
+				.missingSeatsRowList(missingSeatsRowsFinal)
+				.numberOfBreaksEconomyClass(Integer.valueOf(numberOfBrakesEconomyClass))
+				.numberOfBreaksBusinessClass(Integer.valueOf(numberOfBrakesBusinessClass))
+				.numberOfBreaksFirstClass(Integer.valueOf(numberOfBrakesFirstClass))
+				.numberOfRowsEconomyClass(Integer.valueOf(numberOfRowsEconomyClass))
+				.numberOfRowsBusinessClass(Integer.valueOf(numberOfRowsBusinessClass))
+				.numberOfRowsFirstClass(Integer.valueOf(numberOfRowsFirstClass))
+				.numberOfColumnsEconomyClass(numberOfColumnsEconomyClassArray)
+				.numberOfColumnsBusinessClass(numberOfColumnsBusinessClassArray)
+				.numberOfColumnsFirstClass(numberOfColumnsFirstClassArray)
+				.pitchEconomyClass(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(seatsPitchEconomyClass),
+								Unit.valueOf(seatsPitchEconomyClassUnit)
+								)
+						)
+				.pitchBusinessClass(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(seatsPitchBusinessClass),
+								Unit.valueOf(seatsPitchBusinessClassUnit)
+								)
+						)
+				.pitchFirstClass(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(seatsPitchFirstClass),
+								Unit.valueOf(seatsPitchFirstClassUnit)
+								)
+						)
+				.widthEconomyClass(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(seatsWidthEconomyClass),
+								Unit.valueOf(seatsWidthEconomyClassUnit)
+								)
+						)
+				.widthBusinessClass(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(seatsWidthBusinessClass),
+								Unit.valueOf(seatsWidthBusinessClassUnit)
+								)
+						)
+				.widthFirstClass(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(seatsWidthFirstClass),
+								Unit.valueOf(seatsWidthFirstClassUnit)
+								)
+						)
+				.distanceFromWallEconomyClass(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(distanceFromWallEconomyClass),
+								Unit.valueOf(distanceFromWallEconomyClassUnit)
+								)
+						)
+				.distanceFromWallBusinessClass(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(distanceFromWallBusinessClass),
+								Unit.valueOf(distanceFromWallBusinessClassUnit)
+								)
+						)
+				.distanceFromWallFirstClass(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(distanceFromWallFirstClass),
+								Unit.valueOf(distanceFromWallFirstClassUnit)
+								)
+						)
+				.massFurnishingsAndEquipmentReference(
+						(Amount<Mass>) Amount.valueOf(
+								Double.valueOf(referenceMassFurnishingsAndEquipments),
+								Unit.valueOf(referenceMassFurnishingsAndEquipmentsUnit)
+								)
+						)
+				.build();
+		
+		Main.getTheAircraft().setCabinConfiguration(aircraftCabinConfiguration);
+
 	}
-	
+
 	private void updateWingTabData() {
 		
-		
+		// TODO: AFTER MATHCING ADJUST CRITERION WITH THE DATA MODEL
 		
 	}
 	
 	private void updateHTailTabData() {
 		
-		
+		// TODO: AFTER MATHCING ADJUST CRITERION WITH THE DATA MODEL
 		
 	}
 	
 	private void updateVTailTabData() {
 		
-		
+		// TODO: AFTER MATHCING ADJUST CRITERION WITH THE DATA MODEL
 		
 	}
 	
 	private void updateCanardTabData() {
 		
-		
+		// TODO: AFTER MATHCING ADJUST CRITERION WITH THE DATA MODEL
 		
 	}
 	
 	private void updateNacelleTabData() {
 		
-		
+		// TODO: CONTIUNE FROM HERE
 		
 	}
 	
@@ -10359,6 +10716,8 @@ public class InputManagerController {
 	        saveAircraftDataWarning.show();
 			
 		}
+		
+		System.gc();
 		
 	}
 	
@@ -12014,10 +12373,10 @@ public class InputManagerController {
 
 		}
 
-		else
-			textFieldAircraftFuselageX.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftFuselageX.setText("0.0");
+			fuselageXUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getFuselage() != null) {
 			textFieldAircraftFuselageY.setText(
@@ -12039,10 +12398,10 @@ public class InputManagerController {
 				fuselageYUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftFuselageY.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftFuselageY.setText("0.0");
+			fuselageYUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getFuselage() != null) {
 			textFieldAircraftFuselageZ.setText(
@@ -12064,10 +12423,10 @@ public class InputManagerController {
 				fuselageZUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftFuselageZ.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftFuselageZ.setText("0.0");
+			fuselageZUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//---------------------------------------------------------------------------------
 		// WING:
 		String wingFileName =
@@ -12081,7 +12440,7 @@ public class InputManagerController {
 					+ File.separator
 					+ wingFileName
 					);
-		else
+		else 
 			textFieldAircraftWingFile.setText(
 					"NOT INITIALIZED"
 					);
@@ -12107,10 +12466,10 @@ public class InputManagerController {
 				wingXUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftWingX.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftWingX.setText("0.0");
+			wingXUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getWing() != null) {
 
@@ -12133,10 +12492,10 @@ public class InputManagerController {
 				wingYUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftWingY.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftWingY.setText("0.0");
+			wingYUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getWing() != null) {
 
@@ -12159,10 +12518,10 @@ public class InputManagerController {
 				wingZUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftWingZ.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftWingZ.setText("0.0");
+			wingZUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getWing() != null) {
 
@@ -12188,10 +12547,10 @@ public class InputManagerController {
 				wingRiggingAngleUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftWingRiggingAngle.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftWingRiggingAngle.setText("0.0");
+			wingRiggingAngleUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//---------------------------------------------------------------------------------
 		// HORIZONTAL TAIL:
 		String hTailFileName =
@@ -12231,10 +12590,10 @@ public class InputManagerController {
 				hTailXUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftHTailX.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftHTailX.setText("0.0");
+			hTailXUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getHTail() != null) {
 
@@ -12257,10 +12616,10 @@ public class InputManagerController {
 				hTailYUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftHTailY.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftHTailY.setText("0.0");
+			hTailYUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getHTail() != null) {
 
@@ -12283,10 +12642,10 @@ public class InputManagerController {
 				htailZUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftHTailZ.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftHTailZ.setText("0.0");
+			htailZUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getHTail() != null) {
 
@@ -12312,10 +12671,10 @@ public class InputManagerController {
 				hTailRiggingAngleUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftHTailRiggingAngle.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftHTailRiggingAngle.setText("0.0");
+			hTailRiggingAngleUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//---------------------------------------------------------------------------------
 		// VERTICAL TAIL:
 		String vTailFileName =
@@ -12355,10 +12714,10 @@ public class InputManagerController {
 				vTailXUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftVTailX.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftVTailX.setText("0.0");
+			vTailXUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getVTail() != null) {
 
@@ -12381,10 +12740,10 @@ public class InputManagerController {
 				vTailYUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftVTailY.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftVTailY.setText("0.0");
+			vTailYUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getVTail() != null) {
 
@@ -12407,10 +12766,10 @@ public class InputManagerController {
 				vTailZUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftVTailZ.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftVTailZ.setText("0.0");
+			vTailZUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getVTail() != null) {
 
@@ -12436,10 +12795,10 @@ public class InputManagerController {
 				vTailRiggingAngleUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftVTailRiggingAngle.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftVTailRiggingAngle.setText("0.0");
+			vTailRiggingAngleUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//---------------------------------------------------------------------------------
 		// CANARD:
 		String canardFileName =
@@ -12479,10 +12838,10 @@ public class InputManagerController {
 				canardXUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftCanardX.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftCanardX.setText("0.0");
+			canardXUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getCanard() != null) {
 
@@ -12505,10 +12864,10 @@ public class InputManagerController {
 				canardYUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftCanardY.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftCanardY.setText("0.0");
+			canardYUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getCanard() != null) {
 
@@ -12531,10 +12890,10 @@ public class InputManagerController {
 				canardZUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftCanardZ.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftCanardZ.setText("0.0");
+			canardZUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getCanard() != null) {
 
@@ -12560,10 +12919,10 @@ public class InputManagerController {
 				canardRiggingAngleUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftCanardRiggingAngle.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftCanardRiggingAngle.setText("0.0");
+			canardRiggingAngleUnitChoiceBox.getSelectionModel().select(0);
+		}
 		
 		//---------------------------------------------------------------------------------
 		// ENGINES NUMBER CHECK:
@@ -12615,10 +12974,10 @@ public class InputManagerController {
 							.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
 						choiceBoxAircraftEngineXUnitList.get(i).getSelectionModel().select(1);
 				}
-				else
-					textFieldAircraftEngineXList.get(i).setText(
-							"NOT INITIALIZED"
-							);
+				else {
+					textFieldAircraftEngineXList.get(i).setText("0.0");
+					choiceBoxAircraftEngineXUnitList.get(i).getSelectionModel().select(0);
+				}
 				//..........................................................................................................
 				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null) {
 					textFieldAircraftEngineYList.get(i).setText(
@@ -12637,10 +12996,10 @@ public class InputManagerController {
 							.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
 						choiceBoxAircraftEngineYUnitList.get(i).getSelectionModel().select(1);
 				}
-				else
-					textFieldAircraftEngineYList.get(i).setText(
-							"NOT INITIALIZED"
-							);
+				else {
+					textFieldAircraftEngineYList.get(i).setText("0.0");
+					choiceBoxAircraftEngineYUnitList.get(i).getSelectionModel().select(0);
+				}
 				//..........................................................................................................
 				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null) {
 					textFieldAircraftEngineZList.get(i).setText(
@@ -12659,10 +13018,10 @@ public class InputManagerController {
 							.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
 						choiceBoxAircraftEngineZUnitList.get(i).getSelectionModel().select(1);
 				}
-				else
-					textFieldAircraftEngineZList.get(i).setText(
-							"NOT INITIALIZED"
-							);
+				else {
+					textFieldAircraftEngineZList.get(i).setText("0.0");
+					choiceBoxAircraftEngineZUnitList.get(i).getSelectionModel().select(0);
+				}
 				//..........................................................................................................
 				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
 
@@ -12711,10 +13070,10 @@ public class InputManagerController {
 							.getTiltingAngle().getUnit().toString().equalsIgnoreCase("rad"))
 						choiceBoxAircraftEngineTiltUnitList.get(i).getSelectionModel().select(1);
 				}
-				else
-					textFieldAircraftEngineTiltList.get(i).setText(
-							"NOT INITIALIZED"
-							);
+				else {
+					textFieldAircraftEngineTiltList.get(i).setText("0.0");
+					choiceBoxAircraftEngineTiltUnitList.get(i).getSelectionModel().select(0);
+				}
 			}
 		}
 
@@ -12768,10 +13127,10 @@ public class InputManagerController {
 							.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
 						choiceBoxAircraftNacelleXUnitList.get(i).getSelectionModel().select(1);
 				}
-				else
-					textFieldAircraftNacelleXList.get(i).setText(
-							"NOT INITIALIZED"
-							);
+				else {
+					textFieldAircraftNacelleXList.get(i).setText("0.0");
+					choiceBoxAircraftNacelleXUnitList.get(i).getSelectionModel().select(0);
+				}
 				//..........................................................................................................
 				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null) {
 					textFieldAircraftNacelleYList.get(i).setText(
@@ -12790,10 +13149,10 @@ public class InputManagerController {
 							.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
 						choiceBoxAircraftNacelleYUnitList.get(i).getSelectionModel().select(1);
 				}
-				else
-					textFieldAircraftNacelleYList.get(i).setText(
-							"NOT INITIALIZED"
-							);
+				else {
+					textFieldAircraftNacelleYList.get(i).setText("0.0");
+					choiceBoxAircraftNacelleYUnitList.get(i).getSelectionModel().select(0);
+				}
 				//..........................................................................................................
 				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null) {
 					textFieldAircraftNacelleZList.get(i).setText(
@@ -12812,10 +13171,10 @@ public class InputManagerController {
 							.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
 						choiceBoxAircraftNacelleZUnitList.get(i).getSelectionModel().select(1);
 				}
-				else
-					textFieldAircraftNacelleZList.get(i).setText(
-							"NOT INITIALIZED"
-							);
+				else {
+					textFieldAircraftNacelleZList.get(i).setText("0.0");
+					choiceBoxAircraftNacelleZUnitList.get(i).getSelectionModel().select(0);
+				}
 				//..........................................................................................................
 				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
 
@@ -12882,10 +13241,10 @@ public class InputManagerController {
 				landingGearsXUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftLandingGearsX.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftLandingGearsX.setText("0.0");
+			landingGearsXUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getLandingGears() != null) {
 
@@ -12908,10 +13267,10 @@ public class InputManagerController {
 				landingGearsYUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftLandingGearsY.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftLandingGearsY.setText("0.0");
+			landingGearsYUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getLandingGears() != null) {
 
@@ -12934,10 +13293,10 @@ public class InputManagerController {
 				landingGearsZUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftLandingGearsZ.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftLandingGearsZ.setText("0.0");
+			landingGearsZUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getLandingGears() != null)
 
@@ -12996,10 +13355,10 @@ public class InputManagerController {
 				systemsXUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftSystemsX.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftSystemsX.setText("0.0");
+			systemsXUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getSystems() != null) {
 
@@ -13022,10 +13381,10 @@ public class InputManagerController {
 				systemsYUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftSystemsY.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftSystemsY.setText("0.0");
+			systemsYUnitChoiceBox.getSelectionModel().select(0);
+		}
 		//.................................................................................
 		if(Main.getTheAircraft().getSystems() != null) {
 
@@ -13048,10 +13407,10 @@ public class InputManagerController {
 				systemsZUnitChoiceBox.getSelectionModel().select(1);
 
 		}
-		else
-			textFieldAircraftSystemsZ.setText(
-					"NOT INITIALIZED"
-					);
+		else {
+			textFieldAircraftSystemsZ.setText("0.0");
+			systemsZUnitChoiceBox.getSelectionModel().select(0);
+		}
 	}
 	
 	private void createFuselageTopView() {
@@ -14446,9 +14805,7 @@ public class InputManagerController {
 							)
 					);
 			else
-				textFieldActualPassengersNumber.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldActualPassengersNumber.setText("0");
 			//---------------------------------------------------------------------------------
 			// MAXIMUM PASSENGERS NUMBER:
 			if(Main.getTheAircraft().getCabinConfiguration().getMaxPax() != null)
@@ -14460,9 +14817,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldMaximumPassengersNumber.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldMaximumPassengersNumber.setText("0");
 			//---------------------------------------------------------------------------------
 			// FLIGHT CREW NUMBER:
 			if(Main.getTheAircraft().getCabinConfiguration().getFlightCrewNumber() != null)
@@ -14474,9 +14829,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldFlightCrewNumber.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldFlightCrewNumber.setText("0");
 			//---------------------------------------------------------------------------------
 			// CLASSES NUMBER:
 			if(Main.getTheAircraft().getCabinConfiguration().getClassesNumber() != null) 
@@ -14488,9 +14841,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldFlightCrewNumber.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldFlightCrewNumber.setText("0");
 			//---------------------------------------------------------------------------------
 			// CLASSES TYPE:
 			if(Main.getTheAircraft().getCabinConfiguration().getTypeList() != null) {
@@ -14565,9 +14916,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldAislesNumber.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldAislesNumber.setText("0");
 			//---------------------------------------------------------------------------------
 			// X COORDINATE FIRST ROW:
 			if(Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow() != null) {
@@ -14591,10 +14940,10 @@ public class InputManagerController {
 					cabinConfigurationXCoordinateFirstRowUnitChoiceBox.getSelectionModel().select(1);
 				
 			}
-			else
-				textFieldXCoordinateFirstRow.setText(
-						"NOT INITIALIZED"
-						);
+			else {
+				textFieldXCoordinateFirstRow.setText("0.0");
+				cabinConfigurationXCoordinateFirstRowUnitChoiceBox.getSelectionModel().select(0);
+			}
 			
 			//---------------------------------------------------------------------------------
 			// MISSING SEATS ROW:
@@ -14615,9 +14964,7 @@ public class InputManagerController {
 									)
 							);
 					else
-						textFieldMissingSeatRow1.setText(
-								"NOT INITIALIZED"
-								);
+						textFieldMissingSeatRow1.setText("0");
 					
 					if (i==1) {
 					
@@ -14634,9 +14981,7 @@ public class InputManagerController {
 										)
 								);
 						else
-							textFieldMissingSeatRow1.setText(
-									"NOT INITIALIZED"
-									);
+							textFieldMissingSeatRow1.setText("0");
 
 						// CLASS 2
 						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(1) != null)
@@ -14651,9 +14996,7 @@ public class InputManagerController {
 										)
 								);
 						else
-							textFieldMissingSeatRow2.setText(
-									"NOT INITIALIZED"
-									);
+							textFieldMissingSeatRow2.setText("0");
 						
 					}
 					if (i==2) {
@@ -14671,9 +15014,7 @@ public class InputManagerController {
 										)
 								);
 						else
-							textFieldMissingSeatRow1.setText(
-									"NOT INITIALIZED"
-									);
+							textFieldMissingSeatRow1.setText("0");
 
 						// CLASS 2
 						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(1) != null)
@@ -14688,9 +15029,7 @@ public class InputManagerController {
 										)
 								);
 						else
-							textFieldMissingSeatRow2.setText(
-									"NOT INITIALIZED"
-									);
+							textFieldMissingSeatRow2.setText("0");
 						
 						// CLASS 3
 						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(2) != null)
@@ -14705,9 +15044,7 @@ public class InputManagerController {
 										)
 								);
 						else
-							textFieldMissingSeatRow3.setText(
-									"NOT INITIALIZED"
-									);
+							textFieldMissingSeatRow3.setText("0");
 					}
 				}
 			}
@@ -14723,9 +15060,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldNumberOfBrakesEconomy.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldNumberOfBrakesEconomy.setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF BRAKES BUSINESS:
 			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksBusinessClass() != null)
@@ -14737,9 +15072,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldNumberOfBrakesBusiness.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldNumberOfBrakesBusiness.setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF BRAKES FIRST:
 			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksFirstClass() != null)
@@ -14751,9 +15084,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldNumberOfBrakesFirst.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldNumberOfBrakesFirst.setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF ROWS ECONOMY:
 			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsEconomyClass() != null)
@@ -14765,9 +15096,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldNumberOfRowsEconomy.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldNumberOfRowsEconomy.setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF ROWS BUSINESS:
 			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsBusinessClass() != null)
@@ -14779,9 +15108,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldNumberOfRowsBusiness.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldNumberOfRowsBusiness.setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF ROWS FIRST:
 			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsFirstClass() != null)
@@ -14793,9 +15120,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldNumberOfRowsFirst.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldNumberOfRowsFirst.setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF COLUMNS ECONOMY:
 			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfColumnsEconomyClass() != null)
@@ -14809,9 +15134,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldNumberOfColumnsEconomy.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldNumberOfColumnsEconomy.setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF COLUMNS BUSINESS:
 			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfColumnsBusinessClass() != null)
@@ -14825,9 +15148,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldNumberOfColumnsBusiness.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldNumberOfColumnsBusiness.setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF COLUMNS FIRST:
 			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfColumnsFirstClass() != null)
@@ -14841,9 +15162,7 @@ public class InputManagerController {
 								)
 						);
 			else
-				textFieldNumberOfColumnsFirst.setText(
-						"NOT INITIALIZED"
-						);
+				textFieldNumberOfColumnsFirst.setText("0");
 			//---------------------------------------------------------------------------------
 			// SEATS PITCH ECONOMY:
 			if(Main.getTheAircraft().getCabinConfiguration().getPitchEconomyClass() != null) {
@@ -14867,10 +15186,10 @@ public class InputManagerController {
 					cabinConfigurationSeatsPitchEconomyUnitChoiceBox.getSelectionModel().select(1);
 				
 			}
-			else
-				textFieldSeatsPitchEconomy.setText(
-						"NOT INITIALIZED"
-						);
+			else {
+				textFieldSeatsPitchEconomy.setText("0.0");
+				cabinConfigurationSeatsPitchEconomyUnitChoiceBox.getSelectionModel().select(0);
+			}
 			
 			//---------------------------------------------------------------------------------
 			// SEATS PITCH BUSINESS:
@@ -14895,10 +15214,10 @@ public class InputManagerController {
 					cabinConfigurationSeatsPitchBusinessUnitChoiceBox.getSelectionModel().select(1);
 				
 			}
-			else
-				textFieldSeatsPitchBusiness.setText(
-						"NOT INITIALIZED"
-						);
+			else {
+				textFieldSeatsPitchBusiness.setText("0.0");
+				cabinConfigurationSeatsPitchBusinessUnitChoiceBox.getSelectionModel().select(0);
+			}
 			
 			//---------------------------------------------------------------------------------
 			// SEATS PITCH FIRST:
@@ -14923,10 +15242,10 @@ public class InputManagerController {
 					cabinConfigurationSeatsPitchFirstUnitChoiceBox.getSelectionModel().select(1);
 				
 			}
-			else
-				textFieldSeatsPitchFirst.setText(
-						"NOT INITIALIZED"
-						);
+			else {
+				textFieldSeatsPitchFirst.setText("0.0");
+				cabinConfigurationSeatsPitchFirstUnitChoiceBox.getSelectionModel().select(0);
+			}
 			//---------------------------------------------------------------------------------
 			// SEATS WIDTH ECONOMY:
 			if(Main.getTheAircraft().getCabinConfiguration().getWidthEconomyClass() != null) {
@@ -14950,10 +15269,10 @@ public class InputManagerController {
 					cabinConfigurationSeatsWidthEconomyUnitChoiceBox.getSelectionModel().select(1);
 				
 			}
-			else
-				textFieldSeatsWidthEconomy.setText(
-						"NOT INITIALIZED"
-						);
+			else {
+				textFieldSeatsWidthEconomy.setText("0.0");
+				cabinConfigurationSeatsWidthEconomyUnitChoiceBox.getSelectionModel().select(0);
+			}
 			
 			//---------------------------------------------------------------------------------
 			// SEATS WIDTH BUSINESS:
@@ -14978,10 +15297,10 @@ public class InputManagerController {
 					cabinConfigurationSeatsWidthBusinessUnitChoiceBox.getSelectionModel().select(1);
 				
 			}
-			else
-				textFieldSeatsWidthBusiness.setText(
-						"NOT INITIALIZED"
-						);
+			else {
+				textFieldSeatsWidthBusiness.setText("0.0");
+				cabinConfigurationSeatsWidthBusinessUnitChoiceBox.getSelectionModel().select(0);
+			}
 			
 			//---------------------------------------------------------------------------------
 			// SEATS WIDTH FIRST:
@@ -15006,10 +15325,10 @@ public class InputManagerController {
 					cabinConfigurationSeatsWidthFirstUnitChoiceBox.getSelectionModel().select(1);
 				
 			}
-			else
-				textFieldSeatsWidthFirst.setText(
-						"NOT INITIALIZED"
-						);
+			else {
+				textFieldSeatsWidthFirst.setText("0.0");
+				cabinConfigurationSeatsWidthFirstUnitChoiceBox.getSelectionModel().select(0);
+			}
 			//---------------------------------------------------------------------------------
 			// DISTANCE FROM WALL ECONOMY:
 			if(Main.getTheAircraft().getCabinConfiguration().getDistanceFromWallEconomyClass() != null) {
@@ -15033,10 +15352,10 @@ public class InputManagerController {
 					cabinConfigurationDistanceFromWallEconomyUnitChoiceBox.getSelectionModel().select(1);
 				
 			}
-			else
-				textFieldDistanceFromWallEconomy.setText(
-						"NOT INITIALIZED"
-						);
+			else {
+				textFieldDistanceFromWallEconomy.setText("0.0");
+				cabinConfigurationDistanceFromWallEconomyUnitChoiceBox.getSelectionModel().select(0);
+			}
 			
 			//---------------------------------------------------------------------------------
 			// DISTANCE FROM WALL BUSINESS:
@@ -15061,10 +15380,10 @@ public class InputManagerController {
 					cabinConfigurationDistanceFromWallBusinessUnitChoiceBox.getSelectionModel().select(1);
 				
 			}
-			else
-				textFieldDistanceFromWallBusiness.setText(
-						"NOT INITIALIZED"
-						);
+			else {
+				textFieldDistanceFromWallBusiness.setText("0.0");
+				cabinConfigurationDistanceFromWallBusinessUnitChoiceBox.getSelectionModel().select(0);
+			}
 			
 			//---------------------------------------------------------------------------------
 			// DISTANCE FROM WALL FIRST:
@@ -15089,10 +15408,10 @@ public class InputManagerController {
 					cabinConfigurationDistanceFromWallFirstUnitChoiceBox.getSelectionModel().select(1);
 				
 			}
-			else
-				textFieldDistanceFromWallFirst.setText(
-						"NOT INITIALIZED"
-						);
+			else {
+				textFieldDistanceFromWallFirst.setText("0.0");
+				cabinConfigurationDistanceFromWallFirstUnitChoiceBox.getSelectionModel().select(0);
+			}
 			
 			//---------------------------------------------------------------------------------
 			// MASS FURNISHINGS AND EQUIPMENT:
@@ -15117,10 +15436,10 @@ public class InputManagerController {
 					cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox.getSelectionModel().select(1);
 				
 			}
-			else
-				textFieldMassFurnishingsAndEquipment.setText(
-						"NOT INITIALIZED"
-						);
+			else {
+				textFieldMassFurnishingsAndEquipment.setText("0.0");
+				cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox.getSelectionModel().select(0);
+			}
 		}
 	}
 	
