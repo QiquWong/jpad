@@ -352,6 +352,15 @@ public final class MyArrayUtils {
 		return vec_d;
 	}
 
+	public static Integer[] convertListOfIntegerToIntegerArray (List<Integer> list){
+
+		Integer[] vec_i = new Integer[list.size()];
+		for(int i=0; i<list.size(); i++) 
+			vec_i[i] = list.get(i);
+
+		return vec_i;
+	}
+	
 	public static String[] convertListStringToStringArray (List<String> list) {
 		return
 				list.toArray(new String[list.size()]);
