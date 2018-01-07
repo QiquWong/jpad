@@ -29,6 +29,7 @@ import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.apache.commons.lang3.StringUtils;
+import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.validation.Severity;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
@@ -54,21 +55,27 @@ import org.w3c.dom.NodeList;
 import aircraft.auxiliary.SeatsBlock;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
-import aircraft.components.LandingGears;
 import aircraft.components.CabinConfiguration.ConfigurationBuilder;
+import aircraft.components.FuelTank;
+import aircraft.components.LandingGears;
 import aircraft.components.LandingGears.LandingGearsBuilder;
+import aircraft.components.Systems;
+import aircraft.components.fuselage.Fuselage.FuselageBuilder;
+import aircraft.components.fuselage.creator.FuselageCreator;
+import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator;
+import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import aircraft.components.nacelles.NacelleCreator;
-import aircraft.components.nacelles.Nacelles;
 import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.nacelles.NacelleCreator.NacelleCreatorBuilder;
+import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerplant.Engine;
-import aircraft.components.powerplant.PowerPlant;
 import aircraft.components.powerplant.Engine.EngineBuilder;
+import aircraft.components.powerplant.PowerPlant;
 import calculators.geometry.FusNacGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftTypeEnum;
@@ -93,6 +100,7 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -158,6 +166,8 @@ public class InputManagerController {
 	//...........................................................................................
 	// LAYOUTS:
 	//...........................................................................................
+	@FXML 
+	private ToolBar actionButtonToolbar;
 	@FXML
 	private SplitPane aircraftViewsAndDataLogSplitPane;
 	@FXML
@@ -403,6 +413,98 @@ public class InputManagerController {
 	Map<Button, Integer> canardAirfoilDetailsButtonAndTabsMap = new HashMap<>();
 	
 	//...........................................................................................
+	// CHECK BOXES and UPDATE related data:
+	//...........................................................................................
+	private CheckComboBox<String> updateAircraftDataFromFileComboBox;
+	
+	private boolean updateCabinConfigurationDataFromFile;
+	private boolean updateFuselageDataFromFile;
+	private boolean updateWingDataFromFile;
+	private boolean updateHTailDataFromFile;
+	private boolean updateVTailDataFromFile;
+	private boolean updateCanardDataFromFile;
+	private boolean updatePowerPlantDataFromFile;
+	private boolean updateNacellesDataFromFile;
+	private boolean updateLandingGearsDataFromFile;
+	private boolean updateSystemsDataFromFile;
+
+	private String fuselageXPositionValue = "";
+	private String fuselageXPositionUnit = "";
+	private String fuselageYPositionValue = "";
+	private String fuselageYPositionUnit = "";
+	private String fuselageZPositionValue = "";
+	private String fuselageZPositionUnit = "";
+
+	private String wingXPositionValue = "";
+	private String wingXPositionUnit = "";
+	private String wingYPositionValue = "";
+	private String wingYPositionUnit = "";
+	private String wingZPositionValue = "";
+	private String wingZPositionUnit = "";
+	private String wingRiggingAngleValue = "";
+	private String wingRiggingAngleUnit = "";
+
+	private String hTailXPositionValue = "";
+	private String hTailXPositionUnit = "";
+	private String hTailYPositionValue = "";
+	private String hTailYPositionUnit = "";
+	private String hTailZPositionValue = "";
+	private String hTailZPositionUnit = "";
+	private String hTailRiggingAngleValue = "";
+	private String hTailRiggingAngleUnit = "";
+
+	private String vTailXPositionValue = "";
+	private String vTailXPositionUnit = "";
+	private String vTailYPositionValue = "";
+	private String vTailYPositionUnit = "";
+	private String vTailZPositionValue = "";
+	private String vTailZPositionUnit = "";
+	private String vTailRiggingAngleValue = "";
+	private String vTailRiggingAngleUnit = "";
+	
+	private String canardXPositionValue = "";
+	private String canardXPositionUnit = "";
+	private String canardYPositionValue = "";
+	private String canardYPositionUnit = "";
+	private String canardZPositionValue = "";
+	private String canardZPositionUnit = "";
+	private String canardRiggingAngleValue = "";
+	private String canardRiggingAngleUnit = "";
+
+	private List<String> engineXPositionValueList = new ArrayList<>();
+	private List<String> engineXPositionUnitList = new ArrayList<>();
+	private List<String> engineYPositionValueList = new ArrayList<>();
+	private List<String> engineYPositionUnitList = new ArrayList<>();
+	private List<String> engineZPositionValueList = new ArrayList<>();
+	private List<String> engineZPositionUnitList = new ArrayList<>();
+	private List<String> engineTiltAngleValueList = new ArrayList<>();
+	private List<String> engineTiltAngleUnitList = new ArrayList<>();
+	private List<String> engineMountinPositionValueList = new ArrayList<>();
+
+	private List<String> nacelleXPositionValueList = new ArrayList<>();
+	private List<String> nacelleXPositionUnitList = new ArrayList<>();
+	private List<String> nacelleYPositionValueList = new ArrayList<>();
+	private List<String> nacelleYPositionUnitList = new ArrayList<>();
+	private List<String> nacelleZPositionValueList = new ArrayList<>();
+	private List<String> nacelleZPositionUnitList = new ArrayList<>();
+	private List<String> nacelleMountinPositionValueList = new ArrayList<>();
+
+	private String landingGearsXPositionValue = "";
+	private String landingGearsXPositionUnit = "";
+	private String landingGearsYPositionValue = "";
+	private String landingGearsYPositionUnit = "";
+	private String landingGearsZPositionValue = "";
+	private String landingGearsZPositionUnit = "";
+	private String landingGearsMountinPositionValue = "";
+
+	private String systemsXPositionValue = "";
+	private String systemsXPositionUnit = "";
+	private String systemsYPositionValue = "";
+	private String systemsYPositionUnit = "";
+	private String systemsZPositionValue = "";
+	private String systemsZPositionUnit = "";
+	
+	//...........................................................................................
 	// FILE CHOOSER:
 	//...........................................................................................
 	private FileChooser aircraftFileChooser;
@@ -559,6 +661,18 @@ public class InputManagerController {
 	ObservableList<String> powerUnitsList = FXCollections.observableArrayList(
 			"W",
 			"hp" 
+			);
+	ObservableList<String> componentsList = FXCollections.observableArrayList(
+			"Cabin Configuration",
+			"Fuselage", 
+			"Wing",
+			"Horizontal Tail",
+			"Vertical Tail",
+			"Canard",
+			"Power Plant",
+			"Nacelles",
+			"Landing Gears",
+			"Systems"
 			);
 	
 	//...........................................................................................
@@ -1651,6 +1765,47 @@ public class InputManagerController {
 		Main.setAircraftUpdated(false);
 		Platform.setImplicitExit(false);
 		
+		updateCabinConfigurationDataFromFile = false;
+		updateFuselageDataFromFile = false;
+		updateWingDataFromFile = false;
+		updateHTailDataFromFile = false;
+		updateVTailDataFromFile = false;
+		updateCanardDataFromFile = false;
+		updatePowerPlantDataFromFile = false;
+		updateNacellesDataFromFile = false;
+		updateLandingGearsDataFromFile = false;
+		updateSystemsDataFromFile = false;
+		
+		updateAircraftDataFromFileComboBox = new CheckComboBox<>(componentsList);
+		updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+		     public void onChanged(ListChangeListener.Change<? extends String> c) {
+		    	 
+		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Cabin Configuration"))
+		    		updateCabinConfigurationDataFromFile = true;
+		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Fuselage"))
+		    		updateFuselageDataFromFile = true;
+		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Wing"))
+		    		updateWingDataFromFile = true;
+		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Horizontal Tail"))
+		    		updateHTailDataFromFile = true;
+		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Vertical Tail"))
+		    		updateVTailDataFromFile = true;
+		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Canard"))
+		    		updateCanardDataFromFile = true;
+		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Power Plant"))
+		    		updatePowerPlantDataFromFile = true;
+		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Nacelles"))
+		    		updateNacellesDataFromFile = true;
+		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Landing Gears"))
+		    		updateLandingGearsDataFromFile = true;
+		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Systems"))
+		    		updateSystemsDataFromFile = true;
+		    		
+		     }
+		 });
+		actionButtonToolbar.getItems().add(updateAircraftDataFromFileComboBox);
+		actionButtonToolbar.getItems().add(new Label("<- Update Components Using Files"));
+		
 		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
 
 		try {
@@ -2563,8 +2718,6 @@ public class InputManagerController {
 		hTailAdjustCriterionDisableCheck();
 		vTailAdjustCriterionDisableCheck();
 		canardAdjustCriterionDisableCheck();
-		
-		
 		
 	}
 	
@@ -7986,8 +8139,6 @@ public class InputManagerController {
 			textFieldAircraftSystemsFile.setText(file.getAbsolutePath());
 		}
 		
-		
-		
 	}
 	
 	private boolean isAircraftFile(String pathToAircraftXML) {
@@ -9596,47 +9747,56 @@ public class InputManagerController {
 						updateProgress(1, numberOfOperations);
 						updateMessage("Updating Fuselage Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement) + "%");
-						updateFuselageTabData();
+						if(!updateFuselageDataFromFile)
+							updateFuselageTabData();
 						
 						updateProgress(2, numberOfOperations);
 						updateMessage("Updating Cabin Configuration Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*2) + "%");
-						updateCabinConfigurationTabData();
+						if(!updateCabinConfigurationDataFromFile)
+							updateCabinConfigurationTabData();
 						
 						updateProgress(3, numberOfOperations);
 						updateMessage("Updating Wing Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*3) + "%");
-						updateWingTabData();
+						if(!updateWingDataFromFile)
+							updateWingTabData();
 						
 						updateProgress(4, numberOfOperations);
 						updateMessage("Updating Horizontal Tail Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*4) + "%");
-						updateHTailTabData();
+						if(!updateHTailDataFromFile)
+							updateHTailTabData();
 						
 						updateProgress(5, numberOfOperations);
 						updateMessage("Updating Vertical Tail Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*5) + "%");
-						updateVTailTabData();
+						if(!updateVTailDataFromFile)
+							updateVTailTabData();
 						
 						updateProgress(6, numberOfOperations);
 						updateMessage("Updating Canard Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*6)+ "%");
-						updateCanardTabData();
+						if(!updateCanardDataFromFile)
+							updateCanardTabData();
 						
 						updateProgress(7, numberOfOperations);
 						updateMessage("Updating Nacelles Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*7) + "%");
-						updateNacelleTabData();
+						if(!updateNacellesDataFromFile)
+							updateNacelleTabData();
 						
 						updateProgress(8, numberOfOperations);
 						updateMessage("Updating Power Plant Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*8) + "%");
-						updatePowerPlantTabData();
+						if(!updatePowerPlantDataFromFile)
+							updatePowerPlantTabData();
 						
 						updateProgress(9, numberOfOperations);
 						updateMessage("Updating Landing Gears Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*9) + "%");
-						updateLandingGearsTabData();
+						if(!updateLandingGearsDataFromFile)
+							updateLandingGearsTabData();
 						
 						updateProgress(10, numberOfOperations);
 						updateMessage("Updating Aircraft Tab Data ...");
@@ -10063,89 +10223,89 @@ public class InputManagerController {
 		String cabinConfigurationFilePath = "";
 		//.................................................................................................
 		String fuselageFilePath = "";
-		String fuselageXPosition = "";
-		String fuselageXPositionUnit = "";
-		String fuselageYPosition = "";
-		String fuselageYPositionUnit = "";
-		String fuselageZPosition = "";
-		String fuselageZPositionUnit = "";
+		fuselageXPositionValue = "";
+		fuselageXPositionUnit = "";
+		fuselageYPositionValue = "";
+		fuselageYPositionUnit = "";
+		fuselageZPositionValue = "";
+		fuselageZPositionUnit = "";
 		//.................................................................................................
 		String wingFilePath = "";
-		String wingXPosition = "";
-		String wingXPositionUnit = "";
-		String wingYPosition = "";
-		String wingYPositionUnit = "";
-		String wingZPosition = "";
-		String wingZPositionUnit = "";
-		String wingRiggingAngle = "";
-		String wingRiggingAngleUnit = "";
+		wingXPositionValue = "";
+		wingXPositionUnit = "";
+		wingYPositionValue = "";
+		wingYPositionUnit = "";
+		wingZPositionValue = "";
+		wingZPositionUnit = "";
+		wingRiggingAngleValue = "";
+		wingRiggingAngleUnit = "";
 		//.................................................................................................
 		String hTailFilePath = "";
-		String hTailXPosition = "";
-		String hTailXPositionUnit = "";
-		String hTailYPosition = "";
-		String hTailYPositionUnit = "";
-		String hTailZPosition = "";
-		String hTailZPositionUnit = "";
-		String hTailRiggingAngle = "";
-		String hTailRiggingAngleUnit = "";
+		hTailXPositionValue = "";
+		hTailXPositionUnit = "";
+		hTailYPositionValue = "";
+		hTailYPositionUnit = "";
+		hTailZPositionValue = "";
+		hTailZPositionUnit = "";
+		hTailRiggingAngleValue = "";
+		hTailRiggingAngleUnit = "";
 		//.................................................................................................
 		String vTailFilePath = "";
-		String vTailXPosition = "";
-		String vTailXPositionUnit = "";
-		String vTailYPosition = "";
-		String vTailYPositionUnit = "";
-		String vTailZPosition = "";
-		String vTailZPositionUnit = "";
-		String vTailRiggingAngle = "";
-		String vTailRiggingAngleUnit = "";
+		vTailXPositionValue = "";
+		vTailXPositionUnit = "";
+		vTailYPositionValue = "";
+		vTailYPositionUnit = "";
+		vTailZPositionValue = "";
+		vTailZPositionUnit = "";
+		vTailRiggingAngleValue = "";
+		vTailRiggingAngleUnit = "";
 		//.................................................................................................
 		String canardFilePath = "";
-		String canardXPosition = "";
-		String canardXPositionUnit = "";
-		String canardYPosition = "";
-		String canardYPositionUnit = "";
-		String canardZPosition = "";
-		String canardZPositionUnit = "";
-		String canardRiggingAngle = "";
-		String canardRiggingAngleUnit = "";
+		canardXPositionValue = "";
+		canardXPositionUnit = "";
+		canardYPositionValue = "";
+		canardYPositionUnit = "";
+		canardZPositionValue = "";
+		canardZPositionUnit = "";
+		canardRiggingAngleValue = "";
+		canardRiggingAngleUnit = "";
 		//.................................................................................................
 		List<String> engineFilePathList = new ArrayList<>();
-		List<String> engineXPositionList = new ArrayList<>();
-		List<String> engineXPositionUnitList = new ArrayList<>();
-		List<String> engineYPositionList = new ArrayList<>();
-		List<String> engineYPositionUnitList = new ArrayList<>();
-		List<String> engineZPositionList = new ArrayList<>();
-		List<String> engineZPositionUnitList = new ArrayList<>();
-		List<String> engineTiltAngleList = new ArrayList<>();
-		List<String> engineTiltAngleUnitList = new ArrayList<>();
-		List<String> engineMountinPositionList = new ArrayList<>();
+		engineXPositionValueList = new ArrayList<>();
+		engineXPositionUnitList = new ArrayList<>();
+		engineYPositionValueList = new ArrayList<>();
+		engineYPositionUnitList = new ArrayList<>();
+		engineZPositionValueList = new ArrayList<>();
+		engineZPositionUnitList = new ArrayList<>();
+		engineTiltAngleValueList = new ArrayList<>();
+		engineTiltAngleUnitList = new ArrayList<>();
+		engineMountinPositionValueList = new ArrayList<>();
 		//.................................................................................................
 		List<String> nacelleFilePathList = new ArrayList<>();
-		List<String> nacelleXPositionList = new ArrayList<>();
-		List<String> nacelleXPositionUnitList = new ArrayList<>();
-		List<String> nacelleYPositionList = new ArrayList<>();
-		List<String> nacelleYPositionUnitList = new ArrayList<>();
-		List<String> nacelleZPositionList = new ArrayList<>();
-		List<String> nacelleZPositionUnitList = new ArrayList<>();
-		List<String> nacelleMountinPositionList = new ArrayList<>();
+		nacelleXPositionValueList = new ArrayList<>();
+		nacelleXPositionUnitList = new ArrayList<>();
+		nacelleYPositionValueList = new ArrayList<>();
+		nacelleYPositionUnitList = new ArrayList<>();
+		nacelleZPositionValueList = new ArrayList<>();
+		nacelleZPositionUnitList = new ArrayList<>();
+		nacelleMountinPositionValueList = new ArrayList<>();
 		//.................................................................................................
 		String landingGearsFilePath = "";
-		String landingGearsXPosition = "";
-		String landingGearsXPositionUnit = "";
-		String landingGearsYPosition = "";
-		String landingGearsYPositionUnit = "";
-		String landingGearsZPosition = "";
-		String landingGearsZPositionUnit = "";
-		String landingGearsMountinPosition = "";
+		landingGearsXPositionValue = "";
+		landingGearsXPositionUnit = "";
+		landingGearsYPositionValue = "";
+		landingGearsYPositionUnit = "";
+		landingGearsZPositionValue = "";
+		landingGearsZPositionUnit = "";
+		landingGearsMountinPositionValue = "";
 		//.................................................................................................
 		String systemsFilePath = "";
-		String systemsXPosition = "";
-		String systemsXPositionUnit = "";
-		String systemsYPosition = "";
-		String systemsYPositionUnit = "";
-		String systemsZPosition = "";
-		String systemsZPositionUnit = "";
+		systemsXPositionValue = "";
+		systemsXPositionUnit = "";
+		systemsYPositionValue = "";
+		systemsYPositionUnit = "";
+		systemsZPositionValue = "";
+		systemsZPositionUnit = "";
 		
 		//.................................................................................................
 		// FETCHING DATA FROM GUI FIELDS ...
@@ -10161,91 +10321,91 @@ public class InputManagerController {
 		if(textFieldAircraftFuselageFile.getText() != null)
 			fuselageFilePath = textFieldAircraftFuselageFile.getText();
 		if(textFieldAircraftFuselageX.getText() != null)
-			fuselageXPosition = textFieldAircraftFuselageX.getText();
+			fuselageXPositionValue = textFieldAircraftFuselageX.getText();
 		if(!fuselageXUnitChoiceBox.getSelectionModel().isEmpty())
 			fuselageXPositionUnit = fuselageXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftFuselageY.getText() != null)
-			fuselageYPosition = textFieldAircraftFuselageY.getText();
+			fuselageYPositionValue = textFieldAircraftFuselageY.getText();
 		if(!fuselageYUnitChoiceBox.getSelectionModel().isEmpty())
 			fuselageYPositionUnit = fuselageYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftFuselageZ.getText() != null)
-			fuselageZPosition = textFieldAircraftFuselageZ.getText();
+			fuselageZPositionValue = textFieldAircraftFuselageZ.getText();
 		if(!fuselageZUnitChoiceBox.getSelectionModel().isEmpty())
 			fuselageZPositionUnit = fuselageZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		//.................................................................................................
 		if(textFieldAircraftWingFile.getText() != null)
 			wingFilePath = textFieldAircraftWingFile.getText();
 		if(textFieldAircraftWingX.getText() != null)
-			wingXPosition = textFieldAircraftWingX.getText();
+			wingXPositionValue = textFieldAircraftWingX.getText();
 		if(!wingXUnitChoiceBox.getSelectionModel().isEmpty())
 			wingXPositionUnit = wingXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftWingY.getText() != null)
-			wingYPosition = textFieldAircraftWingY.getText();
+			wingYPositionValue = textFieldAircraftWingY.getText();
 		if(!wingYUnitChoiceBox.getSelectionModel().isEmpty())
 			wingYPositionUnit = wingYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftWingZ.getText() != null)
-			wingZPosition = textFieldAircraftWingZ.getText();
+			wingZPositionValue = textFieldAircraftWingZ.getText();
 		if(!wingZUnitChoiceBox.getSelectionModel().isEmpty())
 			wingZPositionUnit = wingZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftWingRiggingAngle.getText() != null)
-			wingRiggingAngle = textFieldAircraftWingRiggingAngle.getText();
+			wingRiggingAngleValue = textFieldAircraftWingRiggingAngle.getText();
 		if(!wingRiggingAngleUnitChoiceBox.getSelectionModel().isEmpty())
 			wingRiggingAngleUnit = wingRiggingAngleUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		//.................................................................................................
 		if(textFieldAircraftHTailFile.getText() != null)
 			hTailFilePath = textFieldAircraftHTailFile.getText();
 		if(textFieldAircraftHTailX.getText() != null)
-			hTailXPosition = textFieldAircraftHTailX.getText();
+			hTailXPositionValue = textFieldAircraftHTailX.getText();
 		if(!hTailXUnitChoiceBox.getSelectionModel().isEmpty())
 			hTailXPositionUnit = hTailXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftHTailY.getText() != null)
-			hTailYPosition = textFieldAircraftHTailY.getText();
+			hTailYPositionValue = textFieldAircraftHTailY.getText();
 		if(!hTailYUnitChoiceBox.getSelectionModel().isEmpty())
 			hTailYPositionUnit = hTailYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftHTailZ.getText() != null)
-			hTailZPosition = textFieldAircraftHTailZ.getText();
+			hTailZPositionValue = textFieldAircraftHTailZ.getText();
 		if(!htailZUnitChoiceBox.getSelectionModel().isEmpty())
 			hTailZPositionUnit = htailZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftHTailRiggingAngle.getText() != null)
-			hTailRiggingAngle = textFieldAircraftHTailRiggingAngle.getText();
+			hTailRiggingAngleValue = textFieldAircraftHTailRiggingAngle.getText();
 		if(!hTailRiggingAngleUnitChoiceBox.getSelectionModel().isEmpty())
 			hTailRiggingAngleUnit = hTailRiggingAngleUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		//.................................................................................................
 		if(textFieldAircraftVTailFile.getText() != null)
 			vTailFilePath = textFieldAircraftVTailFile.getText();
 		if(textFieldAircraftVTailX.getText() != null)
-			vTailXPosition = textFieldAircraftVTailX.getText();
+			vTailXPositionValue = textFieldAircraftVTailX.getText();
 		if(!vTailXUnitChoiceBox.getSelectionModel().isEmpty())
 			vTailXPositionUnit = vTailXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftVTailY.getText() != null)
-			vTailYPosition = textFieldAircraftVTailY.getText();
+			vTailYPositionValue = textFieldAircraftVTailY.getText();
 		if(!vTailYUnitChoiceBox.getSelectionModel().isEmpty())
 			vTailYPositionUnit = vTailYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftVTailZ.getText() != null)
-			vTailZPosition = textFieldAircraftVTailZ.getText();
+			vTailZPositionValue = textFieldAircraftVTailZ.getText();
 		if(!vTailZUnitChoiceBox.getSelectionModel().isEmpty())
 			vTailZPositionUnit = vTailZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftVTailRiggingAngle.getText() != null)
-			vTailRiggingAngle = textFieldAircraftVTailRiggingAngle.getText();
+			vTailRiggingAngleValue = textFieldAircraftVTailRiggingAngle.getText();
 		if(!vTailRiggingAngleUnitChoiceBox.getSelectionModel().isEmpty())
 			vTailRiggingAngleUnit = vTailRiggingAngleUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		//.................................................................................................
 		if(textFieldAircraftCanardFile.getText() != null)
 			canardFilePath = textFieldAircraftCanardFile.getText();
 		if(textFieldAircraftCanardX.getText() != null)
-			canardXPosition = textFieldAircraftCanardX.getText();
+			canardXPositionValue = textFieldAircraftCanardX.getText();
 		if(!canardXUnitChoiceBox.getSelectionModel().isEmpty())
 			canardXPositionUnit = canardXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftCanardY.getText() != null)
-			canardYPosition = textFieldAircraftCanardY.getText();
+			canardYPositionValue = textFieldAircraftCanardY.getText();
 		if(!canardYUnitChoiceBox.getSelectionModel().isEmpty())
 			canardYPositionUnit = canardYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftCanardZ.getText() != null)
-			canardZPosition = textFieldAircraftCanardZ.getText();
+			canardZPositionValue = textFieldAircraftCanardZ.getText();
 		if(!canardZUnitChoiceBox.getSelectionModel().isEmpty())
 			canardZPositionUnit = canardZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftCanardRiggingAngle.getText() != null)
-			canardRiggingAngle = textFieldAircraftCanardRiggingAngle.getText();
+			canardRiggingAngleValue = textFieldAircraftCanardRiggingAngle.getText();
 		if(!canardRiggingAngleUnitChoiceBox.getSelectionModel().isEmpty())
 			canardRiggingAngleUnit = canardRiggingAngleUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		//.................................................................................................
@@ -10256,7 +10416,7 @@ public class InputManagerController {
 		if(!textFieldAircraftEngineXList.isEmpty())
 			textFieldAircraftEngineXList.stream()
 			.filter(tf -> !tf.getText().isEmpty())
-			.forEach(tf -> engineXPositionList.add(tf.getText()));
+			.forEach(tf -> engineXPositionValueList.add(tf.getText()));
 		if(!choiceBoxAircraftEngineXUnitList.isEmpty())
 			choiceBoxAircraftEngineXUnitList.stream()
 			.filter(cb -> !cb.getSelectionModel().isEmpty())
@@ -10264,7 +10424,7 @@ public class InputManagerController {
 		if(!textFieldAircraftEngineYList.isEmpty())
 			textFieldAircraftEngineYList.stream()
 			.filter(tf -> !tf.getText().isEmpty())
-			.forEach(tf -> engineYPositionList.add(tf.getText()));
+			.forEach(tf -> engineYPositionValueList.add(tf.getText()));
 		if(!choiceBoxAircraftEngineYUnitList.isEmpty())
 			choiceBoxAircraftEngineYUnitList.stream()
 			.filter(cb -> !cb.getSelectionModel().isEmpty())
@@ -10272,7 +10432,7 @@ public class InputManagerController {
 		if(!textFieldAircraftEngineZList.isEmpty())
 			textFieldAircraftEngineZList.stream()
 			.filter(tf -> !tf.getText().isEmpty())
-			.forEach(tf -> engineZPositionList.add(tf.getText()));
+			.forEach(tf -> engineZPositionValueList.add(tf.getText()));
 		if(!choiceBoxAircraftEngineZUnitList.isEmpty())
 			choiceBoxAircraftEngineZUnitList.stream()
 			.filter(cb -> !cb.getSelectionModel().isEmpty())
@@ -10280,7 +10440,7 @@ public class InputManagerController {
 		if(!textFieldAircraftEngineTiltList.isEmpty())
 			textFieldAircraftEngineTiltList.stream()
 			.filter(tf -> !tf.getText().isEmpty())
-			.forEach(tf -> engineTiltAngleList.add(tf.getText()));
+			.forEach(tf -> engineTiltAngleValueList.add(tf.getText()));
 		if(!choiceBoxAircraftEngineTiltUnitList.isEmpty())
 			choiceBoxAircraftEngineTiltUnitList.stream()
 			.filter(cb -> !cb.getSelectionModel().isEmpty())
@@ -10288,7 +10448,7 @@ public class InputManagerController {
 		if(!choiceBoxesAircraftEnginePositonList.isEmpty())
 			choiceBoxesAircraftEnginePositonList.stream()
 			.filter(cb -> !cb.getSelectionModel().isEmpty())
-			.forEach(cb -> engineMountinPositionList.add(cb.getSelectionModel().getSelectedItem()));
+			.forEach(cb -> engineMountinPositionValueList.add(cb.getSelectionModel().getSelectedItem()));
 		//.................................................................................................
 		if(!textFieldsAircraftNacelleFileList.isEmpty())
 			textFieldsAircraftNacelleFileList.stream()
@@ -10297,7 +10457,7 @@ public class InputManagerController {
 		if(!textFieldAircraftNacelleXList.isEmpty())
 			textFieldAircraftNacelleXList.stream()
 			.filter(tf -> !tf.getText().isEmpty())
-			.forEach(tf -> nacelleXPositionList.add(tf.getText()));
+			.forEach(tf -> nacelleXPositionValueList.add(tf.getText()));
 		if(!choiceBoxAircraftNacelleXUnitList.isEmpty())
 			choiceBoxAircraftNacelleXUnitList.stream()
 			.filter(cb -> !cb.getSelectionModel().isEmpty())
@@ -10305,7 +10465,7 @@ public class InputManagerController {
 		if(!textFieldAircraftNacelleYList.isEmpty())
 			textFieldAircraftNacelleYList.stream()
 			.filter(tf -> !tf.getText().isEmpty())
-			.forEach(tf -> nacelleYPositionList.add(tf.getText()));
+			.forEach(tf -> nacelleYPositionValueList.add(tf.getText()));
 		if(!choiceBoxAircraftNacelleYUnitList.isEmpty())
 			choiceBoxAircraftNacelleYUnitList.stream()
 			.filter(cb -> !cb.getSelectionModel().isEmpty())
@@ -10313,7 +10473,7 @@ public class InputManagerController {
 		if(!textFieldAircraftNacelleZList.isEmpty())
 			textFieldAircraftNacelleZList.stream()
 			.filter(tf -> !tf.getText().isEmpty())
-			.forEach(tf -> nacelleZPositionList.add(tf.getText()));
+			.forEach(tf -> nacelleZPositionValueList.add(tf.getText()));
 		if(!choiceBoxAircraftNacelleZUnitList.isEmpty())
 			choiceBoxAircraftNacelleZUnitList.stream()
 			.filter(cb -> !cb.getSelectionModel().isEmpty())
@@ -10321,37 +10481,37 @@ public class InputManagerController {
 		if(!choiceBoxesAircraftNacellePositonList.isEmpty())
 			choiceBoxesAircraftNacellePositonList.stream()
 			.filter(cb -> !cb.getSelectionModel().isEmpty())
-			.forEach(cb -> nacelleMountinPositionList.add(cb.getSelectionModel().getSelectedItem()));
+			.forEach(cb -> nacelleMountinPositionValueList.add(cb.getSelectionModel().getSelectedItem()));
 		//.................................................................................................
 		if(textFieldAircraftLandingGearsFile.getText() != null)
 			landingGearsFilePath = textFieldAircraftLandingGearsFile.getText();
 		if(textFieldAircraftLandingGearsX.getText() != null)
-			landingGearsXPosition = textFieldAircraftLandingGearsX.getText();
+			landingGearsXPositionValue = textFieldAircraftLandingGearsX.getText();
 		if(!landingGearsXUnitChoiceBox.getSelectionModel().isEmpty())
 			landingGearsXPositionUnit = landingGearsXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftLandingGearsY.getText() != null)
-			landingGearsYPosition = textFieldAircraftLandingGearsY.getText();
+			landingGearsYPositionValue = textFieldAircraftLandingGearsY.getText();
 		if(!landingGearsYUnitChoiceBox.getSelectionModel().isEmpty())
 			landingGearsYPositionUnit = landingGearsYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftLandingGearsZ.getText() != null)
-			landingGearsZPosition = textFieldAircraftLandingGearsZ.getText();
+			landingGearsZPositionValue = textFieldAircraftLandingGearsZ.getText();
 		if(!landingGearsZUnitChoiceBox.getSelectionModel().isEmpty())
 			landingGearsZPositionUnit = landingGearsZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(!landingGearsMountingPositionTypeChoiceBox.getSelectionModel().isEmpty())
-			landingGearsMountinPosition = landingGearsMountingPositionTypeChoiceBox.getSelectionModel().getSelectedItem().toString();
+			landingGearsMountinPositionValue = landingGearsMountingPositionTypeChoiceBox.getSelectionModel().getSelectedItem().toString();
 		//.................................................................................................
 		if(textFieldAircraftSystemsFile.getText() != null)
 			systemsFilePath = textFieldAircraftSystemsFile.getText();
 		if(textFieldAircraftSystemsX.getText() != null)
-			systemsXPosition = textFieldAircraftSystemsX.getText();
+			systemsXPositionValue = textFieldAircraftSystemsX.getText();
 		if(!systemsXUnitChoiceBox.getSelectionModel().isEmpty())
 			systemsXPositionUnit = systemsXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftSystemsY.getText() != null)
-			systemsYPosition = textFieldAircraftSystemsY.getText();
+			systemsYPositionValue = textFieldAircraftSystemsY.getText();
 		if(!systemsYUnitChoiceBox.getSelectionModel().isEmpty())
 			systemsYPositionUnit = systemsYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(textFieldAircraftSystemsZ.getText() != null)
-			systemsZPosition = textFieldAircraftSystemsZ.getText();
+			systemsZPositionValue = textFieldAircraftSystemsZ.getText();
 		if(!systemsZUnitChoiceBox.getSelectionModel().isEmpty())
 			systemsZPositionUnit = systemsZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		
@@ -10360,13 +10520,13 @@ public class InputManagerController {
 		//.................................................................................................
 		int numberOfFilledNacelleTabs = Arrays.asList(
 				nacelleFilePathList.size(),
-				nacelleXPositionList.size(),
+				nacelleXPositionValueList.size(),
 				nacelleXPositionUnitList.size(),
-				nacelleYPositionList.size(),
+				nacelleYPositionValueList.size(),
 				nacelleYPositionUnitList.size(),
-				nacelleZPositionList.size(),
+				nacelleZPositionValueList.size(),
 				nacelleZPositionUnitList.size(),
-				nacelleMountinPositionList.size()
+				nacelleMountinPositionValueList.size()
 				).stream()
 				.mapToInt(size -> size)
 				.min()
@@ -10374,15 +10534,15 @@ public class InputManagerController {
 		
 		int numberOfFilledEngineTabs = Arrays.asList(
 				engineFilePathList.size(),
-				engineXPositionList.size(),
+				engineXPositionValueList.size(),
 				engineXPositionUnitList.size(),
-				engineYPositionList.size(),
+				engineYPositionValueList.size(),
 				engineYPositionUnitList.size(),
-				engineZPositionList.size(),
+				engineZPositionValueList.size(),
 				engineZPositionUnitList.size(),
-				engineTiltAngleList.size(),
+				engineTiltAngleValueList.size(),
 				engineTiltAngleUnitList.size(),
-				engineMountinPositionList.size()
+				engineMountinPositionValueList.size()
 				).stream()
 				.mapToInt(size -> size)
 				.min()
@@ -10489,61 +10649,76 @@ public class InputManagerController {
 		if(Main.getTheAircraft().getFuselage() != null) {
 			Main.getTheAircraft().setFuselageFilePath(fuselageFilePath);
 			Main.getTheAircraft().getFuselage().setXApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(fuselageXPosition), Unit.valueOf(fuselageXPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(fuselageXPositionValue), Unit.valueOf(fuselageXPositionUnit))
 					);
 			Main.getTheAircraft().getFuselage().setYApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(fuselageYPosition), Unit.valueOf(fuselageYPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(fuselageYPositionValue), Unit.valueOf(fuselageYPositionUnit))
 					);
 			Main.getTheAircraft().getFuselage().setZApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(fuselageZPosition), Unit.valueOf(fuselageZPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(fuselageZPositionValue), Unit.valueOf(fuselageZPositionUnit))
 					);
 		}
 		//.................................................................................................
 		if(Main.getTheAircraft().getWing() != null) {
 			Main.getTheAircraft().setWingFilePath(wingFilePath);
 			Main.getTheAircraft().getWing().setXApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(wingXPosition), Unit.valueOf(wingXPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(wingXPositionValue), Unit.valueOf(wingXPositionUnit))
 					);
 			Main.getTheAircraft().getWing().setYApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(wingYPosition), Unit.valueOf(wingYPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(wingYPositionValue), Unit.valueOf(wingYPositionUnit))
 					);
 			Main.getTheAircraft().getWing().setZApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(wingZPosition), Unit.valueOf(wingZPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(wingZPositionValue), Unit.valueOf(wingZPositionUnit))
 					);
 			Main.getTheAircraft().getWing().setRiggingAngle(
-					(Amount<Angle>) Amount.valueOf(Double.valueOf(wingRiggingAngle), Unit.valueOf(wingRiggingAngleUnit))
+					(Amount<Angle>) Amount.valueOf(Double.valueOf(wingRiggingAngleValue), Unit.valueOf(wingRiggingAngleUnit))
 					);
+			
+			Main.getTheAircraft().getFuelTank().setXApexConstructionAxes(
+					Main.getTheAircraft().getWing().getXApexConstructionAxes()
+					.plus(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
+							.times(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMainSparNonDimensionalPosition()
+									)
+							)
+					);
+			Main.getTheAircraft().getFuelTank().setYApexConstructionAxes(
+					Main.getTheAircraft().getWing().getYApexConstructionAxes()
+					);
+			Main.getTheAircraft().getFuelTank().setZApexConstructionAxes(
+					Main.getTheAircraft().getWing().getZApexConstructionAxes()
+					);
+			
 		}
 		//.................................................................................................
 		if(Main.getTheAircraft().getHTail() != null) {
 			Main.getTheAircraft().setHTailFilePath(hTailFilePath);
 			Main.getTheAircraft().getHTail().setXApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(hTailXPosition), Unit.valueOf(hTailXPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(hTailXPositionValue), Unit.valueOf(hTailXPositionUnit))
 					);
 			Main.getTheAircraft().getHTail().setYApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(hTailYPosition), Unit.valueOf(hTailYPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(hTailYPositionValue), Unit.valueOf(hTailYPositionUnit))
 					);
 			Main.getTheAircraft().getHTail().setZApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(hTailZPosition), Unit.valueOf(hTailZPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(hTailZPositionValue), Unit.valueOf(hTailZPositionUnit))
 					);
 			Main.getTheAircraft().getHTail().setRiggingAngle(
-					(Amount<Angle>) Amount.valueOf(Double.valueOf(hTailRiggingAngle), Unit.valueOf(hTailRiggingAngleUnit))
+					(Amount<Angle>) Amount.valueOf(Double.valueOf(hTailRiggingAngleValue), Unit.valueOf(hTailRiggingAngleUnit))
 					);
 		}
 		//.................................................................................................
 		if(Main.getTheAircraft().getVTail() != null) {
 			Main.getTheAircraft().setVTailFilePath(vTailFilePath);
 			Main.getTheAircraft().getVTail().setXApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(vTailXPosition), Unit.valueOf(vTailXPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(vTailXPositionValue), Unit.valueOf(vTailXPositionUnit))
 					);
 			Main.getTheAircraft().getVTail().setYApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(vTailYPosition), Unit.valueOf(vTailYPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(vTailYPositionValue), Unit.valueOf(vTailYPositionUnit))
 					);
 			Main.getTheAircraft().getVTail().setZApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(vTailZPosition), Unit.valueOf(vTailZPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(vTailZPositionValue), Unit.valueOf(vTailZPositionUnit))
 					);
 			Main.getTheAircraft().getVTail().setRiggingAngle(
-					(Amount<Angle>) Amount.valueOf(Double.valueOf(vTailRiggingAngle), Unit.valueOf(vTailRiggingAngleUnit))
+					(Amount<Angle>) Amount.valueOf(Double.valueOf(vTailRiggingAngleValue), Unit.valueOf(vTailRiggingAngleUnit))
 					);
 		}
 		//.................................................................................................
@@ -10551,16 +10726,16 @@ public class InputManagerController {
 			
 			Main.getTheAircraft().setCanardFilePath(canardFilePath);
 			Main.getTheAircraft().getCanard().setXApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(canardXPosition), Unit.valueOf(canardXPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(canardXPositionValue), Unit.valueOf(canardXPositionUnit))
 					);
 			Main.getTheAircraft().getCanard().setYApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(canardYPosition), Unit.valueOf(canardYPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(canardYPositionValue), Unit.valueOf(canardYPositionUnit))
 					);
 			Main.getTheAircraft().getCanard().setZApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(canardZPosition), Unit.valueOf(canardZPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(canardZPositionValue), Unit.valueOf(canardZPositionUnit))
 					);
 			Main.getTheAircraft().getCanard().setRiggingAngle(
-					(Amount<Angle>) Amount.valueOf(Double.valueOf(canardRiggingAngle), Unit.valueOf(canardRiggingAngleUnit))
+					(Amount<Angle>) Amount.valueOf(Double.valueOf(canardRiggingAngleValue), Unit.valueOf(canardRiggingAngleUnit))
 					);
 		}
 		//.................................................................................................
@@ -10573,29 +10748,31 @@ public class InputManagerController {
 
 				currentEngine.setXApexConstructionAxes(
 						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(engineXPositionList.get(i)), 
+								Double.valueOf(engineXPositionValueList.get(i)), 
 								Unit.valueOf(engineXPositionUnitList.get(i))
 								)
 						);
 				currentEngine.setYApexConstructionAxes(
 						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(engineYPositionList.get(i)), 
+								Double.valueOf(engineYPositionValueList.get(i)), 
 								Unit.valueOf(engineYPositionUnitList.get(i))
 								)
 						);
 				currentEngine.setZApexConstructionAxes(
 						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(engineZPositionList.get(i)), 
+								Double.valueOf(engineZPositionValueList.get(i)), 
 								Unit.valueOf(engineZPositionUnitList.get(i))
 								)
 						);
 				currentEngine.setTiltingAngle(
 						(Amount<Angle>) Amount.valueOf(
-								Double.valueOf(engineTiltAngleList.get(i)), 
+								Double.valueOf(engineTiltAngleValueList.get(i)), 
 								Unit.valueOf(engineTiltAngleUnitList.get(i))
 								)
 						);
-				currentEngine.setMountingPosition(EngineMountingPositionEnum.valueOf(engineMountinPositionList.get(i)));
+				currentEngine.setMountingPosition(
+						EngineMountingPositionEnum.valueOf(engineMountinPositionValueList.get(i))
+						);
 			}
 		}
 		//.................................................................................................
@@ -10608,50 +10785,52 @@ public class InputManagerController {
 
 				currentNacelle.setXApexConstructionAxes(
 						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(nacelleXPositionList.get(i)), 
+								Double.valueOf(nacelleXPositionValueList.get(i)), 
 								Unit.valueOf(nacelleXPositionUnitList.get(i))
 								)
 						);
 				currentNacelle.setYApexConstructionAxes(
 						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(nacelleYPositionList.get(i)), 
+								Double.valueOf(nacelleYPositionValueList.get(i)), 
 								Unit.valueOf(nacelleYPositionUnitList.get(i))
 								)
 						);
 				currentNacelle.setZApexConstructionAxes(
 						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(nacelleZPositionList.get(i)), 
+								Double.valueOf(nacelleZPositionValueList.get(i)), 
 								Unit.valueOf(nacelleZPositionUnitList.get(i))
 								)
 						);
-				currentNacelle.setMountingPosition(MountingPosition.valueOf(nacelleMountinPositionList.get(i)));
+				currentNacelle.setMountingPosition(
+						MountingPosition.valueOf(nacelleMountinPositionValueList.get(i))
+						);
 			}
 		}
 		//.................................................................................................
 		if(Main.getTheAircraft().getLandingGears() != null) {
 			Main.getTheAircraft().setLandingGearsFilePath(landingGearsFilePath);
 			Main.getTheAircraft().getLandingGears().setXApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsXPosition), Unit.valueOf(landingGearsXPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsXPositionValue), Unit.valueOf(landingGearsXPositionUnit))
 					);
 			Main.getTheAircraft().getLandingGears().setYApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsYPosition), Unit.valueOf(landingGearsYPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsYPositionValue), Unit.valueOf(landingGearsYPositionUnit))
 					);
 			Main.getTheAircraft().getLandingGears().setZApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsZPosition), Unit.valueOf(landingGearsZPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsZPositionValue), Unit.valueOf(landingGearsZPositionUnit))
 					);
-			Main.getTheAircraft().getLandingGears().setMountingPosition(aircraft.components.LandingGears.MountingPosition.valueOf(landingGearsMountinPosition));
+			Main.getTheAircraft().getLandingGears().setMountingPosition(aircraft.components.LandingGears.MountingPosition.valueOf(landingGearsMountinPositionValue));
 		}
 		//.................................................................................................
 		if(Main.getTheAircraft().getSystems() != null) {
 			Main.getTheAircraft().setSystemsFilePath(systemsFilePath);
 			Main.getTheAircraft().getSystems().setXApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsXPosition), Unit.valueOf(systemsXPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsXPositionValue), Unit.valueOf(systemsXPositionUnit))
 					);
 			Main.getTheAircraft().getSystems().setYApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsYPosition), Unit.valueOf(systemsYPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsYPositionValue), Unit.valueOf(systemsYPositionUnit))
 					);
 			Main.getTheAircraft().getSystems().setZApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsZPosition), Unit.valueOf(systemsZPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsZPositionValue), Unit.valueOf(systemsZPositionUnit))
 					);
 		}
 	}
@@ -10946,6 +11125,7 @@ public class InputManagerController {
 	private void updateWingTabData() {
 		
 		// TODO: AFTER MATHCING ADJUST CRITERION WITH THE DATA MODEL
+        //       REMEMBER TO UPDATE THE FUEL TANK TOO		      
 		
 	}
 	
@@ -11912,13 +12092,563 @@ public class InputManagerController {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void createAircraftObjectFromData() {
 		
-		/*
-		 * TODO: IF THE FILE PATH ARE FILLED, OPEN A DIALOG TO ASK THE USER TO CHOOSE BETWEEN FILE DATA AND 
-		 *       TEXTFIELDS DATA FOR EACH COMPONENTS (USE CHECKBOXES) 
-		 */
+		//....................................................................................
+		// DATA INITIALIZATION
+		//....................................................................................
+		File cabinConfigurationFilePath = null;
+		File fuselageFilePath = null;
+		File wingFilePath = null;
+		File hTailFilePath = null;
+		File vTailFilePath = null;
+		File canardFilePath = null;
+		List<File> powerPlantFilePathList = new ArrayList<>();
+		List<File> nacellesFilePathList = new ArrayList<>();
+		File landingGearsFilePath = null;
+		File systemsFilePath = null;
 		
+		FusDesDatabaseReader fusDesDatabaseReader = Main.getTheAircraft().getFuselage().getFusDesDatabaseReader();
+		AerodynamicDatabaseReader aerodynamicDatabaseReader = Main.getTheAircraft().getWing().getAerodynamicDatabaseReader();
+		HighLiftDatabaseReader highLiftDatabaseReader = Main.getTheAircraft().getWing().getHighLiftDatabaseReader();
+		VeDSCDatabaseReader veDSCDatabaseReader = Main.getTheAircraft().getWing().getVEDSCDatabaseReader();
+		
+		if(!textFieldAircraftCabinConfigurationFile.getText().isEmpty()) 
+			cabinConfigurationFilePath = new File(textFieldAircraftCabinConfigurationFile.getText());
+		if(!textFieldAircraftFuselageFile.getText().isEmpty()) 
+			fuselageFilePath = new File(textFieldAircraftFuselageFile.getText());
+		if(!textFieldAircraftWingFile.getText().isEmpty()) 
+			wingFilePath = new File(textFieldAircraftWingFile.getText());
+		if(!textFieldAircraftHTailFile.getText().isEmpty()) 
+			hTailFilePath = new File(textFieldAircraftHTailFile.getText());
+		if(!textFieldAircraftVTailFile.getText().isEmpty()) 
+			vTailFilePath = new File(textFieldAircraftVTailFile.getText());
+		if(!textFieldAircraftCanardFile.getText().isEmpty()) 
+			canardFilePath = new File(textFieldAircraftCanardFile.getText());
+		
+		textFieldsAircraftEngineFileList.stream()
+		.filter(tf -> !tf.getText().isEmpty())
+		.forEach(tf -> powerPlantFilePathList.add(new File(tf.getText())));
+		
+		textFieldsAircraftNacelleFileList.stream()
+		.filter(tf -> !tf.getText().isEmpty())
+		.forEach(tf -> nacellesFilePathList.add(new File(tf.getText())));
+		
+		if(!textFieldAircraftLandingGearsFile.getText().isEmpty()) 
+			landingGearsFilePath = new File(textFieldAircraftLandingGearsFile.getText());
+		if(!textFieldAircraftSystemsFile.getText().isEmpty()) 
+			systemsFilePath = new File(textFieldAircraftSystemsFile.getText());
+		
+		//....................................................................................
+		// CREATING AIRCRAFT COMPONENTS FROM FILE ...
+		//....................................................................................
+		// CABIN CONFIGURATION
+		if (updateCabinConfigurationDataFromFile)
+			if (cabinConfigurationFilePath.exists())
+				Main.getTheAircraft().setCabinConfiguration(
+						CabinConfiguration.importFromXML(cabinConfigurationFilePath.getAbsolutePath())
+						);
+		//....................................................................................
+		// FUSELAGE
+		if (updateFuselageDataFromFile) {
+			if (fuselageFilePath.exists()) {
+
+				Amount<Length> fuselageXApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageXPositionValue), 
+						Unit.valueOf(fuselageXPositionUnit)
+						);
+				Amount<Length> fuselageYApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageYPositionValue), 
+						Unit.valueOf(fuselageYPositionUnit)
+						);
+				Amount<Length> fuselageZApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageZPositionValue),
+						Unit.valueOf(fuselageZPositionUnit)
+						);
+
+				Main.getTheAircraft().setFuselage(
+						new FuselageBuilder(
+								"Fuselage - " + Main.getTheAircraft().getId(),
+								fusDesDatabaseReader
+								)
+						.fuselageCreator(
+								FuselageCreator.importFromXML(fuselageFilePath.getAbsolutePath())
+								)
+						.build()
+						);
+				Main.getTheAircraft().getFuselage().getFuselageCreator().calculateGeometry();
+				Main.getTheAircraft().getFuselage().setXApexConstructionAxes(fuselageXApex);
+				Main.getTheAircraft().getFuselage().setYApexConstructionAxes(fuselageYApex);
+				Main.getTheAircraft().getFuselage().setZApexConstructionAxes(fuselageZApex);
+			}
+		}
+		//....................................................................................
+		// WING
+		if (updateWingDataFromFile) {
+			if (wingFilePath.exists()) {
+
+				Amount<Length> wingXApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(wingXPositionValue),
+						Unit.valueOf(wingXPositionUnit)
+						);
+				Amount<Length> wingYApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(wingYPositionValue), 
+						Unit.valueOf(wingYPositionUnit)
+						);
+				Amount<Length> wingZApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(wingZPositionValue), 
+						Unit.valueOf(wingZPositionUnit)
+						);
+				Amount<Angle> wingRiggingAngle = (Amount<Angle>) Amount.valueOf(
+						Double.valueOf(wingRiggingAngleValue),
+						Unit.valueOf(wingRiggingAngleUnit)
+						);
+
+				Main.getTheAircraft().setWing(
+						new LiftingSurfaceBuilder(
+								"Wing - " + Main.getTheAircraft().getId(),
+								ComponentEnum.WING,
+								aerodynamicDatabaseReader,
+								highLiftDatabaseReader,
+								veDSCDatabaseReader
+								)
+						.liftingSurfaceCreator(
+								LiftingSurfaceCreator.importFromXML(
+										ComponentEnum.WING,
+										wingFilePath.getAbsolutePath(),
+										Main.getInputDirectoryPath() + File.separator
+										+ "Template_Aircraft" + File.separator
+										+ "lifting_surfaces" + File.separator
+										+ "airfoils" + File.separator
+										)
+								)
+						.build()
+						);
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().calculateGeometry(
+						ComponentEnum.WING, 
+						Boolean.TRUE
+						);
+				Main.getTheAircraft().getWing().populateAirfoilList(
+						aerodynamicDatabaseReader,
+						Boolean.FALSE
+						);
+				Main.getTheAircraft().getWing().setXApexConstructionAxes(wingXApex);
+				Main.getTheAircraft().getWing().setYApexConstructionAxes(wingYApex);
+				Main.getTheAircraft().getWing().setZApexConstructionAxes(wingZApex);
+				Main.getTheAircraft().getWing().setRiggingAngle(wingRiggingAngle);
+
+				Main.getTheAircraft().setFuelTank(
+						new FuelTank.FuelTankBuilder(
+								"Fuel Tank - " + Main.getTheAircraft().getId(),
+								Main.getTheAircraft().getWing()
+								).build()
+						);
+				Main.getTheAircraft().getFuelTank().setXApexConstructionAxes(
+						Main.getTheAircraft().getWing().getXApexConstructionAxes()
+						.plus(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
+								.times(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMainSparNonDimensionalPosition()
+										)
+								)
+						);
+				Main.getTheAircraft().getFuelTank().setYApexConstructionAxes(
+						Main.getTheAircraft().getWing().getYApexConstructionAxes()
+						);
+				Main.getTheAircraft().getFuelTank().setZApexConstructionAxes(
+						Main.getTheAircraft().getWing().getZApexConstructionAxes()
+						);
+
+			}
+		}
+		//....................................................................................
+		// HORIZONTAL TAIL
+		if (updateHTailDataFromFile) {
+			if (hTailFilePath.exists()) {
+
+				Amount<Length> hTailXApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(hTailXPositionValue),
+						Unit.valueOf(hTailXPositionUnit)
+						);
+				Amount<Length> hTailYApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(hTailYPositionValue), 
+						Unit.valueOf(hTailYPositionUnit)
+						);
+				Amount<Length> hTailZApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(hTailZPositionValue), 
+						Unit.valueOf(hTailZPositionUnit)
+						);
+				Amount<Angle> hTailRiggingAngle = (Amount<Angle>) Amount.valueOf(
+						Double.valueOf(hTailRiggingAngleValue),
+						Unit.valueOf(hTailRiggingAngleUnit)
+						);
+
+				Main.getTheAircraft().setHTail(
+						new LiftingSurfaceBuilder(
+								"Horizontal Tail - " + Main.getTheAircraft().getId(),
+								ComponentEnum.HORIZONTAL_TAIL,
+								aerodynamicDatabaseReader,
+								highLiftDatabaseReader,
+								veDSCDatabaseReader
+								)
+						.liftingSurfaceCreator(
+								LiftingSurfaceCreator.importFromXML(
+										ComponentEnum.HORIZONTAL_TAIL,
+										hTailFilePath.getAbsolutePath(),
+										Main.getInputDirectoryPath() + File.separator
+										+ "Template_Aircraft" + File.separator
+										+ "lifting_surfaces" + File.separator
+										+ "airfoils" + File.separator
+										)
+								)
+						.build()
+						);
+				Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().calculateGeometry(
+						ComponentEnum.HORIZONTAL_TAIL, 
+						Boolean.TRUE
+						);
+				Main.getTheAircraft().getHTail().populateAirfoilList(
+						aerodynamicDatabaseReader,
+						Boolean.FALSE
+						);
+				Main.getTheAircraft().getHTail().setXApexConstructionAxes(hTailXApex);
+				Main.getTheAircraft().getHTail().setYApexConstructionAxes(hTailYApex);
+				Main.getTheAircraft().getHTail().setZApexConstructionAxes(hTailZApex);
+				Main.getTheAircraft().getHTail().setRiggingAngle(hTailRiggingAngle);
+			}
+		}
+		//....................................................................................
+		// VERTICAL TAIL
+		if (updateVTailDataFromFile) {
+			if (vTailFilePath.exists()) {
+
+				Amount<Length> vTailXApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(vTailXPositionValue),
+						Unit.valueOf(vTailXPositionUnit)
+						);
+				Amount<Length> vTailYApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(vTailYPositionValue), 
+						Unit.valueOf(vTailYPositionUnit)
+						);
+				Amount<Length> vTailZApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(vTailZPositionValue), 
+						Unit.valueOf(vTailZPositionUnit)
+						);
+				Amount<Angle> vTailRiggingAngle = (Amount<Angle>) Amount.valueOf(
+						Double.valueOf(vTailRiggingAngleValue),
+						Unit.valueOf(vTailRiggingAngleUnit)
+						);
+
+				Main.getTheAircraft().setVTail(
+						new LiftingSurfaceBuilder(
+								"Vertical Tail - " + Main.getTheAircraft().getId(),
+								ComponentEnum.VERTICAL_TAIL,
+								aerodynamicDatabaseReader,
+								highLiftDatabaseReader,
+								veDSCDatabaseReader
+								)
+						.liftingSurfaceCreator(
+								LiftingSurfaceCreator.importFromXML(
+										ComponentEnum.VERTICAL_TAIL,
+										vTailFilePath.getAbsolutePath(),
+										Main.getInputDirectoryPath() + File.separator
+										+ "Template_Aircraft" + File.separator
+										+ "lifting_surfaces" + File.separator
+										+ "airfoils" + File.separator
+										)
+								)
+						.build()
+						);
+				Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().calculateGeometry(
+						ComponentEnum.VERTICAL_TAIL, 
+						Boolean.FALSE
+						);
+				Main.getTheAircraft().getVTail().populateAirfoilList(
+						aerodynamicDatabaseReader,
+						Boolean.FALSE
+						);
+				Main.getTheAircraft().getVTail().setXApexConstructionAxes(vTailXApex);
+				Main.getTheAircraft().getVTail().setYApexConstructionAxes(vTailYApex);
+				Main.getTheAircraft().getVTail().setZApexConstructionAxes(vTailZApex);
+				Main.getTheAircraft().getVTail().setRiggingAngle(vTailRiggingAngle);
+			}
+		}
+		//....................................................................................
+		// CANARD
+		if (updateCanardDataFromFile) {
+			if (canardFilePath.exists()) {
+
+				Amount<Length> canardXApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(canardXPositionValue),
+						Unit.valueOf(canardXPositionUnit)
+						);
+				Amount<Length> canardYApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(canardYPositionValue), 
+						Unit.valueOf(canardYPositionUnit)
+						);
+				Amount<Length> canardZApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(canardZPositionValue), 
+						Unit.valueOf(canardZPositionUnit)
+						);
+				Amount<Angle> canardRiggingAngle = (Amount<Angle>) Amount.valueOf(
+						Double.valueOf(canardRiggingAngleValue),
+						Unit.valueOf(canardRiggingAngleUnit)
+						);
+
+				Main.getTheAircraft().setCanard(
+						new LiftingSurfaceBuilder(
+								"Canard - " + Main.getTheAircraft().getId(),
+								ComponentEnum.CANARD,
+								aerodynamicDatabaseReader,
+								highLiftDatabaseReader,
+								veDSCDatabaseReader
+								)
+						.liftingSurfaceCreator(
+								LiftingSurfaceCreator.importFromXML(
+										ComponentEnum.CANARD,
+										canardFilePath.getAbsolutePath(),
+										Main.getInputDirectoryPath() + File.separator
+										+ "Template_Aircraft" + File.separator
+										+ "lifting_surfaces" + File.separator
+										+ "airfoils" + File.separator
+										)
+								)
+						.build()
+						);
+				Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().calculateGeometry(
+						ComponentEnum.CANARD, 
+						Boolean.TRUE
+						);
+				Main.getTheAircraft().getCanard().populateAirfoilList(
+						aerodynamicDatabaseReader,
+						Boolean.FALSE
+						);
+				Main.getTheAircraft().getCanard().setXApexConstructionAxes(canardXApex);
+				Main.getTheAircraft().getCanard().setYApexConstructionAxes(canardYApex);
+				Main.getTheAircraft().getCanard().setZApexConstructionAxes(canardZApex);
+				Main.getTheAircraft().getCanard().setRiggingAngle(canardRiggingAngle);
+			}
+		}
+		//....................................................................................
+		// POWER PLANT
+		if (updatePowerPlantDataFromFile) {
+			
+			List<Engine> engineList = new ArrayList<>();
+			List<Amount<Length>> engineXList = new ArrayList<>();
+			List<Amount<Length>> engineYList = new ArrayList<>();
+			List<Amount<Length>> engineZList = new ArrayList<>();
+			List<Amount<Angle>> engineTiltList = new ArrayList<>();		
+			List<EngineMountingPositionEnum> engineMountingPositionList = new ArrayList<>();
+
+			for (int i=0; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++) {
+
+				engineXList.add(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(engineXPositionValueList.get(i)), 
+								Unit.valueOf(engineXPositionUnitList.get(i))
+								)
+						);
+				engineYList.add(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(engineYPositionValueList.get(i)), 
+								Unit.valueOf(engineYPositionUnitList.get(i))
+								)
+						);
+				engineZList.add(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(engineZPositionValueList.get(i)), 
+								Unit.valueOf(engineZPositionUnitList.get(i))
+								)
+						);
+				engineTiltList.add(
+						(Amount<Angle>) Amount.valueOf(
+								Double.valueOf(engineTiltAngleValueList.get(i)), 
+								Unit.valueOf(engineTiltAngleUnitList.get(i))
+								)
+						);
+				engineMountingPositionList.add(
+						EngineMountingPositionEnum.valueOf(engineMountinPositionValueList.get(i))
+						);
+
+			}
+
+			powerPlantFilePathList.stream().filter(file -> file.exists()).forEach(
+					file -> engineList.add(Engine.importFromXML(file.getAbsolutePath()))
+					);
+
+			for(int i=0; i<engineList.size(); i++) {
+
+				engineList.get(i).setXApexConstructionAxes(engineXList.get(i));
+				engineList.get(i).setYApexConstructionAxes(engineYList.get(i));
+				engineList.get(i).setZApexConstructionAxes(engineZList.get(i));
+				engineList.get(i).setTiltingAngle(engineTiltList.get(i));
+				engineList.get(i).setMountingPosition(engineMountingPositionList.get(i));
+
+			}
+
+			Main.getTheAircraft().setPowerPlant(
+					new PowerPlant.PowerPlantBuilder(
+							"Power Plant - " + Main.getTheAircraft().getId(), 
+							engineList
+							).build()
+					);
+		}
+		//....................................................................................
+		// NACELLES
+		if (updateNacellesDataFromFile) {
+			
+		List<NacelleCreator> nacelleList = new ArrayList<>();
+		List<Amount<Length>> nacelleXList = new ArrayList<>();
+		List<Amount<Length>> nacelleYList = new ArrayList<>();
+		List<Amount<Length>> nacelleZList = new ArrayList<>();
+		List<MountingPosition> nacelleMountingPositionList = new ArrayList<>();
+		
+		Main.getTheAircraft().getNacelles().getNacellesList().stream().forEach(nacelle -> {
+			nacelleXList.add(nacelle.getXApexConstructionAxes());
+			nacelleYList.add(nacelle.getYApexConstructionAxes());
+			nacelleZList.add(nacelle.getZApexConstructionAxes());
+			nacelleMountingPositionList.add(nacelle.getMountingPosition());
+		});
+
+		nacellesFilePathList.stream().filter(file -> file.exists()).forEach(
+				file -> nacelleList.add(
+						NacelleCreator.importFromXML(
+								file.getAbsolutePath(),
+								Main.getInputDirectoryPath() + File.separator
+								+ "Template_Aircraft" + File.separator
+								+ "engines" + File.separator
+								)
+						)
+				);
+		
+		for(int i=0; i<nacelleList.size(); i++) {
+			
+			nacelleList.get(i).setXApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(
+							Double.valueOf(nacelleXPositionValueList.get(i)), 
+							Unit.valueOf(nacelleXPositionUnitList.get(i))
+							)
+					);
+			nacelleList.get(i).setYApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(
+							Double.valueOf(nacelleYPositionValueList.get(i)), 
+							Unit.valueOf(nacelleYPositionUnitList.get(i))
+							)
+					);
+			nacelleList.get(i).setZApexConstructionAxes(
+					(Amount<Length>) Amount.valueOf(
+							Double.valueOf(nacelleZPositionValueList.get(i)), 
+							Unit.valueOf(nacelleZPositionUnitList.get(i))
+							)
+					);
+			nacelleList.get(i).setMountingPosition(
+					MountingPosition.valueOf(nacelleMountinPositionValueList.get(i))
+					);
+			
+		}
+
+		Main.getTheAircraft().setNacelles(
+				new Nacelles.NacellesBuilder(
+						"Nacelles - " + Main.getTheAircraft().getId(), 
+						nacelleList
+						).build()
+				);
+		
+		}
+		//....................................................................................
+		// LANDING GEARS
+		if (updateLandingGearsDataFromFile) {
+			if (landingGearsFilePath.exists()) {
+
+				Amount<Length> landingGearsXApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(landingGearsXPositionValue),
+						Unit.valueOf(landingGearsXPositionUnit)
+						);
+				Amount<Length> landingGearsYApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(landingGearsYPositionValue),
+						Unit.valueOf(landingGearsYPositionUnit)
+						);
+				Amount<Length> landingGearsZApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(landingGearsZPositionValue),
+						Unit.valueOf(landingGearsZPositionUnit)
+						);
+				aircraft.components.LandingGears.MountingPosition landingGearsMountingPosition =
+						aircraft.components.LandingGears.MountingPosition.valueOf(landingGearsMountinPositionValue);
+
+				Main.getTheAircraft().setLandingGears(
+						LandingGears.importFromXML(landingGearsFilePath.getAbsolutePath())
+						);
+				Main.getTheAircraft().getLandingGears().setXApexConstructionAxes(landingGearsXApex);
+				Main.getTheAircraft().getLandingGears().setYApexConstructionAxes(landingGearsYApex);
+				Main.getTheAircraft().getLandingGears().setZApexConstructionAxes(landingGearsZApex);
+				Main.getTheAircraft().getLandingGears().setMountingPosition(landingGearsMountingPosition);
+			}
+		}
+		//....................................................................................
+		// SYSTEMS
+		if (updateSystemsDataFromFile) {
+			if (systemsFilePath.exists()) {
+
+				Amount<Length> systemsXApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(systemsXPositionValue), 
+						Unit.valueOf(systemsXPositionUnit)
+						);
+				Amount<Length> systemsYApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(systemsYPositionValue), 
+						Unit.valueOf(systemsYPositionUnit)
+						);
+				Amount<Length> systemsZApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(systemsZPositionValue), 
+						Unit.valueOf(systemsZPositionUnit)
+						);
+
+				Main.getTheAircraft().setSystems(
+						Systems.importFromXML(systemsFilePath.getAbsolutePath())
+						);
+				Main.getTheAircraft().getSystems().setXApexConstructionAxes(systemsXApex);
+				Main.getTheAircraft().getSystems().setYApexConstructionAxes(systemsYApex);
+				Main.getTheAircraft().getSystems().setZApexConstructionAxes(systemsZApex);
+
+			}
+		}
+		//....................................................................................
+		// LOGGING AIRCRAFT COMPONENTS DATA TO GUI ...
+		//....................................................................................
+		// COMPONENTS LOG TO INTERFACE
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+
+				if (updateFuselageDataFromFile)
+					if(Main.getTheAircraft().getFuselage() != null)
+						logFuselageFromFileToInterface();
+				if (updateCabinConfigurationDataFromFile)
+					if(Main.getTheAircraft().getCabinConfiguration() != null)
+						logCabinConfigutionFromFileToInterface();
+				if (updateWingDataFromFile)
+					if(Main.getTheAircraft().getWing() != null)
+						logWingFromFileToInterface();
+				if (updateHTailDataFromFile)
+					if(Main.getTheAircraft().getHTail() != null)
+						logHTailFromFileToInterface();
+				if (updateVTailDataFromFile)
+					if(Main.getTheAircraft().getVTail() != null)
+						logVTailFromFileToInterface();
+				if (updateCanardDataFromFile)
+					if(Main.getTheAircraft().getCanard() != null)
+						logCanardFromFileToInterface();
+				if (updateNacellesDataFromFile)
+					if(Main.getTheAircraft().getNacelles() != null)
+						logNacelleFromFileToInterface();
+				if (updatePowerPlantDataFromFile)
+					if(Main.getTheAircraft().getPowerPlant() != null)
+						logPowerPlantFromFileToInterface();
+				if (updateLandingGearsDataFromFile)
+					if(Main.getTheAircraft().getLandingGears() != null)
+						logLandingGearsFromFileToInterface();
+				
+			}
+		});
 	}
 	
 	@FXML
@@ -12422,8 +13152,8 @@ public class InputManagerController {
 							Main.getTheAircraft().getNacelles().getNacellesList().get(
 									seriesNacelleCruvesTopViewList.indexOf(nac)
 									).getZApexConstructionAxes().doubleValue(SI.METER)
-							+ 0.001
-							+ seriesNacelleCruvesTopViewList.indexOf(nac)*0.001, 
+							+ 0.005
+							+ seriesNacelleCruvesTopViewList.indexOf(nac)*0.005, 
 							Tuple.of(nac, Color.decode("#FF7F50"))
 							)
 					);
@@ -13551,6 +14281,7 @@ public class InputManagerController {
 		String dirLiftingSurfaces = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "lifting_surfaces";
 		String dirFuselages = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "fuselages";
 		String dirEngines = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "engines";
+		String dirNacelles = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "nacelles";
 		String dirLandingGears = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "landing_gears";
 		String dirSystems = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "systems";
 		String dirCabinConfiguration = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "cabin_configurations";
@@ -14394,7 +15125,7 @@ public class InputManagerController {
 				Element elementNacelle = (Element) nodeNacelle;
 				if(elementNacelle.getAttribute("file") != null)
 					textFieldsAircraftNacelleFileList.get(i).setText(
-							dirEngines 
+							dirNacelles
 							+ File.separator
 							+ elementNacelle.getAttribute("file")	
 							);
@@ -17340,6 +18071,7 @@ public class InputManagerController {
 		// print the toString method of the aircraft inside the text area of the GUI ...
 		textAreaWingConsoleOutput.setText(
 				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().toString()
+				+ "\n\n\n" + Main.getTheAircraft().getFuelTank().toString()
 				);
 
 		if(Main.getTheAircraft().getWing() != null) {
