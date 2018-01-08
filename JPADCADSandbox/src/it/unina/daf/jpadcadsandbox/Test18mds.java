@@ -25,7 +25,7 @@ public class Test18mds {
 		
 		boolean exportLofts = true;
 		boolean exportSupportShapes = true;
-
+		
 		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, exportLofts, exportSupportShapes);
 //		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, exportLofts, exportSupportShapes);
 //		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, exportLofts, exportSupportShapes);
@@ -36,4 +36,5 @@ public class Test18mds {
 		if (OCCUtils.write(fileName, wingShapes))
 			System.out.println("========== [main] Output written on file: " + fileName);	
 	}
+	
 }

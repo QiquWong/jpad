@@ -319,10 +319,13 @@ public final class OCCUtils {
 		TopoDS_Vertex vtx_1 = null;
 		// check if at least one projection occurred
 		if (poc.NbPoints() > 0) {			
-			gpPnt_1 = poc.Point(1);
+//			gpPnt_1 = poc.Point(1);
+//			System.out.println("[OCCUtils.splitEdge]>> Projected point (" + gpPnt_1.X() +", "+ gpPnt_1.Y() +", "+ gpPnt_1.Z() + ")" );
+//			par_1 = poc.Parameter(1);
+//			System.out.println("[OCCUtils.splitEdge]>> Projected point parameter: " + par_1);
+			
+			gpPnt_1 = poc.NearestPoint();
 			System.out.println("[OCCUtils.splitEdge]>> Projected point (" + gpPnt_1.X() +", "+ gpPnt_1.Y() +", "+ gpPnt_1.Z() + ")" );
-			par_1 = poc.Parameter(1);
-			System.out.println("[OCCUtils.splitEdge]>> Projected point parameter: " + par_1);
 			
 			// https://www.opencascade.com/doc/occt-7.0.0/overview/html/occt_user_guides__boolean_operations.html
 			// https://github.com/DLR-SC/tigl/src/boolean_operations/CCutShape.cpp
