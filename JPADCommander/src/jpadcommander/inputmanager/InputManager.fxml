@@ -40,7 +40,7 @@
                                              <children>
                                                 <ScrollPane prefHeight="4609.0" prefWidth="403.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
                                                    <content>
-                                                      <AnchorPane minHeight="0.0" minWidth="0.0">
+                                                      <AnchorPane fx:id="aircraftDataAnchorPane" minHeight="0.0" minWidth="0.0">
                                                          <children>
                                                             <Label layoutX="5.0" layoutY="132.0" text="Cabin configuration file:">
                                                                <font>

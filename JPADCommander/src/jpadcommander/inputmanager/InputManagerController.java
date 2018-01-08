@@ -52,6 +52,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
+
 import aircraft.auxiliary.SeatsBlock;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
@@ -99,6 +101,8 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -117,6 +121,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -128,6 +133,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -166,6 +172,11 @@ public class InputManagerController {
 	//...........................................................................................
 	// LAYOUTS:
 	//...........................................................................................
+	@FXML 
+	private AnchorPane aircraftDataAnchorPane;
+	
+	// TODO: MAKE ALSO FOR OTHER COMPONENTS
+	
 	@FXML 
 	private ToolBar actionButtonToolbar;
 	@FXML
@@ -577,7 +588,7 @@ public class InputManagerController {
 			"MODIFY NOSE LENGTH, CONSTANT TOTAL LENGTH AND DIAMETERS",
 			"MODIFY NOSE LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS",
 			"MODIFY NOSE LENGTH, CONSTANT FINENESS-RATIOS",
-			"MODIFY TAILCONE LENGTH, CONSTANT TOTAL LENGTH AND DIAMETERS",
+			"MODIFY TAILCONE LENGTH, CONSTANT TOTAL LENGTH, DIAMETERS AND NOSE LENGTH RATIO",
 			"MODIFY TAILCONE LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS",
 			"MODIFY TAILCONE LENGTH, CONSTANT FINENESS-RATIOS",
 			"MODIFY FUSELAGE DIAMETER, CONSTANT FINENESS-RATIOS"
@@ -1758,12 +1769,27 @@ public class InputManagerController {
 	//-------------------------------------------------------------------------------------------
 	// METHODS
 	//-------------------------------------------------------------------------------------------
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@FXML
 	private void initialize() {
 		
 		Main.setAircraftSaved(false);
 		Main.setAircraftUpdated(false);
 		Platform.setImplicitExit(false);
+		
+//		aircraftDataAnchorPane.getChildren().stream()
+//		.filter(node -> node instanceof TextField)
+//		.map(node -> (TextField) node)
+//		.forEach(tf -> tf.textProperty().addListener(
+//				new ChangeListener() {
+//					@Override
+//					public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+//
+//						System.err.println("AIRCRAFT DATA MODIFIED ! ");
+//						
+//					}
+//				 })
+//				);
 		
 		updateCabinConfigurationDataFromFile = false;
 		updateFuselageDataFromFile = false;
