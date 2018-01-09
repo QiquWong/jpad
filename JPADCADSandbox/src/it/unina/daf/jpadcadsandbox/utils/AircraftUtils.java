@@ -57,6 +57,7 @@ import opencascade.BRepBuilderAPI_MakeWire;
 import opencascade.BRepBuilderAPI_Sewing;
 import opencascade.BRepBuilderAPI_Transform;
 import opencascade.BRepOffsetAPI_MakeFilling;
+import opencascade.BRep_Tool;
 import opencascade.GeomAPI_ProjectPointOnCurve;
 import opencascade.GeomAbs_Shape;
 import opencascade.TopAbs_ShapeEnum;
@@ -1503,8 +1504,7 @@ public final class AircraftUtils {
 				tanBConstPlaneGuideCrv, 
 				tanCConstPlaneGuideCrv, 
 				false
-				);
-		
+				);	
 		CADGeomCurve3D constPlaneGuideCrv2 = OCCUtils.theFactory.newCurve3D(
 				constPlaneGuideCrv2Pnts, 
 				false, 
@@ -1519,10 +1519,128 @@ public final class AircraftUtils {
 				new double[] {dPnt.x, dPnt.y, dPnt.z}
 				);
 		
+		// main sections curves creation
+		List<double[]> sec1MainCrvPnts = new ArrayList<>();
+		List<double[]> sec2MainCrvPnts = new ArrayList<>();
+		
+		sec1MainCrvPnts.add(airfoilUpperCrvs.get(spRatios.length).vertices()[0].pnt());
+		sec1MainCrvPnts.add(new double[] {cPnt.x, cPnt.y, cPnt.z});
+		sec1MainCrvPnts.add(airfoilLowerCrvs.get(spRatios.length).vertices()[1].pnt());		
+		
+		sec2MainCrvPnts.add(airfoilUpperCrvs.get(spRatios.length-1).vertices()[0].pnt());
+		sec2MainCrvPnts.add(new double[] {dPnt.x, dPnt.y, dPnt.z});
+		sec2MainCrvPnts.add(airfoilLowerCrvs.get(spRatios.length-1).vertices()[1].pnt());
+		
+		double tanUppSec1MainCrvFac = tanAFac*(-1);
+		double tanLowSec1MainCrvFac = tanAFac;		
+		double tanUppSec2MainCrvFac = tanAFac*(-1);
+		double tanLowSec2MainCrvFac = tanAFac;
+		
+		double[] tanUppSec1MainCrv = MyArrayUtils.scaleArray(
+				new double[] {tanList.get(0)[0].x, tanList.get(0)[0].y, tanList.get(0)[0].z}, 
+				tanUppSec1MainCrvFac
+				);		
+		double[] tanLowSec1MainCrv = MyArrayUtils.scaleArray(
+				new double[] {tanList.get(0)[1].x, tanList.get(0)[1].y, tanList.get(0)[1].z},
+				tanLowSec1MainCrvFac
+				);		
+		double[] tanUppSec2MainCrv = MyArrayUtils.scaleArray(
+				new double[] {tanList.get(1)[0].x, tanList.get(1)[0].y, tanList.get(1)[0].z}, 
+				tanUppSec2MainCrvFac
+				);		
+		double[] tanLowSec2MainCrv = MyArrayUtils.scaleArray(
+				new double[] {tanList.get(1)[1].x, tanList.get(1)[1].y, tanList.get(1)[1].z},
+				tanLowSec2MainCrvFac
+				);
+		
+		CADGeomCurve3D sec1MainCrv = OCCUtils.theFactory.newCurve3D(
+				sec1MainCrvPnts, 
+				false, 
+				tanUppSec1MainCrv, 
+				tanLowSec1MainCrv, 
+				false
+				);		
+		CADGeomCurve3D sec2MainCrv = OCCUtils.theFactory.newCurve3D(
+				sec2MainCrvPnts, 
+				false, 
+				tanUppSec2MainCrv, 
+				tanLowSec2MainCrv, 
+				false
+				);
+		
+		// attempting to fill the first section
+		double[] rangeCPGC2 = constPlaneGuideCrv2.getRange();	
+		double[] cPGC2Pnt1 = ((OCCGeomCurve3D)constPlaneGuideCrv2).value(0.05*(rangeCPGC2[1] + rangeCPGC2[0]));
+		double[] cPGC2Pnt2 = ((OCCGeomCurve3D)constPlaneGuideCrv2).value(0.50*(rangeCPGC2[1] + rangeCPGC2[0]));
+		double[] cPGC2Pnt3 = ((OCCGeomCurve3D)constPlaneGuideCrv2).value(0.85*(rangeCPGC2[1] + rangeCPGC2[0]));
+		
+		BRepOffsetAPI_MakeFilling fillMaker1 = new BRepOffsetAPI_MakeFilling();
+		
+		fillMaker1.Add(
+				airfoilUpperCrvs.get(spRatios.length).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillMaker1.Add(
+				airfoilLowerCrvs.get(spRatios.length).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);		
+		fillMaker1.Add(
+				((OCCEdge)((OCCGeomCurve3D)sec1MainCrv).edge()).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		
+		fillMaker1.Add(new gp_Pnt(cPGC2Pnt1[0], cPGC2Pnt1[1], cPGC2Pnt1[2]));
+		fillMaker1.Add(new gp_Pnt(cPGC2Pnt2[0], cPGC2Pnt2[1], cPGC2Pnt2[2]));
+		fillMaker1.Add(new gp_Pnt(cPGC2Pnt3[0], cPGC2Pnt3[1], cPGC2Pnt3[2]));
+		
+		fillMaker1.Build();
+		System.out.println("Deformed surface 1 is done? = " + fillMaker1.IsDone());
+		System.out.println("Deformed surface 1 shape type: " + fillMaker1.Shape().ShapeType());	
+		
+		// attempting to fill the second section
+		List<CADGeomCurve3D> filler2CadCrvList = new ArrayList<>();
+		filler2CadCrvList.add(sec2MainCrv);
+		filler2CadCrvList.add(sec1MainCrv);
+		OCCShape filler2 = OCCUtils.makePatchThruSections(filler2CadCrvList);
+		
+		// attempting to fill the last section
+		double[] rangeCPGC1_1 = (OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(0))).getRange();
+		double[] cPGC1_1Pnt1 = (OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(0))).value(0.10*(rangeCPGC1_1[1] + rangeCPGC1_1[0]));
+		double[] cPGC1_1Pnt2 = (OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(0))).value(0.50*(rangeCPGC1_1[1] + rangeCPGC1_1[0]));
+		double[] cPGC1_1Pnt3 = (OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(0))).value(0.85*(rangeCPGC1_1[1] + rangeCPGC1_1[0]));
+		
+		BRepOffsetAPI_MakeFilling fillMaker3 = new BRepOffsetAPI_MakeFilling();
+		
+		fillMaker3.Add(
+				airfoilUpperCrvs.get(spRatios.length - 2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillMaker3.Add(
+				airfoilLowerCrvs.get(spRatios.length - 2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);		
+		fillMaker3.Add(
+				((OCCEdge)((OCCGeomCurve3D)sec2MainCrv).edge()).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		
+		fillMaker3.Add(new gp_Pnt(cPGC1_1Pnt1[0], cPGC1_1Pnt1[1], cPGC1_1Pnt1[2]));
+		fillMaker3.Add(new gp_Pnt(cPGC1_1Pnt2[0], cPGC1_1Pnt2[1], cPGC1_1Pnt2[2]));
+		fillMaker3.Add(new gp_Pnt(cPGC1_1Pnt3[0], cPGC1_1Pnt3[1], cPGC1_1Pnt3[2]));
+		
+		fillMaker3.Build();
+		System.out.println("Deformed surface 3 is done? = " + fillMaker3.IsDone());
+		System.out.println("Deformed surface 3 shape type: " + fillMaker3.Shape().ShapeType());	
+		
+		// exporting shapes
 		extraShapes.addAll(constPlaneGuideCrvs1);
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv2).edge());
-
+		extraShapes.add((OCCEdge)((OCCGeomCurve3D)sec1MainCrv).edge());
+		extraShapes.add((OCCEdge)((OCCGeomCurve3D)sec2MainCrv).edge());
 		extraShapes.add(airfoilPreTipCrvs.get(1));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillMaker1.Shape()));
+		extraShapes.add(filler2);
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillMaker3.Shape()));
 		
 		// tip chord quarter
 //		PVector chord1QuartP = PVector.lerp(le2, te2, 0.25f); // PVector of the point at 1/4 tip chord
