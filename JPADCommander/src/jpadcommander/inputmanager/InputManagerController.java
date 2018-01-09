@@ -52,8 +52,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
-
 import aircraft.auxiliary.SeatsBlock;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
@@ -101,8 +99,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -121,7 +117,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -133,7 +128,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -172,11 +166,11 @@ public class InputManagerController {
 	//...........................................................................................
 	// LAYOUTS:
 	//...........................................................................................
-	@FXML 
-	private AnchorPane aircraftDataAnchorPane;
-	
-	// TODO: MAKE ALSO FOR OTHER COMPONENTS
-	
+//	@FXML 
+//	private AnchorPane aircraftDataAnchorPane;
+//	
+//	// TODO: MAKE ALSO FOR OTHER COMPONENTS
+//	
 	@FXML 
 	private ToolBar actionButtonToolbar;
 	@FXML
@@ -295,11 +289,13 @@ public class InputManagerController {
 	// BUTTONS:
 	//...........................................................................................
 	@FXML
+	private Button chooseAircraftFileButton;	
+	@FXML
 	private Button loadAircraftButton;
 	@FXML
 	private Button newAircraftButton;
 	@FXML
-	private Button updateGeometryButton;
+	private Button updateAircraftDataButton;
 	@FXML
 	private Button saveAircraftButton;
 	@FXML
@@ -518,9 +514,9 @@ public class InputManagerController {
 	//...........................................................................................
 	// FILE CHOOSER:
 	//...........................................................................................
-	private FileChooser aircraftFileChooser;
 	@SuppressWarnings("unused")
 	private FileChooser airfoilFileChooser;
+	private FileChooser aircraftFileChooser;
 	private FileChooser engineDatabaseFileChooser;
 	private FileChooser saveAircraftFileChooser;
 	private FileChooser cabinConfigurationFileChooser;
@@ -538,6 +534,12 @@ public class InputManagerController {
 	// VALIDATIONS (ControlsFX):
 	//...........................................................................................
 	private ValidationSupport validation = new ValidationSupport();
+	
+	//...........................................................................................
+	// STYLES (.css):
+	//...........................................................................................
+	private String textFieldAlertStyle = "-fx-control-inner-background: #FFA500";
+	private String buttonSuggestedActionStyle = "-fx-border-color: #32CD32; -fx-border-width: 2px;";
 	
 	//...........................................................................................
 	// OBSERVABLE LISTS:
@@ -1769,13 +1771,15 @@ public class InputManagerController {
 	//-------------------------------------------------------------------------------------------
 	// METHODS
 	//-------------------------------------------------------------------------------------------
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+//	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@FXML
 	private void initialize() {
 		
 		Main.setAircraftSaved(false);
 		Main.setAircraftUpdated(false);
 		Platform.setImplicitExit(false);
+		
+		chooseAircraftFileButton.setStyle(buttonSuggestedActionStyle);
 		
 //		aircraftDataAnchorPane.getChildren().stream()
 //		.filter(node -> node instanceof TextField)
@@ -1832,19 +1836,30 @@ public class InputManagerController {
 		actionButtonToolbar.getItems().add(updateAircraftDataFromFileComboBox);
 		actionButtonToolbar.getItems().add(new Label("<- Update Components Using Files"));
 		
+		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
 		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
 
 		try {
 			aircraftSavedFlag.set(Main.getAircraftSaved());
 			saveAircraftButton.disableProperty().bind(
-					Bindings.equal(aircraftSavedFlag, true)
+					Bindings.equal(aircraftSavedFlag, true).or(Bindings.isNull(aircraft))
 					);
 		} catch (Exception e) {
 			saveAircraftButton.setDisable(true);
 		}
-		
-		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
 
+		try {
+			updateAircraftDataButton.disableProperty().bind(
+					Bindings.isNull(aircraft)
+					);
+			updateAircraftDataFromFileComboBox.disableProperty().bind(
+					Bindings.isNull(aircraft)
+					);
+		} catch (Exception e) {
+			updateAircraftDataButton.setDisable(true);
+			updateAircraftDataFromFileComboBox.setDisable(true);
+		}
+		
 		try {
 			aircraft.set(Main.getTheAircraft());
 			newAircraftButton.disableProperty().bind(
@@ -2739,11 +2754,6 @@ public class InputManagerController {
 		setShowEngineDataAction(powerPlantJetRadioButton1, 0, EngineTypeEnum.TURBOFAN);
 		setShowEngineDataAction(powerPlantTurbopropRadioButton1, 0, EngineTypeEnum.TURBOPROP);
 		setShowEngineDataAction(powerPlantPistonRadioButton1, 0, EngineTypeEnum.PISTON);
-		fuselageAdjustCriterionDisableCheck();
-		wingAdjustCriterionDisableCheck();
-		hTailAdjustCriterionDisableCheck();
-		vTailAdjustCriterionDisableCheck();
-		canardAdjustCriterionDisableCheck();
 		
 	}
 	
@@ -3665,36 +3675,6 @@ public class InputManagerController {
 		// disable the panels tab pane if the check-box is checked
 		tabPaneWingPanels.disableProperty().bind(equivalentWingCheckBox.selectedProperty());
 		wingAddPanelButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty());
-		
-	}
-	
-	private void fuselageAdjustCriterionDisableCheck() {
-		
-		// TODO: SEE HOW TO MATCH THE DATA MODEL WITH THE ADJUST CRITERIONS
-		
-	}
-	
-	private void wingAdjustCriterionDisableCheck() {
-		
-		// TODO: SEE HOW TO MATCH THE DATA MODEL WITH THE ADJUST CRITERIONS
-		
-	}
-	
-	private void hTailAdjustCriterionDisableCheck() {
-		
-		// TODO: SEE HOW TO MATCH THE DATA MODEL WITH THE ADJUST CRITERIONS
-		
-	}
-	
-	private void vTailAdjustCriterionDisableCheck() {
-		
-		// TODO: SEE HOW TO MATCH THE DATA MODEL WITH THE ADJUST CRITERIONS
-		
-	}
-	
-	private void canardAdjustCriterionDisableCheck() {
-		
-		// TODO: SEE HOW TO MATCH THE DATA MODEL WITH THE ADJUST CRITERIONS
 		
 	}
 	
@@ -7925,6 +7905,8 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftInputFile.setText(file.getAbsolutePath());
 			Main.setInputFileAbsolutePath(file.getAbsolutePath());
+			chooseAircraftFileButton.setStyle("");
+			loadAircraftButton.setStyle(buttonSuggestedActionStyle);
 		}
 		
 		
@@ -8221,6 +8203,9 @@ public class InputManagerController {
 			public void handle(ActionEvent arg0) {
 				newAircraftImplementation();
 				inputDataWarning.close();
+				updateAircraftDataButton.setStyle("");
+				saveAircraftButton.setStyle("");
+				chooseAircraftFileButton.setStyle(buttonSuggestedActionStyle);
 			}
         	
 		});
@@ -9123,7 +9108,29 @@ public class InputManagerController {
 		Main.setTheAircraft(null);
 
 		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
+		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
+		
+		try {
+			aircraftSavedFlag.set(Main.getAircraftSaved());
+			saveAircraftButton.disableProperty().bind(
+					Bindings.equal(aircraftSavedFlag, true).or(Bindings.isNull(aircraft))
+					);
+		} catch (Exception e) {
+			saveAircraftButton.setDisable(true);
+		}
 
+		try {
+			updateAircraftDataButton.disableProperty().bind(
+					Bindings.isNull(aircraft)
+					);
+			updateAircraftDataFromFileComboBox.disableProperty().bind(
+					Bindings.isNull(aircraft)
+					);
+		} catch (Exception e) {
+			updateAircraftDataButton.setDisable(true);
+			updateAircraftDataFromFileComboBox.setDisable(true);
+		}
+		
 		try {
 			aircraft.set(Main.getTheAircraft());
 			newAircraftButton.disableProperty().bind(
@@ -9141,6 +9148,9 @@ public class InputManagerController {
 		if(isAircraftFile(textFieldAircraftInputFile.getText()))
 			try {
 				loadAircraftFileImplementation();
+				loadAircraftButton.setStyle("");
+				saveAircraftButton.setStyle(buttonSuggestedActionStyle);
+				updateAircraftDataButton.setStyle(buttonSuggestedActionStyle);
 			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -9593,7 +9603,29 @@ public class InputManagerController {
 			            }
 						
 			    		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
+			    		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
+			    		
+			    		try {
+			    			aircraftSavedFlag.set(Main.getAircraftSaved());
+			    			saveAircraftButton.disableProperty().bind(
+			    					Bindings.equal(aircraftSavedFlag, true).or(Bindings.isNull(aircraft))
+			    					);
+			    		} catch (Exception e) {
+			    			saveAircraftButton.setDisable(true);
+			    		}
 
+			    		try {
+			    			updateAircraftDataButton.disableProperty().bind(
+			    					Bindings.isNull(aircraft)
+			    					);
+			    			updateAircraftDataFromFileComboBox.disableProperty().bind(
+			    					Bindings.isNull(aircraft)
+			    					);
+			    		} catch (Exception e) {
+			    			updateAircraftDataButton.setDisable(true);
+			    			updateAircraftDataFromFileComboBox.setDisable(true);
+			    		}
+			    		
 			    		try {
 			    			aircraft.set(Main.getTheAircraft());
 			    			newAircraftButton.disableProperty().bind(
@@ -9714,40 +9746,6 @@ public class InputManagerController {
 				updateAircraftDataImplementation();
 			
 		}
-		else {
-			
-			//..................................................................................
-			// NULL AIRCRAFT DATA WARNING
-			Stage saveAircraftDataWarning = new Stage();
-			
-			saveAircraftDataWarning.setTitle("Null Aircraft Warning");
-			saveAircraftDataWarning.initModality(Modality.WINDOW_MODAL);
-			saveAircraftDataWarning.initStyle(StageStyle.UNDECORATED);
-			saveAircraftDataWarning.initOwner(Main.getPrimaryStage());
-
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("inputmanager/SaveAircraftDataWarningNoAircraft.fxml"));
-			BorderPane saveAircraftDataWarningBorderPane = loader.load();
-			
-			Button continueButton = (Button) saveAircraftDataWarningBorderPane.lookup("#warningContinueButton");
-			continueButton.setOnAction(new EventHandler<ActionEvent>() {
-				
-				@Override
-				public void handle(ActionEvent arg0) {
-					saveAircraftDataWarning.close();
-				}
-				
-			});
-			
-			Scene scene = new Scene(saveAircraftDataWarningBorderPane);
-			saveAircraftDataWarning.setScene(scene);
-			saveAircraftDataWarning.sizeToScene();
-	        saveAircraftDataWarning.show();
-			
-		}
-		
-		
-		
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -9773,8 +9771,16 @@ public class InputManagerController {
 						updateProgress(1, numberOfOperations);
 						updateMessage("Updating Fuselage Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement) + "%");
-						if(!updateFuselageDataFromFile)
-							updateFuselageTabData();
+						if(!updateFuselageDataFromFile) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									updateFuselageTabData();
+									
+								}
+							});
+						}
 						
 						updateProgress(2, numberOfOperations);
 						updateMessage("Updating Cabin Configuration Tab Data ...");
@@ -10863,7 +10869,25 @@ public class InputManagerController {
 	
 	private void updateFuselageTabData() {
 		
-		// TODO: AFTER MATHCING ADJUST CRITERION WITH THE DATA MODEL
+
+		if (!fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
+			
+			textFieldFuselageLength.setStyle(textFieldAlertStyle);
+			textFieldFuselageNoseLengthRatio.setStyle(textFieldAlertStyle);
+			textFieldFuselageCylinderLengthRatio.setStyle(textFieldAlertStyle);
+			textFieldFuselageCylinderSectionHeight.setStyle(textFieldAlertStyle);
+			textFieldFuselageCylinderSectionWidth.setStyle(textFieldAlertStyle);
+
+			Stage fuselageAdjustCriterionDialog = new FuselageAdjustCriterionDialog(
+					Main.getPrimaryStage(), 
+					fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem()
+					);
+			fuselageAdjustCriterionDialog.sizeToScene();
+			fuselageAdjustCriterionDialog.initStyle(StageStyle.UNDECORATED);
+			fuselageAdjustCriterionDialog.showAndWait();
+			
+		}
+		
 		
 	}
 	
@@ -12734,40 +12758,6 @@ public class InputManagerController {
 				
 			}
 		}
-		else {
-			
-			//..................................................................................
-			// NULL AIRCRAFT DATA WARNING
-			Stage saveAircraftDataWarning = new Stage();
-			
-			saveAircraftDataWarning.setTitle("Null Aircraft Warning");
-			saveAircraftDataWarning.initModality(Modality.WINDOW_MODAL);
-			saveAircraftDataWarning.initStyle(StageStyle.UNDECORATED);
-			saveAircraftDataWarning.initOwner(Main.getPrimaryStage());
-
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("inputmanager/SaveAircraftDataWarningNoAircraft.fxml"));
-			BorderPane saveAircraftDataWarningBorderPane = loader.load();
-			
-			Button continueButton = (Button) saveAircraftDataWarningBorderPane.lookup("#warningContinueButton");
-			continueButton.setOnAction(new EventHandler<ActionEvent>() {
-				
-				@Override
-				public void handle(ActionEvent arg0) {
-					saveAircraftDataWarning.close();
-				}
-				
-			});
-			
-			Scene scene = new Scene(saveAircraftDataWarningBorderPane);
-			saveAircraftDataWarning.setScene(scene);
-			saveAircraftDataWarning.sizeToScene();
-	        saveAircraftDataWarning.show();
-			
-		}
-		
-		
-		
 	}
 	
 	@SuppressWarnings("rawtypes")

@@ -72,7 +72,7 @@
                                                                   <Label text="Z:" GridPane.rowIndex="3" />
                                                                   <Label text="File:" />
                                                                   <TextField id="textFieldAircraftFuselageFile" fx:id="textFieldAircraftFuselageFile" GridPane.columnIndex="1" />
-                                                                  <TextField id="textFieldAircraftFuselageX" fx:id="textFieldAircraftFuselageX" prefHeight="31.0" prefWidth="125.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageX" fx:id="textFieldAircraftFuselageX" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftFuselageZ" fx:id="textFieldAircraftFuselageZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                   <TextField id="textFieldAircraftFuselageY" fx:id="textFieldAircraftFuselageY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <ChoiceBox id="fuselageXUnitChoiceBox" fx:id="fuselageXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
@@ -500,7 +500,7 @@
                                        </padding>
                                     </Label>
                                     <TextField id="textFieldAircraftInputFile" fx:id="textFieldAircraftInputFile" prefHeight="30.0" prefWidth="884.0" />
-                                    <Button mnemonicParsing="false" onAction="#chooseAircraftFile" text="..." />
+                                    <Button fx:id="chooseAircraftFileButton" mnemonicParsing="false" onAction="#chooseAircraftFile" text="..." />
                                     <Button id="loadButton" fx:id="loadAircraftButton" mnemonicParsing="false" onAction="#loadAircraftFile" text="Load" />
                                  </items>
                               </ToolBar>
@@ -3199,7 +3199,7 @@
         <items>
             <Button fx:id="newAircraftButton" mnemonicParsing="false" onAction="#newAircraft" text="New Aircraft" />
             <Button id="saveAircraftButton" fx:id="saveAircraftButton" mnemonicParsing="false" onAction="#saveAircraftToFile" text="Save Aircraft" />
-            <Button id="updateAllButton" fx:id="updateGeometryButton" mnemonicParsing="false" onAction="#updateAircraftData" text="Update Aircraft Data" />
+            <Button id="updateAllButton" fx:id="updateAircraftDataButton" mnemonicParsing="false" onAction="#updateAircraftData" text="Update Aircraft Data" />
         </items>
       </ToolBar>
    </top>
