@@ -102,11 +102,7 @@ import writers.JPADStaticWriteUtils;
 public class ACAerodynamicAndStabilityManager {
 
 	/*
-	 *******************************************************************************
-	 * THIS CLASS IS A PROTOTYPE OF THE NEW ACAerodynamicsManager (WORK IN PROGRESS)
-	 * 
 	 * @author Vittorio Trifari, Manuela Ruocco, Agostino De Marco
-	 *******************************************************************************
 	 */
 
 	//------------------------------------------------------------------------------

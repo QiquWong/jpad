@@ -1112,7 +1112,7 @@ public class TakeOffCalc {
 		// failure speed array
 		failureSpeedArray = MyArrayUtils.linspace(
 				vSTakeOff.times(0.5).getEstimatedValue(),
-				vRot.getEstimatedValue(),
+				vLO.getEstimatedValue(),
 				4);
 		// continued take-off array
 		continuedTakeOffArray = new double[failureSpeedArray.length]; 
@@ -1148,7 +1148,7 @@ public class TakeOffCalc {
 		
 		failureSpeedArrayFitted = MyArrayUtils.linspace(
 				vSTakeOff.times(0.5).getEstimatedValue(),
-				vRot.getEstimatedValue(),
+				vLO.getEstimatedValue(),
 				1000);
 		continuedTakeOffArrayFitted = new double[failureSpeedArrayFitted.length];
 		abortedTakeOffArrayFitted = new double[failureSpeedArrayFitted.length];

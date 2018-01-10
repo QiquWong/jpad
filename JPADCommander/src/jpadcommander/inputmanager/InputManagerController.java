@@ -28,11 +28,8 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
-import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.CheckComboBox;
-import org.controlsfx.validation.Severity;
 import org.controlsfx.validation.ValidationSupport;
-import org.controlsfx.validation.Validator;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -60,7 +57,7 @@ import aircraft.components.FuelTank;
 import aircraft.components.LandingGears;
 import aircraft.components.LandingGears.LandingGearsBuilder;
 import aircraft.components.Systems;
-import aircraft.components.fuselage.Fuselage.FuselageBuilder;
+import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator;
@@ -96,7 +93,6 @@ import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import graphics.ChartCanvas;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -105,11 +101,9 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -145,7 +139,6 @@ import jpadcommander.Main;
 import standaloneutils.GeometryCalc;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
-import standaloneutils.MyMapUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.AircraftSaveDirectives;
@@ -163,6 +156,8 @@ public class InputManagerController {
 	//-------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
 	//-------------------------------------------------------------------------------------------
+	private InputManagerControllerUtilities inputManagerControllerUtilities;
+	
 	//...........................................................................................
 	// LAYOUTS:
 	//...........................................................................................
@@ -514,7 +509,6 @@ public class InputManagerController {
 	//...........................................................................................
 	// FILE CHOOSER:
 	//...........................................................................................
-	@SuppressWarnings("unused")
 	private FileChooser airfoilFileChooser;
 	private FileChooser aircraftFileChooser;
 	private FileChooser engineDatabaseFileChooser;
@@ -1775,6 +1769,8 @@ public class InputManagerController {
 	@FXML
 	private void initialize() {
 		
+		inputManagerControllerUtilities = new InputManagerControllerUtilities(this);
+		
 		Main.setAircraftSaved(false);
 		Main.setAircraftUpdated(false);
 		Platform.setImplicitExit(false);
@@ -1871,15 +1867,15 @@ public class InputManagerController {
 		
 		tabPaneFuselageSpoilers.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		for(int i=0; i<tabPaneFuselageSpoilers.getTabs().size(); i++)
-			removeContentOnSpoilerTabClose(tabPaneFuselageSpoilers.getTabs().get(i), ComponentEnum.FUSELAGE);
+			inputManagerControllerUtilities.removeContentOnSpoilerTabClose(tabPaneFuselageSpoilers.getTabs().get(i), ComponentEnum.FUSELAGE);
 		
 		tabPaneAircraftEngines.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		for(int i=0; i<tabPaneAircraftEngines.getTabs().size(); i++)
-			removeContentOnAircraftEngineTabClose(tabPaneAircraftEngines.getTabs().get(i));
+			inputManagerControllerUtilities.removeContentOnAircraftEngineTabClose(tabPaneAircraftEngines.getTabs().get(i));
 		
 		tabPaneAircraftNacelles.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		for(int i=0; i<tabPaneAircraftNacelles.getTabs().size(); i++)
-			removeContentOnAircraftNacelleTabClose(tabPaneAircraftNacelles.getTabs().get(i));
+			inputManagerControllerUtilities.removeContentOnAircraftNacelleTabClose(tabPaneAircraftNacelles.getTabs().get(i));
 		
 		tabPaneWingPanels.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingFlaps.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
@@ -1890,13 +1886,13 @@ public class InputManagerController {
 		tabPaneWingViewAndAirfoils.getTabs().get(1).closableProperty().set(false);
 		
 		for(int i=0; i<tabPaneWingPanels.getTabs().size(); i++)
-			removeContentOnPanelTabClose(tabPaneWingPanels.getTabs().get(i), ComponentEnum.WING);
+			inputManagerControllerUtilities.removeContentOnPanelTabClose(tabPaneWingPanels.getTabs().get(i), ComponentEnum.WING);
 		for(int i=0; i<tabPaneWingFlaps.getTabs().size(); i++)
-			removeContentOnFlapTabClose(tabPaneWingFlaps.getTabs().get(i), ComponentEnum.WING);
+			inputManagerControllerUtilities.removeContentOnFlapTabClose(tabPaneWingFlaps.getTabs().get(i), ComponentEnum.WING);
 		for(int i=0; i<tabPaneWingSlats.getTabs().size(); i++)
-			removeContentOnSlatTabClose(tabPaneWingSlats.getTabs().get(i));
+			inputManagerControllerUtilities.removeContentOnSlatTabClose(tabPaneWingSlats.getTabs().get(i));
 		for(int i=0; i<tabPaneWingSpoilers.getTabs().size(); i++)
-			removeContentOnSpoilerTabClose(tabPaneWingSpoilers.getTabs().get(i), ComponentEnum.WING);
+			inputManagerControllerUtilities.removeContentOnSpoilerTabClose(tabPaneWingSpoilers.getTabs().get(i), ComponentEnum.WING);
 		
 		tabPaneHTailPanels.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneHTailElevators.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
@@ -1904,9 +1900,9 @@ public class InputManagerController {
 		tabPaneHTailViewAndAirfoils.getTabs().get(0).closableProperty().set(false);
 		
 		for(int i=0; i<tabPaneHTailPanels.getTabs().size(); i++)
-			removeContentOnPanelTabClose(tabPaneHTailPanels.getTabs().get(i), ComponentEnum.HORIZONTAL_TAIL);
+			inputManagerControllerUtilities.removeContentOnPanelTabClose(tabPaneHTailPanels.getTabs().get(i), ComponentEnum.HORIZONTAL_TAIL);
 		for(int i=0; i<tabPaneHTailElevators.getTabs().size(); i++)
-			removeContentOnFlapTabClose(tabPaneHTailElevators.getTabs().get(i), ComponentEnum.HORIZONTAL_TAIL);
+			inputManagerControllerUtilities.removeContentOnFlapTabClose(tabPaneHTailElevators.getTabs().get(i), ComponentEnum.HORIZONTAL_TAIL);
 		
 		tabPaneVTailPanels.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneVTailRudders.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
@@ -1914,9 +1910,9 @@ public class InputManagerController {
 		tabPaneVTailViewAndAirfoils.getTabs().get(0).closableProperty().set(false);
 		
 		for(int i=0; i<tabPaneVTailPanels.getTabs().size(); i++)
-			removeContentOnPanelTabClose(tabPaneVTailPanels.getTabs().get(i), ComponentEnum.VERTICAL_TAIL);
+			inputManagerControllerUtilities.removeContentOnPanelTabClose(tabPaneVTailPanels.getTabs().get(i), ComponentEnum.VERTICAL_TAIL);
 		for(int i=0; i<tabPaneVTailRudders.getTabs().size(); i++)
-			removeContentOnFlapTabClose(tabPaneVTailRudders.getTabs().get(i), ComponentEnum.VERTICAL_TAIL);
+			inputManagerControllerUtilities.removeContentOnFlapTabClose(tabPaneVTailRudders.getTabs().get(i), ComponentEnum.VERTICAL_TAIL);
 		
 		tabPaneCanardPanels.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneCanardControlSurfaces.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
@@ -1924,17 +1920,17 @@ public class InputManagerController {
 		tabPaneCanardViewAndAirfoils.getTabs().get(0).closableProperty().set(false);
 		
 		for(int i=0; i<tabPaneCanardPanels.getTabs().size(); i++)
-			removeContentOnPanelTabClose(tabPaneCanardPanels.getTabs().get(i), ComponentEnum.CANARD);
+			inputManagerControllerUtilities.removeContentOnPanelTabClose(tabPaneCanardPanels.getTabs().get(i), ComponentEnum.CANARD);
 		for(int i=0; i<tabPaneCanardControlSurfaces.getTabs().size(); i++)
-			removeContentOnFlapTabClose(tabPaneCanardControlSurfaces.getTabs().get(i), ComponentEnum.CANARD);
+			inputManagerControllerUtilities.removeContentOnFlapTabClose(tabPaneCanardControlSurfaces.getTabs().get(i), ComponentEnum.CANARD);
 		
 		tabPaneNacelles.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		for(int i=0; i<tabPaneNacelles.getTabs().size(); i++)
-			removeContentOnNacelleTabClose(tabPaneAircraftNacelles.getTabs().get(i));
+			inputManagerControllerUtilities.removeContentOnNacelleTabClose(tabPaneAircraftNacelles.getTabs().get(i));
 		
 		tabPaneEngines.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		for(int i=0; i<tabPaneEngines.getTabs().size(); i++)
-			removeContentOnEngineTabClose(tabPaneAircraftEngines.getTabs().get(i));
+			inputManagerControllerUtilities.removeContentOnEngineTabClose(tabPaneAircraftEngines.getTabs().get(i));
 		
 		//.......................................................................................
 		// CHOICE BOX INITIALIZATION
@@ -2718,970 +2714,49 @@ public class InputManagerController {
 		enginePistonNumberOfBladesTextFieldMap = new HashMap<>();
 		enginePistonPropellerEfficiencyTextFieldMap = new HashMap<>();
 		
-		aircraftLoadButtonDisableCheck();
-		setChooseNacelleFileAction();
-		setChooseEngineFileAction();
-		cabinConfigurationClassesNumberDisableCheck();
-		checkCabinConfigurationClassesNumber();
-		setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilRootDetailButton, textFieldEquivalentWingAirfoilRootPath, ComponentEnum.WING);
-		setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilKinkDetailButton, textFieldEquivalentWingAirfoilKinkPath, ComponentEnum.WING);
-		setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilTipDetailButton, textFieldEquivalentWingAirfoilTipPath, ComponentEnum.WING);
-		setAirfoilDetailsActionAndDisableCheck(wingInnerSectionAirfoilDetailsPanel1Button, textFieldWingAirfoilPathInnerSectionPanel1, ComponentEnum.WING);
-		setAirfoilDetailsActionAndDisableCheck(wingOuterSectionAirfoilDetailsPanel1Button, textFieldWingAirfoilPathOuterSectionPanel1, ComponentEnum.WING);
-		setAirfoilDetailsActionAndDisableCheck(hTailInnerSectionAirfoilDetailsPanel1Button, textFieldHTailAirfoilPathInnerSectionPanel1, ComponentEnum.HORIZONTAL_TAIL);
-		setAirfoilDetailsActionAndDisableCheck(hTailOuterSectionAirfoilDetailsPanel1Button, textFieldHTailAirfoilPathOuterSectionPanel1, ComponentEnum.HORIZONTAL_TAIL);
-		setAirfoilDetailsActionAndDisableCheck(vTailInnerSectionAirfoilDetailsPanel1Button, textFieldVTailAirfoilPathInnerSectionPanel1, ComponentEnum.VERTICAL_TAIL);
-		setAirfoilDetailsActionAndDisableCheck(vTailOuterSectionAirfoilDetailsPanel1Button, textFieldVTailAirfoilPathOuterSectionPanel1, ComponentEnum.VERTICAL_TAIL);
-		setAirfoilDetailsActionAndDisableCheck(canardInnerSectionAirfoilDetailsPanel1Button, textFieldCanardAirfoilPathInnerSectionPanel1, ComponentEnum.CANARD);
-		setAirfoilDetailsActionAndDisableCheck(canardOuterSectionAirfoilDetailsPanel1Button, textFieldCanardAirfoilPathOuterSectionPanel1, ComponentEnum.CANARD);
-		setChooseAirfoilFileAction(equivalentWingChooseAirfoilRootButton, textFieldEquivalentWingAirfoilRootPath);
-		setChooseAirfoilFileAction(equivalentWingChooseAirfoilKinkButton, textFieldEquivalentWingAirfoilKinkPath);
-		setChooseAirfoilFileAction(equivalentWingChooseAirfoilTipButton, textFieldEquivalentWingAirfoilTipPath);
-		setChooseAirfoilFileAction(wingChooseInnerAirfoilPanel1Button, textFieldWingAirfoilPathInnerSectionPanel1);
-		setChooseAirfoilFileAction(wingChooseOuterAirfoilPanel1Button, textFieldWingAirfoilPathOuterSectionPanel1);
-		setChooseAirfoilFileAction(hTailChooseInnerAirfoilPanel1Button, textFieldHTailAirfoilPathInnerSectionPanel1);
-		setChooseAirfoilFileAction(hTailChooseOuterAirfoilPanel1Button, textFieldHTailAirfoilPathOuterSectionPanel1);
-		setChooseAirfoilFileAction(vTailChooseInnerAirfoilPanel1Button, textFieldVTailAirfoilPathInnerSectionPanel1);
-		setChooseAirfoilFileAction(vTailChooseOuterAirfoilPanel1Button, textFieldVTailAirfoilPathOuterSectionPanel1);
-		setChooseAirfoilFileAction(canardChooseInnerAirfoilPanel1Button, textFieldCanardAirfoilPathInnerSectionPanel1);
-		setChooseAirfoilFileAction(canardChooseOuterAirfoilPanel1Button, textFieldCanardAirfoilPathOuterSectionPanel1);
-		equivalentWingDisableCheck();
-		linkedToDisableCheck(ComponentEnum.WING);
-		linkedToDisableCheck(ComponentEnum.HORIZONTAL_TAIL);
-		linkedToDisableCheck(ComponentEnum.VERTICAL_TAIL);
-		linkedToDisableCheck(ComponentEnum.CANARD);
-		setEstimateNacelleGeometryAction(nacelleEstimateGeometryButton1, tabPaneNacelles.getTabs().get(0));
-		setShowEngineDataAction(powerPlantJetRadioButton1, 0, EngineTypeEnum.TURBOFAN);
-		setShowEngineDataAction(powerPlantTurbopropRadioButton1, 0, EngineTypeEnum.TURBOPROP);
-		setShowEngineDataAction(powerPlantPistonRadioButton1, 0, EngineTypeEnum.PISTON);
-		
-	}
-	
-	private void removeContentOnAircraftEngineTabClose (Tab tab) {
-
-		tab.setOnCloseRequest(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-
-				int indexEngine = tabPaneAircraftEngines.getTabs().indexOf(tab);
-
-				textFieldsAircraftEngineFileList.remove(indexEngine);
-				textFieldAircraftEngineXList.remove(indexEngine);
-				textFieldAircraftEngineYList.remove(indexEngine);
-				textFieldAircraftEngineZList.remove(indexEngine);
-				textFieldAircraftEngineTiltList.remove(indexEngine);
-				choiceBoxesAircraftEnginePositonList.remove(indexEngine);
-
-				choiceBoxAircraftEngineXUnitList.remove(indexEngine);
-				choiceBoxAircraftEngineYUnitList.remove(indexEngine);
-				choiceBoxAircraftEngineZUnitList.remove(indexEngine);
-				choiceBoxAircraftEngineTiltUnitList.remove(indexEngine);
-				
-			}
-		});
-	}
-	
-	private void removeContentOnAircraftNacelleTabClose (Tab tab) {
-		
-		tab.setOnCloseRequest(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-		
-				int indexNacelle = tabPaneAircraftNacelles.getTabs().indexOf(tab);
-
-				textFieldsAircraftNacelleFileList.remove(indexNacelle);
-				textFieldAircraftNacelleXList.remove(indexNacelle);
-				textFieldAircraftNacelleYList.remove(indexNacelle);
-				textFieldAircraftNacelleZList.remove(indexNacelle);
-				choiceBoxesAircraftNacellePositonList.remove(indexNacelle);
-
-				choiceBoxAircraftNacelleXUnitList.remove(indexNacelle);
-				choiceBoxAircraftNacelleYUnitList.remove(indexNacelle);
-				choiceBoxAircraftNacelleZUnitList.remove(indexNacelle);
-				
-			}
-		});
-	}
-	
-	private void removeContentOnNacelleTabClose (Tab tab) {
-		
-		tab.setOnCloseRequest(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-		
-				int indexNacelle = tabPaneNacelles.getTabs().indexOf(tab);
-
-				textFieldNacelleRoughnessList.remove(indexNacelle);
-				textFieldNacelleLengthList.remove(indexNacelle);
-				textFieldNacelleMaximumDiameterList.remove(indexNacelle);
-				textFieldNacelleRoughnessList.remove(indexNacelle);
-				textFieldNacelleKInletList.remove(indexNacelle);
-				textFieldNacelleKOutletList.remove(indexNacelle);
-				textFieldNacelleKLengthList.remove(indexNacelle);
-				textFieldNacelleKDiameterOutletList.remove(indexNacelle);
-				
-				choiceBoxNacelleRoughnessUnitList.remove(indexNacelle);
-				choiceBoxNacelleLengthUnitList.remove(indexNacelle);
-				choiceBoxNacelleMaximumDiameterUnitList.remove(indexNacelle);
-				
-				nacelleEstimateDimesnsionButtonList.remove(indexNacelle);
-				nacelleKInletInfoButtonList.remove(indexNacelle);
-				nacelleKOutletInfoButtonList.remove(indexNacelle);
-				nacelleKLengthInfoButtonList.remove(indexNacelle);
-				nacelleKDiameterOutletInfoButtonList.remove(indexNacelle);
-				
-			}
-		});
-	}
-	
-	private void removeContentOnEngineTabClose (Tab tab) {
-		
-		tab.setOnCloseRequest(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-		
-				int indexEngine = tabPaneEngines.getTabs().indexOf(tab);
-				powerPlantJetRadioButtonList.remove(indexEngine);
-				powerPlantTurbopropRadioButtonList.remove(indexEngine);
-				powerPlantPistonRadioButtonList.remove(indexEngine);
-				powerPlantToggleGropuList.remove(indexEngine);
-				
-				powerPlantBorderPaneMap.remove(indexEngine);
-				powerPlantPaneMap.remove(indexEngine);
-				
-			}
-		});
-	}
-	
-	private void removeAirfoilDetailsButtonFromMapOnTabClose(Tab tab, ComponentEnum type) {
-		
-		tab.setOnCloseRequest(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-				
-				switch (type) {
-				case WING:
-					MyMapUtils.removeEntryByValue(
-							wingAirfoilDetailsButtonAndTabsMap,
-							tabPaneWingViewAndAirfoils.getTabs().indexOf(tab)
-							);
-					break;
-					
-				case HORIZONTAL_TAIL:
-					MyMapUtils.removeEntryByValue(
-							hTailAirfoilDetailsButtonAndTabsMap,
-							tabPaneHTailViewAndAirfoils.getTabs().indexOf(tab)
-							);
-					break;
-
-				case VERTICAL_TAIL:
-					MyMapUtils.removeEntryByValue(
-							vTailAirfoilDetailsButtonAndTabsMap,
-							tabPaneVTailViewAndAirfoils.getTabs().indexOf(tab)
-							);
-					break;
-					
-				case CANARD:
-					MyMapUtils.removeEntryByValue(
-							canardAirfoilDetailsButtonAndTabsMap,
-							tabPaneCanardViewAndAirfoils.getTabs().indexOf(tab)
-							);
-					break;
-					
-				default:
-					break;
-				}
-				
-			}
-		});
-		
-	}
-	
-	private void removeContentOnPanelTabClose(Tab tab, ComponentEnum type) {
-		
-		tab.setOnCloseRequest(new EventHandler<Event>() {
-			
-			@Override
-			public void handle(Event event) {
-				
-				switch (type) {
-				case WING:
-					int indexWing = tabPaneWingPanels.getTabs().indexOf(tab); 
-					
-					if (indexWing > 0)
-						checkBoxWingLinkedToPreviousPanelList.remove(indexWing-1);
-					
-					textFieldWingSpanPanelList.remove(indexWing);
-					textFieldWingSweepLEPanelList.remove(indexWing);
-					textFieldWingDihedralPanelList.remove(indexWing);
-					textFieldWingInnerChordPanelList.remove(indexWing);
-					textFieldWingInnerTwistPanelList.remove(indexWing);
-					textFieldWingInnerAirfoilPanelList.remove(indexWing);
-					textFieldWingOuterChordPanelList.remove(indexWing);
-					textFieldWingOuterTwistPanelList.remove(indexWing);
-					textFieldWingOuterAirfoilPanelList.remove(indexWing);
-					
-					choiceBoxWingSpanPanelUnitList.remove(indexWing);
-					choiceBoxWingSweepLEPanelUnitList.remove(indexWing);
-					choiceBoxWingDihedralPanelUnitList.remove(indexWing);
-					choiceBoxWingInnerChordPanelUnitList.remove(indexWing);
-					choiceBoxWingInnerTwistPanelUnitList.remove(indexWing);
-					choiceBoxWingOuterChordPanelUnitList.remove(indexWing);
-					choiceBoxWingOuterTwistPanelUnitList.remove(indexWing);
-					
-					chooseInnerWingAirfoilFileButtonList.remove(indexWing);
-					chooseOuterWingAirfoilFileButtonList.remove(indexWing);
-					detailButtonWingInnerAirfoilList.remove(indexWing);
-					detailButtonWingOuterAirfoilList.remove(indexWing);
-					break;
-					
-				case HORIZONTAL_TAIL:
-					int indexHTail = tabPaneHTailPanels.getTabs().indexOf(tab); 
-					
-					if (indexHTail > 0)
-						checkBoxHTailLinkedToPreviousPanelList.remove(indexHTail-1);
-					
-					textFieldHTailSpanPanelList.remove(indexHTail);
-					textFieldHTailSweepLEPanelList.remove(indexHTail);
-					textFieldHTailDihedralPanelList.remove(indexHTail);
-					textFieldHTailInnerChordPanelList.remove(indexHTail);
-					textFieldHTailInnerTwistPanelList.remove(indexHTail);
-					textFieldHTailInnerAirfoilPanelList.remove(indexHTail);
-					textFieldHTailOuterChordPanelList.remove(indexHTail);
-					textFieldHTailOuterTwistPanelList.remove(indexHTail);
-					textFieldHTailOuterAirfoilPanelList.remove(indexHTail);
-					
-					choiceBoxHTailSpanPanelUnitList.remove(indexHTail);
-					choiceBoxHTailSweepLEPanelUnitList.remove(indexHTail);
-					choiceBoxHTailDihedralPanelUnitList.remove(indexHTail);
-					choiceBoxHTailInnerChordPanelUnitList.remove(indexHTail);
-					choiceBoxHTailInnerTwistPanelUnitList.remove(indexHTail);
-					choiceBoxHTailOuterChordPanelUnitList.remove(indexHTail);
-					choiceBoxHTailOuterTwistPanelUnitList.remove(indexHTail);
-					
-					chooseInnerHTailAirfoilFileButtonList.remove(indexHTail);
-					chooseOuterHTailAirfoilFileButtonList.remove(indexHTail);
-					detailButtonHTailInnerAirfoilList.remove(indexHTail);
-					detailButtonHTailOuterAirfoilList.remove(indexHTail);
-					break;
-					
-				case VERTICAL_TAIL:
-					int indexVTail = tabPaneVTailPanels.getTabs().indexOf(tab); 
-					
-					if (indexVTail > 0)
-						checkBoxVTailLinkedToPreviousPanelList.remove(indexVTail-1);
-					
-					textFieldVTailSpanPanelList.remove(indexVTail);
-					textFieldVTailSweepLEPanelList.remove(indexVTail);
-					textFieldVTailDihedralPanelList.remove(indexVTail);
-					textFieldVTailInnerChordPanelList.remove(indexVTail);
-					textFieldVTailInnerTwistPanelList.remove(indexVTail);
-					textFieldVTailInnerAirfoilPanelList.remove(indexVTail);
-					textFieldVTailOuterChordPanelList.remove(indexVTail);
-					textFieldVTailOuterTwistPanelList.remove(indexVTail);
-					textFieldVTailOuterAirfoilPanelList.remove(indexVTail);
-					
-					choiceBoxVTailSpanPanelUnitList.remove(indexVTail);
-					choiceBoxVTailSweepLEPanelUnitList.remove(indexVTail);
-					choiceBoxVTailDihedralPanelUnitList.remove(indexVTail);
-					choiceBoxVTailInnerChordPanelUnitList.remove(indexVTail);
-					choiceBoxVTailInnerTwistPanelUnitList.remove(indexVTail);
-					choiceBoxVTailOuterChordPanelUnitList.remove(indexVTail);
-					choiceBoxVTailOuterTwistPanelUnitList.remove(indexVTail);
-					
-					chooseInnerVTailAirfoilFileButtonList.remove(indexVTail);
-					chooseOuterVTailAirfoilFileButtonList.remove(indexVTail);
-					detailButtonVTailInnerAirfoilList.remove(indexVTail);
-					detailButtonVTailOuterAirfoilList.remove(indexVTail);
-					break;
-					
-				case CANARD:
-					int indexCanard = tabPaneCanardPanels.getTabs().indexOf(tab); 
-					
-					if (indexCanard > 0)
-						checkBoxCanardLinkedToPreviousPanelList.remove(indexCanard-1);
-					
-					textFieldCanardSpanPanelList.remove(indexCanard);
-					textFieldCanardSweepLEPanelList.remove(indexCanard);
-					textFieldCanardDihedralPanelList.remove(indexCanard);
-					textFieldCanardInnerChordPanelList.remove(indexCanard);
-					textFieldCanardInnerTwistPanelList.remove(indexCanard);
-					textFieldCanardInnerAirfoilPanelList.remove(indexCanard);
-					textFieldCanardOuterChordPanelList.remove(indexCanard);
-					textFieldCanardOuterTwistPanelList.remove(indexCanard);
-					textFieldCanardOuterAirfoilPanelList.remove(indexCanard);
-					
-					choiceBoxCanardSpanPanelUnitList.remove(indexCanard);
-					choiceBoxCanardSweepLEPanelUnitList.remove(indexCanard);
-					choiceBoxCanardDihedralPanelUnitList.remove(indexCanard);
-					choiceBoxCanardInnerChordPanelUnitList.remove(indexCanard);
-					choiceBoxCanardInnerTwistPanelUnitList.remove(indexCanard);
-					choiceBoxCanardOuterChordPanelUnitList.remove(indexCanard);
-					choiceBoxCanardOuterTwistPanelUnitList.remove(indexCanard);
-					
-					chooseInnerCanardAirfoilFileButtonList.remove(indexCanard);
-					chooseOuterCanardAirfoilFileButtonList.remove(indexCanard);
-					detailButtonCanardInnerAirfoilList.remove(indexCanard);
-					detailButtonCanardOuterAirfoilList.remove(indexCanard);
-					break;
-					
-				default:
-					break;
-				}
-			}
-		});
-		
-	}
-
-	private void removeContentOnFlapTabClose(Tab tab, ComponentEnum type) {
-		
-		tab.setOnCloseRequest(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-				
-				switch (type) {
-				case WING:
-					int indexWing = tabPaneWingFlaps.getTabs().indexOf(tab);
-					
-					textFieldWingInnerPositionFlapList.remove(indexWing);
-					textFieldWingOuterPositionFlapList.remove(indexWing);
-					textFieldWingInnerChordRatioFlapList.remove(indexWing);
-					textFieldWingOuterChordRatioFlapList.remove(indexWing);
-					textFieldWingMinimumDeflectionAngleFlapList.remove(indexWing);
-					textFieldWingMaximumDeflectionAngleFlapList.remove(indexWing);
-					
-					choiceBoxWingMinimumDeflectionAngleFlapUnitList.remove(indexWing);
-					choiceBoxWingMaximumDeflectionAngleFlapUnitList.remove(indexWing);					
-					break;
-
-				case HORIZONTAL_TAIL:
-					int indexHTail = tabPaneHTailElevators.getTabs().indexOf(tab);
-					
-					textFieldHTailInnerPositionElevatorList.remove(indexHTail);
-					textFieldHTailOuterPositionElevatorList.remove(indexHTail);
-					textFieldHTailInnerChordRatioElevatorList.remove(indexHTail);
-					textFieldHTailOuterChordRatioElevatorList.remove(indexHTail);
-					textFieldHTailMinimumDeflectionAngleElevatorList.remove(indexHTail);
-					textFieldHTailMaximumDeflectionAngleElevatorList.remove(indexHTail);
-					
-					choiceBoxHTailMinimumDeflectionAngleElevatorUnitList.remove(indexHTail);
-					choiceBoxHTailMaximumDeflectionAngleElevatorUnitList.remove(indexHTail);
-					break;
-					
-				case VERTICAL_TAIL:
-					int indexVTail = tabPaneVTailRudders.getTabs().indexOf(tab);
-					
-					textFieldVTailInnerPositionRudderList.remove(indexVTail);
-					textFieldVTailOuterPositionRudderList.remove(indexVTail);
-					textFieldVTailInnerChordRatioRudderList.remove(indexVTail);
-					textFieldVTailOuterChordRatioRudderList.remove(indexVTail);
-					textFieldVTailMinimumDeflectionAngleRudderList.remove(indexVTail);
-					textFieldVTailMaximumDeflectionAngleRudderList.remove(indexVTail);
-					
-					choiceBoxVTailMinimumDeflectionAngleRudderUnitList.remove(indexVTail);
-					choiceBoxVTailMaximumDeflectionAngleRudderUnitList.remove(indexVTail);
-					break;
-					
-				case CANARD:
-					int indexCanard = tabPaneCanardControlSurfaces.getTabs().indexOf(tab);
-					
-					textFieldCanardInnerPositionControlSurfaceList.remove(indexCanard);
-					textFieldCanardOuterPositionControlSurfaceList.remove(indexCanard);
-					textFieldCanardInnerChordRatioControlSurfaceList.remove(indexCanard);
-					textFieldCanardOuterChordRatioControlSurfaceList.remove(indexCanard);
-					textFieldCanardMinimumDeflectionAngleControlSurfaceList.remove(indexCanard);
-					textFieldCanardMaximumDeflectionAngleControlSurfaceList.remove(indexCanard);
-					
-					choiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList.remove(indexCanard);
-					choiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList.remove(indexCanard);
-					break;
-					
-				default:
-					break;
-				}
-			}
-		});
-		
-	}
-	
-	private void removeContentOnSlatTabClose(Tab tab) {
-		
-		tab.setOnCloseRequest(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-				
-				int index = tabPaneWingSlats.getTabs().indexOf(tab);
-				
-				textFieldWingInnerPositionSlatList.remove(index);
-				textFieldWingOuterPositionSlatList.remove(index);
-				textFieldWingInnerChordRatioSlatList.remove(index);
-				textFieldWingOuterChordRatioSlatList.remove(index);
-				textFieldWingExtensionRatioSlatList.remove(index);
-				textFieldWingMinimumDeflectionAngleSlatList.remove(index);
-				textFieldWingMaximumDeflectionAngleSlatList.remove(index);
-				
-				choiceBoxWingMinimumDeflectionAngleSlatUnitList.remove(index);
-				choiceBoxWingMaximumDeflectionAngleSlatUnitList.remove(index);
-				
-			}
-		});
-		
-	}
-	
-	private void removeContentOnSpoilerTabClose (Tab tab, ComponentEnum type) {
-		
-		tab.setOnCloseRequest(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-				
-				switch (type) {
-				case WING:
-					int indexWing = tabPaneWingSpoilers.getTabs().indexOf(tab);
-					
-					textFieldWingInnerSpanwisePositionSpoilerList.remove(indexWing);
-					textFieldWingOuterSpanwisePositionSpoilerList.remove(indexWing);
-					textFieldWingInnerChordwisePositionSpoilerList.remove(indexWing);
-					textFieldWingOuterChordwisePositionSpoilerList.remove(indexWing);
-					textFieldWingMinimumDeflectionAngleSpoilerList.remove(indexWing);
-					textFieldWingMaximumDeflectionAngleSpoilerList.remove(indexWing);
-					
-					choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.remove(indexWing);
-					choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.remove(indexWing);					
-					break;
-					
-				case FUSELAGE:
-					int indexFuselage = tabPaneFuselageSpoilers.getTabs().indexOf(tab);
-					
-					textFieldFuselageInnerSpanwisePositionSpoilerList.remove(indexFuselage);
-					textFieldFuselageOuterSpanwisePositionSpoilerList.remove(indexFuselage);
-					textFieldFuselageInnerChordwisePositionSpoilerList.remove(indexFuselage);
-					textFieldFuselageOuterChordwisePositionSpoilerList.remove(indexFuselage);
-					textFieldFuselageMinimumDeflectionAngleSpoilerList.remove(indexFuselage);
-					textFieldFuselageMaximumDeflectionAngleSpoilerList.remove(indexFuselage);
-					
-					choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList.remove(indexFuselage);
-					choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList.remove(indexFuselage);
-					break;
-
-				default:
-					break;
-				}
-			}
-		});
-		
-	}
-	
-	private void linkedToDisableCheck(ComponentEnum type) {
-
-		switch (type) {
-		case WING:
-			for(int i=0; i<checkBoxWingLinkedToPreviousPanelList.size(); i++) {
-				
-				textFieldWingInnerChordPanelList.get(i+1).disableProperty().bind(
-						checkBoxWingLinkedToPreviousPanelList.get(i).selectedProperty()
-						);	
-				choiceBoxWingInnerChordPanelUnitList.get(i+1).disableProperty().bind(
-						checkBoxWingLinkedToPreviousPanelList.get(i).selectedProperty()
-						);	
-				textFieldWingInnerTwistPanelList.get(i+1).disableProperty().bind(
-						checkBoxWingLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				choiceBoxWingInnerTwistPanelUnitList.get(i+1).disableProperty().bind(
-						checkBoxWingLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				textFieldWingInnerAirfoilPanelList.get(i+1).disableProperty().bind(
-						checkBoxWingLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				detailButtonWingInnerAirfoilList.get(i+1).disableProperty().bind(
-						checkBoxWingLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				chooseInnerWingAirfoilFileButtonList.get(i+1).disableProperty().bind(
-						checkBoxWingLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-			}
-			break;
-			
-		case HORIZONTAL_TAIL:
-			for(int i=0; i<checkBoxHTailLinkedToPreviousPanelList.size(); i++) {
-				
-				textFieldHTailInnerChordPanelList.get(i+1).disableProperty().bind(
-						checkBoxHTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);	
-				choiceBoxHTailInnerChordPanelUnitList.get(i+1).disableProperty().bind(
-						checkBoxHTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);	
-				textFieldHTailInnerTwistPanelList.get(i+1).disableProperty().bind(
-						checkBoxHTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				choiceBoxHTailInnerTwistPanelUnitList.get(i+1).disableProperty().bind(
-						checkBoxHTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				textFieldHTailInnerAirfoilPanelList.get(i+1).disableProperty().bind(
-						checkBoxHTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				detailButtonHTailInnerAirfoilList.get(i+1).disableProperty().bind(
-						checkBoxHTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				chooseInnerHTailAirfoilFileButtonList.get(i+1).disableProperty().bind(
-						checkBoxHTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-			}
-			break;
-			
-		case VERTICAL_TAIL:
-			for(int i=0; i<checkBoxVTailLinkedToPreviousPanelList.size(); i++) {
-				
-				textFieldVTailInnerChordPanelList.get(i+1).disableProperty().bind(
-						checkBoxVTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);	
-				choiceBoxVTailInnerChordPanelUnitList.get(i+1).disableProperty().bind(
-						checkBoxVTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);	
-				textFieldVTailInnerTwistPanelList.get(i+1).disableProperty().bind(
-						checkBoxVTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				choiceBoxVTailInnerTwistPanelUnitList.get(i+1).disableProperty().bind(
-						checkBoxVTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				textFieldVTailInnerAirfoilPanelList.get(i+1).disableProperty().bind(
-						checkBoxVTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				detailButtonVTailInnerAirfoilList.get(i+1).disableProperty().bind(
-						checkBoxVTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				chooseInnerVTailAirfoilFileButtonList.get(i+1).disableProperty().bind(
-						checkBoxVTailLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-			}
-			break;
-
-		case CANARD:
-			for(int i=0; i<checkBoxCanardLinkedToPreviousPanelList.size(); i++) {
-				
-				textFieldCanardInnerChordPanelList.get(i+1).disableProperty().bind(
-						checkBoxCanardLinkedToPreviousPanelList.get(i).selectedProperty()
-						);	
-				choiceBoxCanardInnerChordPanelUnitList.get(i+1).disableProperty().bind(
-						checkBoxCanardLinkedToPreviousPanelList.get(i).selectedProperty()
-						);	
-				textFieldCanardInnerTwistPanelList.get(i+1).disableProperty().bind(
-						checkBoxCanardLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				choiceBoxCanardInnerTwistPanelUnitList.get(i+1).disableProperty().bind(
-						checkBoxCanardLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				textFieldCanardInnerAirfoilPanelList.get(i+1).disableProperty().bind(
-						checkBoxCanardLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				detailButtonCanardInnerAirfoilList.get(i+1).disableProperty().bind(
-						checkBoxCanardLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-				chooseInnerCanardAirfoilFileButtonList.get(i+1).disableProperty().bind(
-						checkBoxCanardLinkedToPreviousPanelList.get(i).selectedProperty()
-						);
-			}
-			break;
-			
-		default:
-			break;
-		}
-	}
-
-	private void setChooseAirfoilFileAction (Button chooseFileButton, TextField airfoilPathTextField) {
-		
-		chooseFileButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				chooseAirfoilFile(airfoilPathTextField);
-			}
-		});
-		
-	}
-	
-	private void setChooseNacelleFileAction() {
-		
-		for(int i=0; i<tabPaneAircraftNacelles.getTabs().size(); i++) {
-			
-			int indexOfNacelle = i;
-			chooseNacelleFileButtonList.get(i).setOnAction(new EventHandler<ActionEvent>() {
-				
-				@Override
-				public void handle(ActionEvent event) {
-					try {
-						chooseAircraftNacelleFile(indexOfNacelle);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}					
-				}
-			});
-		}
-	}
-	
-	private void setChooseEngineFileAction() {
-		
-		for(int i=0; i<tabPaneAircraftEngines.getTabs().size(); i++) {
-			
-			int indexOfEngine = i;
-			chooseEngineFileButtonList.get(i).setOnAction(new EventHandler<ActionEvent>() {
-
-				@Override
-				public void handle(ActionEvent event) {
-					try {
-						chooseAircraftEngineFile(indexOfEngine);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}					
-				}
-			});
-		}
-	}
-	
-	private void setAirfoilDetailsActionAndDisableCheck (Button detailsButton, TextField airfoilPathTextField, ComponentEnum type) {
-
-		detailsButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-
-				switch (type) {
-				case WING:
-					if(!wingAirfoilDetailsButtonAndTabsMap.containsKey(detailsButton)) {
-						try {
-							wingAirfoilDetailsButtonAndTabsMap.put(
-									detailsButton, 
-									tabPaneWingViewAndAirfoils.getTabs().size()
-									);
-							showAirfoilData(
-									Paths.get(airfoilPathTextField.getText()).getFileName().toString(),
-									detailsButton,
-									type
-									);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					break;
-					
-				case HORIZONTAL_TAIL:
-					if(!hTailAirfoilDetailsButtonAndTabsMap.containsKey(detailsButton)) {
-						try {
-							hTailAirfoilDetailsButtonAndTabsMap.put(
-									detailsButton, 
-									tabPaneHTailViewAndAirfoils.getTabs().size()
-									);
-							showAirfoilData(
-									Paths.get(airfoilPathTextField.getText()).getFileName().toString(),
-									detailsButton,
-									type
-									);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					break;
-					
-				case VERTICAL_TAIL:
-					if(!vTailAirfoilDetailsButtonAndTabsMap.containsKey(detailsButton)) {
-						try {
-							vTailAirfoilDetailsButtonAndTabsMap.put(
-									detailsButton, 
-									tabPaneVTailViewAndAirfoils.getTabs().size()
-									);
-							showAirfoilData(
-									Paths.get(airfoilPathTextField.getText()).getFileName().toString(),
-									detailsButton,
-									type
-									);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					break;
-					
-				case CANARD:
-					if(!canardAirfoilDetailsButtonAndTabsMap.containsKey(detailsButton)) {
-						try {
-							canardAirfoilDetailsButtonAndTabsMap.put(
-									detailsButton, 
-									tabPaneCanardViewAndAirfoils.getTabs().size()
-									);
-							showAirfoilData(
-									Paths.get(airfoilPathTextField.getText()).getFileName().toString(),
-									detailsButton,
-									type
-									);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					break;
-					
-				default:
-					break;
-				}
-			}
-		});
-		
-		final Tooltip warning = new Tooltip("WARNING : The airfoil details are already opened !!");
-		detailsButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				
-				switch (type) {
-				case WING:
-					Point2D pW = detailsButton
-					.localToScreen(
-							-2.5*detailsButton.getLayoutBounds().getMaxX(),
-							1.2*detailsButton.getLayoutBounds().getMaxY()
-							);
-					if(wingAirfoilDetailsButtonAndTabsMap.containsKey(detailsButton)) {
-						warning.show(detailsButton, pW.getX(), pW.getY());
-					}
-					break;
-
-				case HORIZONTAL_TAIL:
-					Point2D pH = detailsButton
-					.localToScreen(
-							-2.5*detailsButton.getLayoutBounds().getMaxX(),
-							1.2*detailsButton.getLayoutBounds().getMaxY()
-							);
-					if(hTailAirfoilDetailsButtonAndTabsMap.containsKey(detailsButton)) {
-						warning.show(detailsButton, pH.getX(), pH.getY());
-					}
-					break;
-					
-				case VERTICAL_TAIL:
-					Point2D pV = detailsButton
-					.localToScreen(
-							-2.5*detailsButton.getLayoutBounds().getMaxX(),
-							1.2*detailsButton.getLayoutBounds().getMaxY()
-							);
-					if(vTailAirfoilDetailsButtonAndTabsMap.containsKey(detailsButton)) {
-						warning.show(detailsButton, pV.getX(), pV.getY());
-					}
-					break;
-					
-				case CANARD:
-					Point2D pC = detailsButton
-					.localToScreen(
-							-2.5*detailsButton.getLayoutBounds().getMaxX(),
-							1.2*detailsButton.getLayoutBounds().getMaxY()
-							);
-					if(canardAirfoilDetailsButtonAndTabsMap.containsKey(detailsButton)) {
-						warning.show(detailsButton, pC.getX(), pC.getY());
-					}
-					break;
-
-				default:
-					break;
-				}
-
-			}
-		});
-
-		detailsButton.setOnMouseExited(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				warning.hide();
-			}
-		});
-
-		detailsButton.disableProperty().bind(
-				Bindings.isEmpty(airfoilPathTextField.textProperty())
-				);	
-
-	}
-
-	private void setShowEngineDataAction (RadioButton radioButton, int indexOfEngineTab, EngineTypeEnum type) {
-
-		radioButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-
-				switch (type) {
-				case TURBOFAN:
-					if (powerPlantPaneMap.containsKey(indexOfEngineTab)) {
-						if(powerPlantEngineTypePaneMap.get(indexOfEngineTab).containsKey(EngineTypeEnum.TURBOFAN))
-							powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(
-									powerPlantEngineTypePaneMap.get(indexOfEngineTab).get(EngineTypeEnum.TURBOFAN)
-									);
-						else
-							showTurbojetTurboFanDataRadioButton(indexOfEngineTab);
-					}
-					else
-						showTurbojetTurboFanDataRadioButton(indexOfEngineTab);
-					break;
-				case TURBOPROP:
-					if (powerPlantPaneMap.containsKey(indexOfEngineTab)) {
-						if(powerPlantEngineTypePaneMap.get(indexOfEngineTab).containsKey(EngineTypeEnum.TURBOPROP))
-							powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(
-									powerPlantEngineTypePaneMap.get(indexOfEngineTab).get(EngineTypeEnum.TURBOPROP)
-									);
-						else
-							showTurbopropDataRadioButton(indexOfEngineTab);
-					}
-					else
-						showTurbopropDataRadioButton(indexOfEngineTab);
-					break;
-				case PISTON:
-					if (powerPlantPaneMap.containsKey(indexOfEngineTab)) {
-						if(powerPlantEngineTypePaneMap.get(indexOfEngineTab).containsKey(EngineTypeEnum.PISTON))
-							powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(
-									powerPlantEngineTypePaneMap.get(indexOfEngineTab).get(EngineTypeEnum.PISTON)
-									);
-						else
-							showPistonDataRadioButton(indexOfEngineTab);
-					}
-					else
-						showPistonDataRadioButton(indexOfEngineTab);
-					break;
-				default:
-					break;
-				}
-			}
-		});
-	}
-	
-	private void aircraftLoadButtonDisableCheck () {
-		
-		//.......................................................................................
-		// CHECK IF THE AIRCRAFT FILE TEXT FIELD IS NOT EMPTY
-		loadAircraftButton.disableProperty().bind(
-				Bindings.isEmpty(textFieldAircraftInputFile.textProperty())
-				);
-		
-		// CHECK IF THE FILE IN TEXTFIELD IS AN AIRCRAFT
-        final Tooltip warning = new Tooltip("WARNING : The selected file is not an aircraft !!");
-        loadAircraftButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
-        	
-        	@Override
-        	public void handle(MouseEvent event) {
-        		Point2D p = loadAircraftButton
-        				.localToScreen(
-        						-2.5*loadAircraftButton.getLayoutBounds().getMaxX(),
-        						1.2*loadAircraftButton.getLayoutBounds().getMaxY()
-        						);
-        		if(!isAircraftFile(textFieldAircraftInputFile.getText())
-        				) {
-        			warning.show(loadAircraftButton, p.getX(), p.getY());
-        		}
-        	}
-        });
-        loadAircraftButton.setOnMouseExited(new EventHandler<MouseEvent>() {
-        	
-        	@Override
-        	public void handle(MouseEvent event) {
-        		warning.hide();
-        	}
-        });
-	}
-	
-	private void checkCabinConfigurationClassesNumber() {
-		
-		validation.registerValidator(
-				textFieldClassesNumber,
-				false,
-				Validator.createPredicateValidator(
-						o -> {
-							if(textFieldClassesNumber.getText().equals("") 
-									|| !StringUtils.isNumeric(textFieldClassesNumber.getText())
-									|| textFieldClassesNumber.getText().length() > 1
-									)
-								return false;
-							else
-								return Integer.valueOf(textFieldClassesNumber.getText()) <= 3;
-						},
-						"The maximum number of classes should be less than or equal to 3",
-						Severity.WARNING
-						)
-				);
-	}
-	
-	private void cabinConfigurationClassesNumberDisableCheck () {
-
-		BooleanBinding cabinConfigurationClassesTypeChoiceBox1Binding = 
-				textFieldClassesNumber.textProperty().isNotEqualTo("1")
-				.and(textFieldClassesNumber.textProperty().isNotEqualTo("2"))
-				.and(textFieldClassesNumber.textProperty().isNotEqualTo("3"));
-		BooleanBinding cabinConfigurationClassesTypeChoiceBox2Binding = 
-				textFieldClassesNumber.textProperty().isNotEqualTo("2")
-				.and(textFieldClassesNumber.textProperty().isNotEqualTo("3"));
-		BooleanBinding cabinConfigurationClassesTypeChoiceBox3Binding = 
-				textFieldClassesNumber.textProperty().isNotEqualTo("3");
-		
-		
-		cabinConfigurationClassesTypeChoiceBox1.disableProperty().bind(
-				cabinConfigurationClassesTypeChoiceBox1Binding
-				);
-		cabinConfigurationClassesTypeChoiceBox2.disableProperty().bind(
-				cabinConfigurationClassesTypeChoiceBox2Binding
-				);
-		cabinConfigurationClassesTypeChoiceBox3.disableProperty().bind(
-				cabinConfigurationClassesTypeChoiceBox3Binding
-				);
-		textFieldMissingSeatRow1.disableProperty().bind(
-				cabinConfigurationClassesTypeChoiceBox1Binding
-				);
-		textFieldMissingSeatRow2.disableProperty().bind(
-				cabinConfigurationClassesTypeChoiceBox2Binding
-				);
-		textFieldMissingSeatRow3.disableProperty().bind(
-				cabinConfigurationClassesTypeChoiceBox3Binding
-				);
-		
-	}
-	
-	private void equivalentWingDisableCheck () {
-
-		// disable equivalent wing if the check-box is not checked
-		textFieldEquivalentWingArea.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		textFieldEquivalentWingAspectRatio.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		textFieldEquivalentWingKinkPosition.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		textFieldEquivalentWingSweepLeadingEdge.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		textFieldEquivalentWingTwistAtTip.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		textFieldEquivalentWingDihedral.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		textFieldEquivalentWingTaperRatio.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		textFieldEquivalentWingRootXOffsetLE.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		textFieldEquivalentWingRootXOffsetTE.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		textFieldEquivalentWingAirfoilRootPath.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		textFieldEquivalentWingAirfoilKinkPath.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		textFieldEquivalentWingAirfoilTipPath.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingAreaUnitChoiceBox.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingSweepLEUnitChoiceBox.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingTwistAtTipUnitChoiceBox.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingDihedralUnitChoiceBox.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingAirfoilRootDetailButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingChooseAirfoilRootButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingAirfoilKinkDetailButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingChooseAirfoilKinkButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingAirfoilTipDetailButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingChooseAirfoilTipButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingInfoButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingRootXOffsetLEInfoButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		equivalentWingRootXOffseTLEInfoButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
-		
-		// disable the panels tab pane if the check-box is checked
-		tabPaneWingPanels.disableProperty().bind(equivalentWingCheckBox.selectedProperty());
-		wingAddPanelButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty());
+		inputManagerControllerUtilities.aircraftLoadButtonDisableCheck();
+		inputManagerControllerUtilities.setChooseNacelleFileAction();
+		inputManagerControllerUtilities.setChooseEngineFileAction();
+		inputManagerControllerUtilities.cabinConfigurationClassesNumberDisableCheck();
+		inputManagerControllerUtilities.checkCabinConfigurationClassesNumber();
+		inputManagerControllerUtilities.setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilRootDetailButton, textFieldEquivalentWingAirfoilRootPath, ComponentEnum.WING);
+		inputManagerControllerUtilities.setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilKinkDetailButton, textFieldEquivalentWingAirfoilKinkPath, ComponentEnum.WING);
+		inputManagerControllerUtilities.setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilTipDetailButton, textFieldEquivalentWingAirfoilTipPath, ComponentEnum.WING);
+		inputManagerControllerUtilities.setAirfoilDetailsActionAndDisableCheck(wingInnerSectionAirfoilDetailsPanel1Button, textFieldWingAirfoilPathInnerSectionPanel1, ComponentEnum.WING);
+		inputManagerControllerUtilities.setAirfoilDetailsActionAndDisableCheck(wingOuterSectionAirfoilDetailsPanel1Button, textFieldWingAirfoilPathOuterSectionPanel1, ComponentEnum.WING);
+		inputManagerControllerUtilities.setAirfoilDetailsActionAndDisableCheck(hTailInnerSectionAirfoilDetailsPanel1Button, textFieldHTailAirfoilPathInnerSectionPanel1, ComponentEnum.HORIZONTAL_TAIL);
+		inputManagerControllerUtilities.setAirfoilDetailsActionAndDisableCheck(hTailOuterSectionAirfoilDetailsPanel1Button, textFieldHTailAirfoilPathOuterSectionPanel1, ComponentEnum.HORIZONTAL_TAIL);
+		inputManagerControllerUtilities.setAirfoilDetailsActionAndDisableCheck(vTailInnerSectionAirfoilDetailsPanel1Button, textFieldVTailAirfoilPathInnerSectionPanel1, ComponentEnum.VERTICAL_TAIL);
+		inputManagerControllerUtilities.setAirfoilDetailsActionAndDisableCheck(vTailOuterSectionAirfoilDetailsPanel1Button, textFieldVTailAirfoilPathOuterSectionPanel1, ComponentEnum.VERTICAL_TAIL);
+		inputManagerControllerUtilities.setAirfoilDetailsActionAndDisableCheck(canardInnerSectionAirfoilDetailsPanel1Button, textFieldCanardAirfoilPathInnerSectionPanel1, ComponentEnum.CANARD);
+		inputManagerControllerUtilities.setAirfoilDetailsActionAndDisableCheck(canardOuterSectionAirfoilDetailsPanel1Button, textFieldCanardAirfoilPathOuterSectionPanel1, ComponentEnum.CANARD);
+		inputManagerControllerUtilities.setChooseAirfoilFileAction(equivalentWingChooseAirfoilRootButton, textFieldEquivalentWingAirfoilRootPath);
+		inputManagerControllerUtilities.setChooseAirfoilFileAction(equivalentWingChooseAirfoilKinkButton, textFieldEquivalentWingAirfoilKinkPath);
+		inputManagerControllerUtilities.setChooseAirfoilFileAction(equivalentWingChooseAirfoilTipButton, textFieldEquivalentWingAirfoilTipPath);
+		inputManagerControllerUtilities.setChooseAirfoilFileAction(wingChooseInnerAirfoilPanel1Button, textFieldWingAirfoilPathInnerSectionPanel1);
+		inputManagerControllerUtilities.setChooseAirfoilFileAction(wingChooseOuterAirfoilPanel1Button, textFieldWingAirfoilPathOuterSectionPanel1);
+		inputManagerControllerUtilities.setChooseAirfoilFileAction(hTailChooseInnerAirfoilPanel1Button, textFieldHTailAirfoilPathInnerSectionPanel1);
+		inputManagerControllerUtilities.setChooseAirfoilFileAction(hTailChooseOuterAirfoilPanel1Button, textFieldHTailAirfoilPathOuterSectionPanel1);
+		inputManagerControllerUtilities.setChooseAirfoilFileAction(vTailChooseInnerAirfoilPanel1Button, textFieldVTailAirfoilPathInnerSectionPanel1);
+		inputManagerControllerUtilities.setChooseAirfoilFileAction(vTailChooseOuterAirfoilPanel1Button, textFieldVTailAirfoilPathOuterSectionPanel1);
+		inputManagerControllerUtilities.setChooseAirfoilFileAction(canardChooseInnerAirfoilPanel1Button, textFieldCanardAirfoilPathInnerSectionPanel1);
+		inputManagerControllerUtilities.setChooseAirfoilFileAction(canardChooseOuterAirfoilPanel1Button, textFieldCanardAirfoilPathOuterSectionPanel1);
+		inputManagerControllerUtilities.equivalentWingDisableCheck();
+		inputManagerControllerUtilities.linkedToDisableCheck(ComponentEnum.WING);
+		inputManagerControllerUtilities.linkedToDisableCheck(ComponentEnum.HORIZONTAL_TAIL);
+		inputManagerControllerUtilities.linkedToDisableCheck(ComponentEnum.VERTICAL_TAIL);
+		inputManagerControllerUtilities.linkedToDisableCheck(ComponentEnum.CANARD);
+		inputManagerControllerUtilities.setEstimateNacelleGeometryAction(nacelleEstimateGeometryButton1, tabPaneNacelles.getTabs().get(0));
+		inputManagerControllerUtilities.setShowEngineDataAction(powerPlantJetRadioButton1, 0, EngineTypeEnum.TURBOFAN);
+		inputManagerControllerUtilities.setShowEngineDataAction(powerPlantTurbopropRadioButton1, 0, EngineTypeEnum.TURBOPROP);
+		inputManagerControllerUtilities.setShowEngineDataAction(powerPlantPistonRadioButton1, 0, EngineTypeEnum.PISTON);
 		
 	}
 	
 	@FXML
 	private void addAircraftEngine() throws IOException {
 		
-		addAircraftEngineImplementation();
+		inputManagerControllerUtilities.addAircraftEngineImplementation();
 	
 		//..................................................................................
 		// NEW ENGINE WARNING
@@ -3702,9 +2777,9 @@ public class InputManagerController {
 			@Override
 			public void handle(ActionEvent arg0) {
 				newEngineWaring.close();
-				addEngineImplementation();
-				addNacelleImplementation();
-				addAircraftNacelleImplementation();
+				inputManagerControllerUtilities.addEngineImplementation();
+				inputManagerControllerUtilities.addNacelleImplementation();
+				inputManagerControllerUtilities.addAircraftNacelleImplementation();
 			}
 			
 		});
@@ -3716,163 +2791,12 @@ public class InputManagerController {
 		
 	}
 	
-	private void addAircraftEngineImplementation() {
-		
-		Tab newEngineTab = new Tab("Engine " + (tabPaneAircraftEngines.getTabs().size()+1));
-		Pane contentPane = new Pane();
-		
-		Label engineFileLabel = new Label("File:");
-		engineFileLabel.setFont(Font.font("System", 15));
-		engineFileLabel.setLayoutX(6.0);
-		engineFileLabel.setLayoutY(0.0);
-		contentPane.getChildren().add(engineFileLabel);
-		
-		TextField engineFileTextField = new TextField();
-		engineFileTextField.setLayoutX(6.0);
-		engineFileTextField.setLayoutY(21);
-		engineFileTextField.setPrefWidth(340);
-		engineFileTextField.setPrefHeight(31);
-		contentPane.getChildren().add(engineFileTextField);
-		
-		Button engineChooseFileButton = new Button("...");
-		engineChooseFileButton.setLayoutX(348);
-		engineChooseFileButton.setLayoutY(21);
-		engineChooseFileButton.setPrefWidth(44);
-		engineChooseFileButton.setPrefHeight(31);
-		engineChooseFileButton.setOnAction(new EventHandler<ActionEvent>() {
 
-			@Override
-			public void handle(ActionEvent arg0) {
-				
-				try {
-					chooseAircraftEngineFile(tabPaneAircraftEngines.getTabs().size()-1);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-			}
-		});
-		contentPane.getChildren().add(engineChooseFileButton);
-		
-		Label engineXPositionLabel = new Label("X:");
-		engineXPositionLabel.setFont(Font.font("System", 15));
-		engineXPositionLabel.setLayoutX(6.0);
-		engineXPositionLabel.setLayoutY(52.0);
-		contentPane.getChildren().add(engineXPositionLabel);
-		
-		TextField engineXPositionTextField = new TextField();
-		engineXPositionTextField.setLayoutX(6.0);
-		engineXPositionTextField.setLayoutY(73);
-		engineXPositionTextField.setPrefWidth(340);
-		engineXPositionTextField.setPrefHeight(31);
-		contentPane.getChildren().add(engineXPositionTextField);
-		
-		ChoiceBox<String> engineXChoiceBox = new ChoiceBox<String>();
-		engineXChoiceBox.setLayoutX(348.0);
-		engineXChoiceBox.setLayoutY(74);
-		engineXChoiceBox.setPrefWidth(47);
-		engineXChoiceBox.setPrefHeight(30);
-		engineXChoiceBox.setItems(lengthUnitsList);
-		contentPane.getChildren().add(engineXChoiceBox);
-		
-		Label engineYPositionLabel = new Label("Y:");
-		engineYPositionLabel.setFont(Font.font("System", 15));
-		engineYPositionLabel.setLayoutX(6.0);
-		engineYPositionLabel.setLayoutY(104.0);
-		contentPane.getChildren().add(engineYPositionLabel);
-		
-		TextField engineYPositionTextField = new TextField();
-		engineYPositionTextField.setLayoutX(6.0);
-		engineYPositionTextField.setLayoutY(125);
-		engineYPositionTextField.setPrefWidth(340);
-		engineYPositionTextField.setPrefHeight(31);
-		contentPane.getChildren().add(engineYPositionTextField);
-		
-		ChoiceBox<String> engineYChoiceBox = new ChoiceBox<String>();
-		engineYChoiceBox.setLayoutX(348.0);
-		engineYChoiceBox.setLayoutY(126);
-		engineYChoiceBox.setPrefWidth(47);
-		engineYChoiceBox.setPrefHeight(30);
-		engineYChoiceBox.setItems(lengthUnitsList);
-		contentPane.getChildren().add(engineYChoiceBox);
-		
-		Label engineZPositionLabel = new Label("Z:");
-		engineZPositionLabel.setFont(Font.font("System", 15));
-		engineZPositionLabel.setLayoutX(7.0);
-		engineZPositionLabel.setLayoutY(156.0);
-		contentPane.getChildren().add(engineZPositionLabel);
-		
-		TextField engineZPositionTextField = new TextField();
-		engineZPositionTextField.setLayoutX(7.0);
-		engineZPositionTextField.setLayoutY(177);
-		engineZPositionTextField.setPrefWidth(340);
-		engineZPositionTextField.setPrefHeight(31);
-		contentPane.getChildren().add(engineZPositionTextField);
-		
-		ChoiceBox<String> engineZChoiceBox = new ChoiceBox<String>();
-		engineZChoiceBox.setLayoutX(348.0);
-		engineZChoiceBox.setLayoutY(178);
-		engineZChoiceBox.setPrefWidth(47);
-		engineZChoiceBox.setPrefHeight(30);
-		engineZChoiceBox.setItems(lengthUnitsList);
-		contentPane.getChildren().add(engineZChoiceBox);
-		
-		Label engineTiltAngleLabel = new Label("Tilting Angle:");
-		engineTiltAngleLabel.setFont(Font.font("System", 15));
-		engineTiltAngleLabel.setLayoutX(7.0);
-		engineTiltAngleLabel.setLayoutY(208.0);
-		contentPane.getChildren().add(engineTiltAngleLabel);
-		
-		TextField engineTiltAngleTextField = new TextField();
-		engineTiltAngleTextField.setLayoutX(7.0);
-		engineTiltAngleTextField.setLayoutY(229);
-		engineTiltAngleTextField.setPrefWidth(340);
-		engineTiltAngleTextField.setPrefHeight(31);
-		contentPane.getChildren().add(engineTiltAngleTextField);
-		
-		ChoiceBox<String> engineTiltAngleChoiceBox = new ChoiceBox<String>();
-		engineTiltAngleChoiceBox.setLayoutX(348.0);
-		engineTiltAngleChoiceBox.setLayoutY(230);
-		engineTiltAngleChoiceBox.setPrefWidth(47);
-		engineTiltAngleChoiceBox.setPrefHeight(30);
-		engineTiltAngleChoiceBox.setItems(angleUnitsList);
-		contentPane.getChildren().add(engineTiltAngleChoiceBox);
-		
-		Label engineMountingPositionLabel = new Label("Position:");
-		engineMountingPositionLabel.setFont(Font.font("System", 15));
-		engineMountingPositionLabel.setLayoutX(7.0);
-		engineMountingPositionLabel.setLayoutY(260.0);
-		contentPane.getChildren().add(engineMountingPositionLabel);
-		
-		ChoiceBox<String> engineMountingPositionChoiceBox = new ChoiceBox<String>();
-		engineMountingPositionChoiceBox.setLayoutX(6.0);
-		engineMountingPositionChoiceBox.setLayoutY(282);
-		engineMountingPositionChoiceBox.setPrefWidth(340);
-		engineMountingPositionChoiceBox.setPrefHeight(31);
-		engineMountingPositionChoiceBox.setItems(powerPlantMountingPositionTypeList);
-		contentPane.getChildren().add(engineMountingPositionChoiceBox);
-		
-		textFieldsAircraftEngineFileList.add(engineFileTextField);
-		textFieldAircraftEngineXList.add(engineXPositionTextField);
-		textFieldAircraftEngineYList.add(engineYPositionTextField);
-		textFieldAircraftEngineZList.add(engineZPositionTextField);
-		textFieldAircraftEngineTiltList.add(engineTiltAngleTextField);
-		choiceBoxesAircraftEnginePositonList.add(engineMountingPositionChoiceBox);
-		
-		choiceBoxAircraftEngineXUnitList.add(engineXChoiceBox);
-		choiceBoxAircraftEngineYUnitList.add(engineYChoiceBox);
-		choiceBoxAircraftEngineZUnitList.add(engineZChoiceBox);
-		choiceBoxAircraftEngineTiltUnitList.add(engineTiltAngleChoiceBox);
-		
-		newEngineTab.setContent(contentPane);
-		tabPaneAircraftEngines.getTabs().add(newEngineTab);
-		
-	}
 	
 	@FXML
 	private void addAircraftNacelle() throws IOException {
 		
-		addAircraftNacelleImplementation();
+		inputManagerControllerUtilities.addAircraftNacelleImplementation();
 		
 		//..................................................................................
 		// NEW NACELLE WARNING
@@ -3893,9 +2817,9 @@ public class InputManagerController {
 			@Override
 			public void handle(ActionEvent arg0) {
 				newNacelleWaring.close();
-				addEngineImplementation();
-				addNacelleImplementation();
-				addAircraftEngineImplementation();
+				inputManagerControllerUtilities.addEngineImplementation();
+				inputManagerControllerUtilities.addNacelleImplementation();
+				inputManagerControllerUtilities.addAircraftEngineImplementation();
 			}
 			
 		});
@@ -3904,136 +2828,6 @@ public class InputManagerController {
 		newNacelleWaring.setScene(scene);
 		newNacelleWaring.sizeToScene();
 		newNacelleWaring.show();
-		
-	}
-	
-	private void addAircraftNacelleImplementation() {
-		
-		Tab newNacelleTab = new Tab("Nacelle " + (tabPaneAircraftNacelles.getTabs().size()+1));
-		Pane contentPane = new Pane();
-		
-		Label nacelleFileLabel = new Label("File:");
-		nacelleFileLabel.setFont(Font.font("System", 15));
-		nacelleFileLabel.setLayoutX(6.0);
-		nacelleFileLabel.setLayoutY(0.0);
-		contentPane.getChildren().add(nacelleFileLabel);
-		
-		TextField nacelleFileTextField = new TextField();
-		nacelleFileTextField.setLayoutX(6.0);
-		nacelleFileTextField.setLayoutY(21);
-		nacelleFileTextField.setPrefWidth(340);
-		nacelleFileTextField.setPrefHeight(31);
-		contentPane.getChildren().add(nacelleFileTextField);
-		
-		Button nacelleChooseFileButton = new Button("...");
-		nacelleChooseFileButton.setLayoutX(348);
-		nacelleChooseFileButton.setLayoutY(21);
-		nacelleChooseFileButton.setPrefWidth(44);
-		nacelleChooseFileButton.setPrefHeight(31);
-		nacelleChooseFileButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent arg0) {
-				
-				try {
-					chooseAircraftNacelleFile(tabPaneAircraftNacelles.getTabs().size()-1);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-			}
-		});
-		contentPane.getChildren().add(nacelleChooseFileButton);
-		
-		Label nacelleXPositionLabel = new Label("X:");
-		nacelleXPositionLabel.setFont(Font.font("System", 15));
-		nacelleXPositionLabel.setLayoutX(6.0);
-		nacelleXPositionLabel.setLayoutY(52.0);
-		contentPane.getChildren().add(nacelleXPositionLabel);
-		
-		TextField nacelleXPositionTextField = new TextField();
-		nacelleXPositionTextField.setLayoutX(6.0);
-		nacelleXPositionTextField.setLayoutY(73);
-		nacelleXPositionTextField.setPrefWidth(340);
-		nacelleXPositionTextField.setPrefHeight(31);
-		contentPane.getChildren().add(nacelleXPositionTextField);
-		
-		ChoiceBox<String> nacelleXChoiceBox = new ChoiceBox<String>();
-		nacelleXChoiceBox.setLayoutX(348.0);
-		nacelleXChoiceBox.setLayoutY(74);
-		nacelleXChoiceBox.setPrefWidth(47);
-		nacelleXChoiceBox.setPrefHeight(30);
-		nacelleXChoiceBox.setItems(lengthUnitsList);
-		contentPane.getChildren().add(nacelleXChoiceBox);
-		
-		Label nacelleYPositionLabel = new Label("Y:");
-		nacelleYPositionLabel.setFont(Font.font("System", 15));
-		nacelleYPositionLabel.setLayoutX(6.0);
-		nacelleYPositionLabel.setLayoutY(104.0);
-		contentPane.getChildren().add(nacelleYPositionLabel);
-		
-		TextField nacelleYPositionTextField = new TextField();
-		nacelleYPositionTextField.setLayoutX(6.0);
-		nacelleYPositionTextField.setLayoutY(125);
-		nacelleYPositionTextField.setPrefWidth(340);
-		nacelleYPositionTextField.setPrefHeight(31);
-		contentPane.getChildren().add(nacelleYPositionTextField);
-		
-		ChoiceBox<String> nacelleYChoiceBox = new ChoiceBox<String>();
-		nacelleYChoiceBox.setLayoutX(348.0);
-		nacelleYChoiceBox.setLayoutY(126);
-		nacelleYChoiceBox.setPrefWidth(47);
-		nacelleYChoiceBox.setPrefHeight(30);
-		nacelleYChoiceBox.setItems(lengthUnitsList);
-		contentPane.getChildren().add(nacelleYChoiceBox);
-		
-		Label nacelleZPositionLabel = new Label("Z:");
-		nacelleZPositionLabel.setFont(Font.font("System", 15));
-		nacelleZPositionLabel.setLayoutX(7.0);
-		nacelleZPositionLabel.setLayoutY(156.0);
-		contentPane.getChildren().add(nacelleZPositionLabel);
-		
-		TextField nacelleZPositionTextField = new TextField();
-		nacelleZPositionTextField.setLayoutX(7.0);
-		nacelleZPositionTextField.setLayoutY(177);
-		nacelleZPositionTextField.setPrefWidth(340);
-		nacelleZPositionTextField.setPrefHeight(31);
-		contentPane.getChildren().add(nacelleZPositionTextField);
-		
-		ChoiceBox<String> nacelleZChoiceBox = new ChoiceBox<String>();
-		nacelleZChoiceBox.setLayoutX(348.0);
-		nacelleZChoiceBox.setLayoutY(178);
-		nacelleZChoiceBox.setPrefWidth(47);
-		nacelleZChoiceBox.setPrefHeight(30);
-		nacelleZChoiceBox.setItems(lengthUnitsList);
-		contentPane.getChildren().add(nacelleZChoiceBox);
-		
-		Label nacelleMountingPositionLabel = new Label("Position:");
-		nacelleMountingPositionLabel.setFont(Font.font("System", 15));
-		nacelleMountingPositionLabel.setLayoutX(6.0);
-		nacelleMountingPositionLabel.setLayoutY(208.0);
-		contentPane.getChildren().add(nacelleMountingPositionLabel);
-		
-		ChoiceBox<String> nacelleMountingPositionChoiceBox = new ChoiceBox<String>();
-		nacelleMountingPositionChoiceBox.setLayoutX(6.0);
-		nacelleMountingPositionChoiceBox.setLayoutY(230);
-		nacelleMountingPositionChoiceBox.setPrefWidth(340);
-		nacelleMountingPositionChoiceBox.setPrefHeight(31);
-		nacelleMountingPositionChoiceBox.setItems(nacelleMountingPositionTypeList);
-		contentPane.getChildren().add(nacelleMountingPositionChoiceBox);
-		
-		textFieldsAircraftNacelleFileList.add(nacelleFileTextField);
-		textFieldAircraftNacelleXList.add(nacelleXPositionTextField);
-		textFieldAircraftNacelleYList.add(nacelleYPositionTextField);
-		textFieldAircraftNacelleZList.add(nacelleZPositionTextField);
-		choiceBoxesAircraftNacellePositonList.add(nacelleMountingPositionChoiceBox);
-		
-		choiceBoxAircraftNacelleXUnitList.add(nacelleXChoiceBox);
-		choiceBoxAircraftNacelleYUnitList.add(nacelleYChoiceBox);
-		choiceBoxAircraftNacelleZUnitList.add(nacelleZChoiceBox);
-		
-		newNacelleTab.setContent(contentPane);
-		tabPaneAircraftNacelles.getTabs().add(newNacelleTab);
 		
 	}
 	
@@ -4548,8 +3342,6 @@ public class InputManagerController {
 		newPanelTab.setContent(contentPane);
 		tabPaneWingPanels.getTabs().add(newPanelTab);
 		
-		
-		
 	}
 	
 	@FXML
@@ -4679,8 +3471,6 @@ public class InputManagerController {
 		newFlapTab.setContent(contentPane);
 		tabPaneWingFlaps.getTabs().add(newFlapTab);
 		
-		
-		
 	}
 	
 	@FXML
@@ -4809,8 +3599,6 @@ public class InputManagerController {
 		newSlatTab.setContent(contentPane);
 		tabPaneWingSlats.getTabs().add(newSlatTab);
 		
-		
-		
 	}
 	
 	@FXML
@@ -4924,8 +3712,6 @@ public class InputManagerController {
 		
 		newSpoilerTab.setContent(contentPane);
 		tabPaneWingSpoilers.getTabs().add(newSpoilerTab);
-		
-		
 		
 	}
 	
@@ -5326,8 +4112,6 @@ public class InputManagerController {
 		newPanelTab.setContent(contentPane);
 		tabPaneHTailPanels.getTabs().add(newPanelTab);
 		
-		
-		
 	}
 	
 	@FXML
@@ -5456,8 +4240,6 @@ public class InputManagerController {
 		
 		newElevatorTab.setContent(contentPane);
 		tabPaneHTailElevators.getTabs().add(newElevatorTab);
-		
-		
 		
 	}
 	
@@ -5858,8 +4640,6 @@ public class InputManagerController {
 		newPanelTab.setContent(contentPane);
 		tabPaneVTailPanels.getTabs().add(newPanelTab);
 	
-		
-		
 	}
 	
 	@FXML
@@ -5988,8 +4768,6 @@ public class InputManagerController {
 		
 		newRudderTab.setContent(contentPane);
 		tabPaneVTailRudders.getTabs().add(newRudderTab);
-		
-		
 		
 	}
 	
@@ -6390,8 +5168,6 @@ public class InputManagerController {
 		newPanelTab.setContent(contentPane);
 		tabPaneCanardPanels.getTabs().add(newPanelTab);
 		
-		
-		
 	}
 	
 	@FXML
@@ -6521,14 +5297,12 @@ public class InputManagerController {
 		newControlSurfaceTab.setContent(contentPane);
 		tabPaneCanardControlSurfaces.getTabs().add(newControlSurfaceTab);
 		
-		
-		
 	}
 	
 	@FXML
 	private void addNacelle() throws IOException {
 		
-		addNacelleImplementation();
+		inputManagerControllerUtilities.addNacelleImplementation();
 		
 		//..................................................................................
 		// NEW NACELLE WARNING
@@ -6549,9 +5323,9 @@ public class InputManagerController {
 			@Override
 			public void handle(ActionEvent arg0) {
 				newNacelleWaring.close();
-				addEngineImplementation();
-				addAircraftNacelleImplementation();
-				addAircraftEngineImplementation();
+				inputManagerControllerUtilities.addEngineImplementation();
+				inputManagerControllerUtilities.addAircraftNacelleImplementation();
+				inputManagerControllerUtilities.addAircraftEngineImplementation();
 			}
 			
 		});
@@ -6565,251 +5339,12 @@ public class InputManagerController {
 		
 	}
 	
-	private void addNacelleImplementation() {
-		
-		Tab newNacelleTab = new Tab("Nacelle " + (tabPaneNacelles.getTabs().size()+1));
-		Pane contentPane = new Pane();
-		
-		Label nacelleGlobalDataLabel = new Label("GLOBAL DATA:");
-		nacelleGlobalDataLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		nacelleGlobalDataLabel.setTextFill(Paint.valueOf("#0400ff"));
-		nacelleGlobalDataLabel.setLayoutX(6.0);
-		nacelleGlobalDataLabel.setLayoutY(6.0);
-		contentPane.getChildren().add(nacelleGlobalDataLabel);
-		
-		Separator globalDataLowerSeparator = new Separator();
-		globalDataLowerSeparator.setLayoutX(-20);
-		globalDataLowerSeparator.setLayoutY(33);
-		globalDataLowerSeparator.setPrefWidth(1312);
-		contentPane.getChildren().add(globalDataLowerSeparator);
-		
-		Label nacelleRoughnessLabel = new Label("Roughness:");
-		nacelleRoughnessLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		nacelleRoughnessLabel.setLayoutX(6.0);
-		nacelleRoughnessLabel.setLayoutY(34.0);
-		contentPane.getChildren().add(nacelleRoughnessLabel);
-		
-		TextField nacelleRoughnessTextField = new TextField();
-		nacelleRoughnessTextField.setLayoutX(6.0);
-		nacelleRoughnessTextField.setLayoutY(55);
-		nacelleRoughnessTextField.setPrefWidth(340);
-		nacelleRoughnessTextField.setPrefHeight(31);
-		contentPane.getChildren().add(nacelleRoughnessTextField);
-		
-		ChoiceBox<String> nacelleRoughnessChoiceBox = new ChoiceBox<String>();
-		nacelleRoughnessChoiceBox.setLayoutX(348.0);
-		nacelleRoughnessChoiceBox.setLayoutY(56);
-		nacelleRoughnessChoiceBox.setPrefWidth(47);
-		nacelleRoughnessChoiceBox.setPrefHeight(30);
-		nacelleRoughnessChoiceBox.setItems(lengthUnitsList);
-		contentPane.getChildren().add(nacelleRoughnessChoiceBox);
-		
-		Separator roughnessLowerSeparator = new Separator();
-		roughnessLowerSeparator.setLayoutX(0);
-		roughnessLowerSeparator.setLayoutY(95);
-		roughnessLowerSeparator.setPrefWidth(1345);
-		contentPane.getChildren().add(roughnessLowerSeparator);
-		
-		Label nacelleGeometryLabel = new Label("GEOMETRY:");
-		nacelleGeometryLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		nacelleGeometryLabel.setTextFill(Paint.valueOf("#0400ff"));
-		nacelleGeometryLabel.setLayoutX(6.0);
-		nacelleGeometryLabel.setLayoutY(103.0);
-		contentPane.getChildren().add(nacelleGeometryLabel);
-		
-		Button nacelleEstimateGeometryButton = new Button("Estimate");
-		nacelleEstimateGeometryButton.setLayoutX(100);
-		nacelleEstimateGeometryButton.setLayoutY(98);
-		nacelleEstimateGeometryButton.setPrefWidth(77);
-		nacelleEstimateGeometryButton.setPrefHeight(31);
-		setEstimateNacelleGeometryAction(nacelleEstimateGeometryButton, newNacelleTab);
-		contentPane.getChildren().add(nacelleEstimateGeometryButton);
-		
-		Separator geometryLowerSeparator = new Separator();
-		geometryLowerSeparator.setLayoutX(-28);
-		geometryLowerSeparator.setLayoutY(131);
-		geometryLowerSeparator.setPrefWidth(1345);
-		contentPane.getChildren().add(geometryLowerSeparator);
-		
-		Label nacelleLengthLabel = new Label("Length:");
-		nacelleLengthLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		nacelleLengthLabel.setLayoutX(6.0);
-		nacelleLengthLabel.setLayoutY(135.0);
-		contentPane.getChildren().add(nacelleLengthLabel);
-		
-		TextField nacelleLengthTextField = new TextField();
-		nacelleLengthTextField.setLayoutX(6.0);
-		nacelleLengthTextField.setLayoutY(158);
-		nacelleLengthTextField.setPrefWidth(340);
-		nacelleLengthTextField.setPrefHeight(31);
-		contentPane.getChildren().add(nacelleLengthTextField);
-		
-		ChoiceBox<String> nacelleLengthChoiceBox = new ChoiceBox<String>();
-		nacelleLengthChoiceBox.setLayoutX(348.0);
-		nacelleLengthChoiceBox.setLayoutY(158);
-		nacelleLengthChoiceBox.setPrefWidth(47);
-		nacelleLengthChoiceBox.setPrefHeight(30);
-		nacelleLengthChoiceBox.setItems(lengthUnitsList);
-		contentPane.getChildren().add(nacelleLengthChoiceBox);
-		
-		Label nacelleMaximumDiameterLabel = new Label("Maximum Diameter:");
-		nacelleMaximumDiameterLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		nacelleMaximumDiameterLabel.setLayoutX(6.0);
-		nacelleMaximumDiameterLabel.setLayoutY(189.0);
-		contentPane.getChildren().add(nacelleMaximumDiameterLabel);
-		
-		TextField nacelleMaximumDiameterTextField = new TextField();
-		nacelleMaximumDiameterTextField.setLayoutX(6.0);
-		nacelleMaximumDiameterTextField.setLayoutY(210);
-		nacelleMaximumDiameterTextField.setPrefWidth(340);
-		nacelleMaximumDiameterTextField.setPrefHeight(31);
-		contentPane.getChildren().add(nacelleMaximumDiameterTextField);
-		
-		ChoiceBox<String> nacelleMaximumDiameterChoiceBox = new ChoiceBox<String>();
-		nacelleMaximumDiameterChoiceBox.setLayoutX(348.0);
-		nacelleMaximumDiameterChoiceBox.setLayoutY(211);
-		nacelleMaximumDiameterChoiceBox.setPrefWidth(47);
-		nacelleMaximumDiameterChoiceBox.setPrefHeight(30);
-		nacelleMaximumDiameterChoiceBox.setItems(lengthUnitsList);
-		contentPane.getChildren().add(nacelleMaximumDiameterChoiceBox);
-		
-		Label nacelleKInletLabel = new Label("k Inlet:");
-		nacelleKInletLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		nacelleKInletLabel.setLayoutX(6.0);
-		nacelleKInletLabel.setLayoutY(245.0);
-		contentPane.getChildren().add(nacelleKInletLabel);
-		
-		TextField nacelleKInletTextField = new TextField();
-		nacelleKInletTextField.setLayoutX(6.0);
-		nacelleKInletTextField.setLayoutY(266);
-		nacelleKInletTextField.setPrefWidth(340);
-		nacelleKInletTextField.setPrefHeight(31);
-		contentPane.getChildren().add(nacelleKInletTextField);
-		
-		Button nacelleKInletInfoButton = new Button("?");
-		nacelleKInletInfoButton.setStyle("-fx-font-size: 8;");
-		nacelleKInletInfoButton.setStyle("-fx-font-weight: bold;");
-		nacelleKInletInfoButton.setLayoutX(63);
-		nacelleKInletInfoButton.setLayoutY(245);
-		nacelleKInletInfoButton.setPrefWidth(16);
-		nacelleKInletInfoButton.setPrefHeight(18);
-		nacelleKInletInfoButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				showNacelleKInletInfo();
-			}
-		});
-		contentPane.getChildren().add(nacelleKInletInfoButton);
-		
-		Label nacelleKOutletLabel = new Label("k Outlet:");
-		nacelleKOutletLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		nacelleKOutletLabel.setLayoutX(6.0); 
-		nacelleKOutletLabel.setLayoutY(304.0);
-		contentPane.getChildren().add(nacelleKOutletLabel);
-		
-		TextField nacelleKOutletTextField = new TextField();
-		nacelleKOutletTextField.setLayoutX(6.0);
-		nacelleKOutletTextField.setLayoutY(327);
-		nacelleKOutletTextField.setPrefWidth(340);
-		nacelleKOutletTextField.setPrefHeight(31);
-		contentPane.getChildren().add(nacelleKOutletTextField);
-		
-		Button nacelleKOutletInfoButton = new Button("?");
-		nacelleKOutletInfoButton.setStyle("-fx-font-size: 8;");
-		nacelleKOutletInfoButton.setStyle("-fx-font-weight: bold;");
-		nacelleKOutletInfoButton.setLayoutX(71);
-		nacelleKOutletInfoButton.setLayoutY(304);
-		nacelleKOutletInfoButton.setPrefWidth(16);
-		nacelleKOutletInfoButton.setPrefHeight(18);
-		nacelleKOutletInfoButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				showNacelleKOutletInfo();
-			}
-		});
-		contentPane.getChildren().add(nacelleKOutletInfoButton);
-		
-		Label nacelleKLengthLabel = new Label("k Length:");
-		nacelleKLengthLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		nacelleKLengthLabel.setLayoutX(6.0);
-		nacelleKLengthLabel.setLayoutY(364.0);
-		contentPane.getChildren().add(nacelleKLengthLabel);
-		
-		TextField nacelleKLengthTextField = new TextField();
-		nacelleKLengthTextField.setLayoutX(6.0);
-		nacelleKLengthTextField.setLayoutY(389);
-		nacelleKLengthTextField.setPrefWidth(340);
-		nacelleKLengthTextField.setPrefHeight(31);
-		contentPane.getChildren().add(nacelleKLengthTextField);
-		
-		Button nacelleKLengthInfoButton = new Button("?");
-		nacelleKLengthInfoButton.setStyle("-fx-font-size: 8;");
-		nacelleKLengthInfoButton.setStyle("-fx-font-weight: bold;");
-		nacelleKLengthInfoButton.setLayoutX(75);
-		nacelleKLengthInfoButton.setLayoutY(365);
-		nacelleKLengthInfoButton.setPrefWidth(16);
-		nacelleKLengthInfoButton.setPrefHeight(18);
-		nacelleKLengthInfoButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				showNacelleKLengthInfo();
-			}
-		});
-		contentPane.getChildren().add(nacelleKLengthInfoButton);
-		
-		Label nacelleKDiameterOutletLabel = new Label("k Diameter Outlet:");
-		nacelleKDiameterOutletLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		nacelleKDiameterOutletLabel.setLayoutX(6.0);
-		nacelleKDiameterOutletLabel.setLayoutY(430.0);
-		contentPane.getChildren().add(nacelleKDiameterOutletLabel);
-		
-		TextField nacelleKDiameterOutletTextField = new TextField();
-		nacelleKDiameterOutletTextField.setLayoutX(6.0);
-		nacelleKDiameterOutletTextField.setLayoutY(452);
-		nacelleKDiameterOutletTextField.setPrefWidth(340);
-		nacelleKDiameterOutletTextField.setPrefHeight(31);
-		contentPane.getChildren().add(nacelleKDiameterOutletTextField);
-		
-		Button nacelleKDiameterOutletInfoButton = new Button("?");
-		nacelleKDiameterOutletInfoButton.setStyle("-fx-font-size: 8;");
-		nacelleKDiameterOutletInfoButton.setStyle("-fx-font-weight: bold;");
-		nacelleKDiameterOutletInfoButton.setLayoutX(137);
-		nacelleKDiameterOutletInfoButton.setLayoutY(432);
-		nacelleKDiameterOutletInfoButton.setPrefWidth(16);
-		nacelleKDiameterOutletInfoButton.setPrefHeight(18);
-		nacelleKDiameterOutletInfoButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				showNacelleKDiameterOutletInfo();
-			}
-		});
-		contentPane.getChildren().add(nacelleKDiameterOutletInfoButton);
-		
-		textFieldNacelleRoughnessList.add(nacelleRoughnessTextField);
-		textFieldNacelleLengthList.add(nacelleLengthTextField);
-		textFieldNacelleMaximumDiameterList.add(nacelleMaximumDiameterTextField);
-		textFieldNacelleKInletList.add(nacelleKInletTextField);
-		textFieldNacelleKOutletList.add(nacelleKOutletTextField);
-		textFieldNacelleKLengthList.add(nacelleKLengthTextField);
-		textFieldNacelleKDiameterOutletList.add(nacelleKDiameterOutletTextField);
-		choiceBoxNacelleRoughnessUnitList.add(nacelleRoughnessChoiceBox);
-		choiceBoxNacelleLengthUnitList.add(nacelleLengthChoiceBox);
-		choiceBoxNacelleMaximumDiameterUnitList.add(nacelleMaximumDiameterChoiceBox);
-		nacelleEstimateDimesnsionButtonList.add(nacelleEstimateGeometryButton);
-		nacelleKInletInfoButtonList.add(nacelleKInletInfoButton);
-		nacelleKOutletInfoButtonList.add(nacelleKOutletInfoButton);
-		nacelleKLengthInfoButtonList.add(nacelleKLengthInfoButton);
-		nacelleKDiameterOutletInfoButtonList.add(nacelleKDiameterOutletInfoButton);
-		
-		newNacelleTab.setContent(contentPane);
-		tabPaneNacelles.getTabs().add(newNacelleTab);
-		
-	}
+
 	
 	@FXML
 	private void addEngine() throws IOException {
 		
-		addEngineImplementation();
+		inputManagerControllerUtilities.addEngineImplementation();
 		
 		//..................................................................................
 		// NEW ENGINE WARNING
@@ -6830,9 +5365,9 @@ public class InputManagerController {
 			@Override
 			public void handle(ActionEvent arg0) {
 				newEngineWaring.close();
-				addNacelleImplementation();
-				addAircraftNacelleImplementation();
-				addAircraftEngineImplementation();
+				inputManagerControllerUtilities.addNacelleImplementation();
+				inputManagerControllerUtilities.addAircraftNacelleImplementation();
+				inputManagerControllerUtilities.addAircraftEngineImplementation();
 			}
 			
 		});
@@ -6846,61 +5381,15 @@ public class InputManagerController {
 		
 	}
 	
-	private void addEngineImplementation() {
-		
-		int indexOfEngineTab = tabPaneEngines.getTabs().size();
-		
-		Tab newEngineTab = new Tab("Engine" + (tabPaneEngines.getTabs().size()+1));
-		BorderPane contentBorderPane = new BorderPane();
-		
-		ToggleGroup enigneToggleGroup = new ToggleGroup();
-		powerPlantToggleGropuList.add(enigneToggleGroup);
-		
-		RadioButton turbojetTurbofanRadioButton = new RadioButton("Turbofan/Turbojet");
-		turbojetTurbofanRadioButton.setPadding(new Insets(0, 30, 0, 0));
-		turbojetTurbofanRadioButton.setToggleGroup(enigneToggleGroup);
-		turbojetTurbofanRadioButton.setUserData(0);
-		powerPlantJetRadioButtonList.add(turbojetTurbofanRadioButton);
-		setShowEngineDataAction(turbojetTurbofanRadioButton, indexOfEngineTab, EngineTypeEnum.TURBOFAN);
-		
-		RadioButton turbopropRadioButton = new RadioButton("Turboprop");
-		turbopropRadioButton.setPadding(new Insets(0, 30, 0, 0));
-		turbopropRadioButton.setToggleGroup(enigneToggleGroup);
-		turbopropRadioButton.setUserData(1);
-		powerPlantTurbopropRadioButtonList.add(turbopropRadioButton);
-		setShowEngineDataAction(turbopropRadioButton, indexOfEngineTab, EngineTypeEnum.TURBOPROP);
-		
-		RadioButton pistonRadioButton = new RadioButton("Piston");
-		pistonRadioButton.setPadding(new Insets(0, 30, 0, 0));
-		pistonRadioButton.setToggleGroup(enigneToggleGroup);
-		pistonRadioButton.setUserData(2);
-		powerPlantPistonRadioButtonList.add(pistonRadioButton);
-		setShowEngineDataAction(pistonRadioButton, indexOfEngineTab, EngineTypeEnum.PISTON);
-		
-		ToolBar engineTypeToolBar = new ToolBar();
-		engineTypeToolBar.setPrefWidth(200);
-		engineTypeToolBar.setPrefHeight(40);
-		engineTypeToolBar.getItems().add(turbojetTurbofanRadioButton);
-		engineTypeToolBar.getItems().add(turbopropRadioButton);
-		engineTypeToolBar.getItems().add(pistonRadioButton);
-		
-		Pane engineDataPane = new Pane();
-		
-		contentBorderPane.setTop(engineTypeToolBar);
-		contentBorderPane.setCenter(engineDataPane);
-		powerPlantBorderPaneMap.put(indexOfEngineTab, contentBorderPane);
-		newEngineTab.setContent(contentBorderPane);
-		tabPaneEngines.getTabs().add(newEngineTab);
-		
-	}
+
 	
 	@FXML
-	private void showTurbojetTurboFanDataRadioButton (int indexOfEngineTab) {
+	public void showTurbojetTurboFanDataRadioButton (int indexOfEngineTab) {
 		
 		if (powerPlantEngineTypePaneMap.get(indexOfEngineTab) == null)
-			showTurbojetTurboFanDataRadioButtonImplementation(indexOfEngineTab);
+			inputManagerControllerUtilities.showTurbojetTurboFanDataRadioButtonImplementation(indexOfEngineTab);
 		else if (powerPlantEngineTypePaneMap.get(indexOfEngineTab).get(EngineTypeEnum.TURBOFAN) == null) 
-			showTurbojetTurboFanDataRadioButtonImplementation(indexOfEngineTab);
+			inputManagerControllerUtilities.showTurbojetTurboFanDataRadioButtonImplementation(indexOfEngineTab);
 		else 
 			powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(
 					powerPlantEngineTypePaneMap.get(indexOfEngineTab).get(EngineTypeEnum.TURBOFAN)
@@ -6908,202 +5397,13 @@ public class InputManagerController {
 		
 	}
 
-	private void showTurbojetTurboFanDataRadioButtonImplementation (int indexOfEngineTab) {
-		
-		Pane engineDataPane = new Pane();
-
-		Label engineTypeLabel = new Label("Type:");
-		engineTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineTypeLabel.setLayoutX(6.0);
-		engineTypeLabel.setLayoutY(0.0);
-		engineDataPane.getChildren().add(engineTypeLabel);
-		
-		ChoiceBox<String> engineTypeChoiceBox = new ChoiceBox<String>();
-		engineTypeChoiceBox.setLayoutX(6.0);
-		engineTypeChoiceBox.setLayoutY(21.0);
-		engineTypeChoiceBox.setPrefWidth(340);
-		engineTypeChoiceBox.setPrefHeight(31);
-		engineTypeChoiceBox.setItems(jetEngineTypeList);
-		engineDataPane.getChildren().add(engineTypeChoiceBox);
-		engineTurbojetTurbofanTypeChoiceBoxMap.put(indexOfEngineTab, engineTypeChoiceBox); 
-		
-		Label engineDatabaseLabel = new Label("Database:");
-		engineDatabaseLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineDatabaseLabel.setLayoutX(6.0);
-		engineDatabaseLabel.setLayoutY(52.0);
-		engineDataPane.getChildren().add(engineDatabaseLabel);
-		
-		TextField engineDatabasePathTextField = new TextField();
-		engineDatabasePathTextField.setLayoutX(6.0);
-		engineDatabasePathTextField.setLayoutY(73);
-		engineDatabasePathTextField.setPrefWidth(340);
-		engineDatabasePathTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineDatabasePathTextField);
-		engineTurbojetTurbofanDatabaseTextFieldMap.put(indexOfEngineTab, engineDatabasePathTextField);
-		
-		Button engineDatabasePathChooseButton = new Button("...");
-		engineDatabasePathChooseButton.setLayoutX(350.0);
-		engineDatabasePathChooseButton.setLayoutY(73);
-		engineDatabasePathChooseButton.setPrefWidth(24);
-		engineDatabasePathChooseButton.setPrefHeight(31);
-		engineDatabasePathChooseButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				chooseEngineDatabase(engineDatabasePathTextField);
-			}
-		});
-		engineDataPane.getChildren().add(engineDatabasePathChooseButton);
-		
-		Label engineLengthLabel = new Label("Length:");
-		engineLengthLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineLengthLabel.setLayoutX(6.0);
-		engineLengthLabel.setLayoutY(104.0);
-		engineDataPane.getChildren().add(engineLengthLabel);
-		
-		TextField engineLengthTextField = new TextField();
-		engineLengthTextField.setLayoutX(6.0);
-		engineLengthTextField.setLayoutY(125);
-		engineLengthTextField.setPrefWidth(340);
-		engineLengthTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineLengthTextField);
-		engineTurbojetTurbofanLengthTextFieldMap.put(indexOfEngineTab, engineLengthTextField);
-		
-		ChoiceBox<String> engineLengthChoiceBox = new ChoiceBox<String>();
-		engineLengthChoiceBox.setLayoutX(348.0);
-		engineLengthChoiceBox.setLayoutY(125);
-		engineLengthChoiceBox.setPrefWidth(47);
-		engineLengthChoiceBox.setPrefHeight(30);
-		engineLengthChoiceBox.setItems(lengthUnitsList);
-		engineDataPane.getChildren().add(engineLengthChoiceBox);
-		engineTurbojetTurbofanLengthUnitChoiceBoxMap.put(indexOfEngineTab, engineLengthChoiceBox);
-		
-		Label engineStaticThrustLabel = new Label("Static Thrust:");
-		engineStaticThrustLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineStaticThrustLabel.setLayoutX(6.0);
-		engineStaticThrustLabel.setLayoutY(159.0);
-		engineDataPane.getChildren().add(engineStaticThrustLabel);
-		
-		TextField engineStaticThrustTextField = new TextField();
-		engineStaticThrustTextField.setLayoutX(6.0);
-		engineStaticThrustTextField.setLayoutY(180);
-		engineStaticThrustTextField.setPrefWidth(340);
-		engineStaticThrustTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineStaticThrustTextField);
-		engineTurbojetTurbofanStaticThrustTextFieldMap.put(indexOfEngineTab, engineStaticThrustTextField);
-		
-		ChoiceBox<String> engineStaticThrustChoiceBox = new ChoiceBox<String>();
-		engineStaticThrustChoiceBox.setLayoutX(348.0);
-		engineStaticThrustChoiceBox.setLayoutY(180);
-		engineStaticThrustChoiceBox.setPrefWidth(47);
-		engineStaticThrustChoiceBox.setPrefHeight(30);
-		engineStaticThrustChoiceBox.setItems(forceUnitsList);
-		engineDataPane.getChildren().add(engineStaticThrustChoiceBox);
-		engineTurbojetTurbofanStaticThrustUnitChoiceBoxMap.put(indexOfEngineTab, engineStaticThrustChoiceBox);
-		
-		Label engineDryMassLabel = new Label("Dry Mass:");
-		engineDryMassLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineDryMassLabel.setLayoutX(6.0);
-		engineDryMassLabel.setLayoutY(213.0);
-		engineDataPane.getChildren().add(engineDryMassLabel);
-		
-		TextField engineDryMassTextField = new TextField();
-		engineDryMassTextField.setLayoutX(6.0);
-		engineDryMassTextField.setLayoutY(234);
-		engineDryMassTextField.setPrefWidth(340);
-		engineDryMassTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineDryMassTextField);
-		engineTurbojetTurbofanDryMassTextFieldMap.put(indexOfEngineTab, engineDryMassTextField);
-		
-		ChoiceBox<String> engineDryMassChoiceBox = new ChoiceBox<String>();
-		engineDryMassChoiceBox.setLayoutX(348.0);
-		engineDryMassChoiceBox.setLayoutY(234);
-		engineDryMassChoiceBox.setPrefWidth(47);
-		engineDryMassChoiceBox.setPrefHeight(30);
-		engineDryMassChoiceBox.setItems(massUnitsList);
-		engineDataPane.getChildren().add(engineDryMassChoiceBox);
-		engineTurbojetTurbofanDryMassUnitChoiceBoxMap.put(indexOfEngineTab, engineDryMassChoiceBox);
-		
-		Button engineDryMassCalculateButton = new Button("Calculate");
-		engineDryMassCalculateButton.setLayoutX(397.0);
-		engineDryMassCalculateButton.setLayoutY(234);
-		engineDryMassCalculateButton.setPrefHeight(31);
-		engineDryMassCalculateButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				calculateEngineDryMass(engineDryMassTextField, engineDryMassChoiceBox, indexOfEngineTab);
-			}
-		});
-		engineDataPane.getChildren().add(engineDryMassCalculateButton);
-		
-		Label engineBPRLabel = new Label("BPR:");
-		engineBPRLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineBPRLabel.setLayoutX(6.0);
-		engineBPRLabel.setLayoutY(268.0);
-		engineDataPane.getChildren().add(engineBPRLabel);
-		
-		TextField engineBPRTextField = new TextField();
-		engineBPRTextField.setLayoutX(6.0);
-		engineBPRTextField.setLayoutY(289);
-		engineBPRTextField.setPrefWidth(340);
-		engineBPRTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineBPRTextField);
-		engineTurbojetTurbofanBPRTextFieldMap.put(indexOfEngineTab, engineBPRTextField);
-		
-		Label engineNumberOfCompressorStagesLabel = new Label("Number Of Compressor Stages:");
-		engineNumberOfCompressorStagesLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineNumberOfCompressorStagesLabel.setLayoutX(6.0);
-		engineNumberOfCompressorStagesLabel.setLayoutY(323.0);
-		engineDataPane.getChildren().add(engineNumberOfCompressorStagesLabel);
-		
-		TextField engineNumberOfCompressorStagesTextField = new TextField();
-		engineNumberOfCompressorStagesTextField.setLayoutX(6.0);
-		engineNumberOfCompressorStagesTextField.setLayoutY(344);
-		engineNumberOfCompressorStagesTextField.setPrefWidth(340);
-		engineNumberOfCompressorStagesTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineNumberOfCompressorStagesTextField);
-		engineTurbojetTurbofanNumberOfCompressorStagesTextFieldMap.put(indexOfEngineTab, engineNumberOfCompressorStagesTextField);
-		
-		Label engineNumberOfShaftsLabel = new Label("Number Of Shafts:");
-		engineNumberOfShaftsLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineNumberOfShaftsLabel.setLayoutX(6.0);
-		engineNumberOfShaftsLabel.setLayoutY(378.0);
-		engineDataPane.getChildren().add(engineNumberOfShaftsLabel);
-		
-		TextField engineNumberOfShaftsTextField = new TextField();
-		engineNumberOfShaftsTextField.setLayoutX(6.0);
-		engineNumberOfShaftsTextField.setLayoutY(399);
-		engineNumberOfShaftsTextField.setPrefWidth(340);
-		engineNumberOfShaftsTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineNumberOfShaftsTextField);
-		engineTurbojetTurbofanNumberOfShaftsTextFieldMap.put(indexOfEngineTab, engineNumberOfShaftsTextField);
-		
-		Label engineOverallPressureRatioLabel = new Label("Overall Pressure Ratio:");
-		engineOverallPressureRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineOverallPressureRatioLabel.setLayoutX(6.0);
-		engineOverallPressureRatioLabel.setLayoutY(433.0);
-		engineDataPane.getChildren().add(engineOverallPressureRatioLabel);
-		
-		TextField engineOverallPressureRatioTextField = new TextField();
-		engineOverallPressureRatioTextField.setLayoutX(6.0);
-		engineOverallPressureRatioTextField.setLayoutY(454);
-		engineOverallPressureRatioTextField.setPrefWidth(340);
-		engineOverallPressureRatioTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineOverallPressureRatioTextField);
-		engineTurbojetTurbofanOverallPressureRatioTextFieldMap.put(indexOfEngineTab, engineOverallPressureRatioTextField);
-		
-		powerPlantPaneMap.put(EngineTypeEnum.TURBOFAN, engineDataPane);
-		powerPlantEngineTypePaneMap.put(indexOfEngineTab, powerPlantPaneMap);
-		powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(engineDataPane);
-		
-	}
-	
 	@FXML
-	private void showTurbopropDataRadioButton (int indexOfEngineTab) {
+	public void showTurbopropDataRadioButton (int indexOfEngineTab) {
 		
 		if (powerPlantEngineTypePaneMap.get(indexOfEngineTab) == null)
-			showTurbopropDataRadioButtonImplementation(indexOfEngineTab);
+			inputManagerControllerUtilities.showTurbopropDataRadioButtonImplementation(indexOfEngineTab);
 		else if (powerPlantEngineTypePaneMap.get(indexOfEngineTab).get(EngineTypeEnum.TURBOPROP) == null) 
-			showTurbopropDataRadioButtonImplementation(indexOfEngineTab);
+			inputManagerControllerUtilities.showTurbopropDataRadioButtonImplementation(indexOfEngineTab);
 		else 
 			powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(
 					powerPlantEngineTypePaneMap.get(indexOfEngineTab).get(EngineTypeEnum.TURBOPROP)
@@ -7111,239 +5411,15 @@ public class InputManagerController {
 		
 	}
 	
-	private void showTurbopropDataRadioButtonImplementation (int indexOfEngineTab) {
-		
-		Pane engineDataPane = new Pane();
-		
-		Label engineTypeLabel = new Label("Type:");
-		engineTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineTypeLabel.setLayoutX(6.0);
-		engineTypeLabel.setLayoutY(0.0);
-		engineDataPane.getChildren().add(engineTypeLabel);
-		
-		ChoiceBox<String> engineTypeChoiceBox = new ChoiceBox<String>();
-		engineTypeChoiceBox.setLayoutX(6.0);
-		engineTypeChoiceBox.setLayoutY(21.0);
-		engineTypeChoiceBox.setPrefWidth(340);
-		engineTypeChoiceBox.setPrefHeight(31);
-		engineTypeChoiceBox.setItems(turbopropEngineTypeList);
-		engineDataPane.getChildren().add(engineTypeChoiceBox);
-		engineTurbopropTypeChoiceBoxMap.put(indexOfEngineTab, engineTypeChoiceBox); 
-		
-		Label engineDatabaseLabel = new Label("Database:");
-		engineDatabaseLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineDatabaseLabel.setLayoutX(6.0);
-		engineDatabaseLabel.setLayoutY(52.0);
-		engineDataPane.getChildren().add(engineDatabaseLabel);
-		
-		TextField engineDatabasePathTextField = new TextField();
-		engineDatabasePathTextField.setLayoutX(6.0);
-		engineDatabasePathTextField.setLayoutY(73);
-		engineDatabasePathTextField.setPrefWidth(340);
-		engineDatabasePathTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineDatabasePathTextField);
-		engineTurbopropDatabaseTextFieldMap.put(indexOfEngineTab, engineDatabasePathTextField);
-		
-		Button engineDatabasePathChooseButton = new Button("...");
-		engineDatabasePathChooseButton.setLayoutX(350.0);
-		engineDatabasePathChooseButton.setLayoutY(73);
-		engineDatabasePathChooseButton.setPrefWidth(24);
-		engineDatabasePathChooseButton.setPrefHeight(31);
-		engineDatabasePathChooseButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				chooseEngineDatabase(engineDatabasePathTextField);
-			}
-		});
-		engineDataPane.getChildren().add(engineDatabasePathChooseButton);
-		
-		Label engineLengthLabel = new Label("Length:");
-		engineLengthLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineLengthLabel.setLayoutX(6.0);
-		engineLengthLabel.setLayoutY(104.0);
-		engineDataPane.getChildren().add(engineLengthLabel);
-		
-		TextField engineLengthTextField = new TextField();
-		engineLengthTextField.setLayoutX(6.0);
-		engineLengthTextField.setLayoutY(125);
-		engineLengthTextField.setPrefWidth(340);
-		engineLengthTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineLengthTextField);
-		engineTurbopropLengthTextFieldMap.put(indexOfEngineTab, engineLengthTextField);
-		
-		ChoiceBox<String> engineLengthChoiceBox = new ChoiceBox<String>();
-		engineLengthChoiceBox.setLayoutX(348.0);
-		engineLengthChoiceBox.setLayoutY(125);
-		engineLengthChoiceBox.setPrefWidth(47);
-		engineLengthChoiceBox.setPrefHeight(30);
-		engineLengthChoiceBox.setItems(lengthUnitsList);
-		engineDataPane.getChildren().add(engineLengthChoiceBox);
-		engineTurbopropLengthUnitChoiceBoxMap.put(indexOfEngineTab, engineLengthChoiceBox);
-		
-		Label engineStaticPowerLabel = new Label("Static Power:");
-		engineStaticPowerLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineStaticPowerLabel.setLayoutX(6.0);
-		engineStaticPowerLabel.setLayoutY(159.0);
-		engineDataPane.getChildren().add(engineStaticPowerLabel);
-		
-		TextField engineStaticPowerTextField = new TextField();
-		engineStaticPowerTextField.setLayoutX(6.0);
-		engineStaticPowerTextField.setLayoutY(180);
-		engineStaticPowerTextField.setPrefWidth(340);
-		engineStaticPowerTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineStaticPowerTextField);
-		engineTurbopropStaticPowerTextFieldMap.put(indexOfEngineTab, engineStaticPowerTextField);
-		
-		ChoiceBox<String> engineStaticPowerChoiceBox = new ChoiceBox<String>();
-		engineStaticPowerChoiceBox.setLayoutX(348.0);
-		engineStaticPowerChoiceBox.setLayoutY(180);
-		engineStaticPowerChoiceBox.setPrefWidth(47);
-		engineStaticPowerChoiceBox.setPrefHeight(30);
-		engineStaticPowerChoiceBox.setItems(powerUnitsList);
-		engineDataPane.getChildren().add(engineStaticPowerChoiceBox);
-		engineTurbopropStaticPowerUnitChoiceBoxMap.put(indexOfEngineTab, engineStaticPowerChoiceBox);
-		
-		Label engineDryMassLabel = new Label("Dry Mass:");
-		engineDryMassLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineDryMassLabel.setLayoutX(6.0);
-		engineDryMassLabel.setLayoutY(213.0);
-		engineDataPane.getChildren().add(engineDryMassLabel);
-		
-		TextField engineDryMassTextField = new TextField();
-		engineDryMassTextField.setLayoutX(6.0);
-		engineDryMassTextField.setLayoutY(234);
-		engineDryMassTextField.setPrefWidth(340);
-		engineDryMassTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineDryMassTextField);
-		engineTurbopropDryMassTextFieldMap.put(indexOfEngineTab, engineDryMassTextField);
-		
-		ChoiceBox<String> engineDryMassChoiceBox = new ChoiceBox<String>();
-		engineDryMassChoiceBox.setLayoutX(348.0);
-		engineDryMassChoiceBox.setLayoutY(234);
-		engineDryMassChoiceBox.setPrefWidth(47);
-		engineDryMassChoiceBox.setPrefHeight(30);
-		engineDryMassChoiceBox.setItems(massUnitsList);
-		engineDataPane.getChildren().add(engineDryMassChoiceBox);
-		engineTurbopropDryMassUnitChoiceBoxMap.put(indexOfEngineTab, engineDryMassChoiceBox);
-		
-		Button engineDryMassCalculateButton = new Button("Calculate");
-		engineDryMassCalculateButton.setLayoutX(397.0);
-		engineDryMassCalculateButton.setLayoutY(234);
-		engineDryMassCalculateButton.setPrefHeight(31);
-		engineDryMassCalculateButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				calculateEngineDryMass(engineDryMassTextField, engineDryMassChoiceBox, indexOfEngineTab);
-			}
-		});
-		engineDataPane.getChildren().add(engineDryMassCalculateButton);
-		
-		Label enginePropellerDiameterLabel = new Label("Propeller Diameter:");
-		enginePropellerDiameterLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		enginePropellerDiameterLabel.setLayoutX(6.0);
-		enginePropellerDiameterLabel.setLayoutY(268.0);
-		engineDataPane.getChildren().add(enginePropellerDiameterLabel);
-		
-		TextField enginePropellerDiameterTextField = new TextField();
-		enginePropellerDiameterTextField.setLayoutX(6.0);
-		enginePropellerDiameterTextField.setLayoutY(289);
-		enginePropellerDiameterTextField.setPrefWidth(340);
-		enginePropellerDiameterTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(enginePropellerDiameterTextField);
-		engineTurbopropPropellerDiameterTextFieldMap.put(indexOfEngineTab, enginePropellerDiameterTextField);
-		
-		ChoiceBox<String> enginePropellerDiameterChoiceBox = new ChoiceBox<String>();
-		enginePropellerDiameterChoiceBox.setLayoutX(348.0);
-		enginePropellerDiameterChoiceBox.setLayoutY(289);
-		enginePropellerDiameterChoiceBox.setPrefWidth(47);
-		enginePropellerDiameterChoiceBox.setPrefHeight(30);
-		enginePropellerDiameterChoiceBox.setItems(lengthUnitsList);
-		engineDataPane.getChildren().add(enginePropellerDiameterChoiceBox);
-		engineTurbopropPropellerDiameterUnitChoiceBoxMap.put(indexOfEngineTab, enginePropellerDiameterChoiceBox);
-		
-		Label engineNumberOfBladesLabel = new Label("Number Of Blades:");
-		engineNumberOfBladesLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineNumberOfBladesLabel.setLayoutX(6.0);
-		engineNumberOfBladesLabel.setLayoutY(323.0);
-		engineDataPane.getChildren().add(engineNumberOfBladesLabel);
-		
-		TextField engineNumberOfBladesTextField = new TextField();
-		engineNumberOfBladesTextField.setLayoutX(6.0);
-		engineNumberOfBladesTextField.setLayoutY(344);
-		engineNumberOfBladesTextField.setPrefWidth(340);
-		engineNumberOfBladesTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineNumberOfBladesTextField);
-		engineTurbopropNumberOfBladesTextFieldMap.put(indexOfEngineTab, engineNumberOfBladesTextField);
-		
-		Label enginePropellerEfficiencyLabel = new Label("Propeller Efficiency:");
-		enginePropellerEfficiencyLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		enginePropellerEfficiencyLabel.setLayoutX(6.0);
-		enginePropellerEfficiencyLabel.setLayoutY(378.0);
-		engineDataPane.getChildren().add(enginePropellerEfficiencyLabel);
-		
-		TextField enginePropellerEfficiencyTextField = new TextField();
-		enginePropellerEfficiencyTextField.setLayoutX(6.0);
-		enginePropellerEfficiencyTextField.setLayoutY(399);
-		enginePropellerEfficiencyTextField.setPrefWidth(340);
-		enginePropellerEfficiencyTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(enginePropellerEfficiencyTextField);
-		engineTurbopropPropellerEfficiencyTextFieldMap.put(indexOfEngineTab, enginePropellerEfficiencyTextField);
-		
-		Label engineNumberOfCompressorStagesLabel = new Label("Number Of Compressor Stages:");
-		engineNumberOfCompressorStagesLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineNumberOfCompressorStagesLabel.setLayoutX(6.0);
-		engineNumberOfCompressorStagesLabel.setLayoutY(433.0);
-		engineDataPane.getChildren().add(engineNumberOfCompressorStagesLabel);
-		
-		TextField engineNumberOfCompressorStagesTextField = new TextField();
-		engineNumberOfCompressorStagesTextField.setLayoutX(6.0);
-		engineNumberOfCompressorStagesTextField.setLayoutY(454);
-		engineNumberOfCompressorStagesTextField.setPrefWidth(340);
-		engineNumberOfCompressorStagesTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineNumberOfCompressorStagesTextField);
-		engineTurbopropNumberOfCompressorStagesTextFieldMap.put(indexOfEngineTab, engineNumberOfCompressorStagesTextField);
-		
-		Label engineNumberOfShaftsLabel = new Label("Number Of Shafts:");
-		engineNumberOfShaftsLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineNumberOfShaftsLabel.setLayoutX(6.0);
-		engineNumberOfShaftsLabel.setLayoutY(487.0);
-		engineDataPane.getChildren().add(engineNumberOfShaftsLabel);
-		
-		TextField engineNumberOfShaftsTextField = new TextField();
-		engineNumberOfShaftsTextField.setLayoutX(6.0);
-		engineNumberOfShaftsTextField.setLayoutY(508);
-		engineNumberOfShaftsTextField.setPrefWidth(340);
-		engineNumberOfShaftsTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineNumberOfShaftsTextField);
-		engineTurbopropNumberOfShaftsTextFieldMap.put(indexOfEngineTab, engineNumberOfShaftsTextField);
-		
-		Label engineOverallPressureRatioLabel = new Label("Overall Pressure Ratio:");
-		engineOverallPressureRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineOverallPressureRatioLabel.setLayoutX(6.0);
-		engineOverallPressureRatioLabel.setLayoutY(542.0);
-		engineDataPane.getChildren().add(engineOverallPressureRatioLabel);
-		
-		TextField engineOverallPressureRatioTextField = new TextField();
-		engineOverallPressureRatioTextField.setLayoutX(6.0);
-		engineOverallPressureRatioTextField.setLayoutY(563);
-		engineOverallPressureRatioTextField.setPrefWidth(340);
-		engineOverallPressureRatioTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineOverallPressureRatioTextField);
-		engineTurbopropOverallPressureRatioTextFieldMap.put(indexOfEngineTab, engineOverallPressureRatioTextField);
-		
-		powerPlantPaneMap.put(EngineTypeEnum.TURBOPROP, engineDataPane);
-		powerPlantEngineTypePaneMap.put(indexOfEngineTab, powerPlantPaneMap);
-		powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(engineDataPane);
-		
-	}
+
 	
 	@FXML
-	private void showPistonDataRadioButton (int indexOfEngineTab) {
+	public void showPistonDataRadioButton (int indexOfEngineTab) {
 		
 		if (powerPlantEngineTypePaneMap.get(indexOfEngineTab) == null)
-			showPistonDataRadioButtonImplementation(indexOfEngineTab);
+			inputManagerControllerUtilities.showPistonDataRadioButtonImplementation(indexOfEngineTab);
 		else if (powerPlantEngineTypePaneMap.get(indexOfEngineTab).get(EngineTypeEnum.PISTON) == null) 
-			showPistonDataRadioButtonImplementation(indexOfEngineTab);
+			inputManagerControllerUtilities.showPistonDataRadioButtonImplementation(indexOfEngineTab);
 		else 
 			powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(
 					powerPlantEngineTypePaneMap.get(indexOfEngineTab).get(EngineTypeEnum.PISTON)
@@ -7351,231 +5427,8 @@ public class InputManagerController {
 		
 	}
 	
-	private void showPistonDataRadioButtonImplementation (int indexOfEngineTab) {
-		
-		Pane engineDataPane = new Pane();
-		
-		Label engineTypeLabel = new Label("Type:");
-		engineTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineTypeLabel.setLayoutX(6.0);
-		engineTypeLabel.setLayoutY(0.0);
-		engineDataPane.getChildren().add(engineTypeLabel);
-		
-		ChoiceBox<String> engineTypeChoiceBox = new ChoiceBox<String>();
-		engineTypeChoiceBox.setLayoutX(6.0);
-		engineTypeChoiceBox.setLayoutY(21.0);
-		engineTypeChoiceBox.setPrefWidth(340);
-		engineTypeChoiceBox.setPrefHeight(31);
-		engineTypeChoiceBox.setItems(pistonEngineTypeList);
-		engineDataPane.getChildren().add(engineTypeChoiceBox);
-		enginePistonTypeChoiceBoxMap.put(indexOfEngineTab, engineTypeChoiceBox); 
-		
-		Label engineDatabaseLabel = new Label("Database:");
-		engineDatabaseLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineDatabaseLabel.setLayoutX(6.0);
-		engineDatabaseLabel.setLayoutY(52.0);
-		engineDataPane.getChildren().add(engineDatabaseLabel);
-		
-		TextField engineDatabasePathTextField = new TextField();
-		engineDatabasePathTextField.setLayoutX(6.0);
-		engineDatabasePathTextField.setLayoutY(73);
-		engineDatabasePathTextField.setPrefWidth(340);
-		engineDatabasePathTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineDatabasePathTextField);
-		enginePistonDatabaseTextFieldMap.put(indexOfEngineTab, engineDatabasePathTextField);
-		
-		Button engineDatabasePathChooseButton = new Button("...");
-		engineDatabasePathChooseButton.setLayoutX(350.0);
-		engineDatabasePathChooseButton.setLayoutY(73);
-		engineDatabasePathChooseButton.setPrefWidth(24);
-		engineDatabasePathChooseButton.setPrefHeight(31);
-		engineDatabasePathChooseButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				chooseEngineDatabase(engineDatabasePathTextField);
-			}
-		});
-		engineDataPane.getChildren().add(engineDatabasePathChooseButton);
-		
-		Label engineLengthLabel = new Label("Length:");
-		engineLengthLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineLengthLabel.setLayoutX(6.0);
-		engineLengthLabel.setLayoutY(104.0);
-		engineDataPane.getChildren().add(engineLengthLabel);
-		
-		TextField engineLengthTextField = new TextField();
-		engineLengthTextField.setLayoutX(6.0);
-		engineLengthTextField.setLayoutY(125);
-		engineLengthTextField.setPrefWidth(340);
-		engineLengthTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineLengthTextField);
-		enginePistonLengthTextFieldMap.put(indexOfEngineTab, engineLengthTextField);
-		
-		ChoiceBox<String> engineLengthChoiceBox = new ChoiceBox<String>();
-		engineLengthChoiceBox.setLayoutX(348.0);
-		engineLengthChoiceBox.setLayoutY(125);
-		engineLengthChoiceBox.setPrefWidth(47);
-		engineLengthChoiceBox.setPrefHeight(30);
-		engineLengthChoiceBox.setItems(lengthUnitsList);
-		engineDataPane.getChildren().add(engineLengthChoiceBox);
-		enginePistonLengthUnitChoiceBoxMap.put(indexOfEngineTab, engineLengthChoiceBox);
-		
-		Label engineStaticPowerLabel = new Label("Static Power:");
-		engineStaticPowerLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineStaticPowerLabel.setLayoutX(6.0);
-		engineStaticPowerLabel.setLayoutY(159.0);
-		engineDataPane.getChildren().add(engineStaticPowerLabel);
-		
-		TextField engineStaticPowerTextField = new TextField();
-		engineStaticPowerTextField.setLayoutX(6.0);
-		engineStaticPowerTextField.setLayoutY(180);
-		engineStaticPowerTextField.setPrefWidth(340);
-		engineStaticPowerTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineStaticPowerTextField);
-		enginePistonStaticPowerTextFieldMap.put(indexOfEngineTab, engineStaticPowerTextField);
-		
-		ChoiceBox<String> engineStaticPowerChoiceBox = new ChoiceBox<String>();
-		engineStaticPowerChoiceBox.setLayoutX(348.0);
-		engineStaticPowerChoiceBox.setLayoutY(180);
-		engineStaticPowerChoiceBox.setPrefWidth(47);
-		engineStaticPowerChoiceBox.setPrefHeight(30);
-		engineStaticPowerChoiceBox.setItems(powerUnitsList);
-		engineDataPane.getChildren().add(engineStaticPowerChoiceBox);
-		enginePistonStaticPowerUnitChoiceBoxMap.put(indexOfEngineTab, engineStaticPowerChoiceBox);
-		
-		Label engineDryMassLabel = new Label("Dry Mass:");
-		engineDryMassLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineDryMassLabel.setLayoutX(6.0);
-		engineDryMassLabel.setLayoutY(213.0);
-		engineDataPane.getChildren().add(engineDryMassLabel);
-		
-		TextField engineDryMassTextField = new TextField();
-		engineDryMassTextField.setLayoutX(6.0);
-		engineDryMassTextField.setLayoutY(234);
-		engineDryMassTextField.setPrefWidth(340);
-		engineDryMassTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineDryMassTextField);
-		enginePistonDryMassTextFieldMap.put(indexOfEngineTab, engineDryMassTextField);
-		
-		ChoiceBox<String> engineDryMassChoiceBox = new ChoiceBox<String>();
-		engineDryMassChoiceBox.setLayoutX(348.0);
-		engineDryMassChoiceBox.setLayoutY(234);
-		engineDryMassChoiceBox.setPrefWidth(47);
-		engineDryMassChoiceBox.setPrefHeight(30);
-		engineDryMassChoiceBox.setItems(massUnitsList);
-		engineDataPane.getChildren().add(engineDryMassChoiceBox);
-		enginePistonDryMassUnitChoiceBoxMap.put(indexOfEngineTab, engineDryMassChoiceBox);
-		
-		Button engineDryMassCalculateButton = new Button("Calculate");
-		engineDryMassCalculateButton.setLayoutX(397.0);
-		engineDryMassCalculateButton.setLayoutY(234);
-		engineDryMassCalculateButton.setPrefHeight(31);
-		engineDryMassCalculateButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				calculateEngineDryMass(engineDryMassTextField, engineDryMassChoiceBox, indexOfEngineTab);
-			}
-		});
-		engineDataPane.getChildren().add(engineDryMassCalculateButton);
-		
-		Label enginePropellerDiameterLabel = new Label("Propeller Diameter:");
-		enginePropellerDiameterLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		enginePropellerDiameterLabel.setLayoutX(6.0);
-		enginePropellerDiameterLabel.setLayoutY(268.0);
-		engineDataPane.getChildren().add(enginePropellerDiameterLabel);
-		
-		TextField enginePropellerDiameterTextField = new TextField();
-		enginePropellerDiameterTextField.setLayoutX(6.0);
-		enginePropellerDiameterTextField.setLayoutY(289);
-		enginePropellerDiameterTextField.setPrefWidth(340);
-		enginePropellerDiameterTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(enginePropellerDiameterTextField);
-		enginePistonPropellerDiameterTextFieldMap.put(indexOfEngineTab, enginePropellerDiameterTextField);
-		
-		ChoiceBox<String> enginePropellerDiameterChoiceBox = new ChoiceBox<String>();
-		enginePropellerDiameterChoiceBox.setLayoutX(348.0);
-		enginePropellerDiameterChoiceBox.setLayoutY(289);
-		enginePropellerDiameterChoiceBox.setPrefWidth(47);
-		enginePropellerDiameterChoiceBox.setPrefHeight(30);
-		enginePropellerDiameterChoiceBox.setItems(lengthUnitsList);
-		engineDataPane.getChildren().add(enginePropellerDiameterChoiceBox);
-		enginePistonPropellerDiameterUnitChoiceBoxMap.put(indexOfEngineTab, enginePropellerDiameterChoiceBox);
-		
-		Label engineNumberOfBladesLabel = new Label("Number Of Blades:");
-		engineNumberOfBladesLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		engineNumberOfBladesLabel.setLayoutX(6.0);
-		engineNumberOfBladesLabel.setLayoutY(323.0);
-		engineDataPane.getChildren().add(engineNumberOfBladesLabel);
-		
-		TextField engineNumberOfBladesTextField = new TextField();
-		engineNumberOfBladesTextField.setLayoutX(6.0);
-		engineNumberOfBladesTextField.setLayoutY(344);
-		engineNumberOfBladesTextField.setPrefWidth(340);
-		engineNumberOfBladesTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(engineNumberOfBladesTextField);
-		enginePistonNumberOfBladesTextFieldMap.put(indexOfEngineTab, engineNumberOfBladesTextField);
-		
-		Label enginePropellerEfficiencyLabel = new Label("Propeller Efficiency:");
-		enginePropellerEfficiencyLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-		enginePropellerEfficiencyLabel.setLayoutX(6.0);
-		enginePropellerEfficiencyLabel.setLayoutY(378.0);
-		engineDataPane.getChildren().add(enginePropellerEfficiencyLabel);
-		
-		TextField enginePropellerEfficiencyTextField = new TextField();
-		enginePropellerEfficiencyTextField.setLayoutX(6.0);
-		enginePropellerEfficiencyTextField.setLayoutY(399);
-		enginePropellerEfficiencyTextField.setPrefWidth(340);
-		enginePropellerEfficiencyTextField.setPrefHeight(31);
-		engineDataPane.getChildren().add(enginePropellerEfficiencyTextField);
-		enginePistonPropellerEfficiencyTextFieldMap.put(indexOfEngineTab, enginePropellerEfficiencyTextField);
-		
-		powerPlantPaneMap.put(EngineTypeEnum.PISTON, engineDataPane);
-		powerPlantEngineTypePaneMap.put(indexOfEngineTab, powerPlantPaneMap);
-		powerPlantBorderPaneMap.get(indexOfEngineTab).setCenter(engineDataPane);
-		
-	}
-	
 	@FXML
-	private void setEstimateNacelleGeometryAction (Button estimateButton, Tab currentTab) {
-		
-		estimateButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				
-				int tabIndex = tabPaneNacelles.getTabs().indexOf(currentTab);	
-				
-				NacelleCreator currentNacelle = Main.getTheAircraft().getNacelles().getNacellesList().get(tabIndex);
-
-				currentNacelle.estimateDimensions(currentNacelle.getTheEngine());
-
-				textFieldNacelleLengthList.get(tabIndex).clear();
-				textFieldNacelleLengthList.get(tabIndex).setText(
-						String.valueOf(currentNacelle.getLength().getEstimatedValue()));
-
-				if(currentNacelle.getLength().getUnit().toString().equalsIgnoreCase("m"))
-					choiceBoxNacelleLengthUnitList.get(tabIndex).getSelectionModel().select(0);
-				else if(currentNacelle.getLength().getUnit().toString().equalsIgnoreCase("ft"))
-					choiceBoxNacelleLengthUnitList.get(tabIndex).getSelectionModel().select(1);
-
-				textFieldNacelleMaximumDiameterList.get(tabIndex).clear();
-				textFieldNacelleMaximumDiameterList.get(tabIndex).setText(
-						String.valueOf(currentNacelle.getDiameterMax().getEstimatedValue()));
-
-				if(currentNacelle.getDiameterMax().getUnit().toString().equalsIgnoreCase("m"))
-					choiceBoxNacelleMaximumDiameterUnitList.get(tabIndex).getSelectionModel().select(0);
-				else if(currentNacelle.getDiameterMax().getUnit().toString().equalsIgnoreCase("ft"))
-					choiceBoxNacelleMaximumDiameterUnitList.get(tabIndex).getSelectionModel().select(1);
-
-			}
-		});
-
-		
-		
-	}
-
-	@FXML
-	private void calculateEngineDryMass (TextField dryMassTextField, ChoiceBox<String> dryMassChoiceBox, int indexOfEngineTab) {
+	public void calculateEngineDryMass (TextField dryMassTextField, ChoiceBox<String> dryMassChoiceBox, int indexOfEngineTab) {
 
 		if (Main.getTheAircraft() != null) {
 			if (Main.getTheAircraft().getPowerPlant() != null) {
@@ -7737,13 +5590,10 @@ public class InputManagerController {
 		else {
 			dryMassTextField.setText("INVALID VALUE. THE AIRCRAFT IS NULL");
 		}
-		
-		
-		
 	}
 	
 	@FXML
-	private void showAirfoilData(String airfoilFileName, Button detailButton, ComponentEnum type) throws IOException {
+	public void showAirfoilData(String airfoilFileName, Button detailButton, ComponentEnum type) throws IOException {
 		
 		Tab airfoilTab = new Tab("Airfoil: " + airfoilFileName);
 		
@@ -7772,7 +5622,7 @@ public class InputManagerController {
 			airfoilInputManagerController.createCmCurve();
 
 			airfoilTab.setContent(contentPane);
-			removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab, type);
+			inputManagerControllerUtilities.removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab, type);
 
 			tabPaneWingViewAndAirfoils.getTabs().add(airfoilTab);			
 			break;
@@ -7796,7 +5646,7 @@ public class InputManagerController {
 			airfoilInputManagerController.createCmCurve();
 
 			airfoilTab.setContent(contentPane);
-			removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab, type);
+			inputManagerControllerUtilities.removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab, type);
 
 			tabPaneHTailViewAndAirfoils.getTabs().add(airfoilTab);
 			break;
@@ -7820,7 +5670,7 @@ public class InputManagerController {
 			airfoilInputManagerController.createCmCurve();
 
 			airfoilTab.setContent(contentPane);
-			removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab, type);
+			inputManagerControllerUtilities.removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab, type);
 
 			tabPaneVTailViewAndAirfoils.getTabs().add(airfoilTab);
 			break;
@@ -7844,7 +5694,7 @@ public class InputManagerController {
 			airfoilInputManagerController.createCmCurve();
 
 			airfoilTab.setContent(contentPane);
-			removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab, type);
+			inputManagerControllerUtilities.removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab, type);
 
 			tabPaneCanardViewAndAirfoils.getTabs().add(airfoilTab);
 			break;
@@ -7858,7 +5708,7 @@ public class InputManagerController {
 	}
 	
 	@FXML
-	private void chooseAirfoilFile(TextField panelInnerSectionAirfoilPathTextField) {
+	public void chooseAirfoilFile(TextField panelInnerSectionAirfoilPathTextField) {
 		
 		aircraftFileChooser = new FileChooser();
 		aircraftFileChooser.setTitle("Open File");
@@ -7878,7 +5728,7 @@ public class InputManagerController {
 	}
 	
 	@FXML
-	private void chooseEngineDatabase(TextField engineDatabasePathTextField) {
+	public void chooseEngineDatabase(TextField engineDatabasePathTextField) {
 		
 		engineDatabaseFileChooser = new FileChooser();
 		engineDatabaseFileChooser.setTitle("Open File");
@@ -7932,9 +5782,6 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftCabinConfigurationFile.setText(file.getAbsolutePath());
 		}
-		
-		
-		
 	}
 	
 	@FXML
@@ -8052,55 +5899,6 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftCanardFile.setText(file.getAbsolutePath());
 		}
-		
-		
-		
-	}
-	
-	private void chooseAircraftEngineFile(int indexOfEngine) throws IOException {
-
-		engineFileChooser = new FileChooser();
-		engineFileChooser.setTitle("Open File");
-		engineFileChooser.setInitialDirectory(
-				new File(
-						Main.getInputDirectoryPath() 
-						+ File.separator 
-						+ "Template_Aircraft" 
-						+ File.separator 
-						+ "engines"
-						)
-				);
-		File file = engineFileChooser.showOpenDialog(null);
-		if (file != null) {
-			// get full path and populate the text box
-			textFieldsAircraftEngineFileList.get(indexOfEngine).setText(file.getAbsolutePath());
-		}
-		
-		
-		
-	}
-	
-	private void chooseAircraftNacelleFile(int indexOfNacelle) throws IOException {
-
-		nacelleFileChooser = new FileChooser();
-		nacelleFileChooser.setTitle("Open File");
-		nacelleFileChooser.setInitialDirectory(
-				new File(
-						Main.getInputDirectoryPath() 
-						+ File.separator 
-						+ "Template_Aircraft" 
-						+ File.separator 
-						+ "nacelles"
-						)
-				);
-		File file = nacelleFileChooser.showOpenDialog(null);
-		if (file != null) {
-			// get full path and populate the text box
-			textFieldsAircraftNacelleFileList.get(indexOfNacelle).setText(file.getAbsolutePath());
-		}
-		
-		
-		
 	}
 	
 	@FXML
@@ -8147,32 +5945,6 @@ public class InputManagerController {
 			textFieldAircraftSystemsFile.setText(file.getAbsolutePath());
 		}
 		
-	}
-	
-	private boolean isAircraftFile(String pathToAircraftXML) {
-
-		boolean isAircraftFile = false;
-		
-		final PrintStream originalOut = System.out;
-		PrintStream filterStream = new PrintStream(new OutputStream() {
-			public void write(int b) {
-				// write nothing
-			}
-		});
-		System.setOut(filterStream);
-
-		if(pathToAircraftXML.endsWith(".xml")) {
-			File inputFile = new File(pathToAircraftXML);
-			if(inputFile.exists()) {
-				JPADXmlReader reader = new JPADXmlReader(pathToAircraftXML);
-				if(reader.getXmlDoc().getElementsByTagName("aircraft").getLength() > 0)
-					isAircraftFile = true;
-			}
-		}
-		// write again
-		System.setOut(originalOut);
-		
-		return isAircraftFile;
 	}
 	
 	@FXML
@@ -9145,7 +6917,7 @@ public class InputManagerController {
 	@FXML
 	private void loadAircraftFile() throws IOException, InterruptedException {
 	
-		if(isAircraftFile(textFieldAircraftInputFile.getText()))
+		if(inputManagerControllerUtilities.isAircraftFile(textFieldAircraftInputFile.getText()))
 			try {
 				loadAircraftFileImplementation();
 				loadAircraftButton.setStyle("");
@@ -10867,17 +8639,23 @@ public class InputManagerController {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void updateFuselageTabData() {
 		
-
+		FusDesDatabaseReader fusDesDatabaseReader = Main.getTheAircraft().getFuselage().getFusDesDatabaseReader();
+		
 		if (!fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
 			
+			//................................................................................................
+			// ASSIGNING TEXTFIELDS STYLE ...
 			textFieldFuselageLength.setStyle(textFieldAlertStyle);
 			textFieldFuselageNoseLengthRatio.setStyle(textFieldAlertStyle);
 			textFieldFuselageCylinderLengthRatio.setStyle(textFieldAlertStyle);
 			textFieldFuselageCylinderSectionHeight.setStyle(textFieldAlertStyle);
 			textFieldFuselageCylinderSectionWidth.setStyle(textFieldAlertStyle);
 
+			//................................................................................................
+			// ADJUSTING MEASURES ...
 			Stage fuselageAdjustCriterionDialog = new FuselageAdjustCriterionDialog(
 					Main.getPrimaryStage(), 
 					fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem()
@@ -10886,8 +8664,409 @@ public class InputManagerController {
 			fuselageAdjustCriterionDialog.initStyle(StageStyle.UNDECORATED);
 			fuselageAdjustCriterionDialog.showAndWait();
 			
+			//.................................................................................................
+			// REMOVING TEXTFIELDS STYLE ...
+			textFieldFuselageLength.setStyle("");
+			textFieldFuselageNoseLengthRatio.setStyle("");
+			textFieldFuselageCylinderLengthRatio.setStyle("");
+			textFieldFuselageCylinderSectionHeight.setStyle("");
+			textFieldFuselageCylinderSectionWidth.setStyle("");
+			
+			//.................................................................................................
+			// SETTING NEW MEASURE DATA TO TEXTFIELDS ...
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF() != null) {
+				textFieldFuselageLength.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().getEstimatedValue())
+						);
+				
+				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF()
+						.getUnit().toString().equalsIgnoreCase("m"))
+					fuselageLengthUnitChoiceBox.getSelectionModel().select(0);
+				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF()
+						.getUnit().toString().equalsIgnoreCase("ft"))
+					fuselageLengthUnitChoiceBox.getSelectionModel().select(1);
+				
+			}
+			
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioNF() != null) 
+				textFieldFuselageNoseLengthRatio.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioNF())
+						);
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioCF() != null) 
+				textFieldFuselageCylinderLengthRatio.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioCF())
+						);
+			
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight() != null) {
+				textFieldFuselageCylinderSectionHeight.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().getEstimatedValue())
+						);
+				
+				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight()
+						.getUnit().toString().equalsIgnoreCase("m"))
+					fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().select(0);
+				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight()
+						.getUnit().toString().equalsIgnoreCase("ft"))
+					fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().select(1);
+				
+			}
+			
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth() != null) {
+				textFieldFuselageCylinderSectionWidth.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().getEstimatedValue())
+						);
+				
+				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth()
+						.getUnit().toString().equalsIgnoreCase("m"))
+					fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().select(0);
+				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth()
+						.getUnit().toString().equalsIgnoreCase("ft"))
+					fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().select(1);
+				
+			}
+			
 		}
 		
+		//.................................................................................................
+		// DATA INITIALIZATION
+		//.................................................................................................
+		boolean fuselagePressurizedFlag = false;
+		String fuselageDeckNumber = "";
+		String fuselageLength = "";
+		String fuselageLengthUnit = "";
+		String fuselageRoughness = "";
+		String fuselageRoughnessUnit = "";
+		//.................................................................................................
+		String fuselageNoseLengthRatio = "";
+		String fuselageNoseTipOffset = "";
+		String fuselageNoseTipOffsetUnit = "";
+		String fuselageNoseDxCapPercent = "";
+		String fuselageNoseWindshieldType = "";
+		String fuselageNoseWindshieldWidth = "";
+		String fuselageNoseWindshieldWidthUnit = "";
+		String fuselageNoseWindshieldHeigth = "";
+		String fuselageNoseWindshieldHeightUnit = "";
+		String fuselageNoseMidSectionToTotalSectionHeightRatio = "";
+		String fuselageNoseSectionRhoUpper = "";
+		String fuselageNoseSectionRhoLower = "";
+		//.................................................................................................
+		String fuselageCylinderLengthRatio = "";
+		String fuselageCylinderSectionWidth = "";
+		String fuselageCylinderSectionWidthUnit = "";
+		String fuselageCylinderSectionHeight = "";
+		String fuselageCylinderSectionHeigthUnit = "";
+		String fuselageCylinderHeigthFromGround = "";
+		String fuselageCylinderHeigthFromGroundUnit = "";
+		String fuselageCylinderMidSectionToTotalSectionHeightRatio = "";
+		String fuselageCylinderSectionRhoUpper = "";
+		String fuselageCylinderSectionRhoLower = "";
+		//.................................................................................................
+		String fuselageTailTipOffset = "";
+		String fuselageTailTipOffsetUnit = "";
+		String fuselageTailDxCapPercent = "";
+		String fuselageTailMidSectionToTotalSectionHeightRatio = "";
+		String fuselageTailSectionRhoUpper = "";
+		String fuselageTailSectionRhoLower = "";
+		//.................................................................................................
+		List<String> fuselageSpoilersInnerSpanwisePositionList = new ArrayList<>();
+		List<String> fuselageSpoilersOuterSpanwisePositionList = new ArrayList<>();
+		List<String> fuselageSpoilersInnerChordwisePositionList = new ArrayList<>();
+		List<String> fuselageSpoilersOuterChordwisePositionList = new ArrayList<>();
+		List<String> fuselageSpoilersMaximumDeflectionAngleList = new ArrayList<>();
+		List<String> fuselageSpoilersMaximumDeflectionAngleUnitList = new ArrayList<>();
+		List<String> fuselageSpoilersMinimumDeflectionAngleList = new ArrayList<>();
+		List<String> fuselageSpoilersMinimumDeflectionAngleUnitList = new ArrayList<>();
+		
+		//.................................................................................................
+		// FETCHING DATA FROM GUI FIELDS ...
+		//.................................................................................................
+		if(fuselagePressurizedCheckBox.isSelected())
+			fuselagePressurizedFlag = true;
+		if(textFieldFuselageDeckNumber.getText() != null)
+			fuselageDeckNumber = textFieldFuselageDeckNumber.getText();
+		if(textFieldFuselageLength.getText() != null)
+			fuselageLength = textFieldFuselageLength.getText();
+		if(!fuselageLengthUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageLengthUnit = fuselageLengthUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldFuselageSurfaceRoughness.getText() != null)
+			fuselageRoughness = textFieldFuselageSurfaceRoughness.getText();
+		if(!fuselageRoughnessUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageRoughnessUnit = fuselageRoughnessUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(textFieldFuselageNoseLengthRatio.getText() != null)
+			fuselageNoseLengthRatio = textFieldFuselageNoseLengthRatio.getText();
+		if(textFieldFuselageNoseTipOffset.getText() != null)
+			fuselageNoseTipOffset = textFieldFuselageNoseTipOffset.getText();
+		if(!fuselageNoseTipOffsetZUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageNoseTipOffsetUnit = fuselageNoseTipOffsetZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldFuselageNoseDxCap.getText() != null)
+			fuselageNoseDxCapPercent = textFieldFuselageNoseDxCap.getText();
+		if(!windshieldTypeChoiceBox.getSelectionModel().isEmpty())
+			fuselageNoseWindshieldType = windshieldTypeChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldFuselageNoseWindshieldWidth.getText() != null)
+			fuselageNoseWindshieldWidth = textFieldFuselageNoseWindshieldWidth.getText();
+		if(!fuselageWindshieldWidthUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageNoseWindshieldWidthUnit = fuselageWindshieldWidthUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldFuselageNoseWindshieldWidth.getText() != null)
+			fuselageNoseWindshieldWidth = textFieldFuselageNoseWindshieldWidth.getText();
+		if(!fuselageWindshieldWidthUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageNoseWindshieldWidthUnit = fuselageWindshieldWidthUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldFuselageNoseWindshieldHeight.getText() != null)
+			fuselageNoseWindshieldHeigth = textFieldFuselageNoseWindshieldHeight.getText();
+		if(!fuselageWindshieldHeightUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageNoseWindshieldHeightUnit = fuselageWindshieldHeightUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldFuselageNoseMidSectionHeight.getText() != null)
+			fuselageNoseMidSectionToTotalSectionHeightRatio = textFieldFuselageNoseMidSectionHeight.getText();
+		if(textFieldFuselageNoseMidSectionRhoUpper.getText() != null)
+			fuselageNoseSectionRhoUpper = textFieldFuselageNoseMidSectionRhoUpper.getText();
+		if(textFieldFuselageNoseMidSectionRhoLower.getText() != null)
+			fuselageNoseSectionRhoLower = textFieldFuselageNoseMidSectionRhoLower.getText();
+		//.................................................................................................
+		if(textFieldFuselageCylinderLengthRatio.getText() != null)
+			fuselageCylinderLengthRatio = textFieldFuselageCylinderLengthRatio.getText();
+		if(textFieldFuselageCylinderSectionWidth.getText() != null)
+			fuselageCylinderSectionWidth = textFieldFuselageCylinderSectionWidth.getText();
+		if(!fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageCylinderSectionWidthUnit = fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldFuselageCylinderSectionHeight.getText() != null)
+			fuselageCylinderSectionHeight = textFieldFuselageCylinderSectionHeight.getText();
+		if(!fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageCylinderSectionHeigthUnit = fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldFuselageCylinderHeightFromGround.getText() != null)
+			fuselageCylinderHeigthFromGround = textFieldFuselageCylinderHeightFromGround.getText();
+		if(!fuselageHeightFromGroundUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageCylinderHeigthFromGroundUnit = fuselageHeightFromGroundUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldFuselageCylinderSectionHeightRatio.getText() != null)
+			fuselageCylinderMidSectionToTotalSectionHeightRatio = textFieldFuselageCylinderSectionHeightRatio.getText();
+		if(textFieldFuselageCylinderSectionRhoUpper.getText() != null)
+			fuselageCylinderSectionRhoUpper = textFieldFuselageCylinderSectionRhoUpper.getText();
+		if(textFieldFuselageCylinderSectionRhoLower.getText() != null)
+			fuselageCylinderSectionRhoLower = textFieldFuselageCylinderSectionRhoLower.getText();
+		//.................................................................................................
+		if(textFieldFuselageTailTipOffset.getText() != null)
+			fuselageTailTipOffset = textFieldFuselageTailTipOffset.getText();
+		if(!fuselageTailTipOffsetZUnitChoiceBox.getSelectionModel().isEmpty())
+			fuselageTailTipOffsetUnit = fuselageTailTipOffsetZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldFuselageTailDxCap.getText() != null)
+			fuselageTailDxCapPercent = textFieldFuselageTailDxCap.getText();
+		if(textFieldFuselageTailMidSectionHeight.getText() != null)
+			fuselageTailMidSectionToTotalSectionHeightRatio = textFieldFuselageTailMidSectionHeight.getText();
+		if(textFieldFuselageTailMidRhoLower.getText() != null)
+			fuselageTailSectionRhoUpper = textFieldFuselageTailMidRhoUpper.getText();
+		if(textFieldFuselageTailMidRhoLower.getText() != null)
+			fuselageTailSectionRhoLower = textFieldFuselageTailMidRhoLower.getText();
+		//.................................................................................................
+		if(!textFieldFuselageInnerSpanwisePositionSpoilerList.isEmpty())
+			textFieldFuselageInnerSpanwisePositionSpoilerList.stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> fuselageSpoilersInnerSpanwisePositionList.add(tf.getText()));
+		if(!textFieldFuselageOuterSpanwisePositionSpoilerList.isEmpty())
+			textFieldFuselageOuterSpanwisePositionSpoilerList.stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> fuselageSpoilersOuterSpanwisePositionList.add(tf.getText()));
+		if(!textFieldFuselageInnerChordwisePositionSpoilerList.isEmpty())
+			textFieldFuselageInnerChordwisePositionSpoilerList.stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> fuselageSpoilersInnerChordwisePositionList.add(tf.getText()));
+		if(!textFieldFuselageOuterChordwisePositionSpoilerList.isEmpty())
+			textFieldFuselageOuterChordwisePositionSpoilerList.stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> fuselageSpoilersOuterChordwisePositionList.add(tf.getText()));
+		if(!textFieldFuselageMaximumDeflectionAngleSpoilerList.isEmpty())
+			textFieldFuselageMaximumDeflectionAngleSpoilerList.stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> fuselageSpoilersMaximumDeflectionAngleList.add(tf.getText()));
+		if(!choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList.isEmpty())
+			choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList.stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> fuselageSpoilersMaximumDeflectionAngleUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!textFieldFuselageMinimumDeflectionAngleSpoilerList.isEmpty())
+			textFieldFuselageMinimumDeflectionAngleSpoilerList.stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> fuselageSpoilersMinimumDeflectionAngleList.add(tf.getText()));
+		if(!choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList.isEmpty())
+			choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList.stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> fuselageSpoilersMinimumDeflectionAngleUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		
+		//.................................................................................................
+		// FILTERING FILLED NACELLE AND ENGINES TABS ...
+		//.................................................................................................
+		int numberOfFilledFuselageSpoilerTabs = Arrays.asList(
+				fuselageSpoilersInnerSpanwisePositionList.size(),
+				fuselageSpoilersOuterSpanwisePositionList.size(),
+				fuselageSpoilersInnerChordwisePositionList.size(),
+				fuselageSpoilersOuterChordwisePositionList.size(),
+				fuselageSpoilersMaximumDeflectionAngleList.size(),
+				fuselageSpoilersMaximumDeflectionAngleUnitList.size(),
+				fuselageSpoilersMinimumDeflectionAngleList.size(),
+				fuselageSpoilersMinimumDeflectionAngleUnitList.size()
+				).stream()
+				.mapToInt(size -> size)
+				.min()
+				.getAsInt();
+		
+		if (tabPaneFuselageSpoilers.getTabs().size() > numberOfFilledFuselageSpoilerTabs) {
+			
+			Platform.runLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					
+					//..................................................................................
+					// FUSELAGE SPOILERS UPDATE WARNING
+					Stage fuselageSpoilersUpdateWarning = new Stage();
+					
+					fuselageSpoilersUpdateWarning.setTitle("Fuselage Spoiler Update Warning");
+					fuselageSpoilersUpdateWarning.initModality(Modality.WINDOW_MODAL);
+					fuselageSpoilersUpdateWarning.initStyle(StageStyle.UNDECORATED);
+					fuselageSpoilersUpdateWarning.initOwner(Main.getPrimaryStage());
+
+					FXMLLoader loader = new FXMLLoader();
+					loader.setLocation(Main.class.getResource("inputmanager/UpdateFuselageSpoilersWarning.fxml"));
+					BorderPane fuselageSpoilersUpdateWarningBorderPane = null;
+					try {
+						fuselageSpoilersUpdateWarningBorderPane = loader.load();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+					Button continueButton = (Button) fuselageSpoilersUpdateWarningBorderPane.lookup("#warningContinueButton");
+					continueButton.setOnAction(new EventHandler<ActionEvent>() {
+						
+						@Override
+						public void handle(ActionEvent arg0) {
+							fuselageSpoilersUpdateWarning.close();
+						}
+						
+					});
+					
+					Scene scene = new Scene(fuselageSpoilersUpdateWarningBorderPane);
+					fuselageSpoilersUpdateWarning.setScene(scene);
+					fuselageSpoilersUpdateWarning.sizeToScene();
+					fuselageSpoilersUpdateWarning.show();
+					
+				}
+			});
+			
+		}
+		
+		//.................................................................................................
+		// SETTING ALL DATA INSIDE THE AIRCRAFT OBJECT ...
+		//.................................................................................................
+		List<SpoilerCreator> spoilersList = new ArrayList<>();
+		
+		for (int i=0; i<numberOfFilledFuselageSpoilerTabs; i++) {
+		
+			spoilersList.add(
+					new SpoilerCreator.SpoilerBuilder(
+							"Fuselage Spoiler " + (i+1) + " - " + Main.getTheAircraft().getId(), 
+							Double.valueOf(fuselageSpoilersInnerSpanwisePositionList.get(i)), 
+							Double.valueOf(fuselageSpoilersOuterSpanwisePositionList.get(i)), 
+							Double.valueOf(fuselageSpoilersInnerChordwisePositionList.get(i)), 
+							Double.valueOf(fuselageSpoilersOuterChordwisePositionList.get(i)), 
+							(Amount<Angle>) Amount.valueOf(
+									Double.valueOf(fuselageSpoilersMinimumDeflectionAngleList.get(i)),
+									Unit.valueOf(fuselageSpoilersMinimumDeflectionAngleUnitList.get(i))
+									),
+							(Amount<Angle>) Amount.valueOf(
+									Double.valueOf(fuselageSpoilersMaximumDeflectionAngleList.get(i)), 
+									Unit.valueOf(fuselageSpoilersMaximumDeflectionAngleUnitList.get(i))
+									)
+							).build()
+					);
+		}
+		
+		FuselageCreator fuselageCreator = new FuselageCreator.FuselageBuilder("Fuselage Creator - " + Main.getTheAircraft().getId())
+				// TOP LEVEL
+				.pressurized(fuselagePressurizedFlag)
+				//GLOBAL DATA
+				.length(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(fuselageLength),
+								Unit.valueOf(fuselageLengthUnit)
+								)
+						)
+				.deckNumber(Integer.valueOf(fuselageDeckNumber))
+				.roughness(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(fuselageRoughness),
+								Unit.valueOf(fuselageRoughnessUnit)
+								)
+						)
+				// NOSE TRUNK
+				.dxNoseCapPercent(Double.valueOf(fuselageNoseDxCapPercent))
+				.heightN(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(fuselageNoseTipOffset),
+								Unit.valueOf(fuselageNoseTipOffsetUnit)
+								)
+						)
+				.lenRatioNF(Double.valueOf(fuselageNoseLengthRatio))
+				.sectionMidNoseRhoLower(Double.valueOf(fuselageNoseSectionRhoUpper))
+				.sectionMidNoseRhoUpper(Double.valueOf(fuselageNoseSectionRhoLower))
+				.sectionNoseMidLowerToTotalHeightRatio(Double.valueOf(fuselageNoseMidSectionToTotalSectionHeightRatio))
+				.windshieldType(WindshieldTypeEnum.valueOf(fuselageNoseWindshieldType))
+				.windshieldHeight(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(fuselageNoseWindshieldHeigth),
+								Unit.valueOf(fuselageNoseWindshieldHeightUnit)
+								)
+						)
+				.windshieldWidth(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(fuselageNoseWindshieldWidth),
+								Unit.valueOf(fuselageNoseWindshieldWidthUnit)
+								)
+						)
+				// CYLINDRICAL TRUNK
+				.lenRatioCF(Double.valueOf(fuselageCylinderLengthRatio))
+				.sectionCylinderHeight(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(fuselageCylinderSectionHeight),
+								Unit.valueOf(fuselageCylinderSectionHeigthUnit)
+								)
+						)
+				.sectionCylinderWidth(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(fuselageCylinderSectionWidth),
+								Unit.valueOf(fuselageCylinderSectionWidthUnit)
+								)
+						)
+				.heightFromGround(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(fuselageCylinderHeigthFromGround),
+								Unit.valueOf(fuselageCylinderHeigthFromGroundUnit)
+								)
+						)
+				.sectionCylinderLowerToTotalHeightRatio(Double.valueOf(fuselageCylinderMidSectionToTotalSectionHeightRatio))
+				.sectionCylinderRhoLower(Double.valueOf(fuselageCylinderSectionRhoLower))
+				.sectionCylinderRhoUpper(Double.valueOf(fuselageCylinderSectionRhoUpper))
+				// TAIL TRUNK
+				.heightT(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(fuselageTailTipOffset),
+								Unit.valueOf(fuselageTailTipOffsetUnit)
+								)
+						)
+				.dxTailCapPercent(Double.valueOf(fuselageTailDxCapPercent))
+				.sectionMidTailRhoLower(Double.valueOf(fuselageTailSectionRhoLower))
+				.sectionMidTailRhoUpper(Double.valueOf(fuselageTailSectionRhoUpper))
+				.sectionTailMidLowerToTotalHeightRatio(Double.valueOf(fuselageTailMidSectionToTotalSectionHeightRatio))
+				.build();
+		
+		// SPOILERS
+		fuselageCreator.setSpoilers(spoilersList);
+		
+		Main.getTheAircraft().setFuselage(
+				new Fuselage.FuselageBuilder(
+						"Fuselage",
+						fusDesDatabaseReader
+						)
+				.fuselageCreator(fuselageCreator)
+				.build()
+				);
+		Main.getTheAircraft().getFuselage().getFuselageCreator().calculateGeometry();
 		
 	}
 	
@@ -12218,7 +10397,7 @@ public class InputManagerController {
 						);
 
 				Main.getTheAircraft().setFuselage(
-						new FuselageBuilder(
+						new Fuselage.FuselageBuilder(
 								"Fuselage - " + Main.getTheAircraft().getId(),
 								fusDesDatabaseReader
 								)
@@ -14972,7 +13151,7 @@ public class InputManagerController {
 			int iStart = tabPaneAircraftEngines.getTabs().size();
 			
 			for(int i=iStart; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++)
-				addAircraftEngineImplementation();
+				inputManagerControllerUtilities.addAircraftEngineImplementation();
 			
 		}
 		
@@ -15125,7 +13304,7 @@ public class InputManagerController {
 			int iStart = tabPaneAircraftNacelles.getTabs().size();
 			
 			for(int i=iStart; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++)
-				addAircraftNacelleImplementation();
+				inputManagerControllerUtilities.addAircraftNacelleImplementation();
 			
 		}
 		
@@ -21590,7 +19769,7 @@ public class InputManagerController {
 				int iStart = tabPaneNacelles.getTabs().size();
 
 				for(int i=iStart; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++)
-					addNacelleImplementation();
+					inputManagerControllerUtilities.addNacelleImplementation();
 
 			}
 
@@ -21717,7 +19896,7 @@ public class InputManagerController {
 				int iStart = tabPaneEngines.getTabs().size();
 
 				for(int i=iStart; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++)
-					addEngineImplementation();
+					inputManagerControllerUtilities.addEngineImplementation();
 
 			}
 
@@ -21731,7 +19910,7 @@ public class InputManagerController {
 				case TURBOFAN:
 					
 					powerPlantJetRadioButtonList.get(i).setSelected(true);
-					showTurbojetTurboFanDataRadioButtonImplementation(i);
+					inputManagerControllerUtilities.showTurbojetTurboFanDataRadioButtonImplementation(i);
 					
 					//---------------------------------------------------------------------------------
 					// ENGINE TYPE:
@@ -21852,7 +20031,7 @@ public class InputManagerController {
 				case TURBOJET:
 					
 					powerPlantJetRadioButtonList.get(i).setSelected(true);
-					showTurbojetTurboFanDataRadioButtonImplementation(i);
+					inputManagerControllerUtilities.showTurbojetTurboFanDataRadioButtonImplementation(i);
 					
 					//---------------------------------------------------------------------------------
 					// ENGINE TYPE:
@@ -21973,7 +20152,7 @@ public class InputManagerController {
 				case TURBOPROP:
 					
 					powerPlantTurbopropRadioButtonList.get(i).setSelected(true);
-					showTurbopropDataRadioButtonImplementation(i);
+					inputManagerControllerUtilities.showTurbopropDataRadioButtonImplementation(i);
 					
 					//---------------------------------------------------------------------------------
 					// ENGINE TYPE:
@@ -22123,7 +20302,7 @@ public class InputManagerController {
 				case PISTON:
 					
 					powerPlantPistonRadioButtonList.get(i).setSelected(true);
-					showPistonDataRadioButtonImplementation(i);
+					inputManagerControllerUtilities.showPistonDataRadioButtonImplementation(i);
 					
 					//---------------------------------------------------------------------------------
 					// ENGINE TYPE:
@@ -22466,70 +20645,70 @@ public class InputManagerController {
 	//...........................................................................................
 	
 	@FXML
-	private void showMissingSeatRowInfo() {
+	public void showMissingSeatRowInfo() {
 		
 		// TODO
 		
 	};
 	
 	@FXML
-	private void showCabinConfigurationReferenceMassInfo() {
+	public void showCabinConfigurationReferenceMassInfo() {
 		
 		// TODO
 		
 	};
 	
 	@FXML
-	private void showEquivalentWingInfo() {
+	public void showEquivalentWingInfo() {
 		
 		// TODO
 		
 	};
 	
 	@FXML
-	private void showEquivalentWingXOffsetLEInfo() {
+	public void showEquivalentWingXOffsetLEInfo() {
 		
 		// TODO
 		
 	};
 	
 	@FXML
-	private void showEquivalentWingXOffsetTEInfo() {
+	public void showEquivalentWingXOffsetTEInfo() {
 		
 		// TODO
 		
 	};
 	
 	@FXML
-	private void showNacelleKInletInfo() {
+	public void showNacelleKInletInfo() {
 		
 		// TODO
 		
 	};
 	
 	@FXML
-	private void showNacelleKOutletInfo() {
+	public void showNacelleKOutletInfo() {
 		
 		// TODO
 		
 	};
 	
 	@FXML
-	private void showNacelleKLengthInfo() {
+	public void showNacelleKLengthInfo() {
 		
 		// TODO
 		
 	};
 	
 	@FXML
-	private void showNacelleKDiameterOutletInfo() {
+	public void showNacelleKDiameterOutletInfo() {
 		
 		// TODO
 		
 	};
 	
 	@FXML
-	private void showLandingGearsKMainLegLengthInfo() {
+	public void showLandingGearsKMainLegLengthInfo() {
 		
 		// TODO
 		
@@ -22617,6 +20796,6813 @@ public class InputManagerController {
 	@FXML
 	private void zoomViewsNacelle() {
 		nacelleViewsAndDataLogSplitPane.setDividerPositions(0.9);
+	}
+
+	//..........................................................................................
+	// GETTERS AND SETTERS
+	//..........................................................................................
+	
+	public ToolBar getActionButtonToolbar() {
+		return actionButtonToolbar;
+	}
+
+	public void setActionButtonToolbar(ToolBar actionButtonToolbar) {
+		this.actionButtonToolbar = actionButtonToolbar;
+	}
+
+	public SplitPane getAircraftViewsAndDataLogSplitPane() {
+		return aircraftViewsAndDataLogSplitPane;
+	}
+
+	public void setAircraftViewsAndDataLogSplitPane(SplitPane aircraftViewsAndDataLogSplitPane) {
+		this.aircraftViewsAndDataLogSplitPane = aircraftViewsAndDataLogSplitPane;
+	}
+
+	public SplitPane getFuselageViewsAndDataLogSplitPane() {
+		return fuselageViewsAndDataLogSplitPane;
+	}
+
+	public void setFuselageViewsAndDataLogSplitPane(SplitPane fuselageViewsAndDataLogSplitPane) {
+		this.fuselageViewsAndDataLogSplitPane = fuselageViewsAndDataLogSplitPane;
+	}
+
+	public SplitPane getCabinConfigurationViewsAndDataLogSplitPane() {
+		return cabinConfigurationViewsAndDataLogSplitPane;
+	}
+
+	public void setCabinConfigurationViewsAndDataLogSplitPane(SplitPane cabinConfigurationViewsAndDataLogSplitPane) {
+		this.cabinConfigurationViewsAndDataLogSplitPane = cabinConfigurationViewsAndDataLogSplitPane;
+	}
+
+	public SplitPane getWingViewsAndDataLogSplitPane() {
+		return wingViewsAndDataLogSplitPane;
+	}
+
+	public void setWingViewsAndDataLogSplitPane(SplitPane wingViewsAndDataLogSplitPane) {
+		this.wingViewsAndDataLogSplitPane = wingViewsAndDataLogSplitPane;
+	}
+
+	public SplitPane gethTailViewsAndDataLogSplitPane() {
+		return hTailViewsAndDataLogSplitPane;
+	}
+
+	public void sethTailViewsAndDataLogSplitPane(SplitPane hTailViewsAndDataLogSplitPane) {
+		this.hTailViewsAndDataLogSplitPane = hTailViewsAndDataLogSplitPane;
+	}
+
+	public SplitPane getvTailViewsAndDataLogSplitPane() {
+		return vTailViewsAndDataLogSplitPane;
+	}
+
+	public void setvTailViewsAndDataLogSplitPane(SplitPane vTailViewsAndDataLogSplitPane) {
+		this.vTailViewsAndDataLogSplitPane = vTailViewsAndDataLogSplitPane;
+	}
+
+	public SplitPane getCanardViewsAndDataLogSplitPane() {
+		return canardViewsAndDataLogSplitPane;
+	}
+
+	public void setCanardViewsAndDataLogSplitPane(SplitPane canardViewsAndDataLogSplitPane) {
+		this.canardViewsAndDataLogSplitPane = canardViewsAndDataLogSplitPane;
+	}
+
+	public SplitPane getNacelleViewsAndDataLogSplitPane() {
+		return nacelleViewsAndDataLogSplitPane;
+	}
+
+	public void setNacelleViewsAndDataLogSplitPane(SplitPane nacelleViewsAndDataLogSplitPane) {
+		this.nacelleViewsAndDataLogSplitPane = nacelleViewsAndDataLogSplitPane;
+	}
+
+	public Pane getAircraftFrontViewPane() {
+		return aircraftFrontViewPane;
+	}
+
+	public void setAircraftFrontViewPane(Pane aircraftFrontViewPane) {
+		this.aircraftFrontViewPane = aircraftFrontViewPane;
+	}
+
+	public Pane getAircraftSideViewPane() {
+		return aircraftSideViewPane;
+	}
+
+	public void setAircraftSideViewPane(Pane aircraftSideViewPane) {
+		this.aircraftSideViewPane = aircraftSideViewPane;
+	}
+
+	public Pane getAircraftTopViewPane() {
+		return aircraftTopViewPane;
+	}
+
+	public void setAircraftTopViewPane(Pane aircraftTopViewPane) {
+		this.aircraftTopViewPane = aircraftTopViewPane;
+	}
+
+	public Pane getFuselageFrontViewPane() {
+		return fuselageFrontViewPane;
+	}
+
+	public void setFuselageFrontViewPane(Pane fuselageFrontViewPane) {
+		this.fuselageFrontViewPane = fuselageFrontViewPane;
+	}
+
+	public Pane getFuselageSideViewPane() {
+		return fuselageSideViewPane;
+	}
+
+	public void setFuselageSideViewPane(Pane fuselageSideViewPane) {
+		this.fuselageSideViewPane = fuselageSideViewPane;
+	}
+
+	public Pane getFuselageTopViewPane() {
+		return fuselageTopViewPane;
+	}
+
+	public void setFuselageTopViewPane(Pane fuselageTopViewPane) {
+		this.fuselageTopViewPane = fuselageTopViewPane;
+	}
+
+	public Pane getCabinConfigurationSeatMapPane() {
+		return cabinConfigurationSeatMapPane;
+	}
+
+	public void setCabinConfigurationSeatMapPane(Pane cabinConfigurationSeatMapPane) {
+		this.cabinConfigurationSeatMapPane = cabinConfigurationSeatMapPane;
+	}
+
+	public Pane getWingPlanformPane() {
+		return wingPlanformPane;
+	}
+
+	public void setWingPlanformPane(Pane wingPlanformPane) {
+		this.wingPlanformPane = wingPlanformPane;
+	}
+
+	public Pane getEquivalentWingPane() {
+		return equivalentWingPane;
+	}
+
+	public void setEquivalentWingPane(Pane equivalentWingPane) {
+		this.equivalentWingPane = equivalentWingPane;
+	}
+
+	public Pane gethTailPlanformPane() {
+		return hTailPlanformPane;
+	}
+
+	public void sethTailPlanformPane(Pane hTailPlanformPane) {
+		this.hTailPlanformPane = hTailPlanformPane;
+	}
+
+	public Pane getvTailPlanformPane() {
+		return vTailPlanformPane;
+	}
+
+	public void setvTailPlanformPane(Pane vTailPlanformPane) {
+		this.vTailPlanformPane = vTailPlanformPane;
+	}
+
+	public Pane getCanardPlanformPane() {
+		return canardPlanformPane;
+	}
+
+	public void setCanardPlanformPane(Pane canardPlanformPane) {
+		this.canardPlanformPane = canardPlanformPane;
+	}
+
+	public Pane getNacelle1FrontViewPane() {
+		return nacelle1FrontViewPane;
+	}
+
+	public void setNacelle1FrontViewPane(Pane nacelle1FrontViewPane) {
+		this.nacelle1FrontViewPane = nacelle1FrontViewPane;
+	}
+
+	public Pane getNacelle1SideViewPane() {
+		return nacelle1SideViewPane;
+	}
+
+	public void setNacelle1SideViewPane(Pane nacelle1SideViewPane) {
+		this.nacelle1SideViewPane = nacelle1SideViewPane;
+	}
+
+	public Pane getNacelle1TopViewPane() {
+		return nacelle1TopViewPane;
+	}
+
+	public void setNacelle1TopViewPane(Pane nacelle1TopViewPane) {
+		this.nacelle1TopViewPane = nacelle1TopViewPane;
+	}
+
+	public BorderPane getEngine1BorderPane() {
+		return engine1BorderPane;
+	}
+
+	public void setEngine1BorderPane(BorderPane engine1BorderPane) {
+		this.engine1BorderPane = engine1BorderPane;
+	}
+
+	public TextArea getTextAreaAircraftConsoleOutput() {
+		return textAreaAircraftConsoleOutput;
+	}
+
+	public void setTextAreaAircraftConsoleOutput(TextArea textAreaAircraftConsoleOutput) {
+		this.textAreaAircraftConsoleOutput = textAreaAircraftConsoleOutput;
+	}
+
+	public TextArea getTextAreaFuselageConsoleOutput() {
+		return textAreaFuselageConsoleOutput;
+	}
+
+	public void setTextAreaFuselageConsoleOutput(TextArea textAreaFuselageConsoleOutput) {
+		this.textAreaFuselageConsoleOutput = textAreaFuselageConsoleOutput;
+	}
+
+	public TextArea getTextAreaCabinConfigurationConsoleOutput() {
+		return textAreaCabinConfigurationConsoleOutput;
+	}
+
+	public void setTextAreaCabinConfigurationConsoleOutput(TextArea textAreaCabinConfigurationConsoleOutput) {
+		this.textAreaCabinConfigurationConsoleOutput = textAreaCabinConfigurationConsoleOutput;
+	}
+
+	public TextArea getTextAreaWingConsoleOutput() {
+		return textAreaWingConsoleOutput;
+	}
+
+	public void setTextAreaWingConsoleOutput(TextArea textAreaWingConsoleOutput) {
+		this.textAreaWingConsoleOutput = textAreaWingConsoleOutput;
+	}
+
+	public TextArea getTextAreaHTailConsoleOutput() {
+		return textAreaHTailConsoleOutput;
+	}
+
+	public void setTextAreaHTailConsoleOutput(TextArea textAreaHTailConsoleOutput) {
+		this.textAreaHTailConsoleOutput = textAreaHTailConsoleOutput;
+	}
+
+	public TextArea getTextAreaVTailConsoleOutput() {
+		return textAreaVTailConsoleOutput;
+	}
+
+	public void setTextAreaVTailConsoleOutput(TextArea textAreaVTailConsoleOutput) {
+		this.textAreaVTailConsoleOutput = textAreaVTailConsoleOutput;
+	}
+
+	public TextArea getTextAreaCanardConsoleOutput() {
+		return textAreaCanardConsoleOutput;
+	}
+
+	public void setTextAreaCanardConsoleOutput(TextArea textAreaCanardConsoleOutput) {
+		this.textAreaCanardConsoleOutput = textAreaCanardConsoleOutput;
+	}
+
+	public TextArea getTextAreaNacelleConsoleOutput() {
+		return textAreaNacelleConsoleOutput;
+	}
+
+	public void setTextAreaNacelleConsoleOutput(TextArea textAreaNacelleConsoleOutput) {
+		this.textAreaNacelleConsoleOutput = textAreaNacelleConsoleOutput;
+	}
+
+	public TextArea getTextAreaPowerPlantConsoleOutput() {
+		return textAreaPowerPlantConsoleOutput;
+	}
+
+	public void setTextAreaPowerPlantConsoleOutput(TextArea textAreaPowerPlantConsoleOutput) {
+		this.textAreaPowerPlantConsoleOutput = textAreaPowerPlantConsoleOutput;
+	}
+
+	public TextArea getTextAreaLandingGearsConsoleOutput() {
+		return textAreaLandingGearsConsoleOutput;
+	}
+
+	public void setTextAreaLandingGearsConsoleOutput(TextArea textAreaLandingGearsConsoleOutput) {
+		this.textAreaLandingGearsConsoleOutput = textAreaLandingGearsConsoleOutput;
+	}
+
+	public TabPane getTabPaneAircraftEngines() {
+		return tabPaneAircraftEngines;
+	}
+
+	public void setTabPaneAircraftEngines(TabPane tabPaneAircraftEngines) {
+		this.tabPaneAircraftEngines = tabPaneAircraftEngines;
+	}
+
+	public TabPane getTabPaneAircraftNacelles() {
+		return tabPaneAircraftNacelles;
+	}
+
+	public void setTabPaneAircraftNacelles(TabPane tabPaneAircraftNacelles) {
+		this.tabPaneAircraftNacelles = tabPaneAircraftNacelles;
+	}
+
+	public TabPane getTabPaneFuselageSpoilers() {
+		return tabPaneFuselageSpoilers;
+	}
+
+	public void setTabPaneFuselageSpoilers(TabPane tabPaneFuselageSpoilers) {
+		this.tabPaneFuselageSpoilers = tabPaneFuselageSpoilers;
+	}
+
+	public TabPane getTabPaneWingPanels() {
+		return tabPaneWingPanels;
+	}
+
+	public void setTabPaneWingPanels(TabPane tabPaneWingPanels) {
+		this.tabPaneWingPanels = tabPaneWingPanels;
+	}
+
+	public TabPane getTabPaneWingFlaps() {
+		return tabPaneWingFlaps;
+	}
+
+	public void setTabPaneWingFlaps(TabPane tabPaneWingFlaps) {
+		this.tabPaneWingFlaps = tabPaneWingFlaps;
+	}
+
+	public TabPane getTabPaneWingSlats() {
+		return tabPaneWingSlats;
+	}
+
+	public void setTabPaneWingSlats(TabPane tabPaneWingSlats) {
+		this.tabPaneWingSlats = tabPaneWingSlats;
+	}
+
+	public TabPane getTabPaneWingSpoilers() {
+		return tabPaneWingSpoilers;
+	}
+
+	public void setTabPaneWingSpoilers(TabPane tabPaneWingSpoilers) {
+		this.tabPaneWingSpoilers = tabPaneWingSpoilers;
+	}
+
+	public TabPane getTabPaneWingViewAndAirfoils() {
+		return tabPaneWingViewAndAirfoils;
+	}
+
+	public void setTabPaneWingViewAndAirfoils(TabPane tabPaneWingViewAndAirfoils) {
+		this.tabPaneWingViewAndAirfoils = tabPaneWingViewAndAirfoils;
+	}
+
+	public TabPane getTabPaneHTailPanels() {
+		return tabPaneHTailPanels;
+	}
+
+	public void setTabPaneHTailPanels(TabPane tabPaneHTailPanels) {
+		this.tabPaneHTailPanels = tabPaneHTailPanels;
+	}
+
+	public TabPane getTabPaneHTailElevators() {
+		return tabPaneHTailElevators;
+	}
+
+	public void setTabPaneHTailElevators(TabPane tabPaneHTailElevators) {
+		this.tabPaneHTailElevators = tabPaneHTailElevators;
+	}
+
+	public TabPane getTabPaneHTailViewAndAirfoils() {
+		return tabPaneHTailViewAndAirfoils;
+	}
+
+	public void setTabPaneHTailViewAndAirfoils(TabPane tabPaneHTailViewAndAirfoils) {
+		this.tabPaneHTailViewAndAirfoils = tabPaneHTailViewAndAirfoils;
+	}
+
+	public TabPane getTabPaneVTailPanels() {
+		return tabPaneVTailPanels;
+	}
+
+	public void setTabPaneVTailPanels(TabPane tabPaneVTailPanels) {
+		this.tabPaneVTailPanels = tabPaneVTailPanels;
+	}
+
+	public TabPane getTabPaneVTailRudders() {
+		return tabPaneVTailRudders;
+	}
+
+	public void setTabPaneVTailRudders(TabPane tabPaneVTailRudders) {
+		this.tabPaneVTailRudders = tabPaneVTailRudders;
+	}
+
+	public TabPane getTabPaneVTailViewAndAirfoils() {
+		return tabPaneVTailViewAndAirfoils;
+	}
+
+	public void setTabPaneVTailViewAndAirfoils(TabPane tabPaneVTailViewAndAirfoils) {
+		this.tabPaneVTailViewAndAirfoils = tabPaneVTailViewAndAirfoils;
+	}
+
+	public TabPane getTabPaneCanardPanels() {
+		return tabPaneCanardPanels;
+	}
+
+	public void setTabPaneCanardPanels(TabPane tabPaneCanardPanels) {
+		this.tabPaneCanardPanels = tabPaneCanardPanels;
+	}
+
+	public TabPane getTabPaneCanardControlSurfaces() {
+		return tabPaneCanardControlSurfaces;
+	}
+
+	public void setTabPaneCanardControlSurfaces(TabPane tabPaneCanardControlSurfaces) {
+		this.tabPaneCanardControlSurfaces = tabPaneCanardControlSurfaces;
+	}
+
+	public TabPane getTabPaneCanardViewAndAirfoils() {
+		return tabPaneCanardViewAndAirfoils;
+	}
+
+	public void setTabPaneCanardViewAndAirfoils(TabPane tabPaneCanardViewAndAirfoils) {
+		this.tabPaneCanardViewAndAirfoils = tabPaneCanardViewAndAirfoils;
+	}
+
+	public TabPane getTabPaneNacelles() {
+		return tabPaneNacelles;
+	}
+
+	public void setTabPaneNacelles(TabPane tabPaneNacelles) {
+		this.tabPaneNacelles = tabPaneNacelles;
+	}
+
+	public TabPane getTabPaneNacellesTopViews() {
+		return tabPaneNacellesTopViews;
+	}
+
+	public void setTabPaneNacellesTopViews(TabPane tabPaneNacellesTopViews) {
+		this.tabPaneNacellesTopViews = tabPaneNacellesTopViews;
+	}
+
+	public TabPane getTabPaneNacellesSideViews() {
+		return tabPaneNacellesSideViews;
+	}
+
+	public void setTabPaneNacellesSideViews(TabPane tabPaneNacellesSideViews) {
+		this.tabPaneNacellesSideViews = tabPaneNacellesSideViews;
+	}
+
+	public TabPane getTabPaneNacellesFrontViews() {
+		return tabPaneNacellesFrontViews;
+	}
+
+	public void setTabPaneNacellesFrontViews(TabPane tabPaneNacellesFrontViews) {
+		this.tabPaneNacellesFrontViews = tabPaneNacellesFrontViews;
+	}
+
+	public TabPane getTabPaneEngines() {
+		return tabPaneEngines;
+	}
+
+	public void setTabPaneEngines(TabPane tabPaneEngines) {
+		this.tabPaneEngines = tabPaneEngines;
+	}
+
+	public Button getChooseAircraftFileButton() {
+		return chooseAircraftFileButton;
+	}
+
+	public void setChooseAircraftFileButton(Button chooseAircraftFileButton) {
+		this.chooseAircraftFileButton = chooseAircraftFileButton;
+	}
+
+	public Button getLoadAircraftButton() {
+		return loadAircraftButton;
+	}
+
+	public void setLoadAircraftButton(Button loadAircraftButton) {
+		this.loadAircraftButton = loadAircraftButton;
+	}
+
+	public Button getNewAircraftButton() {
+		return newAircraftButton;
+	}
+
+	public void setNewAircraftButton(Button newAircraftButton) {
+		this.newAircraftButton = newAircraftButton;
+	}
+
+	public Button getUpdateAircraftDataButton() {
+		return updateAircraftDataButton;
+	}
+
+	public void setUpdateAircraftDataButton(Button updateAircraftDataButton) {
+		this.updateAircraftDataButton = updateAircraftDataButton;
+	}
+
+	public Button getSaveAircraftButton() {
+		return saveAircraftButton;
+	}
+
+	public void setSaveAircraftButton(Button saveAircraftButton) {
+		this.saveAircraftButton = saveAircraftButton;
+	}
+
+	public Button getAircraftChooseCabinConfigurationFileButton() {
+		return aircraftChooseCabinConfigurationFileButton;
+	}
+
+	public void setAircraftChooseCabinConfigurationFileButton(Button aircraftChooseCabinConfigurationFileButton) {
+		this.aircraftChooseCabinConfigurationFileButton = aircraftChooseCabinConfigurationFileButton;
+	}
+
+	public Button getAircraftChooseFuselageFileButton() {
+		return aircraftChooseFuselageFileButton;
+	}
+
+	public void setAircraftChooseFuselageFileButton(Button aircraftChooseFuselageFileButton) {
+		this.aircraftChooseFuselageFileButton = aircraftChooseFuselageFileButton;
+	}
+
+	public Button getAircraftChooseWingFileButton() {
+		return aircraftChooseWingFileButton;
+	}
+
+	public void setAircraftChooseWingFileButton(Button aircraftChooseWingFileButton) {
+		this.aircraftChooseWingFileButton = aircraftChooseWingFileButton;
+	}
+
+	public Button getAircraftChooseHTailFileButton() {
+		return aircraftChooseHTailFileButton;
+	}
+
+	public void setAircraftChooseHTailFileButton(Button aircraftChooseHTailFileButton) {
+		this.aircraftChooseHTailFileButton = aircraftChooseHTailFileButton;
+	}
+
+	public Button getAircraftChooseVTailFileButton() {
+		return aircraftChooseVTailFileButton;
+	}
+
+	public void setAircraftChooseVTailFileButton(Button aircraftChooseVTailFileButton) {
+		this.aircraftChooseVTailFileButton = aircraftChooseVTailFileButton;
+	}
+
+	public Button getAircraftChooseCanardFileButton() {
+		return aircraftChooseCanardFileButton;
+	}
+
+	public void setAircraftChooseCanardFileButton(Button aircraftChooseCanardFileButton) {
+		this.aircraftChooseCanardFileButton = aircraftChooseCanardFileButton;
+	}
+
+	public Button getAircraftChooseEngine1FileButton() {
+		return aircraftChooseEngine1FileButton;
+	}
+
+	public void setAircraftChooseEngine1FileButton(Button aircraftChooseEngine1FileButton) {
+		this.aircraftChooseEngine1FileButton = aircraftChooseEngine1FileButton;
+	}
+
+	public Button getAircraftChooseNacelle1FileButton() {
+		return aircraftChooseNacelle1FileButton;
+	}
+
+	public void setAircraftChooseNacelle1FileButton(Button aircraftChooseNacelle1FileButton) {
+		this.aircraftChooseNacelle1FileButton = aircraftChooseNacelle1FileButton;
+	}
+
+	public Button getAircraftChooseLandingGearsFileButton() {
+		return aircraftChooseLandingGearsFileButton;
+	}
+
+	public void setAircraftChooseLandingGearsFileButton(Button aircraftChooseLandingGearsFileButton) {
+		this.aircraftChooseLandingGearsFileButton = aircraftChooseLandingGearsFileButton;
+	}
+
+	public Button getAircraftChooseSystemsFileButton() {
+		return aircraftChooseSystemsFileButton;
+	}
+
+	public void setAircraftChooseSystemsFileButton(Button aircraftChooseSystemsFileButton) {
+		this.aircraftChooseSystemsFileButton = aircraftChooseSystemsFileButton;
+	}
+
+	public Button getAircraftAddEngineButton() {
+		return aircraftAddEngineButton;
+	}
+
+	public void setAircraftAddEngineButton(Button aircraftAddEngineButton) {
+		this.aircraftAddEngineButton = aircraftAddEngineButton;
+	}
+
+	public Button getAircraftAddNacelleButton() {
+		return aircraftAddNacelleButton;
+	}
+
+	public void setAircraftAddNacelleButton(Button aircraftAddNacelleButton) {
+		this.aircraftAddNacelleButton = aircraftAddNacelleButton;
+	}
+
+	public Button getFuselageAddSpoilerButton() {
+		return fuselageAddSpoilerButton;
+	}
+
+	public void setFuselageAddSpoilerButton(Button fuselageAddSpoilerButton) {
+		this.fuselageAddSpoilerButton = fuselageAddSpoilerButton;
+	}
+
+	public Button getMissingSeatRowCabinConfigurationInfoButton() {
+		return missingSeatRowCabinConfigurationInfoButton;
+	}
+
+	public void setMissingSeatRowCabinConfigurationInfoButton(Button missingSeatRowCabinConfigurationInfoButton) {
+		this.missingSeatRowCabinConfigurationInfoButton = missingSeatRowCabinConfigurationInfoButton;
+	}
+
+	public Button getReferenceMassCabinConfigurationInfoButton() {
+		return referenceMassCabinConfigurationInfoButton;
+	}
+
+	public void setReferenceMassCabinConfigurationInfoButton(Button referenceMassCabinConfigurationInfoButton) {
+		this.referenceMassCabinConfigurationInfoButton = referenceMassCabinConfigurationInfoButton;
+	}
+
+	public Button getEquivalentWingInfoButton() {
+		return equivalentWingInfoButton;
+	}
+
+	public void setEquivalentWingInfoButton(Button equivalentWingInfoButton) {
+		this.equivalentWingInfoButton = equivalentWingInfoButton;
+	}
+
+	public Button getEquivalentWingRootXOffsetLEInfoButton() {
+		return equivalentWingRootXOffsetLEInfoButton;
+	}
+
+	public void setEquivalentWingRootXOffsetLEInfoButton(Button equivalentWingRootXOffsetLEInfoButton) {
+		this.equivalentWingRootXOffsetLEInfoButton = equivalentWingRootXOffsetLEInfoButton;
+	}
+
+	public Button getEquivalentWingRootXOffseTLEInfoButton() {
+		return equivalentWingRootXOffseTLEInfoButton;
+	}
+
+	public void setEquivalentWingRootXOffseTLEInfoButton(Button equivalentWingRootXOffseTLEInfoButton) {
+		this.equivalentWingRootXOffseTLEInfoButton = equivalentWingRootXOffseTLEInfoButton;
+	}
+
+	public Button getEquivalentWingAirfoilRootDetailButton() {
+		return equivalentWingAirfoilRootDetailButton;
+	}
+
+	public void setEquivalentWingAirfoilRootDetailButton(Button equivalentWingAirfoilRootDetailButton) {
+		this.equivalentWingAirfoilRootDetailButton = equivalentWingAirfoilRootDetailButton;
+	}
+
+	public Button getEquivalentWingChooseAirfoilRootButton() {
+		return equivalentWingChooseAirfoilRootButton;
+	}
+
+	public void setEquivalentWingChooseAirfoilRootButton(Button equivalentWingChooseAirfoilRootButton) {
+		this.equivalentWingChooseAirfoilRootButton = equivalentWingChooseAirfoilRootButton;
+	}
+
+	public Button getEquivalentWingAirfoilKinkDetailButton() {
+		return equivalentWingAirfoilKinkDetailButton;
+	}
+
+	public void setEquivalentWingAirfoilKinkDetailButton(Button equivalentWingAirfoilKinkDetailButton) {
+		this.equivalentWingAirfoilKinkDetailButton = equivalentWingAirfoilKinkDetailButton;
+	}
+
+	public Button getEquivalentWingChooseAirfoilKinkButton() {
+		return equivalentWingChooseAirfoilKinkButton;
+	}
+
+	public void setEquivalentWingChooseAirfoilKinkButton(Button equivalentWingChooseAirfoilKinkButton) {
+		this.equivalentWingChooseAirfoilKinkButton = equivalentWingChooseAirfoilKinkButton;
+	}
+
+	public Button getEquivalentWingAirfoilTipDetailButton() {
+		return equivalentWingAirfoilTipDetailButton;
+	}
+
+	public void setEquivalentWingAirfoilTipDetailButton(Button equivalentWingAirfoilTipDetailButton) {
+		this.equivalentWingAirfoilTipDetailButton = equivalentWingAirfoilTipDetailButton;
+	}
+
+	public Button getEquivalentWingChooseAirfoilTipButton() {
+		return equivalentWingChooseAirfoilTipButton;
+	}
+
+	public void setEquivalentWingChooseAirfoilTipButton(Button equivalentWingChooseAirfoilTipButton) {
+		this.equivalentWingChooseAirfoilTipButton = equivalentWingChooseAirfoilTipButton;
+	}
+
+	public Button getWingAddPanelButton() {
+		return wingAddPanelButton;
+	}
+
+	public void setWingAddPanelButton(Button wingAddPanelButton) {
+		this.wingAddPanelButton = wingAddPanelButton;
+	}
+
+	public Button getWingInnerSectionAirfoilDetailsPanel1Button() {
+		return wingInnerSectionAirfoilDetailsPanel1Button;
+	}
+
+	public void setWingInnerSectionAirfoilDetailsPanel1Button(Button wingInnerSectionAirfoilDetailsPanel1Button) {
+		this.wingInnerSectionAirfoilDetailsPanel1Button = wingInnerSectionAirfoilDetailsPanel1Button;
+	}
+
+	public Button getWingOuterSectionAirfoilDetailsPanel1Button() {
+		return wingOuterSectionAirfoilDetailsPanel1Button;
+	}
+
+	public void setWingOuterSectionAirfoilDetailsPanel1Button(Button wingOuterSectionAirfoilDetailsPanel1Button) {
+		this.wingOuterSectionAirfoilDetailsPanel1Button = wingOuterSectionAirfoilDetailsPanel1Button;
+	}
+
+	public Button getWingAddFlapButton() {
+		return wingAddFlapButton;
+	}
+
+	public void setWingAddFlapButton(Button wingAddFlapButton) {
+		this.wingAddFlapButton = wingAddFlapButton;
+	}
+
+	public Button getWingAddSlatButton() {
+		return wingAddSlatButton;
+	}
+
+	public void setWingAddSlatButton(Button wingAddSlatButton) {
+		this.wingAddSlatButton = wingAddSlatButton;
+	}
+
+	public Button getWingAddSpoilerButton() {
+		return wingAddSpoilerButton;
+	}
+
+	public void setWingAddSpoilerButton(Button wingAddSpoilerButton) {
+		this.wingAddSpoilerButton = wingAddSpoilerButton;
+	}
+
+	public Button getWingChooseInnerAirfoilPanel1Button() {
+		return wingChooseInnerAirfoilPanel1Button;
+	}
+
+	public void setWingChooseInnerAirfoilPanel1Button(Button wingChooseInnerAirfoilPanel1Button) {
+		this.wingChooseInnerAirfoilPanel1Button = wingChooseInnerAirfoilPanel1Button;
+	}
+
+	public Button getWingChooseOuterAirfoilPanel1Button() {
+		return wingChooseOuterAirfoilPanel1Button;
+	}
+
+	public void setWingChooseOuterAirfoilPanel1Button(Button wingChooseOuterAirfoilPanel1Button) {
+		this.wingChooseOuterAirfoilPanel1Button = wingChooseOuterAirfoilPanel1Button;
+	}
+
+	public Button gethTailAddPanelButton() {
+		return hTailAddPanelButton;
+	}
+
+	public void sethTailAddPanelButton(Button hTailAddPanelButton) {
+		this.hTailAddPanelButton = hTailAddPanelButton;
+	}
+
+	public Button gethTailInnerSectionAirfoilDetailsPanel1Button() {
+		return hTailInnerSectionAirfoilDetailsPanel1Button;
+	}
+
+	public void sethTailInnerSectionAirfoilDetailsPanel1Button(Button hTailInnerSectionAirfoilDetailsPanel1Button) {
+		this.hTailInnerSectionAirfoilDetailsPanel1Button = hTailInnerSectionAirfoilDetailsPanel1Button;
+	}
+
+	public Button gethTailOuterSectionAirfoilDetailsPanel1Button() {
+		return hTailOuterSectionAirfoilDetailsPanel1Button;
+	}
+
+	public void sethTailOuterSectionAirfoilDetailsPanel1Button(Button hTailOuterSectionAirfoilDetailsPanel1Button) {
+		this.hTailOuterSectionAirfoilDetailsPanel1Button = hTailOuterSectionAirfoilDetailsPanel1Button;
+	}
+
+	public Button gethTailAddElevatorButton() {
+		return hTailAddElevatorButton;
+	}
+
+	public void sethTailAddElevatorButton(Button hTailAddElevatorButton) {
+		this.hTailAddElevatorButton = hTailAddElevatorButton;
+	}
+
+	public Button gethTailChooseInnerAirfoilPanel1Button() {
+		return hTailChooseInnerAirfoilPanel1Button;
+	}
+
+	public void sethTailChooseInnerAirfoilPanel1Button(Button hTailChooseInnerAirfoilPanel1Button) {
+		this.hTailChooseInnerAirfoilPanel1Button = hTailChooseInnerAirfoilPanel1Button;
+	}
+
+	public Button gethTailChooseOuterAirfoilPanel1Button() {
+		return hTailChooseOuterAirfoilPanel1Button;
+	}
+
+	public void sethTailChooseOuterAirfoilPanel1Button(Button hTailChooseOuterAirfoilPanel1Button) {
+		this.hTailChooseOuterAirfoilPanel1Button = hTailChooseOuterAirfoilPanel1Button;
+	}
+
+	public Button getvTailAddPanelButton() {
+		return vTailAddPanelButton;
+	}
+
+	public void setvTailAddPanelButton(Button vTailAddPanelButton) {
+		this.vTailAddPanelButton = vTailAddPanelButton;
+	}
+
+	public Button getvTailInnerSectionAirfoilDetailsPanel1Button() {
+		return vTailInnerSectionAirfoilDetailsPanel1Button;
+	}
+
+	public void setvTailInnerSectionAirfoilDetailsPanel1Button(Button vTailInnerSectionAirfoilDetailsPanel1Button) {
+		this.vTailInnerSectionAirfoilDetailsPanel1Button = vTailInnerSectionAirfoilDetailsPanel1Button;
+	}
+
+	public Button getvTailOuterSectionAirfoilDetailsPanel1Button() {
+		return vTailOuterSectionAirfoilDetailsPanel1Button;
+	}
+
+	public void setvTailOuterSectionAirfoilDetailsPanel1Button(Button vTailOuterSectionAirfoilDetailsPanel1Button) {
+		this.vTailOuterSectionAirfoilDetailsPanel1Button = vTailOuterSectionAirfoilDetailsPanel1Button;
+	}
+
+	public Button getvTailAddRudderButton() {
+		return vTailAddRudderButton;
+	}
+
+	public void setvTailAddRudderButton(Button vTailAddRudderButton) {
+		this.vTailAddRudderButton = vTailAddRudderButton;
+	}
+
+	public Button getvTailChooseInnerAirfoilPanel1Button() {
+		return vTailChooseInnerAirfoilPanel1Button;
+	}
+
+	public void setvTailChooseInnerAirfoilPanel1Button(Button vTailChooseInnerAirfoilPanel1Button) {
+		this.vTailChooseInnerAirfoilPanel1Button = vTailChooseInnerAirfoilPanel1Button;
+	}
+
+	public Button getvTailChooseOuterAirfoilPanel1Button() {
+		return vTailChooseOuterAirfoilPanel1Button;
+	}
+
+	public void setvTailChooseOuterAirfoilPanel1Button(Button vTailChooseOuterAirfoilPanel1Button) {
+		this.vTailChooseOuterAirfoilPanel1Button = vTailChooseOuterAirfoilPanel1Button;
+	}
+
+	public Button getCanardAddPanelButton() {
+		return canardAddPanelButton;
+	}
+
+	public void setCanardAddPanelButton(Button canardAddPanelButton) {
+		this.canardAddPanelButton = canardAddPanelButton;
+	}
+
+	public Button getCanardInnerSectionAirfoilDetailsPanel1Button() {
+		return canardInnerSectionAirfoilDetailsPanel1Button;
+	}
+
+	public void setCanardInnerSectionAirfoilDetailsPanel1Button(Button canardInnerSectionAirfoilDetailsPanel1Button) {
+		this.canardInnerSectionAirfoilDetailsPanel1Button = canardInnerSectionAirfoilDetailsPanel1Button;
+	}
+
+	public Button getCanardOuterSectionAirfoilDetailsPanel1Button() {
+		return canardOuterSectionAirfoilDetailsPanel1Button;
+	}
+
+	public void setCanardOuterSectionAirfoilDetailsPanel1Button(Button canardOuterSectionAirfoilDetailsPanel1Button) {
+		this.canardOuterSectionAirfoilDetailsPanel1Button = canardOuterSectionAirfoilDetailsPanel1Button;
+	}
+
+	public Button getCanardAddControlSurfaceButton() {
+		return canardAddControlSurfaceButton;
+	}
+
+	public void setCanardAddControlSurfaceButton(Button canardAddControlSurfaceButton) {
+		this.canardAddControlSurfaceButton = canardAddControlSurfaceButton;
+	}
+
+	public Button getCanardChooseInnerAirfoilPanel1Button() {
+		return canardChooseInnerAirfoilPanel1Button;
+	}
+
+	public void setCanardChooseInnerAirfoilPanel1Button(Button canardChooseInnerAirfoilPanel1Button) {
+		this.canardChooseInnerAirfoilPanel1Button = canardChooseInnerAirfoilPanel1Button;
+	}
+
+	public Button getCanardChooseOuterAirfoilPanel1Button() {
+		return canardChooseOuterAirfoilPanel1Button;
+	}
+
+	public void setCanardChooseOuterAirfoilPanel1Button(Button canardChooseOuterAirfoilPanel1Button) {
+		this.canardChooseOuterAirfoilPanel1Button = canardChooseOuterAirfoilPanel1Button;
+	}
+
+	public Button getNacelleEstimateGeometryButton1() {
+		return nacelleEstimateGeometryButton1;
+	}
+
+	public void setNacelleEstimateGeometryButton1(Button nacelleEstimateGeometryButton1) {
+		this.nacelleEstimateGeometryButton1 = nacelleEstimateGeometryButton1;
+	}
+
+	public Button getNacelleKInletInfoButton1() {
+		return nacelleKInletInfoButton1;
+	}
+
+	public void setNacelleKInletInfoButton1(Button nacelleKInletInfoButton1) {
+		this.nacelleKInletInfoButton1 = nacelleKInletInfoButton1;
+	}
+
+	public Button getNacelleKOutletInfoButton1() {
+		return nacelleKOutletInfoButton1;
+	}
+
+	public void setNacelleKOutletInfoButton1(Button nacelleKOutletInfoButton1) {
+		this.nacelleKOutletInfoButton1 = nacelleKOutletInfoButton1;
+	}
+
+	public Button getNacelleKLengthInfoButton1() {
+		return nacelleKLengthInfoButton1;
+	}
+
+	public void setNacelleKLengthInfoButton1(Button nacelleKLengthInfoButton1) {
+		this.nacelleKLengthInfoButton1 = nacelleKLengthInfoButton1;
+	}
+
+	public Button getNacelleKDiameterOutletInfoButton1() {
+		return nacelleKDiameterOutletInfoButton1;
+	}
+
+	public void setNacelleKDiameterOutletInfoButton1(Button nacelleKDiameterOutletInfoButton1) {
+		this.nacelleKDiameterOutletInfoButton1 = nacelleKDiameterOutletInfoButton1;
+	}
+
+	public Button getLandingGearsKMainLegLengthInfoButton() {
+		return landingGearsKMainLegLengthInfoButton;
+	}
+
+	public void setLandingGearsKMainLegLengthInfoButton(Button landingGearsKMainLegLengthInfoButton) {
+		this.landingGearsKMainLegLengthInfoButton = landingGearsKMainLegLengthInfoButton;
+	}
+
+	public Map<Button, Integer> getWingAirfoilDetailsButtonAndTabsMap() {
+		return wingAirfoilDetailsButtonAndTabsMap;
+	}
+
+	public void setWingAirfoilDetailsButtonAndTabsMap(Map<Button, Integer> wingAirfoilDetailsButtonAndTabsMap) {
+		this.wingAirfoilDetailsButtonAndTabsMap = wingAirfoilDetailsButtonAndTabsMap;
+	}
+
+	public Map<Button, Integer> gethTailAirfoilDetailsButtonAndTabsMap() {
+		return hTailAirfoilDetailsButtonAndTabsMap;
+	}
+
+	public void sethTailAirfoilDetailsButtonAndTabsMap(Map<Button, Integer> hTailAirfoilDetailsButtonAndTabsMap) {
+		this.hTailAirfoilDetailsButtonAndTabsMap = hTailAirfoilDetailsButtonAndTabsMap;
+	}
+
+	public Map<Button, Integer> getvTailAirfoilDetailsButtonAndTabsMap() {
+		return vTailAirfoilDetailsButtonAndTabsMap;
+	}
+
+	public void setvTailAirfoilDetailsButtonAndTabsMap(Map<Button, Integer> vTailAirfoilDetailsButtonAndTabsMap) {
+		this.vTailAirfoilDetailsButtonAndTabsMap = vTailAirfoilDetailsButtonAndTabsMap;
+	}
+
+	public Map<Button, Integer> getCanardAirfoilDetailsButtonAndTabsMap() {
+		return canardAirfoilDetailsButtonAndTabsMap;
+	}
+
+	public void setCanardAirfoilDetailsButtonAndTabsMap(Map<Button, Integer> canardAirfoilDetailsButtonAndTabsMap) {
+		this.canardAirfoilDetailsButtonAndTabsMap = canardAirfoilDetailsButtonAndTabsMap;
+	}
+
+	public CheckComboBox<String> getUpdateAircraftDataFromFileComboBox() {
+		return updateAircraftDataFromFileComboBox;
+	}
+
+	public void setUpdateAircraftDataFromFileComboBox(CheckComboBox<String> updateAircraftDataFromFileComboBox) {
+		this.updateAircraftDataFromFileComboBox = updateAircraftDataFromFileComboBox;
+	}
+
+	public boolean isUpdateCabinConfigurationDataFromFile() {
+		return updateCabinConfigurationDataFromFile;
+	}
+
+	public void setUpdateCabinConfigurationDataFromFile(boolean updateCabinConfigurationDataFromFile) {
+		this.updateCabinConfigurationDataFromFile = updateCabinConfigurationDataFromFile;
+	}
+
+	public boolean isUpdateFuselageDataFromFile() {
+		return updateFuselageDataFromFile;
+	}
+
+	public void setUpdateFuselageDataFromFile(boolean updateFuselageDataFromFile) {
+		this.updateFuselageDataFromFile = updateFuselageDataFromFile;
+	}
+
+	public boolean isUpdateWingDataFromFile() {
+		return updateWingDataFromFile;
+	}
+
+	public void setUpdateWingDataFromFile(boolean updateWingDataFromFile) {
+		this.updateWingDataFromFile = updateWingDataFromFile;
+	}
+
+	public boolean isUpdateHTailDataFromFile() {
+		return updateHTailDataFromFile;
+	}
+
+	public void setUpdateHTailDataFromFile(boolean updateHTailDataFromFile) {
+		this.updateHTailDataFromFile = updateHTailDataFromFile;
+	}
+
+	public boolean isUpdateVTailDataFromFile() {
+		return updateVTailDataFromFile;
+	}
+
+	public void setUpdateVTailDataFromFile(boolean updateVTailDataFromFile) {
+		this.updateVTailDataFromFile = updateVTailDataFromFile;
+	}
+
+	public boolean isUpdateCanardDataFromFile() {
+		return updateCanardDataFromFile;
+	}
+
+	public void setUpdateCanardDataFromFile(boolean updateCanardDataFromFile) {
+		this.updateCanardDataFromFile = updateCanardDataFromFile;
+	}
+
+	public boolean isUpdatePowerPlantDataFromFile() {
+		return updatePowerPlantDataFromFile;
+	}
+
+	public void setUpdatePowerPlantDataFromFile(boolean updatePowerPlantDataFromFile) {
+		this.updatePowerPlantDataFromFile = updatePowerPlantDataFromFile;
+	}
+
+	public boolean isUpdateNacellesDataFromFile() {
+		return updateNacellesDataFromFile;
+	}
+
+	public void setUpdateNacellesDataFromFile(boolean updateNacellesDataFromFile) {
+		this.updateNacellesDataFromFile = updateNacellesDataFromFile;
+	}
+
+	public boolean isUpdateLandingGearsDataFromFile() {
+		return updateLandingGearsDataFromFile;
+	}
+
+	public void setUpdateLandingGearsDataFromFile(boolean updateLandingGearsDataFromFile) {
+		this.updateLandingGearsDataFromFile = updateLandingGearsDataFromFile;
+	}
+
+	public boolean isUpdateSystemsDataFromFile() {
+		return updateSystemsDataFromFile;
+	}
+
+	public void setUpdateSystemsDataFromFile(boolean updateSystemsDataFromFile) {
+		this.updateSystemsDataFromFile = updateSystemsDataFromFile;
+	}
+
+	public String getFuselageXPositionValue() {
+		return fuselageXPositionValue;
+	}
+
+	public void setFuselageXPositionValue(String fuselageXPositionValue) {
+		this.fuselageXPositionValue = fuselageXPositionValue;
+	}
+
+	public String getFuselageXPositionUnit() {
+		return fuselageXPositionUnit;
+	}
+
+	public void setFuselageXPositionUnit(String fuselageXPositionUnit) {
+		this.fuselageXPositionUnit = fuselageXPositionUnit;
+	}
+
+	public String getFuselageYPositionValue() {
+		return fuselageYPositionValue;
+	}
+
+	public void setFuselageYPositionValue(String fuselageYPositionValue) {
+		this.fuselageYPositionValue = fuselageYPositionValue;
+	}
+
+	public String getFuselageYPositionUnit() {
+		return fuselageYPositionUnit;
+	}
+
+	public void setFuselageYPositionUnit(String fuselageYPositionUnit) {
+		this.fuselageYPositionUnit = fuselageYPositionUnit;
+	}
+
+	public String getFuselageZPositionValue() {
+		return fuselageZPositionValue;
+	}
+
+	public void setFuselageZPositionValue(String fuselageZPositionValue) {
+		this.fuselageZPositionValue = fuselageZPositionValue;
+	}
+
+	public String getFuselageZPositionUnit() {
+		return fuselageZPositionUnit;
+	}
+
+	public void setFuselageZPositionUnit(String fuselageZPositionUnit) {
+		this.fuselageZPositionUnit = fuselageZPositionUnit;
+	}
+
+	public String getWingXPositionValue() {
+		return wingXPositionValue;
+	}
+
+	public void setWingXPositionValue(String wingXPositionValue) {
+		this.wingXPositionValue = wingXPositionValue;
+	}
+
+	public String getWingXPositionUnit() {
+		return wingXPositionUnit;
+	}
+
+	public void setWingXPositionUnit(String wingXPositionUnit) {
+		this.wingXPositionUnit = wingXPositionUnit;
+	}
+
+	public String getWingYPositionValue() {
+		return wingYPositionValue;
+	}
+
+	public void setWingYPositionValue(String wingYPositionValue) {
+		this.wingYPositionValue = wingYPositionValue;
+	}
+
+	public String getWingYPositionUnit() {
+		return wingYPositionUnit;
+	}
+
+	public void setWingYPositionUnit(String wingYPositionUnit) {
+		this.wingYPositionUnit = wingYPositionUnit;
+	}
+
+	public String getWingZPositionValue() {
+		return wingZPositionValue;
+	}
+
+	public void setWingZPositionValue(String wingZPositionValue) {
+		this.wingZPositionValue = wingZPositionValue;
+	}
+
+	public String getWingZPositionUnit() {
+		return wingZPositionUnit;
+	}
+
+	public void setWingZPositionUnit(String wingZPositionUnit) {
+		this.wingZPositionUnit = wingZPositionUnit;
+	}
+
+	public String getWingRiggingAngleValue() {
+		return wingRiggingAngleValue;
+	}
+
+	public void setWingRiggingAngleValue(String wingRiggingAngleValue) {
+		this.wingRiggingAngleValue = wingRiggingAngleValue;
+	}
+
+	public String getWingRiggingAngleUnit() {
+		return wingRiggingAngleUnit;
+	}
+
+	public void setWingRiggingAngleUnit(String wingRiggingAngleUnit) {
+		this.wingRiggingAngleUnit = wingRiggingAngleUnit;
+	}
+
+	public String gethTailXPositionValue() {
+		return hTailXPositionValue;
+	}
+
+	public void sethTailXPositionValue(String hTailXPositionValue) {
+		this.hTailXPositionValue = hTailXPositionValue;
+	}
+
+	public String gethTailXPositionUnit() {
+		return hTailXPositionUnit;
+	}
+
+	public void sethTailXPositionUnit(String hTailXPositionUnit) {
+		this.hTailXPositionUnit = hTailXPositionUnit;
+	}
+
+	public String gethTailYPositionValue() {
+		return hTailYPositionValue;
+	}
+
+	public void sethTailYPositionValue(String hTailYPositionValue) {
+		this.hTailYPositionValue = hTailYPositionValue;
+	}
+
+	public String gethTailYPositionUnit() {
+		return hTailYPositionUnit;
+	}
+
+	public void sethTailYPositionUnit(String hTailYPositionUnit) {
+		this.hTailYPositionUnit = hTailYPositionUnit;
+	}
+
+	public String gethTailZPositionValue() {
+		return hTailZPositionValue;
+	}
+
+	public void sethTailZPositionValue(String hTailZPositionValue) {
+		this.hTailZPositionValue = hTailZPositionValue;
+	}
+
+	public String gethTailZPositionUnit() {
+		return hTailZPositionUnit;
+	}
+
+	public void sethTailZPositionUnit(String hTailZPositionUnit) {
+		this.hTailZPositionUnit = hTailZPositionUnit;
+	}
+
+	public String gethTailRiggingAngleValue() {
+		return hTailRiggingAngleValue;
+	}
+
+	public void sethTailRiggingAngleValue(String hTailRiggingAngleValue) {
+		this.hTailRiggingAngleValue = hTailRiggingAngleValue;
+	}
+
+	public String gethTailRiggingAngleUnit() {
+		return hTailRiggingAngleUnit;
+	}
+
+	public void sethTailRiggingAngleUnit(String hTailRiggingAngleUnit) {
+		this.hTailRiggingAngleUnit = hTailRiggingAngleUnit;
+	}
+
+	public String getvTailXPositionValue() {
+		return vTailXPositionValue;
+	}
+
+	public void setvTailXPositionValue(String vTailXPositionValue) {
+		this.vTailXPositionValue = vTailXPositionValue;
+	}
+
+	public String getvTailXPositionUnit() {
+		return vTailXPositionUnit;
+	}
+
+	public void setvTailXPositionUnit(String vTailXPositionUnit) {
+		this.vTailXPositionUnit = vTailXPositionUnit;
+	}
+
+	public String getvTailYPositionValue() {
+		return vTailYPositionValue;
+	}
+
+	public void setvTailYPositionValue(String vTailYPositionValue) {
+		this.vTailYPositionValue = vTailYPositionValue;
+	}
+
+	public String getvTailYPositionUnit() {
+		return vTailYPositionUnit;
+	}
+
+	public void setvTailYPositionUnit(String vTailYPositionUnit) {
+		this.vTailYPositionUnit = vTailYPositionUnit;
+	}
+
+	public String getvTailZPositionValue() {
+		return vTailZPositionValue;
+	}
+
+	public void setvTailZPositionValue(String vTailZPositionValue) {
+		this.vTailZPositionValue = vTailZPositionValue;
+	}
+
+	public String getvTailZPositionUnit() {
+		return vTailZPositionUnit;
+	}
+
+	public void setvTailZPositionUnit(String vTailZPositionUnit) {
+		this.vTailZPositionUnit = vTailZPositionUnit;
+	}
+
+	public String getvTailRiggingAngleValue() {
+		return vTailRiggingAngleValue;
+	}
+
+	public void setvTailRiggingAngleValue(String vTailRiggingAngleValue) {
+		this.vTailRiggingAngleValue = vTailRiggingAngleValue;
+	}
+
+	public String getvTailRiggingAngleUnit() {
+		return vTailRiggingAngleUnit;
+	}
+
+	public void setvTailRiggingAngleUnit(String vTailRiggingAngleUnit) {
+		this.vTailRiggingAngleUnit = vTailRiggingAngleUnit;
+	}
+
+	public String getCanardXPositionValue() {
+		return canardXPositionValue;
+	}
+
+	public void setCanardXPositionValue(String canardXPositionValue) {
+		this.canardXPositionValue = canardXPositionValue;
+	}
+
+	public String getCanardXPositionUnit() {
+		return canardXPositionUnit;
+	}
+
+	public void setCanardXPositionUnit(String canardXPositionUnit) {
+		this.canardXPositionUnit = canardXPositionUnit;
+	}
+
+	public String getCanardYPositionValue() {
+		return canardYPositionValue;
+	}
+
+	public void setCanardYPositionValue(String canardYPositionValue) {
+		this.canardYPositionValue = canardYPositionValue;
+	}
+
+	public String getCanardYPositionUnit() {
+		return canardYPositionUnit;
+	}
+
+	public void setCanardYPositionUnit(String canardYPositionUnit) {
+		this.canardYPositionUnit = canardYPositionUnit;
+	}
+
+	public String getCanardZPositionValue() {
+		return canardZPositionValue;
+	}
+
+	public void setCanardZPositionValue(String canardZPositionValue) {
+		this.canardZPositionValue = canardZPositionValue;
+	}
+
+	public String getCanardZPositionUnit() {
+		return canardZPositionUnit;
+	}
+
+	public void setCanardZPositionUnit(String canardZPositionUnit) {
+		this.canardZPositionUnit = canardZPositionUnit;
+	}
+
+	public String getCanardRiggingAngleValue() {
+		return canardRiggingAngleValue;
+	}
+
+	public void setCanardRiggingAngleValue(String canardRiggingAngleValue) {
+		this.canardRiggingAngleValue = canardRiggingAngleValue;
+	}
+
+	public String getCanardRiggingAngleUnit() {
+		return canardRiggingAngleUnit;
+	}
+
+	public void setCanardRiggingAngleUnit(String canardRiggingAngleUnit) {
+		this.canardRiggingAngleUnit = canardRiggingAngleUnit;
+	}
+
+	public List<String> getEngineXPositionValueList() {
+		return engineXPositionValueList;
+	}
+
+	public void setEngineXPositionValueList(List<String> engineXPositionValueList) {
+		this.engineXPositionValueList = engineXPositionValueList;
+	}
+
+	public List<String> getEngineXPositionUnitList() {
+		return engineXPositionUnitList;
+	}
+
+	public void setEngineXPositionUnitList(List<String> engineXPositionUnitList) {
+		this.engineXPositionUnitList = engineXPositionUnitList;
+	}
+
+	public List<String> getEngineYPositionValueList() {
+		return engineYPositionValueList;
+	}
+
+	public void setEngineYPositionValueList(List<String> engineYPositionValueList) {
+		this.engineYPositionValueList = engineYPositionValueList;
+	}
+
+	public List<String> getEngineYPositionUnitList() {
+		return engineYPositionUnitList;
+	}
+
+	public void setEngineYPositionUnitList(List<String> engineYPositionUnitList) {
+		this.engineYPositionUnitList = engineYPositionUnitList;
+	}
+
+	public List<String> getEngineZPositionValueList() {
+		return engineZPositionValueList;
+	}
+
+	public void setEngineZPositionValueList(List<String> engineZPositionValueList) {
+		this.engineZPositionValueList = engineZPositionValueList;
+	}
+
+	public List<String> getEngineZPositionUnitList() {
+		return engineZPositionUnitList;
+	}
+
+	public void setEngineZPositionUnitList(List<String> engineZPositionUnitList) {
+		this.engineZPositionUnitList = engineZPositionUnitList;
+	}
+
+	public List<String> getEngineTiltAngleValueList() {
+		return engineTiltAngleValueList;
+	}
+
+	public void setEngineTiltAngleValueList(List<String> engineTiltAngleValueList) {
+		this.engineTiltAngleValueList = engineTiltAngleValueList;
+	}
+
+	public List<String> getEngineTiltAngleUnitList() {
+		return engineTiltAngleUnitList;
+	}
+
+	public void setEngineTiltAngleUnitList(List<String> engineTiltAngleUnitList) {
+		this.engineTiltAngleUnitList = engineTiltAngleUnitList;
+	}
+
+	public List<String> getEngineMountinPositionValueList() {
+		return engineMountinPositionValueList;
+	}
+
+	public void setEngineMountinPositionValueList(List<String> engineMountinPositionValueList) {
+		this.engineMountinPositionValueList = engineMountinPositionValueList;
+	}
+
+	public List<String> getNacelleXPositionValueList() {
+		return nacelleXPositionValueList;
+	}
+
+	public void setNacelleXPositionValueList(List<String> nacelleXPositionValueList) {
+		this.nacelleXPositionValueList = nacelleXPositionValueList;
+	}
+
+	public List<String> getNacelleXPositionUnitList() {
+		return nacelleXPositionUnitList;
+	}
+
+	public void setNacelleXPositionUnitList(List<String> nacelleXPositionUnitList) {
+		this.nacelleXPositionUnitList = nacelleXPositionUnitList;
+	}
+
+	public List<String> getNacelleYPositionValueList() {
+		return nacelleYPositionValueList;
+	}
+
+	public void setNacelleYPositionValueList(List<String> nacelleYPositionValueList) {
+		this.nacelleYPositionValueList = nacelleYPositionValueList;
+	}
+
+	public List<String> getNacelleYPositionUnitList() {
+		return nacelleYPositionUnitList;
+	}
+
+	public void setNacelleYPositionUnitList(List<String> nacelleYPositionUnitList) {
+		this.nacelleYPositionUnitList = nacelleYPositionUnitList;
+	}
+
+	public List<String> getNacelleZPositionValueList() {
+		return nacelleZPositionValueList;
+	}
+
+	public void setNacelleZPositionValueList(List<String> nacelleZPositionValueList) {
+		this.nacelleZPositionValueList = nacelleZPositionValueList;
+	}
+
+	public List<String> getNacelleZPositionUnitList() {
+		return nacelleZPositionUnitList;
+	}
+
+	public void setNacelleZPositionUnitList(List<String> nacelleZPositionUnitList) {
+		this.nacelleZPositionUnitList = nacelleZPositionUnitList;
+	}
+
+	public List<String> getNacelleMountinPositionValueList() {
+		return nacelleMountinPositionValueList;
+	}
+
+	public void setNacelleMountinPositionValueList(List<String> nacelleMountinPositionValueList) {
+		this.nacelleMountinPositionValueList = nacelleMountinPositionValueList;
+	}
+
+	public String getLandingGearsXPositionValue() {
+		return landingGearsXPositionValue;
+	}
+
+	public void setLandingGearsXPositionValue(String landingGearsXPositionValue) {
+		this.landingGearsXPositionValue = landingGearsXPositionValue;
+	}
+
+	public String getLandingGearsXPositionUnit() {
+		return landingGearsXPositionUnit;
+	}
+
+	public void setLandingGearsXPositionUnit(String landingGearsXPositionUnit) {
+		this.landingGearsXPositionUnit = landingGearsXPositionUnit;
+	}
+
+	public String getLandingGearsYPositionValue() {
+		return landingGearsYPositionValue;
+	}
+
+	public void setLandingGearsYPositionValue(String landingGearsYPositionValue) {
+		this.landingGearsYPositionValue = landingGearsYPositionValue;
+	}
+
+	public String getLandingGearsYPositionUnit() {
+		return landingGearsYPositionUnit;
+	}
+
+	public void setLandingGearsYPositionUnit(String landingGearsYPositionUnit) {
+		this.landingGearsYPositionUnit = landingGearsYPositionUnit;
+	}
+
+	public String getLandingGearsZPositionValue() {
+		return landingGearsZPositionValue;
+	}
+
+	public void setLandingGearsZPositionValue(String landingGearsZPositionValue) {
+		this.landingGearsZPositionValue = landingGearsZPositionValue;
+	}
+
+	public String getLandingGearsZPositionUnit() {
+		return landingGearsZPositionUnit;
+	}
+
+	public void setLandingGearsZPositionUnit(String landingGearsZPositionUnit) {
+		this.landingGearsZPositionUnit = landingGearsZPositionUnit;
+	}
+
+	public String getLandingGearsMountinPositionValue() {
+		return landingGearsMountinPositionValue;
+	}
+
+	public void setLandingGearsMountinPositionValue(String landingGearsMountinPositionValue) {
+		this.landingGearsMountinPositionValue = landingGearsMountinPositionValue;
+	}
+
+	public String getSystemsXPositionValue() {
+		return systemsXPositionValue;
+	}
+
+	public void setSystemsXPositionValue(String systemsXPositionValue) {
+		this.systemsXPositionValue = systemsXPositionValue;
+	}
+
+	public String getSystemsXPositionUnit() {
+		return systemsXPositionUnit;
+	}
+
+	public void setSystemsXPositionUnit(String systemsXPositionUnit) {
+		this.systemsXPositionUnit = systemsXPositionUnit;
+	}
+
+	public String getSystemsYPositionValue() {
+		return systemsYPositionValue;
+	}
+
+	public void setSystemsYPositionValue(String systemsYPositionValue) {
+		this.systemsYPositionValue = systemsYPositionValue;
+	}
+
+	public String getSystemsYPositionUnit() {
+		return systemsYPositionUnit;
+	}
+
+	public void setSystemsYPositionUnit(String systemsYPositionUnit) {
+		this.systemsYPositionUnit = systemsYPositionUnit;
+	}
+
+	public String getSystemsZPositionValue() {
+		return systemsZPositionValue;
+	}
+
+	public void setSystemsZPositionValue(String systemsZPositionValue) {
+		this.systemsZPositionValue = systemsZPositionValue;
+	}
+
+	public String getSystemsZPositionUnit() {
+		return systemsZPositionUnit;
+	}
+
+	public void setSystemsZPositionUnit(String systemsZPositionUnit) {
+		this.systemsZPositionUnit = systemsZPositionUnit;
+	}
+
+	public FileChooser getAirfoilFileChooser() {
+		return airfoilFileChooser;
+	}
+
+	public void setAirfoilFileChooser(FileChooser airfoilFileChooser) {
+		this.airfoilFileChooser = airfoilFileChooser;
+	}
+
+	public FileChooser getAircraftFileChooser() {
+		return aircraftFileChooser;
+	}
+
+	public void setAircraftFileChooser(FileChooser aircraftFileChooser) {
+		this.aircraftFileChooser = aircraftFileChooser;
+	}
+
+	public FileChooser getEngineDatabaseFileChooser() {
+		return engineDatabaseFileChooser;
+	}
+
+	public void setEngineDatabaseFileChooser(FileChooser engineDatabaseFileChooser) {
+		this.engineDatabaseFileChooser = engineDatabaseFileChooser;
+	}
+
+	public FileChooser getSaveAircraftFileChooser() {
+		return saveAircraftFileChooser;
+	}
+
+	public void setSaveAircraftFileChooser(FileChooser saveAircraftFileChooser) {
+		this.saveAircraftFileChooser = saveAircraftFileChooser;
+	}
+
+	public FileChooser getCabinConfigurationFileChooser() {
+		return cabinConfigurationFileChooser;
+	}
+
+	public void setCabinConfigurationFileChooser(FileChooser cabinConfigurationFileChooser) {
+		this.cabinConfigurationFileChooser = cabinConfigurationFileChooser;
+	}
+
+	public FileChooser getFuselageFileChooser() {
+		return fuselageFileChooser;
+	}
+
+	public void setFuselageFileChooser(FileChooser fuselageFileChooser) {
+		this.fuselageFileChooser = fuselageFileChooser;
+	}
+
+	public FileChooser getWingFileChooser() {
+		return wingFileChooser;
+	}
+
+	public void setWingFileChooser(FileChooser wingFileChooser) {
+		this.wingFileChooser = wingFileChooser;
+	}
+
+	public FileChooser gethTailFileChooser() {
+		return hTailFileChooser;
+	}
+
+	public void sethTailFileChooser(FileChooser hTailFileChooser) {
+		this.hTailFileChooser = hTailFileChooser;
+	}
+
+	public FileChooser getvTailFileChooser() {
+		return vTailFileChooser;
+	}
+
+	public void setvTailFileChooser(FileChooser vTailFileChooser) {
+		this.vTailFileChooser = vTailFileChooser;
+	}
+
+	public FileChooser getCanardFileChooser() {
+		return canardFileChooser;
+	}
+
+	public void setCanardFileChooser(FileChooser canardFileChooser) {
+		this.canardFileChooser = canardFileChooser;
+	}
+
+	public FileChooser getEngineFileChooser() {
+		return engineFileChooser;
+	}
+
+	public void setEngineFileChooser(FileChooser engineFileChooser) {
+		this.engineFileChooser = engineFileChooser;
+	}
+
+	public FileChooser getNacelleFileChooser() {
+		return nacelleFileChooser;
+	}
+
+	public void setNacelleFileChooser(FileChooser nacelleFileChooser) {
+		this.nacelleFileChooser = nacelleFileChooser;
+	}
+
+	public FileChooser getLandingGearsFileChooser() {
+		return landingGearsFileChooser;
+	}
+
+	public void setLandingGearsFileChooser(FileChooser landingGearsFileChooser) {
+		this.landingGearsFileChooser = landingGearsFileChooser;
+	}
+
+	public FileChooser getSystemsFileChooser() {
+		return systemsFileChooser;
+	}
+
+	public void setSystemsFileChooser(FileChooser systemsFileChooser) {
+		this.systemsFileChooser = systemsFileChooser;
+	}
+
+	public ValidationSupport getValidation() {
+		return validation;
+	}
+
+	public void setValidation(ValidationSupport validation) {
+		this.validation = validation;
+	}
+
+	public String getTextFieldAlertStyle() {
+		return textFieldAlertStyle;
+	}
+
+	public void setTextFieldAlertStyle(String textFieldAlertStyle) {
+		this.textFieldAlertStyle = textFieldAlertStyle;
+	}
+
+	public String getButtonSuggestedActionStyle() {
+		return buttonSuggestedActionStyle;
+	}
+
+	public void setButtonSuggestedActionStyle(String buttonSuggestedActionStyle) {
+		this.buttonSuggestedActionStyle = buttonSuggestedActionStyle;
+	}
+
+	public ObservableList<String> getAircraftTypeList() {
+		return aircraftTypeList;
+	}
+
+	public void setAircraftTypeList(ObservableList<String> aircraftTypeList) {
+		this.aircraftTypeList = aircraftTypeList;
+	}
+
+	public ObservableList<String> getRegulationsTypeList() {
+		return regulationsTypeList;
+	}
+
+	public void setRegulationsTypeList(ObservableList<String> regulationsTypeList) {
+		this.regulationsTypeList = regulationsTypeList;
+	}
+
+	public ObservableList<String> getWindshieldTypeList() {
+		return windshieldTypeList;
+	}
+
+	public void setWindshieldTypeList(ObservableList<String> windshieldTypeList) {
+		this.windshieldTypeList = windshieldTypeList;
+	}
+
+	public ObservableList<String> getPowerPlantMountingPositionTypeList() {
+		return powerPlantMountingPositionTypeList;
+	}
+
+	public void setPowerPlantMountingPositionTypeList(ObservableList<String> powerPlantMountingPositionTypeList) {
+		this.powerPlantMountingPositionTypeList = powerPlantMountingPositionTypeList;
+	}
+
+	public ObservableList<String> getNacelleMountingPositionTypeList() {
+		return nacelleMountingPositionTypeList;
+	}
+
+	public void setNacelleMountingPositionTypeList(ObservableList<String> nacelleMountingPositionTypeList) {
+		this.nacelleMountingPositionTypeList = nacelleMountingPositionTypeList;
+	}
+
+	public ObservableList<String> getLandingGearsMountingPositionTypeList() {
+		return landingGearsMountingPositionTypeList;
+	}
+
+	public void setLandingGearsMountingPositionTypeList(ObservableList<String> landingGearsMountingPositionTypeList) {
+		this.landingGearsMountingPositionTypeList = landingGearsMountingPositionTypeList;
+	}
+
+	public ObservableList<String> getFuselageAdjustCriteriaTypeList() {
+		return fuselageAdjustCriteriaTypeList;
+	}
+
+	public void setFuselageAdjustCriteriaTypeList(ObservableList<String> fuselageAdjustCriteriaTypeList) {
+		this.fuselageAdjustCriteriaTypeList = fuselageAdjustCriteriaTypeList;
+	}
+
+	public ObservableList<String> getLiftingSurfaceAdjustCriteriaTypeList() {
+		return liftingSurfaceAdjustCriteriaTypeList;
+	}
+
+	public void setLiftingSurfaceAdjustCriteriaTypeList(ObservableList<String> liftingSurfaceAdjustCriteriaTypeList) {
+		this.liftingSurfaceAdjustCriteriaTypeList = liftingSurfaceAdjustCriteriaTypeList;
+	}
+
+	public ObservableList<String> getCabinConfigurationClassesTypeList() {
+		return cabinConfigurationClassesTypeList;
+	}
+
+	public void setCabinConfigurationClassesTypeList(ObservableList<String> cabinConfigurationClassesTypeList) {
+		this.cabinConfigurationClassesTypeList = cabinConfigurationClassesTypeList;
+	}
+
+	public ObservableList<String> getJetEngineTypeList() {
+		return jetEngineTypeList;
+	}
+
+	public void setJetEngineTypeList(ObservableList<String> jetEngineTypeList) {
+		this.jetEngineTypeList = jetEngineTypeList;
+	}
+
+	public ObservableList<String> getTurbopropEngineTypeList() {
+		return turbopropEngineTypeList;
+	}
+
+	public void setTurbopropEngineTypeList(ObservableList<String> turbopropEngineTypeList) {
+		this.turbopropEngineTypeList = turbopropEngineTypeList;
+	}
+
+	public ObservableList<String> getPistonEngineTypeList() {
+		return pistonEngineTypeList;
+	}
+
+	public void setPistonEngineTypeList(ObservableList<String> pistonEngineTypeList) {
+		this.pistonEngineTypeList = pistonEngineTypeList;
+	}
+
+	public ObservableList<String> getFlapTypeList() {
+		return flapTypeList;
+	}
+
+	public void setFlapTypeList(ObservableList<String> flapTypeList) {
+		this.flapTypeList = flapTypeList;
+	}
+
+	public ObservableList<String> getAileronTypeList() {
+		return aileronTypeList;
+	}
+
+	public void setAileronTypeList(ObservableList<String> aileronTypeList) {
+		this.aileronTypeList = aileronTypeList;
+	}
+
+	public ObservableList<String> getElevatorTypeList() {
+		return elevatorTypeList;
+	}
+
+	public void setElevatorTypeList(ObservableList<String> elevatorTypeList) {
+		this.elevatorTypeList = elevatorTypeList;
+	}
+
+	public ObservableList<String> getRudderTypeList() {
+		return rudderTypeList;
+	}
+
+	public void setRudderTypeList(ObservableList<String> rudderTypeList) {
+		this.rudderTypeList = rudderTypeList;
+	}
+
+	public ObservableList<String> getCanardSurfaceTypeList() {
+		return canardSurfaceTypeList;
+	}
+
+	public void setCanardSurfaceTypeList(ObservableList<String> canardSurfaceTypeList) {
+		this.canardSurfaceTypeList = canardSurfaceTypeList;
+	}
+
+	public ObservableList<String> getLengthUnitsList() {
+		return lengthUnitsList;
+	}
+
+	public void setLengthUnitsList(ObservableList<String> lengthUnitsList) {
+		this.lengthUnitsList = lengthUnitsList;
+	}
+
+	public ObservableList<String> getAngleUnitsList() {
+		return angleUnitsList;
+	}
+
+	public void setAngleUnitsList(ObservableList<String> angleUnitsList) {
+		this.angleUnitsList = angleUnitsList;
+	}
+
+	public ObservableList<String> getMassUnitsList() {
+		return massUnitsList;
+	}
+
+	public void setMassUnitsList(ObservableList<String> massUnitsList) {
+		this.massUnitsList = massUnitsList;
+	}
+
+	public ObservableList<String> getAreaUnitsList() {
+		return areaUnitsList;
+	}
+
+	public void setAreaUnitsList(ObservableList<String> areaUnitsList) {
+		this.areaUnitsList = areaUnitsList;
+	}
+
+	public ObservableList<String> getForceUnitsList() {
+		return forceUnitsList;
+	}
+
+	public void setForceUnitsList(ObservableList<String> forceUnitsList) {
+		this.forceUnitsList = forceUnitsList;
+	}
+
+	public ObservableList<String> getPowerUnitsList() {
+		return powerUnitsList;
+	}
+
+	public void setPowerUnitsList(ObservableList<String> powerUnitsList) {
+		this.powerUnitsList = powerUnitsList;
+	}
+
+	public ObservableList<String> getComponentsList() {
+		return componentsList;
+	}
+
+	public void setComponentsList(ObservableList<String> componentsList) {
+		this.componentsList = componentsList;
+	}
+
+	public ChoiceBox<String> getAircraftTypeChoiceBox() {
+		return aircraftTypeChoiceBox;
+	}
+
+	public void setAircraftTypeChoiceBox(ChoiceBox<String> aircraftTypeChoiceBox) {
+		this.aircraftTypeChoiceBox = aircraftTypeChoiceBox;
+	}
+
+	public ChoiceBox<String> getRegulationsTypeChoiceBox() {
+		return regulationsTypeChoiceBox;
+	}
+
+	public void setRegulationsTypeChoiceBox(ChoiceBox<String> regulationsTypeChoiceBox) {
+		this.regulationsTypeChoiceBox = regulationsTypeChoiceBox;
+	}
+
+	public ChoiceBox<String> getEngineMountingPositionTypeChoiceBox1() {
+		return engineMountingPositionTypeChoiceBox1;
+	}
+
+	public void setEngineMountingPositionTypeChoiceBox1(ChoiceBox<String> engineMountingPositionTypeChoiceBox1) {
+		this.engineMountingPositionTypeChoiceBox1 = engineMountingPositionTypeChoiceBox1;
+	}
+
+	public ChoiceBox<String> getNacelleMountingPositionTypeChoiceBox1() {
+		return nacelleMountingPositionTypeChoiceBox1;
+	}
+
+	public void setNacelleMountingPositionTypeChoiceBox1(ChoiceBox<String> nacelleMountingPositionTypeChoiceBox1) {
+		this.nacelleMountingPositionTypeChoiceBox1 = nacelleMountingPositionTypeChoiceBox1;
+	}
+
+	public ChoiceBox<String> getLandingGearsMountingPositionTypeChoiceBox() {
+		return landingGearsMountingPositionTypeChoiceBox;
+	}
+
+	public void setLandingGearsMountingPositionTypeChoiceBox(ChoiceBox<String> landingGearsMountingPositionTypeChoiceBox) {
+		this.landingGearsMountingPositionTypeChoiceBox = landingGearsMountingPositionTypeChoiceBox;
+	}
+
+	public List<TextField> getTextFieldsAircraftEngineFileList() {
+		return textFieldsAircraftEngineFileList;
+	}
+
+	public void setTextFieldsAircraftEngineFileList(List<TextField> textFieldsAircraftEngineFileList) {
+		this.textFieldsAircraftEngineFileList = textFieldsAircraftEngineFileList;
+	}
+
+	public List<TextField> getTextFieldAircraftEngineXList() {
+		return textFieldAircraftEngineXList;
+	}
+
+	public void setTextFieldAircraftEngineXList(List<TextField> textFieldAircraftEngineXList) {
+		this.textFieldAircraftEngineXList = textFieldAircraftEngineXList;
+	}
+
+	public List<TextField> getTextFieldAircraftEngineYList() {
+		return textFieldAircraftEngineYList;
+	}
+
+	public void setTextFieldAircraftEngineYList(List<TextField> textFieldAircraftEngineYList) {
+		this.textFieldAircraftEngineYList = textFieldAircraftEngineYList;
+	}
+
+	public List<TextField> getTextFieldAircraftEngineZList() {
+		return textFieldAircraftEngineZList;
+	}
+
+	public void setTextFieldAircraftEngineZList(List<TextField> textFieldAircraftEngineZList) {
+		this.textFieldAircraftEngineZList = textFieldAircraftEngineZList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxesAircraftEnginePositonList() {
+		return choiceBoxesAircraftEnginePositonList;
+	}
+
+	public void setChoiceBoxesAircraftEnginePositonList(List<ChoiceBox<String>> choiceBoxesAircraftEnginePositonList) {
+		this.choiceBoxesAircraftEnginePositonList = choiceBoxesAircraftEnginePositonList;
+	}
+
+	public List<TextField> getTextFieldAircraftEngineTiltList() {
+		return textFieldAircraftEngineTiltList;
+	}
+
+	public void setTextFieldAircraftEngineTiltList(List<TextField> textFieldAircraftEngineTiltList) {
+		this.textFieldAircraftEngineTiltList = textFieldAircraftEngineTiltList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxAircraftEngineXUnitList() {
+		return choiceBoxAircraftEngineXUnitList;
+	}
+
+	public void setChoiceBoxAircraftEngineXUnitList(List<ChoiceBox<String>> choiceBoxAircraftEngineXUnitList) {
+		this.choiceBoxAircraftEngineXUnitList = choiceBoxAircraftEngineXUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxAircraftEngineYUnitList() {
+		return choiceBoxAircraftEngineYUnitList;
+	}
+
+	public void setChoiceBoxAircraftEngineYUnitList(List<ChoiceBox<String>> choiceBoxAircraftEngineYUnitList) {
+		this.choiceBoxAircraftEngineYUnitList = choiceBoxAircraftEngineYUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxAircraftEngineZUnitList() {
+		return choiceBoxAircraftEngineZUnitList;
+	}
+
+	public void setChoiceBoxAircraftEngineZUnitList(List<ChoiceBox<String>> choiceBoxAircraftEngineZUnitList) {
+		this.choiceBoxAircraftEngineZUnitList = choiceBoxAircraftEngineZUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxAircraftEngineTiltUnitList() {
+		return choiceBoxAircraftEngineTiltUnitList;
+	}
+
+	public void setChoiceBoxAircraftEngineTiltUnitList(List<ChoiceBox<String>> choiceBoxAircraftEngineTiltUnitList) {
+		this.choiceBoxAircraftEngineTiltUnitList = choiceBoxAircraftEngineTiltUnitList;
+	}
+
+	public List<Button> getChooseEngineFileButtonList() {
+		return chooseEngineFileButtonList;
+	}
+
+	public void setChooseEngineFileButtonList(List<Button> chooseEngineFileButtonList) {
+		this.chooseEngineFileButtonList = chooseEngineFileButtonList;
+	}
+
+	public List<TextField> getTextFieldsAircraftNacelleFileList() {
+		return textFieldsAircraftNacelleFileList;
+	}
+
+	public void setTextFieldsAircraftNacelleFileList(List<TextField> textFieldsAircraftNacelleFileList) {
+		this.textFieldsAircraftNacelleFileList = textFieldsAircraftNacelleFileList;
+	}
+
+	public List<TextField> getTextFieldAircraftNacelleXList() {
+		return textFieldAircraftNacelleXList;
+	}
+
+	public void setTextFieldAircraftNacelleXList(List<TextField> textFieldAircraftNacelleXList) {
+		this.textFieldAircraftNacelleXList = textFieldAircraftNacelleXList;
+	}
+
+	public List<TextField> getTextFieldAircraftNacelleYList() {
+		return textFieldAircraftNacelleYList;
+	}
+
+	public void setTextFieldAircraftNacelleYList(List<TextField> textFieldAircraftNacelleYList) {
+		this.textFieldAircraftNacelleYList = textFieldAircraftNacelleYList;
+	}
+
+	public List<TextField> getTextFieldAircraftNacelleZList() {
+		return textFieldAircraftNacelleZList;
+	}
+
+	public void setTextFieldAircraftNacelleZList(List<TextField> textFieldAircraftNacelleZList) {
+		this.textFieldAircraftNacelleZList = textFieldAircraftNacelleZList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxesAircraftNacellePositonList() {
+		return choiceBoxesAircraftNacellePositonList;
+	}
+
+	public void setChoiceBoxesAircraftNacellePositonList(List<ChoiceBox<String>> choiceBoxesAircraftNacellePositonList) {
+		this.choiceBoxesAircraftNacellePositonList = choiceBoxesAircraftNacellePositonList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxAircraftNacelleXUnitList() {
+		return choiceBoxAircraftNacelleXUnitList;
+	}
+
+	public void setChoiceBoxAircraftNacelleXUnitList(List<ChoiceBox<String>> choiceBoxAircraftNacelleXUnitList) {
+		this.choiceBoxAircraftNacelleXUnitList = choiceBoxAircraftNacelleXUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxAircraftNacelleYUnitList() {
+		return choiceBoxAircraftNacelleYUnitList;
+	}
+
+	public void setChoiceBoxAircraftNacelleYUnitList(List<ChoiceBox<String>> choiceBoxAircraftNacelleYUnitList) {
+		this.choiceBoxAircraftNacelleYUnitList = choiceBoxAircraftNacelleYUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxAircraftNacelleZUnitList() {
+		return choiceBoxAircraftNacelleZUnitList;
+	}
+
+	public void setChoiceBoxAircraftNacelleZUnitList(List<ChoiceBox<String>> choiceBoxAircraftNacelleZUnitList) {
+		this.choiceBoxAircraftNacelleZUnitList = choiceBoxAircraftNacelleZUnitList;
+	}
+
+	public List<Button> getChooseNacelleFileButtonList() {
+		return chooseNacelleFileButtonList;
+	}
+
+	public void setChooseNacelleFileButtonList(List<Button> chooseNacelleFileButtonList) {
+		this.chooseNacelleFileButtonList = chooseNacelleFileButtonList;
+	}
+
+	public TextField getTextFieldAircraftInputFile() {
+		return textFieldAircraftInputFile;
+	}
+
+	public void setTextFieldAircraftInputFile(TextField textFieldAircraftInputFile) {
+		this.textFieldAircraftInputFile = textFieldAircraftInputFile;
+	}
+
+	public TextField getTextFieldAircraftCabinConfigurationFile() {
+		return textFieldAircraftCabinConfigurationFile;
+	}
+
+	public void setTextFieldAircraftCabinConfigurationFile(TextField textFieldAircraftCabinConfigurationFile) {
+		this.textFieldAircraftCabinConfigurationFile = textFieldAircraftCabinConfigurationFile;
+	}
+
+	public TextField getTextFieldAircraftFuselageFile() {
+		return textFieldAircraftFuselageFile;
+	}
+
+	public void setTextFieldAircraftFuselageFile(TextField textFieldAircraftFuselageFile) {
+		this.textFieldAircraftFuselageFile = textFieldAircraftFuselageFile;
+	}
+
+	public TextField getTextFieldAircraftFuselageX() {
+		return textFieldAircraftFuselageX;
+	}
+
+	public void setTextFieldAircraftFuselageX(TextField textFieldAircraftFuselageX) {
+		this.textFieldAircraftFuselageX = textFieldAircraftFuselageX;
+	}
+
+	public TextField getTextFieldAircraftFuselageY() {
+		return textFieldAircraftFuselageY;
+	}
+
+	public void setTextFieldAircraftFuselageY(TextField textFieldAircraftFuselageY) {
+		this.textFieldAircraftFuselageY = textFieldAircraftFuselageY;
+	}
+
+	public TextField getTextFieldAircraftFuselageZ() {
+		return textFieldAircraftFuselageZ;
+	}
+
+	public void setTextFieldAircraftFuselageZ(TextField textFieldAircraftFuselageZ) {
+		this.textFieldAircraftFuselageZ = textFieldAircraftFuselageZ;
+	}
+
+	public TextField getTextFieldAircraftWingFile() {
+		return textFieldAircraftWingFile;
+	}
+
+	public void setTextFieldAircraftWingFile(TextField textFieldAircraftWingFile) {
+		this.textFieldAircraftWingFile = textFieldAircraftWingFile;
+	}
+
+	public TextField getTextFieldAircraftWingX() {
+		return textFieldAircraftWingX;
+	}
+
+	public void setTextFieldAircraftWingX(TextField textFieldAircraftWingX) {
+		this.textFieldAircraftWingX = textFieldAircraftWingX;
+	}
+
+	public TextField getTextFieldAircraftWingY() {
+		return textFieldAircraftWingY;
+	}
+
+	public void setTextFieldAircraftWingY(TextField textFieldAircraftWingY) {
+		this.textFieldAircraftWingY = textFieldAircraftWingY;
+	}
+
+	public TextField getTextFieldAircraftWingZ() {
+		return textFieldAircraftWingZ;
+	}
+
+	public void setTextFieldAircraftWingZ(TextField textFieldAircraftWingZ) {
+		this.textFieldAircraftWingZ = textFieldAircraftWingZ;
+	}
+
+	public TextField getTextFieldAircraftWingRiggingAngle() {
+		return textFieldAircraftWingRiggingAngle;
+	}
+
+	public void setTextFieldAircraftWingRiggingAngle(TextField textFieldAircraftWingRiggingAngle) {
+		this.textFieldAircraftWingRiggingAngle = textFieldAircraftWingRiggingAngle;
+	}
+
+	public TextField getTextFieldAircraftHTailFile() {
+		return textFieldAircraftHTailFile;
+	}
+
+	public void setTextFieldAircraftHTailFile(TextField textFieldAircraftHTailFile) {
+		this.textFieldAircraftHTailFile = textFieldAircraftHTailFile;
+	}
+
+	public TextField getTextFieldAircraftHTailX() {
+		return textFieldAircraftHTailX;
+	}
+
+	public void setTextFieldAircraftHTailX(TextField textFieldAircraftHTailX) {
+		this.textFieldAircraftHTailX = textFieldAircraftHTailX;
+	}
+
+	public TextField getTextFieldAircraftHTailY() {
+		return textFieldAircraftHTailY;
+	}
+
+	public void setTextFieldAircraftHTailY(TextField textFieldAircraftHTailY) {
+		this.textFieldAircraftHTailY = textFieldAircraftHTailY;
+	}
+
+	public TextField getTextFieldAircraftHTailZ() {
+		return textFieldAircraftHTailZ;
+	}
+
+	public void setTextFieldAircraftHTailZ(TextField textFieldAircraftHTailZ) {
+		this.textFieldAircraftHTailZ = textFieldAircraftHTailZ;
+	}
+
+	public TextField getTextFieldAircraftHTailRiggingAngle() {
+		return textFieldAircraftHTailRiggingAngle;
+	}
+
+	public void setTextFieldAircraftHTailRiggingAngle(TextField textFieldAircraftHTailRiggingAngle) {
+		this.textFieldAircraftHTailRiggingAngle = textFieldAircraftHTailRiggingAngle;
+	}
+
+	public TextField getTextFieldAircraftVTailFile() {
+		return textFieldAircraftVTailFile;
+	}
+
+	public void setTextFieldAircraftVTailFile(TextField textFieldAircraftVTailFile) {
+		this.textFieldAircraftVTailFile = textFieldAircraftVTailFile;
+	}
+
+	public TextField getTextFieldAircraftVTailX() {
+		return textFieldAircraftVTailX;
+	}
+
+	public void setTextFieldAircraftVTailX(TextField textFieldAircraftVTailX) {
+		this.textFieldAircraftVTailX = textFieldAircraftVTailX;
+	}
+
+	public TextField getTextFieldAircraftVTailY() {
+		return textFieldAircraftVTailY;
+	}
+
+	public void setTextFieldAircraftVTailY(TextField textFieldAircraftVTailY) {
+		this.textFieldAircraftVTailY = textFieldAircraftVTailY;
+	}
+
+	public TextField getTextFieldAircraftVTailZ() {
+		return textFieldAircraftVTailZ;
+	}
+
+	public void setTextFieldAircraftVTailZ(TextField textFieldAircraftVTailZ) {
+		this.textFieldAircraftVTailZ = textFieldAircraftVTailZ;
+	}
+
+	public TextField getTextFieldAircraftVTailRiggingAngle() {
+		return textFieldAircraftVTailRiggingAngle;
+	}
+
+	public void setTextFieldAircraftVTailRiggingAngle(TextField textFieldAircraftVTailRiggingAngle) {
+		this.textFieldAircraftVTailRiggingAngle = textFieldAircraftVTailRiggingAngle;
+	}
+
+	public TextField getTextFieldAircraftCanardFile() {
+		return textFieldAircraftCanardFile;
+	}
+
+	public void setTextFieldAircraftCanardFile(TextField textFieldAircraftCanardFile) {
+		this.textFieldAircraftCanardFile = textFieldAircraftCanardFile;
+	}
+
+	public TextField getTextFieldAircraftCanardX() {
+		return textFieldAircraftCanardX;
+	}
+
+	public void setTextFieldAircraftCanardX(TextField textFieldAircraftCanardX) {
+		this.textFieldAircraftCanardX = textFieldAircraftCanardX;
+	}
+
+	public TextField getTextFieldAircraftCanardY() {
+		return textFieldAircraftCanardY;
+	}
+
+	public void setTextFieldAircraftCanardY(TextField textFieldAircraftCanardY) {
+		this.textFieldAircraftCanardY = textFieldAircraftCanardY;
+	}
+
+	public TextField getTextFieldAircraftCanardZ() {
+		return textFieldAircraftCanardZ;
+	}
+
+	public void setTextFieldAircraftCanardZ(TextField textFieldAircraftCanardZ) {
+		this.textFieldAircraftCanardZ = textFieldAircraftCanardZ;
+	}
+
+	public TextField getTextFieldAircraftCanardRiggingAngle() {
+		return textFieldAircraftCanardRiggingAngle;
+	}
+
+	public void setTextFieldAircraftCanardRiggingAngle(TextField textFieldAircraftCanardRiggingAngle) {
+		this.textFieldAircraftCanardRiggingAngle = textFieldAircraftCanardRiggingAngle;
+	}
+
+	public TextField getTextFieldAircraftEngineFile1() {
+		return textFieldAircraftEngineFile1;
+	}
+
+	public void setTextFieldAircraftEngineFile1(TextField textFieldAircraftEngineFile1) {
+		this.textFieldAircraftEngineFile1 = textFieldAircraftEngineFile1;
+	}
+
+	public TextField getTextFieldAircraftEngineX1() {
+		return textFieldAircraftEngineX1;
+	}
+
+	public void setTextFieldAircraftEngineX1(TextField textFieldAircraftEngineX1) {
+		this.textFieldAircraftEngineX1 = textFieldAircraftEngineX1;
+	}
+
+	public TextField getTextFieldAircraftEngineY1() {
+		return textFieldAircraftEngineY1;
+	}
+
+	public void setTextFieldAircraftEngineY1(TextField textFieldAircraftEngineY1) {
+		this.textFieldAircraftEngineY1 = textFieldAircraftEngineY1;
+	}
+
+	public TextField getTextFieldAircraftEngineZ1() {
+		return textFieldAircraftEngineZ1;
+	}
+
+	public void setTextFieldAircraftEngineZ1(TextField textFieldAircraftEngineZ1) {
+		this.textFieldAircraftEngineZ1 = textFieldAircraftEngineZ1;
+	}
+
+	public TextField getTextFieldAircraftEngineTilt1() {
+		return textFieldAircraftEngineTilt1;
+	}
+
+	public void setTextFieldAircraftEngineTilt1(TextField textFieldAircraftEngineTilt1) {
+		this.textFieldAircraftEngineTilt1 = textFieldAircraftEngineTilt1;
+	}
+
+	public TextField getTextFieldAircraftNacelleFile1() {
+		return textFieldAircraftNacelleFile1;
+	}
+
+	public void setTextFieldAircraftNacelleFile1(TextField textFieldAircraftNacelleFile1) {
+		this.textFieldAircraftNacelleFile1 = textFieldAircraftNacelleFile1;
+	}
+
+	public TextField getTextFieldAircraftNacelleX1() {
+		return textFieldAircraftNacelleX1;
+	}
+
+	public void setTextFieldAircraftNacelleX1(TextField textFieldAircraftNacelleX1) {
+		this.textFieldAircraftNacelleX1 = textFieldAircraftNacelleX1;
+	}
+
+	public TextField getTextFieldAircraftNacelleY1() {
+		return textFieldAircraftNacelleY1;
+	}
+
+	public void setTextFieldAircraftNacelleY1(TextField textFieldAircraftNacelleY1) {
+		this.textFieldAircraftNacelleY1 = textFieldAircraftNacelleY1;
+	}
+
+	public TextField getTextFieldAircraftNacelleZ1() {
+		return textFieldAircraftNacelleZ1;
+	}
+
+	public void setTextFieldAircraftNacelleZ1(TextField textFieldAircraftNacelleZ1) {
+		this.textFieldAircraftNacelleZ1 = textFieldAircraftNacelleZ1;
+	}
+
+	public TextField getTextFieldAircraftLandingGearsFile() {
+		return textFieldAircraftLandingGearsFile;
+	}
+
+	public void setTextFieldAircraftLandingGearsFile(TextField textFieldAircraftLandingGearsFile) {
+		this.textFieldAircraftLandingGearsFile = textFieldAircraftLandingGearsFile;
+	}
+
+	public TextField getTextFieldAircraftLandingGearsX() {
+		return textFieldAircraftLandingGearsX;
+	}
+
+	public void setTextFieldAircraftLandingGearsX(TextField textFieldAircraftLandingGearsX) {
+		this.textFieldAircraftLandingGearsX = textFieldAircraftLandingGearsX;
+	}
+
+	public TextField getTextFieldAircraftLandingGearsY() {
+		return textFieldAircraftLandingGearsY;
+	}
+
+	public void setTextFieldAircraftLandingGearsY(TextField textFieldAircraftLandingGearsY) {
+		this.textFieldAircraftLandingGearsY = textFieldAircraftLandingGearsY;
+	}
+
+	public TextField getTextFieldAircraftLandingGearsZ() {
+		return textFieldAircraftLandingGearsZ;
+	}
+
+	public void setTextFieldAircraftLandingGearsZ(TextField textFieldAircraftLandingGearsZ) {
+		this.textFieldAircraftLandingGearsZ = textFieldAircraftLandingGearsZ;
+	}
+
+	public TextField getTextFieldAircraftSystemsFile() {
+		return textFieldAircraftSystemsFile;
+	}
+
+	public void setTextFieldAircraftSystemsFile(TextField textFieldAircraftSystemsFile) {
+		this.textFieldAircraftSystemsFile = textFieldAircraftSystemsFile;
+	}
+
+	public TextField getTextFieldAircraftSystemsX() {
+		return textFieldAircraftSystemsX;
+	}
+
+	public void setTextFieldAircraftSystemsX(TextField textFieldAircraftSystemsX) {
+		this.textFieldAircraftSystemsX = textFieldAircraftSystemsX;
+	}
+
+	public TextField getTextFieldAircraftSystemsY() {
+		return textFieldAircraftSystemsY;
+	}
+
+	public void setTextFieldAircraftSystemsY(TextField textFieldAircraftSystemsY) {
+		this.textFieldAircraftSystemsY = textFieldAircraftSystemsY;
+	}
+
+	public TextField getTextFieldAircraftSystemsZ() {
+		return textFieldAircraftSystemsZ;
+	}
+
+	public void setTextFieldAircraftSystemsZ(TextField textFieldAircraftSystemsZ) {
+		this.textFieldAircraftSystemsZ = textFieldAircraftSystemsZ;
+	}
+
+	public ChoiceBox<String> getFuselageXUnitChoiceBox() {
+		return fuselageXUnitChoiceBox;
+	}
+
+	public void setFuselageXUnitChoiceBox(ChoiceBox<String> fuselageXUnitChoiceBox) {
+		this.fuselageXUnitChoiceBox = fuselageXUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageYUnitChoiceBox() {
+		return fuselageYUnitChoiceBox;
+	}
+
+	public void setFuselageYUnitChoiceBox(ChoiceBox<String> fuselageYUnitChoiceBox) {
+		this.fuselageYUnitChoiceBox = fuselageYUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageZUnitChoiceBox() {
+		return fuselageZUnitChoiceBox;
+	}
+
+	public void setFuselageZUnitChoiceBox(ChoiceBox<String> fuselageZUnitChoiceBox) {
+		this.fuselageZUnitChoiceBox = fuselageZUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingXUnitChoiceBox() {
+		return wingXUnitChoiceBox;
+	}
+
+	public void setWingXUnitChoiceBox(ChoiceBox<String> wingXUnitChoiceBox) {
+		this.wingXUnitChoiceBox = wingXUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingYUnitChoiceBox() {
+		return wingYUnitChoiceBox;
+	}
+
+	public void setWingYUnitChoiceBox(ChoiceBox<String> wingYUnitChoiceBox) {
+		this.wingYUnitChoiceBox = wingYUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingZUnitChoiceBox() {
+		return wingZUnitChoiceBox;
+	}
+
+	public void setWingZUnitChoiceBox(ChoiceBox<String> wingZUnitChoiceBox) {
+		this.wingZUnitChoiceBox = wingZUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingRiggingAngleUnitChoiceBox() {
+		return wingRiggingAngleUnitChoiceBox;
+	}
+
+	public void setWingRiggingAngleUnitChoiceBox(ChoiceBox<String> wingRiggingAngleUnitChoiceBox) {
+		this.wingRiggingAngleUnitChoiceBox = wingRiggingAngleUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailXUnitChoiceBox() {
+		return hTailXUnitChoiceBox;
+	}
+
+	public void sethTailXUnitChoiceBox(ChoiceBox<String> hTailXUnitChoiceBox) {
+		this.hTailXUnitChoiceBox = hTailXUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailYUnitChoiceBox() {
+		return hTailYUnitChoiceBox;
+	}
+
+	public void sethTailYUnitChoiceBox(ChoiceBox<String> hTailYUnitChoiceBox) {
+		this.hTailYUnitChoiceBox = hTailYUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getHtailZUnitChoiceBox() {
+		return htailZUnitChoiceBox;
+	}
+
+	public void setHtailZUnitChoiceBox(ChoiceBox<String> htailZUnitChoiceBox) {
+		this.htailZUnitChoiceBox = htailZUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailRiggingAngleUnitChoiceBox() {
+		return hTailRiggingAngleUnitChoiceBox;
+	}
+
+	public void sethTailRiggingAngleUnitChoiceBox(ChoiceBox<String> hTailRiggingAngleUnitChoiceBox) {
+		this.hTailRiggingAngleUnitChoiceBox = hTailRiggingAngleUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailXUnitChoiceBox() {
+		return vTailXUnitChoiceBox;
+	}
+
+	public void setvTailXUnitChoiceBox(ChoiceBox<String> vTailXUnitChoiceBox) {
+		this.vTailXUnitChoiceBox = vTailXUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailYUnitChoiceBox() {
+		return vTailYUnitChoiceBox;
+	}
+
+	public void setvTailYUnitChoiceBox(ChoiceBox<String> vTailYUnitChoiceBox) {
+		this.vTailYUnitChoiceBox = vTailYUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailZUnitChoiceBox() {
+		return vTailZUnitChoiceBox;
+	}
+
+	public void setvTailZUnitChoiceBox(ChoiceBox<String> vTailZUnitChoiceBox) {
+		this.vTailZUnitChoiceBox = vTailZUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailRiggingAngleUnitChoiceBox() {
+		return vTailRiggingAngleUnitChoiceBox;
+	}
+
+	public void setvTailRiggingAngleUnitChoiceBox(ChoiceBox<String> vTailRiggingAngleUnitChoiceBox) {
+		this.vTailRiggingAngleUnitChoiceBox = vTailRiggingAngleUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardXUnitChoiceBox() {
+		return canardXUnitChoiceBox;
+	}
+
+	public void setCanardXUnitChoiceBox(ChoiceBox<String> canardXUnitChoiceBox) {
+		this.canardXUnitChoiceBox = canardXUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardYUnitChoiceBox() {
+		return canardYUnitChoiceBox;
+	}
+
+	public void setCanardYUnitChoiceBox(ChoiceBox<String> canardYUnitChoiceBox) {
+		this.canardYUnitChoiceBox = canardYUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardZUnitChoiceBox() {
+		return canardZUnitChoiceBox;
+	}
+
+	public void setCanardZUnitChoiceBox(ChoiceBox<String> canardZUnitChoiceBox) {
+		this.canardZUnitChoiceBox = canardZUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardRiggingAngleUnitChoiceBox() {
+		return canardRiggingAngleUnitChoiceBox;
+	}
+
+	public void setCanardRiggingAngleUnitChoiceBox(ChoiceBox<String> canardRiggingAngleUnitChoiceBox) {
+		this.canardRiggingAngleUnitChoiceBox = canardRiggingAngleUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getEngineX1UnitChoiceBox() {
+		return engineX1UnitChoiceBox;
+	}
+
+	public void setEngineX1UnitChoiceBox(ChoiceBox<String> engineX1UnitChoiceBox) {
+		this.engineX1UnitChoiceBox = engineX1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getEngineY1UnitChoiceBox() {
+		return engineY1UnitChoiceBox;
+	}
+
+	public void setEngineY1UnitChoiceBox(ChoiceBox<String> engineY1UnitChoiceBox) {
+		this.engineY1UnitChoiceBox = engineY1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getEngineZ1UnitChoiceBox() {
+		return engineZ1UnitChoiceBox;
+	}
+
+	public void setEngineZ1UnitChoiceBox(ChoiceBox<String> engineZ1UnitChoiceBox) {
+		this.engineZ1UnitChoiceBox = engineZ1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getEngineTilt1AngleUnitChoiceBox() {
+		return engineTilt1AngleUnitChoiceBox;
+	}
+
+	public void setEngineTilt1AngleUnitChoiceBox(ChoiceBox<String> engineTilt1AngleUnitChoiceBox) {
+		this.engineTilt1AngleUnitChoiceBox = engineTilt1AngleUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getNacelleX1UnitChoiceBox() {
+		return nacelleX1UnitChoiceBox;
+	}
+
+	public void setNacelleX1UnitChoiceBox(ChoiceBox<String> nacelleX1UnitChoiceBox) {
+		this.nacelleX1UnitChoiceBox = nacelleX1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getNacelleY1UnitChoiceBox() {
+		return nacelleY1UnitChoiceBox;
+	}
+
+	public void setNacelleY1UnitChoiceBox(ChoiceBox<String> nacelleY1UnitChoiceBox) {
+		this.nacelleY1UnitChoiceBox = nacelleY1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getNacelleZ1UnitChoiceBox() {
+		return nacelleZ1UnitChoiceBox;
+	}
+
+	public void setNacelleZ1UnitChoiceBox(ChoiceBox<String> nacelleZ1UnitChoiceBox) {
+		this.nacelleZ1UnitChoiceBox = nacelleZ1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getLandingGearsXUnitChoiceBox() {
+		return landingGearsXUnitChoiceBox;
+	}
+
+	public void setLandingGearsXUnitChoiceBox(ChoiceBox<String> landingGearsXUnitChoiceBox) {
+		this.landingGearsXUnitChoiceBox = landingGearsXUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getLandingGearsYUnitChoiceBox() {
+		return landingGearsYUnitChoiceBox;
+	}
+
+	public void setLandingGearsYUnitChoiceBox(ChoiceBox<String> landingGearsYUnitChoiceBox) {
+		this.landingGearsYUnitChoiceBox = landingGearsYUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getLandingGearsZUnitChoiceBox() {
+		return landingGearsZUnitChoiceBox;
+	}
+
+	public void setLandingGearsZUnitChoiceBox(ChoiceBox<String> landingGearsZUnitChoiceBox) {
+		this.landingGearsZUnitChoiceBox = landingGearsZUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getSystemsXUnitChoiceBox() {
+		return systemsXUnitChoiceBox;
+	}
+
+	public void setSystemsXUnitChoiceBox(ChoiceBox<String> systemsXUnitChoiceBox) {
+		this.systemsXUnitChoiceBox = systemsXUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getSystemsYUnitChoiceBox() {
+		return systemsYUnitChoiceBox;
+	}
+
+	public void setSystemsYUnitChoiceBox(ChoiceBox<String> systemsYUnitChoiceBox) {
+		this.systemsYUnitChoiceBox = systemsYUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getSystemsZUnitChoiceBox() {
+		return systemsZUnitChoiceBox;
+	}
+
+	public void setSystemsZUnitChoiceBox(ChoiceBox<String> systemsZUnitChoiceBox) {
+		this.systemsZUnitChoiceBox = systemsZUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWindshieldTypeChoiceBox() {
+		return windshieldTypeChoiceBox;
+	}
+
+	public void setWindshieldTypeChoiceBox(ChoiceBox<String> windshieldTypeChoiceBox) {
+		this.windshieldTypeChoiceBox = windshieldTypeChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageAdjustCriterionChoiceBox() {
+		return fuselageAdjustCriterionChoiceBox;
+	}
+
+	public void setFuselageAdjustCriterionChoiceBox(ChoiceBox<String> fuselageAdjustCriterionChoiceBox) {
+		this.fuselageAdjustCriterionChoiceBox = fuselageAdjustCriterionChoiceBox;
+	}
+
+	public CheckBox getFuselagePressurizedCheckBox() {
+		return fuselagePressurizedCheckBox;
+	}
+
+	public void setFuselagePressurizedCheckBox(CheckBox fuselagePressurizedCheckBox) {
+		this.fuselagePressurizedCheckBox = fuselagePressurizedCheckBox;
+	}
+
+	public TextField getTextFieldFuselageDeckNumber() {
+		return textFieldFuselageDeckNumber;
+	}
+
+	public void setTextFieldFuselageDeckNumber(TextField textFieldFuselageDeckNumber) {
+		this.textFieldFuselageDeckNumber = textFieldFuselageDeckNumber;
+	}
+
+	public TextField getTextFieldFuselageLength() {
+		return textFieldFuselageLength;
+	}
+
+	public void setTextFieldFuselageLength(TextField textFieldFuselageLength) {
+		this.textFieldFuselageLength = textFieldFuselageLength;
+	}
+
+	public TextField getTextFieldFuselageSurfaceRoughness() {
+		return textFieldFuselageSurfaceRoughness;
+	}
+
+	public void setTextFieldFuselageSurfaceRoughness(TextField textFieldFuselageSurfaceRoughness) {
+		this.textFieldFuselageSurfaceRoughness = textFieldFuselageSurfaceRoughness;
+	}
+
+	public TextField getTextFieldFuselageNoseLengthRatio() {
+		return textFieldFuselageNoseLengthRatio;
+	}
+
+	public void setTextFieldFuselageNoseLengthRatio(TextField textFieldFuselageNoseLengthRatio) {
+		this.textFieldFuselageNoseLengthRatio = textFieldFuselageNoseLengthRatio;
+	}
+
+	public TextField getTextFieldFuselageNoseTipOffset() {
+		return textFieldFuselageNoseTipOffset;
+	}
+
+	public void setTextFieldFuselageNoseTipOffset(TextField textFieldFuselageNoseTipOffset) {
+		this.textFieldFuselageNoseTipOffset = textFieldFuselageNoseTipOffset;
+	}
+
+	public TextField getTextFieldFuselageNoseDxCap() {
+		return textFieldFuselageNoseDxCap;
+	}
+
+	public void setTextFieldFuselageNoseDxCap(TextField textFieldFuselageNoseDxCap) {
+		this.textFieldFuselageNoseDxCap = textFieldFuselageNoseDxCap;
+	}
+
+	public TextField getTextFieldFuselageNoseWindshieldWidth() {
+		return textFieldFuselageNoseWindshieldWidth;
+	}
+
+	public void setTextFieldFuselageNoseWindshieldWidth(TextField textFieldFuselageNoseWindshieldWidth) {
+		this.textFieldFuselageNoseWindshieldWidth = textFieldFuselageNoseWindshieldWidth;
+	}
+
+	public TextField getTextFieldFuselageNoseWindshieldHeight() {
+		return textFieldFuselageNoseWindshieldHeight;
+	}
+
+	public void setTextFieldFuselageNoseWindshieldHeight(TextField textFieldFuselageNoseWindshieldHeight) {
+		this.textFieldFuselageNoseWindshieldHeight = textFieldFuselageNoseWindshieldHeight;
+	}
+
+	public TextField getTextFieldFuselageNoseMidSectionHeight() {
+		return textFieldFuselageNoseMidSectionHeight;
+	}
+
+	public void setTextFieldFuselageNoseMidSectionHeight(TextField textFieldFuselageNoseMidSectionHeight) {
+		this.textFieldFuselageNoseMidSectionHeight = textFieldFuselageNoseMidSectionHeight;
+	}
+
+	public TextField getTextFieldFuselageNoseMidSectionRhoUpper() {
+		return textFieldFuselageNoseMidSectionRhoUpper;
+	}
+
+	public void setTextFieldFuselageNoseMidSectionRhoUpper(TextField textFieldFuselageNoseMidSectionRhoUpper) {
+		this.textFieldFuselageNoseMidSectionRhoUpper = textFieldFuselageNoseMidSectionRhoUpper;
+	}
+
+	public TextField getTextFieldFuselageNoseMidSectionRhoLower() {
+		return textFieldFuselageNoseMidSectionRhoLower;
+	}
+
+	public void setTextFieldFuselageNoseMidSectionRhoLower(TextField textFieldFuselageNoseMidSectionRhoLower) {
+		this.textFieldFuselageNoseMidSectionRhoLower = textFieldFuselageNoseMidSectionRhoLower;
+	}
+
+	public TextField getTextFieldFuselageCylinderLengthRatio() {
+		return textFieldFuselageCylinderLengthRatio;
+	}
+
+	public void setTextFieldFuselageCylinderLengthRatio(TextField textFieldFuselageCylinderLengthRatio) {
+		this.textFieldFuselageCylinderLengthRatio = textFieldFuselageCylinderLengthRatio;
+	}
+
+	public TextField getTextFieldFuselageCylinderSectionWidth() {
+		return textFieldFuselageCylinderSectionWidth;
+	}
+
+	public void setTextFieldFuselageCylinderSectionWidth(TextField textFieldFuselageCylinderSectionWidth) {
+		this.textFieldFuselageCylinderSectionWidth = textFieldFuselageCylinderSectionWidth;
+	}
+
+	public TextField getTextFieldFuselageCylinderSectionHeight() {
+		return textFieldFuselageCylinderSectionHeight;
+	}
+
+	public void setTextFieldFuselageCylinderSectionHeight(TextField textFieldFuselageCylinderSectionHeight) {
+		this.textFieldFuselageCylinderSectionHeight = textFieldFuselageCylinderSectionHeight;
+	}
+
+	public TextField getTextFieldFuselageCylinderHeightFromGround() {
+		return textFieldFuselageCylinderHeightFromGround;
+	}
+
+	public void setTextFieldFuselageCylinderHeightFromGround(TextField textFieldFuselageCylinderHeightFromGround) {
+		this.textFieldFuselageCylinderHeightFromGround = textFieldFuselageCylinderHeightFromGround;
+	}
+
+	public TextField getTextFieldFuselageCylinderSectionHeightRatio() {
+		return textFieldFuselageCylinderSectionHeightRatio;
+	}
+
+	public void setTextFieldFuselageCylinderSectionHeightRatio(TextField textFieldFuselageCylinderSectionHeightRatio) {
+		this.textFieldFuselageCylinderSectionHeightRatio = textFieldFuselageCylinderSectionHeightRatio;
+	}
+
+	public TextField getTextFieldFuselageCylinderSectionRhoUpper() {
+		return textFieldFuselageCylinderSectionRhoUpper;
+	}
+
+	public void setTextFieldFuselageCylinderSectionRhoUpper(TextField textFieldFuselageCylinderSectionRhoUpper) {
+		this.textFieldFuselageCylinderSectionRhoUpper = textFieldFuselageCylinderSectionRhoUpper;
+	}
+
+	public TextField getTextFieldFuselageCylinderSectionRhoLower() {
+		return textFieldFuselageCylinderSectionRhoLower;
+	}
+
+	public void setTextFieldFuselageCylinderSectionRhoLower(TextField textFieldFuselageCylinderSectionRhoLower) {
+		this.textFieldFuselageCylinderSectionRhoLower = textFieldFuselageCylinderSectionRhoLower;
+	}
+
+	public TextField getTextFieldFuselageTailTipOffset() {
+		return textFieldFuselageTailTipOffset;
+	}
+
+	public void setTextFieldFuselageTailTipOffset(TextField textFieldFuselageTailTipOffset) {
+		this.textFieldFuselageTailTipOffset = textFieldFuselageTailTipOffset;
+	}
+
+	public TextField getTextFieldFuselageTailDxCap() {
+		return textFieldFuselageTailDxCap;
+	}
+
+	public void setTextFieldFuselageTailDxCap(TextField textFieldFuselageTailDxCap) {
+		this.textFieldFuselageTailDxCap = textFieldFuselageTailDxCap;
+	}
+
+	public TextField getTextFieldFuselageTailMidSectionHeight() {
+		return textFieldFuselageTailMidSectionHeight;
+	}
+
+	public void setTextFieldFuselageTailMidSectionHeight(TextField textFieldFuselageTailMidSectionHeight) {
+		this.textFieldFuselageTailMidSectionHeight = textFieldFuselageTailMidSectionHeight;
+	}
+
+	public TextField getTextFieldFuselageTailMidRhoUpper() {
+		return textFieldFuselageTailMidRhoUpper;
+	}
+
+	public void setTextFieldFuselageTailMidRhoUpper(TextField textFieldFuselageTailMidRhoUpper) {
+		this.textFieldFuselageTailMidRhoUpper = textFieldFuselageTailMidRhoUpper;
+	}
+
+	public TextField getTextFieldFuselageTailMidRhoLower() {
+		return textFieldFuselageTailMidRhoLower;
+	}
+
+	public void setTextFieldFuselageTailMidRhoLower(TextField textFieldFuselageTailMidRhoLower) {
+		this.textFieldFuselageTailMidRhoLower = textFieldFuselageTailMidRhoLower;
+	}
+
+	public TextField getTextFieldFuselageSpoilerXin1() {
+		return textFieldFuselageSpoilerXin1;
+	}
+
+	public void setTextFieldFuselageSpoilerXin1(TextField textFieldFuselageSpoilerXin1) {
+		this.textFieldFuselageSpoilerXin1 = textFieldFuselageSpoilerXin1;
+	}
+
+	public TextField getTextFieldFuselageSpoilerXout1() {
+		return textFieldFuselageSpoilerXout1;
+	}
+
+	public void setTextFieldFuselageSpoilerXout1(TextField textFieldFuselageSpoilerXout1) {
+		this.textFieldFuselageSpoilerXout1 = textFieldFuselageSpoilerXout1;
+	}
+
+	public TextField getTextFieldFuselageSpoilerYin1() {
+		return textFieldFuselageSpoilerYin1;
+	}
+
+	public void setTextFieldFuselageSpoilerYin1(TextField textFieldFuselageSpoilerYin1) {
+		this.textFieldFuselageSpoilerYin1 = textFieldFuselageSpoilerYin1;
+	}
+
+	public TextField getTextFieldFuselageSpoilerYout1() {
+		return textFieldFuselageSpoilerYout1;
+	}
+
+	public void setTextFieldFuselageSpoilerYout1(TextField textFieldFuselageSpoilerYout1) {
+		this.textFieldFuselageSpoilerYout1 = textFieldFuselageSpoilerYout1;
+	}
+
+	public TextField getTextFieldFuselageSpoilerMinDeflection1() {
+		return textFieldFuselageSpoilerMinDeflection1;
+	}
+
+	public void setTextFieldFuselageSpoilerMinDeflection1(TextField textFieldFuselageSpoilerMinDeflection1) {
+		this.textFieldFuselageSpoilerMinDeflection1 = textFieldFuselageSpoilerMinDeflection1;
+	}
+
+	public TextField getTextFieldFuselageSpoilerMaxDeflection1() {
+		return textFieldFuselageSpoilerMaxDeflection1;
+	}
+
+	public void setTextFieldFuselageSpoilerMaxDeflection1(TextField textFieldFuselageSpoilerMaxDeflection1) {
+		this.textFieldFuselageSpoilerMaxDeflection1 = textFieldFuselageSpoilerMaxDeflection1;
+	}
+
+	public List<TextField> getTextFieldFuselageInnerSpanwisePositionSpoilerList() {
+		return textFieldFuselageInnerSpanwisePositionSpoilerList;
+	}
+
+	public void setTextFieldFuselageInnerSpanwisePositionSpoilerList(
+			List<TextField> textFieldFuselageInnerSpanwisePositionSpoilerList) {
+		this.textFieldFuselageInnerSpanwisePositionSpoilerList = textFieldFuselageInnerSpanwisePositionSpoilerList;
+	}
+
+	public List<TextField> getTextFieldFuselageOuterSpanwisePositionSpoilerList() {
+		return textFieldFuselageOuterSpanwisePositionSpoilerList;
+	}
+
+	public void setTextFieldFuselageOuterSpanwisePositionSpoilerList(
+			List<TextField> textFieldFuselageOuterSpanwisePositionSpoilerList) {
+		this.textFieldFuselageOuterSpanwisePositionSpoilerList = textFieldFuselageOuterSpanwisePositionSpoilerList;
+	}
+
+	public List<TextField> getTextFieldFuselageInnerChordwisePositionSpoilerList() {
+		return textFieldFuselageInnerChordwisePositionSpoilerList;
+	}
+
+	public void setTextFieldFuselageInnerChordwisePositionSpoilerList(
+			List<TextField> textFieldFuselageInnerChordwisePositionSpoilerList) {
+		this.textFieldFuselageInnerChordwisePositionSpoilerList = textFieldFuselageInnerChordwisePositionSpoilerList;
+	}
+
+	public List<TextField> getTextFieldFuselageOuterChordwisePositionSpoilerList() {
+		return textFieldFuselageOuterChordwisePositionSpoilerList;
+	}
+
+	public void setTextFieldFuselageOuterChordwisePositionSpoilerList(
+			List<TextField> textFieldFuselageOuterChordwisePositionSpoilerList) {
+		this.textFieldFuselageOuterChordwisePositionSpoilerList = textFieldFuselageOuterChordwisePositionSpoilerList;
+	}
+
+	public List<TextField> getTextFieldFuselageMinimumDeflectionAngleSpoilerList() {
+		return textFieldFuselageMinimumDeflectionAngleSpoilerList;
+	}
+
+	public void setTextFieldFuselageMinimumDeflectionAngleSpoilerList(
+			List<TextField> textFieldFuselageMinimumDeflectionAngleSpoilerList) {
+		this.textFieldFuselageMinimumDeflectionAngleSpoilerList = textFieldFuselageMinimumDeflectionAngleSpoilerList;
+	}
+
+	public List<TextField> getTextFieldFuselageMaximumDeflectionAngleSpoilerList() {
+		return textFieldFuselageMaximumDeflectionAngleSpoilerList;
+	}
+
+	public void setTextFieldFuselageMaximumDeflectionAngleSpoilerList(
+			List<TextField> textFieldFuselageMaximumDeflectionAngleSpoilerList) {
+		this.textFieldFuselageMaximumDeflectionAngleSpoilerList = textFieldFuselageMaximumDeflectionAngleSpoilerList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList() {
+		return choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList;
+	}
+
+	public void setChoiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList(
+			List<ChoiceBox<String>> choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList) {
+		this.choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList = choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList() {
+		return choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList;
+	}
+
+	public void setChoiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList(
+			List<ChoiceBox<String>> choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList) {
+		this.choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList = choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList;
+	}
+
+	public ChoiceBox<String> getFuselageLengthUnitChoiceBox() {
+		return fuselageLengthUnitChoiceBox;
+	}
+
+	public void setFuselageLengthUnitChoiceBox(ChoiceBox<String> fuselageLengthUnitChoiceBox) {
+		this.fuselageLengthUnitChoiceBox = fuselageLengthUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageRoughnessUnitChoiceBox() {
+		return fuselageRoughnessUnitChoiceBox;
+	}
+
+	public void setFuselageRoughnessUnitChoiceBox(ChoiceBox<String> fuselageRoughnessUnitChoiceBox) {
+		this.fuselageRoughnessUnitChoiceBox = fuselageRoughnessUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageNoseTipOffsetZUnitChoiceBox() {
+		return fuselageNoseTipOffsetZUnitChoiceBox;
+	}
+
+	public void setFuselageNoseTipOffsetZUnitChoiceBox(ChoiceBox<String> fuselageNoseTipOffsetZUnitChoiceBox) {
+		this.fuselageNoseTipOffsetZUnitChoiceBox = fuselageNoseTipOffsetZUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageWindshieldWidthUnitChoiceBox() {
+		return fuselageWindshieldWidthUnitChoiceBox;
+	}
+
+	public void setFuselageWindshieldWidthUnitChoiceBox(ChoiceBox<String> fuselageWindshieldWidthUnitChoiceBox) {
+		this.fuselageWindshieldWidthUnitChoiceBox = fuselageWindshieldWidthUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageWindshieldHeightUnitChoiceBox() {
+		return fuselageWindshieldHeightUnitChoiceBox;
+	}
+
+	public void setFuselageWindshieldHeightUnitChoiceBox(ChoiceBox<String> fuselageWindshieldHeightUnitChoiceBox) {
+		this.fuselageWindshieldHeightUnitChoiceBox = fuselageWindshieldHeightUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageCylinderSectionWidthUnitChoiceBox() {
+		return fuselageCylinderSectionWidthUnitChoiceBox;
+	}
+
+	public void setFuselageCylinderSectionWidthUnitChoiceBox(ChoiceBox<String> fuselageCylinderSectionWidthUnitChoiceBox) {
+		this.fuselageCylinderSectionWidthUnitChoiceBox = fuselageCylinderSectionWidthUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageCylinderSectionHeightUnitChoiceBox() {
+		return fuselageCylinderSectionHeightUnitChoiceBox;
+	}
+
+	public void setFuselageCylinderSectionHeightUnitChoiceBox(
+			ChoiceBox<String> fuselageCylinderSectionHeightUnitChoiceBox) {
+		this.fuselageCylinderSectionHeightUnitChoiceBox = fuselageCylinderSectionHeightUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageHeightFromGroundUnitChoiceBox() {
+		return fuselageHeightFromGroundUnitChoiceBox;
+	}
+
+	public void setFuselageHeightFromGroundUnitChoiceBox(ChoiceBox<String> fuselageHeightFromGroundUnitChoiceBox) {
+		this.fuselageHeightFromGroundUnitChoiceBox = fuselageHeightFromGroundUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageTailTipOffsetZUnitChoiceBox() {
+		return fuselageTailTipOffsetZUnitChoiceBox;
+	}
+
+	public void setFuselageTailTipOffsetZUnitChoiceBox(ChoiceBox<String> fuselageTailTipOffsetZUnitChoiceBox) {
+		this.fuselageTailTipOffsetZUnitChoiceBox = fuselageTailTipOffsetZUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageSpoiler1DeltaMinUnitChoiceBox() {
+		return fuselageSpoiler1DeltaMinUnitChoiceBox;
+	}
+
+	public void setFuselageSpoiler1DeltaMinUnitChoiceBox(ChoiceBox<String> fuselageSpoiler1DeltaMinUnitChoiceBox) {
+		this.fuselageSpoiler1DeltaMinUnitChoiceBox = fuselageSpoiler1DeltaMinUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getFuselageSpoiler1DeltaMaxUnitChoiceBox() {
+		return fuselageSpoiler1DeltaMaxUnitChoiceBox;
+	}
+
+	public void setFuselageSpoiler1DeltaMaxUnitChoiceBox(ChoiceBox<String> fuselageSpoiler1DeltaMaxUnitChoiceBox) {
+		this.fuselageSpoiler1DeltaMaxUnitChoiceBox = fuselageSpoiler1DeltaMaxUnitChoiceBox;
+	}
+
+	public TextField getTextFieldActualPassengersNumber() {
+		return textFieldActualPassengersNumber;
+	}
+
+	public void setTextFieldActualPassengersNumber(TextField textFieldActualPassengersNumber) {
+		this.textFieldActualPassengersNumber = textFieldActualPassengersNumber;
+	}
+
+	public TextField getTextFieldMaximumPassengersNumber() {
+		return textFieldMaximumPassengersNumber;
+	}
+
+	public void setTextFieldMaximumPassengersNumber(TextField textFieldMaximumPassengersNumber) {
+		this.textFieldMaximumPassengersNumber = textFieldMaximumPassengersNumber;
+	}
+
+	public TextField getTextFieldFlightCrewNumber() {
+		return textFieldFlightCrewNumber;
+	}
+
+	public void setTextFieldFlightCrewNumber(TextField textFieldFlightCrewNumber) {
+		this.textFieldFlightCrewNumber = textFieldFlightCrewNumber;
+	}
+
+	public TextField getTextFieldClassesNumber() {
+		return textFieldClassesNumber;
+	}
+
+	public void setTextFieldClassesNumber(TextField textFieldClassesNumber) {
+		this.textFieldClassesNumber = textFieldClassesNumber;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationClassesTypeChoiceBox1() {
+		return cabinConfigurationClassesTypeChoiceBox1;
+	}
+
+	public void setCabinConfigurationClassesTypeChoiceBox1(ChoiceBox<String> cabinConfigurationClassesTypeChoiceBox1) {
+		this.cabinConfigurationClassesTypeChoiceBox1 = cabinConfigurationClassesTypeChoiceBox1;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationClassesTypeChoiceBox2() {
+		return cabinConfigurationClassesTypeChoiceBox2;
+	}
+
+	public void setCabinConfigurationClassesTypeChoiceBox2(ChoiceBox<String> cabinConfigurationClassesTypeChoiceBox2) {
+		this.cabinConfigurationClassesTypeChoiceBox2 = cabinConfigurationClassesTypeChoiceBox2;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationClassesTypeChoiceBox3() {
+		return cabinConfigurationClassesTypeChoiceBox3;
+	}
+
+	public void setCabinConfigurationClassesTypeChoiceBox3(ChoiceBox<String> cabinConfigurationClassesTypeChoiceBox3) {
+		this.cabinConfigurationClassesTypeChoiceBox3 = cabinConfigurationClassesTypeChoiceBox3;
+	}
+
+	public TextField getTextFieldAislesNumber() {
+		return textFieldAislesNumber;
+	}
+
+	public void setTextFieldAislesNumber(TextField textFieldAislesNumber) {
+		this.textFieldAislesNumber = textFieldAislesNumber;
+	}
+
+	public TextField getTextFieldXCoordinateFirstRow() {
+		return textFieldXCoordinateFirstRow;
+	}
+
+	public void setTextFieldXCoordinateFirstRow(TextField textFieldXCoordinateFirstRow) {
+		this.textFieldXCoordinateFirstRow = textFieldXCoordinateFirstRow;
+	}
+
+	public TextField getTextFieldMissingSeatRow1() {
+		return textFieldMissingSeatRow1;
+	}
+
+	public void setTextFieldMissingSeatRow1(TextField textFieldMissingSeatRow1) {
+		this.textFieldMissingSeatRow1 = textFieldMissingSeatRow1;
+	}
+
+	public TextField getTextFieldMissingSeatRow2() {
+		return textFieldMissingSeatRow2;
+	}
+
+	public void setTextFieldMissingSeatRow2(TextField textFieldMissingSeatRow2) {
+		this.textFieldMissingSeatRow2 = textFieldMissingSeatRow2;
+	}
+
+	public TextField getTextFieldMissingSeatRow3() {
+		return textFieldMissingSeatRow3;
+	}
+
+	public void setTextFieldMissingSeatRow3(TextField textFieldMissingSeatRow3) {
+		this.textFieldMissingSeatRow3 = textFieldMissingSeatRow3;
+	}
+
+	public TextField getTextFieldNumberOfBrakesEconomy() {
+		return textFieldNumberOfBrakesEconomy;
+	}
+
+	public void setTextFieldNumberOfBrakesEconomy(TextField textFieldNumberOfBrakesEconomy) {
+		this.textFieldNumberOfBrakesEconomy = textFieldNumberOfBrakesEconomy;
+	}
+
+	public TextField getTextFieldNumberOfBrakesBusiness() {
+		return textFieldNumberOfBrakesBusiness;
+	}
+
+	public void setTextFieldNumberOfBrakesBusiness(TextField textFieldNumberOfBrakesBusiness) {
+		this.textFieldNumberOfBrakesBusiness = textFieldNumberOfBrakesBusiness;
+	}
+
+	public TextField getTextFieldNumberOfBrakesFirst() {
+		return textFieldNumberOfBrakesFirst;
+	}
+
+	public void setTextFieldNumberOfBrakesFirst(TextField textFieldNumberOfBrakesFirst) {
+		this.textFieldNumberOfBrakesFirst = textFieldNumberOfBrakesFirst;
+	}
+
+	public TextField getTextFieldNumberOfRowsEconomy() {
+		return textFieldNumberOfRowsEconomy;
+	}
+
+	public void setTextFieldNumberOfRowsEconomy(TextField textFieldNumberOfRowsEconomy) {
+		this.textFieldNumberOfRowsEconomy = textFieldNumberOfRowsEconomy;
+	}
+
+	public TextField getTextFieldNumberOfRowsBusiness() {
+		return textFieldNumberOfRowsBusiness;
+	}
+
+	public void setTextFieldNumberOfRowsBusiness(TextField textFieldNumberOfRowsBusiness) {
+		this.textFieldNumberOfRowsBusiness = textFieldNumberOfRowsBusiness;
+	}
+
+	public TextField getTextFieldNumberOfRowsFirst() {
+		return textFieldNumberOfRowsFirst;
+	}
+
+	public void setTextFieldNumberOfRowsFirst(TextField textFieldNumberOfRowsFirst) {
+		this.textFieldNumberOfRowsFirst = textFieldNumberOfRowsFirst;
+	}
+
+	public TextField getTextFieldNumberOfColumnsEconomy() {
+		return textFieldNumberOfColumnsEconomy;
+	}
+
+	public void setTextFieldNumberOfColumnsEconomy(TextField textFieldNumberOfColumnsEconomy) {
+		this.textFieldNumberOfColumnsEconomy = textFieldNumberOfColumnsEconomy;
+	}
+
+	public TextField getTextFieldNumberOfColumnsBusiness() {
+		return textFieldNumberOfColumnsBusiness;
+	}
+
+	public void setTextFieldNumberOfColumnsBusiness(TextField textFieldNumberOfColumnsBusiness) {
+		this.textFieldNumberOfColumnsBusiness = textFieldNumberOfColumnsBusiness;
+	}
+
+	public TextField getTextFieldNumberOfColumnsFirst() {
+		return textFieldNumberOfColumnsFirst;
+	}
+
+	public void setTextFieldNumberOfColumnsFirst(TextField textFieldNumberOfColumnsFirst) {
+		this.textFieldNumberOfColumnsFirst = textFieldNumberOfColumnsFirst;
+	}
+
+	public TextField getTextFieldSeatsPitchEconomy() {
+		return textFieldSeatsPitchEconomy;
+	}
+
+	public void setTextFieldSeatsPitchEconomy(TextField textFieldSeatsPitchEconomy) {
+		this.textFieldSeatsPitchEconomy = textFieldSeatsPitchEconomy;
+	}
+
+	public TextField getTextFieldSeatsPitchBusiness() {
+		return textFieldSeatsPitchBusiness;
+	}
+
+	public void setTextFieldSeatsPitchBusiness(TextField textFieldSeatsPitchBusiness) {
+		this.textFieldSeatsPitchBusiness = textFieldSeatsPitchBusiness;
+	}
+
+	public TextField getTextFieldSeatsPitchFirst() {
+		return textFieldSeatsPitchFirst;
+	}
+
+	public void setTextFieldSeatsPitchFirst(TextField textFieldSeatsPitchFirst) {
+		this.textFieldSeatsPitchFirst = textFieldSeatsPitchFirst;
+	}
+
+	public TextField getTextFieldSeatsWidthEconomy() {
+		return textFieldSeatsWidthEconomy;
+	}
+
+	public void setTextFieldSeatsWidthEconomy(TextField textFieldSeatsWidthEconomy) {
+		this.textFieldSeatsWidthEconomy = textFieldSeatsWidthEconomy;
+	}
+
+	public TextField getTextFieldSeatsWidthBusiness() {
+		return textFieldSeatsWidthBusiness;
+	}
+
+	public void setTextFieldSeatsWidthBusiness(TextField textFieldSeatsWidthBusiness) {
+		this.textFieldSeatsWidthBusiness = textFieldSeatsWidthBusiness;
+	}
+
+	public TextField getTextFieldSeatsWidthFirst() {
+		return textFieldSeatsWidthFirst;
+	}
+
+	public void setTextFieldSeatsWidthFirst(TextField textFieldSeatsWidthFirst) {
+		this.textFieldSeatsWidthFirst = textFieldSeatsWidthFirst;
+	}
+
+	public TextField getTextFieldDistanceFromWallEconomy() {
+		return textFieldDistanceFromWallEconomy;
+	}
+
+	public void setTextFieldDistanceFromWallEconomy(TextField textFieldDistanceFromWallEconomy) {
+		this.textFieldDistanceFromWallEconomy = textFieldDistanceFromWallEconomy;
+	}
+
+	public TextField getTextFieldDistanceFromWallBusiness() {
+		return textFieldDistanceFromWallBusiness;
+	}
+
+	public void setTextFieldDistanceFromWallBusiness(TextField textFieldDistanceFromWallBusiness) {
+		this.textFieldDistanceFromWallBusiness = textFieldDistanceFromWallBusiness;
+	}
+
+	public TextField getTextFieldDistanceFromWallFirst() {
+		return textFieldDistanceFromWallFirst;
+	}
+
+	public void setTextFieldDistanceFromWallFirst(TextField textFieldDistanceFromWallFirst) {
+		this.textFieldDistanceFromWallFirst = textFieldDistanceFromWallFirst;
+	}
+
+	public TextField getTextFieldMassFurnishingsAndEquipment() {
+		return textFieldMassFurnishingsAndEquipment;
+	}
+
+	public void setTextFieldMassFurnishingsAndEquipment(TextField textFieldMassFurnishingsAndEquipment) {
+		this.textFieldMassFurnishingsAndEquipment = textFieldMassFurnishingsAndEquipment;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationXCoordinateFirstRowUnitChoiceBox() {
+		return cabinConfigurationXCoordinateFirstRowUnitChoiceBox;
+	}
+
+	public void setCabinConfigurationXCoordinateFirstRowUnitChoiceBox(
+			ChoiceBox<String> cabinConfigurationXCoordinateFirstRowUnitChoiceBox) {
+		this.cabinConfigurationXCoordinateFirstRowUnitChoiceBox = cabinConfigurationXCoordinateFirstRowUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationSeatsPitchEconomyUnitChoiceBox() {
+		return cabinConfigurationSeatsPitchEconomyUnitChoiceBox;
+	}
+
+	public void setCabinConfigurationSeatsPitchEconomyUnitChoiceBox(
+			ChoiceBox<String> cabinConfigurationSeatsPitchEconomyUnitChoiceBox) {
+		this.cabinConfigurationSeatsPitchEconomyUnitChoiceBox = cabinConfigurationSeatsPitchEconomyUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationSeatsPitchBusinessUnitChoiceBox() {
+		return cabinConfigurationSeatsPitchBusinessUnitChoiceBox;
+	}
+
+	public void setCabinConfigurationSeatsPitchBusinessUnitChoiceBox(
+			ChoiceBox<String> cabinConfigurationSeatsPitchBusinessUnitChoiceBox) {
+		this.cabinConfigurationSeatsPitchBusinessUnitChoiceBox = cabinConfigurationSeatsPitchBusinessUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationSeatsPitchFirstUnitChoiceBox() {
+		return cabinConfigurationSeatsPitchFirstUnitChoiceBox;
+	}
+
+	public void setCabinConfigurationSeatsPitchFirstUnitChoiceBox(
+			ChoiceBox<String> cabinConfigurationSeatsPitchFirstUnitChoiceBox) {
+		this.cabinConfigurationSeatsPitchFirstUnitChoiceBox = cabinConfigurationSeatsPitchFirstUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationSeatsWidthEconomyUnitChoiceBox() {
+		return cabinConfigurationSeatsWidthEconomyUnitChoiceBox;
+	}
+
+	public void setCabinConfigurationSeatsWidthEconomyUnitChoiceBox(
+			ChoiceBox<String> cabinConfigurationSeatsWidthEconomyUnitChoiceBox) {
+		this.cabinConfigurationSeatsWidthEconomyUnitChoiceBox = cabinConfigurationSeatsWidthEconomyUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationSeatsWidthBusinessUnitChoiceBox() {
+		return cabinConfigurationSeatsWidthBusinessUnitChoiceBox;
+	}
+
+	public void setCabinConfigurationSeatsWidthBusinessUnitChoiceBox(
+			ChoiceBox<String> cabinConfigurationSeatsWidthBusinessUnitChoiceBox) {
+		this.cabinConfigurationSeatsWidthBusinessUnitChoiceBox = cabinConfigurationSeatsWidthBusinessUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationSeatsWidthFirstUnitChoiceBox() {
+		return cabinConfigurationSeatsWidthFirstUnitChoiceBox;
+	}
+
+	public void setCabinConfigurationSeatsWidthFirstUnitChoiceBox(
+			ChoiceBox<String> cabinConfigurationSeatsWidthFirstUnitChoiceBox) {
+		this.cabinConfigurationSeatsWidthFirstUnitChoiceBox = cabinConfigurationSeatsWidthFirstUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationDistanceFromWallEconomyUnitChoiceBox() {
+		return cabinConfigurationDistanceFromWallEconomyUnitChoiceBox;
+	}
+
+	public void setCabinConfigurationDistanceFromWallEconomyUnitChoiceBox(
+			ChoiceBox<String> cabinConfigurationDistanceFromWallEconomyUnitChoiceBox) {
+		this.cabinConfigurationDistanceFromWallEconomyUnitChoiceBox = cabinConfigurationDistanceFromWallEconomyUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationDistanceFromWallBusinessUnitChoiceBox() {
+		return cabinConfigurationDistanceFromWallBusinessUnitChoiceBox;
+	}
+
+	public void setCabinConfigurationDistanceFromWallBusinessUnitChoiceBox(
+			ChoiceBox<String> cabinConfigurationDistanceFromWallBusinessUnitChoiceBox) {
+		this.cabinConfigurationDistanceFromWallBusinessUnitChoiceBox = cabinConfigurationDistanceFromWallBusinessUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationDistanceFromWallFirstUnitChoiceBox() {
+		return cabinConfigurationDistanceFromWallFirstUnitChoiceBox;
+	}
+
+	public void setCabinConfigurationDistanceFromWallFirstUnitChoiceBox(
+			ChoiceBox<String> cabinConfigurationDistanceFromWallFirstUnitChoiceBox) {
+		this.cabinConfigurationDistanceFromWallFirstUnitChoiceBox = cabinConfigurationDistanceFromWallFirstUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox() {
+		return cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox;
+	}
+
+	public void setCabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox(
+			ChoiceBox<String> cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox) {
+		this.cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox = cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingAdjustCriterionChoiceBox() {
+		return wingAdjustCriterionChoiceBox;
+	}
+
+	public void setWingAdjustCriterionChoiceBox(ChoiceBox<String> wingAdjustCriterionChoiceBox) {
+		this.wingAdjustCriterionChoiceBox = wingAdjustCriterionChoiceBox;
+	}
+
+	public CheckBox getEquivalentWingCheckBox() {
+		return equivalentWingCheckBox;
+	}
+
+	public void setEquivalentWingCheckBox(CheckBox equivalentWingCheckBox) {
+		this.equivalentWingCheckBox = equivalentWingCheckBox;
+	}
+
+	public TextField getTextFieldWingMainSparAdimensionalPosition() {
+		return textFieldWingMainSparAdimensionalPosition;
+	}
+
+	public void setTextFieldWingMainSparAdimensionalPosition(TextField textFieldWingMainSparAdimensionalPosition) {
+		this.textFieldWingMainSparAdimensionalPosition = textFieldWingMainSparAdimensionalPosition;
+	}
+
+	public TextField getTextFieldWingSecondarySparAdimensionalPosition() {
+		return textFieldWingSecondarySparAdimensionalPosition;
+	}
+
+	public void setTextFieldWingSecondarySparAdimensionalPosition(
+			TextField textFieldWingSecondarySparAdimensionalPosition) {
+		this.textFieldWingSecondarySparAdimensionalPosition = textFieldWingSecondarySparAdimensionalPosition;
+	}
+
+	public TextField getTextFieldWingCompositeMassCorrectionFactor() {
+		return textFieldWingCompositeMassCorrectionFactor;
+	}
+
+	public void setTextFieldWingCompositeMassCorrectionFactor(TextField textFieldWingCompositeMassCorrectionFactor) {
+		this.textFieldWingCompositeMassCorrectionFactor = textFieldWingCompositeMassCorrectionFactor;
+	}
+
+	public TextField getTextFieldWingRoughness() {
+		return textFieldWingRoughness;
+	}
+
+	public void setTextFieldWingRoughness(TextField textFieldWingRoughness) {
+		this.textFieldWingRoughness = textFieldWingRoughness;
+	}
+
+	public TextField getTextFieldWingWingletHeight() {
+		return textFieldWingWingletHeight;
+	}
+
+	public void setTextFieldWingWingletHeight(TextField textFieldWingWingletHeight) {
+		this.textFieldWingWingletHeight = textFieldWingWingletHeight;
+	}
+
+	public TextField getTextFieldEquivalentWingArea() {
+		return textFieldEquivalentWingArea;
+	}
+
+	public void setTextFieldEquivalentWingArea(TextField textFieldEquivalentWingArea) {
+		this.textFieldEquivalentWingArea = textFieldEquivalentWingArea;
+	}
+
+	public TextField getTextFieldEquivalentWingAspectRatio() {
+		return textFieldEquivalentWingAspectRatio;
+	}
+
+	public void setTextFieldEquivalentWingAspectRatio(TextField textFieldEquivalentWingAspectRatio) {
+		this.textFieldEquivalentWingAspectRatio = textFieldEquivalentWingAspectRatio;
+	}
+
+	public TextField getTextFieldEquivalentWingKinkPosition() {
+		return textFieldEquivalentWingKinkPosition;
+	}
+
+	public void setTextFieldEquivalentWingKinkPosition(TextField textFieldEquivalentWingKinkPosition) {
+		this.textFieldEquivalentWingKinkPosition = textFieldEquivalentWingKinkPosition;
+	}
+
+	public TextField getTextFieldEquivalentWingSweepLeadingEdge() {
+		return textFieldEquivalentWingSweepLeadingEdge;
+	}
+
+	public void setTextFieldEquivalentWingSweepLeadingEdge(TextField textFieldEquivalentWingSweepLeadingEdge) {
+		this.textFieldEquivalentWingSweepLeadingEdge = textFieldEquivalentWingSweepLeadingEdge;
+	}
+
+	public TextField getTextFieldEquivalentWingTwistAtTip() {
+		return textFieldEquivalentWingTwistAtTip;
+	}
+
+	public void setTextFieldEquivalentWingTwistAtTip(TextField textFieldEquivalentWingTwistAtTip) {
+		this.textFieldEquivalentWingTwistAtTip = textFieldEquivalentWingTwistAtTip;
+	}
+
+	public TextField getTextFieldEquivalentWingDihedral() {
+		return textFieldEquivalentWingDihedral;
+	}
+
+	public void setTextFieldEquivalentWingDihedral(TextField textFieldEquivalentWingDihedral) {
+		this.textFieldEquivalentWingDihedral = textFieldEquivalentWingDihedral;
+	}
+
+	public TextField getTextFieldEquivalentWingTaperRatio() {
+		return textFieldEquivalentWingTaperRatio;
+	}
+
+	public void setTextFieldEquivalentWingTaperRatio(TextField textFieldEquivalentWingTaperRatio) {
+		this.textFieldEquivalentWingTaperRatio = textFieldEquivalentWingTaperRatio;
+	}
+
+	public TextField getTextFieldEquivalentWingRootXOffsetLE() {
+		return textFieldEquivalentWingRootXOffsetLE;
+	}
+
+	public void setTextFieldEquivalentWingRootXOffsetLE(TextField textFieldEquivalentWingRootXOffsetLE) {
+		this.textFieldEquivalentWingRootXOffsetLE = textFieldEquivalentWingRootXOffsetLE;
+	}
+
+	public TextField getTextFieldEquivalentWingRootXOffsetTE() {
+		return textFieldEquivalentWingRootXOffsetTE;
+	}
+
+	public void setTextFieldEquivalentWingRootXOffsetTE(TextField textFieldEquivalentWingRootXOffsetTE) {
+		this.textFieldEquivalentWingRootXOffsetTE = textFieldEquivalentWingRootXOffsetTE;
+	}
+
+	public TextField getTextFieldEquivalentWingAirfoilRootPath() {
+		return textFieldEquivalentWingAirfoilRootPath;
+	}
+
+	public void setTextFieldEquivalentWingAirfoilRootPath(TextField textFieldEquivalentWingAirfoilRootPath) {
+		this.textFieldEquivalentWingAirfoilRootPath = textFieldEquivalentWingAirfoilRootPath;
+	}
+
+	public TextField getTextFieldEquivalentWingAirfoilKinkPath() {
+		return textFieldEquivalentWingAirfoilKinkPath;
+	}
+
+	public void setTextFieldEquivalentWingAirfoilKinkPath(TextField textFieldEquivalentWingAirfoilKinkPath) {
+		this.textFieldEquivalentWingAirfoilKinkPath = textFieldEquivalentWingAirfoilKinkPath;
+	}
+
+	public TextField getTextFieldEquivalentWingAirfoilTipPath() {
+		return textFieldEquivalentWingAirfoilTipPath;
+	}
+
+	public void setTextFieldEquivalentWingAirfoilTipPath(TextField textFieldEquivalentWingAirfoilTipPath) {
+		this.textFieldEquivalentWingAirfoilTipPath = textFieldEquivalentWingAirfoilTipPath;
+	}
+
+	public TextField getTextFieldWingSpanPanel1() {
+		return textFieldWingSpanPanel1;
+	}
+
+	public void setTextFieldWingSpanPanel1(TextField textFieldWingSpanPanel1) {
+		this.textFieldWingSpanPanel1 = textFieldWingSpanPanel1;
+	}
+
+	public TextField getTextFieldWingSweepLeadingEdgePanel1() {
+		return textFieldWingSweepLeadingEdgePanel1;
+	}
+
+	public void setTextFieldWingSweepLeadingEdgePanel1(TextField textFieldWingSweepLeadingEdgePanel1) {
+		this.textFieldWingSweepLeadingEdgePanel1 = textFieldWingSweepLeadingEdgePanel1;
+	}
+
+	public TextField getTextFieldWingDihedralPanel1() {
+		return textFieldWingDihedralPanel1;
+	}
+
+	public void setTextFieldWingDihedralPanel1(TextField textFieldWingDihedralPanel1) {
+		this.textFieldWingDihedralPanel1 = textFieldWingDihedralPanel1;
+	}
+
+	public TextField getTextFieldWingChordInnerSectionPanel1() {
+		return textFieldWingChordInnerSectionPanel1;
+	}
+
+	public void setTextFieldWingChordInnerSectionPanel1(TextField textFieldWingChordInnerSectionPanel1) {
+		this.textFieldWingChordInnerSectionPanel1 = textFieldWingChordInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldWingTwistInnerSectionPanel1() {
+		return textFieldWingTwistInnerSectionPanel1;
+	}
+
+	public void setTextFieldWingTwistInnerSectionPanel1(TextField textFieldWingTwistInnerSectionPanel1) {
+		this.textFieldWingTwistInnerSectionPanel1 = textFieldWingTwistInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldWingAirfoilPathInnerSectionPanel1() {
+		return textFieldWingAirfoilPathInnerSectionPanel1;
+	}
+
+	public void setTextFieldWingAirfoilPathInnerSectionPanel1(TextField textFieldWingAirfoilPathInnerSectionPanel1) {
+		this.textFieldWingAirfoilPathInnerSectionPanel1 = textFieldWingAirfoilPathInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldWingChordOuterSectionPanel1() {
+		return textFieldWingChordOuterSectionPanel1;
+	}
+
+	public void setTextFieldWingChordOuterSectionPanel1(TextField textFieldWingChordOuterSectionPanel1) {
+		this.textFieldWingChordOuterSectionPanel1 = textFieldWingChordOuterSectionPanel1;
+	}
+
+	public TextField getTextFieldWingTwistOuterSectionPanel1() {
+		return textFieldWingTwistOuterSectionPanel1;
+	}
+
+	public void setTextFieldWingTwistOuterSectionPanel1(TextField textFieldWingTwistOuterSectionPanel1) {
+		this.textFieldWingTwistOuterSectionPanel1 = textFieldWingTwistOuterSectionPanel1;
+	}
+
+	public TextField getTextFieldWingAirfoilPathOuterSectionPanel1() {
+		return textFieldWingAirfoilPathOuterSectionPanel1;
+	}
+
+	public void setTextFieldWingAirfoilPathOuterSectionPanel1(TextField textFieldWingAirfoilPathOuterSectionPanel1) {
+		this.textFieldWingAirfoilPathOuterSectionPanel1 = textFieldWingAirfoilPathOuterSectionPanel1;
+	}
+
+	public ChoiceBox<String> getWingFlap1TypeChoichBox() {
+		return wingFlap1TypeChoichBox;
+	}
+
+	public void setWingFlap1TypeChoichBox(ChoiceBox<String> wingFlap1TypeChoichBox) {
+		this.wingFlap1TypeChoichBox = wingFlap1TypeChoichBox;
+	}
+
+	public TextField getTextFieldWingInnerPositionFlap1() {
+		return textFieldWingInnerPositionFlap1;
+	}
+
+	public void setTextFieldWingInnerPositionFlap1(TextField textFieldWingInnerPositionFlap1) {
+		this.textFieldWingInnerPositionFlap1 = textFieldWingInnerPositionFlap1;
+	}
+
+	public TextField getTextFieldWingOuterPositionFlap1() {
+		return textFieldWingOuterPositionFlap1;
+	}
+
+	public void setTextFieldWingOuterPositionFlap1(TextField textFieldWingOuterPositionFlap1) {
+		this.textFieldWingOuterPositionFlap1 = textFieldWingOuterPositionFlap1;
+	}
+
+	public TextField getTextFieldWingInnerChordRatioFlap1() {
+		return textFieldWingInnerChordRatioFlap1;
+	}
+
+	public void setTextFieldWingInnerChordRatioFlap1(TextField textFieldWingInnerChordRatioFlap1) {
+		this.textFieldWingInnerChordRatioFlap1 = textFieldWingInnerChordRatioFlap1;
+	}
+
+	public TextField getTextFieldWingOuterChordRatioFlap1() {
+		return textFieldWingOuterChordRatioFlap1;
+	}
+
+	public void setTextFieldWingOuterChordRatioFlap1(TextField textFieldWingOuterChordRatioFlap1) {
+		this.textFieldWingOuterChordRatioFlap1 = textFieldWingOuterChordRatioFlap1;
+	}
+
+	public TextField getTextFieldWingMinimumDeflectionAngleFlap1() {
+		return textFieldWingMinimumDeflectionAngleFlap1;
+	}
+
+	public void setTextFieldWingMinimumDeflectionAngleFlap1(TextField textFieldWingMinimumDeflectionAngleFlap1) {
+		this.textFieldWingMinimumDeflectionAngleFlap1 = textFieldWingMinimumDeflectionAngleFlap1;
+	}
+
+	public TextField getTextFieldWingMaximumDeflectionAngleFlap1() {
+		return textFieldWingMaximumDeflectionAngleFlap1;
+	}
+
+	public void setTextFieldWingMaximumDeflectionAngleFlap1(TextField textFieldWingMaximumDeflectionAngleFlap1) {
+		this.textFieldWingMaximumDeflectionAngleFlap1 = textFieldWingMaximumDeflectionAngleFlap1;
+	}
+
+	public TextField getTextFieldWingInnerPositionSlat1() {
+		return textFieldWingInnerPositionSlat1;
+	}
+
+	public void setTextFieldWingInnerPositionSlat1(TextField textFieldWingInnerPositionSlat1) {
+		this.textFieldWingInnerPositionSlat1 = textFieldWingInnerPositionSlat1;
+	}
+
+	public TextField getTextFieldWingOuterPositionSlat1() {
+		return textFieldWingOuterPositionSlat1;
+	}
+
+	public void setTextFieldWingOuterPositionSlat1(TextField textFieldWingOuterPositionSlat1) {
+		this.textFieldWingOuterPositionSlat1 = textFieldWingOuterPositionSlat1;
+	}
+
+	public TextField getTextFieldWingInnerChordRatioSlat1() {
+		return textFieldWingInnerChordRatioSlat1;
+	}
+
+	public void setTextFieldWingInnerChordRatioSlat1(TextField textFieldWingInnerChordRatioSlat1) {
+		this.textFieldWingInnerChordRatioSlat1 = textFieldWingInnerChordRatioSlat1;
+	}
+
+	public TextField getTextFieldWingOuterChordRatioSlat1() {
+		return textFieldWingOuterChordRatioSlat1;
+	}
+
+	public void setTextFieldWingOuterChordRatioSlat1(TextField textFieldWingOuterChordRatioSlat1) {
+		this.textFieldWingOuterChordRatioSlat1 = textFieldWingOuterChordRatioSlat1;
+	}
+
+	public TextField getTextFieldWingExtensionRatioSlat1() {
+		return textFieldWingExtensionRatioSlat1;
+	}
+
+	public void setTextFieldWingExtensionRatioSlat1(TextField textFieldWingExtensionRatioSlat1) {
+		this.textFieldWingExtensionRatioSlat1 = textFieldWingExtensionRatioSlat1;
+	}
+
+	public TextField getTextFieldWingMinimumDeflectionAngleSlat1() {
+		return textFieldWingMinimumDeflectionAngleSlat1;
+	}
+
+	public void setTextFieldWingMinimumDeflectionAngleSlat1(TextField textFieldWingMinimumDeflectionAngleSlat1) {
+		this.textFieldWingMinimumDeflectionAngleSlat1 = textFieldWingMinimumDeflectionAngleSlat1;
+	}
+
+	public TextField getTextFieldWingMaximumDeflectionAngleSlat1() {
+		return textFieldWingMaximumDeflectionAngleSlat1;
+	}
+
+	public void setTextFieldWingMaximumDeflectionAngleSlat1(TextField textFieldWingMaximumDeflectionAngleSlat1) {
+		this.textFieldWingMaximumDeflectionAngleSlat1 = textFieldWingMaximumDeflectionAngleSlat1;
+	}
+
+	public ChoiceBox<String> getWingLeftAileronTypeChoichBox() {
+		return wingLeftAileronTypeChoichBox;
+	}
+
+	public void setWingLeftAileronTypeChoichBox(ChoiceBox<String> wingLeftAileronTypeChoichBox) {
+		this.wingLeftAileronTypeChoichBox = wingLeftAileronTypeChoichBox;
+	}
+
+	public TextField getTextFieldWingInnerPositionAileronLeft() {
+		return textFieldWingInnerPositionAileronLeft;
+	}
+
+	public void setTextFieldWingInnerPositionAileronLeft(TextField textFieldWingInnerPositionAileronLeft) {
+		this.textFieldWingInnerPositionAileronLeft = textFieldWingInnerPositionAileronLeft;
+	}
+
+	public TextField getTextFieldWingOuterPositionAileronLeft() {
+		return textFieldWingOuterPositionAileronLeft;
+	}
+
+	public void setTextFieldWingOuterPositionAileronLeft(TextField textFieldWingOuterPositionAileronLeft) {
+		this.textFieldWingOuterPositionAileronLeft = textFieldWingOuterPositionAileronLeft;
+	}
+
+	public TextField getTextFieldWingInnerChordRatioAileronLeft() {
+		return textFieldWingInnerChordRatioAileronLeft;
+	}
+
+	public void setTextFieldWingInnerChordRatioAileronLeft(TextField textFieldWingInnerChordRatioAileronLeft) {
+		this.textFieldWingInnerChordRatioAileronLeft = textFieldWingInnerChordRatioAileronLeft;
+	}
+
+	public TextField getTextFieldWingOuterChordRatioAileronLeft() {
+		return textFieldWingOuterChordRatioAileronLeft;
+	}
+
+	public void setTextFieldWingOuterChordRatioAileronLeft(TextField textFieldWingOuterChordRatioAileronLeft) {
+		this.textFieldWingOuterChordRatioAileronLeft = textFieldWingOuterChordRatioAileronLeft;
+	}
+
+	public TextField getTextFieldWingMinimumDeflectionAngleAileronLeft() {
+		return textFieldWingMinimumDeflectionAngleAileronLeft;
+	}
+
+	public void setTextFieldWingMinimumDeflectionAngleAileronLeft(
+			TextField textFieldWingMinimumDeflectionAngleAileronLeft) {
+		this.textFieldWingMinimumDeflectionAngleAileronLeft = textFieldWingMinimumDeflectionAngleAileronLeft;
+	}
+
+	public TextField getTextFieldWingMaximumDeflectionAngleAileronLeft() {
+		return textFieldWingMaximumDeflectionAngleAileronLeft;
+	}
+
+	public void setTextFieldWingMaximumDeflectionAngleAileronLeft(
+			TextField textFieldWingMaximumDeflectionAngleAileronLeft) {
+		this.textFieldWingMaximumDeflectionAngleAileronLeft = textFieldWingMaximumDeflectionAngleAileronLeft;
+	}
+
+	public ChoiceBox<String> getWingRightAileronTypeChoichBox() {
+		return wingRightAileronTypeChoichBox;
+	}
+
+	public void setWingRightAileronTypeChoichBox(ChoiceBox<String> wingRightAileronTypeChoichBox) {
+		this.wingRightAileronTypeChoichBox = wingRightAileronTypeChoichBox;
+	}
+
+	public TextField getTextFieldWingInnerPositionAileronRight() {
+		return textFieldWingInnerPositionAileronRight;
+	}
+
+	public void setTextFieldWingInnerPositionAileronRight(TextField textFieldWingInnerPositionAileronRight) {
+		this.textFieldWingInnerPositionAileronRight = textFieldWingInnerPositionAileronRight;
+	}
+
+	public TextField getTextFieldWingOuterPositionAileronRight() {
+		return textFieldWingOuterPositionAileronRight;
+	}
+
+	public void setTextFieldWingOuterPositionAileronRight(TextField textFieldWingOuterPositionAileronRight) {
+		this.textFieldWingOuterPositionAileronRight = textFieldWingOuterPositionAileronRight;
+	}
+
+	public TextField getTextFieldWingInnerChordRatioAileronRight() {
+		return textFieldWingInnerChordRatioAileronRight;
+	}
+
+	public void setTextFieldWingInnerChordRatioAileronRight(TextField textFieldWingInnerChordRatioAileronRight) {
+		this.textFieldWingInnerChordRatioAileronRight = textFieldWingInnerChordRatioAileronRight;
+	}
+
+	public TextField getTextFieldWingOuterChordRatioAileronRight() {
+		return textFieldWingOuterChordRatioAileronRight;
+	}
+
+	public void setTextFieldWingOuterChordRatioAileronRight(TextField textFieldWingOuterChordRatioAileronRight) {
+		this.textFieldWingOuterChordRatioAileronRight = textFieldWingOuterChordRatioAileronRight;
+	}
+
+	public TextField getTextFieldWingMinimumDeflectionAngleAileronRight() {
+		return textFieldWingMinimumDeflectionAngleAileronRight;
+	}
+
+	public void setTextFieldWingMinimumDeflectionAngleAileronRight(
+			TextField textFieldWingMinimumDeflectionAngleAileronRight) {
+		this.textFieldWingMinimumDeflectionAngleAileronRight = textFieldWingMinimumDeflectionAngleAileronRight;
+	}
+
+	public TextField getTextFieldWingMaximumDeflectionAngleAileronRight() {
+		return textFieldWingMaximumDeflectionAngleAileronRight;
+	}
+
+	public void setTextFieldWingMaximumDeflectionAngleAileronRight(
+			TextField textFieldWingMaximumDeflectionAngleAileronRight) {
+		this.textFieldWingMaximumDeflectionAngleAileronRight = textFieldWingMaximumDeflectionAngleAileronRight;
+	}
+
+	public TextField getTextFieldWingInnerSpanwisePositionSpolier1() {
+		return textFieldWingInnerSpanwisePositionSpolier1;
+	}
+
+	public void setTextFieldWingInnerSpanwisePositionSpolier1(TextField textFieldWingInnerSpanwisePositionSpolier1) {
+		this.textFieldWingInnerSpanwisePositionSpolier1 = textFieldWingInnerSpanwisePositionSpolier1;
+	}
+
+	public TextField getTextFieldWingOuterSpanwisePositionSpolier1() {
+		return textFieldWingOuterSpanwisePositionSpolier1;
+	}
+
+	public void setTextFieldWingOuterSpanwisePositionSpolier1(TextField textFieldWingOuterSpanwisePositionSpolier1) {
+		this.textFieldWingOuterSpanwisePositionSpolier1 = textFieldWingOuterSpanwisePositionSpolier1;
+	}
+
+	public TextField getTextFieldWingInnerChordwisePositionSpolier1() {
+		return textFieldWingInnerChordwisePositionSpolier1;
+	}
+
+	public void setTextFieldWingInnerChordwisePositionSpolier1(TextField textFieldWingInnerChordwisePositionSpolier1) {
+		this.textFieldWingInnerChordwisePositionSpolier1 = textFieldWingInnerChordwisePositionSpolier1;
+	}
+
+	public TextField getTextFieldWingOuterChordwisePositionSpolier1() {
+		return textFieldWingOuterChordwisePositionSpolier1;
+	}
+
+	public void setTextFieldWingOuterChordwisePositionSpolier1(TextField textFieldWingOuterChordwisePositionSpolier1) {
+		this.textFieldWingOuterChordwisePositionSpolier1 = textFieldWingOuterChordwisePositionSpolier1;
+	}
+
+	public TextField getTextFieldWingMinimumDeflectionAngleSpolier1() {
+		return textFieldWingMinimumDeflectionAngleSpolier1;
+	}
+
+	public void setTextFieldWingMinimumDeflectionAngleSpolier1(TextField textFieldWingMinimumDeflectionAngleSpolier1) {
+		this.textFieldWingMinimumDeflectionAngleSpolier1 = textFieldWingMinimumDeflectionAngleSpolier1;
+	}
+
+	public TextField getTextFieldWingMaximumDeflectionAngleSpoiler1() {
+		return textFieldWingMaximumDeflectionAngleSpoiler1;
+	}
+
+	public void setTextFieldWingMaximumDeflectionAngleSpoiler1(TextField textFieldWingMaximumDeflectionAngleSpoiler1) {
+		this.textFieldWingMaximumDeflectionAngleSpoiler1 = textFieldWingMaximumDeflectionAngleSpoiler1;
+	}
+
+	public List<TextField> getTextFieldWingSpanPanelList() {
+		return textFieldWingSpanPanelList;
+	}
+
+	public void setTextFieldWingSpanPanelList(List<TextField> textFieldWingSpanPanelList) {
+		this.textFieldWingSpanPanelList = textFieldWingSpanPanelList;
+	}
+
+	public List<TextField> getTextFieldWingSweepLEPanelList() {
+		return textFieldWingSweepLEPanelList;
+	}
+
+	public void setTextFieldWingSweepLEPanelList(List<TextField> textFieldWingSweepLEPanelList) {
+		this.textFieldWingSweepLEPanelList = textFieldWingSweepLEPanelList;
+	}
+
+	public List<TextField> getTextFieldWingDihedralPanelList() {
+		return textFieldWingDihedralPanelList;
+	}
+
+	public void setTextFieldWingDihedralPanelList(List<TextField> textFieldWingDihedralPanelList) {
+		this.textFieldWingDihedralPanelList = textFieldWingDihedralPanelList;
+	}
+
+	public List<TextField> getTextFieldWingInnerChordPanelList() {
+		return textFieldWingInnerChordPanelList;
+	}
+
+	public void setTextFieldWingInnerChordPanelList(List<TextField> textFieldWingInnerChordPanelList) {
+		this.textFieldWingInnerChordPanelList = textFieldWingInnerChordPanelList;
+	}
+
+	public List<TextField> getTextFieldWingInnerTwistPanelList() {
+		return textFieldWingInnerTwistPanelList;
+	}
+
+	public void setTextFieldWingInnerTwistPanelList(List<TextField> textFieldWingInnerTwistPanelList) {
+		this.textFieldWingInnerTwistPanelList = textFieldWingInnerTwistPanelList;
+	}
+
+	public List<TextField> getTextFieldWingInnerAirfoilPanelList() {
+		return textFieldWingInnerAirfoilPanelList;
+	}
+
+	public void setTextFieldWingInnerAirfoilPanelList(List<TextField> textFieldWingInnerAirfoilPanelList) {
+		this.textFieldWingInnerAirfoilPanelList = textFieldWingInnerAirfoilPanelList;
+	}
+
+	public List<TextField> getTextFieldWingOuterChordPanelList() {
+		return textFieldWingOuterChordPanelList;
+	}
+
+	public void setTextFieldWingOuterChordPanelList(List<TextField> textFieldWingOuterChordPanelList) {
+		this.textFieldWingOuterChordPanelList = textFieldWingOuterChordPanelList;
+	}
+
+	public List<TextField> getTextFieldWingOuterTwistPanelList() {
+		return textFieldWingOuterTwistPanelList;
+	}
+
+	public void setTextFieldWingOuterTwistPanelList(List<TextField> textFieldWingOuterTwistPanelList) {
+		this.textFieldWingOuterTwistPanelList = textFieldWingOuterTwistPanelList;
+	}
+
+	public List<TextField> getTextFieldWingOuterAirfoilPanelList() {
+		return textFieldWingOuterAirfoilPanelList;
+	}
+
+	public void setTextFieldWingOuterAirfoilPanelList(List<TextField> textFieldWingOuterAirfoilPanelList) {
+		this.textFieldWingOuterAirfoilPanelList = textFieldWingOuterAirfoilPanelList;
+	}
+
+	public List<CheckBox> getCheckBoxWingLinkedToPreviousPanelList() {
+		return checkBoxWingLinkedToPreviousPanelList;
+	}
+
+	public void setCheckBoxWingLinkedToPreviousPanelList(List<CheckBox> checkBoxWingLinkedToPreviousPanelList) {
+		this.checkBoxWingLinkedToPreviousPanelList = checkBoxWingLinkedToPreviousPanelList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingSpanPanelUnitList() {
+		return choiceBoxWingSpanPanelUnitList;
+	}
+
+	public void setChoiceBoxWingSpanPanelUnitList(List<ChoiceBox<String>> choiceBoxWingSpanPanelUnitList) {
+		this.choiceBoxWingSpanPanelUnitList = choiceBoxWingSpanPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingSweepLEPanelUnitList() {
+		return choiceBoxWingSweepLEPanelUnitList;
+	}
+
+	public void setChoiceBoxWingSweepLEPanelUnitList(List<ChoiceBox<String>> choiceBoxWingSweepLEPanelUnitList) {
+		this.choiceBoxWingSweepLEPanelUnitList = choiceBoxWingSweepLEPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingDihedralPanelUnitList() {
+		return choiceBoxWingDihedralPanelUnitList;
+	}
+
+	public void setChoiceBoxWingDihedralPanelUnitList(List<ChoiceBox<String>> choiceBoxWingDihedralPanelUnitList) {
+		this.choiceBoxWingDihedralPanelUnitList = choiceBoxWingDihedralPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingInnerChordPanelUnitList() {
+		return choiceBoxWingInnerChordPanelUnitList;
+	}
+
+	public void setChoiceBoxWingInnerChordPanelUnitList(List<ChoiceBox<String>> choiceBoxWingInnerChordPanelUnitList) {
+		this.choiceBoxWingInnerChordPanelUnitList = choiceBoxWingInnerChordPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingInnerTwistPanelUnitList() {
+		return choiceBoxWingInnerTwistPanelUnitList;
+	}
+
+	public void setChoiceBoxWingInnerTwistPanelUnitList(List<ChoiceBox<String>> choiceBoxWingInnerTwistPanelUnitList) {
+		this.choiceBoxWingInnerTwistPanelUnitList = choiceBoxWingInnerTwistPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingOuterChordPanelUnitList() {
+		return choiceBoxWingOuterChordPanelUnitList;
+	}
+
+	public void setChoiceBoxWingOuterChordPanelUnitList(List<ChoiceBox<String>> choiceBoxWingOuterChordPanelUnitList) {
+		this.choiceBoxWingOuterChordPanelUnitList = choiceBoxWingOuterChordPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingOuterTwistPanelUnitList() {
+		return choiceBoxWingOuterTwistPanelUnitList;
+	}
+
+	public void setChoiceBoxWingOuterTwistPanelUnitList(List<ChoiceBox<String>> choiceBoxWingOuterTwistPanelUnitList) {
+		this.choiceBoxWingOuterTwistPanelUnitList = choiceBoxWingOuterTwistPanelUnitList;
+	}
+
+	public List<Button> getDetailButtonWingInnerAirfoilList() {
+		return detailButtonWingInnerAirfoilList;
+	}
+
+	public void setDetailButtonWingInnerAirfoilList(List<Button> detailButtonWingInnerAirfoilList) {
+		this.detailButtonWingInnerAirfoilList = detailButtonWingInnerAirfoilList;
+	}
+
+	public List<Button> getDetailButtonWingOuterAirfoilList() {
+		return detailButtonWingOuterAirfoilList;
+	}
+
+	public void setDetailButtonWingOuterAirfoilList(List<Button> detailButtonWingOuterAirfoilList) {
+		this.detailButtonWingOuterAirfoilList = detailButtonWingOuterAirfoilList;
+	}
+
+	public List<Button> getChooseInnerWingAirfoilFileButtonList() {
+		return chooseInnerWingAirfoilFileButtonList;
+	}
+
+	public void setChooseInnerWingAirfoilFileButtonList(List<Button> chooseInnerWingAirfoilFileButtonList) {
+		this.chooseInnerWingAirfoilFileButtonList = chooseInnerWingAirfoilFileButtonList;
+	}
+
+	public List<Button> getChooseOuterWingAirfoilFileButtonList() {
+		return chooseOuterWingAirfoilFileButtonList;
+	}
+
+	public void setChooseOuterWingAirfoilFileButtonList(List<Button> chooseOuterWingAirfoilFileButtonList) {
+		this.chooseOuterWingAirfoilFileButtonList = chooseOuterWingAirfoilFileButtonList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingFlapTypeList() {
+		return choiceBoxWingFlapTypeList;
+	}
+
+	public void setChoiceBoxWingFlapTypeList(List<ChoiceBox<String>> choiceBoxWingFlapTypeList) {
+		this.choiceBoxWingFlapTypeList = choiceBoxWingFlapTypeList;
+	}
+
+	public List<TextField> getTextFieldWingInnerPositionFlapList() {
+		return textFieldWingInnerPositionFlapList;
+	}
+
+	public void setTextFieldWingInnerPositionFlapList(List<TextField> textFieldWingInnerPositionFlapList) {
+		this.textFieldWingInnerPositionFlapList = textFieldWingInnerPositionFlapList;
+	}
+
+	public List<TextField> getTextFieldWingOuterPositionFlapList() {
+		return textFieldWingOuterPositionFlapList;
+	}
+
+	public void setTextFieldWingOuterPositionFlapList(List<TextField> textFieldWingOuterPositionFlapList) {
+		this.textFieldWingOuterPositionFlapList = textFieldWingOuterPositionFlapList;
+	}
+
+	public List<TextField> getTextFieldWingInnerChordRatioFlapList() {
+		return textFieldWingInnerChordRatioFlapList;
+	}
+
+	public void setTextFieldWingInnerChordRatioFlapList(List<TextField> textFieldWingInnerChordRatioFlapList) {
+		this.textFieldWingInnerChordRatioFlapList = textFieldWingInnerChordRatioFlapList;
+	}
+
+	public List<TextField> getTextFieldWingOuterChordRatioFlapList() {
+		return textFieldWingOuterChordRatioFlapList;
+	}
+
+	public void setTextFieldWingOuterChordRatioFlapList(List<TextField> textFieldWingOuterChordRatioFlapList) {
+		this.textFieldWingOuterChordRatioFlapList = textFieldWingOuterChordRatioFlapList;
+	}
+
+	public List<TextField> getTextFieldWingMinimumDeflectionAngleFlapList() {
+		return textFieldWingMinimumDeflectionAngleFlapList;
+	}
+
+	public void setTextFieldWingMinimumDeflectionAngleFlapList(
+			List<TextField> textFieldWingMinimumDeflectionAngleFlapList) {
+		this.textFieldWingMinimumDeflectionAngleFlapList = textFieldWingMinimumDeflectionAngleFlapList;
+	}
+
+	public List<TextField> getTextFieldWingMaximumDeflectionAngleFlapList() {
+		return textFieldWingMaximumDeflectionAngleFlapList;
+	}
+
+	public void setTextFieldWingMaximumDeflectionAngleFlapList(
+			List<TextField> textFieldWingMaximumDeflectionAngleFlapList) {
+		this.textFieldWingMaximumDeflectionAngleFlapList = textFieldWingMaximumDeflectionAngleFlapList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingMinimumDeflectionAngleFlapUnitList() {
+		return choiceBoxWingMinimumDeflectionAngleFlapUnitList;
+	}
+
+	public void setChoiceBoxWingMinimumDeflectionAngleFlapUnitList(
+			List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleFlapUnitList) {
+		this.choiceBoxWingMinimumDeflectionAngleFlapUnitList = choiceBoxWingMinimumDeflectionAngleFlapUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingMaximumDeflectionAngleFlapUnitList() {
+		return choiceBoxWingMaximumDeflectionAngleFlapUnitList;
+	}
+
+	public void setChoiceBoxWingMaximumDeflectionAngleFlapUnitList(
+			List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleFlapUnitList) {
+		this.choiceBoxWingMaximumDeflectionAngleFlapUnitList = choiceBoxWingMaximumDeflectionAngleFlapUnitList;
+	}
+
+	public List<TextField> getTextFieldWingInnerPositionSlatList() {
+		return textFieldWingInnerPositionSlatList;
+	}
+
+	public void setTextFieldWingInnerPositionSlatList(List<TextField> textFieldWingInnerPositionSlatList) {
+		this.textFieldWingInnerPositionSlatList = textFieldWingInnerPositionSlatList;
+	}
+
+	public List<TextField> getTextFieldWingOuterPositionSlatList() {
+		return textFieldWingOuterPositionSlatList;
+	}
+
+	public void setTextFieldWingOuterPositionSlatList(List<TextField> textFieldWingOuterPositionSlatList) {
+		this.textFieldWingOuterPositionSlatList = textFieldWingOuterPositionSlatList;
+	}
+
+	public List<TextField> getTextFieldWingInnerChordRatioSlatList() {
+		return textFieldWingInnerChordRatioSlatList;
+	}
+
+	public void setTextFieldWingInnerChordRatioSlatList(List<TextField> textFieldWingInnerChordRatioSlatList) {
+		this.textFieldWingInnerChordRatioSlatList = textFieldWingInnerChordRatioSlatList;
+	}
+
+	public List<TextField> getTextFieldWingOuterChordRatioSlatList() {
+		return textFieldWingOuterChordRatioSlatList;
+	}
+
+	public void setTextFieldWingOuterChordRatioSlatList(List<TextField> textFieldWingOuterChordRatioSlatList) {
+		this.textFieldWingOuterChordRatioSlatList = textFieldWingOuterChordRatioSlatList;
+	}
+
+	public List<TextField> getTextFieldWingExtensionRatioSlatList() {
+		return textFieldWingExtensionRatioSlatList;
+	}
+
+	public void setTextFieldWingExtensionRatioSlatList(List<TextField> textFieldWingExtensionRatioSlatList) {
+		this.textFieldWingExtensionRatioSlatList = textFieldWingExtensionRatioSlatList;
+	}
+
+	public List<TextField> getTextFieldWingMinimumDeflectionAngleSlatList() {
+		return textFieldWingMinimumDeflectionAngleSlatList;
+	}
+
+	public void setTextFieldWingMinimumDeflectionAngleSlatList(
+			List<TextField> textFieldWingMinimumDeflectionAngleSlatList) {
+		this.textFieldWingMinimumDeflectionAngleSlatList = textFieldWingMinimumDeflectionAngleSlatList;
+	}
+
+	public List<TextField> getTextFieldWingMaximumDeflectionAngleSlatList() {
+		return textFieldWingMaximumDeflectionAngleSlatList;
+	}
+
+	public void setTextFieldWingMaximumDeflectionAngleSlatList(
+			List<TextField> textFieldWingMaximumDeflectionAngleSlatList) {
+		this.textFieldWingMaximumDeflectionAngleSlatList = textFieldWingMaximumDeflectionAngleSlatList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingMinimumDeflectionAngleSlatUnitList() {
+		return choiceBoxWingMinimumDeflectionAngleSlatUnitList;
+	}
+
+	public void setChoiceBoxWingMinimumDeflectionAngleSlatUnitList(
+			List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleSlatUnitList) {
+		this.choiceBoxWingMinimumDeflectionAngleSlatUnitList = choiceBoxWingMinimumDeflectionAngleSlatUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingMaximumDeflectionAngleSlatUnitList() {
+		return choiceBoxWingMaximumDeflectionAngleSlatUnitList;
+	}
+
+	public void setChoiceBoxWingMaximumDeflectionAngleSlatUnitList(
+			List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleSlatUnitList) {
+		this.choiceBoxWingMaximumDeflectionAngleSlatUnitList = choiceBoxWingMaximumDeflectionAngleSlatUnitList;
+	}
+
+	public List<TextField> getTextFieldWingInnerSpanwisePositionSpoilerList() {
+		return textFieldWingInnerSpanwisePositionSpoilerList;
+	}
+
+	public void setTextFieldWingInnerSpanwisePositionSpoilerList(
+			List<TextField> textFieldWingInnerSpanwisePositionSpoilerList) {
+		this.textFieldWingInnerSpanwisePositionSpoilerList = textFieldWingInnerSpanwisePositionSpoilerList;
+	}
+
+	public List<TextField> getTextFieldWingOuterSpanwisePositionSpoilerList() {
+		return textFieldWingOuterSpanwisePositionSpoilerList;
+	}
+
+	public void setTextFieldWingOuterSpanwisePositionSpoilerList(
+			List<TextField> textFieldWingOuterSpanwisePositionSpoilerList) {
+		this.textFieldWingOuterSpanwisePositionSpoilerList = textFieldWingOuterSpanwisePositionSpoilerList;
+	}
+
+	public List<TextField> getTextFieldWingInnerChordwisePositionSpoilerList() {
+		return textFieldWingInnerChordwisePositionSpoilerList;
+	}
+
+	public void setTextFieldWingInnerChordwisePositionSpoilerList(
+			List<TextField> textFieldWingInnerChordwisePositionSpoilerList) {
+		this.textFieldWingInnerChordwisePositionSpoilerList = textFieldWingInnerChordwisePositionSpoilerList;
+	}
+
+	public List<TextField> getTextFieldWingOuterChordwisePositionSpoilerList() {
+		return textFieldWingOuterChordwisePositionSpoilerList;
+	}
+
+	public void setTextFieldWingOuterChordwisePositionSpoilerList(
+			List<TextField> textFieldWingOuterChordwisePositionSpoilerList) {
+		this.textFieldWingOuterChordwisePositionSpoilerList = textFieldWingOuterChordwisePositionSpoilerList;
+	}
+
+	public List<TextField> getTextFieldWingMinimumDeflectionAngleSpoilerList() {
+		return textFieldWingMinimumDeflectionAngleSpoilerList;
+	}
+
+	public void setTextFieldWingMinimumDeflectionAngleSpoilerList(
+			List<TextField> textFieldWingMinimumDeflectionAngleSpoilerList) {
+		this.textFieldWingMinimumDeflectionAngleSpoilerList = textFieldWingMinimumDeflectionAngleSpoilerList;
+	}
+
+	public List<TextField> getTextFieldWingMaximumDeflectionAngleSpoilerList() {
+		return textFieldWingMaximumDeflectionAngleSpoilerList;
+	}
+
+	public void setTextFieldWingMaximumDeflectionAngleSpoilerList(
+			List<TextField> textFieldWingMaximumDeflectionAngleSpoilerList) {
+		this.textFieldWingMaximumDeflectionAngleSpoilerList = textFieldWingMaximumDeflectionAngleSpoilerList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingMinimumDeflectionAngleSpoilerUnitList() {
+		return choiceBoxWingMinimumDeflectionAngleSpoilerUnitList;
+	}
+
+	public void setChoiceBoxWingMinimumDeflectionAngleSpoilerUnitList(
+			List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleSpoilerUnitList) {
+		this.choiceBoxWingMinimumDeflectionAngleSpoilerUnitList = choiceBoxWingMinimumDeflectionAngleSpoilerUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingMaximumDeflectionAngleSpoilerUnitList() {
+		return choiceBoxWingMaximumDeflectionAngleSpoilerUnitList;
+	}
+
+	public void setChoiceBoxWingMaximumDeflectionAngleSpoilerUnitList(
+			List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleSpoilerUnitList) {
+		this.choiceBoxWingMaximumDeflectionAngleSpoilerUnitList = choiceBoxWingMaximumDeflectionAngleSpoilerUnitList;
+	}
+
+	public ChoiceBox<String> getWingRoughnessUnitChoiceBox() {
+		return wingRoughnessUnitChoiceBox;
+	}
+
+	public void setWingRoughnessUnitChoiceBox(ChoiceBox<String> wingRoughnessUnitChoiceBox) {
+		this.wingRoughnessUnitChoiceBox = wingRoughnessUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingWingletHeightUnitChoiceBox() {
+		return wingWingletHeightUnitChoiceBox;
+	}
+
+	public void setWingWingletHeightUnitChoiceBox(ChoiceBox<String> wingWingletHeightUnitChoiceBox) {
+		this.wingWingletHeightUnitChoiceBox = wingWingletHeightUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getEquivalentWingAreaUnitChoiceBox() {
+		return equivalentWingAreaUnitChoiceBox;
+	}
+
+	public void setEquivalentWingAreaUnitChoiceBox(ChoiceBox<String> equivalentWingAreaUnitChoiceBox) {
+		this.equivalentWingAreaUnitChoiceBox = equivalentWingAreaUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getEquivalentWingSweepLEUnitChoiceBox() {
+		return equivalentWingSweepLEUnitChoiceBox;
+	}
+
+	public void setEquivalentWingSweepLEUnitChoiceBox(ChoiceBox<String> equivalentWingSweepLEUnitChoiceBox) {
+		this.equivalentWingSweepLEUnitChoiceBox = equivalentWingSweepLEUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getEquivalentWingTwistAtTipUnitChoiceBox() {
+		return equivalentWingTwistAtTipUnitChoiceBox;
+	}
+
+	public void setEquivalentWingTwistAtTipUnitChoiceBox(ChoiceBox<String> equivalentWingTwistAtTipUnitChoiceBox) {
+		this.equivalentWingTwistAtTipUnitChoiceBox = equivalentWingTwistAtTipUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getEquivalentWingDihedralUnitChoiceBox() {
+		return equivalentWingDihedralUnitChoiceBox;
+	}
+
+	public void setEquivalentWingDihedralUnitChoiceBox(ChoiceBox<String> equivalentWingDihedralUnitChoiceBox) {
+		this.equivalentWingDihedralUnitChoiceBox = equivalentWingDihedralUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingSpanPanel1UnitChoiceBox() {
+		return wingSpanPanel1UnitChoiceBox;
+	}
+
+	public void setWingSpanPanel1UnitChoiceBox(ChoiceBox<String> wingSpanPanel1UnitChoiceBox) {
+		this.wingSpanPanel1UnitChoiceBox = wingSpanPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingSweepLEPanel1UnitChoiceBox() {
+		return wingSweepLEPanel1UnitChoiceBox;
+	}
+
+	public void setWingSweepLEPanel1UnitChoiceBox(ChoiceBox<String> wingSweepLEPanel1UnitChoiceBox) {
+		this.wingSweepLEPanel1UnitChoiceBox = wingSweepLEPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingDihedralPanel1UnitChoiceBox() {
+		return wingDihedralPanel1UnitChoiceBox;
+	}
+
+	public void setWingDihedralPanel1UnitChoiceBox(ChoiceBox<String> wingDihedralPanel1UnitChoiceBox) {
+		this.wingDihedralPanel1UnitChoiceBox = wingDihedralPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingInnerSectionChordPanel1UnitChoiceBox() {
+		return wingInnerSectionChordPanel1UnitChoiceBox;
+	}
+
+	public void setWingInnerSectionChordPanel1UnitChoiceBox(ChoiceBox<String> wingInnerSectionChordPanel1UnitChoiceBox) {
+		this.wingInnerSectionChordPanel1UnitChoiceBox = wingInnerSectionChordPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingInnerSectionTwistTipPanel1UnitChoiceBox() {
+		return wingInnerSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public void setWingInnerSectionTwistTipPanel1UnitChoiceBox(
+			ChoiceBox<String> wingInnerSectionTwistTipPanel1UnitChoiceBox) {
+		this.wingInnerSectionTwistTipPanel1UnitChoiceBox = wingInnerSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingOuterSectionChordPanel1UnitChoiceBox() {
+		return wingOuterSectionChordPanel1UnitChoiceBox;
+	}
+
+	public void setWingOuterSectionChordPanel1UnitChoiceBox(ChoiceBox<String> wingOuterSectionChordPanel1UnitChoiceBox) {
+		this.wingOuterSectionChordPanel1UnitChoiceBox = wingOuterSectionChordPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingOuterSectionTwistTipPanel1UnitChoiceBox() {
+		return wingOuterSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public void setWingOuterSectionTwistTipPanel1UnitChoiceBox(
+			ChoiceBox<String> wingOuterSectionTwistTipPanel1UnitChoiceBox) {
+		this.wingOuterSectionTwistTipPanel1UnitChoiceBox = wingOuterSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingMinimumDeflectionAngleFlap1UnitChoiceBox() {
+		return wingMinimumDeflectionAngleFlap1UnitChoiceBox;
+	}
+
+	public void setWingMinimumDeflectionAngleFlap1UnitChoiceBox(
+			ChoiceBox<String> wingMinimumDeflectionAngleFlap1UnitChoiceBox) {
+		this.wingMinimumDeflectionAngleFlap1UnitChoiceBox = wingMinimumDeflectionAngleFlap1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingMaximumDeflectionAngleFlap1UnitChoiceBox() {
+		return wingMaximumDeflectionAngleFlap1UnitChoiceBox;
+	}
+
+	public void setWingMaximumDeflectionAngleFlap1UnitChoiceBox(
+			ChoiceBox<String> wingMaximumDeflectionAngleFlap1UnitChoiceBox) {
+		this.wingMaximumDeflectionAngleFlap1UnitChoiceBox = wingMaximumDeflectionAngleFlap1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingMinimumDeflectionAngleSlat1UnitChoiceBox() {
+		return wingMinimumDeflectionAngleSlat1UnitChoiceBox;
+	}
+
+	public void setWingMinimumDeflectionAngleSlat1UnitChoiceBox(
+			ChoiceBox<String> wingMinimumDeflectionAngleSlat1UnitChoiceBox) {
+		this.wingMinimumDeflectionAngleSlat1UnitChoiceBox = wingMinimumDeflectionAngleSlat1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingMaximumDeflectionAngleSlat1UnitChoiceBox() {
+		return wingMaximumDeflectionAngleSlat1UnitChoiceBox;
+	}
+
+	public void setWingMaximumDeflectionAngleSlat1UnitChoiceBox(
+			ChoiceBox<String> wingMaximumDeflectionAngleSlat1UnitChoiceBox) {
+		this.wingMaximumDeflectionAngleSlat1UnitChoiceBox = wingMaximumDeflectionAngleSlat1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingMinimumDeflectionAngleAileronLeftUnitChoiceBox() {
+		return wingMinimumDeflectionAngleAileronLeftUnitChoiceBox;
+	}
+
+	public void setWingMinimumDeflectionAngleAileronLeftUnitChoiceBox(
+			ChoiceBox<String> wingMinimumDeflectionAngleAileronLeftUnitChoiceBox) {
+		this.wingMinimumDeflectionAngleAileronLeftUnitChoiceBox = wingMinimumDeflectionAngleAileronLeftUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingMaximumDeflectionAngleAileronLeftUnitChoiceBox() {
+		return wingMaximumDeflectionAngleAileronLeftUnitChoiceBox;
+	}
+
+	public void setWingMaximumDeflectionAngleAileronLeftUnitChoiceBox(
+			ChoiceBox<String> wingMaximumDeflectionAngleAileronLeftUnitChoiceBox) {
+		this.wingMaximumDeflectionAngleAileronLeftUnitChoiceBox = wingMaximumDeflectionAngleAileronLeftUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox() {
+		return wingMinimumDeflectionAngleAileronRigthUnitChoiceBox;
+	}
+
+	public void setWingMinimumDeflectionAngleAileronRigthUnitChoiceBox(
+			ChoiceBox<String> wingMinimumDeflectionAngleAileronRigthUnitChoiceBox) {
+		this.wingMinimumDeflectionAngleAileronRigthUnitChoiceBox = wingMinimumDeflectionAngleAileronRigthUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingMaximumDeflectionAngleAileronRightUnitChoiceBox() {
+		return wingMaximumDeflectionAngleAileronRightUnitChoiceBox;
+	}
+
+	public void setWingMaximumDeflectionAngleAileronRightUnitChoiceBox(
+			ChoiceBox<String> wingMaximumDeflectionAngleAileronRightUnitChoiceBox) {
+		this.wingMaximumDeflectionAngleAileronRightUnitChoiceBox = wingMaximumDeflectionAngleAileronRightUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingMinimumDeflectionAngleSpoiler1UnitChoiceBox() {
+		return wingMinimumDeflectionAngleSpoiler1UnitChoiceBox;
+	}
+
+	public void setWingMinimumDeflectionAngleSpoiler1UnitChoiceBox(
+			ChoiceBox<String> wingMinimumDeflectionAngleSpoiler1UnitChoiceBox) {
+		this.wingMinimumDeflectionAngleSpoiler1UnitChoiceBox = wingMinimumDeflectionAngleSpoiler1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getWingMaximumDeflectionAngleSpoiler1UnitChoiceBox() {
+		return wingMaximumDeflectionAngleSpoiler1UnitChoiceBox;
+	}
+
+	public void setWingMaximumDeflectionAngleSpoiler1UnitChoiceBox(
+			ChoiceBox<String> wingMaximumDeflectionAngleSpoiler1UnitChoiceBox) {
+		this.wingMaximumDeflectionAngleSpoiler1UnitChoiceBox = wingMaximumDeflectionAngleSpoiler1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailAdjustCriterionChoiceBox() {
+		return hTailAdjustCriterionChoiceBox;
+	}
+
+	public void sethTailAdjustCriterionChoiceBox(ChoiceBox<String> hTailAdjustCriterionChoiceBox) {
+		this.hTailAdjustCriterionChoiceBox = hTailAdjustCriterionChoiceBox;
+	}
+
+	public TextField getTextFieldHTailCompositeMassCorrectionFactor() {
+		return textFieldHTailCompositeMassCorrectionFactor;
+	}
+
+	public void setTextFieldHTailCompositeMassCorrectionFactor(TextField textFieldHTailCompositeMassCorrectionFactor) {
+		this.textFieldHTailCompositeMassCorrectionFactor = textFieldHTailCompositeMassCorrectionFactor;
+	}
+
+	public TextField getTextFieldHTailRoughness() {
+		return textFieldHTailRoughness;
+	}
+
+	public void setTextFieldHTailRoughness(TextField textFieldHTailRoughness) {
+		this.textFieldHTailRoughness = textFieldHTailRoughness;
+	}
+
+	public TextField getTextFieldHTailSpanPanel1() {
+		return textFieldHTailSpanPanel1;
+	}
+
+	public void setTextFieldHTailSpanPanel1(TextField textFieldHTailSpanPanel1) {
+		this.textFieldHTailSpanPanel1 = textFieldHTailSpanPanel1;
+	}
+
+	public TextField getTextFieldHTailSweepLeadingEdgePanel1() {
+		return textFieldHTailSweepLeadingEdgePanel1;
+	}
+
+	public void setTextFieldHTailSweepLeadingEdgePanel1(TextField textFieldHTailSweepLeadingEdgePanel1) {
+		this.textFieldHTailSweepLeadingEdgePanel1 = textFieldHTailSweepLeadingEdgePanel1;
+	}
+
+	public TextField getTextFieldHTailDihedralPanel1() {
+		return textFieldHTailDihedralPanel1;
+	}
+
+	public void setTextFieldHTailDihedralPanel1(TextField textFieldHTailDihedralPanel1) {
+		this.textFieldHTailDihedralPanel1 = textFieldHTailDihedralPanel1;
+	}
+
+	public TextField getTextFieldHTailChordInnerSectionPanel1() {
+		return textFieldHTailChordInnerSectionPanel1;
+	}
+
+	public void setTextFieldHTailChordInnerSectionPanel1(TextField textFieldHTailChordInnerSectionPanel1) {
+		this.textFieldHTailChordInnerSectionPanel1 = textFieldHTailChordInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldHTailTwistInnerSectionPanel1() {
+		return textFieldHTailTwistInnerSectionPanel1;
+	}
+
+	public void setTextFieldHTailTwistInnerSectionPanel1(TextField textFieldHTailTwistInnerSectionPanel1) {
+		this.textFieldHTailTwistInnerSectionPanel1 = textFieldHTailTwistInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldHTailAirfoilPathInnerSectionPanel1() {
+		return textFieldHTailAirfoilPathInnerSectionPanel1;
+	}
+
+	public void setTextFieldHTailAirfoilPathInnerSectionPanel1(TextField textFieldHTailAirfoilPathInnerSectionPanel1) {
+		this.textFieldHTailAirfoilPathInnerSectionPanel1 = textFieldHTailAirfoilPathInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldHTailChordOuterSectionPanel1() {
+		return textFieldHTailChordOuterSectionPanel1;
+	}
+
+	public void setTextFieldHTailChordOuterSectionPanel1(TextField textFieldHTailChordOuterSectionPanel1) {
+		this.textFieldHTailChordOuterSectionPanel1 = textFieldHTailChordOuterSectionPanel1;
+	}
+
+	public TextField getTextFieldHTailTwistOuterSectionPanel1() {
+		return textFieldHTailTwistOuterSectionPanel1;
+	}
+
+	public void setTextFieldHTailTwistOuterSectionPanel1(TextField textFieldHTailTwistOuterSectionPanel1) {
+		this.textFieldHTailTwistOuterSectionPanel1 = textFieldHTailTwistOuterSectionPanel1;
+	}
+
+	public TextField getTextFieldHTailAirfoilPathOuterSectionPanel1() {
+		return textFieldHTailAirfoilPathOuterSectionPanel1;
+	}
+
+	public void setTextFieldHTailAirfoilPathOuterSectionPanel1(TextField textFieldHTailAirfoilPathOuterSectionPanel1) {
+		this.textFieldHTailAirfoilPathOuterSectionPanel1 = textFieldHTailAirfoilPathOuterSectionPanel1;
+	}
+
+	public ChoiceBox<String> gethTailElevator1TypeChoiceBox() {
+		return hTailElevator1TypeChoiceBox;
+	}
+
+	public void sethTailElevator1TypeChoiceBox(ChoiceBox<String> hTailElevator1TypeChoiceBox) {
+		this.hTailElevator1TypeChoiceBox = hTailElevator1TypeChoiceBox;
+	}
+
+	public TextField getTextFieldHTailInnerPositionElevator1() {
+		return textFieldHTailInnerPositionElevator1;
+	}
+
+	public void setTextFieldHTailInnerPositionElevator1(TextField textFieldHTailInnerPositionElevator1) {
+		this.textFieldHTailInnerPositionElevator1 = textFieldHTailInnerPositionElevator1;
+	}
+
+	public TextField getTextFieldHTailOuterPositionElevator1() {
+		return textFieldHTailOuterPositionElevator1;
+	}
+
+	public void setTextFieldHTailOuterPositionElevator1(TextField textFieldHTailOuterPositionElevator1) {
+		this.textFieldHTailOuterPositionElevator1 = textFieldHTailOuterPositionElevator1;
+	}
+
+	public TextField getTextFieldHTailInnerChordRatioElevator1() {
+		return textFieldHTailInnerChordRatioElevator1;
+	}
+
+	public void setTextFieldHTailInnerChordRatioElevator1(TextField textFieldHTailInnerChordRatioElevator1) {
+		this.textFieldHTailInnerChordRatioElevator1 = textFieldHTailInnerChordRatioElevator1;
+	}
+
+	public TextField getTextFieldHTailOuterChordRatioElevator1() {
+		return textFieldHTailOuterChordRatioElevator1;
+	}
+
+	public void setTextFieldHTailOuterChordRatioElevator1(TextField textFieldHTailOuterChordRatioElevator1) {
+		this.textFieldHTailOuterChordRatioElevator1 = textFieldHTailOuterChordRatioElevator1;
+	}
+
+	public TextField getTextFieldHTailMinimumDeflectionAngleElevator1() {
+		return textFieldHTailMinimumDeflectionAngleElevator1;
+	}
+
+	public void setTextFieldHTailMinimumDeflectionAngleElevator1(TextField textFieldHTailMinimumDeflectionAngleElevator1) {
+		this.textFieldHTailMinimumDeflectionAngleElevator1 = textFieldHTailMinimumDeflectionAngleElevator1;
+	}
+
+	public TextField getTextFieldHTailMaximumDeflectionAngleElevator1() {
+		return textFieldHTailMaximumDeflectionAngleElevator1;
+	}
+
+	public void setTextFieldHTailMaximumDeflectionAngleElevator1(TextField textFieldHTailMaximumDeflectionAngleElevator1) {
+		this.textFieldHTailMaximumDeflectionAngleElevator1 = textFieldHTailMaximumDeflectionAngleElevator1;
+	}
+
+	public List<TextField> getTextFieldHTailSpanPanelList() {
+		return textFieldHTailSpanPanelList;
+	}
+
+	public void setTextFieldHTailSpanPanelList(List<TextField> textFieldHTailSpanPanelList) {
+		this.textFieldHTailSpanPanelList = textFieldHTailSpanPanelList;
+	}
+
+	public List<TextField> getTextFieldHTailSweepLEPanelList() {
+		return textFieldHTailSweepLEPanelList;
+	}
+
+	public void setTextFieldHTailSweepLEPanelList(List<TextField> textFieldHTailSweepLEPanelList) {
+		this.textFieldHTailSweepLEPanelList = textFieldHTailSweepLEPanelList;
+	}
+
+	public List<TextField> getTextFieldHTailDihedralPanelList() {
+		return textFieldHTailDihedralPanelList;
+	}
+
+	public void setTextFieldHTailDihedralPanelList(List<TextField> textFieldHTailDihedralPanelList) {
+		this.textFieldHTailDihedralPanelList = textFieldHTailDihedralPanelList;
+	}
+
+	public List<TextField> getTextFieldHTailInnerChordPanelList() {
+		return textFieldHTailInnerChordPanelList;
+	}
+
+	public void setTextFieldHTailInnerChordPanelList(List<TextField> textFieldHTailInnerChordPanelList) {
+		this.textFieldHTailInnerChordPanelList = textFieldHTailInnerChordPanelList;
+	}
+
+	public List<TextField> getTextFieldHTailInnerTwistPanelList() {
+		return textFieldHTailInnerTwistPanelList;
+	}
+
+	public void setTextFieldHTailInnerTwistPanelList(List<TextField> textFieldHTailInnerTwistPanelList) {
+		this.textFieldHTailInnerTwistPanelList = textFieldHTailInnerTwistPanelList;
+	}
+
+	public List<TextField> getTextFieldHTailInnerAirfoilPanelList() {
+		return textFieldHTailInnerAirfoilPanelList;
+	}
+
+	public void setTextFieldHTailInnerAirfoilPanelList(List<TextField> textFieldHTailInnerAirfoilPanelList) {
+		this.textFieldHTailInnerAirfoilPanelList = textFieldHTailInnerAirfoilPanelList;
+	}
+
+	public List<TextField> getTextFieldHTailOuterChordPanelList() {
+		return textFieldHTailOuterChordPanelList;
+	}
+
+	public void setTextFieldHTailOuterChordPanelList(List<TextField> textFieldHTailOuterChordPanelList) {
+		this.textFieldHTailOuterChordPanelList = textFieldHTailOuterChordPanelList;
+	}
+
+	public List<TextField> getTextFieldHTailOuterTwistPanelList() {
+		return textFieldHTailOuterTwistPanelList;
+	}
+
+	public void setTextFieldHTailOuterTwistPanelList(List<TextField> textFieldHTailOuterTwistPanelList) {
+		this.textFieldHTailOuterTwistPanelList = textFieldHTailOuterTwistPanelList;
+	}
+
+	public List<TextField> getTextFieldHTailOuterAirfoilPanelList() {
+		return textFieldHTailOuterAirfoilPanelList;
+	}
+
+	public void setTextFieldHTailOuterAirfoilPanelList(List<TextField> textFieldHTailOuterAirfoilPanelList) {
+		this.textFieldHTailOuterAirfoilPanelList = textFieldHTailOuterAirfoilPanelList;
+	}
+
+	public List<CheckBox> getCheckBoxHTailLinkedToPreviousPanelList() {
+		return checkBoxHTailLinkedToPreviousPanelList;
+	}
+
+	public void setCheckBoxHTailLinkedToPreviousPanelList(List<CheckBox> checkBoxHTailLinkedToPreviousPanelList) {
+		this.checkBoxHTailLinkedToPreviousPanelList = checkBoxHTailLinkedToPreviousPanelList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxHTailSpanPanelUnitList() {
+		return choiceBoxHTailSpanPanelUnitList;
+	}
+
+	public void setChoiceBoxHTailSpanPanelUnitList(List<ChoiceBox<String>> choiceBoxHTailSpanPanelUnitList) {
+		this.choiceBoxHTailSpanPanelUnitList = choiceBoxHTailSpanPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxHTailSweepLEPanelUnitList() {
+		return choiceBoxHTailSweepLEPanelUnitList;
+	}
+
+	public void setChoiceBoxHTailSweepLEPanelUnitList(List<ChoiceBox<String>> choiceBoxHTailSweepLEPanelUnitList) {
+		this.choiceBoxHTailSweepLEPanelUnitList = choiceBoxHTailSweepLEPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxHTailDihedralPanelUnitList() {
+		return choiceBoxHTailDihedralPanelUnitList;
+	}
+
+	public void setChoiceBoxHTailDihedralPanelUnitList(List<ChoiceBox<String>> choiceBoxHTailDihedralPanelUnitList) {
+		this.choiceBoxHTailDihedralPanelUnitList = choiceBoxHTailDihedralPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxHTailInnerChordPanelUnitList() {
+		return choiceBoxHTailInnerChordPanelUnitList;
+	}
+
+	public void setChoiceBoxHTailInnerChordPanelUnitList(List<ChoiceBox<String>> choiceBoxHTailInnerChordPanelUnitList) {
+		this.choiceBoxHTailInnerChordPanelUnitList = choiceBoxHTailInnerChordPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxHTailInnerTwistPanelUnitList() {
+		return choiceBoxHTailInnerTwistPanelUnitList;
+	}
+
+	public void setChoiceBoxHTailInnerTwistPanelUnitList(List<ChoiceBox<String>> choiceBoxHTailInnerTwistPanelUnitList) {
+		this.choiceBoxHTailInnerTwistPanelUnitList = choiceBoxHTailInnerTwistPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxHTailOuterChordPanelUnitList() {
+		return choiceBoxHTailOuterChordPanelUnitList;
+	}
+
+	public void setChoiceBoxHTailOuterChordPanelUnitList(List<ChoiceBox<String>> choiceBoxHTailOuterChordPanelUnitList) {
+		this.choiceBoxHTailOuterChordPanelUnitList = choiceBoxHTailOuterChordPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxHTailOuterTwistPanelUnitList() {
+		return choiceBoxHTailOuterTwistPanelUnitList;
+	}
+
+	public void setChoiceBoxHTailOuterTwistPanelUnitList(List<ChoiceBox<String>> choiceBoxHTailOuterTwistPanelUnitList) {
+		this.choiceBoxHTailOuterTwistPanelUnitList = choiceBoxHTailOuterTwistPanelUnitList;
+	}
+
+	public List<Button> getDetailButtonHTailInnerAirfoilList() {
+		return detailButtonHTailInnerAirfoilList;
+	}
+
+	public void setDetailButtonHTailInnerAirfoilList(List<Button> detailButtonHTailInnerAirfoilList) {
+		this.detailButtonHTailInnerAirfoilList = detailButtonHTailInnerAirfoilList;
+	}
+
+	public List<Button> getDetailButtonHTailOuterAirfoilList() {
+		return detailButtonHTailOuterAirfoilList;
+	}
+
+	public void setDetailButtonHTailOuterAirfoilList(List<Button> detailButtonHTailOuterAirfoilList) {
+		this.detailButtonHTailOuterAirfoilList = detailButtonHTailOuterAirfoilList;
+	}
+
+	public List<Button> getChooseInnerHTailAirfoilFileButtonList() {
+		return chooseInnerHTailAirfoilFileButtonList;
+	}
+
+	public void setChooseInnerHTailAirfoilFileButtonList(List<Button> chooseInnerHTailAirfoilFileButtonList) {
+		this.chooseInnerHTailAirfoilFileButtonList = chooseInnerHTailAirfoilFileButtonList;
+	}
+
+	public List<Button> getChooseOuterHTailAirfoilFileButtonList() {
+		return chooseOuterHTailAirfoilFileButtonList;
+	}
+
+	public void setChooseOuterHTailAirfoilFileButtonList(List<Button> chooseOuterHTailAirfoilFileButtonList) {
+		this.chooseOuterHTailAirfoilFileButtonList = chooseOuterHTailAirfoilFileButtonList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxHTailElevatorTypeList() {
+		return choiceBoxHTailElevatorTypeList;
+	}
+
+	public void setChoiceBoxHTailElevatorTypeList(List<ChoiceBox<String>> choiceBoxHTailElevatorTypeList) {
+		this.choiceBoxHTailElevatorTypeList = choiceBoxHTailElevatorTypeList;
+	}
+
+	public List<TextField> getTextFieldHTailInnerPositionElevatorList() {
+		return textFieldHTailInnerPositionElevatorList;
+	}
+
+	public void setTextFieldHTailInnerPositionElevatorList(List<TextField> textFieldHTailInnerPositionElevatorList) {
+		this.textFieldHTailInnerPositionElevatorList = textFieldHTailInnerPositionElevatorList;
+	}
+
+	public List<TextField> getTextFieldHTailOuterPositionElevatorList() {
+		return textFieldHTailOuterPositionElevatorList;
+	}
+
+	public void setTextFieldHTailOuterPositionElevatorList(List<TextField> textFieldHTailOuterPositionElevatorList) {
+		this.textFieldHTailOuterPositionElevatorList = textFieldHTailOuterPositionElevatorList;
+	}
+
+	public List<TextField> getTextFieldHTailInnerChordRatioElevatorList() {
+		return textFieldHTailInnerChordRatioElevatorList;
+	}
+
+	public void setTextFieldHTailInnerChordRatioElevatorList(List<TextField> textFieldHTailInnerChordRatioElevatorList) {
+		this.textFieldHTailInnerChordRatioElevatorList = textFieldHTailInnerChordRatioElevatorList;
+	}
+
+	public List<TextField> getTextFieldHTailOuterChordRatioElevatorList() {
+		return textFieldHTailOuterChordRatioElevatorList;
+	}
+
+	public void setTextFieldHTailOuterChordRatioElevatorList(List<TextField> textFieldHTailOuterChordRatioElevatorList) {
+		this.textFieldHTailOuterChordRatioElevatorList = textFieldHTailOuterChordRatioElevatorList;
+	}
+
+	public List<TextField> getTextFieldHTailMinimumDeflectionAngleElevatorList() {
+		return textFieldHTailMinimumDeflectionAngleElevatorList;
+	}
+
+	public void setTextFieldHTailMinimumDeflectionAngleElevatorList(
+			List<TextField> textFieldHTailMinimumDeflectionAngleElevatorList) {
+		this.textFieldHTailMinimumDeflectionAngleElevatorList = textFieldHTailMinimumDeflectionAngleElevatorList;
+	}
+
+	public List<TextField> getTextFieldHTailMaximumDeflectionAngleElevatorList() {
+		return textFieldHTailMaximumDeflectionAngleElevatorList;
+	}
+
+	public void setTextFieldHTailMaximumDeflectionAngleElevatorList(
+			List<TextField> textFieldHTailMaximumDeflectionAngleElevatorList) {
+		this.textFieldHTailMaximumDeflectionAngleElevatorList = textFieldHTailMaximumDeflectionAngleElevatorList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxHTailMinimumDeflectionAngleElevatorUnitList() {
+		return choiceBoxHTailMinimumDeflectionAngleElevatorUnitList;
+	}
+
+	public void setChoiceBoxHTailMinimumDeflectionAngleElevatorUnitList(
+			List<ChoiceBox<String>> choiceBoxHTailMinimumDeflectionAngleElevatorUnitList) {
+		this.choiceBoxHTailMinimumDeflectionAngleElevatorUnitList = choiceBoxHTailMinimumDeflectionAngleElevatorUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxHTailMaximumDeflectionAngleElevatorUnitList() {
+		return choiceBoxHTailMaximumDeflectionAngleElevatorUnitList;
+	}
+
+	public void setChoiceBoxHTailMaximumDeflectionAngleElevatorUnitList(
+			List<ChoiceBox<String>> choiceBoxHTailMaximumDeflectionAngleElevatorUnitList) {
+		this.choiceBoxHTailMaximumDeflectionAngleElevatorUnitList = choiceBoxHTailMaximumDeflectionAngleElevatorUnitList;
+	}
+
+	public ChoiceBox<String> gethTailRoughnessUnitChoiceBox() {
+		return hTailRoughnessUnitChoiceBox;
+	}
+
+	public void sethTailRoughnessUnitChoiceBox(ChoiceBox<String> hTailRoughnessUnitChoiceBox) {
+		this.hTailRoughnessUnitChoiceBox = hTailRoughnessUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailSpanPanel1UnitChoiceBox() {
+		return hTailSpanPanel1UnitChoiceBox;
+	}
+
+	public void sethTailSpanPanel1UnitChoiceBox(ChoiceBox<String> hTailSpanPanel1UnitChoiceBox) {
+		this.hTailSpanPanel1UnitChoiceBox = hTailSpanPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailSweepLEPanel1UnitChoiceBox() {
+		return hTailSweepLEPanel1UnitChoiceBox;
+	}
+
+	public void sethTailSweepLEPanel1UnitChoiceBox(ChoiceBox<String> hTailSweepLEPanel1UnitChoiceBox) {
+		this.hTailSweepLEPanel1UnitChoiceBox = hTailSweepLEPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailDihedralPanel1UnitChoiceBox() {
+		return hTailDihedralPanel1UnitChoiceBox;
+	}
+
+	public void sethTailDihedralPanel1UnitChoiceBox(ChoiceBox<String> hTailDihedralPanel1UnitChoiceBox) {
+		this.hTailDihedralPanel1UnitChoiceBox = hTailDihedralPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailInnerSectionChordPanel1UnitChoiceBox() {
+		return hTailInnerSectionChordPanel1UnitChoiceBox;
+	}
+
+	public void sethTailInnerSectionChordPanel1UnitChoiceBox(ChoiceBox<String> hTailInnerSectionChordPanel1UnitChoiceBox) {
+		this.hTailInnerSectionChordPanel1UnitChoiceBox = hTailInnerSectionChordPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailInnerSectionTwistTipPanel1UnitChoiceBox() {
+		return hTailInnerSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public void sethTailInnerSectionTwistTipPanel1UnitChoiceBox(
+			ChoiceBox<String> hTailInnerSectionTwistTipPanel1UnitChoiceBox) {
+		this.hTailInnerSectionTwistTipPanel1UnitChoiceBox = hTailInnerSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailOuterSectionChordPanel1UnitChoiceBox() {
+		return hTailOuterSectionChordPanel1UnitChoiceBox;
+	}
+
+	public void sethTailOuterSectionChordPanel1UnitChoiceBox(ChoiceBox<String> hTailOuterSectionChordPanel1UnitChoiceBox) {
+		this.hTailOuterSectionChordPanel1UnitChoiceBox = hTailOuterSectionChordPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailOuterSectionTwistTipPanel1UnitChoiceBox() {
+		return hTailOuterSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public void sethTailOuterSectionTwistTipPanel1UnitChoiceBox(
+			ChoiceBox<String> hTailOuterSectionTwistTipPanel1UnitChoiceBox) {
+		this.hTailOuterSectionTwistTipPanel1UnitChoiceBox = hTailOuterSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailMinimumDeflectionAngleElevator1UnitChoiceBox() {
+		return hTailMinimumDeflectionAngleElevator1UnitChoiceBox;
+	}
+
+	public void sethTailMinimumDeflectionAngleElevator1UnitChoiceBox(
+			ChoiceBox<String> hTailMinimumDeflectionAngleElevator1UnitChoiceBox) {
+		this.hTailMinimumDeflectionAngleElevator1UnitChoiceBox = hTailMinimumDeflectionAngleElevator1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> gethTailMaximumDeflectionAngleElevator1UnitChoiceBox() {
+		return hTailMaximumDeflectionAngleElevator1UnitChoiceBox;
+	}
+
+	public void sethTailMaximumDeflectionAngleElevator1UnitChoiceBox(
+			ChoiceBox<String> hTailMaximumDeflectionAngleElevator1UnitChoiceBox) {
+		this.hTailMaximumDeflectionAngleElevator1UnitChoiceBox = hTailMaximumDeflectionAngleElevator1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailAdjustCriterionChoiceBox() {
+		return vTailAdjustCriterionChoiceBox;
+	}
+
+	public void setvTailAdjustCriterionChoiceBox(ChoiceBox<String> vTailAdjustCriterionChoiceBox) {
+		this.vTailAdjustCriterionChoiceBox = vTailAdjustCriterionChoiceBox;
+	}
+
+	public TextField getTextFieldVTailCompositeMassCorrectionFactor() {
+		return textFieldVTailCompositeMassCorrectionFactor;
+	}
+
+	public void setTextFieldVTailCompositeMassCorrectionFactor(TextField textFieldVTailCompositeMassCorrectionFactor) {
+		this.textFieldVTailCompositeMassCorrectionFactor = textFieldVTailCompositeMassCorrectionFactor;
+	}
+
+	public TextField getTextFieldVTailRoughness() {
+		return textFieldVTailRoughness;
+	}
+
+	public void setTextFieldVTailRoughness(TextField textFieldVTailRoughness) {
+		this.textFieldVTailRoughness = textFieldVTailRoughness;
+	}
+
+	public TextField getTextFieldVTailSpanPanel1() {
+		return textFieldVTailSpanPanel1;
+	}
+
+	public void setTextFieldVTailSpanPanel1(TextField textFieldVTailSpanPanel1) {
+		this.textFieldVTailSpanPanel1 = textFieldVTailSpanPanel1;
+	}
+
+	public TextField getTextFieldVTailSweepLeadingEdgePanel1() {
+		return textFieldVTailSweepLeadingEdgePanel1;
+	}
+
+	public void setTextFieldVTailSweepLeadingEdgePanel1(TextField textFieldVTailSweepLeadingEdgePanel1) {
+		this.textFieldVTailSweepLeadingEdgePanel1 = textFieldVTailSweepLeadingEdgePanel1;
+	}
+
+	public TextField getTextFieldVTailDihedralPanel1() {
+		return textFieldVTailDihedralPanel1;
+	}
+
+	public void setTextFieldVTailDihedralPanel1(TextField textFieldVTailDihedralPanel1) {
+		this.textFieldVTailDihedralPanel1 = textFieldVTailDihedralPanel1;
+	}
+
+	public TextField getTextFieldVTailChordInnerSectionPanel1() {
+		return textFieldVTailChordInnerSectionPanel1;
+	}
+
+	public void setTextFieldVTailChordInnerSectionPanel1(TextField textFieldVTailChordInnerSectionPanel1) {
+		this.textFieldVTailChordInnerSectionPanel1 = textFieldVTailChordInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldVTailTwistInnerSectionPanel1() {
+		return textFieldVTailTwistInnerSectionPanel1;
+	}
+
+	public void setTextFieldVTailTwistInnerSectionPanel1(TextField textFieldVTailTwistInnerSectionPanel1) {
+		this.textFieldVTailTwistInnerSectionPanel1 = textFieldVTailTwistInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldVTailAirfoilPathInnerSectionPanel1() {
+		return textFieldVTailAirfoilPathInnerSectionPanel1;
+	}
+
+	public void setTextFieldVTailAirfoilPathInnerSectionPanel1(TextField textFieldVTailAirfoilPathInnerSectionPanel1) {
+		this.textFieldVTailAirfoilPathInnerSectionPanel1 = textFieldVTailAirfoilPathInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldVTailChordOuterSectionPanel1() {
+		return textFieldVTailChordOuterSectionPanel1;
+	}
+
+	public void setTextFieldVTailChordOuterSectionPanel1(TextField textFieldVTailChordOuterSectionPanel1) {
+		this.textFieldVTailChordOuterSectionPanel1 = textFieldVTailChordOuterSectionPanel1;
+	}
+
+	public TextField getTextFieldVTailTwistOuterSectionPanel1() {
+		return textFieldVTailTwistOuterSectionPanel1;
+	}
+
+	public void setTextFieldVTailTwistOuterSectionPanel1(TextField textFieldVTailTwistOuterSectionPanel1) {
+		this.textFieldVTailTwistOuterSectionPanel1 = textFieldVTailTwistOuterSectionPanel1;
+	}
+
+	public TextField getTextFieldVTailAirfoilPathOuterSectionPanel1() {
+		return textFieldVTailAirfoilPathOuterSectionPanel1;
+	}
+
+	public void setTextFieldVTailAirfoilPathOuterSectionPanel1(TextField textFieldVTailAirfoilPathOuterSectionPanel1) {
+		this.textFieldVTailAirfoilPathOuterSectionPanel1 = textFieldVTailAirfoilPathOuterSectionPanel1;
+	}
+
+	public ChoiceBox<String> getvTailRudder1TypeChoiceBox() {
+		return vTailRudder1TypeChoiceBox;
+	}
+
+	public void setvTailRudder1TypeChoiceBox(ChoiceBox<String> vTailRudder1TypeChoiceBox) {
+		this.vTailRudder1TypeChoiceBox = vTailRudder1TypeChoiceBox;
+	}
+
+	public TextField getTextFieldVTailInnerPositionRudder1() {
+		return textFieldVTailInnerPositionRudder1;
+	}
+
+	public void setTextFieldVTailInnerPositionRudder1(TextField textFieldVTailInnerPositionRudder1) {
+		this.textFieldVTailInnerPositionRudder1 = textFieldVTailInnerPositionRudder1;
+	}
+
+	public TextField getTextFieldVTailOuterPositionRudder1() {
+		return textFieldVTailOuterPositionRudder1;
+	}
+
+	public void setTextFieldVTailOuterPositionRudder1(TextField textFieldVTailOuterPositionRudder1) {
+		this.textFieldVTailOuterPositionRudder1 = textFieldVTailOuterPositionRudder1;
+	}
+
+	public TextField getTextFieldVTailInnerChordRatioRudder1() {
+		return textFieldVTailInnerChordRatioRudder1;
+	}
+
+	public void setTextFieldVTailInnerChordRatioRudder1(TextField textFieldVTailInnerChordRatioRudder1) {
+		this.textFieldVTailInnerChordRatioRudder1 = textFieldVTailInnerChordRatioRudder1;
+	}
+
+	public TextField getTextFieldVTailOuterChordRatioRudder1() {
+		return textFieldVTailOuterChordRatioRudder1;
+	}
+
+	public void setTextFieldVTailOuterChordRatioRudder1(TextField textFieldVTailOuterChordRatioRudder1) {
+		this.textFieldVTailOuterChordRatioRudder1 = textFieldVTailOuterChordRatioRudder1;
+	}
+
+	public TextField getTextFieldVTailMinimumDeflectionAngleRudder1() {
+		return textFieldVTailMinimumDeflectionAngleRudder1;
+	}
+
+	public void setTextFieldVTailMinimumDeflectionAngleRudder1(TextField textFieldVTailMinimumDeflectionAngleRudder1) {
+		this.textFieldVTailMinimumDeflectionAngleRudder1 = textFieldVTailMinimumDeflectionAngleRudder1;
+	}
+
+	public TextField getTextFieldVTailMaximumDeflectionAngleRudder1() {
+		return textFieldVTailMaximumDeflectionAngleRudder1;
+	}
+
+	public void setTextFieldVTailMaximumDeflectionAngleRudder1(TextField textFieldVTailMaximumDeflectionAngleRudder1) {
+		this.textFieldVTailMaximumDeflectionAngleRudder1 = textFieldVTailMaximumDeflectionAngleRudder1;
+	}
+
+	public List<TextField> getTextFieldVTailSpanPanelList() {
+		return textFieldVTailSpanPanelList;
+	}
+
+	public void setTextFieldVTailSpanPanelList(List<TextField> textFieldVTailSpanPanelList) {
+		this.textFieldVTailSpanPanelList = textFieldVTailSpanPanelList;
+	}
+
+	public List<TextField> getTextFieldVTailSweepLEPanelList() {
+		return textFieldVTailSweepLEPanelList;
+	}
+
+	public void setTextFieldVTailSweepLEPanelList(List<TextField> textFieldVTailSweepLEPanelList) {
+		this.textFieldVTailSweepLEPanelList = textFieldVTailSweepLEPanelList;
+	}
+
+	public List<TextField> getTextFieldVTailDihedralPanelList() {
+		return textFieldVTailDihedralPanelList;
+	}
+
+	public void setTextFieldVTailDihedralPanelList(List<TextField> textFieldVTailDihedralPanelList) {
+		this.textFieldVTailDihedralPanelList = textFieldVTailDihedralPanelList;
+	}
+
+	public List<TextField> getTextFieldVTailInnerChordPanelList() {
+		return textFieldVTailInnerChordPanelList;
+	}
+
+	public void setTextFieldVTailInnerChordPanelList(List<TextField> textFieldVTailInnerChordPanelList) {
+		this.textFieldVTailInnerChordPanelList = textFieldVTailInnerChordPanelList;
+	}
+
+	public List<TextField> getTextFieldVTailInnerTwistPanelList() {
+		return textFieldVTailInnerTwistPanelList;
+	}
+
+	public void setTextFieldVTailInnerTwistPanelList(List<TextField> textFieldVTailInnerTwistPanelList) {
+		this.textFieldVTailInnerTwistPanelList = textFieldVTailInnerTwistPanelList;
+	}
+
+	public List<TextField> getTextFieldVTailInnerAirfoilPanelList() {
+		return textFieldVTailInnerAirfoilPanelList;
+	}
+
+	public void setTextFieldVTailInnerAirfoilPanelList(List<TextField> textFieldVTailInnerAirfoilPanelList) {
+		this.textFieldVTailInnerAirfoilPanelList = textFieldVTailInnerAirfoilPanelList;
+	}
+
+	public List<TextField> getTextFieldVTailOuterChordPanelList() {
+		return textFieldVTailOuterChordPanelList;
+	}
+
+	public void setTextFieldVTailOuterChordPanelList(List<TextField> textFieldVTailOuterChordPanelList) {
+		this.textFieldVTailOuterChordPanelList = textFieldVTailOuterChordPanelList;
+	}
+
+	public List<TextField> getTextFieldVTailOuterTwistPanelList() {
+		return textFieldVTailOuterTwistPanelList;
+	}
+
+	public void setTextFieldVTailOuterTwistPanelList(List<TextField> textFieldVTailOuterTwistPanelList) {
+		this.textFieldVTailOuterTwistPanelList = textFieldVTailOuterTwistPanelList;
+	}
+
+	public List<TextField> getTextFieldVTailOuterAirfoilPanelList() {
+		return textFieldVTailOuterAirfoilPanelList;
+	}
+
+	public void setTextFieldVTailOuterAirfoilPanelList(List<TextField> textFieldVTailOuterAirfoilPanelList) {
+		this.textFieldVTailOuterAirfoilPanelList = textFieldVTailOuterAirfoilPanelList;
+	}
+
+	public List<CheckBox> getCheckBoxVTailLinkedToPreviousPanelList() {
+		return checkBoxVTailLinkedToPreviousPanelList;
+	}
+
+	public void setCheckBoxVTailLinkedToPreviousPanelList(List<CheckBox> checkBoxVTailLinkedToPreviousPanelList) {
+		this.checkBoxVTailLinkedToPreviousPanelList = checkBoxVTailLinkedToPreviousPanelList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxVTailSpanPanelUnitList() {
+		return choiceBoxVTailSpanPanelUnitList;
+	}
+
+	public void setChoiceBoxVTailSpanPanelUnitList(List<ChoiceBox<String>> choiceBoxVTailSpanPanelUnitList) {
+		this.choiceBoxVTailSpanPanelUnitList = choiceBoxVTailSpanPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxVTailSweepLEPanelUnitList() {
+		return choiceBoxVTailSweepLEPanelUnitList;
+	}
+
+	public void setChoiceBoxVTailSweepLEPanelUnitList(List<ChoiceBox<String>> choiceBoxVTailSweepLEPanelUnitList) {
+		this.choiceBoxVTailSweepLEPanelUnitList = choiceBoxVTailSweepLEPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxVTailDihedralPanelUnitList() {
+		return choiceBoxVTailDihedralPanelUnitList;
+	}
+
+	public void setChoiceBoxVTailDihedralPanelUnitList(List<ChoiceBox<String>> choiceBoxVTailDihedralPanelUnitList) {
+		this.choiceBoxVTailDihedralPanelUnitList = choiceBoxVTailDihedralPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxVTailInnerChordPanelUnitList() {
+		return choiceBoxVTailInnerChordPanelUnitList;
+	}
+
+	public void setChoiceBoxVTailInnerChordPanelUnitList(List<ChoiceBox<String>> choiceBoxVTailInnerChordPanelUnitList) {
+		this.choiceBoxVTailInnerChordPanelUnitList = choiceBoxVTailInnerChordPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxVTailInnerTwistPanelUnitList() {
+		return choiceBoxVTailInnerTwistPanelUnitList;
+	}
+
+	public void setChoiceBoxVTailInnerTwistPanelUnitList(List<ChoiceBox<String>> choiceBoxVTailInnerTwistPanelUnitList) {
+		this.choiceBoxVTailInnerTwistPanelUnitList = choiceBoxVTailInnerTwistPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxVTailOuterChordPanelUnitList() {
+		return choiceBoxVTailOuterChordPanelUnitList;
+	}
+
+	public void setChoiceBoxVTailOuterChordPanelUnitList(List<ChoiceBox<String>> choiceBoxVTailOuterChordPanelUnitList) {
+		this.choiceBoxVTailOuterChordPanelUnitList = choiceBoxVTailOuterChordPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxVTailOuterTwistPanelUnitList() {
+		return choiceBoxVTailOuterTwistPanelUnitList;
+	}
+
+	public void setChoiceBoxVTailOuterTwistPanelUnitList(List<ChoiceBox<String>> choiceBoxVTailOuterTwistPanelUnitList) {
+		this.choiceBoxVTailOuterTwistPanelUnitList = choiceBoxVTailOuterTwistPanelUnitList;
+	}
+
+	public List<Button> getDetailButtonVTailInnerAirfoilList() {
+		return detailButtonVTailInnerAirfoilList;
+	}
+
+	public void setDetailButtonVTailInnerAirfoilList(List<Button> detailButtonVTailInnerAirfoilList) {
+		this.detailButtonVTailInnerAirfoilList = detailButtonVTailInnerAirfoilList;
+	}
+
+	public List<Button> getDetailButtonVTailOuterAirfoilList() {
+		return detailButtonVTailOuterAirfoilList;
+	}
+
+	public void setDetailButtonVTailOuterAirfoilList(List<Button> detailButtonVTailOuterAirfoilList) {
+		this.detailButtonVTailOuterAirfoilList = detailButtonVTailOuterAirfoilList;
+	}
+
+	public List<Button> getChooseInnerVTailAirfoilFileButtonList() {
+		return chooseInnerVTailAirfoilFileButtonList;
+	}
+
+	public void setChooseInnerVTailAirfoilFileButtonList(List<Button> chooseInnerVTailAirfoilFileButtonList) {
+		this.chooseInnerVTailAirfoilFileButtonList = chooseInnerVTailAirfoilFileButtonList;
+	}
+
+	public List<Button> getChooseOuterVTailAirfoilFileButtonList() {
+		return chooseOuterVTailAirfoilFileButtonList;
+	}
+
+	public void setChooseOuterVTailAirfoilFileButtonList(List<Button> chooseOuterVTailAirfoilFileButtonList) {
+		this.chooseOuterVTailAirfoilFileButtonList = chooseOuterVTailAirfoilFileButtonList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxVTailRudderTypeList() {
+		return choiceBoxVTailRudderTypeList;
+	}
+
+	public void setChoiceBoxVTailRudderTypeList(List<ChoiceBox<String>> choiceBoxVTailRudderTypeList) {
+		this.choiceBoxVTailRudderTypeList = choiceBoxVTailRudderTypeList;
+	}
+
+	public List<TextField> getTextFieldVTailInnerPositionRudderList() {
+		return textFieldVTailInnerPositionRudderList;
+	}
+
+	public void setTextFieldVTailInnerPositionRudderList(List<TextField> textFieldVTailInnerPositionRudderList) {
+		this.textFieldVTailInnerPositionRudderList = textFieldVTailInnerPositionRudderList;
+	}
+
+	public List<TextField> getTextFieldVTailOuterPositionRudderList() {
+		return textFieldVTailOuterPositionRudderList;
+	}
+
+	public void setTextFieldVTailOuterPositionRudderList(List<TextField> textFieldVTailOuterPositionRudderList) {
+		this.textFieldVTailOuterPositionRudderList = textFieldVTailOuterPositionRudderList;
+	}
+
+	public List<TextField> getTextFieldVTailInnerChordRatioRudderList() {
+		return textFieldVTailInnerChordRatioRudderList;
+	}
+
+	public void setTextFieldVTailInnerChordRatioRudderList(List<TextField> textFieldVTailInnerChordRatioRudderList) {
+		this.textFieldVTailInnerChordRatioRudderList = textFieldVTailInnerChordRatioRudderList;
+	}
+
+	public List<TextField> getTextFieldVTailOuterChordRatioRudderList() {
+		return textFieldVTailOuterChordRatioRudderList;
+	}
+
+	public void setTextFieldVTailOuterChordRatioRudderList(List<TextField> textFieldVTailOuterChordRatioRudderList) {
+		this.textFieldVTailOuterChordRatioRudderList = textFieldVTailOuterChordRatioRudderList;
+	}
+
+	public List<TextField> getTextFieldVTailMinimumDeflectionAngleRudderList() {
+		return textFieldVTailMinimumDeflectionAngleRudderList;
+	}
+
+	public void setTextFieldVTailMinimumDeflectionAngleRudderList(
+			List<TextField> textFieldVTailMinimumDeflectionAngleRudderList) {
+		this.textFieldVTailMinimumDeflectionAngleRudderList = textFieldVTailMinimumDeflectionAngleRudderList;
+	}
+
+	public List<TextField> getTextFieldVTailMaximumDeflectionAngleRudderList() {
+		return textFieldVTailMaximumDeflectionAngleRudderList;
+	}
+
+	public void setTextFieldVTailMaximumDeflectionAngleRudderList(
+			List<TextField> textFieldVTailMaximumDeflectionAngleRudderList) {
+		this.textFieldVTailMaximumDeflectionAngleRudderList = textFieldVTailMaximumDeflectionAngleRudderList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxVTailMinimumDeflectionAngleRudderUnitList() {
+		return choiceBoxVTailMinimumDeflectionAngleRudderUnitList;
+	}
+
+	public void setChoiceBoxVTailMinimumDeflectionAngleRudderUnitList(
+			List<ChoiceBox<String>> choiceBoxVTailMinimumDeflectionAngleRudderUnitList) {
+		this.choiceBoxVTailMinimumDeflectionAngleRudderUnitList = choiceBoxVTailMinimumDeflectionAngleRudderUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxVTailMaximumDeflectionAngleRudderUnitList() {
+		return choiceBoxVTailMaximumDeflectionAngleRudderUnitList;
+	}
+
+	public void setChoiceBoxVTailMaximumDeflectionAngleRudderUnitList(
+			List<ChoiceBox<String>> choiceBoxVTailMaximumDeflectionAngleRudderUnitList) {
+		this.choiceBoxVTailMaximumDeflectionAngleRudderUnitList = choiceBoxVTailMaximumDeflectionAngleRudderUnitList;
+	}
+
+	public ChoiceBox<String> getvTailRoughnessUnitChoiceBox() {
+		return vTailRoughnessUnitChoiceBox;
+	}
+
+	public void setvTailRoughnessUnitChoiceBox(ChoiceBox<String> vTailRoughnessUnitChoiceBox) {
+		this.vTailRoughnessUnitChoiceBox = vTailRoughnessUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailSpanPanel1UnitChoiceBox() {
+		return vTailSpanPanel1UnitChoiceBox;
+	}
+
+	public void setvTailSpanPanel1UnitChoiceBox(ChoiceBox<String> vTailSpanPanel1UnitChoiceBox) {
+		this.vTailSpanPanel1UnitChoiceBox = vTailSpanPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailSweepLEPanel1UnitChoiceBox() {
+		return vTailSweepLEPanel1UnitChoiceBox;
+	}
+
+	public void setvTailSweepLEPanel1UnitChoiceBox(ChoiceBox<String> vTailSweepLEPanel1UnitChoiceBox) {
+		this.vTailSweepLEPanel1UnitChoiceBox = vTailSweepLEPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailDihedralPanel1UnitChoiceBox() {
+		return vTailDihedralPanel1UnitChoiceBox;
+	}
+
+	public void setvTailDihedralPanel1UnitChoiceBox(ChoiceBox<String> vTailDihedralPanel1UnitChoiceBox) {
+		this.vTailDihedralPanel1UnitChoiceBox = vTailDihedralPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailInnerSectionChordPanel1UnitChoiceBox() {
+		return vTailInnerSectionChordPanel1UnitChoiceBox;
+	}
+
+	public void setvTailInnerSectionChordPanel1UnitChoiceBox(ChoiceBox<String> vTailInnerSectionChordPanel1UnitChoiceBox) {
+		this.vTailInnerSectionChordPanel1UnitChoiceBox = vTailInnerSectionChordPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailInnerSectionTwistTipPanel1UnitChoiceBox() {
+		return vTailInnerSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public void setvTailInnerSectionTwistTipPanel1UnitChoiceBox(
+			ChoiceBox<String> vTailInnerSectionTwistTipPanel1UnitChoiceBox) {
+		this.vTailInnerSectionTwistTipPanel1UnitChoiceBox = vTailInnerSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailOuterSectionChordPanel1UnitChoiceBox() {
+		return vTailOuterSectionChordPanel1UnitChoiceBox;
+	}
+
+	public void setvTailOuterSectionChordPanel1UnitChoiceBox(ChoiceBox<String> vTailOuterSectionChordPanel1UnitChoiceBox) {
+		this.vTailOuterSectionChordPanel1UnitChoiceBox = vTailOuterSectionChordPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailOuterSectionTwistTipPanel1UnitChoiceBox() {
+		return vTailOuterSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public void setvTailOuterSectionTwistTipPanel1UnitChoiceBox(
+			ChoiceBox<String> vTailOuterSectionTwistTipPanel1UnitChoiceBox) {
+		this.vTailOuterSectionTwistTipPanel1UnitChoiceBox = vTailOuterSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailMinimumDeflectionAngleRudder1UnitChoiceBox() {
+		return vTailMinimumDeflectionAngleRudder1UnitChoiceBox;
+	}
+
+	public void setvTailMinimumDeflectionAngleRudder1UnitChoiceBox(
+			ChoiceBox<String> vTailMinimumDeflectionAngleRudder1UnitChoiceBox) {
+		this.vTailMinimumDeflectionAngleRudder1UnitChoiceBox = vTailMinimumDeflectionAngleRudder1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getvTailMaximumDeflectionAngleRudder1UnitChoiceBox() {
+		return vTailMaximumDeflectionAngleRudder1UnitChoiceBox;
+	}
+
+	public void setvTailMaximumDeflectionAngleRudder1UnitChoiceBox(
+			ChoiceBox<String> vTailMaximumDeflectionAngleRudder1UnitChoiceBox) {
+		this.vTailMaximumDeflectionAngleRudder1UnitChoiceBox = vTailMaximumDeflectionAngleRudder1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardAdjustCriterionChoiceBox() {
+		return canardAdjustCriterionChoiceBox;
+	}
+
+	public void setCanardAdjustCriterionChoiceBox(ChoiceBox<String> canardAdjustCriterionChoiceBox) {
+		this.canardAdjustCriterionChoiceBox = canardAdjustCriterionChoiceBox;
+	}
+
+	public TextField getTextFieldCanardCompositeMassCorrectionFactor() {
+		return textFieldCanardCompositeMassCorrectionFactor;
+	}
+
+	public void setTextFieldCanardCompositeMassCorrectionFactor(TextField textFieldCanardCompositeMassCorrectionFactor) {
+		this.textFieldCanardCompositeMassCorrectionFactor = textFieldCanardCompositeMassCorrectionFactor;
+	}
+
+	public TextField getTextFieldCanardRoughness() {
+		return textFieldCanardRoughness;
+	}
+
+	public void setTextFieldCanardRoughness(TextField textFieldCanardRoughness) {
+		this.textFieldCanardRoughness = textFieldCanardRoughness;
+	}
+
+	public TextField getTextFieldCanardSpanPanel1() {
+		return textFieldCanardSpanPanel1;
+	}
+
+	public void setTextFieldCanardSpanPanel1(TextField textFieldCanardSpanPanel1) {
+		this.textFieldCanardSpanPanel1 = textFieldCanardSpanPanel1;
+	}
+
+	public TextField getTextFieldCanardSweepLeadingEdgePanel1() {
+		return textFieldCanardSweepLeadingEdgePanel1;
+	}
+
+	public void setTextFieldCanardSweepLeadingEdgePanel1(TextField textFieldCanardSweepLeadingEdgePanel1) {
+		this.textFieldCanardSweepLeadingEdgePanel1 = textFieldCanardSweepLeadingEdgePanel1;
+	}
+
+	public TextField getTextFieldCanardDihedralPanel1() {
+		return textFieldCanardDihedralPanel1;
+	}
+
+	public void setTextFieldCanardDihedralPanel1(TextField textFieldCanardDihedralPanel1) {
+		this.textFieldCanardDihedralPanel1 = textFieldCanardDihedralPanel1;
+	}
+
+	public TextField getTextFieldCanardChordInnerSectionPanel1() {
+		return textFieldCanardChordInnerSectionPanel1;
+	}
+
+	public void setTextFieldCanardChordInnerSectionPanel1(TextField textFieldCanardChordInnerSectionPanel1) {
+		this.textFieldCanardChordInnerSectionPanel1 = textFieldCanardChordInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldCanardTwistInnerSectionPanel1() {
+		return textFieldCanardTwistInnerSectionPanel1;
+	}
+
+	public void setTextFieldCanardTwistInnerSectionPanel1(TextField textFieldCanardTwistInnerSectionPanel1) {
+		this.textFieldCanardTwistInnerSectionPanel1 = textFieldCanardTwistInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldCanardAirfoilPathInnerSectionPanel1() {
+		return textFieldCanardAirfoilPathInnerSectionPanel1;
+	}
+
+	public void setTextFieldCanardAirfoilPathInnerSectionPanel1(TextField textFieldCanardAirfoilPathInnerSectionPanel1) {
+		this.textFieldCanardAirfoilPathInnerSectionPanel1 = textFieldCanardAirfoilPathInnerSectionPanel1;
+	}
+
+	public TextField getTextFieldCanardChordOuterSectionPanel1() {
+		return textFieldCanardChordOuterSectionPanel1;
+	}
+
+	public void setTextFieldCanardChordOuterSectionPanel1(TextField textFieldCanardChordOuterSectionPanel1) {
+		this.textFieldCanardChordOuterSectionPanel1 = textFieldCanardChordOuterSectionPanel1;
+	}
+
+	public TextField getTextFieldCanardTwistOuterSectionPanel1() {
+		return textFieldCanardTwistOuterSectionPanel1;
+	}
+
+	public void setTextFieldCanardTwistOuterSectionPanel1(TextField textFieldCanardTwistOuterSectionPanel1) {
+		this.textFieldCanardTwistOuterSectionPanel1 = textFieldCanardTwistOuterSectionPanel1;
+	}
+
+	public TextField getTextFieldCanardAirfoilPathOuterSectionPanel1() {
+		return textFieldCanardAirfoilPathOuterSectionPanel1;
+	}
+
+	public void setTextFieldCanardAirfoilPathOuterSectionPanel1(TextField textFieldCanardAirfoilPathOuterSectionPanel1) {
+		this.textFieldCanardAirfoilPathOuterSectionPanel1 = textFieldCanardAirfoilPathOuterSectionPanel1;
+	}
+
+	public ChoiceBox<String> getCanardControlSurface1TypeChoiceBox() {
+		return canardControlSurface1TypeChoiceBox;
+	}
+
+	public void setCanardControlSurface1TypeChoiceBox(ChoiceBox<String> canardControlSurface1TypeChoiceBox) {
+		this.canardControlSurface1TypeChoiceBox = canardControlSurface1TypeChoiceBox;
+	}
+
+	public TextField getTextFieldCanardInnerPositionControlSurface1() {
+		return textFieldCanardInnerPositionControlSurface1;
+	}
+
+	public void setTextFieldCanardInnerPositionControlSurface1(TextField textFieldCanardInnerPositionControlSurface1) {
+		this.textFieldCanardInnerPositionControlSurface1 = textFieldCanardInnerPositionControlSurface1;
+	}
+
+	public TextField getTextFieldCanardOuterPositionControlSurface1() {
+		return textFieldCanardOuterPositionControlSurface1;
+	}
+
+	public void setTextFieldCanardOuterPositionControlSurface1(TextField textFieldCanardOuterPositionControlSurface1) {
+		this.textFieldCanardOuterPositionControlSurface1 = textFieldCanardOuterPositionControlSurface1;
+	}
+
+	public TextField getTextFieldCanardInnerChordRatioControlSurface1() {
+		return textFieldCanardInnerChordRatioControlSurface1;
+	}
+
+	public void setTextFieldCanardInnerChordRatioControlSurface1(TextField textFieldCanardInnerChordRatioControlSurface1) {
+		this.textFieldCanardInnerChordRatioControlSurface1 = textFieldCanardInnerChordRatioControlSurface1;
+	}
+
+	public TextField getTextFieldCanardOuterChordRatioControlSurface1() {
+		return textFieldCanardOuterChordRatioControlSurface1;
+	}
+
+	public void setTextFieldCanardOuterChordRatioControlSurface1(TextField textFieldCanardOuterChordRatioControlSurface1) {
+		this.textFieldCanardOuterChordRatioControlSurface1 = textFieldCanardOuterChordRatioControlSurface1;
+	}
+
+	public TextField getTextFieldCanardMinimumDeflectionAngleControlSurface1() {
+		return textFieldCanardMinimumDeflectionAngleControlSurface1;
+	}
+
+	public void setTextFieldCanardMinimumDeflectionAngleControlSurface1(
+			TextField textFieldCanardMinimumDeflectionAngleControlSurface1) {
+		this.textFieldCanardMinimumDeflectionAngleControlSurface1 = textFieldCanardMinimumDeflectionAngleControlSurface1;
+	}
+
+	public TextField getTextFieldCanardMaximumDeflectionAngleControlSurface1() {
+		return textFieldCanardMaximumDeflectionAngleControlSurface1;
+	}
+
+	public void setTextFieldCanardMaximumDeflectionAngleControlSurface1(
+			TextField textFieldCanardMaximumDeflectionAngleControlSurface1) {
+		this.textFieldCanardMaximumDeflectionAngleControlSurface1 = textFieldCanardMaximumDeflectionAngleControlSurface1;
+	}
+
+	public List<TextField> getTextFieldCanardSpanPanelList() {
+		return textFieldCanardSpanPanelList;
+	}
+
+	public void setTextFieldCanardSpanPanelList(List<TextField> textFieldCanardSpanPanelList) {
+		this.textFieldCanardSpanPanelList = textFieldCanardSpanPanelList;
+	}
+
+	public List<TextField> getTextFieldCanardSweepLEPanelList() {
+		return textFieldCanardSweepLEPanelList;
+	}
+
+	public void setTextFieldCanardSweepLEPanelList(List<TextField> textFieldCanardSweepLEPanelList) {
+		this.textFieldCanardSweepLEPanelList = textFieldCanardSweepLEPanelList;
+	}
+
+	public List<TextField> getTextFieldCanardDihedralPanelList() {
+		return textFieldCanardDihedralPanelList;
+	}
+
+	public void setTextFieldCanardDihedralPanelList(List<TextField> textFieldCanardDihedralPanelList) {
+		this.textFieldCanardDihedralPanelList = textFieldCanardDihedralPanelList;
+	}
+
+	public List<TextField> getTextFieldCanardInnerChordPanelList() {
+		return textFieldCanardInnerChordPanelList;
+	}
+
+	public void setTextFieldCanardInnerChordPanelList(List<TextField> textFieldCanardInnerChordPanelList) {
+		this.textFieldCanardInnerChordPanelList = textFieldCanardInnerChordPanelList;
+	}
+
+	public List<TextField> getTextFieldCanardInnerTwistPanelList() {
+		return textFieldCanardInnerTwistPanelList;
+	}
+
+	public void setTextFieldCanardInnerTwistPanelList(List<TextField> textFieldCanardInnerTwistPanelList) {
+		this.textFieldCanardInnerTwistPanelList = textFieldCanardInnerTwistPanelList;
+	}
+
+	public List<TextField> getTextFieldCanardInnerAirfoilPanelList() {
+		return textFieldCanardInnerAirfoilPanelList;
+	}
+
+	public void setTextFieldCanardInnerAirfoilPanelList(List<TextField> textFieldCanardInnerAirfoilPanelList) {
+		this.textFieldCanardInnerAirfoilPanelList = textFieldCanardInnerAirfoilPanelList;
+	}
+
+	public List<TextField> getTextFieldCanardOuterChordPanelList() {
+		return textFieldCanardOuterChordPanelList;
+	}
+
+	public void setTextFieldCanardOuterChordPanelList(List<TextField> textFieldCanardOuterChordPanelList) {
+		this.textFieldCanardOuterChordPanelList = textFieldCanardOuterChordPanelList;
+	}
+
+	public List<TextField> getTextFieldCanardOuterTwistPanelList() {
+		return textFieldCanardOuterTwistPanelList;
+	}
+
+	public void setTextFieldCanardOuterTwistPanelList(List<TextField> textFieldCanardOuterTwistPanelList) {
+		this.textFieldCanardOuterTwistPanelList = textFieldCanardOuterTwistPanelList;
+	}
+
+	public List<TextField> getTextFieldCanardOuterAirfoilPanelList() {
+		return textFieldCanardOuterAirfoilPanelList;
+	}
+
+	public void setTextFieldCanardOuterAirfoilPanelList(List<TextField> textFieldCanardOuterAirfoilPanelList) {
+		this.textFieldCanardOuterAirfoilPanelList = textFieldCanardOuterAirfoilPanelList;
+	}
+
+	public List<CheckBox> getCheckBoxCanardLinkedToPreviousPanelList() {
+		return checkBoxCanardLinkedToPreviousPanelList;
+	}
+
+	public void setCheckBoxCanardLinkedToPreviousPanelList(List<CheckBox> checkBoxCanardLinkedToPreviousPanelList) {
+		this.checkBoxCanardLinkedToPreviousPanelList = checkBoxCanardLinkedToPreviousPanelList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxCanardSpanPanelUnitList() {
+		return choiceBoxCanardSpanPanelUnitList;
+	}
+
+	public void setChoiceBoxCanardSpanPanelUnitList(List<ChoiceBox<String>> choiceBoxCanardSpanPanelUnitList) {
+		this.choiceBoxCanardSpanPanelUnitList = choiceBoxCanardSpanPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxCanardSweepLEPanelUnitList() {
+		return choiceBoxCanardSweepLEPanelUnitList;
+	}
+
+	public void setChoiceBoxCanardSweepLEPanelUnitList(List<ChoiceBox<String>> choiceBoxCanardSweepLEPanelUnitList) {
+		this.choiceBoxCanardSweepLEPanelUnitList = choiceBoxCanardSweepLEPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxCanardDihedralPanelUnitList() {
+		return choiceBoxCanardDihedralPanelUnitList;
+	}
+
+	public void setChoiceBoxCanardDihedralPanelUnitList(List<ChoiceBox<String>> choiceBoxCanardDihedralPanelUnitList) {
+		this.choiceBoxCanardDihedralPanelUnitList = choiceBoxCanardDihedralPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxCanardInnerChordPanelUnitList() {
+		return choiceBoxCanardInnerChordPanelUnitList;
+	}
+
+	public void setChoiceBoxCanardInnerChordPanelUnitList(List<ChoiceBox<String>> choiceBoxCanardInnerChordPanelUnitList) {
+		this.choiceBoxCanardInnerChordPanelUnitList = choiceBoxCanardInnerChordPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxCanardInnerTwistPanelUnitList() {
+		return choiceBoxCanardInnerTwistPanelUnitList;
+	}
+
+	public void setChoiceBoxCanardInnerTwistPanelUnitList(List<ChoiceBox<String>> choiceBoxCanardInnerTwistPanelUnitList) {
+		this.choiceBoxCanardInnerTwistPanelUnitList = choiceBoxCanardInnerTwistPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxCanardOuterChordPanelUnitList() {
+		return choiceBoxCanardOuterChordPanelUnitList;
+	}
+
+	public void setChoiceBoxCanardOuterChordPanelUnitList(List<ChoiceBox<String>> choiceBoxCanardOuterChordPanelUnitList) {
+		this.choiceBoxCanardOuterChordPanelUnitList = choiceBoxCanardOuterChordPanelUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxCanardOuterTwistPanelUnitList() {
+		return choiceBoxCanardOuterTwistPanelUnitList;
+	}
+
+	public void setChoiceBoxCanardOuterTwistPanelUnitList(List<ChoiceBox<String>> choiceBoxCanardOuterTwistPanelUnitList) {
+		this.choiceBoxCanardOuterTwistPanelUnitList = choiceBoxCanardOuterTwistPanelUnitList;
+	}
+
+	public List<Button> getDetailButtonCanardInnerAirfoilList() {
+		return detailButtonCanardInnerAirfoilList;
+	}
+
+	public void setDetailButtonCanardInnerAirfoilList(List<Button> detailButtonCanardInnerAirfoilList) {
+		this.detailButtonCanardInnerAirfoilList = detailButtonCanardInnerAirfoilList;
+	}
+
+	public List<Button> getDetailButtonCanardOuterAirfoilList() {
+		return detailButtonCanardOuterAirfoilList;
+	}
+
+	public void setDetailButtonCanardOuterAirfoilList(List<Button> detailButtonCanardOuterAirfoilList) {
+		this.detailButtonCanardOuterAirfoilList = detailButtonCanardOuterAirfoilList;
+	}
+
+	public List<Button> getChooseInnerCanardAirfoilFileButtonList() {
+		return chooseInnerCanardAirfoilFileButtonList;
+	}
+
+	public void setChooseInnerCanardAirfoilFileButtonList(List<Button> chooseInnerCanardAirfoilFileButtonList) {
+		this.chooseInnerCanardAirfoilFileButtonList = chooseInnerCanardAirfoilFileButtonList;
+	}
+
+	public List<Button> getChooseOuterCanardAirfoilFileButtonList() {
+		return chooseOuterCanardAirfoilFileButtonList;
+	}
+
+	public void setChooseOuterCanardAirfoilFileButtonList(List<Button> chooseOuterCanardAirfoilFileButtonList) {
+		this.chooseOuterCanardAirfoilFileButtonList = chooseOuterCanardAirfoilFileButtonList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxCanardControlSurfaceTypeList() {
+		return choiceBoxCanardControlSurfaceTypeList;
+	}
+
+	public void setChoiceBoxCanardControlSurfaceTypeList(List<ChoiceBox<String>> choiceBoxCanardControlSurfaceTypeList) {
+		this.choiceBoxCanardControlSurfaceTypeList = choiceBoxCanardControlSurfaceTypeList;
+	}
+
+	public List<TextField> getTextFieldCanardInnerPositionControlSurfaceList() {
+		return textFieldCanardInnerPositionControlSurfaceList;
+	}
+
+	public void setTextFieldCanardInnerPositionControlSurfaceList(
+			List<TextField> textFieldCanardInnerPositionControlSurfaceList) {
+		this.textFieldCanardInnerPositionControlSurfaceList = textFieldCanardInnerPositionControlSurfaceList;
+	}
+
+	public List<TextField> getTextFieldCanardOuterPositionControlSurfaceList() {
+		return textFieldCanardOuterPositionControlSurfaceList;
+	}
+
+	public void setTextFieldCanardOuterPositionControlSurfaceList(
+			List<TextField> textFieldCanardOuterPositionControlSurfaceList) {
+		this.textFieldCanardOuterPositionControlSurfaceList = textFieldCanardOuterPositionControlSurfaceList;
+	}
+
+	public List<TextField> getTextFieldCanardInnerChordRatioControlSurfaceList() {
+		return textFieldCanardInnerChordRatioControlSurfaceList;
+	}
+
+	public void setTextFieldCanardInnerChordRatioControlSurfaceList(
+			List<TextField> textFieldCanardInnerChordRatioControlSurfaceList) {
+		this.textFieldCanardInnerChordRatioControlSurfaceList = textFieldCanardInnerChordRatioControlSurfaceList;
+	}
+
+	public List<TextField> getTextFieldCanardOuterChordRatioControlSurfaceList() {
+		return textFieldCanardOuterChordRatioControlSurfaceList;
+	}
+
+	public void setTextFieldCanardOuterChordRatioControlSurfaceList(
+			List<TextField> textFieldCanardOuterChordRatioControlSurfaceList) {
+		this.textFieldCanardOuterChordRatioControlSurfaceList = textFieldCanardOuterChordRatioControlSurfaceList;
+	}
+
+	public List<TextField> getTextFieldCanardMinimumDeflectionAngleControlSurfaceList() {
+		return textFieldCanardMinimumDeflectionAngleControlSurfaceList;
+	}
+
+	public void setTextFieldCanardMinimumDeflectionAngleControlSurfaceList(
+			List<TextField> textFieldCanardMinimumDeflectionAngleControlSurfaceList) {
+		this.textFieldCanardMinimumDeflectionAngleControlSurfaceList = textFieldCanardMinimumDeflectionAngleControlSurfaceList;
+	}
+
+	public List<TextField> getTextFieldCanardMaximumDeflectionAngleControlSurfaceList() {
+		return textFieldCanardMaximumDeflectionAngleControlSurfaceList;
+	}
+
+	public void setTextFieldCanardMaximumDeflectionAngleControlSurfaceList(
+			List<TextField> textFieldCanardMaximumDeflectionAngleControlSurfaceList) {
+		this.textFieldCanardMaximumDeflectionAngleControlSurfaceList = textFieldCanardMaximumDeflectionAngleControlSurfaceList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList() {
+		return choiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList;
+	}
+
+	public void setChoiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList(
+			List<ChoiceBox<String>> choiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList) {
+		this.choiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList = choiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList() {
+		return choiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList;
+	}
+
+	public void setChoiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList(
+			List<ChoiceBox<String>> choiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList) {
+		this.choiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList = choiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList;
+	}
+
+	public ChoiceBox<String> getCanardRoughnessUnitChoiceBox() {
+		return canardRoughnessUnitChoiceBox;
+	}
+
+	public void setCanardRoughnessUnitChoiceBox(ChoiceBox<String> canardRoughnessUnitChoiceBox) {
+		this.canardRoughnessUnitChoiceBox = canardRoughnessUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardSpanPanel1UnitChoiceBox() {
+		return canardSpanPanel1UnitChoiceBox;
+	}
+
+	public void setCanardSpanPanel1UnitChoiceBox(ChoiceBox<String> canardSpanPanel1UnitChoiceBox) {
+		this.canardSpanPanel1UnitChoiceBox = canardSpanPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardSweepLEPanel1UnitChoiceBox() {
+		return canardSweepLEPanel1UnitChoiceBox;
+	}
+
+	public void setCanardSweepLEPanel1UnitChoiceBox(ChoiceBox<String> canardSweepLEPanel1UnitChoiceBox) {
+		this.canardSweepLEPanel1UnitChoiceBox = canardSweepLEPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardDihedralPanel1UnitChoiceBox() {
+		return canardDihedralPanel1UnitChoiceBox;
+	}
+
+	public void setCanardDihedralPanel1UnitChoiceBox(ChoiceBox<String> canardDihedralPanel1UnitChoiceBox) {
+		this.canardDihedralPanel1UnitChoiceBox = canardDihedralPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardInnerSectionChordPanel1UnitChoiceBox() {
+		return canardInnerSectionChordPanel1UnitChoiceBox;
+	}
+
+	public void setCanardInnerSectionChordPanel1UnitChoiceBox(
+			ChoiceBox<String> canardInnerSectionChordPanel1UnitChoiceBox) {
+		this.canardInnerSectionChordPanel1UnitChoiceBox = canardInnerSectionChordPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardInnerSectionTwistTipPanel1UnitChoiceBox() {
+		return canardInnerSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public void setCanardInnerSectionTwistTipPanel1UnitChoiceBox(
+			ChoiceBox<String> canardInnerSectionTwistTipPanel1UnitChoiceBox) {
+		this.canardInnerSectionTwistTipPanel1UnitChoiceBox = canardInnerSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardOuterSectionChordPanel1UnitChoiceBox() {
+		return canardOuterSectionChordPanel1UnitChoiceBox;
+	}
+
+	public void setCanardOuterSectionChordPanel1UnitChoiceBox(
+			ChoiceBox<String> canardOuterSectionChordPanel1UnitChoiceBox) {
+		this.canardOuterSectionChordPanel1UnitChoiceBox = canardOuterSectionChordPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardOuterSectionTwistTipPanel1UnitChoiceBox() {
+		return canardOuterSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public void setCanardOuterSectionTwistTipPanel1UnitChoiceBox(
+			ChoiceBox<String> canardOuterSectionTwistTipPanel1UnitChoiceBox) {
+		this.canardOuterSectionTwistTipPanel1UnitChoiceBox = canardOuterSectionTwistTipPanel1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardMinimumDeflectionAngleControlSurface1UnitChoiceBox() {
+		return canardMinimumDeflectionAngleControlSurface1UnitChoiceBox;
+	}
+
+	public void setCanardMinimumDeflectionAngleControlSurface1UnitChoiceBox(
+			ChoiceBox<String> canardMinimumDeflectionAngleControlSurface1UnitChoiceBox) {
+		this.canardMinimumDeflectionAngleControlSurface1UnitChoiceBox = canardMinimumDeflectionAngleControlSurface1UnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getCanardMaximumDeflectionAngleControlSurface1UnitChoiceBox() {
+		return canardMaximumDeflectionAngleControlSurface1UnitChoiceBox;
+	}
+
+	public void setCanardMaximumDeflectionAngleControlSurface1UnitChoiceBox(
+			ChoiceBox<String> canardMaximumDeflectionAngleControlSurface1UnitChoiceBox) {
+		this.canardMaximumDeflectionAngleControlSurface1UnitChoiceBox = canardMaximumDeflectionAngleControlSurface1UnitChoiceBox;
+	}
+
+	public TextField getTextFieldNacelleRoughness1() {
+		return textFieldNacelleRoughness1;
+	}
+
+	public void setTextFieldNacelleRoughness1(TextField textFieldNacelleRoughness1) {
+		this.textFieldNacelleRoughness1 = textFieldNacelleRoughness1;
+	}
+
+	public TextField getTextFieldNacelleLength1() {
+		return textFieldNacelleLength1;
+	}
+
+	public void setTextFieldNacelleLength1(TextField textFieldNacelleLength1) {
+		this.textFieldNacelleLength1 = textFieldNacelleLength1;
+	}
+
+	public TextField getTextFieldNacelleMaximumDiameter1() {
+		return textFieldNacelleMaximumDiameter1;
+	}
+
+	public void setTextFieldNacelleMaximumDiameter1(TextField textFieldNacelleMaximumDiameter1) {
+		this.textFieldNacelleMaximumDiameter1 = textFieldNacelleMaximumDiameter1;
+	}
+
+	public TextField getTextFieldNacelleKInlet1() {
+		return textFieldNacelleKInlet1;
+	}
+
+	public void setTextFieldNacelleKInlet1(TextField textFieldNacelleKInlet1) {
+		this.textFieldNacelleKInlet1 = textFieldNacelleKInlet1;
+	}
+
+	public TextField getTextFieldNacelleKOutlet1() {
+		return textFieldNacelleKOutlet1;
+	}
+
+	public void setTextFieldNacelleKOutlet1(TextField textFieldNacelleKOutlet1) {
+		this.textFieldNacelleKOutlet1 = textFieldNacelleKOutlet1;
+	}
+
+	public TextField getTextFieldNacelleKLength1() {
+		return textFieldNacelleKLength1;
+	}
+
+	public void setTextFieldNacelleKLength1(TextField textFieldNacelleKLength1) {
+		this.textFieldNacelleKLength1 = textFieldNacelleKLength1;
+	}
+
+	public TextField getTextFieldNacelleKDiameterOutlet1() {
+		return textFieldNacelleKDiameterOutlet1;
+	}
+
+	public void setTextFieldNacelleKDiameterOutlet1(TextField textFieldNacelleKDiameterOutlet1) {
+		this.textFieldNacelleKDiameterOutlet1 = textFieldNacelleKDiameterOutlet1;
+	}
+
+	public List<TextField> getTextFieldNacelleRoughnessList() {
+		return textFieldNacelleRoughnessList;
+	}
+
+	public void setTextFieldNacelleRoughnessList(List<TextField> textFieldNacelleRoughnessList) {
+		this.textFieldNacelleRoughnessList = textFieldNacelleRoughnessList;
+	}
+
+	public List<TextField> getTextFieldNacelleLengthList() {
+		return textFieldNacelleLengthList;
+	}
+
+	public void setTextFieldNacelleLengthList(List<TextField> textFieldNacelleLengthList) {
+		this.textFieldNacelleLengthList = textFieldNacelleLengthList;
+	}
+
+	public List<TextField> getTextFieldNacelleMaximumDiameterList() {
+		return textFieldNacelleMaximumDiameterList;
+	}
+
+	public void setTextFieldNacelleMaximumDiameterList(List<TextField> textFieldNacelleMaximumDiameterList) {
+		this.textFieldNacelleMaximumDiameterList = textFieldNacelleMaximumDiameterList;
+	}
+
+	public List<TextField> getTextFieldNacelleKInletList() {
+		return textFieldNacelleKInletList;
+	}
+
+	public void setTextFieldNacelleKInletList(List<TextField> textFieldNacelleKInletList) {
+		this.textFieldNacelleKInletList = textFieldNacelleKInletList;
+	}
+
+	public List<TextField> getTextFieldNacelleKOutletList() {
+		return textFieldNacelleKOutletList;
+	}
+
+	public void setTextFieldNacelleKOutletList(List<TextField> textFieldNacelleKOutletList) {
+		this.textFieldNacelleKOutletList = textFieldNacelleKOutletList;
+	}
+
+	public List<TextField> getTextFieldNacelleKLengthList() {
+		return textFieldNacelleKLengthList;
+	}
+
+	public void setTextFieldNacelleKLengthList(List<TextField> textFieldNacelleKLengthList) {
+		this.textFieldNacelleKLengthList = textFieldNacelleKLengthList;
+	}
+
+	public List<TextField> getTextFieldNacelleKDiameterOutletList() {
+		return textFieldNacelleKDiameterOutletList;
+	}
+
+	public void setTextFieldNacelleKDiameterOutletList(List<TextField> textFieldNacelleKDiameterOutletList) {
+		this.textFieldNacelleKDiameterOutletList = textFieldNacelleKDiameterOutletList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxNacelleRoughnessUnitList() {
+		return choiceBoxNacelleRoughnessUnitList;
+	}
+
+	public void setChoiceBoxNacelleRoughnessUnitList(List<ChoiceBox<String>> choiceBoxNacelleRoughnessUnitList) {
+		this.choiceBoxNacelleRoughnessUnitList = choiceBoxNacelleRoughnessUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxNacelleLengthUnitList() {
+		return choiceBoxNacelleLengthUnitList;
+	}
+
+	public void setChoiceBoxNacelleLengthUnitList(List<ChoiceBox<String>> choiceBoxNacelleLengthUnitList) {
+		this.choiceBoxNacelleLengthUnitList = choiceBoxNacelleLengthUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxNacelleMaximumDiameterUnitList() {
+		return choiceBoxNacelleMaximumDiameterUnitList;
+	}
+
+	public void setChoiceBoxNacelleMaximumDiameterUnitList(
+			List<ChoiceBox<String>> choiceBoxNacelleMaximumDiameterUnitList) {
+		this.choiceBoxNacelleMaximumDiameterUnitList = choiceBoxNacelleMaximumDiameterUnitList;
+	}
+
+	public List<Button> getNacelleEstimateDimesnsionButtonList() {
+		return nacelleEstimateDimesnsionButtonList;
+	}
+
+	public void setNacelleEstimateDimesnsionButtonList(List<Button> nacelleEstimateDimesnsionButtonList) {
+		this.nacelleEstimateDimesnsionButtonList = nacelleEstimateDimesnsionButtonList;
+	}
+
+	public List<Button> getNacelleKInletInfoButtonList() {
+		return nacelleKInletInfoButtonList;
+	}
+
+	public void setNacelleKInletInfoButtonList(List<Button> nacelleKInletInfoButtonList) {
+		this.nacelleKInletInfoButtonList = nacelleKInletInfoButtonList;
+	}
+
+	public List<Button> getNacelleKOutletInfoButtonList() {
+		return nacelleKOutletInfoButtonList;
+	}
+
+	public void setNacelleKOutletInfoButtonList(List<Button> nacelleKOutletInfoButtonList) {
+		this.nacelleKOutletInfoButtonList = nacelleKOutletInfoButtonList;
+	}
+
+	public List<Button> getNacelleKLengthInfoButtonList() {
+		return nacelleKLengthInfoButtonList;
+	}
+
+	public void setNacelleKLengthInfoButtonList(List<Button> nacelleKLengthInfoButtonList) {
+		this.nacelleKLengthInfoButtonList = nacelleKLengthInfoButtonList;
+	}
+
+	public List<Button> getNacelleKDiameterOutletInfoButtonList() {
+		return nacelleKDiameterOutletInfoButtonList;
+	}
+
+	public void setNacelleKDiameterOutletInfoButtonList(List<Button> nacelleKDiameterOutletInfoButtonList) {
+		this.nacelleKDiameterOutletInfoButtonList = nacelleKDiameterOutletInfoButtonList;
+	}
+
+	public List<Pane> getNacelleTopViewPaneList() {
+		return nacelleTopViewPaneList;
+	}
+
+	public void setNacelleTopViewPaneList(List<Pane> nacelleTopViewPaneList) {
+		this.nacelleTopViewPaneList = nacelleTopViewPaneList;
+	}
+
+	public List<Pane> getNacelleSideViewPaneList() {
+		return nacelleSideViewPaneList;
+	}
+
+	public void setNacelleSideViewPaneList(List<Pane> nacelleSideViewPaneList) {
+		this.nacelleSideViewPaneList = nacelleSideViewPaneList;
+	}
+
+	public List<Pane> getNacelleFrontViewPaneList() {
+		return nacelleFrontViewPaneList;
+	}
+
+	public void setNacelleFrontViewPaneList(List<Pane> nacelleFrontViewPaneList) {
+		this.nacelleFrontViewPaneList = nacelleFrontViewPaneList;
+	}
+
+	public ChoiceBox<String> getNacelleRoughnessUnitChoiceBox1() {
+		return nacelleRoughnessUnitChoiceBox1;
+	}
+
+	public void setNacelleRoughnessUnitChoiceBox1(ChoiceBox<String> nacelleRoughnessUnitChoiceBox1) {
+		this.nacelleRoughnessUnitChoiceBox1 = nacelleRoughnessUnitChoiceBox1;
+	}
+
+	public ChoiceBox<String> getNacelleLengthUnitChoiceBox1() {
+		return nacelleLengthUnitChoiceBox1;
+	}
+
+	public void setNacelleLengthUnitChoiceBox1(ChoiceBox<String> nacelleLengthUnitChoiceBox1) {
+		this.nacelleLengthUnitChoiceBox1 = nacelleLengthUnitChoiceBox1;
+	}
+
+	public ChoiceBox<String> getNacelleMaximumDiameterUnitChoiceBox1() {
+		return nacelleMaximumDiameterUnitChoiceBox1;
+	}
+
+	public void setNacelleMaximumDiameterUnitChoiceBox1(ChoiceBox<String> nacelleMaximumDiameterUnitChoiceBox1) {
+		this.nacelleMaximumDiameterUnitChoiceBox1 = nacelleMaximumDiameterUnitChoiceBox1;
+	}
+
+	public RadioButton getPowerPlantJetRadioButton1() {
+		return powerPlantJetRadioButton1;
+	}
+
+	public void setPowerPlantJetRadioButton1(RadioButton powerPlantJetRadioButton1) {
+		this.powerPlantJetRadioButton1 = powerPlantJetRadioButton1;
+	}
+
+	public RadioButton getPowerPlantTurbopropRadioButton1() {
+		return powerPlantTurbopropRadioButton1;
+	}
+
+	public void setPowerPlantTurbopropRadioButton1(RadioButton powerPlantTurbopropRadioButton1) {
+		this.powerPlantTurbopropRadioButton1 = powerPlantTurbopropRadioButton1;
+	}
+
+	public RadioButton getPowerPlantPistonRadioButton1() {
+		return powerPlantPistonRadioButton1;
+	}
+
+	public void setPowerPlantPistonRadioButton1(RadioButton powerPlantPistonRadioButton1) {
+		this.powerPlantPistonRadioButton1 = powerPlantPistonRadioButton1;
+	}
+
+	public ToggleGroup getPowerPlantToggleGroup1() {
+		return powerPlantToggleGroup1;
+	}
+
+	public void setPowerPlantToggleGroup1(ToggleGroup powerPlantToggleGroup1) {
+		this.powerPlantToggleGroup1 = powerPlantToggleGroup1;
+	}
+
+	public List<RadioButton> getPowerPlantJetRadioButtonList() {
+		return powerPlantJetRadioButtonList;
+	}
+
+	public void setPowerPlantJetRadioButtonList(List<RadioButton> powerPlantJetRadioButtonList) {
+		this.powerPlantJetRadioButtonList = powerPlantJetRadioButtonList;
+	}
+
+	public List<RadioButton> getPowerPlantTurbopropRadioButtonList() {
+		return powerPlantTurbopropRadioButtonList;
+	}
+
+	public void setPowerPlantTurbopropRadioButtonList(List<RadioButton> powerPlantTurbopropRadioButtonList) {
+		this.powerPlantTurbopropRadioButtonList = powerPlantTurbopropRadioButtonList;
+	}
+
+	public List<RadioButton> getPowerPlantPistonRadioButtonList() {
+		return powerPlantPistonRadioButtonList;
+	}
+
+	public void setPowerPlantPistonRadioButtonList(List<RadioButton> powerPlantPistonRadioButtonList) {
+		this.powerPlantPistonRadioButtonList = powerPlantPistonRadioButtonList;
+	}
+
+	public List<ToggleGroup> getPowerPlantToggleGropuList() {
+		return powerPlantToggleGropuList;
+	}
+
+	public void setPowerPlantToggleGropuList(List<ToggleGroup> powerPlantToggleGropuList) {
+		this.powerPlantToggleGropuList = powerPlantToggleGropuList;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEngineTurbojetTurbofanTypeChoiceBoxMap() {
+		return engineTurbojetTurbofanTypeChoiceBoxMap;
+	}
+
+	public void setEngineTurbojetTurbofanTypeChoiceBoxMap(
+			Map<Integer, ChoiceBox<String>> engineTurbojetTurbofanTypeChoiceBoxMap) {
+		this.engineTurbojetTurbofanTypeChoiceBoxMap = engineTurbojetTurbofanTypeChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbojetTurbofanDatabaseTextFieldMap() {
+		return engineTurbojetTurbofanDatabaseTextFieldMap;
+	}
+
+	public void setEngineTurbojetTurbofanDatabaseTextFieldMap(
+			Map<Integer, TextField> engineTurbojetTurbofanDatabaseTextFieldMap) {
+		this.engineTurbojetTurbofanDatabaseTextFieldMap = engineTurbojetTurbofanDatabaseTextFieldMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbojetTurbofanLengthTextFieldMap() {
+		return engineTurbojetTurbofanLengthTextFieldMap;
+	}
+
+	public void setEngineTurbojetTurbofanLengthTextFieldMap(
+			Map<Integer, TextField> engineTurbojetTurbofanLengthTextFieldMap) {
+		this.engineTurbojetTurbofanLengthTextFieldMap = engineTurbojetTurbofanLengthTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEngineTurbojetTurbofanLengthUnitChoiceBoxMap() {
+		return engineTurbojetTurbofanLengthUnitChoiceBoxMap;
+	}
+
+	public void setEngineTurbojetTurbofanLengthUnitChoiceBoxMap(
+			Map<Integer, ChoiceBox<String>> engineTurbojetTurbofanLengthUnitChoiceBoxMap) {
+		this.engineTurbojetTurbofanLengthUnitChoiceBoxMap = engineTurbojetTurbofanLengthUnitChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbojetTurbofanDryMassTextFieldMap() {
+		return engineTurbojetTurbofanDryMassTextFieldMap;
+	}
+
+	public void setEngineTurbojetTurbofanDryMassTextFieldMap(
+			Map<Integer, TextField> engineTurbojetTurbofanDryMassTextFieldMap) {
+		this.engineTurbojetTurbofanDryMassTextFieldMap = engineTurbojetTurbofanDryMassTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEngineTurbojetTurbofanDryMassUnitChoiceBoxMap() {
+		return engineTurbojetTurbofanDryMassUnitChoiceBoxMap;
+	}
+
+	public void setEngineTurbojetTurbofanDryMassUnitChoiceBoxMap(
+			Map<Integer, ChoiceBox<String>> engineTurbojetTurbofanDryMassUnitChoiceBoxMap) {
+		this.engineTurbojetTurbofanDryMassUnitChoiceBoxMap = engineTurbojetTurbofanDryMassUnitChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbojetTurbofanStaticThrustTextFieldMap() {
+		return engineTurbojetTurbofanStaticThrustTextFieldMap;
+	}
+
+	public void setEngineTurbojetTurbofanStaticThrustTextFieldMap(
+			Map<Integer, TextField> engineTurbojetTurbofanStaticThrustTextFieldMap) {
+		this.engineTurbojetTurbofanStaticThrustTextFieldMap = engineTurbojetTurbofanStaticThrustTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEngineTurbojetTurbofanStaticThrustUnitChoiceBoxMap() {
+		return engineTurbojetTurbofanStaticThrustUnitChoiceBoxMap;
+	}
+
+	public void setEngineTurbojetTurbofanStaticThrustUnitChoiceBoxMap(
+			Map<Integer, ChoiceBox<String>> engineTurbojetTurbofanStaticThrustUnitChoiceBoxMap) {
+		this.engineTurbojetTurbofanStaticThrustUnitChoiceBoxMap = engineTurbojetTurbofanStaticThrustUnitChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbojetTurbofanBPRTextFieldMap() {
+		return engineTurbojetTurbofanBPRTextFieldMap;
+	}
+
+	public void setEngineTurbojetTurbofanBPRTextFieldMap(Map<Integer, TextField> engineTurbojetTurbofanBPRTextFieldMap) {
+		this.engineTurbojetTurbofanBPRTextFieldMap = engineTurbojetTurbofanBPRTextFieldMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbojetTurbofanNumberOfCompressorStagesTextFieldMap() {
+		return engineTurbojetTurbofanNumberOfCompressorStagesTextFieldMap;
+	}
+
+	public void setEngineTurbojetTurbofanNumberOfCompressorStagesTextFieldMap(
+			Map<Integer, TextField> engineTurbojetTurbofanNumberOfCompressorStagesTextFieldMap) {
+		this.engineTurbojetTurbofanNumberOfCompressorStagesTextFieldMap = engineTurbojetTurbofanNumberOfCompressorStagesTextFieldMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbojetTurbofanNumberOfShaftsTextFieldMap() {
+		return engineTurbojetTurbofanNumberOfShaftsTextFieldMap;
+	}
+
+	public void setEngineTurbojetTurbofanNumberOfShaftsTextFieldMap(
+			Map<Integer, TextField> engineTurbojetTurbofanNumberOfShaftsTextFieldMap) {
+		this.engineTurbojetTurbofanNumberOfShaftsTextFieldMap = engineTurbojetTurbofanNumberOfShaftsTextFieldMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbojetTurbofanOverallPressureRatioTextFieldMap() {
+		return engineTurbojetTurbofanOverallPressureRatioTextFieldMap;
+	}
+
+	public void setEngineTurbojetTurbofanOverallPressureRatioTextFieldMap(
+			Map<Integer, TextField> engineTurbojetTurbofanOverallPressureRatioTextFieldMap) {
+		this.engineTurbojetTurbofanOverallPressureRatioTextFieldMap = engineTurbojetTurbofanOverallPressureRatioTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEngineTurbopropTypeChoiceBoxMap() {
+		return engineTurbopropTypeChoiceBoxMap;
+	}
+
+	public void setEngineTurbopropTypeChoiceBoxMap(Map<Integer, ChoiceBox<String>> engineTurbopropTypeChoiceBoxMap) {
+		this.engineTurbopropTypeChoiceBoxMap = engineTurbopropTypeChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbopropDatabaseTextFieldMap() {
+		return engineTurbopropDatabaseTextFieldMap;
+	}
+
+	public void setEngineTurbopropDatabaseTextFieldMap(Map<Integer, TextField> engineTurbopropDatabaseTextFieldMap) {
+		this.engineTurbopropDatabaseTextFieldMap = engineTurbopropDatabaseTextFieldMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbopropLengthTextFieldMap() {
+		return engineTurbopropLengthTextFieldMap;
+	}
+
+	public void setEngineTurbopropLengthTextFieldMap(Map<Integer, TextField> engineTurbopropLengthTextFieldMap) {
+		this.engineTurbopropLengthTextFieldMap = engineTurbopropLengthTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEngineTurbopropLengthUnitChoiceBoxMap() {
+		return engineTurbopropLengthUnitChoiceBoxMap;
+	}
+
+	public void setEngineTurbopropLengthUnitChoiceBoxMap(
+			Map<Integer, ChoiceBox<String>> engineTurbopropLengthUnitChoiceBoxMap) {
+		this.engineTurbopropLengthUnitChoiceBoxMap = engineTurbopropLengthUnitChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbopropDryMassTextFieldMap() {
+		return engineTurbopropDryMassTextFieldMap;
+	}
+
+	public void setEngineTurbopropDryMassTextFieldMap(Map<Integer, TextField> engineTurbopropDryMassTextFieldMap) {
+		this.engineTurbopropDryMassTextFieldMap = engineTurbopropDryMassTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEngineTurbopropDryMassUnitChoiceBoxMap() {
+		return engineTurbopropDryMassUnitChoiceBoxMap;
+	}
+
+	public void setEngineTurbopropDryMassUnitChoiceBoxMap(
+			Map<Integer, ChoiceBox<String>> engineTurbopropDryMassUnitChoiceBoxMap) {
+		this.engineTurbopropDryMassUnitChoiceBoxMap = engineTurbopropDryMassUnitChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbopropStaticPowerTextFieldMap() {
+		return engineTurbopropStaticPowerTextFieldMap;
+	}
+
+	public void setEngineTurbopropStaticPowerTextFieldMap(Map<Integer, TextField> engineTurbopropStaticPowerTextFieldMap) {
+		this.engineTurbopropStaticPowerTextFieldMap = engineTurbopropStaticPowerTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEngineTurbopropStaticPowerUnitChoiceBoxMap() {
+		return engineTurbopropStaticPowerUnitChoiceBoxMap;
+	}
+
+	public void setEngineTurbopropStaticPowerUnitChoiceBoxMap(
+			Map<Integer, ChoiceBox<String>> engineTurbopropStaticPowerUnitChoiceBoxMap) {
+		this.engineTurbopropStaticPowerUnitChoiceBoxMap = engineTurbopropStaticPowerUnitChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbopropPropellerDiameterTextFieldMap() {
+		return engineTurbopropPropellerDiameterTextFieldMap;
+	}
+
+	public void setEngineTurbopropPropellerDiameterTextFieldMap(
+			Map<Integer, TextField> engineTurbopropPropellerDiameterTextFieldMap) {
+		this.engineTurbopropPropellerDiameterTextFieldMap = engineTurbopropPropellerDiameterTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEngineTurbopropPropellerDiameterUnitChoiceBoxMap() {
+		return engineTurbopropPropellerDiameterUnitChoiceBoxMap;
+	}
+
+	public void setEngineTurbopropPropellerDiameterUnitChoiceBoxMap(
+			Map<Integer, ChoiceBox<String>> engineTurbopropPropellerDiameterUnitChoiceBoxMap) {
+		this.engineTurbopropPropellerDiameterUnitChoiceBoxMap = engineTurbopropPropellerDiameterUnitChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbopropNumberOfBladesTextFieldMap() {
+		return engineTurbopropNumberOfBladesTextFieldMap;
+	}
+
+	public void setEngineTurbopropNumberOfBladesTextFieldMap(
+			Map<Integer, TextField> engineTurbopropNumberOfBladesTextFieldMap) {
+		this.engineTurbopropNumberOfBladesTextFieldMap = engineTurbopropNumberOfBladesTextFieldMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbopropPropellerEfficiencyTextFieldMap() {
+		return engineTurbopropPropellerEfficiencyTextFieldMap;
+	}
+
+	public void setEngineTurbopropPropellerEfficiencyTextFieldMap(
+			Map<Integer, TextField> engineTurbopropPropellerEfficiencyTextFieldMap) {
+		this.engineTurbopropPropellerEfficiencyTextFieldMap = engineTurbopropPropellerEfficiencyTextFieldMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbopropNumberOfCompressorStagesTextFieldMap() {
+		return engineTurbopropNumberOfCompressorStagesTextFieldMap;
+	}
+
+	public void setEngineTurbopropNumberOfCompressorStagesTextFieldMap(
+			Map<Integer, TextField> engineTurbopropNumberOfCompressorStagesTextFieldMap) {
+		this.engineTurbopropNumberOfCompressorStagesTextFieldMap = engineTurbopropNumberOfCompressorStagesTextFieldMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbopropNumberOfShaftsTextFieldMap() {
+		return engineTurbopropNumberOfShaftsTextFieldMap;
+	}
+
+	public void setEngineTurbopropNumberOfShaftsTextFieldMap(
+			Map<Integer, TextField> engineTurbopropNumberOfShaftsTextFieldMap) {
+		this.engineTurbopropNumberOfShaftsTextFieldMap = engineTurbopropNumberOfShaftsTextFieldMap;
+	}
+
+	public Map<Integer, TextField> getEngineTurbopropOverallPressureRatioTextFieldMap() {
+		return engineTurbopropOverallPressureRatioTextFieldMap;
+	}
+
+	public void setEngineTurbopropOverallPressureRatioTextFieldMap(
+			Map<Integer, TextField> engineTurbopropOverallPressureRatioTextFieldMap) {
+		this.engineTurbopropOverallPressureRatioTextFieldMap = engineTurbopropOverallPressureRatioTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEnginePistonTypeChoiceBoxMap() {
+		return enginePistonTypeChoiceBoxMap;
+	}
+
+	public void setEnginePistonTypeChoiceBoxMap(Map<Integer, ChoiceBox<String>> enginePistonTypeChoiceBoxMap) {
+		this.enginePistonTypeChoiceBoxMap = enginePistonTypeChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEnginePistonDatabaseTextFieldMap() {
+		return enginePistonDatabaseTextFieldMap;
+	}
+
+	public void setEnginePistonDatabaseTextFieldMap(Map<Integer, TextField> enginePistonDatabaseTextFieldMap) {
+		this.enginePistonDatabaseTextFieldMap = enginePistonDatabaseTextFieldMap;
+	}
+
+	public Map<Integer, TextField> getEnginePistonLengthTextFieldMap() {
+		return enginePistonLengthTextFieldMap;
+	}
+
+	public void setEnginePistonLengthTextFieldMap(Map<Integer, TextField> enginePistonLengthTextFieldMap) {
+		this.enginePistonLengthTextFieldMap = enginePistonLengthTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEnginePistonLengthUnitChoiceBoxMap() {
+		return enginePistonLengthUnitChoiceBoxMap;
+	}
+
+	public void setEnginePistonLengthUnitChoiceBoxMap(Map<Integer, ChoiceBox<String>> enginePistonLengthUnitChoiceBoxMap) {
+		this.enginePistonLengthUnitChoiceBoxMap = enginePistonLengthUnitChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEnginePistonDryMassTextFieldMap() {
+		return enginePistonDryMassTextFieldMap;
+	}
+
+	public void setEnginePistonDryMassTextFieldMap(Map<Integer, TextField> enginePistonDryMassTextFieldMap) {
+		this.enginePistonDryMassTextFieldMap = enginePistonDryMassTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEnginePistonDryMassUnitChoiceBoxMap() {
+		return enginePistonDryMassUnitChoiceBoxMap;
+	}
+
+	public void setEnginePistonDryMassUnitChoiceBoxMap(
+			Map<Integer, ChoiceBox<String>> enginePistonDryMassUnitChoiceBoxMap) {
+		this.enginePistonDryMassUnitChoiceBoxMap = enginePistonDryMassUnitChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEnginePistonStaticPowerTextFieldMap() {
+		return enginePistonStaticPowerTextFieldMap;
+	}
+
+	public void setEnginePistonStaticPowerTextFieldMap(Map<Integer, TextField> enginePistonStaticPowerTextFieldMap) {
+		this.enginePistonStaticPowerTextFieldMap = enginePistonStaticPowerTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEnginePistonStaticPowerUnitChoiceBoxMap() {
+		return enginePistonStaticPowerUnitChoiceBoxMap;
+	}
+
+	public void setEnginePistonStaticPowerUnitChoiceBoxMap(
+			Map<Integer, ChoiceBox<String>> enginePistonStaticPowerUnitChoiceBoxMap) {
+		this.enginePistonStaticPowerUnitChoiceBoxMap = enginePistonStaticPowerUnitChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEnginePistonPropellerDiameterTextFieldMap() {
+		return enginePistonPropellerDiameterTextFieldMap;
+	}
+
+	public void setEnginePistonPropellerDiameterTextFieldMap(
+			Map<Integer, TextField> enginePistonPropellerDiameterTextFieldMap) {
+		this.enginePistonPropellerDiameterTextFieldMap = enginePistonPropellerDiameterTextFieldMap;
+	}
+
+	public Map<Integer, ChoiceBox<String>> getEnginePistonPropellerDiameterUnitChoiceBoxMap() {
+		return enginePistonPropellerDiameterUnitChoiceBoxMap;
+	}
+
+	public void setEnginePistonPropellerDiameterUnitChoiceBoxMap(
+			Map<Integer, ChoiceBox<String>> enginePistonPropellerDiameterUnitChoiceBoxMap) {
+		this.enginePistonPropellerDiameterUnitChoiceBoxMap = enginePistonPropellerDiameterUnitChoiceBoxMap;
+	}
+
+	public Map<Integer, TextField> getEnginePistonNumberOfBladesTextFieldMap() {
+		return enginePistonNumberOfBladesTextFieldMap;
+	}
+
+	public void setEnginePistonNumberOfBladesTextFieldMap(Map<Integer, TextField> enginePistonNumberOfBladesTextFieldMap) {
+		this.enginePistonNumberOfBladesTextFieldMap = enginePistonNumberOfBladesTextFieldMap;
+	}
+
+	public Map<Integer, TextField> getEnginePistonPropellerEfficiencyTextFieldMap() {
+		return enginePistonPropellerEfficiencyTextFieldMap;
+	}
+
+	public void setEnginePistonPropellerEfficiencyTextFieldMap(
+			Map<Integer, TextField> enginePistonPropellerEfficiencyTextFieldMap) {
+		this.enginePistonPropellerEfficiencyTextFieldMap = enginePistonPropellerEfficiencyTextFieldMap;
+	}
+
+	public Map<EngineTypeEnum, Pane> getPowerPlantPaneMap() {
+		return powerPlantPaneMap;
+	}
+
+	public void setPowerPlantPaneMap(Map<EngineTypeEnum, Pane> powerPlantPaneMap) {
+		this.powerPlantPaneMap = powerPlantPaneMap;
+	}
+
+	public Map<Integer, Map<EngineTypeEnum, Pane>> getPowerPlantEngineTypePaneMap() {
+		return powerPlantEngineTypePaneMap;
+	}
+
+	public void setPowerPlantEngineTypePaneMap(Map<Integer, Map<EngineTypeEnum, Pane>> powerPlantEngineTypePaneMap) {
+		this.powerPlantEngineTypePaneMap = powerPlantEngineTypePaneMap;
+	}
+
+	public Map<Integer, BorderPane> getPowerPlantBorderPaneMap() {
+		return powerPlantBorderPaneMap;
+	}
+
+	public void setPowerPlantBorderPaneMap(Map<Integer, BorderPane> powerPlantBorderPaneMap) {
+		this.powerPlantBorderPaneMap = powerPlantBorderPaneMap;
+	}
+
+	public TextField getTextFieldLandingGearsMainLegLength() {
+		return textFieldLandingGearsMainLegLength;
+	}
+
+	public void setTextFieldLandingGearsMainLegLength(TextField textFieldLandingGearsMainLegLength) {
+		this.textFieldLandingGearsMainLegLength = textFieldLandingGearsMainLegLength;
+	}
+
+	public TextField getTextFieldLandingGearsKMainLegLength() {
+		return textFieldLandingGearsKMainLegLength;
+	}
+
+	public void setTextFieldLandingGearsKMainLegLength(TextField textFieldLandingGearsKMainLegLength) {
+		this.textFieldLandingGearsKMainLegLength = textFieldLandingGearsKMainLegLength;
+	}
+
+	public TextField getTextFieldLandingGearsDistanceBetweenWheels() {
+		return textFieldLandingGearsDistanceBetweenWheels;
+	}
+
+	public void setTextFieldLandingGearsDistanceBetweenWheels(TextField textFieldLandingGearsDistanceBetweenWheels) {
+		this.textFieldLandingGearsDistanceBetweenWheels = textFieldLandingGearsDistanceBetweenWheels;
+	}
+
+	public TextField getTextFieldLandingGearsNumberOfFrontalWheels() {
+		return textFieldLandingGearsNumberOfFrontalWheels;
+	}
+
+	public void setTextFieldLandingGearsNumberOfFrontalWheels(TextField textFieldLandingGearsNumberOfFrontalWheels) {
+		this.textFieldLandingGearsNumberOfFrontalWheels = textFieldLandingGearsNumberOfFrontalWheels;
+	}
+
+	public TextField getTextFieldLandingGearsNumberOfRearWheels() {
+		return textFieldLandingGearsNumberOfRearWheels;
+	}
+
+	public void setTextFieldLandingGearsNumberOfRearWheels(TextField textFieldLandingGearsNumberOfRearWheels) {
+		this.textFieldLandingGearsNumberOfRearWheels = textFieldLandingGearsNumberOfRearWheels;
+	}
+
+	public TextField getTextFieldLandingGearsFrontalWheelsHeight() {
+		return textFieldLandingGearsFrontalWheelsHeight;
+	}
+
+	public void setTextFieldLandingGearsFrontalWheelsHeight(TextField textFieldLandingGearsFrontalWheelsHeight) {
+		this.textFieldLandingGearsFrontalWheelsHeight = textFieldLandingGearsFrontalWheelsHeight;
+	}
+
+	public TextField getTextFieldLandingGearsFrontalWheelsWidth() {
+		return textFieldLandingGearsFrontalWheelsWidth;
+	}
+
+	public void setTextFieldLandingGearsFrontalWheelsWidth(TextField textFieldLandingGearsFrontalWheelsWidth) {
+		this.textFieldLandingGearsFrontalWheelsWidth = textFieldLandingGearsFrontalWheelsWidth;
+	}
+
+	public TextField getTextFieldLandingGearsRearWheelsHeight() {
+		return textFieldLandingGearsRearWheelsHeight;
+	}
+
+	public void setTextFieldLandingGearsRearWheelsHeight(TextField textFieldLandingGearsRearWheelsHeight) {
+		this.textFieldLandingGearsRearWheelsHeight = textFieldLandingGearsRearWheelsHeight;
+	}
+
+	public TextField getTextFieldLandingGearsRearWheelsWidth() {
+		return textFieldLandingGearsRearWheelsWidth;
+	}
+
+	public void setTextFieldLandingGearsRearWheelsWidth(TextField textFieldLandingGearsRearWheelsWidth) {
+		this.textFieldLandingGearsRearWheelsWidth = textFieldLandingGearsRearWheelsWidth;
+	}
+
+	public ChoiceBox<String> getLandingGearsMainLegLengthUnitChoiceBox() {
+		return landingGearsMainLegLengthUnitChoiceBox;
+	}
+
+	public void setLandingGearsMainLegLengthUnitChoiceBox(ChoiceBox<String> landingGearsMainLegLengthUnitChoiceBox) {
+		this.landingGearsMainLegLengthUnitChoiceBox = landingGearsMainLegLengthUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getLandingGearsDistanceBetweenWheelsUnitChoiceBox() {
+		return landingGearsDistanceBetweenWheelsUnitChoiceBox;
+	}
+
+	public void setLandingGearsDistanceBetweenWheelsUnitChoiceBox(
+			ChoiceBox<String> landingGearsDistanceBetweenWheelsUnitChoiceBox) {
+		this.landingGearsDistanceBetweenWheelsUnitChoiceBox = landingGearsDistanceBetweenWheelsUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getLandingGearsFrontalWheelsHeigthUnitChoiceBox() {
+		return landingGearsFrontalWheelsHeigthUnitChoiceBox;
+	}
+
+	public void setLandingGearsFrontalWheelsHeigthUnitChoiceBox(
+			ChoiceBox<String> landingGearsFrontalWheelsHeigthUnitChoiceBox) {
+		this.landingGearsFrontalWheelsHeigthUnitChoiceBox = landingGearsFrontalWheelsHeigthUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getLandingGearsFrontalWheelsWidthUnitChoiceBox() {
+		return landingGearsFrontalWheelsWidthUnitChoiceBox;
+	}
+
+	public void setLandingGearsFrontalWheelsWidthUnitChoiceBox(
+			ChoiceBox<String> landingGearsFrontalWheelsWidthUnitChoiceBox) {
+		this.landingGearsFrontalWheelsWidthUnitChoiceBox = landingGearsFrontalWheelsWidthUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getLandingGearsRearWheelsHeigthUnitChoiceBox() {
+		return landingGearsRearWheelsHeigthUnitChoiceBox;
+	}
+
+	public void setLandingGearsRearWheelsHeigthUnitChoiceBox(ChoiceBox<String> landingGearsRearWheelsHeigthUnitChoiceBox) {
+		this.landingGearsRearWheelsHeigthUnitChoiceBox = landingGearsRearWheelsHeigthUnitChoiceBox;
+	}
+
+	public ChoiceBox<String> getLandingGearsRearWheelsWidthUnitChoiceBox() {
+		return landingGearsRearWheelsWidthUnitChoiceBox;
+	}
+
+	public void setLandingGearsRearWheelsWidthUnitChoiceBox(ChoiceBox<String> landingGearsRearWheelsWidthUnitChoiceBox) {
+		this.landingGearsRearWheelsWidthUnitChoiceBox = landingGearsRearWheelsWidthUnitChoiceBox;
 	};
 	
 }

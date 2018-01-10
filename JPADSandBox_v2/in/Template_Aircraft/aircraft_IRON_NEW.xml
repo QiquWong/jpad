@@ -7,28 +7,36 @@
         <lifting_surfaces>
             <wing file="wing_IRON_NEW.xml">
                 <position>
-                    <x unit="m">20.8</x>
+                    <x unit="m">21.6</x>
                     <y unit="m">0.0</y>
                     <z unit="m">-1.32</z>
                 </position>
                 <rigging_angle unit="deg">2</rigging_angle>
             </wing>
-            <horizontal_tail file="htail_IRON.xml">
+            <horizontal_tail file="htail_IRON_NEW.xml">
                 <position>
                     <x unit="m">31.54</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">1.34</z>
+                    <z unit="m">1.02</z>
                 </position>
-                <rigging_angle unit="deg">0.0</rigging_angle>
+                <rigging_angle unit="deg">-2.0</rigging_angle>
             </horizontal_tail>
             <vertical_tail file="vtail_IRON.xml">
                 <position>
-                    <x unit="m">29.12</x>
+                    <x unit="m">31.37</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">1.5</z>
+                    <z unit="m">1.56</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>
+			<canard file="canard_IRON_NEW.xml">
+                <position>
+                    <x unit="m">6.0</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">1.75</z>
+                </position>
+                <rigging_angle unit="deg">4.0</rigging_angle>
+            </canard>
         </lifting_surfaces>
         <fuselages>
             <fuselage file="fuselage_IRON.xml">
@@ -42,44 +50,44 @@
 		<power_plant>
             <engine file="engine_IRON.xml">
                 <position>
-                    <x unit="m">18.50</x>
-                    <y unit="m">6.035</y>
-                    <z unit="m">-1.32</z>
+                    <x unit="m">29.49</x>
+                    <y unit="m">6.5</y>
+                    <z unit="m">1.089</z>
                 </position>
                 <tilting_angle unit="deg">0.0</tilting_angle>
-				<mounting_point>WING</mounting_point>
+				<mounting_point>HTAIL</mounting_point>
             </engine>
             <engine file="engine_IRON.xml">
                 <position>
-                    <x unit="m">18.50</x>
-                    <y unit="m">-6.035</y>
-                    <z unit="m">-1.32</z>
+                    <x unit="m">29.49</x>
+                    <y unit="m">-6.5</y>
+                    <z unit="m">1.089</z>
                 </position>
                 <tilting_angle unit="deg">0.0</tilting_angle>
-                <mounting_point>WING</mounting_point>
+                <mounting_point>HTAIL</mounting_point>
             </engine>
 		</power_plant> 
 		<nacelles>
             <nacelle file="nacelle_IRON.xml">
                 <position>
-                    <x unit="m">18.50</x>
-                    <y unit="m">6.035</y>
-                    <z unit="m">-1.32</z>
+                    <x unit="m">29.49</x>
+                    <y unit="m">6.5</y>
+                    <z unit="m">1.089</z>
                 </position>
-                <mounting_point>WING</mounting_point>
+                <mounting_point>HTAIL</mounting_point>
             </nacelle>
             <nacelle file="nacelle_IRON.xml">
                 <position>
-                    <x unit="m">18.50</x>
-                    <y unit="m">-6.035</y>
-                    <z unit="m">-1.32</z>
+                    <x unit="m">29.49</x>
+                    <y unit="m">-6.5</y>
+                    <z unit="m">1.089</z>
                 </position>
-                <mounting_point>WING</mounting_point>
+                <mounting_point>HTAIL</mounting_point>
             </nacelle>
 		</nacelles> 
 		<landing_gears file="landing_gear_IRON.xml">
 			<position>
-                <x unit="m">22.35</x>
+                <x unit="m">23.66</x>
                 <y unit="m">0.0</y>
                 <z unit="m">-1.782</z>
             </position>
