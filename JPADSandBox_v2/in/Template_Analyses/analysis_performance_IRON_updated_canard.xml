@@ -20,7 +20,7 @@
 					<!-- CLalpha increased by 1.3 (ground effect) --> 
 					<cLmax_take_off_configuration>2.9</cLmax_take_off_configuration>
 					<cL_alpha_take_off unit="1/deg">0.1344</cL_alpha_take_off> 
-					<cL0_take_off_configuration>0.4963</cL0_take_off_configuration>
+					<cL0_take_off_configuration>1.4593</cL0_take_off_configuration>
 					<!---->
 					<cLmax_landing_configuration>3.5</cLmax_landing_configuration> <!-- value of the trimmed CLmax in landing used to determine the approach speed --> 
 					<cL_alpha_landing unit="1/deg">0.1343</cL_alpha_landing> <!-- value of the CLalpha with ground effect (used during ground roll) -->

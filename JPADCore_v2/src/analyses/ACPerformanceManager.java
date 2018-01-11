@@ -3804,7 +3804,8 @@ public class ACPerformanceManager {
 			
 			Amount<Length> dimensionalXcg = 
 					_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER).times(xcg)
-					.plus(_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER));
+					.plus(_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+					.plus(_thePerformanceInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER));
 			
 			String veDSCDatabaseFileName = "VeDSC_database.h5";
 			
@@ -3884,7 +3885,7 @@ public class ACPerformanceManager {
 							0.05,
 							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER)
 							),
-					_theTakeOffCalculatorMap.get(xcg).getvSTakeOff().times(1.13).doubleValue(SI.METERS_PER_SECOND),
+					_theTakeOffCalculatorMap.get(xcg).getvSTakeOff().times(1.2).doubleValue(SI.METERS_PER_SECOND),
 					250
 					);
 
@@ -4033,7 +4034,7 @@ public class ACPerformanceManager {
 							0.05,
 							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER)
 							)/_vStallTakeOffMap.get(xcg).doubleValue(SI.METERS_PER_SECOND),
-					1.13, // maximum value of the VMC from FAR regulations
+					1.20, // maximum possible value of the VMC
 					250
 					);
 			
@@ -4396,7 +4397,7 @@ public class ACPerformanceManager {
 			altitude.add(Amount.valueOf(0.0, SI.METER));
 			Amount<Length> deltaAltitude = Amount.valueOf(100, SI.METER);
 			
-			int nPointSpeed = 1000;
+			int nPointSpeed = 5000;
 			double[] speedArray = new double[nPointSpeed];
 			int i=0;
 			
@@ -4411,7 +4412,7 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 							MyArrayUtils.getMax(_thePerformanceInterface.getPolarCLCruise().get(xcg))
 							),
-					SpeedCalc.calculateTAS(1.0, altitude.get(0).doubleValue(SI.METER)),
+					SpeedCalc.calculateTAS(2.0, altitude.get(0).doubleValue(SI.METER)),
 					nPointSpeed
 					);
 			//..................................................................................................
@@ -4471,9 +4472,21 @@ public class ACPerformanceManager {
 					>= 0.0001
 					) {
 
+				if ((_intersectionListMap.get(xcg).get(_intersectionListMap.get(xcg).size()-1).getMaxSpeed()
+						- _intersectionListMap.get(xcg).get(_intersectionListMap.get(xcg).size()-1).getMinSpeed())
+						< 0.0001
+						) {
+					System.err.println("");
+				}
+				
 				if(i >= 1)
 					altitude.add(altitude.get(i-1).plus(deltaAltitude));
 
+				if(altitude.get(i).doubleValue(NonSI.FOOT) >= 50000) {
+					System.err.println("WARNING: (FLIGHT ENVELOPE - CRUISE) MAXIMUM ALTITUDE OF 50000ft REACHED!!");
+					break;
+				}
+					
 				//..................................................................................................
 				speedArray = MyArrayUtils.linspace(
 						SpeedCalc.calculateSpeedStall(
@@ -4484,7 +4497,7 @@ public class ACPerformanceManager {
 								_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_thePerformanceInterface.getPolarCLCruise().get(xcg))
 								),
-						SpeedCalc.calculateTAS(1.0, altitude.get(i).doubleValue(SI.METER)),
+						SpeedCalc.calculateTAS(2.0, altitude.get(i).doubleValue(SI.METER)),
 						nPointSpeed
 						);
 				//..................................................................................................

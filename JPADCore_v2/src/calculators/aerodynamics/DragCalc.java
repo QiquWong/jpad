@@ -544,12 +544,22 @@ public class DragCalc {
 			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType
 			) {
 
-		double cL, cD;
+		double cL, cD, cDWave, cDTot;
 		double[] drag = new double[speed.length];
 		for (int i=0; i< speed.length; i++){
 			cL = LiftCalc.calculateLiftCoeff(weight, speed[i], surface, altitude);
 			cD = MyMathUtils.getInterpolatedValue1DLinear(polarCL, polarCD, cL);
-			drag[i] = calculateDragAtSpeed(weight, altitude, surface, speed[i], cD);
+			cDWave = calculateCDWaveLockKorn(
+					cL, 
+					SpeedCalc.calculateMach(altitude, speed[i]), 
+					AerodynamicCalc.calculateMachCriticalKornMason(
+							cL, 
+							sweepHalfChord,
+							tcMax, 
+							airfoilType)
+					);
+			cDTot = cD + cDWave;
+			drag[i] = calculateDragAtSpeed(weight, altitude, surface, speed[i], cDTot);
 		}
 		return drag;
 	}

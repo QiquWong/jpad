@@ -1523,9 +1523,9 @@ public class TakeOffCalc {
 		MyChartToFileUtils.plot(
 				xMatrix2SI, yMatrix2SI,
 				0.0, null, null, null,
-				"Time", "Horizontal Forces", "m", "N",
+				"Ground Distance", "Horizontal Forces", "m", "N",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-				takeOffFolderPath, "HorizontalForces_evolution_SI",
+				takeOffFolderPath, "HorizontalForces_vs_GroundDistance_SI",
 				createCSV);
 
 		double[][] xMatrix2IMPERIAL = new double[5][totalForce.size()];
@@ -1564,9 +1564,9 @@ public class TakeOffCalc {
 		MyChartToFileUtils.plot(
 				xMatrix2IMPERIAL, yMatrix2IMPERIAL,
 				0.0, null, null, null,
-				"Time", "Horizontal Forces", "ft", "lb",
+				"Ground Distance", "Horizontal Forces", "ft", "lb",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-				takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL",
+				takeOffFolderPath, "HorizontalForces_vs_GroundDistance_IMPERIAL",
 				createCSV);
 
 		//.................................................................................

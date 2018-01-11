@@ -269,7 +269,7 @@ public class PerformanceDataManager {
 					&& x.getWeight() == weight) return x.getMaxSpeed();
 		}
 
-		return 0.;
+		return 0.0;
 	}
 
 	/**
@@ -295,7 +295,7 @@ public class PerformanceDataManager {
 					&& x.getWeight() == weight) return x.getMinSpeed();
 		}
 
-		return null;
+		return 0.0;
 	}
 
 	/**
