@@ -39,7 +39,7 @@ public class FuselageAdjustCriterionDialog extends Stage {
         initOwner(owner);
         initModality(Modality.APPLICATION_MODAL);
         Group root = new Group();
-        Scene scene = new Scene(root, owner.getWidth()*0.33, owner.getHeight()*0.15, Color.LIGHTBLUE);
+        Scene scene = new Scene(root, owner.getWidth()*0.5, owner.getHeight()*0.2, Color.LIGHTBLUE);
         setScene(scene);
 
         GridPane gridpane = new GridPane();

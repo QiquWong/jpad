@@ -104,6 +104,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -125,6 +126,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -430,6 +432,12 @@ public class InputManagerController {
 	private boolean updateLandingGearsDataFromFile;
 	private boolean updateSystemsDataFromFile;
 
+	private boolean noneAdjustCriterionFuselage = false;
+	private boolean noneAdjustCriterionWing = false;
+	private boolean noneAdjustCriterionHTail = false;
+	private boolean noneAdjustCriterionVTail = false;
+	private boolean noneAdjustCriterionCanard = false;
+	
 	private String fuselageXPositionValue = "";
 	private String fuselageXPositionUnit = "";
 	private String fuselageYPositionValue = "";
@@ -1801,6 +1809,12 @@ public class InputManagerController {
 		updateNacellesDataFromFile = false;
 		updateLandingGearsDataFromFile = false;
 		updateSystemsDataFromFile = false;
+		
+		noneAdjustCriterionFuselage = false;
+		noneAdjustCriterionWing = false;
+		noneAdjustCriterionHTail = false;
+		noneAdjustCriterionVTail = false;
+		noneAdjustCriterionCanard = false;
 		
 		updateAircraftDataFromFileComboBox = new CheckComboBox<>(componentsList);
 		updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
@@ -7474,6 +7488,9 @@ public class InputManagerController {
 				FXMLLoader loader = new FXMLLoader();
 				loader.setLocation(Main.class.getResource("inputmanager/AdjustCriterionAircraftWarning.fxml"));
 				BorderPane adjustCriterionAircraftWarningBorderPane = loader.load();
+				adjustCriterionAircraftWarningBorderPane.setPrefSize(600, 400);
+				
+				VBox actionVBox = (VBox) adjustCriterionAircraftWarningBorderPane.lookup("#actionVBox");
 				
 				Button continueButton = (Button) adjustCriterionAircraftWarningBorderPane.lookup("#warningContinueButton");
 				continueButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -7486,22 +7503,56 @@ public class InputManagerController {
 					
 				});
 				
-				Button continueAndSetToNoneButton = (Button) adjustCriterionAircraftWarningBorderPane.lookup("#warningContinueNoneButton");
+				ObservableList<String> componentsList = FXCollections.observableArrayList(
+						"Fuselage", 
+						"Wing",
+						"Horizontal Tail",
+						"Vertical Tail",
+						"Canard"
+						);
+				
+				CheckComboBox<String> chooseComponentsNoneAdjustCriterionComboBox = new CheckComboBox<String>(componentsList);
+				actionVBox.getChildren().add(chooseComponentsNoneAdjustCriterionComboBox);
+				chooseComponentsNoneAdjustCriterionComboBox.setPadding(new Insets(0.0, 0.0, 0.0, 100.0));
+				chooseComponentsNoneAdjustCriterionComboBox.setPrefSize(520, 31);
+				
+				chooseComponentsNoneAdjustCriterionComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+				     public void onChanged(ListChangeListener.Change<? extends String> c) {
+				    	 
+				    	if (chooseComponentsNoneAdjustCriterionComboBox.getCheckModel().getCheckedItems().contains("Fuselage"))
+				    		noneAdjustCriterionFuselage = true;
+				    	if (chooseComponentsNoneAdjustCriterionComboBox.getCheckModel().getCheckedItems().contains("Wing"))
+				    		noneAdjustCriterionWing = true;
+				    	if (chooseComponentsNoneAdjustCriterionComboBox.getCheckModel().getCheckedItems().contains("Horizontal Tail"))
+				    		noneAdjustCriterionHTail = true;
+				    	if (chooseComponentsNoneAdjustCriterionComboBox.getCheckModel().getCheckedItems().contains("Vertical Tail"))
+				    		noneAdjustCriterionVTail = true;
+				    	if (chooseComponentsNoneAdjustCriterionComboBox.getCheckModel().getCheckedItems().contains("Canard"))
+				    		noneAdjustCriterionCanard = true;
+				     }
+				 });
+				
+				Button continueAndSetToNoneButton = (Button) adjustCriterionAircraftWarningBorderPane.lookup("#warningContinueAndNoneButton");
 				continueAndSetToNoneButton.setOnAction(new EventHandler<ActionEvent>() {
 					
 					@Override
 					public void handle(ActionEvent arg0) {
 						adjustCriterionAircraftWarning.close();
 						if(Main.getTheAircraft().getFuselage() != null)
-							fuselageAdjustCriterionChoiceBox.getSelectionModel().select(0);
+							if (noneAdjustCriterionFuselage)
+								fuselageAdjustCriterionChoiceBox.getSelectionModel().select(0);
 						if(Main.getTheAircraft().getWing() != null)
-							wingAdjustCriterionChoiceBox.getSelectionModel().select(0);
+							if (noneAdjustCriterionWing)
+								wingAdjustCriterionChoiceBox.getSelectionModel().select(0);
 						if(Main.getTheAircraft().getHTail() != null)
-							hTailAdjustCriterionChoiceBox.getSelectionModel().select(0);
+							if (noneAdjustCriterionHTail)
+								hTailAdjustCriterionChoiceBox.getSelectionModel().select(0);
 						if(Main.getTheAircraft().getVTail() != null)
-							vTailAdjustCriterionChoiceBox.getSelectionModel().select(0);
+							if (noneAdjustCriterionVTail)
+								vTailAdjustCriterionChoiceBox.getSelectionModel().select(0);
 						if(Main.getTheAircraft().getCanard() != null)
-							canardAdjustCriterionChoiceBox.getSelectionModel().select(0);
+							if (noneAdjustCriterionCanard)
+								canardAdjustCriterionChoiceBox.getSelectionModel().select(0);
 						
 						updateAircraftDataImplementation();
 					}
@@ -7523,6 +7574,89 @@ public class InputManagerController {
 	@SuppressWarnings("rawtypes")
 	private void updateAircraftDataImplementation() {
 		
+		if (!fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
+			
+			//................................................................................................
+			// ASSIGNING TEXTFIELDS STYLE ...
+			textFieldFuselageLength.setStyle(textFieldAlertStyle);
+			textFieldFuselageNoseLengthRatio.setStyle(textFieldAlertStyle);
+			textFieldFuselageCylinderLengthRatio.setStyle(textFieldAlertStyle);
+			textFieldFuselageCylinderSectionHeight.setStyle(textFieldAlertStyle);
+			textFieldFuselageCylinderSectionWidth.setStyle(textFieldAlertStyle);
+
+			//................................................................................................
+			// ADJUSTING MEASURES ...
+			Stage fuselageAdjustCriterionDialog = new FuselageAdjustCriterionDialog(
+					Main.getPrimaryStage(), 
+					fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem()
+					);
+			fuselageAdjustCriterionDialog.sizeToScene();
+			fuselageAdjustCriterionDialog.initStyle(StageStyle.UNDECORATED);
+			fuselageAdjustCriterionDialog.showAndWait();
+
+			//.................................................................................................
+			// REMOVING TEXTFIELDS STYLE ...
+			textFieldFuselageLength.setStyle("");
+			textFieldFuselageNoseLengthRatio.setStyle("");
+			textFieldFuselageCylinderLengthRatio.setStyle("");
+			textFieldFuselageCylinderSectionHeight.setStyle("");
+			textFieldFuselageCylinderSectionWidth.setStyle("");
+
+			//.................................................................................................
+			// SETTING NEW MEASURE DATA TO TEXTFIELDS ...
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF() != null) {
+				textFieldFuselageLength.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().getEstimatedValue())
+						);
+
+				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF()
+						.getUnit().toString().equalsIgnoreCase("m"))
+					fuselageLengthUnitChoiceBox.getSelectionModel().select(0);
+				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF()
+						.getUnit().toString().equalsIgnoreCase("ft"))
+					fuselageLengthUnitChoiceBox.getSelectionModel().select(1);
+
+			}
+
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioNF() != null) 
+				textFieldFuselageNoseLengthRatio.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioNF())
+						);
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioCF() != null) 
+				textFieldFuselageCylinderLengthRatio.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioCF())
+						);
+
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight() != null) {
+				textFieldFuselageCylinderSectionHeight.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().getEstimatedValue())
+						);
+
+				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight()
+						.getUnit().toString().equalsIgnoreCase("m"))
+					fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().select(0);
+				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight()
+						.getUnit().toString().equalsIgnoreCase("ft"))
+					fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().select(1);
+
+			}
+
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth() != null) {
+				textFieldFuselageCylinderSectionWidth.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().getEstimatedValue())
+						);
+
+				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth()
+						.getUnit().toString().equalsIgnoreCase("m"))
+					fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().select(0);
+				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth()
+						.getUnit().toString().equalsIgnoreCase("ft"))
+					fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().select(1);
+
+			}
+
+		}
+		
 		Service updateAircraftDataService = new Service() {
 
 			@Override
@@ -7543,16 +7677,8 @@ public class InputManagerController {
 						updateProgress(1, numberOfOperations);
 						updateMessage("Updating Fuselage Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement) + "%");
-						if(!updateFuselageDataFromFile) {
-							Platform.runLater(new Runnable() {
-								
-								@Override
-								public void run() {
-									updateFuselageTabData();
-									
-								}
-							});
-						}
+						if(!updateFuselageDataFromFile) 
+							updateFuselageTabData();
 						
 						updateProgress(2, numberOfOperations);
 						updateMessage("Updating Cabin Configuration Tab Data ...");
@@ -8644,89 +8770,6 @@ public class InputManagerController {
 		
 		FusDesDatabaseReader fusDesDatabaseReader = Main.getTheAircraft().getFuselage().getFusDesDatabaseReader();
 		
-		if (!fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
-			
-			//................................................................................................
-			// ASSIGNING TEXTFIELDS STYLE ...
-			textFieldFuselageLength.setStyle(textFieldAlertStyle);
-			textFieldFuselageNoseLengthRatio.setStyle(textFieldAlertStyle);
-			textFieldFuselageCylinderLengthRatio.setStyle(textFieldAlertStyle);
-			textFieldFuselageCylinderSectionHeight.setStyle(textFieldAlertStyle);
-			textFieldFuselageCylinderSectionWidth.setStyle(textFieldAlertStyle);
-
-			//................................................................................................
-			// ADJUSTING MEASURES ...
-			Stage fuselageAdjustCriterionDialog = new FuselageAdjustCriterionDialog(
-					Main.getPrimaryStage(), 
-					fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem()
-					);
-			fuselageAdjustCriterionDialog.sizeToScene();
-			fuselageAdjustCriterionDialog.initStyle(StageStyle.UNDECORATED);
-			fuselageAdjustCriterionDialog.showAndWait();
-			
-			//.................................................................................................
-			// REMOVING TEXTFIELDS STYLE ...
-			textFieldFuselageLength.setStyle("");
-			textFieldFuselageNoseLengthRatio.setStyle("");
-			textFieldFuselageCylinderLengthRatio.setStyle("");
-			textFieldFuselageCylinderSectionHeight.setStyle("");
-			textFieldFuselageCylinderSectionWidth.setStyle("");
-			
-			//.................................................................................................
-			// SETTING NEW MEASURE DATA TO TEXTFIELDS ...
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF() != null) {
-				textFieldFuselageLength.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().getEstimatedValue())
-						);
-				
-				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF()
-						.getUnit().toString().equalsIgnoreCase("m"))
-					fuselageLengthUnitChoiceBox.getSelectionModel().select(0);
-				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF()
-						.getUnit().toString().equalsIgnoreCase("ft"))
-					fuselageLengthUnitChoiceBox.getSelectionModel().select(1);
-				
-			}
-			
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioNF() != null) 
-				textFieldFuselageNoseLengthRatio.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioNF())
-						);
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioCF() != null) 
-				textFieldFuselageCylinderLengthRatio.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioCF())
-						);
-			
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight() != null) {
-				textFieldFuselageCylinderSectionHeight.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().getEstimatedValue())
-						);
-				
-				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight()
-						.getUnit().toString().equalsIgnoreCase("m"))
-					fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().select(0);
-				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight()
-						.getUnit().toString().equalsIgnoreCase("ft"))
-					fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().select(1);
-				
-			}
-			
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth() != null) {
-				textFieldFuselageCylinderSectionWidth.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().getEstimatedValue())
-						);
-				
-				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth()
-						.getUnit().toString().equalsIgnoreCase("m"))
-					fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().select(0);
-				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth()
-						.getUnit().toString().equalsIgnoreCase("ft"))
-					fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().select(1);
-				
-			}
-			
-		}
-		
 		//.................................................................................................
 		// DATA INITIALIZATION
 		//.................................................................................................
@@ -8890,7 +8933,7 @@ public class InputManagerController {
 			.forEach(cb -> fuselageSpoilersMinimumDeflectionAngleUnitList.add(cb.getSelectionModel().getSelectedItem()));
 		
 		//.................................................................................................
-		// FILTERING FILLED NACELLE AND ENGINES TABS ...
+		// FILTERING FILLED SPOILERS TABS ...
 		//.................................................................................................
 		int numberOfFilledFuselageSpoilerTabs = Arrays.asList(
 				fuselageSpoilersInnerSpanwisePositionList.size(),
@@ -27603,6 +27646,54 @@ public class InputManagerController {
 
 	public void setLandingGearsRearWheelsWidthUnitChoiceBox(ChoiceBox<String> landingGearsRearWheelsWidthUnitChoiceBox) {
 		this.landingGearsRearWheelsWidthUnitChoiceBox = landingGearsRearWheelsWidthUnitChoiceBox;
+	}
+
+	public InputManagerControllerUtilities getInputManagerControllerUtilities() {
+		return inputManagerControllerUtilities;
+	}
+
+	public void setInputManagerControllerUtilities(InputManagerControllerUtilities inputManagerControllerUtilities) {
+		this.inputManagerControllerUtilities = inputManagerControllerUtilities;
+	}
+
+	public boolean isNoneAdjustCriterionFuselage() {
+		return noneAdjustCriterionFuselage;
+	}
+
+	public void setNoneAdjustCriterionFuselage(boolean noneAdjustCriterionFuselage) {
+		this.noneAdjustCriterionFuselage = noneAdjustCriterionFuselage;
+	}
+
+	public boolean isNoneAdjustCriterionWing() {
+		return noneAdjustCriterionWing;
+	}
+
+	public void setNoneAdjustCriterionWing(boolean noneAdjustCriterionWing) {
+		this.noneAdjustCriterionWing = noneAdjustCriterionWing;
+	}
+
+	public boolean isNoneAdjustCriterionHTail() {
+		return noneAdjustCriterionHTail;
+	}
+
+	public void setNoneAdjustCriterionHTail(boolean noneAdjustCriterionHTail) {
+		this.noneAdjustCriterionHTail = noneAdjustCriterionHTail;
+	}
+
+	public boolean isNoneAdjustCriterionVTail() {
+		return noneAdjustCriterionVTail;
+	}
+
+	public void setNoneAdjustCriterionVTail(boolean noneAdjustCriterionVTail) {
+		this.noneAdjustCriterionVTail = noneAdjustCriterionVTail;
+	}
+
+	public boolean isNoneAdjustCriterionCanard() {
+		return noneAdjustCriterionCanard;
+	}
+
+	public void setNoneAdjustCriterionCanard(boolean noneAdjustCriterionCanard) {
+		this.noneAdjustCriterionCanard = noneAdjustCriterionCanard;
 	};
 	
 }
