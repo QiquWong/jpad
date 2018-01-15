@@ -1236,8 +1236,9 @@ public final class AircraftUtils {
 //		result.add((OCCShape)faceRoot);	
 		
 		// Closing the tip using a filler surface
-		int iTip = cadCurveAirfoilBPList.size() - 1; // tip airfoil index 
-		CADGeomCurve3D airfoilTip = cadCurveAirfoilBPList.get(iTip); // airfoil CAD curve
+		int iTip = cadCurveAirfoilBPList.size() - 1;                      // tip airfoil index 
+		CADGeomCurve3D airfoilTip = cadCurveAirfoilBPList.get(iTip);      // airfoil CAD curve
+		CADGeomCurve3D airfoilPreTip = cadCurveAirfoilBPList.get(iTip-1); // second to last airfoil CAD curve
 				
 		Double rTh = liftingSurface.getAirfoilList().get(iTip).getAirfoilCreator().getThicknessToChordRatio(); 
 		Double eTh = rTh*chords.get(iTip); // effective airfoil thickness	
@@ -1246,10 +1247,20 @@ public final class AircraftUtils {
 		OCCEdge tipChord = (OCCEdge) OCCUtils.theFactory.newShape(tdsChords.get(iTip));	
 		Double tipChordLength = liftingSurface.getChordTip().doubleValue(SI.METER);
 		
-		// splitting the airfoil curve using the first vertex of the tip chord
+		// creating the second to last chord edge
+		OCCEdge preTipChord = (OCCEdge) OCCUtils.theFactory.newShape(tdsChords.get(iTip-1));	
+		Double preTipChordLength = liftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints().get(iTip-1).doubleValue(SI.METER);
+		
+		// splitting the tip airfoil curve using the first vertex of the tip chord
 		List<OCCEdge> airfoilTipCrvs = OCCUtils.splitEdge(
 				airfoilTip, 
 				OCCUtils.getVertexFromEdge(tipChord, 0).pnt()
+				);
+		
+		// splitting the second to last airfoil curve using its chord first vertex
+		List<OCCEdge> airfoilPreTipCrvs = OCCUtils.splitEdge(
+				airfoilPreTip, 
+				OCCUtils.getVertexFromEdge(preTipChord, 0).pnt()
 				);
 				
 		// creating a drawing plane next to the tip airfoil
@@ -1284,6 +1295,7 @@ public final class AircraftUtils {
 		PVector aPnt = PVector.add(le2, aVector);
 		
 		PVector teVector = PVector.sub(te2, te1); // vector representation of the last panel trailing edge 
+		teVector.z = leVector.z; // slightly modified in order to obtain a plane
 		float teLength = teVector.mag();
 		float bLength = eTh.floatValue()/teLength;		
 		PVector bVector = PVector.mult(teVector, bLength);
@@ -1312,168 +1324,33 @@ public final class AircraftUtils {
 		PVector chordTipNVector = new PVector();
 		PVector.cross(chordTipVector, aVector, chordTipNVector).normalize(); // vector in the airfoil plane, normal to the chord, normalized
 		
-		// splitting the tip airfoil in 6 parts, 3 for the upper and 3 for the lower
-		Double[] spRatios = {0.25, 0.75};
-		List<OCCEdge> airfoilUpperCrvs = new ArrayList<>();
-		List<OCCEdge> airfoilLowerCrvs = new ArrayList<>();
-		airfoilUpperCrvs.add(airfoilTipCrvs.get(0));
-		airfoilLowerCrvs.add(airfoilTipCrvs.get(1));
-		
-		for(int i = 0; i < spRatios.length; i++) {
-			
-			int iUpp = 0;
-			int iLow = 0;
-			
-			PVector pntOnChord = PVector.lerp(le2, te2, spRatios[i].floatValue()); // tip chord fraction point
-			
-			Double[] airfoilThickAtPnt = AircraftUtils.getThicknessAtX(
-					liftingSurface.getAirfoilList().get(iTip).getAirfoilCreator(), 
-					spRatios[i]
-					);
-			
-			PVector pntOnAirfoilUCrv = PVector.add(
-					pntOnChord, 
-					PVector.mult(chordTipNVector, (airfoilThickAtPnt[0].floatValue())*tipChordLength.floatValue())
-					);
-			
-			PVector pntOnAirfoilLCrv = PVector.add(
-					pntOnChord, 
-					PVector.mult(chordTipNVector, (airfoilThickAtPnt[1].floatValue())*tipChordLength.floatValue())
-					);
-						
-			List<OCCEdge> arflUppCrvs = OCCUtils.splitEdge(
-					OCCUtils.theFactory.newCurve3D(airfoilUpperCrvs.get(iUpp)), 
-					new double[] {pntOnAirfoilUCrv.x, pntOnAirfoilUCrv.y, pntOnAirfoilUCrv.z}
-					);
-			
-			List<OCCEdge> arflLowCrvs = OCCUtils.splitEdge(
-					OCCUtils.theFactory.newCurve3D(airfoilLowerCrvs.get(iLow)), 
-					new double[] {pntOnAirfoilLCrv.x, pntOnAirfoilLCrv.y, pntOnAirfoilLCrv.z}
-					);
-			
-			airfoilUpperCrvs.remove(iUpp);		
-			airfoilUpperCrvs.add(iUpp, arflUppCrvs.get(0));
-			airfoilUpperCrvs.add(iUpp + 1, arflUppCrvs.get(1));
-			
-			airfoilLowerCrvs.remove(iLow);
-			airfoilLowerCrvs.add(iLow, arflLowCrvs.get(1));
-			airfoilLowerCrvs.add(iLow + 1, arflLowCrvs.get(0));
-			
-			iLow++;						
-		}
-		
-		// creating tangent vectors for the filler surface guide curves
-		List<PVector[]> tanList = new ArrayList<>();
-		CADGeomCurve3D airfoilPreTip = cadCurveAirfoilBPList.get(iTip-1); // second to last airfoil CAD curve
-		
-		OCCEdge preTipChord = (OCCEdge) OCCUtils.theFactory.newShape(tdsChords.get(iTip-1));	
-		Double preTipChordLength = liftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints().get(iTip-1).doubleValue(SI.METER);
-		
-		List<OCCEdge> airfoilPreTipCrvs = OCCUtils.splitEdge(
-				airfoilPreTip, 
-				OCCUtils.getVertexFromEdge(preTipChord, 0).pnt()
-				);
-		
+		// creating vertical splitting vectors for the second to last airfoil curve
 		PVector chordPreTipVector = PVector.sub(te1, le1); 	
 		PVector chordPreTipNVector = new PVector();
 		PVector.cross(chordPreTipVector, aVector, chordPreTipNVector).normalize(); 
 		
-		for(int i = 0; i < spRatios.length; i++) {
-			
-			PVector pntOnChord = PVector.lerp(le1, te1, spRatios[i].floatValue()); 
-
-			Double[] airfoilThickAtPnt = AircraftUtils.getThicknessAtX(
-					liftingSurface.getAirfoilList().get(iTip-1).getAirfoilCreator(), 
-					spRatios[i]
-					);		
-			
-			PVector pntOnAirfoilUCrv = PVector.add(
-					pntOnChord, 
-					PVector.mult(chordPreTipNVector, (airfoilThickAtPnt[0].floatValue())*preTipChordLength.floatValue())
-					);
-			
-			PVector pntOnAirfoilLCrv = PVector.add(
-					pntOnChord, 
-					PVector.mult(chordPreTipNVector, (airfoilThickAtPnt[1].floatValue())*preTipChordLength.floatValue())
-					);
-			
-			double[] pntU = new double[] {pntOnAirfoilUCrv.x, pntOnAirfoilUCrv.y, pntOnAirfoilUCrv.z};
-			double[] pntL = new double[] {pntOnAirfoilLCrv.x, pntOnAirfoilLCrv.y, pntOnAirfoilLCrv.z};
-			
-			CADVertex pnt_U = OCCUtils.pointProjectionOnCurve(
-					(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(0)),
-					pntU
-					);
-			gp_Pnt gpPnt_U = new gp_Pnt(pnt_U.pnt()[0], pnt_U.pnt()[1], pnt_U.pnt()[2]);
-			
-			CADVertex pnt_L = OCCUtils.pointProjectionOnCurve(
-					(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(1)),
-					pntL
-					);
-			gp_Pnt gpPnt_L = new gp_Pnt(pnt_L.pnt()[0], pnt_L.pnt()[1], pnt_L.pnt()[2]);
-			
-			PVector pntUppPreTip = new PVector(
-					((Double) gpPnt_U.X()).floatValue(), 
-					((Double) gpPnt_U.Y()).floatValue(),
-					((Double) gpPnt_U.Z()).floatValue()
-					);
-			
-			PVector pntLowPreTip = new PVector(
-					((Double) gpPnt_L.X()).floatValue(), 
-					((Double) gpPnt_L.Y()).floatValue(),
-					((Double) gpPnt_L.Z()).floatValue()
-					);
-			
-			PVector[] tanVecs = new PVector[2];
-			
-			double[] airfoilTipUppCrvsPnt = airfoilUpperCrvs.get(spRatios.length - i).vertices()[0].pnt();
-			double[] airfoilTipLowCrvsPnt = airfoilLowerCrvs.get(spRatios.length - i).vertices()[1].pnt();
-			
-			tanVecs[0] = PVector.sub(
-					new PVector(
-							((Double) airfoilTipUppCrvsPnt[0]).floatValue(), 
-							((Double) airfoilTipUppCrvsPnt[1]).floatValue(), 
-							((Double) airfoilTipUppCrvsPnt[2]).floatValue()
-							),
-					pntUppPreTip
-					).normalize();
-			
-			tanVecs[1] = PVector.sub(
-					new PVector(
-							((Double) airfoilTipLowCrvsPnt[0]).floatValue(), 
-							((Double) airfoilTipLowCrvsPnt[1]).floatValue(), 
-							((Double) airfoilTipLowCrvsPnt[2]).floatValue()
-							),
-					pntLowPreTip
-					).normalize();
-			
-			System.out.println(">>>> Upper Tangent #" + (i + 1) + ": " + Arrays.toString(tanVecs[0].array()));
-			System.out.println(">>>> Lower Tangent #" + (i + 1) + ": " + Arrays.toString(tanVecs[1].array()));
-
-			tanList.add(tanVecs);
-		}
-				
 		// creating points for the guide curves in the construction plane formed by the segments a, b and c
-		PVector cPnt = PVector.lerp(aPnt, bPnt, spRatios[0].floatValue());
-		PVector dPnt = PVector.lerp(aPnt, bPnt, spRatios[1].floatValue());
+		Double[] splits = {0.25, 0.75};
+		PVector cPnt = PVector.lerp(aPnt, bPnt, splits[0].floatValue());
+		PVector dPnt = PVector.lerp(aPnt, bPnt, splits[1].floatValue());
 		
-		PVector ePnt = PVector.lerp(le2, te2, spRatios[1].floatValue());
+		PVector ePnt = PVector.lerp(le2, te2, splits[1].floatValue());
 		dPnt.lerp(ePnt, 0.25f); // slightly modified D point
 		
 		// creating the guide curves in the construction plane
 		List<double[]> constPlaneGuideCrv1Pnts = new ArrayList<>();
-		constPlaneGuideCrv1Pnts.add(new double[] {te2.x, te2.y, te2.z});
-		constPlaneGuideCrv1Pnts.add(new double[] {dPnt.x, dPnt.y, dPnt.z});
+		constPlaneGuideCrv1Pnts.add(new double[] {le2.x, le2.y, le2.z});
 		constPlaneGuideCrv1Pnts.add(new double[] {cPnt.x, cPnt.y, cPnt.z});
 		
 		List<double[]> constPlaneGuideCrv2Pnts = new ArrayList<>();
 		constPlaneGuideCrv2Pnts.add(new double[] {cPnt.x, cPnt.y, cPnt.z});
-		constPlaneGuideCrv2Pnts.add(new double[] {le2.x, le2.y, le2.z});
-		
-		PVector cVector = PVector.sub(aPnt, bPnt);
+		constPlaneGuideCrv2Pnts.add(new double[] {dPnt.x, dPnt.y, dPnt.z});
+		constPlaneGuideCrv2Pnts.add(new double[] {te2.x, te2.y, te2.z});
 				
-		double tanAFac = 5*aVector.mag()*(-1);
-		double tanBFac = 3*bVector.mag();
+		PVector cVector = PVector.sub(bPnt, aPnt);
+				
+		double tanAFac = 5*aVector.mag();
+		double tanBFac = 3*bVector.mag()*(-1);
 		double tanCFac = 5*aVector.mag();
 		aVector.normalize();
 		bVector.normalize();
@@ -1490,133 +1367,215 @@ public final class AircraftUtils {
 		CADGeomCurve3D constPlaneGuideCrv1 = OCCUtils.theFactory.newCurve3D(
 				constPlaneGuideCrv1Pnts, 
 				false, 
-				tanBConstPlaneGuideCrv, 
+				tanAConstPlaneGuideCrv, 
 				tanCConstPlaneGuideCrv, 
 				false
 				);	
-		CADGeomCurve3D constPlaneGuideCrv2 = OCCUtils.theFactory.newCurve3D(
+		CADGeomCurve3D constPlaneGuideCrv2_0 = OCCUtils.theFactory.newCurve3D(
 				constPlaneGuideCrv2Pnts, 
 				false, 
 				tanCConstPlaneGuideCrv, 
-				tanAConstPlaneGuideCrv, 
+				tanBConstPlaneGuideCrv, 
 				false
 				);
 		
-		// splitting constPlaneGuideCrv1 for further manipulations
-		List<OCCEdge> constPlaneGuideCrvs1 = OCCUtils.splitEdge(
-				constPlaneGuideCrv1, 
+		// splitting constPlaneGuideCrv2_0 for further manipulations
+		List<OCCEdge> constPlaneGuideCrvs2 = OCCUtils.splitEdge(
+				constPlaneGuideCrv2_0, 
 				new double[] {dPnt.x, dPnt.y, dPnt.z}
 				);		
-		CADGeomCurve3D constPlaneGuideCrv1_1 = OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(0));
-		CADGeomCurve3D constPlaneGuideCrv1_2 = OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(1));
+		CADGeomCurve3D constPlaneGuideCrv2 = OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs2.get(0));
+		CADGeomCurve3D constPlaneGuideCrv3 = OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs2.get(1));
 		
-		// main sections curves creation
-		List<double[]> sec1MainCrvPnts = new ArrayList<>();
-		List<double[]> sec2MainCrvPnts = new ArrayList<>();
+		// first of all, splitting the tip airfoil in 6 parts, 3 for the upper and 3 for the lower, and getting tangent vectors
+		List<OCCEdge> airfoilUpperCrvs = new ArrayList<>();
+		List<OCCEdge> airfoilLowerCrvs = new ArrayList<>();
+		airfoilUpperCrvs.add(airfoilTipCrvs.get(0));
+		airfoilLowerCrvs.add(airfoilTipCrvs.get(1));
 		
-		sec1MainCrvPnts.add(airfoilUpperCrvs.get(spRatios.length).vertices()[0].pnt());
-		sec1MainCrvPnts.add(new double[] {cPnt.x, cPnt.y, cPnt.z});
-		sec1MainCrvPnts.add(airfoilLowerCrvs.get(spRatios.length).vertices()[1].pnt());		
+		List<PVector[]> tanList = new ArrayList<>();
 		
-		sec2MainCrvPnts.add(airfoilUpperCrvs.get(spRatios.length-1).vertices()[0].pnt());
-		sec2MainCrvPnts.add(new double[] {dPnt.x, dPnt.y, dPnt.z});
-		sec2MainCrvPnts.add(airfoilLowerCrvs.get(spRatios.length-1).vertices()[1].pnt());
+		for(int i = 0; i < splits.length; i++) {
+			
+			int iUpp = 0;
+			int iLow = 0;
+			
+			PVector pntOnTipChord = PVector.lerp(le2, te2, splits[i].floatValue()); // tip chord fraction point
+			
+			Double[] tipAirfoilThickAtPnt = AircraftUtils.getThicknessAtX(
+					liftingSurface.getAirfoilList().get(iTip).getAirfoilCreator(), 
+					splits[i]
+					);
+			
+			PVector pntOnTipAirfoilUCrv = PVector.add(
+					pntOnTipChord, 
+					PVector.mult(chordTipNVector, (tipAirfoilThickAtPnt[0].floatValue())*tipChordLength.floatValue())
+					);			
+			PVector pntOnTipAirfoilLCrv = PVector.add(
+					pntOnTipChord, 
+					PVector.mult(chordTipNVector, (tipAirfoilThickAtPnt[1].floatValue())*tipChordLength.floatValue())
+					);
+						
+			List<OCCEdge> arflUppCrvs = OCCUtils.splitEdge(
+					OCCUtils.theFactory.newCurve3D(airfoilUpperCrvs.get(iUpp)), 
+					new double[] {pntOnTipAirfoilUCrv.x, pntOnTipAirfoilUCrv.y, pntOnTipAirfoilUCrv.z}
+					);			
+			List<OCCEdge> arflLowCrvs = OCCUtils.splitEdge(
+					OCCUtils.theFactory.newCurve3D(airfoilLowerCrvs.get(iLow)),
+					new double[] {pntOnTipAirfoilLCrv.x, pntOnTipAirfoilLCrv.y, pntOnTipAirfoilLCrv.z}
+					);
+			
+			airfoilUpperCrvs.remove(iUpp);		
+			airfoilUpperCrvs.add(iUpp, arflUppCrvs.get(0));
+			airfoilUpperCrvs.add(iUpp + 1, arflUppCrvs.get(1));
+			
+			airfoilLowerCrvs.remove(iLow);
+			airfoilLowerCrvs.add(iLow, arflLowCrvs.get(1));
+			airfoilLowerCrvs.add(iLow + 1, arflLowCrvs.get(0));
+			
+			iLow++;	
+			
+			// tangent vectors calculation
+			PVector pntOnPreTipChord = PVector.lerp(le1, te1, splits[i].floatValue());
+			
+			Double[] preTipAirfoilThickAtPnt = AircraftUtils.getThicknessAtX(
+					liftingSurface.getAirfoilList().get(iTip-1).getAirfoilCreator(), 
+					splits[i]
+					);
+			
+			PVector pntOnPreTipAirfoilUCrv = PVector.add(
+					pntOnPreTipChord, 
+					PVector.mult(chordPreTipNVector, (preTipAirfoilThickAtPnt[0].floatValue())*preTipChordLength.floatValue())
+					);			
+			PVector pntOnPreTipAirfoilLCrv = PVector.add(
+					pntOnPreTipChord, 
+					PVector.mult(chordPreTipNVector, (preTipAirfoilThickAtPnt[1].floatValue())*preTipChordLength.floatValue())
+					);
+			
+			double[] pntPTU = OCCUtils.pointProjectionOnCurve(
+					(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(0)),
+					new double[] {pntOnPreTipAirfoilUCrv.x, pntOnPreTipAirfoilUCrv.y, pntOnPreTipAirfoilUCrv.z}
+					).pnt();			
+			double[] pntPTL = OCCUtils.pointProjectionOnCurve(
+					(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(1)),
+					new double[] {pntOnPreTipAirfoilLCrv.x, pntOnPreTipAirfoilLCrv.y, pntOnPreTipAirfoilLCrv.z}
+					).pnt();
+			
+			PVector pntPreTipUpp = new PVector(
+					(float) pntPTU[0], 
+					(float) pntPTU[1],
+					(float) pntPTU[2]
+					);			
+			PVector pntPreTipLow = new PVector(
+					(float) pntPTL[0], 
+					(float) pntPTL[1],
+					(float) pntPTL[2]
+					);
+			
+			PVector[] tanVecs = new PVector[2];
+			
+			tanVecs[0] = PVector.sub(
+					pntOnTipAirfoilUCrv,
+					pntPreTipUpp
+					).normalize();
+			
+			tanVecs[1] = PVector.sub(
+					pntOnTipAirfoilLCrv,
+					pntPreTipLow
+					).normalize();
+			
+			System.out.println(">>>> Upper Tangent #" + (i + 1) + ": " + Arrays.toString(tanVecs[0].array()));
+			System.out.println(">>>> Lower Tangent #" + (i + 1) + ": " + Arrays.toString(tanVecs[1].array()));
+
+			tanList.add(tanVecs);
+		}
 		
-		double tanUppSec1MainCrvFac = tanAFac*(-1);
-		double tanLowSec1MainCrvFac = tanAFac;		
-		double tanUppSec2MainCrvFac = tanAFac*(-1);
-		double tanLowSec2MainCrvFac = tanAFac;
+		// main vertical sections 
+		List<double[]> mainVSec1Pnts = new ArrayList<>();
+		List<double[]> mainVSec2Pnts = new ArrayList<>();
 		
-		double[] tanUppSec1MainCrv = MyArrayUtils.scaleArray(
+		mainVSec1Pnts.add(airfoilUpperCrvs.get(splits.length).vertices()[0].pnt());
+		mainVSec1Pnts.add(new double[] {cPnt.x, cPnt.y, cPnt.z});
+		mainVSec1Pnts.add(airfoilLowerCrvs.get(splits.length).vertices()[1].pnt());		
+		
+		mainVSec2Pnts.add(airfoilUpperCrvs.get(splits.length-1).vertices()[0].pnt());
+		mainVSec2Pnts.add(new double[] {dPnt.x, dPnt.y, dPnt.z});
+		mainVSec2Pnts.add(airfoilLowerCrvs.get(splits.length-1).vertices()[1].pnt());
+		
+		double tanUppMainVSec1Fac = tanAFac;
+		double tanLowMainVSec1Fac = tanAFac*(-1);		
+		double tanUppMainVSec2Fac = tanAFac;
+		double tanLowMainVSec2Fac = tanAFac*(-1);
+		
+		double[] tanUppMainVSec1 = MyArrayUtils.scaleArray(
 				new double[] {tanList.get(0)[0].x, tanList.get(0)[0].y, tanList.get(0)[0].z}, 
-				tanUppSec1MainCrvFac
+				tanUppMainVSec1Fac
 				);		
-		double[] tanLowSec1MainCrv = MyArrayUtils.scaleArray(
+		double[] tanLowMainVSec1 = MyArrayUtils.scaleArray(
 				new double[] {tanList.get(0)[1].x, tanList.get(0)[1].y, tanList.get(0)[1].z},
-				tanLowSec1MainCrvFac
+				tanLowMainVSec1Fac
 				);		
-		double[] tanUppSec2MainCrv = MyArrayUtils.scaleArray(
+		double[] tanUppMainVSec2 = MyArrayUtils.scaleArray(
 				new double[] {tanList.get(1)[0].x, tanList.get(1)[0].y, tanList.get(1)[0].z}, 
-				tanUppSec2MainCrvFac
+				tanUppMainVSec2Fac
 				);		
-		double[] tanLowSec2MainCrv = MyArrayUtils.scaleArray(
+		double[] tanLowMainVSec2 = MyArrayUtils.scaleArray(
 				new double[] {tanList.get(1)[1].x, tanList.get(1)[1].y, tanList.get(1)[1].z},
-				tanLowSec2MainCrvFac
+				tanLowMainVSec2Fac
 				);
 		
-		CADGeomCurve3D sec1MainCrv = OCCUtils.theFactory.newCurve3D(
-				sec1MainCrvPnts, 
+		CADGeomCurve3D mainVSec1 = OCCUtils.theFactory.newCurve3D(
+				mainVSec1Pnts, 
 				false, 
-				tanUppSec1MainCrv, 
-				tanLowSec1MainCrv, 
+				tanUppMainVSec1, 
+				tanLowMainVSec1, 
 				false
 				);		
-		CADGeomCurve3D sec2MainCrv = OCCUtils.theFactory.newCurve3D(
-				sec2MainCrvPnts, 
+		CADGeomCurve3D mainVSec2 = OCCUtils.theFactory.newCurve3D(
+				mainVSec2Pnts, 
 				false, 
-				tanUppSec2MainCrv, 
-				tanLowSec2MainCrv, 
+				tanUppMainVSec2, 
+				tanLowMainVSec2, 
 				false
 				);
 		
 		// splitting the main sections curves, in order to obtain better accuracy
-		List<OCCEdge> sec1MainCrvs = OCCUtils.splitEdge(
-				sec1MainCrv, 
-				new double[] {cPnt.x, cPnt.y, cPnt.z}
-				);		
-		CADGeomCurve3D sec1MainCrvUpp = OCCUtils.theFactory.newCurve3D(sec1MainCrvs.get(0));
-		CADGeomCurve3D sec1MainCrvLow = OCCUtils.theFactory.newCurve3D(sec1MainCrvs.get(1));
+//		List<OCCEdge> mainVSec1Crvs = OCCUtils.splitEdge(
+//				mainVSec1, 
+//				new double[] {cPnt.x, cPnt.y, cPnt.z}
+//				);		
+//		CADGeomCurve3D mainVSec1Upp = OCCUtils.theFactory.newCurve3D(mainVSec1Crvs.get(0));
+//		CADGeomCurve3D mainVSec1Low = OCCUtils.theFactory.newCurve3D(mainVSec1Crvs.get(1));
+//		
+//		List<OCCEdge> mainVSec2Crvs = OCCUtils.splitEdge(
+//				mainVSec2, 
+//				new double[] {dPnt.x, dPnt.y, dPnt.z}
+//				);
+//		CADGeomCurve3D mainVSec2Upp = OCCUtils.theFactory.newCurve3D(mainVSec2Crvs.get(0));
+//		CADGeomCurve3D mainVSec2Low = OCCUtils.theFactory.newCurve3D(mainVSec2Crvs.get(1));
 		
-		List<OCCEdge> sec2MainCrvs = OCCUtils.splitEdge(
-				sec2MainCrv, 
-				new double[] {dPnt.x, dPnt.y, dPnt.z}
-				);
-		CADGeomCurve3D sec2MainCrvUpp = OCCUtils.theFactory.newCurve3D(sec2MainCrvs.get(0));
-		CADGeomCurve3D sec2MainCrvLow = OCCUtils.theFactory.newCurve3D(sec2MainCrvs.get(1));
+		// more splittings for better accuracy
+		Double[] splitsVP1 = {0.10, 0.30, 0.50, 0.75};
+		Double[] splitsVP2 = {0.20, 0.40, 0.60, 0.80};
+		Double[] splitsVP3 = {0.25, 0.50, 0.70, 0.85};
 		
-		// adjusting guide curves points 
-		int nPointsCPGC = 10;
+		Double[] splitsHP1 = {0.15, 0.35, 0.70, 0.85};
+		Double[] splitsHP2 = {0.15, 0.35, 0.70, 0.85};
+		Double[] splitsHP3 = {0.15, 0.35, 0.70, 0.85};
 		
-		constPlaneGuideCrv2.discretize(nPointsCPGC);
-		List<gp_Pnt> gpPntsCPGC2 = ((OCCGeomCurve3D)constPlaneGuideCrv2).getDiscretizedCurve().getPoints();	
-		OCCVertex vtxCPGC2 = OCCUtils.getVertexFromEdge((OCCEdge)sec1MainCrvs.get(0), 1);
-		gpPntsCPGC2.set(0, BRep_Tool.Pnt(vtxCPGC2.getShape()));	
-		CADGeomCurve3D constPlaneGuideCrv2Fix = OCCUtils.theFactory.newCurve3DGP(
-				gpPntsCPGC2, 
-				false
-				);
+		// first patch, sub vertical curves creation
+		List<double[]> pntsOnCPGC1 = new ArrayList<>();
+		List<OCCEdge> airfoilUpperCrvsP1 = new ArrayList<>();
+		List<OCCEdge> airfoilLowerCrvsP1 = new ArrayList<>();
+		List<CADGeomCurve3D> subVSecP1 = new ArrayList<>();
+		airfoilUpperCrvsP1.add(airfoilUpperCrvs.get(2));
+		airfoilLowerCrvsP1.add(airfoilLowerCrvs.get(2));
+		double[] rangeCPGC1 = constPlaneGuideCrv1.getRange();
 		
-		constPlaneGuideCrv1_2.discretize(nPointsCPGC);
-		List<gp_Pnt> gpPntsCPGC1_2 = ((OCCGeomCurve3D)constPlaneGuideCrv1_2).getDiscretizedCurve().getPoints();	
-		OCCVertex vtxCPGC1 = OCCUtils.getVertexFromEdge((OCCEdge)sec2MainCrvs.get(0), 1);
-		gpPntsCPGC1_2.set(0, BRep_Tool.Pnt(vtxCPGC1.getShape()));	
-		gpPntsCPGC1_2.set(nPointsCPGC - 1, BRep_Tool.Pnt(vtxCPGC2.getShape()));
-		CADGeomCurve3D constPlaneGuideCrv1_2Fix = OCCUtils.theFactory.newCurve3DGP(
-				gpPntsCPGC1_2, 
-				false
-				);
-		
-		constPlaneGuideCrv1_1.discretize(nPointsCPGC);
-		List<gp_Pnt> gpPntsCPGC1_1 = ((OCCGeomCurve3D)constPlaneGuideCrv1_1).getDiscretizedCurve().getPoints();	
-		gpPntsCPGC1_1.set(nPointsCPGC - 1, BRep_Tool.Pnt(vtxCPGC1.getShape()));	
-		CADGeomCurve3D constPlaneGuideCrv1_1Fix = OCCUtils.theFactory.newCurve3DGP(
-				gpPntsCPGC1_1, 
-				false
-				);
-		
-		// creating new sub-sections between main for better accuracy
-		List<double[]> subSecList = new ArrayList<>();
-		List<PVector[]> subSecTanList = new ArrayList<>();
-		List<CADGeomCurve3D> subSecCADList = new ArrayList<>();
-		subSecList.add(new double[] {0.20, 0.50, 0.80});
-		subSecList.add(new double[] {0.20, 0.50, 0.80});
-		subSecList.add(new double[] {0.20, 0.50, 0.80});
-		
-		double[] rangeCPGC2F = constPlaneGuideCrv2Fix.getRange();
-
-		for(int i = 0; i < subSecList.get(0).length; i++) {
+		for(int i = 0; i < splitsVP1.length; i++) {			
 			// projecting points on the construction curve onto the tip chord
-			double[] pntOnCrv = constPlaneGuideCrv2Fix.value(subSecList.get(1)[i]*(rangeCPGC2F[1] + rangeCPGC2F[0]));
+			double[] pntOnCrv = constPlaneGuideCrv1.value(splitsVP1[i]*(rangeCPGC1[1] - rangeCPGC1[0]) + rangeCPGC1[0]);
+			pntsOnCPGC1.add(pntOnCrv);
 			double[] projOnChord = OCCUtils.pointProjectionOnCurve(
 					OCCUtils.theFactory.newCurve3D(tipChord), 
 					pntOnCrv
@@ -1628,12 +1587,10 @@ public final class AircraftUtils {
 					);
 			double chordFraction = (PVector.sub(projOnChordPV, le2).mag())/tipChordLength;
 			
-			double subCrvFac = PVector.sub(
-					new PVector((float) pntOnCrv[0], (float) pntOnCrv[1], (float) pntOnCrv[2]), 
-					projOnChordPV
-					).mag();
+			// obtaining points on the tip airfoil curve	
+			int iUpp = 0;
+			int iLow = 0;
 			
-			// obtaining points on the tip airfoil curve		
 			PVector pntOnTipChord = PVector.lerp(le2, te2, (float) chordFraction);
 			
 			Double[] tipAirfoilThickAtPnt = AircraftUtils.getThicknessAtX(
@@ -1644,12 +1601,28 @@ public final class AircraftUtils {
 			PVector pntOnTipAirfoilUCrv = PVector.add(
 					pntOnTipChord, 
 					PVector.mult(chordTipNVector, (tipAirfoilThickAtPnt[0].floatValue())*tipChordLength.floatValue())
-					);
-			
+					);			
 			PVector pntOnTipAirfoilLCrv = PVector.add(
 					pntOnTipChord, 
 					PVector.mult(chordTipNVector, (tipAirfoilThickAtPnt[1].floatValue())*tipChordLength.floatValue())
-					);		
+					);	
+			
+			List<OCCEdge> arflUppCrvs = OCCUtils.splitEdge(
+					OCCUtils.theFactory.newCurve3D(airfoilUpperCrvsP1.get(iUpp)), 
+					new double[] {pntOnTipAirfoilUCrv.x, pntOnTipAirfoilUCrv.y, pntOnTipAirfoilUCrv.z}
+					);			
+			List<OCCEdge> arflLowCrvs = OCCUtils.splitEdge(
+					OCCUtils.theFactory.newCurve3D(airfoilLowerCrvsP1.get(iLow)), 
+					new double[] {pntOnTipAirfoilLCrv.x, pntOnTipAirfoilLCrv.y, pntOnTipAirfoilLCrv.z}
+					);
+			
+			airfoilUpperCrvsP1.remove(iUpp);		
+			airfoilUpperCrvsP1.add(iUpp, arflUppCrvs.get(0));
+			airfoilUpperCrvsP1.add(iUpp + 1, arflUppCrvs.get(1));
+			
+			airfoilLowerCrvsP1.remove(iLow);
+			airfoilLowerCrvsP1.add(iLow, arflLowCrvs.get(1));
+			airfoilLowerCrvsP1.add(iLow + 1, arflLowCrvs.get(0));
 			
 			// calculating tangent using the second to last airfoil curve
 			PVector pntOnPreTipChord = PVector.lerp(le1, te1, (float) chordFraction); 
@@ -1658,409 +1631,730 @@ public final class AircraftUtils {
 					liftingSurface.getAirfoilList().get(iTip-1).getAirfoilCreator(), 
 					chordFraction
 					);		
-
-			PVector pntOnPreTipAirfoilUCrv = PVector.add(
+			
+			PVector pntOnPreTipAirfoilUpp = PVector.add(
 					pntOnPreTipChord, 
 					PVector.mult(chordPreTipNVector, (preTipAirfoilThickAtPnt[0].floatValue())*preTipChordLength.floatValue())
 					);
-
-			PVector pntOnPreTipAirfoilLCrv = PVector.add(
+			PVector pntOnPreTipAirfoilLow = PVector.add(
 					pntOnPreTipChord, 
 					PVector.mult(chordPreTipNVector, (preTipAirfoilThickAtPnt[1].floatValue())*preTipChordLength.floatValue())
-					);
-
-			double[] pntU = new double[] {pntOnPreTipAirfoilUCrv.x, pntOnPreTipAirfoilUCrv.y, pntOnPreTipAirfoilUCrv.z};
-			double[] pntL = new double[] {pntOnPreTipAirfoilLCrv.x, pntOnPreTipAirfoilLCrv.y, pntOnPreTipAirfoilLCrv.z};
-
-			CADVertex pnt_U = OCCUtils.pointProjectionOnCurve(
-					(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(0)),
-					pntU
-					);
-			gp_Pnt gpPnt_U = new gp_Pnt(pnt_U.pnt()[0], pnt_U.pnt()[1], pnt_U.pnt()[2]);
-
-			CADVertex pnt_L = OCCUtils.pointProjectionOnCurve(
-					(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(1)),
-					pntL
-					);
-			gp_Pnt gpPnt_L = new gp_Pnt(pnt_L.pnt()[0], pnt_L.pnt()[1], pnt_L.pnt()[2]);
-
-			PVector pntUppPreTip = new PVector(
-					((Double) gpPnt_U.X()).floatValue(), 
-					((Double) gpPnt_U.Y()).floatValue(),
-					((Double) gpPnt_U.Z()).floatValue()
-					);
-
-			PVector pntLowPreTip = new PVector(
-					((Double) gpPnt_L.X()).floatValue(), 
-					((Double) gpPnt_L.Y()).floatValue(),
-					((Double) gpPnt_L.Z()).floatValue()
+					);			
+			double[] pntPTU = OCCUtils.pointProjectionOnCurve(
+					OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(0)), 
+					new double[] {pntOnPreTipAirfoilUpp.x, pntOnPreTipAirfoilUpp.y, pntOnPreTipAirfoilUpp.z}
+					).pnt();				
+			double[] pntPTL = OCCUtils.pointProjectionOnCurve(
+					OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(1)), 
+					new double[] {pntOnPreTipAirfoilLow.x, pntOnPreTipAirfoilLow.y, pntOnPreTipAirfoilLow.z}
+					).pnt();			
+			PVector pntPreTipUpp = new PVector(
+					(float) pntPTU[0], 
+					(float) pntPTU[1],
+					(float) pntPTU[2]
+					);			
+			PVector pntPreTipLow = new PVector(
+					(float) pntPTL[0], 
+					(float) pntPTL[1],
+					(float) pntPTL[2]
 					);
 
 			PVector[] tanVecs = new PVector[2];
-
-//			double[] airfoilTipUppCrvsPnt = airfoilUpperCrvs.get(2).vertices()[0].pnt();
-//			double[] airfoilTipLowCrvsPnt = airfoilLowerCrvs.get(2).vertices()[1].pnt();
-
 			tanVecs[0] = PVector.sub(
-//					new PVector(
-//							((Double) airfoilTipUppCrvsPnt[0]).floatValue(), 
-//							((Double) airfoilTipUppCrvsPnt[1]).floatValue(), 
-//							((Double) airfoilTipUppCrvsPnt[2]).floatValue()
-//							),
 					pntOnTipAirfoilUCrv,
-					pntUppPreTip
+					pntPreTipUpp
 					).normalize();
-
 			tanVecs[1] = PVector.sub(
-//					new PVector(
-//							((Double) airfoilTipLowCrvsPnt[0]).floatValue(), 
-//							((Double) airfoilTipLowCrvsPnt[1]).floatValue(), 
-//							((Double) airfoilTipLowCrvsPnt[2]).floatValue()
-//							),
 					pntOnTipAirfoilLCrv,
-					pntLowPreTip
+					pntPreTipLow
 					).normalize();
+			double tanSubVSecUppFac = tanAFac;
+			double tanSubVSecLowFac = tanAFac*(-1);
 
 			System.out.println(">>>> Upper Tangent #" + (i + 1) + ": " + Arrays.toString(tanVecs[0].array()));
 			System.out.println(">>>> Lower Tangent #" + (i + 1) + ": " + Arrays.toString(tanVecs[1].array()));
 			
-			double tanSubCrvUppFac = tanAFac*(-1);
-			double tanSubCrvLowFac = tanAFac;
-			
-			List<double[]> pntsSubCrv = new ArrayList<>();
-			pntsSubCrv.add(new double[] {pntOnTipAirfoilUCrv.x, pntOnTipAirfoilUCrv.y, pntOnTipAirfoilUCrv.z});
-			pntsSubCrv.add(pntOnCrv);
-			pntsSubCrv.add(new double[] {pntOnTipAirfoilLCrv.x, pntOnTipAirfoilLCrv.y, pntOnTipAirfoilLCrv.z});
-			
-			CADGeomCurve3D subCrv = OCCUtils.theFactory.newCurve3D(
-					pntsSubCrv, 
+			// creating new sub vertical curves for patch 1			
+			List<double[]> pntsSubVSec = new ArrayList<>();
+			pntsSubVSec.add(arflUppCrvs.get(0).vertices()[1].pnt());
+			pntsSubVSec.add(pntOnCrv);
+			pntsSubVSec.add(arflLowCrvs.get(0).vertices()[1].pnt());
+			CADGeomCurve3D subVSec = OCCUtils.theFactory.newCurve3D(
+					pntsSubVSec, 
 					false,
-					MyArrayUtils.scaleArray(new double[] {tanVecs[0].x, tanVecs[0].y, tanVecs[0].z}, tanSubCrvUppFac),  
-					MyArrayUtils.scaleArray(new double[] {tanVecs[1].x, tanVecs[1].y, tanVecs[1].z}, tanSubCrvLowFac),
+					MyArrayUtils.scaleArray(new double[] {tanVecs[0].x, tanVecs[0].y, tanVecs[0].z}, tanSubVSecUppFac),  
+					MyArrayUtils.scaleArray(new double[] {tanVecs[1].x, tanVecs[1].y, tanVecs[1].z}, tanSubVSecLowFac),
 					false
 					);
-
-			subSecTanList.add(tanVecs);
-			subSecCADList.add(subCrv);
+			subVSecP1.add(subVSec);				
 		}
 		
-		// new filling attempt 
-		// first section, up
-		BRepOffsetAPI_MakeFilling filler1Upp = new BRepOffsetAPI_MakeFilling();
+		// second patch, sub vertical curves creation
+		List<double[]> pntsOnCPGC2 = new ArrayList<>();
+		List<OCCEdge> airfoilUpperCrvsP2 = new ArrayList<>();
+		List<OCCEdge> airfoilLowerCrvsP2 = new ArrayList<>();
+		List<CADGeomCurve3D> subVSecP2 = new ArrayList<>();
+		airfoilUpperCrvsP2.add(airfoilUpperCrvs.get(1));
+		airfoilLowerCrvsP2.add(airfoilLowerCrvs.get(1));
+		double[] rangeCPGC2 = constPlaneGuideCrv2.getRange();
 		
-		filler1Upp.Add(
-				airfoilUpperCrvs.get(spRatios.length).getShape(),
-				GeomAbs_Shape.GeomAbs_C0
-				);		
-		filler1Upp.Add(
-				((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv2Fix).edge()).getShape(),
-				GeomAbs_Shape.GeomAbs_C0
-				);
-		filler1Upp.Add(
-				sec1MainCrvs.get(0).getShape(),
-				GeomAbs_Shape.GeomAbs_C0				
-				);
-		
-		filler1Upp.Build();
-		System.out.println("Deformed surface 1Upp is done? = " + filler1Upp.IsDone());
-		System.out.println("Deformed surface 1Upp shape type: " + filler1Upp.Shape().ShapeType());
-		
-		// first section, low
-		BRepOffsetAPI_MakeFilling filler1Low = new BRepOffsetAPI_MakeFilling();
+		for(int i = 0; i < splitsVP2.length; i++) {			
+			// projecting points on the construction curve onto the tip chord
+			double[] pntOnCrv = constPlaneGuideCrv2.value(splitsVP2[i]*(rangeCPGC2[1] - rangeCPGC2[0]) + rangeCPGC2[0]);
+			pntsOnCPGC2.add(pntOnCrv);
+			double[] projOnChord = OCCUtils.pointProjectionOnCurve(
+					OCCUtils.theFactory.newCurve3D(tipChord), 
+					pntOnCrv
+					).pnt();
+			PVector projOnChordPV = new PVector(
+					(float) projOnChord[0], 
+					(float) projOnChord[1], 
+					(float) projOnChord[2]
+					);
+			double chordFraction = (PVector.sub(projOnChordPV, le2).mag())/tipChordLength;
+			
+			// obtaining points on the tip airfoil curve	
+			int iUpp = 0;
+			int iLow = 0;
+			
+			PVector pntOnTipChord = PVector.lerp(le2, te2, (float) chordFraction);
+			
+			Double[] tipAirfoilThickAtPnt = AircraftUtils.getThicknessAtX(
+					liftingSurface.getAirfoilList().get(iTip).getAirfoilCreator(), 
+					chordFraction
+					);
+			
+			PVector pntOnTipAirfoilUCrv = PVector.add(
+					pntOnTipChord, 
+					PVector.mult(chordTipNVector, (tipAirfoilThickAtPnt[0].floatValue())*tipChordLength.floatValue())
+					);			
+			PVector pntOnTipAirfoilLCrv = PVector.add(
+					pntOnTipChord, 
+					PVector.mult(chordTipNVector, (tipAirfoilThickAtPnt[1].floatValue())*tipChordLength.floatValue())
+					);	
+			
+			List<OCCEdge> arflUppCrvs = OCCUtils.splitEdge(
+					OCCUtils.theFactory.newCurve3D(airfoilUpperCrvsP2.get(iUpp)), 
+					new double[] {pntOnTipAirfoilUCrv.x, pntOnTipAirfoilUCrv.y, pntOnTipAirfoilUCrv.z}
+					);			
+			List<OCCEdge> arflLowCrvs = OCCUtils.splitEdge(
+					OCCUtils.theFactory.newCurve3D(airfoilLowerCrvsP2.get(iLow)),
+					new double[] {pntOnTipAirfoilLCrv.x, pntOnTipAirfoilLCrv.y, pntOnTipAirfoilLCrv.z}
+					);
+			
+			airfoilUpperCrvsP2.remove(iUpp);		
+			airfoilUpperCrvsP2.add(iUpp, arflUppCrvs.get(0));
+			airfoilUpperCrvsP2.add(iUpp + 1, arflUppCrvs.get(1));
+			
+			airfoilLowerCrvsP2.remove(iLow);
+			airfoilLowerCrvsP2.add(iLow, arflLowCrvs.get(1));
+			airfoilLowerCrvsP2.add(iLow + 1, arflLowCrvs.get(0));
+			
+			// calculating tangent using the second to last airfoil curve
+			PVector pntOnPreTipChord = PVector.lerp(le1, te1, (float) chordFraction); 
 
-		filler1Low.Add(
-				airfoilLowerCrvs.get(spRatios.length).getShape(),
+			Double[] preTipAirfoilThickAtPnt = AircraftUtils.getThicknessAtX(
+					liftingSurface.getAirfoilList().get(iTip-1).getAirfoilCreator(), 
+					chordFraction
+					);		
+			
+			PVector pntOnPreTipAirfoilUpp = PVector.add(
+					pntOnPreTipChord, 
+					PVector.mult(chordPreTipNVector, (preTipAirfoilThickAtPnt[0].floatValue())*preTipChordLength.floatValue())
+					);
+			PVector pntOnPreTipAirfoilLow = PVector.add(
+					pntOnPreTipChord, 
+					PVector.mult(chordPreTipNVector, (preTipAirfoilThickAtPnt[1].floatValue())*preTipChordLength.floatValue())
+					);			
+			double[] pntPTU = OCCUtils.pointProjectionOnCurve(
+					OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(0)), 
+					new double[] {pntOnPreTipAirfoilUpp.x, pntOnPreTipAirfoilUpp.y, pntOnPreTipAirfoilUpp.z}
+					).pnt();				
+			double[] pntPTL = OCCUtils.pointProjectionOnCurve(
+					OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(1)), 
+					new double[] {pntOnPreTipAirfoilLow.x, pntOnPreTipAirfoilLow.y, pntOnPreTipAirfoilLow.z}
+					).pnt();			
+			PVector pntPreTipUpp = new PVector(
+					(float) pntPTU[0], 
+					(float) pntPTU[1],
+					(float) pntPTU[2]
+					);			
+			PVector pntPreTipLow = new PVector(
+					(float) pntPTL[0], 
+					(float) pntPTL[1],
+					(float) pntPTL[2]
+					);
+
+			PVector[] tanVecs = new PVector[2];
+			tanVecs[0] = PVector.sub(
+					pntOnTipAirfoilUCrv,
+					pntPreTipUpp
+					).normalize();
+			tanVecs[1] = PVector.sub(
+					pntOnTipAirfoilLCrv,
+					pntPreTipLow
+					).normalize();
+			double tanSubVSecUppFac = tanAFac;
+			double tanSubVSecLowFac = tanAFac*(-1);
+
+			System.out.println(">>>> Upper Tangent #" + (i + 1) + ": " + Arrays.toString(tanVecs[0].array()));
+			System.out.println(">>>> Lower Tangent #" + (i + 1) + ": " + Arrays.toString(tanVecs[1].array()));
+			
+			// creating new sub vertical curves for patch 1			
+			List<double[]> pntsSubVSec = new ArrayList<>();
+			pntsSubVSec.add(arflUppCrvs.get(0).vertices()[1].pnt());
+			pntsSubVSec.add(pntOnCrv);
+			pntsSubVSec.add(arflLowCrvs.get(0).vertices()[1].pnt());
+			CADGeomCurve3D subVSec = OCCUtils.theFactory.newCurve3D(
+					pntsSubVSec, 
+					false,
+					MyArrayUtils.scaleArray(new double[] {tanVecs[0].x, tanVecs[0].y, tanVecs[0].z}, tanSubVSecUppFac),  
+					MyArrayUtils.scaleArray(new double[] {tanVecs[1].x, tanVecs[1].y, tanVecs[1].z}, tanSubVSecLowFac),
+					false
+					);
+			subVSecP2.add(subVSec);				
+		}
+		
+		// third patch, sub vertical curves creation
+		List<double[]> pntsOnCPGC3 = new ArrayList<>();
+		List<OCCEdge> airfoilUpperCrvsP3 = new ArrayList<>();
+		List<OCCEdge> airfoilLowerCrvsP3 = new ArrayList<>();
+		List<CADGeomCurve3D> subVSecP3 = new ArrayList<>();
+		airfoilUpperCrvsP3.add(airfoilUpperCrvs.get(0));
+		airfoilLowerCrvsP3.add(airfoilLowerCrvs.get(0));
+		double[] rangeCPGC3 = constPlaneGuideCrv3.getRange();
+
+		for(int i = 0; i < splitsVP3.length; i++) {			
+			// projecting points on the construction curve onto the tip chord
+			double[] pntOnCrv = constPlaneGuideCrv3.value(splitsVP3[i]*(rangeCPGC3[1] - rangeCPGC3[0]) + rangeCPGC3[0]);
+			pntsOnCPGC3.add(pntOnCrv);
+			double[] projOnChord = OCCUtils.pointProjectionOnCurve(
+					OCCUtils.theFactory.newCurve3D(tipChord), 
+					pntOnCrv
+					).pnt();
+			PVector projOnChordPV = new PVector(
+					(float) projOnChord[0], 
+					(float) projOnChord[1], 
+					(float) projOnChord[2]
+					);
+			double chordFraction = (PVector.sub(projOnChordPV, le2).mag())/tipChordLength;
+			
+			System.out.println(chordFraction);
+
+			// obtaining points on the tip airfoil curve	
+			int iUpp = 0;
+			int iLow = 0;
+
+			PVector pntOnTipChord = PVector.lerp(le2, te2, (float) chordFraction);
+
+			Double[] tipAirfoilThickAtPnt = AircraftUtils.getThicknessAtX(
+					liftingSurface.getAirfoilList().get(iTip).getAirfoilCreator(), 
+					chordFraction
+					);
+
+			PVector pntOnTipAirfoilUCrv = PVector.add(
+					pntOnTipChord, 
+					PVector.mult(chordTipNVector, (tipAirfoilThickAtPnt[0].floatValue())*tipChordLength.floatValue())
+					);			
+			PVector pntOnTipAirfoilLCrv = PVector.add(
+					pntOnTipChord, 
+					PVector.mult(chordTipNVector, (tipAirfoilThickAtPnt[1].floatValue())*tipChordLength.floatValue())
+					);	
+
+			List<OCCEdge> arflUppCrvs = OCCUtils.splitEdge(
+					OCCUtils.theFactory.newCurve3D(airfoilUpperCrvsP3.get(iUpp)),
+					new double[] {pntOnTipAirfoilUCrv.x, pntOnTipAirfoilUCrv.y, pntOnTipAirfoilUCrv.z}
+					);			
+			List<OCCEdge> arflLowCrvs = OCCUtils.splitEdge(
+					OCCUtils.theFactory.newCurve3D(airfoilLowerCrvsP3.get(iLow)), 
+					new double[] {pntOnTipAirfoilLCrv.x, pntOnTipAirfoilLCrv.y, pntOnTipAirfoilLCrv.z}
+					);
+
+			airfoilUpperCrvsP3.remove(iUpp);		
+			airfoilUpperCrvsP3.add(iUpp, arflUppCrvs.get(0));
+			airfoilUpperCrvsP3.add(iUpp + 1, arflUppCrvs.get(1));
+
+			airfoilLowerCrvsP3.remove(iLow);
+			airfoilLowerCrvsP3.add(iLow, arflLowCrvs.get(1));
+			airfoilLowerCrvsP3.add(iLow + 1, arflLowCrvs.get(0));
+
+			// calculating tangent using the second to last airfoil curve
+			PVector pntOnPreTipChord = PVector.lerp(le1, te1, (float) chordFraction); 
+
+			Double[] preTipAirfoilThickAtPnt = AircraftUtils.getThicknessAtX(
+					liftingSurface.getAirfoilList().get(iTip-1).getAirfoilCreator(), 
+					chordFraction
+					);		
+
+			PVector pntOnPreTipAirfoilUpp = PVector.add(
+					pntOnPreTipChord, 
+					PVector.mult(chordPreTipNVector, (preTipAirfoilThickAtPnt[0].floatValue())*preTipChordLength.floatValue())
+					);
+			PVector pntOnPreTipAirfoilLow = PVector.add(
+					pntOnPreTipChord, 
+					PVector.mult(chordPreTipNVector, (preTipAirfoilThickAtPnt[1].floatValue())*preTipChordLength.floatValue())
+					);			
+			double[] pntPTU = OCCUtils.pointProjectionOnCurve(
+					OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(0)), 
+					new double[] {pntOnPreTipAirfoilUpp.x, pntOnPreTipAirfoilUpp.y, pntOnPreTipAirfoilUpp.z}
+					).pnt();				
+			double[] pntPTL = OCCUtils.pointProjectionOnCurve(
+					OCCUtils.theFactory.newCurve3D(airfoilPreTipCrvs.get(1)), 
+					new double[] {pntOnPreTipAirfoilLow.x, pntOnPreTipAirfoilLow.y, pntOnPreTipAirfoilLow.z}
+					).pnt();			
+			PVector pntPreTipUpp = new PVector(
+					(float) pntPTU[0], 
+					(float) pntPTU[1],
+					(float) pntPTU[2]
+					);			
+			PVector pntPreTipLow = new PVector(
+					(float) pntPTL[0], 
+					(float) pntPTL[1],
+					(float) pntPTL[2]
+					);
+
+			PVector[] tanVecs = new PVector[2];
+			tanVecs[0] = PVector.sub(
+					pntOnTipAirfoilUCrv,
+					pntPreTipUpp
+					).normalize();
+			tanVecs[1] = PVector.sub(
+					pntOnTipAirfoilLCrv,
+					pntPreTipLow
+					).normalize();
+			double tanSubVSecUppFac = tanAFac;
+			double tanSubVSecLowFac = tanAFac*(-1);
+
+			System.out.println(">>>> Upper Tangent #" + (i + 1) + ": " + Arrays.toString(tanVecs[0].array()));
+			System.out.println(">>>> Lower Tangent #" + (i + 1) + ": " + Arrays.toString(tanVecs[1].array()));
+
+			// creating new sub vertical curves for patch 3			
+			List<double[]> pntsSubVSec = new ArrayList<>();
+			pntsSubVSec.add(arflUppCrvs.get(0).vertices()[1].pnt());
+			pntsSubVSec.add(pntOnCrv);
+			pntsSubVSec.add(arflLowCrvs.get(0).vertices()[1].pnt());
+			CADGeomCurve3D subVSec = OCCUtils.theFactory.newCurve3D(
+					pntsSubVSec, 
+					false,
+					MyArrayUtils.scaleArray(new double[] {tanVecs[0].x, tanVecs[0].y, tanVecs[0].z}, tanSubVSecUppFac),  
+					MyArrayUtils.scaleArray(new double[] {tanVecs[1].x, tanVecs[1].y, tanVecs[1].z}, tanSubVSecLowFac),
+					false
+					);
+			subVSecP3.add(subVSec);				
+		}
+		
+		// first patch, sub horizontal curves creation
+		List<CADGeomCurve3D> subHSecP1 = new ArrayList<>();
+		for(int i = 0; i < splitsHP1.length; i++) {
+			List<double[]> pntsSubH = new ArrayList<>();
+			double[] mainVSec1R = mainVSec1.getRange();
+			int index = i;
+			pntsSubH.add(airfoilTipCrvs.get(0).vertices()[1].pnt());
+			subVSecP1.forEach(crv -> {
+				double[] crvRange = crv.getRange();
+				pntsSubH.add(crv.value(splitsHP1[index]*(crvRange[1] - crvRange[0]) + crvRange[0]));
+			});
+			pntsSubH.add(mainVSec1.value(splitsHP1[i]*(mainVSec1R[1] - mainVSec1R[0]) + mainVSec1R[0]));
+			CADGeomCurve3D subHSec = OCCUtils.theFactory.newCurve3D(pntsSubH, false);
+			subHSecP1.add(subHSec);
+		}
+		
+		// second patch, sub horizontal curves creation
+		List<CADGeomCurve3D> subHSecP2 = new ArrayList<>();
+		for(int i = 0; i < splitsHP2.length; i++) {
+			List<double[]> pntsSubH = new ArrayList<>();
+			double[] mainVSec1R = mainVSec1.getRange();
+			double[] mainVSec2R = mainVSec2.getRange();
+			int index = i;
+			pntsSubH.add(mainVSec1.value(splitsHP2[i]*(mainVSec1R[1] - mainVSec1R[0]) + mainVSec1R[0]));
+			subVSecP2.forEach(crv -> {
+				double[] crvRange = crv.getRange();
+				pntsSubH.add(crv.value(splitsHP2[index]*(crvRange[1] - crvRange[0]) + crvRange[0]));
+			});
+			pntsSubH.add(mainVSec2.value(splitsHP2[i]*(mainVSec2R[1] - mainVSec2R[0]) + mainVSec2R[0]));
+			CADGeomCurve3D subHSec = OCCUtils.theFactory.newCurve3D(pntsSubH, false);
+			subHSecP2.add(subHSec);
+		}
+		
+		// third patch, sub horizontal curves creation
+		List<CADGeomCurve3D> subHSecP3 = new ArrayList<>();
+		for(int i = 0; i < splitsHP3.length; i++) {
+			List<double[]> pntsSubH = new ArrayList<>();
+			double[] mainVSec2R = mainVSec2.getRange();
+			int index = i;
+			pntsSubH.add(mainVSec2.value(splitsHP3[i]*(mainVSec2R[1] - mainVSec2R[0]) + mainVSec2R[0]));
+			subVSecP3.forEach(crv -> {
+				double[] crvRange = crv.getRange();
+				pntsSubH.add(crv.value(splitsHP3[index]*(crvRange[1] - crvRange[0]) + crvRange[0]));
+			});
+			pntsSubH.add(airfoilTipCrvs.get(0).vertices()[0].pnt());
+			CADGeomCurve3D subHSec = OCCUtils.theFactory.newCurve3D(pntsSubH, false);
+			subHSecP3.add(subHSec);
+		}
+		
+		// splitting main vertical guide curves
+		List<OCCEdge> mainVSec1Split = new ArrayList<>();
+		mainVSec1Split = OCCUtils.splitEdge(mainVSec1, Arrays.asList(splitsHP1));
+		
+		List<OCCEdge> mainVSec2Split = new ArrayList<>();
+		mainVSec2Split = OCCUtils.splitEdge(mainVSec2, Arrays.asList(splitsHP2));
+		
+		// splitting construction plane guide curves
+		List<OCCEdge> constPlaneGC1Split = new ArrayList<>();
+		constPlaneGC1Split = OCCUtils.splitEdge(constPlaneGuideCrv1, Arrays.asList(splitsHP1));
+		
+		// splitting first patch sub vertical and horizontal curves
+		List<List<OCCEdge>> subVSecP1Split = new ArrayList<List<OCCEdge>>();
+		subVSecP1.stream().forEach(crv -> subVSecP1Split.add(OCCUtils.splitEdge(
+				crv, 
+				Arrays.asList(splitsHP1)
+				)));
+		
+		List<List<OCCEdge>> subHSecP1Split = new ArrayList<List<OCCEdge>>();
+		for(int i = 0; i < splitsHP1.length; i++) {
+			List<double[]> pnts = new ArrayList<>();
+			int index = i;
+			subVSecP1Split.stream().forEach(crvList -> pnts.add(crvList.get(index).vertices()[1].pnt()));
+			subHSecP1Split.add(OCCUtils.splitEdgeByPntsList(subHSecP1.get(i), pnts));
+			}
+		
+		// splitting second patch sub vertical and horizontal curves
+		List<List<OCCEdge>> subVSecP2Split = new ArrayList<List<OCCEdge>>();
+		subVSecP2.stream().forEach(crv -> subVSecP2Split.add(OCCUtils.splitEdge(
+				crv, 
+				Arrays.asList(splitsHP2)
+				)));
+		
+		List<List<OCCEdge>> subHSecP2Split = new ArrayList<List<OCCEdge>>();
+		for(int i = 0; i < splitsHP2.length; i++) {
+			List<double[]> pnts = new ArrayList<>();
+			int index = i;
+			subVSecP2Split.stream().forEach(crvList -> pnts.add(crvList.get(index).vertices()[1].pnt()));
+			subHSecP2Split.add(OCCUtils.splitEdgeByPntsList(subHSecP2.get(i), pnts));
+			}
+		
+		// splitting third patch sub vertical and horizontal curves
+		List<List<OCCEdge>> subVSecP3Split = new ArrayList<List<OCCEdge>>();
+		subVSecP3.stream().forEach(crv -> subVSecP3Split.add(OCCUtils.splitEdge(
+				crv, 
+				Arrays.asList(splitsHP3)
+				)));
+		
+		List<List<OCCEdge>> subHSecP3Split = new ArrayList<List<OCCEdge>>();
+		for(int i = 0; i < splitsHP3.length; i++) {
+			List<double[]> pnts = new ArrayList<>();
+			int index = i;
+			subVSecP3Split.stream().forEach(crvList -> pnts.add(crvList.get(index).vertices()[1].pnt()));
+			subHSecP3Split.add(OCCUtils.splitEdgeByPntsList(subHSecP3.get(i), pnts));
+			}		
+		
+		// filling patch 1 
+		// patch P1_11
+		double[] pnt1_P1_11 = subHSecP1Split.get(0).get(0).vertices()[1].pnt();
+		double[] pnt2_P1_11 = subHSecP1Split.get(0).get(1).vertices()[1].pnt();
+		
+		BRepOffsetAPI_MakeFilling fillerP1_11 = new BRepOffsetAPI_MakeFilling();
+		
+		fillerP1_11.Add(
+				airfoilUpperCrvsP1.get(2).getShape(),
 				GeomAbs_Shape.GeomAbs_C0
-				);		
-		filler1Low.Add(
-				((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv2Fix).edge()).getShape(),
+				);	
+		fillerP1_11.Add(
+				airfoilUpperCrvsP1.get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_11.Add(
+				airfoilUpperCrvsP1.get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_11.Add(
+				subHSecP1Split.get(1).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_11.Add(
+				subHSecP1Split.get(1).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_11.Add(
+				subHSecP1Split.get(1).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_11.Add(
+				subVSecP1Split.get(2).get(0).getShape(),
 				GeomAbs_Shape.GeomAbs_C0
 				);
-		filler1Low.Add(
-				sec1MainCrvs.get(1).getShape(),
-				GeomAbs_Shape.GeomAbs_C0				
+		fillerP1_11.Add(
+				subVSecP1Split.get(2).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		
+		fillerP1_11.Add(new gp_Pnt(pnt1_P1_11[0], pnt1_P1_11[1], pnt1_P1_11[2]));
+		fillerP1_11.Add(new gp_Pnt(pnt2_P1_11[0], pnt2_P1_11[1], pnt2_P1_11[2]));		
+	
+		fillerP1_11.Build();
+		System.out.println("Deformed surface P1_11 is done? = " + fillerP1_11.IsDone());
+		System.out.println("Deformed surface P1_11 shape type: " + fillerP1_11.Shape().ShapeType());
+		
+		// patch p1_12
+		double[] pnt1_P1_12 = subHSecP1Split.get(0).get(3).vertices()[1].pnt();
+		
+		BRepOffsetAPI_MakeFilling fillerP1_12 = new BRepOffsetAPI_MakeFilling();
+		
+		fillerP1_12.Add(
+				airfoilUpperCrvsP1.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_12.Add(
+				airfoilUpperCrvsP1.get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_12.Add(
+				subVSecP1Split.get(2).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP1_12.Add(
+				subVSecP1Split.get(2).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP1_12.Add(
+				subHSecP1Split.get(1).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_12.Add(
+				subHSecP1Split.get(1).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);		
+		fillerP1_12.Add(
+				mainVSec1Split.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP1_12.Add(
+				mainVSec1Split.get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		
+		fillerP1_12.Add(new gp_Pnt(pnt1_P1_12[0], pnt1_P1_12[1], pnt1_P1_12[2]));	
+	
+		fillerP1_12.Build();
+		System.out.println("Deformed surface P1_12 is done? = " + fillerP1_12.IsDone());
+		System.out.println("Deformed surface P1_12 shape type: " + fillerP1_12.Shape().ShapeType());
+
+		// patch P1_21
+		CADGeomCurve3D cc1_P1_21 = OCCUtils.theFactory.newCurve3D(subVSecP1Split.get(0).get(2));
+		CADGeomCurve3D cc2_P1_21 = OCCUtils.theFactory.newCurve3D(subVSecP1Split.get(1).get(2));
+		double[] cc1_P1_21R = cc1_P1_21.getRange();
+		double[] cc2_P1_21R = cc2_P1_21.getRange();
+		double[] pnt1_P1_21 = constPlaneGC1Split.get(0).vertices()[1].pnt();
+		double[] pnt2_P1_21 = constPlaneGC1Split.get(1).vertices()[1].pnt();
+		double[] pnt3_P1_21 = cc1_P1_21.value(0.10*(cc1_P1_21R[1] - cc1_P1_21R[0]) + cc1_P1_21R[0]);
+		double[] pnt4_P1_21 = cc1_P1_21.value(0.65*(cc1_P1_21R[1] - cc1_P1_21R[0]) + cc1_P1_21R[0]);
+		double[] pnt5_P1_21 = cc2_P1_21.value(0.10*(cc2_P1_21R[1] - cc2_P1_21R[0]) + cc2_P1_21R[0]);
+		double[] pnt6_P1_21 = cc2_P1_21.value(0.65*(cc2_P1_21R[1] - cc2_P1_21R[0]) + cc2_P1_21R[0]);
+		
+		BRepOffsetAPI_MakeFilling fillerP1_21 = new BRepOffsetAPI_MakeFilling();
+		
+		fillerP1_21.Add(
+				subHSecP1Split.get(1).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_21.Add(
+				subHSecP1Split.get(1).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_21.Add(
+				subHSecP1Split.get(1).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_21.Add(
+				subHSecP1Split.get(2).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_21.Add(
+				subHSecP1Split.get(2).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_21.Add(
+				subHSecP1Split.get(2).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_21.Add(
+				subVSecP1Split.get(2).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		
+		fillerP1_21.Add(new gp_Pnt(pnt1_P1_21[0], pnt1_P1_21[1], pnt1_P1_21[2]));
+		fillerP1_21.Add(new gp_Pnt(pnt2_P1_21[0], pnt2_P1_21[1], pnt2_P1_21[2]));	
+		fillerP1_21.Add(new gp_Pnt(pnt3_P1_21[0], pnt3_P1_21[1], pnt3_P1_21[2]));
+		fillerP1_21.Add(new gp_Pnt(pnt4_P1_21[0], pnt4_P1_21[1], pnt4_P1_21[2]));
+		fillerP1_21.Add(new gp_Pnt(pnt5_P1_21[0], pnt5_P1_21[1], pnt5_P1_21[2]));
+		fillerP1_21.Add(new gp_Pnt(pnt6_P1_21[0], pnt6_P1_21[1], pnt6_P1_21[2]));
+	
+		fillerP1_21.Build();
+		System.out.println("Deformed surface P1_21 is done? = " + fillerP1_21.IsDone());
+		System.out.println("Deformed surface P1_21 shape type: " + fillerP1_21.Shape().ShapeType());
+		
+		// patch P1_22
+		CADGeomCurve3D cc1_P1_22 = OCCUtils.theFactory.newCurve3D(subVSecP1Split.get(3).get(2));
+		double[] cc1_P1_22R = cc1_P1_22.getRange();
+		double[] pnt1_P1_22 = constPlaneGC1Split.get(3).vertices()[1].pnt();
+		double[] pnt2_P1_22 = cc1_P1_22.value(0.10*(cc1_P1_22R[1] - cc1_P1_22R[0]) + cc1_P1_22R[0]);
+		double[] pnt3_P1_22 = cc1_P1_22.value(0.65*(cc1_P1_22R[1] - cc1_P1_22R[0]) + cc1_P1_22R[0]);
+
+		BRepOffsetAPI_MakeFilling fillerP1_22 = new BRepOffsetAPI_MakeFilling();
+
+		fillerP1_22.Add(
+				subHSecP1Split.get(1).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_22.Add(
+				subHSecP1Split.get(1).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);		
+		fillerP1_22.Add(
+				subHSecP1Split.get(2).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_22.Add(
+				subHSecP1Split.get(2).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_22.Add(
+				subVSecP1Split.get(2).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP1_22.Add(
+				mainVSec1Split.get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
 				);
 
-		filler1Low.Build();
-		System.out.println("Deformed surface 1Low is done? = " + filler1Low.IsDone());
-		System.out.println("Deformed surface 1Low shape type: " + filler1Low.Shape().ShapeType());	
-		
-		// second section, up
-		BRepOffsetAPI_MakeFilling filler2Upp = new BRepOffsetAPI_MakeFilling();
+		fillerP1_22.Add(new gp_Pnt(pnt1_P1_22[0], pnt1_P1_22[1], pnt1_P1_22[2]));
+		fillerP1_22.Add(new gp_Pnt(pnt2_P1_22[0], pnt2_P1_22[1], pnt2_P1_22[2]));	
+		fillerP1_22.Add(new gp_Pnt(pnt3_P1_22[0], pnt3_P1_22[1], pnt3_P1_22[2]));
 
-		filler2Upp.Add(
-				airfoilUpperCrvs.get(spRatios.length - 1).getShape(),
+		fillerP1_22.Build();
+		System.out.println("Deformed surface P1_22 is done? = " + fillerP1_22.IsDone());
+		System.out.println("Deformed surface P1_22 shape type: " + fillerP1_22.Shape().ShapeType());
+		
+		// patch P1_31
+		double[] pnt1_P1_31 = subHSecP1Split.get(3).get(0).vertices()[1].pnt();
+		double[] pnt2_P1_31 = subHSecP1Split.get(3).get(1).vertices()[1].pnt();
+		
+		BRepOffsetAPI_MakeFilling fillerP1_31 = new BRepOffsetAPI_MakeFilling();
+
+		fillerP1_31.Add(
+				subHSecP1Split.get(2).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_31.Add(
+				subHSecP1Split.get(2).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_31.Add(
+				subHSecP1Split.get(2).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_31.Add(
+				airfoilLowerCrvsP1.get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_31.Add(
+				airfoilLowerCrvsP1.get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_31.Add(
+				airfoilLowerCrvsP1.get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_31.Add(
+				subVSecP1Split.get(2).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP1_31.Add(
+				subVSecP1Split.get(2).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		
+		fillerP1_31.Add(new gp_Pnt(pnt1_P1_31[0], pnt1_P1_31[1], pnt1_P1_31[2]));
+		fillerP1_31.Add(new gp_Pnt(pnt2_P1_31[0], pnt2_P1_31[1], pnt2_P1_31[2]));	
+
+		fillerP1_31.Build();
+		System.out.println("Deformed surface P1_31 is done? = " + fillerP1_31.IsDone());
+		System.out.println("Deformed surface P1_31 shape type: " + fillerP1_31.Shape().ShapeType());
+		
+		// patch P1_32
+		double[] pnt1_P1_32 = subHSecP1Split.get(3).get(3).vertices()[1].pnt();
+
+		BRepOffsetAPI_MakeFilling fillerP1_32 = new BRepOffsetAPI_MakeFilling();
+
+		fillerP1_32.Add(
+				subHSecP1Split.get(2).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_32.Add(
+				subHSecP1Split.get(2).get(4).getShape(),
 				GeomAbs_Shape.GeomAbs_C0
 				);		
-		filler2Upp.Add(
-				((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv1_2Fix).edge()).getShape(),
+		fillerP1_32.Add(
+				airfoilLowerCrvsP1.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP1_32.Add(
+				airfoilLowerCrvsP1.get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);		
+		fillerP1_32.Add(
+				subVSecP1Split.get(2).get(3).getShape(),
 				GeomAbs_Shape.GeomAbs_C0
 				);
-		filler2Upp.Add(
-				sec1MainCrvs.get(0).getShape(),
-				GeomAbs_Shape.GeomAbs_C0				
+		fillerP1_32.Add(
+				subVSecP1Split.get(2).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
 				);
-		filler2Upp.Add(
-				sec2MainCrvs.get(0).getShape(),
-				GeomAbs_Shape.GeomAbs_C0				
+		fillerP1_32.Add(
+				mainVSec1Split.get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP1_32.Add(
+				mainVSec1Split.get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
 				);
 
-		filler2Upp.Build();
-		System.out.println("Deformed surface 2Upp is done? = " + filler2Upp.IsDone());
-		System.out.println("Deformed surface 2Upp shape type: " + filler2Upp.Shape().ShapeType());	
-		
-		// attempting to fill the first section
-		double[] rangeCPGC2 = constPlaneGuideCrv2.getRange();	
-		double[] cPGC2Pnt1 = ((OCCGeomCurve3D)constPlaneGuideCrv2).value(0.05*(rangeCPGC2[1] + rangeCPGC2[0]));
-		double[] cPGC2Pnt2 = ((OCCGeomCurve3D)constPlaneGuideCrv2).value(0.50*(rangeCPGC2[1] + rangeCPGC2[0]));
-		double[] cPGC2Pnt3 = ((OCCGeomCurve3D)constPlaneGuideCrv2).value(0.85*(rangeCPGC2[1] + rangeCPGC2[0]));
-		
-		BRepOffsetAPI_MakeFilling fillMaker1 = new BRepOffsetAPI_MakeFilling();
-		
-		fillMaker1.Add(
-				airfoilUpperCrvs.get(spRatios.length).getShape(),
-				GeomAbs_Shape.GeomAbs_C0
-				);
-		fillMaker1.Add(
-				airfoilLowerCrvs.get(spRatios.length).getShape(),
-				GeomAbs_Shape.GeomAbs_C0
-				);		
-		fillMaker1.Add(
-				((OCCEdge)((OCCGeomCurve3D)sec1MainCrv).edge()).getShape(),
-				GeomAbs_Shape.GeomAbs_C0
-				);
-		
-		fillMaker1.Add(new gp_Pnt(cPGC2Pnt1[0], cPGC2Pnt1[1], cPGC2Pnt1[2]));
-		fillMaker1.Add(new gp_Pnt(cPGC2Pnt2[0], cPGC2Pnt2[1], cPGC2Pnt2[2]));
-		fillMaker1.Add(new gp_Pnt(cPGC2Pnt3[0], cPGC2Pnt3[1], cPGC2Pnt3[2]));
-		
-		fillMaker1.Build();
-		System.out.println("Deformed surface 1 is done? = " + fillMaker1.IsDone());
-		System.out.println("Deformed surface 1 shape type: " + fillMaker1.Shape().ShapeType());	
-		
-		// attempting to fill the second section
-		List<CADGeomCurve3D> filler2CadCrvList = new ArrayList<>();
-		filler2CadCrvList.add(sec2MainCrv);
-		filler2CadCrvList.add(sec1MainCrv);
-		OCCShape filler2 = OCCUtils.makePatchThruSections(filler2CadCrvList);
-		
-		// attempting to fill the last section
-		double[] rangeCPGC1_1 = (OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(0))).getRange();
-		double[] cPGC1_1Pnt1 = (OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(0))).value(0.10*(rangeCPGC1_1[1] + rangeCPGC1_1[0]));
-		double[] cPGC1_1Pnt2 = (OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(0))).value(0.50*(rangeCPGC1_1[1] + rangeCPGC1_1[0]));
-		double[] cPGC1_1Pnt3 = (OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(0))).value(0.85*(rangeCPGC1_1[1] + rangeCPGC1_1[0]));
-		
-		BRepOffsetAPI_MakeFilling fillMaker3 = new BRepOffsetAPI_MakeFilling();
-		
-		fillMaker3.Add(
-				airfoilUpperCrvs.get(spRatios.length - 2).getShape(),
-				GeomAbs_Shape.GeomAbs_C0
-				);
-		fillMaker3.Add(
-				airfoilLowerCrvs.get(spRatios.length - 2).getShape(),
-				GeomAbs_Shape.GeomAbs_C0
-				);		
-		fillMaker3.Add(
-				((OCCEdge)((OCCGeomCurve3D)sec2MainCrv).edge()).getShape(),
-				GeomAbs_Shape.GeomAbs_C0
-				);
-		
-		fillMaker3.Add(new gp_Pnt(cPGC1_1Pnt1[0], cPGC1_1Pnt1[1], cPGC1_1Pnt1[2]));
-		fillMaker3.Add(new gp_Pnt(cPGC1_1Pnt2[0], cPGC1_1Pnt2[1], cPGC1_1Pnt2[2]));
-		fillMaker3.Add(new gp_Pnt(cPGC1_1Pnt3[0], cPGC1_1Pnt3[1], cPGC1_1Pnt3[2]));
-		
-		fillMaker3.Build();
-		System.out.println("Deformed surface 3 is done? = " + fillMaker3.IsDone());
-		System.out.println("Deformed surface 3 shape type: " + fillMaker3.Shape().ShapeType());	
-		
-		// exporting shapes
-//		extraShapes.addAll(constPlaneGuideCrvs1);
-//		extraShapes.add((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv2).edge());
-		extraShapes.add((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv2Fix).edge());
-		extraShapes.add((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv1_2Fix).edge());
-		extraShapes.add((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv1_1Fix).edge());
-		extraShapes.add((OCCEdge)((OCCGeomCurve3D)sec1MainCrv).edge());
-		extraShapes.add((OCCEdge)((OCCGeomCurve3D)sec2MainCrv).edge());
-		subSecCADList.forEach(crv -> extraShapes.add((OCCEdge)((OCCGeomCurve3D)crv).edge()));
-//		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(filler1Upp.Shape()));
-//		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(filler1Low.Shape()));
-//		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(filler2Upp.Shape()));
-//		extraShapes.add(airfoilPreTipCrvs.get(1));
-//		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillMaker1.Shape()));
-//		extraShapes.add(filler2);
-//		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillMaker3.Shape()));
-		
-		// tip chord quarter
-//		PVector chord1QuartP = PVector.lerp(le2, te2, 0.25f); // PVector of the point at 1/4 tip chord
-		
-		// vertical splitting vectors at 1/4 tip chord
-//		Double xChord = 0.25;
-//		Double[] chord1QuartThick = AircraftUtils.getThicknessAtX(liftingSurface.getAirfoilList().get(iTip).getAirfoilCreator(), xChord);
-//		PVector chord1QuartNU = PVector.add(
-//				chord1QuartP, 
-//				PVector.mult(chordNVector, (chord1QuartThick[0].floatValue())*tipChordLength.floatValue())
-//				);
-//		PVector chord1QuartNL = PVector.add(
-//				chord1QuartP, 
-//				PVector.mult(chordNVector, (chord1QuartThick[1].floatValue())*tipChordLength.floatValue())
-//				);
-		
-		// splitting the airfoil upper curve in two halves
-//		List<PVector> splSegPntsU = new ArrayList<>();
-//		splSegPntsU.add(chord1QuartP);
-//		splSegPntsU.add(chord1QuartNU);
-//		CADGeomCurve3D splCrvU = OCCUtils.theFactory.newCurve3DP(splSegPntsU, false);
-//
-//		List<OCCEdge> airfoilUpperCrvs = OCCUtils.splitEdge(
-//				OCCUtils.theFactory.newCurve3D(airfoilCrvs.get(0)), 
-//				OCCUtils.getVertexFromEdge((OCCEdge)((OCCGeomCurve3D)splCrvU).edge(), 1).pnt()
-//				);
-				
-		// splitting the airfoil lower curve in two halves	
-//		List<PVector> splSegPntsL = new ArrayList<>();
-//		splSegPntsL.add(chord1QuartP);
-//		splSegPntsL.add(chord1QuartNL);
-//		CADGeomCurve3D splCrvL = OCCUtils.theFactory.newCurve3DP(splSegPntsL, false);		
-//		
-//		List<OCCEdge> airfoilLowerCrvs = OCCUtils.splitEdge(
-//				OCCUtils.theFactory.newCurve3D(airfoilCrvs.get(1)), 
-//				OCCUtils.getVertexFromEdge((OCCEdge)((OCCGeomCurve3D)splCrvL).edge(), 1).pnt()
-//				);
+		fillerP1_32.Add(new gp_Pnt(pnt1_P1_32[0], pnt1_P1_32[1], pnt1_P1_32[2]));
+
+		fillerP1_32.Build();
+		System.out.println("Deformed surface P1_32 is done? = " + fillerP1_32.IsDone());
+		System.out.println("Deformed surface P1_32 shape type: " + fillerP1_32.Shape().ShapeType());
 		
 		// exporting the shapes
-//		extraShapes.add(airfoilCrvs.get(0));
-//		extraShapes.add(airfoilUpperCrvs.get(0));
-//		extraShapes.add(airfoilUpperCrvs.get(1));
-//		extraShapes.add(airfoilCrvs.get(1));
-//		extraShapes.add(airfoilLowerCrvs.get(0));
-		extraShapes.addAll(airfoilUpperCrvs);
-		extraShapes.addAll(airfoilLowerCrvs);
+		extraShapes.addAll(airfoilUpperCrvsP1);
+		extraShapes.addAll(airfoilUpperCrvsP2);
+		extraShapes.addAll(airfoilUpperCrvsP3);
+		extraShapes.addAll(airfoilLowerCrvsP1);
+		extraShapes.addAll(airfoilLowerCrvsP2);
+		extraShapes.addAll(airfoilLowerCrvsP3);
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)segA).edge());
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)segB).edge());
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)segC).edge());
-//		extraShapes.add((OCCEdge)((OCCGeomCurve3D)splCrvU).edge());
-//		extraShapes.add((OCCEdge)((OCCGeomCurve3D)splCrvL).edge());
+		extraShapes.add((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv1).edge());
+		extraShapes.add((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv2).edge());
+		extraShapes.add((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv3).edge());
+		mainVSec1Split.forEach(crv -> extraShapes.add(crv));
+		mainVSec2Split.forEach(crv -> extraShapes.add(crv));
+		subVSecP1Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
+		subVSecP2Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
+		subVSecP3Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
+		subHSecP1Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
+		subHSecP2Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
+		subHSecP3Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_11.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_12.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_21.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_22.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_31.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_32.Shape()));
 		
-		// Closing the tip using a filler surface
-//		CADGeomCurve3D airfoilTip = cadCurveAirfoilList.get(1).get(cadCurveAirfoilList.get(1).size()-1);
-//		double[] rangeAirfoil = airfoilTip.getRange();
-//		double[] pnt0 = airfoilTip.value(0.5*(rangeAirfoil[0] + rangeAirfoil[1]));
-//		
-//		// coupled points for main vertical sections
-//		List<double[]> pts1 = AircraftUtils.airfoilCoupleCoordinates(airfoilTip, 0.10);
-//		List<double[]> pts2 = AircraftUtils.airfoilCoupleCoordinates(airfoilTip, 0.25);
-//		List<double[]> pts3 = AircraftUtils.airfoilCoupleCoordinates(airfoilTip, 0.50);	
-//		
-//		// splitting airfoil curve in two guide curves
-//		List<OCCEdge> gCrvs = OCCUtils.splitEdge(airfoilTip, pnt0);
-//		OCCEdge gC1 = gCrvs.get(0); // upper curve
-//		OCCEdge gC2 = gCrvs.get(1);	// lower curve
-//				
-//		// splitting both airfoil guide curve again by means of Sec2
-//		List<OCCEdge> gCrvs1 = OCCUtils.splitEdge(OCCUtils.theFactory.newCurve3D(gC1), pts2.get(0)); // upper curves
-//		List<OCCEdge> gCrvs2 = OCCUtils.splitEdge(OCCUtils.theFactory.newCurve3D(gC2), pts2.get(1)); // lower curves
-//		
-////		System.out.println(Arrays.toString(gC1.vertices()[0].pnt()));
-////		System.out.println(Arrays.toString(gC1.vertices()[1].pnt()));
-////		System.out.println(Arrays.toString(gC2.vertices()[0].pnt()));
-////		System.out.println(Arrays.toString(gC2.vertices()[1].pnt()));
-//		
-//		// #1 vertical section 
-//		List<double[]> ptsSec1 = new ArrayList<>();
-//		ptsSec1.add(pts1.get(0));
-//		ptsSec1.add(new double[] {
-//				(pts1.get(0)[0] + pts1.get(1)[0])/2,                                
-//				(pts1.get(0)[1] + pts1.get(1)[1])/2 + (pts1.get(0)[2] - pts1.get(1)[2])/2,
-//				(pts1.get(0)[2] + pts1.get(1)[2])/2
-//		});
-//		ptsSec1.add(pts1.get(1));
-//		CADGeomCurve3D cadSec1 = OCCUtils.theFactory.newCurve3D(ptsSec1, false);
-//		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadSec1).edge());
-//		
-//		List<OCCEdge> cadSecs1 = OCCUtils.splitEdge(cadSec1, ptsSec1.get(1)); // splitting
-//		
-//		// #2 vertical section
-//		List<double[]> ptsSec2 = new ArrayList<>();
-//		ptsSec2.add(pts2.get(0));
-//		ptsSec2.add(new double[] {
-//				(pts2.get(0)[0] + pts2.get(1)[0])/2,                                
-//				(pts2.get(0)[1] + pts2.get(1)[1])/2 + (pts2.get(0)[2] - pts2.get(1)[2])/2,
-//				(pts2.get(0)[2] + pts2.get(1)[2])/2
-//		});
-//		ptsSec2.add(pts2.get(1));
-//		CADGeomCurve3D cadSec2 = OCCUtils.theFactory.newCurve3D(ptsSec2, false);
-//		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadSec2).edge());
-//		
-//		List<OCCEdge> cadSecs2 = OCCUtils.splitEdge(cadSec2, ptsSec2.get(1)); // splitting
-//		
-//		// #3 vertical section
-//		List<double[]> ptsSec3 = new ArrayList<>();
-//		ptsSec3.add(pts3.get(0));
-//		ptsSec3.add(new double[] {
-//				(pts3.get(0)[0] + pts3.get(1)[0])/2,                                
-//				(pts3.get(0)[1] + pts3.get(1)[1])/2 + (pts3.get(0)[2] - pts3.get(1)[2])/2,
-//				(pts3.get(0)[2] + pts3.get(1)[2])/2
-//		});
-//		ptsSec3.add(pts3.get(1));
-//		CADGeomCurve3D cadSec3 = OCCUtils.theFactory.newCurve3D(ptsSec3, false);
-//		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadSec3).edge());
-//		
-//		List<OCCEdge> cadSecs3 = OCCUtils.splitEdge(cadSec3, ptsSec3.get(1)); // splitting
-//		
-//		// horizontal guide curve
-//		List<double[]> ptsHSec = new ArrayList<>();
-//		ptsHSec.add(pnt0);
-//		ptsHSec.add(new double[] {
-//				(pts1.get(0)[0] + pts1.get(1)[0])/2,                                
-//				(pts1.get(0)[1] + pts1.get(1)[1])/2 + (pts1.get(0)[2] - pts1.get(1)[2])/2,
-//				(pts1.get(0)[2] + pts1.get(1)[2])/2
-//		});
-//		ptsHSec.add(new double[] {
-//				(pts2.get(0)[0] + pts2.get(1)[0])/2,                                
-//				(pts2.get(0)[1] + pts2.get(1)[1])/2 + (pts2.get(0)[2] - pts2.get(1)[2])/2,
-//				(pts2.get(0)[2] + pts2.get(1)[2])/2
-//		});
-//		ptsHSec.add(new double[] {
-//				(pts3.get(0)[0] + pts3.get(1)[0])/2,                                
-//				(pts3.get(0)[1] + pts3.get(1)[1])/2 + (pts3.get(0)[2] - pts3.get(1)[2])/2,
-//				(pts3.get(0)[2] + pts3.get(1)[2])/2
-//		});
-//		ptsHSec.add(airfoilTip.value(rangeAirfoil[0]));
-//		CADGeomCurve3D cadHSec = OCCUtils.theFactory.newCurve3D(ptsHSec, false);
-//		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadHSec).edge());
-//		
-//		List<OCCEdge> cadHSecs = OCCUtils.splitEdge(cadHSec, ptsHSec.get(2)); // splitting
 		
-//		double[] range0 = cadSec0.getRange();
-//		double[] pnt0Sec0 = cadSec0.value(0.10*(range0[1] - range0[0]));
-//		double[] pnt1Sec0 = cadSec0.value(0.30*(range0[1] - range0[0]));
-//		double[] pnt2Sec0 = cadSec0.value(0.60*(range0[1] - range0[0]));
-//		double[] pnt3Sec0 = cadSec0.value(1.00*(range0[1] - range0[0]));
-//		
-//		BRepOffsetAPI_MakeFilling fillMaker = new BRepOffsetAPI_MakeFilling();
-//
-//		fillMaker.Add(
-//				(gC1).getShape(),
-//				GeomAbs_Shape.GeomAbs_C0
-//				);
-//		
-//		fillMaker.Add(
-//				((OCCEdge)((OCCGeomCurve3D)cadSec0).edge()).getShape(),
-//				GeomAbs_Shape.GeomAbs_C0
-//				);	
-//		
-//		fillMaker.Add(
-//				(cadSec11).getShape(),
-//				GeomAbs_Shape.GeomAbs_C0
-//				);
 		
-//		fillMaker.Add(new gp_Pnt(pnt0Sec0[0], pnt0Sec0[1], pnt0Sec0[2]));
-//		fillMaker.Add(new gp_Pnt(pnt2Sec0[0], pnt2Sec0[1], pnt2Sec0[2]));
-//		fillMaker.Add(new gp_Pnt(pnt3Sec0[0], pnt3Sec0[1], pnt3Sec0[2]));
-		
-//		fillMaker.Build();
-//		System.out.println("Deformed surface is done? = " + fillMaker.IsDone());
-//		System.out.println("Deformed surface shape  type: " + fillMaker.Shape().ShapeType());
 		
 		// Sewing adjacent patches in order to create one single shell
 //		BRepBuilderAPI_Sewing sewMaker = new BRepBuilderAPI_Sewing();
