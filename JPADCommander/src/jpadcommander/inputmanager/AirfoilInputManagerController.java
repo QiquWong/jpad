@@ -2057,6 +2057,7 @@ public class AirfoilInputManagerController {
 		
 		//create browser
 		Scene sceneSideView = new Scene(stackPane, WIDTH+10, HEIGHT+10, javafx.scene.paint.Color.web("#666970"));
+		paneAirfoilView.getChildren().clear();
 		paneAirfoilView.getChildren().add(sceneSideView.getRoot());
 		
 	}
@@ -2192,6 +2193,7 @@ public class AirfoilInputManagerController {
 		
 		//create browser
 		Scene sceneSideView = new Scene(stackPane, WIDTH+10, HEIGHT+10, javafx.scene.paint.Color.web("#666970"));
+		paneAirfoilClCurveView.getChildren().clear();
 		paneAirfoilClCurveView.getChildren().add(sceneSideView.getRoot());
 		
 	}
@@ -2327,6 +2329,7 @@ public class AirfoilInputManagerController {
 		
 		//create browser
 		Scene sceneSideView = new Scene(stackPane, WIDTH+10, HEIGHT+10, javafx.scene.paint.Color.web("#666970"));
+		paneAirfoilCdCurveView.getChildren().clear();
 		paneAirfoilCdCurveView.getChildren().add(sceneSideView.getRoot());
 		
 	}
@@ -2462,6 +2465,7 @@ public class AirfoilInputManagerController {
 		
 		//create browser
 		Scene sceneSideView = new Scene(stackPane, WIDTH+10, HEIGHT+10, javafx.scene.paint.Color.web("#666970"));
+		paneAirfoilCmCurveView.getChildren().clear();
 		paneAirfoilCmCurveView.getChildren().add(sceneSideView.getRoot());
 		
 	}

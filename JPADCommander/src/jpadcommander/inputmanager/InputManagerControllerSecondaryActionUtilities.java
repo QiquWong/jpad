@@ -41,7 +41,7 @@ import jpadcommander.Main;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyMapUtils;
 
-public class InputManagerControllerUtilities {
+public class InputManagerControllerSecondaryActionUtilities {
 	
 	//---------------------------------------------------------------------------------
 	// VARIABLE DECLARATION
@@ -49,15 +49,11 @@ public class InputManagerControllerUtilities {
 	
 	//---------------------------------------------------------------------------------
 	// BUILDER
-	public InputManagerControllerUtilities(InputManagerController controller) {
+	public InputManagerControllerSecondaryActionUtilities(InputManagerController controller) {
 		
 		this.theController = controller;
 		
 	}
-	
-	/*
-	 * TODO: CONTINUE TO MOVE METHODS WITHOUT @FXML FROM InputManagerController
-	 */
 	
 	//---------------------------------------------------------------------------------
 	// METHODS
