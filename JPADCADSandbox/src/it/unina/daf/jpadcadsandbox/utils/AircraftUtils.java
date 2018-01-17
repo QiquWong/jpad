@@ -1133,14 +1133,14 @@ public final class AircraftUtils {
 //		cadCurveAirfoilBetBPList.forEach(crv -> extraShapes.add((OCCEdge)((OCCGeomCurve3D)crv).edge()));
 
 		// Create patches through the sections defined above
-		List<OCCShape> patchList = new ArrayList<>();
+		List<OCCShape> patchListWing = new ArrayList<>();
 //		patchList = cadCurveAirfoilList.stream()
 //									   .map(crvL -> OCCUtils.makePatchThruSections(crvL))
 //									   .collect(Collectors.toList());
 		
 		for(int i = 0; i < cadCurveAirfoilList.size(); i++) {
 			for(int j = 1; j < cadCurveAirfoilList.get(i).size(); j++) {
-				patchList.add(OCCUtils.makePatchThruSections(
+				patchListWing.add(OCCUtils.makePatchThruSections(
 						cadCurveAirfoilList.get(i).get(j-1),
 						cadCurveAirfoilList.get(i).get(j)
 						));
@@ -1229,11 +1229,12 @@ public final class AircraftUtils {
 			}	
 		}
 		
-		// Closing tip (testing)
+		// Closing wing tip (testing)
 //		CADShape faceTip = OCCUtils.makeFilledFace(cadCurveAirfoilList.get(cadCurveAirfoilList.size()-1).get(cadCurveAirfoilList.get(cadCurveAirfoilList.size()-1).size()-1));
-//		CADShape faceRoot = OCCUtils.makeFilledFace(cadCurveAirfoilList.get(0).get(0));
 //		result.add((OCCShape)faceTip);
-//		result.add((OCCShape)faceRoot);	
+		// Closing wing root 
+		CADShape faceRoot = OCCUtils.makeFilledFace(cadCurveAirfoilList.get(0).get(0));
+		result.add((OCCShape)faceRoot);	
 		
 		// Closing the tip using a filler surface
 		int iTip = cadCurveAirfoilBPList.size() - 1;                      // tip airfoil index 
@@ -1555,7 +1556,7 @@ public final class AircraftUtils {
 //		CADGeomCurve3D mainVSec2Low = OCCUtils.theFactory.newCurve3D(mainVSec2Crvs.get(1));
 		
 		// more splittings for better accuracy
-		Double[] splitsVP1 = {0.10, 0.30, 0.50, 0.75};
+		Double[] splitsVP1 = {0.10, 0.30, 0.50, 0.75}; // TODO: use MyArrayUtils.halfCosine1Space(a, b, n)
 		Double[] splitsVP2 = {0.25, 0.50, 0.75};
 		Double[] splitsVP3 = {0.30, 0.55, 0.75, 0.90};
 		
@@ -2912,33 +2913,77 @@ public final class AircraftUtils {
 		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP3_32.Shape()));
 		
 		// sewing shapes
-		BRepBuilderAPI_Sewing sewMaker = new BRepBuilderAPI_Sewing();
+		BRepBuilderAPI_Sewing sewMakerTip = new BRepBuilderAPI_Sewing();
 		
-		sewMaker.Init();
-		sewMaker.Add(fillerP1_11.Shape());
-		sewMaker.Add(fillerP1_12.Shape());
-		sewMaker.Add(fillerP1_21.Shape());
-		sewMaker.Add(fillerP1_22.Shape());
-		sewMaker.Add(fillerP1_31.Shape());
-		sewMaker.Add(fillerP1_32.Shape());
-		sewMaker.Add(fillerP2_11.Shape());
-		sewMaker.Add(fillerP2_12.Shape());
-		sewMaker.Add(fillerP2_21.Shape());
-		sewMaker.Add(fillerP2_22.Shape());
-		sewMaker.Add(fillerP2_31.Shape());
-		sewMaker.Add(fillerP2_32.Shape());
-		sewMaker.Add(fillerP3_11.Shape());
-		sewMaker.Add(fillerP3_12.Shape());
-		sewMaker.Add(fillerP3_21.Shape());
-		sewMaker.Add(fillerP3_22.Shape());
-		sewMaker.Add(fillerP3_31.Shape());
-		sewMaker.Add(fillerP3_32.Shape());
-		sewMaker.Perform();
+		sewMakerTip.Init();
+		sewMakerTip.Add(fillerP1_11.Shape());
+		sewMakerTip.Add(fillerP1_12.Shape());
+		sewMakerTip.Add(fillerP1_21.Shape());
+		sewMakerTip.Add(fillerP1_22.Shape());
+		sewMakerTip.Add(fillerP1_31.Shape());
+		sewMakerTip.Add(fillerP1_32.Shape());
+		sewMakerTip.Add(fillerP2_11.Shape());
+		sewMakerTip.Add(fillerP2_12.Shape());
+		sewMakerTip.Add(fillerP2_21.Shape());
+		sewMakerTip.Add(fillerP2_22.Shape());
+		sewMakerTip.Add(fillerP2_31.Shape());
+		sewMakerTip.Add(fillerP2_32.Shape());
+		sewMakerTip.Add(fillerP3_11.Shape());
+		sewMakerTip.Add(fillerP3_12.Shape());
+		sewMakerTip.Add(fillerP3_21.Shape());
+		sewMakerTip.Add(fillerP3_22.Shape());
+		sewMakerTip.Add(fillerP3_31.Shape());
+		sewMakerTip.Add(fillerP3_32.Shape());
+		sewMakerTip.Perform();
 		
-		System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Sewing step successful? " + !sewMaker.IsNull());	
+		System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Tip sewing step successful? " + !sewMakerTip.IsNull());	
 		
-		if (!sewMaker.IsNull()) {
-			TopoDS_Shape tds_shape = sewMaker.SewedShape();
+		List<OCCShape> sewedShapesTip = new ArrayList<>();
+		if (!sewMakerTip.IsNull()) {
+			TopoDS_Shape tds_shape = sewMakerTip.SewedShape();
+			// The resulting shape may consist of multiple shapes!
+			// Use TopExp_Explorer to iterate through shells
+			System.out.println(OCCUtils.reportOnShape(tds_shape, "Lifting Surface sewed surface (Right side)"));
+			TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
+			while (exp.More() > 0) {
+				sewedShapesTip.add((OCCShape)OCCUtils.theFactory.newShape(exp.Current()));
+				exp.Next();
+			}
+//			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Exporting tip sewed loft.");
+//			result.addAll(sewedShapesTip);
+		}
+		
+		// Sewing adjacent patches in order to create one single shell
+		BRepBuilderAPI_Sewing sewMakerWing = new BRepBuilderAPI_Sewing();
+		
+		sewMakerWing.Init();
+		for(int i = 0; i < patchListWing.size(); i++) {
+			sewMakerWing.Add(patchListWing.get(i).getShape());
+		}
+		if(!patchTE.isEmpty()) {
+			for(int i = 0; i < patchTE.size(); i++) {
+				for(int j = 0; j < patchTE.get(i).size(); j++) {
+					sewMakerWing.Add(patchTE.get(i).get(j).getShape());
+				}
+			}	
+		}
+		
+		//sewMakerWing.Add(((OCCShape)faceTip).getShape()); // TODO: take the flat tip shell is rounded tip fails
+		
+		sewMakerWing.Add(((OCCShape)faceRoot).getShape());
+		
+		// rounded tip MUST be there ==> sewedShapesTip.get(0) non null
+		assert !sewMakerTip.IsNull();
+
+		sewMakerWing.Add(sewedShapesTip.get(0).getShape());
+		
+		sewMakerWing.Perform();
+		
+		
+		System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Sewing step successful? " + !sewMakerWing.IsNull());	
+ 
+		if (!sewMakerWing.IsNull()) {
+			TopoDS_Shape tds_shape = sewMakerWing.SewedShape();
 			// The resulting shape may consist of multiple shapes!
 			// Use TopExp_Explorer to iterate through shells
 			System.out.println(OCCUtils.reportOnShape(tds_shape, "Lifting Surface sewed surface (Right side)"));
@@ -2948,44 +2993,9 @@ public final class AircraftUtils {
 				sewedShapes.add((OCCShape)OCCUtils.theFactory.newShape(exp.Current()));
 				exp.Next();
 			}
-			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Exporting sewed loft.");
-			result.addAll(sewedShapes);
-		}
-		
-		// Sewing adjacent patches in order to create one single shell
-//		BRepBuilderAPI_Sewing sewMaker = new BRepBuilderAPI_Sewing();
-//		
-//		sewMaker.Init();
-//		for(int i = 0; i < patchList.size(); i++) {
-//			sewMaker.Add(patchList.get(i).getShape());
-//		}
-//		if(!patchTE.isEmpty()) {
-//			for(int i = 0; i < patchTE.size(); i++) {
-//				for(int j = 0; j < patchTE.get(i).size(); j++) {
-//					sewMaker.Add(patchTE.get(i).get(j).getShape());
-//				}
-//			}	
-//		}	
-//		sewMaker.Add(((OCCShape)faceTip).getShape());
-//		sewMaker.Add(((OCCShape)faceRoot).getShape());
-//		sewMaker.Perform();
-		
-//		System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Sewing step successful? " + !sewMaker.IsNull());	
-//		
-//		if (!sewMaker.IsNull()) {
-//			TopoDS_Shape tds_shape = sewMaker.SewedShape();
-//			// The resulting shape may consist of multiple shapes!
-//			// Use TopExp_Explorer to iterate through shells
-//			System.out.println(OCCUtils.reportOnShape(tds_shape, "Lifting Surface sewed surface (Right side)"));
-//			List<OCCShape> sewedShapes = new ArrayList<>();
-//			TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
-//			while (exp.More() > 0) {
-//				sewedShapes.add((OCCShape)OCCUtils.theFactory.newShape(exp.Current()));
-//				exp.Next();
-//			}
 //			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Exporting sewed loft.");
 //			result.addAll(sewedShapes);
-//			
+
 //			// >>>>>>>>>>>>>>>>>>>>>>>>>>>> MIRRORING
 //
 //			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Mirroring sewed lofts.");
@@ -3013,33 +3023,35 @@ public final class AircraftUtils {
 //			result.addAll(mirroredShapes);
 			
 			// Make a solid from the two halves
-//			boolean exportSolid = true;
-//			if (exportSolid) {
-//				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Experimental: build a solid ...");
-//				CADSolid solidLiftingSurface = null;
-//				BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
-//				sewedShapes.stream()
-//					.forEach( sh -> {
-//						TopoDS_Shape tds_shape1 = sh.getShape();
-//						TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
-//						solidMaker.Add(TopoDS.ToShell(exp1.Current()));					
-//					});
+			boolean exportSolid = true;
+			if (exportSolid) {
+				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Experimental: build a solid ...");
+				CADSolid solidLiftingSurface = null;
+				BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
+				sewedShapes.stream()
+					.forEach( sh -> {
+						TopoDS_Shape tds_shape1 = sh.getShape();
+						TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
+						solidMaker.Add(TopoDS.ToShell(exp1.Current()));					
+					});
+				// TODO: add mirrored part
 //				mirroredShapes.stream()
 //					.forEach( sh -> {
 //						TopoDS_Shape tds_shape2 = sh.getShape();
 //						TopExp_Explorer exp2 = new TopExp_Explorer(tds_shape2, TopAbs_ShapeEnum.TopAbs_SHELL);
 //						solidMaker.Add(TopoDS.ToShell(exp2.Current()));					
 //					});
-//				solidMaker.Build();
-//				System.out.println("Solid is done? " + (solidMaker.IsDone() == 1));
-//				if (solidMaker.IsDone() == 1) {
-//					solidLiftingSurface = (CADSolid) OCCUtils.theFactory.newShape(solidMaker.Solid());
-//					result.add((OCCShape) solidLiftingSurface);
-//					
-//					System.out.println(OCCUtils.reportOnShape(((OCCShape) solidLiftingSurface).getShape(), "LS solid (Right + Left)"));
-//				}
-//			}				
-//		}
+				solidMaker.Build();
+				System.out.println("Solid is done? " + (solidMaker.IsDone() == 1));
+				if (solidMaker.IsDone() == 1) {
+					solidLiftingSurface = (CADSolid) OCCUtils.theFactory.newShape(solidMaker.Solid());
+					result.add((OCCShape) solidLiftingSurface);
+					
+					System.out.println(OCCUtils.reportOnShape(((OCCShape) solidLiftingSurface).getShape(), "LS solid (Right)")); // (Right + Left)
+				}
+			}
+			
+		}
 						
 				
 //		if(!patchTE.isEmpty()) {

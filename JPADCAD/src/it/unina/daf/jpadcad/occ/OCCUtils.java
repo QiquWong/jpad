@@ -96,7 +96,8 @@ public final class OCCUtils {
 		
 		// ====================
 		// write on file
-		long result = BRepTools.Write(compound, fileName);		
+		long result = BRepTools.Write(compound, fileName);
+		
 		return (result == 1);
 	}
 	
