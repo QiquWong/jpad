@@ -1556,12 +1556,12 @@ public final class AircraftUtils {
 		
 		// more splittings for better accuracy
 		Double[] splitsVP1 = {0.10, 0.30, 0.50, 0.75};
-		Double[] splitsVP2 = {0.20, 0.40, 0.60, 0.80};
-		Double[] splitsVP3 = {0.25, 0.50, 0.70, 0.85};
+		Double[] splitsVP2 = {0.25, 0.50, 0.75};
+		Double[] splitsVP3 = {0.30, 0.55, 0.75, 0.90};
 		
-		Double[] splitsHP1 = {0.15, 0.35, 0.70, 0.85};
-		Double[] splitsHP2 = {0.15, 0.35, 0.70, 0.85};
-		Double[] splitsHP3 = {0.15, 0.35, 0.70, 0.85};
+		Double[] splitsHP1 = {0.15, 0.35, 0.65, 0.85};
+		Double[] splitsHP2 = {0.15, 0.35, 0.65, 0.85};
+		Double[] splitsHP3 = {0.15, 0.35, 0.65, 0.85};
 		
 		// first patch, sub vertical curves creation
 		List<double[]> pntsOnCPGC1 = new ArrayList<>();
@@ -2003,6 +2003,12 @@ public final class AircraftUtils {
 		List<OCCEdge> constPlaneGC1Split = new ArrayList<>();
 		constPlaneGC1Split = OCCUtils.splitEdge(constPlaneGuideCrv1, Arrays.asList(splitsHP1));
 		
+		List<OCCEdge> constPlaneGC2Split = new ArrayList<>();
+		constPlaneGC2Split = OCCUtils.splitEdge(constPlaneGuideCrv2, Arrays.asList(splitsHP2));
+		
+		List<OCCEdge> constPlaneGC3Split = new ArrayList<>();
+		constPlaneGC3Split = OCCUtils.splitEdge(constPlaneGuideCrv3, Arrays.asList(splitsHP3));
+		
 		// splitting first patch sub vertical and horizontal curves
 		List<List<OCCEdge>> subVSecP1Split = new ArrayList<List<OCCEdge>>();
 		subVSecP1.stream().forEach(crv -> subVSecP1Split.add(OCCUtils.splitEdge(
@@ -2325,6 +2331,546 @@ public final class AircraftUtils {
 		System.out.println("Deformed surface P1_32 is done? = " + fillerP1_32.IsDone());
 		System.out.println("Deformed surface P1_32 shape type: " + fillerP1_32.Shape().ShapeType());
 		
+		// patch P2_11
+		double[] pnt1_P2_11 = subHSecP2Split.get(0).get(0).vertices()[1].pnt();
+		
+		BRepOffsetAPI_MakeFilling fillerP2_11 = new BRepOffsetAPI_MakeFilling();
+		
+		fillerP2_11.Add(
+				airfoilUpperCrvsP2.get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP2_11.Add(
+				airfoilUpperCrvsP2.get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_11.Add(
+				mainVSec1Split.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_11.Add(
+				mainVSec1Split.get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_11.Add(
+				subHSecP2Split.get(1).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_11.Add(
+				subHSecP2Split.get(1).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_11.Add(
+				subVSecP2Split.get(1).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_11.Add(
+				subVSecP2Split.get(1).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		
+		fillerP2_11.Add(new gp_Pnt(pnt1_P2_11[0], pnt1_P2_11[1], pnt1_P2_11[2]));
+		
+		fillerP2_11.Build();
+		System.out.println("Deformed surface P2_11 is done? = " + fillerP2_11.IsDone());
+		System.out.println("Deformed surface P2_11 shape type: " + fillerP2_11.Shape().ShapeType());
+		
+		// patch P2_12
+		double[] pnt1_P2_12 = subHSecP2Split.get(0).get(2).vertices()[1].pnt();
+
+		BRepOffsetAPI_MakeFilling fillerP2_12 = new BRepOffsetAPI_MakeFilling();
+
+		fillerP2_12.Add(
+				airfoilUpperCrvsP2.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP2_12.Add(
+				airfoilUpperCrvsP2.get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_12.Add(
+				mainVSec2Split.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_12.Add(
+				mainVSec2Split.get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_12.Add(
+				subHSecP2Split.get(1).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_12.Add(
+				subHSecP2Split.get(1).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_12.Add(
+				subVSecP2Split.get(1).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_12.Add(
+				subVSecP2Split.get(1).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+
+		fillerP2_12.Add(new gp_Pnt(pnt1_P2_12[0], pnt1_P2_12[1], pnt1_P2_12[2]));
+
+		fillerP2_12.Build();
+		System.out.println("Deformed surface P2_12 is done? = " + fillerP2_12.IsDone());
+		System.out.println("Deformed surface P2_12 shape type: " + fillerP2_12.Shape().ShapeType());
+		
+		// patch P2_21
+		CADGeomCurve3D cc1_P2_21 = OCCUtils.theFactory.newCurve3D(subVSecP2Split.get(0).get(2));
+		double[] cc1_P2_21R = cc1_P2_21.getRange();
+		double[] pnt1_P2_21 = constPlaneGC2Split.get(0).vertices()[1].pnt();
+		double[] pnt2_P2_21 = cc1_P2_21.value(0.10*(cc1_P2_21R[1] - cc1_P2_21R[0]) + cc1_P2_21R[0]);
+		double[] pnt3_P2_21 = cc1_P2_21.value(0.65*(cc1_P2_21R[1] - cc1_P2_21R[0]) + cc1_P2_21R[0]);
+		
+		BRepOffsetAPI_MakeFilling fillerP2_21 = new BRepOffsetAPI_MakeFilling();
+		
+		fillerP2_21.Add(
+				subHSecP2Split.get(1).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP2_21.Add(
+				subHSecP2Split.get(1).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);		
+		fillerP2_21.Add(
+				subHSecP2Split.get(2).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP2_21.Add(
+				subHSecP2Split.get(2).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP2_21.Add(
+				subVSecP2Split.get(1).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_21.Add(
+				mainVSec1Split.get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+
+		fillerP2_21.Add(new gp_Pnt(pnt1_P2_21[0], pnt1_P2_21[1], pnt1_P2_21[2]));
+		fillerP2_21.Add(new gp_Pnt(pnt2_P2_21[0], pnt2_P2_21[1], pnt2_P2_21[2]));	
+		fillerP2_21.Add(new gp_Pnt(pnt3_P2_21[0], pnt3_P2_21[1], pnt3_P2_21[2]));
+
+		fillerP2_21.Build();
+		System.out.println("Deformed surface P2_21 is done? = " + fillerP2_21.IsDone());
+		System.out.println("Deformed surface P2_21 shape type: " + fillerP2_21.Shape().ShapeType());
+		
+		// patch P2_22
+		CADGeomCurve3D cc1_P2_22 = OCCUtils.theFactory.newCurve3D(subVSecP2Split.get(2).get(2));
+		CADGeomCurve3D cc2_P2_22 = OCCUtils.theFactory.newCurve3D(constPlaneGC2Split.get(2));
+		CADGeomCurve3D cc3_P2_22 = OCCUtils.theFactory.newCurve3D(constPlaneGC2Split.get(3));
+		double[] cc1_P2_22R = cc1_P2_22.getRange();
+		double[] cc2_P2_22R = cc2_P2_22.getRange();
+		double[] cc3_P2_22R = cc3_P2_22.getRange();
+		double[] pnt1_P2_22 = constPlaneGC2Split.get(2).vertices()[1].pnt();
+		double[] pnt2_P2_22 = cc1_P2_22.value(0.10*(cc1_P2_22R[1] - cc1_P2_22R[0]) + cc1_P2_22R[0]);
+		double[] pnt3_P2_22 = cc1_P2_22.value(0.65*(cc1_P2_22R[1] - cc1_P2_22R[0]) + cc1_P2_22R[0]);
+		double[] pnt4_P2_22 = cc2_P2_22.value(0.10*(cc2_P2_22R[1] - cc2_P2_22R[0]) + cc2_P2_22R[0]);
+		double[] pnt5_P2_22 = cc3_P2_22.value(0.10*(cc3_P2_22R[1] - cc3_P2_22R[0]) + cc3_P2_22R[0]);
+
+		BRepOffsetAPI_MakeFilling fillerP2_22 = new BRepOffsetAPI_MakeFilling();
+
+		fillerP2_22.Add(
+				subHSecP2Split.get(1).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP2_22.Add(
+				subHSecP2Split.get(1).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);		
+		fillerP2_22.Add(
+				subHSecP2Split.get(2).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP2_22.Add(
+				subHSecP2Split.get(2).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP2_22.Add(
+				subVSecP2Split.get(1).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_22.Add(
+				mainVSec2Split.get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+
+		fillerP2_22.Add(new gp_Pnt(pnt1_P2_22[0], pnt1_P2_22[1], pnt1_P2_22[2]));
+		fillerP2_22.Add(new gp_Pnt(pnt2_P2_22[0], pnt2_P2_22[1], pnt2_P2_22[2]));	
+		fillerP2_22.Add(new gp_Pnt(pnt3_P2_22[0], pnt3_P2_22[1], pnt3_P2_22[2]));
+		fillerP2_22.Add(new gp_Pnt(pnt4_P2_22[0], pnt4_P2_22[1], pnt4_P2_22[2]));
+		fillerP2_22.Add(new gp_Pnt(pnt5_P2_22[0], pnt5_P2_22[1], pnt5_P2_22[2]));
+
+		fillerP2_22.Build();
+		System.out.println("Deformed surface P2_22 is done? = " + fillerP2_22.IsDone());
+		System.out.println("Deformed surface P2_22 shape type: " + fillerP2_22.Shape().ShapeType());
+		
+		// patch P2_31
+		double[] pnt1_P2_31 = subHSecP2Split.get(3).get(0).vertices()[1].pnt();
+
+		BRepOffsetAPI_MakeFilling fillerP2_31 = new BRepOffsetAPI_MakeFilling();
+
+		fillerP2_31.Add(
+				airfoilLowerCrvsP2.get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP2_31.Add(
+				airfoilLowerCrvsP2.get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_31.Add(
+				mainVSec1Split.get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_31.Add(
+				mainVSec1Split.get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_31.Add(
+				subHSecP2Split.get(2).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_31.Add(
+				subHSecP2Split.get(2).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_31.Add(
+				subVSecP2Split.get(1).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_31.Add(
+				subVSecP2Split.get(1).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+
+		fillerP2_31.Add(new gp_Pnt(pnt1_P2_31[0], pnt1_P2_31[1], pnt1_P2_31[2]));
+
+		fillerP2_31.Build();
+		System.out.println("Deformed surface P2_31 is done? = " + fillerP2_31.IsDone());
+		System.out.println("Deformed surface P2_31 shape type: " + fillerP2_31.Shape().ShapeType());
+		
+		// patch P2_32
+		double[] pnt1_P2_32 = subHSecP2Split.get(3).get(2).vertices()[1].pnt();
+
+		BRepOffsetAPI_MakeFilling fillerP2_32 = new BRepOffsetAPI_MakeFilling();
+
+		fillerP2_32.Add(
+				airfoilLowerCrvsP2.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP2_32.Add(
+				airfoilLowerCrvsP2.get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_32.Add(
+				mainVSec2Split.get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_32.Add(
+				mainVSec2Split.get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_32.Add(
+				subHSecP2Split.get(2).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_32.Add(
+				subHSecP2Split.get(2).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_32.Add(
+				subVSecP2Split.get(1).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP2_32.Add(
+				subVSecP2Split.get(1).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+
+		fillerP2_32.Add(new gp_Pnt(pnt1_P2_32[0], pnt1_P2_32[1], pnt1_P2_32[2]));
+
+		fillerP2_32.Build();
+		System.out.println("Deformed surface P2_32 is done? = " + fillerP2_32.IsDone());
+		System.out.println("Deformed surface P2_32 shape type: " + fillerP2_32.Shape().ShapeType());
+		
+		// patch P3_11
+		double[] pnt1_P3_11 = subHSecP3Split.get(0).get(0).vertices()[1].pnt();
+
+		BRepOffsetAPI_MakeFilling fillerP3_11 = new BRepOffsetAPI_MakeFilling();
+
+		fillerP3_11.Add(
+				airfoilUpperCrvsP3.get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP3_11.Add(
+				airfoilUpperCrvsP3.get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_11.Add(
+				mainVSec2Split.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_11.Add(
+				mainVSec2Split.get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_11.Add(
+				subHSecP3Split.get(1).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_11.Add(
+				subHSecP3Split.get(1).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_11.Add(
+				subVSecP3Split.get(1).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_11.Add(
+				subVSecP3Split.get(1).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+
+		fillerP3_11.Add(new gp_Pnt(pnt1_P3_11[0], pnt1_P3_11[1], pnt1_P3_11[2]));
+
+		fillerP3_11.Build();
+		System.out.println("Deformed surface P3_11 is done? = " + fillerP3_11.IsDone());
+		System.out.println("Deformed surface P3_11 shape type: " + fillerP3_11.Shape().ShapeType());
+		
+		// patch P3_12
+		double[] pnt1_P3_12 = subHSecP3Split.get(0).get(2).vertices()[1].pnt();
+		double[] pnt2_P3_12 = subHSecP3Split.get(0).get(3).vertices()[1].pnt();
+
+		BRepOffsetAPI_MakeFilling fillerP3_12 = new BRepOffsetAPI_MakeFilling();
+
+		fillerP3_12.Add(
+				airfoilUpperCrvsP3.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP3_12.Add(
+				airfoilUpperCrvsP3.get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_12.Add(
+				airfoilUpperCrvsP3.get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_12.Add(
+				subHSecP3Split.get(1).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_12.Add(
+				subHSecP3Split.get(1).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_12.Add(
+				subHSecP3Split.get(1).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_12.Add(
+				subVSecP3Split.get(1).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_12.Add(
+				subVSecP3Split.get(1).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+
+		fillerP3_12.Add(new gp_Pnt(pnt1_P3_12[0], pnt1_P3_12[1], pnt1_P3_12[2]));
+		fillerP3_12.Add(new gp_Pnt(pnt2_P3_12[0], pnt2_P3_12[1], pnt2_P3_12[2]));
+
+		fillerP3_12.Build();
+		System.out.println("Deformed surface P3_12 is done? = " + fillerP3_12.IsDone());
+		System.out.println("Deformed surface P3_12 shape type: " + fillerP3_12.Shape().ShapeType());
+		
+		// patch P3_21
+		CADGeomCurve3D cc1_P3_21 = OCCUtils.theFactory.newCurve3D(subVSecP3Split.get(0).get(2));
+		CADGeomCurve3D cc2_P3_21 = OCCUtils.theFactory.newCurve3D(constPlaneGC3Split.get(0));
+		CADGeomCurve3D cc3_P3_21 = OCCUtils.theFactory.newCurve3D(constPlaneGC3Split.get(1));
+		double[] cc1_P3_21R = cc1_P3_21.getRange();
+		double[] cc2_P3_21R = cc2_P3_21.getRange();
+		double[] cc3_P3_21R = cc3_P3_21.getRange();
+		double[] pnt1_P3_21 = constPlaneGC3Split.get(0).vertices()[1].pnt();		
+		double[] pnt2_P3_21 = cc1_P3_21.value(0.10*(cc1_P3_21R[1] - cc1_P3_21R[0]) + cc1_P3_21R[0]);
+		double[] pnt3_P3_21 = cc1_P3_21.value(0.65*(cc1_P3_21R[1] - cc1_P3_21R[0]) + cc1_P3_21R[0]);
+		double[] pnt4_P3_21 = cc2_P3_21.value(0.10*(cc2_P3_21R[1] - cc2_P3_21R[0]) + cc2_P3_21R[0]);
+		double[] pnt5_P3_21 = cc3_P3_21.value(0.99*(cc3_P3_21R[1] - cc3_P3_21R[0]) + cc3_P3_21R[0]);
+		
+		BRepOffsetAPI_MakeFilling fillerP3_21 = new BRepOffsetAPI_MakeFilling();
+		
+		fillerP3_21.Add(
+				subHSecP3Split.get(1).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_21.Add(
+				subHSecP3Split.get(1).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_21.Add(
+				mainVSec2Split.get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_21.Add(
+				subHSecP3Split.get(2).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_21.Add(
+				subHSecP3Split.get(2).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_21.Add(
+				subVSecP3Split.get(1).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+
+		fillerP3_21.Add(new gp_Pnt(pnt1_P3_21[0], pnt1_P3_21[1], pnt1_P3_21[2]));
+		fillerP3_21.Add(new gp_Pnt(pnt2_P3_21[0], pnt2_P3_21[1], pnt2_P3_21[2]));
+		fillerP3_21.Add(new gp_Pnt(pnt3_P3_21[0], pnt3_P3_21[1], pnt3_P3_21[2]));
+		fillerP3_21.Add(new gp_Pnt(pnt4_P3_21[0], pnt4_P3_21[1], pnt4_P3_21[2]));
+		fillerP3_21.Add(new gp_Pnt(pnt5_P3_21[0], pnt5_P3_21[1], pnt5_P3_21[2]));
+		
+		fillerP3_21.Build();
+		System.out.println("Deformed surface P3_21 is done? = " + fillerP3_21.IsDone());
+		System.out.println("Deformed surface P3_21 shape type: " + fillerP3_21.Shape().ShapeType());
+		
+		// patch P3_22
+		double[] pnt1_P3_22 = constPlaneGC3Split.get(2).vertices()[1].pnt();
+		double[] pnt2_P3_22 = constPlaneGC3Split.get(3).vertices()[1].pnt();
+		
+		BRepOffsetAPI_MakeFilling fillerP3_22 = new BRepOffsetAPI_MakeFilling();
+		
+		fillerP3_22.Add(
+				subHSecP3Split.get(1).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_22.Add(
+				subHSecP3Split.get(1).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_22.Add(
+				subHSecP3Split.get(1).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_22.Add(
+				subVSecP3Split.get(1).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_22.Add(
+				subHSecP3Split.get(2).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_22.Add(
+				subHSecP3Split.get(2).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_22.Add(
+				subHSecP3Split.get(2).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		
+		fillerP3_22.Add(new gp_Pnt(pnt1_P3_22[0], pnt1_P3_22[1], pnt1_P3_22[2]));
+		fillerP3_22.Add(new gp_Pnt(pnt2_P3_22[0], pnt2_P3_22[1], pnt2_P3_22[2]));
+		
+		fillerP3_22.Build();
+		System.out.println("Deformed surface P3_22 is done? = " + fillerP3_22.IsDone());
+		System.out.println("Deformed surface P3_22 shape type: " + fillerP3_22.Shape().ShapeType());
+		
+		// patch P3_31
+		double[] pnt1_P3_31 = subHSecP3Split.get(3).get(0).vertices()[1].pnt();	
+		
+		BRepOffsetAPI_MakeFilling fillerP3_31 = new BRepOffsetAPI_MakeFilling();
+		
+		fillerP3_31.Add(
+				subHSecP3Split.get(2).get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_31.Add(
+				subHSecP3Split.get(2).get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_31.Add(
+				airfoilLowerCrvsP3.get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP3_31.Add(
+				airfoilLowerCrvsP3.get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_31.Add(
+				mainVSec2Split.get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_31.Add(
+				mainVSec2Split.get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_31.Add(
+				subVSecP3Split.get(1).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_31.Add(
+				subVSecP3Split.get(1).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		
+		fillerP3_31.Add(new gp_Pnt(pnt1_P3_31[0], pnt1_P3_31[1], pnt1_P3_31[2]));
+		
+		fillerP3_31.Build();
+		System.out.println("Deformed surface P3_31 is done? = " + fillerP3_31.IsDone());
+		System.out.println("Deformed surface P3_31 shape type: " + fillerP3_31.Shape().ShapeType());
+		
+		// patch P3_32
+		double[] pnt1_P3_32 = subHSecP3Split.get(3).get(2).vertices()[1].pnt();
+		double[] pnt2_P3_32 = subHSecP3Split.get(3).get(3).vertices()[1].pnt();
+
+		BRepOffsetAPI_MakeFilling fillerP3_32 = new BRepOffsetAPI_MakeFilling();
+
+		fillerP3_32.Add(
+				airfoilLowerCrvsP3.get(0).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);	
+		fillerP3_32.Add(
+				airfoilLowerCrvsP3.get(1).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_32.Add(
+				airfoilLowerCrvsP3.get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_32.Add(
+				subHSecP3Split.get(2).get(2).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_32.Add(
+				subHSecP3Split.get(2).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_32.Add(
+				subHSecP3Split.get(2).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_32.Add(
+				subVSecP3Split.get(1).get(3).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+		fillerP3_32.Add(
+				subVSecP3Split.get(1).get(4).getShape(),
+				GeomAbs_Shape.GeomAbs_C0
+				);
+
+		fillerP3_32.Add(new gp_Pnt(pnt1_P3_32[0], pnt1_P3_32[1], pnt1_P3_32[2]));
+		fillerP3_32.Add(new gp_Pnt(pnt2_P3_32[0], pnt2_P3_32[1], pnt2_P3_32[2]));
+
+		fillerP3_32.Build();
+		System.out.println("Deformed surface P3_32 is done? = " + fillerP3_32.IsDone());
+		System.out.println("Deformed surface P3_32 shape type: " + fillerP3_32.Shape().ShapeType());		
+		
 		// exporting the shapes
 		extraShapes.addAll(airfoilUpperCrvsP1);
 		extraShapes.addAll(airfoilUpperCrvsP2);
@@ -2340,21 +2886,71 @@ public final class AircraftUtils {
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)constPlaneGuideCrv3).edge());
 		mainVSec1Split.forEach(crv -> extraShapes.add(crv));
 		mainVSec2Split.forEach(crv -> extraShapes.add(crv));
-		subVSecP1Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
-		subVSecP2Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
-		subVSecP3Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
-		subHSecP1Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
-		subHSecP2Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
-		subHSecP3Split.stream().forEach(crvList -> crvList.stream().forEach(crv -> extraShapes.add(crv)));
+		subVSecP1Split.forEach(crvList -> crvList.forEach(crv -> extraShapes.add(crv)));
+		subVSecP2Split.forEach(crvList -> crvList.forEach(crv -> extraShapes.add(crv)));
+		subVSecP3Split.forEach(crvList -> crvList.forEach(crv -> extraShapes.add(crv)));
+		subHSecP1Split.forEach(crvList -> crvList.forEach(crv -> extraShapes.add(crv)));
+		subHSecP2Split.forEach(crvList -> crvList.forEach(crv -> extraShapes.add(crv)));
+		subHSecP3Split.forEach(crvList -> crvList.forEach(crv -> extraShapes.add(crv)));
 		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_11.Shape()));
 		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_12.Shape()));
 		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_21.Shape()));
 		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_22.Shape()));
 		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_31.Shape()));
 		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1_32.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP2_11.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP2_12.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP2_21.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP2_22.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP2_31.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP2_32.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP3_11.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP3_12.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP3_21.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP3_22.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP3_31.Shape()));
+		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP3_32.Shape()));
 		
+		// sewing shapes
+		BRepBuilderAPI_Sewing sewMaker = new BRepBuilderAPI_Sewing();
 		
+		sewMaker.Init();
+		sewMaker.Add(fillerP1_11.Shape());
+		sewMaker.Add(fillerP1_12.Shape());
+		sewMaker.Add(fillerP1_21.Shape());
+		sewMaker.Add(fillerP1_22.Shape());
+		sewMaker.Add(fillerP1_31.Shape());
+		sewMaker.Add(fillerP1_32.Shape());
+		sewMaker.Add(fillerP2_11.Shape());
+		sewMaker.Add(fillerP2_12.Shape());
+		sewMaker.Add(fillerP2_21.Shape());
+		sewMaker.Add(fillerP2_22.Shape());
+		sewMaker.Add(fillerP2_31.Shape());
+		sewMaker.Add(fillerP2_32.Shape());
+		sewMaker.Add(fillerP3_11.Shape());
+		sewMaker.Add(fillerP3_12.Shape());
+		sewMaker.Add(fillerP3_21.Shape());
+		sewMaker.Add(fillerP3_22.Shape());
+		sewMaker.Add(fillerP3_31.Shape());
+		sewMaker.Add(fillerP3_32.Shape());
+		sewMaker.Perform();
 		
+		System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Sewing step successful? " + !sewMaker.IsNull());	
+		
+		if (!sewMaker.IsNull()) {
+			TopoDS_Shape tds_shape = sewMaker.SewedShape();
+			// The resulting shape may consist of multiple shapes!
+			// Use TopExp_Explorer to iterate through shells
+			System.out.println(OCCUtils.reportOnShape(tds_shape, "Lifting Surface sewed surface (Right side)"));
+			List<OCCShape> sewedShapes = new ArrayList<>();
+			TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
+			while (exp.More() > 0) {
+				sewedShapes.add((OCCShape)OCCUtils.theFactory.newShape(exp.Current()));
+				exp.Next();
+			}
+			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Exporting sewed loft.");
+			result.addAll(sewedShapes);
+		}
 		
 		// Sewing adjacent patches in order to create one single shell
 //		BRepBuilderAPI_Sewing sewMaker = new BRepBuilderAPI_Sewing();
