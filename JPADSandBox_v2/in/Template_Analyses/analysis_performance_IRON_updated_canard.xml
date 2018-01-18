@@ -5,11 +5,11 @@
 			id="IRON - PERFORMANCE" 
 			weights_from_previous_file="false" 
 			aerodynamics_from_previous_file="false" 
-			> <!-- T/T0 CRUISE INCREMENTED BY 1.05 TO ACHIEVE M=0.64 -->
+			> 
 			<weights>
 				<!-- MTOM -->
-				<maximum_take_off_mass unit="kg">55448</maximum_take_off_mass> <!-- IRON = 53610 / CS300 = 67585 -->
-				<operating_empty_mass unit="kg">34441</operating_empty_mass> <!-- IRON = 33550 / CS300 = 37081 -->
+				<maximum_take_off_mass unit="kg">55151</maximum_take_off_mass> <!-- LEONARDO = 55151 / UNINA = 55448 -->
+				<operating_empty_mass unit="kg">34010</operating_empty_mass> <!-- LEONARDO = 34010 / UNINA = 34441 -->
 				<maximum_fuel_mass unit="kg">7786</maximum_fuel_mass> <!-- IRON = 11959 / CS300 = 17213 -->
 				<single_passenger_mass unit="kg">105</single_passenger_mass> 
 			</weights>
@@ -142,8 +142,13 @@
 				</wheels_friction_coefficient_function>
 					<!-- here is possible to assign the fricition coefficient (with brakes) function of the speed. If only one value is given, the function is constant -->
 				<wheels_friction_coefficient_with_brakes_function>
+				<!--
 					<friction_coefficient_with_brakes>0.94;0.89;0.85;0.8;0.74;0.68;0.62;0.57;0.52</friction_coefficient_with_brakes>
-					<speed unit="m/s">0;10;20;30;40;50;60;70;80</speed> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+					<speed unit="m/s">0;10;20;30;40;50;60;70;80</speed>
+				-->
+				<friction_coefficient_with_brakes>0.3</friction_coefficient_with_brakes>
+				<speed unit="m/s"></speed>
+				<!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
 				</wheels_friction_coefficient_with_brakes_function>
 				<!-- take-off data -->
 				<dt_rotation unit="s">2</dt_rotation> <!-- the duration of the rotation phase (default = 3s) -->
@@ -167,10 +172,10 @@
 			<climb>
 				<k_climb_weight_AEO></k_climb_weight_AEO> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
 				<!-- k_weigth_OEI = 0.941 for SECOND SEGMENT CLIMB -->
-				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
-				<initial_climb_altitude unit="ft">0.0</initial_climb_altitude>
-				<final_climb_altitude unit="ft">25000.0</final_climb_altitude>
-				<climb_speed_CAS unit="kn">190</climb_speed_CAS>
+				<k_climb_weight_OEI>0.924733912</k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
+				<initial_climb_altitude unit="ft">5435.0</initial_climb_altitude>
+				<final_climb_altitude unit="ft">5800.0</final_climb_altitude>
+				<climb_speed_CAS unit="kn">118.88</climb_speed_CAS>
 			</climb>
 			<cruise>
 				<altitudes_array unit="ft">20000;25000;30000</altitudes_array>
