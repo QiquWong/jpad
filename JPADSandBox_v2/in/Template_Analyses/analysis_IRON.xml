@@ -51,8 +51,8 @@
 	-->
  	<performance 
 			file="analysis_performance_IRON_updated_canard.xml"
-			plot="FALSE"
-			create_CSV="FALSE"
+			plot="TRUE"
+			create_CSV="TRUE"
 			take_off="TRUE"
 			climb="FALSE"
 			cruise="FALSE"

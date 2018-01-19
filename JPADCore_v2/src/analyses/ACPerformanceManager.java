@@ -1779,6 +1779,11 @@ public class ACPerformanceManager {
 		List<String> altitudeListCruiseProperty = reader.getXMLPropertiesByPath("//performance/cruise/altitudes_array");
 		if(!altitudeListCruiseProperty.isEmpty()) {
 			altitudeListCruise = reader.readArrayofAmountFromXML("//performance/cruise/altitudes_array"); 
+			if(altitudeListCruise.size() == 1) {
+				System.err.println("WARNING!! THERE ARE TOO FEW CRUISE ALTITUDE (MIN: 2) ... ADDING CRUISE ALTITUDES TO THE LIST (THE SAME CHOSEN ALTITUDE WILL BE ADDED)");
+				Amount<Length> selectedAltitude = altitudeListCruise.get(0).times(1.001);
+				altitudeListCruise.add(selectedAltitude);
+			}
 		}
 		//...............................................................
 		// K CRUISE WEIGHT 
