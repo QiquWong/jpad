@@ -76,7 +76,7 @@ public class TakeOffCalc {
 	tFaiulre = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
 	tRec = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 	private Amount<Mass> maxTakeOffMass; 
-	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2;
+	private Amount<Velocity> vSTakeOff, vRot, vMC, vLO, vWind, v1, v2;
 	private Amount<Length> altitude, wingToGroundDistance, obstacle, balancedFieldLength;
 	private Amount<Angle> alphaGround, iw;
 	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, sfc;
@@ -187,14 +187,12 @@ public class TakeOffCalc {
 						cLmaxTO
 						),
 				SI.METERS_PER_SECOND);
-		vRot = vSTakeOff.times(kRot);
 		
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("CLmaxTO = " + cLmaxTO);
 		System.out.println("CL0 = " + cLZeroTO);
 		System.out.println("CLground = " + cLground);
 		System.out.println("VsTO = " + vSTakeOff);
-		System.out.println("VRot = " + vRot);
 		System.out.println("-----------------------------------------------------------\n");
 
 		// McCormick interpolated function --> See the excel file into JPAD DOCS
@@ -285,11 +283,23 @@ public class TakeOffCalc {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void calculateTakeOffDistanceODE(Double vFailure, boolean isAborted, boolean iterativeLoopOverV2) {
+	public void calculateTakeOffDistanceODE(Double vFailure, boolean isAborted, boolean iterativeLoopOverV2, Amount<Velocity> vMC) {
 
 		System.out.println("---------------------------------------------------");
 		System.out.println("CalcTakeOff :: ODE integration\n\n");
 
+		if(vMC != null) {
+			if(vMC.doubleValue(SI.METERS_PER_SECOND) > (kRot*vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+					) {
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+				vRot = vMC.to(SI.METERS_PER_SECOND);
+			}
+			else
+				vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
+		}
+		else
+			vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
+		
 		int i=0;
 		double newAlphaRed = 0.0;
 		alphaRed = 0.0;
@@ -1107,7 +1117,7 @@ public class TakeOffCalc {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void calculateBalancedFieldLength() {
+	public void calculateBalancedFieldLength(Amount<Velocity> vMC) {
 
 		// failure speed array
 		failureSpeedArray = MyArrayUtils.linspace(
@@ -1121,14 +1131,14 @@ public class TakeOffCalc {
 
 		// iterative take-off distance calculation for both conditions
 		for(int i=0; i<failureSpeedArray.length; i++) {
-			calculateTakeOffDistanceODE(failureSpeedArray[i], false, false);
+			calculateTakeOffDistanceODE(failureSpeedArray[i], false, false, vMC);
 			if(!getGroundDistance().isEmpty())
 				continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 			else {
 				failureSpeedArray[i] = 0.0;
 				continuedTakeOffArray[i] = 0.0;
 			}
-			calculateTakeOffDistanceODE(failureSpeedArray[i], true, false);
+			calculateTakeOffDistanceODE(failureSpeedArray[i], true, false, vMC);
 			if(!getGroundDistance().isEmpty() && groundDistance.get(groundDistance.size()-1).getEstimatedValue() >= 0.0)
 				abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 			else {
@@ -2815,6 +2825,14 @@ public class TakeOffCalc {
 
 	public void setPolarCDTakeOff(Double[] polarCDTakeOff) {
 		this.polarCDTakeOff = polarCDTakeOff;
+	}
+
+	public Amount<Velocity> getVMC() {
+		return vMC;
+	}
+
+	public void setVMC(Amount<Velocity> vMC) {
+		this.vMC = vMC;
 	}
 
 }

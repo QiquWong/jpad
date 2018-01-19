@@ -2440,20 +2440,24 @@ public class ACPerformanceManager {
 						);
 
 				CalcTakeOff calcTakeOff = new CalcTakeOff();
+				calcTakeOff.calculateVMC(_thePerformanceInterface.getXcgPositionList().get(i));
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
+					calcTakeOff.plotVMC(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
 				calcTakeOff.performTakeOffSimulation(
 						_thePerformanceInterface.getMaximumTakeOffMass(), 
 						_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().to(SI.METER),
 						_thePerformanceInterface.getTheOperatingConditions().getMachTakeOff(),
-						_thePerformanceInterface.getXcgPositionList().get(i)
+						_thePerformanceInterface.getXcgPositionList().get(i),
+						_vMCMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).to(SI.METERS_PER_SECOND)
 						);
 				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 					calcTakeOff.plotTakeOffPerformance(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-				calcTakeOff.calculateBalancedFieldLength(_thePerformanceInterface.getXcgPositionList().get(i));
+				calcTakeOff.calculateBalancedFieldLength(
+						_thePerformanceInterface.getXcgPositionList().get(i),
+						_vMCMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).to(SI.METERS_PER_SECOND)
+						);
 				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 					calcTakeOff.plotBalancedFieldLength(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-				calcTakeOff.calculateVMC(_thePerformanceInterface.getXcgPositionList().get(i));
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
-					calcTakeOff.plotVMC(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
 
 			}
 
@@ -3684,7 +3688,8 @@ public class ACPerformanceManager {
 				Amount<Mass> takeOffMass,
 				Amount<Length> altitude,
 				Double mach,
-				Double xcg
+				Double xcg,
+				Amount<Velocity> vMC
 				) {
 			
 			Amount<Length> wingToGroundDistance = 
@@ -3737,7 +3742,7 @@ public class ACPerformanceManager {
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, true);
+			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, true, vMC);
 
 			// Distances:
 			_groundRollDistanceTakeOffMap.put(
@@ -3790,9 +3795,9 @@ public class ACPerformanceManager {
 			
 		}
 		
-		public void calculateBalancedFieldLength(Double xcg) {
+		public void calculateBalancedFieldLength(Double xcg, Amount<Velocity> vMC) {
 			
-			_theTakeOffCalculatorMap.get(xcg).calculateBalancedFieldLength();
+			_theTakeOffCalculatorMap.get(xcg).calculateBalancedFieldLength(vMC);
 			
 			_v1Map.put(
 					xcg, 
@@ -3890,7 +3895,12 @@ public class ACPerformanceManager {
 							0.05,
 							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER)
 							),
-					_theTakeOffCalculatorMap.get(xcg).getvSTakeOff().times(1.2).doubleValue(SI.METERS_PER_SECOND),
+					SpeedCalc.calculateSpeedStall(
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER),
+							_thePerformanceInterface.getMaximumTakeOffMass().to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
+							_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							_thePerformanceInterface.getCLmaxTakeOff().get(xcg)
+							)*1.2,
 					250
 					);
 
@@ -4038,7 +4048,13 @@ public class ACPerformanceManager {
 					SpeedCalc.calculateTAS(
 							0.05,
 							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER)
-							)/_vStallTakeOffMap.get(xcg).doubleValue(SI.METERS_PER_SECOND),
+							)
+					/SpeedCalc.calculateSpeedStall(
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER),
+							_thePerformanceInterface.getMaximumTakeOffMass().to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
+							_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							_thePerformanceInterface.getCLmaxTakeOff().get(xcg)
+							),
 					1.20, // maximum possible value of the VMC
 					250
 					);
@@ -5740,6 +5756,11 @@ public class ACPerformanceManager {
 
 		public void fromMissionProfile(Double xcg) {
 
+			if (_vMCMap.get(xcg) == null) {
+				CalcTakeOff calcTakeOff = new CalcTakeOff();
+				calcTakeOff.calculateVMC(xcg);
+			}
+			
 			_thePayloadRangeCalculatorMap.put(
 					xcg, 
 					new PayloadRangeCalcMissionProfile(
@@ -5804,7 +5825,7 @@ public class ACPerformanceManager {
 			
 			//------------------------------------------------------------
 			// CRUISE MACH AND ALTITUDE
-			_thePayloadRangeCalculatorMap.get(xcg).createPayloadRange();
+			_thePayloadRangeCalculatorMap.get(xcg).createPayloadRange(_vMCMap.get(xcg).to(SI.METERS_PER_SECOND));
 			
 			_rangeAtMaxPayloadMap.put(xcg, _thePayloadRangeCalculatorMap.get(xcg).getRangeAtMaxPayload());
 			_rangeAtDesignPayloadMap.put(xcg, _thePayloadRangeCalculatorMap.get(xcg).getRangeAtDesignPayload());
@@ -5916,6 +5937,11 @@ public class ACPerformanceManager {
 
 		public void calculateMissionProfileIterative(Double xcg) {
 
+			if (_vMCMap.get(xcg) == null) {
+				CalcTakeOff calcTakeOff = new CalcTakeOff();
+				calcTakeOff.calculateVMC(xcg);
+			}
+			
 			_theMissionProfileCalculatorMap.put(
 					xcg, 
 					new MissionProfileCalc(
@@ -5980,7 +6006,7 @@ public class ACPerformanceManager {
 							)
 					);
 				
-			_theMissionProfileCalculatorMap.get(xcg).calculateProfiles();
+			_theMissionProfileCalculatorMap.get(xcg).calculateProfiles(_vMCMap.get(xcg).to(SI.METERS_PER_SECOND));
 			
 			_altitudeListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getAltitudeList());
 			_rangeListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getRangeList());

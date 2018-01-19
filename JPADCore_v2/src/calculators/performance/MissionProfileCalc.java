@@ -264,7 +264,7 @@ public class MissionProfileCalc {
 	//--------------------------------------------------------------------------------------------
 	// METHODS:
 	
-	public void calculateProfiles() {
+	public void calculateProfiles(Amount<Velocity> vMC) {
 
 		_initialMissionMass = _operatingEmptyMass
 				.plus(_singlePassengerMass.times(_passengersNumber))
@@ -446,16 +446,16 @@ public class MissionProfileCalc {
 					_mu,
 					_muBrake,
 					wingToGroundDistance,
-					_obstacleTakeOff,
-					_windSpeed,
-					_alphaGround,
-					_theAircraft.getWing().getRiggingAngle(),
+					_obstacleTakeOff.to(SI.METER),
+					_windSpeed.to(SI.METERS_PER_SECOND),
+					_alphaGround.to(NonSI.DEGREE_ANGLE),
+					_theAircraft.getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE),
 					_cLmaxTakeOff,
 					_cLZeroTakeOff,
 					_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 					);
 
-			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false);
+			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false, vMC);
 
 			Amount<Length> groundRollDistanceTakeOff = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0);
 			Amount<Length> rotationDistanceTakeOff = 
@@ -3421,4 +3421,5 @@ public class MissionProfileCalc {
 	public void setMissionProfileStopped(Boolean missionProfileStopped) {
 		this._missionProfileStopped = missionProfileStopped;
 	}
+
 }
