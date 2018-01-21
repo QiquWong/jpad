@@ -43,7 +43,7 @@
             <panel id="IRON - Outer panel" linked_to="IRON - Inner panel">
                 <span unit="m">12.075</span>
                 <dihedral unit="deg">5.5</dihedral>
-                <sweep_leading_edge unit="deg">5</sweep_leading_edge>
+                <sweep_leading_edge unit="deg">2.3</sweep_leading_edge>
                 <outer_section>
                     <chord unit="m">1.5345</chord>
                     <airfoil file="TIP_IRON_NEW.xml"/>
