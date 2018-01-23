@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="CPACS_21_Schema.xsd">
+   <header xsi:type="headerType">
+      <name>JPAD.CPACSWrite - Test</name>
+      <description>JPAD Aircraft converted to CPACS format</description>
+      <creator>JPAD</creator>
+      <timestamp>Tue Jan 23 13:33:47 CET 2018</timestamp>
+      <version>0.1</version>
+      <cpacsversion>3.0</cpacsversion>
+   </header>
+</cpacs>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/JPADSandBox_v2/src/sandbox2/adm/cpacs/writer/Test01.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<mapAttribute key="org.eclipse.debug.core.environmentVariables">
+<mapEntry key="Path" value="${JPAD_ROOT}\libraries\hdf;${JPAD_ROOT}\libraries\tigl\v2.2.1\win64"/>
+</mapAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox2.adm.cpacs.writer.Test01"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/aircraft_ATR72.xml &#13;&#10;-ia ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Analyses/analysis_ATR72.xml &#13;&#10;-ioc ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Analyses/operating_conditions_ATR72.xml &#13;&#10;--database-dir ${JPAD_ROOT}/JPADSandBox_v2/data &#13;&#10;-da ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/lifting_surfaces/airfoils &#13;&#10;-df ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/fuselages &#13;&#10;-dls ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/lifting_surfaces &#13;&#10;-de ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/engines &#13;&#10;-dn ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/nacelles &#13;&#10;-dlg ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/landing_gears &#13;&#10;-ds ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/systems &#13;&#10;-dcc ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/cabin_configurations&#13;&#10;-o ${JPAD_ROOT}/JPADSandBox_v2/out/CPACS/test01.xml"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADSandBox_v2"/>
+</launchConfiguration>

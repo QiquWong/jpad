@@ -188,6 +188,30 @@ public class JPADStaticWriteUtils {
 		}
 	}
 
+	/**
+	 * 
+	 * @author Agostino De Marco
+	 *
+	 * @param doc
+	 * @param file
+	 */
+	public static void writeDocumentToXml(Document doc, File file) {
+		try {
+			//System.out.println(""+doc);
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(file);
+			transformer.transform(source, result);
+			System.out.println("Data successfully written to " + file.getAbsolutePath());
+
+		} catch (TransformerException tfe) {
+			tfe.printStackTrace();
+		}
+	}
+	
 	@SuppressWarnings("resource")
 	public static void exportToCSV (
 			List<Double[]> xList, 
@@ -3248,6 +3272,12 @@ public class JPADStaticWriteUtils {
 
 		element.appendChild(doc.createTextNode(value));
 
+		return element;
+	}
+
+	public static org.w3c.dom.Element createXMLElementWithValue(Document doc, String elementName, String value) {
+		org.w3c.dom.Element element = doc.createElement(elementName);
+		element.appendChild(doc.createTextNode(value));
 		return element;
 	}
 	
