@@ -5,8 +5,46 @@
       <name>JPAD.CPACSWrite - Test</name>
       <description>JPAD Aircraft converted to CPACS format</description>
       <creator>JPAD</creator>
-      <timestamp>Tue Jan 23 13:33:47 CET 2018</timestamp>
+      <timestamp>Tue Jan 23 17:05:25 CET 2018</timestamp>
       <version>0.1</version>
       <cpacsversion>3.0</cpacsversion>
    </header>
+   <vehicles>
+      <aircraft>
+         <model uID="ID_CPACSWRITE_TEST" xsi:type="aircraftModelType">
+            <name>[REPLACE: vehicles.aircraft.model.name]</name>
+            <description>[REPLACE: vehicles.aircraft.model.description]</description>
+            <fuselages>
+               <fuselage>
+                  <name>Fuselage</name>
+                  <description>A fuselage created with JPAD</description>
+                  <transformation xsi:type="transformationType">
+                     <scaling xsi:type="pointType">
+                        <x>1.0</x>
+                        <y>1.0</y>
+                        <z>1.0</z>
+                     </scaling>
+                     <rotation xsi:type="pointType">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                     </rotation>
+                     <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                     </translation>
+                  </transformation>
+               </fuselage>
+            </fuselages>
+            <wings/>
+            <engines/>
+         </model>
+      </aircraft>
+      <profiles>
+         <fuselageProfiles/>
+         <wingAirfoils/>
+      </profiles>
+   </vehicles>
+   <toolspecific/>
 </cpacs>
