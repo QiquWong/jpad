@@ -3249,6 +3249,50 @@ public class JPADStaticWriteUtils {
 		return element;
 	}
 
+	public static org.w3c.dom.Element createXMLElementWithAttributes(Document doc, String elementName, 
+			List<Tuple2<String,String>> attributeValueTuples) {
+		org.w3c.dom.Element element = doc.createElement(elementName);
+		attributeValueTuples.stream()
+			.forEach( tpl -> {
+				org.w3c.dom.Attr a = doc.createAttribute(tpl._1());
+				a.setValue(tpl._2());
+				element.setAttributeNode(a);
+			});
+		return element;
+	}
+	
+	@SafeVarargs
+	public static org.w3c.dom.Element createXMLElementWithContentAndAttributes(Document doc, String elementName, String content,
+			Tuple2<String,String>... attributeValueTuples) {
+		org.w3c.dom.Element element = doc.createElement(elementName);
+		Arrays.stream(attributeValueTuples)
+			.forEach( tpl -> {
+				org.w3c.dom.Attr a = doc.createAttribute(tpl._1());
+				a.setValue(tpl._2());
+				element.setAttributeNode(a);
+			});
+
+		element.appendChild(doc.createTextNode(content));
+
+		return element;
+	}
+
+	public static org.w3c.dom.Element createXMLElementWithContentAndAttributes(Document doc, String elementName, String content,
+			List<Tuple2<String,String>> attributeValueTuples) {
+		org.w3c.dom.Element element = doc.createElement(elementName);
+		attributeValueTuples.stream()
+			.forEach( tpl -> {
+				org.w3c.dom.Attr a = doc.createAttribute(tpl._1());
+				a.setValue(tpl._2());
+				element.setAttributeNode(a);
+			});
+
+		element.appendChild(doc.createTextNode(content));
+
+		return element;
+	}
+	
+	
 	@SafeVarargs
 	public static org.w3c.dom.Element createXMLElementWithValueAndAttributes(Document doc, String elementName, Object valueToWrite,
 			int above, int below,
@@ -3275,6 +3319,31 @@ public class JPADStaticWriteUtils {
 		return element;
 	}
 
+	public static org.w3c.dom.Element createXMLElementWithValueAndAttributes(Document doc, String elementName, Object valueToWrite,
+			int above, int below,
+			List<Tuple2<String,String>> attributeValueTuples) {
+		org.w3c.dom.Element element = doc.createElement(elementName);
+		attributeValueTuples.stream()
+			.forEach( tpl -> {
+				org.w3c.dom.Attr a = doc.createAttribute(tpl._1());
+				a.setValue(tpl._2());
+				element.setAttributeNode(a);
+			});
+		
+		String[] str = new String[2];
+		str = prepareSingleVariableToWrite(valueToWrite, above, below);
+		
+		String value = str[0];
+		String unit = str[1];
+
+		if (unit.length() != 0)
+			element.setAttribute("unit", unit);
+
+		element.appendChild(doc.createTextNode(value));
+
+		return element;
+	}
+	
 	public static org.w3c.dom.Element createXMLElementWithValue(Document doc, String elementName, String value) {
 		org.w3c.dom.Element element = doc.createElement(elementName);
 		element.appendChild(doc.createTextNode(value));
