@@ -1,19 +1,28 @@
 package standaloneutils.cpacs;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.measure.quantity.Length;
+import javax.measure.unit.SI;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import javaslang.Tuple;
+import processing.core.PVector;
+import standaloneutils.MyArrayUtils;
 import writers.JPADStaticWriteUtils;
 
 public class CPACSWriter {
@@ -333,13 +342,45 @@ public class CPACSWriter {
 		
 		fuselageElement.appendChild(transformationElement); // fuselage <-- transformation
 		
-		// TODO
+		// fuselage.translation
+		org.w3c.dom.Element sectionsElement = JPADStaticWriteUtils.createXMLElementWithAttributes(_cpacsDoc, "sections",
+				Tuple.of("xsi:type","fuselageSectionsType")
+				);
 		
-		// sections
+		// TODO
+		// EXPERIMENTAL
+		
 		// sections.section ...
-		// cpacs.vehicles.aircraft.profiles.fuselageProfiles
-		// cpacs.vehicles.aircraft.profiles.fuselageProfiles.fuselageProfile ...
+//		LOGGER.info("[insertFuselage] n. sections "+ fuselage.getFuselageCreator().getSectionsYZ().size());
+//		LOGGER.info("[insertFuselage] n. x-stations "+ fuselage.getFuselageCreator().getSectionsYZStations().size());
+//		int idx = 2;
+//		LOGGER.info("SectionYZ idx = " + idx);
+//		LOGGER.info("x-station = " + fuselage.getFuselageCreator().getSectionsYZStations().get(idx));
+//		LOGGER.info("n. points, left = " + fuselage.getFuselageCreator().getSectionsYZ().get(idx).getSectionLeftPoints().size());
+//		fuselage.getFuselageCreator().getSectionsYZ().get(idx).getSectionLeftPoints().stream()
+//			.forEach(pv -> System.out.println(">> >>" + pv.x + ", " + pv.y + ", " + pv.z));
+		
+		LOGGER.info("-> getFuselageYZSections .............................................");
+		List<List<PVector>> sectionsYZ = getFuselageYZSections(fuselage, 0.15, 1.0, 3, 9, 7, 1.0, 0.10, 3);		
+		LOGGER.info("<- getFuselageYZSections .............................................");
+		LOGGER.info("[insertFuselage] n. x-stations = " + sectionsYZ.size());
+		
+//		sectionsYZ.stream()
+//			.forEach(lpv -> System.out.println(">>" + lpv.get(0).x));
+		
+		List<org.w3c.dom.Element> listSectionElements = new ArrayList<>();
+		List<org.w3c.dom.Element> listFuselageProfileElements = new ArrayList<>();
+		// populate the lists of elements: section AND fuselageProfile
+		sectionsYZ.stream()
+			.forEach(s -> {
+				
+			});
+		
+		listSectionElements.stream().forEach(el -> sectionsElement.appendChild(el)); // fuselage.sections <- section (i-th)
+		fuselageElement.appendChild(sectionsElement); // fuselage <-- sections
 
+		listFuselageProfileElements.stream().forEach(el -> _fuselageProfilesElement.appendChild(el)); // cpacs.vehicles.aircraft.profiles.fuselageProfiles <- fuselageProfile (i-th)
+		
 		// FINALLY: append the single fuselage data to the list of fuselages --- Mind the final "s" 
 		_fuselagesElement.appendChild(fuselageElement); // cpacs.vehicles.aircraft.model.fuselages <-- fuselage
 		
@@ -369,5 +410,338 @@ public class CPACSWriter {
 		
 		// TODO
 	}
+
+	/**
+	 * Creates a list of shapes, mostly surfaces/shells, representing the fuselage.
+	 * 
+	 * Nose trunk patches. Patch-1, Patch-2:
+	 * First, the nose patch is created, as the union of two patches: Patch-1, i.e. Nose Cap Patch, and Patch-2, i.e. from cap terminal section to
+	 * the nose trunk terminal section. Patch-1 has numberNoseCapSections supporting section curves and is constrained to include the fuselage foremost tip vertex.
+	 * Patch-1 passes thru: nose tip vertex, support-section-1, support-section-2, ... support-section-<numberNoseCapSections>. The last section of Patch-1 coincides
+	 * with the first support section of Patch-2, which passes thru: support-section-<numberNoseCapSections>, support-section-<numberNoseCapSections + 1>, ... 
+	 * support-section-<numberNoseCapSections + numberNosePatch2Sections>.
+	 * 
+	 * Cylindrical trunk patch:
+	 * Patch-3
+	 * 
+	 * Tail cone trunk patch:
+	 * Patch-4
+	 * 
+	 * Tail cap patch:
+	 * Patch-5
+	 * 
+	 * @param fuselage 						the fuselage object, extracted from a Aircraft object
+	 * @param noseCapSectionFactor1 		the factor multiplying xNoseCap/noseCapLength to obtain the first support section of Patch-1, e.g. 0.15
+	 * @param noseCapSectionFactor2			the factor multiplying xNoseCap/noseCapLength to obtain the last support section of Patch-1, e.g. 1.0 (>1.0 means x > xNoseCap) 
+	 * @param numberNoseCapSections			number of Patch-1 supporting sections, e.g. 3 
+	 * @param numberNosePatch2Sections		number of Patch-2 supporting sections, e.g. 9
+	 * @param numberTailPatchSections		number of Patch-4 supporting sections, e.g. 5
+	 * @param tailCapSectionFactor1 		the factor multiplying (fuselageLength - xTailCap)/tailCapLength to obtain the first support section of Patch-5, e.g. 1.0 (>1.0 means x < xFusLength - tailCapLength)
+	 * @param tailCapSectionFactor2 	    the factor multiplying (fuselageLength - xTailCap)/tailCapLength to obtain the last support section of Patch-5, e.g. 0.15
+	 * @param numberTailCapSections			number of Patch-5 supporting sections, e.g. 3 
+	 * @return a list of lists of points, one sub-list for each section
+	 */
+	public static List<List<PVector>> getFuselageYZSections(Fuselage fuselage,
+			double noseCapSectionFactor1, double noseCapSectionFactor2, int numberNoseCapSections, 
+			int numberNosePatch2Sections, int numberTailPatchSections, double tailCapSectionFactor1, double tailCapSectionFactor2, int numberTailCapSections
+			) {
+		if (fuselage == null)
+			return null;
+		
+		LOGGER.info("[getFuselageYZSections] extracting " 
+				+ (numberNoseCapSections + numberNosePatch2Sections -3 + numberTailPatchSections + numberTailCapSections) + " XY-type sections ...");
+
+		List<List<PVector>> result = new ArrayList<>();
+		
+		Amount<Length> noseLength = fuselage.getFuselageCreator().getLengthNoseTrunk();
+		System.out.println(">> Nose length: " + noseLength);
+		Amount<Length> noseCapStation = fuselage.getFuselageCreator().getDxNoseCap();
+		System.out.println(">> Nose cap x-station: " + noseCapStation);
+		Double xbarNoseCap = fuselage.getNoseDxCapPercent(); // normalized with noseLength
+		System.out.println(">> Nose cap x-station normalized: " + xbarNoseCap);
+		Amount<Length> zNoseTip = Amount.valueOf( 
+				fuselage.getFuselageCreator().getZOutlineXZLowerAtX(0.0),
+				SI.METER);
+		System.out.println(">> Nose tip z: " + zNoseTip);
+
+		LOGGER.info("[getFuselageYZSections] Nose cap, from nose tip: x = 0 m to x=" + noseCapStation);
+		
+		System.out.println(">> Getting selected sections ...");
+		// all xbar's are normalized with noseLength
+		List<Double> xbars1 = Arrays.asList(
+				MyArrayUtils
+					// .linspaceDouble(
+					.halfCosine2SpaceDouble(
+					// .cosineSpaceDouble(
+					noseCapSectionFactor1*xbarNoseCap, noseCapSectionFactor2*xbarNoseCap, 
+					numberNoseCapSections) // n. points
+				);
+		
+		List<List<PVector>> sections1 = new ArrayList<List<PVector>>();
+		xbars1.stream()
+			  .forEach(x -> sections1.add(
+					  fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength.times(x)))
+			  );
+
+		// x stations defining cap outlines
+		List<Double> xmtPatch1 = new ArrayList<>();
+		xmtPatch1.add(0.0); // nose tip
+		xbars1.stream()
+			  .forEach(x -> xmtPatch1.add(x*noseLength.doubleValue(SI.METER)));
+		
+		System.out.println(">> Nose-cap trunk selected x-stations (m), Patch-1: " + xmtPatch1.toString());
+		
+		LOGGER.info("[getFuselageYZSections] Nose trunk (no cap): x=" + noseCapStation + " to x=" + noseLength);
+		
+		System.out.println(">> Getting selected sections ...");
+
+		// all xbar's are normalized with noseLength
+		List<Double> xbars2 = Arrays.asList(
+				MyArrayUtils
+				// .linspaceDouble(
+				// .halfCosine1SpaceDouble(
+				.cosineSpaceDouble(
+					noseCapSectionFactor2*xbarNoseCap, 1.0, 
+					numberNosePatch2Sections) // n. points
+				);
+
+		// x stations defining nose outlines
+		List<Double> xmtPatch2 = new ArrayList<>();
+		xbars2.stream()
+			  .forEach(x -> xmtPatch2.add(x*noseLength.doubleValue(SI.METER)));
+		
+		System.out.println(">> Nose trunk selected x-stations (m), Patch-2: " + xmtPatch2.toString());
+
+//		List<List<PVector>> sections2 = new ArrayList<List<PVector>>();
+//		xbars2.stream()
+//			  .forEach(x -> sections2.add(
+//					  fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength.times(x)))
+//			  );
+
+		xmtPatch2.stream()
+				 .map(x -> Amount.valueOf(x, SI.METER))
+				 .forEach(x -> result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(x)));
+		
+		// nose Patch-2 terminal section
+//		result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(noseLength));
+		// do not duplicate this section
+
+		Amount<Length> cylinderLength = fuselage.getFuselageCreator().getLengthCylindricalTrunk();
+
+		LOGGER.info("[getFuselageYZSections] Fuselage cylindrical trunk: x=" + noseLength + " to x=" + noseLength.plus(cylinderLength));
+
+		// x stations defining cylinder outlines
+		List<Double> xmtPatch3 = Arrays.asList(
+				MyArrayUtils.linspaceDouble(
+						noseLength.doubleValue(SI.METER), noseLength.plus(cylinderLength).doubleValue(SI.METER), 
+						3) // n. points
+				);
+		
+		System.out.println(">> Cylinder trunk selected x-stations (m), Patch-3: " + xmtPatch3.toString());
+		
+		// Cylindrical trunk mid section
+		result.add(
+				fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(
+						noseLength.plus(cylinderLength.times(0.5))
+						)
+				);
+
+		// Cylindrical trunk terminal section
+		result.add(
+				fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(
+						noseLength.plus(cylinderLength)
+						)
+				);
+
+		// Tail trunk
+		Amount<Length> tailLength = fuselage.getFuselageCreator().getLengthTailTrunk();
+		Amount<Length> tailCapLength = fuselage.getFuselageCreator().getDxTailCap();
+		Amount<Length> fuselageLength = fuselage.getLength();
+
+		LOGGER.info("[getFuselageYZSections] Tail trunk (no cap): x=" 
+				+ noseLength.plus(cylinderLength) + " to x=" + fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)) + " (fus. length - tail cap length)"
+				);
+
+		// x stations defining cylinder outlines
+		List<Double> xmtPatch4 = Arrays.asList(
+				MyArrayUtils.halfCosine1SpaceDouble( // cosineSpaceDouble( // 
+						noseLength.plus(cylinderLength).doubleValue(SI.METER), 
+						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)).doubleValue(SI.METER),
+						numberTailPatchSections) // n. points
+				);
+		
+		System.out.println(">> Tail trunk selected x-stations (m), Patch-4: " + xmtPatch4.toString());
+		
+		xmtPatch4.stream()
+		 		 .skip(1) // do not duplicate this section
+				 .map(x -> Amount.valueOf(x, SI.METER))
+				 .forEach(x -> result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(x)));
+		
+		// tail cap patch
+
+		LOGGER.info("[getFuselageYZSections] Fuselage tail cap trunk: x=" 
+				+ fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)) + " to x=" + fuselageLength + " (fus. total length)"
+				);
+
+		// x stations in tail cap
+		List<Double> xmtPatch5 = Arrays.asList(
+				MyArrayUtils.halfCosine2SpaceDouble(
+						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)).doubleValue(SI.METER), 
+						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor2)).doubleValue(SI.METER), // tweak to avoid a degenerate section 
+						numberTailCapSections) // n. points
+				);
+
+		System.out.println(">> Tail cap trunk selected x-stations (m), Patch-5: " + xmtPatch5.toString());
+		
+		Amount<Length> zTailTip = Amount.valueOf( 
+				fuselage.getFuselageCreator().getZOutlineXZLowerAtX(fuselageLength.doubleValue(SI.METER)),
+				SI.METER);
+		
+//		CADVertex vertexTailTip = OCCUtils.theFactory.newVertex(
+//				fuselageLength.doubleValue(SI.METER), 0, zTailTip.doubleValue(SI.METER));
+		
+		xmtPatch5.stream()
+		 .skip(1) // do not duplicate this section
+				 .map(x -> Amount.valueOf(x, SI.METER))
+				 .forEach(x -> result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(x)));
+
+		//============================================================================================
+		
+//		// other nose cap entities (outline curves, vertices)
+		
+		PVector ptNoseTip = new PVector(0.0f, 0.0f, (float)zNoseTip.doubleValue(SI.METER));
+		
+		// points z's on nose outline curve, XZ, upper
+		List<double[]> pointsNoseCapXZUpper = xmtPatch1.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+				})
+				.collect(Collectors.toList());		
+		// points z's on nose outline curve, XZ, lower
+		List<double[]> pointsNoseCapXZLower = xmtPatch1.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+				})
+				.collect(Collectors.toList());
+		// points y's on nose outline curve, XY, right
+		List<double[]> pointsNoseCapSideRight = xmtPatch1.stream()
+				.map(x -> new double[]{
+						x,
+						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+						fuselage.getFuselageCreator().getCamberZAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		
+		// points z's on nose outline curve, XZ, lower
+		List<double[]> pointsNoseXZLower = xmtPatch2.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		List<double[]> pointsNoseSideRight = xmtPatch2.stream()
+				.map(x -> new double[]{
+						x,
+						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+						fuselage.getFuselageCreator().getCamberZAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		// support sections of cylinder, patch-3
+		
+		// points z's on cylinder outline curve, XZ, upper
+		List<double[]> pointsCylinderXZUpper = xmtPatch3.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+				})
+				.collect(Collectors.toList());
+		// points z's on cylinder outline curve, XZ, lower
+		List<double[]> pointsCylinderXZLower = xmtPatch3.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		// cylinder side curve
+		List<double[]> pointsCylinderSideRight = xmtPatch3.stream()
+				.map(x -> new double[]{
+						x,
+						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+						fuselage.getFuselageCreator().getCamberZAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		// tail trunk
+		// points z's on nose outline curve, XZ, upper
+		List<double[]> pointsTailXZUpper = xmtPatch4.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+				})
+				.collect(Collectors.toList());
+		// points z's on nose outline curve, XZ, lower
+		List<double[]> pointsTailXZLower = xmtPatch4.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		// tail side curve
+		List<double[]> pointsTailSideRight = xmtPatch4.stream()
+				.map(x -> new double[]{
+						x,
+						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+						fuselage.getFuselageCreator().getCamberZAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		// points z's on tail cap outline curve, XZ, upper
+		List<double[]> pointsTailCapXZUpper = xmtPatch5.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+				})
+				.collect(Collectors.toList());
+//		pointsTailCapXZUpper.add(vertexTailTip.pnt()); // add tail tip point
+
+		// points z's on nose outline curve, XZ, lower
+		List<double[]> pointsTailCapXZLower = xmtPatch5.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+				})
+				.collect(Collectors.toList());
+//		pointsTailCapXZLower.add(vertexTailTip.pnt()); // add tail tip point
+		
+		// tail side curve
+		List<double[]> pointsTailCapSideRight = xmtPatch5.stream()
+				.map(x -> new double[]{
+						x,
+						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+						fuselage.getFuselageCreator().getCamberZAtX(x)
+				})
+				.collect(Collectors.toList());
+//		pointsTailCapSideRight.add(vertexTailTip.pnt()); // add tail tip point
+		
+		return result;
+	}
+
+	
 	
 }
