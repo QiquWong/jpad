@@ -1,0 +1,11 @@
+Validate cpacs files online at:
+
+https://www.freeformatter.com/xml-validator-xsd.html
+
+upload <cpacs file>.xml and "CPACS_21_Schema.xsd"
+
+CPACS downloads here:
+https://code.google.com/archive/p/cpacs/downloads
+
+TiGL downloads here:
+https://github.com/DLR-SC/tigl
