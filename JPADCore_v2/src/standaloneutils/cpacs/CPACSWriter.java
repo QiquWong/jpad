@@ -617,12 +617,6 @@ public class CPACSWriter {
 					numberNoseCapSections) // n. points
 				);
 		
-		List<List<PVector>> sections1 = new ArrayList<List<PVector>>();
-		xbars1.stream()
-			  .forEach(x -> sections1.add(
-					  fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength.times(x)))
-			  );
-
 		// x stations defining cap outlines
 		List<Double> xmtPatch1 = new ArrayList<>();
 		xmtPatch1.add(0.0); // nose tip
@@ -879,6 +873,9 @@ public class CPACSWriter {
 				.collect(Collectors.toList());
 //		pointsTailCapSideRight.add(vertexTailTip.pnt()); // add tail tip point
 		
+		result.stream()
+			.forEach(r -> System.out.println(">> size: " + r.size()));
+			
 		return result;
 	}
 

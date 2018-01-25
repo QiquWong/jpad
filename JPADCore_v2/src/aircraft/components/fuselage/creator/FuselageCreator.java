@@ -1070,13 +1070,10 @@ public class FuselageCreator implements IFuselageCreator {
 	public List<PVector> getUniqueValuesYZSectionCurve(Amount<Length> len_x)
 	{
 		List<PVector> result = new ArrayList<>();
-		List<PVector> pts  = getUniqueValuesYZSideRCurve(len_x);
-		result.addAll(pts);
-		// simply change all Y-coordinates  
-		for (PVector p : pts){ p.y = -p.y; }
-		// and add all in reversed order
-		Collections.reverse(pts);
-		pts.stream().skip(1) // skipping the first, being an undesired duplicate
+		List<PVector> ptsR  = getUniqueValuesYZSideRCurve(len_x);
+		result.addAll(ptsR);
+		List<PVector> ptsL  = getUniqueValuesYZSideLCurve(len_x); // points in SideL curves are in the right order
+		ptsL.stream().skip(1) // skipping the first, being an undesired duplicate
 			.forEach(p -> result.add(p));
 		return result;
 	}
