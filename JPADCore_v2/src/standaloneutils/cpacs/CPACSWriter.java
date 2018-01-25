@@ -1,9 +1,11 @@
 package standaloneutils.cpacs;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -18,6 +20,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
+
+import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
@@ -170,9 +174,13 @@ public class CPACSWriter {
 				 JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "creator", "JPAD")
 		);
 		// header.timestamp
-		Instant now = Instant.now();
+		//Instant now = Instant.now();
+		Date now = new Date();
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		// "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" // Instant.now() // ISO-8601
+		// "yyyy-MM-dd'T'HH:mm:ss" // <== ok in CPACS
 		_headerElement.appendChild(
-				 JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "timestamp",now.toString())
+				 JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "timestamp",dateFormatter.format(now))
 		);
 		// header.version
 		_headerElement.appendChild(
@@ -289,9 +297,10 @@ public class CPACSWriter {
 		
 		LOGGER.info("[insertFuselage] inserting fuselage into CPACS tree ...");
 		
+		String fuselageID = fuselage.getId() + "_1"; // TODO: parametrize this name getting the trailing part from a function argument
 		org.w3c.dom.Element fuselageElement = JPADStaticWriteUtils.createXMLElementWithAttributes(_cpacsDoc, "fuselage",
 				Tuple.of("xsi:type", "fuselageType"),
-				Tuple.of("uID", "Fuselage_1")
+				Tuple.of("uID", fuselageID)
 				);
 
 		List<Tuple2<String,String>> translationAttributes = new ArrayList<>();
@@ -302,7 +311,7 @@ public class CPACSWriter {
 		// fuselage.description
 		// fuselage.transformation
 		appendNameDescriptionTransformation(_cpacsDoc, fuselageElement,
-				fuselage.getId(), // name
+				fuselageID, // name
 				"A fuselage created with JPAD", // description
 				Tuple.of("xsi:type","transformationType"), // transformation attributes
 				Tuple.of("xsi:type","pointType"), // scaling attributes,
@@ -318,8 +327,10 @@ public class CPACSWriter {
 				Tuple.of("xsi:type","fuselageSectionsType")
 				);
 		
-		// TODO
-		// EXPERIMENTAL
+		// TODO: EXPERIMENTAL, for now all the fuselage sections are reported in profiles.fuselageProfiles
+		//       as they are in JPAD, and referred in each fuselage.sections.section.element WITH NO FURTHER TRANSFORM.
+		//       It might be the case to save each section in its local YZ coordinates and then put the proper transform
+		//       definitions in eache fuselage.sections.section.element
 		
 		LOGGER.info("-> getFuselageYZSections .............................................");
 		List<List<PVector>> sectionsYZ = getFuselageYZSections(fuselage, 0.15, 1.0, 3, 9, 7, 1.0, 0.10, 3);		
@@ -336,6 +347,8 @@ public class CPACSWriter {
 				listProfileID.add("Profile_Fuselage_Section_"+i);
 			});
 		LOGGER.info("[insertFuselage] IDs: " + Arrays.toString(listSectionID.toArray()));
+		
+		List<String> listElementsID = new ArrayList<>();
 		
 		// populate the lists of elements: section AND fuselageProfile
 		IntStream.range(0,sectionsYZ.size())
@@ -416,20 +429,25 @@ public class CPACSWriter {
 				sectionElement.appendChild(elementsElement); // works also when sectionElement has already been appended to parent
 				
 				// === section.elements.element -- just one for now
+				String elementUID = "Element_"+listSectionID.get(i);
 				org.w3c.dom.Element elementElement = JPADStaticWriteUtils.createXMLElementWithAttributes(_cpacsDoc, "element",
 						Tuple.of("xsi:type","fuselageElementType"),
-						Tuple.of("uID","Element_"+listSectionID.get(i))
+						Tuple.of("uID", elementUID)
 						);
+				listElementsID.add(elementUID);
 
 				translationAttributes.clear();
 				translationAttributes.add(Tuple.of("refType","absGlobal"));
 				translationAttributes.add(Tuple.of("xsi:type","pointAbsRelType"));
 				
+				double[] scaling = {0.0, 0.0, 0.0};
+				// collapse only the first element, i.e. make it the fuselage nose point
+				if (i > 0) { scaling[0] = 1.0; scaling[1] = 1.0; scaling[1] = 1.0;}
 				appendNameDescriptionTransformation(_cpacsDoc, elementElement,
-						"Name " + listSectionID.get(i) + ", Element 1" /* name */, "An element created with JPAD" /* description */,
+						"Name " + listSectionID.get(i) + ", Element 0" /* name */, "An element created with JPAD" /* description */,
 						Tuple.of("xsi:type","transformationType"), // transformation attributes
 						Tuple.of("xsi:type","pointType"), // scaling attributes,
-						new double[] {1.0, 1.0, 1.0}, // TODO: check if has to be {0.0, 0.0, 0.0} 
+						scaling, 
 						Tuple.of("xsi:type","pointType"), // rotation attributes,
 						new double[] {0.0, 0.0, 0.0},
 						translationAttributes,
@@ -456,13 +474,52 @@ public class CPACSWriter {
 
 		fuselageElement.appendChild(positioningsElement); // fuselage <-- positionings
 		
+		// define each positioning block
+		// append-to-parent works effectively also when the parent has already been appended to his parent
+		for(int i = 0; i < listSectionID.size(); i++) {
+			// positioning
+			org.w3c.dom.Element positioningElement = JPADStaticWriteUtils.createXMLElementWithAttributes(_cpacsDoc, "positioning",
+					Tuple.of("xsi:type","positioningType"),
+					Tuple.of("uID",listSectionID.get(i)+"_Pos"+String.valueOf(i))
+					);
+			positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "name", "Name " + listSectionID.get(i)+"_Pos"+String.valueOf(i))); // <======
+			positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "sweepAngle", String.valueOf(90.0)));
+			positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "dihedralAngle", String.valueOf(0.0)));
+			if (i == 0) {
+				positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "length", String.valueOf(0.0))); // <======
+			} else { // i > 0
+				positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "length", String.valueOf(
+						sectionsYZ.get(i).get(0).x - sectionsYZ.get(i - 1).get(0).x))); // <======
+				positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "fromSectionUID", listSectionID.get(i - 1))); // <======
+			}
+			positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "toSectionUID", listSectionID.get(i))); // <======
+			positioningsElement.appendChild(positioningElement); // append to parent
+		}
+		
 		// fuselage.segments
 		org.w3c.dom.Element segmentsElement = JPADStaticWriteUtils.createXMLElementWithAttributes(_cpacsDoc, "segments",
 				Tuple.of("xsi:type","fuselageSegmentsType")
 				);
 		
-		fuselageElement.appendChild(segmentsElement); // fuselage <-- positionings
+		fuselageElement.appendChild(segmentsElement); // fuselage <-- segments
 		
+		// define each segment block
+		// append-to-parent works effectively also when the parent has already been appended to his parent
+		for(int i = 1; i < listSectionID.size(); i++) {
+			String uID = fuselageID+"_Segment_"+String.valueOf(i - 1)+"_"+String.valueOf(i);
+			// segment
+			org.w3c.dom.Element segmentElement = JPADStaticWriteUtils.createXMLElementWithAttributes(_cpacsDoc, "segment",
+					Tuple.of("xsi:type","fuselageSegmentType"),
+					Tuple.of("uID", uID) // <===== uID
+					);
+			segmentElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "name", uID));
+			segmentElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "description", uID));
+			segmentElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "fromElementUID", listElementsID.get(i - 1))); // <======
+			segmentElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "toElementUID", listElementsID.get(i))); // <======
+
+			segmentsElement.appendChild(segmentElement); // append to parent
+
+		}		
 		
 		// FINALLY: append the single fuselage data to the list of fuselages --- Mind the final "s" 
 		_fuselagesElement.appendChild(fuselageElement); // cpacs.vehicles.aircraft.model.fuselages <-- fuselage

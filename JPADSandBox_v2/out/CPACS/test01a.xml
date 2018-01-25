@@ -62,9 +62,9 @@
                               <description>An element created with JPAD</description>
                               <transformation xsi:type="transformationType">
                                  <scaling xsi:type="pointType">
-                                    <x>0.0</x>
-                                    <y>0.0</y>
-                                    <z>0.0</z>
+                                    <x>1.0</x>
+                                    <y>1.0</y>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation xsi:type="pointType">
                                     <x>0.0</x>
@@ -893,6 +893,7 @@
                      </section>
                   </sections>
                   <positionings xsi:type="positioningsType">
+<!--
                      <positioning uID="Fuselage_Section_0_Pos0" xsi:type="positioningType">
                         <name>Name Fuselage_Section_0_Pos0</name>
                         <sweepAngle>90.0</sweepAngle>
@@ -900,6 +901,7 @@
                         <length>0.0</length>
                         <toSectionUID>Fuselage_Section_0</toSectionUID>
                      </positioning>
+-->
                      <positioning uID="Fuselage_Section_1_Pos1" xsi:type="positioningType">
                         <name>Name Fuselage_Section_1_Pos1</name>
                         <sweepAngle>90.0</sweepAngle>

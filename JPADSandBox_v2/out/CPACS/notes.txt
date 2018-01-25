@@ -9,3 +9,8 @@ https://code.google.com/archive/p/cpacs/downloads
 
 TiGL downloads here:
 https://github.com/DLR-SC/tigl
+
+Time stamps in Java:
+
+https://gist.github.com/mscharhag/9195718
+https://www.javatips.net/api/webarchive-commons-master/src/main/java/org/archive/util/DateUtils.java
