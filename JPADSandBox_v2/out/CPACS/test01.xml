@@ -5,7 +5,7 @@
       <name>JPAD.CPACSWrite - Test</name>
       <description>JPAD Aircraft converted to CPACS format</description>
       <creator>JPAD</creator>
-      <timestamp>2018-01-25T16:50:33</timestamp>
+      <timestamp>2018-01-25T17:39:58</timestamp>
       <version>0.1</version>
       <cpacsVersion>3.0</cpacsVersion>
    </header>
@@ -18,18 +18,20 @@
                <fuselage uID="Fuselage_1" xsi:type="fuselageType">
                   <name>Fuselage_1</name>
                   <description>A fuselage created with JPAD</description>
-                  <transformation xsi:type="transformationType">
-                     <scaling xsi:type="pointType">
+                  <transformation uID="Fuselage_1_TRANSFORMATION_uID" xsi:type="transformationType">
+                     <scaling uID="Fuselage_1_SCALING_uID" xsi:type="pointType">
                         <x>1.0</x>
                         <y>1.0</y>
                         <z>1.0</z>
                      </scaling>
-                     <rotation xsi:type="pointType">
+                     <rotation uID="Fuselage_1_ROTATION_uID" xsi:type="pointType">
                         <x>0.0</x>
                         <y>0.0</y>
                         <z>0.0</z>
                      </rotation>
-                     <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                     <translation refType="absGlobal"
+                                  uID="Fuselage_1_TRANSLATION_uID"
+                                  xsi:type="pointAbsRelType">
                         <x>0.0</x>
                         <y>0.0</y>
                         <z>0.0</z>
@@ -39,18 +41,21 @@
                      <section uID="Fuselage_Section_0" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_0</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_0_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_0_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_0_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_0_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -60,18 +65,21 @@
                            <element uID="Element_Fuselage_Section_0" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_0, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_0_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_0_SCALING_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_0_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_0_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -84,18 +92,21 @@
                      <section uID="Fuselage_Section_1" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_1</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_1_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_1_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_1_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_1_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -105,18 +116,21 @@
                            <element uID="Element_Fuselage_Section_1" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_1, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_1_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_1_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_1_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_1_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -129,18 +143,21 @@
                      <section uID="Fuselage_Section_2" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_2</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_2_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_2_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_2_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_2_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -150,18 +167,21 @@
                            <element uID="Element_Fuselage_Section_2" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_2, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_2_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_2_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_2_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_2_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -174,18 +194,21 @@
                      <section uID="Fuselage_Section_3" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_3</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_3_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_3_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_3_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_3_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -195,18 +218,21 @@
                            <element uID="Element_Fuselage_Section_3" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_3, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_3_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_3_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_3_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_3_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -219,18 +245,21 @@
                      <section uID="Fuselage_Section_4" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_4</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_4_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_4_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_4_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_4_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -240,18 +269,21 @@
                            <element uID="Element_Fuselage_Section_4" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_4, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_4_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_4_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_4_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_4_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -264,18 +296,21 @@
                      <section uID="Fuselage_Section_5" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_5</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_5_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_5_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_5_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_5_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -285,18 +320,21 @@
                            <element uID="Element_Fuselage_Section_5" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_5, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_5_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_5_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_5_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_5_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -309,18 +347,21 @@
                      <section uID="Fuselage_Section_6" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_6</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_6_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_6_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_6_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_6_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -330,18 +371,21 @@
                            <element uID="Element_Fuselage_Section_6" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_6, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_6_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_6_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_6_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_6_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -354,18 +398,21 @@
                      <section uID="Fuselage_Section_7" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_7</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_7_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_7_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_7_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_7_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -375,18 +422,21 @@
                            <element uID="Element_Fuselage_Section_7" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_7, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_7_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_7_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_7_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_7_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -399,18 +449,21 @@
                      <section uID="Fuselage_Section_8" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_8</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_8_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_8_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_8_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_8_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -420,18 +473,21 @@
                            <element uID="Element_Fuselage_Section_8" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_8, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_8_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_8_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_8_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_8_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -444,18 +500,21 @@
                      <section uID="Fuselage_Section_9" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_9</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_9_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_9_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_9_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_9_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -465,18 +524,21 @@
                            <element uID="Element_Fuselage_Section_9" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_9, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_9_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_9_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_9_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_9_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -489,18 +551,21 @@
                      <section uID="Fuselage_Section_10" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_10</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_10_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_10_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_10_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_10_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -510,18 +575,21 @@
                            <element uID="Element_Fuselage_Section_10" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_10, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_10_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_10_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_10_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_10_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -534,18 +602,21 @@
                      <section uID="Fuselage_Section_11" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_11</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_11_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_11_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_11_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_11_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -555,18 +626,21 @@
                            <element uID="Element_Fuselage_Section_11" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_11, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_11_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_11_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_11_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_11_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -579,18 +653,21 @@
                      <section uID="Fuselage_Section_12" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_12</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_12_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_12_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_12_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_12_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -600,18 +677,21 @@
                            <element uID="Element_Fuselage_Section_12" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_12, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_12_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_12_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_12_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_12_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -624,18 +704,21 @@
                      <section uID="Fuselage_Section_13" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_13</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_13_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_13_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_13_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_13_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -645,18 +728,21 @@
                            <element uID="Element_Fuselage_Section_13" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_13, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_13_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_13_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_13_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_13_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -669,18 +755,21 @@
                      <section uID="Fuselage_Section_14" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_14</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_14_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_14_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_14_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_14_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -690,18 +779,21 @@
                            <element uID="Element_Fuselage_Section_14" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_14, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_14_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_14_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_14_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_14_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -714,18 +806,21 @@
                      <section uID="Fuselage_Section_15" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_15</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_15_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_15_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_15_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_15_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -735,18 +830,21 @@
                            <element uID="Element_Fuselage_Section_15" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_15, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_15_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_15_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_15_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_15_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -759,18 +857,21 @@
                      <section uID="Fuselage_Section_16" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_16</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_16_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_16_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_16_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_16_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -780,18 +881,21 @@
                            <element uID="Element_Fuselage_Section_16" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_16, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_16_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_16_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_16_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_16_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -804,18 +908,21 @@
                      <section uID="Fuselage_Section_17" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_17</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_17_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_17_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_17_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_17_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -825,18 +932,21 @@
                            <element uID="Element_Fuselage_Section_17" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_17, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_17_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_17_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_17_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_17_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
@@ -849,18 +959,21 @@
                      <section uID="Fuselage_Section_18" xsi:type="fuselageSectionType">
                         <name>Fuselage_Section_18</name>
                         <description>A section created with JPAD</description>
-                        <transformation xsi:type="transformationType">
-                           <scaling xsi:type="pointType">
+                        <transformation uID="Fuselage_Section_18_TRANSFORMATION_ID"
+                                        xsi:type="transformationType">
+                           <scaling uID="Fuselage_Section_18_SCALING_ID" xsi:type="pointType">
                               <x>1.0</x>
                               <y>1.0</y>
                               <z>1.0</z>
                            </scaling>
-                           <rotation xsi:type="pointType">
+                           <rotation uID="Fuselage_Section_18_ROTATION_ID" xsi:type="pointType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                            </rotation>
-                           <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                           <translation refType="absGlobal"
+                                        uID="Fuselage_Section_18_TRANSLATION_ID"
+                                        xsi:type="pointAbsRelType">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
@@ -870,18 +983,21 @@
                            <element uID="Element_Fuselage_Section_18" xsi:type="fuselageElementType">
                               <name>Name Fuselage_Section_18, Element 0</name>
                               <description>An element created with JPAD</description>
-                              <transformation xsi:type="transformationType">
-                                 <scaling xsi:type="pointType">
+                              <transformation uID="Element_Fuselage_Section_18_TRANSFORMATION_ID"
+                                              xsi:type="transformationType">
+                                 <scaling uID="Element_Fuselage_Section_18_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
                                     <z>0.0</z>
                                  </scaling>
-                                 <rotation xsi:type="pointType">
+                                 <rotation uID="Element_Fuselage_Section_18_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>
                                  </rotation>
-                                 <translation refType="absGlobal" xsi:type="pointAbsRelType">
+                                 <translation refType="absGlobal"
+                                              uID="Element_Fuselage_Section_18_TRANSLATION_ID"
+                                              xsi:type="pointAbsRelType">
                                     <x>0.0</x>
                                     <y>0.0</y>
                                     <z>0.0</z>

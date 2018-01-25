@@ -303,9 +303,23 @@ public class CPACSWriter {
 				Tuple.of("uID", fuselageID)
 				);
 
+		List<Tuple2<String,String>> transformationAttributes = new ArrayList<>();
+		List<Tuple2<String,String>> scalingAttributes = new ArrayList<>();
+		List<Tuple2<String,String>> rotationAttributes = new ArrayList<>();
 		List<Tuple2<String,String>> translationAttributes = new ArrayList<>();
+		
+		transformationAttributes.add(Tuple.of("xsi:type","transformationType"));
+		transformationAttributes.add(Tuple.of("uID",fuselageID+"_TRANSFORMATION_uID"));
+		
+		scalingAttributes.add(Tuple.of("xsi:type","pointType"));
+		scalingAttributes.add(Tuple.of("uID",fuselageID+"_SCALING_uID"));
+		
+		rotationAttributes.add(Tuple.of("xsi:type","pointType"));
+		rotationAttributes.add(Tuple.of("uID",fuselageID+"_ROTATION_uID"));
+
 		translationAttributes.add(Tuple.of("refType","absGlobal"));
 		translationAttributes.add(Tuple.of("xsi:type","pointAbsRelType"));
+		translationAttributes.add(Tuple.of("uID",fuselageID+"_TRANSLATION_uID"));
 		
 		// fuselage.name
 		// fuselage.description
@@ -313,10 +327,10 @@ public class CPACSWriter {
 		appendNameDescriptionTransformation(_cpacsDoc, fuselageElement,
 				fuselageID, // name
 				"A fuselage created with JPAD", // description
-				Tuple.of("xsi:type","transformationType"), // transformation attributes
-				Tuple.of("xsi:type","pointType"), // scaling attributes,
+				transformationAttributes, // transformation attributes
+				scalingAttributes, // scaling attributes,
 				new double[] {1.0, 1.0, 1.0},
-				Tuple.of("xsi:type","pointType"), // rotation attributes,
+				rotationAttributes, // rotation attributes,
 				new double[] {0.0, 0.0, 0.0},
 				translationAttributes,
 				new double[] {0.0, 0.0, 0.0}
@@ -362,16 +376,30 @@ public class CPACSWriter {
 				// section.name
 				// section.description
 				// section.transformation
+				transformationAttributes.clear();
+				scalingAttributes.clear();
+				rotationAttributes.clear();
 				translationAttributes.clear();
+				
+				transformationAttributes.add(Tuple.of("xsi:type","transformationType"));
+				transformationAttributes.add(Tuple.of("uID",listSectionID.get(i)+"_TRANSFORMATION_ID"));
+				
+				scalingAttributes.add(Tuple.of("xsi:type","pointType"));
+				scalingAttributes.add(Tuple.of("uID",listSectionID.get(i)+"_SCALING_ID"));
+
+				rotationAttributes.add(Tuple.of("xsi:type","pointType"));
+				rotationAttributes.add(Tuple.of("uID",listSectionID.get(i)+"_ROTATION_ID"));
+				
 				translationAttributes.add(Tuple.of("refType","absGlobal"));
 				translationAttributes.add(Tuple.of("xsi:type","pointAbsRelType"));
+				translationAttributes.add(Tuple.of("uID",listSectionID.get(i)+"_TRANSLATION_ID"));
 				
 				appendNameDescriptionTransformation(_cpacsDoc, sectionElement,
 						listSectionID.get(i) /* name */, "A section created with JPAD" /* description */,
-						Tuple.of("xsi:type","transformationType"), // transformation attributes
-						Tuple.of("xsi:type","pointType"), // scaling attributes,
+						transformationAttributes, // transformation attributes
+						scalingAttributes, // scaling attributes,
 						new double[] {1.0, 1.0, 1.0},
-						Tuple.of("xsi:type","pointType"), // rotation attributes,
+						rotationAttributes, // rotation attributes,
 						new double[] {0.0, 0.0, 0.0},
 						translationAttributes,
 						new double[] {0.0, 0.0, 0.0}
@@ -437,18 +465,34 @@ public class CPACSWriter {
 				listElementsID.add(elementUID);
 
 				translationAttributes.clear();
+				
+				transformationAttributes.clear();
+				scalingAttributes.clear();
+				rotationAttributes.clear();
+				translationAttributes.clear();
+				
+				transformationAttributes.add(Tuple.of("xsi:type","transformationType"));
+				transformationAttributes.add(Tuple.of("uID",elementUID+"_TRANSFORMATION_ID"));
+				
+				scalingAttributes.add(Tuple.of("xsi:type","pointType"));
+				scalingAttributes.add(Tuple.of("uID",elementUID+"_SCALING_ID"));
+				
+				rotationAttributes.add(Tuple.of("xsi:type","pointType"));
+				rotationAttributes.add(Tuple.of("uID",elementUID+"_ROTATION_ID"));
+				
 				translationAttributes.add(Tuple.of("refType","absGlobal"));
 				translationAttributes.add(Tuple.of("xsi:type","pointAbsRelType"));
+				translationAttributes.add(Tuple.of("uID",elementUID+"_TRANSLATION_ID"));
 				
 				double[] scaling = {0.0, 0.0, 0.0};
 				// collapse only the first element, i.e. make it the fuselage nose point
 				if (i > 0) { scaling[0] = 1.0; scaling[1] = 1.0; scaling[1] = 1.0;}
 				appendNameDescriptionTransformation(_cpacsDoc, elementElement,
 						"Name " + listSectionID.get(i) + ", Element 0" /* name */, "An element created with JPAD" /* description */,
-						Tuple.of("xsi:type","transformationType"), // transformation attributes
-						Tuple.of("xsi:type","pointType"), // scaling attributes,
+						transformationAttributes, // transformation attributes
+						scalingAttributes, // scaling attributes,
 						scaling, 
-						Tuple.of("xsi:type","pointType"), // rotation attributes,
+						rotationAttributes, // rotation attributes,
 						new double[] {0.0, 0.0, 0.0},
 						translationAttributes,
 						new double[] {0.0, 0.0, 0.0}
@@ -896,10 +940,10 @@ public class CPACSWriter {
 	
 	public void appendNameDescriptionTransformation(Document doc, org.w3c.dom.Element toElement,
 			String name, String description,
-			Tuple2<String,String> transformationAttributes,
-			Tuple2<String,String> scalingAttributes,
+			List<Tuple2<String,String>> transformationAttributes,
+			List<Tuple2<String,String>> scalingAttributes,
 			double[] scaling,
-			Tuple2<String,String> rotationAttributes,
+			List<Tuple2<String,String>> rotationAttributes,
 			double[] rotation,
 			List<Tuple2<String,String>> translationAttributes,
 			double[] translation
