@@ -342,14 +342,29 @@ public class CPACSWriter {
 				);
 		
 		// TODO: EXPERIMENTAL, for now all the fuselage sections are reported in profiles.fuselageProfiles
-		//       as they are in JPAD, and referred in each fuselage.sections.section.element WITH NO FURTHER TRANSFORM.
+		//       as they are in JPAD, and referred in each fuselage.sections.section.element 
+		//       WITH NO FURTHER TRANSFORM.
 		//       It might be the case to save each section in its local YZ coordinates and then put the proper transform
 		//       definitions in eache fuselage.sections.section.element
+		// TODO: referring fuselage profiles to local coordinates YZ with x=0
 		
 		LOGGER.info("-> getFuselageYZSections .............................................");
 		List<List<PVector>> sectionsYZ = getFuselageYZSections(fuselage, 0.15, 1.0, 3, 9, 7, 1.0, 0.10, 3);		
 		LOGGER.info("<- getFuselageYZSections .............................................");
 		LOGGER.info("[insertFuselage] n. x-stations = " + sectionsYZ.size());
+		
+		// get the x's of all fuselage sections
+		// each section's list of points have all the same x-coordinate
+		List<Double> xStations = new ArrayList<>();
+		IntStream.range(0,sectionsYZ.size())
+			.forEach(i -> xStations.add((double)sectionsYZ.get(i).get(0).x));
+
+		// get the distance between successive fuselage sections
+		List<Double> dxStations = new ArrayList<>();
+		IntStream.range(1,sectionsYZ.size())
+			.forEach(i -> dxStations.add(
+					xStations.get(i) - xStations.get(i - 1)
+					));
 		
 		List<String> listSectionID = new ArrayList<>();
 		List<String> listProfileID = new ArrayList<>();
@@ -424,7 +439,8 @@ public class CPACSWriter {
 						String.join( // a string of joined values
 								";", 
 								sectionsYZ.get(i).stream() // scan all points in the i-th section and collect all coordinates
-									.map(pt -> String.valueOf(pt.x)) // <== x
+									//.map(pt -> String.valueOf(pt.x)) // <== x
+									.map(pt -> String.valueOf(0.0)) // <== SET X=0
 									.collect(Collectors.toList())
 								),
 						Tuple.of("mapType","vector")
