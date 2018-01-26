@@ -27,22 +27,21 @@ public class Test19mds {
 
 		System.out.println("========== [main] Getting the aircraft and the fuselage ...");
 		Aircraft theAircraft = AircraftUtils.importAircraft(args);
-
-//		LiftingSurface wing = theAircraft.getWing();
+		
+		Fuselage fuselage = theAircraft.getFuselage();
+		LiftingSurface wing = theAircraft.getWing();
 		LiftingSurface horTail = theAircraft.getHTail();
-//		LiftingSurface verTail = theAircraft.getVTail();
+		LiftingSurface verTail = theAircraft.getVTail();
 		
-		boolean exportLofts = true;
-		boolean exportSupportShapes = true;		
-		
-//		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, exportLofts, exportSupportShapes);
-		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, exportLofts, exportSupportShapes);
-//		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, exportLofts, exportSupportShapes);
+		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, true, true);
+		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-2, true, true);
+		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, true, true);
+		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-2, true, true);
 		
 		// Write to a file
 		String fileName = "test19mds.brep";
 
-		if (OCCUtils.write(fileName, horTailShapes))
+		if(OCCUtils.write(fileName, fuselageShapes, wingShapes, horTailShapes, verTailShapes))
 			System.out.println("========== [main] Output written on file: " + fileName);		
 	}	
 }	
