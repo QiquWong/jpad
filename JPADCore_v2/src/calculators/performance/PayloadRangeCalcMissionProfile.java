@@ -74,7 +74,6 @@ public class PayloadRangeCalcMissionProfile{
 	private Amount<Velocity> _windSpeed;
 	private MyInterpolatingFunction _mu;
 	private MyInterpolatingFunction _muBrake;
-	private Amount<Duration> _dtRotation;
 	private Amount<Duration> _dtHold;
 	private Amount<Angle> _alphaGround;
 	private Amount<Length> _obstacleTakeOff;
@@ -156,7 +155,6 @@ public class PayloadRangeCalcMissionProfile{
 			Amount<Velocity> windSpeed,
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
-			Amount<Duration> dtRotation,
 			Amount<Duration> dtHold,
 			Amount<Angle> alphaGround,
 			Amount<Length> obstacleTakeOff,
@@ -214,7 +212,6 @@ public class PayloadRangeCalcMissionProfile{
 		this._windSpeed = windSpeed;
 		this._mu = mu;
 		this._muBrake = muBrake;
-		this._dtRotation = dtRotation;
 		this._dtHold = dtHold;
 		this._alphaGround = alphaGround;
 		this._obstacleTakeOff = obstacleTakeOff;
@@ -311,7 +308,6 @@ public class PayloadRangeCalcMissionProfile{
 					_takeOffMissionAltitude.to(SI.METER),
 					_theOperatingConditions.getMachTakeOff(),
 					initialMissionMass.to(SI.KILOGRAM),
-					_dtRotation,
 					_dtHold,
 					_kCLmax,
 					_kRotation,
@@ -1977,14 +1973,6 @@ public class PayloadRangeCalcMissionProfile{
 
 	public void setMuBrake(MyInterpolatingFunction _muBrake) {
 		this._muBrake = _muBrake;
-	}
-
-	public Amount<Duration> getDtRotation() {
-		return _dtRotation;
-	}
-
-	public void setDtRotation(Amount<Duration> _dtRotation) {
-		this._dtRotation = _dtRotation;
 	}
 
 	public Amount<Duration> getDtHold() {
