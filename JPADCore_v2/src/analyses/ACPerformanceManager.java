@@ -1548,7 +1548,6 @@ public class ACPerformanceManager {
 		List<Double> muBrakeFunction = new ArrayList<>();
 		List<Amount<Velocity>> muBrakeFunctionSpeed = new ArrayList<>();
 		
-		Amount<Duration> dtRotation = Amount.valueOf(3.0, SI.SECOND);
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		Amount<Length> obstacleTakeOff = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
@@ -1565,12 +1564,6 @@ public class ACPerformanceManager {
 		Double kFlare = 1.23;
 		Double kTouchDown = 1.15;
 		Amount<Duration> freeRollDuration = Amount.valueOf(2.0, SI.SECOND);
-		
-		//...............................................................
-		// dt ROTATION
-		String dtRotationProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/dt_rotation");
-		if(dtRotationProperty != null)
-			dtRotation = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//performance/takeoff_landing/dt_rotation");				
 		
 		//...............................................................
 		// dt HOLD
@@ -2352,7 +2345,6 @@ public class ACPerformanceManager {
 				.putAllTauRudderMap(tauRudderMap)
 				.setMuFunction(muInterpolatingFunction)
 				.setMuBrakeFunction(muBrakeInterpolatingFunction)
-				.setDtRotation(dtRotation)
 				.setDtHold(dtHold)
 				.setAlphaGround(alphaGround)
 				.setWindSpeed(windSpeed.to(SI.METERS_PER_SECOND))
@@ -3718,7 +3710,6 @@ public class ACPerformanceManager {
 							altitude.to(SI.METER),
 							mach,
 							takeOffMass.to(SI.KILOGRAM),
-							_thePerformanceInterface.getDtRotation(),
 							_thePerformanceInterface.getDtHold(),
 							_thePerformanceInterface.getKCLmax(),
 							_thePerformanceInterface.getKRotation(),
@@ -3742,7 +3733,7 @@ public class ACPerformanceManager {
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, true, vMC);
+			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, false, vMC);
 
 			// Distances:
 			_groundRollDistanceTakeOffMap.put(
@@ -5802,7 +5793,6 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getWindSpeed(),
 							_thePerformanceInterface.getMuFunction(),
 							_thePerformanceInterface.getMuBrakeFunction(),
-							_thePerformanceInterface.getDtRotation(),
 							_thePerformanceInterface.getDtHold(),
 							_thePerformanceInterface.getAlphaGround(),
 							_thePerformanceInterface.getObstacleTakeOff(),
@@ -5985,7 +5975,6 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getWindSpeed(),
 							_thePerformanceInterface.getMuFunction(),
 							_thePerformanceInterface.getMuBrakeFunction(),
-							_thePerformanceInterface.getDtRotation(),
 							_thePerformanceInterface.getDtHold(),
 							_thePerformanceInterface.getAlphaGround(),
 							_thePerformanceInterface.getObstacleTakeOff(),

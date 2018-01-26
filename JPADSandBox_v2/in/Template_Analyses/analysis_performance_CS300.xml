@@ -72,7 +72,6 @@
 					<speed unit="m/s"></speed> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
 				</wheels_friction_coefficient_with_brakes_function>
 				<!-- take-off data -->
-				<dt_rotation unit="s"></dt_rotation> <!-- the duration of the rotation phase (default = 3s) -->
 				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
 				<alpha_ground unit="deg"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->

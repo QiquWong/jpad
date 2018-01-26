@@ -63,7 +63,7 @@
 							<polar_curve_CD>0.120882047;0.120193186;0.120092728;0.120580024;0.121656301;0.12332271;0.125580319;0.128430117;0.131873008;0.13590981;0.140541251;0.145767924;0.151590465;0.158009348;0.16502482;0.172637199;0.180846652;0.18965325;0.199056964;0.211763475;0.216959659</polar_curve_CD>
 						</take_off>
 						<landing>
-							<polar_curve_CL>1.227468589;1.347085916;1.466436616;1.585982225;1.705712951;1.825618976;1.945690463;2.065917548;2.186290348;2.306798956;2.427433446;2.548181116;2.669037508;2.789992638;2.911030989;3.032145294;3.153325512;3.274561585;3.395843441;3.543965697;3.6128186</polar_curve_CL>
+							<polar_curve_CL>1.229223504;1.348280999;1.467072781;1.586057666;1.705226117;1.824568577;1.944075464;2.063737173;2.18354408;2.303486535;2.423554872;2.543736657;2.664027669;2.784418179;2.904892956;3.025444977;3.14606446;3.266741606;3.387466598;3.534910337;3.60345399</polar_curve_CL>
 							<polar_curve_CD>0.123907938;0.12304779;0.122776981;0.123092846;0.123996685;0.125489725;0.127573116;0.130247927;0.133515146;0.137375678;0.141830338;0.146879813;0.152524826;0.158765947;0.16560352;0.173037957;0.181069525;0.189698392;0.19892463;0.211452184;0.216475296</polar_curve_CD>
 						</landing>
 					</polar_curves>
@@ -146,19 +146,18 @@
 					<friction_coefficient_with_brakes>0.94;0.89;0.85;0.8;0.74;0.68;0.62;0.57;0.52</friction_coefficient_with_brakes>
 					<speed unit="m/s">0;10;20;30;40;50;60;70;80</speed>
 				-->
-				<friction_coefficient_with_brakes>0.3</friction_coefficient_with_brakes>
-				<speed unit="m/s"></speed>
+					<friction_coefficient_with_brakes>0.3</friction_coefficient_with_brakes>
+					<speed unit="m/s"></speed>
 				<!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
 				</wheels_friction_coefficient_with_brakes_function>
 				<!-- take-off data -->
-				<dt_rotation unit="s">2</dt_rotation> <!-- the duration of the rotation phase (default = 3s) -->
-				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
+				<dt_hold unit="s">1</dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
 				<alpha_ground unit="deg"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
 				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
-				<alpha_dot_rotation>4</alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
-				<k_cLmax></k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
-				<drag_due_to_engine_failure>0.006</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
+				<alpha_dot_rotation></alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
+				<k_cLmax>0.86</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
+				<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
 				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
 				<!-- landing data -->
 				<k_landing_weight></k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->

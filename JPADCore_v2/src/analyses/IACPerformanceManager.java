@@ -59,7 +59,6 @@ public interface IACPerformanceManager {
 	MyInterpolatingFunction getMuFunction();
 	MyInterpolatingFunction getMuBrakeFunction();
 
-	Amount<Duration> getDtRotation();
 	Amount<Duration> getDtHold();
 	Amount<Angle> getAlphaGround();
 	Amount<Length> getObstacleTakeOff();
