@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -297,6 +298,8 @@ public class CPACSWriter {
 		
 		LOGGER.info("[insertFuselage] inserting fuselage into CPACS tree ...");
 		
+		Locale.setDefault(new Locale("en", "US")); // drastic solution: forces decimal separator as '.'
+		
 		String fuselageID = fuselage.getId() + "_1"; // TODO: parametrize this name getting the trailing part from a function argument
 		org.w3c.dom.Element fuselageElement = JPADStaticWriteUtils.createXMLElementWithAttributes(_cpacsDoc, "fuselage",
 				Tuple.of("xsi:type", "fuselageType"),
@@ -439,8 +442,8 @@ public class CPACSWriter {
 						String.join( // a string of joined values
 								";", 
 								sectionsYZ.get(i).stream() // scan all points in the i-th section and collect all coordinates
-									//.map(pt -> String.valueOf(pt.x)) // <== x
-									.map(pt -> String.valueOf(0.0)) // <== SET X=0
+									//.map(pt -> String.format(Locale.ROOT, "%f", pt.x)) // <== x
+									.map(pt -> String.format("%f", 0.0)) // <== SET X=0
 									.collect(Collectors.toList())
 								),
 						Tuple.of("mapType","vector")
@@ -449,7 +452,7 @@ public class CPACSWriter {
 						String.join( // a string of joined values
 								";", 
 								sectionsYZ.get(i).stream() // scan all points in the i-th section and collect all coordinates
-									.map(pt -> String.valueOf(pt.y)) // <== y
+									.map(pt -> String.format("%f", pt.y)) // <== y
 									.collect(Collectors.toList())
 								),
 						Tuple.of("mapType","vector")
@@ -458,7 +461,7 @@ public class CPACSWriter {
 						String.join( // a string of joined values
 								";", 
 								sectionsYZ.get(i).stream() // scan all points in the i-th section and collect all coordinates
-									.map(pt -> String.valueOf(pt.z)) // <== z
+									.map(pt -> String.format("%f", pt.z)) // <== z
 									.collect(Collectors.toList())
 								),
 						Tuple.of("mapType","vector")
