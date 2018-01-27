@@ -78,7 +78,6 @@ public class MissionProfileCalc {
 	private Amount<Velocity> _windSpeed;
 	private MyInterpolatingFunction _mu;
 	private MyInterpolatingFunction _muBrake;
-	private Amount<Duration> _dtRotation;
 	private Amount<Duration> _dtHold;
 	private Amount<Angle> _alphaGround;
 	private Amount<Length> _obstacleTakeOff;
@@ -167,7 +166,6 @@ public class MissionProfileCalc {
 			Amount<Velocity> windSpeed,
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
-			Amount<Duration> dtRotation,
 			Amount<Duration> dtHold,
 			Amount<Angle> alphaGround,
 			Amount<Length> obstacleTakeOff,
@@ -227,7 +225,6 @@ public class MissionProfileCalc {
 		this._windSpeed = windSpeed;
 		this._mu = mu;
 		this._muBrake = muBrake;
-		this._dtRotation = dtRotation;
 		this._dtHold = dtHold;
 		this._alphaGround = alphaGround;
 		this._obstacleTakeOff = obstacleTakeOff;
@@ -264,7 +261,7 @@ public class MissionProfileCalc {
 	//--------------------------------------------------------------------------------------------
 	// METHODS:
 	
-	public void calculateProfiles() {
+	public void calculateProfiles(Amount<Velocity> vMC) {
 
 		_initialMissionMass = _operatingEmptyMass
 				.plus(_singlePassengerMass.times(_passengersNumber))
@@ -434,7 +431,6 @@ public class MissionProfileCalc {
 					_takeOffMissionAltitude.to(SI.METER),
 					_theOperatingConditions.getMachTakeOff(),
 					_initialMissionMass,
-					_dtRotation,
 					_dtHold,
 					_kCLmax,
 					_kRotation,
@@ -446,16 +442,16 @@ public class MissionProfileCalc {
 					_mu,
 					_muBrake,
 					wingToGroundDistance,
-					_obstacleTakeOff,
-					_windSpeed,
-					_alphaGround,
-					_theAircraft.getWing().getRiggingAngle(),
+					_obstacleTakeOff.to(SI.METER),
+					_windSpeed.to(SI.METERS_PER_SECOND),
+					_alphaGround.to(NonSI.DEGREE_ANGLE),
+					_theAircraft.getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE),
 					_cLmaxTakeOff,
 					_cLZeroTakeOff,
 					_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 					);
 
-			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false);
+			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false, vMC);
 
 			Amount<Length> groundRollDistanceTakeOff = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0);
 			Amount<Length> rotationDistanceTakeOff = 
@@ -2958,14 +2954,6 @@ public class MissionProfileCalc {
 		this._muBrake = _muBrake;
 	}
 
-	public Amount<Duration> getDtRotation() {
-		return _dtRotation;
-	}
-
-	public void setDtRotation(Amount<Duration> _dtRotation) {
-		this._dtRotation = _dtRotation;
-	}
-
 	public Amount<Duration> getDtHold() {
 		return _dtHold;
 	}
@@ -3421,4 +3409,5 @@ public class MissionProfileCalc {
 	public void setMissionProfileStopped(Boolean missionProfileStopped) {
 		this._missionProfileStopped = missionProfileStopped;
 	}
+
 }

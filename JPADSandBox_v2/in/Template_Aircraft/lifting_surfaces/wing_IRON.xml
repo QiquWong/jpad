@@ -4,7 +4,7 @@
         <global_data>
 			<main_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.25</main_spar_non_dimensional_position>
 			<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.55</secondary_spar_non_dimensional_position>
-			<composite_correction_factor>1.0</composite_correction_factor>
+			<composite_correction_factor>0.85</composite_correction_factor>
 			<roughness unit="m">0.405e-5</roughness>
 			<winglet_height unit="m">0.0</winglet_height>
 		</global_data>

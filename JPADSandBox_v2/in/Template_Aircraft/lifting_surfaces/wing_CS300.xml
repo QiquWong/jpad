@@ -54,15 +54,15 @@
         </panels>
         <symmetric_flaps>
             <symmetric_flap id="Inner flap" type="FOWLER">
-                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.11</inner_station_spanwise_position>
-                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.37</outer_station_spanwise_position>
-                <inner_chord_ratio>0.20</inner_chord_ratio>
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.1</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.345</outer_station_spanwise_position>
+                <inner_chord_ratio>0.18</inner_chord_ratio>
 				<outer_chord_ratio>0.32</outer_chord_ratio>
                 <min_deflection unit="deg">0.0</min_deflection>
 				<max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>
 			<symmetric_flap id="Outer flap" type="FOWLER">
-                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.375</inner_station_spanwise_position>
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.346</inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.70</outer_station_spanwise_position>
                 <inner_chord_ratio>0.32</inner_chord_ratio>
 				<outer_chord_ratio>0.32</outer_chord_ratio>

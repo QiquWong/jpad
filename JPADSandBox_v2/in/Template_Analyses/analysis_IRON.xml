@@ -35,6 +35,7 @@
             method_vtail=""
 			method_canard=""
 		/> -->
+	<!--
 	<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="FALSE"
@@ -47,20 +48,20 @@
 			landing_condition="TRUE"
 			file_landing_condition="analysis_aerodynamics_Prototype.xml"
 	/>
-	
-<!-- 	<performance 
+	-->
+ 	<performance 
 			file="analysis_performance_IRON_updated_canard.xml"
 			plot="TRUE"
-			create_CSV="FALSE"
+			create_CSV="TRUE"
 			take_off="TRUE"
-			climb="TRUE"
-			cruise="TRUE"
-			descent="TRUE"
-			landing="TRUE"
-			payload_range="TRUE"
-			V_n_diagram="TRUE"
-			mission_profile="TRUE"
-	/> -->
+			climb="FALSE"
+			cruise="FALSE"
+			descent="FALSE"
+			landing="FALSE"
+			payload_range="FALSE"
+			V_n_diagram="FALSE"
+			mission_profile="FALSE"
+	/>
 <!-- 	<costs 
 			file="analysis_costs_IRON.xml"
 			plot="FALSE"

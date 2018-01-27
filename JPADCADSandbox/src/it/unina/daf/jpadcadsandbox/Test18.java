@@ -24,7 +24,7 @@ public class Test18 {
 		boolean exportLofts = true;
 		boolean exportSupportShapes = true;
 
-		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, exportLofts, exportSupportShapes);
+		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-2, true, true);
 
 		// Write to a file
 		String fileName = "test18.brep";

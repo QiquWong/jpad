@@ -788,7 +788,7 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "N",
 						true, legend_SI,
-						climbFolderPath, "Drag_and_Thrust_curves_CONTINUOUS_OEI_IMPERIAL",
+						climbFolderPath, "Drag_and_Thrust_curves_CONTINUOUS_OEI_SI",
 						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
@@ -1543,8 +1543,8 @@ public class ClimbCalc {
 										57.3)
 								)
 						);
-				legend_SI.add("Rate of climb at " + _rcMapAEO.get(i).getAltitude() + " m");
-				legend_Imperial.add("Rate of climb at " + Amount.valueOf(_rcMapAEO.get(i).getAltitude(), SI.METER).doubleValue(NonSI.FOOT) + " m");
+				legend_SI.add("Climb Angle at " + _rcMapAEO.get(i).getAltitude() + " m");
+				legend_Imperial.add("Climb Angle at " + Amount.valueOf(_rcMapAEO.get(i).getAltitude(), SI.METER).doubleValue(NonSI.FOOT) + " ft");
 			}
 
 			try {

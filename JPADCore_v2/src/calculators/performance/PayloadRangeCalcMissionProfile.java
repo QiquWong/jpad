@@ -74,7 +74,6 @@ public class PayloadRangeCalcMissionProfile{
 	private Amount<Velocity> _windSpeed;
 	private MyInterpolatingFunction _mu;
 	private MyInterpolatingFunction _muBrake;
-	private Amount<Duration> _dtRotation;
 	private Amount<Duration> _dtHold;
 	private Amount<Angle> _alphaGround;
 	private Amount<Length> _obstacleTakeOff;
@@ -156,7 +155,6 @@ public class PayloadRangeCalcMissionProfile{
 			Amount<Velocity> windSpeed,
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
-			Amount<Duration> dtRotation,
 			Amount<Duration> dtHold,
 			Amount<Angle> alphaGround,
 			Amount<Length> obstacleTakeOff,
@@ -214,7 +212,6 @@ public class PayloadRangeCalcMissionProfile{
 		this._windSpeed = windSpeed;
 		this._mu = mu;
 		this._muBrake = muBrake;
-		this._dtRotation = dtRotation;
 		this._dtHold = dtHold;
 		this._alphaGround = alphaGround;
 		this._obstacleTakeOff = obstacleTakeOff;
@@ -247,7 +244,8 @@ public class PayloadRangeCalcMissionProfile{
 	 */
 	private Amount<Length> calcRangeAtGivenPayload(
 			Amount<Mass> maxTakeOffMassCurrent,
-			Amount<Mass> payloadMass
+			Amount<Mass> payloadMass,
+			Amount<Velocity> vMC
 			) {	
 		
 		Amount<Length> totalMissionRange = Amount.valueOf(0.0, SI.METER);
@@ -310,7 +308,6 @@ public class PayloadRangeCalcMissionProfile{
 					_takeOffMissionAltitude.to(SI.METER),
 					_theOperatingConditions.getMachTakeOff(),
 					initialMissionMass.to(SI.KILOGRAM),
-					_dtRotation,
 					_dtHold,
 					_kCLmax,
 					_kRotation,
@@ -331,7 +328,7 @@ public class PayloadRangeCalcMissionProfile{
 					_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 					);
 
-			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false);
+			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false, vMC);
 
 			Amount<Length> groundRollDistanceTakeOff = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0);
 			Amount<Length> rotationDistanceTakeOff = 
@@ -1567,14 +1564,15 @@ public class PayloadRangeCalcMissionProfile{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void createPayloadRange() {
+	public void createPayloadRange(Amount<Velocity> vMC) {
 		
 		_rangeArray = new ArrayList<>();
 		
 		// RANGE AT MAX PAYLOAD
 		_rangeAtMaxPayload = calcRangeAtGivenPayload(
 				_maximumTakeOffMass.to(SI.KILOGRAM),
-				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getMaxPax())
+				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getMaxPax()),
+				vMC
 				);
 		_maxPayload = _singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getMaxPax());
 		_passengersNumberAtMaxPayload = _theAircraft.getCabinConfiguration().getMaxPax();
@@ -1588,7 +1586,8 @@ public class PayloadRangeCalcMissionProfile{
 		// RANGE AT DESIGN PAYLOAD
 		_rangeAtDesignPayload = calcRangeAtGivenPayload(
 				_maximumTakeOffMass.to(SI.KILOGRAM),
-				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getNPax())
+				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getNPax()),
+				vMC
 				);
 		_designPayload = _singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getNPax());
 		_passengersNumberAtDesignPayload = _theAircraft.getCabinConfiguration().getNPax();
@@ -1604,7 +1603,8 @@ public class PayloadRangeCalcMissionProfile{
 				_maximumTakeOffMass.to(SI.KILOGRAM),
 				_maximumTakeOffMass.to(SI.KILOGRAM)
 				.minus(_operatingEmptyMass.to(SI.KILOGRAM))
-				.minus(_maxFuelMass.to(SI.KILOGRAM))
+				.minus(_maxFuelMass.to(SI.KILOGRAM)),
+				vMC
 				);
 		_payloadAtMaxFuel = 
 				_maximumTakeOffMass.to(SI.KILOGRAM)
@@ -1624,7 +1624,8 @@ public class PayloadRangeCalcMissionProfile{
 				if(_rangeAtMaxPayload.doubleValue(NonSI.NAUTICAL_MILE)!= 0.0) {
 					_rangeAtZeroPayload = calcRangeAtGivenPayload(
 							_operatingEmptyMass.plus(_maxFuelMass),
-							Amount.valueOf(0.0, SI.KILOGRAM)
+							Amount.valueOf(0.0, SI.KILOGRAM),
+							vMC
 							);
 				}
 				else {
@@ -1972,14 +1973,6 @@ public class PayloadRangeCalcMissionProfile{
 
 	public void setMuBrake(MyInterpolatingFunction _muBrake) {
 		this._muBrake = _muBrake;
-	}
-
-	public Amount<Duration> getDtRotation() {
-		return _dtRotation;
-	}
-
-	public void setDtRotation(Amount<Duration> _dtRotation) {
-		this._dtRotation = _dtRotation;
 	}
 
 	public Amount<Duration> getDtHold() {

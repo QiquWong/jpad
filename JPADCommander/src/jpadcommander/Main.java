@@ -134,7 +134,7 @@ public class Main extends Application {
 		});
 		
 		showMainItems();
-		System.gc();
+		
 		
 	}
 
@@ -144,7 +144,7 @@ public class Main extends Application {
 		HBox mainItems = loader.load();
 		_mainLayout.setCenter(mainItems);
 		_primaryStage.show();
-		System.gc();
+		
 		
 	}
 	
@@ -176,7 +176,7 @@ public class Main extends Application {
 		_primaryStage.setFullScreen(false);
 		_primaryStage.setResizable(false);
 		_primaryStage.show();
-		System.gc();
+		
 		
 	}
 	
@@ -193,7 +193,7 @@ public class Main extends Application {
 		_mainLayout.setCenter(_mainInputManagerLayout);
 		
 		_primaryStage.show();
-		System.gc();
+		
 		
 	}
 	

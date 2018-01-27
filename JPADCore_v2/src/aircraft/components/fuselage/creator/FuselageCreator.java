@@ -781,11 +781,11 @@ public class FuselageCreator implements IFuselageCreator {
 		return npT;
 	}
 
-	public int getgetNumberPointsSectionUpper() {
+	public int getNumberPointsSectionUpper() {
 		return npSecUp;
 	}
 
-	public int getgetNumberPointsSectionLower() {
+	public int getNumberPointsSectionLower() {
 		return npSecLow;
 	}
 
@@ -1000,10 +1000,15 @@ public class FuselageCreator implements IFuselageCreator {
 		return -getYOutlineXYSideRAtX(x);
 	}
 
-	// NOTE: section points on SideR are ordered as follows:
-	//       first point is at Y=0 at the top of the section,
-	//       successive points are taken going counter-clockwise when looking at
-	//       YZ section from X- towards X+
+	/**
+	 * section points on SideR are ordered as follows:
+	 * first point is at Y=0 at the top of the section,
+	 * successive points are taken going counter-clockwise when looking at
+	 * YZ section from X- towards X+
+	 *
+	 * @param len_x, dimensional x-coordinate of the desired section
+	 * @return a list of 3D points (pvectors)
+	 */
 	public List<PVector> getUniqueValuesYZSideRCurve(Amount<Length> len_x)
 	{
 		List<PVector> p  = new ArrayList<PVector>();
@@ -1039,8 +1044,8 @@ public class FuselageCreator implements IFuselageCreator {
 	 * successive points are taken going counter-clockwise when looking at
 	 * YZ section from X- towards X+
 	 *
-	 * @param len_x
-	 * @return
+	 * @param len_x, dimensional x-coordinate of the desired section
+	 * @return a list of 3D points (pvectors)
 	 */
 	public List<PVector> getUniqueValuesYZSideLCurve(Amount<Length> len_x)
 	{
@@ -1049,6 +1054,28 @@ public class FuselageCreator implements IFuselageCreator {
 		for (PVector p : pts){ p.y = -p.y; }
 		Collections.reverse(pts);
 		return pts;
+	}
+
+	/**
+	 * section points of a fuselage section, ordered as follows:
+	 * first point is at Y=0 at the top of the section,
+	 * successive points are taken going counter-clockwise when looking at
+	 * YZ section from X- towards X+.
+	 * The section is closed, i.e. the last point is again at Y=0, at the top 
+	 * of the section, and coincides with the first point.
+	 *
+	 * @param len_x, dimensional x-coordinate of the desired section
+	 * @return a list of 3D points (pvectors)
+	 */
+	public List<PVector> getUniqueValuesYZSectionCurve(Amount<Length> len_x)
+	{
+		List<PVector> result = new ArrayList<>();
+		List<PVector> ptsR  = getUniqueValuesYZSideRCurve(len_x);
+		result.addAll(ptsR);
+		List<PVector> ptsL  = getUniqueValuesYZSideLCurve(len_x); // points in SideL curves are in the right order
+		ptsL.stream().skip(1) // skipping the first, being an undesired duplicate
+			.forEach(p -> result.add(p));
+		return result;
 	}
 
 	public List<PVector> getUniqueValuesXZUpperCurve()

@@ -352,7 +352,6 @@ public class Engine implements IEngine {
 			//..............................................................................
 			// DRY MASS
 			Amount<Mass> dryMass = null;
-			Boolean calculateDryMass = Boolean.FALSE;
 			String calculateDryMassString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -360,7 +359,6 @@ public class Engine implements IEngine {
 			
 			if(calculateDryMassString.equalsIgnoreCase("TRUE")){
 				
-				calculateDryMass = Boolean.TRUE;
 				
 				if(staticThrust.doubleValue(NonSI.POUND_FORCE) < 10000)
 					dryMass = Amount.valueOf(
@@ -431,7 +429,6 @@ public class Engine implements IEngine {
 					.engineDatabaseName(engineDatabaseName)
 					.t0(staticThrust)
 					.bpr(bpr)
-					.calculateDryMass(calculateDryMass)
 					.dryMass(dryMass)
 					.numberOfCompressorStages(numberOfCompressorStages)
 					.numberOfShafts(numberOfShafts)

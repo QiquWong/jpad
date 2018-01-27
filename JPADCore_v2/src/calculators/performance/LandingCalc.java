@@ -744,7 +744,7 @@ public class LandingCalc {
 			double theThrust = 0.0;
 
 			theThrust =	
-					LandingCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().getEstimatedValue()
+					LandingCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON)
 					*throttleGroundIdle(speed)
 					*LandingCalc.this.getAircraft().getPowerPlant().getEngineNumber();
 
@@ -779,6 +779,13 @@ public class LandingCalc {
 							theConditions.getAltitudeLanding().getEstimatedValue())
 					*(Math.pow((speed + vWind), 2))
 					*cDnew;
+			
+//			return 	0.5
+//					*aircraft.getWing().getSurface().getEstimatedValue()
+//					*AtmosphereCalc.getDensity(
+//							theConditions.getAltitudeLanding().getEstimatedValue())
+//					*(Math.pow((speed + vWind), 2))
+//					*cD;
 		}
 
 		public double lift(double speed) {

@@ -26,26 +26,26 @@
 		</equivalent_wing>
 		<panels>
             <panel id="IRON - Inner panel">
-                <span unit="m">5.19</span>
+                <span unit="m">5.175</span>
                 <dihedral unit="deg">5.5</dihedral>
-                <sweep_leading_edge unit="deg">5</sweep_leading_edge>
+                <sweep_leading_edge unit="deg">2.3</sweep_leading_edge>
                 <inner_section>
-                    <chord unit="m">4.28</chord>
+                    <chord unit="m">4.0641</chord>
                     <airfoil file="ROOT_IRON_NEW.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
-                    <chord unit="m">3.381</chord>
+                    <chord unit="m">3.2085</chord>
                     <airfoil file="ROOT_IRON_NEW.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
             </panel>
             <panel id="IRON - Outer panel" linked_to="IRON - Inner panel">
-                <span unit="m">12.11</span>
+                <span unit="m">12.075</span>
                 <dihedral unit="deg">5.5</dihedral>
-                <sweep_leading_edge unit="deg">5</sweep_leading_edge>
+                <sweep_leading_edge unit="deg">2.3</sweep_leading_edge>
                 <outer_section>
-                    <chord unit="m">1.617</chord>
+                    <chord unit="m">1.5345</chord>
                     <airfoil file="TIP_IRON_NEW.xml"/>
                     <geometric_twist unit="deg">-2</geometric_twist>
                 </outer_section>

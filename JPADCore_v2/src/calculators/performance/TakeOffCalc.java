@@ -66,7 +66,7 @@ public class TakeOffCalc {
 	private PowerPlant thePowerPlant;
 	private Double[] polarCLTakeOff;
 	private Double[] polarCDTakeOff;
-	private Amount<Duration> dtRot, dtHold,
+	private Amount<Duration> dtHold,
 	dtRec = Amount.valueOf(3, SI.SECOND),
 	tHold = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
 	tEndHold = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
@@ -76,7 +76,7 @@ public class TakeOffCalc {
 	tFaiulre = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
 	tRec = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 	private Amount<Mass> maxTakeOffMass; 
-	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2;
+	private Amount<Velocity> vSTakeOff, vRot, vMC, vLO, vWind, v1, v2;
 	private Amount<Length> altitude, wingToGroundDistance, obstacle, balancedFieldLength;
 	private Amount<Angle> alphaGround, iw;
 	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, sfc;
@@ -123,7 +123,6 @@ public class TakeOffCalc {
 			Amount<Length> altitude,
 			double mach,
 			Amount<Mass> maxTakeOffMass,
-			Amount<Duration> dtRot,
 			Amount<Duration> dtHold,
 			double kcLMax,
 			double kRot,
@@ -157,7 +156,6 @@ public class TakeOffCalc {
 		this.altitude = altitude;
 		this.mach = mach;
 		this.maxTakeOffMass = maxTakeOffMass;
-		this.dtRot = dtRot;
 		this.dtHold = dtHold;
 		this.kcLMax = kcLMax;
 		this.kRot = kRot;
@@ -187,14 +185,12 @@ public class TakeOffCalc {
 						cLmaxTO
 						),
 				SI.METERS_PER_SECOND);
-		vRot = vSTakeOff.times(kRot);
 		
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("CLmaxTO = " + cLmaxTO);
 		System.out.println("CL0 = " + cLZeroTO);
 		System.out.println("CLground = " + cLground);
 		System.out.println("VsTO = " + vSTakeOff);
-		System.out.println("VRot = " + vRot);
 		System.out.println("-----------------------------------------------------------\n");
 
 		// McCormick interpolated function --> See the excel file into JPAD DOCS
@@ -285,18 +281,30 @@ public class TakeOffCalc {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void calculateTakeOffDistanceODE(Double vFailure, boolean isAborted, boolean iterativeLoopOverV2) {
+	public void calculateTakeOffDistanceODE(Double vFailure, boolean isAborted, boolean iterativeLoopOverV2, Amount<Velocity> vMC) {
 
 		System.out.println("---------------------------------------------------");
 		System.out.println("CalcTakeOff :: ODE integration\n\n");
 
+		if(vMC != null) {
+			if(1.06*vMC.doubleValue(SI.METERS_PER_SECOND) > (kRot*vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+					) {
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+				vRot = vMC.to(SI.METERS_PER_SECOND).times(1.06);
+			}
+			else
+				vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
+		}
+		else
+			vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
+		
 		int i=0;
 		double newAlphaRed = 0.0;
 		alphaRed = 0.0;
 		
 		v2 = Amount.valueOf(10000.0, SI.METERS_PER_SECOND); // initialization to an impossible speed
 		
-		while (Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) >= 0.009) {
+		while (Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.13)) >= 0.001) {
 
 			if(i >= 1) {
 				if(newAlphaRed <= 0.0)
@@ -306,7 +314,8 @@ public class TakeOffCalc {
 			}
 			
 			if(i > 100) {
-				System.err.println("WARNING: (SIMULATION - TAKE-OFF) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED ...");
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. "
+						+ "(V2 = " + v2.to(SI.METERS_PER_SECOND) + "; V2/VsTO = " + v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)));
 				break;
 			}
 			
@@ -320,7 +329,7 @@ public class TakeOffCalc {
 				this.vFailure = vFailure;
 
 			FirstOrderIntegrator theIntegrator = new HighamHall54Integrator(
-					1e-8,
+					1e-16,
 					1,
 					1e-16,
 					1e-16
@@ -343,7 +352,7 @@ public class TakeOffCalc {
 				@Override
 				public double g(double t, double[] x) {
 
-					if(t < tRec.getEstimatedValue())
+					if(t < tFaiulre.getEstimatedValue())
 						return x[1] - TakeOffCalc.this.vFailure;
 					else
 						return 10; // a generic positive value used to make the event trigger once
@@ -590,7 +599,7 @@ public class TakeOffCalc {
 				}
 			};
 
-			if(!isAborted) {
+			if(isAborted == false) {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
@@ -616,7 +625,7 @@ public class TakeOffCalc {
 					double[] x = interpolator.getInterpolatedState();
 
 					// CHECK TO BE DONE ONLY IF isAborted IS FALSE!!
-					if(!isAborted) {
+					if(isAborted == false) {
 
 						// CHECK ON LOAD FACTOR --> END ROTATION WHEN n=1
 						if((t > tRot.getEstimatedValue()) && (tEndRot.getEstimatedValue() == 10000.0) &&
@@ -760,7 +769,7 @@ public class TakeOffCalc {
 
 					//--------------------------------------------------------------------------------
 					// FRICTION:
-					if(!isAborted) {
+					if(isAborted == false) {
 						if(t < tEndRot.getEstimatedValue())
 							TakeOffCalc.this.getFriction().add(Amount.valueOf(
 									((DynamicsEquationsTakeOff)ode).mu(x[1])
@@ -821,7 +830,7 @@ public class TakeOffCalc {
 							);
 					//----------------------------------------------------------------------------------------
 					// TOTAL FORCE:
-					if(!isAborted) {
+					if(isAborted == false) {
 						TakeOffCalc.this.getTotalForce().add(Amount.valueOf(
 								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
 										Amount.valueOf(
@@ -918,7 +927,7 @@ public class TakeOffCalc {
 							);
 					//----------------------------------------------------------------------------------------
 					// ACCELERATION:
-					if(!isAborted)
+					if(isAborted == false)
 						TakeOffCalc.this.getAcceleration().add(Amount.valueOf(
 								(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
 								*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
@@ -1078,12 +1087,12 @@ public class TakeOffCalc {
 			theIntegrator.clearEventHandlers();
 			theIntegrator.clearStepHandlers();
 
-			if(isAborted || !iterativeLoopOverV2) 
+			if(isAborted == true || iterativeLoopOverV2 == false) 
 				break;
 			
 			//--------------------------------------------------------------------------------
 			// NEW ALPHA REDUCTION RATE 
-			if(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2) >= 0.0)
+			if(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.13) >= 0.0)
 				newAlphaRed = alphaRed + 0.1;
 			else
 				newAlphaRed = alphaRed - 0.1;
@@ -1107,13 +1116,13 @@ public class TakeOffCalc {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void calculateBalancedFieldLength() {
+	public void calculateBalancedFieldLength(Amount<Velocity> vMC) {
 
 		// failure speed array
 		failureSpeedArray = MyArrayUtils.linspace(
 				vSTakeOff.times(0.5).getEstimatedValue(),
 				vRot.getEstimatedValue(),
-				4);
+				5);
 		// continued take-off array
 		continuedTakeOffArray = new double[failureSpeedArray.length]; 
 		// aborted take-off array
@@ -1121,14 +1130,14 @@ public class TakeOffCalc {
 
 		// iterative take-off distance calculation for both conditions
 		for(int i=0; i<failureSpeedArray.length; i++) {
-			calculateTakeOffDistanceODE(failureSpeedArray[i], false, false);
+			calculateTakeOffDistanceODE(failureSpeedArray[i], false, true, vMC);
 			if(!getGroundDistance().isEmpty())
 				continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 			else {
 				failureSpeedArray[i] = 0.0;
 				continuedTakeOffArray[i] = 0.0;
 			}
-			calculateTakeOffDistanceODE(failureSpeedArray[i], true, false);
+			calculateTakeOffDistanceODE(failureSpeedArray[i], true, false, vMC);
 			if(!getGroundDistance().isEmpty() && groundDistance.get(groundDistance.size()-1).getEstimatedValue() >= 0.0)
 				abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 			else {
@@ -1193,7 +1202,7 @@ public class TakeOffCalc {
 
 		System.out.println("\n---------WRITING TAKE-OFF PERFORMANCE CHARTS TO FILE-----------");
 
-		if(!isAborted) {
+		if(isAborted == false) {
 			//.................................................................................
 			// take-off trajectory
 			
@@ -1359,7 +1368,7 @@ public class TakeOffCalc {
 				"Ground distance", "Load Factor", "m", "",
 				takeOffFolderPath, "LoadFactor_vs_GroundDistance_IMPERIAL",true);
 
-		if(!isAborted) {
+		if(isAborted == false) {
 			//.................................................................................
 			// Rate of Climb v.s. Time
 			MyChartToFileUtils.plotNoLegend(
@@ -1523,9 +1532,9 @@ public class TakeOffCalc {
 		MyChartToFileUtils.plot(
 				xMatrix2SI, yMatrix2SI,
 				0.0, null, null, null,
-				"Time", "Horizontal Forces", "m", "N",
+				"Ground Distance", "Horizontal Forces", "m", "N",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-				takeOffFolderPath, "HorizontalForces_evolution_SI",
+				takeOffFolderPath, "HorizontalForces_vs_GroundDistance_SI",
 				createCSV);
 
 		double[][] xMatrix2IMPERIAL = new double[5][totalForce.size()];
@@ -1564,9 +1573,9 @@ public class TakeOffCalc {
 		MyChartToFileUtils.plot(
 				xMatrix2IMPERIAL, yMatrix2IMPERIAL,
 				0.0, null, null, null,
-				"Time", "Horizontal Forces", "ft", "lb",
+				"Ground Distance", "Horizontal Forces", "ft", "lb",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-				takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL",
+				takeOffFolderPath, "HorizontalForces_vs_GroundDistance_IMPERIAL",
 				createCSV);
 
 		//.................................................................................
@@ -1682,7 +1691,7 @@ public class TakeOffCalc {
 				new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
 				takeOffFolderPath, "VerticalForces_vs_GroundDistance_IMPERIAL", createCSV);
 		
-		if(!isAborted) {
+		if(isAborted == false) {
 			//.................................................................................
 			// Angles v.s. time
 			double[][] xMatrix5 = new double[3][totalForce.size()];
@@ -1923,7 +1932,7 @@ public class TakeOffCalc {
 			double altitude = x[3];
 			gamma = x[2];
 			
-			if(!isAborted) {
+			if(isAborted == false) {
 				if( t < tEndRot.getEstimatedValue()) {
 					xDot[0] = speed;
 					xDot[1] = (g0/weight)*(thrust(speed, gamma, t, altitude) - drag(speed, alpha, gamma, t)
@@ -1966,7 +1975,7 @@ public class TakeOffCalc {
 
 			double theThrust = 0.0;
 
-			if (time < tFaiulre.getEstimatedValue())
+			if (time <= tFaiulre.getEstimatedValue())
 				theThrust =	ThrustCalc.calculateThrustDatabase(
 						TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 						TakeOffCalc.this.getThePowerPlant().getEngineNumber(),
@@ -1985,56 +1994,76 @@ public class TakeOffCalc {
 								)
 						);
 			else {
-				if(!isAborted) {
-				// CHECK ON THE APR SETTING, if present use this ...
-				if ((TakeOffCalc.this.getThePowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP) 
-						&& (Double.valueOf(
-								TakeOffCalc.this.getThePowerPlant()
-								.getTurbopropEngineDatabaseReader()
-								.getThrustAPR(
-										TakeOffCalc.this.getMach(),
-										TakeOffCalc.this.getAltitude().doubleValue(SI.METER),
-										TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR()
-										)
-								) != 0.0
-							)
-						)
-				theThrust =	ThrustCalc.calculateThrustDatabase(
-						TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-						TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1,
-						TakeOffCalc.this.getPhi(),
-						TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
-						TakeOffCalc.this.getThePowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.APR,
-						TakeOffCalc.this.getThePowerPlant(),
-						altitude,
-						SpeedCalc.calculateMach(
+				if(isAborted == false) {
+					if (time <= tFaiulre.getEstimatedValue() + 1)
+						theThrust =	ThrustCalc.calculateThrustDatabase(
+								TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1,
+								TakeOffCalc.this.getPhi(),
+								TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
+								TakeOffCalc.this.getThePowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.TAKE_OFF,
+								TakeOffCalc.this.getThePowerPlant(),
 								altitude,
-								speed + 
-								(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-										gamma,
-										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
+								SpeedCalc.calculateMach(
+										altitude,
+										speed + 
+										(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
+												gamma,
+												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
+										)
+								);
+					else {
+						// CHECK ON THE APR SETTING, if present use this ...
+						if ((TakeOffCalc.this.getThePowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP) 
+								&& (Double.valueOf(
+										TakeOffCalc.this.getThePowerPlant()
+										.getTurbopropEngineDatabaseReader()
+										.getThrustAPR(
+												TakeOffCalc.this.getMach(),
+												TakeOffCalc.this.getAltitude().doubleValue(SI.METER),
+												TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR()
+												)
+										) != 0.0
+										)
 								)
-						);
-				else
-					// ... otherwise use TAKE-OFF
-					theThrust =	ThrustCalc.calculateThrustDatabase(
-							TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-							TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1,
-							TakeOffCalc.this.getPhi(),
-							TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
-							TakeOffCalc.this.getThePowerPlant().getEngineType(),
-							EngineOperatingConditionEnum.TAKE_OFF,
-							TakeOffCalc.this.getThePowerPlant(),
-							altitude,
-							SpeedCalc.calculateMach(
+							theThrust =	ThrustCalc.calculateThrustDatabase(
+									TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+									TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1,
+									TakeOffCalc.this.getPhi(),
+									TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
+									TakeOffCalc.this.getThePowerPlant().getEngineType(),
+									EngineOperatingConditionEnum.APR,
+									TakeOffCalc.this.getThePowerPlant(),
 									altitude,
-									speed + 
-									(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-											gamma,
-											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-									)
-							);
+									SpeedCalc.calculateMach(
+											altitude,
+											speed + 
+											(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
+													gamma,
+													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
+											)
+									);
+						else
+							// ... otherwise use TAKE-OFF
+							theThrust =	ThrustCalc.calculateThrustDatabase(
+									TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+									TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1,
+									TakeOffCalc.this.getPhi(),
+									TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
+									TakeOffCalc.this.getThePowerPlant().getEngineType(),
+									EngineOperatingConditionEnum.TAKE_OFF,
+									TakeOffCalc.this.getThePowerPlant(),
+									altitude,
+									SpeedCalc.calculateMach(
+											altitude,
+											speed + 
+											(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
+													gamma,
+													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
+											)
+									);
+					}
 				}
 				else {
 					if(time < tRec.doubleValue(SI.SECOND))
@@ -2057,13 +2086,12 @@ public class TakeOffCalc {
 								);
 					else
 						theThrust =	
-								TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON)
-								*throttleGrounIdle(speed)
-								*(TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1)
-								;
+						TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON)
+						*throttleGrounIdle(speed)
+						*(TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1);
 				}
 			}
-			
+
 			return theThrust;
 		}
 
@@ -2079,7 +2107,7 @@ public class TakeOffCalc {
 									),
 							cL
 							);
-			
+
 			double cD0 = MyArrayUtils.getMin(
 					MyArrayUtils.convertToDoublePrimitive(
 							polarCDTakeOff
@@ -2088,15 +2116,16 @@ public class TakeOffCalc {
 			double cDi = (cD-cD0)*kGround;
 
 			double cDnew = cD0 + cDi;
-			
+
 			return cDnew;
+			
 		}
 
 		public double drag(double speed, double alpha, double gamma, double time) {
 
 			double cD = 0;
-			
-			if (time < tRec.getEstimatedValue())
+
+			if (time < tFaiulre.getEstimatedValue())
 				cD = cD(cL(speed, alpha, gamma, time));
 			else
 				cD = kFailure + cD(cL(speed, alpha, gamma, time));
@@ -2159,7 +2188,7 @@ public class TakeOffCalc {
 
 			double alphaDot = 0.0;
 			
-			if(isAborted)
+			if(isAborted == true)
 				alphaDot = 0.0;
 			else {
 				if((time > tRot.getEstimatedValue()) && (time < tHold.getEstimatedValue())) {
@@ -2196,14 +2225,6 @@ public class TakeOffCalc {
 
 	//-------------------------------------------------------------------------------------
 	// GETTERS AND SETTERS:
-
-	public Amount<Duration> getDtRot() {
-		return dtRot;
-	}
-
-	public void setDtRot(Amount<Duration> dtRot) {
-		this.dtRot = dtRot;
-	}
 
 	public Amount<Duration> getDtHold() {
 		return dtHold;
@@ -2815,6 +2836,14 @@ public class TakeOffCalc {
 
 	public void setPolarCDTakeOff(Double[] polarCDTakeOff) {
 		this.polarCDTakeOff = polarCDTakeOff;
+	}
+
+	public Amount<Velocity> getVMC() {
+		return vMC;
+	}
+
+	public void setVMC(Amount<Velocity> vMC) {
+		this.vMC = vMC;
 	}
 
 }
