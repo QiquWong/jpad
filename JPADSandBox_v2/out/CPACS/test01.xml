@@ -5,7 +5,7 @@
       <name>JPAD.CPACSWrite - Test</name>
       <description>JPAD Aircraft converted to CPACS format</description>
       <creator>JPAD</creator>
-      <timestamp>2018-01-27T00:33:04</timestamp>
+      <timestamp>2018-01-27T10:46:42</timestamp>
       <version>0.1</version>
       <cpacsVersion>3.0</cpacsVersion>
    </header>
@@ -121,7 +121,7 @@
                                  <scaling uID="Element_Fuselage_Section_1_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_1_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -172,7 +172,7 @@
                                  <scaling uID="Element_Fuselage_Section_2_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_2_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -223,7 +223,7 @@
                                  <scaling uID="Element_Fuselage_Section_3_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_3_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -274,7 +274,7 @@
                                  <scaling uID="Element_Fuselage_Section_4_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_4_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -325,7 +325,7 @@
                                  <scaling uID="Element_Fuselage_Section_5_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_5_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -376,7 +376,7 @@
                                  <scaling uID="Element_Fuselage_Section_6_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_6_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -427,7 +427,7 @@
                                  <scaling uID="Element_Fuselage_Section_7_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_7_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -478,7 +478,7 @@
                                  <scaling uID="Element_Fuselage_Section_8_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_8_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -529,7 +529,7 @@
                                  <scaling uID="Element_Fuselage_Section_9_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_9_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -580,7 +580,7 @@
                                  <scaling uID="Element_Fuselage_Section_10_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_10_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -631,7 +631,7 @@
                                  <scaling uID="Element_Fuselage_Section_11_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_11_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -682,7 +682,7 @@
                                  <scaling uID="Element_Fuselage_Section_12_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_12_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -733,7 +733,7 @@
                                  <scaling uID="Element_Fuselage_Section_13_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_13_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -784,7 +784,7 @@
                                  <scaling uID="Element_Fuselage_Section_14_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_14_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -835,7 +835,7 @@
                                  <scaling uID="Element_Fuselage_Section_15_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_15_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -886,7 +886,7 @@
                                  <scaling uID="Element_Fuselage_Section_16_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_16_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -937,7 +937,7 @@
                                  <scaling uID="Element_Fuselage_Section_17_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_17_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -988,7 +988,7 @@
                                  <scaling uID="Element_Fuselage_Section_18_SCALING_ID" xsi:type="pointType">
                                     <x>1.0</x>
                                     <y>1.0</y>
-                                    <z>0.0</z>
+                                    <z>1.0</z>
                                  </scaling>
                                  <rotation uID="Element_Fuselage_Section_18_ROTATION_ID" xsi:type="pointType">
                                     <x>0.0</x>
@@ -1013,14 +1013,14 @@
                         <name>Name Fuselage_Section_0_Pos0</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.0</length>
+                        <length>0.000000</length>
                         <toSectionUID>Fuselage_Section_0</toSectionUID>
                      </positioning>
                      <positioning uID="Fuselage_Section_1_Pos1" xsi:type="positioningType">
                         <name>Name Fuselage_Section_1_Pos1</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.14307722</length>
+                        <length>0.143077</length>
                         <fromSectionUID>Fuselage_Section_0</fromSectionUID>
                         <toSectionUID>Fuselage_Section_1</toSectionUID>
                      </positioning>
@@ -1028,7 +1028,7 @@
                         <name>Name Fuselage_Section_2_Pos2</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.40744942</length>
+                        <length>0.407449</length>
                         <fromSectionUID>Fuselage_Section_1</fromSectionUID>
                         <toSectionUID>Fuselage_Section_2</toSectionUID>
                      </positioning>
@@ -1036,7 +1036,7 @@
                         <name>Name Fuselage_Section_3_Pos3</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.60979116</length>
+                        <length>0.609791</length>
                         <fromSectionUID>Fuselage_Section_2</fromSectionUID>
                         <toSectionUID>Fuselage_Section_3</toSectionUID>
                      </positioning>
@@ -1044,7 +1044,7 @@
                         <name>Name Fuselage_Section_4_Pos4</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.71929765</length>
+                        <length>0.719298</length>
                         <fromSectionUID>Fuselage_Section_3</fromSectionUID>
                         <toSectionUID>Fuselage_Section_4</toSectionUID>
                      </positioning>
@@ -1052,7 +1052,7 @@
                         <name>Name Fuselage_Section_5_Pos5</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.7192979</length>
+                        <length>0.719298</length>
                         <fromSectionUID>Fuselage_Section_4</fromSectionUID>
                         <toSectionUID>Fuselage_Section_5</toSectionUID>
                      </positioning>
@@ -1060,7 +1060,7 @@
                         <name>Name Fuselage_Section_6_Pos6</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.60979104</length>
+                        <length>0.609791</length>
                         <fromSectionUID>Fuselage_Section_5</fromSectionUID>
                         <toSectionUID>Fuselage_Section_6</toSectionUID>
                      </positioning>
@@ -1068,7 +1068,7 @@
                         <name>Name Fuselage_Section_7_Pos7</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.40744948</length>
+                        <length>0.407449</length>
                         <fromSectionUID>Fuselage_Section_6</fromSectionUID>
                         <toSectionUID>Fuselage_Section_7</toSectionUID>
                      </positioning>
@@ -1076,7 +1076,7 @@
                         <name>Name Fuselage_Section_8_Pos8</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.14307714</length>
+                        <length>0.143077</length>
                         <fromSectionUID>Fuselage_Section_7</fromSectionUID>
                         <toSectionUID>Fuselage_Section_8</toSectionUID>
                      </positioning>
@@ -1084,7 +1084,7 @@
                         <name>Name Fuselage_Section_9_Pos9</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>8.42146</length>
+                        <length>8.421460</length>
                         <fromSectionUID>Fuselage_Section_8</fromSectionUID>
                         <toSectionUID>Fuselage_Section_9</toSectionUID>
                      </positioning>
@@ -1092,7 +1092,7 @@
                         <name>Name Fuselage_Section_10_Pos10</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>8.42146</length>
+                        <length>8.421460</length>
                         <fromSectionUID>Fuselage_Section_9</fromSectionUID>
                         <toSectionUID>Fuselage_Section_10</toSectionUID>
                      </positioning>
@@ -1100,7 +1100,7 @@
                         <name>Name Fuselage_Section_11_Pos11</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.20900536</length>
+                        <length>0.209005</length>
                         <fromSectionUID>Fuselage_Section_10</fromSectionUID>
                         <toSectionUID>Fuselage_Section_11</toSectionUID>
                      </positioning>
@@ -1108,7 +1108,7 @@
                         <name>Name Fuselage_Section_12_Pos12</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.6127758</length>
+                        <length>0.612776</length>
                         <fromSectionUID>Fuselage_Section_11</fromSectionUID>
                         <toSectionUID>Fuselage_Section_12</toSectionUID>
                      </positioning>
@@ -1116,7 +1116,7 @@
                         <name>Name Fuselage_Section_13_Pos13</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.97478676</length>
+                        <length>0.974787</length>
                         <fromSectionUID>Fuselage_Section_12</fromSectionUID>
                         <toSectionUID>Fuselage_Section_13</toSectionUID>
                      </positioning>
@@ -1124,7 +1124,7 @@
                         <name>Name Fuselage_Section_14_Pos14</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>1.2703648</length>
+                        <length>1.270365</length>
                         <fromSectionUID>Fuselage_Section_13</fromSectionUID>
                         <toSectionUID>Fuselage_Section_14</toSectionUID>
                      </positioning>
@@ -1140,7 +1140,7 @@
                         <name>Name Fuselage_Section_16_Pos16</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>1.5875607</length>
+                        <length>1.587561</length>
                         <fromSectionUID>Fuselage_Section_15</fromSectionUID>
                         <toSectionUID>Fuselage_Section_16</toSectionUID>
                      </positioning>
@@ -1148,7 +1148,7 @@
                         <name>Name Fuselage_Section_17_Pos17</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.07966423</length>
+                        <length>0.079664</length>
                         <fromSectionUID>Fuselage_Section_16</fromSectionUID>
                         <toSectionUID>Fuselage_Section_17</toSectionUID>
                      </positioning>
@@ -1156,7 +1156,7 @@
                         <name>Name Fuselage_Section_18_Pos18</name>
                         <sweepAngle>90.0</sweepAngle>
                         <dihedralAngle>0.0</dihedralAngle>
-                        <length>0.03299904</length>
+                        <length>0.032999</length>
                         <fromSectionUID>Fuselage_Section_17</fromSectionUID>
                         <toSectionUID>Fuselage_Section_18</toSectionUID>
                      </positioning>

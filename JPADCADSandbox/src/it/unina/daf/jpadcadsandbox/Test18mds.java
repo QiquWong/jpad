@@ -36,7 +36,7 @@ public class Test18mds {
 		boolean exportSupportShapes = true;
 		
 		
-		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, exportLofts, exportSupportShapes);
+		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING,1e-2, exportLofts, exportSupportShapes);
 //		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, exportLofts, exportSupportShapes);
 //		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, exportLofts, exportSupportShapes);
 		

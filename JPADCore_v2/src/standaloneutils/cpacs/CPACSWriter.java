@@ -298,8 +298,6 @@ public class CPACSWriter {
 		
 		LOGGER.info("[insertFuselage] inserting fuselage into CPACS tree ...");
 		
-		Locale.setDefault(new Locale("en", "US")); // drastic solution: forces decimal separator as '.'
-		
 		String fuselageID = fuselage.getId() + "_1"; // TODO: parametrize this name getting the trailing part from a function argument
 		org.w3c.dom.Element fuselageElement = JPADStaticWriteUtils.createXMLElementWithAttributes(_cpacsDoc, "fuselage",
 				Tuple.of("xsi:type", "fuselageType"),
@@ -443,7 +441,7 @@ public class CPACSWriter {
 								";", 
 								sectionsYZ.get(i).stream() // scan all points in the i-th section and collect all coordinates
 									//.map(pt -> String.format(Locale.ROOT, "%f", pt.x)) // <== x
-									.map(pt -> String.format("%f", 0.0)) // <== SET X=0
+									.map(pt -> String.format(Locale.ROOT,"%f", 0.0)) // <== SET X=0
 									.collect(Collectors.toList())
 								),
 						Tuple.of("mapType","vector")
@@ -452,7 +450,7 @@ public class CPACSWriter {
 						String.join( // a string of joined values
 								";", 
 								sectionsYZ.get(i).stream() // scan all points in the i-th section and collect all coordinates
-									.map(pt -> String.format("%f", pt.y)) // <== y
+									.map(pt -> String.format(Locale.ROOT,"%f", pt.y)) // <== y
 									.collect(Collectors.toList())
 								),
 						Tuple.of("mapType","vector")
@@ -461,7 +459,7 @@ public class CPACSWriter {
 						String.join( // a string of joined values
 								";", 
 								sectionsYZ.get(i).stream() // scan all points in the i-th section and collect all coordinates
-									.map(pt -> String.format("%f", pt.z)) // <== z
+									.map(pt -> String.format(Locale.ROOT,"%f", pt.z)) // <== z
 									.collect(Collectors.toList())
 								),
 						Tuple.of("mapType","vector")
@@ -505,7 +503,7 @@ public class CPACSWriter {
 				
 				double[] scaling = {0.0, 0.0, 0.0};
 				// collapse only the first element, i.e. make it the fuselage nose point
-				if (i > 0) { scaling[0] = 1.0; scaling[1] = 1.0; scaling[1] = 1.0;}
+				if (i > 0) { scaling[0] = 1.0; scaling[1] = 1.0; scaling[2] = 1.0;}
 				appendNameDescriptionTransformation(_cpacsDoc, elementElement,
 						"Name " + listSectionID.get(i) + ", Element 0" /* name */, "An element created with JPAD" /* description */,
 						transformationAttributes, // transformation attributes
@@ -549,9 +547,9 @@ public class CPACSWriter {
 			positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "sweepAngle", String.valueOf(90.0)));
 			positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "dihedralAngle", String.valueOf(0.0)));
 			if (i == 0) {
-				positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "length", String.valueOf(0.0))); // <======
+				positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "length", String.format(Locale.ROOT, "%f",0.0))); // <======
 			} else { // i > 0
-				positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "length", String.valueOf(
+				positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "length", String.format(Locale.ROOT, "%f",
 						sectionsYZ.get(i).get(0).x - sectionsYZ.get(i - 1).get(0).x))); // <======
 				positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "fromSectionUID", listSectionID.get(i - 1))); // <======
 			}
