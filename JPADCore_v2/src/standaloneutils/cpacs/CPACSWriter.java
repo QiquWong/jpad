@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -350,7 +351,7 @@ public class CPACSWriter {
 		// TODO: referring fuselage profiles to local coordinates YZ with x=0
 		
 		LOGGER.info("-> getFuselageYZSections .............................................");
-		List<List<PVector>> sectionsYZ = getFuselageYZSections(fuselage, 0.15, 1.0, 3, 9, 7, 1.0, 0.10, 3);		
+		List<List<PVector>> sectionsYZ = getFuselageYZSections(fuselage, 0.15 /* 0.15 */, 1.0, 3 /* 3 */, 9, 7, 1.0, 0.10, 3);		
 		LOGGER.info("<- getFuselageYZSections .............................................");
 		LOGGER.info("[insertFuselage] n. x-stations = " + sectionsYZ.size());
 		
@@ -360,12 +361,17 @@ public class CPACSWriter {
 		IntStream.range(0,sectionsYZ.size())
 			.forEach(i -> xStations.add((double)sectionsYZ.get(i).get(0).x));
 
+		LOGGER.info("[insertFuselage] x-stations = " + Arrays.toString(xStations.toArray()));
+		
 		// get the distance between successive fuselage sections
 		List<Double> dxStations = new ArrayList<>();
 		IntStream.range(1,sectionsYZ.size())
 			.forEach(i -> dxStations.add(
 					xStations.get(i) - xStations.get(i - 1)
 					));
+
+		LOGGER.info("[insertFuselage] n. dx-s = " + dxStations.size());
+		LOGGER.info("[insertFuselage] dx-s = " + Arrays.toString(dxStations.toArray()));
 		
 		List<String> listSectionID = new ArrayList<>();
 		List<String> listProfileID = new ArrayList<>();
@@ -410,6 +416,12 @@ public class CPACSWriter {
 				translationAttributes.add(Tuple.of("xsi:type","pointAbsRelType"));
 				translationAttributes.add(Tuple.of("uID",listSectionID.get(i)+"_TRANSLATION_ID"));
 				
+				double zTrans = 0.0;
+				if (i == 0) // <== first collapsed point
+					zTrans = fuselage.getNoseTipHeightOffset().doubleValue(SI.METER);
+				if (i == sectionsYZ.size())			
+					zTrans = fuselage.getTailTipHeightOffset().doubleValue(SI.METER);
+
 				appendNameDescriptionTransformation(_cpacsDoc, sectionElement,
 						listSectionID.get(i) /* name */, "A section created with JPAD" /* description */,
 						transformationAttributes, // transformation attributes
@@ -418,7 +430,7 @@ public class CPACSWriter {
 						rotationAttributes, // rotation attributes,
 						new double[] {0.0, 0.0, 0.0},
 						translationAttributes,
-						new double[] {0.0, 0.0, 0.0}
+						new double[] {0.0, 0.0, zTrans}
 						);
 				
 				sectionsElement.appendChild(sectionElement); // fuselage.sections <- section (i-th)
@@ -501,9 +513,11 @@ public class CPACSWriter {
 				translationAttributes.add(Tuple.of("xsi:type","pointAbsRelType"));
 				translationAttributes.add(Tuple.of("uID",elementUID+"_TRANSLATION_ID"));
 				
-				double[] scaling = {0.0, 0.0, 0.0};
-				// collapse only the first element, i.e. make it the fuselage nose point
-				if (i > 0) { scaling[0] = 1.0; scaling[1] = 1.0; scaling[2] = 1.0;}
+				double[] scaling = {1.0, 1.0, 1.0};
+				// collapse the first and last elements, i.e. nose tip and tail tip points
+				if ( (i == 0) || (i == (sectionsYZ.size() - 1)) ) {
+					scaling[0] = 0.0; scaling[1] = 0.0; scaling[2] = 0.0;
+				}
 				appendNameDescriptionTransformation(_cpacsDoc, elementElement,
 						"Name " + listSectionID.get(i) + ", Element 0" /* name */, "An element created with JPAD" /* description */,
 						transformationAttributes, // transformation attributes
@@ -546,7 +560,7 @@ public class CPACSWriter {
 			positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "name", "Name " + listSectionID.get(i)+"_Pos"+String.valueOf(i))); // <======
 			positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "sweepAngle", String.valueOf(90.0)));
 			positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "dihedralAngle", String.valueOf(0.0)));
-			if (i == 0) {
+			if ((i == 0) || (i == (listSectionID.size() - 1))){
 				positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "length", String.format(Locale.ROOT, "%f",0.0))); // <======
 			} else { // i > 0
 				positioningElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValue(_cpacsDoc, "length", String.format(Locale.ROOT, "%f",
@@ -613,7 +627,11 @@ public class CPACSWriter {
 	}
 
 	/**
-	 * Creates a list of shapes, mostly surfaces/shells, representing the fuselage.
+	 * Creates a list of list of points representing successive fuselage sections.
+	 * In each sublist representing a sections, points are ordered starting from the topmost, going
+	 * towards positive y's, passing through the bottom, going towards negative y's, finally finishing
+	 * at the top again. First and last points are duplicated.
+	 * Two fake sections are added, corresponding to the two points at nose and tail tips.  
 	 * 
 	 * Nose trunk patches. Patch-1, Patch-2:
 	 * First, the nose patch is created, as the union of two patches: Patch-1, i.e. Nose Cap Patch, and Patch-2, i.e. from cap terminal section to
@@ -684,6 +702,28 @@ public class CPACSWriter {
 		xbars1.stream()
 			  .forEach(x -> xmtPatch1.add(x*noseLength.doubleValue(SI.METER)));
 		
+		//======================================================================== NOSECAP-TIP-COLLAPSED-SECTION
+		// get the n. point in the sections
+		int nSectionPoints = fuselage.getFuselageCreator()
+				.getUniqueValuesYZSectionCurve(Amount.valueOf(xmtPatch1.get(1), SI.METER)).size();
+		// add a list of collapsed PVector-s, at (0, 0, z_Nose)
+//		result.add(
+//				IntStream.range(0, nSectionPoints)
+//					.mapToObj(i -> new PVector(0.0f, 0.0f, (float)fuselage.getNoseTipHeightOffset().doubleValue(SI.METER)))
+//					.collect(Collectors.toList())
+//					);
+		// better this than collapsing
+		result.add(
+				fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(Amount.valueOf(0.5*xmtPatch1.get(1), SI.METER)).stream()
+					.map(pt -> new PVector(0.0f, pt.y, pt.z))
+					.collect(Collectors.toList())
+				);
+		//======================================================================== PATCH-1
+		xmtPatch1.stream()
+				 .skip(1) // skip x=0
+				 .map(x -> Amount.valueOf(x, SI.METER))
+				 .forEach(x -> result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(x)));
+		
 		System.out.println(">> Nose-cap trunk selected x-stations (m), Patch-1: " + xmtPatch1.toString());
 		
 		LOGGER.info("[getFuselageYZSections] Nose trunk (no cap): x=" + noseCapStation + " to x=" + noseLength);
@@ -707,13 +747,9 @@ public class CPACSWriter {
 		
 		System.out.println(">> Nose trunk selected x-stations (m), Patch-2: " + xmtPatch2.toString());
 
-//		List<List<PVector>> sections2 = new ArrayList<List<PVector>>();
-//		xbars2.stream()
-//			  .forEach(x -> sections2.add(
-//					  fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength.times(x)))
-//			  );
-
+		//======================================================================== PATCH-2		
 		xmtPatch2.stream()
+				 .skip(1) // do not duplicate last section of previous patch
 				 .map(x -> Amount.valueOf(x, SI.METER))
 				 .forEach(x -> result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(x)));
 		
@@ -734,6 +770,7 @@ public class CPACSWriter {
 		
 		System.out.println(">> Cylinder trunk selected x-stations (m), Patch-3: " + xmtPatch3.toString());
 		
+		//======================================================================== PATCH-3		
 		// Cylindrical trunk mid section
 		result.add(
 				fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(
@@ -767,8 +804,9 @@ public class CPACSWriter {
 		
 		System.out.println(">> Tail trunk selected x-stations (m), Patch-4: " + xmtPatch4.toString());
 		
+		//======================================================================== PATCH-4	
 		xmtPatch4.stream()
-		 		 .skip(1) // do not duplicate this section
+		 		 .skip(1) // do not duplicate last section of previous patch
 				 .map(x -> Amount.valueOf(x, SI.METER))
 				 .forEach(x -> result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(x)));
 		
@@ -795,14 +833,36 @@ public class CPACSWriter {
 //		CADVertex vertexTailTip = OCCUtils.theFactory.newVertex(
 //				fuselageLength.doubleValue(SI.METER), 0, zTailTip.doubleValue(SI.METER));
 		
+		//======================================================================== PATCH-5		
 		xmtPatch5.stream()
-		 .skip(1) // do not duplicate this section
+		 		 .skip(1) // do not duplicate last section of previous patch
 				 .map(x -> Amount.valueOf(x, SI.METER))
 				 .forEach(x -> result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(x)));
 
-		//============================================================================================
 		
-//		// other nose cap entities (outline curves, vertices)
+		//======================================================================== TAIL-TIP-COLLAPSED-SECTION		
+		// add a list of collapsed PVector-s, at (Nose_length, 0, z_Nose)
+//		result.add(
+//				IntStream.range(0, nSectionPoints)
+//					.mapToObj(i -> new PVector(
+//							(float) fuselageLength.doubleValue(SI.METER), 
+//							0.0f, 
+//							(float) fuselage.getTailTipHeightOffset().doubleValue(SI.METER)))
+//					.collect(Collectors.toList())
+//					);
+		// better this than collapsing
+		result.add(
+				fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(
+						Amount.valueOf(xmtPatch5.get(xmtPatch5.size() - 1), SI.METER)).stream()
+					.map(pt -> new PVector((float) fuselageLength.doubleValue(SI.METER), pt.y, pt.z))
+					.collect(Collectors.toList())
+				);
+		
+		//============================================================================================
+		// TODO: get guidelines ...
+		
+/*		
+		// other nose cap entities (outline curves, vertices)
 		
 		PVector ptNoseTip = new PVector(0.0f, 0.0f, (float)zNoseTip.doubleValue(SI.METER));
 		
@@ -934,9 +994,10 @@ public class CPACSWriter {
 				.collect(Collectors.toList());
 //		pointsTailCapSideRight.add(vertexTailTip.pnt()); // add tail tip point
 		
-		result.stream()
-			.forEach(r -> System.out.println(">> size: " + r.size()));
-			
+//		result.stream()
+//			.forEach(r -> System.out.println(">> size: " + r.size()));
+
+*/
 		return result;
 	}
 
