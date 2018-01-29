@@ -42,6 +42,34 @@ public class Test19mds {
 		String fileName = "test19mds.brep";
 
 		if(OCCUtils.write(fileName, fuselageShapes, wingShapes, horTailShapes, verTailShapes))
-			System.out.println("========== [main] Output written on file: " + fileName);		
+			System.out.println("========== [main] Output written on file: " + fileName);	
+		
+		// ====================
+		// write on step file, only solids
+		String fileNameSolids = "test19mds_solids.step";
+		List<TopoDS_Shape> tds_shapes = new ArrayList<>();
+		List<OCCShape> allShapes = new ArrayList<>();
+		allShapes.addAll(fuselageShapes);
+		allShapes.addAll(wingShapes);
+		allShapes.addAll(horTailShapes);
+		allShapes.addAll(verTailShapes);
+
+		allShapes.stream()
+				 .forEach( sh -> {
+					 TopoDS_Shape tds_shape1 = sh.getShape();
+					 // filter solids
+					 TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SOLID);
+					 while (exp1.More() > 0) {
+						 System.out.println(">> [main] solid!");
+						 tds_shapes.add(exp1.Current());
+						 exp1.Next();
+					 }
+				 });
+		STEPControl_Writer stepWriter = new STEPControl_Writer();
+		tds_shapes.stream()
+				  .forEach(tds -> stepWriter.Transfer(tds, STEPControl_StepModelType.STEPControl_AsIs));
+
+		IFSelect_ReturnStatus statusStep = stepWriter.Write(fileNameSolids);
+		System.out.println("========== [main] STEP output status: " + statusStep);				
 	}	
 }	

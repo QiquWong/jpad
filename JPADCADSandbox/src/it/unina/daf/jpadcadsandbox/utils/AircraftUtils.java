@@ -3340,7 +3340,7 @@ public final class AircraftUtils {
 				exp.Next();
 			}
 			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Exporting sewed loft.");
-			result.addAll(sewedShapes);
+//			result.addAll(sewedShapes);
 
 			// >>>>>>>>>>>>>>>>>>>>>>>>>>>> MIRRORING
 			List<OCCShape> mirroredShapes = new ArrayList<>();
@@ -3364,41 +3364,100 @@ public final class AircraftUtils {
 									   (OCCShape)OCCUtils.theFactory.newShape(sMirrored)
 									   );
 						   });
-			System.out.println("Mirrored shapes: " + mirroredShapes.size());
-			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Exporting mirrored sewed loft.");
-			result.addAll(mirroredShapes);
+				System.out.println("Mirrored shapes: " + mirroredShapes.size());
+				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Exporting mirrored sewed loft.");
+//				result.addAll(mirroredShapes);
 			}
 			
-			// Make a solid from the two halves
+			// Sewing the two halves
+			List<OCCShape> sewedHalvesShapes = new ArrayList<>();
+			if(!liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				BRepBuilderAPI_Sewing sewMakerHalves = new BRepBuilderAPI_Sewing();
+				
+				sewMakerHalves.Init();
+				
+				sewedShapes.forEach(sh -> {
+					TopoDS_Shape tds_shape1 = sh.getShape();
+					TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
+					sewMakerHalves.Add(TopoDS.ToShell(exp1.Current()));		
+				});
+				
+				mirroredShapes.forEach(sh -> {
+					TopoDS_Shape tds_shape1 = sh.getShape();
+					TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
+					sewMakerHalves.Add(TopoDS.ToShell(exp1.Current()));	
+				});
+				
+				sewMakerHalves.Perform();
+				
+				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Sewing halves step successful? " + !sewMakerHalves.IsNull());
+				
+				if(!sewMakerHalves.IsNull()) {
+					TopoDS_Shape tds_shape2 = sewMakerHalves.SewedShape();
+					// The resulting shape may consist of multiple shapes!
+					// Use TopExp_Explorer to iterate through shells
+					System.out.println(OCCUtils.reportOnShape(tds_shape2, "Lifting Surface sewed surface (Right + Left side)"));
+					TopExp_Explorer exp2 = new TopExp_Explorer(tds_shape2, TopAbs_ShapeEnum.TopAbs_SHELL);
+					while (exp2.More() > 0) {
+						sewedHalvesShapes.add((OCCShape)OCCUtils.theFactory.newShape(exp2.Current()));
+						exp2.Next();
+					}
+				}
+			} else {
+				sewedHalvesShapes.addAll(sewedShapes);
+			}
+//			result.addAll(sewedHalvesShapes);
+			
+			// Make a solid from the sewed halves
 			boolean exportSolid = true;
-			if (exportSolid) {
+			if(exportSolid) {
 				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Experimental: build a solid ...");
 				CADSolid solidLiftingSurface = null;
 				BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
-				sewedShapes.stream()
-					.forEach( sh -> {
+				sewedHalvesShapes.forEach(sh -> {
 						TopoDS_Shape tds_shape1 = sh.getShape();
 						TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
 						solidMaker.Add(TopoDS.ToShell(exp1.Current()));					
 					});
-				// TODO: add mirrored part
-				if(!liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
-					mirroredShapes.stream()
-								  .forEach( sh -> {
-									  TopoDS_Shape tds_shape2 = sh.getShape();
-									  TopExp_Explorer exp2 = new TopExp_Explorer(tds_shape2, TopAbs_ShapeEnum.TopAbs_SHELL);
-									  solidMaker.Add(TopoDS.ToShell(exp2.Current()));					
-								  });
-				}
 				solidMaker.Build();
 				System.out.println("Solid is done? " + (solidMaker.IsDone() == 1));
-				if (solidMaker.IsDone() == 1) {
+				if(solidMaker.IsDone() == 1) {
 					solidLiftingSurface = (CADSolid) OCCUtils.theFactory.newShape(solidMaker.Solid());
 					result.add((OCCShape) solidLiftingSurface);
 					
-					System.out.println(OCCUtils.reportOnShape(((OCCShape) solidLiftingSurface).getShape(), "LS solid (Right)")); // (Right + Left)
+					System.out.println(OCCUtils.reportOnShape(((OCCShape) solidLiftingSurface).getShape(), "LS solid")); 
 				}
-			}			
+			}
+			
+			// Make a solid from the two halves
+//			boolean exportSolid = true;
+//			if (exportSolid) {
+//				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Experimental: build a solid ...");
+//				CADSolid solidLiftingSurface = null;
+//				BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
+//				sewedShapes.stream()
+//					.forEach( sh -> {
+//						TopoDS_Shape tds_shape1 = sh.getShape();
+//						TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
+//						solidMaker.Add(TopoDS.ToShell(exp1.Current()));					
+//					});
+//				if(!liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+//					mirroredShapes.stream()
+//								  .forEach( sh -> {
+//									  TopoDS_Shape tds_shape2 = sh.getShape();
+//									  TopExp_Explorer exp2 = new TopExp_Explorer(tds_shape2, TopAbs_ShapeEnum.TopAbs_SHELL);
+//									  solidMaker.Add(TopoDS.ToShell(exp2.Current()));					
+//								  });
+//				}
+//				solidMaker.Build();
+//				System.out.println("Solid is done? " + (solidMaker.IsDone() == 1));
+//				if (solidMaker.IsDone() == 1) {
+//					solidLiftingSurface = (CADSolid) OCCUtils.theFactory.newShape(solidMaker.Solid());
+//					result.add((OCCShape) solidLiftingSurface);
+//					
+//					System.out.println(OCCUtils.reportOnShape(((OCCShape) solidLiftingSurface).getShape(), "LS solid (Right)")); // (Right + Left)
+//				}
+//			}			
 		}
 						
 				
