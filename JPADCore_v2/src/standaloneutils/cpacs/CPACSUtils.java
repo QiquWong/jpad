@@ -370,6 +370,67 @@ public final class CPACSUtils {
 		
 		return doubleArray;
 	}
+	public static double [] shiftElementInTheAeroPerformanceMap(List<String> listAeroPerformanceMap, int alpha, int yaw) {
+		double[] inputVector =  CPACSUtils.getDoubleArrayFromStringList(listAeroPerformanceMap);
+		double[] outputVector =  CPACSUtils.getDoubleArrayFromStringList(listAeroPerformanceMap);
+		int counter = 0;
+		int flag = alpha*yaw - 1;
+		int lastIndex = alpha*yaw - 1;
+		int fistIndex = lastIndex - alpha + 1;
+		int j = 0;
+		while (counter != (inputVector.length - 1)) {
+			for (int i = 0; i< inputVector.length; i++) {
+				if ((i >= fistIndex)&&(i<=lastIndex)) {
+					outputVector[j] = inputVector[i];
+					j = j + 1;  
+					
+				}
+			}
+			if ((fistIndex - (flag - alpha*yaw + 1))  != 0 ) {
+				fistIndex = fistIndex - alpha;
+				lastIndex = lastIndex - alpha;
+			}
+			else {
+				
+				lastIndex = flag + alpha*yaw;
+				fistIndex = lastIndex - alpha + 1;
+				flag = flag +  alpha*yaw;
+			}
+			counter = counter + 1;
+		}
+		return outputVector;
+	}
 	
-
+	public static double [] shiftElementInTheAeroPerformanceMapControlSurface(
+			List<String> listAeroPerformanceMap, int alpha, int yaw, int delta) {
+		double[] inputVector =  CPACSUtils.getDoubleArrayFromStringList(listAeroPerformanceMap);
+		double[] outputVector = inputVector;
+		int counter = 0;
+		int flag = delta*alpha*yaw - 1;
+		int lastIndex = delta*alpha*yaw - 1;
+		int fistIndex = lastIndex - alpha*delta + 1;
+		int j = 0;
+		while (counter != (inputVector.length - 1)) {
+			for (int i = 0; i< inputVector.length; i++) {
+				if ((i >= fistIndex)&&(i<=lastIndex)) {
+					outputVector[j] = inputVector[i];
+					j = j + 1;  
+					
+				}
+			}
+			if ((fistIndex - (flag - delta*alpha*yaw + 1))  != 0 ) {
+				fistIndex = fistIndex - delta*alpha;
+				lastIndex = lastIndex - delta*alpha;
+			}
+			else {
+				
+				lastIndex = flag + delta*alpha*yaw;
+				fistIndex = lastIndex - delta*alpha + 1;
+				flag = flag +  delta*alpha*yaw;
+			}
+			counter = counter + 1;
+		}
+		return outputVector;
+	}
+		
 }

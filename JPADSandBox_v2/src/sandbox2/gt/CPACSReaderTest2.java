@@ -8,7 +8,6 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -23,10 +22,7 @@ import configuration.MyConfiguration;
 import de.dlr.sc.tigl.Tigl;
 import de.dlr.sc.tigl.TiglException;
 import javaslang.Tuple;
-import standaloneutils.JPADXmlReader;
-import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.cpacs.CPACSReader;
-import standaloneutils.cpacs.CPACSUtils;
 import standaloneutils.jsbsim.JSBSimModel;
 import writers.JPADStaticWriteUtils;
 
@@ -143,12 +139,13 @@ public class CPACSReaderTest2 {
 						Tuple.of("aircraft", "D150_JSBSim"), // TODO: get aircraft name from _cpaceReader
 						Tuple.of("initialize", "initialCondition")
 						);
+				String deltaT = "0.1"; 
 				runscriptElement.appendChild(useElement);
 				org.w3c.dom.Element runElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
 						docScript,"run",
 						Tuple.of("start", "0"), // TODO: get aircraft name from _cpaceReader
 						Tuple.of("end", "100"),
-						Tuple.of("dt", "0.1")
+						Tuple.of("dt", deltaT)
 						);
 				runscriptElement.appendChild(runElement);
 				JPADStaticWriteUtils.writeSingleNode("property","simulation/notify-time-trigger",runElement,docScript);
@@ -165,19 +162,63 @@ public class CPACSReaderTest2 {
 						3, 6, Tuple.of("value", "1"));
 				runElement.appendChild(propertyElem);
 				//Start Element
-				org.w3c.dom.Element eventElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+				org.w3c.dom.Element eventElemStart =  JPADStaticWriteUtils.createXMLElementWithAttributes(
 						docScript,"event",
 						Tuple.of("name", "engine start") // TODO: get aircraft name from _cpaceReader
 						);
+				runElement.appendChild(eventElemStart);	
+				JPADStaticWriteUtils.writeSingleNode("description","Start the engine",eventElemStart,docScript);
+				JPADStaticWriteUtils.writeSingleNode("condition"," simulation/sim-time-sec le "+deltaT,eventElemStart,docScript);
+				org.w3c.dom.Element run1Elem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+						docScript,"set",
+						Tuple.of("name", "propulsion/engine[1]/set-running"), 
+						Tuple.of("value", "1.0"));
+				eventElemStart.appendChild(run1Elem);
+				org.w3c.dom.Element runElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+						docScript,"set",
+						Tuple.of("name", "propulsion/engine[0]/set-running"), 
+						Tuple.of("value", "1.0"));
+				eventElemStart.appendChild(runElem);
+				org.w3c.dom.Element trimElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+						docScript,"set",
+						Tuple.of("name", "simulation/do_simple_trim"), 
+						Tuple.of("value", "2.0"));
+				eventElemStart.appendChild(trimElem);
+//			      For "do_simple_trim" (Classic trim):
+//			      0: Longitudinal
+//			      1: Full
+//			      2: Ground
+//			      3: Pullup
+//			      4: Custom
+//			      5: Turn
+//			      6: None				
+				org.w3c.dom.Element notifyElem = docScript.createElement("notify");
+				eventElemStart.appendChild(notifyElem);
+				JPADStaticWriteUtils.writeSingleNode("property"," position/h-agl-ft",notifyElem,docScript);
+				//throttle comand
+				org.w3c.dom.Element eventElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+						docScript,"event",
+						Tuple.of("name", "throttle comand") // TODO: get aircraft name from _cpaceReader
+						);
 				runElement.appendChild(eventElem);	
 				JPADStaticWriteUtils.writeSingleNode("description","Start the engine",eventElem,docScript);
-				JPADStaticWriteUtils.writeSingleNode("condition"," simulation/sim-time-sec GE 0.2",eventElem,docScript);
+				JPADStaticWriteUtils.writeSingleNode("condition"," simulation/sim-time-sec gt 1.0",eventElem,docScript);
 				org.w3c.dom.Element setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
 						docScript,"set",
-						Tuple.of("name", "fcs/throttle-cmd-norm"), 
+						Tuple.of("name", "fcs/throttle-cmd-norm[0]"), 
 						Tuple.of("value", "1.0"));
 				eventElem.appendChild(setElem);	
-				org.w3c.dom.Element notifyElem = docScript.createElement("notify");
+				setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+						docScript,"set",
+						Tuple.of("name", "fcs/throttle-cmd-norm[1]"), 
+						Tuple.of("value", "1.0"));
+				eventElem.appendChild(setElem);	
+				setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+						docScript,"set",
+						Tuple.of("name", "fcs/flap-cmd-norm"), 
+						Tuple.of("value", "0.66"));
+				eventElem.appendChild(setElem);	
+				notifyElem = docScript.createElement("notify");
 				eventElem.appendChild(notifyElem);
 				JPADStaticWriteUtils.writeSingleNode("property"," position/h-agl-ft",notifyElem,docScript);
 				JPADStaticWriteUtils.writeSingleNode("property"," velocities/vc-kts",notifyElem,docScript);
@@ -189,7 +230,7 @@ public class CPACSReaderTest2 {
 						);
 				runElement.appendChild(eventElem);	
 				JPADStaticWriteUtils.writeSingleNode("description","Release brakes and get rolling with flaps at 30 degrees.",eventElem,docScript);
-				JPADStaticWriteUtils.writeSingleNode("condition"," simulation/sim-time-sec GE 2.5",eventElem,docScript);
+				JPADStaticWriteUtils.writeSingleNode("condition"," simulation/sim-time-sec gt 2.5",eventElem,docScript);
 				setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
 						docScript,"set",
 						Tuple.of("name", "fcs/left-brake-cmd-norm"), 
@@ -199,11 +240,6 @@ public class CPACSReaderTest2 {
 						docScript,"set",
 						Tuple.of("name", "fcs/right-brake-cmd-norm"), 
 						Tuple.of("value", "0"));
-				eventElem.appendChild(setElem);	
-				setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
-						docScript,"set",
-						Tuple.of("name", "fcs/flap-cmd-norm"), 
-						Tuple.of("value", "0.66"));
 				eventElem.appendChild(setElem);	
 				notifyElem = docScript.createElement("notify");
 				eventElem.appendChild(notifyElem);
@@ -217,7 +253,7 @@ public class CPACSReaderTest2 {
 						);
 				runElement.appendChild(eventElem);	
 				JPADStaticWriteUtils.writeSingleNode("description","at 1000 feet remove flap",eventElem,docScript);
-				JPADStaticWriteUtils.writeSingleNode("condition"," position/h-agl-ft GE 1000",eventElem,docScript);
+				JPADStaticWriteUtils.writeSingleNode("condition"," position/h-agl-ft gt 1000",eventElem,docScript);
 				setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
 						docScript,"set",
 						Tuple.of("name", "fcs/flap-cmd-norm"), 
@@ -235,19 +271,20 @@ public class CPACSReaderTest2 {
 
 					jsbsimModel.exportToXML(outputFile,dirPath);
 					//Initial condition are given as double value
-					double ubody = 250.0;
-					double vbody = 0.0;
-					double wbody = 0.0;
+//					double ubody = 0.0;
+//					double vbody = 0.0;
+//					double wbody = 0.0;
+					double vt = 0.0;
 					double longitude = 20.0;
 					double latitude = 30.0;
 					double phi = 0.0;
 					double theta = 1.0;
-					double psi = 30.0;
-					double altitude = 2000.5;
-					double elevation = 2000.0;
+					double psi = 0.0;
+					double altitude = 0.5;
+					double elevation = 0.0;
 					double hwind = 0.0;
 					String icFilePath = outputDirPath + "/" + icFileNameBase + ".xml";
-					jsbsimModel.writeInitialConditionsFile(icFilePath, ubody, vbody, wbody,
+					jsbsimModel.writeInitialConditionsFile(icFilePath, vt,
 							longitude, latitude, phi, theta, psi, altitude, elevation, hwind);
 					if (!va.isNoSim())
 						jsbsimModel.startJSBSimSimulation(dirPath, scriptName);

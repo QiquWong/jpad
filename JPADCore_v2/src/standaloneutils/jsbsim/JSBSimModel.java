@@ -173,6 +173,8 @@ public class JSBSimModel {
 	double[] rudderDeflectionAero = null;
 	double[] reynoldNumber = null;
 	int reynoldDimension = 0;
+	double[] altitudeVector = null;
+	int altitudeDimension = 0;
 	double[] machNumber = null;
 	double[] betaVector = null;
 	int machDimension = 0;
@@ -396,6 +398,10 @@ public class JSBSimModel {
 						+ "/noseGears/noseGear/fuselageAttachment/translation/z"));
 
 		//Right Main
+		String checkMainGearReference = jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/landingGear/mainGears/"
+						+ "mainGear/wingAttachment/positioning/eta");
+		if (checkMainGearReference != null) {
 		Double etaRightLandingGear = Double.parseDouble(
 				jpadXmlReader.getXMLPropertyByPath(
 						"cpacs/vehicles/aircraft/model/landingGear/mainGears/"
@@ -413,7 +419,18 @@ public class JSBSimModel {
 		coordinateRightLandingGear[0] = coordinateRightLandingGear[0] + wingPosition[0];
 		coordinateRightLandingGear[1] = coordinateRightLandingGear[1] + wingPosition[1];
 		coordinateRightLandingGear[2] = coordinateRightLandingGear[2] + wingPosition[2];
-
+		}
+		else {
+			coordinateRightLandingGear[0] = Double.parseDouble(jpadXmlReader.getXMLPropertyByPath(
+					"cpacs/vehicles/aircraft/model/landingGear"
+							+ "/mainGears/mainGear/fuselageAttachment/translation/x"));
+			coordinateRightLandingGear[1] = Double.parseDouble(jpadXmlReader.getXMLPropertyByPath(
+					"cpacs/vehicles/aircraft/model/landingGear"
+							+ "/mainGears/mainGear/fuselageAttachment/translation/y"));
+			coordinateRightLandingGear[2] = Double.parseDouble(jpadXmlReader.getXMLPropertyByPath(
+					"cpacs/vehicles/aircraft/model/landingGear"
+							+ "/mainGears/mainGear/fuselageAttachment/translation/z"));
+		}
 		System.out.println("--------------------------------");
 		System.out.println("X position of landing gear is : "+ coordinateRightLandingGear[0] );
 		System.out.println("Y position of landing gear is : "+ coordinateRightLandingGear[1] );
@@ -468,10 +485,14 @@ public class JSBSimModel {
 
 
 		//Flight Control
+		
+		
+		//Aeromap
 		NodeList aeroNodeList = MyXMLReaderUtils.getXMLNodeListByPath(
 				jpadXmlReader.getXmlDoc(),
-				"cpacs/vehicles/aircraft/model/analyses/aeroPerformanceMap");
-
+//				"cpacs/vehicles/aircraft/model/analyses/aeroPerformanceMap");
+				"cpacs/toolspecific/tornado/analyses");
+				
 		DocumentBuilderFactory factoryAero = DocumentBuilderFactory.newInstance();
 		factoryAero.setNamespaceAware(true);
 		DocumentBuilder builderAero;
@@ -484,8 +505,8 @@ public class JSBSimModel {
 		NodeList controlSurfaceAeroPerformanceList = MyXMLReaderUtils.getXMLNodeListByPath(
 				docAero, 
 				"//controlSurfaces/controlSurface");
-		reynoldNumber = CPACSReader.getReynoldsNumberFromAeroPerformanceMap(docAero);
-		reynoldDimension = reynoldNumber.length;
+		altitudeVector = CPACSReader.getAltitudeFromAeroPerformanceMap(docAero);
+		altitudeDimension = altitudeVector.length;
 		machNumber = CPACSReader.getMachNumberFromAeroPerformanceMap(docAero);
 		betaVector = CPACSReader.getYawFromAeroPerformanceMap(docAero);
 
@@ -928,11 +949,11 @@ public class JSBSimModel {
 			rootElement.appendChild(outputElement);
 			org.w3c.dom.Element axisElementDrag = doc.createElement("axis");
 			axisElementDrag.setAttribute("name", "DRAG");
-			aeroElement.appendChild(axisElementDrag);
+//			aeroElement.appendChild(axisElementDrag);
 			
 			org.w3c.dom.Element axisElementSide = doc.createElement("axis");
 			axisElementSide.setAttribute("name", "SIDE");
-			aeroElement.appendChild(axisElementSide);
+//			aeroElement.appendChild(axisElementSide);
 			
 			org.w3c.dom.Element axisElementLift = doc.createElement("axis");
 			axisElementLift.setAttribute("name", "LIFT");
@@ -952,415 +973,420 @@ public class JSBSimModel {
 			// Start external function
 			rootElement.appendChild(
 					JSBSimUtils.createAeroDataExternalFunctionElement(
-							doc, cdList, machDimension, machNumber, reynoldDimension, reynoldNumber, "drag", aeroElement));
+							doc, cdList, machDimension, machNumber, altitudeDimension, altitudeVector, "drag", aeroElement));
 			rootElement.appendChild(
 					JSBSimUtils.createAeroDataExternalFunctionElement(
-							doc, cyList, machDimension, machNumber, reynoldDimension, reynoldNumber, "side", aeroElement));
+							doc, cyList, machDimension, machNumber, altitudeDimension, altitudeVector, "side", aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionElement(
-					doc, clList, machDimension, machNumber, reynoldDimension, reynoldNumber, "lift", aeroElement));
+					doc, clList, machDimension, machNumber, altitudeDimension, altitudeVector, "lift", aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionElement(
-					doc, cmxList, machDimension, machNumber, reynoldDimension, reynoldNumber, "roll", aeroElement));
+					doc, cmxList, machDimension, machNumber, altitudeDimension, altitudeVector, "roll", aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionElement(
-					doc, cmyList, machDimension, machNumber, reynoldDimension, reynoldNumber, "pitch", aeroElement));
+					doc, cmyList, machDimension, machNumber, altitudeDimension, altitudeVector, "pitch", aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionElement(
-					doc, cmzList, machDimension, machNumber, reynoldDimension, reynoldNumber, "yaw", aeroElement));
+					doc, cmzList, machDimension, machNumber, altitudeDimension, altitudeVector, "yaw", aeroElement));
 			//Flap Inner
 
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, cdListFlapInner, machDimension, machNumber, reynoldDimension, reynoldNumber, 
+					doc, cdListFlapInner, machDimension, machNumber, altitudeDimension, altitudeVector, 
 					"drag", flapDeflectionAero, "flap_inner", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, cyListFlapInner, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, cyListFlapInner, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"side", flapDeflectionAero, "flap_inner", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, clListFlapInner, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, clListFlapInner, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"lift", flapDeflectionAero, "flap_inner", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmxFlapListInner, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmxFlapListInner, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"roll", flapDeflectionAero, "flap_inner", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmyFlapListInner, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmyFlapListInner, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"pitch", flapDeflectionAero, "flap_inner", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmzFlapListInner, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmzFlapListInner, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"yaw", flapDeflectionAero, "flap_inner", betaVector, aeroElement));
 			
 			//Flap Outer
 
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, cdListFlapOuter, machDimension, machNumber, reynoldDimension, reynoldNumber, 
+					doc, cdListFlapOuter, machDimension, machNumber, altitudeDimension, altitudeVector, 
 					"drag", flapDeflectionAero, "flap_outer", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, cyListFlapOuter, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, cyListFlapOuter, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"side", flapDeflectionAero, "flap_outer", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, clListFlapOuter, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, clListFlapOuter, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"lift", flapDeflectionAero, "flap_outer", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmxFlapListOuter, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmxFlapListOuter, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"roll", flapDeflectionAero, "flap_outer", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmyFlapListOuter, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmyFlapListOuter, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"pitch", flapDeflectionAero, "flap_outer", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmzFlapListOuter, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmzFlapListOuter, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"yaw", flapDeflectionAero, "flap_outer", betaVector, aeroElement));
 			//Aileron
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, cdListAileron, machDimension, machNumber, reynoldDimension, reynoldNumber, 
+					doc, cdListAileron, machDimension, machNumber, altitudeDimension, altitudeVector, 
 					"drag", aileronDeflectionAero, "aileron", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, cyListAileron, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, cyListAileron, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"side", aileronDeflectionAero, "aileron", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, clListAileron, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, clListAileron, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"lift", aileronDeflectionAero, "aileron", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmxAileronList, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmxAileronList, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"roll", aileronDeflectionAero, "aileron", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmyAileronList, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmyAileronList, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"pitch", aileronDeflectionAero, "aileron", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmzAileronList, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmzAileronList, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"yaw", aileronDeflectionAero, "aileron", betaVector, aeroElement));
 
 			//Elevator
 
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, cdListElevator, machDimension, machNumber, reynoldDimension, reynoldNumber, 
+					doc, cdListElevator, machDimension, machNumber, altitudeDimension, altitudeVector, 
 					"drag", elevatorDeflectionAero, "elevator", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, cyListElevator, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, cyListElevator, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"side", elevatorDeflectionAero, "elevator", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, clListElevator, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, clListElevator, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"lift", elevatorDeflectionAero, "elevator", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmxElevatorList, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmxElevatorList, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"roll", elevatorDeflectionAero, "elevator", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmyElevatorList, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmyElevatorList, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"pitch", elevatorDeflectionAero, "elevator", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmzElevatorList, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmzElevatorList, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"yaw", elevatorDeflectionAero, "elevator", betaVector, aeroElement));
 
 			//Rudder
 
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, cdListRudder, machDimension, machNumber, reynoldDimension, reynoldNumber, 
+					doc, cdListRudder, machDimension, machNumber, altitudeDimension, altitudeVector, 
 					"drag", rudderDeflectionAero, "rudder", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, cyListRudder, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, cyListRudder, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"side", rudderDeflectionAero, "rudder", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, clListRudder, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, clListRudder, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"lift", rudderDeflectionAero, "rudder", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmxRudderList, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmxRudderList, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"roll", rudderDeflectionAero, "rudder", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmyRudderList, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmyRudderList, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"pitch", rudderDeflectionAero, "rudder", betaVector, aeroElement));
 			rootElement.appendChild(JSBSimUtils.createAeroDataExternalFunctionControlSurfaceElement(
-					doc, dmzRudderList, machDimension, machNumber, reynoldDimension, reynoldNumber,
+					doc, dmzRudderList, machDimension, machNumber, altitudeDimension, altitudeVector,
 					"yaw", rudderDeflectionAero, "rudder", betaVector, aeroElement));
 			//Damping derivative
 			//p-rate
 			if (cdListp.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, cdListp, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-drag", aeroElement));
+						doc, cdListp, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "p-drag", aeroElement));
 			}
 			if (cyListp.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, cyListp, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-side", aeroElement));
+						doc, cyListp, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "p-side", aeroElement));
 			}
 			if (clListp.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, clListp, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-lift", aeroElement));
+						doc, clListp, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "p-lift", aeroElement));
 			}
 			if (dmxpList.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, dmxpList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-roll", aeroElement));
+						doc, dmxpList, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "p-roll", aeroElement));
 			}
 			if (dmypList.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, dmypList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-pitch", aeroElement));
+						doc, dmypList, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "p-pitch", aeroElement));
 			}
 			if (dmzpList.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, dmzpList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-yaw", aeroElement));
+						doc, dmzpList, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "p-yaw", aeroElement));
 			}
 			// q-rate
 			if (cdListq.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, cdListq, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-drag", aeroElement));
+						doc, cdListq, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "q-drag", aeroElement));
 			}
 			if (cyListq.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, cyListq, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-side", aeroElement));
+						doc, cyListq, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "q-side", aeroElement));
 			}
 			if (clListq.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, clListq, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-lift", aeroElement));
+						doc, clListq, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "q-lift", aeroElement));
 			}
 			if (dmxqList.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, dmxqList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-roll", aeroElement));
+						doc, dmxqList, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "q-roll", aeroElement));
 			}
 			if (dmyqList.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, dmyqList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-pitch", aeroElement));
+						doc, dmyqList, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "q-pitch", aeroElement));
 			}
 			if (dmzqList.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, dmzqList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-yaw", aeroElement));
+						doc, dmzqList, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "q-yaw", aeroElement));
 			}
 
 			//r-rate
 			if (cdListr.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, cdListr, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-drag", aeroElement));
+						doc, cdListr, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "r-drag", aeroElement));
 			}
 			if (cyListr.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, cyListr, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-side", aeroElement));
+						doc, cyListr, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "r-side", aeroElement));
 			}
 			if (clListr.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, clListr, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-lift", aeroElement));
+						doc, clListr, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "r-lift", aeroElement));
 			}
 			if (dmxrList.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, dmxrList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-roll", aeroElement));
+						doc, dmxrList, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "r-roll", aeroElement));
 			}
 			if (dmyrList.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, dmyrList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-pitch", aeroElement));
+						doc, dmyrList, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "r-pitch", aeroElement));
 			}
 			if (dmzrList.size()>0) {
 				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesExternalFunctionElement(
-						doc, dmzrList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-yaw", aeroElement));
+						doc, dmzrList, machDimension, machNumber, altitudeDimension,
+						altitudeVector, "r-yaw", aeroElement));
 			}
 			//Function in axis Element
 			aeroElement.appendChild(
 					JSBSimUtils.createAeroDataBodyAxisElement(
-							doc, outputElement, cdList, machDimension, machNumber, "drag", axisElementDrag));
+							doc, outputElement, cdList, machDimension, machNumber, "drag", axisElementDrag, aeroElement));
 			aeroElement.appendChild(
 					JSBSimUtils.createAeroDataBodyAxisElement(
-							doc, outputElement, cyList, machDimension, machNumber, "side", axisElementSide));
-			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
-					doc, outputElement, clList, machDimension, machNumber, "lift", axisElementLift));
-			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
-					doc, outputElement, cmxList, machDimension, machNumber, "roll", axisElementRoll));
-			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
-					doc, outputElement, cmyList, machDimension, machNumber, "pitch", axisElementPitch));
-			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
-					doc, outputElement, cmzList, machDimension, machNumber, "yaw", axisElementYaw));
+							doc, outputElement, cyList, machDimension, machNumber, "side", axisElementSide, aeroElement));
+			aeroElement.appendChild(
+					JSBSimUtils.createAeroDataBodyAxisElement(
+					doc, outputElement, clList, machDimension, machNumber, "lift", axisElementLift, aeroElement));
+			aeroElement.appendChild(
+					JSBSimUtils.createAeroDataBodyAxisElement(
+					doc, outputElement, cmxList, machDimension, machNumber, "roll", axisElementRoll, aeroElement));
+			aeroElement.appendChild(
+					JSBSimUtils.createAeroDataBodyAxisElement(
+					doc, outputElement, cmyList, machDimension, machNumber, "pitch", axisElementPitch, aeroElement));
+			aeroElement.appendChild(
+					JSBSimUtils.createAeroDataBodyAxisElement(
+					doc, outputElement, cmzList, machDimension, machNumber, "yaw", axisElementYaw, aeroElement));
 			//Flap Inner
 
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, cdListFlapInner, machDimension, machNumber, "drag", axisElementDrag,
-					flapDeflectionAero, "flap_inner", outputElement));
+					flapDeflectionAero, "flap_inner", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, cyListFlapInner, machDimension, machNumber, "side", axisElementSide,
-					flapDeflectionAero, "flap_inner", outputElement));
+					flapDeflectionAero, "flap_inner", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, clListFlapInner, machDimension, machNumber, "lift", axisElementLift,
-					flapDeflectionAero, "flap_inner", outputElement));
+					flapDeflectionAero, "flap_inner", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmxFlapListInner, machDimension, machNumber, "roll", axisElementRoll,
-					flapDeflectionAero, "flap_inner", outputElement));
+					flapDeflectionAero, "flap_inner", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmyFlapListInner, machDimension, machNumber, "pitch", axisElementPitch,
-					flapDeflectionAero, "flap_inner", outputElement));
+					flapDeflectionAero, "flap_inner", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmzFlapListInner, machDimension, machNumber, "yaw", axisElementYaw,
-					flapDeflectionAero, "flap_inner", outputElement));
+					flapDeflectionAero, "flap_inner", outputElement, aeroElement));
 			
 			//Flap Outer
 
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, cdListFlapOuter, machDimension, machNumber, "drag", axisElementDrag,
-					flapDeflectionAero, "flap_outer", outputElement));
+					flapDeflectionAero, "flap_outer", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, cyListFlapOuter, machDimension, machNumber, "side", axisElementSide,
-					flapDeflectionAero, "flap_outer", outputElement));
+					flapDeflectionAero, "flap_outer", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, clListFlapOuter, machDimension, machNumber, "lift", axisElementLift,
-					flapDeflectionAero, "flap_outer", outputElement));
+					flapDeflectionAero, "flap_outer", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmxFlapListOuter, machDimension, machNumber, "roll", axisElementRoll,
-					flapDeflectionAero, "flap_outer", outputElement));
+					flapDeflectionAero, "flap_outer", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmyFlapListOuter, machDimension, machNumber, "pitch", axisElementPitch,
-					flapDeflectionAero, "flap_outer", outputElement));
+					flapDeflectionAero, "flap_outer", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmzFlapListOuter, machDimension, machNumber, "yaw", axisElementYaw,
-					flapDeflectionAero, "flap_outer", outputElement));
+					flapDeflectionAero, "flap_outer", outputElement, aeroElement));
 			//Aileron
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, cdListAileron, machDimension, machNumber, "drag", axisElementDrag, 
-					aileronDeflectionAero, "aileron", outputElement));
+					aileronDeflectionAero, "aileron", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, cyListAileron, machDimension, machNumber, "side", axisElementSide,
-					aileronDeflectionAero, "aileron", outputElement));
+					aileronDeflectionAero, "aileron", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, clListAileron, machDimension, machNumber, "lift", axisElementLift,
-					aileronDeflectionAero, "aileron", outputElement));
+					aileronDeflectionAero, "aileron", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmxAileronList, machDimension, machNumber, "roll", axisElementRoll,
-					aileronDeflectionAero, "aileron", outputElement));
+					aileronDeflectionAero, "aileron", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmyAileronList, machDimension, machNumber, "pitch", axisElementPitch,
-					aileronDeflectionAero, "aileron", outputElement));
+					aileronDeflectionAero, "aileron", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmzAileronList, machDimension, machNumber, "yaw", axisElementYaw,
-					aileronDeflectionAero, "aileron", outputElement));
+					aileronDeflectionAero, "aileron", outputElement, aeroElement));
 
 			//Elevator
 
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, cdListElevator, machDimension, machNumber, "drag", axisElementDrag,
-					elevatorDeflectionAero, "elevator", outputElement));
+					elevatorDeflectionAero, "elevator", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, cyListElevator, machDimension, machNumber, "side", axisElementSide, 
-					elevatorDeflectionAero, "elevator", outputElement));
+					elevatorDeflectionAero, "elevator", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, clListElevator, machDimension, machNumber, "lift", axisElementLift,
-					elevatorDeflectionAero, "elevator", outputElement));
+					elevatorDeflectionAero, "elevator", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmxElevatorList, machDimension, machNumber, "roll", axisElementRoll,
-					elevatorDeflectionAero, "elevator", outputElement));
+					elevatorDeflectionAero, "elevator", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmyElevatorList, machDimension, machNumber, "pitch", axisElementPitch,
-					elevatorDeflectionAero, "elevator", outputElement));
+					elevatorDeflectionAero, "elevator", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmzElevatorList, machDimension, machNumber, "yaw", axisElementYaw,
-					elevatorDeflectionAero, "elevator", outputElement));
+					elevatorDeflectionAero, "elevator", outputElement, aeroElement));
 
 			//Rudder
 
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, cdListRudder, machDimension, machNumber, "drag", axisElementDrag,
-					rudderDeflectionAero, "rudder", outputElement));
+					rudderDeflectionAero, "rudder", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, cyListRudder, machDimension, machNumber, "side", axisElementSide, 
-					rudderDeflectionAero, "rudder", outputElement));
+					rudderDeflectionAero, "rudder", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, clListRudder, machDimension, machNumber, "lift", axisElementLift, 
-					rudderDeflectionAero, "rudder", outputElement));
+					rudderDeflectionAero, "rudder", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmxRudderList, machDimension, machNumber, "roll", axisElementRoll,
-					rudderDeflectionAero, "rudder", outputElement));
+					rudderDeflectionAero, "rudder", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmyRudderList, machDimension, machNumber, "pitch", axisElementPitch,
-					rudderDeflectionAero, "rudder", outputElement));
+					rudderDeflectionAero, "rudder", outputElement, aeroElement));
 			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
 					doc, dmzRudderList, machDimension, machNumber, "yaw", axisElementYaw,
-					rudderDeflectionAero, "rudder", outputElement));
+					rudderDeflectionAero, "rudder", outputElement, aeroElement));
 			//Damping derivative
-//			//p-rate
-//			if (cdListp.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, cdListp, machDimension, machNumber, "p-drag", axisElementDrag, "p"));
-//			}
-//			if (cyListp.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, cyListp, machDimension, machNumber, "p-side", axisElementSide, "p"));
-//			}
-//			if (clListp.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, clListp, machDimension, machNumber, "p-lift", axisElementLift, "p"));
-//			}
-//			if (dmxpList.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, dmxpList, machDimension, machNumber, "p-roll", axisElementRoll, "p"));
-//			}
-//			if (dmypList.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, dmypList, machDimension, machNumber, "p-pitch", axisElementPitch, "p"));
-//			}
-//			if (dmzpList.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, dmzpList, machDimension, machNumber, "p-yaw", axisElementYaw, "p"));
-//			}
-//			// q-rate
-//			if (cdListq.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, cdListq, machDimension, machNumber, "q-drag", axisElementDrag, "q"));
-//			}
-//			if (cyListq.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, cyListq, machDimension, machNumber, "q-side", axisElementSide, "q"));
-//			}
-//			if (clListq.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, clListq, machDimension, machNumber, "q-lift", axisElementLift, "q"));
-//			}
-//			if (dmxqList.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, dmxqList, machDimension, machNumber, "q-roll", axisElementRoll, "q"));
-//			}
-//			if (dmyqList.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, dmyqList, machDimension, machNumber, "q-pitch", axisElementPitch, "q"));
-//			}
-//			if (dmzqList.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, dmzqList, machDimension, machNumber, "q-yaw", axisElementYaw, "q"));
-//			}
-//
-//			//r-rate
-//			if (cdListr.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, cdListr, machDimension, machNumber, "r-drag", axisElementDrag, "r"));
-//			}
-//			if (cyListr.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, cyListr, machDimension, machNumber, "r-side", axisElementSide, "r"));
-//			}
-//			if (clListr.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, clListr, machDimension, machNumber, "r-lift", axisElementLift, "r"));
-//			}
-//			if (dmxrList.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, dmxrList, machDimension, machNumber, "r-roll", axisElementRoll, "r"));
-//			}
-//			if (dmyrList.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, dmyrList, machDimension, machNumber, "r-pitch", axisElementPitch, "r"));
-//			}
-//			if (dmzrList.size()>0) {
-//				rootElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
-//						doc, outputElement, dmzrList, machDimension, machNumber, "r-yaw", axisElementYaw, "r"));
-//			}
-//			
+			//p-rate
+			if (cdListp.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, cdListp, machDimension, machNumber, "p-drag", axisElementDrag, "p", aeroElement));
+			}
+			if (cyListp.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, cyListp, machDimension, machNumber, "p-side", axisElementSide, "p", aeroElement));
+			}
+			if (clListp.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, clListp, machDimension, machNumber, "p-lift", axisElementLift, "p", aeroElement));
+			}
+			if (dmxpList.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, dmxpList, machDimension, machNumber, "p-roll", axisElementRoll, "p", aeroElement));
+			}
+			if (dmypList.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, dmypList, machDimension, machNumber, "p-pitch", axisElementPitch, "p", aeroElement));
+			}
+			if (dmzpList.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, dmzpList, machDimension, machNumber, "p-yaw", axisElementYaw, "p", aeroElement));
+			}
+			// q-rate
+			if (cdListq.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, cdListq, machDimension, machNumber, "q-drag", axisElementDrag, "q", aeroElement));
+			}
+			if (cyListq.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, cyListq, machDimension, machNumber, "q-side", axisElementSide, "q", aeroElement));
+			}
+			if (clListq.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, clListq, machDimension, machNumber, "q-lift", axisElementLift, "q", aeroElement));
+			}
+			if (dmxqList.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, dmxqList, machDimension, machNumber, "q-roll", axisElementRoll, "q", aeroElement));
+			}
+			if (dmyqList.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, dmyqList, machDimension, machNumber, "q-pitch", axisElementPitch, "q", aeroElement));
+			}
+			if (dmzqList.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, dmzqList, machDimension, machNumber, "q-yaw", axisElementYaw, "q", aeroElement));
+			}
+
+			//r-rate
+			if (cdListr.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, cdListr, machDimension, machNumber, "r-drag", axisElementDrag, "r", aeroElement));
+			}
+			if (cyListr.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, cyListr, machDimension, machNumber, "r-side", axisElementSide, "r", aeroElement));
+			}
+			if (clListr.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, clListr, machDimension, machNumber, "r-lift", axisElementLift, "r", aeroElement));
+			}
+			if (dmxrList.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, dmxrList, machDimension, machNumber, "r-roll", axisElementRoll, "r", aeroElement));
+			}
+			if (dmyrList.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, dmyrList, machDimension, machNumber, "r-pitch", axisElementPitch, "r", aeroElement));
+			}
+			if (dmzrList.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataDampingDerivativesBodyAxisElement(
+						doc, outputElement, dmzrList, machDimension, machNumber, "r-yaw", axisElementYaw, "r", aeroElement));
+			}
+			
 			JPADStaticWriteUtils.writeSingleNode("property","aero/alpha-deg",outputElement,doc);
 			JPADStaticWriteUtils.writeSingleNode("property","aero/beta-deg",outputElement,doc);
 			JPADStaticWriteUtils.writeSingleNode("property","aero/Re",outputElement,doc);
 			JPADStaticWriteUtils.writeSingleNode("property","velocities/mach",outputElement,doc);
 			/*
+
 
 velocities/h-dot-fps (R)
 velocities/v-north-fps (R)
@@ -1599,15 +1625,15 @@ propulsion/engine/thrust-lbs (R)
 		JSBSimUtils.runJSBSIM(commandList, dirPath);
 
 	}
-	public void writeInitialConditionsFile(String initializePath, double ubody, double vbody, double wbody, double longitude,
+	public void writeInitialConditionsFile(String initializePath, double vt, double longitude,
 			double latitude, double phi, double theta, double psi, double altitude, double elevation, double hwind) {
-		Document doc = writeInitialCondition(ubody, vbody, wbody,
+		Document doc = writeInitialCondition(vt,
 				longitude, latitude, phi, theta, psi, altitude, elevation, hwind);
 
 		System.out.println("[JSBSimModel.exportToXML] writing file " + initializePath + " ...");
 		JPADStaticWriteUtils.writeDocumentToXml(doc, initializePath);
 	}
-	public Document writeInitialCondition(double ubody, double vbody, double wbody, double longitude,
+	public Document writeInitialCondition(double vt, double longitude,
 			double latitude, double phi, double theta, double psi, double altitude, double elevation, double hwind) {
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
@@ -1622,19 +1648,9 @@ propulsion/engine/thrust-lbs (R)
 					);
 			doc.appendChild(rootElement);
 			rootElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
-					doc, "ubody",
-					ubody, 3, 6, // value, rounding-above, rounding-below
-					Tuple.of("unit", "M/SEC")
-					));
-			rootElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
-					doc, "vbody",
-					vbody, 3, 6, // value, rounding-above, rounding-below
-					Tuple.of("unit", "M/SEC")
-					));
-			rootElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
-					doc, "wbody",
-					wbody, 3, 6, // value, rounding-above, rounding-below
-					Tuple.of("unit", "M/SEC")
+					doc, "vt",
+					vt, 3, 6, // value, rounding-above, rounding-below
+					Tuple.of("unit", "FT/SEC")
 					));
 			rootElement.appendChild(JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
 					doc, "longitude",

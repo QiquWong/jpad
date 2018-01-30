@@ -413,13 +413,30 @@ public class CPACSReader {
 		double[] gravityCenterPosition;
 		gravityCenterPosition= new double [3]; 
 		String xPositionGCString = _jpadXmlReader.getXMLPropertyByPath(pathToCoords+"/x");
-		gravityCenterPosition[0] = Double.parseDouble(xPositionGCString);			
+			if (xPositionGCString != null) {
+				gravityCenterPosition[0] = Double.parseDouble(xPositionGCString);	
+			}
+			else {
+				gravityCenterPosition[0] = 0.0;
+			}
+					
 
 		String yPositionGCString = _jpadXmlReader.getXMLPropertyByPath(pathToCoords+"/y");
-		gravityCenterPosition[1] = Double.parseDouble(yPositionGCString);			
-
+					
+		if (xPositionGCString != null) {
+			gravityCenterPosition[1] = Double.parseDouble(yPositionGCString);	
+		}
+		else {
+			gravityCenterPosition[1] = 0.0;
+		}
 		String zPositionGCString = _jpadXmlReader.getXMLPropertyByPath(pathToCoords+"/z");
-		gravityCenterPosition[2] = Double.parseDouble(zPositionGCString);			
+		
+		if (xPositionGCString != null) {
+			gravityCenterPosition[2] = Double.parseDouble(zPositionGCString);		
+		}
+		else {
+			gravityCenterPosition[2] = 0.0;
+		}		
 
 		return gravityCenterPosition;
 	}	
@@ -438,15 +455,32 @@ public class CPACSReader {
 		System.out.println("--------------------------------");
 		String xPositionGCString = _jpadXmlReader.getXMLPropertyByPath(
 				pathInTheCpacs+"/x");
-		vectorCenterPosition[0] = Double.parseDouble(xPositionGCString);	
+		
+		if (xPositionGCString != null) {
+			vectorCenterPosition[0] = Double.parseDouble(xPositionGCString);		
+		}
+		else {
+			vectorCenterPosition[0] = 0.0;
+		}
+		
+		
 		String yPositionGCString = _jpadXmlReader.getXMLPropertyByPath(
 				pathInTheCpacs+"/y");
-		vectorCenterPosition[1] = Double.parseDouble(yPositionGCString);			
+		if (xPositionGCString != null) {
+			vectorCenterPosition[1] = Double.parseDouble(yPositionGCString);		
+		}
+		else {
+			vectorCenterPosition[1] = 0.0;
+		}
+					
 		String zPositionGCString = _jpadXmlReader.getXMLPropertyByPath(
 				pathInTheCpacs+"/z");
-		vectorCenterPosition[2] = Double.parseDouble(zPositionGCString);			
-
-
+		if (xPositionGCString != null) {
+			vectorCenterPosition[2] = Double.parseDouble(zPositionGCString);		
+		}
+		else {
+			vectorCenterPosition[2] = 0.0;
+		}
 		return vectorCenterPosition;
 	}	
 
@@ -536,8 +570,7 @@ public class CPACSReader {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
-	
-	
+
 			try {
 				builder = factory.newDocumentBuilder();
 				Document doc = builder.newDocument();
@@ -562,15 +595,10 @@ public class CPACSReader {
 				}
 				
 			}
-			
-			
+
 			catch (ParserConfigurationException e) {
 				e.printStackTrace();
 			}
-
-
-		
-		
 		
 	}
 	/**
@@ -604,11 +632,11 @@ public class CPACSReader {
 			}
 			controlSurfaceNumberOfStep = deflectionNode.getLength();
 			return controlSurfaceNumberOfStep;
-					}
-					catch (ParserConfigurationException e) {
-						e.printStackTrace();
-						return 0;
-					}
+		}
+		catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return 0;
+		}
 
 		 
 	}
@@ -758,7 +786,7 @@ public class CPACSReader {
 	public static double[] getControlSurfaceDeflectionFromAeroPerformanceMap(Node node) throws ParserConfigurationException{
 		Document doc = createDOCFromNode(node);
 		List<String>deflectionList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
-				"//relDeflection/text()");
+				"//csAbsDeflection/text()");
 		return CPACSUtils.getDoubleArrayFromStringList(deflectionList);
 }
 	/**
@@ -783,6 +811,28 @@ public class CPACSReader {
 	 
 	}
 	
+	public static double[] getBetaFromAeroPerformanceMap(Document doc){
+		List<String>yawAngleList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+				"//angleOfYaw/text()");
+		double[] str2doubleVector = CPACSUtils.getDoubleArrayFromStringList(yawAngleList);
+		double[] outputVector = new double [str2doubleVector.length];
+		for (int i = 0; i > str2doubleVector.length ; i++) {
+			outputVector[i] = -1*str2doubleVector[str2doubleVector.length-i];
+		}
+		return outputVector;
+
+}
+	
+	public static double[] getAltitudeFromAeroPerformanceMap(Document doc){
+		List<String>reynoldsNumberList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+				"//altitude/text()");
+		double [] altitude = null;
+		altitude =  CPACSUtils.getDoubleArrayFromStringList(reynoldsNumberList);
+		for (int i = 0;i<altitude.length;i++) {
+			altitude[i] = altitude[i]*3.28084;
+		}
+		return altitude;
+}
 	/**
 	 * 
 	 * @param doc doc of the AeroPerformanceMap node
@@ -829,6 +879,7 @@ public class CPACSReader {
 			Node importedNodeControlSurface = docAeroControlSurface.importNode(aeroNodeControlSurface, true);
 			docAeroControlSurface.appendChild(importedNodeControlSurface);
 			double [] alpha = getAlphaFromAeroPerformanceMap(doc);
+			double [] yaw = getYawFromAeroPerformanceMap(doc);
 			List<String> deflectionList = MyXMLReaderUtils.getXMLPropertiesByPath(docAeroControlSurface,
 					"//csAbsDeflection/text()");
 			double[] deflectionVector = CPACSUtils.getDoubleArrayFromStringList(deflectionList);
@@ -853,58 +904,55 @@ public class CPACSReader {
 			List<String> coefficientList = MyXMLReaderUtils.getXMLPropertiesByPath(docAeroControlSurface,
 					coefficientStringPath);
 			
-			double[] coefficientVector =  CPACSUtils.getDoubleArrayFromStringList(coefficientList);
-			
-			
-			double[] coefficientVectorMinimumDeflection = new double[coefficientVector.length/2];
-			int counterVectorMinimumDeflection = 0;
-			double[] coefficientVectorMaximumDeflection = new double[coefficientVector.length/2];
-			int counterVectorMaximumDeflection = 0;
 
-			for (int i = 0; i<coefficientVector.length; i++) {
-				if (i%2==0) {
-					coefficientVectorMinimumDeflection[counterVectorMinimumDeflection]=coefficientVector[i];
-					counterVectorMinimumDeflection++;
-				}
-				else {
-					coefficientVectorMaximumDeflection[counterVectorMaximumDeflection]=coefficientVector[i];
-					counterVectorMaximumDeflection++;
-				}
-			}
 			
-			if (correctionAxisDefinition==1) {
-				for (int s = 0;s<coefficientVectorMinimumDeflection.length;s++) {
-					coefficientVectorMinimumDeflection[s] = -1.0*coefficientVectorMinimumDeflection[s];
-				}
-			}
-			int i = 0;
-			int flag = alpha.length-1; //flag need to 
-			for (int s = 0;s<coefficientVectorMinimumDeflection.length;s++) {
+			if (coefficientList.size()>0) {
+//				double[] coefficientVector =  CPACSUtils.getDoubleArrayFromStringList(coefficientList);
 
-				if (s>flag) {
-					flag = flag+alpha.length;
-					forceFixedMach.add(CPACSUtils.matrixDoubleToJSBSimTable2D(matrix, "	"));
-					i  = 0;
-				}
+				double[] coefficientVector = CPACSUtils.shiftElementInTheAeroPerformanceMapControlSurface
+						(coefficientList, alpha.length, yaw.length, deflectionVector.length);
+//				int counter = 1;
+				int i = 0;
+				int j = 0; //counter matrix column index
+				int flag = alpha.length-1; //flag need to 
+				int flag1 = alpha.length*deflectionVector.length-1;
+				int k =  deflectionVector.length; //counter Reynolds -->3rd dimension (index List<String>)
 
-				if (s<flag+1) {
-					matrix[i+1][1]=coefficientVectorMinimumDeflection[s];
-					matrix[i+1][2]=coefficientVectorMaximumDeflection[s];
-					i = i + 1;
-				}		
-				if (s==coefficientVectorMinimumDeflection.length-1) {
-					i = 0;
-					for (int h = s+1-alpha.length*2;h<s+1;h++) {
-						if (i == alpha.length) {
-							i  = 0;
-						}
-						if (i<alpha.length) {
-						matrix[i+1][1]=coefficientVectorMinimumDeflection[h];
-						matrix[i+1][2]=coefficientVectorMaximumDeflection[h];
-						i++;
-						}
+
+				for (int s = 0;s<coefficientVector.length;s++) {
+
+					if (j == k) {
+						j = 0;
+						i = i + 1;
 					}
-					forceFixedMach.add(CPACSUtils.matrixDoubleToJSBSimTable2D(matrix, "	"));
+					if (s>flag1) {
+						flag1 = flag1 + alpha.length*deflectionVector.length;
+						forceFixedMach.add(CPACSUtils.matrixDoubleToJSBSimTable2D(matrix, "	"));
+						j = 0;
+						i  = 0;
+					}
+
+					if (s<flag1+1) {
+						matrix[i+1][j+1]=coefficientVector[s];
+						j = j +1;
+					}
+
+					if (s==coefficientVector.length-1) {
+						i = 0;
+						j = 0;
+						for (int h = s+1-alpha.length*deflectionVector.length;h<s+1;h++) {
+							if (j == k) {
+								i = i + 1;
+								j  = 0;
+							}
+							if (i<alpha.length) {
+								matrix[i+1][j+1]=coefficientVector[h];
+								j++;
+							}
+
+						}
+						forceFixedMach.add(CPACSUtils.matrixDoubleToJSBSimTable2D(matrix, "	"));
+					}
 				}
 			}
 			return forceFixedMach;
@@ -1934,8 +1982,6 @@ public class CPACSReader {
 			Document doc = builder.newDocument();
 			Node importedNode = doc.importNode(aeroNode, true);
 			doc.appendChild(importedNode);
-			double [] mach = getMachNumberFromAeroPerformanceMap(doc);
-			double [] reynolds = getReynoldsNumberFromAeroPerformanceMap(doc);
 			double [] yaw = getYawFromAeroPerformanceMap(doc);
 			double [] alpha = getAlphaFromAeroPerformanceMap(doc);
 			double [][] matrix = new double[alpha.length+1][yaw.length+1];
@@ -1959,22 +2005,25 @@ public class CPACSReader {
 			List<String> coefficientList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
 					coefficientStringPath);
 			if (coefficientList.size()>0) {
-				double[] coefficientVector = null;
-				if (correctioAxisDefinition==0) {
-					coefficientVector = CPACSUtils.getDoubleArrayFromStringList(coefficientList);
-				}
-				else {
-					coefficientVector = CPACSUtils.getDoubleArrayFromStringList(coefficientList);
-					for (int s = 0;s<coefficientVector.length;s++) {
-						coefficientVector[s] = -1.0*coefficientVector[s];
-					}				
-				}
+//				double[] coefficientVector = null;
+
+//				if (correctioAxisDefinition==0) {
+//					coefficientVector = CPACSUtils.getDoubleArrayFromStringList(coefficientList);
+//				}
+//				else {
+//					coefficientVector = CPACSUtils.getDoubleArrayFromStringList(coefficientList);
+//					for (int s = 0;s<coefficientVector.length;s++) {
+//						coefficientVector[s] = -1.0*coefficientVector[s];
+//					}				
+//				}
+				double[] coefficientVector = CPACSUtils.shiftElementInTheAeroPerformanceMap(
+						coefficientList, alpha.length, yaw.length);
+
 //				int counter = 1;
 				int i = 0;
 				int j = 0; //counter matrix column index
 				int flag = alpha.length-1; //flag need to 
 				int flag1 = alpha.length*yaw.length-1;
-				int flag2 = alpha.length*yaw.length*reynolds.length-1;
 				int k = 0; //counter Reynolds -->3rd dimension (index List<String>)
 
 
@@ -1991,11 +2040,6 @@ public class CPACSReader {
 						j = 0;
 						forceFixedMach.add(CPACSUtils.matrixDoubleToJSBSimTable2D(matrix, "	"));
 						k = k + 1;
-					}
-					if (s>flag2) {
-						flag2 = flag2 + alpha.length*yaw.length*reynolds.length;
-						k = 0;
-
 					}
 					if (s<flag+1) {
 						matrix[i+1][j+1]=coefficientVector[s];
@@ -2025,7 +2069,6 @@ public class CPACSReader {
 			e.printStackTrace();
 			return null;
 		}
-
 	}
 	
 	public List<String> getAeroLiftCoefficientFromAeroPerformanceMap
@@ -2097,6 +2140,7 @@ public class CPACSReader {
 					if (s>flag1) {
 						flag1 = flag1 + alpha.length*yaw.length;
 						j = 0;
+						System.out.println("Prova = "+matrix);
 						forceFixedMach.add(CPACSUtils.matrixDoubleToJSBSimTable2D(matrix, "	"));
 						k = k + 1;
 					}

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Views.WarningController">
+   <center>
+      <VBox alignment="TOP_CENTER" prefHeight="220.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="47.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../img/Icon_Warning.png" />
+               </image>
+            </ImageView>
+            <Label text="WARNING! Surfaces mismatch">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <TextField alignment="CENTER" editable="false" focusTraversable="false" prefHeight="40.0" prefWidth="486.0" style="-fx-background-color: 10;" text="The written surface is not the same as the calculated one from the chord distribution">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <TextField alignment="CENTER" editable="false" focusTraversable="false" prefHeight="40.0" prefWidth="486.0" style="-fx-background-color: 10;" text="Please choose TWO of the following three parameters to keep them constant:">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </TextField>
+            <Pane prefHeight="134.0" prefWidth="600.0">
+               <children>
+                  <HBox layoutY="-1.0" prefHeight="40.0" prefWidth="600.0" spacing="30.0">
+                     <children>
+                        <CheckBox fx:id="surface" mnemonicParsing="false" onAction="#enableOptions" text="Surface" />
+                        <CheckBox fx:id="aspectRatio" mnemonicParsing="false" onAction="#enableOptions" text="Aspect Ratio" />
+                        <CheckBox fx:id="chords" mnemonicParsing="false" onAction="#enableOptions" text="Chord Distribution" />
+                     </children>
+                     <padding>
+                        <Insets left="153.0" top="15.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </Pane>
+            <HBox prefHeight="328.0" prefWidth="560.0">
+               <children>
+                  <VBox prefHeight="162.0" prefWidth="596.0" spacing="10.0">
+                     <children>
+                        <RadioButton fx:id="aspectRatioChoice" disable="true" mnemonicParsing="false" onAction="#setNewAspectRatio" text="Set the calculated ASPECT RATIO">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="surfaceorchords" />
+                           </toggleGroup></RadioButton>
+                        <RadioButton fx:id="calculatedSurface" disable="true" mnemonicParsing="false" onAction="#setCalculatedSurface" text="Set the calculated SURFACE instead of the written one (span is going to change)" toggleGroup="$surfaceorchords" />
+                        <RadioButton fx:id="newChordsInput" disable="true" mnemonicParsing="false" onAction="#setNewChordValues" text="Set new CHORD Values" toggleGroup="$surfaceorchords" />
+                        <HBox alignment="CENTER_LEFT">
+                           <VBox.margin>
+                              <Insets left="60.0" />
+                           </VBox.margin>
+                           <children>
+                              <RadioButton fx:id="setNewValuesChord" disable="true" mnemonicParsing="false" onAction="#chordsNewValues" text="Set new values">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="inputorcalculated" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <TextField fx:id="chord1" disable="true" prefHeight="25.0" prefWidth="44.0">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <TextField fx:id="chord2" disable="true" prefHeight="25.0" prefWidth="44.0" />
+                              <TextField fx:id="chord3" disable="true" prefHeight="25.0" prefWidth="44.0" />
+                              <TextField fx:id="chord4" disable="true" prefHeight="25.0" prefWidth="44.0" />
+                              <TextField fx:id="chord5" disable="true" prefHeight="25.0" prefWidth="44.0" />
+                              <ChoiceBox fx:id="chordsUnitsWarning" disable="true" prefHeight="25.0" prefWidth="56.0">
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </ChoiceBox>
+                           </children>
+                        </HBox>
+                        <RadioButton fx:id="useCalculatedValues" disable="true" mnemonicParsing="false" onAction="#chordsCalculatedValue" text="Use calculated values (with the same taper ratios, the same surface and the same span)" toggleGroup="$inputorcalculated">
+                           <VBox.margin>
+                              <Insets left="60.0" />
+                           </VBox.margin>
+                        </RadioButton>
+                        <Separator prefHeight="13.0" prefWidth="591.0" />
+                        <TextField alignment="CENTER" editable="false" focusTraversable="false" prefHeight="28.0" prefWidth="591.0" style="-fx-background-color: 10;" text="Please choose ONE of the following options:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </TextField>
+                        <HBox alignment="CENTER" spacing="65.0">
+                           <children>
+                              <RadioButton fx:id="sameSweep" mnemonicParsing="false" onAction="#Sweep" text="Same LE sweep">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="sweep" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <RadioButton fx:id="sameXLE" mnemonicParsing="false" onAction="#Sweep" text="Same X le positions" toggleGroup="$sweep" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <Button fx:id="confirmData" disable="true" mnemonicParsing="false" onAction="#confirmData" text="CONFIRM DATA">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="AR ESSENCE" size="16.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
