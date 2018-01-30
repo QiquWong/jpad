@@ -1964,7 +1964,7 @@ public class TakeOffCalc {
 				else {
 					xDot[0] = speed;
 					xDot[1] = (g0/weight)*(thrust(speed, gamma, t, altitude) - drag(speed, alpha, gamma, t)
-							- (muBrake.value(speed)*(weight-lift(speed, alpha, gamma, t))));
+							- (muBrake.value(speed)*(weight - lift(speed, alpha, gamma, t))));
 					xDot[2] = 0.0;
 					xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
 				}
