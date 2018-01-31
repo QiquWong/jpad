@@ -6124,6 +6124,9 @@ public class InputManagerController {
 	@SuppressWarnings("rawtypes")
 	private void updateAircraftDataImplementation() {
 		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// FUSELAGE ADJUST DIALOG
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		if (!fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
 			
 			//................................................................................................
@@ -6151,6 +6154,99 @@ public class InputManagerController {
 			textFieldFuselageCylinderLengthRatio.setStyle("");
 			textFieldFuselageCylinderSectionHeight.setStyle("");
 			textFieldFuselageCylinderSectionWidth.setStyle("");
+
+			//.................................................................................................
+			// SETTING NEW MEASURE DATA TO TEXTFIELDS ...
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF() != null) {
+				textFieldFuselageLength.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().getEstimatedValue())
+						);
+
+				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF()
+						.getUnit().toString().equalsIgnoreCase("m"))
+					fuselageLengthUnitChoiceBox.getSelectionModel().select(0);
+				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF()
+						.getUnit().toString().equalsIgnoreCase("ft"))
+					fuselageLengthUnitChoiceBox.getSelectionModel().select(1);
+
+			}
+
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioNF() != null) 
+				textFieldFuselageNoseLengthRatio.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioNF())
+						);
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioCF() != null) 
+				textFieldFuselageCylinderLengthRatio.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioCF())
+						);
+
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight() != null) {
+				textFieldFuselageCylinderSectionHeight.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().getEstimatedValue())
+						);
+
+				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight()
+						.getUnit().toString().equalsIgnoreCase("m"))
+					fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().select(0);
+				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight()
+						.getUnit().toString().equalsIgnoreCase("ft"))
+					fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().select(1);
+
+			}
+
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth() != null) {
+				textFieldFuselageCylinderSectionWidth.setText(
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().getEstimatedValue())
+						);
+
+				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth()
+						.getUnit().toString().equalsIgnoreCase("m"))
+					fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().select(0);
+				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth()
+						.getUnit().toString().equalsIgnoreCase("ft"))
+					fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().select(1);
+
+			}
+
+		}
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// WING ADJUST DIALOG
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		if (!wingAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
+			
+			//................................................................................................
+			// ASSIGNING TEXTFIELDS STYLE ...
+			textFieldEquivalentWingArea.setStyle(textFieldAlertStyle);
+			textFieldEquivalentWingAspectRatio.setStyle(textFieldAlertStyle);
+			textFieldEquivalentWingSweepLeadingEdge.setStyle(textFieldAlertStyle);
+			textFieldEquivalentWingTaperRatio.setStyle(textFieldAlertStyle);
+			textFieldWingSpanPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+			textFieldWingSweepLEPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+			textFieldWingInnerChordPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+			textFieldWingOuterChordPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+
+			//................................................................................................
+			// ADJUSTING MEASURES ...
+			Stage wingAdjustCriterionDialog = new LiftingSurfaceAdjustCriterionDialog(
+					Main.getPrimaryStage(), 
+					wingAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem(),
+					ComponentEnum.WING
+					);
+			wingAdjustCriterionDialog.sizeToScene();
+			wingAdjustCriterionDialog.initStyle(StageStyle.UNDECORATED);
+			wingAdjustCriterionDialog.showAndWait();
+
+			//.................................................................................................
+			// REMOVING TEXTFIELDS STYLE ...
+			textFieldEquivalentWingArea.setStyle("");
+			textFieldEquivalentWingAspectRatio.setStyle("");
+			textFieldEquivalentWingSweepLeadingEdge.setStyle("");
+			textFieldEquivalentWingTaperRatio.setStyle("");
+			textFieldWingSpanPanelList.stream().forEach(tf -> tf.setStyle(""));
+			textFieldWingSweepLEPanelList.stream().forEach(tf -> tf.setStyle(""));
+			textFieldWingInnerChordPanelList.stream().forEach(tf -> tf.setStyle(""));
+			textFieldWingOuterChordPanelList.stream().forEach(tf -> tf.setStyle(""));
 
 			//.................................................................................................
 			// SETTING NEW MEASURE DATA TO TEXTFIELDS ...
