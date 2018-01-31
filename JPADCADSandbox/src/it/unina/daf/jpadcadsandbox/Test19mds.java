@@ -28,48 +28,48 @@ public class Test19mds {
 		System.out.println("========== [main] Getting the aircraft and the fuselage ...");
 		Aircraft theAircraft = AircraftUtils.importAircraft(args);
 		
-		Fuselage fuselage = theAircraft.getFuselage();
+//		Fuselage fuselage = theAircraft.getFuselage();
 		LiftingSurface wing = theAircraft.getWing();
-		LiftingSurface horTail = theAircraft.getHTail();
-		LiftingSurface verTail = theAircraft.getVTail();
+//		LiftingSurface horTail = theAircraft.getHTail();
+//		LiftingSurface verTail = theAircraft.getVTail();
 		
-		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, true, true);
-		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-2, true, true);
-		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, true, true);
-		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-2, true, true);
+//		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, true, false);
+		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, true, false);
+//		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, true, false);
+//		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, true, false);
 		
 		// Write to a file
 		String fileName = "test19mds.brep";
 
-		if(OCCUtils.write(fileName, fuselageShapes, wingShapes, horTailShapes, verTailShapes))
+		if(OCCUtils.write(fileName, wingShapes))
 			System.out.println("========== [main] Output written on file: " + fileName);	
 		
 		// ====================
 		// write on step file, only solids
-		String fileNameSolids = "test19mds_solids.step";
-		List<TopoDS_Shape> tds_shapes = new ArrayList<>();
-		List<OCCShape> allShapes = new ArrayList<>();
-		allShapes.addAll(fuselageShapes);
-		allShapes.addAll(wingShapes);
-		allShapes.addAll(horTailShapes);
-		allShapes.addAll(verTailShapes);
-
-		allShapes.stream()
-				 .forEach( sh -> {
-					 TopoDS_Shape tds_shape1 = sh.getShape();
-					 // filter solids
-					 TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SOLID);
-					 while (exp1.More() > 0) {
-						 System.out.println(">> [main] solid!");
-						 tds_shapes.add(exp1.Current());
-						 exp1.Next();
-					 }
-				 });
-		STEPControl_Writer stepWriter = new STEPControl_Writer();
-		tds_shapes.stream()
-				  .forEach(tds -> stepWriter.Transfer(tds, STEPControl_StepModelType.STEPControl_AsIs));
-
-		IFSelect_ReturnStatus statusStep = stepWriter.Write(fileNameSolids);
-		System.out.println("========== [main] STEP output status: " + statusStep);				
+//		String fileNameSolids = "test19mds_solids.step";
+//		List<TopoDS_Shape> tds_shapes = new ArrayList<>();
+//		List<OCCShape> allShapes = new ArrayList<>();
+//		allShapes.addAll(fuselageShapes);
+//		allShapes.addAll(wingShapes);
+//		allShapes.addAll(horTailShapes);
+//		allShapes.addAll(verTailShapes);
+//
+//		allShapes.stream()
+//				 .forEach( sh -> {
+//					 TopoDS_Shape tds_shape1 = sh.getShape();
+//					 // filter solids
+//					 TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SOLID);
+//					 while (exp1.More() > 0) {
+//						 System.out.println(">> [main] solid!");
+//						 tds_shapes.add(exp1.Current());
+//						 exp1.Next();
+//					 }
+//				 });
+//		STEPControl_Writer stepWriter = new STEPControl_Writer();
+//		tds_shapes.stream()
+//				  .forEach(tds -> stepWriter.Transfer(tds, STEPControl_StepModelType.STEPControl_AsIs));
+//
+//		IFSelect_ReturnStatus statusStep = stepWriter.Write(fileNameSolids);
+//		System.out.println("========== [main] STEP output status: " + statusStep);				
 	}	
 }	

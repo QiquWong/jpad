@@ -1324,16 +1324,23 @@ public final class AircraftUtils {
 			mainVSections.add(mainVSec);
 		}
 		
-		CADGeomCurve3D[] mainVSec3 = new CADGeomCurve3D[2];		
-		mainVSec3[0] = OCCUtils.theFactory.newCurve3D(
-				airfoilTipCrvs.get(0).vertices()[0].pnt(), 
+//		CADGeomCurve3D[] mainVSec3 = new CADGeomCurve3D[2];		
+//		mainVSec3[0] = OCCUtils.theFactory.newCurve3D(
+//				airfoilTipCrvs.get(0).vertices()[0].pnt(), 
+//				new double[] {gPnt.x, gPnt.y, gPnt.z}
+//				);
+//		mainVSec3[1] = OCCUtils.theFactory.newCurve3D(
+//				new double[] {gPnt.x, gPnt.y, gPnt.z},
+//				airfoilTipCrvs.get(1).vertices()[1].pnt()
+//				);	
+//		mainVSections.add(mainVSec3); // trailing edge vertical section curve (a triangle)
+		
+		CADGeomCurve3D[] mainVSec3 = createVerCrvsForTipClosure( 
+				airfoilTipCrvs,
+				airfoilPreTipCrvs,
 				new double[] {gPnt.x, gPnt.y, gPnt.z}
 				);
-		mainVSec3[1] = OCCUtils.theFactory.newCurve3D(
-				new double[] {gPnt.x, gPnt.y, gPnt.z},
-				airfoilTipCrvs.get(1).vertices()[1].pnt()
-				);	
-		mainVSections.add(mainVSec3); // trailing edge vertical section curve (a triangle)
+		mainVSections.add(mainVSec3); // trailing edge vertical section curve
 		
 		// creating sub vertical sections
 		List<CADGeomCurve3D> constPlaneGuideCrvs = new ArrayList<CADGeomCurve3D>();
@@ -1341,9 +1348,9 @@ public final class AircraftUtils {
 		constPlaneGuideCrvs.add(constPlaneGuideCrv2);
 		constPlaneGuideCrvs.add(constPlaneGuideCrv3);
 		
-		double[] subVSecP1Vector = {0.10, 0.15, 0.25, 0.50, 0.75}; 
-		double[] subVSecP2Vector = {0.33, 0.66};
-		double[] subVSecP3Vector = {0.25, 0.50, 0.75};	
+		double[] subVSecP1Vector = {0.10, 0.15, 0.40, 0.55, 0.60, 0.75, 0.90}; 
+		double[] subVSecP2Vector = {0.25, 0.50, 0.75};
+		double[] subVSecP3Vector = {0.25, 0.50, 0.75};
 		List<double[]> subVSecVector = new ArrayList<>();
 		subVSecVector.add(subVSecP1Vector);
 		subVSecVector.add(subVSecP2Vector);
@@ -1431,13 +1438,96 @@ public final class AircraftUtils {
 				splitPntsLow
 				));
 		
+		// patching through vertical sections
+		List<CADGeomCurve3D> sectionsListP1Upp = new ArrayList<>();
+		List<CADGeomCurve3D> sectionsListP1Low = new ArrayList<>();
+		
+		sectionsListP1Upp.addAll(subVSecP1.stream()
+										  .skip(1)	
+										  .map(crvs -> crvs[0])
+										  .collect(Collectors.toList())		
+				);
+		sectionsListP1Upp.add(mainVSections.get(0)[0]);
+		
+		sectionsListP1Low.addAll(subVSecP1.stream()	
+										  .skip(1)
+										  .map(crvs -> crvs[1])
+										  .collect(Collectors.toList())		
+				);
+		sectionsListP1Low.add(mainVSections.get(0)[1]);
+		
+		OCCShape patch1Upp = OCCUtils.makePatchThruSections(sectionsListP1Upp);
+		OCCShape patch1Low = OCCUtils.makePatchThruSections(sectionsListP1Low);
+		
+		List<CADGeomCurve3D> sectionsListP2_1Upp = new ArrayList<>();
+		List<CADGeomCurve3D> sectionsListP2_1Low = new ArrayList<>();
+		
+		sectionsListP2_1Upp.add(mainVSections.get(0)[0]);
+		sectionsListP2_1Upp.addAll(subVSecP2.stream()
+											.limit(2)
+											.map(crvs -> crvs[0])
+											.collect(Collectors.toList())		
+				);
+		
+		sectionsListP2_1Low.add(mainVSections.get(0)[1]);
+		sectionsListP2_1Low.addAll(subVSecP2.stream()
+											.limit(2)	
+											.map(crvs -> crvs[1])
+											.collect(Collectors.toList())		
+				);
+		
+		OCCShape patch2_1Upp = OCCUtils.makePatchThruSections(sectionsListP2_1Upp);
+		OCCShape patch2_1Low = OCCUtils.makePatchThruSections(sectionsListP2_1Low);
+		
+		List<CADGeomCurve3D> sectionsListP2_2Upp = new ArrayList<>();
+		List<CADGeomCurve3D> sectionsListP2_2Low = new ArrayList<>();
+		
+		sectionsListP2_2Upp.addAll(subVSecP2.stream()
+											.skip(1)
+											.map(crvs -> crvs[0])
+											.collect(Collectors.toList())		
+				);
+		sectionsListP2_2Upp.add(mainVSections.get(1)[0]);
+		
+		sectionsListP2_2Low.addAll(subVSecP2.stream()
+											.skip(1)	
+											.map(crvs -> crvs[1])
+											.collect(Collectors.toList())		
+				);
+		sectionsListP2_2Low.add(mainVSections.get(1)[1]);
+		
+		OCCShape patch2_2Upp = OCCUtils.makePatchThruSections(sectionsListP2_2Upp);
+		OCCShape patch2_2Low = OCCUtils.makePatchThruSections(sectionsListP2_2Low);
+		
+		List<CADGeomCurve3D> sectionsListP3Upp = new ArrayList<>();
+		List<CADGeomCurve3D> sectionsListP3Low = new ArrayList<>();
+		
+		sectionsListP3Upp.add(mainVSections.get(1)[0]);
+		sectionsListP3Upp.addAll(subVSecP3.stream()
+										  .map(crvs -> crvs[0])
+										  .collect(Collectors.toList())		
+				);
+		sectionsListP3Upp.add(mainVSections.get(2)[0]);
+		
+		sectionsListP3Low.add(mainVSections.get(1)[1]);
+		sectionsListP3Low.addAll(subVSecP3.stream()
+										  .map(crvs -> crvs[1])
+										  .collect(Collectors.toList())		
+				);
+		sectionsListP3Low.add(mainVSections.get(2)[1]);
+		
+		OCCShape patch3Upp = OCCUtils.makePatchThruSections(sectionsListP3Upp);
+		OCCShape patch3Low = OCCUtils.makePatchThruSections(sectionsListP3Low);
+		
 		// creating sub horizontal curves
-		double[] subHSecUppVector = {0.20, 0.40, 0.65};
-		double[] subHSecLowVector = {0.35, 0.60, 0.80};
+//		double[] subHSecUppVector = {0.20, 0.40, 0.65};
+//		double[] subHSecLowVector = {0.35, 0.60, 0.80};
+		double[] subHSecUppVector = MyArrayUtils.cosineSpace(0, 1, 9);
+		double[] subHSecLowVector = MyArrayUtils.cosineSpace(0, 1, 9);
 		
 		List<CADGeomCurve3D> subHSecP1Upp = new ArrayList<>();
 		List<CADGeomCurve3D> subHSecP1Low = new ArrayList<>();
-		for(int i = 0; i < subHSecUppVector.length; i++) {
+		for(int i = 1; i < subHSecUppVector.length - 1; i++) {
 			List<double[]> pntsSubHUpp = new ArrayList<>();
 			List<double[]> pntsSubHLow = new ArrayList<>();
 			double[] mainVSecUppR = mainVSections.get(0)[0].getRange();
@@ -1459,7 +1549,7 @@ public final class AircraftUtils {
 		
 		List<CADGeomCurve3D> subHSecP2Upp = new ArrayList<>();
 		List<CADGeomCurve3D> subHSecP2Low = new ArrayList<>();
-		for(int i = 0; i < subHSecUppVector.length; i++) {
+		for(int i = 1; i < subHSecUppVector.length - 1; i++) {
 			List<double[]> pntsSubHUpp = new ArrayList<>();
 			List<double[]> pntsSubHLow = new ArrayList<>();
 			double[] mainVSec1UppR = mainVSections.get(0)[0].getRange();
@@ -1485,7 +1575,7 @@ public final class AircraftUtils {
 		
 		List<CADGeomCurve3D> subHSecP3Upp = new ArrayList<>();
 		List<CADGeomCurve3D> subHSecP3Low = new ArrayList<>();
-		for(int i = 0; i < subHSecUppVector.length; i++) {
+		for(int i = 1; i < subHSecUppVector.length - 1; i++) {
 			List<double[]> pntsSubHUpp = new ArrayList<>();
 			List<double[]> pntsSubHLow = new ArrayList<>();
 			double[] mainVSec1UppR = mainVSections.get(1)[0].getRange();
@@ -1515,48 +1605,66 @@ public final class AircraftUtils {
 				constPlaneGuideCrv1, 
 				subVSecP1.get(1)[0].edge().vertices()[1].pnt()
 				));
+//		
+//		List<CADGeomCurve3D> sectionsListP1Upp = new ArrayList<>();
+//		List<CADGeomCurve3D> sectionsListP1Low = new ArrayList<>();
 		
-		List<CADGeomCurve3D> sectionsListP1Upp = new ArrayList<>();
-		List<CADGeomCurve3D> sectionsListP1Low = new ArrayList<>();
+//		sectionsListP1Upp.add(OCCUtils.theFactory.newCurve3D(airfoilUpperCrvs.get(2)));		
+//		sectionsListP1Upp.addAll(subHSecP1Upp);
+//		sectionsListP1Upp.add(OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(1)));
+//		
+//		sectionsListP1Low.add(OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(1)));
+//		sectionsListP1Low.addAll(subHSecP1Low);	
+//		sectionsListP1Low.add(OCCUtils.theFactory.newCurve3D(airfoilLowerCrvs.get(1)));		
 		
-		sectionsListP1Upp.add(OCCUtils.theFactory.newCurve3D(airfoilUpperCrvs.get(2)));		
-		sectionsListP1Upp.addAll(subHSecP1Upp);
-		sectionsListP1Upp.add(OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(1)));
+//		sectionsListP1Upp.add(OCCUtils.theFactory.newCurve3D(airfoilUpperCrvs.get(2)));		
+//		sectionsListP1Upp.addAll(subHSecP1Upp);
+//		sectionsListP1Upp.add(OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(1)));
+//		sectionsListP1Upp.addAll(subHSecP1Low);	
+//		sectionsListP1Upp.add(OCCUtils.theFactory.newCurve3D(airfoilLowerCrvs.get(1)));		
 		
-		sectionsListP1Low.add(OCCUtils.theFactory.newCurve3D(constPlaneGuideCrvs1.get(1)));
-		sectionsListP1Low.addAll(subHSecP1Low);	
-		sectionsListP1Low.add(OCCUtils.theFactory.newCurve3D(airfoilLowerCrvs.get(1)));			
+//		OCCShape patch1Upp = OCCUtils.makePatchThruSections(sectionsListP1Upp);
+//		OCCShape patch1Low = OCCUtils.makePatchThruSections(sectionsListP1Low);
 		
-		OCCShape patch1Upp = OCCUtils.makePatchThruSections(sectionsListP1Upp);
-		OCCShape patch1Low = OCCUtils.makePatchThruSections(sectionsListP1Low);
+//		List<CADGeomCurve3D> sectionsListP2Upp = new ArrayList<>();
+//		List<CADGeomCurve3D> sectionsListP2Low = new ArrayList<>();
 		
-		List<CADGeomCurve3D> sectionsListP2Upp = new ArrayList<>();
-		List<CADGeomCurve3D> sectionsListP2Low = new ArrayList<>();
+//		sectionsListP2Upp.add(OCCUtils.theFactory.newCurve3D(airfoilUpperCrvs.get(1)));		
+//		sectionsListP2Upp.addAll(subHSecP2Upp);
+//		sectionsListP2Upp.add(constPlaneGuideCrv2);
+//		
+//		sectionsListP2Low.add(constPlaneGuideCrv2);
+//		sectionsListP2Low.addAll(subHSecP2Low);	
+//		sectionsListP2Low.add(OCCUtils.theFactory.newCurve3D(airfoilLowerCrvs.get(2)));	
 		
-		sectionsListP2Upp.add(OCCUtils.theFactory.newCurve3D(airfoilUpperCrvs.get(1)));		
-		sectionsListP2Upp.addAll(subHSecP2Upp);
-		sectionsListP2Upp.add(constPlaneGuideCrv2);
+//		sectionsListP2Upp.add(OCCUtils.theFactory.newCurve3D(airfoilUpperCrvs.get(1)));		
+//		sectionsListP2Upp.addAll(subHSecP2Upp);
+//		sectionsListP2Upp.add(constPlaneGuideCrv2);
+//		sectionsListP2Upp.addAll(subHSecP2Low);	
+//		sectionsListP2Upp.add(OCCUtils.theFactory.newCurve3D(airfoilLowerCrvs.get(2)));	
 		
-		sectionsListP2Low.add(constPlaneGuideCrv2);
-		sectionsListP2Low.addAll(subHSecP2Low);	
-		sectionsListP2Low.add(OCCUtils.theFactory.newCurve3D(airfoilLowerCrvs.get(2)));			
+//		OCCShape patch2Upp = OCCUtils.makePatchThruSections(sectionsListP2Upp);
+//		OCCShape patch2Low = OCCUtils.makePatchThruSections(sectionsListP2Low);
 		
-		OCCShape patch2Upp = OCCUtils.makePatchThruSections(sectionsListP2Upp);
-		OCCShape patch2Low = OCCUtils.makePatchThruSections(sectionsListP2Low);
+//		List<CADGeomCurve3D> sectionsListP3Upp = new ArrayList<>();
+//		List<CADGeomCurve3D> sectionsListP3Low = new ArrayList<>();
 		
-		List<CADGeomCurve3D> sectionsListP3Upp = new ArrayList<>();
-		List<CADGeomCurve3D> sectionsListP3Low = new ArrayList<>();
+//		sectionsListP3Upp.add(OCCUtils.theFactory.newCurve3D(airfoilUpperCrvs.get(0)));		
+//		sectionsListP3Upp.addAll(subHSecP3Upp);
+//		sectionsListP3Upp.add(constPlaneGuideCrv3);
+//		
+//		sectionsListP3Low.add(constPlaneGuideCrv3);
+//		sectionsListP3Low.addAll(subHSecP3Low);	
+//		sectionsListP3Low.add(OCCUtils.theFactory.newCurve3D(airfoilLowerCrvs.get(3)));		
 		
-		sectionsListP3Upp.add(OCCUtils.theFactory.newCurve3D(airfoilUpperCrvs.get(0)));		
-		sectionsListP3Upp.addAll(subHSecP3Upp);
-		sectionsListP3Upp.add(constPlaneGuideCrv3);
+//		sectionsListP3Upp.add(OCCUtils.theFactory.newCurve3D(airfoilUpperCrvs.get(0)));		
+//		sectionsListP3Upp.addAll(subHSecP3Upp);
+//		sectionsListP3Upp.add(constPlaneGuideCrv3);
+//		sectionsListP3Upp.addAll(subHSecP3Low);	
+//		sectionsListP3Upp.add(OCCUtils.theFactory.newCurve3D(airfoilLowerCrvs.get(3)));	
 		
-		sectionsListP3Low.add(constPlaneGuideCrv3);
-		sectionsListP3Low.addAll(subHSecP3Low);	
-		sectionsListP3Low.add(OCCUtils.theFactory.newCurve3D(airfoilLowerCrvs.get(3)));			
-		
-		OCCShape patch3Upp = OCCUtils.makePatchThruSections(sectionsListP3Upp);
-		OCCShape patch3Low = OCCUtils.makePatchThruSections(sectionsListP3Low);	
+//		OCCShape patch3Upp = OCCUtils.makePatchThruSections(sectionsListP3Upp);
+//		OCCShape patch3Low = OCCUtils.makePatchThruSections(sectionsListP3Low);	
 			
 		// creating a filler surface at the wing tip leading edge		
 		double[] contrCrvUppRng = subVSecP1.get(0)[0].getRange();
@@ -1616,10 +1724,19 @@ public final class AircraftUtils {
 		System.out.println("Deformed surface P1 Low shape type: " + fillerP1Low.Shape().ShapeType());
 		
 		// creating a triangular face in order to close the wing tip trailing edge
-		CADFace faceTE = OCCUtils.theFactory.newFacePlanar(
-				airfoilUpperCrvs.get(0).vertices()[0].pnt(), 
-				((OCCGeomCurve3D)constPlaneGuideCrv3).edge().vertices()[1].pnt(), 
-				airfoilLowerCrvs.get(3).vertices()[1].pnt()
+//		CADFace faceTE = OCCUtils.theFactory.newFacePlanar(
+//				airfoilUpperCrvs.get(0).vertices()[0].pnt(), 
+//				((OCCGeomCurve3D)constPlaneGuideCrv3).edge().vertices()[1].pnt(), 
+//				airfoilLowerCrvs.get(3).vertices()[1].pnt()
+//				);
+		
+		CADShape wingTipTE = OCCUtils.makeFilledFace(
+				mainVSections.get(2)[0],
+				mainVSections.get(2)[1],
+				OCCUtils.theFactory.newCurve3D(
+						airfoilUpperCrvs.get(0).vertices()[0].pnt(), 
+						airfoilLowerCrvs.get(3).vertices()[1].pnt()
+						)
 				);
 		
 		// sewing shapes test
@@ -1631,11 +1748,13 @@ public final class AircraftUtils {
 		sewMakerTip.Add(fillerP1Low.Shape());
 		sewMakerTip.Add(patch1Upp.getShape());
 		sewMakerTip.Add(patch1Low.getShape());
-		sewMakerTip.Add(patch2Upp.getShape());
-		sewMakerTip.Add(patch2Low.getShape());
+		sewMakerTip.Add(patch2_1Upp.getShape());
+		sewMakerTip.Add(patch2_1Low.getShape());
+		sewMakerTip.Add(patch2_2Upp.getShape());
+		sewMakerTip.Add(patch2_2Low.getShape());
 		sewMakerTip.Add(patch3Upp.getShape());
 		sewMakerTip.Add(patch3Low.getShape());		
-		sewMakerTip.Add(((OCCShape)faceTE).getShape());
+		sewMakerTip.Add(((OCCShape)wingTipTE).getShape());
 		sewMakerTip.Perform();
 		
 		System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Tip sewing step successful? " + !sewMakerTip.IsNull());
@@ -1645,7 +1764,7 @@ public final class AircraftUtils {
 			TopoDS_Shape tds_shape = sewMakerTip.SewedShape();
 			// The resulting shape may consist of multiple shapes!
 			// Use TopExp_Explorer to iterate through shells
-			System.out.println(OCCUtils.reportOnShape(tds_shape, "Lifting Surface sewed surface (Right side)"));
+			System.out.println(OCCUtils.reportOnShape(tds_shape, "Tip sewed surface"));
 			TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
 			while (exp.More() > 0) {
 				sewedShapesTip.add((OCCShape)OCCUtils.theFactory.newShape(exp.Current()));
@@ -3209,6 +3328,7 @@ public final class AircraftUtils {
 //		extraShapes.add(patch2Low);
 //		extraShapes.add(patch3Upp);
 //		extraShapes.add(patch3Low);
+//		extraShapes.add((OCCShape)wingTipTE);
 //		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1Upp.Shape()));
 //		extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(fillerP1Low.Shape()));
 //		extraShapes.addAll(sewedShapesTip);
@@ -3291,6 +3411,9 @@ public final class AircraftUtils {
 		BRepBuilderAPI_Sewing sewMakerWing = new BRepBuilderAPI_Sewing();
 		
 		sewMakerWing.Init();
+		
+		sewMakerWing.SetTolerance(tipTolerance);
+		
 		for(int i = 0; i < patchListWing.size(); i++) {
 			sewMakerWing.Add(patchListWing.get(i).getShape());
 		}
@@ -3340,94 +3463,94 @@ public final class AircraftUtils {
 				exp.Next();
 			}
 			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Exporting sewed loft.");
-//			result.addAll(sewedShapes);
+			result.addAll(sewedShapes);
 
-			// >>>>>>>>>>>>>>>>>>>>>>>>>>>> MIRRORING
-			List<OCCShape> mirroredShapes = new ArrayList<>();
-			if(!liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
-				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Mirroring sewed lofts.");
-				gp_Trsf mirrorTransform = new gp_Trsf();
-				gp_Ax2 mirrorPointPlane = new gp_Ax2(
-						new gp_Pnt(0.0, 0.0, 0.0),
-						new gp_Dir(0.0, 1.0, 0.0), // Y direction normal to reflection plane XZ
-						new gp_Dir(1.0, 0.0, 0.0)
-						);
-				mirrorTransform.SetMirror(mirrorPointPlane);
-				BRepBuilderAPI_Transform mirrorBuilder = new BRepBuilderAPI_Transform(mirrorTransform);
-
-				sewedShapes.stream()
-						   .map(occshape -> occshape.getShape())
-						   .forEach(s -> {
-							   mirrorBuilder.Perform(s, 1);
-							   TopoDS_Shape sMirrored = mirrorBuilder.Shape();
-							   mirroredShapes.add(
-									   (OCCShape)OCCUtils.theFactory.newShape(sMirrored)
-									   );
-						   });
-				System.out.println("Mirrored shapes: " + mirroredShapes.size());
-				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Exporting mirrored sewed loft.");
+//			// >>>>>>>>>>>>>>>>>>>>>>>>>>>> MIRRORING
+//			List<OCCShape> mirroredShapes = new ArrayList<>();
+//			if(!liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+//				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Mirroring sewed lofts.");
+//				gp_Trsf mirrorTransform = new gp_Trsf();
+//				gp_Ax2 mirrorPointPlane = new gp_Ax2(
+//						new gp_Pnt(0.0, 0.0, 0.0),
+//						new gp_Dir(0.0, 1.0, 0.0), // Y direction normal to reflection plane XZ
+//						new gp_Dir(1.0, 0.0, 0.0)
+//						);
+//				mirrorTransform.SetMirror(mirrorPointPlane);
+//				BRepBuilderAPI_Transform mirrorBuilder = new BRepBuilderAPI_Transform(mirrorTransform);
+//
+//				sewedShapes.stream()
+//						   .map(occshape -> occshape.getShape())
+//						   .forEach(s -> {
+//							   mirrorBuilder.Perform(s, 1);
+//							   TopoDS_Shape sMirrored = mirrorBuilder.Shape();
+//							   mirroredShapes.add(
+//									   (OCCShape)OCCUtils.theFactory.newShape(sMirrored)
+//									   );
+//						   });
+//				System.out.println("Mirrored shapes: " + mirroredShapes.size());
+//				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Exporting mirrored sewed loft.");
 //				result.addAll(mirroredShapes);
-			}
+//			}
 			
-			// Sewing the two halves
-			List<OCCShape> sewedHalvesShapes = new ArrayList<>();
-			if(!liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
-				BRepBuilderAPI_Sewing sewMakerHalves = new BRepBuilderAPI_Sewing();
-				
-				sewMakerHalves.Init();
-				
-				sewedShapes.forEach(sh -> {
-					TopoDS_Shape tds_shape1 = sh.getShape();
-					TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
-					sewMakerHalves.Add(TopoDS.ToShell(exp1.Current()));		
-				});
-				
-				mirroredShapes.forEach(sh -> {
-					TopoDS_Shape tds_shape1 = sh.getShape();
-					TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
-					sewMakerHalves.Add(TopoDS.ToShell(exp1.Current()));	
-				});
-				
-				sewMakerHalves.Perform();
-				
-				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Sewing halves step successful? " + !sewMakerHalves.IsNull());
-				
-				if(!sewMakerHalves.IsNull()) {
-					TopoDS_Shape tds_shape2 = sewMakerHalves.SewedShape();
-					// The resulting shape may consist of multiple shapes!
-					// Use TopExp_Explorer to iterate through shells
-					System.out.println(OCCUtils.reportOnShape(tds_shape2, "Lifting Surface sewed surface (Right + Left side)"));
-					TopExp_Explorer exp2 = new TopExp_Explorer(tds_shape2, TopAbs_ShapeEnum.TopAbs_SHELL);
-					while (exp2.More() > 0) {
-						sewedHalvesShapes.add((OCCShape)OCCUtils.theFactory.newShape(exp2.Current()));
-						exp2.Next();
-					}
-				}
-			} else {
-				sewedHalvesShapes.addAll(sewedShapes);
-			}
+//			// Sewing the two halves
+//			List<OCCShape> sewedHalvesShapes = new ArrayList<>();
+//			if(!liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+//				BRepBuilderAPI_Sewing sewMakerHalves = new BRepBuilderAPI_Sewing();
+//				
+//				sewMakerHalves.Init();
+//				
+//				sewedShapes.forEach(sh -> {
+//					TopoDS_Shape tds_shape1 = sh.getShape();
+//					TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
+//					sewMakerHalves.Add(TopoDS.ToShell(exp1.Current()));		
+//				});
+//				
+//				mirroredShapes.forEach(sh -> {
+//					TopoDS_Shape tds_shape1 = sh.getShape();
+//					TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
+//					sewMakerHalves.Add(TopoDS.ToShell(exp1.Current()));	
+//				});
+//				
+//				sewMakerHalves.Perform();
+//				
+//				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Sewing halves step successful? " + !sewMakerHalves.IsNull());
+//				
+//				if(!sewMakerHalves.IsNull()) {
+//					TopoDS_Shape tds_shape2 = sewMakerHalves.SewedShape();
+//					// The resulting shape may consist of multiple shapes!
+//					// Use TopExp_Explorer to iterate through shells
+//					System.out.println(OCCUtils.reportOnShape(tds_shape2, "Lifting Surface sewed surface (Right + Left side)"));
+//					TopExp_Explorer exp2 = new TopExp_Explorer(tds_shape2, TopAbs_ShapeEnum.TopAbs_SHELL);
+//					while (exp2.More() > 0) {
+//						sewedHalvesShapes.add((OCCShape)OCCUtils.theFactory.newShape(exp2.Current()));
+//						exp2.Next();
+//					}
+//				}
+//			} else {
+//				sewedHalvesShapes.addAll(sewedShapes);
+//			}
 //			result.addAll(sewedHalvesShapes);
 			
-			// Make a solid from the sewed halves
-			boolean exportSolid = true;
-			if(exportSolid) {
-				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Experimental: build a solid ...");
-				CADSolid solidLiftingSurface = null;
-				BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
-				sewedHalvesShapes.forEach(sh -> {
-						TopoDS_Shape tds_shape1 = sh.getShape();
-						TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
-						solidMaker.Add(TopoDS.ToShell(exp1.Current()));					
-					});
-				solidMaker.Build();
-				System.out.println("Solid is done? " + (solidMaker.IsDone() == 1));
-				if(solidMaker.IsDone() == 1) {
-					solidLiftingSurface = (CADSolid) OCCUtils.theFactory.newShape(solidMaker.Solid());
-					result.add((OCCShape) solidLiftingSurface);
-					
-					System.out.println(OCCUtils.reportOnShape(((OCCShape) solidLiftingSurface).getShape(), "LS solid")); 
-				}
-			}
+//			// Make a solid from the sewed halves
+//			boolean exportSolid = true;
+//			if(exportSolid) {
+//				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Experimental: build a solid ...");
+//				CADSolid solidLiftingSurface = null;
+//				BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
+//				sewedHalvesShapes.forEach(sh -> {
+//						TopoDS_Shape tds_shape1 = sh.getShape();
+//						TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
+//						solidMaker.Add(TopoDS.ToShell(exp1.Current()));					
+//					});
+//				solidMaker.Build();
+//				System.out.println("Solid is done? " + (solidMaker.IsDone() == 1));
+//				if(solidMaker.IsDone() == 1) {
+//					solidLiftingSurface = (CADSolid) OCCUtils.theFactory.newShape(solidMaker.Solid());
+//					result.add((OCCShape) solidLiftingSurface);
+//					
+//					System.out.println(OCCUtils.reportOnShape(((OCCShape) solidLiftingSurface).getShape(), "LS solid")); 
+//				}
+//			}
 			
 			// Make a solid from the two halves
 //			boolean exportSolid = true;
@@ -3573,7 +3696,6 @@ public final class AircraftUtils {
 				.getChordTip().doubleValue(SI.METER);
 		float preTipChordLength = (float) theLiftingSurface
 				.getLiftingSurfaceCreator().getChordsBreakPoints().get(iTip-1).doubleValue(SI.METER);
-		double eTh = theLiftingSurface.getAirfoilList().get(iTip).getAirfoilCreator().getThicknessToChordRatio()*tipChordLength; 
 		
 		PVector le1 = leVec[0];
 		PVector le2 = leVec[1];
@@ -3665,8 +3787,8 @@ public final class AircraftUtils {
 		
 		double tanUppVSecCrvFac = 1;
 		double tanLowVSecCrvFac = 1*(-1);		
-		double tanUppHalfVSecCrvFac = Math.pow(thickUpp/crvHeight, 1.05)*(-1); //TODO: eventually make this a parameter
-		double tanLowHalfVSecCrvFac = Math.pow(thickLow/crvHeight, 1.05)*(-1);
+		double tanUppHalfVSecCrvFac = Math.pow(thickUpp/crvHeight, 0.75)*(-1); //TODO: eventually make this a parameter
+		double tanLowHalfVSecCrvFac = Math.pow(thickLow/crvHeight, 0.75)*(-1);
 		
 		// vertical section curves creation
 		List<double[]> verSecCrvUppPnts = new ArrayList<>();
@@ -3713,78 +3835,99 @@ public final class AircraftUtils {
 		verSecCrvsList[1] = verSecCrvLow;
 		
 		return verSecCrvsList;
+	}
+	
+	public static CADGeomCurve3D[] createVerCrvsForTipClosure( 
+			List<OCCEdge> tipAirfoil,
+			List<OCCEdge> preTipAirfoil,
+			double[] guideCrvPnt
+			) {		
 		
-		// vertical section curve creation 
-//		List<double[]> verSecCrvPnts = new ArrayList<>();
-//
-//		verSecCrvPnts.add(tipAirfoilUppVtx);
-//		verSecCrvPnts.add(guideCrvPnt);
-//		verSecCrvPnts.add(tipAirfoilLowVtx);			
-//
-//		double[] tanUppVSecCrv = MyArrayUtils.scaleArray(
-//				new double[] {tanVecs[0].x, tanVecs[0].y, tanVecs[0].z}, 
-//				tanUppVSecCrvFac
-//				);		
-//		double[] tanLowVSecCrv = MyArrayUtils.scaleArray(
-//				new double[] {tanVecs[1].x, tanVecs[1].y, tanVecs[1].z},
-//				tanLowVSecCrvFac
-//				);		
-//
-//		CADGeomCurve3D verSecCrv = OCCUtils.theFactory.newCurve3D(
-//				verSecCrvPnts, 
-//				false, 
-//				tanUppVSecCrv, 
-//				tanLowVSecCrv, 
-//				false
-//				);
+		CADGeomCurve3D[] verSecCrvsList = new CADGeomCurve3D[2];
 		
-		// splitting the curve at guide curve point and adding tangent constraint
-//		double[] tanUppHalfVSecCrv = MyArrayUtils.scaleArray(
-//				new double[] {chordTipNVector.x, chordTipNVector.y, chordTipNVector.z}, 
-//				tanUppHalfVSecCrvFac
-//				);
-//		double[] tanLowHalfVSecCrv = MyArrayUtils.scaleArray(
-//				new double[] {chordTipNVector.x, chordTipNVector.y, chordTipNVector.z}, 
-//				tanLowHalfVSecCrvFac
-//				);
-//		
-//		List<OCCEdge> verSecCrvs = OCCUtils.splitEdge(verSecCrv, guideCrvPnt);
-//		
-//		CADGeomCurve3D verSecCrvUpp = OCCUtils.theFactory.newCurve3D(verSecCrvs.get(0));
-//		CADGeomCurve3D verSecCrvLow = OCCUtils.theFactory.newCurve3D(verSecCrvs.get(1));
-//		
-//		verSecCrvUpp.discretize(2);
-//		verSecCrvLow.discretize(2);
-//		
-//		List<gp_Pnt> gpPntsUpp = ((OCCGeomCurve3D)verSecCrvUpp).getDiscretizedCurve().getPoints();
-//		List<gp_Pnt> gpPntsLow = ((OCCGeomCurve3D)verSecCrvLow).getDiscretizedCurve().getPoints();
-//		
-//		List<double[]> pntsUpp = gpPntsUpp.stream()
-//				 						  .map(gp -> new double[] {gp.X(), gp.Y(), gp.Z()})
-//				 						  .collect(Collectors.toList());
-//		List<double[]> pntsLow = gpPntsLow.stream()
-//				 						  .map(gp -> new double[] {gp.X(), gp.Y(), gp.Z()})
-//				 						  .collect(Collectors.toList());
-//		
-//		CADGeomCurve3D verSecCrvUppFix = OCCUtils.theFactory.newCurve3D(
-//				pntsUpp, 
-//				false, 
-//				tanUppVSecCrv, 
-//				tanUppHalfVSecCrv, 
-//				false
-//				);
-//		CADGeomCurve3D verSecCrvLowFix = OCCUtils.theFactory.newCurve3D(
-//				pntsLow, 
-//				false, 				
-//				tanLowHalfVSecCrv, 
-//				tanLowVSecCrv, 
-//				false
-//				);
-//		
-//		verSecCrvsList[0] = verSecCrvUppFix;
-//		verSecCrvsList[1] = verSecCrvLowFix;
-//		
-//		return verSecCrvsList;
+		// getting points on the tip airfoil	
+		double[] tipAirfoilUppVtx = tipAirfoil.get(0).vertices()[0].pnt();			
+		double[] tipAirfoilLowVtx = tipAirfoil.get(1).vertices()[1].pnt();
+		
+		// tangent vectors calculation
+		double[] preTipAirfoilUppVtx = preTipAirfoil.get(0).vertices()[0].pnt();				
+		double[] preTipAirfoilLowVtx = preTipAirfoil.get(1).vertices()[1].pnt();
+		
+		PVector[] tanVecs = new PVector[2];
+		tanVecs[0] = PVector.sub(
+				new PVector((float) tipAirfoilUppVtx[0], (float) tipAirfoilUppVtx[1], (float) tipAirfoilUppVtx[2]),
+				new PVector((float) preTipAirfoilUppVtx[0], (float) preTipAirfoilUppVtx[1], (float) preTipAirfoilUppVtx[2])
+				).normalize();
+		tanVecs[1] = PVector.sub(
+				new PVector((float) tipAirfoilLowVtx[0], (float) tipAirfoilLowVtx[1], (float) tipAirfoilLowVtx[2]),
+				new PVector((float) preTipAirfoilLowVtx[0], (float) preTipAirfoilLowVtx[1], (float) preTipAirfoilLowVtx[2])
+				).normalize();
+		
+		// weights for the tangent constraints
+		PVector thickness = PVector.sub(
+				new PVector((float) tipAirfoilUppVtx[0], (float) tipAirfoilUppVtx[1], (float) tipAirfoilUppVtx[2]),
+				new PVector((float) tipAirfoilLowVtx[0], (float) tipAirfoilLowVtx[1], (float) tipAirfoilLowVtx[2])
+				);
+		
+		double thickUpp = thickness.mag()/2;
+		double thickLow = thickUpp;
+		double crvHeight = PVector.sub(
+				new PVector((float) guideCrvPnt[0], (float) guideCrvPnt[1], (float) guideCrvPnt[2]), 
+				new PVector((float) tipAirfoilUppVtx[0], (float) tipAirfoilUppVtx[1], (float) tipAirfoilUppVtx[2])
+				).mag();
+
+		double tanUppVSecCrvFac = 1;
+		double tanLowVSecCrvFac = 1*(-1);		
+		double tanUppHalfVSecCrvFac = Math.pow(thickUpp/crvHeight, 0.75)*(-1); //TODO: eventually make this a parameter
+		double tanLowHalfVSecCrvFac = Math.pow(thickLow/crvHeight, 0.75)*(-1);
+		
+		// vertical section curves creation
+		List<double[]> verSecCrvUppPnts = new ArrayList<>();
+		List<double[]> verSecCrvLowPnts = new ArrayList<>();
+		
+		thickness.normalize();
+
+		verSecCrvUppPnts.add(tipAirfoilUppVtx);
+		verSecCrvUppPnts.add(guideCrvPnt);
+		verSecCrvLowPnts.add(guideCrvPnt);
+		verSecCrvLowPnts.add(tipAirfoilLowVtx);
+
+		double[] tanUppVSecCrv = MyArrayUtils.scaleArray(
+				new double[] {tanVecs[0].x, tanVecs[0].y, tanVecs[0].z}, 
+				tanUppVSecCrvFac
+				);	
+		double[] tanUppHalfVSecCrv = MyArrayUtils.scaleArray(
+				new double[] {thickness.x, thickness.y, thickness.z}, 
+				tanUppHalfVSecCrvFac
+				);
+		double[] tanLowHalfVSecCrv = MyArrayUtils.scaleArray(
+				new double[] {thickness.x, thickness.y, thickness.z}, 
+				tanLowHalfVSecCrvFac
+				);
+		double[] tanLowVSecCrv = MyArrayUtils.scaleArray(
+				new double[] {tanVecs[1].x, tanVecs[1].y, tanVecs[1].z},
+				tanLowVSecCrvFac
+				);
+
+		CADGeomCurve3D verSecCrvUpp = OCCUtils.theFactory.newCurve3D(
+				verSecCrvUppPnts, 
+				false, 
+				tanUppVSecCrv, 
+				tanUppHalfVSecCrv, 
+				false
+				);
+		CADGeomCurve3D verSecCrvLow = OCCUtils.theFactory.newCurve3D(
+				verSecCrvLowPnts, 
+				false, 
+				tanLowHalfVSecCrv, 
+				tanLowVSecCrv, 
+				false
+				);
+
+		verSecCrvsList[0] = verSecCrvUpp;
+		verSecCrvsList[1] = verSecCrvLow;
+
+		return verSecCrvsList;
 	}
 	
 	public static Double[] getThicknessAtX(AirfoilCreator airfoil, Double xChord) {
