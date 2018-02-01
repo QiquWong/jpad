@@ -1,6 +1,6 @@
 # JPAD, a Java Program toolchain for Aircraft Designers
 
-JPAD is a Java software library, a toolbox providing a set of classes and utility functions that you can use to build software systems. Some features of JPAD are dependent on some native libraries that are provided only for the Windows 64-bit platform. These libraries are open source and users of other platforms, such as Linux or Mac OSX, must build their own version.
+JPAD is a Java software library, a toolbox providing a set of classes and utility functions that you can use to build software systems. 
 
 The typical user of JPAD is the aircraft designer, one who is interested in aerodynamic or performance predictions and in parametric studies. The principal focus of the library is the overall aircraft model, conceived as a set of interconnected and parametrized submodels: the wing and its variants (horizontal tail, vertical tail, canard), the fuselage, nacelles, the propulsion system.
 
@@ -18,13 +18,13 @@ The modules `JPADSandbox_v2` and `JPADCADSandbox` are used for testing and devel
 
 __Caveat:__ JPAD is under heavy development and is about to reach a beta state. The codebase is provided here because we believe in the open source philosophy. Be advised the whole repository is approximately 10 GiB. In future all the unnecessary files will be stripped off in order to reduce the codebase footprint.
 
-__Caveat:__ We provide instructions for Windows users. Some dependencies use native libraries that have been tested on Win64 only. A Linux version of JPAD will be provided when the library is declared stable and feature complete (release candidate 1.0). 
+__Caveat:__ Some features of JPAD are dependent on a couple of native libraries that have been tested and are provided only for the Windows 64-bit platform. Hence, we provide instructions for Windows users. A Linux version of JPAD will be provided when the library is declared stable and feature complete (release candidate 1.0). 
 
 ## Tools
 
 Download and install:
 
-- [Java SE Development Kit 8](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html)
+- [Java SE Development Kit 8 (8u161 for Windows x64, as of January 2018)](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html)
 - [Git bash for Windows](https://git-scm.com/downloads)
 - [Eclipse IDE (Oxygen, as of January 2018)](http://www.eclipse.org/downloads/packages/eclipse-ide-java-developers/oxygen2)
 
