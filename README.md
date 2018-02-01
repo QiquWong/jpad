@@ -9,6 +9,7 @@ The typical user of JPAD is the aircraft designer, one who is interested in aero
 - `JPADConfigs`
 - `JPADCore_v2`
 - `JPADCAD`
+- `JPADCommander`
 - `JPADSandbox_v2`
 - `JPADCADSandbox`
 
@@ -74,14 +75,34 @@ The JPAD API is now set up in place in your IDE. The project JPADCore_v2 depends
 
 #### JPADCAD
 
-The JPAD repository includes also a module that features advanced CAD functions to model 3D geometric entities, such as NURB surfaces and solids. This project is named *JPADCAD* and employs a Java binding of the C++ [Open CASCADE Technology (OCCT) SDK](https://www.opencascade.com/content/overview) [(v7.0.0)](https://www.opencascade.com/doc/occt-7.0.0/overview/html/index.html).
+The JPAD repository includes a module that features advanced CAD functions to model 3D geometric entities, such as NURB surfaces and solids. This project is named *JPADCAD* and employs a Java binding of the C++ [Open CASCADE Technology (OCCT) SDK](https://www.opencascade.com/content/overview) [(v7.0.0)](https://www.opencascade.com/doc/occt-7.0.0/overview/html/index.html).
 The JAR file containing the Java wrapper and the supporting native libraries compiled for Win64 are found in the folder `<JPAD_ROOT>libraries/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64`. This path will be called `<OCCJAVA>`.
 
 From the Eclipse import wizard select the existing project `JPADCAD` by setting the root directory as `<JPAD_ROOT>/JPADCAD`. The *JPADCAD* project will be recognized by the wizard. Select the project and click `Finish`.
 
+#### JPADCommander
+
+The project named *JPADCommander* features a GUI designed around the JPAD core API. This application provides an interactive workflow for complete aircraft model authoring. Predefined aircraft models can be loaded, modified and saved with JPADCommander, which gives visual feedback to the user during the process. The GUI will provide also the possibility to execute aerodynamic and performance analysis tasks. This functionality is still under development.
+
+From the Eclipse import wizard select the existing project `JPADCommander` by setting the root directory as `<JPAD_ROOT>/JPADCommander`. The *JPADCommander* project will be recognized by the wizard. Select the project and click `Finish`.
+
+The project JPADCommander depends on the two projects JPADCore_v2 and JPADConfigs.
+
 #### Sandboxes
 
-TBD
+The JPAD repository includes additional projects that are used by the development team as *sandboxes*. These are *JPADSandbox_v2* and *JPADCADSandbox*. You can import into Eclipse the two sandbox projects by pointing the import wizard to the root folders: `<JPAD_ROOT>/JPADSandbox_v2` and `<JPAD_ROOT>/JPADCADSandbox`.
+
+The project JPADSandbox_v2 depends on the two projects JPADCore_v2 and JPADConfigs.
+
+The project JPADCADSandbox depends on the two projects JPADCore_v2, JPADConfigs, and JPADCAD.
+
+### Running the example programs
+
+To run the test programs in Eclipse go to the menu `Run -> Run Configurations`. Explore the dialog that manages all the existing run configurations, which are stored as `.launch` files. Select a configuration from the left pane (in the Java Application group). 
+
+Before running a configuration do check the panels on the right pane. Explore the `Main`, `Arguments` and the `Environment` tabs. In the `Environment` tab make sure you edit the `Path` variable, which expands the `JPAD_ROOT` variable (see the string `${JPAD_ROOT}`). Select the `Path` variable, click `Edit`, click `Variables`, click `Edit Variables`, finally create the new variable `JPAD_ROOT` pointing to the path `<JPAD_ROOT>`.
+
+
 
 ---
 [DAF Research Group at University Naples Federico II](http://www.daf.unina.it/)
