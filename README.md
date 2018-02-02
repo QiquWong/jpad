@@ -15,6 +15,8 @@ The typical user of JPAD is the aircraft designer, one who is interested in aero
 
 The modules `JPADSandbox_v2` and `JPADCADSandbox` are used for testing and development of new features.
 
+See also [this wiki page](https://github.com/Aircraft-Design-UniNa/jpad/wiki/Setup-For-Developers).
+
 # How to use JPAD
 
 __Caveat:__ JPAD is under heavy development and is about to reach a beta state. The codebase is provided here because we believe in the open source philosophy. Be advised the whole repository is approximately 10 GiB. In future all the unnecessary files will be stripped off in order to reduce the codebase footprint.
@@ -102,7 +104,7 @@ To run the test programs in Eclipse go to the menu `Run -> Run Configurations`. 
 
 Before running a configuration do check the panels on the right pane. Explore the `Main`, `Arguments` and the `Environment` tabs. In the `Environment` tab make sure you edit the `Path` variable, which expands the `JPAD_ROOT` variable (see the string `${JPAD_ROOT}`). Select the `Path` variable, click `Edit`, click `Variables`, click `Edit Variables`, finally create the new variable `JPAD_ROOT` pointing to the path `<JPAD_ROOT>`.
 
-
+See also [this wiki page](https://github.com/Aircraft-Design-UniNa/jpad/wiki/Setup-For-Developers).
 
 ---
 [DAF Research Group at University Naples Federico II](http://www.daf.unina.it/)
