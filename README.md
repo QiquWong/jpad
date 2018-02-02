@@ -1,6 +1,6 @@
 # JPAD, a Java Program toolchain for Aircraft Designers
 
-JPAD is a Java software library, a toolbox providing a set of classes and utility functions that you can use to build software systems. 
+JPAD is a Java software library containing classes and utility functions that can be used to build software systems. 
 
 The typical user of JPAD is the aircraft designer, one who is interested in aerodynamic or performance predictions and in parametric studies. The principal focus of the library is the overall aircraft model, conceived as a set of interconnected and parametrized submodels: the wing and its variants (horizontal tail, vertical tail, canard), the fuselage, nacelles, the propulsion system.
 
