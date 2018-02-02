@@ -6,6 +6,8 @@ The typical user of JPAD is the aircraft designer, one who is interested in aero
 
 ## JPAD Main modules
 
+JPAD comes with a set of modules, i.e. interdependent projects. These include:
+
 - `JPADConfigs`
 - `JPADCore_v2`
 - `JPADCAD`
@@ -13,15 +15,15 @@ The typical user of JPAD is the aircraft designer, one who is interested in aero
 - `JPADSandbox_v2`
 - `JPADCADSandbox`
 
-The modules `JPADSandbox_v2` and `JPADCADSandbox` are used for testing and development of new features.
+The modules `JPADSandbox_v2` and `JPADCADSandbox` are used for testing and development of new features. Additional smaller projects and folders are present in the repository, but they are temporary and can be discarded. A major revision of the repository folders is under consideration.
 
 See also [this wiki page](https://github.com/Aircraft-Design-UniNa/jpad/wiki/Setup-For-Developers).
 
 # How to use JPAD
 
-__Caveat:__ JPAD is under heavy development and is about to reach a beta state. The codebase is provided here because we believe in the open source philosophy. Be advised the whole repository is approximately 10 GiB. In future all the unnecessary files will be stripped off in order to reduce the codebase footprint.
+__Caveat:__ JPAD is under heavy development and is about to reach a beta state. The codebase is provided here because we believe in the open source philosophy. Be advised, the whole repository is approximately 10 GiB. In future all the unnecessary files will be stripped off in order to reduce the codebase footprint.
 
-__Caveat:__ Some features of JPAD are dependent on a couple of native libraries that have been tested and are provided only for the Windows 64-bit platform. Hence, we provide instructions for Windows users. A Linux version of JPAD will be provided when the library is declared stable and feature complete (release candidate 1.0). 
+__Caveat:__ Some features of JPAD depend upon a couple of native libraries that have been tested only for the Windows 64-bit platform. Hence, we provide instructions for Windows users. A Linux version of JPAD will be available once the library is declared stable and feature complete (release candidate 1.0). 
 
 ## Tools
 
@@ -48,18 +50,18 @@ git clone git@github.com:Aircraft-Design-UniNa/jpad.git
 if you have set up your shell to use SSH. [See this guide to learn more.](https://help.github.com/articles/which-remote-url-should-i-use/)
 Alternatively, you can download the repository as a zip archive [from this link.](https://github.com/Aircraft-Design-UniNa/jpad/archive/master.zip)
 
-If you have cloned successfully the JPAD repository from `C:\Users\John\Dev` you end up with the folder `C:\Users\John\Dev\jpad` populated with all the necessary files to use the library. We call this folder `<JPAD_ROOT>`.
+Once you have cloned successfully the JPAD repository, e.g. from `C:\Users\John\Dev`, you end up with the subfolder `jpad` populated with all the necessary files to use the library. We call this folder `<JPAD_ROOT>`.
 
 
 ## Importing the projects into Eclipse
 
-Open Eclipse and prepare to import a couple of projects that live in `JPAD_ROOT`.
+Open Eclipse and prepare to import a couple of projects that live in `<JPAD_ROOT>`.
 
 ### Classpath variables
 
 From the menu `Window -> Preferences` open the dialog and navigate in the left pane to `Java -> Build Path -> Classpath Variables`. In the right pane define the following new variables:
 
-- `JPAD_ROOT` pointing to the `jpad` folder, e.g. `C:\Users\John\Dev\jpad`
+- `JPAD_ROOT` pointing to the path of the folder `jpad`, e.g. `C:\Users\John\Dev\jpad`
 - `LIBRARY_FOLDER` pointing to the path `<JPAD_ROOT>/libraries`, e.g. `C:\Users\John\Dev\jpad\libraries`
 - `ECLIPSE_FOLDER` pointing to the path `<JPAD_ROOT>/libraries/eclipse/plugins`, e.g. `C:\Users\John\Dev\jpad\libraries\eclipse\plugins`
 
