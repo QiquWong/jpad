@@ -38,6 +38,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
+import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADFace;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
 import it.unina.daf.jpadcad.occ.CADGeomSurface;
@@ -60,8 +61,10 @@ import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRep_Tool;
 import opencascade.GeomAPI_ProjectPointOnCurve;
 import opencascade.GeomAbs_Shape;
+import opencascade.ShapeExtend_Explorer;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
+import opencascade.TopTools_HSequenceOfShape;
 import opencascade.TopoDS;
 import opencascade.TopoDS_Edge;
 import opencascade.TopoDS_Face;
@@ -944,7 +947,6 @@ public final class AircraftUtils {
 	 * @param exportSupportShapes			include supporting sections, outline curves, etc in the output shape list 
 	 * @return
 	 */
-
 	public static List<OCCShape> getLiftingSurfaceCAD(
 			LiftingSurface liftingSurface, 
 			ComponentEnum typeLS,
@@ -1013,7 +1015,7 @@ public final class AircraftUtils {
 		}
 		
 //		BRepBuilderAPI_MakeWire wm = new BRepBuilderAPI_MakeWire();
-//		tdsEdgesLE.stream().forEach(e -> wm.Add(e));
+//		tdsEdgesLE.forEach(e -> wm.Add(e));
 //		wm.Build();
 
 		// export
@@ -1097,7 +1099,7 @@ public final class AircraftUtils {
 
 		// airfoils between breakpoints
 		List<CADGeomCurve3D> cadCurveAirfoilBetBPList = new ArrayList<CADGeomCurve3D>();
-		int nSec = 1; // number of sections between two contiguous breakpoints
+		int nSec = 5; // number of sections between two contiguous breakpoints
 		for(int iP = 1; iP <= liftingSurface.getLiftingSurfaceCreator().getPanels().size(); iP++) {
 			List<CADGeomCurve3D> cadCurveAirfoilPanelList = new ArrayList<CADGeomCurve3D>();
 			double[] secVec = new double[nSec + 2];
@@ -1137,6 +1139,9 @@ public final class AircraftUtils {
 						));
 			}
 		}
+//		patchWing.addAll(cadCurveAirfoilList.stream()
+//		                   .map(OCCUtils::makePatchThruSections)
+//		                   .collect(Collectors.toList()));
 		
 		// Closing the trailing edge
 		List<List<OCCShape>> patchTE = new ArrayList<List<OCCShape>>();
@@ -1341,6 +1346,8 @@ public final class AircraftUtils {
 		CADGeomCurve3D[] mainVSec3 = createVerCrvsForTipClosure( 
 				airfoilTipCrvs,
 				airfoilPreTipCrvs,
+				new PVector[] {le1, le2},
+				new PVector[] {te1, te2},
 				new double[] {gPnt.x, gPnt.y, gPnt.z}
 				);
 		mainVSections.add(mainVSec3); // trailing edge vertical section curve
@@ -1629,7 +1636,7 @@ public final class AircraftUtils {
 					cadCurveAirfoilBPList.get(iTip),
 					OCCUtils.theFactory.newCurve3D(
 							cadCurveAirfoilBPList.get(iTip).edge().vertices()[0].pnt(), 
-							cadCurveAirfoilBPList.get(iTip).edge().vertices()[0].pnt()
+							cadCurveAirfoilBPList.get(iTip).edge().vertices()[1].pnt()
 							)
 					);
 			wingTip.add((OCCShape)faceTip);
@@ -1877,14 +1884,23 @@ public final class AircraftUtils {
 		
 		// creating vertical splitting vectors for the tip airfoil curve, orthogonal to the chord
 		PVector leVector = PVector.sub(le2, le1);
+		PVector axisVector; 
 		PVector chordTipVector = PVector.sub(te2, le2); // vector in the airfoil plane	
 		PVector chordTipNVector = new PVector();
-		PVector.cross(chordTipVector, leVector, chordTipNVector).normalize(); // vector in the airfoil plane, normal to the chord, normalized
+		PVector constrCrvApexTan = new PVector();
+		PVector.cross(chordTipVector, leVector, constrCrvApexTan).normalize();
+//		PVector.cross(chordTipVector, leVector, chordTipNVector).normalize(); // vector in the airfoil plane, normal to the chord, normalized
+		if(!theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL))
+			axisVector = new PVector(0, 1, 0);
+		else
+			axisVector = new PVector(0, 0, 1);
+		PVector.cross(chordTipVector, axisVector, chordTipNVector).normalize(); // vector in the airfoil plane, normal to the chord, normalized
 		
 		// creating vertical splitting vectors for the second to last airfoil curve
 		PVector chordPreTipVector = PVector.sub(te1, le1); 	
 		PVector chordPreTipNVector = new PVector();
-		PVector.cross(chordPreTipVector, leVector, chordPreTipNVector).normalize(); 
+//		PVector.cross(chordPreTipVector, leVector, chordPreTipNVector).normalize(); 
+		PVector.cross(chordPreTipVector, axisVector, chordPreTipNVector).normalize();
 		
 		// getting points onto the tip airfoil
 		PVector pntOnTipChord = PVector.lerp(le2, te2, (float) chordFrac); // tip chord fraction point
@@ -1977,11 +1993,11 @@ public final class AircraftUtils {
 				tanUppVSecCrvFac
 				);	
 		double[] tanUppHalfVSecCrv = MyArrayUtils.scaleArray(
-				new double[] {chordTipNVector.x, chordTipNVector.y, chordTipNVector.z}, 
+				new double[] {constrCrvApexTan.x, constrCrvApexTan.y, constrCrvApexTan.z}, 
 				tanUppHalfVSecCrvFac
 				);
 		double[] tanLowHalfVSecCrv = MyArrayUtils.scaleArray(
-				new double[] {chordTipNVector.x, chordTipNVector.y, chordTipNVector.z}, 
+				new double[] {constrCrvApexTan.x, constrCrvApexTan.y, constrCrvApexTan.z}, 
 				tanLowHalfVSecCrvFac
 				);
 		double[] tanLowVSecCrv = MyArrayUtils.scaleArray(
@@ -2005,7 +2021,7 @@ public final class AircraftUtils {
 				);
 		
 		verSecCrvsList[0] = verSecCrvUpp;
-		verSecCrvsList[1] = verSecCrvLow;
+		verSecCrvsList[1] = verSecCrvLow;		
 		
 		return verSecCrvsList;
 	}
@@ -2013,10 +2029,17 @@ public final class AircraftUtils {
 	public static CADGeomCurve3D[] createVerCrvsForTipClosure( 
 			List<OCCEdge> tipAirfoil,
 			List<OCCEdge> preTipAirfoil,
+			PVector[] leVec,
+			PVector[] teVec,
 			double[] guideCrvPnt
 			) {		
 		
 		CADGeomCurve3D[] verSecCrvsList = new CADGeomCurve3D[2];
+		
+		PVector le1 = leVec[0];
+		PVector le2 = leVec[1];
+		PVector te1 = teVec[0];
+		PVector te2 = teVec[1];
 		
 		// getting points on the tip airfoil	
 		double[] tipAirfoilUppVtx = tipAirfoil.get(0).vertices()[0].pnt();			
@@ -2054,6 +2077,12 @@ public final class AircraftUtils {
 		double tanUppHalfVSecCrvFac = Math.pow(thickUpp/crvHeight, 0.60)*(-1); //TODO: eventually make this a parameter
 		double tanLowHalfVSecCrvFac = Math.pow(thickLow/crvHeight, 0.60)*(-1);
 		
+		// section curves apex tangent vector
+		PVector chordTipVector = PVector.sub(te2, le2);
+		PVector leVector = PVector.sub(le2, le1);
+		PVector constrCrvApexTan = new PVector();
+		PVector.cross(chordTipVector, leVector, constrCrvApexTan).normalize();
+		
 		// vertical section curves creation
 		List<double[]> verSecCrvUppPnts = new ArrayList<>();
 		List<double[]> verSecCrvLowPnts = new ArrayList<>();
@@ -2070,11 +2099,11 @@ public final class AircraftUtils {
 				tanUppVSecCrvFac
 				);	
 		double[] tanUppHalfVSecCrv = MyArrayUtils.scaleArray(
-				new double[] {thickness.x, thickness.y, thickness.z}, 
+				new double[] {constrCrvApexTan.x, constrCrvApexTan.y, constrCrvApexTan.z}, 
 				tanUppHalfVSecCrvFac
 				);
 		double[] tanLowHalfVSecCrv = MyArrayUtils.scaleArray(
-				new double[] {thickness.x, thickness.y, thickness.z}, 
+				new double[] {constrCrvApexTan.x, constrCrvApexTan.y, constrCrvApexTan.z}, 
 				tanLowHalfVSecCrvFac
 				);
 		double[] tanLowVSecCrv = MyArrayUtils.scaleArray(
