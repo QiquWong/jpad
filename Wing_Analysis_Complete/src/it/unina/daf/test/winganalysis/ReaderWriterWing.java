@@ -122,7 +122,6 @@ public class ReaderWriterWing {
 		int numberOfPointSemispan =  (int)Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_point_semispan").get(0));
 		input.setNumberOfPointSemispan(numberOfPointSemispan);
 		
-		double adimensionalKinkStation = Double.parseDouble(reader.getXMLPropertiesByPath("//adimensional_kink_station ").get(0));
 		
 		double momentumPole = Double.parseDouble(reader.getXMLPropertiesByPath("//momentum_pole").get(0));
 		input.setMomentumPole(momentumPole);
@@ -566,7 +565,7 @@ public class ReaderWriterWing {
 		System.out.print("le radius distribution : ");
 			System.out.println(input.getLeRadiusDistribution());
 			
-		System.out.print("\nAdimentional stations :");
+		System.out.print("\nAdimensional stations :");
 		 	System.out.println(input.getyAdimensionalStationInput());
 		}
 		}
@@ -669,6 +668,8 @@ public class ReaderWriterWing {
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cl_ideal_distribution", input.getClIdealDistributionInput(), childDistributionNew, doc);
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("k_distribution", input.getkDistributionInput(), childDistributionNew, doc);
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cm_c4_distribution", input.getCmc4DistributionInput(), childDistributionNew, doc);
+		JPADStaticWriteUtils.writeSingleNode("max_thickness_distribution", input.getMaxThicknessAirfoilsDistribution(), childDistributionNew, doc);
+		JPADStaticWriteUtils.writeSingleNode("leading_edge_radius_distribution", input.getLeRadiusDistribution(), childDistributionNew, doc);
 		
 		//--------------------------------------------------------------------------------------
 		// OUTPUT
@@ -685,8 +686,6 @@ public class ReaderWriterWing {
 		org.w3c.dom.Element cleanElement = doc.createElement("lift_characteristics");
 		wingCLEANAerodynamicElement.appendChild(cleanElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("max_thickness_distribution", input.getMaxThicknessAirfoilsDistribution(), cleanElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("leading_edge_radius_distribution", input.getLeRadiusDistribution(), cleanElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift", input.getAlphaZeroLift(), cleanElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cL_alpha", Amount.valueOf(Double.valueOf(input.getcLAlpha()), NonSI.DEGREE_ANGLE.inverse()), cleanElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cL_zero", input.getcLZero(), cleanElement, doc);
@@ -742,7 +741,7 @@ public class ReaderWriterWing {
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cl_clean",input.getcLVsAlphaVector(), dragBreakdownDistribution, doc);
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cd_parasite",input.getParasitePolar(), dragBreakdownDistribution, doc);
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cd_induced",input.getInducedPolar(), dragBreakdownDistribution, doc);
-		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cd_wawe",input.getWawePolar(), dragBreakdownDistribution, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cd_wave",input.getWawePolar(), dragBreakdownDistribution, doc);
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("total_polar_curve",input.getPolarClean(), dragBreakdownDistribution, doc);
 		
 		
@@ -751,6 +750,8 @@ public class ReaderWriterWing {
 		wingCLEANAerodynamicElement.appendChild(cleanMomentElement);
 		org.w3c.dom.Element cleanMomentDistributionElement = doc.createElement("moment_distribution");
 		cleanMomentElement.appendChild(cleanMomentDistributionElement);
+		
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("eta",input.getyAdimensionalStationActual(), dragDistribution, doc);
 		
 		if (input.getNumberOfAlpha()!=0){
 			for (int i=0; i<input.getNumberOfAlpha(); i++){
@@ -765,9 +766,35 @@ public class ReaderWriterWing {
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_array", input.getAlphaVector(), cleanMomentCurveElement, doc, "°");
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("moment_curve", input.getMomentCurveClean(), cleanMomentCurveElement, doc);
 		
-		
 		}
+		org.w3c.dom.Element wingHLAerodynamicElement = doc.createElement("HIGHLIFT_configuration");
+		wingAerodynamicElement.appendChild(wingHLAerodynamicElement);
+
+		org.w3c.dom.Element liftElement = doc.createElement("lift_characteristics");
+		wingHLAerodynamicElement.appendChild(liftElement);
 		
+		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift", input.getAlphaZeroLiftHL(), liftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_alpha", input.get_cLAlphaHighLift().getEstimatedValue(), liftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_zero", input.getcLZeroHL(), liftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_star", input.getcLStarHL(), liftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_star", input.getAlphaStarHL(), liftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_max", input.getcLMaxHL(), liftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_stall", input.getAlphaStallHL(), liftElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_array", input.getAlphaVectorHL(), liftElement, doc, "°");
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("CL_curve_High_Lift", input.getClVsAlphaHighLift(), liftElement, doc);
+		
+		
+		org.w3c.dom.Element dragElement = doc.createElement("drag_characteristics");
+		wingHLAerodynamicElement.appendChild(dragElement);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("CD_curve_High_Lift", input.getPolarHighLift(), dragElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("CL_curve_High_Lift", input.getClVsAlphaHighLift(), dragElement, doc);
+		
+	
+		org.w3c.dom.Element momentElement = doc.createElement("moment_characteristics");
+		wingHLAerodynamicElement.appendChild(momentElement);
+		
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_array", input.getAlphaVectorHL(), momentElement, doc, "°");
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("CM_curve_High_Lift", input.getMomentCurveHighLift(), momentElement, doc);
 		
 	}
 
