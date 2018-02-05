@@ -57,15 +57,23 @@ import opencascade.BRepBuilderAPI_MakeSolid;
 import opencascade.BRepBuilderAPI_MakeWire;
 import opencascade.BRepBuilderAPI_Sewing;
 import opencascade.BRepBuilderAPI_Transform;
+import opencascade.BRepMesh_IncrementalMesh;
 import opencascade.BRepOffsetAPI_MakeFilling;
+import opencascade.BRepTools;
+import opencascade.BRep_Builder;
 import opencascade.BRep_Tool;
 import opencascade.GeomAPI_ProjectPointOnCurve;
 import opencascade.GeomAbs_Shape;
+import opencascade.IFSelect_ReturnStatus;
+import opencascade.STEPControl_StepModelType;
+import opencascade.STEPControl_Writer;
 import opencascade.ShapeExtend_Explorer;
+import opencascade.StlAPI_Writer;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
 import opencascade.TopTools_HSequenceOfShape;
 import opencascade.TopoDS;
+import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
 import opencascade.TopoDS_Face;
 import opencascade.TopoDS_Shape;
@@ -1746,7 +1754,7 @@ public final class AircraftUtils {
 			// Make a solid from the sewed halves
 			boolean exportSolid = true;
 			if(exportSolid) {
-				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Experimental: build a solid ...");
+				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Building the solid");
 				CADSolid solidWing = null;
 				BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
 				sewedWing.forEach(s -> {
@@ -1772,7 +1780,7 @@ public final class AircraftUtils {
 		
 		// exporting lofts
 		if(exportSolids) {
-			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] adding loft surfaces");
+			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] adding solids");
 			result.addAll(solids);
 		}
 		
@@ -1784,7 +1792,97 @@ public final class AircraftUtils {
 		return result;
 	}
 	
-	public static List<double[]> populateCoordinateList(
+	public static void getAircraftSolidFile(
+			List<OCCShape> allShapes,
+			String fileName,
+			String fileExtension
+			) {
+		
+		// filter the shapes in order to obtain just the solids
+		List<TopoDS_Shape> tdsSolids = new ArrayList<>();
+		System.out.println("========== [AircraftUtils::getAircraftSolidFile] Searching for solids");
+		allShapes.forEach(s -> {
+			TopoDS_Shape tdsShape = s.getShape();
+			TopExp_Explorer exp = new TopExp_Explorer(tdsShape, TopAbs_ShapeEnum.TopAbs_SOLID);
+			while(exp.More() > 0) {
+				tdsSolids.add(exp.Current());
+				exp.Next();
+			}
+		});
+		System.out.println("Solids found: " + tdsSolids.size());
+		
+		// choosing the file extension
+		switch(fileExtension) {
+		
+		case ".brep":
+			System.out.println("========== [AircraftUtils::getAircraftSolidFile] .brep file extension selected");
+			String fileNameBrep = fileName + fileExtension;
+			
+			BRep_Builder compoundBrep = new BRep_Builder();
+			TopoDS_Compound solidsCompoundBrep = new TopoDS_Compound();
+			compoundBrep.MakeCompound(solidsCompoundBrep);
+			tdsSolids.forEach(s -> compoundBrep.Add(solidsCompoundBrep, s));
+			
+			System.out.println(".brep file writing ...");
+			long result = BRepTools.Write(solidsCompoundBrep, fileNameBrep);
+			System.out.println("========== [AircraftUtils::getAircraftSolidFile] file correctly written? " + (result == 1)); 
+			
+			break;
+			
+		case ".step":
+			System.out.println("========== [AircraftUtils::getAircraftSolidFile] .step file extension selected");
+			String fileNameStep = fileName + fileExtension;
+			
+			STEPControl_Writer stepWriter = new STEPControl_Writer();
+			tdsSolids.forEach(s -> stepWriter.Transfer(s, STEPControl_StepModelType.STEPControl_AsIs));
+			
+			System.out.println(".step file writing ...");
+			IFSelect_ReturnStatus statusStep = stepWriter.Write(fileNameStep);
+			System.out.println("========== [AircraftUtils::getAircraftSolidFile] file status: " + statusStep);
+			
+			break;
+			
+		case ".stl":
+			System.out.println("========== [AircraftUtils::getAircraftSolidFile] .stl file extension selected");
+			String fileNameStl = fileName + fileExtension;
+			
+			BRep_Builder compoundStl = new BRep_Builder();
+			TopoDS_Compound solidsCompoundStl = new TopoDS_Compound();
+			compoundStl.MakeCompound(solidsCompoundStl);
+			
+			BRepMesh_IncrementalMesh solidMesh = new BRepMesh_IncrementalMesh();
+			StlAPI_Writer stlWriter = new StlAPI_Writer();		
+			
+			// meshing each solid separately			
+//			tdsSolids.forEach(s -> {
+//				solidMesh.SetShape(s);
+//				solidMesh.Perform();
+//				TopoDS_Shape tdsSolidMeshed = solidMesh.Shape();
+//				tdsSolidMeshed.Reverse();
+//				compoundBuilder.Add(solidsCompoundStl, tdsSolidMeshed);		
+//			});
+			
+			// meshing all the solids at the same time
+			System.out.println("creating the mesh ...");
+			tdsSolids.forEach(s -> compoundStl.Add(solidsCompoundStl, s));
+			solidMesh.SetShape(solidsCompoundStl);
+			solidMesh.Perform();
+			TopoDS_Shape tdsSolidMeshed = solidMesh.Shape();
+			tdsSolidMeshed.Reverse();
+			
+			System.out.println(".step file writing ...");
+			//stlWriter.Write(solidsCompoundStl, fileNameSTL);
+			stlWriter.Write(tdsSolidMeshed, fileNameStl);
+			System.out.println("========== [AircraftUtils::getAircraftSolidFile] file done");
+			
+			break;
+
+		default:
+			break;
+		}
+	}
+	
+	private static List<double[]> populateCoordinateList(
 			double yStation,
 			AirfoilCreator theCreator,
 			LiftingSurface theLiftingSurface
@@ -1859,7 +1957,7 @@ public final class AircraftUtils {
 		return actualAirfoilCoordinates;
 	}
 	
-	public static CADGeomCurve3D[] createVerCrvsForTipClosure(
+	private static CADGeomCurve3D[] createVerCrvsForTipClosure(
 			LiftingSurface theLiftingSurface, 
 			List<OCCEdge> tipAirfoil,
 			List<OCCEdge> preTipAirfoil,
@@ -2026,7 +2124,7 @@ public final class AircraftUtils {
 		return verSecCrvsList;
 	}
 	
-	public static CADGeomCurve3D[] createVerCrvsForTipClosure( 
+	private static CADGeomCurve3D[] createVerCrvsForTipClosure( 
 			List<OCCEdge> tipAirfoil,
 			List<OCCEdge> preTipAirfoil,
 			PVector[] leVec,
@@ -2132,7 +2230,7 @@ public final class AircraftUtils {
 		return verSecCrvsList;
 	}
 	
-	public static Double[] getThicknessAtX(AirfoilCreator airfoil, Double xChord) {
+	private static Double[] getThicknessAtX(AirfoilCreator airfoil, Double xChord) {
 		Double[] thickness = new Double[2];
 		
 		Double[] x = airfoil.getXCoords();
@@ -2190,12 +2288,12 @@ public final class AircraftUtils {
 		return thickness;
 	}
 	
-	public static Amount<Angle> getDihedralAtYActual(LiftingSurface theLiftingSurface, Double yStation) {
+	private static Amount<Angle> getDihedralAtYActual(LiftingSurface theLiftingSurface, Double yStation) {
 		if (yStation >= 0) return getDihedralSemispanAtYActual(theLiftingSurface, yStation);
 		else return getDihedralSemispanAtYActual(theLiftingSurface, -yStation);
 	}
 	
-	public static Amount<Angle> getDihedralSemispanAtYActual(LiftingSurface theLiftingSurface, Double yStation) {
+	private static Amount<Angle> getDihedralSemispanAtYActual(LiftingSurface theLiftingSurface, Double yStation) {
 		Amount<Angle> dihedralAtY = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		if(yStation < theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(0).getEstimatedValue()) {
 			System.err.println("INVALID Y STATION");
