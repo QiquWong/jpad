@@ -1017,6 +1017,12 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 		System.out.println(" CM curve " + input.getMomentCurveClean() + "\n");
 		
 		if(input.isHighLiftFlag()) {
+		System.out.println(" \n-----------HIGH LIFT RESULTS-------------- ");
+		System.out.println(" Alpha stall = " + input.getAlphaStallHL().getEstimatedValue() + " " + input.getAlphaStallHL().getUnit());
+		System.out.println(" Alpha star = " + input.getAlphaStarHL().getEstimatedValue() + " " + input.getAlphaStarHL().getUnit());
+		System.out.println(" CL max = " + input.getcLMaxHL());
+		System.out.println(" CL star = " + input.getcLStarHL());
+		System.out.println(" CL alpha = " + input.get_cLAlphaHighLift().getEstimatedValue() + " (1/deg)");
 		System.out.println(" Alpha Array for CL curve High Lift devices (deg) unit = " + input.getAlphaVector().get(0).getUnit() + " " + 
 				Arrays.toString( 
 				MyArrayUtils.convertListOfAmountTodoubleArray((input.getAlphaVectorHL()))
