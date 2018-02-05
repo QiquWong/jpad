@@ -152,6 +152,8 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
         }
         else if (adjustCriterion.equalsIgnoreCase("") ) {
 
+        	
+        	
         }
         
         continueButton.setOnAction(new EventHandler<ActionEvent>() {
