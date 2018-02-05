@@ -3733,13 +3733,23 @@ public class ACPerformanceManager {
 			
 			//------------------------------------------------------------
 			// SIMULATION
-//			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, false, vMC);
+			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, false, vMC);
+			
+			// OEI
+//			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(28.32, false, true, vMC);
+//			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(36.109, false, true, vMC);
+//			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(43.897, false, true, vMC);
+//			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(51.685, false, true, vMC);
+//			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(59.473, false, true, vMC);
+			
+			// ABORTED
 //			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(28.32, true, false, vMC);
 //			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(36.109, true, false, vMC);
 //			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(43.897, true, false, vMC);
 //			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(51.685, true, false, vMC);
-			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(59.473, true, false, vMC);
+//			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(59.473, true, false, vMC);
 
+			// OEI 
 //			// Distances:
 //			_groundRollDistanceTakeOffMap.put(
 //					xcg, 
@@ -3789,6 +3799,7 @@ public class ACPerformanceManager {
 //					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getTime().get(2)
 //					);
 			
+			// ABORTED
 			// Distances:
 			_groundRollDistanceTakeOffMap.put(
 					xcg, 
