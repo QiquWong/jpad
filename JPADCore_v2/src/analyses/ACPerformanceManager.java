@@ -3749,77 +3749,30 @@ public class ACPerformanceManager {
 //			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(51.685, true, false, vMC);
 //			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(59.473, true, false, vMC);
 
-			// OEI 
-//			// Distances:
-//			_groundRollDistanceTakeOffMap.put(
-//					xcg, 
-//					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT)
-//					);
-//			_rotationDistanceTakeOffMap.put(
-//					xcg,
-//					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(1)
-//					.minus(_groundRollDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT)
-//					);
-//			_airborneDistanceTakeOffMap.put(
-//					xcg,
-//					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(2)
-//					.minus(_rotationDistanceTakeOffMap.get(xcg))
-//					.minus(_groundRollDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT));
-//			_takeOffDistanceAEOMap.put(
-//					xcg, 
-//					_groundRollDistanceTakeOffMap.get(xcg)
-//					.plus(_rotationDistanceTakeOffMap.get(xcg))
-//					.plus(_airborneDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT));
-//			_takeOffDistanceFAR25Map.put(
-//					xcg, 
-//					_takeOffDistanceAEOMap.get(xcg).times(1.15).to(NonSI.FOOT)
-//					);
-//			
-//			// Velocities:
-//			_vStallTakeOffMap.put(
-//					xcg,
-//					_theTakeOffCalculatorMap.get(xcg).getvSTakeOff().to(NonSI.KNOT)
-//					);
-//			_vRotationMap.put(
-//					xcg, 
-//					_theTakeOffCalculatorMap.get(xcg).getvRot().to(NonSI.KNOT)
-//					);
-//			_vLiftOffMap.put(
-//					xcg, 
-//					_theTakeOffCalculatorMap.get(xcg).getvLO().to(NonSI.KNOT)
-//					);
-//			_v2Map.put(
-//					xcg, 
-//					_theTakeOffCalculatorMap.get(xcg).getV2().to(NonSI.KNOT)
-//					);
-//			
-//			// Duration:
-//			_takeOffDurationMap.put(
-//					xcg,
-//					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getTime().get(2)
-//					);
-			
-			// ABORTED
+			// AEO and OEI 
 			// Distances:
 			_groundRollDistanceTakeOffMap.put(
 					xcg, 
-					_theTakeOffCalculatorMap.get(xcg).getGroundDistance().get(_theTakeOffCalculatorMap.get(xcg).getGroundDistance().size()-1).to(NonSI.FOOT)
+					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT)
 					);
 			_rotationDistanceTakeOffMap.put(
 					xcg,
-					Amount.valueOf(0.0, NonSI.FOOT)
+					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(1)
+					.minus(_groundRollDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT)
 					);
 			_airborneDistanceTakeOffMap.put(
 					xcg,
-					Amount.valueOf(0.0, NonSI.FOOT)
-					);
+					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(2)
+					.minus(_rotationDistanceTakeOffMap.get(xcg))
+					.minus(_groundRollDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT));
 			_takeOffDistanceAEOMap.put(
 					xcg, 
-					Amount.valueOf(0.0, NonSI.FOOT)
-					);
+					_groundRollDistanceTakeOffMap.get(xcg)
+					.plus(_rotationDistanceTakeOffMap.get(xcg))
+					.plus(_airborneDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT));
 			_takeOffDistanceFAR25Map.put(
 					xcg, 
-					Amount.valueOf(0.0, NonSI.FOOT)
+					_takeOffDistanceAEOMap.get(xcg).times(1.15).to(NonSI.FOOT)
 					);
 			
 			// Velocities:
@@ -3829,22 +3782,69 @@ public class ACPerformanceManager {
 					);
 			_vRotationMap.put(
 					xcg, 
-					Amount.valueOf(0.0, NonSI.KNOT)
+					_theTakeOffCalculatorMap.get(xcg).getvRot().to(NonSI.KNOT)
 					);
 			_vLiftOffMap.put(
 					xcg, 
-					Amount.valueOf(0.0, NonSI.KNOT)
+					_theTakeOffCalculatorMap.get(xcg).getvLO().to(NonSI.KNOT)
 					);
 			_v2Map.put(
 					xcg, 
-					Amount.valueOf(0.0, NonSI.KNOT)
+					_theTakeOffCalculatorMap.get(xcg).getV2().to(NonSI.KNOT)
 					);
 			
 			// Duration:
 			_takeOffDurationMap.put(
 					xcg,
-					_theTakeOffCalculatorMap.get(xcg).getTime().get(_theTakeOffCalculatorMap.get(xcg).getTime().size()-1).to(SI.SECOND)
+					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getTime().get(2)
 					);
+			
+			// ABORTED
+			// Distances:
+//			_groundRollDistanceTakeOffMap.put(
+//					xcg, 
+//					_theTakeOffCalculatorMap.get(xcg).getGroundDistance().get(_theTakeOffCalculatorMap.get(xcg).getGroundDistance().size()-1).to(NonSI.FOOT)
+//					);
+//			_rotationDistanceTakeOffMap.put(
+//					xcg,
+//					Amount.valueOf(0.0, NonSI.FOOT)
+//					);
+//			_airborneDistanceTakeOffMap.put(
+//					xcg,
+//					Amount.valueOf(0.0, NonSI.FOOT)
+//					);
+//			_takeOffDistanceAEOMap.put(
+//					xcg, 
+//					Amount.valueOf(0.0, NonSI.FOOT)
+//					);
+//			_takeOffDistanceFAR25Map.put(
+//					xcg, 
+//					Amount.valueOf(0.0, NonSI.FOOT)
+//					);
+//			
+//			// Velocities:
+//			_vStallTakeOffMap.put(
+//					xcg,
+//					_theTakeOffCalculatorMap.get(xcg).getvSTakeOff().to(NonSI.KNOT)
+//					);
+//			_vRotationMap.put(
+//					xcg, 
+//					Amount.valueOf(0.0, NonSI.KNOT)
+//					);
+//			_vLiftOffMap.put(
+//					xcg, 
+//					Amount.valueOf(0.0, NonSI.KNOT)
+//					);
+//			_v2Map.put(
+//					xcg, 
+//					Amount.valueOf(0.0, NonSI.KNOT)
+//					);
+//			
+//			// Duration:
+//			_takeOffDurationMap.put(
+//					xcg,
+//					_theTakeOffCalculatorMap.get(xcg).getTime().get(_theTakeOffCalculatorMap.get(xcg).getTime().size()-1).to(SI.SECOND)
+//					);
 			
 		}
 		
@@ -5387,11 +5387,11 @@ public class ACPerformanceManager {
 				for(int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
 				
 					double sigma = OperatingConditions.getAtmosphere(
-							_cruiseEnvelopeListMap.get(xcg).get(i).getAltitude()
+							_thePerformanceInterface.getAltitudeListCruise().get(i).doubleValue(SI.METER)
 							).getDensity()*1000/1.225; 
 					
 					double speedOfSound = OperatingConditions.getAtmosphere(
-							_cruiseEnvelopeListMap.get(xcg).get(i).getAltitude()
+							_thePerformanceInterface.getAltitudeListCruise().get(i).doubleValue(SI.METER)
 							).getSpeedOfSound(); 
 					
 					speedListAltitudeParameterization_TAS_SI.add(
@@ -5520,11 +5520,11 @@ public class ACPerformanceManager {
 				for(int i=0; i<_weightListCruiseMap.get(xcg).size(); i++) {
 					
 					double sigma = OperatingConditions.getAtmosphere(
-							_cruiseEnvelopeListMap.get(xcg).get(i).getAltitude()
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 							).getDensity()*1000/1.225; 
 					
 					double speedOfSound = OperatingConditions.getAtmosphere(
-							_cruiseEnvelopeListMap.get(xcg).get(i).getAltitude()
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 							).getSpeedOfSound(); 
 					
 					speedListWeightParameterization_TAS_SI.add(
