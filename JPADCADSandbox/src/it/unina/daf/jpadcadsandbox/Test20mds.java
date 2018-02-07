@@ -95,6 +95,7 @@ public class Test20mds {
 //		allShapes.addAll(verTailShapes);
 		
 //		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds", ".brep");
-		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds_solids", ".stl");
+//		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds_solids", ".stl");
+		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds_solids", ".step");
 	}
 }
