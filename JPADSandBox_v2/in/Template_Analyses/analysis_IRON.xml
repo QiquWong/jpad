@@ -54,7 +54,7 @@
 			plot="TRUE"
 			create_CSV="TRUE"
 			take_off="FALSE"
-			climb="TRUE"
+			climb="FALSE"
 			cruise="FALSE"
 			descent="FALSE"
 			landing="FALSE"
