@@ -11,17 +11,17 @@
          <condition> simulation/sim-time-sec le 0.01 </condition>
          <set name="propulsion/engine[0]/set-running" value="1"/>
          <set name="propulsion/engine[1]/set-running" value="1"/>
-		 <set name="fcs/throttle-cmd-norm[1]" value="0.80"/>
-	     <set name="fcs/throttle-cmd-norm[0]" value="0.80"/>
+		 <set name="fcs/throttle-cmd-norm[1]" value="0.2"/>
+	     <set name="fcs/throttle-cmd-norm[0]" value="0.2"/>
          <notify/>
       </event>
 	  <event name="Set engines running">
          <condition> simulation/sim-time-sec gt 0.1 </condition>
-		 <set name="fcs/throttle-cmd-norm[1]" value="0.80"/>
-	     <set name="fcs/throttle-cmd-norm[0]" value="0.80"/>
+		 <set name="fcs/throttle-cmd-norm[1]" value="0.2"/>
+	     <set name="fcs/throttle-cmd-norm[0]" value="0.2"/>
          <notify/>
       </event>
-	      <event name="Repeating Notify" persistent="true">
+	  <event name="Repeating Notify" persistent="true">
         <description>Output message at X second intervals</description>
         <notify>
           <property>propulsion/engine[0]/n2</property>
@@ -40,12 +40,12 @@
 		  <property>fcs/rudder-pos-deg</property>
 		  <property>fcs/right-aileron-pos-deg</property>
 		  <property>fcs/throttle-cmd-norm</property> 	 
-		  <!--<property>aero/function/drag_coeff_basic_Mach</property>
-		  <property>aero/function/lift_coeff_basic_Mach</property>
-		  <property>aero/function/side_coeff_basic_Mach</property>
-		  <property>aero/function/pitch_coeff_basic_Mach</property>
-		  <property>aero/function/roll_coeff_basic_Mach</property>
-		  <property>aero/function/yaw_coeff_basic_Mach</property>-->
+          <!--<property>aero/forces/drag_basic_Mach</property>
+          <property>aero/forces/side_basic_Mach</property>
+          <property>aero/forces/lift_basic_Mach</property>
+          <property>aero/forces/roll_basic_Mach</property>
+          <property>aero/forces/pitch_basic_Mach</property>
+          <property>aero/forces/yaw_basic_Mach</property>-->
 	      <property>aero/qbar-area</property>
 	      <property>aero/alpha-deg</property>
           <property>aero/beta-deg</property>

@@ -2,6 +2,7 @@ package standaloneutils.jsbsim;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -90,6 +91,52 @@ public class JSBSimUtils {
 		
 	}
 	
+	public static String convertDoubleArrayAsString(double[] vector) {
+
+		StringBuffer result = new StringBuffer();
+
+		// iterate over the first dimension
+		for (int i = 0; i < vector.length; i++) {
+					result.append(vector[i]);
+					result.append("\t");
+		}
+		result.append("\n");
+		return result.toString();
+	}
+	
+	
+	public static void createCheckFileTXT(String dirPath, List<String> aeroData, double[] machVector,
+			double[] reynoldsVector, double[] alphaVector, double[] betaVector, String name ) 
+					throws IOException, TransformerException, ParserConfigurationException {
+		System.out.println(dirPath);
+		String filePath = dirPath+"/"+name+".txt";
+		FileWriter writer = new FileWriter(filePath); 
+		writer.write(convertDoubleArrayAsString(machVector));
+		writer.write(convertDoubleArrayAsString(reynoldsVector));
+		writer.write(convertDoubleArrayAsString(betaVector));
+		writer.write(convertDoubleArrayAsString(alphaVector));
+		for(int i = 0; i< aeroData.size();i++) {
+		  writer.write(aeroData.get(i));
+		}
+		writer.close();
+	}
+	
+	public static void createCheckFileControlSurfaceTXT(String dirPath, List<String> aeroData, double[] machVector,
+			double[] reynoldsVector, double[] alphaVector, double[] betaVector, double[] deflectionVector, String axis ) 
+					throws IOException, TransformerException, ParserConfigurationException {
+		System.out.println(dirPath);
+		String filePath = dirPath+"/"+axis+".txt";
+		FileWriter writer = new FileWriter(filePath); 
+		writer.write(convertDoubleArrayAsString(machVector));
+		writer.write(convertDoubleArrayAsString(reynoldsVector));
+		writer.write(convertDoubleArrayAsString(betaVector));
+		writer.write(convertDoubleArrayAsString(alphaVector));
+		writer.write(convertDoubleArrayAsString(deflectionVector));
+		for(int i = 0; i< aeroData.size();i++) {
+		  writer.write(aeroData.get(i));
+		}
+		writer.close();
+	}
 	
 	private static Document writeThrusterJetXML() throws ParserConfigurationException {
 		DocumentBuilderFactory docFactorythruster = DocumentBuilderFactory.newInstance();
@@ -624,6 +671,63 @@ public class JSBSimUtils {
 	}
 	
 	
+	public static Element createAeroDataBodyAxisElementSimplify (Document doc, org.w3c.dom.Element outputElement,List<String> aeroData,
+			int machDimension, double[] machVector, String axis, org.w3c.dom.Element axisElement, org.w3c.dom.Element aeroElement, String check) {
+		aeroElement.appendChild(axisElement);
+		//FORCE		
+		org.w3c.dom.Element forceFunctionElement = 
+				doc.createElement("function");
+		forceFunctionElement.setAttribute("name", "aero/forces/"+axis+"_basic_Mach");
+		axisElement.appendChild(forceFunctionElement);
+		if (check.equals("latero")) {
+			JPADStaticWriteUtils.writeSingleNode(
+					"description",axis+" force due to beta and Mach number",forceFunctionElement,doc);	
+		}
+		if (check.equals("longitudinal")) {
+			JPADStaticWriteUtils.writeSingleNode(
+					"description",axis+" force due to alpha and Mach number",forceFunctionElement,doc);	
+		}
+		org.w3c.dom.Element productElement = 
+				doc.createElement("product");
+		forceFunctionElement.appendChild(productElement);
+		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-psf",productElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("property","metrics/Sw-sqft",productElement,doc);
+		if ((axis.equals("roll"))||(axis.equals("yaw"))) {
+			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productElement,doc);
+		}
+		if (axis.equals("pitch")) {
+			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productElement,doc);
+		}
+		
+		org.w3c.dom.Element tableElement = doc.createElement("table");
+		
+		productElement.appendChild(tableElement);
+		if (check.equals("latero")) {
+			org.w3c.dom.Element rowElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+					doc, "independentVar", "aero/beta-rad", 
+					3, 6, Tuple.of("lookup", "row"));
+			tableElement.appendChild(rowElement);	
+		}
+		if (check.equals("longitudinal")) {
+			org.w3c.dom.Element rowElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+					doc, "independentVar", "aero/alpha-rad", 
+					3, 6, Tuple.of("lookup", "row"));
+			tableElement.appendChild(rowElement);
+		}
+
+		org.w3c.dom.Element columnElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "velocities/mach", 
+				3, 6, Tuple.of("lookup", "column"));
+		tableElement.appendChild(columnElement);
+
+		
+		JPADStaticWriteUtils.writeSingleNode("tableData",aeroData.get(0),tableElement,doc);
+		//Output element
+		//JPADStaticWriteUtils.writeSingleNode("property","aero/function/"+axis+"_coeff_basic_Mach",outputElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("property","aero/forces/"+axis+"_basic_Mach",outputElement,doc);
+		return axisElement;
+	}
+	
 	public static Element createAeroDataBodyAxisControlSurfaceElement(
 			Document doc, List<String> deltaAeroDataDeflection, int machDimension, double[] machVector, String axis,
 			org.w3c.dom.Element axisElement, double[] deflection, String controlSurfaceUID, org.w3c.dom.Element outputElement, org.w3c.dom.Element aeroElement) {
@@ -688,7 +792,6 @@ public class JSBSimUtils {
 							doc, "independentVar", "fcs/right-"+controlSurfaceUID+"-pos-deg", 
 							3, 6, Tuple.of("lookup", "column"));
 					tableElement.appendChild(columnElement);
-
 				}
 				else if(controlSurfaceUID.equals("flap_inner")) {
 					org.w3c.dom.Element columnElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(

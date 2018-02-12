@@ -42,7 +42,7 @@ public final class CPACSUtils {
 			// iterate over the second dimension
 			for(int j = 0; j < matrix[i].length; j++){
 				if(i==0&&j==0) {
-					result.append("\n 	");
+					result.append("\n \t");
 				}
 				else {
 					result.append(matrix[i][j]);
