@@ -1735,7 +1735,7 @@ public class WingAnalysisCalculator {
 					yADold);
 
 	
-			alphaZeroLiftDistributionHighLiftFinalAmount.set(i,
+			alphaZeroLiftDistributionHighLiftFinalAmount.add(i,
 					Amount.valueOf(
 					alphaZeroLiftDistributionHighLiftFinal[i],
 					SI.RADIAN)
@@ -1816,8 +1816,8 @@ public class WingAnalysisCalculator {
 		List<Amount<Angle>> aolDistributionHighLiftFinalAmount = new ArrayList<>();
 		
 		for (int i=0; i< twistDistributionHighLiftFinal.length; i++) {
-			twistDistributionHighLiftFinalAmount.set(i, Amount.valueOf(twistDistributionHighLiftFinal[i], SI.RADIAN));
-			aolDistributionHighLiftFinalAmount.set(i, Amount.valueOf(alphaZeroLiftDistributionHighLiftFinal[i], SI.RADIAN));
+			twistDistributionHighLiftFinalAmount.add(i, Amount.valueOf(twistDistributionHighLiftFinal[i], SI.RADIAN));
+			aolDistributionHighLiftFinalAmount.add(i, Amount.valueOf(alphaZeroLiftDistributionHighLiftFinal[i], SI.RADIAN));
 		}
 		
 		theNasaBlackwellHIGHLIFTCalculator = new  calculators.aerodynamics.NasaBlackwell(

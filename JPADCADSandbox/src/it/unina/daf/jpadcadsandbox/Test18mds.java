@@ -33,10 +33,10 @@ public class Test18mds {
 //		LiftingSurface verTail = theAircraft.getVTail();
 		
 		boolean exportLofts = true;
-		boolean exportSupportShapes = true;
+		boolean exportSolids = true;
+		boolean exportSupportShapes = true;	
 		
-		
-		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING,1e-2, exportLofts, exportSupportShapes);
+		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING,1e-2, exportLofts, exportSolids, exportSupportShapes);
 //		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, exportLofts, exportSupportShapes);
 //		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, exportLofts, exportSupportShapes);
 		

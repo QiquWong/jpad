@@ -12,6 +12,7 @@
                 <surface unit="m²">83.15</surface>
                 <aspect_ratio>9.43</aspect_ratio>
                 <number_of_point_semispan>100</number_of_point_semispan>
+				<adimensional_kink_station>0.399</adimensional_kink_station>
 				<momentum_pole>0.2</momentum_pole> <!-- with respect to MAC -->
              </global>
              <distribution>

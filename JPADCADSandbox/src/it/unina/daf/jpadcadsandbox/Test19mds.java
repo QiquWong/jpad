@@ -33,10 +33,10 @@ public class Test19mds {
 		LiftingSurface horTail = theAircraft.getHTail();
 		LiftingSurface verTail = theAircraft.getVTail();
 		
-		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, true, true);
-		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-2, true, true);
-		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, true, true);
-		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-2, true, true);
+		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, true, true);	
+		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, true, true, true);
+		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, true, true, true);
+		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, true, true, true);
 		
 		// Write to a file
 		String fileName = "test19mds.brep";

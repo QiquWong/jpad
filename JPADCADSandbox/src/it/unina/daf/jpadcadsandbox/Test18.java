@@ -22,9 +22,10 @@ public class Test18 {
 		LiftingSurface wing = theAircraft.getWing();
 		
 		boolean exportLofts = true;
+		boolean exportSolids = true;
 		boolean exportSupportShapes = true;
 
-		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-2, true, true);
+		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-2, exportLofts, exportSolids, exportSupportShapes);
 
 		// Write to a file
 		String fileName = "test18.brep";

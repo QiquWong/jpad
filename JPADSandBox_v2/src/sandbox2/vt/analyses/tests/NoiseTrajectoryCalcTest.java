@@ -309,7 +309,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 			
 			//......................................................................
 			Amount<Length> xEndSimulation = Amount.valueOf(8000, SI.METER);
-			Amount<Length> cutbackAltitude = Amount.valueOf(984, NonSI.FOOT);
+			Amount<Length> cutbackAltitude = Amount.valueOf(984, NonSI.FOOT); //  also to be done at 1000ft and 2000ft
 			int numberOfThrustSettingCutback = 3;
 			Amount<Mass> maxTakeOffMass = Amount.valueOf(54500, SI.KILOGRAM);
 			Double[] polarCLTakeOff = new Double[] {-1.024064237,-0.882750413,-0.741378289,-0.599943427,-0.458441424,-0.316867914,-0.175218573,-0.033489115,0.108324705,0.250227087,0.392222187,0.534314117,0.676640473,0.818668509,0.960722621,1.102937968,1.245474454,1.388346414,1.531385114,1.674589688,1.818061748,1.961717376,2.105583653,2.249660071,2.392645609,2.512647424,2.592665502,2.616980286};
