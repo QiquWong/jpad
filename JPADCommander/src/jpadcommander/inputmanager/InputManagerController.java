@@ -6129,7 +6129,8 @@ public class InputManagerController {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// FUSELAGE ADJUST DIALOG
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		if (!fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
+		if (fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem() != null
+				&& !fuselageAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
 			
 			//................................................................................................
 			// ASSIGNING TEXTFIELDS STYLE ...
@@ -6215,7 +6216,8 @@ public class InputManagerController {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// WING ADJUST DIALOG
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		if (!wingAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
+		if (wingAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem() != null
+				&& !wingAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
 			
 			//................................................................................................
 			// ASSIGNING TEXTFIELDS STYLE ...
@@ -6377,7 +6379,8 @@ public class InputManagerController {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// HORIZONTAL TAIL ADJUST DIALOG
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		if (!hTailAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
+		if (hTailAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem() != null
+				&& !hTailAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
 			
 			//................................................................................................
 			// ASSIGNING TEXTFIELDS STYLE ...
@@ -6481,7 +6484,8 @@ public class InputManagerController {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// VERTICAL TAIL ADJUST DIALOG
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		if (!vTailAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
+		if (vTailAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem() != null
+				&& !vTailAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
 			
 			//................................................................................................
 			// ASSIGNING TEXTFIELDS STYLE ...
@@ -6585,106 +6589,107 @@ public class InputManagerController {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// CANARD ADJUST DIALOG
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		if (!canardAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
-//			
-//			//................................................................................................
-//			// ASSIGNING TEXTFIELDS STYLE ...
-//			textFieldCanardSpanPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
-//			textFieldCanardSweepLEPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
-//			textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
-//			textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
-//
-//			//................................................................................................
-//			// ADJUSTING MEASURES ...
-//			Stage canardAdjustCriterionDialog = new LiftingSurfaceAdjustCriterionDialog(
-//					Main.getPrimaryStage(), 
-//					canardAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem(),
-//					ComponentEnum.CANARD
-//					);
-//			canardAdjustCriterionDialog.sizeToScene();
-//			canardAdjustCriterionDialog.initStyle(StageStyle.UNDECORATED);
-//			canardAdjustCriterionDialog.showAndWait();
-//
-//			//.................................................................................................
-//			// REMOVING TEXTFIELDS STYLE ...
-//			textFieldCanardSpanPanelList.stream().forEach(tf -> tf.setStyle(""));
-//			textFieldCanardSweepLEPanelList.stream().forEach(tf -> tf.setStyle(""));
-//			textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(""));
-//			textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(""));
-//
-//			//.................................................................................................
-//			// SETTING NEW MEASURE DATA TO TEXTFIELDS ...
-//			for (int i=0; i<Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().size(); i++) {
-//				
-//				LiftingSurfacePanelCreator currentPanel = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().get(i);
-//				
-//				textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(""));
-//				textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(""));
-//				
-//				//---------------------------------------------------------------------------------
-//				// PANEL SPAN:
-//				if(currentPanel.getSpan() != null) {
-//					
-//					textFieldCanardSpanPanelList.get(i).setText(
-//							String.valueOf(currentPanel.getSpan().getEstimatedValue())
-//							);
-//					
-//					if(currentPanel.getSpan().getUnit().toString().equalsIgnoreCase("m"))
-//						choiceBoxCanardSpanPanelUnitList.get(i).getSelectionModel().select(0);
-//					else if(currentPanel.getSpan().getUnit().toString().equalsIgnoreCase("ft"))
-//						choiceBoxCanardSpanPanelUnitList.get(i).getSelectionModel().select(1);
-//					
-//				}
-//				
-//				//---------------------------------------------------------------------------------
-//				// SWEEP LE:
-//				if(currentPanel.getSweepLeadingEdge() != null) {
-//					
-//					textFieldCanardSweepLEPanelList.get(i).setText(
-//							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
-//							);
-//					
-//					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
-//							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
-//						choiceBoxCanardSweepLEPanelUnitList.get(i).getSelectionModel().select(0);
-//					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
-//						choiceBoxCanardSweepLEPanelUnitList.get(i).getSelectionModel().select(1);
-//					
-//				}
-//				
-//				//---------------------------------------------------------------------------------
-//				// INNER CHORD (ROOT):
-//				if(currentPanel.getChordRoot() != null) {
-//					
-//					textFieldCanardInnerChordPanelList.get(i).setText(
-//							String.valueOf(currentPanel.getChordRoot().getEstimatedValue())
-//							);
-//					
-//					if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("m"))
-//						choiceBoxCanardInnerChordPanelUnitList.get(i).getSelectionModel().select(0);
-//					else if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("ft"))
-//						choiceBoxCanardInnerChordPanelUnitList.get(i).getSelectionModel().select(1);
-//					
-//				}
-//				
-//				//---------------------------------------------------------------------------------
-//				// OUTER CHORD (TIP):
-//				if(currentPanel.getChordTip() != null) {
-//					
-//					textFieldCanardOuterChordPanelList.get(i).setText(
-//							String.valueOf(currentPanel.getChordTip().getEstimatedValue())
-//							);
-//					
-//					if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("m"))
-//						choiceBoxCanardOuterChordPanelUnitList.get(i).getSelectionModel().select(0);
-//					else if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("ft"))
-//						choiceBoxCanardOuterChordPanelUnitList.get(i).getSelectionModel().select(1);
-//					
-//				}
-//				
-//			}
-//			
-//		}
+		if (canardAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem() != null
+				&& !canardAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
+			
+			//................................................................................................
+			// ASSIGNING TEXTFIELDS STYLE ...
+			textFieldCanardSpanPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+			textFieldCanardSweepLEPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+			textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+			textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+
+			//................................................................................................
+			// ADJUSTING MEASURES ...
+			Stage canardAdjustCriterionDialog = new LiftingSurfaceAdjustCriterionDialog(
+					Main.getPrimaryStage(), 
+					canardAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem(),
+					ComponentEnum.CANARD
+					);
+			canardAdjustCriterionDialog.sizeToScene();
+			canardAdjustCriterionDialog.initStyle(StageStyle.UNDECORATED);
+			canardAdjustCriterionDialog.showAndWait();
+
+			//.................................................................................................
+			// REMOVING TEXTFIELDS STYLE ...
+			textFieldCanardSpanPanelList.stream().forEach(tf -> tf.setStyle(""));
+			textFieldCanardSweepLEPanelList.stream().forEach(tf -> tf.setStyle(""));
+			textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(""));
+			textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(""));
+
+			//.................................................................................................
+			// SETTING NEW MEASURE DATA TO TEXTFIELDS ...
+			for (int i=0; i<Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().size(); i++) {
+				
+				LiftingSurfacePanelCreator currentPanel = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().get(i);
+				
+				textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(""));
+				textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(""));
+				
+				//---------------------------------------------------------------------------------
+				// PANEL SPAN:
+				if(currentPanel.getSpan() != null) {
+					
+					textFieldCanardSpanPanelList.get(i).setText(
+							String.valueOf(currentPanel.getSpan().getEstimatedValue())
+							);
+					
+					if(currentPanel.getSpan().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxCanardSpanPanelUnitList.get(i).getSelectionModel().select(0);
+					else if(currentPanel.getSpan().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxCanardSpanPanelUnitList.get(i).getSelectionModel().select(1);
+					
+				}
+				
+				//---------------------------------------------------------------------------------
+				// SWEEP LE:
+				if(currentPanel.getSweepLeadingEdge() != null) {
+					
+					textFieldCanardSweepLEPanelList.get(i).setText(
+							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
+							);
+					
+					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
+						choiceBoxCanardSweepLEPanelUnitList.get(i).getSelectionModel().select(0);
+					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
+						choiceBoxCanardSweepLEPanelUnitList.get(i).getSelectionModel().select(1);
+					
+				}
+				
+				//---------------------------------------------------------------------------------
+				// INNER CHORD (ROOT):
+				if(currentPanel.getChordRoot() != null) {
+					
+					textFieldCanardInnerChordPanelList.get(i).setText(
+							String.valueOf(currentPanel.getChordRoot().getEstimatedValue())
+							);
+					
+					if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxCanardInnerChordPanelUnitList.get(i).getSelectionModel().select(0);
+					else if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxCanardInnerChordPanelUnitList.get(i).getSelectionModel().select(1);
+					
+				}
+				
+				//---------------------------------------------------------------------------------
+				// OUTER CHORD (TIP):
+				if(currentPanel.getChordTip() != null) {
+					
+					textFieldCanardOuterChordPanelList.get(i).setText(
+							String.valueOf(currentPanel.getChordTip().getEstimatedValue())
+							);
+					
+					if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("m"))
+						choiceBoxCanardOuterChordPanelUnitList.get(i).getSelectionModel().select(0);
+					else if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("ft"))
+						choiceBoxCanardOuterChordPanelUnitList.get(i).getSelectionModel().select(1);
+					
+				}
+				
+			}
+			
+		}
 		
 		Service updateAircraftDataService = new Service() {
 
@@ -8426,8 +8431,344 @@ public class InputManagerController {
 
 	private void updateWingTabData() {
 		
-		// TODO: AFTER MATHCING ADJUST CRITERION WITH THE DATA MODEL
-        //       REMEMBER TO UPDATE THE FUEL TANK TOO		      
+		//.................................................................................................
+		// DATA INITIALIZATION
+		//.................................................................................................
+		boolean wingEquivalentFlag = false;
+		String wingMainSparLoacation = "";
+		String wingSecondarySparLocation = "";
+		String wingCompositeCorrectionFactor = "";
+		String wingRoughness = "";
+		String wingRoughnessUnit = "";
+		String wingWingletHeigth = "";
+		String wingWingletHeightUnit = "";
+		//.................................................................................................
+		String wingEquivalentArea = "";
+		String wingEquivalentAreaUnit = "";
+		String wingEquivalentAspectRatio = "";
+		String fuselageNoseTipOffsetUnit = "";
+		String wingEquivalentKinkEtaStation = "";
+		String wingEquivalentSweepLE = "";
+		String wingEquivalentSweepLEUnit = "";
+		String wingEquivalentTwistAtTip = "";
+		String wingEquivalentTwistAtTipUnit = "";
+		String wingEquivalentDihedralAngle = "";
+		String wingEquivalentDihedralAngleUnit = "";
+		String wingEquivalentTaperRatio = "";
+		String wingEquivalentXOffsetRootLE = "";
+		String wingEquivalentXOffsetRootLEUnit = "";
+		String wingEquivalentXOffsetRootTE = "";
+		String wingEquivalentXOffsetRootTEUnit = "";
+		String wingEquivalentAirfoilRootPath = "";
+		String wingEquivalentAirfoilKinkPath = "";
+		String wingEquivalentAirfoilTipPath = "";
+		//.................................................................................................
+		List<String> wingPanelsSpanList = new ArrayList<>();
+		List<String> wingPanelsSpanUnitList = new ArrayList<>();
+		List<String> wingPanelsSweepLEList = new ArrayList<>();
+		List<String> wingPanelsSweepLEUnitList = new ArrayList<>();
+		List<String> wingPanelsDihedralList = new ArrayList<>();
+		List<String> wingPanelsDihedralUnitList = new ArrayList<>();
+		List<String> wingPanelsInnerChordList = new ArrayList<>();
+		List<String> wingPanelsInnerChordUnitList = new ArrayList<>();
+		List<String> wingPanelsTwistList = new ArrayList<>();
+		List<String> wingPanelsTwistUnitList = new ArrayList<>();
+		
+		//TODO: CONTINUE FROM HERE
+		
+		//.................................................................................................
+		// FETCHING DATA FROM GUI FIELDS ...
+		//.................................................................................................
+//		if(fuselagePressurizedCheckBox.isSelected())
+//			fuselagePressurizedFlag = true;
+//		if(textFieldFuselageDeckNumber.getText() != null)
+//			fuselageDeckNumber = textFieldFuselageDeckNumber.getText();
+//		if(textFieldFuselageLength.getText() != null)
+//			fuselageLength = textFieldFuselageLength.getText();
+//		if(!fuselageLengthUnitChoiceBox.getSelectionModel().isEmpty())
+//			fuselageLengthUnit = fuselageLengthUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+//		if(textFieldFuselageSurfaceRoughness.getText() != null)
+//			fuselageRoughness = textFieldFuselageSurfaceRoughness.getText();
+//		if(!fuselageRoughnessUnitChoiceBox.getSelectionModel().isEmpty())
+//			fuselageRoughnessUnit = fuselageRoughnessUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+//		//.................................................................................................
+//		if(textFieldFuselageNoseLengthRatio.getText() != null)
+//			fuselageNoseLengthRatio = textFieldFuselageNoseLengthRatio.getText();
+//		if(textFieldFuselageNoseTipOffset.getText() != null)
+//			fuselageNoseTipOffset = textFieldFuselageNoseTipOffset.getText();
+//		if(!fuselageNoseTipOffsetZUnitChoiceBox.getSelectionModel().isEmpty())
+//			fuselageNoseTipOffsetUnit = fuselageNoseTipOffsetZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+//		if(textFieldFuselageNoseDxCap.getText() != null)
+//			fuselageNoseDxCapPercent = textFieldFuselageNoseDxCap.getText();
+//		if(!windshieldTypeChoiceBox.getSelectionModel().isEmpty())
+//			fuselageNoseWindshieldType = windshieldTypeChoiceBox.getSelectionModel().getSelectedItem().toString();
+//		if(textFieldFuselageNoseWindshieldWidth.getText() != null)
+//			fuselageNoseWindshieldWidth = textFieldFuselageNoseWindshieldWidth.getText();
+//		if(!fuselageWindshieldWidthUnitChoiceBox.getSelectionModel().isEmpty())
+//			fuselageNoseWindshieldWidthUnit = fuselageWindshieldWidthUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+//		if(textFieldFuselageNoseWindshieldWidth.getText() != null)
+//			fuselageNoseWindshieldWidth = textFieldFuselageNoseWindshieldWidth.getText();
+//		if(!fuselageWindshieldWidthUnitChoiceBox.getSelectionModel().isEmpty())
+//			fuselageNoseWindshieldWidthUnit = fuselageWindshieldWidthUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+//		if(textFieldFuselageNoseWindshieldHeight.getText() != null)
+//			fuselageNoseWindshieldHeigth = textFieldFuselageNoseWindshieldHeight.getText();
+//		if(!fuselageWindshieldHeightUnitChoiceBox.getSelectionModel().isEmpty())
+//			fuselageNoseWindshieldHeightUnit = fuselageWindshieldHeightUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+//		if(textFieldFuselageNoseMidSectionHeight.getText() != null)
+//			fuselageNoseMidSectionToTotalSectionHeightRatio = textFieldFuselageNoseMidSectionHeight.getText();
+//		if(textFieldFuselageNoseMidSectionRhoUpper.getText() != null)
+//			fuselageNoseSectionRhoUpper = textFieldFuselageNoseMidSectionRhoUpper.getText();
+//		if(textFieldFuselageNoseMidSectionRhoLower.getText() != null)
+//			fuselageNoseSectionRhoLower = textFieldFuselageNoseMidSectionRhoLower.getText();
+//		//.................................................................................................
+//		if(textFieldFuselageCylinderLengthRatio.getText() != null)
+//			fuselageCylinderLengthRatio = textFieldFuselageCylinderLengthRatio.getText();
+//		if(textFieldFuselageCylinderSectionWidth.getText() != null)
+//			fuselageCylinderSectionWidth = textFieldFuselageCylinderSectionWidth.getText();
+//		if(!fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().isEmpty())
+//			fuselageCylinderSectionWidthUnit = fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+//		if(textFieldFuselageCylinderSectionHeight.getText() != null)
+//			fuselageCylinderSectionHeight = textFieldFuselageCylinderSectionHeight.getText();
+//		if(!fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().isEmpty())
+//			fuselageCylinderSectionHeigthUnit = fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+//		if(textFieldFuselageCylinderHeightFromGround.getText() != null)
+//			fuselageCylinderHeigthFromGround = textFieldFuselageCylinderHeightFromGround.getText();
+//		if(!fuselageHeightFromGroundUnitChoiceBox.getSelectionModel().isEmpty())
+//			fuselageCylinderHeigthFromGroundUnit = fuselageHeightFromGroundUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+//		if(textFieldFuselageCylinderSectionHeightRatio.getText() != null)
+//			fuselageCylinderMidSectionToTotalSectionHeightRatio = textFieldFuselageCylinderSectionHeightRatio.getText();
+//		if(textFieldFuselageCylinderSectionRhoUpper.getText() != null)
+//			fuselageCylinderSectionRhoUpper = textFieldFuselageCylinderSectionRhoUpper.getText();
+//		if(textFieldFuselageCylinderSectionRhoLower.getText() != null)
+//			fuselageCylinderSectionRhoLower = textFieldFuselageCylinderSectionRhoLower.getText();
+//		//.................................................................................................
+//		if(textFieldFuselageTailTipOffset.getText() != null)
+//			fuselageTailTipOffset = textFieldFuselageTailTipOffset.getText();
+//		if(!fuselageTailTipOffsetZUnitChoiceBox.getSelectionModel().isEmpty())
+//			fuselageTailTipOffsetUnit = fuselageTailTipOffsetZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+//		if(textFieldFuselageTailDxCap.getText() != null)
+//			fuselageTailDxCapPercent = textFieldFuselageTailDxCap.getText();
+//		if(textFieldFuselageTailMidSectionHeight.getText() != null)
+//			fuselageTailMidSectionToTotalSectionHeightRatio = textFieldFuselageTailMidSectionHeight.getText();
+//		if(textFieldFuselageTailMidRhoLower.getText() != null)
+//			fuselageTailSectionRhoUpper = textFieldFuselageTailMidRhoUpper.getText();
+//		if(textFieldFuselageTailMidRhoLower.getText() != null)
+//			fuselageTailSectionRhoLower = textFieldFuselageTailMidRhoLower.getText();
+//		//.................................................................................................
+//		if(!textFieldFuselageInnerSpanwisePositionSpoilerList.isEmpty())
+//			textFieldFuselageInnerSpanwisePositionSpoilerList.stream()
+//			.filter(tf -> !tf.getText().isEmpty())
+//			.forEach(tf -> fuselageSpoilersInnerSpanwisePositionList.add(tf.getText()));
+//		if(!textFieldFuselageOuterSpanwisePositionSpoilerList.isEmpty())
+//			textFieldFuselageOuterSpanwisePositionSpoilerList.stream()
+//			.filter(tf -> !tf.getText().isEmpty())
+//			.forEach(tf -> fuselageSpoilersOuterSpanwisePositionList.add(tf.getText()));
+//		if(!textFieldFuselageInnerChordwisePositionSpoilerList.isEmpty())
+//			textFieldFuselageInnerChordwisePositionSpoilerList.stream()
+//			.filter(tf -> !tf.getText().isEmpty())
+//			.forEach(tf -> fuselageSpoilersInnerChordwisePositionList.add(tf.getText()));
+//		if(!textFieldFuselageOuterChordwisePositionSpoilerList.isEmpty())
+//			textFieldFuselageOuterChordwisePositionSpoilerList.stream()
+//			.filter(tf -> !tf.getText().isEmpty())
+//			.forEach(tf -> fuselageSpoilersOuterChordwisePositionList.add(tf.getText()));
+//		if(!textFieldFuselageMaximumDeflectionAngleSpoilerList.isEmpty())
+//			textFieldFuselageMaximumDeflectionAngleSpoilerList.stream()
+//			.filter(tf -> !tf.getText().isEmpty())
+//			.forEach(tf -> fuselageSpoilersMaximumDeflectionAngleList.add(tf.getText()));
+//		if(!choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList.isEmpty())
+//			choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList.stream()
+//			.filter(cb -> !cb.getSelectionModel().isEmpty())
+//			.forEach(cb -> fuselageSpoilersMaximumDeflectionAngleUnitList.add(cb.getSelectionModel().getSelectedItem()));
+//		if(!textFieldFuselageMinimumDeflectionAngleSpoilerList.isEmpty())
+//			textFieldFuselageMinimumDeflectionAngleSpoilerList.stream()
+//			.filter(tf -> !tf.getText().isEmpty())
+//			.forEach(tf -> fuselageSpoilersMinimumDeflectionAngleList.add(tf.getText()));
+//		if(!choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList.isEmpty())
+//			choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList.stream()
+//			.filter(cb -> !cb.getSelectionModel().isEmpty())
+//			.forEach(cb -> fuselageSpoilersMinimumDeflectionAngleUnitList.add(cb.getSelectionModel().getSelectedItem()));
+//		
+//		//.................................................................................................
+//		// FILTERING FILLED SPOILERS TABS ...
+//		//.................................................................................................
+//		int numberOfFilledFuselageSpoilerTabs = Arrays.asList(
+//				fuselageSpoilersInnerSpanwisePositionList.size(),
+//				fuselageSpoilersOuterSpanwisePositionList.size(),
+//				fuselageSpoilersInnerChordwisePositionList.size(),
+//				fuselageSpoilersOuterChordwisePositionList.size(),
+//				fuselageSpoilersMaximumDeflectionAngleList.size(),
+//				fuselageSpoilersMaximumDeflectionAngleUnitList.size(),
+//				fuselageSpoilersMinimumDeflectionAngleList.size(),
+//				fuselageSpoilersMinimumDeflectionAngleUnitList.size()
+//				).stream()
+//				.mapToInt(size -> size)
+//				.min()
+//				.getAsInt();
+//
+//		if (numberOfFilledFuselageSpoilerTabs > 0) {
+//			if (tabPaneFuselageSpoilers.getTabs().size() > numberOfFilledFuselageSpoilerTabs) {
+//
+//				Platform.runLater(new Runnable() {
+//
+//					@Override
+//					public void run() {
+//
+//						//..................................................................................
+//						// FUSELAGE SPOILERS UPDATE WARNING
+//						Stage fuselageSpoilersUpdateWarning = new Stage();
+//
+//						fuselageSpoilersUpdateWarning.setTitle("Fuselage Spoiler Update Warning");
+//						fuselageSpoilersUpdateWarning.initModality(Modality.WINDOW_MODAL);
+//						fuselageSpoilersUpdateWarning.initStyle(StageStyle.UNDECORATED);
+//						fuselageSpoilersUpdateWarning.initOwner(Main.getPrimaryStage());
+//
+//						FXMLLoader loader = new FXMLLoader();
+//						loader.setLocation(Main.class.getResource("inputmanager/UpdateFuselageSpoilersWarning.fxml"));
+//						BorderPane fuselageSpoilersUpdateWarningBorderPane = null;
+//						try {
+//							fuselageSpoilersUpdateWarningBorderPane = loader.load();
+//						} catch (IOException e) {
+//							e.printStackTrace();
+//						}
+//
+//						Button continueButton = (Button) fuselageSpoilersUpdateWarningBorderPane.lookup("#warningContinueButton");
+//						continueButton.setOnAction(new EventHandler<ActionEvent>() {
+//
+//							@Override
+//							public void handle(ActionEvent arg0) {
+//								fuselageSpoilersUpdateWarning.close();
+//							}
+//
+//						});
+//
+//						Scene scene = new Scene(fuselageSpoilersUpdateWarningBorderPane);
+//						fuselageSpoilersUpdateWarning.setScene(scene);
+//						fuselageSpoilersUpdateWarning.sizeToScene();
+//						fuselageSpoilersUpdateWarning.show();
+//
+//					}
+//				});
+//
+//			}
+//		}
+//		//.................................................................................................
+//		// SETTING ALL DATA INSIDE THE AIRCRAFT OBJECT ...
+//		//.................................................................................................
+//		List<SpoilerCreator> spoilersList = new ArrayList<>();
+//		
+//		for (int i=0; i<numberOfFilledFuselageSpoilerTabs; i++) {
+//		
+//			spoilersList.add(
+//					new SpoilerCreator.SpoilerBuilder(
+//							"Fuselage Spoiler " + (i+1) + " - " + Main.getTheAircraft().getId(), 
+//							Double.valueOf(fuselageSpoilersInnerSpanwisePositionList.get(i)), 
+//							Double.valueOf(fuselageSpoilersOuterSpanwisePositionList.get(i)), 
+//							Double.valueOf(fuselageSpoilersInnerChordwisePositionList.get(i)), 
+//							Double.valueOf(fuselageSpoilersOuterChordwisePositionList.get(i)), 
+//							(Amount<Angle>) Amount.valueOf(
+//									Double.valueOf(fuselageSpoilersMinimumDeflectionAngleList.get(i)),
+//									Unit.valueOf(fuselageSpoilersMinimumDeflectionAngleUnitList.get(i))
+//									),
+//							(Amount<Angle>) Amount.valueOf(
+//									Double.valueOf(fuselageSpoilersMaximumDeflectionAngleList.get(i)), 
+//									Unit.valueOf(fuselageSpoilersMaximumDeflectionAngleUnitList.get(i))
+//									)
+//							).build()
+//					);
+//		}
+//		
+//		FuselageCreator fuselageCreator = new FuselageCreator.FuselageBuilder("Fuselage Creator - " + Main.getTheAircraft().getId())
+//				// TOP LEVEL
+//				.pressurized(fuselagePressurizedFlag)
+//				//GLOBAL DATA
+//				.length(
+//						(Amount<Length>) Amount.valueOf(
+//								Double.valueOf(fuselageLength),
+//								Unit.valueOf(fuselageLengthUnit)
+//								)
+//						)
+//				.deckNumber(Integer.valueOf(fuselageDeckNumber))
+//				.roughness(
+//						(Amount<Length>) Amount.valueOf(
+//								Double.valueOf(fuselageRoughness),
+//								Unit.valueOf(fuselageRoughnessUnit)
+//								)
+//						)
+//				// NOSE TRUNK
+//				.dxNoseCapPercent(Double.valueOf(fuselageNoseDxCapPercent))
+//				.heightN(
+//						(Amount<Length>) Amount.valueOf(
+//								Double.valueOf(fuselageNoseTipOffset),
+//								Unit.valueOf(fuselageNoseTipOffsetUnit)
+//								)
+//						)
+//				.lenRatioNF(Double.valueOf(fuselageNoseLengthRatio))
+//				.sectionMidNoseRhoLower(Double.valueOf(fuselageNoseSectionRhoUpper))
+//				.sectionMidNoseRhoUpper(Double.valueOf(fuselageNoseSectionRhoLower))
+//				.sectionNoseMidLowerToTotalHeightRatio(Double.valueOf(fuselageNoseMidSectionToTotalSectionHeightRatio))
+//				.windshieldType(WindshieldTypeEnum.valueOf(fuselageNoseWindshieldType))
+//				.windshieldHeight(
+//						(Amount<Length>) Amount.valueOf(
+//								Double.valueOf(fuselageNoseWindshieldHeigth),
+//								Unit.valueOf(fuselageNoseWindshieldHeightUnit)
+//								)
+//						)
+//				.windshieldWidth(
+//						(Amount<Length>) Amount.valueOf(
+//								Double.valueOf(fuselageNoseWindshieldWidth),
+//								Unit.valueOf(fuselageNoseWindshieldWidthUnit)
+//								)
+//						)
+//				// CYLINDRICAL TRUNK
+//				.lenRatioCF(Double.valueOf(fuselageCylinderLengthRatio))
+//				.sectionCylinderHeight(
+//						(Amount<Length>) Amount.valueOf(
+//								Double.valueOf(fuselageCylinderSectionHeight),
+//								Unit.valueOf(fuselageCylinderSectionHeigthUnit)
+//								)
+//						)
+//				.sectionCylinderWidth(
+//						(Amount<Length>) Amount.valueOf(
+//								Double.valueOf(fuselageCylinderSectionWidth),
+//								Unit.valueOf(fuselageCylinderSectionWidthUnit)
+//								)
+//						)
+//				.heightFromGround(
+//						(Amount<Length>) Amount.valueOf(
+//								Double.valueOf(fuselageCylinderHeigthFromGround),
+//								Unit.valueOf(fuselageCylinderHeigthFromGroundUnit)
+//								)
+//						)
+//				.sectionCylinderLowerToTotalHeightRatio(Double.valueOf(fuselageCylinderMidSectionToTotalSectionHeightRatio))
+//				.sectionCylinderRhoLower(Double.valueOf(fuselageCylinderSectionRhoLower))
+//				.sectionCylinderRhoUpper(Double.valueOf(fuselageCylinderSectionRhoUpper))
+//				// TAIL TRUNK
+//				.heightT(
+//						(Amount<Length>) Amount.valueOf(
+//								Double.valueOf(fuselageTailTipOffset),
+//								Unit.valueOf(fuselageTailTipOffsetUnit)
+//								)
+//						)
+//				.dxTailCapPercent(Double.valueOf(fuselageTailDxCapPercent))
+//				.sectionMidTailRhoLower(Double.valueOf(fuselageTailSectionRhoLower))
+//				.sectionMidTailRhoUpper(Double.valueOf(fuselageTailSectionRhoUpper))
+//				.sectionTailMidLowerToTotalHeightRatio(Double.valueOf(fuselageTailMidSectionToTotalSectionHeightRatio))
+//				.build();
+//		
+//		// SPOILERS
+//		fuselageCreator.setSpoilers(spoilersList);
+//		
+//		Main.getTheAircraft().setFuselage(
+//				new Fuselage.FuselageBuilder(
+//						"Fuselage",
+//						fusDesDatabaseReader
+//						)
+//				.fuselageCreator(fuselageCreator)
+//				.build()
+//				);
+//		Main.getTheAircraft().getFuselage().getFuselageCreator().calculateGeometry();
+//		
+//	}  
 		
 	}
 	

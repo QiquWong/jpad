@@ -2817,6 +2817,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		_equivalentWing.addPanel(equivalentWingPanel);
 		_equivalentWing.setXOffsetEquivalentWingRootLE(xOffsetEquivalentWingRootLE);
 		_equivalentWing.setXOffsetEquivalentWingRootTE(xOffsetEquivalentWingRootTE);
+		_equivalentWing.setNonDimensionalSpanStationKink(this._etaBP.get(1));
+		_equivalentWing.setTwistAtKinkRealWing(this._twistsBreakPoints.get(1));
 		
 		return _equivalentWing;
 	}

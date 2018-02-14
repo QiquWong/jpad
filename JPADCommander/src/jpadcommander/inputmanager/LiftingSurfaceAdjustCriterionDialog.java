@@ -92,7 +92,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getAspectRatio()
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getAspectRatio()
 										)
 						);
 			else
@@ -101,7 +101,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getPanels().get(0).getAspectRatio()
+										2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
 										)
 						);
 				

@@ -119,6 +119,74 @@ public class InputManagerControllerMainActionUtilities {
 		
 		//..................................................................................
 		// AIRCRAFT
+		cleanAircraftData();
+		//..................................................................................
+		// FUSELAGE
+		cleanFuselageData();
+		//..................................................................................
+		// CABIN CONFIGURATION
+		cleanCabinConfigurationData();
+		//..................................................................................
+		// WING
+		cleanWingData();
+		//..................................................................................
+		// HTAIL
+		cleanHTailData();
+		//..................................................................................
+		// VTAIL
+		cleanVTailData();
+		//..................................................................................
+		// CANARD
+		cleanCanardData();
+		//..................................................................................
+		// NACELLE
+		cleanNacelleData();
+		//..................................................................................
+		// POWER PLANT
+		cleanPowerPlantData();
+		//..................................................................................
+		// LANDING GEARS
+		cleanLandingGearsData();
+		
+		Main.setTheAircraft(null);
+
+		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
+		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
+		
+		try {
+			aircraftSavedFlag.set(Main.getAircraftSaved());
+			theController.getSaveAircraftButton().disableProperty().bind(
+					Bindings.equal(aircraftSavedFlag, true).or(Bindings.isNull(aircraft))
+					);
+		} catch (Exception e) {
+			theController.getSaveAircraftButton().setDisable(true);
+		}
+
+		try {
+			theController.getUpdateAircraftDataButton().disableProperty().bind(
+					Bindings.isNull(aircraft)
+					);
+			theController.getUpdateAircraftDataFromFileComboBox().disableProperty().bind(
+					Bindings.isNull(aircraft)
+					);
+		} catch (Exception e) {
+			theController.getUpdateAircraftDataButton().setDisable(true);
+			theController.getUpdateAircraftDataFromFileComboBox().setDisable(true);
+		}
+		
+		try {
+			aircraft.set(Main.getTheAircraft());
+			theController.getNewAircraftButton().disableProperty().bind(
+					Bindings.isNull(aircraft)
+					);
+		} catch (Exception e) {
+			theController.getNewAircraftButton().setDisable(true);
+		}
+
+	}
+
+	private void cleanAircraftData() {
+		
 		theController.getAircraftTypeChoiceBox().getSelectionModel().clearSelection();
 		theController.getRegulationsTypeChoiceBox().getSelectionModel().clearSelection();
 		
@@ -245,8 +313,10 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getAircraftSideViewPane().getChildren().clear();
 		theController.getAircraftFrontViewPane().getChildren().clear();
 		
-		//..................................................................................
-		// FUSELAGE
+	}
+	
+	private void cleanFuselageData() {
+		
 		theController.getFuselageAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
 		theController.getFuselageAdjustCriterionChoiceBox().setDisable(true);
 		
@@ -313,8 +383,11 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getFuselageSideViewPane().getChildren().clear();
 		theController.getFuselageFrontViewPane().getChildren().clear();
 
-		//..................................................................................
-		// CABIN CONFIGURATION
+		
+	}
+	
+	private void cleanCabinConfigurationData() {
+		
 		theController.getTextFieldActualPassengersNumber().clear();
 		theController.getTextFieldMaximumPassengersNumber().clear();
 		theController.getTextFieldFlightCrewNumber().clear();
@@ -362,8 +435,10 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getTextAreaCabinConfigurationConsoleOutput().clear();
 		theController.getCabinConfigurationSeatMapPane().getChildren().clear();
 		
-		//..................................................................................
-		// WING
+	}
+	
+	private void cleanWingData() {
+		
 		theController.getWingAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
 		theController.getEquivalentWingCheckBox().setSelected(false);
 		theController.getTextFieldWingMainSparAdimensionalPosition().clear();
@@ -558,8 +633,10 @@ public class InputManagerControllerMainActionUtilities {
 			theController.getChoiceBoxWingMaximumDeflectionAngleSpoilerUnitList().subList(1, theController.getChoiceBoxWingMaximumDeflectionAngleSpoilerUnitList().size()).clear();
 		theController.getTabPaneWingSpoilers().getTabs().remove(1, theController.getTabPaneWingSpoilers().getTabs().size());
 		
-		//..................................................................................
-		// HTAIL
+	}
+	
+	private void cleanHTailData() {
+		
 		theController.gethTailAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
 		theController.getTextFieldHTailCompositeMassCorrectionFactor().clear();
 		theController.getTextFieldHTailRoughness().clear();
@@ -656,8 +733,10 @@ public class InputManagerControllerMainActionUtilities {
 			theController.getChoiceBoxHTailMinimumDeflectionAngleElevatorUnitList().subList(1, theController.getChoiceBoxHTailMinimumDeflectionAngleElevatorUnitList().size()).clear();
 		theController.getTabPaneHTailElevators().getTabs().remove(1, theController.getTabPaneHTailElevators().getTabs().size());
 		
-		//..................................................................................
-		// VTAIL
+	}
+	
+	private void cleanVTailData() {
+		
 		theController.getvTailAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
 		theController.getTextFieldVTailCompositeMassCorrectionFactor().clear();
 		theController.getTextFieldVTailRoughness().clear();
@@ -754,8 +833,10 @@ public class InputManagerControllerMainActionUtilities {
 			theController.getChoiceBoxVTailMinimumDeflectionAngleRudderUnitList().subList(1, theController.getChoiceBoxVTailMinimumDeflectionAngleRudderUnitList().size()).clear();
 		theController.getTabPaneVTailRudders().getTabs().remove(1, theController.getTabPaneVTailRudders().getTabs().size());
 		
-		//..................................................................................
-		// CANARD
+	}
+	
+	private void cleanCanardData() {
+		
 		theController.getCanardAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
 		theController.getTextFieldCanardCompositeMassCorrectionFactor().clear();
 		theController.getTextFieldCanardRoughness().clear();
@@ -852,8 +933,10 @@ public class InputManagerControllerMainActionUtilities {
 			theController.getChoiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList().subList(1, theController.getChoiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList().size()).clear();
 		theController.getTabPaneCanardControlSurfaces().getTabs().remove(1, theController.getTabPaneCanardControlSurfaces().getTabs().size());
 		
-		//..................................................................................
-		// NACELLE
+	}
+	
+	private void cleanNacelleData() {
+		
 		theController.getTextFieldNacelleRoughness1().clear();
 		theController.getNacelleRoughnessUnitChoiceBox1().getSelectionModel().clearSelection();
 		theController.getTextFieldNacelleLength1().clear();
@@ -895,9 +978,10 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getTabPaneNacellesSideViews().getTabs().remove(1, theController.getTabPaneNacellesSideViews().getTabs().size());
 		theController.getTabPaneNacellesFrontViews().getTabs().remove(1, theController.getTabPaneNacellesFrontViews().getTabs().size());
 		
+	}
+	
+	private void cleanPowerPlantData() {
 		
-		//..................................................................................
-		// POWER PLANT
 		theController.getTextAreaPowerPlantConsoleOutput().clear();
 		
 		theController.getPowerPlantJetRadioButtonList().subList(1, theController.getTabPaneEngines().getTabs().size()).clear();
@@ -954,7 +1038,6 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getPowerPlantEngineTypePaneMap().get(i).get(EngineTypeEnum.TURBOPROP).getChildren().clear();
 			if (theController.getPowerPlantEngineTypePaneMap().get(i).containsKey(EngineTypeEnum.PISTON)) 
 				theController.getPowerPlantEngineTypePaneMap().get(i).get(EngineTypeEnum.PISTON).getChildren().clear();
-			theController.getPowerPlantBorderPaneMap().remove(i);
 			theController.getPowerPlantPaneMap().remove(i);
 		}
 		
@@ -964,10 +1047,12 @@ public class InputManagerControllerMainActionUtilities {
 		
 		theController.getTabPaneEngines().getTabs().remove(1, theController.getTabPaneEngines().getTabs().size());
 		
-		//..................................................................................
-		// LANDING GEARS
-		theController.getTextAreaLandingGearsConsoleOutput().clear();
+	}
+	
+	private void cleanLandingGearsData() {
 		
+		theController.getTextAreaLandingGearsConsoleOutput().clear();
+
 		theController.getTextFieldLandingGearsMainLegLength().clear();
 		theController.getTextFieldLandingGearsKMainLegLength().clear();
 		theController.getTextFieldLandingGearsNumberOfFrontalWheels().clear();
@@ -985,43 +1070,8 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getLandingGearsRearWheelsHeigthUnitChoiceBox().getSelectionModel().clearSelection();
 		theController.getLandingGearsRearWheelsWidthUnitChoiceBox().getSelectionModel().clearSelection();
 		
-		Main.setTheAircraft(null);
-
-		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
-		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
-		
-		try {
-			aircraftSavedFlag.set(Main.getAircraftSaved());
-			theController.getSaveAircraftButton().disableProperty().bind(
-					Bindings.equal(aircraftSavedFlag, true).or(Bindings.isNull(aircraft))
-					);
-		} catch (Exception e) {
-			theController.getSaveAircraftButton().setDisable(true);
-		}
-
-		try {
-			theController.getUpdateAircraftDataButton().disableProperty().bind(
-					Bindings.isNull(aircraft)
-					);
-			theController.getUpdateAircraftDataFromFileComboBox().disableProperty().bind(
-					Bindings.isNull(aircraft)
-					);
-		} catch (Exception e) {
-			theController.getUpdateAircraftDataButton().setDisable(true);
-			theController.getUpdateAircraftDataFromFileComboBox().setDisable(true);
-		}
-		
-		try {
-			aircraft.set(Main.getTheAircraft());
-			theController.getNewAircraftButton().disableProperty().bind(
-					Bindings.isNull(aircraft)
-					);
-		} catch (Exception e) {
-			theController.getNewAircraftButton().setDisable(true);
-		}
-
 	}
-
+	
 	@SuppressWarnings({ "rawtypes" })
 	public void loadAircraftFileImplementation() throws IOException, InterruptedException {
 		
@@ -1032,6 +1082,21 @@ public class InputManagerControllerMainActionUtilities {
 			}
 		});
 		System.setOut(filterStream);
+		
+		if(Main.getTheAircraft() != null) {
+			
+			cleanAircraftData();
+			cleanFuselageData();
+			cleanCabinConfigurationData();
+			cleanWingData();
+			cleanHTailData();
+			cleanVTailData();
+			cleanCanardData();
+			cleanNacelleData();
+			cleanPowerPlantData();
+			cleanLandingGearsData();
+			
+		}
 		
 		Service loadAircraftService = new Service() {
 
@@ -6897,25 +6962,10 @@ public class InputManagerControllerMainActionUtilities {
 								)
 						);
 			}
-			else {
+			else 
 				theController.getTextFieldEquivalentWingKinkPosition().setText(
-						String.valueOf(
-								Main.getTheAircraft()
-								.getWing()
-								.getLiftingSurfaceCreator()
-								.getEtaBreakPoints()
-								.get(1)
-								)
-
+						"NOT INITIALIZED"
 						);
-				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().setNonDimensionalSpanStationKink(
-						Main.getTheAircraft()
-						.getWing()
-						.getLiftingSurfaceCreator()
-						.getEtaBreakPoints()
-						.get(1)
-						);
-			}
 			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING SWEEP LE:
