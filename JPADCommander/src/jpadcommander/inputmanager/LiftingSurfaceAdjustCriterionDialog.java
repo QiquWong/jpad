@@ -85,44 +85,80 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAspectRatioLabel, 0, 1);
 			liftingSurfaceAspectRatioTextField = new TextField();
 			gridpane.add(liftingSurfaceAspectRatioTextField, 1, 1);
-			Label currentLiftingSurfaceAspectRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getAspectRatio()
-									)
-					);
+			Label currentLiftingSurfaceAspectRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				 currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getAspectRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getAspectRatio()
+										)
+						);
+				
 			gridpane.add(currentLiftingSurfaceAspectRatioLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceSpanLabel = new Label("Span:");
 			gridpane.add(liftingSurfaceSpanLabel, 0, 2);
 			liftingSurfaceSpanTextField = new TextField();
 			gridpane.add(liftingSurfaceSpanTextField, 1, 2);
-			Label currentLiftingSurfaceSpanLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceSpanLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceSpanLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceRootChordLabel = new Label("Root Chord:");
 			gridpane.add(liftingSurfaceRootChordLabel, 0, 3);
 			liftingSurfaceRootChordTextField = new TextField();
 			gridpane.add(liftingSurfaceRootChordTextField, 1, 3);
-			Label currentLiftingSurfaceRootChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceRootChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceRootChordLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -134,15 +170,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
-							Double.valueOf(liftingSurfaceSpanTextField.getText()),
-							Double.valueOf(liftingSurfaceRootChordTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AR_SPAN_ROOTCHORD
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_SPAN_ROOTCHORD
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_SPAN_ROOTCHORD
+								);
 					close();
 
 				}
@@ -155,46 +202,83 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAspectRatioLabel, 0, 1);
 			liftingSurfaceAspectRatioTextField = new TextField();
 			gridpane.add(liftingSurfaceAspectRatioTextField, 1, 1);
-			Label currentLiftingSurfaceAspectRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
-									)
-					);
+			Label currentLiftingSurfaceAspectRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getAspectRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceAspectRatioLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceSpanLabel = new Label("Span:");
 			gridpane.add(liftingSurfaceSpanLabel, 0, 2);
 			liftingSurfaceSpanTextField = new TextField();
 			gridpane.add(liftingSurfaceSpanTextField, 1, 2);
-			Label currentLiftingSurfaceSpanLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceSpanLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceSpanLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTipChordLabel = new Label("Tip Chord:");
 			gridpane.add(liftingSurfaceTipChordLabel, 0, 3);
 			liftingSurfaceTipChordTextField = new TextField();
 			gridpane.add(liftingSurfaceTipChordTextField, 1, 3);
-			Label currentLiftingSurfaceTipChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels()
-									.get(currentLiftingSurface.getPanels().size()-1)
-									.getChordTip().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceTipChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceTipChordLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -206,15 +290,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
-							Double.valueOf(liftingSurfaceSpanTextField.getText()),
-							Double.valueOf(liftingSurfaceTipChordTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AR_SPAN_TIPCHORD
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_SPAN_TIPCHORD
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_SPAN_TIPCHORD
+								);
 					close();
 
 				}
@@ -228,43 +323,77 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAspectRatioLabel, 0, 1);
 			liftingSurfaceAspectRatioTextField = new TextField();
 			gridpane.add(liftingSurfaceAspectRatioTextField, 1, 1);
-			Label currentLiftingSurfaceAspectRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
-									)
-					);
+			Label currentLiftingSurfaceAspectRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getAspectRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceAspectRatioLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceSpanLabel = new Label("Span:");
 			gridpane.add(liftingSurfaceSpanLabel, 0, 2);
 			liftingSurfaceSpanTextField = new TextField();
 			gridpane.add(liftingSurfaceSpanTextField, 1, 2);
-			Label currentLiftingSurfaceSpanLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceSpanLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceSpanLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTaperRatioLabel = new Label("Taper Ratio:");
 			gridpane.add(liftingSurfaceTaperRatioLabel, 0, 3);
 			liftingSurfaceTaperRatioTextField= new TextField();
 			gridpane.add(liftingSurfaceTaperRatioTextField, 1, 3);
-			Label currentLiftingSurfaceTaperRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getTaperRatio()
-									)
-					);
+			Label currentLiftingSurfaceTaperRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTaperRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getTaperRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceTaperRatioLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -276,15 +405,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
-							Double.valueOf(liftingSurfaceSpanTextField.getText()),
-							Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AR_SPAN_TAPER
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_SPAN_TAPER
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_SPAN_TAPER
+								);
 					close();
 
 				}
@@ -298,44 +438,79 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAspectRatioLabel, 0, 1);
 			liftingSurfaceAspectRatioTextField = new TextField();
 			gridpane.add(liftingSurfaceAspectRatioTextField, 1, 1);
-			Label currentLiftingSurfaceAspectRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
-									)
-					);
+			Label currentLiftingSurfaceAspectRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getAspectRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceAspectRatioLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceAreaLabel = new Label("Area:");
 			gridpane.add(liftingSurfaceAreaLabel, 0, 2);
 			liftingSurfaceAreaTextField = new TextField();
 			gridpane.add(liftingSurfaceAreaTextField, 1, 2);
-			Label currentLiftingSurfaceAreaLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
-									)
-							+ " m²"
-					);
+			Label currentLiftingSurfaceAreaLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
+			else
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceRootChordLabel = new Label("Root Chord:");
 			gridpane.add(liftingSurfaceRootChordLabel, 0, 3);
 			liftingSurfaceRootChordTextField = new TextField();
 			gridpane.add(liftingSurfaceRootChordTextField, 1, 3);
-			Label currentLiftingSurfaceRootChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceRootChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceRootChordLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -347,15 +522,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
-							Double.valueOf(liftingSurfaceAreaTextField.getText()),
-							Double.valueOf(liftingSurfaceRootChordTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AR_AREA_ROOTCHORD
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_AREA_ROOTCHORD
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_AREA_ROOTCHORD
+								);
 					close();
 
 				}
@@ -369,46 +555,83 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAspectRatioLabel, 0, 1);
 			liftingSurfaceAspectRatioTextField = new TextField();
 			gridpane.add(liftingSurfaceAspectRatioTextField, 1, 1);
-			Label currentLiftingSurfaceAspectRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
-									)
-					);
+			Label currentLiftingSurfaceAspectRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getAspectRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceAspectRatioLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceAreaLabel = new Label("Area:");
 			gridpane.add(liftingSurfaceAreaLabel, 0, 2);
 			liftingSurfaceAreaTextField = new TextField();
 			gridpane.add(liftingSurfaceAreaTextField, 1, 2);
-			Label currentLiftingSurfaceAreaLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
-									)
-							+ " m²"
-					);
+			Label currentLiftingSurfaceAreaLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
+			else
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTipChordLabel = new Label("Tip Chord:");
 			gridpane.add(liftingSurfaceTipChordLabel, 0, 3);
 			liftingSurfaceTipChordTextField = new TextField();
 			gridpane.add(liftingSurfaceTipChordTextField, 1, 3);
-			Label currentLiftingSurfaceTipChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels()
-									.get(currentLiftingSurface.getPanels().size()-1)
-									.getChordTip().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceTipChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceTipChordLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -420,15 +643,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
-							Double.valueOf(liftingSurfaceAreaTextField.getText()),
-							Double.valueOf(liftingSurfaceTipChordTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AR_AREA_TIPCHORD
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_AREA_TIPCHORD
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_AREA_TIPCHORD
+								);
 					close();
 
 				}
@@ -442,43 +676,77 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAspectRatioLabel, 0, 1);
 			liftingSurfaceAspectRatioTextField = new TextField();
 			gridpane.add(liftingSurfaceAspectRatioTextField, 1, 1);
-			Label currentLiftingSurfaceAspectRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
-									)
-					);
+			Label currentLiftingSurfaceAspectRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getAspectRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceAspectRatioLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceAreaLabel = new Label("Area:");
 			gridpane.add(liftingSurfaceAreaLabel, 0, 2);
 			liftingSurfaceAreaTextField = new TextField();
 			gridpane.add(liftingSurfaceAreaTextField, 1, 2);
-			Label currentLiftingSurfaceAreaLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
-									)
-							+ " m²"
-					);
+			Label currentLiftingSurfaceAreaLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
+			else
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTaperRatioLabel = new Label("Taper Ratio:");
 			gridpane.add(liftingSurfaceTaperRatioLabel, 0, 3);
 			liftingSurfaceTaperRatioTextField= new TextField();
 			gridpane.add(liftingSurfaceTaperRatioTextField, 1, 3);
-			Label currentLiftingSurfaceTaperRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getTaperRatio()
-									)
-					);
+			Label currentLiftingSurfaceTaperRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTaperRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getTaperRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceTaperRatioLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -490,15 +758,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
-							Double.valueOf(liftingSurfaceAreaTextField.getText()),
-							Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AR_AREA_TAPER
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_AREA_TAPER
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_AREA_TAPER
+								);
 					close();
 
 				}
@@ -512,46 +791,83 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAspectRatioLabel, 0, 1);
 			liftingSurfaceAspectRatioTextField = new TextField();
 			gridpane.add(liftingSurfaceAspectRatioTextField, 1, 1);
-			Label currentLiftingSurfaceAspectRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
-									)
-					);
+			Label currentLiftingSurfaceAspectRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getAspectRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceAspectRatioLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceRootChordLabel = new Label("Root Chord:");
 			gridpane.add(liftingSurfaceRootChordLabel, 0, 2);
 			liftingSurfaceRootChordTextField = new TextField();
 			gridpane.add(liftingSurfaceRootChordTextField, 1, 2);
-			Label currentLiftingSurfaceRootChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceRootChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceRootChordLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTipChordLabel = new Label("Tip Chord:");
 			gridpane.add(liftingSurfaceTipChordLabel, 0, 3);
 			liftingSurfaceTipChordTextField= new TextField();
 			gridpane.add(liftingSurfaceTipChordTextField, 1, 3);
-			Label currentLiftingSurfaceTipChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels()
-									.get(currentLiftingSurface.getPanels().size()-1)
-									.getChordTip().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceTipChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceTipChordLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -563,15 +879,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
-							Double.valueOf(liftingSurfaceRootChordTextField.getText()),
-							Double.valueOf(liftingSurfaceTipChordTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
+								);
 					close();
 
 				}
@@ -585,43 +912,77 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAspectRatioLabel, 0, 1);
 			liftingSurfaceAspectRatioTextField = new TextField();
 			gridpane.add(liftingSurfaceAspectRatioTextField, 1, 1);
-			Label currentLiftingSurfaceAspectRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
-									)
-					);
+			Label currentLiftingSurfaceAspectRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getAspectRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceAspectRatioLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceRootChordLabel = new Label("Root Chord:");
 			gridpane.add(liftingSurfaceRootChordLabel, 0, 2);
 			liftingSurfaceRootChordTextField = new TextField();
 			gridpane.add(liftingSurfaceRootChordTextField, 1, 2);
-			Label currentLiftingSurfaceRootChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceRootChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceRootChordLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTaperRatioLabel = new Label("Taper Ratio:");
 			gridpane.add(liftingSurfaceTaperRatioLabel, 0, 3);
 			liftingSurfaceTaperRatioTextField= new TextField();
 			gridpane.add(liftingSurfaceTaperRatioTextField, 1, 3);
-			Label currentLiftingSurfaceTaperRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getTaperRatio()
-									)
-					);
+			Label currentLiftingSurfaceTaperRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTaperRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getTaperRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceTaperRatioLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -633,15 +994,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
-							Double.valueOf(liftingSurfaceRootChordTextField.getText()),
-							Double.valueOf(liftingSurfaceTaperRatioLabel.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AR_ROOTCHORD_TAPER
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioLabel.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_ROOTCHORD_TAPER
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
+								);
 					close();
 
 				}
@@ -655,45 +1027,81 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAspectRatioLabel, 0, 1);
 			liftingSurfaceAspectRatioTextField = new TextField();
 			gridpane.add(liftingSurfaceAspectRatioTextField, 1, 1);
-			Label currentLiftingSurfaceAspectRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
-									)
-					);
+			Label currentLiftingSurfaceAspectRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getAspectRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceAspectRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getAspectRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceAspectRatioLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceTipChordLabel = new Label("Tip Chord:");
 			gridpane.add(liftingSurfaceTipChordLabel, 0, 2);
 			liftingSurfaceTipChordTextField = new TextField();
 			gridpane.add(liftingSurfaceTipChordTextField, 1, 2);
-			Label currentLiftingSurfaceTipChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels()
-									.get(currentLiftingSurface.getPanels().size()-1)
-									.getChordTip().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceTipChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceTipChordLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTaperRatioLabel = new Label("Taper Ratio:");
 			gridpane.add(liftingSurfaceTaperRatioLabel, 0, 3);
 			liftingSurfaceTaperRatioTextField= new TextField();
 			gridpane.add(liftingSurfaceTaperRatioTextField, 1, 3);
-			Label currentLiftingSurfaceTaperRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getTaperRatio()
-									)
-					);
+			Label currentLiftingSurfaceTaperRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTaperRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getTaperRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceTaperRatioLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -705,15 +1113,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
-							Double.valueOf(liftingSurfaceTipChordTextField.getText()),
-							Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AR_TIPCHORD_TAPER
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_TIPCHORD_TAPER
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
+								);
 					close();
 
 				}
@@ -727,45 +1146,81 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceSpanLabel, 0, 1);
 			liftingSurfaceSpanTextField = new TextField();
 			gridpane.add(liftingSurfaceSpanTextField, 1, 1);
-			Label currentLiftingSurfaceSpanLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceSpanLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceSpanLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceAreaLabel = new Label("Area:");
 			gridpane.add(liftingSurfaceAreaLabel, 0, 2);
 			liftingSurfaceAreaTextField = new TextField();
 			gridpane.add(liftingSurfaceAreaTextField, 1, 2);
-			Label currentLiftingSurfaceAreaLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
-									)
-							+ " m²"
-					);
+			Label currentLiftingSurfaceAreaLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
+			else
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceRootChordLabel = new Label("Root Chord:");
 			gridpane.add(liftingSurfaceRootChordLabel, 0, 3);
 			liftingSurfaceRootChordTextField= new TextField();
 			gridpane.add(liftingSurfaceRootChordTextField, 1, 3);
-			Label currentLiftingSurfaceRootChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceRootChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceRootChordLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -777,15 +1232,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceSpanTextField.getText()),
-							Double.valueOf(liftingSurfaceAreaTextField.getText()),
-							Double.valueOf(liftingSurfaceRootChordTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.SPAN_AREA_ROOTCHORD
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_AREA_ROOTCHORD
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_AREA_ROOTCHORD
+								);
 					close();
 
 				}
@@ -799,47 +1265,85 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceSpanLabel, 0, 1);
 			liftingSurfaceSpanTextField = new TextField();
 			gridpane.add(liftingSurfaceSpanTextField, 1, 1);
-			Label currentLiftingSurfaceSpanLabel = new Label(
+			Label currentLiftingSurfaceSpanLabel = null;
+			if(type.equals(ComponentEnum.WING))
+			currentLiftingSurfaceSpanLabel = new Label(
 					"Current value: " 
 							+ String.format(
 									Locale.ROOT,
 									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
+									2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSpan().doubleValue(SI.METER)
 									)
 							+ " m"
 					);
+			else
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceSpanLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceAreaLabel = new Label("Area:");
 			gridpane.add(liftingSurfaceAreaLabel, 0, 2);
 			liftingSurfaceAreaTextField = new TextField();
 			gridpane.add(liftingSurfaceAreaTextField, 1, 2);
-			Label currentLiftingSurfaceAreaLabel = new Label(
+			Label currentLiftingSurfaceAreaLabel = null;
+			if(type.equals(ComponentEnum.WING))
+			currentLiftingSurfaceAreaLabel = new Label(
 					"Current value: " 
 							+ String.format(
 									Locale.ROOT,
 									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+									2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 									)
 							+ " m²"
 					);
+			else
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTipChordLabel = new Label("Tip Chord:");
 			gridpane.add(liftingSurfaceTipChordLabel, 0, 3);
 			liftingSurfaceTipChordTextField= new TextField();
 			gridpane.add(liftingSurfaceTipChordTextField, 1, 3);
-			Label currentLiftingSurfaceTipChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels()
-									.get(currentLiftingSurface.getPanels().size()-1)
-									.getChordTip().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceTipChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceTipChordLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -851,15 +1355,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceSpanTextField.getText()),
-							Double.valueOf(liftingSurfaceAreaTextField.getText()),
-							Double.valueOf(liftingSurfaceTipChordTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.SPAN_AREA_TIPCHORD
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_AREA_TIPCHORD
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_AREA_TIPCHORD
+								);
 					close();
 
 				}
@@ -873,44 +1388,79 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceSpanLabel, 0, 1);
 			liftingSurfaceSpanTextField = new TextField();
 			gridpane.add(liftingSurfaceSpanTextField, 1, 1);
-			Label currentLiftingSurfaceSpanLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceSpanLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceSpanLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceAreaLabel = new Label("Area:");
 			gridpane.add(liftingSurfaceAreaLabel, 0, 2);
 			liftingSurfaceAreaTextField = new TextField();
 			gridpane.add(liftingSurfaceAreaTextField, 1, 2);
-			Label currentLiftingSurfaceAreaLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
-									)
-							+ " m²"
-					);
+			Label currentLiftingSurfaceAreaLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
+			else
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTaperRatioLabel = new Label("Taper Ratio:");
 			gridpane.add(liftingSurfaceTaperRatioLabel, 0, 3);
 			liftingSurfaceTaperRatioTextField= new TextField();
 			gridpane.add(liftingSurfaceTaperRatioTextField, 1, 3);
-			Label currentLiftingSurfaceTaperRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getTaperRatio()
-									)
-					);
+			Label currentLiftingSurfaceTaperRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTaperRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getTaperRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceTaperRatioLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -922,15 +1472,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceSpanTextField.getText()),
-							Double.valueOf(liftingSurfaceAreaTextField.getText()),
-							Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.SPAN_AREA_TAPER
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_AREA_TAPER
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_AREA_TAPER
+								);
 					close();
 
 				}
@@ -944,47 +1505,85 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceSpanLabel, 0, 1);
 			liftingSurfaceSpanTextField = new TextField();
 			gridpane.add(liftingSurfaceSpanTextField, 1, 1);
-			Label currentLiftingSurfaceSpanLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceSpanLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceSpanLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceRootChordLabel = new Label("Root Chord:");
 			gridpane.add(liftingSurfaceRootChordLabel, 0, 2);
 			liftingSurfaceRootChordTextField = new TextField();
 			gridpane.add(liftingSurfaceRootChordTextField, 1, 2);
-			Label currentLiftingSurfaceRootChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceRootChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceRootChordLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTipChordLabel = new Label("Tip Chord:");
 			gridpane.add(liftingSurfaceTipChordLabel, 0, 3);
 			liftingSurfaceTipChordTextField= new TextField();
 			gridpane.add(liftingSurfaceTipChordTextField, 1, 3);
-			Label currentLiftingSurfaceTipChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels()
-									.get(currentLiftingSurface.getPanels().size()-1)
-									.getChordTip().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceTipChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceTipChordLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -996,15 +1595,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceSpanTextField.getText()),
-							Double.valueOf(liftingSurfaceRootChordTextField.getText()),
-							Double.valueOf(liftingSurfaceTipChordTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.SPAN_ROOTCHORD_TIPCHORD
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_ROOTCHORD_TIPCHORD
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_AREA_TAPER
+								);
 					close();
 
 				}
@@ -1018,44 +1628,79 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceSpanLabel, 0, 1);
 			liftingSurfaceSpanTextField = new TextField();
 			gridpane.add(liftingSurfaceSpanTextField, 1, 1);
-			Label currentLiftingSurfaceSpanLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceSpanLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceSpanLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceRootChordLabel = new Label("Root Chord:");
 			gridpane.add(liftingSurfaceRootChordLabel, 0, 2);
 			liftingSurfaceRootChordTextField = new TextField();
 			gridpane.add(liftingSurfaceRootChordTextField, 1, 2);
-			Label currentLiftingSurfaceRootChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceRootChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceRootChordLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTaperRatioLabel = new Label("Taper Ratio:");
 			gridpane.add(liftingSurfaceTaperRatioLabel, 0, 3);
 			liftingSurfaceTaperRatioTextField= new TextField();
 			gridpane.add(liftingSurfaceTaperRatioTextField, 1, 3);
-			Label currentLiftingSurfaceTaperRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getTaperRatio()
-									)
-					);
+			Label currentLiftingSurfaceTaperRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTaperRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getTaperRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceTaperRatioLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -1067,15 +1712,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceSpanTextField.getText()),
-							Double.valueOf(liftingSurfaceRootChordTextField.getText()),
-							Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.SPAN_ROOTCHORD_TAPER
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_ROOTCHORD_TAPER
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_ROOTCHORD_TAPER
+								);
 					close();
 
 				}
@@ -1089,46 +1745,83 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceSpanLabel, 0, 1);
 			liftingSurfaceSpanTextField = new TextField();
 			gridpane.add(liftingSurfaceSpanTextField, 1, 1);
-			Label currentLiftingSurfaceSpanLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceSpanLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceSpanLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSpan().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceSpanLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceTipChordLabel = new Label("Tip Chord:");
 			gridpane.add(liftingSurfaceTipChordLabel, 0, 2);
 			liftingSurfaceTipChordTextField = new TextField();
 			gridpane.add(liftingSurfaceTipChordTextField, 1, 2);
-			Label currentLiftingSurfaceTipChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels()
-									.get(currentLiftingSurface.getPanels().size()-1)
-									.getChordTip().doubleValue(SI.METRE)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceTipChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceTipChordLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTaperRatioLabel = new Label("Taper Ratio:");
 			gridpane.add(liftingSurfaceTaperRatioLabel, 0, 3);
 			liftingSurfaceTaperRatioTextField= new TextField();
 			gridpane.add(liftingSurfaceTaperRatioTextField, 1, 3);
-			Label currentLiftingSurfaceTaperRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getTaperRatio()
-									)
-					);
+			Label currentLiftingSurfaceTaperRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTaperRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getTaperRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceTaperRatioLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -1140,15 +1833,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceSpanTextField.getText()),
-							Double.valueOf(liftingSurfaceTipChordTextField.getText()),
-							Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.SPAN_TIPCHORD_TAPER
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_TIPCHORD_TAPER
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceSpanTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.SPAN_TIPCHORD_TAPER
+								);
 					close();
 
 				}
@@ -1162,47 +1866,85 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAreaLabel, 0, 1);
 			liftingSurfaceAreaTextField = new TextField();
 			gridpane.add(liftingSurfaceAreaTextField, 1, 1);
-			Label currentLiftingSurfaceAreaLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
-									)
-							+ " m²"
-					);
+			Label currentLiftingSurfaceAreaLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
+			else
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceRootChordLabel = new Label("Root Chord:");
 			gridpane.add(liftingSurfaceRootChordLabel, 0, 2);
 			liftingSurfaceRootChordTextField = new TextField();
 			gridpane.add(liftingSurfaceRootChordTextField, 1, 2);
-			Label currentLiftingSurfaceRootChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceRootChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceRootChordLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTipChordLabel = new Label("Tip Chord:");
 			gridpane.add(liftingSurfaceTipChordLabel, 0, 3);
 			liftingSurfaceTipChordTextField= new TextField();
 			gridpane.add(liftingSurfaceTipChordTextField, 1, 3);
-			Label currentLiftingSurfaceTipChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels()
-									.get(currentLiftingSurface.getPanels().size()-1)
-									.getChordTip().doubleValue(SI.METER)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceTipChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METER)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceTipChordLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -1214,15 +1956,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAreaTextField.getText()),
-							Double.valueOf(liftingSurfaceRootChordTextField.getText()),
-							Double.valueOf(liftingSurfaceTipChordTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AREA_ROOTCHORD_TIPCHORD
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AREA_ROOTCHORD_TIPCHORD
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AREA_ROOTCHORD_TIPCHORD
+								);
 					close();
 
 				}
@@ -1236,44 +1989,79 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAreaLabel, 0, 1);
 			liftingSurfaceAreaTextField = new TextField();
 			gridpane.add(liftingSurfaceAreaTextField, 1, 1);
-			Label currentLiftingSurfaceAreaLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
-									)
-							+ " m²"
-					);
+			Label currentLiftingSurfaceAreaLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
+			else
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceRootChordLabel = new Label("Root Chord:");
 			gridpane.add(liftingSurfaceRootChordLabel, 0, 2);
 			liftingSurfaceRootChordTextField = new TextField();
 			gridpane.add(liftingSurfaceRootChordTextField, 1, 2);
-			Label currentLiftingSurfaceRootChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceRootChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceRootChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getChordRoot().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceRootChordLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTaperRatioLabel = new Label("Taper Ratio:");
 			gridpane.add(liftingSurfaceTaperRatioLabel, 0, 3);
 			liftingSurfaceTaperRatioTextField= new TextField();
 			gridpane.add(liftingSurfaceTaperRatioTextField, 1, 3);
-			Label currentLiftingSurfaceTaperRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getTaperRatio()
-									)
-					);
+			Label currentLiftingSurfaceTaperRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTaperRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getTaperRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceTaperRatioLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -1285,15 +2073,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAreaTextField.getText()),
-							Double.valueOf(liftingSurfaceRootChordTextField.getText()),
-							Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AREA_ROOTCHORD_TAPER
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AREA_ROOTCHORD_TAPER
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AREA_ROOTCHORD_TAPER
+								);
 					close();
 
 				}
@@ -1307,46 +2106,83 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			gridpane.add(liftingSurfaceAreaLabel, 0, 1);
 			liftingSurfaceAreaTextField = new TextField();
 			gridpane.add(liftingSurfaceAreaTextField, 1, 1);
-			Label currentLiftingSurfaceAreaLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
-									)
-							+ " m²"
-					);
+			Label currentLiftingSurfaceAreaLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
+			else
+				currentLiftingSurfaceAreaLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+										)
+								+ " m²"
+						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 1);
 			//.......................................................................................
 			Label liftingSurfaceTipChordLabel = new Label("Tip Chord:");
 			gridpane.add(liftingSurfaceTipChordLabel, 0, 2);
 			liftingSurfaceTipChordTextField = new TextField();
 			gridpane.add(liftingSurfaceTipChordTextField, 1, 2);
-			Label currentLiftingSurfaceTipChordLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels()
-									.get(currentLiftingSurface.getPanels().size()-1)
-									.getChordTip().doubleValue(SI.METRE)
-									)
-							+ " m"
-					);
+			Label currentLiftingSurfaceTipChordLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
+			else
+				currentLiftingSurfaceTipChordLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels()
+										.get(currentLiftingSurface.getPanels().size()-1)
+										.getChordTip().doubleValue(SI.METRE)
+										)
+								+ " m"
+						);
 			gridpane.add(currentLiftingSurfaceTipChordLabel, 2, 2);
 			//.......................................................................................
 			Label liftingSurfaceTaperRatioLabel = new Label("Taper Ratio:");
 			gridpane.add(liftingSurfaceTaperRatioLabel, 0, 3);
 			liftingSurfaceTaperRatioTextField= new TextField();
 			gridpane.add(liftingSurfaceTaperRatioTextField, 1, 3);
-			Label currentLiftingSurfaceTaperRatioLabel = new Label(
-					"Current value: " 
-							+ String.format(
-									Locale.ROOT,
-									"%.02f",
-									currentLiftingSurface.getPanels().get(0).getTaperRatio()
-									)
-					);
+			Label currentLiftingSurfaceTaperRatioLabel = null;
+			if(type.equals(ComponentEnum.WING))
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTaperRatio()
+										)
+						);
+			else
+				currentLiftingSurfaceTaperRatioLabel = new Label(
+						"Current value: " 
+								+ String.format(
+										Locale.ROOT,
+										"%.02f",
+										currentLiftingSurface.getPanels().get(0).getTaperRatio()
+										)
+						);
 			gridpane.add(currentLiftingSurfaceTaperRatioLabel, 2, 3);
 			//.......................................................................................
 			continueButton.disableProperty().bind(
@@ -1358,15 +2194,26 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 
 				public void handle(ActionEvent action) {
 
-					currentLiftingSurface.adjustDimensions(
-							Double.valueOf(liftingSurfaceAreaTextField.getText()),
-							Double.valueOf(liftingSurfaceTipChordTextField.getText()),
-							Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
-							currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
-							currentLiftingSurface.getPanels().get(0).getDihedral(), 
-							currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-							WingAdjustCriteriaEnum.AREA_TIPCHORD_TAPER
-							);
+					if(type.equals(ComponentEnum.WING))
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AREA_TIPCHORD_TAPER
+								);
+					else
+						currentLiftingSurface.adjustDimensions(
+								Double.valueOf(liftingSurfaceAreaTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
+								currentLiftingSurface.getPanels().get(0).getDihedral(), 
+								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
+								WingAdjustCriteriaEnum.AREA_TIPCHORD_TAPER
+								);
 					close();
 
 				}

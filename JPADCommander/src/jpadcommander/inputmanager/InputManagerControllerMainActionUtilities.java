@@ -6897,10 +6897,25 @@ public class InputManagerControllerMainActionUtilities {
 								)
 						);
 			}
-			else
+			else {
 				theController.getTextFieldEquivalentWingKinkPosition().setText(
-						"NOT INITIALIZED"
+						String.valueOf(
+								Main.getTheAircraft()
+								.getWing()
+								.getLiftingSurfaceCreator()
+								.getEtaBreakPoints()
+								.get(1)
+								)
+
 						);
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().setNonDimensionalSpanStationKink(
+						Main.getTheAircraft()
+						.getWing()
+						.getLiftingSurfaceCreator()
+						.getEtaBreakPoints()
+						.get(1)
+						);
+			}
 			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING SWEEP LE:

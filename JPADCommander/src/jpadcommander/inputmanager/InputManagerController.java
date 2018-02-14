@@ -5969,6 +5969,7 @@ public class InputManagerController {
 	
 		if(inputManagerControllerSecondaryActionUtilities.isAircraftFile(textFieldAircraftInputFile.getText()))
 			try {
+				
 				inputManagerControllerMainActionUtilities.loadAircraftFileImplementation();
 				loadAircraftButton.setStyle("");
 				saveAircraftButton.setStyle(buttonSuggestedActionStyle);
