@@ -6585,106 +6585,106 @@ public class InputManagerController {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// CANARD ADJUST DIALOG
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		if (!canardAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
-			
-			//................................................................................................
-			// ASSIGNING TEXTFIELDS STYLE ...
-			textFieldCanardSpanPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
-			textFieldCanardSweepLEPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
-			textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
-			textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
-
-			//................................................................................................
-			// ADJUSTING MEASURES ...
-			Stage canardAdjustCriterionDialog = new LiftingSurfaceAdjustCriterionDialog(
-					Main.getPrimaryStage(), 
-					canardAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem(),
-					ComponentEnum.CANARD
-					);
-			canardAdjustCriterionDialog.sizeToScene();
-			canardAdjustCriterionDialog.initStyle(StageStyle.UNDECORATED);
-			canardAdjustCriterionDialog.showAndWait();
-
-			//.................................................................................................
-			// REMOVING TEXTFIELDS STYLE ...
-			textFieldCanardSpanPanelList.stream().forEach(tf -> tf.setStyle(""));
-			textFieldCanardSweepLEPanelList.stream().forEach(tf -> tf.setStyle(""));
-			textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(""));
-			textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(""));
-
-			//.................................................................................................
-			// SETTING NEW MEASURE DATA TO TEXTFIELDS ...
-			for (int i=0; i<Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().size(); i++) {
-				
-				LiftingSurfacePanelCreator currentPanel = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().get(i);
-				
-				textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(""));
-				textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(""));
-				
-				//---------------------------------------------------------------------------------
-				// PANEL SPAN:
-				if(currentPanel.getSpan() != null) {
-					
-					textFieldCanardSpanPanelList.get(i).setText(
-							String.valueOf(currentPanel.getSpan().getEstimatedValue())
-							);
-					
-					if(currentPanel.getSpan().getUnit().toString().equalsIgnoreCase("m"))
-						choiceBoxCanardSpanPanelUnitList.get(i).getSelectionModel().select(0);
-					else if(currentPanel.getSpan().getUnit().toString().equalsIgnoreCase("ft"))
-						choiceBoxCanardSpanPanelUnitList.get(i).getSelectionModel().select(1);
-					
-				}
-				
-				//---------------------------------------------------------------------------------
-				// SWEEP LE:
-				if(currentPanel.getSweepLeadingEdge() != null) {
-					
-					textFieldCanardSweepLEPanelList.get(i).setText(
-							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
-							);
-					
-					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
-							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
-						choiceBoxCanardSweepLEPanelUnitList.get(i).getSelectionModel().select(0);
-					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
-						choiceBoxCanardSweepLEPanelUnitList.get(i).getSelectionModel().select(1);
-					
-				}
-				
-				//---------------------------------------------------------------------------------
-				// INNER CHORD (ROOT):
-				if(currentPanel.getChordRoot() != null) {
-					
-					textFieldCanardInnerChordPanelList.get(i).setText(
-							String.valueOf(currentPanel.getChordRoot().getEstimatedValue())
-							);
-					
-					if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("m"))
-						choiceBoxCanardInnerChordPanelUnitList.get(i).getSelectionModel().select(0);
-					else if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("ft"))
-						choiceBoxCanardInnerChordPanelUnitList.get(i).getSelectionModel().select(1);
-					
-				}
-				
-				//---------------------------------------------------------------------------------
-				// OUTER CHORD (TIP):
-				if(currentPanel.getChordTip() != null) {
-					
-					textFieldCanardOuterChordPanelList.get(i).setText(
-							String.valueOf(currentPanel.getChordTip().getEstimatedValue())
-							);
-					
-					if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("m"))
-						choiceBoxCanardOuterChordPanelUnitList.get(i).getSelectionModel().select(0);
-					else if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("ft"))
-						choiceBoxCanardOuterChordPanelUnitList.get(i).getSelectionModel().select(1);
-					
-				}
-				
-			}
-			
-		}
+//		if (!canardAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem().equalsIgnoreCase("NONE")) {
+//			
+//			//................................................................................................
+//			// ASSIGNING TEXTFIELDS STYLE ...
+//			textFieldCanardSpanPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+//			textFieldCanardSweepLEPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+//			textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+//			textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(textFieldAlertStyle));
+//
+//			//................................................................................................
+//			// ADJUSTING MEASURES ...
+//			Stage canardAdjustCriterionDialog = new LiftingSurfaceAdjustCriterionDialog(
+//					Main.getPrimaryStage(), 
+//					canardAdjustCriterionChoiceBox.getSelectionModel().getSelectedItem(),
+//					ComponentEnum.CANARD
+//					);
+//			canardAdjustCriterionDialog.sizeToScene();
+//			canardAdjustCriterionDialog.initStyle(StageStyle.UNDECORATED);
+//			canardAdjustCriterionDialog.showAndWait();
+//
+//			//.................................................................................................
+//			// REMOVING TEXTFIELDS STYLE ...
+//			textFieldCanardSpanPanelList.stream().forEach(tf -> tf.setStyle(""));
+//			textFieldCanardSweepLEPanelList.stream().forEach(tf -> tf.setStyle(""));
+//			textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(""));
+//			textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(""));
+//
+//			//.................................................................................................
+//			// SETTING NEW MEASURE DATA TO TEXTFIELDS ...
+//			for (int i=0; i<Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().size(); i++) {
+//				
+//				LiftingSurfacePanelCreator currentPanel = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().get(i);
+//				
+//				textFieldCanardInnerChordPanelList.stream().forEach(tf -> tf.setStyle(""));
+//				textFieldCanardOuterChordPanelList.stream().forEach(tf -> tf.setStyle(""));
+//				
+//				//---------------------------------------------------------------------------------
+//				// PANEL SPAN:
+//				if(currentPanel.getSpan() != null) {
+//					
+//					textFieldCanardSpanPanelList.get(i).setText(
+//							String.valueOf(currentPanel.getSpan().getEstimatedValue())
+//							);
+//					
+//					if(currentPanel.getSpan().getUnit().toString().equalsIgnoreCase("m"))
+//						choiceBoxCanardSpanPanelUnitList.get(i).getSelectionModel().select(0);
+//					else if(currentPanel.getSpan().getUnit().toString().equalsIgnoreCase("ft"))
+//						choiceBoxCanardSpanPanelUnitList.get(i).getSelectionModel().select(1);
+//					
+//				}
+//				
+//				//---------------------------------------------------------------------------------
+//				// SWEEP LE:
+//				if(currentPanel.getSweepLeadingEdge() != null) {
+//					
+//					textFieldCanardSweepLEPanelList.get(i).setText(
+//							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
+//							);
+//					
+//					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+//							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
+//						choiceBoxCanardSweepLEPanelUnitList.get(i).getSelectionModel().select(0);
+//					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
+//						choiceBoxCanardSweepLEPanelUnitList.get(i).getSelectionModel().select(1);
+//					
+//				}
+//				
+//				//---------------------------------------------------------------------------------
+//				// INNER CHORD (ROOT):
+//				if(currentPanel.getChordRoot() != null) {
+//					
+//					textFieldCanardInnerChordPanelList.get(i).setText(
+//							String.valueOf(currentPanel.getChordRoot().getEstimatedValue())
+//							);
+//					
+//					if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("m"))
+//						choiceBoxCanardInnerChordPanelUnitList.get(i).getSelectionModel().select(0);
+//					else if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("ft"))
+//						choiceBoxCanardInnerChordPanelUnitList.get(i).getSelectionModel().select(1);
+//					
+//				}
+//				
+//				//---------------------------------------------------------------------------------
+//				// OUTER CHORD (TIP):
+//				if(currentPanel.getChordTip() != null) {
+//					
+//					textFieldCanardOuterChordPanelList.get(i).setText(
+//							String.valueOf(currentPanel.getChordTip().getEstimatedValue())
+//							);
+//					
+//					if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("m"))
+//						choiceBoxCanardOuterChordPanelUnitList.get(i).getSelectionModel().select(0);
+//					else if(currentPanel.getChordRoot().getUnit().toString().equalsIgnoreCase("ft"))
+//						choiceBoxCanardOuterChordPanelUnitList.get(i).getSelectionModel().select(1);
+//					
+//				}
+//				
+//			}
+//			
+//		}
 		
 		Service updateAircraftDataService = new Service() {
 
