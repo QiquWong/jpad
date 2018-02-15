@@ -1679,7 +1679,7 @@
                                                                            </font>
                                                                         </Label>
                                                                         <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingOuterChordRatioAileronRight" layoutX="6.0" layoutY="232.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingMinimumDeflectionAngleAileronRigthUnitChoiceBox" layoutX="348.0" layoutY="285.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingMinimumDeflectionAngleAileronRightUnitChoiceBox" layoutX="348.0" layoutY="285.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="6.0" layoutY="263.0" prefHeight="21.0" prefWidth="197.0" text="Minimum deflection angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
