@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -23,6 +24,8 @@ import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.validation.ValidationSupport;
 import org.jscience.physics.amount.Amount;
 
+import aircraft.auxiliary.airfoil.Airfoil;
+import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
 import aircraft.components.CabinConfiguration.ConfigurationBuilder;
@@ -33,11 +36,13 @@ import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
+import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
+import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator.LiftingSurfacePanelBuilder;
 import aircraft.components.nacelles.NacelleCreator;
 import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.nacelles.NacelleCreator.NacelleCreatorBuilder;
@@ -102,6 +107,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import jpadcommander.Main;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
 /*
@@ -8795,7 +8801,6 @@ public class InputManagerController {
 			.filter(cb -> !cb.getSelectionModel().isEmpty())
 			.forEach(cb -> wingSpoilersMinimumDeflectionUnitList.add(cb.getSelectionModel().getSelectedItem()));
 		
-		
 		//.................................................................................................
 		// FILTERING FILLED FLAPS TABS ...
 		//.................................................................................................
@@ -8975,6 +8980,93 @@ public class InputManagerController {
 		}
 		
 		//.................................................................................................
+		// FILTERING FILLED AILERONS TABS ... /*TODO*/
+		//.................................................................................................
+//		int numberOfFilledWingAileronTabs = Arrays.asList(
+//				wingSpoilersInnerSpanwisePositionList.size(),
+//				wingSpoilersOuterSpanwisePositionList.size(),
+//				wingSpoilersInnerChordwisePositionList.size(),
+//				wingSpoilersOuterChordwisePositionList.size(),
+//				wingSpoilersMaximumDeflectionList.size(),
+//				wingSpoilersMaximumDeflectionUnitList.size(),
+//				wingSpoilersMinimumDeflectionList.size(),
+//				wingSpoilersMinimumDeflectionUnitList.size()
+//				).stream()
+//				.mapToInt(size -> size)
+//				.min()
+//				.getAsInt();
+//
+//		if (numberOfFilledWingSpoilerTabs > 0) {
+//			if (tabPaneWingSpoilers.getTabs().size() > numberOfFilledWingSpoilerTabs) {
+//
+//				Platform.runLater(new Runnable() {
+//
+//					@Override
+//					public void run() {
+//
+//						//..................................................................................
+//						// WING SPOILERS UPDATE WARNING
+//						Stage wingSpoilersUpdateWarning = new Stage();
+//
+//						wingSpoilersUpdateWarning.setTitle("Wing Spoiler Update Warning");
+//						wingSpoilersUpdateWarning.initModality(Modality.WINDOW_MODAL);
+//						wingSpoilersUpdateWarning.initStyle(StageStyle.UNDECORATED);
+//						wingSpoilersUpdateWarning.initOwner(Main.getPrimaryStage());
+//
+//						FXMLLoader loader = new FXMLLoader();
+//						loader.setLocation(Main.class.getResource("inputmanager/UpdateWingSpoilersWarning.fxml"));
+//						BorderPane wingSpoilersUpdateWarningBorderPane = null;
+//						try {
+//							wingSpoilersUpdateWarningBorderPane = loader.load();
+//						} catch (IOException e) {
+//							e.printStackTrace();
+//						}
+//
+//						Button continueButton = (Button) wingSpoilersUpdateWarningBorderPane.lookup("#warningContinueButton");
+//						continueButton.setOnAction(new EventHandler<ActionEvent>() {
+//
+//							@Override
+//							public void handle(ActionEvent arg0) {
+//								wingSpoilersUpdateWarning.close();
+//							}
+//
+//						});
+//
+//						Scene scene = new Scene(wingSpoilersUpdateWarningBorderPane);
+//						wingSpoilersUpdateWarning.setScene(scene);
+//						wingSpoilersUpdateWarning.sizeToScene();
+//						wingSpoilersUpdateWarning.show();
+//
+//					}
+//				});
+//
+//			}
+//		}
+//		
+//		List<AsymmetricFlapCreator> aileronList = new ArrayList<>();
+//		
+//		for (int i=0; i<numberOfFilledWingSpoilerTabs; i++) {
+//		
+//			spoilersList.add(
+//					new SpoilerCreator.SpoilerBuilder(
+//							"Wing Spoiler " + (i+1) + " - " + Main.getTheAircraft().getId(), 
+//							Double.valueOf(wingSpoilersInnerSpanwisePositionList.get(i)), 
+//							Double.valueOf(wingSpoilersOuterSpanwisePositionList.get(i)), 
+//							Double.valueOf(wingSpoilersInnerChordwisePositionList.get(i)), 
+//							Double.valueOf(wingSpoilersOuterChordwisePositionList.get(i)), 
+//							(Amount<Angle>) Amount.valueOf(
+//									Double.valueOf(wingSpoilersMinimumDeflectionList.get(i)),
+//									Unit.valueOf(wingSpoilersMinimumDeflectionUnitList.get(i))
+//									),
+//							(Amount<Angle>) Amount.valueOf(
+//									Double.valueOf(wingSpoilersMaximumDeflectionList.get(i)), 
+//									Unit.valueOf(wingSpoilersMaximumDeflectionUnitList.get(i))
+//									)
+//							).build()
+//					);
+//		}
+		
+		//.................................................................................................
 		// FILTERING FILLED SPOILERS TABS ...
 		//.................................................................................................
 		int numberOfFilledWingSpoilerTabs = Arrays.asList(
@@ -9064,102 +9156,256 @@ public class InputManagerController {
 		//.................................................................................................
 		// SETTING ALL DATA INSIDE THE AIRCRAFT OBJECT ...
 		//.................................................................................................
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().setEquivalentWingFlag(wingEquivalentFlag);
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().setMainSparNonDimensionalPosition(Double.valueOf(wingMainSparLoacation));
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().setSecondarySparNonDimensionalPosition(Double.valueOf(wingSecondarySparLocation));
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().setCompositeCorrectioFactor(Double.valueOf(wingCompositeCorrectionFactor));
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().setRoughness(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(wingRoughness),
+						Unit.valueOf(wingRoughnessUnit)
+						)
+				);
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().setWingletHeight(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(wingWingletHeigth),
+						Unit.valueOf(wingWingletHeightUnit)
+						)
+				);
+		//.................................................................................................
+		if(wingEquivalentFlag == true) {
+			
+			double aspectRatio = Double.valueOf(wingEquivalentAspectRatio);
+			
+			Amount<Area> area = (Amount<Area>) Amount.valueOf(
+					Double.valueOf(wingEquivalentArea),
+					Unit.valueOf(wingEquivalentAreaUnit)
+					);
+			
+			double taperRatio = Double.valueOf(wingEquivalentTaperRatio);
+			
+			Amount<Length> span = 
+					Amount.valueOf(
+							Math.sqrt(
+									aspectRatio*
+									area.doubleValue(SI.SQUARE_METRE)),
+							SI.METER
+							);
+			
+			Amount<Length> chordRootEquivalentWing = 
+					Amount.valueOf(
+							(2*area.doubleValue(SI.SQUARE_METRE))
+							/(span.doubleValue(SI.METER)*(1+taperRatio)),
+							SI.METER
+							);
+			
+			Amount<Length> chordTipEquivalentWing = 
+					Amount.valueOf(
+							taperRatio*chordRootEquivalentWing.doubleValue(SI.METER),
+							SI.METER
+							);
+			
+			AirfoilCreator airfoilRoot = null;
+			if(wingEquivalentAirfoilRootPath != null) {
+				airfoilRoot = AirfoilCreator.importFromXML(wingEquivalentAirfoilRootPath);
+			}
+
+			AirfoilCreator airfoilKink = null;
+			if(wingEquivalentAirfoilKinkPath != null) {
+				airfoilKink = AirfoilCreator.importFromXML(wingEquivalentAirfoilKinkPath);
+			}
+
+			AirfoilCreator airfoilTip = null;
+			if(wingEquivalentAirfoilTipPath != null) {
+				airfoilTip = AirfoilCreator.importFromXML(wingEquivalentAirfoilTipPath);
+			}
+			
+			LiftingSurfacePanelCreator equivalentWingPanel = new 
+					LiftingSurfacePanelBuilder(
+							"Equivalent wing",
+							false,
+							chordRootEquivalentWing.to(SI.METER),
+							chordTipEquivalentWing.to(SI.METER),
+							airfoilRoot,
+							airfoilTip,
+							Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
+							(Amount<Angle>) Amount.valueOf(
+									Double.valueOf(wingEquivalentTwistAtTip),
+									Unit.valueOf(wingEquivalentTwistAtTipUnit)
+									),
+							span.divide(2).to(SI.METER),
+							(Amount<Angle>) Amount.valueOf(
+									Double.valueOf(wingEquivalentSweepLE),
+									Unit.valueOf(wingEquivalentSweepLEUnit)
+									).to(SI.RADIAN),
+							(Amount<Angle>) Amount.valueOf(
+									Double.valueOf(wingEquivalentDihedralAngle),
+									Unit.valueOf(wingEquivalentDihedralAngleUnit)
+									).to(SI.RADIAN)
+							)
+					.build();
+			
+			LiftingSurfaceCreator equivalentWing = new LiftingSurfaceCreator(
+					"Equivalent Wing", 
+					Boolean.TRUE, 
+					ComponentEnum.WING
+					);
+			
+			equivalentWing.addPanel(equivalentWingPanel);
+			equivalentWing.setNonDimensionalSpanStationKink(Double.valueOf(wingEquivalentKinkEtaStation));
+			equivalentWing.setAirfoilKinkEquivalentWing(airfoilKink);
+			equivalentWing.setXOffsetEquivalentWingRootLE(Double.valueOf(wingEquivalentXOffsetRootLE));
+			equivalentWing.setXOffsetEquivalentWingRootTE(Double.valueOf(wingEquivalentXOffsetRootTE));
+			equivalentWing.setEquivalentWingFlag(wingEquivalentFlag);
+			Main.getTheAircraft().getWing().setLiftingSurfaceCreator(equivalentWing);
+			
+		}
+		//.................................................................................................
+		else {
+			
+			//.................................................................................................
+			// FILTERING FILLED WING PANELS TABS ...
+			//.................................................................................................
+			int numberOfFilledWingPanelsTabs = Arrays.asList(
+					wingPanelsSpanList.size(),
+					wingPanelsSpanUnitList.size(),
+					wingPanelsSweepLEList.size(),
+					wingPanelsSweepLEUnitList.size(),
+					wingPanelsDihedralList.size(),
+					wingPanelsDihedralUnitList.size(),
+					wingPanelsInnerChordList.size(),
+					wingPanelsInnerChordUnitList.size(),
+					wingPanelsInnerTwistList.size(),
+					wingPanelsInnerTwistUnitList.size(),
+					wingPanelsInnerAirfoilPathList.size(),
+					wingPanelsOuterChordList.size(),
+					wingPanelsOuterChordUnitList.size(),
+					wingPanelsOuterTwistList.size(),
+					wingPanelsOuterTwistUnitList.size(),
+					wingPanelsOuterAirfoilPathList.size()
+					).stream()
+					.mapToInt(size -> size)
+					.min()
+					.getAsInt();
+
+			if (numberOfFilledWingPanelsTabs > 0) {
+				if (tabPaneWingPanels.getTabs().size() > numberOfFilledWingPanelsTabs) {
+
+					Platform.runLater(new Runnable() {
+
+						@Override
+						public void run() {
+
+							//..................................................................................
+							// WING SPOILERS UPDATE WARNING
+							Stage wingPanelsUpdateWarning = new Stage();
+
+							wingPanelsUpdateWarning.setTitle("Wing Panels Update Warning");
+							wingPanelsUpdateWarning.initModality(Modality.WINDOW_MODAL);
+							wingPanelsUpdateWarning.initStyle(StageStyle.UNDECORATED);
+							wingPanelsUpdateWarning.initOwner(Main.getPrimaryStage());
+
+							FXMLLoader loader = new FXMLLoader();
+							loader.setLocation(Main.class.getResource("inputmanager/UpdateWingPanelsWarning.fxml"));
+							BorderPane wingPanelsUpdateWarningBorderPane = null;
+							try {
+								wingPanelsUpdateWarningBorderPane = loader.load();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+
+							Button continueButton = (Button) wingPanelsUpdateWarningBorderPane.lookup("#warningContinueButton");
+							continueButton.setOnAction(new EventHandler<ActionEvent>() {
+
+								@Override
+								public void handle(ActionEvent arg0) {
+									wingPanelsUpdateWarning.close();
+								}
+
+							});
+
+							Scene scene = new Scene(wingPanelsUpdateWarningBorderPane);
+							wingPanelsUpdateWarning.setScene(scene);
+							wingPanelsUpdateWarning.sizeToScene();
+							wingPanelsUpdateWarning.show();
+
+						}
+					});
+
+				}
+			}
+			
+			List<LiftingSurfacePanelCreator> panelsList = new ArrayList<>();
+			
+			for (int i=0; i<numberOfFilledWingPanelsTabs; i++) {
+			
+				panelsList.add(
+						new LiftingSurfacePanelCreator.LiftingSurfacePanelBuilder(
+								"Wing Panels " + (i+1) + " - " + Main.getTheAircraft().getId(), 
+								false,
+								(Amount<Length>) Amount.valueOf(
+										Double.valueOf(wingPanelsInnerChordList.get(i)),
+										Unit.valueOf(wingPanelsInnerChordUnitList.get(i))
+										),
+								(Amount<Length>) Amount.valueOf(
+										Double.valueOf(wingPanelsOuterChordList.get(i)),
+										Unit.valueOf(wingPanelsOuterChordUnitList.get(i))
+										),
+								AirfoilCreator.importFromXML(wingPanelsInnerAirfoilPathList.get(i)),
+								AirfoilCreator.importFromXML(wingPanelsOuterAirfoilPathList.get(i)),
+								(Amount<Angle>) Amount.valueOf(
+										Double.valueOf(wingPanelsInnerTwistList.get(i)),
+										Unit.valueOf(wingPanelsInnerTwistUnitList.get(i))
+										),
+								(Amount<Angle>) Amount.valueOf(
+										Double.valueOf(wingPanelsOuterTwistList.get(i)),
+										Unit.valueOf(wingPanelsOuterTwistUnitList.get(i))
+										),
+								(Amount<Length>) Amount.valueOf(
+										Double.valueOf(wingPanelsSpanList.get(i)),
+										Unit.valueOf(wingPanelsSpanUnitList.get(i))
+										),
+								(Amount<Angle>) Amount.valueOf(
+										Double.valueOf(wingPanelsSweepLEList.get(i)),
+										Unit.valueOf(wingPanelsSweepLEUnitList.get(i))
+										),
+								(Amount<Angle>) Amount.valueOf(
+										Double.valueOf(wingPanelsDihedralList.get(i)),
+										Unit.valueOf(wingPanelsDihedralUnitList.get(i))
+										)
+								)
+						.setAirfoilRootPath(wingPanelsInnerAirfoilPathList.get(i))
+						.setAirfoilTipPath(wingPanelsOuterAirfoilPathList.get(i))
+						.build()
+						);
+			}
+			
+			Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().clear();
+			Main.getTheAircraft().getWing().getLiftingSurfaceCreator().setPanels(panelsList);
+			
+		}
+		//.................................................................................................
 		
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().clear();
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().clear();
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().clear();
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().clear();
 		
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().addAll(flapList);
+//		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().addAll(flapList);
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().addAll(slatList);
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().addAll(spoilersList);
 		
-		
-//		FuselageCreator fuselageCreator = new FuselageCreator.FuselageBuilder("Fuselage Creator - " + Main.getTheAircraft().getId())
-//				// TOP LEVEL
-//				.pressurized(fuselagePressurizedFlag)
-//				//GLOBAL DATA
-//				.length(
-//						(Amount<Length>) Amount.valueOf(
-//								Double.valueOf(fuselageLength),
-//								Unit.valueOf(fuselageLengthUnit)
-//								)
-//						)
-//				.deckNumber(Integer.valueOf(fuselageDeckNumber))
-//				.roughness(
-//						(Amount<Length>) Amount.valueOf(
-//								Double.valueOf(fuselageRoughness),
-//								Unit.valueOf(fuselageRoughnessUnit)
-//								)
-//						)
-//				// NOSE TRUNK
-//				.dxNoseCapPercent(Double.valueOf(fuselageNoseDxCapPercent))
-//				.heightN(
-//						(Amount<Length>) Amount.valueOf(
-//								Double.valueOf(fuselageNoseTipOffset),
-//								Unit.valueOf(fuselageNoseTipOffsetUnit)
-//								)
-//						)
-//				.lenRatioNF(Double.valueOf(fuselageNoseLengthRatio))
-//				.sectionMidNoseRhoLower(Double.valueOf(fuselageNoseSectionRhoUpper))
-//				.sectionMidNoseRhoUpper(Double.valueOf(fuselageNoseSectionRhoLower))
-//				.sectionNoseMidLowerToTotalHeightRatio(Double.valueOf(fuselageNoseMidSectionToTotalSectionHeightRatio))
-//				.windshieldType(WindshieldTypeEnum.valueOf(fuselageNoseWindshieldType))
-//				.windshieldHeight(
-//						(Amount<Length>) Amount.valueOf(
-//								Double.valueOf(fuselageNoseWindshieldHeigth),
-//								Unit.valueOf(fuselageNoseWindshieldHeightUnit)
-//								)
-//						)
-//				.windshieldWidth(
-//						(Amount<Length>) Amount.valueOf(
-//								Double.valueOf(fuselageNoseWindshieldWidth),
-//								Unit.valueOf(fuselageNoseWindshieldWidthUnit)
-//								)
-//						)
-//				// CYLINDRICAL TRUNK
-//				.lenRatioCF(Double.valueOf(fuselageCylinderLengthRatio))
-//				.sectionCylinderHeight(
-//						(Amount<Length>) Amount.valueOf(
-//								Double.valueOf(fuselageCylinderSectionHeight),
-//								Unit.valueOf(fuselageCylinderSectionHeigthUnit)
-//								)
-//						)
-//				.sectionCylinderWidth(
-//						(Amount<Length>) Amount.valueOf(
-//								Double.valueOf(fuselageCylinderSectionWidth),
-//								Unit.valueOf(fuselageCylinderSectionWidthUnit)
-//								)
-//						)
-//				.heightFromGround(
-//						(Amount<Length>) Amount.valueOf(
-//								Double.valueOf(fuselageCylinderHeigthFromGround),
-//								Unit.valueOf(fuselageCylinderHeigthFromGroundUnit)
-//								)
-//						)
-//				.sectionCylinderLowerToTotalHeightRatio(Double.valueOf(fuselageCylinderMidSectionToTotalSectionHeightRatio))
-//				.sectionCylinderRhoLower(Double.valueOf(fuselageCylinderSectionRhoLower))
-//				.sectionCylinderRhoUpper(Double.valueOf(fuselageCylinderSectionRhoUpper))
-//				// TAIL TRUNK
-//				.heightT(
-//						(Amount<Length>) Amount.valueOf(
-//								Double.valueOf(fuselageTailTipOffset),
-//								Unit.valueOf(fuselageTailTipOffsetUnit)
-//								)
-//						)
-//				.dxTailCapPercent(Double.valueOf(fuselageTailDxCapPercent))
-//				.sectionMidTailRhoLower(Double.valueOf(fuselageTailSectionRhoLower))
-//				.sectionMidTailRhoUpper(Double.valueOf(fuselageTailSectionRhoUpper))
-//				.sectionTailMidLowerToTotalHeightRatio(Double.valueOf(fuselageTailMidSectionToTotalSectionHeightRatio))
-//				.build();
-//		
-//		// SPOILERS
-//		fuselageCreator.setSpoilers(spoilersList);
-//		
-//		Main.getTheAircraft().setFuselage(
-//				new Fuselage.FuselageBuilder(
-//						"Fuselage",
-//						fusDesDatabaseReader
-//						)
-//				.fuselageCreator(fuselageCreator)
-//				.build()
-//				);
-//		Main.getTheAircraft().getFuselage().getFuselageCreator().calculateGeometry();
-//		
-//	}  
+		//.................................................................................................
+		Main.getTheAircraft().getWing().calculateGeometry(
+				40,
+				Main.getTheAircraft().getWing().getType(),
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().isMirrored()
+				);
+		Main.getTheAircraft().getWing().populateAirfoilList(
+				Main.getTheAircraft().getWing().getAerodynamicDatabaseReader(), 
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getEquivalentWingFlag()
+				);
 		
 	}
 	

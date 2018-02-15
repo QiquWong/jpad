@@ -690,10 +690,6 @@ public class Aircraft implements IAircraft {
 	// End of builder pattern
 	//===================================================================================================
 	
-	public Aircraft() {
-		
-	}
-	
 	public Aircraft(AircraftBuilder builder) {
 		
 		this._id = builder.__id;

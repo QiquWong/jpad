@@ -26,7 +26,6 @@ import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
-import standaloneutils.JPADXmlReader;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentsAnalysis {
@@ -127,7 +126,6 @@ public class CompleteAnalysisTest extends Application {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
-	public static JPADXmlReader reader;
 
 	//-------------------------------------------------------------
 
@@ -264,17 +262,6 @@ public class CompleteAnalysisTest extends Application {
 			// deactivating system.out
 			System.setOut(filterStream);
 			
-			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder(
-//					"ATR-72",
-//					AircraftEnum.ATR72,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader,
-//			        fusDesDatabaseReader,
-//					veDSCDatabaseReader
-//					)
-//					.build();
-
 //			AircraftSaveDirectives asd = new AircraftSaveDirectives
 //					.Builder("_ATR72")
 //					.addAllWingAirfoilFileNames(
@@ -319,10 +306,6 @@ public class CompleteAnalysisTest extends Application {
 			
 			////////////////////////////////////////////////////////////////////////
 			// Set the folders tree
-			MyConfiguration.initWorkingDirectoryTree(
-					MyConfiguration.currentDirectoryString,
-					MyConfiguration.inputDirectory, 
-					MyConfiguration.outputDirectory);
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
 			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + File.separator);
 			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
