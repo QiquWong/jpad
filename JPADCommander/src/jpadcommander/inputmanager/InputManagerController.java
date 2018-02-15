@@ -9392,9 +9392,9 @@ public class InputManagerController {
 		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().clear();
 		
 		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().addAll(flapList);
-//		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().addAll(flapList);
-		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().addAll(slatList);
-		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().addAll(spoilersList);
+//		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().addAll(flapList);
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().addAll(slatList);
+		Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().addAll(spoilersList);
 		
 		//.................................................................................................
 		Main.getTheAircraft().getWing().calculateGeometry(
