@@ -2223,8 +2223,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					false,
 					Amount.valueOf(rootChord, SI.METER),
 					Amount.valueOf(tipChord, SI.METER),
-					_equivalentWing.getPanels().get(0).getAirfoilRoot(),
-					_equivalentWing.getPanels().get(0).getAirfoilTip(),
+					_panels.get(0).getAirfoilRoot(),
+					_panels.get(0).getAirfoilTip(),
 					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 					equivalentTwistAtTip,
 					Amount.valueOf(0.5*span, SI.METER),
@@ -2817,6 +2817,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		_equivalentWing.addPanel(equivalentWingPanel);
 		_equivalentWing.setXOffsetEquivalentWingRootLE(xOffsetEquivalentWingRootLE);
 		_equivalentWing.setXOffsetEquivalentWingRootTE(xOffsetEquivalentWingRootTE);
+		_equivalentWing.setNonDimensionalSpanStationKink(this._etaBP.get(1));
+		_equivalentWing.setTwistAtKinkRealWing(this._twistsBreakPoints.get(1));
 		
 		return _equivalentWing;
 	}
