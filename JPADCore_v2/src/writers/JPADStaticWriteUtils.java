@@ -1545,7 +1545,7 @@ public class JPADStaticWriteUtils {
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator,
-							aircraftSaveDirectives.getAircraftFileName(), 
+							aircraftSaveDirectives.getAircraftFileName() + ".xml", 
 							ComponentEnum.AIRCRAFT
 							)
 					);
@@ -1554,7 +1554,7 @@ public class JPADStaticWriteUtils {
 						Tuple.of(
 								docBuilder.newDocument(),
 								aircraftDirPath + File.separator + "lifting_surfaces" + File.separator,
-								aircraftSaveDirectives.getWingFileName(), 
+								aircraftSaveDirectives.getWingFileName() + ".xml", 
 								ComponentEnum.WING
 								)
 						);
@@ -1564,7 +1564,7 @@ public class JPADStaticWriteUtils {
 							Tuple.of(
 									docBuilder.newDocument(),
 									aircraftDirPath + File.separator + "lifting_surfaces" + File.separator + "airfoils" + File.separator,
-									aircraftSaveDirectives.getWingAirfoilFileNames().get(i), 
+									aircraftSaveDirectives.getWingAirfoilFileNames().get(i) + ".xml", 
 									ComponentEnum.WING_AIRFOIL
 									)
 							);
@@ -1575,7 +1575,7 @@ public class JPADStaticWriteUtils {
 						Tuple.of(
 								docBuilder.newDocument(),
 								aircraftDirPath + File.separator + "lifting_surfaces" + File.separator, 
-								aircraftSaveDirectives.getHTailFileName(), 
+								aircraftSaveDirectives.getHTailFileName() + ".xml", 
 								ComponentEnum.HORIZONTAL_TAIL
 								)
 						);
@@ -1584,7 +1584,7 @@ public class JPADStaticWriteUtils {
 							Tuple.of(
 									docBuilder.newDocument(),
 									aircraftDirPath + File.separator + "lifting_surfaces" + File.separator + "airfoils" + File.separator,
-									aircraftSaveDirectives.getHTailAirfoilFileNames().get(i), 
+									aircraftSaveDirectives.getHTailAirfoilFileNames().get(i) + ".xml", 
 									ComponentEnum.HORIZONTAL_TAIL_AIRFOIL
 									)
 							);
@@ -1594,7 +1594,7 @@ public class JPADStaticWriteUtils {
 						Tuple.of(
 								docBuilder.newDocument(),
 								aircraftDirPath + File.separator + "lifting_surfaces" + File.separator,
-								aircraftSaveDirectives.getVTailFileName(), 
+								aircraftSaveDirectives.getVTailFileName() + ".xml", 
 								ComponentEnum.VERTICAL_TAIL
 								)
 						);
@@ -1603,7 +1603,7 @@ public class JPADStaticWriteUtils {
 							Tuple.of(
 									docBuilder.newDocument(),
 									aircraftDirPath + File.separator + "lifting_surfaces" + File.separator + "airfoils" + File.separator,
-									aircraftSaveDirectives.getVTailAirfoilFileNames().get(i), 
+									aircraftSaveDirectives.getVTailAirfoilFileNames().get(i) + ".xml", 
 									ComponentEnum.VERTICAL_TAIL_AIRFOIL
 									)
 							);
@@ -1613,7 +1613,7 @@ public class JPADStaticWriteUtils {
 						Tuple.of(
 								docBuilder.newDocument(),
 								aircraftDirPath + File.separator + "lifting_surfaces" + File.separator, 
-								aircraftSaveDirectives.getCanardFileName(), 
+								aircraftSaveDirectives.getCanardFileName() + ".xml", 
 								ComponentEnum.CANARD
 								)
 						);
@@ -1622,7 +1622,7 @@ public class JPADStaticWriteUtils {
 							Tuple.of(
 									docBuilder.newDocument(),
 									aircraftDirPath + File.separator + "lifting_surfaces" + File.separator + "airfoils" + File.separator,
-									aircraftSaveDirectives.getCanardAirfoilFileNames().get(i), 
+									aircraftSaveDirectives.getCanardAirfoilFileNames().get(i) + ".xml", 
 									ComponentEnum.CANARD_AIRFOIL
 									)
 							);
@@ -1632,7 +1632,7 @@ public class JPADStaticWriteUtils {
 						Tuple.of(
 								docBuilder.newDocument(),
 								aircraftDirPath + File.separator + "fuselages" + File.separator, 
-								aircraftSaveDirectives.getFuselageFileName(), 
+								aircraftSaveDirectives.getFuselageFileName() + ".xml", 
 								ComponentEnum.FUSELAGE
 								)
 						);
@@ -1675,7 +1675,7 @@ public class JPADStaticWriteUtils {
 						Tuple.of(
 								docBuilder.newDocument(),
 								aircraftDirPath + File.separator + "landing_gears" + File.separator, 
-								aircraftSaveDirectives.getLandingGearFileName(), 
+								aircraftSaveDirectives.getLandingGearFileName() + ".xml", 
 								ComponentEnum.LANDING_GEAR
 								)
 						);
@@ -1684,7 +1684,7 @@ public class JPADStaticWriteUtils {
 						Tuple.of(
 								docBuilder.newDocument(),
 								aircraftDirPath + File.separator + "systems" + File.separator, 
-								aircraftSaveDirectives.getSystemFileName(), 
+								aircraftSaveDirectives.getSystemFileName() + ".xml", 
 								ComponentEnum.SYSTEMS
 								)
 						);
@@ -1693,7 +1693,7 @@ public class JPADStaticWriteUtils {
 						Tuple.of(
 								docBuilder.newDocument(),
 								aircraftDirPath + File.separator + "cabin_configurations" + File.separator, 
-								aircraftSaveDirectives.getCabinConfigurationFileName(), 
+								aircraftSaveDirectives.getCabinConfigurationFileName() + ".xml", 
 								ComponentEnum.CABIN_CONFIGURATION
 								)
 						);
@@ -2458,7 +2458,7 @@ public class JPADStaticWriteUtils {
 		// global_data - cabin_configuration
 		globalDataElement.appendChild(
 			createXMLElementWithAttributes(doc, "cabin_configuration", 
-					Tuple.of("file", aircraftSaveDirectives.getCabinConfigurationFileName())
+					Tuple.of("file", aircraftSaveDirectives.getCabinConfigurationFileName() + ".xml")
 			)
 		);
 		
@@ -2475,13 +2475,13 @@ public class JPADStaticWriteUtils {
 		liftingSurfacesList.stream()
 			.forEach(ls -> {
 				if(ls.getType().equals(ComponentEnum.WING))
-					liftingSurfacesFileNames.add(aircraftSaveDirectives.getWingFileName());
+					liftingSurfacesFileNames.add(aircraftSaveDirectives.getWingFileName() + ".xml");
 				else if(ls.getType().equals(ComponentEnum.HORIZONTAL_TAIL))
-					liftingSurfacesFileNames.add(aircraftSaveDirectives.getHTailFileName());
+					liftingSurfacesFileNames.add(aircraftSaveDirectives.getHTailFileName() + ".xml");
 				else if(ls.getType().equals(ComponentEnum.VERTICAL_TAIL))
-					liftingSurfacesFileNames.add(aircraftSaveDirectives.getVTailFileName());
+					liftingSurfacesFileNames.add(aircraftSaveDirectives.getVTailFileName() + ".xml");
 				else if(ls.getType().equals(ComponentEnum.CANARD))
-					liftingSurfacesFileNames.add(aircraftSaveDirectives.getCanardFileName());
+					liftingSurfacesFileNames.add(aircraftSaveDirectives.getCanardFileName() + ".xml");
 			});
 		
 		liftingSurfacesList.stream()
@@ -2510,7 +2510,7 @@ public class JPADStaticWriteUtils {
 					.forEach(fus ->
 					fuselagesElement.appendChild(
 							createFuselageElement(doc, 
-									aircraftSaveDirectives.getFuselageFileName(), 
+									aircraftSaveDirectives.getFuselageFileName() + ".xml", 
 									fus.getXApexConstructionAxes(),
 									fus.getYApexConstructionAxes(),
 									fus.getZApexConstructionAxes())
@@ -2529,7 +2529,10 @@ public class JPADStaticWriteUtils {
 		.forEach(e -> {
 			powerPlantElement.appendChild(
 					createEngineElement(doc, 
-							aircraftSaveDirectives.getEngineFileName(), 
+							aircraftSaveDirectives.getEngineFileName().substring(
+									0,
+									aircraftSaveDirectives.getEngineFileName().length()-4
+									)  + "_" + aircraft.getPowerPlant().getEngineList().indexOf(e) + ".xml", 
 							aircraft.getPowerPlant().getEngineList().get(aircraft.getPowerPlant().getEngineList().indexOf(e)).getXApexConstructionAxes(),
 							aircraft.getPowerPlant().getEngineList().get(aircraft.getPowerPlant().getEngineList().indexOf(e)).getYApexConstructionAxes(),
 							aircraft.getPowerPlant().getEngineList().get(aircraft.getPowerPlant().getEngineList().indexOf(e)).getZApexConstructionAxes(),
@@ -2550,7 +2553,10 @@ public class JPADStaticWriteUtils {
 		.forEach(e -> {
 			nacellesElement.appendChild(
 					createNacelleElement(doc, 
-							aircraftSaveDirectives.getNacelleFileName(), 
+							aircraftSaveDirectives.getNacelleFileName().substring(
+									0,
+									aircraftSaveDirectives.getNacelleFileName().length()-4
+									) + "_" + aircraft.getNacelles().getNacellesList().indexOf(e) + ".xml", 
 							aircraft.getNacelles().getNacellesList().get(aircraft.getNacelles().getNacellesList().indexOf(e)).getXApexConstructionAxes(),
 							aircraft.getNacelles().getNacellesList().get(aircraft.getNacelles().getNacellesList().indexOf(e)).getYApexConstructionAxes(),
 							aircraft.getNacelles().getNacellesList().get(aircraft.getNacelles().getNacellesList().indexOf(e)).getZApexConstructionAxes(),
@@ -2569,7 +2575,7 @@ public class JPADStaticWriteUtils {
 				.forEach(lg ->
 				aircraftElement.appendChild(
 						createLandingGearElement(doc, 
-								aircraftSaveDirectives.getLandingGearFileName(), 
+								aircraftSaveDirectives.getLandingGearFileName() + ".xml", 
 								lg.getXApexConstructionAxes(),
 								lg.getYApexConstructionAxes(),
 								lg.getZApexConstructionAxes(),
@@ -2585,7 +2591,7 @@ public class JPADStaticWriteUtils {
 				.forEach(sys ->
 				aircraftElement.appendChild(
 						createSystemElement(doc, 
-								aircraftSaveDirectives.getSystemFileName(), 
+								aircraftSaveDirectives.getSystemFileName() + ".xml", 
 								sys.getXApexConstructionAxes(),
 								sys.getYApexConstructionAxes(),
 								sys.getZApexConstructionAxes()
@@ -2993,7 +2999,10 @@ public class JPADStaticWriteUtils {
 		// nacelle
 		org.w3c.dom.Element nacelleElement = createXMLElementWithAttributes(doc, "nacelle", 
 				Tuple.of("id", nacelle.getId()),
-				Tuple.of("engine", aircraftSaveDirectives.getEngineFileName())
+				Tuple.of("engine", aircraftSaveDirectives.getEngineFileName().substring(
+						0,
+						aircraftSaveDirectives.getEngineFileName().length()-4
+						) + "_" + indexOfNacelle + ".xml")
 				);
 		rootElement.appendChild(nacelleElement);
 		
@@ -3109,7 +3118,7 @@ public class JPADStaticWriteUtils {
 			 
 		 }
 		 
-		 else if(engineType == EngineTypeEnum.TURBOPROP || engineType == EngineTypeEnum.TURBOFAN || engineType == EngineTypeEnum.TURBOJET) { 
+		 if(engineType == EngineTypeEnum.TURBOPROP || engineType == EngineTypeEnum.TURBOFAN || engineType == EngineTypeEnum.TURBOJET) { 
 		
 			 // specifications - number_of_compressor_stages
 			 JPADStaticWriteUtils.writeSingleNode("number_of_compressor_stages", 
