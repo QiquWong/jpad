@@ -592,8 +592,9 @@ public class JSBSimUtils {
 		org.w3c.dom.Element productForceElement = 
 				doc.createElement("product");
 		forceFunctionElement.appendChild(productForceElement);
-		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-psf",productForceElement,doc);
-		JPADStaticWriteUtils.writeSingleNode("property","metrics/Sw-sqft",productForceElement,doc);
+//		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-psf",productForceElement,doc);
+//		JPADStaticWriteUtils.writeSingleNode("property","metrics/Sw-sqft",productForceElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-area",productForceElement,doc);
 		JPADStaticWriteUtils.writeSingleNode("property","aero/function/"+axis+"_coeff_basic_Mach",productForceElement,doc);
 		if ((axis.equals("roll"))||(axis.equals("yaw"))) {
 			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
@@ -655,17 +656,13 @@ public class JSBSimUtils {
 		functionElement.appendChild(interpElement);
 		JPADStaticWriteUtils.writeSingleNode("p",
 				"velocities/mach" ,interpElement,doc);
+		counterList = 0;
 		for (int i = 0; i<machDimension; i++) {
 			//Coefficient
-			org.w3c.dom.Element valueInner = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
-					doc, "v", machVector[i], 
-					3, 6);
-			interpElement.appendChild(valueInner);
-			
-			org.w3c.dom.Element propertyInner = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
-					doc, "p", "aero/function/"+axis+"_coeff_basic_M" + i, 
-					3, 6);
-			interpElement.appendChild(propertyInner);
+			JPADStaticWriteUtils.writeSingleNode(
+					"v",machVector[i],interpElement,doc);	
+			JPADStaticWriteUtils.writeSingleNode("p",
+					"aero/function/"+axis+"_coeff_basic_M" + i ,interpElement,doc);			
 		}
 		return aeroElement;
 	}

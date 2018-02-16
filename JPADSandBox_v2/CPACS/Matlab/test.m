@@ -51,6 +51,21 @@ plot( ...
 xlabel('t (s)');
 ylabel('angle (°)');
 legend('\alpha','\beta');
+
+
+
+figure()
+plot( ...
+    dataTable.Time, dataTable.fdmjsbsimattitudephideg, ...
+    dataTable.Time, dataTable.fdmjsbsimattitudethetadeg, ...
+    dataTable.Time, dataTable.fdmjsbsimattitudepsideg ...
+    )
+xlabel('t (s)');
+ylabel('angle (°)');
+legend('\phi','\theta', '\psi');
+
+
+
 figure()
 % Start Force
 plot( ...           

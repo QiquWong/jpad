@@ -1501,7 +1501,7 @@ propulsion/engine/thrust-lbs (R)
 
 			 */
 
-			JPADStaticWriteUtils.writeSingleNode("property","propulsion/engine/thrust-lbs",outputElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","propulsion/engine[0]/thrust-lbs",outputElement,doc);
 			JPADStaticWriteUtils.writeSingleNode("property","propulsion/engine[1]/thrust-lbs",outputElement,doc);
 			JPADStaticWriteUtils.writeSingleNode("property","position/h-sl-meters",outputElement,doc);
 			JPADStaticWriteUtils.writeSingleNode("property","attitude/phi-deg",outputElement,doc);

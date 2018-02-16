@@ -5,7 +5,7 @@
 
 JSBSim startup beginning ...
 
-Reading Aircraft Configuration File: D150 AGILE
+Reading Aircraft Configuration File: D150_JSBSimCambioMomenti
                             Version: 2.0
 
 
@@ -41932,195 +41932,102 @@ Use this model for development purposes ONLY!!!
     Function: aero/forces/p-lift_basic_Mach
     Function: aero/forces/q-lift_basic_Mach
     Function: aero/forces/r-lift_basic_Mach
-    Function: aero/forces/roll_basic_Mach
-    Function: aero/forces/flap_inner_roll_basic_Mach
-    Function: aero/forces/flap_outer_roll_basic_Mach
-    Function: aero/forces/aileron_roll_basic_Mach
-    Function: aero/forces/elevator_roll_basic_Mach
-    Function: aero/forces/rudder_roll_basic_Mach
-    Function: aero/forces/p-roll_basic_Mach
-    Function: aero/forces/q-roll_basic_Mach
-    Function: aero/forces/r-roll_basic_Mach
-    Function: aero/forces/pitch_basic_Mach
-    Function: aero/forces/flap_inner_pitch_basic_Mach
-    Function: aero/forces/flap_outer_pitch_basic_Mach
-    Function: aero/forces/aileron_pitch_basic_Mach
-    Function: aero/forces/elevator_pitch_basic_Mach
-    Function: aero/forces/rudder_pitch_basic_Mach
-    Function: aero/forces/p-pitch_basic_Mach
-    Function: aero/forces/q-pitch_basic_Mach
-    Function: aero/forces/r-pitch_basic_Mach
-    Function: aero/forces/yaw_basic_Mach
-    Function: aero/forces/flap_inner_yaw_basic_Mach
-    Function: aero/forces/flap_outer_yaw_basic_Mach
-    Function: aero/forces/aileron_yaw_basic_Mach
-    Function: aero/forces/elevator_yaw_basic_Mach
-    Function: aero/forces/rudder_yaw_basic_Mach
-    Function: aero/forces/p-yaw_basic_Mach
-    Function: aero/forces/q-yaw_basic_Mach
-    Function: aero/forces/r-yaw_basic_Mach
+    Function: aero/coefficient/Clb
+    Function: aero/coefficient/Clp
+    Function: aero/coefficient/Clr
+    1 dimensional table with 2 rows.
+	0.0000	0.0017	
+	2.0000	0.0006	
+    Function: aero/coefficient/Clda
+    Function: aero/coefficient/Cldr
+    Function: aero/coefficient/Cmalpha
+    1 dimensional table with 2 rows.
+	0.0000	-0.0210	
+	2.0000	-0.0050	
+    Function: aero/coefficient/Cmde
+    Function: aero/coefficient/Cmq
+    Function: aero/coefficient/Cmadot
+    Function: aero/coefficient/Cnb
+    Function: aero/coefficient/Cnr
+    Function: aero/coefficient/Cndr
 
   Output data set: 0  
 
-Script: "D150_JSBSim"
-  begins at 0.0000 seconds and runs to 100.0083 seconds with dt = 0.100000 (10.000000 Hz)
+Script: "D150_JSBSimCambioMomenti"
+  begins at 0.0000 seconds and runs to 100.0083 seconds with dt = 0.010000 (100.000000 Hz)
 
-Local property: notify-time-trigger = 0.000000
 Local property: run_id = 1.000000
-Event 0 (engine start):
+Local property: notify-time-trigger = 0.000000
+Local property: notify-time-trigger1 = 0.000000
+Event 0 (Set engines running):
   When first triggered, executes once  if all of the following are true: {
-    sim-time-sec le 0.100000
+    sim-time-sec le 0.010000
   }
   Actions taken:
     {
-      set propulsion/engine[1]/set-running to 1.000000 (constant via step)
       set propulsion/engine/set-running to 1.000000 (constant via step)
-      set simulation/do_simple_trim to 2.000000 (constant via step)
-    }
-  Notifications:
-    {
-      position/h-agl-ft
+      set propulsion/engine[1]/set-running to 1.000000 (constant via step)
     }
 
-Event 1 (throttle comand):
+Event 1 (Set engines running):
   When first triggered, executes once  if all of the following are true: {
-    sim-time-sec gt 1.000000
+    sim-time-sec gt 0.100000
   }
   Actions taken:
     {
-      set fcs/throttle-cmd-norm to 1.000000 (constant via step)
-      set fcs/throttle-cmd-norm[1] to 1.000000 (constant via step)
-      set fcs/flap-cmd-norm to 0.660000 (constant via step)
-    }
-  Notifications:
-    {
-      position/h-agl-ft
-      velocities/vc-kts
+      set fcs/throttle-cmd-norm[1] to 0.200000 (constant via step)
+      set fcs/throttle-cmd-norm to 0.200000 (constant via step)
     }
 
-Event 2 (Remove flap):
-  When first triggered, executes once  if all of the following are true: {
-    h-agl-ft gt 1000.000000
+Event 2 (Repeating trim):
+  Whenever triggered, executes once  if all of the following are true: {
+    sim-time-sec gt 0.100000
   }
   Actions taken:
     {
-      set fcs/flap-cmd-norm to 0.000000 (constant via step)
+      set simulation/do_simple_trim to 0.000000 (constant via step)
+    }
+
+Event 3 (Repeating Notify):
+  Whenever triggered, executes once  if all of the following are true: {
+    sim-time-sec >= notify-time-trigger1
+  }
+  Actions taken:
+    {
+      set simulation/notify-time-trigger1 to 1.000000 (delta via step)
     }
   Notifications:
     {
+      propulsion/engine[0]/n2
+      propulsion/engine[1]/n2
+      propulsion/engine[0]/thrust-lbs
+      propulsion/engine[1]/thrust-lbs
       position/h-agl-ft
       velocities/vc-kts
+      velocities/vc-fps
+      velocities/vt-fps
+      attitude/phi-deg
+      attitude/theta-rad
+      attitude/psi-rad
+      fcs/elevator-pos-deg
+      fcs/flap-pos-deg
+      fcs/rudder-pos-deg
+      fcs/right-aileron-pos-deg
+      fcs/throttle-cmd-norm
+      aero/function/drag_coeff_basic_Mach
+      aero/function/side_coeff_basic_Mach
+      aero/function/lift_coeff_basic_Mach
+      aero/function/roll_coeff_basic_Mach
+      aero/function/pitch_coeff_basic_Mach
+      aero/function/yaw_coeff_basic_Mach
+      aero/qbar-area
+      aero/alpha-deg
+      aero/beta-deg
+      aero/Re
+      velocities/mach
     }
 
     Properties logged:
-      - drag_coeff_basic_Mach
-      - drag_basic_Mach
-      - side_coeff_basic_Mach
-      - side_basic_Mach
-      - lift_coeff_basic_Mach
-      - lift_basic_Mach
-      - roll_coeff_basic_Mach
-      - roll_basic_Mach
-      - pitch_coeff_basic_Mach
-      - pitch_basic_Mach
-      - yaw_coeff_basic_Mach
-      - yaw_basic_Mach
-      - flap_inner_drag_coeff_basic_Mach
-      - flap_inner_drag_basic_Mach
-      - flap_inner_side_coeff_basic_Mach
-      - flap_inner_side_basic_Mach
-      - flap_inner_lift_coeff_basic_Mach
-      - flap_inner_lift_basic_Mach
-      - flap_inner_roll_coeff_basic_Mach
-      - flap_inner_roll_basic_Mach
-      - flap_inner_pitch_coeff_basic_Mach
-      - flap_inner_pitch_basic_Mach
-      - flap_inner_yaw_coeff_basic_Mach
-      - flap_inner_yaw_basic_Mach
-      - flap_outer_drag_coeff_basic_Mach
-      - flap_outer_drag_basic_Mach
-      - flap_outer_side_coeff_basic_Mach
-      - flap_outer_side_basic_Mach
-      - flap_outer_lift_coeff_basic_Mach
-      - flap_outer_lift_basic_Mach
-      - flap_outer_roll_coeff_basic_Mach
-      - flap_outer_roll_basic_Mach
-      - flap_outer_pitch_coeff_basic_Mach
-      - flap_outer_pitch_basic_Mach
-      - flap_outer_yaw_coeff_basic_Mach
-      - flap_outer_yaw_basic_Mach
-      - aileron_drag_coeff_basic_Mach
-      - aileron_drag_basic_Mach
-      - aileron_side_coeff_basic_Mach
-      - aileron_side_basic_Mach
-      - aileron_lift_coeff_basic_Mach
-      - aileron_lift_basic_Mach
-      - aileron_roll_coeff_basic_Mach
-      - aileron_roll_basic_Mach
-      - aileron_pitch_coeff_basic_Mach
-      - aileron_pitch_basic_Mach
-      - aileron_yaw_coeff_basic_Mach
-      - aileron_yaw_basic_Mach
-      - elevator_drag_coeff_basic_Mach
-      - elevator_drag_basic_Mach
-      - elevator_side_coeff_basic_Mach
-      - elevator_side_basic_Mach
-      - elevator_lift_coeff_basic_Mach
-      - elevator_lift_basic_Mach
-      - elevator_roll_coeff_basic_Mach
-      - elevator_roll_basic_Mach
-      - elevator_pitch_coeff_basic_Mach
-      - elevator_pitch_basic_Mach
-      - elevator_yaw_coeff_basic_Mach
-      - elevator_yaw_basic_Mach
-      - rudder_drag_coeff_basic_Mach
-      - rudder_drag_basic_Mach
-      - rudder_side_coeff_basic_Mach
-      - rudder_side_basic_Mach
-      - rudder_lift_coeff_basic_Mach
-      - rudder_lift_basic_Mach
-      - rudder_roll_coeff_basic_Mach
-      - rudder_roll_basic_Mach
-      - rudder_pitch_coeff_basic_Mach
-      - rudder_pitch_basic_Mach
-      - rudder_yaw_coeff_basic_Mach
-      - rudder_yaw_basic_Mach
-      - p-drag_coeff_basic_Mach
-      - p-drag_basic_Mach
-      - p-side_coeff_basic_Mach
-      - p-side_basic_Mach
-      - p-lift_coeff_basic_Mach
-      - p-lift_basic_Mach
-      - p-roll_coeff_basic_Mach
-      - p-roll_basic_Mach
-      - p-pitch_coeff_basic_Mach
-      - p-pitch_basic_Mach
-      - p-yaw_coeff_basic_Mach
-      - p-yaw_basic_Mach
-      - q-drag_coeff_basic_Mach
-      - q-drag_basic_Mach
-      - q-side_coeff_basic_Mach
-      - q-side_basic_Mach
-      - q-lift_coeff_basic_Mach
-      - q-lift_basic_Mach
-      - q-roll_coeff_basic_Mach
-      - q-roll_basic_Mach
-      - q-pitch_coeff_basic_Mach
-      - q-pitch_basic_Mach
-      - q-yaw_coeff_basic_Mach
-      - q-yaw_basic_Mach
-      - r-drag_coeff_basic_Mach
-      - r-drag_basic_Mach
-      - r-side_coeff_basic_Mach
-      - r-side_basic_Mach
-      - r-lift_coeff_basic_Mach
-      - r-lift_basic_Mach
-      - r-roll_coeff_basic_Mach
-      - r-roll_basic_Mach
-      - r-pitch_coeff_basic_Mach
-      - r-pitch_basic_Mach
-      - r-yaw_coeff_basic_Mach
-      - r-yaw_basic_Mach
       - alpha-deg
       - beta-deg
       - Re
@@ -42162,106 +42069,3065 @@ Propulsion Model:
 ------------------------------------------------------------------
 State Report at sim time: 0.000000 seconds
   Position
-    ECI:   17029243.79536634, 6198137.85357576, 10462823.98293997 (x,y,z, in ft)
-    ECEF:  17029243.795366 , 6198137.853576 , 10462823.982940 (x,y,z, in ft)
-    Local: 30.166783, 20.000000, 1.640420 (geodetic lat, lon, alt ASL in deg and ft)
+    ECI:   17045263.43478733, 6203968.525488679, 10472666.50263997 (x,y,z, in ft)
+    ECEF:  17045263.434787 , 6203968.525489 , 10472666.502640 (x,y,z, in ft)
+    Local: 30.166626, 20.000000, 19686.679820 (geodetic lat, lon, alt ASL in deg and ft)
 
   Orientation
-    ECI:   180, -62.86478897565413, 200 (phi, theta, psi in deg)
-    Local: -1.572359771870039e-15, 2.864788975654113, 7.563186534571558e-16 (phi, theta, psi in deg)
+    ECI:   180, -59.99999999999999, 200 (phi, theta, psi in deg)
+    Local: 1.590277340731758e-15, -4.770832022195275e-15, 360 (phi, theta, psi in deg)
 
   Velocity
-    ECI:   -451.975340141276, 1241.792041188478, 0 (x,y,z in ft/s)
-    ECEF:  0, 0, 0 (x,y,z in ft/s)
-    Local: 0.000000 , 0.000000 , 0.000000 (n,e,d in ft/sec)
-    Body:  0.000000 , 0.000000 , -0.000000 (u,v,w in ft/sec)
+    ECI:   -781.2929367175066, 1123.253161553658, 606.2177826491069 (x,y,z in ft/s)
+    ECEF:  -328.8924172750677, -119.7070501639841, 606.2177826491068 (x,y,z in ft/s)
+    Local: 700.000000 , -0.000000 , 0.000000 (n,e,d in ft/sec)
+    Body:  700.000000 , -0.000000 , 0.000000 (u,v,w in ft/sec)
 
   Body Rates (relative to given frame, expressed in body frame)
-    ECI:   0.003718204718825269, 0, -0.001905585769101433 (p,q,r in deg/s)
-    ECEF:  0, 0, 0 (p,q,r in deg/s)
+    ECI:   0.003618318337414813, -0.001914844020338437, -0.002089037066120201 (p,q,r in deg/s)
+    ECEF:  0, -0.001914844020338437, 0 (p,q,r in deg/s)
 
 ---- JSBSim Execution beginning ... --------------------------------------------
 
-  Ground Trim
+
+Set engines running (Event 0) executed at time: 0.010000
+
+
+Repeating Notify (Event 3) executed at time: 0.010000
+    propulsion/engine[0]/n2 = 0.000000
+    propulsion/engine[1]/n2 = 0.000000
+    propulsion/engine[0]/thrust-lbs = 704.978544
+    propulsion/engine[1]/thrust-lbs = 704.978544
+    position/h-agl-ft = 19686.679820
+    velocities/vc-kts = 313.181211
+    velocities/vc-fps = 528.590380
+    velocities/vt-fps = 700.000000
+    attitude/phi-deg = 0.000000
+    attitude/theta-rad = -0.000000
+    attitude/psi-rad = 6.283185
+    fcs/elevator-pos-deg = 0.000000
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.000000
+    aero/function/drag_coeff_basic_Mach = 0.003607
+    aero/function/side_coeff_basic_Mach = 0.000000
+    aero/function/lift_coeff_basic_Mach = 0.386562
+    aero/function/roll_coeff_basic_Mach = -0.000000
+    aero/function/pitch_coeff_basic_Mach = -0.063416
+    aero/function/yaw_coeff_basic_Mach = 0.000000
+    aero/qbar-area = 440824.731793
+    aero/alpha-deg = 0.000000
+    aero/beta-deg = -0.000000
+    aero/Re = 37016472.823985
+    velocities/mach = 0.674231
+
+Start: Friday February 16 2018 10:17:51 (HH:MM:SS)
+  Longitudinal Trim
 
   Trim successful
   Trim Results: 
-          Altitude AGL:   2.75  wdot:  8.77e-04 Tolerance: 1.000000e-03  Passed
-           Pitch Angle:   0.05  qdot:  8.48e-06 Tolerance: 1.000000e-04  Passed
-            Roll Angle:  -0.00  pdot: -1.50e-09 Tolerance: 1.000000e-04  Passed
+       Angle of Attack:  -0.75  wdot:  7.18e-04 Tolerance: 1.000000e-03  Passed
+              Throttle:   0.13  udot: -1.79e-05 Tolerance: 1.000000e-03  Passed
+            Pitch Trim:  -0.07  qdot: -3.42e-17 Tolerance: 1.000000e-04  Passed
 
-engine start (Event 0) executed at time: 0.100000
-    position/h-agl-ft = 2.747710
+Repeating Notify (Event 3) executed at time: 1.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19686.689951
+    velocities/vc-kts = 313.152636
+    velocities/vc-fps = 528.542151
+    velocities/vt-fps = 699.999416
+    attitude/phi-deg = -0.000946
+    attitude/theta-rad = -0.013057
+    attitude/psi-rad = 0.000034
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002796
+    aero/function/side_coeff_basic_Mach = -0.000018
+    aero/function/lift_coeff_basic_Mach = 0.294332
+    aero/function/roll_coeff_basic_Mach = 0.000005
+    aero/function/pitch_coeff_basic_Mach = -0.016559
+    aero/function/yaw_coeff_basic_Mach = -0.000009
+    aero/qbar-area = 440823.845959
+    aero/alpha-deg = -0.750094
+    aero/beta-deg = 0.001653
+    aero/Re = 37016431.700898
+    velocities/mach = 0.674230
 
-Start: Monday February 12 2018 09:42:10 (HH:MM:SS)
-0: GEAR_CONTACT: 0 seconds: Nose Gear 1
-1: GEAR_CONTACT: 0 seconds: Right Main Gear 1
-2: GEAR_CONTACT: 0 seconds: Left Main Gear 1
 
-throttle comand (Event 1) executed at time: 1.100000
-    position/h-agl-ft = 2.747857
-    velocities/vc-kts = 0.000231
+Repeating Notify (Event 3) executed at time: 2.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19686.729648
+    velocities/vc-kts = 313.151514
+    velocities/vc-fps = 528.540256
+    velocities/vt-fps = 699.997516
+    attitude/phi-deg = -0.002249
+    attitude/theta-rad = -0.013023
+    attitude/psi-rad = 0.000142
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = 0.000000
+    aero/function/lift_coeff_basic_Mach = 0.294273
+    aero/function/roll_coeff_basic_Mach = -0.000000
+    aero/function/pitch_coeff_basic_Mach = -0.016522
+    aero/function/yaw_coeff_basic_Mach = 0.000000
+    aero/qbar-area = 440820.861619
+    aero/alpha-deg = -0.750549
+    aero/beta-deg = -0.000472
+    aero/Re = 37016290.998495
+    velocities/mach = 0.674229
 
-3: GEAR_CONTACT: 1.7 seconds: Nose Gear 0
-4: GEAR_CONTACT: 1.8 seconds: Nose Gear 1
-5: GEAR_CONTACT: 2.1 seconds: Nose Gear 0
-6: GEAR_CONTACT: 2.2 seconds: Nose Gear 1
-7: GEAR_CONTACT: 2.4 seconds: Nose Gear 0
-8: GEAR_CONTACT: 2.7 seconds: Nose Gear 1
-9: GEAR_CONTACT: 2.8 seconds: Nose Gear 0
-10: GEAR_CONTACT: 3.1 seconds: Nose Gear 1
-11: GEAR_CONTACT: 3.2 seconds: Nose Gear 0
-12: GEAR_CONTACT: 3.3 seconds: Right Main Gear 0
-13: GEAR_CONTACT: 3.3 seconds: Left Main Gear 0
-14: GEAR_CONTACT: 3.4 seconds: Right Main Gear 1
-15: GEAR_CONTACT: 3.4 seconds: Left Main Gear 1
-16: GEAR_CONTACT: 3.7 seconds: Right Main Gear 0
-17: GEAR_CONTACT: 3.7 seconds: Left Main Gear 0
-18: GEAR_CONTACT: 3.8 seconds: Right Main Gear 1
-19: GEAR_CONTACT: 3.8 seconds: Left Main Gear 1
-20: GEAR_CONTACT: 4.1 seconds: Right Main Gear 0
-21: GEAR_CONTACT: 4.1 seconds: Left Main Gear 0
-22: GEAR_CONTACT: 4.2 seconds: Right Main Gear 1
-23: GEAR_CONTACT: 4.2 seconds: Left Main Gear 1
-24: GEAR_CONTACT: 4.5 seconds: Right Main Gear 0
-25: GEAR_CONTACT: 4.5 seconds: Left Main Gear 0
-26: GEAR_CONTACT: 4.6 seconds: Right Main Gear 1
-27: GEAR_CONTACT: 4.6 seconds: Left Main Gear 1
-28: GEAR_CONTACT: 5.3 seconds: Right Main Gear 0
-29: GEAR_CONTACT: 5.3 seconds: Left Main Gear 0
-30: GEAR_CONTACT: 5.4 seconds: Right Main Gear 1
-31: GEAR_CONTACT: 5.4 seconds: Left Main Gear 1
-32: GEAR_CONTACT: 5.7 seconds: Right Main Gear 0
-33: GEAR_CONTACT: 5.7 seconds: Left Main Gear 0
-34: GEAR_CONTACT: 5.8 seconds: Right Main Gear 1
-35: GEAR_CONTACT: 5.8 seconds: Left Main Gear 1
-36: GEAR_CONTACT: 6.1 seconds: Right Main Gear 0
-37: GEAR_CONTACT: 6.1 seconds: Left Main Gear 0
-38: GEAR_CONTACT: 6.2 seconds: Right Main Gear 1
-39: GEAR_CONTACT: 6.2 seconds: Left Main Gear 1
-40: GEAR_CONTACT: 6.4 seconds: Right Main Gear 0
-41: GEAR_CONTACT: 6.4 seconds: Left Main Gear 0
-42: GEAR_CONTACT: 6.8 seconds: Right Main Gear 1
-43: GEAR_CONTACT: 6.8 seconds: Left Main Gear 1
-44: GEAR_CONTACT: 7 seconds: Right Main Gear 0
-45: GEAR_CONTACT: 7 seconds: Left Main Gear 0
-46: GEAR_CONTACT: 7.5 seconds: Right Main Gear 1
-47: GEAR_CONTACT: 7.5 seconds: Left Main Gear 1
-48: GEAR_CONTACT: 8.7 seconds: Nose Gear 1
-49: *CRASH DETECTED* 10.9 seconds: Nose Gear
-50: *CRASH DETECTED* 10.9 seconds: Right Main Gear
-51: *CRASH DETECTED* 10.9 seconds: Left Main Gear
-52: *CRASH DETECTED* 11 seconds: Nose Gear
-53: *CRASH DETECTED* 11 seconds: Right Main Gear
-54: *CRASH DETECTED* 11 seconds: Left Main Gear
-55: *CRASH DETECTED* 11.1 seconds: Nose Gear
-56: *CRASH DETECTED* 11.1 seconds: Right Main Gear
-57: *CRASH DETECTED* 11.1 seconds: Left Main Gear
-58: GEAR_CONTACT: 11.2 seconds: Nose Gear 0
-59: GEAR_CONTACT: 11.2 seconds: Right Main Gear 0
-60: GEAR_CONTACT: 11.2 seconds: Left Main Gear 0
 
-Remove flap (Event 2) executed at time: 11.300000
-    position/h-agl-ft = 5219.931175
-    velocities/vc-kts = 16571.049953
+Repeating Notify (Event 3) executed at time: 3.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19686.795211
+    velocities/vc-kts = 313.149814
+    velocities/vc-fps = 528.537388
+    velocities/vt-fps = 699.994491
+    attitude/phi-deg = -0.001271
+    attitude/theta-rad = -0.012979
+    attitude/psi-rad = 0.000192
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000008
+    aero/function/lift_coeff_basic_Mach = 0.294347
+    aero/function/roll_coeff_basic_Mach = 0.000002
+    aero/function/pitch_coeff_basic_Mach = -0.016563
+    aero/function/yaw_coeff_basic_Mach = -0.000004
+    aero/qbar-area = 440816.074770
+    aero/alpha-deg = -0.749949
+    aero/beta-deg = 0.000746
+    aero/Re = 37016064.580031
+    velocities/mach = 0.674226
 
+
+Repeating Notify (Event 3) executed at time: 4.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19686.886353
+    velocities/vc-kts = 313.147330
+    velocities/vc-fps = 528.533196
+    velocities/vt-fps = 699.990215
+    attitude/phi-deg = -0.001824
+    attitude/theta-rad = -0.012944
+    attitude/psi-rad = 0.000266
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000006
+    aero/function/lift_coeff_basic_Mach = 0.294303
+    aero/function/roll_coeff_basic_Mach = 0.000002
+    aero/function/pitch_coeff_basic_Mach = -0.016540
+    aero/function/yaw_coeff_basic_Mach = -0.000003
+    aero/qbar-area = 440809.333132
+    aero/alpha-deg = -0.750291
+    aero/beta-deg = 0.000563
+    aero/Re = 37015746.162150
+    velocities/mach = 0.674222
+
+
+Repeating Notify (Event 3) executed at time: 5.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19687.005086
+    velocities/vc-kts = 313.144186
+    velocities/vc-fps = 528.527888
+    velocities/vt-fps = 699.984759
+    attitude/phi-deg = -0.001868
+    attitude/theta-rad = -0.012907
+    attitude/psi-rad = 0.000345
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000001
+    aero/function/lift_coeff_basic_Mach = 0.294307
+    aero/function/roll_coeff_basic_Mach = 0.000000
+    aero/function/pitch_coeff_basic_Mach = -0.016541
+    aero/function/yaw_coeff_basic_Mach = -0.000000
+    aero/qbar-area = 440800.693132
+    aero/alpha-deg = -0.750235
+    aero/beta-deg = 0.000099
+    aero/Re = 37015337.331452
+    velocities/mach = 0.674217
+
+
+Repeating Notify (Event 3) executed at time: 6.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19687.148165
+    velocities/vc-kts = 313.140397
+    velocities/vc-fps = 528.521494
+    velocities/vt-fps = 699.978172
+    attitude/phi-deg = -0.001694
+    attitude/theta-rad = -0.012869
+    attitude/psi-rad = 0.000406
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000007
+    aero/function/lift_coeff_basic_Mach = 0.294324
+    aero/function/roll_coeff_basic_Mach = 0.000002
+    aero/function/pitch_coeff_basic_Mach = -0.016554
+    aero/function/yaw_coeff_basic_Mach = -0.000004
+    aero/qbar-area = 440790.268235
+    aero/alpha-deg = -0.750084
+    aero/beta-deg = 0.000706
+    aero/Re = 37014844.109686
+    velocities/mach = 0.674211
+
+
+Repeating Notify (Event 3) executed at time: 7.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19687.316985
+    velocities/vc-kts = 313.135907
+    velocities/vc-fps = 528.513915
+    velocities/vt-fps = 699.970410
+    attitude/phi-deg = -0.002045
+    attitude/theta-rad = -0.012835
+    attitude/psi-rad = 0.000484
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000003
+    aero/function/lift_coeff_basic_Mach = 0.294302
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016542
+    aero/function/yaw_coeff_basic_Mach = -0.000001
+    aero/qbar-area = 440777.978893
+    aero/alpha-deg = -0.750236
+    aero/beta-deg = 0.000288
+    aero/Re = 37014262.613476
+    velocities/mach = 0.674204
+
+
+Repeating Notify (Event 3) executed at time: 8.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19687.510138
+    velocities/vc-kts = 313.130814
+    velocities/vc-fps = 528.505320
+    velocities/vt-fps = 699.961575
+    attitude/phi-deg = -0.001939
+    attitude/theta-rad = -0.012799
+    attitude/psi-rad = 0.000552
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294316
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016551
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440763.976653
+    aero/alpha-deg = -0.750095
+    aero/beta-deg = 0.000419
+    aero/Re = 37013599.750282
+    velocities/mach = 0.674196
+
+
+Repeating Notify (Event 3) executed at time: 9.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19687.726486
+    velocities/vc-kts = 313.125095
+    velocities/vc-fps = 528.495667
+    velocities/vt-fps = 699.951673
+    attitude/phi-deg = -0.002051
+    attitude/theta-rad = -0.012766
+    attitude/psi-rad = 0.000621
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000005
+    aero/function/lift_coeff_basic_Mach = 0.294312
+    aero/function/roll_coeff_basic_Mach = 0.000002
+    aero/function/pitch_coeff_basic_Mach = -0.016551
+    aero/function/yaw_coeff_basic_Mach = -0.000003
+    aero/qbar-area = 440748.285312
+    aero/alpha-deg = -0.750100
+    aero/beta-deg = 0.000500
+    aero/Re = 37012856.957719
+    velocities/mach = 0.674187
+
+
+Repeating Notify (Event 3) executed at time: 10.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19687.965820
+    velocities/vc-kts = 313.118784
+    velocities/vc-fps = 528.485015
+    velocities/vt-fps = 699.940748
+    attitude/phi-deg = -0.002169
+    attitude/theta-rad = -0.012734
+    attitude/psi-rad = 0.000695
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000003
+    aero/function/lift_coeff_basic_Mach = 0.294309
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016551
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440730.964802
+    aero/alpha-deg = -0.750090
+    aero/beta-deg = 0.000340
+    aero/Re = 37012036.831005
+    velocities/mach = 0.674177
+
+
+Repeating Notify (Event 3) executed at time: 11.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.226493
+    velocities/vc-kts = 313.111924
+    velocities/vc-fps = 528.473436
+    velocities/vt-fps = 699.928868
+    attitude/phi-deg = -0.002163
+    attitude/theta-rad = -0.012703
+    attitude/psi-rad = 0.000763
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000005
+    aero/function/lift_coeff_basic_Mach = 0.294315
+    aero/function/roll_coeff_basic_Mach = 0.000002
+    aero/function/pitch_coeff_basic_Mach = -0.016556
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440712.123726
+    aero/alpha-deg = -0.750007
+    aero/beta-deg = 0.000471
+    aero/Re = 37011144.566424
+    velocities/mach = 0.674166
+
+
+Repeating Notify (Event 3) executed at time: 12.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.507673
+    velocities/vc-kts = 313.104524
+    velocities/vc-fps = 528.460946
+    velocities/vt-fps = 699.916065
+    attitude/phi-deg = -0.002290
+    attitude/theta-rad = -0.012674
+    attitude/psi-rad = 0.000835
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294311
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016556
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440691.816539
+    aero/alpha-deg = -0.750002
+    aero/beta-deg = 0.000413
+    aero/Re = 37010182.769984
+    velocities/mach = 0.674155
+
+
+Repeating Notify (Event 3) executed at time: 13.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.808158
+    velocities/vc-kts = 313.096632
+    velocities/vc-fps = 528.447626
+    velocities/vt-fps = 699.902410
+    attitude/phi-deg = -0.002336
+    attitude/theta-rad = -0.012647
+    attitude/psi-rad = 0.000906
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294313
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016560
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440670.148695
+    aero/alpha-deg = -0.749941
+    aero/beta-deg = 0.000406
+    aero/Re = 37009156.333330
+    velocities/mach = 0.674143
+
+
+Repeating Notify (Event 3) executed at time: 14.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19689.126477
+    velocities/vc-kts = 313.088278
+    velocities/vc-fps = 528.433527
+    velocities/vt-fps = 699.887960
+    attitude/phi-deg = -0.002399
+    attitude/theta-rad = -0.012621
+    attitude/psi-rad = 0.000975
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294314
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016563
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440647.215553
+    aero/alpha-deg = -0.749889
+    aero/beta-deg = 0.000444
+    aero/Re = 37008069.827928
+    velocities/mach = 0.674129
+
+
+Repeating Notify (Event 3) executed at time: 15.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19689.461435
+    velocities/vc-kts = 313.079497
+    velocities/vc-fps = 528.418706
+    velocities/vt-fps = 699.872776
+    attitude/phi-deg = -0.002487
+    attitude/theta-rad = -0.012598
+    attitude/psi-rad = 0.001047
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294314
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016565
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440623.111715
+    aero/alpha-deg = -0.749849
+    aero/beta-deg = 0.000405
+    aero/Re = 37006927.687895
+    velocities/mach = 0.674116
+
+
+Repeating Notify (Event 3) executed at time: 16.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19689.811473
+    velocities/vc-kts = 313.070333
+    velocities/vc-fps = 528.403239
+    velocities/vt-fps = 699.856931
+    attitude/phi-deg = -0.002538
+    attitude/theta-rad = -0.012576
+    attitude/psi-rad = 0.001117
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294316
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016569
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440597.952314
+    aero/alpha-deg = -0.749783
+    aero/beta-deg = 0.000427
+    aero/Re = 37005735.349490
+    velocities/mach = 0.674101
+
+
+Repeating Notify (Event 3) executed at time: 17.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19690.175094
+    velocities/vc-kts = 313.060823
+    velocities/vc-fps = 528.387187
+    velocities/vt-fps = 699.840493
+    attitude/phi-deg = -0.002615
+    attitude/theta-rad = -0.012557
+    attitude/psi-rad = 0.001187
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294316
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016572
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440571.843898
+    aero/alpha-deg = -0.749732
+    aero/beta-deg = 0.000423
+    aero/Re = 37004497.865127
+    velocities/mach = 0.674087
+
+
+Repeating Notify (Event 3) executed at time: 18.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19690.546947
+    velocities/vc-kts = 313.051109
+    velocities/vc-fps = 528.370792
+    velocities/vt-fps = 699.823707
+    attitude/phi-deg = -0.002682
+    attitude/theta-rad = -0.012540
+    attitude/psi-rad = 0.001257
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294317
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016575
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440545.176365
+    aero/alpha-deg = -0.749672
+    aero/beta-deg = 0.000415
+    aero/Re = 37003233.682323
+    velocities/mach = 0.674071
+
+
+Repeating Notify (Event 3) executed at time: 19.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19690.932881
+    velocities/vc-kts = 313.041039
+    velocities/vc-fps = 528.353796
+    velocities/vt-fps = 699.806309
+    attitude/phi-deg = -0.002746
+    attitude/theta-rad = -0.012525
+    attitude/psi-rad = 0.001327
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294319
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016579
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440517.530608
+    aero/alpha-deg = -0.749608
+    aero/beta-deg = 0.000425
+    aero/Re = 37001922.929398
+    velocities/mach = 0.674056
+
+
+Repeating Notify (Event 3) executed at time: 20.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19691.327561
+    velocities/vc-kts = 313.030752
+    velocities/vc-fps = 528.336434
+    velocities/vt-fps = 699.788543
+    attitude/phi-deg = -0.002819
+    attitude/theta-rad = -0.012513
+    attitude/psi-rad = 0.001397
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294319
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016582
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440489.291940
+    aero/alpha-deg = -0.749548
+    aero/beta-deg = 0.000418
+    aero/Re = 37000583.855671
+    velocities/mach = 0.674040
+
+
+Repeating Notify (Event 3) executed at time: 21.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19691.729266
+    velocities/vc-kts = 313.020296
+    velocities/vc-fps = 528.318786
+    velocities/vt-fps = 699.770488
+    attitude/phi-deg = -0.002884
+    attitude/theta-rad = -0.012503
+    attitude/psi-rad = 0.001467
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294321
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016586
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440460.586755
+    aero/alpha-deg = -0.749482
+    aero/beta-deg = 0.000420
+    aero/Re = 36999222.435244
+    velocities/mach = 0.674023
+
+
+Repeating Notify (Event 3) executed at time: 22.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19692.136252
+    velocities/vc-kts = 313.009716
+    velocities/vc-fps = 528.300929
+    velocities/vt-fps = 699.752224
+    attitude/phi-deg = -0.002952
+    attitude/theta-rad = -0.012495
+    attitude/psi-rad = 0.001538
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294322
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016589
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440431.541001
+    aero/alpha-deg = -0.749417
+    aero/beta-deg = 0.000421
+    aero/Re = 36997844.633309
+    velocities/mach = 0.674007
+
+
+Repeating Notify (Event 3) executed at time: 23.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19692.546773
+    velocities/vc-kts = 312.999058
+    velocities/vc-fps = 528.282941
+    velocities/vt-fps = 699.733832
+    attitude/phi-deg = -0.003021
+    attitude/theta-rad = -0.012490
+    attitude/psi-rad = 0.001608
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294323
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016593
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440402.282403
+    aero/alpha-deg = -0.749352
+    aero/beta-deg = 0.000418
+    aero/Re = 36996456.490798
+    velocities/mach = 0.673990
+
+
+Repeating Notify (Event 3) executed at time: 24.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19692.959045
+    velocities/vc-kts = 312.988370
+    velocities/vc-fps = 528.264902
+    velocities/vt-fps = 699.715393
+    attitude/phi-deg = -0.003087
+    attitude/theta-rad = -0.012488
+    attitude/psi-rad = 0.001678
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294325
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016597
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440372.940247
+    aero/alpha-deg = -0.749285
+    aero/beta-deg = 0.000420
+    aero/Re = 36995064.129484
+    velocities/mach = 0.673973
+
+
+Repeating Notify (Event 3) executed at time: 25.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19693.371295
+    velocities/vc-kts = 312.977699
+    velocities/vc-fps = 528.246890
+    velocities/vt-fps = 699.696988
+    attitude/phi-deg = -0.003156
+    attitude/theta-rad = -0.012488
+    attitude/psi-rad = 0.001748
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294326
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016600
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440343.642901
+    aero/alpha-deg = -0.749220
+    aero/beta-deg = 0.000419
+    aero/Re = 36993673.628866
+    velocities/mach = 0.673957
+
+
+Repeating Notify (Event 3) executed at time: 26.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19693.781747
+    velocities/vc-kts = 312.967090
+    velocities/vc-fps = 528.228985
+    velocities/vt-fps = 699.678699
+    attitude/phi-deg = -0.003223
+    attitude/theta-rad = -0.012491
+    attitude/psi-rad = 0.001818
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294327
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016604
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440314.519122
+    aero/alpha-deg = -0.749154
+    aero/beta-deg = 0.000418
+    aero/Re = 36992291.086157
+    velocities/mach = 0.673940
+
+
+Repeating Notify (Event 3) executed at time: 27.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19694.188634
+    velocities/vc-kts = 312.956592
+    velocities/vc-fps = 528.211265
+    velocities/vt-fps = 699.660606
+    attitude/phi-deg = -0.003290
+    attitude/theta-rad = -0.012496
+    attitude/psi-rad = 0.001888
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294329
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016608
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440285.696431
+    aero/alpha-deg = -0.749090
+    aero/beta-deg = 0.000419
+    aero/Re = 36990922.544509
+    velocities/mach = 0.673924
+
+
+Repeating Notify (Event 3) executed at time: 28.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19694.590211
+    velocities/vc-kts = 312.946249
+    velocities/vc-fps = 528.193808
+    velocities/vt-fps = 699.642788
+    attitude/phi-deg = -0.003358
+    attitude/theta-rad = -0.012504
+    attitude/psi-rad = 0.001958
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294330
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016611
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440257.300677
+    aero/alpha-deg = -0.749027
+    aero/beta-deg = 0.000418
+    aero/Re = 36989573.967635
+    velocities/mach = 0.673908
+
+
+Repeating Notify (Event 3) executed at time: 29.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19694.984757
+    velocities/vc-kts = 312.936107
+    velocities/vc-fps = 528.176690
+    velocities/vt-fps = 699.625324
+    attitude/phi-deg = -0.003425
+    attitude/theta-rad = -0.012514
+    attitude/psi-rad = 0.002028
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294331
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016615
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440229.455889
+    aero/alpha-deg = -0.748965
+    aero/beta-deg = 0.000418
+    aero/Re = 36988251.235125
+    velocities/mach = 0.673892
+
+
+Repeating Notify (Event 3) executed at time: 30.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19695.370586
+    velocities/vc-kts = 312.926209
+    velocities/vc-fps = 528.159985
+    velocities/vt-fps = 699.608290
+    attitude/phi-deg = -0.003492
+    attitude/theta-rad = -0.012526
+    attitude/psi-rad = 0.002098
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294332
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016618
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440202.283021
+    aero/alpha-deg = -0.748905
+    aero/beta-deg = 0.000418
+    aero/Re = 36986960.083743
+    velocities/mach = 0.673877
+
+
+Repeating Notify (Event 3) executed at time: 31.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19695.746053
+    velocities/vc-kts = 312.916600
+    velocities/vc-fps = 528.143767
+    velocities/vt-fps = 699.591761
+    attitude/phi-deg = -0.003559
+    attitude/theta-rad = -0.012541
+    attitude/psi-rad = 0.002168
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294333
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016622
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440175.900465
+    aero/alpha-deg = -0.748847
+    aero/beta-deg = 0.000417
+    aero/Re = 36985706.126962
+    velocities/mach = 0.673862
+
+
+Repeating Notify (Event 3) executed at time: 32.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19696.109561
+    velocities/vc-kts = 312.907321
+    velocities/vc-fps = 528.128105
+    velocities/vt-fps = 699.575809
+    attitude/phi-deg = -0.003627
+    attitude/theta-rad = -0.012559
+    attitude/psi-rad = 0.002237
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294334
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016625
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440150.422373
+    aero/alpha-deg = -0.748791
+    aero/beta-deg = 0.000417
+    aero/Re = 36984494.781990
+    velocities/mach = 0.673847
+
+
+Repeating Notify (Event 3) executed at time: 33.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19696.459571
+    velocities/vc-kts = 312.898411
+    velocities/vc-fps = 528.113068
+    velocities/vt-fps = 699.560502
+    attitude/phi-deg = -0.003694
+    attitude/theta-rad = -0.012578
+    attitude/psi-rad = 0.002307
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294335
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016628
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440125.958771
+    aero/alpha-deg = -0.748739
+    aero/beta-deg = 0.000417
+    aero/Re = 36983331.270870
+    velocities/mach = 0.673834
+
+
+Repeating Notify (Event 3) executed at time: 34.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19696.794606
+    velocities/vc-kts = 312.889910
+    velocities/vc-fps = 528.098720
+    velocities/vt-fps = 699.545908
+    attitude/phi-deg = -0.003761
+    attitude/theta-rad = -0.012600
+    attitude/psi-rad = 0.002377
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294335
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016630
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440102.615040
+    aero/alpha-deg = -0.748689
+    aero/beta-deg = 0.000417
+    aero/Re = 36982220.596642
+    velocities/mach = 0.673820
+
+
+Repeating Notify (Event 3) executed at time: 35.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19697.113256
+    velocities/vc-kts = 312.881854
+    velocities/vc-fps = 528.085122
+    velocities/vt-fps = 699.532090
+    attitude/phi-deg = -0.003828
+    attitude/theta-rad = -0.012623
+    attitude/psi-rad = 0.002447
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294336
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016633
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440080.491336
+    aero/alpha-deg = -0.748643
+    aero/beta-deg = 0.000417
+    aero/Re = 36981167.516232
+    velocities/mach = 0.673808
+
+
+Repeating Notify (Event 3) executed at time: 36.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19697.414189
+    velocities/vc-kts = 312.874277
+    velocities/vc-fps = 528.072333
+    velocities/vt-fps = 699.519106
+    attitude/phi-deg = -0.003896
+    attitude/theta-rad = -0.012649
+    attitude/psi-rad = 0.002516
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294337
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016635
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440059.682198
+    aero/alpha-deg = -0.748600
+    aero/beta-deg = 0.000416
+    aero/Re = 36980176.521197
+    velocities/mach = 0.673796
+
+
+Repeating Notify (Event 3) executed at time: 37.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19697.696155
+    velocities/vc-kts = 312.867211
+    velocities/vc-fps = 528.060408
+    velocities/vt-fps = 699.507013
+    attitude/phi-deg = -0.003963
+    attitude/theta-rad = -0.012676
+    attitude/psi-rad = 0.002586
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294337
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016638
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440040.276141
+    aero/alpha-deg = -0.748561
+    aero/beta-deg = 0.000416
+    aero/Re = 36979251.818718
+    velocities/mach = 0.673785
+
+
+Repeating Notify (Event 3) executed at time: 38.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19697.957990
+    velocities/vc-kts = 312.860687
+    velocities/vc-fps = 528.049397
+    velocities/vt-fps = 699.495862
+    attitude/phi-deg = -0.004031
+    attitude/theta-rad = -0.012705
+    attitude/psi-rad = 0.002655
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294337
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016640
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440022.355231
+    aero/alpha-deg = -0.748526
+    aero/beta-deg = 0.000416
+    aero/Re = 36978397.311280
+    velocities/mach = 0.673775
+
+
+Repeating Notify (Event 3) executed at time: 39.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19698.198620
+    velocities/vc-kts = 312.854732
+    velocities/vc-fps = 528.039345
+    velocities/vt-fps = 699.485700
+    attitude/phi-deg = -0.004098
+    attitude/theta-rad = -0.012735
+    attitude/psi-rad = 0.002725
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294337
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016641
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440005.994764
+    aero/alpha-deg = -0.748495
+    aero/beta-deg = 0.000416
+    aero/Re = 36977616.581183
+    velocities/mach = 0.673766
+
+
+Repeating Notify (Event 3) executed at time: 40.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19698.417071
+    velocities/vc-kts = 312.849371
+    velocities/vc-fps = 528.030297
+    velocities/vt-fps = 699.476571
+    attitude/phi-deg = -0.004166
+    attitude/theta-rad = -0.012767
+    attitude/psi-rad = 0.002795
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294337
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016643
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439991.262744
+    aero/alpha-deg = -0.748469
+    aero/beta-deg = 0.000416
+    aero/Re = 36976912.866752
+    velocities/mach = 0.673758
+
+
+Repeating Notify (Event 3) executed at time: 41.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19698.612467
+    velocities/vc-kts = 312.844626
+    velocities/vc-fps = 528.022287
+    velocities/vt-fps = 699.468512
+    attitude/phi-deg = -0.004233
+    attitude/theta-rad = -0.012800
+    attitude/psi-rad = 0.002864
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294337
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016644
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439978.220290
+    aero/alpha-deg = -0.748447
+    aero/beta-deg = 0.000415
+    aero/Re = 36976289.077777
+    velocities/mach = 0.673751
+
+
+Repeating Notify (Event 3) executed at time: 42.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19698.784040
+    velocities/vc-kts = 312.840516
+    velocities/vc-fps = 528.015351
+    velocities/vt-fps = 699.461556
+    attitude/phi-deg = -0.004301
+    attitude/theta-rad = -0.012835
+    attitude/psi-rad = 0.002933
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294336
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016645
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439966.920331
+    aero/alpha-deg = -0.748430
+    aero/beta-deg = 0.000415
+    aero/Re = 36975747.739080
+    velocities/mach = 0.673745
+
+
+Repeating Notify (Event 3) executed at time: 43.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19698.931127
+    velocities/vc-kts = 312.837058
+    velocities/vc-fps = 528.009514
+    velocities/vt-fps = 699.455732
+    attitude/phi-deg = -0.004369
+    attitude/theta-rad = -0.012870
+    attitude/psi-rad = 0.003003
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294336
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016646
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439957.408071
+    aero/alpha-deg = -0.748418
+    aero/beta-deg = 0.000415
+    aero/Re = 36975291.008759
+    velocities/mach = 0.673739
+
+
+Repeating Notify (Event 3) executed at time: 44.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19699.054270
+    velocities/vc-kts = 312.834240
+    velocities/vc-fps = 528.004759
+    velocities/vt-fps = 699.451022
+    attitude/phi-deg = -0.004437
+    attitude/theta-rad = -0.012906
+    attitude/psi-rad = 0.003073
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294335
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016646
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439949.653074
+    aero/alpha-deg = -0.748410
+    aero/beta-deg = 0.000415
+    aero/Re = 36974917.399709
+    velocities/mach = 0.673735
+
+
+Repeating Notify (Event 3) executed at time: 45.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19699.150590
+    velocities/vc-kts = 312.832130
+    velocities/vc-fps = 528.001198
+    velocities/vt-fps = 699.447537
+    attitude/phi-deg = -0.004505
+    attitude/theta-rad = -0.012943
+    attitude/psi-rad = 0.003142
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294334
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016646
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439943.837982
+    aero/alpha-deg = -0.748408
+    aero/beta-deg = 0.000415
+    aero/Re = 36974635.704299
+    velocities/mach = 0.673732
+
+
+Repeating Notify (Event 3) executed at time: 46.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19699.221110
+    velocities/vc-kts = 312.830704
+    velocities/vc-fps = 527.998790
+    velocities/vt-fps = 699.445238
+    attitude/phi-deg = -0.004573
+    attitude/theta-rad = -0.012980
+    attitude/psi-rad = 0.003212
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294333
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016646
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439939.897265
+    aero/alpha-deg = -0.748411
+    aero/beta-deg = 0.000414
+    aero/Re = 36974442.773223
+    velocities/mach = 0.673730
+
+
+Repeating Notify (Event 3) executed at time: 47.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19699.265625
+    velocities/vc-kts = 312.829965
+    velocities/vc-fps = 527.997543
+    velocities/vt-fps = 699.444130
+    attitude/phi-deg = -0.004641
+    attitude/theta-rad = -0.013017
+    attitude/psi-rad = 0.003281
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294331
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016645
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439937.842918
+    aero/alpha-deg = -0.748419
+    aero/beta-deg = 0.000414
+    aero/Re = 36974339.190819
+    velocities/mach = 0.673729
+
+
+Repeating Notify (Event 3) executed at time: 48.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19699.284047
+    velocities/vc-kts = 312.829915
+    velocities/vc-fps = 527.997458
+    velocities/vt-fps = 699.444217
+    attitude/phi-deg = -0.004709
+    attitude/theta-rad = -0.013055
+    attitude/psi-rad = 0.003350
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294330
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016644
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439937.678275
+    aero/alpha-deg = -0.748431
+    aero/beta-deg = 0.000414
+    aero/Re = 36974325.131807
+    velocities/mach = 0.673729
+
+
+Repeating Notify (Event 3) executed at time: 49.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19699.276404
+    velocities/vc-kts = 312.830552
+    velocities/vc-fps = 527.998534
+    velocities/vt-fps = 699.445495
+    attitude/phi-deg = -0.004777
+    attitude/theta-rad = -0.013092
+    attitude/psi-rad = 0.003419
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294328
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016643
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439939.398715
+    aero/alpha-deg = -0.748449
+    aero/beta-deg = 0.000414
+    aero/Re = 36974400.390722
+    velocities/mach = 0.673730
+
+
+Repeating Notify (Event 3) executed at time: 50.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19699.242843
+    velocities/vc-kts = 312.831871
+    velocities/vc-fps = 528.000761
+    velocities/vt-fps = 699.447953
+    attitude/phi-deg = -0.004845
+    attitude/theta-rad = -0.013130
+    attitude/psi-rad = 0.003489
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294326
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016642
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439942.990634
+    aero/alpha-deg = -0.748472
+    aero/beta-deg = 0.000414
+    aero/Re = 36974564.338927
+    velocities/mach = 0.673733
+
+
+Repeating Notify (Event 3) executed at time: 51.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19699.183627
+    velocities/vc-kts = 312.833865
+    velocities/vc-fps = 528.004126
+    velocities/vt-fps = 699.451580
+    attitude/phi-deg = -0.004914
+    attitude/theta-rad = -0.013167
+    attitude/psi-rad = 0.003558
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294324
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016640
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439948.432224
+    aero/alpha-deg = -0.748500
+    aero/beta-deg = 0.000413
+    aero/Re = 36974815.957611
+    velocities/mach = 0.673736
+
+
+Repeating Notify (Event 3) executed at time: 52.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19699.099131
+    velocities/vc-kts = 312.836522
+    velocities/vc-fps = 528.008611
+    velocities/vt-fps = 699.456354
+    attitude/phi-deg = -0.004982
+    attitude/theta-rad = -0.013203
+    attitude/psi-rad = 0.003627
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294322
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016638
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439955.693404
+    aero/alpha-deg = -0.748533
+    aero/beta-deg = 0.000413
+    aero/Re = 36975153.835494
+    velocities/mach = 0.673740
+
+
+Repeating Notify (Event 3) executed at time: 53.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19698.989847
+    velocities/vc-kts = 312.839829
+    velocities/vc-fps = 528.014191
+    velocities/vt-fps = 699.462251
+    attitude/phi-deg = -0.005051
+    attitude/theta-rad = -0.013239
+    attitude/psi-rad = 0.003696
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294319
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016636
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439964.735969
+    aero/alpha-deg = -0.748571
+    aero/beta-deg = 0.000413
+    aero/Re = 36975576.175691
+    velocities/mach = 0.673746
+
+
+Repeating Notify (Event 3) executed at time: 54.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19698.856374
+    velocities/vc-kts = 312.843767
+    velocities/vc-fps = 528.020839
+    velocities/vt-fps = 699.469241
+    attitude/phi-deg = -0.005119
+    attitude/theta-rad = -0.013274
+    attitude/psi-rad = 0.003765
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294317
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016634
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439975.513766
+    aero/alpha-deg = -0.748613
+    aero/beta-deg = 0.000413
+    aero/Re = 36976080.804278
+    velocities/mach = 0.673752
+
+
+Repeating Notify (Event 3) executed at time: 55.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19698.699422
+    velocities/vc-kts = 312.848319
+    velocities/vc-fps = 528.028521
+    velocities/vt-fps = 699.477291
+    attitude/phi-deg = -0.005188
+    attitude/theta-rad = -0.013307
+    attitude/psi-rad = 0.003834
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294314
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016631
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 439987.972916
+    aero/alpha-deg = -0.748660
+    aero/beta-deg = 0.000412
+    aero/Re = 36976665.180605
+    velocities/mach = 0.673759
+
+
+Repeating Notify (Event 3) executed at time: 56.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19698.519803
+    velocities/vc-kts = 312.853460
+    velocities/vc-fps = 528.037199
+    velocities/vt-fps = 699.486360
+    attitude/phi-deg = -0.005256
+    attitude/theta-rad = -0.013340
+    attitude/psi-rad = 0.003903
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002795
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294311
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016628
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440002.051888
+    aero/alpha-deg = -0.748711
+    aero/beta-deg = 0.000412
+    aero/Re = 36977326.401751
+    velocities/mach = 0.673768
+
+
+Repeating Notify (Event 3) executed at time: 57.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19698.318432
+    velocities/vc-kts = 312.859168
+    velocities/vc-fps = 528.046832
+    velocities/vt-fps = 699.496405
+    attitude/phi-deg = -0.005325
+    attitude/theta-rad = -0.013371
+    attitude/psi-rad = 0.003972
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294308
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016625
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440017.682486
+    aero/alpha-deg = -0.748767
+    aero/beta-deg = 0.000412
+    aero/Re = 36978061.245623
+    velocities/mach = 0.673777
+
+
+Repeating Notify (Event 3) executed at time: 58.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19698.096317
+    velocities/vc-kts = 312.865412
+    velocities/vc-fps = 528.057371
+    velocities/vt-fps = 699.507379
+    attitude/phi-deg = -0.005394
+    attitude/theta-rad = -0.013401
+    attitude/psi-rad = 0.004041
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294305
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016621
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440034.789111
+    aero/alpha-deg = -0.748826
+    aero/beta-deg = 0.000412
+    aero/Re = 36978866.141462
+    velocities/mach = 0.673787
+
+
+Repeating Notify (Event 3) executed at time: 59.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19697.854562
+    velocities/vc-kts = 312.872165
+    velocities/vc-fps = 528.068769
+    velocities/vt-fps = 699.519227
+    attitude/phi-deg = -0.005463
+    attitude/theta-rad = -0.013430
+    attitude/psi-rad = 0.004110
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294302
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016617
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440053.289811
+    aero/alpha-deg = -0.748889
+    aero/beta-deg = 0.000411
+    aero/Re = 36979737.215975
+    velocities/mach = 0.673798
+
+
+Repeating Notify (Event 3) executed at time: 60.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19697.594355
+    velocities/vc-kts = 312.879393
+    velocities/vc-fps = 528.080968
+    velocities/vt-fps = 699.531896
+    attitude/phi-deg = -0.005531
+    attitude/theta-rad = -0.013456
+    attitude/psi-rad = 0.004178
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294298
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016614
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440073.096478
+    aero/alpha-deg = -0.748956
+    aero/beta-deg = 0.000411
+    aero/Re = 36980670.303688
+    velocities/mach = 0.673809
+
+
+Repeating Notify (Event 3) executed at time: 61.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19697.316965
+    velocities/vc-kts = 312.887063
+    velocities/vc-fps = 528.093913
+    velocities/vt-fps = 699.545324
+    attitude/phi-deg = -0.005600
+    attitude/theta-rad = -0.013481
+    attitude/psi-rad = 0.004247
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294294
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016609
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440094.115256
+    aero/alpha-deg = -0.749026
+    aero/beta-deg = 0.000411
+    aero/Re = 36981660.966010
+    velocities/mach = 0.673821
+
+
+Repeating Notify (Event 3) executed at time: 62.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19697.023739
+    velocities/vc-kts = 312.895137
+    velocities/vc-fps = 528.107542
+    velocities/vt-fps = 699.559449
+    attitude/phi-deg = -0.005669
+    attitude/theta-rad = -0.013504
+    attitude/psi-rad = 0.004316
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294291
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016605
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440116.246962
+    aero/alpha-deg = -0.749098
+    aero/beta-deg = 0.000411
+    aero/Re = 36982704.511594
+    velocities/mach = 0.673834
+
+
+Repeating Notify (Event 3) executed at time: 63.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19696.716091
+    velocities/vc-kts = 312.903579
+    velocities/vc-fps = 528.121790
+    velocities/vt-fps = 699.574205
+    attitude/phi-deg = -0.005738
+    attitude/theta-rad = -0.013525
+    attitude/psi-rad = 0.004385
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294287
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016601
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440139.387544
+    aero/alpha-deg = -0.749174
+    aero/beta-deg = 0.000411
+    aero/Re = 36983796.017660
+    velocities/mach = 0.673848
+
+
+Repeating Notify (Event 3) executed at time: 64.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19696.395498
+    velocities/vc-kts = 312.912349
+    velocities/vc-fps = 528.136591
+    velocities/vt-fps = 699.589523
+    attitude/phi-deg = -0.005807
+    attitude/theta-rad = -0.013544
+    attitude/psi-rad = 0.004453
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294283
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016596
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440163.428550
+    aero/alpha-deg = -0.749252
+    aero/beta-deg = 0.000410
+    aero/Re = 36984930.352495
+    velocities/mach = 0.673861
+
+
+Repeating Notify (Event 3) executed at time: 65.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19696.063495
+    velocities/vc-kts = 312.921405
+    velocities/vc-fps = 528.151876
+    velocities/vt-fps = 699.605332
+    attitude/phi-deg = -0.005876
+    attitude/theta-rad = -0.013560
+    attitude/psi-rad = 0.004522
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294279
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016592
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440188.257620
+    aero/alpha-deg = -0.749332
+    aero/beta-deg = 0.000410
+    aero/Re = 36986102.198682
+    velocities/mach = 0.673876
+
+
+Repeating Notify (Event 3) executed at time: 66.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19695.721665
+    velocities/vc-kts = 312.930705
+    velocities/vc-fps = 528.167574
+    velocities/vt-fps = 699.621558
+    attitude/phi-deg = -0.005945
+    attitude/theta-rad = -0.013575
+    attitude/psi-rad = 0.004591
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294275
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016587
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440213.758820
+    aero/alpha-deg = -0.749413
+    aero/beta-deg = 0.000410
+    aero/Re = 36987306.069928
+    velocities/mach = 0.673890
+
+
+Repeating Notify (Event 3) executed at time: 67.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19695.371631
+    velocities/vc-kts = 312.940207
+    velocities/vc-fps = 528.183611
+    velocities/vt-fps = 699.638126
+    attitude/phi-deg = -0.006013
+    attitude/theta-rad = -0.013587
+    attitude/psi-rad = 0.004659
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294271
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016582
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440239.813869
+    aero/alpha-deg = -0.749497
+    aero/beta-deg = 0.000410
+    aero/Re = 36988536.365469
+    velocities/mach = 0.673906
+
+
+Repeating Notify (Event 3) executed at time: 68.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19695.015055
+    velocities/vc-kts = 312.949866
+    velocities/vc-fps = 528.199913
+    velocities/vt-fps = 699.654960
+    attitude/phi-deg = -0.006082
+    attitude/theta-rad = -0.013596
+    attitude/psi-rad = 0.004728
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294267
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016577
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440266.301619
+    aero/alpha-deg = -0.749581
+    aero/beta-deg = 0.000409
+    aero/Re = 36989787.350986
+    velocities/mach = 0.673921
+
+
+Repeating Notify (Event 3) executed at time: 69.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19694.653623
+    velocities/vc-kts = 312.959637
+    velocities/vc-fps = 528.216404
+    velocities/vt-fps = 699.671982
+    attitude/phi-deg = -0.006151
+    attitude/theta-rad = -0.013603
+    attitude/psi-rad = 0.004796
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294263
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016572
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440293.099307
+    aero/alpha-deg = -0.749666
+    aero/beta-deg = 0.000409
+    aero/Re = 36991053.214169
+    velocities/mach = 0.673936
+
+
+Repeating Notify (Event 3) executed at time: 70.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19694.289041
+    velocities/vc-kts = 312.969475
+    velocities/vc-fps = 528.233009
+    velocities/vt-fps = 699.689113
+    attitude/phi-deg = -0.006220
+    attitude/theta-rad = -0.013608
+    attitude/psi-rad = 0.004865
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294258
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016567
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440320.082928
+    aero/alpha-deg = -0.749752
+    aero/beta-deg = 0.000409
+    aero/Re = 36992328.083582
+    velocities/mach = 0.673952
+
+
+Repeating Notify (Event 3) executed at time: 71.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19693.923028
+    velocities/vc-kts = 312.979334
+    velocities/vc-fps = 528.249650
+    velocities/vt-fps = 699.706276
+    attitude/phi-deg = -0.006288
+    attitude/theta-rad = -0.013610
+    attitude/psi-rad = 0.004933
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294254
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016562
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440347.127800
+    aero/alpha-deg = -0.749837
+    aero/beta-deg = 0.000409
+    aero/Re = 36993606.055044
+    velocities/mach = 0.673967
+
+
+Repeating Notify (Event 3) executed at time: 72.010000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19693.557305
+    velocities/vc-kts = 312.989170
+    velocities/vc-fps = 528.266251
+    velocities/vt-fps = 699.723391
+    attitude/phi-deg = -0.006357
+    attitude/theta-rad = -0.013610
+    attitude/psi-rad = 0.005001
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294250
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016557
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440374.109119
+    aero/alpha-deg = -0.749923
+    aero/beta-deg = 0.000408
+    aero/Re = 36994881.218297
+    velocities/mach = 0.673983
+
+
+Repeating Notify (Event 3) executed at time: 73.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19693.197214
+    velocities/vc-kts = 312.998839
+    velocities/vc-fps = 528.282571
+    velocities/vt-fps = 699.740210
+    attitude/phi-deg = -0.006425
+    attitude/theta-rad = -0.013608
+    attitude/psi-rad = 0.005069
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294246
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016552
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440400.635929
+    aero/alpha-deg = -0.750007
+    aero/beta-deg = 0.000408
+    aero/Re = 36996135.081111
+    velocities/mach = 0.673998
+
+
+Repeating Notify (Event 3) executed at time: 74.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19692.837173
+    velocities/vc-kts = 313.008493
+    velocities/vc-fps = 528.298865
+    velocities/vt-fps = 699.756996
+    attitude/phi-deg = -0.006493
+    attitude/theta-rad = -0.013603
+    attitude/psi-rad = 0.005137
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294242
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016547
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440427.121783
+    aero/alpha-deg = -0.750091
+    aero/beta-deg = 0.000408
+    aero/Re = 36997387.179467
+    velocities/mach = 0.674013
+
+
+Repeating Notify (Event 3) executed at time: 75.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19692.482520
+    velocities/vc-kts = 313.017989
+    velocities/vc-fps = 528.314892
+    velocities/vt-fps = 699.773502
+    attitude/phi-deg = -0.006561
+    attitude/theta-rad = -0.013595
+    attitude/psi-rad = 0.005206
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294238
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016542
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440453.175770
+    aero/alpha-deg = -0.750174
+    aero/beta-deg = 0.000408
+    aero/Re = 36998619.024357
+    velocities/mach = 0.674028
+
+
+Repeating Notify (Event 3) executed at time: 76.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19692.134918
+    velocities/vc-kts = 313.027283
+    velocities/vc-fps = 528.330579
+    velocities/vt-fps = 699.789653
+    attitude/phi-deg = -0.006629
+    attitude/theta-rad = -0.013585
+    attitude/psi-rad = 0.005274
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294234
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016538
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440478.678164
+    aero/alpha-deg = -0.750256
+    aero/beta-deg = 0.000407
+    aero/Re = 36999824.943939
+    velocities/mach = 0.674043
+
+
+Repeating Notify (Event 3) executed at time: 77.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19691.795995
+    velocities/vc-kts = 313.036333
+    velocities/vc-fps = 528.345853
+    velocities/vt-fps = 699.805374
+    attitude/phi-deg = -0.006697
+    attitude/theta-rad = -0.013573
+    attitude/psi-rad = 0.005342
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294230
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016533
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440503.511869
+    aero/alpha-deg = -0.750335
+    aero/beta-deg = 0.000407
+    aero/Re = 37000999.390389
+    velocities/mach = 0.674057
+
+
+Repeating Notify (Event 3) executed at time: 78.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19691.467337
+    velocities/vc-kts = 313.045097
+    velocities/vc-fps = 528.360645
+    velocities/vt-fps = 699.820594
+    attitude/phi-deg = -0.006765
+    attitude/theta-rad = -0.013559
+    attitude/psi-rad = 0.005410
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294226
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016529
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440527.562947
+    aero/alpha-deg = -0.750413
+    aero/beta-deg = 0.000407
+    aero/Re = 37002136.964858
+    velocities/mach = 0.674071
+
+
+Repeating Notify (Event 3) executed at time: 79.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19691.150483
+    velocities/vc-kts = 313.053535
+    velocities/vc-fps = 528.374887
+    velocities/vt-fps = 699.835243
+    attitude/phi-deg = -0.006833
+    attitude/theta-rad = -0.013542
+    attitude/psi-rad = 0.005478
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294222
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016524
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440550.720948
+    aero/alpha-deg = -0.750488
+    aero/beta-deg = 0.000406
+    aero/Re = 37003232.434139
+    velocities/mach = 0.674084
+
+
+Repeating Notify (Event 3) executed at time: 80.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19690.846917
+    velocities/vc-kts = 313.061609
+    velocities/vc-fps = 528.388514
+    velocities/vt-fps = 699.849256
+    attitude/phi-deg = -0.006901
+    attitude/theta-rad = -0.013523
+    attitude/psi-rad = 0.005546
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294218
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016520
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440572.880112
+    aero/alpha-deg = -0.750560
+    aero/beta-deg = 0.000406
+    aero/Re = 37004280.783510
+    velocities/mach = 0.674097
+
+
+Repeating Notify (Event 3) executed at time: 81.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19690.558060
+    velocities/vc-kts = 313.069281
+    velocities/vc-fps = 528.401463
+    velocities/vt-fps = 699.862567
+    attitude/phi-deg = -0.006968
+    attitude/theta-rad = -0.013503
+    attitude/psi-rad = 0.005614
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294215
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016516
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440593.938777
+    aero/alpha-deg = -0.750629
+    aero/beta-deg = 0.000406
+    aero/Re = 37005277.194626
+    velocities/mach = 0.674109
+
+
+Repeating Notify (Event 3) executed at time: 82.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19690.285265
+    velocities/vc-kts = 313.076517
+    velocities/vc-fps = 528.413676
+    velocities/vt-fps = 699.875118
+    attitude/phi-deg = -0.007035
+    attitude/theta-rad = -0.013480
+    attitude/psi-rad = 0.005682
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294211
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016512
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440613.800541
+    aero/alpha-deg = -0.750695
+    aero/beta-deg = 0.000406
+    aero/Re = 37006217.096690
+    velocities/mach = 0.674120
+
+
+Repeating Notify (Event 3) executed at time: 83.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19690.029812
+    velocities/vc-kts = 313.083283
+    velocities/vc-fps = 528.425095
+    velocities/vt-fps = 699.886850
+    attitude/phi-deg = -0.007102
+    attitude/theta-rad = -0.013455
+    attitude/psi-rad = 0.005750
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294208
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016508
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440632.374511
+    aero/alpha-deg = -0.750758
+    aero/beta-deg = 0.000405
+    aero/Re = 37007096.179050
+    velocities/mach = 0.674131
+
+
+Repeating Notify (Event 3) executed at time: 84.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19689.792900
+    velocities/vc-kts = 313.089548
+    velocities/vc-fps = 528.435670
+    velocities/vt-fps = 699.897711
+    attitude/phi-deg = -0.007169
+    attitude/theta-rad = -0.013429
+    attitude/psi-rad = 0.005818
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294205
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016505
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440649.575712
+    aero/alpha-deg = -0.750817
+    aero/beta-deg = 0.000405
+    aero/Re = 37007910.410501
+    velocities/mach = 0.674141
+
+
+Repeating Notify (Event 3) executed at time: 85.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19689.575644
+    velocities/vc-kts = 313.095285
+    velocities/vc-fps = 528.445353
+    velocities/vt-fps = 699.907651
+    attitude/phi-deg = -0.007236
+    attitude/theta-rad = -0.013401
+    attitude/psi-rad = 0.005886
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294202
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016502
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440665.325455
+    aero/alpha-deg = -0.750872
+    aero/beta-deg = 0.000405
+    aero/Re = 37008656.056908
+    velocities/mach = 0.674150
+
+
+Repeating Notify (Event 3) executed at time: 86.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19689.379069
+    velocities/vc-kts = 313.100466
+    velocities/vc-fps = 528.454097
+    velocities/vt-fps = 699.916625
+    attitude/phi-deg = -0.007302
+    attitude/theta-rad = -0.013372
+    attitude/psi-rad = 0.005954
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294199
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016499
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440679.551687
+    aero/alpha-deg = -0.750923
+    aero/beta-deg = 0.000405
+    aero/Re = 37009329.697676
+    velocities/mach = 0.674158
+
+
+Repeating Notify (Event 3) executed at time: 87.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19689.204104
+    velocities/vc-kts = 313.105068
+    velocities/vc-fps = 528.461865
+    velocities/vt-fps = 699.924593
+    attitude/phi-deg = -0.007369
+    attitude/theta-rad = -0.013341
+    attitude/psi-rad = 0.006021
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294196
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016496
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440692.189310
+    aero/alpha-deg = -0.750969
+    aero/beta-deg = 0.000404
+    aero/Re = 37009928.240720
+    velocities/mach = 0.674165
+
+
+Repeating Notify (Event 3) executed at time: 88.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19689.051582
+    velocities/vc-kts = 313.109070
+    velocities/vc-fps = 528.468620
+    velocities/vt-fps = 699.931518
+    attitude/phi-deg = -0.007435
+    attitude/theta-rad = -0.013309
+    attitude/psi-rad = 0.006089
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294193
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016493
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440703.180465
+    aero/alpha-deg = -0.751012
+    aero/beta-deg = 0.000404
+    aero/Re = 37010448.935977
+    velocities/mach = 0.674171
+
+
+Repeating Notify (Event 3) executed at time: 89.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.922231
+    velocities/vc-kts = 313.112454
+    velocities/vc-fps = 528.474331
+    velocities/vt-fps = 699.937370
+    attitude/phi-deg = -0.007501
+    attitude/theta-rad = -0.013276
+    attitude/psi-rad = 0.006157
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294191
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016491
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440712.474778
+    aero/alpha-deg = -0.751049
+    aero/beta-deg = 0.000404
+    aero/Re = 37010889.387251
+    velocities/mach = 0.674177
+
+
+Repeating Notify (Event 3) executed at time: 90.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.816676
+    velocities/vc-kts = 313.115204
+    velocities/vc-fps = 528.478973
+    velocities/vt-fps = 699.942122
+    attitude/phi-deg = -0.007566
+    attitude/theta-rad = -0.013242
+    attitude/psi-rad = 0.006224
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294188
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016489
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440720.029589
+    aero/alpha-deg = -0.751082
+    aero/beta-deg = 0.000404
+    aero/Re = 37011247.562658
+    velocities/mach = 0.674181
+
+
+Repeating Notify (Event 3) executed at time: 91.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.735434
+    velocities/vc-kts = 313.117308
+    velocities/vc-fps = 528.482523
+    velocities/vt-fps = 699.945752
+    attitude/phi-deg = -0.007632
+    attitude/theta-rad = -0.013208
+    attitude/psi-rad = 0.006292
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002794
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294186
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016488
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440725.810121
+    aero/alpha-deg = -0.751110
+    aero/beta-deg = 0.000403
+    aero/Re = 37011521.803126
+    velocities/mach = 0.674184
+
+
+Repeating Notify (Event 3) executed at time: 92.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.678910
+    velocities/vc-kts = 313.118755
+    velocities/vc-fps = 528.484966
+    velocities/vt-fps = 699.948244
+    attitude/phi-deg = -0.007697
+    attitude/theta-rad = -0.013173
+    attitude/psi-rad = 0.006359
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002793
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294184
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016486
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440729.789638
+    aero/alpha-deg = -0.751134
+    aero/beta-deg = 0.000403
+    aero/Re = 37011710.829504
+    velocities/mach = 0.674186
+
+
+Repeating Notify (Event 3) executed at time: 93.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.647398
+    velocities/vc-kts = 313.119540
+    velocities/vc-fps = 528.486291
+    velocities/vt-fps = 699.949586
+    attitude/phi-deg = -0.007762
+    attitude/theta-rad = -0.013137
+    attitude/psi-rad = 0.006427
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002793
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294183
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016485
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440731.949548
+    aero/alpha-deg = -0.751152
+    aero/beta-deg = 0.000403
+    aero/Re = 37011813.747731
+    velocities/mach = 0.674188
+
+
+Repeating Notify (Event 3) executed at time: 94.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.641080
+    velocities/vc-kts = 313.119658
+    velocities/vc-fps = 528.486490
+    velocities/vt-fps = 699.949773
+    attitude/phi-deg = -0.007827
+    attitude/theta-rad = -0.013101
+    attitude/psi-rad = 0.006494
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002793
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294181
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016484
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440732.279479
+    aero/alpha-deg = -0.751166
+    aero/beta-deg = 0.000403
+    aero/Re = 37011830.052351
+    velocities/mach = 0.674188
+
+
+Repeating Notify (Event 3) executed at time: 95.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.660024
+    velocities/vc-kts = 313.119109
+    velocities/vc-fps = 528.485563
+    velocities/vt-fps = 699.948805
+    attitude/phi-deg = -0.007892
+    attitude/theta-rad = -0.013065
+    attitude/psi-rad = 0.006562
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002793
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294180
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016484
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440730.777315
+    aero/alpha-deg = -0.751174
+    aero/beta-deg = 0.000402
+    aero/Re = 37011759.628256
+    velocities/mach = 0.674187
+
+
+Repeating Notify (Event 3) executed at time: 96.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.704183
+    velocities/vc-kts = 313.117894
+    velocities/vc-fps = 528.483513
+    velocities/vt-fps = 699.946684
+    attitude/phi-deg = -0.007956
+    attitude/theta-rad = -0.013030
+    attitude/psi-rad = 0.006629
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002793
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294178
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016483
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440727.449015
+    aero/alpha-deg = -0.751178
+    aero/beta-deg = 0.000402
+    aero/Re = 37011602.743307
+    velocities/mach = 0.674185
+
+
+Repeating Notify (Event 3) executed at time: 97.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.773399
+    velocities/vc-kts = 313.116020
+    velocities/vc-fps = 528.480349
+    velocities/vt-fps = 699.943420
+    attitude/phi-deg = -0.008020
+    attitude/theta-rad = -0.012994
+    attitude/psi-rad = 0.006696
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002793
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294177
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016483
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440722.309283
+    aero/alpha-deg = -0.751177
+    aero/beta-deg = 0.000402
+    aero/Re = 37011360.076138
+    velocities/mach = 0.674182
+
+
+Repeating Notify (Event 3) executed at time: 98.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.867398
+    velocities/vc-kts = 313.113494
+    velocities/vc-fps = 528.476086
+    velocities/vt-fps = 699.939029
+    attitude/phi-deg = -0.008084
+    attitude/theta-rad = -0.012959
+    attitude/psi-rad = 0.006764
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002793
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294176
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016484
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440715.380431
+    aero/alpha-deg = -0.751171
+    aero/beta-deg = 0.000402
+    aero/Re = 37011032.668186
+    velocities/mach = 0.674178
+
+
+Repeating Notify (Event 3) executed at time: 99.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19688.985798
+    velocities/vc-kts = 313.110327
+    velocities/vc-fps = 528.470742
+    velocities/vt-fps = 699.933530
+    attitude/phi-deg = -0.008148
+    attitude/theta-rad = -0.012924
+    attitude/psi-rad = 0.006831
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002793
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294176
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016484
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440706.692972
+    aero/alpha-deg = -0.751160
+    aero/beta-deg = 0.000401
+    aero/Re = 37010621.948067
+    velocities/mach = 0.674173
+
+
+Repeating Notify (Event 3) executed at time: 100.000000
+    propulsion/engine[0]/n2 = 65.379678
+    propulsion/engine[1]/n2 = 65.379678
+    propulsion/engine[0]/thrust-lbs = 1117.283945
+    propulsion/engine[1]/thrust-lbs = 1117.283945
+    position/h-agl-ft = 19689.128106
+    velocities/vc-kts = 313.106534
+    velocities/vc-fps = 528.464340
+    velocities/vt-fps = 699.926947
+    attitude/phi-deg = -0.008212
+    attitude/theta-rad = -0.012890
+    attitude/psi-rad = 0.006898
+    fcs/elevator-pos-deg = -1.049617
+    fcs/flap-pos-deg = 0.000000
+    fcs/rudder-pos-deg = 0.000000
+    fcs/right-aileron-pos-deg = 0.000000
+    fcs/throttle-cmd-norm = 0.134492
+    aero/function/drag_coeff_basic_Mach = 0.002793
+    aero/function/side_coeff_basic_Mach = -0.000004
+    aero/function/lift_coeff_basic_Mach = 0.294175
+    aero/function/roll_coeff_basic_Mach = 0.000001
+    aero/function/pitch_coeff_basic_Mach = -0.016485
+    aero/function/yaw_coeff_basic_Mach = -0.000002
+    aero/qbar-area = 440696.285296
+    aero/alpha-deg = -0.751145
+    aero/beta-deg = 0.000401
+    aero/Re = 37010129.717263
+    velocities/mach = 0.674167
+
+End: Friday February 16 2018 10:17:53 (HH:MM:SS)

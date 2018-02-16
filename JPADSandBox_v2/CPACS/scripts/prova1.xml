@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<runscript initialize="initialCondition" name="D150_JSBSim">
+<runscript initialize="reset00" name="D150_JSBSimCambioMomenti">
    <decription>CPACS simulation with JSBSim through JPAD software</decription>
-   <use aircraft="D150_JSBSim" initialize="initialCondition"/>
+   <use aircraft="D150_JSBSimCambioMomenti" initialize="reset00"/>
    <run dt="0.01" end="100" start="0">
       <property>simulation/notify-time-trigger</property>
+	  <property>simulation/notify-time-trigger1</property>
       <property value="1">simulation/run_id</property>
-	        <property value="1">fcs/left-brake-cmd-norm</property>
-      <property value="1">fcs/right-brake-cmd-norm</property>
 	  <event name="Set engines running">
          <condition> simulation/sim-time-sec le 0.01 </condition>
          <set name="propulsion/engine[0]/set-running" value="1"/>
          <set name="propulsion/engine[1]/set-running" value="1"/>
-		 <set name="fcs/throttle-cmd-norm[1]" value="0.2"/>
-	     <set name="fcs/throttle-cmd-norm[0]" value="0.2"/>
          <notify/>
       </event>
 	  <event name="Set engines running">
          <condition> simulation/sim-time-sec gt 0.1 </condition>
 		 <set name="fcs/throttle-cmd-norm[1]" value="0.2"/>
 	     <set name="fcs/throttle-cmd-norm[0]" value="0.2"/>
-         <notify/>
       </event>
-	  <event name="Repeating Notify" persistent="true">
+ 	  <event name="Repeating trim" persistent="true">
+         <condition> simulation/sim-time-sec gt 0.1 </condition>
+     	<set name="simulation/do_simple_trim" value="0"/>
+    </event>
+	  	  <event name="Repeating Notify" persistent="true">
         <description>Output message at X second intervals</description>
         <notify>
           <property>propulsion/engine[0]/n2</property>
@@ -40,21 +40,28 @@
 		  <property>fcs/rudder-pos-deg</property>
 		  <property>fcs/right-aileron-pos-deg</property>
 		  <property>fcs/throttle-cmd-norm</property> 	 
-          <!--<property>aero/forces/drag_basic_Mach</property>
-          <property>aero/forces/side_basic_Mach</property>
-          <property>aero/forces/lift_basic_Mach</property>
-          <property>aero/forces/roll_basic_Mach</property>
-          <property>aero/forces/pitch_basic_Mach</property>
-          <property>aero/forces/yaw_basic_Mach</property>-->
+          <property>aero/function/drag_coeff_basic_Mach</property>
+          <property>aero/function/side_coeff_basic_Mach</property>
+          <property>aero/function/lift_coeff_basic_Mach</property>
+          <property>aero/function/roll_coeff_basic_Mach</property>
+          <property>aero/function/pitch_coeff_basic_Mach</property>
+          <property>aero/function/yaw_coeff_basic_Mach</property>
 	      <property>aero/qbar-area</property>
 	      <property>aero/alpha-deg</property>
           <property>aero/beta-deg</property>
           <property>aero/Re</property>
           <property>velocities/mach</property>
         </notify>
-        <condition> simulation/sim-time-sec >= simulation/notify-time-trigger </condition>
-        <set name="simulation/notify-time-trigger" value="1" type="FG_DELTA"/>
+        <condition> simulation/sim-time-sec >= simulation/notify-time-trigger1 </condition>
+        <set name="simulation/notify-time-trigger1" value="1" type="FG_DELTA"/>
     </event>
+	
+	 <!--<event name="Repeating trim" persistent="true">
+        <description>Output message at X second intervals</description>
+        <condition> simulation/sim-time-sec >= simulation/notify-time-trigger </condition>
+        <set name="simulation/notify-time-trigger" value="8" type="FG_DELTA"/>
+		<set name="simulation/do_simple_trim" value="1"/>
+    </event>-->
   </run>
 
 </runscript>
