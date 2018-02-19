@@ -1785,7 +1785,7 @@ public class LiftCalc {
 		List<Double> swf = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++) {
 			if(flapTypeIndex.get(i) == 3.0)
-				cLalphaFlapList.add(cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()/flapTypeIndex.size());
+				cLalphaFlapList.add(cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue());
 			else
 				cLalphaFlapList.add(
 						cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()

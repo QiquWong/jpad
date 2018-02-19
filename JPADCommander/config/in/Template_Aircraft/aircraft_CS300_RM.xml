@@ -9,19 +9,19 @@
                 <position>
                     <x unit="m">17.0000</x>
                     <y unit="m">0.0000</y>
-                    <z unit="m">-0.4400</z>
+                    <z unit="m">-1.00</z>
                 </position>
                 <rigging_angle unit="deg">2.0000</rigging_angle>
             </wing>
-            <horizontal_tail file="htail_CS300.xml">
+            <horizontal_tail file="htail_CS300_RM.xml">
                 <position>
-                    <x unit="m">32.7500</x>
+                    <x unit="m">36.50</x>
                     <y unit="m">0.0000</y>
-                    <z unit="m">1.0000</z>
+                    <z unit="m">8.00</z>
                 </position>
                 <rigging_angle unit="deg">0.0000</rigging_angle>
             </horizontal_tail>
-            <vertical_tail file="vtail_CS300.xml">
+            <vertical_tail file="vtail_CS300_RM.xml">
                 <position>
                     <x unit="m">30.7500</x>
                     <y unit="m">0.0000</y>

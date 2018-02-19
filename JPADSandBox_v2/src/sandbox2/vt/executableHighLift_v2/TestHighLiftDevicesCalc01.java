@@ -61,7 +61,7 @@ public class TestHighLiftDevicesCalc01 {
 
 		String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
 		String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
-				"High Lift Charts" + File.separator + "HighLiftDevices_Output.xml"; 
+				"HighLift_Output.xml"; 
 		System.out.println("INPUT ===> " + pathToXML);
 		
 		System.out.println("--------------");

@@ -8,6 +8,8 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
+
+import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.FlapTypeEnum;
 
@@ -15,8 +17,9 @@ public class InputTree {
 
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
+	private boolean plotCharts;
 	
-	private Amount<Angle> currentAlpha;
+	private Amount<Angle> currentAngleOfAttack;
 	
 	private Double aspectRatio;
 	private Amount<Area> surface;
@@ -51,13 +54,15 @@ public class InputTree {
 	private List<Double> etaOutSlat;
 	private List<Amount<Angle>> deltaFlap;
 	private List<Amount<Angle>> deltaSlat;
-	
+	private List<SymmetricFlapCreator> symmetricFlapCreatorList;
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
 	
 	public InputTree() {
 
-		currentAlpha = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		plotCharts = false;
+		
+		currentAngleOfAttack = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		
 		aspectRatio = 0.0;
 		surface = Amount.valueOf(0.0, SI.SQUARE_METRE);
@@ -96,6 +101,14 @@ public class InputTree {
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	
+	public Amount<Angle> getCurrentAngleOfAttack() {
+		return currentAngleOfAttack;
+	}
+
+	public void setCurrentAngleOfAttack(Amount<Angle> currentAngleOfAttack) {
+		this.currentAngleOfAttack = currentAngleOfAttack;
+	}
+
 	public Double getAspectRatio() {
 		return aspectRatio;
 	}
@@ -152,35 +165,35 @@ public class InputTree {
 		this.alphaStarClean = alphaStarClean;
 	}
 
-	public Amount<?> getcLAlphaClean() {
+	public Amount<?> getCLAlphaClean() {
 		return cLAlphaClean;
 	}
 
-	public void setcLAlphaClean(Amount<?> cLAlphaClean) {
+	public void setCLAlphaClean(Amount<?> cLAlphaClean) {
 		this.cLAlphaClean = cLAlphaClean;
 	}
 
-	public Double getcL0Clean() {
+	public Double getCL0Clean() {
 		return cL0Clean;
 	}
 
-	public void setcL0Clean(Double cL0Clean) {
+	public void setCL0Clean(Double cL0Clean) {
 		this.cL0Clean = cL0Clean;
 	}
 
-	public Double getcLstarClean() {
+	public Double getCLstarClean() {
 		return cLstarClean;
 	}
 
-	public void setcLstarClean(Double cLstarClean) {
+	public void setCLstarClean(Double cLstarClean) {
 		this.cLstarClean = cLstarClean;
 	}
 
-	public Double getcLmaxClean() {
+	public Double getCLmaxClean() {
 		return cLmaxClean;
 	}
 
-	public void setcLmaxClean(Double cLmaxClean) {
+	public void setCLmaxClean(Double cLmaxClean) {
 		this.cLmaxClean = cLmaxClean;
 	}
 
@@ -336,11 +349,20 @@ public class InputTree {
 		this.etaStations = etaStations;
 	}
 
-	public Amount<Angle> getCurrentAlpha() {
-		return currentAlpha;
+	public List<SymmetricFlapCreator> getSymmetricFlapCreatorList() {
+		return symmetricFlapCreatorList;
 	}
 
-	public void setCurrentAlpha(Amount<Angle> currentAlpha) {
-		this.currentAlpha = currentAlpha;
+	public void setSymmetricFlapCreatorList(List<SymmetricFlapCreator> symmetricFlapCreatorList) {
+		this.symmetricFlapCreatorList = symmetricFlapCreatorList;
 	}
+
+	public boolean isPlotCharts() {
+		return plotCharts;
+	}
+
+	public void setPlotCharts(boolean plotCharts) {
+		this.plotCharts = plotCharts;
+	}
+
 }
