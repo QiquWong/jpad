@@ -2,7 +2,7 @@
 <jpad_config>
 	<landing_gears id="CS300 Landing Gears">
 		<global_data>
-			<main_gear_legs_length unit="m">1.5</main_gear_legs_length>
+			<main_gear_legs_length unit="m">1.8</main_gear_legs_length>
 			<k_main_gear_legs_length>0.15</k_main_gear_legs_length>
 			<distance_between_wheels unit="m">5.45</distance_between_wheels>
 			<number_of_frontal_wheels>2</number_of_frontal_wheels>

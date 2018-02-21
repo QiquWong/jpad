@@ -1805,8 +1805,8 @@ public class InputManagerControllerMainActionUtilities {
 		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 			
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -2233,8 +2233,8 @@ public class InputManagerControllerMainActionUtilities {
 		double yMaxSideView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		double yMinSideView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -2854,8 +2854,8 @@ public class InputManagerControllerMainActionUtilities {
 		double zMaxFrontView = yMaxFrontView; 
 		double zMinFrontView = yMinFrontView;
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -4214,8 +4214,8 @@ public class InputManagerControllerMainActionUtilities {
 		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -4350,8 +4350,8 @@ public class InputManagerControllerMainActionUtilities {
 		double yMaxSideView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		double yMinSideView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -4486,8 +4486,8 @@ public class InputManagerControllerMainActionUtilities {
 		double zMaxFrontView = yMaxFrontView; 
 		double zMinFrontView = yMinFrontView;
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -5439,8 +5439,8 @@ public class InputManagerControllerMainActionUtilities {
 		double yMaxTopView = Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMinTopView = 0.0;
 
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -6498,8 +6498,8 @@ public class InputManagerControllerMainActionUtilities {
 			
 		}
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -6698,8 +6698,8 @@ public class InputManagerControllerMainActionUtilities {
 			
 		}
 			
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -8119,8 +8119,8 @@ public class InputManagerControllerMainActionUtilities {
 			
 		}
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -8720,8 +8720,8 @@ public class InputManagerControllerMainActionUtilities {
 			
 		}
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -9321,8 +9321,8 @@ public class InputManagerControllerMainActionUtilities {
 			
 		}
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -9873,8 +9873,8 @@ public class InputManagerControllerMainActionUtilities {
 			double yMaxTopView = 1.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 			double yMinTopView = -0.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 
-			int WIDTH = 700;
-			int HEIGHT = 600;
+			int WIDTH = 650;
+			int HEIGHT = 650;
 
 			//-------------------------------------------------------------------------------------
 			// DATASET CRATION
@@ -10046,8 +10046,8 @@ public class InputManagerControllerMainActionUtilities {
 			double yMaxSideView = 1.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 			double yMinSideView = -0.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 
-			int WIDTH = 700;
-			int HEIGHT = 600;
+			int WIDTH = 650;
+			int HEIGHT = 650;
 
 			//-------------------------------------------------------------------------------------
 			// DATASET CRATION
@@ -10208,8 +10208,8 @@ public class InputManagerControllerMainActionUtilities {
 			double xMaxFrontView = yMaxFrontView;
 			double xMinFrontView = yMinFrontView;
 
-			int WIDTH = 700;
-			int HEIGHT = 600;
+			int WIDTH = 650;
+			int HEIGHT = 650;
 
 			//-------------------------------------------------------------------------------------
 			// DATASET CRATION

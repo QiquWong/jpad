@@ -9,7 +9,7 @@
                 <position>
                     <x unit="m">12.54</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">-0.44</z>
+                    <z unit="m">-0.8</z>
                 </position>
                 <rigging_angle unit="deg">2</rigging_angle>
             </wing>
@@ -79,7 +79,7 @@
 		</nacelles> 
 		<landing_gears file="landing_gear_CS300.xml">
 			<position>
-                <x unit="m">18.68</x>
+                <x unit="m">17.82</x>
                 <y unit="m">0.0</y>
                 <z unit="m">-0.27</z>                                                               
             </position>

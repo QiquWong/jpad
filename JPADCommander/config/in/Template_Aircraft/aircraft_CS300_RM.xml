@@ -5,7 +5,7 @@
             <cabin_configuration file="cabin_configuration_CS300.xml"/>
         </global_data>
         <lifting_surfaces>
-            <wing file="wing_CS300.xml">
+            <wing file="wing_CS300_RM.xml">
                 <position>
                     <x unit="m">17.0000</x>
                     <y unit="m">0.0000</y>
@@ -15,9 +15,9 @@
             </wing>
             <horizontal_tail file="htail_CS300_RM.xml">
                 <position>
-                    <x unit="m">36.50</x>
+                    <x unit="m">35.5</x>
                     <y unit="m">0.0000</y>
-                    <z unit="m">8.00</z>
+                    <z unit="m">7.00</z>
                 </position>
                 <rigging_angle unit="deg">0.0000</rigging_angle>
             </horizontal_tail>
@@ -44,7 +44,7 @@
                 <position>
                     <x unit="m">28.0000</x>
                     <y unit="m">3.5000</y>
-                    <z unit="m">0.0000</z>
+                    <z unit="m">0.5000</z>
                 </position>
                 <tilting_angle unit="deg">0.0000</tilting_angle>
                 <mounting_point>AFT_FUSELAGE</mounting_point>
@@ -53,7 +53,7 @@
                 <position>
                     <x unit="m">28.0000</x>
                     <y unit="m">-3.5000</y>
-                    <z unit="m">0.0000</z>
+                    <z unit="m">0.5000</z>
                 </position>
                 <tilting_angle unit="deg">0.0000</tilting_angle>
                 <mounting_point>AFT_FUSELAGE</mounting_point>
@@ -64,7 +64,7 @@
                 <position>
                     <x unit="m">28.0000</x>
                     <y unit="m">3.5000</y>
-                    <z unit="m">0.0000</z>
+                    <z unit="m">0.5000</z>
                 </position>
                 <mounting_point>FUSELAGE</mounting_point>
             </nacelle>
@@ -72,14 +72,14 @@
                 <position>
                     <x unit="m">28.0000</x>
                     <y unit="m">-3.5000</y>
-                    <z unit="m">0.0000</z>
+                    <z unit="m">0.5000</z>
                 </position>
                 <mounting_point>FUSELAGE</mounting_point>
             </nacelle>
         </nacelles>
         <landing_gears file="landing_gear_CS300.xml">
             <position>
-                <x unit="m">18.6800</x>
+                <x unit="m">22.00</x>
                 <y unit="m">0.0000</y>
                 <z unit="m">-0.2700</z>
             </position>

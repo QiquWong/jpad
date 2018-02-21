@@ -28,7 +28,7 @@
 		<panels>
             <panel id="CS300 - Inner panel">
                 <span unit="m">6.05475</span>
-                <dihedral unit="deg">10.0</dihedral>
+                <dihedral unit="deg">5.5</dihedral>
                 <sweep_leading_edge unit="deg">30</sweep_leading_edge>
                 <inner_section>
                     <chord unit="m">6.743</chord>
@@ -43,7 +43,7 @@
             </panel>
             <panel id="CS300 - Outer panel" linked_to="CS300 - Inner panel">
                 <span unit="m">11.49525</span>
-                <dihedral unit="deg">10</dihedral>
+                <dihedral unit="deg">5.5</dihedral>
                 <sweep_leading_edge unit="deg">30</sweep_leading_edge>
                 <outer_section>
                     <chord unit="m">1.3</chord>
