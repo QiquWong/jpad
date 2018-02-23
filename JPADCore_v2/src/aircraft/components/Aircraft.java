@@ -753,15 +753,19 @@ public class Aircraft implements IAircraft {
 					/(_theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(2).getEstimatedValue())
 					);
 		
-		if(_theHTail != null)
-			this._theHTail.setPositionRelativeToAttachment(
-					(_theHTail.getZApexConstructionAxes()
-							.minus(_theVTail
-									.getZApexConstructionAxes()
-									)
-							).divide(_theVTail.getSpan())
-					.getEstimatedValue()
-					);
+		if(_theHTail != null) {
+			if(_theVTail != null)
+				this._theHTail.setPositionRelativeToAttachment(
+						(_theHTail.getZApexConstructionAxes()
+								.minus(_theVTail
+										.getZApexConstructionAxes()
+										)
+								).divide(_theVTail.getSpan())
+						.getEstimatedValue()
+						);
+			else
+				this._theHTail.setPositionRelativeToAttachment(0.0);
+		}
 		
 		if(_theVTail != null)
 			this._theVTail.setPositionRelativeToAttachment(0.0);

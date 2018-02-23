@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jpad_config>
+    <aircraft id="CS300-RM" regulations="FAR_25" type="JET">
+        <global_data>
+            <cabin_configuration file="cabin_configuration_CS300.xml"/>
+        </global_data>
+        <lifting_surfaces>
+            <wing file="wing_CS300_RM.xml">
+                <position>
+                    <x unit="m">17.0000</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">-1.00</z>
+                </position>
+                <rigging_angle unit="deg">2.0000</rigging_angle>
+            </wing>
+            <horizontal_tail file="htail_CS300_RM_INNOVATIVE.xml">
+                <position>
+                    <x unit="m">31.5</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">0.00</z>
+                </position>
+                <rigging_angle unit="deg">0.0000</rigging_angle>
+            </horizontal_tail>
+		</lifting_surfaces>
+        <fuselages>
+            <fuselage file="fuselage_CS300.xml">
+                <position>
+                    <x unit="m">0.0000</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">0.0000</z>
+                </position>
+            </fuselage>
+        </fuselages>
+        <power_plant>
+            <engine file="engine_CS300.xml">
+                <position>
+                    <x unit="m">28.0000</x>
+                    <y unit="m">3.5000</y>
+                    <z unit="m">0.5000</z>
+                </position>
+                <tilting_angle unit="deg">0.0000</tilting_angle>
+                <mounting_point>AFT_FUSELAGE</mounting_point>
+            </engine>
+            <engine file="engine_CS300.xml">
+                <position>
+                    <x unit="m">28.0000</x>
+                    <y unit="m">-3.5000</y>
+                    <z unit="m">0.5000</z>
+                </position>
+                <tilting_angle unit="deg">0.0000</tilting_angle>
+                <mounting_point>AFT_FUSELAGE</mounting_point>
+            </engine>
+        </power_plant>
+        <nacelles>
+            <nacelle file="nacelle_CS300.xml">
+                <position>
+                    <x unit="m">32.3</x>
+                    <y unit="m">1.25000</y>
+                    <z unit="m">3.000</z>
+                </position>
+                <mounting_point>FUSELAGE</mounting_point>
+            </nacelle>
+            <nacelle file="nacelle_CS300.xml">
+                <position>
+                    <x unit="m">32.3</x>
+                    <y unit="m">-1.25000</y>
+                    <z unit="m">3.000</z>
+                </position>
+                <mounting_point>FUSELAGE</mounting_point>
+            </nacelle>
+        </nacelles>
+        <landing_gears file="landing_gear_CS300.xml">
+            <position>
+                <x unit="m">22.00</x>
+                <y unit="m">0.0000</y>
+                <z unit="m">-0.2700</z>
+            </position>
+            <mounting_point>WING</mounting_point>
+        </landing_gears>
+        <systems file="systems_CS300.xml">
+            <position>
+                <x unit="m">0.0000</x>
+                <y unit="m">0.0000</y>
+                <z unit="m">0.0000</z>
+            </position>
+        </systems>
+    </aircraft>
+</jpad_config>
