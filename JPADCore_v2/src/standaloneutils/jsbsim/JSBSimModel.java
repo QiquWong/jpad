@@ -167,7 +167,6 @@ public class JSBSimModel {
 	List<String> cdListr =  new ArrayList<String>();
 	List<String> cyListr =  new ArrayList<String>();
 	List<String> clListr =  new ArrayList<String>();
-	List<String> prova =  new ArrayList<String>();
 	double[] aileronDeflectionAero = null;
 	double[] flapDeflectionAeroInner = null;
 	double[] flapDeflectionAeroOuter = null;
@@ -575,8 +574,6 @@ public class JSBSimModel {
 				controlSurfaceAeroPerformanceList.item(3), "//dCm/text()", aeroNodeList.item(0), 0);
 		dmzElevatorList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
 				controlSurfaceAeroPerformanceList.item(3), "//dCn/text()", aeroNodeList.item(0), 0);
-		prova = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurfaceSimplify
-				(controlSurfaceAeroPerformanceList.item(3),  "//dCm/text()",aeroNodeList.item(0), 1);
 
 		//Rudder
 		rudderDeflectionAero = CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap
@@ -1438,13 +1435,6 @@ public class JSBSimModel {
 				JSBSimUtils.createCheckFileControlSurfaceTXT(dirPath+"/Matlab/Data", dmxElevatorList, machNumber, altitudeVector,alphaVector, betaVector, elevatorDeflectionAero, "C_Roll_Elevator");
 				JSBSimUtils.createCheckFileControlSurfaceTXT(dirPath+"/Matlab/Data", dmyElevatorList, machNumber, altitudeVector,alphaVector, betaVector, elevatorDeflectionAero, "C_M_Elevator");
 				JSBSimUtils.createCheckFileControlSurfaceTXT(dirPath+"/Matlab/Data", dmzElevatorList, machNumber, altitudeVector,alphaVector, betaVector, elevatorDeflectionAero, "C_N_Elevator");
-	
-				
-				JSBSimUtils.createCheckFileControlSurfaceTXT(dirPath+"/Matlab/Data", prova, machNumber, altitudeVector,alphaVector, betaVector, elevatorDeflectionAero, "prova");
-				
-				
-				
-				
 			} catch (TransformerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

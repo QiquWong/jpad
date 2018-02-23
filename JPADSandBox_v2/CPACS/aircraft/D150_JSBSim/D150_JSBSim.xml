@@ -452,7 +452,7 @@
       <property>aero/beta-deg</property>
       <property>aero/Re</property>
       <property>velocities/mach</property>
-      <property>propulsion/engine/thrust-lbs</property>
+      <property>propulsion/engine[0]/thrust-lbs</property>
       <property>propulsion/engine[1]/thrust-lbs</property>
       <property>position/h-sl-meters</property>
       <property>attitude/phi-deg</property>
@@ -27912,7 +27912,6 @@
             <product>
                <property>aero/qbar-area</property>
                <property>aero/function/roll_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/flap_inner_roll_basic_Mach">
@@ -27921,7 +27920,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/flap_inner_roll_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/flap_outer_roll_basic_Mach">
@@ -27930,7 +27928,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/flap_outer_roll_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/aileron_roll_basic_Mach">
@@ -27939,7 +27936,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/aileron_roll_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/elevator_roll_basic_Mach">
@@ -27948,7 +27944,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/elevator_roll_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/rudder_roll_basic_Mach">
@@ -27957,7 +27952,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/rudder_roll_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/p-roll_basic_Mach">
@@ -27968,7 +27962,6 @@
                <property>aero/function/p-roll_coeff_basic_Mach</property>
                <property>velocities/p-aero-rad_sec</property>
                <property>aero/bi2vel</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/q-roll_basic_Mach">
@@ -27979,7 +27972,6 @@
                <property>aero/function/q-roll_coeff_basic_Mach</property>
                <property>velocities/q-aero-rad_sec</property>
                <property>aero/ci2vel</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/r-roll_basic_Mach">
@@ -27990,7 +27982,6 @@
                <property>aero/function/r-roll_coeff_basic_Mach</property>
                <property>velocities/r-aero-rad_sec</property>
                <property>aero/bi2vel</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
       </axis>
@@ -28000,7 +27991,6 @@
             <product>
                <property>aero/qbar-area</property>
                <property>aero/function/pitch_coeff_basic_Mach</property>
-               <property>metrics/cbarw-ft</property>
             </product>
          </function>
          <function name="aero/forces/flap_inner_pitch_basic_Mach">
@@ -28009,7 +27999,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/flap_inner_pitch_coeff_basic_Mach</property>
-               <property>metrics/cbarw-ft</property>
             </product>
          </function>
          <function name="aero/forces/flap_outer_pitch_basic_Mach">
@@ -28018,7 +28007,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/flap_outer_pitch_coeff_basic_Mach</property>
-               <property>metrics/cbarw-ft</property>
             </product>
          </function>
          <function name="aero/forces/aileron_pitch_basic_Mach">
@@ -28027,7 +28015,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/aileron_pitch_coeff_basic_Mach</property>
-               <property>metrics/cbarw-ft</property>
             </product>
          </function>
          <function name="aero/forces/elevator_pitch_basic_Mach">
@@ -28036,7 +28023,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/elevator_pitch_coeff_basic_Mach</property>
-               <property>metrics/cbarw-ft</property>
             </product>
          </function>
          <function name="aero/forces/rudder_pitch_basic_Mach">
@@ -28045,7 +28031,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/rudder_pitch_coeff_basic_Mach</property>
-               <property>metrics/cbarw-ft</property>
             </product>
          </function>
          <function name="aero/forces/p-pitch_basic_Mach">
@@ -28056,7 +28041,6 @@
                <property>aero/function/p-pitch_coeff_basic_Mach</property>
                <property>velocities/p-aero-rad_sec</property>
                <property>aero/bi2vel</property>
-               <property>metrics/cbarw-ft</property>
             </product>
          </function>
          <function name="aero/forces/q-pitch_basic_Mach">
@@ -28067,7 +28051,6 @@
                <property>aero/function/q-pitch_coeff_basic_Mach</property>
                <property>velocities/q-aero-rad_sec</property>
                <property>aero/ci2vel</property>
-               <property>metrics/cbarw-ft</property>
             </product>
          </function>
          <function name="aero/forces/r-pitch_basic_Mach">
@@ -28078,7 +28061,6 @@
                <property>aero/function/r-pitch_coeff_basic_Mach</property>
                <property>velocities/r-aero-rad_sec</property>
                <property>aero/bi2vel</property>
-               <property>metrics/cbarw-ft</property>
             </product>
          </function>
       </axis>
@@ -28088,7 +28070,6 @@
             <product>
                <property>aero/qbar-area</property>
                <property>aero/function/yaw_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/flap_inner_yaw_basic_Mach">
@@ -28097,7 +28078,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/flap_inner_yaw_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/flap_outer_yaw_basic_Mach">
@@ -28106,7 +28086,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/flap_outer_yaw_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/aileron_yaw_basic_Mach">
@@ -28115,7 +28094,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/aileron_yaw_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/elevator_yaw_basic_Mach">
@@ -28124,7 +28102,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/elevator_yaw_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/rudder_yaw_basic_Mach">
@@ -28133,7 +28110,6 @@
                <property>aero/qbar-psf</property>
                <property>metrics/Sw-sqft</property>
                <property>aero/function/rudder_yaw_coeff_basic_Mach</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/p-yaw_basic_Mach">
@@ -28144,7 +28120,6 @@
                <property>aero/function/p-yaw_coeff_basic_Mach</property>
                <property>velocities/p-aero-rad_sec</property>
                <property>aero/bi2vel</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/q-yaw_basic_Mach">
@@ -28155,7 +28130,6 @@
                <property>aero/function/q-yaw_coeff_basic_Mach</property>
                <property>velocities/q-aero-rad_sec</property>
                <property>aero/ci2vel</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
          <function name="aero/forces/r-yaw_basic_Mach">
@@ -28166,7 +28140,6 @@
                <property>aero/function/r-yaw_coeff_basic_Mach</property>
                <property>velocities/r-aero-rad_sec</property>
                <property>aero/bi2vel</property>
-               <property>metrics/bw-ft</property>
             </product>
          </function>
       </axis>

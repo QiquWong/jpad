@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <initialize name="reset00">
-   <vt unit="FT/SEC">700.000000</vt>
+   <vt unit="FT/SEC">500.000000</vt>
    <longitude unit="DEG">20.000</longitude>
    <latitude unit="DEG">30.000</latitude>
    <phi unit="DEG">0.000000</phi>

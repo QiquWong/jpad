@@ -596,12 +596,12 @@ public class JSBSimUtils {
 //		JPADStaticWriteUtils.writeSingleNode("property","metrics/Sw-sqft",productForceElement,doc);
 		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-area",productForceElement,doc);
 		JPADStaticWriteUtils.writeSingleNode("property","aero/function/"+axis+"_coeff_basic_Mach",productForceElement,doc);
-		if ((axis.equals("roll"))||(axis.equals("yaw"))) {
-			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
-		}
-		if (axis.equals("pitch")) {
-			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
-		}
+//		if ((axis.equals("roll"))||(axis.equals("yaw"))) {
+//			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
+//		}
+//		if (axis.equals("pitch")) {
+//			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
+//		}
 		//Output element
 		JPADStaticWriteUtils.writeSingleNode("property","aero/function/"+axis+"_coeff_basic_Mach",outputElement,doc);
 		JPADStaticWriteUtils.writeSingleNode("property","aero/forces/"+axis+"_basic_Mach",outputElement,doc);
@@ -744,12 +744,12 @@ public class JSBSimUtils {
 		JPADStaticWriteUtils.writeSingleNode(
 				"property","aero/function/"+controlSurfaceUID+"_"+axis+"_coeff_basic_Mach",productForceElement,doc);
 		
-		if ((axis.equals("roll"))||(axis.equals("yaw"))) {
-			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
-		}
-		if (axis.equals("pitch")) {
-			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
-		}
+//		if ((axis.equals("roll"))||(axis.equals("yaw"))) {
+//			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
+//		}
+//		if (axis.equals("pitch")) {
+//			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
+//		}
 		JPADStaticWriteUtils.writeSingleNode("property", "aero/function/"+controlSurfaceUID+"_"+axis+"_coeff_basic_Mach",outputElement,doc);
 		JPADStaticWriteUtils.writeSingleNode("property", "aero/forces/"+controlSurfaceUID+"_"+axis+"_basic_Mach",outputElement,doc);
 
@@ -900,12 +900,12 @@ public class JSBSimUtils {
 			JPADStaticWriteUtils.writeSingleNode("property","velocities/r-aero-rad_sec",productForceElement,doc);
 			JPADStaticWriteUtils.writeSingleNode("property","aero/bi2vel",productForceElement,doc);
 		}
-		if ((axis.equals(DampingDerivatives+"-roll"))||(axis.equals(DampingDerivatives+"-yaw"))) {
-			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
-		}
-		if (axis.equals(DampingDerivatives+"-pitch")) {
-			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
-		}
+//		if ((axis.equals(DampingDerivatives+"-roll"))||(axis.equals(DampingDerivatives+"-yaw"))) {
+//			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
+//		}
+//		if (axis.equals(DampingDerivatives+"-pitch")) {
+//			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
+//		}
 		
 		//output
 		JPADStaticWriteUtils.writeSingleNode("property","aero/function/"+axis+"_coeff_basic_Mach",outputElement,doc);
