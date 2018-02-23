@@ -17,8 +17,9 @@ public class InputTree {
 
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
+	private boolean plotCharts;
 	
-	private Double currentLiftingCoefficient;
+	private Amount<Angle> currentAngleOfAttack;
 	
 	private Double aspectRatio;
 	private Amount<Area> surface;
@@ -59,7 +60,9 @@ public class InputTree {
 	
 	public InputTree() {
 
-		currentLiftingCoefficient = 0.0;
+		plotCharts = false;
+		
+		currentAngleOfAttack = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		
 		aspectRatio = 0.0;
 		surface = Amount.valueOf(0.0, SI.SQUARE_METRE);
@@ -98,12 +101,12 @@ public class InputTree {
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	
-	public Double getCurrentLiftingCoefficient() {
-		return currentLiftingCoefficient;
+	public Amount<Angle> getCurrentAngleOfAttack() {
+		return currentAngleOfAttack;
 	}
 
-	public void setCurrentLiftingCoefficient(Double currentLiftingCoefficient) {
-		this.currentLiftingCoefficient = currentLiftingCoefficient;
+	public void setCurrentAngleOfAttack(Amount<Angle> currentAngleOfAttack) {
+		this.currentAngleOfAttack = currentAngleOfAttack;
 	}
 
 	public Double getAspectRatio() {
@@ -162,35 +165,35 @@ public class InputTree {
 		this.alphaStarClean = alphaStarClean;
 	}
 
-	public Amount<?> getcLAlphaClean() {
+	public Amount<?> getCLAlphaClean() {
 		return cLAlphaClean;
 	}
 
-	public void setcLAlphaClean(Amount<?> cLAlphaClean) {
+	public void setCLAlphaClean(Amount<?> cLAlphaClean) {
 		this.cLAlphaClean = cLAlphaClean;
 	}
 
-	public Double getcL0Clean() {
+	public Double getCL0Clean() {
 		return cL0Clean;
 	}
 
-	public void setcL0Clean(Double cL0Clean) {
+	public void setCL0Clean(Double cL0Clean) {
 		this.cL0Clean = cL0Clean;
 	}
 
-	public Double getcLstarClean() {
+	public Double getCLstarClean() {
 		return cLstarClean;
 	}
 
-	public void setcLstarClean(Double cLstarClean) {
+	public void setCLstarClean(Double cLstarClean) {
 		this.cLstarClean = cLstarClean;
 	}
 
-	public Double getcLmaxClean() {
+	public Double getCLmaxClean() {
 		return cLmaxClean;
 	}
 
-	public void setcLmaxClean(Double cLmaxClean) {
+	public void setCLmaxClean(Double cLmaxClean) {
 		this.cLmaxClean = cLmaxClean;
 	}
 
@@ -353,4 +356,13 @@ public class InputTree {
 	public void setSymmetricFlapCreatorList(List<SymmetricFlapCreator> symmetricFlapCreatorList) {
 		this.symmetricFlapCreatorList = symmetricFlapCreatorList;
 	}
+
+	public boolean isPlotCharts() {
+		return plotCharts;
+	}
+
+	public void setPlotCharts(boolean plotCharts) {
+		this.plotCharts = plotCharts;
+	}
+
 }

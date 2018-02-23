@@ -31,17 +31,17 @@ public interface AircraftSaveDirectives {
 			if (args.length > 0)
 				appendToName = args[0];
 			// Set defaults in the builder constructor.
-			setAircraftFileName("aircraft"+ appendToName + ".xml");
-			setWingFileName("wing"+ appendToName + ".xml");
-			setHTailFileName("htail"+ appendToName + ".xml");
-			setVTailFileName("vtail"+ appendToName + ".xml");
-			setCanardFileName("canard"+ appendToName + ".xml");
-			setFuselageFileName("fuselage"+ appendToName + ".xml");
-			setCabinConfigurationFileName("cabin_configuration"+ appendToName + ".xml");
+			setAircraftFileName("aircraft"+ appendToName);
+			setWingFileName("wing"+ appendToName);
+			setHTailFileName("htail"+ appendToName);
+			setVTailFileName("vtail"+ appendToName);
+			setCanardFileName("canard"+ appendToName);
+			setFuselageFileName("fuselage"+ appendToName);
+			setCabinConfigurationFileName("cabin_configuration"+ appendToName);
 			setNacelleFileName("nacelle"+ appendToName + ".xml");
 			setEngineFileName("engine"+ appendToName + ".xml");
-			setLandingGearFileName("landing_gear"+ appendToName + ".xml");
-			setSystemFileName("system"+ appendToName + ".xml");
+			setLandingGearFileName("landing_gear"+ appendToName);
+			setSystemFileName("systems"+ appendToName);
 		}
 	}	
 

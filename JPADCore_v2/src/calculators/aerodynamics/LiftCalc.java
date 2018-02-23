@@ -7,6 +7,7 @@ import static java.lang.Math.tan;
 import static java.lang.Math.toRadians;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1112,13 +1113,17 @@ public class LiftCalc {
 				SI.METER
 				);
 		
-		Boolean negativeFlapDeflection = Boolean.FALSE;
+		boolean[] negativeFlapDeflection = new boolean[flapDeflections.size()];
+		for (int i=0; i<negativeFlapDeflection.length; i++) 
+			negativeFlapDeflection[i] = false;
 		
-		if(flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE) < 0.0) {
-			Double newFlapDeflection = -flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE);
-			flapDeflections.remove(0);
-			flapDeflections.add(0, Amount.valueOf(newFlapDeflection, NonSI.DEGREE_ANGLE));
-			negativeFlapDeflection = Boolean.TRUE;
+		for(int i=0; i<flapDeflections.size(); i++) {
+			if(flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE) < 0.0) {
+				Double newFlapDeflection = -flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE);
+				flapDeflections.remove(i);
+				flapDeflections.add(i, Amount.valueOf(newFlapDeflection, NonSI.DEGREE_ANGLE));
+				negativeFlapDeflection[i] = true;
+			}
 		}
 		
 		if(flapDeflections.size() != flapList.size()) {
@@ -1423,41 +1428,38 @@ public class LiftCalc {
 			cFirstCFlap.add(1+(deltaCCfFlap.get(i).doubleValue()*cfc.get(i).doubleValue()));
 
 		List<Double> deltaCl0FlapList = new ArrayList<>();
-		for(int i=0; i<flapTypeIndex.size(); i++)
+		for(int i=0; i<flapTypeIndex.size(); i++) 
 			deltaCl0FlapList.add(
 					(deltaCl0First.get(i).doubleValue()*cFirstCFlap.get(i).doubleValue())
 					+(clZeroMeanFlap[i]*(cFirstCFlap.get(i).doubleValue()-1))
 					);
-		if(negativeFlapDeflection) {
-			Double deltaCl0FlapNew = deltaCl0FlapList.get(0);
-			deltaCl0FlapList.remove(0);
-			deltaCl0FlapList.add(0, -deltaCl0FlapNew);
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST, 
-					deltaCl0FlapList
-					);
+		
+		for(int i=0; i<negativeFlapDeflection.length; i++) {
+			if(negativeFlapDeflection[i] == true) {
+				Double deltaCl0FlapNew = deltaCl0FlapList.get(i);
+				deltaCl0FlapList.remove(i);
+				deltaCl0FlapList.add(i, -deltaCl0FlapNew);
+				resultsMap.put(
+						HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST, 
+						deltaCl0FlapList
+						);
+			}
+			else
+				resultsMap.put(
+						HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST, 
+						deltaCl0FlapList
+						);
 		}
-		else
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST, 
-					deltaCl0FlapList
-					);
 		
 		double deltaCl0Flap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCl0Flap += deltaCl0FlapList.get(i);
 		
-		if(negativeFlapDeflection)
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP,
-					-deltaCl0Flap
-					);
-		else
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP,
-					deltaCl0Flap
-					);
-		
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP,
+				deltaCl0Flap
+				);
+
 		//---------------------------------------------------------------
 		// deltaClmax (flap)
 		List<Double> deltaClmaxBase = new ArrayList<Double>();
@@ -1532,44 +1534,41 @@ public class LiftCalc {
 				k3.add(1.0);
 
 		List<Double> deltaClmaxFlapList = new ArrayList<>();
-		for(int i=0; i<flapTypeIndex.size(); i++)
+		for(int i=0; i<flapTypeIndex.size(); i++) {
 			deltaClmaxFlapList.add(
 					k1.get(i).doubleValue()
 					*k2.get(i).doubleValue()
 					*k3.get(i).doubleValue()
 					*deltaClmaxBase.get(i).doubleValue()
 					);
-		
-		if(negativeFlapDeflection) {
-			Double deltaClmaxFlapNew = deltaClmaxFlapList.get(0);
-			deltaClmaxFlapList.remove(0);
-			deltaClmaxFlapList.add(0, -deltaClmaxFlapNew);
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP_LIST, 
-					deltaClmaxFlapList
-					);
 		}
-		else
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP_LIST, 
-					deltaClmaxFlapList
-					);
+		
+		for(int i=0; i<negativeFlapDeflection.length; i++) {
+			if(negativeFlapDeflection[i]) {
+				Double deltaClmaxFlapNew = deltaClmaxFlapList.get(i);
+				deltaClmaxFlapList.remove(i);
+				deltaClmaxFlapList.add(i, -deltaClmaxFlapNew);
+				resultsMap.put(
+						HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP_LIST, 
+						deltaClmaxFlapList
+						);
+			}
+			else
+				resultsMap.put(
+						HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP_LIST, 
+						deltaClmaxFlapList
+						);
+		}
 		
 		double deltaClmaxFlap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaClmaxFlap += deltaClmaxFlapList.get(i);
 		
-		if(negativeFlapDeflection) 
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP,
-					-deltaClmaxFlap
-					);
-		else
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP,
-					deltaClmaxFlap
-					);
-		
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP,
+				deltaClmaxFlap
+				);
+
 		double deltaCLmaxSlat = 0.0;
 		if(!slatDeflections.isEmpty()) {
 			//---------------------------------------------------------------
@@ -1691,35 +1690,19 @@ public class LiftCalc {
 							/(clAlphaMeanFlap[i]))
 					);
 		
-		if(negativeFlapDeflection) {
-			Double deltaCl0FlapNew = deltaCL0FlapList.get(0);
-			deltaCL0FlapList.remove(0);
-			deltaCL0FlapList.add(0, -deltaCl0FlapNew);
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_CL0_FLAP_LIST, 
-					deltaCL0FlapList
-					);
-		}
-		else
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_CL0_FLAP_LIST, 
-					deltaCL0FlapList
-					);
-		
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CL0_FLAP_LIST, 
+				deltaCL0FlapList
+				);
+
 		double deltaCL0Flap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCL0Flap += deltaCL0FlapList.get(i);
 		
-		if(negativeFlapDeflection)
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_CL0_FLAP,
-					-deltaCL0Flap
-					);
-		else
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_CL0_FLAP,
-					deltaCL0Flap
-					);
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CL0_FLAP,
+				deltaCL0Flap
+				);
 		
 		//---------------------------------------------------------------
 		// deltaCLmax (flap)
@@ -1749,35 +1732,19 @@ public class LiftCalc {
 					*kLambdaFlap.get(i)
 					);
 		
-		if(negativeFlapDeflection) {
-			Double deltaCLmaxFlapNew = deltaCLmaxFlapList.get(0);
-			deltaCLmaxFlapList.remove(0);
-			deltaCLmaxFlapList.add(0, -deltaCLmaxFlapNew);
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP_LIST, 
-					deltaCLmaxFlapList
-					);
-		}
-		else
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP_LIST, 
-					deltaCLmaxFlapList
-					);
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP_LIST, 
+				deltaCLmaxFlapList
+				);
 		
 		double deltaCLmaxFlap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCLmaxFlap += deltaCLmaxFlapList.get(i).doubleValue();
 		
-		if(negativeFlapDeflection)
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP,
-					-deltaCLmaxFlap
-					);
-		else
-			resultsMap.put(
-					HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP,
-					deltaCLmaxFlap
-					);
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP,
+				deltaCLmaxFlap
+				);
 
 		//---------------------------------------------------------------
 		// new CLalpha
@@ -1785,7 +1752,7 @@ public class LiftCalc {
 		List<Double> swf = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++) {
 			if(flapTypeIndex.get(i) == 3.0)
-				cLalphaFlapList.add(cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()/flapTypeIndex.size());
+				cLalphaFlapList.add(cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue());
 			else
 				cLalphaFlapList.add(
 						cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()

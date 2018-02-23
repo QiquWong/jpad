@@ -1805,8 +1805,8 @@ public class InputManagerControllerMainActionUtilities {
 		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 			
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -2233,8 +2233,8 @@ public class InputManagerControllerMainActionUtilities {
 		double yMaxSideView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		double yMinSideView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -2854,39 +2854,79 @@ public class InputManagerControllerMainActionUtilities {
 		double zMaxFrontView = yMaxFrontView; 
 		double zMinFrontView = yMinFrontView;
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
-		Color propellerColor = new Color(255, 255, 255, 0);
-		
-		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
-		if (Main.getTheAircraft().getFuselage() != null)
-			seriesAndColorList.add(Tuple.of(seriesFuselageCurve, Color.WHITE));
-		if (Main.getTheAircraft().getPowerPlant() != null)
-			seriesPropellerFrontViewList.stream().forEach(
-					prop -> seriesAndColorList.add(Tuple.of(prop, propellerColor))
+		Map<Double, Tuple2<XYSeries, Color>> componentXList = new HashMap<>();
+		if (Main.getTheAircraft().getFuselage() != null) 
+			componentXList.put(
+					Main.getTheAircraft().getFuselage().getXApexConstructionAxes().doubleValue(SI.METER),
+					Tuple.of(seriesFuselageCurve, Color.WHITE) 
 					);
-		if (Main.getTheAircraft().getNacelles() != null)
-			seriesNacelleCruvesFrontViewList.stream().forEach(
-					nac -> seriesAndColorList.add(Tuple.of(nac, Color.decode("#FF7F50")))
+		if (Main.getTheAircraft().getWing() != null) 
+			componentXList.put(
+					Main.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER),
+					Tuple.of(seriesWingFrontView, Color.decode("#87CEFA"))
+					); 
+		if (Main.getTheAircraft().getHTail() != null) 
+			componentXList.put(
+					Main.getTheAircraft().getHTail().getXApexConstructionAxes().doubleValue(SI.METER),
+					Tuple.of(seriesHTailFrontView, Color.decode("#00008B"))
 					);
-		if (Main.getTheAircraft().getCanard() != null)
-			seriesAndColorList.add(Tuple.of(seriesCanardFrontView, Color.decode("#228B22")));
-		if (Main.getTheAircraft().getWing() != null)
-			seriesAndColorList.add(Tuple.of(seriesWingFrontView, Color.decode("#87CEFA")));
-		if (Main.getTheAircraft().getHTail() != null)
-			seriesAndColorList.add(Tuple.of(seriesHTailFrontView, Color.decode("#00008B")));
+		if (Main.getTheAircraft().getCanard() != null) 
+			componentXList.put(
+					Main.getTheAircraft().getCanard().getXApexConstructionAxes().doubleValue(SI.METER),
+					Tuple.of(seriesCanardFrontView, Color.decode("#228B22"))
+					);
 		if (Main.getTheAircraft().getVTail() != null)
-			seriesAndColorList.add(Tuple.of(seriesVTailFrontView, Color.decode("#FFD700")));
-		if (Main.getTheAircraft().getLandingGears() != null)
-			serieLandingGearsCruvesFrontViewList.stream().forEach(
-					lg -> seriesAndColorList.add(Tuple.of(lg, Color.decode("#404040")))
+			componentXList.put(
+					Main.getTheAircraft().getVTail().getXApexConstructionAxes().doubleValue(SI.METER),
+					Tuple.of(seriesVTailFrontView, Color.decode("#FFD700"))
 					);
+		if (Main.getTheAircraft().getNacelles() != null) 
+			seriesNacelleCruvesFrontViewList.stream().forEach(
+					nac -> componentXList.put(
+							Main.getTheAircraft().getNacelles().getNacellesList().get(
+									seriesNacelleCruvesFrontViewList.indexOf(nac)
+									).getXApexConstructionAxes().doubleValue(SI.METER)
+							+ 0.005
+							+ seriesNacelleCruvesFrontViewList.indexOf(nac)*0.005, 
+							Tuple.of(nac, Color.decode("#FF7F50"))
+							)
+					);
+		if (Main.getTheAircraft().getPowerPlant() != null) 
+			seriesPropellerFrontViewList.stream().forEach(
+					prop -> componentXList.put(
+							Main.getTheAircraft().getPowerPlant().getEngineList().get(
+									seriesPropellerFrontViewList.indexOf(prop)
+									).getXApexConstructionAxes().doubleValue(SI.METER)
+							+ 0.0015
+							+ seriesPropellerFrontViewList.indexOf(prop)*0.001, 
+							Tuple.of(prop, Color.BLACK)
+							)
+					);
+		if (Main.getTheAircraft().getLandingGears() != null) 
+			serieLandingGearsCruvesFrontViewList.stream().forEach(
+					lg -> componentXList.put(
+							Main.getTheAircraft().getLandingGears().getXApexConstructionAxes().doubleValue(SI.METER)
+							+ serieLandingGearsCruvesFrontViewList.indexOf(lg)*0.001, 
+							Tuple.of(lg, Color.decode("#404040"))
+							)
+					);
+		
+		Map<Double, Tuple2<XYSeries, Color>> componentXListSorted = 
+				componentXList.entrySet().stream()
+			    .sorted(Entry.comparingByKey(Comparator.naturalOrder()))
+			    .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
+			                              (e1, e2) -> e1, LinkedHashMap::new));
 		
 		XYSeriesCollection dataset = new XYSeriesCollection();
-		seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+		componentXListSorted.values().stream().forEach(t -> dataset.addSeries(t._1()));
+		
+		List<Color> colorList = new ArrayList<>();
+		componentXListSorted.values().stream().forEach(t -> colorList.add(t._2()));
 		
 		//-------------------------------------------------------------------------------------
 		// CHART CRATION
@@ -2925,7 +2965,7 @@ public class InputManagerControllerMainActionUtilities {
 		for(int i=0; i<dataset.getSeries().size(); i++) {
 			xyAreaRenderer.setSeriesPaint(
 					i,
-					seriesAndColorList.get(i)._2()
+					colorList.get(i)
 					);
 		}
 		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
@@ -4174,8 +4214,8 @@ public class InputManagerControllerMainActionUtilities {
 		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -4310,8 +4350,8 @@ public class InputManagerControllerMainActionUtilities {
 		double yMaxSideView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		double yMinSideView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -4446,8 +4486,8 @@ public class InputManagerControllerMainActionUtilities {
 		double zMaxFrontView = yMaxFrontView; 
 		double zMinFrontView = yMinFrontView;
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -5399,8 +5439,8 @@ public class InputManagerControllerMainActionUtilities {
 		double yMaxTopView = Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMinTopView = 0.0;
 
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -6458,8 +6498,8 @@ public class InputManagerControllerMainActionUtilities {
 			
 		}
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -6658,8 +6698,8 @@ public class InputManagerControllerMainActionUtilities {
 			
 		}
 			
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -8079,8 +8119,8 @@ public class InputManagerControllerMainActionUtilities {
 			
 		}
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -8680,8 +8720,8 @@ public class InputManagerControllerMainActionUtilities {
 			
 		}
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -9281,8 +9321,8 @@ public class InputManagerControllerMainActionUtilities {
 			
 		}
 		
-		int WIDTH = 700;
-		int HEIGHT = 600;
+		int WIDTH = 650;
+		int HEIGHT = 650;
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
@@ -9833,8 +9873,8 @@ public class InputManagerControllerMainActionUtilities {
 			double yMaxTopView = 1.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 			double yMinTopView = -0.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 
-			int WIDTH = 700;
-			int HEIGHT = 600;
+			int WIDTH = 650;
+			int HEIGHT = 650;
 
 			//-------------------------------------------------------------------------------------
 			// DATASET CRATION
@@ -10006,8 +10046,8 @@ public class InputManagerControllerMainActionUtilities {
 			double yMaxSideView = 1.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 			double yMinSideView = -0.20*Main.getTheAircraft().getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 
-			int WIDTH = 700;
-			int HEIGHT = 600;
+			int WIDTH = 650;
+			int HEIGHT = 650;
 
 			//-------------------------------------------------------------------------------------
 			// DATASET CRATION
@@ -10168,8 +10208,8 @@ public class InputManagerControllerMainActionUtilities {
 			double xMaxFrontView = yMaxFrontView;
 			double xMinFrontView = yMinFrontView;
 
-			int WIDTH = 700;
-			int HEIGHT = 600;
+			int WIDTH = 650;
+			int HEIGHT = 650;
 
 			//-------------------------------------------------------------------------------------
 			// DATASET CRATION
@@ -11227,7 +11267,7 @@ public class InputManagerControllerMainActionUtilities {
 							
 							AircraftSaveDirectives asd = new AircraftSaveDirectives
 									.Builder("_" + file.getName())
-									.setAircraftFileName("aircraft_" + file.getName() + ".xml")
+									.setAircraftFileName("aircraft_" + file.getName())
 									.addAllWingAirfoilFileNames(wingAirfoilsName)
 									.addAllHTailAirfoilFileNames(hTailAirfoilsName)
 									.addAllVTailAirfoilFileNames(vTailAirfoilsName)
