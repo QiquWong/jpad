@@ -499,12 +499,18 @@ public final class AircraftUtils {
 				);
 
 		// x stations defining cylinder outlines
+//		List<Double> xmtPatch4 = Arrays.asList(
+//				MyArrayUtils.halfCosine1SpaceDouble( // cosineSpaceDouble( // 
+//						noseLength.plus(cylinderLength).doubleValue(SI.METER), 
+//						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)).doubleValue(SI.METER),
+//						numberTailPatchSections) // n. points
+//				);
 		List<Double> xmtPatch4 = Arrays.asList(
-				MyArrayUtils.halfCosine1SpaceDouble( // cosineSpaceDouble( // 
-						noseLength.plus(cylinderLength).doubleValue(SI.METER), 
-						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)).doubleValue(SI.METER),
-						numberTailPatchSections) // n. points
-				);
+		MyArrayUtils.cosineSpaceDouble( // cosineSpaceDouble( // 
+				noseLength.plus(cylinderLength).doubleValue(SI.METER), 
+				fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)).doubleValue(SI.METER),
+				numberTailPatchSections) // n. points
+		);
 		
 		System.out.println("Tail trunk selected x-stations (m), Patch-4: " + xmtPatch4.toString());
 		
@@ -991,14 +997,17 @@ public final class AircraftUtils {
 		// calculate FIRST breakpoint coordinates
 		ptsLE.add(new double[] {xApex.doubleValue(SI.METER), 0.0, zApex.doubleValue(SI.METER)});
 
-		double zbp = zApex.doubleValue(SI.METER);
 		// calculate breakpoints coordinates
 		for (int kBP = 1; kBP < liftingSurface.getLiftingSurfaceCreator().getXLEBreakPoints().size(); kBP++) {
 			double xbp = liftingSurface.getLiftingSurfaceCreator().getXLEBreakPoints().get(kBP).plus(xApex).doubleValue(SI.METER);
 			double ybp = liftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(kBP).doubleValue(SI.METER);
-			double semiSpanPanel = liftingSurface.getLiftingSurfaceCreator().getPanels().get(kBP - 1).getSpan().times(0.5).doubleValue(SI.METER);
+			double zbp = zApex.doubleValue(SI.METER);
+//			double semiSpanPanel = liftingSurface.getLiftingSurfaceCreator().getPanels().get(kBP - 1).getSpan().times(0.5).doubleValue(SI.METER);
+			double spanPanel = liftingSurface.getLiftingSurfaceCreator().getPanels().get(kBP - 1).getSpan().doubleValue(SI.METER);
 			double dihedralPanel = liftingSurface.getLiftingSurfaceCreator().getPanels().get(kBP - 1).getDihedral().doubleValue(SI.RADIAN);
-			zbp = zbp + semiSpanPanel*Math.tan(dihedralPanel);
+//			zbp = zbp + semiSpanPanel*Math.tan(dihedralPanel);
+//			zbp = zbp + spanPanel*Math.tan(dihedralPanel);
+			zbp = zbp + ybp*Math.tan(dihedralPanel);
 			if(liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 				ptsLE.add(new double[] {
 						xbp,
@@ -1008,6 +1017,8 @@ public final class AircraftUtils {
 			} else {
 				ptsLE.add(new double[] {xbp, ybp, zbp});
 			}
+			System.out.println("span #" + kBP + ": " + spanPanel);
+			System.out.println("dihedral #" + kBP + ": " + dihedralPanel);
 		}	
 		
 		// make a wire for the leading edge
@@ -1139,17 +1150,17 @@ public final class AircraftUtils {
 
 		// Create patches through the sections defined above
 		List<OCCShape> patchWing = new ArrayList<>();	
-		for(int i = 0; i < cadCurveAirfoilList.size(); i++) {
-			for(int j = 1; j < cadCurveAirfoilList.get(i).size(); j++) {
-				patchWing.add(OCCUtils.makePatchThruSections(
-						cadCurveAirfoilList.get(i).get(j-1),
-						cadCurveAirfoilList.get(i).get(j)
-						));
-			}
-		}
-//		patchWing.addAll(cadCurveAirfoilList.stream()
-//		                   .map(OCCUtils::makePatchThruSections)
-//		                   .collect(Collectors.toList()));
+//		for(int i = 0; i < cadCurveAirfoilList.size(); i++) {
+//			for(int j = 1; j < cadCurveAirfoilList.get(i).size(); j++) {
+//				patchWing.add(OCCUtils.makePatchThruSections(
+//						cadCurveAirfoilList.get(i).get(j-1),
+//						cadCurveAirfoilList.get(i).get(j)
+//						));
+//			}
+//		}
+		patchWing.addAll(cadCurveAirfoilList.stream()
+		                   .map(OCCUtils::makePatchThruSections)
+		                   .collect(Collectors.toList()));
 		
 		// Closing the trailing edge
 		List<List<OCCShape>> patchTE = new ArrayList<List<OCCShape>>();
@@ -1194,6 +1205,22 @@ public final class AircraftUtils {
 				airfoilTip, 
 				OCCUtils.getVertexFromEdge(tipChord, 0).pnt()
 				);
+		
+		// adjusting points for the tip airfoil
+		int nPnts = 200;
+		CADGeomCurve3D airfoilUpp = OCCUtils.theFactory.newCurve3D(airfoilTipCrvs.get(0));
+		CADGeomCurve3D airfoilLow = OCCUtils.theFactory.newCurve3D(airfoilTipCrvs.get(1));
+		airfoilUpp.discretize(nPnts);
+		airfoilLow.discretize(nPnts);
+		List<gp_Pnt> gpPntAirfoilUpp = ((OCCGeomCurve3D)airfoilUpp).getDiscretizedCurve().getPoints();
+		List<gp_Pnt> gpPntAirfoilLow = ((OCCGeomCurve3D)airfoilLow).getDiscretizedCurve().getPoints();
+		gpPntAirfoilUpp.set(nPnts - 1, BRep_Tool.Pnt(OCCUtils.getVertexFromEdge(tipChord, 0).getShape()));
+		gpPntAirfoilLow.set(0, BRep_Tool.Pnt(OCCUtils.getVertexFromEdge(tipChord, 0).getShape()));
+		CADGeomCurve3D airfoilUppMod = OCCUtils.theFactory.newCurve3DGP(gpPntAirfoilUpp, false);
+		CADGeomCurve3D airfoilLowMod = OCCUtils.theFactory.newCurve3DGP(gpPntAirfoilLow, false);
+		airfoilTipCrvs.clear();
+		airfoilTipCrvs.add((OCCEdge) airfoilUppMod.edge());
+		airfoilTipCrvs.add((OCCEdge) airfoilLowMod.edge());
 		
 		// splitting the second to last airfoil curve using its chord first vertex
 		List<OCCEdge> airfoilPreTipCrvs = OCCUtils.splitEdge(
@@ -1289,12 +1316,20 @@ public final class AircraftUtils {
 		constrPlaneGuideCrv2Pnts.add(new double[] {cPnt.x, cPnt.y, cPnt.z});
 		constrPlaneGuideCrv2Pnts.add(new double[] {fPnt.x, fPnt.y, fPnt.z});
 		constrPlaneGuideCrv2Pnts.add(new double[] {gPnt.x, gPnt.y, gPnt.z});
-				
-		PVector cVector = PVector.sub(bPnt, aPnt);
+		
+		// creating the tangent vectors for the guide curves in the construction plane	
+//		PVector cVector = PVector.sub(bPnt, aPnt);
+		PVector cVector = PVector.sub(cPnt, aPnt);
 		PVector gVector = PVector.sub(gPnt, fPnt);				
-		double tanAFac = 4*aVector.mag();
-		double tanCFac = 5*aVector.mag();
-		double tanGFac = 1*aVector.mag();		
+//		double tanAFac = 4*aVector.mag(); // wing and hTail
+//		double tanCFac = 5*aVector.mag();
+//		double tanGFac = 1*aVector.mag();	
+//		double tanAFac = 7*aVector.mag(); // these parameters work fine for the IRON canard
+//		double tanCFac = 7*aVector.mag();
+//		double tanGFac = 1*aVector.mag();	
+		double tanAFac = 1;
+		double tanCFac = (cVector.mag()/aVector.mag())*0.75;
+		double tanGFac = tanCFac;
 		aVector.normalize();
 		cVector.normalize();
 		gVector.normalize();			
@@ -1451,6 +1486,8 @@ public final class AircraftUtils {
 				OCCUtils.theFactory.newCurve3D(airfoilTipCrvs.get(1)), 
 				subVSecP1.get(1)[1].edge().vertices()[1].pnt()
 				));
+		airfoilUpperCrvs.forEach(crv -> extraShapes.add(crv));
+		airfoilLowerCrvs.forEach(crv -> extraShapes.add(crv));
 		
 		List<OCCEdge> constPlaneGuideCrvs1 = new ArrayList<>();
 		constPlaneGuideCrvs1.addAll(OCCUtils.splitEdge(
@@ -1489,7 +1526,7 @@ public final class AircraftUtils {
 		
 		patchWingTip.add((OCCShape)(OCCUtils.theFactory.newShape(fillerP1Upp.Shape())));
 		
-		// creating a filler surface at the wing tip leading edge, lower
+        // creating a filler surface at the wing tip leading edge, lower
 		double[] contrCrvLowRng = subVSecP1.get(0)[1].getRange();
 		double[] contrPntLow1 = subVSecP1.get(0)[1].value(0.25*(contrCrvLowRng[1] - contrCrvLowRng[0]) + contrCrvLowRng[0]);
 		double[] contrPntLow2 = subVSecP1.get(0)[1].value(0.50*(contrCrvLowRng[1] - contrCrvLowRng[0]) + contrCrvLowRng[0]);
@@ -1778,7 +1815,7 @@ public final class AircraftUtils {
 			result.addAll(lofts);
 		}
 		
-		// exporting lofts
+		// exporting solids
 		if(exportSolids) {
 			System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] adding solids");
 			result.addAll(solids);
@@ -1917,8 +1954,8 @@ public final class AircraftUtils {
 		
 		// checking the trailing edge
 		if(Math.abs(zCoords[0] - zCoords[nPoints - 1]) < 1e-5) {
-			zCoords[0] += 1e-3;
-			zCoords[nPoints - 1] -= 1e-3;
+			zCoords[0] += 1*1e-3;
+			zCoords[nPoints - 1] -= 1*1e-3; // IRON canard works better with 1 instead of .5
 		}
 
 		for (int i = 0; i < nPoints; i++) {
@@ -1928,11 +1965,18 @@ public final class AircraftUtils {
 			y = 0.0;
 			z = zCoords[i]*c;
 
+//			// Rotation due to twist
+//			if(!theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+//				double r = Math.sqrt(x*x + z*z);
+//				x = (x - r*(1-Math.cos(-twist - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN))));
+//				z = (z + r*Math.sin(-twist - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));				
+//			}
+			
 			// Rotation due to twist
 			if(!theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 				double r = Math.sqrt(x*x + z*z);
-				x = (x - r*(1-Math.cos(-twist - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN))));
-				z = (z + r*Math.sin(-twist - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));				
+				x = x - r*(1-Math.cos(twist + theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));
+				z = z - r*Math.sin(twist + theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN));				
 			}
 
 			// Actual location
@@ -1941,7 +1985,7 @@ public final class AircraftUtils {
 			z = z + theLiftingSurface.getZApexConstructionAxes().doubleValue(SI.METER)
 				  + (yStation
 //						* Math.tan(theLiftingSurface.getLiftingSurfaceCreator().getDihedralAtYActual(yStation).doubleValue(SI.RADIAN)));
-                        * Math.tan(AircraftUtils.getDihedralAtYActual(theLiftingSurface, yStation).doubleValue(SI.RADIAN)));	
+                        * Math.tan(AircraftUtils.getDihedralAtYActual(theLiftingSurface, yStation).doubleValue(SI.RADIAN)));
 
 			if(theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 				actualAirfoilCoordinates.add(
@@ -2300,7 +2344,7 @@ public final class AircraftUtils {
 			dihedralAtY = null;
 		}
 		for(int i=1; i<theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().size(); i++) {
-			if(yStation < theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(i).getEstimatedValue() && 
+			if(yStation <= theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(i).getEstimatedValue() && 
 			   yStation >= theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(i-1).getEstimatedValue()
 					)
 				dihedralAtY = theLiftingSurface.getLiftingSurfaceCreator().getPanels().get(i-1).getDihedral();
