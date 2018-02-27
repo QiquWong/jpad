@@ -914,7 +914,8 @@ public class Aircraft {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//systems/@primary_electrical_systems_type");
 		
-		PrimaryElectricSystemsEnum electricalSystemsType = null;
+		// default choice
+		PrimaryElectricSystemsEnum electricalSystemsType = PrimaryElectricSystemsEnum.AC;
 		
 		if(systemsPrimaryElectricalSystemsTypeString != null) {
 			
@@ -1077,7 +1078,7 @@ public class Aircraft {
 	}
 
 	public void setTypeVehicle(AircraftTypeEnum _typeVehicle) {
-		IAircraft.Builder.from(_theAircraftInterface).setTypeVehicle(_typeVehicle);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setTypeVehicle(_typeVehicle).build());
 	}
 
 	public RegulationsEnum getRegulations() {
@@ -1085,7 +1086,7 @@ public class Aircraft {
 	}
 
 	public void setRegulations(RegulationsEnum _regulations) {
-		IAircraft.Builder.from(_theAircraftInterface).setRegulations(_regulations);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setRegulations(_regulations).build());
 	}
 
 	public String getId() {
@@ -1093,7 +1094,7 @@ public class Aircraft {
 	}
 
 	public void setId(String _name) {
-		IAircraft.Builder.from(_theAircraftInterface).setId(_name);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setId(_name).build());
 	}
 	
 	public Amount<Area> getSWetTotal() {
@@ -1129,7 +1130,7 @@ public class Aircraft {
 	}
 	
 	public void setFuselage(Fuselage fuselage) {
-		IAircraft.Builder.from(_theAircraftInterface).setFuselage(fuselage);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setFuselage(fuselage).build());
 	}
 	
 	public LiftingSurface getWing() {
@@ -1137,7 +1138,7 @@ public class Aircraft {
 	}
 	
 	public void setWing(LiftingSurface wing) {
-		IAircraft.Builder.from(_theAircraftInterface).setWing(wing);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setWing(wing).build());
 	}
 	
 	public LiftingSurface getExposedWing() {
@@ -1153,7 +1154,7 @@ public class Aircraft {
 	}
 
 	public void setHTail(LiftingSurface hTail) {
-		IAircraft.Builder.from(_theAircraftInterface).setHTail(hTail);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setHTail(hTail).build());
 	}
 	
 	public LiftingSurface getVTail() {
@@ -1161,7 +1162,7 @@ public class Aircraft {
 	}
 
 	public void setVTail(LiftingSurface vTail) {
-		IAircraft.Builder.from(_theAircraftInterface).setVTail(vTail);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setVTail(vTail).build());
 	}
 	
 	public LiftingSurface getCanard() {
@@ -1169,7 +1170,7 @@ public class Aircraft {
 	}
 
 	public void setCanard(LiftingSurface canard) {
-		IAircraft.Builder.from(_theAircraftInterface).setCanard(canard);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setCanard(canard).build());
 	}
 	
 	public PowerPlant getPowerPlant() {
@@ -1177,7 +1178,7 @@ public class Aircraft {
 	}
 	
 	public void setPowerPlant(PowerPlant powerPlant) {
-		IAircraft.Builder.from(_theAircraftInterface).setPowerPlant(powerPlant);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setPowerPlant(powerPlant).build());
 	}
 	
 	public Nacelles getNacelles() {
@@ -1185,7 +1186,7 @@ public class Aircraft {
 	}
 	
 	public void setNacelles(Nacelles nacelles) {
-		IAircraft.Builder.from(_theAircraftInterface).setNacelles(nacelles);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setNacelles(nacelles).build());
 	}
 	
 	public FuelTank getFuelTank() {
@@ -1193,7 +1194,7 @@ public class Aircraft {
 	}
 	
 	public void setFuelTank(FuelTank fuelTank) {
-		IAircraft.Builder.from(_theAircraftInterface).setFuelTank(fuelTank);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setFuelTank(fuelTank).build());
 	}
 	
 	public LandingGears getLandingGears() {
@@ -1201,7 +1202,7 @@ public class Aircraft {
 	}
 	
 	public void setLandingGears(LandingGears landingGears) {
-		IAircraft.Builder.from(_theAircraftInterface).setLandingGears(landingGears);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setLandingGears(landingGears).build());
 	}
 	
 	public Systems getSystems() {
@@ -1209,7 +1210,7 @@ public class Aircraft {
 	}
 	
 	public void setSystems(Systems systems) {
-		IAircraft.Builder.from(_theAircraftInterface).setSystems(systems);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setSystems(systems).build());
 	}
 	
 	public CabinConfiguration getCabinConfiguration() {
@@ -1217,7 +1218,7 @@ public class Aircraft {
 	}
 	
 	public void setCabinConfiguration(CabinConfiguration theCabinConfiguration) {
-		IAircraft.Builder.from(_theAircraftInterface).setCabinConfiguration(theCabinConfiguration);
+		setTheAircraftInterface(IAircraft.Builder.from(_theAircraftInterface).setCabinConfiguration(theCabinConfiguration).build());
 	}
 	
 	public Amount<Length> getWingACToCGDistance() {

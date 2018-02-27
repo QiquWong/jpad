@@ -84,6 +84,6 @@
             </position>
             <mounting_point>WING</mounting_point>
         </landing_gears>
-        <systems primary_electrical_systems_type=""/> <!-- AC or DC --> 
+        <systems primary_electrical_systems_type="AC"/> <!-- AC or DC --> 
     </aircraft>
 </jpad_config>

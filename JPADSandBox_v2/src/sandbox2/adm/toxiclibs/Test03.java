@@ -46,7 +46,6 @@ import javafx.scene.shape.MeshView;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-import sandbox2.vt.FuselageTest;
 import standaloneutils.JPADXmlReader;
 import toxi.geom.Line3D;
 import toxi.geom.Vec3D;

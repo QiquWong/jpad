@@ -19,6 +19,7 @@
             method_wing=""
             method_htail=""
             method_vtail=""
+			method_canard=""
 			method_nacelles=""
 			method_landing_gears=""
 			method_systems=""

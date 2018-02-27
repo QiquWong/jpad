@@ -131,7 +131,7 @@ public class Fuselage implements IFuselage {
 
 	@Override
 	public Amount<Length> getLength() {
-		return _fuselageCreator.getLenF();
+		return _fuselageCreator.getFuselageLength();
 	}
 
 	@Override
@@ -146,22 +146,22 @@ public class Fuselage implements IFuselage {
 
 	@Override
 	public Double getNoseLengthRatio() {
-		return _fuselageCreator.getLenRatioNF();
+		return _fuselageCreator.getNoseLengthRatio();
 	}
 
 	@Override
 	public Double getFinesseRatio() {
-		return _fuselageCreator.getLambdaN();
+		return _fuselageCreator.getNoseFinenessRatio();
 	}
 
 	@Override
 	public Amount<Length> getNoseTipHeightOffset() {
-		return _fuselageCreator.getHeightN();
+		return _fuselageCreator.getNoseTipOffset();
 	}
 
 	@Override
 	public Double getNoseDxCapPercent() {
-		return _fuselageCreator.getDxNoseCapPercent();
+		return _fuselageCreator.getNoseCapOffsetPercent();
 	}
 
 	@Override
@@ -196,7 +196,7 @@ public class Fuselage implements IFuselage {
 
 	@Override
 	public Double getCylindricalLengthRatio() {
-		return _fuselageCreator.getLenRatioCF();
+		return _fuselageCreator.getCylinderLengthRatio();
 	}
 
 	@Override
@@ -231,12 +231,12 @@ public class Fuselage implements IFuselage {
 
 	@Override
 	public Amount<Length> getTailTipHeightOffset() {
-		return _fuselageCreator.getHeightT();
+		return _fuselageCreator.getTailTipOffset();
 	}
 
 	@Override
 	public Double getTailDxCapPercent() {
-		return _fuselageCreator.getDxTailCapPercent();
+		return _fuselageCreator.getTailCapOffsetPercent();
 	}
 
 	@Override
@@ -269,7 +269,7 @@ public class Fuselage implements IFuselage {
 
 	@Override
 	public Amount<Area> getsWet() {
-		return _fuselageCreator.getsWet();
+		return _fuselageCreator.getSWetTotal();
 	}
 	
 	@Override
@@ -337,7 +337,7 @@ public class Fuselage implements IFuselage {
 
 			_mass = Amount.valueOf(0.039*
 					Math.pow((1 + k) * 
-							2*_fuselageCreator.getLenF().getEstimatedValue()*
+							2*_fuselageCreator.getFuselageLength().getEstimatedValue()*
 							getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue()*
 							Math.pow(aircraft.getTheAnalysisManager().getVDiveEAS().getEstimatedValue(),0.5),
 							1.5), SI.KILOGRAM);
@@ -350,7 +350,7 @@ public class Fuselage implements IFuselage {
 					0.0737*
 					pow(2*getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue()*
 							pow(aircraft.getTheAnalysisManager().getVDiveEAS().getEstimatedValue(), 0.338) * 
-							pow(_fuselageCreator.getLenF().getEstimatedValue(), 0.857)*
+							pow(_fuselageCreator.getFuselageLength().getEstimatedValue(), 0.857)*
 							pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue()*
 									aircraft.getTheAnalysisManager().getNUltimate(), 0.286)
 									, 1.1)
@@ -368,7 +368,7 @@ public class Fuselage implements IFuselage {
 							aircraft.getTheAnalysisManager().getMaxDynamicPressure().to(MyUnits.LB_FT2).getEstimatedValue()/100,
 							0.283)*
 							pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()/1000, 0.95)*
-							pow(_fuselageCreator.getLenF().divide(_fuselageCreator.getSectionCylinderHeight()).getEstimatedValue(), 0.71), 
+							pow(_fuselageCreator.getFuselageLength().divide(_fuselageCreator.getSectionCylinderHeight()).getEstimatedValue(), 0.71), 
 							NonSI.POUND).to(SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), _mass.getUnit()));
 		} break;
@@ -384,7 +384,7 @@ public class Fuselage implements IFuselage {
 			_methodsList.add(method);
 			double Kinlet = 1.;
 			double kRho = 0.0032;
-			_mass = Amount.valueOf(_fuselageCreator.getLenF().getEstimatedValue()*
+			_mass = Amount.valueOf(_fuselageCreator.getFuselageLength().getEstimatedValue()*
 					pow(getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue(),2)*
 					aircraft.getTheAnalysisManager().getTheWeights().getMaterialDensity().getEstimatedValue()*
 					kRho*
@@ -465,7 +465,7 @@ public class Fuselage implements IFuselage {
 						(1+aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio()))*
 						aircraft.getWing().getSpan().to(NonSI.FOOT).getEstimatedValue()*
 						tan(aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN).getEstimatedValue())/
-						_fuselageCreator.getLenF().to(NonSI.FOOT).getEstimatedValue();
+						_fuselageCreator.getFuselageLength().to(NonSI.FOOT).getEstimatedValue();
 
 		return Amount.valueOf(0.328*
 				Kdoor*Klg*
@@ -473,10 +473,10 @@ public class Fuselage implements IFuselage {
 						getMaximumTakeOffMass().to(NonSI.POUND).times(aircraft.getTheAnalysisManager().
 								getNUltimate()).getEstimatedValue(),
 								0.5)*
-								pow(_fuselageCreator.getLenF().to(NonSI.FOOT).getEstimatedValue(),0.25)*
-								pow(_fuselageCreator.getsWet().to(MyUnits.FOOT2).getEstimatedValue(), 0.302)*
+								pow(_fuselageCreator.getFuselageLength().to(NonSI.FOOT).getEstimatedValue(),0.25)*
+								pow(_fuselageCreator.getSWetTotal().to(MyUnits.FOOT2).getEstimatedValue(), 0.302)*
 								pow(1+Kws, 0.04)*
-								pow(_fuselageCreator.getLenF().to(NonSI.FOOT).
+								pow(_fuselageCreator.getFuselageLength().to(NonSI.FOOT).
 										divide(getFuselageCreator().getEquivalentDiameterCylinderGM().to(NonSI.FOOT)).getEstimatedValue(), 0.1), 
 										NonSI.POUND).to(SI.KILOGRAM);
 	}
@@ -484,10 +484,10 @@ public class Fuselage implements IFuselage {
 	private Amount<Mass> calculateMassTorenbeek2013(double nUltimate) {
 		return Amount.valueOf((60*
 				pow(_fuselageCreator.getEquivalentDiameterCylinderGM().getEstimatedValue(),2)*
-				(_fuselageCreator.getLenF().getEstimatedValue() + 1.5)+
+				(_fuselageCreator.getFuselageLength().getEstimatedValue() + 1.5)+
 				160*pow(nUltimate, 0.5)*
 				_fuselageCreator.getEquivalentDiameterCylinderGM().getEstimatedValue()*
-				_fuselageCreator.getLenF().getEstimatedValue()),
+				_fuselageCreator.getFuselageLength().getEstimatedValue()),
 				SI.NEWTON).divide(AtmosphereCalc.g0).to(SI.KILOGRAM);
 
 	}
@@ -533,7 +533,7 @@ public class Fuselage implements IFuselage {
 		_cg = new CenterOfGravity();
 		
 		_cg.setLRForigin(_xApexConstructionAxes, _yApexConstructionAxes, _zApexConstructionAxes);
-		_cg.set_xLRFref(_fuselageCreator.getLenF().times(0.45));
+		_cg.set_xLRFref(_fuselageCreator.getFuselageLength().times(0.45));
 		_cg.set_yLRFref(Amount.valueOf(0., SI.METER));
 		_cg.set_zLRFref(Amount.valueOf(_zApexConstructionAxes.getEstimatedValue(), SI.METER));
 
@@ -548,8 +548,8 @@ public class Fuselage implements IFuselage {
 			_methodsList.add(method);
 
 			_xCG = Amount.valueOf(
-					_fuselageCreator.getLenF().divide(_fuselageCreator.getLambdaF()).getEstimatedValue()*
-					(_fuselageCreator.getLambdaN()+ (_fuselageCreator.getLambdaF() - 5.)/1.8)
+					_fuselageCreator.getFuselageLength().divide(_fuselageCreator.getFuselageFinenessRatio()).getEstimatedValue()*
+					(_fuselageCreator.getNoseFinenessRatio()+ (_fuselageCreator.getFuselageFinenessRatio() - 5.)/1.8)
 					, SI.METER);
 			_xCGMap.put(method, _xCG);
 		} break;
@@ -562,24 +562,24 @@ public class Fuselage implements IFuselage {
 					(aircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON |
 					aircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)) {
 
-				_xCG = _fuselageCreator.getLenF().times(0.335);
+				_xCG = _fuselageCreator.getFuselageLength().times(0.335);
 			}
 
 			if (aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.WING) {
 				if ((aircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON |
 						aircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)) {
-					_xCG = _fuselageCreator.getLenF().times(0.39); 
+					_xCG = _fuselageCreator.getFuselageLength().times(0.39); 
 				} else {
-					_xCG = _fuselageCreator.getLenF().times(0.435);
+					_xCG = _fuselageCreator.getFuselageLength().times(0.435);
 				}
 			}
 
 			if (aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.REAR_FUSELAGE) {
-				_xCG = _fuselageCreator.getLenF().times(0.47);
+				_xCG = _fuselageCreator.getFuselageLength().times(0.47);
 			}
 
 			if (aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.BURIED) {
-				_xCG = _fuselageCreator.getLenF().times(0.45);
+				_xCG = _fuselageCreator.getFuselageLength().times(0.45);
 			}
 
 			_xCGMap.put(method, _xCG);

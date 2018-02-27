@@ -80,10 +80,6 @@ class MyArgumentsAnalysis {
 			usage = "landing gears directory path")
 	private File _landingGearsDirectory;
 	
-	@Option(name = "-ds", aliases = { "--dir-systems" }, required = true,
-			usage = "systems directory path")
-	private File _systemsDirectory;
-	
 	@Option(name = "-dcc", aliases = { "--dir-cabin-configurations" }, required = true,
 			usage = "cabin configurations directory path")
 	private File _cabinConfigurationsDirectory;
@@ -128,10 +124,6 @@ class MyArgumentsAnalysis {
 		return _landingGearsDirectory;
 	}
 
-	public File getSystemsDirectory() {
-		return _systemsDirectory;
-	}
-	
 	public File getCabinConfigurationDirectory() {
 		return _cabinConfigurationsDirectory;
 	}
@@ -226,9 +218,6 @@ public class AVLExternalJobTest extends Application {
 			
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
-			
-			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
-			System.out.println("SYSTEMS ===> " + dirSystems);
 			
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);

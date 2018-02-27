@@ -69,7 +69,7 @@ public class FuselageAdjustCriterionDialog extends Stage {
         					+ String.format(
         							Locale.ROOT,
         							"%.02f",
-        							Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METER)
+        							Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER)
         							)
         					+ " m"
         			);
@@ -86,7 +86,7 @@ public class FuselageAdjustCriterionDialog extends Stage {
             				+ String.format(
             						Locale.ROOT,
             						"%.02f",
-            						Main.getTheAircraft().getFuselage().getFuselageCreator().getLenC().doubleValue(SI.METER)
+            						Main.getTheAircraft().getFuselage().getFuselageCreator().getCylinderLength().doubleValue(SI.METER)
             						)
             				+ " m"
             		);
@@ -105,7 +105,7 @@ public class FuselageAdjustCriterionDialog extends Stage {
             				+ String.format(
             						Locale.ROOT,
             						"%.02f",
-            						Main.getTheAircraft().getFuselage().getFuselageCreator().getLenN().doubleValue(SI.METER)
+            						Main.getTheAircraft().getFuselage().getFuselageCreator().getNoseLength().doubleValue(SI.METER)
             						)
             				+ " m"
             		);
@@ -124,7 +124,7 @@ public class FuselageAdjustCriterionDialog extends Stage {
             		+ String.format(
             						Locale.ROOT, 
             						"%.02f",
-            						Main.getTheAircraft().getFuselage().getFuselageCreator().getLenT().doubleValue(SI.METER)
+            						Main.getTheAircraft().getFuselage().getFuselageCreator().getTailLength().doubleValue(SI.METER)
             						)
             		+ " m"
             		);

@@ -96,7 +96,7 @@ public class FuselageAdjustTest extends Application {
 		}
 		// ADJUSTING SIDE VIEW
 		fuselage2.getFuselageCreator().adjustDimensions(
-				fuselage2.getFuselageCreator().getLenT().times(1.2),
+				fuselage2.getFuselageCreator().getTailLength().times(1.2),
 				FuselageAdjustCriteriaEnum.ADJ_TAILCONE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS
 				);
 		// ADJUSTING FRONT VIEW
@@ -270,13 +270,13 @@ public class FuselageAdjustTest extends Application {
 		listDataArray4.add(dataSectionYZUpperCurveFus2);
 		listDataArray4.add(dataSectionYZLowerCurveFus2);
 		
-		double xMax1 = 1.20*fuselage1.getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double xMin1 = -0.20*fuselage1.getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double xMax1 = 1.20*fuselage1.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double xMin1 = -0.20*fuselage1.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
 		double yMax1 = 15;
 		double yMin1 = -15;
 		
-		double xMax2 = 1.20*fuselage2.getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double xMin2 = -0.20*fuselage2.getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double xMax2 = 1.20*fuselage2.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double xMin2 = -0.20*fuselage2.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
 		double yMax2 = 15;
 		double yMin2 = -15;
 
@@ -505,20 +505,8 @@ public class FuselageAdjustTest extends Application {
 			FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
 			
 			// default Fuselage ...
-			theFuselage1 = new Fuselage.FuselageBuilder("Fuselage_1", fusDesDatabaseReader)
-					.fuselageCreator(
-							new FuselageCreator
-							.FuselageBuilder("ATR72 fuselage", AircraftEnum.ATR72)
-							.build()
-							)
-					.build();
-			theFuselage2 = new Fuselage.FuselageBuilder("Fuselage_2", fusDesDatabaseReader)
-					.fuselageCreator(
-							new FuselageCreator
-							.FuselageBuilder("ATR72 fuselage modified", AircraftEnum.ATR72)
-							.build()
-							)
-					.build();
+			theFuselage1 = null;
+			theFuselage2 = null;
 
 			System.out.println("The fuselage 1 ...");
 			System.out.println(FuselageAdjustTest.theFuselage1.getFuselageCreator().toString());

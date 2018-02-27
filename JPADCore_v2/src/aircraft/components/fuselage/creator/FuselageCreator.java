@@ -21,7 +21,6 @@ import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.apache.commons.math3.analysis.solvers.AllowedSolution;
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.jscience.physics.amount.Amount;
-import org.jscience.physics.amount.AmountFormat;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -31,7 +30,6 @@ import aircraft.components.fuselage.FuselageCurvesSideView;
 import aircraft.components.fuselage.FuselageCurvesUpperView;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FuselageAdjustCriteriaEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import processing.core.PVector;
@@ -40,113 +38,48 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
 
-public class FuselageCreator implements IFuselageCreator {
+public class FuselageCreator {
 
-	private String id;
-	private int deckNumber;
-	private Amount<Mass> massReference;
-
-	private List<SpoilerCreator> spoilers;
+	//----------------------------------------------------------------------
+	// VARIABLE DECLARATION:
+	private IFuselageCreator theFuselageCreatorInterface;
+	// calculate geometry parameters
+	private int npN = 10, npC = 4, npT = 10, npSecUp = 10, npSecLow = 10;
+	public final int IDX_SECTION_YZ_NOSE_TIP   = 0;
+	public final int IDX_SECTION_YZ_NOSE_CAP   = 1;
+	public final int IDX_SECTION_YZ_MID_NOSE   = 2;
+	public final int IDX_SECTION_YZ_CYLINDER_1 = 3;
+	public final int IDX_SECTION_YZ_CYLINDER_2 = 4;
+	public final int IDX_SECTION_YZ_MID_TAIL   = 5;
+	public final int IDX_SECTION_YZ_TAIL_CAP   = 6;
+	public final int IDX_SECTION_YZ_TAIL_TIP   = 7;
+	public final int NUM_SECTIONS_YZ           = 8;
 	
-	private Boolean pressurized;
-
-	// FuselageCreator overall length
-	private Amount<Length> lenF, lenFMIN, lenFMAX;
-
-	// FuselageCreator nose length
-	private Amount<Length> lenN, lenNMIN, lenNMAX;
-
-	private Amount<Length> lenC, lenCMIN, lenCMAX;
-
-	private Amount<Length> lenT, lenTMIN, lenTMAX;
-
+	//----------------------------------------------------------------------
+	// DERIVED INPUT DATA
 	// GM = Geometric Mean, RMS = Root Mean Square, AM = Arithmetic Mean
-	private Amount<Length> equivalentDiameterCylinderGM,
-		equivalentDiameterGM,
-		equivalentDiameterCylinderAM;
-
-	//cylindrical section base area
-	private Amount<Area> areaC;
+	private Amount<Length> equivalentDiameterCylinderGM, equivalentDiameterGM,	equivalentDiameterCylinderAM;
+	private Amount<Length> lengthNose;
+	private Amount<Length> lengthCylinder;
+	private Amount<Length> lengthTail;
+	private Amount<Area> cylinderSectionArea;  //cylindrical section base area
 	private Amount<Area> windshieldArea;
-	private WindshieldTypeEnum windshieldType; // Possible types (Roskam part VI, page 134): Flat,protruding; Flat,flush; Single,round; Single,sharp; Double
-
-	//Wetted area estimate
 	private Amount<Area> sWetNose;
 	private Amount<Area> sWetTail;
-	private Amount<Area> sWetC;
-	private Amount<Area> sFront; // CANNOT FIND FUSELAGE HEIGHT in MyAeroFuselage!!
-	private Amount<Area> sWet;
-
-	// Distance of fuselage lowest part from ground
-	private Amount<Length> heightFromGround;
-
-	//private Double phi1, phi2, phi3;
-	private Amount<Angle> phi1, phi2, phi3;
-
-	private Amount<Angle> phiN, phiT;
-	private Amount<Length> heightN, heightT;
-
+	private Amount<Area> sWetCylinder;
+	private Amount<Area> frontSurface; 
+	private Amount<Area> sWetTotal;
+	private Amount<Angle> phiNose, phiTail;
 	private Amount<Angle> upsweepAngle, windshieldAngle;
-
-	private Amount<Length> roughness;
-
-	// Non-dimensional parameters
-	private Double lambdaF, lambdaFMIN, lambdaFMAX ;
-	private Double lambdaN, lambdaNMIN, lambdaNMAX;
-	private Double lambdaC,lambdaCMIN, lambdaCMAX;
-	private Double lambdaT, lambdaTMIN, lambdaTMAX;
-	private Double lenRatioNF, lenRatioNFMIN, lenRatioNFMAX;
-	private Double lenRatioCF, lenRatioCFMIN, lenRatioCFMAX;
-	private Double lenRatioTF, lenRatioTFMIN, lenRatioTFMAX;
-	private Double formFactor;
-	
-	// Non-dimensional parameters - bounds
-	private Amount<Length> diamCMIN;
-	private Amount<Length> diamCMAX;
-	private Amount<Length> sectionWidthMIN, sectionWidthMAX;
-	private Amount<Length> heightNMIN, heightNMAX, heightTMIN, heightTMAX;
-
-	// FuselageCreator section parameters
-
-	// Width and height
-	private Amount<Length> sectionCylinderWidth;
-	private Amount<Length> sectionCylinderHeight;
-
-	private Amount<Length> windshieldHeight, windshieldWidth;
-
-	private Amount<Length> dxNoseCap, dxNoseCapMIN, dxNoseCapMAX,
-						   dxTailCap, dxTailCapMIN, dxTailCapMAX;
-
-	// Non dimensional section parameters
-
-	// how lower part is different from half diameter
-	private Double
-		sectionCylinderLowerToTotalHeightRatio,sectionLowerToTotalHeightRatioMIN, sectionLowerToTotalHeightRatioMAX,
-		sectionNoseMidLowerToTotalHeightRatio,
-		sectionTailMidLowerToTotalHeightRatio;
-
-
-	// shape index, 1 --> close to a rectangle; 0 --> close to a circle
-	private Double
-		sectionCylinderRhoUpper,sectionRhoUpperMIN, sectionRhoUpperMAX,
-		sectionCylinderRhoLower,sectionRhoLowerMIN, sectionRhoLowerMAX,
-		sectionMidNoseRhoUpper,
-		sectionMidNoseRhoLower,
-		sectionMidTailRhoUpper,
-		sectionMidTailRhoLower;
-
-	// meshing stuff
+	private Amount<Length> noseCapOffset, tailCapOffset;
+	private double fuselageFinenessRatio;
+	private double noseFinenessRatio;
+	private double cylinderFinenessRatio;
+	private double tailFinenessRatio;
+	private double tailLengthRatio;
+	private double formFactor;
 	private double deltaXNose, deltaXCylinder, deltaXTail;
-	private int npN = 10, npC = 4, npT = 10, npSecUp = 10, npSecLow = 10;
-
-	private double dxNoseCapPercent;
-	private double dxTailCapPercent;
-
-	// Note: construction axes,
-	// X from FUSELAGE nose to tail,
-	// Y from left wing to right wing,
-	// Z from pilots feet to head
-
+	
 	// view from left wing to right wing
 	private List<Double> outlineXZUpperCurveX = new ArrayList<Double>();
 	private List<Double> outlineXZUpperCurveZ = new ArrayList<Double>();
@@ -175,44 +108,39 @@ public class FuselageCreator implements IFuselageCreator {
 	// view section Lower curve (fuselage front view, looking from -X towards +X)
 	private List<Double> sectionLowerCurveY = new ArrayList<Double>();
 	private List<Double> sectionLowerCurveZ = new ArrayList<Double>();
-
-	private List<FuselageCurvesSection> sectionsYZ = new ArrayList<FuselageCurvesSection>();
-
-	public final int IDX_SECTION_YZ_NOSE_TIP   = 0;
-	public final int IDX_SECTION_YZ_NOSE_CAP   = 1;
-	public final int IDX_SECTION_YZ_MID_NOSE   = 2;
-	public final int IDX_SECTION_YZ_CYLINDER_1 = 3;
-	public final int IDX_SECTION_YZ_CYLINDER_2 = 4;
-	public final int IDX_SECTION_YZ_MID_TAIL   = 5;
-	public final int IDX_SECTION_YZ_TAIL_CAP   = 6;
-	public final int IDX_SECTION_YZ_TAIL_TIP   = 7;
-	public final int NUM_SECTIONS_YZ           = 8;
 	
-	// X-coordinates (m) of each YZ section
+	private List<FuselageCurvesSection> sectionsYZ = new ArrayList<FuselageCurvesSection>();
 	List<Amount<Length> > sectionsYZStations = new ArrayList<Amount<Length>>();
-
 	List<List<Double>> sectionUpperCurvesY = new ArrayList<List<Double>>();
 	List<List<Double>> sectionUpperCurvesZ = new ArrayList<List<Double>>();
 	List<List<Double>> sectionLowerCurvesY = new ArrayList<List<Double>>();
 	List<List<Double>> sectionLowerCurvesZ = new ArrayList<List<Double>>();
 	
-	// Constructor
-//	public FuselageCreator(String id) {
-//		this.id = id;
-//	}
-	// build via FuselageBuilder
-
-	@Override
+	//----------------------------------------------------------------------
+	// OUTPUT DATA (TO BE MOVED)
+	private Amount<Mass> massReference;
+	
+	//------------------------------------------------------------------------------------------
+	// BUILDER 
+	public FuselageCreator (IFuselageCreator theFuselageCreatorInterface) {
+		
+		this.theFuselageCreatorInterface = theFuselageCreatorInterface;
+		calculateGeometry();
+		
+	}
+	
+	//------------------------------------------------------------------------------------------
+	// METHODS
 	public void calculateGeometry(int np_N, int np_C, int np_T, int np_SecUp, int np_SecLow) {
 		npN           = np_N;
 		npC           = np_C;
 		npT           = np_T;
-		Double l_N = lenN.doubleValue(SI.METRE);
-		Double l_C = lenC.doubleValue(SI.METRE);
-		Double l_T = lenT.doubleValue(SI.METRE);
-		deltaXNose     = l_N/(npN-1);
-		deltaXCylinder = l_C/(npC-1);
-		deltaXTail     = l_T/(npT-1);
+		double lN = lengthNose.doubleValue(SI.METRE);
+		double lC = lengthCylinder.doubleValue(SI.METRE);
+		double lT = lengthTail.doubleValue(SI.METRE);
+		deltaXNose     = lN/(npN-1);
+		deltaXCylinder = lC/(npC-1);
+		deltaXTail     = lT/(npT-1);
 		npSecUp  = np_SecUp;
 		npSecLow = np_SecLow;
 
@@ -221,48 +149,50 @@ public class FuselageCreator implements IFuselageCreator {
 		calculateGeometry();
 	}
 
-	@Override
 	public void calculateGeometry() {
-		// --- OUTPUT DATA ------------------------------------------
 
-		lenRatioTF   = 1.0 - lenRatioCF - lenRatioNF;
+		tailLengthRatio = 1.0 - theFuselageCreatorInterface.getCylinderLengthRatio() - theFuselageCreatorInterface.getNoseLengthRatio();
 
-		lenN         = Amount.valueOf( lenRatioNF * lenF.doubleValue(SI.METRE), SI.METRE);
-		lenC         = Amount.valueOf( lenRatioCF * lenF.doubleValue(SI.METRE), SI.METRE);
-		lenT         = Amount.valueOf( lenRatioTF * lenF.doubleValue(SI.METRE), SI.METRE);
+		lengthNose = Amount.valueOf( theFuselageCreatorInterface.getNoseLengthRatio() * theFuselageCreatorInterface.getFuselageLength().doubleValue(SI.METRE), SI.METRE);
+		lengthCylinder = Amount.valueOf( theFuselageCreatorInterface.getCylinderLengthRatio() * theFuselageCreatorInterface.getFuselageLength().doubleValue(SI.METRE), SI.METRE);
+		lengthTail = Amount.valueOf( tailLengthRatio * theFuselageCreatorInterface.getFuselageLength().doubleValue(SI.METRE), SI.METRE);
 		
 		// Equivalent diameters
 		equivalentDiameterCylinderGM = Amount.valueOf(
-				Math.sqrt(sectionCylinderWidth.getEstimatedValue()*sectionCylinderHeight.getEstimatedValue())
-				,SI.METRE);
+				Math.sqrt(theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METER)
+						*theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METER)),
+				SI.METRE);
 
 		equivalentDiameterCylinderAM = Amount.valueOf(
 				MyMathUtils.arithmeticMean(
-						sectionCylinderWidth.getEstimatedValue(),sectionCylinderHeight.getEstimatedValue())
-						,SI.METRE);
+						theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METER),
+						theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METER)
+						),
+				SI.METRE
+				);
 		
 		// Fineness ratios
-		lambdaN      = lenN.doubleValue(SI.METER)/equivalentDiameterCylinderGM.doubleValue(SI.METER);
-		lambdaC      = lenC.doubleValue(SI.METRE)/equivalentDiameterCylinderGM.doubleValue(SI.METRE); // _len_C / _diam_C;
-		lambdaT      = lenT.doubleValue(SI.METRE)/equivalentDiameterCylinderGM.doubleValue(SI.METRE); // _len_T / _diam_C; // (_len_F - _len_N - _len_C) / _diam_C
-		lambdaF      = lenF.doubleValue(SI.METER)/equivalentDiameterCylinderGM.doubleValue(SI.METER); // _len_F/_diam_C;
+		noseFinenessRatio = lengthNose.doubleValue(SI.METER)/equivalentDiameterCylinderGM.doubleValue(SI.METER);
+		cylinderFinenessRatio = lengthCylinder.doubleValue(SI.METRE)/equivalentDiameterCylinderGM.doubleValue(SI.METRE); 
+		tailFinenessRatio = lengthTail.doubleValue(SI.METRE)/equivalentDiameterCylinderGM.doubleValue(SI.METRE); 
+		fuselageFinenessRatio = theFuselageCreatorInterface.getFuselageLength().doubleValue(SI.METER)/equivalentDiameterCylinderGM.doubleValue(SI.METER); 
 		
-		dxNoseCap = Amount.valueOf(lenN.times(dxNoseCapPercent).doubleValue(SI.METRE), SI.METRE);
-		dxTailCap = Amount.valueOf(lenT.times(dxTailCapPercent).doubleValue(SI.METRE), SI.METRE);
+		noseCapOffset = Amount.valueOf(lengthNose.times(theFuselageCreatorInterface.getNoseCapOffsetPercent()).doubleValue(SI.METRE), SI.METRE);
+		tailCapOffset = Amount.valueOf(lengthTail.times(theFuselageCreatorInterface.getTailCapOffsetPercent()).doubleValue(SI.METRE), SI.METRE);
 
-		windshieldArea = Amount.valueOf(windshieldHeight.getEstimatedValue()*windshieldWidth.getEstimatedValue(), Area.UNIT);
+		windshieldArea = Amount.valueOf(
+				theFuselageCreatorInterface.getWindshieldHeight().doubleValue(SI.METER)
+				*theFuselageCreatorInterface.getWindshieldWidth().doubleValue(SI.METER),
+				SI.SQUARE_METRE
+				);
 
-		phiN         = Amount.valueOf(
+		phiNose = Amount.valueOf(
 				Math.atan(
-						(sectionCylinderHeight.doubleValue(SI.METRE) - heightN.doubleValue(SI.METRE))
-						/ lenN.doubleValue(SI.METRE)
+						(theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METRE) 
+								- theFuselageCreatorInterface.getNoseTipOffset().doubleValue(SI.METRE))
+						/ lengthNose.doubleValue(SI.METRE)
 						),
 						SI.RADIAN);
-
-		//		// mesh stuff
-		//		_deltaXNose     = _len_N.doubleValue(SI.METRE)/(_np_N-1);
-		//		_deltaXCylinder = _len_C.doubleValue(SI.METRE)/(_np_C-1);
-		//		_deltaXTail     = _len_T.doubleValue(SI.METRE)/(_np_T-1);
 
 		//////////////////////////////////////////////////
 		// make all calculations
@@ -278,19 +208,22 @@ public class FuselageCreator implements IFuselageCreator {
 		equivalentDiameterGM = Amount.valueOf(calculateEquivalentDiameter(), SI.METRE);
 		
 		// cylindrical section base area
-		areaC = Amount.valueOf(Math.PI *(sectionCylinderHeight.getEstimatedValue()*sectionCylinderWidth.getEstimatedValue())/4, Area.UNIT);
+		cylinderSectionArea = Amount.valueOf(
+				Math.PI *(
+						theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METER)
+						*theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METER)
+						)
+				/4,
+				SI.SQUARE_METRE
+				);
 
 		calculateSwet("Stanford");
 
 		// Form factor Kff
-		formFactor =  calculateFormFactor(lambdaF);
-
-		//		_reynolds = _theOperatingConditions.calculateRe(_len_F.getEstimatedValue(), _roughness.getEstimatedValue());
+		formFactor =  calculateFormFactor(fuselageFinenessRatio);
 
 		calculateUpsweepAngle();
 		calculateWindshieldAngle(); 
-
-		// --- END OF OUTPUT DATA -----------------------------------------
 
 	}
 
@@ -309,24 +242,24 @@ public class FuselageCreator implements IFuselageCreator {
 		// calculate initial curves
 		// get variables
 
-		Double l_F = lenF.doubleValue(SI.METER);
-		Double l_N = lenN.doubleValue(SI.METER);
-		Double l_C = lenC.doubleValue(SI.METER);
-		Double l_T = lenT.doubleValue(SI.METER);
-		Double d_C = sectionCylinderHeight.doubleValue(SI.METER);
-		Double h_N = heightN.doubleValue(SI.METER); // FuselageCreator origin O_T at nose (>0, when below the cylindrical midline)
-		Double h_T = heightT.doubleValue(SI.METER);
-		Double w_B = sectionCylinderWidth.doubleValue(SI.METER);
-		Double a   = sectionCylinderLowerToTotalHeightRatio.doubleValue();
-		Double rhoUpper = sectionCylinderRhoUpper.doubleValue();
-		Double rhoLower = sectionCylinderRhoLower.doubleValue();
+		double lF = theFuselageCreatorInterface.getFuselageLength().doubleValue(SI.METER);
+		double lN = lengthNose.doubleValue(SI.METER);
+		double lC = lengthCylinder.doubleValue(SI.METER);
+		double lT = lengthTail.doubleValue(SI.METER);
+		double dC = theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METER);
+		double hN = theFuselageCreatorInterface.getNoseTipOffset().doubleValue(SI.METER); // FuselageCreator origin O_T at nose (>0, when below the cylindrical midline)
+		double hT = theFuselageCreatorInterface.getTailTipOffest().doubleValue(SI.METER);
+		double wB = theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METER);
+		double a  = theFuselageCreatorInterface.getSectionCylinderLowerToTotalHeightRatio();
+		double rhoUpper = theFuselageCreatorInterface.getSectionCylinderRhoUpper();
+		double rhoLower = theFuselageCreatorInterface.getSectionCylinderRhoLower();
 
 		npN           = np_N;
 		npC           = np_C;
 		npT           = np_T;
-		deltaXNose     = l_N/(npN-1);
-		deltaXCylinder = l_C/(npC-1);
-		deltaXTail     = l_T/(npT-1);
+		deltaXNose     = lN/(npN-1);
+		deltaXCylinder = lC/(npC-1);
+		deltaXTail     = lT/(npT-1);
 		npSecUp  = np_SecUp;
 		npSecLow = np_SecLow;
 
@@ -338,7 +271,7 @@ public class FuselageCreator implements IFuselageCreator {
 		//------------------------------------------------
 
 		FuselageCurvesSideView fuselageCurvesSideView = new FuselageCurvesSideView(
-				l_N, h_N, l_C, l_F, h_T, d_C/2, a, // lengths
+				lN, hN, lC, lF, hT, dC/2, a, // lengths
 				npN, npC, npT        // no. points (nose, cylinder, tail)
 				);
 
@@ -405,7 +338,7 @@ public class FuselageCreator implements IFuselageCreator {
 		// XY VIEW -- Upper View
 		//------------------------------------------------
 		FuselageCurvesUpperView fuselageCurvesUpperView = new FuselageCurvesUpperView(
-				l_N, l_C, l_F, w_B/2, // lengths
+				lN, lC, lF, wB/2, // lengths
 				npN, npC, npT   // no. points (nose, cylinder, tail)
 				);
 
@@ -429,12 +362,12 @@ public class FuselageCreator implements IFuselageCreator {
 			outlineXYSideRCurveY.add((double) fuselageCurvesUpperView.getTailUpperPoints().get(i).y);
 		}
 
-		//		//------------------------------------------------
-		//		// YZ VIEW -- Section/Front view
-		//		//------------------------------------------------
-		//
+		//------------------------------------------------
+		// YZ VIEW -- Section/Front view
+		//------------------------------------------------
+
 		FuselageCurvesSection fuselageCurvesSection = new FuselageCurvesSection(
-				w_B, d_C, a, rhoUpper, rhoLower, // lengths
+				wB, dC, a, rhoUpper, rhoLower, // lengths
 				npSecUp, npSecLow            // no. points (nose, cylinder, tail)
 				);
 
@@ -448,7 +381,6 @@ public class FuselageCreator implements IFuselageCreator {
 					(double) fuselageCurvesSection.getSectionUpperRightPoints().get(i).y
 					);
 		}
-		// TODO: CAREFUL WITH REPEATED POINTS
 		for (int i = 0; i <= fuselageCurvesSection.getSectionUpperLeftPoints().size() - 1; i++){
 			sectionUpperCurveY.add(
 					(double) fuselageCurvesSection.getSectionUpperLeftPoints().get(i).x
@@ -468,7 +400,6 @@ public class FuselageCreator implements IFuselageCreator {
 					(double) fuselageCurvesSection.getSectionLowerLeftPoints().get(i).y
 					);
 		}
-		// TODO: CAREFUL WITH REPEATED POINTS
 		for (int i = 0; i <= fuselageCurvesSection.getSectionLowerRightPoints().size() - 1; i++){
 			sectionLowerCurveY.add(
 					(double) fuselageCurvesSection.getSectionLowerRightPoints().get(i).x
@@ -489,9 +420,9 @@ public class FuselageCreator implements IFuselageCreator {
 
 		// NOSE TIP
 		// IDX_SECTION_YZ_NOSE_CAP (elliptical and centered)
-		Double x  = 0.;//_dxNoseCap.doubleValue(SI.METRE)  ; // NOTE
-		Double hf =  Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ));
-		Double wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ));
+		double x  = 0.;//_dxNoseCap.doubleValue(SI.METRE)  ; // NOTE
+		double hf =  Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ));
+		double wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ));
 		sectionsYZ.add(
 				new FuselageCurvesSection(
 						wf, hf, 0.5, 0.0, 0.0, // lengths & parameters
@@ -503,7 +434,7 @@ public class FuselageCreator implements IFuselageCreator {
 
 		// NOSE CAP
 		// IDX_SECTION_YZ_NOSE_CAP (elliptical and centered)
-		x  = dxNoseCap.doubleValue(SI.METRE); // NOTE
+		x  = noseCapOffset.doubleValue(SI.METRE); // NOTE
 		hf = Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ));
 		wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ));
 		sectionsYZ.add(
@@ -517,12 +448,16 @@ public class FuselageCreator implements IFuselageCreator {
 
 		// MID-NOSE
 		// IDX_SECTION_YZ_MID_NOSE
-		x  =  0.5*lenN.doubleValue(SI.METRE);
+		x  =  0.5*lengthNose.doubleValue(SI.METRE);
 		hf =  Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ));
 		wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ));
 		sectionsYZ.add(
 				new FuselageCurvesSection(
-						wf, hf, sectionNoseMidLowerToTotalHeightRatio, sectionMidNoseRhoUpper, sectionMidNoseRhoLower, // lengths & parameters
+						wf,
+						hf,
+						theFuselageCreatorInterface.getSectionNoseMidLowerToTotalHeightRatio(), 
+						theFuselageCreatorInterface.getSectionMidNoseRhoUpper(),
+						theFuselageCreatorInterface.getSectionMidNoseRhoLower(),
 						npSecUp, npSecLow  // no. points (nose, cylinder, tail)
 						)
 				.translateZ(this.getZOutlineXZLowerAtX(x) + 0.5*hf)
@@ -531,9 +466,9 @@ public class FuselageCreator implements IFuselageCreator {
 
 		// CYLINDER 1
 		// IDX_SECTION_YZ_CYLINDER
-		x  =  lenN.doubleValue(SI.METRE);
-		wf =  sectionCylinderWidth.doubleValue(SI.METRE);
-		hf =  sectionCylinderHeight.doubleValue(SI.METRE);
+		x  =  lengthNose.doubleValue(SI.METRE);
+		wf =  theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METRE);
+		hf =  theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METRE);
 		sectionsYZ.add(
 				new FuselageCurvesSection(
 						wf, hf, a, rhoUpper, rhoLower, // lengths & parameters
@@ -545,9 +480,9 @@ public class FuselageCreator implements IFuselageCreator {
 
 		// CYLINDER 2
 		// IDX_SECTION_YZ_CYLINDER
-		x  =  lenN.doubleValue(SI.METRE) + lenC.doubleValue(SI.METRE);
-		wf =  sectionCylinderWidth.doubleValue(SI.METRE);
-		hf =  sectionCylinderHeight.doubleValue(SI.METRE);
+		x  =  lengthNose.doubleValue(SI.METRE) + lengthCylinder.doubleValue(SI.METRE);
+		wf =  theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METRE);
+		hf =  theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METRE);
 		sectionsYZ.add(
 				new FuselageCurvesSection(
 						wf, hf, a, rhoUpper, rhoLower, // lengths & parameters
@@ -559,12 +494,16 @@ public class FuselageCreator implements IFuselageCreator {
 
 		// MID-TAIL
 		// IDX_SECTION_YZ_MID_TAIL
-		x = lenF.doubleValue(SI.METRE) - 0.5*lenT.doubleValue(SI.METRE);
+		x = theFuselageCreatorInterface.getFuselageLength().doubleValue(SI.METRE) - 0.5*lengthTail.doubleValue(SI.METRE);
 		hf =  Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ));
 		wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ));
 		sectionsYZ.add(
 				new FuselageCurvesSection(
-						wf, hf, sectionTailMidLowerToTotalHeightRatio, sectionMidTailRhoUpper, sectionMidTailRhoLower, // lengths & parameters
+						wf, 
+						hf, 
+						theFuselageCreatorInterface.getSectionTailMidLowerToTotalHeightRatio(),
+						theFuselageCreatorInterface.getSectionMidTailRhoUpper(),
+						theFuselageCreatorInterface.getSectionMidTailRhoLower(), 
 						npSecUp, npSecLow  // no. points (nose, cylinder, tail)
 						)
 				.translateZ(this.getZOutlineXZLowerAtX(x) + 0.5*hf)
@@ -573,7 +512,7 @@ public class FuselageCreator implements IFuselageCreator {
 
 		// TAIL CAP
 		// IDX_SECTION_YZ_NOSE_CAP (elliptical and centered)
-		x =  lenF.doubleValue(SI.METRE) - dxTailCap.doubleValue(SI.METRE);
+		x =  theFuselageCreatorInterface.getFuselageLength().doubleValue(SI.METRE) - tailCapOffset.doubleValue(SI.METRE);
 		hf = Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ));
 		wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ));
 		sectionsYZ.add(
@@ -587,7 +526,7 @@ public class FuselageCreator implements IFuselageCreator {
 
 		// TAIL TIP
 		// IDX_SECTION_YZ_NOSE_CAP (elliptical and centered)
-		x =  lenF.times(0.999995).doubleValue(SI.METRE);// - _dxTailCap.doubleValue(SI.METRE);
+		x =  theFuselageCreatorInterface.getFuselageLength().times(0.999995).doubleValue(SI.METRE);// - _dxTailCap.doubleValue(SI.METRE);
 		hf =  Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ));
 		wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ));
 		sectionsYZ.add(
@@ -597,7 +536,7 @@ public class FuselageCreator implements IFuselageCreator {
 						)
 				.translateZ(this.getZOutlineXZLowerAtX(x) + 0.5*hf)
 				);
-		sectionsYZStations.add(lenF);
+		sectionsYZStations.add(theFuselageCreatorInterface.getFuselageLength().to(SI.METER));
 
 		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		// Upper and lower coordinates of YZ sections
@@ -611,8 +550,6 @@ public class FuselageCreator implements IFuselageCreator {
 		for ( List<Double> l : sectionLowerCurvesZ) l.clear();
 		sectionLowerCurvesZ.clear();
 
-		//++++++++++++++
-		// TO DO: Careful with repeated points
 		for (int idx = 0; idx < NUM_SECTIONS_YZ; idx++)
 		{
 			List<Double> listDoubleYu = new ArrayList<Double>(); // a new array for each section
@@ -628,9 +565,6 @@ public class FuselageCreator implements IFuselageCreator {
 			sectionUpperCurvesY.add(listDoubleYu);
 			sectionUpperCurvesZ.add(listDoubleZu);
 
-			//			System.out.println("_sectionUpperCurvesY:\n"+_sectionUpperCurvesY.get(idx));
-			//			System.out.println("_sectionUpperCurvesZ:\n"+_sectionUpperCurvesZ.get(idx));
-
 			List<Double> listDoubleYl = new ArrayList<Double>(); // a new array for each section
 			List<Double> listDoubleZl = new ArrayList<Double>(); // a new array for each section
 			for (int i=0; i < sectionsYZ.get(idx).getSectionLowerLeftPoints().size(); i++) {
@@ -644,21 +578,12 @@ public class FuselageCreator implements IFuselageCreator {
 			sectionLowerCurvesY.add(listDoubleYl);
 			sectionLowerCurvesZ.add(listDoubleZl);
 
-			//			System.out.println("_sectionLowerCurvesY:\n"+_sectionLowerCurvesY.get(idx));
-			//			System.out.println("_sectionLowerCurvesZ:\n"+_sectionLowerCurvesZ.get(idx));
-
 		}
 
 		updateCurveSections();
 
-		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-		//		System.out.println("Size _sectionLowerCurvesY: "+ _sectionLowerCurvesY.size());
-
-		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		// ADJUST SIDE CURVE Z-COORDINATES
 		// Take Z-values from section shape scaled at x
-
 		// see: adjustSectionShapeParameters
 
 		outlineXYSideRCurveZ.clear();
@@ -680,140 +605,34 @@ public class FuselageCreator implements IFuselageCreator {
 		}
 		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	}// end-of calculateOutlines
-	
-	public void calculateDependentData() {
-		lambdaN =   
-				lenN.doubleValue(SI.METRE)
-				/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_N / _diam_C;
-		lambdaC =  
-				lenC.doubleValue(SI.METRE)
-				/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_C / _diam_C;
-		lambdaT =   
-				lenT.doubleValue(SI.METRE)
-				/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_T / _diam_C;
-		lambdaF =
-				lenF.doubleValue(SI.METRE)
-				/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_F / _diam_C;
-		lenRatioNF =  
-				lenN.doubleValue(SI.METRE)
-				/ lenF.doubleValue(SI.METRE);
-		lenRatioCF =   
-				lenC.doubleValue(SI.METRE)
-				/ lenF.doubleValue(SI.METRE);
-		lenRatioTF =   
-				lenT.doubleValue(SI.METRE)
-				/ lenF.doubleValue(SI.METRE) ;
 	}
 	
-	public void checkGeometry() {
-
-		// --- CHECKS -----------------------------------------------------
-
-		lambdaCMIN  = 3.0;
-		lambdaCMAX  = 7.0;
-		lenFMIN     =  Amount.valueOf(10.0,SI.METRE);		
-		lenFMAX     =  Amount.valueOf(80.0,SI.METRE);
-		lenRatioNFMIN   = 0.1;
-		lenRatioNFMAX   = 0.2;
-
-		lenNMIN     = Amount.valueOf(1.0, SI.METRE);
-		lenNMAX     = Amount.valueOf(8.0, SI.METRE);
-		lenRatioCFMIN   = 0.4;
-		lenRatioCFMAX   = 0.8;
-		lambdaNMIN  = 1.2;
-		lambdaNMAX  = 2.5;
-
-		lambdaTMIN  = 2.8;
-		lambdaTMAX  = 3.2;
-		lenRatioTFMIN = 1.0- lenRatioCFMIN - lenRatioNFMIN;
-		lenRatioTFMAX = 1.0 - lenRatioCFMAX - lenRatioNFMAX;
-		lenTMIN     = Amount.valueOf( 2.0, SI.METRE);
-		lenTMAX     = Amount.valueOf( 25.0, SI.METRE);
-
-		// Bounds to diameter value input
-		diamCMIN    = Amount.valueOf(2.0, SI.METRE);
-		diamCMAX    = Amount.valueOf( 10.0, SI.METRE);
-
-		sectionWidthMIN         = Amount.valueOf(0.7*diamCMIN.doubleValue(SI.METRE), SI.METRE);
-		sectionWidthMAX         = Amount.valueOf(1.3*diamCMAX.doubleValue(SI.METRE), SI.METRE);
-
-		heightNMIN  =(Amount.valueOf( -0.2 *sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE));
-		heightNMAX  =(Amount.valueOf( 0.2 *sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE));
-
-		heightTMIN  =(Amount.valueOf(  0.4*(0.5*sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE));
-		heightTMAX  =(Amount.valueOf(  1.0*(0.5*sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE));
-
-		dxNoseCapMIN            = Amount.valueOf(0.015 * lenN.doubleValue(SI.METRE), SI.METRE);
-		dxNoseCapMAX            = Amount.valueOf(0.0150* lenN.doubleValue(SI.METRE), SI.METRE);
-
-		dxTailCapMIN            = Amount.valueOf(0.000*lenT.doubleValue(SI.METRE), SI.METRE);
-		dxTailCapMAX            = Amount.valueOf(0.100*lenT.doubleValue(SI.METRE), SI.METRE);
-
-		lambdaFMIN  = 8.0;
-		lambdaFMAX  = 12.5;
-
-		sectionLowerToTotalHeightRatioMIN = 0.1;
-		sectionLowerToTotalHeightRatioMAX = 0.5;
-
-		sectionRhoUpperMIN = 0.0;
-		sectionRhoUpperMAX = 1.0;
-		sectionRhoLowerMIN = 0.0;
-		sectionRhoLowerMAX = 1.0;
-
-		lenCMIN     = Amount.valueOf( 0.35 * lenFMIN.doubleValue(SI.METRE), SI.METRE);
-		lenCMAX     = Amount.valueOf(0.75 * lenFMAX.doubleValue(SI.METRE), SI.METRE);
-
-		// --- END OF CHECKS ----------------------------------------
-
-	}
-
-	public int getNumberPointsNose() {
-		return npN;
-	}
-
-	public int getNumberPointsCylinder() {
-		return npC;
-	}
-
-	public int getNumberPointsTail() {
-		return npT;
-	}
-
-	public int getNumberPointsSectionUpper() {
-		return npSecUp;
-	}
-
-	public int getNumberPointsSectionLower() {
-		return npSecLow;
-	}
-
 	/** Return equivalent diameter of entire fuselage */
-	public Double calculateEquivalentDiameter(){
+	public double calculateEquivalentDiameter(){
 
 		// BEWARE: Gtmat library starts indexing arrays from 1!
 		// To workaround this problem use .data to extract a double[] array
-		double[] x = MyArrayUtils.linspace(0., lenF.getEstimatedValue()*(1-0.0001), 200);
+		double[] x = MyArrayUtils.linspace(0., theFuselageCreatorInterface.getFuselageLength().doubleValue(SI.METER)*(1-0.0001), 200);
 
 		return MyMathUtils.arithmeticMean((getEquivalentDiameterAtX(x)));
 
 	}
 	
 	public double getCamberAngleAtX(double x) {
-		if (x<= this.getLenN().getEstimatedValue()) return Math.atan(getCamberZAtX(x)/x); 
-		if (x>= this.getLenC().getEstimatedValue()) return Math.atan(-getCamberZAtX(x)/x);
+		if (x<= this.getNoseLength().getEstimatedValue()) return Math.atan(getCamberZAtX(x)/x); 
+		if (x>= this.getCylinderLength().getEstimatedValue()) return Math.atan(-getCamberZAtX(x)/x);
 		return 0.;
 	}
 
 	/** Return Camber z-coordinate at x-coordinate */
-	public Double getCamberZAtX(double x) {
+	public double getCamberZAtX(double x) {
 		double zUp = getZOutlineXZUpperAtX(x);
 		double zDown = getZOutlineXZLowerAtX(x);
 		return zUp/2 + zDown/2;
 	}
 
 	/** Return equivalent diameter at x-coordinate */
-	public Double getEquivalentDiameterAtX(double x) {
+	public double getEquivalentDiameterAtX(double x) {
 
 		double zUp = getZOutlineXZUpperAtX(x);
 		double zDown = getZOutlineXZLowerAtX(x);
@@ -822,7 +641,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return Math.sqrt(height*width);
 
 	}
-
 
 	/** Return equivalent diameter at x-coordinates (x is an array)
 	 *
@@ -846,7 +664,7 @@ public class FuselageCreator implements IFuselageCreator {
 	}
 
 	//	Return width at x-coordinate
-	public Double getSectionWidthAtZ(double z) {
+	public double getSectionWidthAtZ(double z) {
 		return -2*getYOutlineYZSectionRightCurveAtZ(z);
 	}
 	
@@ -888,7 +706,7 @@ public class FuselageCreator implements IFuselageCreator {
 				interpolatorSectionRightCurve.interpolate(vzu, vyu);
 
 		// section y-coordinates at z
-		Double ySection = 0.0;
+		double ySection = 0.0;
 		if (z < vzu[0]) {
 			ySection = vyu[0];
 		}
@@ -902,7 +720,7 @@ public class FuselageCreator implements IFuselageCreator {
 	}
 	
 	//  Return width at x-coordinate
-	public Double getWidthAtX(double x) {
+	public double getWidthAtX(double x) {
 		return 2*getYOutlineXYSideRAtX(x);
 	}
 	
@@ -922,7 +740,7 @@ public class FuselageCreator implements IFuselageCreator {
 				interpolatorUpper.interpolate(vxu, vzu);
 
 		// section z-coordinates at x
-		Double z_F_u = 0.0;
+		double z_F_u = 0.0;
 		if (x < vxu[0]) {
 			z_F_u = vzu[0];
 		}
@@ -936,7 +754,7 @@ public class FuselageCreator implements IFuselageCreator {
 	}
 
 
-	public Double getZOutlineXZLowerAtX(double x) {
+	public double getZOutlineXZLowerAtX(double x) {
 		// base vectors - lower
 		// unique values
 		double vxl[] = new double[getUniqueValuesXZLowerCurve().size()];
@@ -952,7 +770,7 @@ public class FuselageCreator implements IFuselageCreator {
 				interpolatorLower.interpolate(vxl, vzl);
 
 		// section z-coordinates at x
-		Double z_F_l = 0.0;
+		double z_F_l = 0.0;
 		if (x < vxl[0]) {
 			z_F_l = vzl[0];
 		}
@@ -966,7 +784,7 @@ public class FuselageCreator implements IFuselageCreator {
 	}
 
 
-	public Double getYOutlineXYSideRAtX(double x) {
+	public double getYOutlineXYSideRAtX(double x) {
 		// base vectors - side (right)
 		// unique values
 		double vxs[] = new double[getUniqueValuesXYSideRCurve().size()];
@@ -981,7 +799,7 @@ public class FuselageCreator implements IFuselageCreator {
 		UnivariateFunction myInterpolationFunctionSide =
 				interpolatorSide.interpolate(vxs, vys);
 
-		Double y_F_r = 0.0;
+		double y_F_r = 0.0;
 		if (x < vxs[0]) {
 			y_F_r = vys[0];
 		}
@@ -995,7 +813,7 @@ public class FuselageCreator implements IFuselageCreator {
 	}
 
 
-	public Double getYOutlineXYSideLAtX(double x) {
+	public double getYOutlineXYSideLAtX(double x) {
 		return -getYOutlineXYSideRAtX(x);
 	}
 
@@ -1198,8 +1016,6 @@ public class FuselageCreator implements IFuselageCreator {
 	 */
 	public FuselageCurvesSection makeSection(double x){
 
-		//		System.out.println("makeSection :: _sectionsYZ size: "+ _sectionsYZ.size() +" x: "+ x);
-
 		if ( sectionsYZ == null )
 		{
 			System.out.println("ERROR -- MyFuselageCurvesSection :: makeSection -- _sectionsYZ is null ");
@@ -1217,8 +1033,6 @@ public class FuselageCreator implements IFuselageCreator {
 					+ sectionsYZStations.size() +" != NUM_SECTIONS_YZ="+ NUM_SECTIONS_YZ);
 			return null;
 		}
-
-		//		System.out.println("makeSection :: _sectionsYZ size: "+ _sectionsYZ.size());
 
 		// breakpoints
 		double vxSec[] = new double[NUM_SECTIONS_YZ];
@@ -1243,7 +1057,6 @@ public class FuselageCreator implements IFuselageCreator {
 			// parameter rho,
 			vRhoU[i] = sectionsYZ.get(i).get_RhoUpper();
 			vRhoL[i] = sectionsYZ.get(i).get_RhoLower();
-			//			System.out.println("x0: "+ vxSec[i] +" a0: "+ vA[i] +" rhoU0: "+ vRhoU[i]+" rhoL0: "+ vRhoL[i] );
 		}
 		// interpolation - lower
 		UnivariateInterpolator interpolatorA = new LinearInterpolator(); // SplineInterpolator();
@@ -1279,13 +1092,7 @@ public class FuselageCreator implements IFuselageCreator {
 		}
 
 
-		//		System.out.println("x: "+ x +
-		//				" a(x): "+ sectionLowerToTotalHeightRatio +
-		//				" rhoU(x): "+ sectionRhoUpper+
-		//				" rhoL(x): "+ sectionRhoLower);
-
 		// Sets of unique values of the x, y, z coordinates are generated
-
 		// base vectors - upper
 		// unique values
 		double vxu[] = new double[getUniqueValuesXZUpperCurve().size()];
@@ -1315,7 +1122,6 @@ public class FuselageCreator implements IFuselageCreator {
 				interpolatorLower.interpolate(vxl, vzl);
 
 		// section z-coordinates at x
-
 		double z_F_u = 0.0;
 		if (x < vxu[0]) {
 			z_F_u = vzu[0];
@@ -1450,7 +1256,7 @@ public class FuselageCreator implements IFuselageCreator {
 		
 		// DATA NOT TO BE SET AS FIELDS BUT NEEDED FOR THE CALCULATION:
 		Double sectionHeightWidthRatio = null;
-		Amount<Length> equivalentDiameterCylinderGM = null;
+		Amount<Length> equivalentDiameterGM = null;
 		Double lenRatioTF = null;
 		Amount<Length> lenN = null;
 		Amount<Length> lenC = null;
@@ -1468,10 +1274,10 @@ public class FuselageCreator implements IFuselageCreator {
 			lenF = len;
 			
 			// constant values
-			lenRatioCF = this.lenRatioCF;
-			lenRatioNF = this.lenRatioNF;
-			sectionCylinderHeight = this.sectionCylinderHeight;
-			sectionCylinderWidth = this.sectionCylinderWidth;
+			lenRatioCF = theFuselageCreatorInterface.getCylinderLengthRatio();
+			lenRatioNF = theFuselageCreatorInterface.getNoseLengthRatio();
+			sectionCylinderHeight = theFuselageCreatorInterface.getSectionCylinderHeight();
+			sectionCylinderWidth = theFuselageCreatorInterface.getSectionCylinderWidth();
 			break;
 
 		case ADJ_TOT_LENGTH_CONST_FINENESS_RATIOS:
@@ -1480,16 +1286,16 @@ public class FuselageCreator implements IFuselageCreator {
 			lenF = len;
 			
 			// constant values
-			lambdaF = this.lambdaF;
-			lambdaC = this.lambdaC;
-			lambdaN = this.lambdaN;
+			lambdaF = fuselageFinenessRatio;
+			lambdaC = cylinderFinenessRatio;
+			lambdaN = noseFinenessRatio;
 			
 			// values to be calculated
 			sectionHeightWidthRatio = 
-					this.sectionCylinderHeight.doubleValue(SI.METER)
-					/this.sectionCylinderWidth.doubleValue(SI.METER);
+					theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METER)
+					/theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METER);
 			
-			equivalentDiameterCylinderGM = Amount.valueOf(
+			equivalentDiameterGM = Amount.valueOf(
 					lenF.doubleValue(SI.METRE)/lambdaF,
 					SI.METER
 					); 
@@ -1497,15 +1303,15 @@ public class FuselageCreator implements IFuselageCreator {
 			sectionCylinderHeight = Amount.valueOf( 
 					Math.sqrt(
 							sectionHeightWidthRatio
-							*Math.pow(equivalentDiameterCylinderGM.doubleValue(SI.METER),2)
+							*Math.pow(equivalentDiameterGM.doubleValue(SI.METER),2)
 							),
 					SI.METER
 					);
 			sectionCylinderWidth = sectionCylinderHeight.divide(sectionHeightWidthRatio);
 			
-			lenN = equivalentDiameterCylinderGM.times(lambdaN);
+			lenN = equivalentDiameterGM.times(lambdaN);
 			
-			lenC = equivalentDiameterCylinderGM.times(lambdaC);
+			lenC = equivalentDiameterGM.times(lambdaC);
 			
 			lenRatioNF =
 					lenN.doubleValue(SI.METER)
@@ -1521,11 +1327,11 @@ public class FuselageCreator implements IFuselageCreator {
 			lenC = len;
 			
 			// constant values
-			lenN = this.lenN;
-			lenT = this.lenT;
-			equivalentDiameterCylinderGM = this.equivalentDiameterCylinderGM; 
-			sectionCylinderHeight = this.sectionCylinderHeight;
-			sectionCylinderWidth = this.sectionCylinderWidth;
+			lenN = lengthNose;
+			lenT = lengthTail;
+			equivalentDiameterGM = equivalentDiameterCylinderGM; 
+			sectionCylinderHeight = theFuselageCreatorInterface.getSectionCylinderHeight();
+			sectionCylinderWidth = theFuselageCreatorInterface.getSectionCylinderWidth();
 			
 			// values to be calculated
 			lenF = Amount.valueOf( 
@@ -1547,11 +1353,11 @@ public class FuselageCreator implements IFuselageCreator {
 			lenN = len;
 			
 			// constant values
-			equivalentDiameterCylinderGM = this.equivalentDiameterCylinderGM;
-			sectionCylinderHeight = this.sectionCylinderHeight;
-			sectionCylinderWidth = this.sectionCylinderWidth;
-			lenF = this.lenF;
-			lenT = this.lenT;
+			equivalentDiameterGM = equivalentDiameterCylinderGM;
+			sectionCylinderHeight = theFuselageCreatorInterface.getSectionCylinderHeight();
+			sectionCylinderWidth = theFuselageCreatorInterface.getSectionCylinderWidth();
+			lenF = theFuselageCreatorInterface.getFuselageLength();
+			lenT = lengthTail;
 			
 			// values to be calculated
 			lenC = Amount.valueOf(  
@@ -1573,11 +1379,11 @@ public class FuselageCreator implements IFuselageCreator {
 			lenN = len;	
 			
 			// constant values
-			lenRatioCF = this.lenRatioCF;
-			lenRatioNF = this.lenRatioTF;
-			equivalentDiameterCylinderGM = this.equivalentDiameterCylinderGM;
-			sectionCylinderHeight = this.sectionCylinderHeight;
-			sectionCylinderWidth = this.sectionCylinderWidth;
+			lenRatioCF = theFuselageCreatorInterface.getCylinderLengthRatio();
+			lenRatioNF = tailLengthRatio;
+			equivalentDiameterGM = equivalentDiameterCylinderGM;
+			sectionCylinderHeight = theFuselageCreatorInterface.getSectionCylinderHeight();
+			sectionCylinderWidth = theFuselageCreatorInterface.getSectionCylinderWidth();
 			
 			// values to be calculated
 			lenF = Amount.valueOf( 
@@ -1591,16 +1397,16 @@ public class FuselageCreator implements IFuselageCreator {
 			lenN = len;	
 			
 			// constant values
-			lambdaN = this.lambdaN;
-			lambdaC = this.lambdaC;
-			lambdaT = this.lambdaT;
+			lambdaN = noseFinenessRatio;
+			lambdaC = cylinderFinenessRatio;
+			lambdaT = tailFinenessRatio;
 			
 			// values to be calculated
 			sectionHeightWidthRatio = 
-					this.sectionCylinderHeight.doubleValue(SI.METER)
-					/this.sectionCylinderWidth.doubleValue(SI.METER);
+					theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METER)
+					/theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METER);
 			
-			equivalentDiameterCylinderGM = Amount.valueOf(
+			equivalentDiameterGM = Amount.valueOf(
 					lenN.doubleValue(SI.METRE)/lambdaN,
 					SI.METER
 					); 
@@ -1608,17 +1414,17 @@ public class FuselageCreator implements IFuselageCreator {
 			sectionCylinderHeight = Amount.valueOf( 
 					Math.sqrt(
 							sectionHeightWidthRatio
-							*Math.pow(equivalentDiameterCylinderGM.doubleValue(SI.METER),2)
+							*Math.pow(equivalentDiameterGM.doubleValue(SI.METER),2)
 							),
 					SI.METER
 					);
 			sectionCylinderWidth = sectionCylinderHeight.divide(sectionHeightWidthRatio);
 			
 			lenC = Amount.valueOf(
-					lambdaC * equivalentDiameterCylinderGM.doubleValue(SI.METRE), 
+					lambdaC * equivalentDiameterGM.doubleValue(SI.METRE), 
 					SI.METRE);
 			lenT = Amount.valueOf(
-					lambdaT * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
+					lambdaT * equivalentDiameterGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenF = Amount.valueOf(
 					lenN.doubleValue(SI.METRE)
@@ -1639,12 +1445,12 @@ public class FuselageCreator implements IFuselageCreator {
 			lenT = len;
 			
 			// constant values
-			equivalentDiameterCylinderGM = this.equivalentDiameterCylinderGM;
-			sectionCylinderHeight = this.sectionCylinderHeight;
-			sectionCylinderWidth = this.sectionCylinderWidth;
-			lenF = this.lenF;
-			lenN = this.lenN;
-			lenRatioNF = this.lenRatioNF;
+			equivalentDiameterGM = equivalentDiameterCylinderGM;
+			sectionCylinderHeight = theFuselageCreatorInterface.getSectionCylinderHeight();
+			sectionCylinderWidth = theFuselageCreatorInterface.getSectionCylinderWidth();
+			lenF = theFuselageCreatorInterface.getFuselageLength();
+			lenN = lengthNose;
+			lenRatioNF = theFuselageCreatorInterface.getNoseLengthRatio();
 			
 			// values to be calculated
 			lenC = Amount.valueOf( 
@@ -1663,12 +1469,12 @@ public class FuselageCreator implements IFuselageCreator {
 			lenT = len;
 			
 			// constant values
-			lenRatioNF = this.lenRatioNF;
-			lenRatioCF = this.lenRatioCF;
-			lenRatioTF = this.lenRatioTF;
-			equivalentDiameterCylinderGM = this.equivalentDiameterCylinderGM;
-			sectionCylinderHeight = this.sectionCylinderHeight;
-			sectionCylinderWidth = this.sectionCylinderWidth;
+			lenRatioNF = theFuselageCreatorInterface.getNoseLengthRatio();
+			lenRatioCF = theFuselageCreatorInterface.getCylinderLengthRatio();
+			lenRatioTF = tailLengthRatio;
+			equivalentDiameterGM = this.equivalentDiameterCylinderGM;
+			sectionCylinderHeight = theFuselageCreatorInterface.getSectionCylinderHeight();
+			sectionCylinderWidth = theFuselageCreatorInterface.getSectionCylinderWidth();
 			
 			// values to be calculated
 			lenF = Amount.valueOf( 
@@ -1682,17 +1488,17 @@ public class FuselageCreator implements IFuselageCreator {
 			lenT = len;
 			
 			// constant values
-			lambdaF = this.lambdaF;
-			lambdaT = this.lambdaT;
-			lambdaN = this.lambdaN;
-			lambdaC = this.lambdaC;
+			lambdaF = fuselageFinenessRatio;
+			lambdaT = tailFinenessRatio;
+			lambdaN = noseFinenessRatio;
+			lambdaC = cylinderFinenessRatio;
 			
 			// values to be calculated
 			sectionHeightWidthRatio = 
-					this.sectionCylinderHeight.doubleValue(SI.METER)
-					/this.sectionCylinderWidth.doubleValue(SI.METER);
+					theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METER)
+					/theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METER);
 			
-			equivalentDiameterCylinderGM = Amount.valueOf(
+			equivalentDiameterGM = Amount.valueOf(
 					lenT.doubleValue(SI.METRE)/lambdaT,
 					SI.METER
 					); 
@@ -1700,20 +1506,20 @@ public class FuselageCreator implements IFuselageCreator {
 			sectionCylinderHeight = Amount.valueOf( 
 					Math.sqrt(
 							sectionHeightWidthRatio
-							*Math.pow(equivalentDiameterCylinderGM.doubleValue(SI.METER),2)
+							*Math.pow(equivalentDiameterGM.doubleValue(SI.METER),2)
 							),
 					SI.METER
 					);
 			sectionCylinderWidth = sectionCylinderHeight.divide(sectionHeightWidthRatio);
 			
 			lenN = Amount.valueOf( 
-					lambdaN * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
+					lambdaN * equivalentDiameterGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenC = Amount.valueOf( 
-					lambdaC * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
+					lambdaC * equivalentDiameterGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenF = Amount.valueOf( 
-					lambdaF * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
+					lambdaF * equivalentDiameterGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenRatioNF = 
 					lenN.doubleValue(SI.METRE)
@@ -1726,36 +1532,36 @@ public class FuselageCreator implements IFuselageCreator {
 		case ADJ_FUS_LENGTH_CONST_FINENESS_RATIOS_VAR_DIAMETERS:
 			
 			// new variable
-			equivalentDiameterCylinderGM= len;
+			equivalentDiameterGM= len;
 			
 			// constant values
-			lambdaF = this.lambdaF;
-			lambdaN = this.lambdaN;
-			lambdaC = this.lambdaC;
-			lambdaT = this.lambdaT;
+			lambdaF = fuselageFinenessRatio;
+			lambdaN = noseFinenessRatio;
+			lambdaC = cylinderFinenessRatio;
+			lambdaT = tailFinenessRatio;
 			
 			// values to be calculated
 			sectionHeightWidthRatio = 
-					this.sectionCylinderHeight.doubleValue(SI.METER)
-					/this.sectionCylinderWidth.doubleValue(SI.METER);
+					theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METER)
+					/theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METER);
 			
 			sectionCylinderHeight = Amount.valueOf( 
 					Math.sqrt(
 							sectionHeightWidthRatio
-							*Math.pow(equivalentDiameterCylinderGM.doubleValue(SI.METER),2)
+							*Math.pow(equivalentDiameterGM.doubleValue(SI.METER),2)
 							),
 					SI.METER
 					);
 			sectionCylinderWidth = sectionCylinderHeight.divide(sectionHeightWidthRatio);
 			
 			lenN  =Amount.valueOf(
-					lambdaN * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
+					lambdaN * equivalentDiameterGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenC = Amount.valueOf(  
-					lambdaC * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
+					lambdaC * equivalentDiameterGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenF = Amount.valueOf( 
-					lambdaF * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
+					lambdaF * equivalentDiameterGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenRatioNF =
 					lenN.doubleValue(SI.METRE)
@@ -1768,34 +1574,40 @@ public class FuselageCreator implements IFuselageCreator {
 			break;
 		}
 		
-		this.lenF = lenF;
-		this.lenRatioCF = lenRatioCF;
-		this.lenRatioNF = lenRatioNF;
-		this.sectionCylinderHeight = sectionCylinderHeight;
-		this.sectionCylinderWidth = sectionCylinderWidth;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface)
+				.setFuselageLength(lenF)
+				.setCylinderLengthRatio(lenRatioCF)
+				.setNoseLengthRatio(lenRatioNF)
+				.setSectionCylinderHeight(sectionCylinderHeight)
+				.setSectionCylinderWidth(sectionCylinderWidth)
+				.build()
+				);
 		
 		calculateGeometry();
 		
 	}  // End  AdjustLength
 	
-	public void adjustSectionShapeParameters(int idx, Double a, Double rhoUpper, Double rhoLower) {
+	public void adjustSectionShapeParameters(int idx, double a, double rhoUpper, double rhoLower) {
 
 		switch (idx) {
 
 		case IDX_SECTION_YZ_NOSE_CAP: // a, rhoUpper, rhoLower NOT USED
 			// NOSE CAP
 			// IDX_SECTION_YZ_NOSE_CAP (elliptical and centered)
-			Double x  =  dxNoseCap.doubleValue(SI.METRE);
-			Double hf = Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ) );
-			Double wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ) );
+			double x  =  noseCapOffset.doubleValue(SI.METRE);
+			double hf = Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ) );
+			double wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ) );
 			sectionsYZ.get(idx).setSectionParameters(
 					wf, hf, 0.5, 0.0, 0.0,         // lengths & parameters
 					npSecUp, npSecLow          // num. points
 					);
 			
-			sectionCylinderLowerToTotalHeightRatio = 0.5;
-			sectionCylinderRhoUpper = 0.0;
-			sectionCylinderRhoLower = 0.0;
+			setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface)
+					.setSectionCylinderLowerToTotalHeightRatio(0.5)
+					.setSectionCylinderRhoUpper(0.0)
+					.setSectionCylinderRhoLower(0.0)
+					.build()
+					);
 			
 			break;
 
@@ -1806,7 +1618,7 @@ public class FuselageCreator implements IFuselageCreator {
 
 			//System.out.println("+++ rhoUpper: "+ _sectionsYZ.get(idx).get_RhoUpper());
 
-			x  = 0.5*lenN.doubleValue(SI.METRE);
+			x  = 0.5*lengthNose.doubleValue(SI.METRE);
 			hf = Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ) );
 			wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ) );
 			sectionsYZ.get(idx).setSectionParameters(
@@ -1814,9 +1626,12 @@ public class FuselageCreator implements IFuselageCreator {
 					npSecUp, npSecLow          // num. points
 					);
 
-			sectionCylinderLowerToTotalHeightRatio = a;
-			sectionCylinderRhoUpper = rhoUpper;
-			sectionCylinderRhoLower = rhoLower;
+			setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface)
+					.setSectionCylinderLowerToTotalHeightRatio(a)
+					.setSectionCylinderRhoUpper(rhoUpper)
+					.setSectionCylinderRhoLower(rhoLower)
+					.build()
+					);
 			
 			break;
 
@@ -1824,41 +1639,47 @@ public class FuselageCreator implements IFuselageCreator {
 
 			// CYLINDER
 			// IDX_SECTION_YZ_CYLINDER
-			x  = lenN.doubleValue(SI.METRE);
-			wf = sectionCylinderWidth.doubleValue(SI.METRE);
-			hf = sectionCylinderHeight.doubleValue(SI.METRE);
+			x  = lengthNose.doubleValue(SI.METRE);
+			wf = theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METRE);
+			hf = theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METRE);
 			sectionsYZ.get(idx).setSectionParameters(
 					wf, hf, a, rhoUpper, rhoLower, // lengths & parameters
 					npSecUp, npSecLow          // num. points
 					);
 			
-			sectionCylinderLowerToTotalHeightRatio = a;
-			sectionCylinderRhoUpper = rhoUpper;
-			sectionCylinderRhoLower = rhoLower;
+			setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface)
+					.setSectionCylinderLowerToTotalHeightRatio(a)
+					.setSectionCylinderRhoUpper(rhoUpper)
+					.setSectionCylinderRhoLower(rhoLower)
+					.build()
+					);
 			
 			break;
 
 		case IDX_SECTION_YZ_CYLINDER_2:
 			// CYLINDER
 			// IDX_SECTION_YZ_CYLINDER
-			x  = lenN.doubleValue(SI.METRE) + lenC.doubleValue(SI.METRE);
-			wf = sectionCylinderWidth.doubleValue(SI.METRE);
-			hf = sectionCylinderHeight.doubleValue(SI.METRE);
+			x  = lengthNose.doubleValue(SI.METRE) + lengthCylinder.doubleValue(SI.METRE);
+			wf = theFuselageCreatorInterface.getSectionCylinderWidth().doubleValue(SI.METRE);
+			hf = theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METRE);
 			sectionsYZ.get(idx).setSectionParameters(
 					wf, hf, a, rhoUpper, rhoLower, // lengths & parameters
 					npSecUp, npSecLow          // num. points
 					);
 			
-			sectionCylinderLowerToTotalHeightRatio = a;
-			sectionCylinderRhoUpper = rhoUpper;
-			sectionCylinderRhoLower = rhoLower;
+			setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface)
+					.setSectionCylinderLowerToTotalHeightRatio(a)
+					.setSectionCylinderRhoUpper(rhoUpper)
+					.setSectionCylinderRhoLower(rhoLower)
+					.build()
+					);
 			
 			break;
 
 		case IDX_SECTION_YZ_MID_TAIL:
 			// MID-TAIL
 			// IDX_SECTION_YZ_MID_TAIL
-			x  = lenF.doubleValue(SI.METRE) - 0.5*lenT.doubleValue(SI.METRE);
+			x  = theFuselageCreatorInterface.getFuselageLength().doubleValue(SI.METRE) - 0.5*lengthTail.doubleValue(SI.METRE);
 			hf = Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ) );
 			wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ) );
 			sectionsYZ.get(idx).setSectionParameters(
@@ -1866,16 +1687,20 @@ public class FuselageCreator implements IFuselageCreator {
 					npSecUp, npSecLow          // num. points
 					);
 			
-			sectionCylinderLowerToTotalHeightRatio = a;
-			sectionCylinderRhoUpper = rhoUpper;
-			sectionCylinderRhoLower = rhoLower;
+			setTheFuselageCreatorInterface(
+					IFuselageCreator.Builder.from(theFuselageCreatorInterface)
+					.setSectionCylinderLowerToTotalHeightRatio(a)
+					.setSectionCylinderRhoUpper(rhoUpper)
+					.setSectionCylinderRhoLower(rhoLower)
+					.build()
+					);
 			
 			break;
 
 		case IDX_SECTION_YZ_TAIL_CAP: // a, rhoUpper, rhoLower NOT USED
 			// TAIL CAP
 			// IDX_SECTION_YZ_NOSE_CAP (elliptical and centered)
-			x  = lenF.doubleValue(SI.METRE) - dxTailCap.doubleValue(SI.METRE);
+			x  = theFuselageCreatorInterface.getFuselageLength().doubleValue(SI.METRE) - tailCapOffset.doubleValue(SI.METRE);
 			hf = Math.abs( getZOutlineXZUpperAtX( x ) - getZOutlineXZLowerAtX( x ) );
 			wf = Math.abs( 2.0*getYOutlineXYSideRAtX( x ) );
 			sectionsYZ.get(idx).setSectionParameters(
@@ -1883,9 +1708,12 @@ public class FuselageCreator implements IFuselageCreator {
 					npSecUp, npSecLow          // num. points
 					);
 			
-			sectionCylinderLowerToTotalHeightRatio = 0.5;
-			sectionCylinderRhoUpper = 0.0;
-			sectionCylinderRhoLower = 0.0;
+			setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface)
+					.setSectionCylinderLowerToTotalHeightRatio(0.5)
+					.setSectionCylinderRhoUpper(0.0)
+					.setSectionCylinderRhoLower(0.0)
+					.build()
+					);
 			
 			break;
 
@@ -1945,15 +1773,21 @@ public class FuselageCreator implements IFuselageCreator {
 		switch (method) {
 
 		case "Stanford" : {
-			sWetNose = Amount.valueOf(0.75 * Math.PI * equivalentDiameterCylinderGM.getEstimatedValue()*lenN.getEstimatedValue(), Area.UNIT);
-			sWetTail = Amount.valueOf(0.72 * Math.PI * equivalentDiameterCylinderGM.getEstimatedValue()*lenT.getEstimatedValue(), Area.UNIT);
-			sWetC = Amount.valueOf(Math.PI * equivalentDiameterCylinderGM.getEstimatedValue()*lenC.getEstimatedValue(), Area.UNIT);
-			sWet = Amount.valueOf(sWetNose.getEstimatedValue() + sWetTail.getEstimatedValue() + sWetC.getEstimatedValue(), Area.UNIT); break;
+			sWetNose = Amount.valueOf(0.75 * Math.PI * equivalentDiameterCylinderGM.doubleValue(SI.METER)*lengthNose.doubleValue(SI.METER), SI.SQUARE_METRE);
+			sWetTail = Amount.valueOf(0.72 * Math.PI * equivalentDiameterCylinderGM.doubleValue(SI.METER)*lengthTail.doubleValue(SI.METER), SI.SQUARE_METRE);
+			sWetCylinder = Amount.valueOf(Math.PI * equivalentDiameterCylinderGM.doubleValue(SI.METER)*lengthCylinder.doubleValue(SI.METER), SI.SQUARE_METRE);
+			sWetTotal = sWetNose.to(SI.SQUARE_METRE).plus(sWetTail.to(SI.SQUARE_METRE)).plus(sWetCylinder.to(SI.SQUARE_METRE)); 
+			break;
 		}
 
 		case "Torenbeek" : { // page 409 torenbeek 2013
-			sFront = Amount.valueOf((Math.PI/4) * Math.pow(sectionCylinderHeight.getEstimatedValue(),2), Area.UNIT); // CANNOT FIND FUSELAGE HEIGHT in MyAeroFuselage!!
-			sWet = Amount.valueOf(sFront.getEstimatedValue()*4*(lambdaF - 1.30), Area.UNIT); break;
+			frontSurface = Amount.valueOf(
+					(Math.PI/4) 
+					* Math.pow(theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METER),2),
+					SI.SQUARE_METRE
+					); 
+			sWetTotal = Amount.valueOf(frontSurface.getEstimatedValue()*4*(fuselageFinenessRatio - 1.30), Area.UNIT); 
+			break;
 		}
 
 		}
@@ -1980,12 +1814,11 @@ public class FuselageCreator implements IFuselageCreator {
 		// Using Java 8 features
 
 		// x at l_N + l_C
-		double x0 = lenN.doubleValue(SI.METER) + lenC.doubleValue(SI.METER);
+		double x0 = lengthNose.doubleValue(SI.METER) + lengthCylinder.doubleValue(SI.METER);
 
 		// values filtered as x >= l_N + l_C
 		List<Double> vX = new ArrayList<Double>();
 		outlineXZLowerCurveX.stream().filter(x -> x > x0 ).distinct().forEach(vX::add);
-//		vX.stream().forEach(e -> System.out.println(e));
 
 		// index of first x in _outlineXZLowerCurveX >= x0
 		int idxX0 = IntStream.range(0,outlineXZLowerCurveX.size())
@@ -1999,11 +1832,11 @@ public class FuselageCreator implements IFuselageCreator {
 	         .collect(Collectors.toList());
 
 		// generate a vector of constant z = z_min + 0.26*d_C, same size of vZ, or vX
-		Double z1 = vZ.get(0) + 0.26*sectionCylinderHeight.doubleValue(SI.METER);
+		double z1 = vZ.get(0) + 0.26*theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METER);
 		List<Double> vZ1 = new ArrayList<Double>();
 		vZ.stream().map(z -> z1).forEach(vZ1::add);
 
-		Double xu = MyArrayUtils.intersectArraysBrent(
+		double xu = MyArrayUtils.intersectArraysBrent(
 				ArrayUtils.toPrimitive(vX.toArray(new Double[vX.size()])),
 				ArrayUtils.toPrimitive(vZ.toArray(new Double[vZ.size()])),
 				ArrayUtils.toPrimitive(vZ1.toArray(new Double[vZ1.size()])),
@@ -2014,7 +1847,7 @@ public class FuselageCreator implements IFuselageCreator {
 		List<Double> vX1 = new ArrayList<Double>();
 		vX.stream().map(x -> xu).forEach(vX1::add);
 
-		Double zu = MyArrayUtils.intersectArraysBrent(
+		double zu = MyArrayUtils.intersectArraysBrent(
 				ArrayUtils.toPrimitive(vZ.toArray(new Double[vZ.size()])),
 				ArrayUtils.toPrimitive(vX.toArray(new Double[vX.size()])),
 				ArrayUtils.toPrimitive(vX1.toArray(new Double[vX1.size()])),
@@ -2041,65 +1874,61 @@ public class FuselageCreator implements IFuselageCreator {
 	 * @author Vincenzo Cusati
 	 */
 	private void calculateWindshieldAngle() {
-		
-			// xcalculate point (x,z) from intersection of:
-			// - horiz. line at 0.75 of fuselage height (d_C) - taken from the bottom-line
-			// - upper profile of the nose sideview
-			//
-			// Using Java 8 features
-		
-				// x at l_N
-				double xLNose = lenN.doubleValue(SI.METER);
 
-				// values filtered as x <= l_N
-				List<Double> vXNose = new ArrayList<Double>();
-				outlineXZUpperCurveX.stream().filter(x -> x < xLNose ).distinct().forEach(vXNose::add);
-				
-				// index of last x in _outlineXZUpperCurveX >= xLNose
-				int idxXNose = vXNose.size();
-//						IntStream.range(0,outlineXZUpperCurveX.size())
-//			            .reduce((i,j) -> outlineXZUpperCurveX.get(i) > xLNose ? i : j)
-//			            .getAsInt();  // or throw
+		// xcalculate point (x,z) from intersection of:
+		// - horiz. line at 0.75 of fuselage height (d_C) - taken from the bottom-line
+		// - upper profile of the nose sideview
+		//
+		// Using Java 8 features
 
-				// the coupled z-values
-				List<Double> vZNose = new ArrayList<Double>();
-				vZNose = IntStream.range(0, outlineXZUpperCurveZ.size()).filter(i -> i < idxXNose)
-					 .mapToObj(i -> outlineXZUpperCurveZ.get(i))
-					 .distinct()
-			         .collect(Collectors.toList());
+		// x at l_N
+		double xLNose = lengthNose.doubleValue(SI.METER);
 
+		// values filtered as x <= l_N
+		List<Double> vXNose = new ArrayList<Double>();
+		outlineXZUpperCurveX.stream().filter(x -> x < xLNose ).distinct().forEach(vXNose::add);
 
-				// generate a vector of constant z = z_min + 0.75*d_C, same size of vZNose, or vXNose
-				// Check if it's better to take the value of z at 0.60*d_C (for the methodology)
-				Double z1Nose = MyArrayUtils.getMin(outlineXZLowerCurveZ) + 0.75*sectionCylinderHeight.doubleValue(SI.METER);
-				List<Double> vZ1Nose = new ArrayList<Double>();
-				vZNose.stream().map(z -> z1Nose).forEach(vZ1Nose::add);
+		// index of last x in _outlineXZUpperCurveX >= xLNose
+		int idxXNose = vXNose.size();
 
-				Double xw = MyArrayUtils.intersectArraysBrent(
-						ArrayUtils.toPrimitive(vXNose.toArray(new Double[vXNose.size()])),
-						ArrayUtils.toPrimitive(vZNose.toArray(new Double[vZNose.size()])),
-						ArrayUtils.toPrimitive(vZ1Nose.toArray(new Double[vZ1Nose.size()])),
-						vXNose.get(0), vXNose.get(vXNose.size()-1),
-						AllowedSolution.ANY_SIDE);
+		// the coupled z-values
+		List<Double> vZNose = new ArrayList<Double>();
+		vZNose = IntStream.range(0, outlineXZUpperCurveZ.size()).filter(i -> i < idxXNose)
+				.mapToObj(i -> outlineXZUpperCurveZ.get(i))
+				.distinct()
+				.collect(Collectors.toList());
 
-				// generate a vector of constant x = xw, same size of vZNose, or vXNose
-				List<Double> vX1Nose = new ArrayList<Double>();
-				vXNose.stream().map(x -> xw).forEach(vX1Nose::add);
+		// generate a vector of constant z = z_min + 0.75*d_C, same size of vZNose, or vXNose
+		// Check if it's better to take the value of z at 0.60*d_C (for the methodology)
+		double z1Nose = MyArrayUtils.getMin(outlineXZLowerCurveZ) + 0.75*theFuselageCreatorInterface.getSectionCylinderHeight().doubleValue(SI.METER);
+		List<Double> vZ1Nose = new ArrayList<Double>();
+		vZNose.stream().map(z -> z1Nose).forEach(vZ1Nose::add);
 
-				Double zw = MyArrayUtils.intersectArraysBrent(
-						ArrayUtils.toPrimitive(vZNose.toArray(new Double[vZNose.size()])),
-						ArrayUtils.toPrimitive(vXNose.toArray(new Double[vXNose.size()])),
-						ArrayUtils.toPrimitive(vX1Nose.toArray(new Double[vX1Nose.size()])),
-						vZNose.get(0), vZNose.get(vZNose.size()-1),
-						AllowedSolution.ANY_SIDE);
+		double xw = MyArrayUtils.intersectArraysBrent(
+				ArrayUtils.toPrimitive(vXNose.toArray(new Double[vXNose.size()])),
+				ArrayUtils.toPrimitive(vZNose.toArray(new Double[vZNose.size()])),
+				ArrayUtils.toPrimitive(vZ1Nose.toArray(new Double[vZ1Nose.size()])),
+				vXNose.get(0), vXNose.get(vXNose.size()-1),
+				AllowedSolution.ANY_SIDE);
 
-				// index of first x after xu
-				int idxXw = IntStream.range(0,vXNose.size())
-			            .reduce((i,j) -> vXNose.get(i)-xw > 0 ? i : j)
-			            .getAsInt();  // or throw
+		// generate a vector of constant x = xw, same size of vZNose, or vXNose
+		List<Double> vX1Nose = new ArrayList<Double>();
+		vXNose.stream().map(x -> xw).forEach(vX1Nose::add);
 
-				windshieldAngle = Amount.valueOf(Math.atan((vZNose.get(idxXw)-zw)/(vXNose.get(idxXw)-xw)), SI.RADIAN)
-						.to(NonSI.DEGREE_ANGLE);
+		double zw = MyArrayUtils.intersectArraysBrent(
+				ArrayUtils.toPrimitive(vZNose.toArray(new Double[vZNose.size()])),
+				ArrayUtils.toPrimitive(vXNose.toArray(new Double[vXNose.size()])),
+				ArrayUtils.toPrimitive(vX1Nose.toArray(new Double[vX1Nose.size()])),
+				vZNose.get(0), vZNose.get(vZNose.size()-1),
+				AllowedSolution.ANY_SIDE);
+
+		// index of first x after xu
+		int idxXw = IntStream.range(0,vXNose.size())
+				.reduce((i,j) -> vXNose.get(i)-xw > 0 ? i : j)
+				.getAsInt();  // or throw
+
+		windshieldAngle = Amount.valueOf(Math.atan((vZNose.get(idxXw)-zw)/(vXNose.get(idxXw)-xw)), SI.RADIAN)
+				.to(NonSI.DEGREE_ANGLE);
 	}
 
 	public double calculateFormFactor(double lambdaF) {
@@ -2141,15 +1970,42 @@ public class FuselageCreator implements IFuselageCreator {
 		sectionsYZStations.clear();
 	}
 
-	//========================================================================
-
 	public static FuselageCreator importFromXML(String pathToXML) {
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
-		
-		
+
 		System.out.println("Reading fuselage data ...");
 
+		//.......................................................
+		// data initialization
+		int deckNum = 0;
+		boolean pressurized = false;
+		Amount<Length> len = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> roughness = Amount.valueOf(0.0, SI.METER);
+		double lenRatioNF = 0.0;
+		Amount<Length> heightN = Amount.valueOf(0.0, SI.METER);
+		double dxNoseCapPercent = 0.0;
+		WindshieldTypeEnum windshieldType = null;
+		Amount<Length> windshieldWidth = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> windshieldHeight = Amount.valueOf(0.0, SI.METER);
+		double sectionNoseMidLowerToTotalHeightRatio = 0.0;
+		double sectionMidNoseRhoUpper = 0.0;
+		double sectionMidNoseRhoLower = 0.0;
+		double lenRatioCF = 0.0;
+		Amount<Length> sectionCylinderWidth = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> sectionCylinderHeight = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> heightFromGround = Amount.valueOf(0.0, SI.METER);
+		double sectionCylinderLowerToTotalHeightRatio = 0.0;
+		double sectionCylinderRhoUpper = 0.0;
+		double sectionCylinderRhoLower = 0.0;
+		Amount<Length> heightT = Amount.valueOf(0.0, SI.METER);
+		double dxTailCapPercent = 0.0;
+		double sectionTailMidLowerToTotalHeightRatio = 0.0;
+		double sectionMidTailRhoUpper = 0.0;
+		double sectionMidTailRhoLower = 0.0;
+		List<SpoilerCreator> spoilers = new ArrayList<>();
+		//.......................................................
+		
 		String id = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
@@ -2158,507 +2014,167 @@ public class FuselageCreator implements IFuselageCreator {
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//fuselage/@pressurized");
-		Boolean pressurized = Boolean.valueOf(pressProp);
+		if(pressProp != null)
+			pressurized = Boolean.valueOf(pressProp);
 
-		
 		// GLOBAL DATA
-		List<String> deckProp = reader.getXMLPropertiesByPath("//global_data/deck_number");
-		Integer deckNum = Integer.valueOf(deckProp.get(0));
-//		Amount<?> deckNum = reader.getXMLAmountWithUnitByPath("//global_data/deck_number").to(Unit.ONE);
+		String deckProp = reader.getXMLPropertyByPath("//global_data/deck_number");
+		if(deckProp != null)
+			deckNum = Integer.valueOf(deckProp);
 		
-		Amount<Length> len = reader.getXMLAmountLengthByPath("//global_data/length");
-		Amount<Length> roughness = reader.getXMLAmountLengthByPath("//global_data/roughness");
+		String lenProp = reader.getXMLPropertyByPath("//global_data/length");
+		if(lenProp != null)
+			len = reader.getXMLAmountLengthByPath("//global_data/length");
+		
+		String roughnessProp = reader.getXMLPropertyByPath("//global_data/roughness");
+		if(roughnessProp != null)
+			roughness = reader.getXMLAmountLengthByPath("//global_data/roughness");
 		
 		// NOSE TRUNK
-		List<String> lenRatioNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/length_ratio");
-		Double lenRatioNF = Double.valueOf(lenRatioNoseProp.get(0));
-		Amount<Length> heightN = reader.getXMLAmountLengthByPath("//nose_trunk/tip_height_offset");
+		String lenRatioNoseProp = reader.getXMLPropertyByPath("//nose_trunk/length_ratio");
+		if(lenRatioNoseProp != null)
+			lenRatioNF = Double.valueOf(lenRatioNoseProp);
 		
-		List<String>  dxCapPercentNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/dx_cap_percent");
-		Double dxNoseCapPercent = Double.valueOf(dxCapPercentNoseProp.get(0));
+		String heightNProp = reader.getXMLPropertyByPath("//nose_trunk/tip_height_offset");
+		if(heightNProp != null)
+			heightN = reader.getXMLAmountLengthByPath("//nose_trunk/tip_height_offset");
 		
-		@SuppressWarnings("unused")
-		WindshieldTypeEnum windshieldType = null;
-		List<String>  windshieldTypeProp = reader.getXMLPropertiesByPath("//nose_trunk/windshield_type");
-		if(windshieldTypeProp.get(0).equalsIgnoreCase("DOUBLE"))
-			windshieldType = WindshieldTypeEnum.DOUBLE;
-		if(windshieldTypeProp.get(0).equalsIgnoreCase("FLAT_FLUSH"))
-			windshieldType = WindshieldTypeEnum.FLAT_FLUSH;
-		if(windshieldTypeProp.get(0).equalsIgnoreCase("FLAT_PROTRUDING"))
-			windshieldType = WindshieldTypeEnum.FLAT_PROTRUDING;
-		if(windshieldTypeProp.get(0).equalsIgnoreCase("SINGLE_ROUND"))
-			windshieldType = WindshieldTypeEnum.SINGLE_ROUND;
-		if(windshieldTypeProp.get(0).equalsIgnoreCase("SINGLE_SHARP"))
-			windshieldType = WindshieldTypeEnum.SINGLE_SHARP;
+		String dxCapPercentNoseProp = reader.getXMLPropertyByPath("//nose_trunk/dx_cap_percent");
+		if(dxCapPercentNoseProp != null)
+			dxNoseCapPercent = Double.valueOf(dxCapPercentNoseProp);
 		
-		Amount<Length> windshieldWidth = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_width");
-		Amount<Length> windshieldHeight = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_height");
-		List<String>  midSectionLowerToTotalHeightRatioProp = reader.getXMLPropertiesByPath("//nose_trunk/mid_section_lower_to_total_height_ratio");
-		Double sectionNoseMidLowerToTotalHeightRatio = Double.valueOf(midSectionLowerToTotalHeightRatioProp.get(0));
-		List<String>  midSectionRhoUpperNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/mid_section_rho_upper");
-		Double sectionMidNoseRhoUpper = Double.valueOf(midSectionRhoUpperNoseProp.get(0));
-		List<String>  midSectionRhoLowerNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/mid_section_rho_lower");
-		Double sectionMidNoseRhoLower = Double.valueOf(midSectionRhoLowerNoseProp.get(0));
+		String windshieldTypeProp = reader.getXMLPropertyByPath("//nose_trunk/windshield_type");
+		if(windshieldTypeProp != null) {
+			if(windshieldTypeProp.equalsIgnoreCase("DOUBLE"))
+				windshieldType = WindshieldTypeEnum.DOUBLE;
+			if(windshieldTypeProp.equalsIgnoreCase("FLAT_FLUSH"))
+				windshieldType = WindshieldTypeEnum.FLAT_FLUSH;
+			if(windshieldTypeProp.equalsIgnoreCase("FLAT_PROTRUDING"))
+				windshieldType = WindshieldTypeEnum.FLAT_PROTRUDING;
+			if(windshieldTypeProp.equalsIgnoreCase("SINGLE_ROUND"))
+				windshieldType = WindshieldTypeEnum.SINGLE_ROUND;
+			if(windshieldTypeProp.equalsIgnoreCase("SINGLE_SHARP"))
+				windshieldType = WindshieldTypeEnum.SINGLE_SHARP;
+		}
+		
+		String windshieldWidthProp = reader.getXMLPropertyByPath("//nose_trunk/windshield_width");
+		if(windshieldWidthProp != null)
+			windshieldWidth = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_width");
+		
+		String windshieldHeightProp = reader.getXMLPropertyByPath("//nose_trunk/windshield_height");
+		if(windshieldHeightProp != null)
+			windshieldHeight = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_height");
+		
+		String midSectionLowerToTotalHeightRatioProp = reader.getXMLPropertyByPath("//nose_trunk/mid_section_lower_to_total_height_ratio");
+		if(midSectionLowerToTotalHeightRatioProp != null)
+			sectionNoseMidLowerToTotalHeightRatio = Double.valueOf(midSectionLowerToTotalHeightRatioProp);
+		
+		String midSectionRhoUpperNoseProp = reader.getXMLPropertyByPath("//nose_trunk/mid_section_rho_upper");
+		if(midSectionRhoUpperNoseProp != null)
+			sectionMidNoseRhoUpper = Double.valueOf(midSectionRhoUpperNoseProp);
+		
+		String midSectionRhoLowerNoseProp = reader.getXMLPropertyByPath("//nose_trunk/mid_section_rho_lower");
+		if(midSectionRhoLowerNoseProp != null)
+			sectionMidNoseRhoLower = Double.valueOf(midSectionRhoLowerNoseProp);
 		
 		// CYLINDRICAL TRUNK
-		List<String>  lenRatioCylProp = reader.getXMLPropertiesByPath("//cylindrical_trunk/length_ratio");
-		Double lenRatioCF = Double.valueOf(lenRatioCylProp.get(0));
-		Amount<Length> sectionCylinderWidth = reader.getXMLAmountLengthByPath("//cylindrical_trunk/section_width");
-		Amount<Length> sectionCylinderHeight = reader.getXMLAmountLengthByPath("//cylindrical_trunk/section_height");
-		Amount<Length> heightFromGround = reader.getXMLAmountLengthByPath("//cylindrical_trunk/height_from_ground");
-		List<String>  sectionLowerToTotalHeightRatioProp = reader.getXMLPropertiesByPath("//cylindrical_trunk/section_lower_to_total_height_ratio");
-		Double sectionCylinderLowerToTotalHeightRatio = Double.valueOf(sectionLowerToTotalHeightRatioProp.get(0));
-		List<String>  sectionRhoUpperProp = reader.getXMLPropertiesByPath("//cylindrical_trunk/section_rho_upper");
-		Double sectionCylinderRhoUpper = Double.valueOf(sectionRhoUpperProp.get(0));
-		List<String>  sectionRhoLowerProp = reader.getXMLPropertiesByPath("//cylindrical_trunk/section_rho_lower");
-		Double sectionCylinderRhoLower = Double.valueOf(sectionRhoLowerProp.get(0));
+		String lenRatioCylProp = reader.getXMLPropertyByPath("//cylindrical_trunk/length_ratio");
+		if(lenRatioCylProp != null)
+			lenRatioCF = Double.valueOf(lenRatioCylProp);
+		
+		String sectionCylinderWidthProp = reader.getXMLPropertyByPath("//cylindrical_trunk/section_width");
+		if(sectionCylinderWidthProp != null)
+			sectionCylinderWidth = reader.getXMLAmountLengthByPath("//cylindrical_trunk/section_width");
+		
+		String sectionCylinderHeightProp = reader.getXMLPropertyByPath("//cylindrical_trunk/section_height");
+		if(sectionCylinderHeightProp != null)
+			sectionCylinderHeight = reader.getXMLAmountLengthByPath("//cylindrical_trunk/section_height");
+		
+		String heightFromGroundProp = reader.getXMLPropertyByPath("//cylindrical_trunk/height_from_ground");
+		if(heightFromGroundProp != null)
+			heightFromGround = reader.getXMLAmountLengthByPath("//cylindrical_trunk/height_from_ground");
+		
+		String sectionLowerToTotalHeightRatioProp = reader.getXMLPropertyByPath("//cylindrical_trunk/section_lower_to_total_height_ratio");
+		if(sectionLowerToTotalHeightRatioProp != null)
+			sectionCylinderLowerToTotalHeightRatio = Double.valueOf(sectionLowerToTotalHeightRatioProp);
+		
+		String sectionRhoUpperProp = reader.getXMLPropertyByPath("//cylindrical_trunk/section_rho_upper");
+		if(sectionRhoUpperProp != null)
+			sectionCylinderRhoUpper = Double.valueOf(sectionRhoUpperProp);
+		
+		String sectionRhoLowerProp = reader.getXMLPropertyByPath("//cylindrical_trunk/section_rho_lower");
+		if(sectionRhoLowerProp != null)
+			sectionCylinderRhoLower = Double.valueOf(sectionRhoLowerProp);
 		
 		// TAIL TRUNK
-		Amount<Length> heightT = reader.getXMLAmountLengthByPath("//tail_trunk/tip_height_offset");
-		List<String>  dxCapPercentTailProp = reader.getXMLPropertiesByPath("//tail_trunk/dx_cap_percent");
-		Double dxTailCapPercent = Double.valueOf(dxCapPercentTailProp.get(0));
-		List<String>  sectionTailMidLowerToTotalHeightRatioProp = reader.getXMLPropertiesByPath("//tail_trunk/mid_section_lower_to_total_height_ratio");
-		Double sectionTailMidLowerToTotalHeightRatio = Double.valueOf(sectionTailMidLowerToTotalHeightRatioProp.get(0));
-		List<String>  midSectionRhoUpperTailProp = reader.getXMLPropertiesByPath("//tail_trunk/mid_section_rho_upper");
-		Double sectionMidTailRhoUpper = Double.valueOf(midSectionRhoUpperTailProp.get(0));
-		List<String>  midSectionRhoLowerTailProp = reader.getXMLPropertiesByPath("//tail_trunk/mid_section_rho_lower");
-		Double sectionMidTailRhoLower = Double.valueOf(midSectionRhoLowerTailProp.get(0));
+		String heightTProp = reader.getXMLPropertyByPath("//tail_trunk/tip_height_offset");
+		if(heightTProp != null)
+			heightT = reader.getXMLAmountLengthByPath("//tail_trunk/tip_height_offset");
+		
+		String dxCapPercentTailProp = reader.getXMLPropertyByPath("//tail_trunk/dx_cap_percent");
+		if(dxCapPercentTailProp != null)
+			dxTailCapPercent = Double.valueOf(dxCapPercentTailProp);
+		
+		String sectionTailMidLowerToTotalHeightRatioProp = reader.getXMLPropertyByPath("//tail_trunk/mid_section_lower_to_total_height_ratio");
+		if(sectionTailMidLowerToTotalHeightRatioProp != null)
+			sectionTailMidLowerToTotalHeightRatio = Double.valueOf(sectionTailMidLowerToTotalHeightRatioProp);
+		
+		String midSectionRhoUpperTailProp = reader.getXMLPropertyByPath("//tail_trunk/mid_section_rho_upper");
+		if(midSectionRhoUpperTailProp != null)
+			sectionMidTailRhoUpper = Double.valueOf(midSectionRhoUpperTailProp);
+		
+		String midSectionRhoLowerTailProp = reader.getXMLPropertyByPath("//tail_trunk/mid_section_rho_lower");
+		if(midSectionRhoLowerTailProp != null)
+			sectionMidTailRhoLower = Double.valueOf(midSectionRhoLowerTailProp);
+		
+		// SPOILERS
+		NodeList nodelistSpoilers = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//spoilers/spoiler");
+		
+		System.out.println("Spoilers found: " + nodelistSpoilers.getLength());
+		
+		for (int i = 0; i < nodelistSpoilers.getLength(); i++) {
+			Node nodeSpoiler  = nodelistSpoilers.item(i); // .getNodeValue();
+			Element elementSpoiler = (Element) nodeSpoiler;
+            System.out.println("[" + i + "]\nSlat id: " + elementSpoiler.getAttribute("id"));
+            
+            spoilers.add(SpoilerCreator.importFromSpoilerNode(nodeSpoiler));
+		}
 		
 		// create the fuselage via its builder
-		FuselageCreator fuselage = new FuselageBuilder(id)
-				// TOP LEVEL
-				.pressurized(pressurized)
-				//GLOBAL DATA
-				.length(len)
-				.deckNumber(deckNum)
-				.roughness(roughness)
-				// NOSE TRUNK
-				.dxNoseCapPercent(dxNoseCapPercent)
-				.heightN(heightN)
-				.lenRatioNF(lenRatioNF)
-				.sectionMidNoseRhoLower(sectionMidNoseRhoLower)
-				.sectionMidNoseRhoUpper(sectionMidNoseRhoUpper)
-				.sectionNoseMidLowerToTotalHeightRatio(sectionNoseMidLowerToTotalHeightRatio)
-				.windshieldType(windshieldType)
-				.windshieldHeight(windshieldHeight)
-				.windshieldWidth(windshieldWidth)
-				// CYLINDRICAL TRUNK
-				.lenRatioCF(lenRatioCF)
-				.sectionCylinderHeight(sectionCylinderHeight)
-				.sectionCylinderWidth(sectionCylinderWidth)
-				.heightFromGround(heightFromGround)
-				.sectionCylinderLowerToTotalHeightRatio(sectionCylinderLowerToTotalHeightRatio)
-				.sectionCylinderRhoLower(sectionCylinderRhoLower)
-				.sectionCylinderRhoUpper(sectionCylinderRhoUpper)
-				// TAIL TRUNK
-				.heightT(heightT)
-				.dxTailCapPercent(dxTailCapPercent)
-				.sectionMidTailRhoLower(sectionMidTailRhoLower)
-				.sectionMidTailRhoUpper(sectionMidTailRhoUpper)
-				.sectionTailMidLowerToTotalHeightRatio(sectionTailMidLowerToTotalHeightRatio)
-				// SPOILERS
-				.addSpoilers(reader)
-				.build();
+		FuselageCreator fuselage = new FuselageCreator(
+				new IFuselageCreator.Builder()
+				.setId(id)
+				.setPressurized(pressurized)
+				.setFuselageLength(len)
+				.setDeckNumber(deckNum)
+				.setRoughness(roughness)
+				.setNoseCapOffsetPercent(dxNoseCapPercent)
+				.setNoseTipOffset(heightN)
+				.setNoseLengthRatio(lenRatioNF)
+				.setSectionNoseMidLowerToTotalHeightRatio(sectionNoseMidLowerToTotalHeightRatio)
+				.setSectionMidNoseRhoUpper(sectionMidNoseRhoUpper)
+				.setSectionMidNoseRhoLower(sectionMidNoseRhoLower)
+				.setWindshieldType(windshieldType)
+				.setWindshieldHeight(windshieldHeight)
+				.setWindshieldWidth(windshieldWidth)
+				.setCylinderLengthRatio(lenRatioCF)
+				.setSectionCylinderHeight(sectionCylinderHeight)
+				.setSectionCylinderWidth(sectionCylinderWidth)
+				.setHeightFromGround(heightFromGround)
+				.setSectionCylinderLowerToTotalHeightRatio(sectionCylinderLowerToTotalHeightRatio)
+				.setSectionCylinderRhoUpper(sectionCylinderRhoUpper)
+				.setSectionCylinderRhoLower(sectionCylinderRhoLower)
+				.setTailTipOffest(heightT)
+				.setTailCapOffsetPercent(dxTailCapPercent)
+				.setSectionTailMidLowerToTotalHeightRatio(sectionTailMidLowerToTotalHeightRatio)
+				.setSectionMidTailRhoUpper(sectionMidTailRhoUpper)
+				.setSectionMidTailRhoLower(sectionMidTailRhoLower)
+				.addAllSpoilers(spoilers)
+				.build()
+				);
 
 		return fuselage;
-	}
-
-	// Builder pattern via a nested public static class
-	public static class FuselageBuilder {
-		// required parameters
-		private String _id;
-
-		// optional parameters ... defaults
-		// ...
-		private int _deckNumber = 1;
-
-		private List<SpoilerCreator> _spoilers = new ArrayList<SpoilerCreator>();
-		private Boolean _pressurized;
-
-		// FuselageCreator overall length
-		private Amount<Length> _lenF;
-
-		private Amount<Length> _sectionCylinderHeight;
-
-		private WindshieldTypeEnum _windshieldType; // Possible types (Roskam part VI, page 134): Flat,protruding; Flat,flush; Single,round; Single,sharp; Double
-
-		// Distance of fuselage lowest part from ground
-		private Amount<Length> _heightFromGround;
-
-		private Amount<Length> _heightN, _heightT;
-
-		private Amount<Length> _roughness;
-
-		// Non-dimensional parameters
-		private Double _lenRatioNF;
-		private Double _lenRatioCF;
-
-		// FuselageCreator section parameters
-
-		// Width and height
-		private Amount<Length> _sectionCylinderWidth;
-		private Amount<Length> _windshieldHeight, _windshieldWidth;
-
-		// Non dimensional section parameters
-
-		// how lower part is different from half diameter
-		private Double
-			_sectionCylinderLowerToTotalHeightRatio,
-			_sectionNoseMidLowerToTotalHeightRatio,
-			_sectionTailMidLowerToTotalHeightRatio;
-
-
-		// shape index, 1 --> close to a rectangle; 0 --> close to a circle
-		private Double
-			_sectionCylinderRhoUpper,
-			_sectionCylinderRhoLower,
-			_sectionMidNoseRhoUpper,
-			_sectionMidNoseRhoLower,
-			_sectionMidTailRhoUpper,
-			_sectionMidTailRhoLower;
-
-		// meshing stuff
-		private double _dxNoseCapPercent;
-		private double _dxTailCapPercent;
-
-
-		public FuselageBuilder(String id){ // defaults to ATR72 fuselage
-			this._id = id;
-//			this.initializeDefaultVariables(AircraftEnum.ATR72);
-		}
-
-		public FuselageBuilder(String id, AircraftEnum aircraftName){
-			this._id = id;
-			this.initializeDefaultVariables(aircraftName);
-		}
-
-		/**
-		 * Overload of the previous method that recognize aircrafts and initialize fuselage data with the relative ones.
-		 *
-		 * @author Vittorio Trifari
-		 */
-		@SuppressWarnings("incomplete-switch")
-		public void initializeDefaultVariables(AircraftEnum aircraftName) {
-
-			// init variables - Reference aircraft:
-			AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-
-			// --- INPUT DATA ------------------------------------------
-
-			switch(aircraftName) {
-			case ATR72:
-				_deckNumber = 1;
-
-				_lenF         =  Amount.valueOf(27.166, 0.0, SI.METRE);
-				_lenRatioNF       = 0.1496;
-				_lenRatioCF       = 0.62;
-
-				_sectionCylinderWidth     = Amount.valueOf(2.865,SI.METRE);
-				_sectionCylinderHeight    = Amount.valueOf(2.6514, SI.METRE);
-
-				// Height from ground of lowest part of fuselage
-				_heightFromGround = Amount.valueOf(0.66, SI.METER);
-
-				// FuselageCreator Roughness
-				_roughness = Amount.valueOf(0.405e-5, SI.METRE);
-
-				// positive if nose tip higher than cylindrical part ref. line (in XZ plane)
-				_heightN      = Amount.valueOf(-0.15*_sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE);
-				_heightT      = Amount.valueOf(  0.8*(0.5*_sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE);
-
-				_pressurized = true;
-
-				// Section parameters
-				_dxNoseCapPercent = 0.0750;
-				_dxTailCapPercent = 0.020; // TODO: check this! 0.050
-
-				_windshieldType = WindshieldTypeEnum.SINGLE_ROUND;
-				_windshieldHeight = Amount.valueOf(0.8, SI.METER);
-				_windshieldWidth = Amount.valueOf(2.5, SI.METER);
-
-				_sectionCylinderLowerToTotalHeightRatio     = 0.4;
-				_sectionCylinderRhoUpper     = 0.2;
-				_sectionCylinderRhoLower     =  0.3;
-
-				_sectionNoseMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
-				_sectionTailMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
-
-				_sectionMidNoseRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
-				_sectionMidTailRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
-
-				_sectionMidNoseRhoLower      = _sectionCylinderRhoLower.doubleValue();
-				_sectionMidTailRhoLower      = _sectionCylinderRhoLower.doubleValue();
-				break;
-
-			case B747_100B:
-				_deckNumber = 1;
-
-				_lenF         =  Amount.valueOf(68.63, 0.0, SI.METRE);
-				_lenRatioNF       = 0.1635;
-				_lenRatioCF       = 0.4964;
-
-				_sectionCylinderWidth     = Amount.valueOf(6.5,SI.METRE);
-				_sectionCylinderHeight    = Amount.valueOf(7.1, SI.METRE);
-
-				// Height from ground of lowest part of fuselage
-				_heightFromGround = Amount.valueOf(2.1, SI.METER);
-
-				// FuselageCreator Roughness
-				_roughness = Amount.valueOf(0.405e-5, SI.METRE);
-
-				// positive if nose tip higher than cylindrical part ref. line (in XZ plane)
-				_heightN      = Amount.valueOf(-0.089*_sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE);
-				_heightT      = Amount.valueOf( 0.457*(0.5*_sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE);
-
-				_pressurized = true;
-
-				// Section parameters
-				_dxNoseCapPercent = 0.075;
-				_dxTailCapPercent = 0.020;
-
-				_windshieldType = WindshieldTypeEnum.SINGLE_ROUND;
-				_windshieldHeight = Amount.valueOf(0.5, SI.METER);
-				_windshieldWidth = Amount.valueOf(2.6, SI.METER);
-
-				_sectionCylinderLowerToTotalHeightRatio     = 0.4;
-				_sectionCylinderRhoUpper     = 0.2;
-				_sectionCylinderRhoLower     =  0.3;
-
-				_sectionNoseMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
-				_sectionTailMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
-
-				_sectionMidNoseRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
-				_sectionMidTailRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
-
-				_sectionMidNoseRhoLower      = _sectionCylinderRhoLower.doubleValue();
-				_sectionMidTailRhoLower      = _sectionCylinderRhoLower.doubleValue();
-				break;
-
-			case AGILE_DC1:
-				_deckNumber = 1;
-
-				_lenF         =  Amount.valueOf(34., 0.0, SI.METRE);
-				_lenRatioNF       = 0.1420;
-				_lenRatioCF       = 0.6148;
-
-				_sectionCylinderWidth     = Amount.valueOf(3.,SI.METRE);
-				_sectionCylinderHeight    = Amount.valueOf(3., SI.METRE);
-
-				// Height from ground of lowest part of fuselage
-				_heightFromGround = Amount.valueOf(4.25, SI.METER);
-
-				// FuselageCreator Roughness
-				_roughness = Amount.valueOf(0.405e-5, SI.METRE);
-
-				// positive if nose tip higher than cylindrical part ref. line (in XZ plane)
-				_heightN      = Amount.valueOf(-0.1698*_sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE);
-				_heightT      = Amount.valueOf( 0.262*(0.5*_sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE);
-
-				_pressurized = true;
-
-				// Section parameters
-				_dxNoseCapPercent = 0.075; // TODO: Have to Check
-				_dxTailCapPercent = 0.020; // TODO: Have to Check
-
-				_windshieldType = WindshieldTypeEnum.SINGLE_ROUND;
-				_windshieldHeight = Amount.valueOf(0.5, SI.METER);
-				_windshieldWidth = Amount.valueOf(3.0, SI.METER);
-
-				_sectionCylinderLowerToTotalHeightRatio     = 0.4;
-				_sectionCylinderRhoUpper     = 0.1;
-				_sectionCylinderRhoLower     = 0.1;
-
-				_sectionNoseMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
-				_sectionTailMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
-
-				_sectionMidNoseRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
-				_sectionMidTailRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
-
-				_sectionMidNoseRhoLower      = _sectionCylinderRhoLower.doubleValue();
-				_sectionMidTailRhoLower      = _sectionCylinderRhoLower.doubleValue();
-				break;
-			}
-			// --- END OF INPUT DATA ------------------------------------------
-		}
-		
-		public FuselageBuilder deckNumber(Integer deckNum) {
-			_deckNumber = deckNum;
-			return this;
-		}
-
-		public FuselageBuilder length(Amount<Length> len) {
-			_lenF = len;
-			return this;
-		}
-		
-		public FuselageBuilder pressurized(Boolean pressurized){
-			_pressurized = pressurized;
-			return this;
-		}
-		
-		public FuselageBuilder lenRatioNF(Double lenRatioNF) {
-			_lenRatioNF = lenRatioNF;
-			return this;
-		}
-		
-		public FuselageBuilder lenRatioCF(Double lenRatioCF) {
-			_lenRatioCF = lenRatioCF;
-			return this;
-		}
-		
-		public FuselageBuilder sectionCylinderWidth(Amount<Length> sectionCylinderWidth) {
-			_sectionCylinderWidth = sectionCylinderWidth;
-			return this;
-		}
-		
-		public FuselageBuilder sectionCylinderHeight(Amount<Length> sectionCylinderHeight) {
-			_sectionCylinderHeight = sectionCylinderHeight;
-			return this;
-		}
-		
-		public FuselageBuilder heightFromGround(Amount<Length> heightFromGround) {
-			_heightFromGround = heightFromGround;
-			return this;
-		}
-		
-		public FuselageBuilder roughness(Amount<Length> roughness) {
-			_roughness = roughness;
-			return this;
-		}
-		
-		public FuselageBuilder heightN(Amount<Length> heightN) {
-			_heightN = heightN;
-			return this;
-		}
-		
-		public FuselageBuilder heightT(Amount<Length> heightT) {
-			_heightT = heightT;
-			return this;
-		}
-		
-		public FuselageBuilder dxNoseCapPercent(double dxNoseCapPercent) {
-			_dxNoseCapPercent = dxNoseCapPercent;
-			return this;
-		}
-		
-		public FuselageBuilder dxTailCapPercent(double dxTailCapPercent) {
-			_dxTailCapPercent = dxTailCapPercent;
-			return this;
-		}
-		
-		public FuselageBuilder windshieldType(WindshieldTypeEnum windshieldType) {
-			_windshieldType = windshieldType;
-			return this;
-		}
-		
-		public FuselageBuilder windshieldHeight(Amount<Length> windshieldHeight) {
-			_windshieldHeight = windshieldHeight;
-			return this;
-		}
-		
-		public FuselageBuilder windshieldWidth(Amount<Length> windshieldWidth) {
-			_windshieldWidth = windshieldWidth;
-			return this;
-		}
-		
-		public FuselageBuilder sectionCylinderLowerToTotalHeightRatio(Double sectionCylinderLowerToTotalHeightRatio) {
-			_sectionCylinderLowerToTotalHeightRatio = sectionCylinderLowerToTotalHeightRatio;
-			return this;
-		}
-		
-		public FuselageBuilder sectionCylinderRhoUpper(Double sectionCylinderRhoUpper) {
-			_sectionCylinderRhoUpper = sectionCylinderRhoUpper;
-			return this;
-		}
-		
-		public FuselageBuilder sectionCylinderRhoLower(Double sectionCylinderRhoLower) {
-			_sectionCylinderRhoLower = sectionCylinderRhoLower;
-			return this;
-		}
-		
-		public FuselageBuilder sectionNoseMidLowerToTotalHeightRatio(Double sectionNoseMidLowerToTotalHeightRatio) {
-			_sectionNoseMidLowerToTotalHeightRatio = sectionNoseMidLowerToTotalHeightRatio;
-			return this;
-		}
-		
-		public FuselageBuilder sectionTailMidLowerToTotalHeightRatio(Double sectionTailMidLowerToTotalHeightRatio) {
-			_sectionTailMidLowerToTotalHeightRatio = sectionTailMidLowerToTotalHeightRatio;
-			return this;
-		}
-		
-		public FuselageBuilder sectionMidNoseRhoUpper(Double sectionMidNoseRhoUpper) {
-			_sectionMidNoseRhoUpper = sectionMidNoseRhoUpper;
-			return this;
-		}
-		
-		public FuselageBuilder sectionMidTailRhoUpper(Double sectionMidTailRhoUpper) {
-			_sectionMidTailRhoUpper = sectionMidTailRhoUpper;
-			return this;
-		}
-		
-		public FuselageBuilder sectionMidNoseRhoLower(Double sectionMidNoseRhoLower) {
-			_sectionMidNoseRhoLower = sectionMidNoseRhoLower;
-			return this;
-		}
-		
-		public FuselageBuilder sectionMidTailRhoLower(Double sectionMidTailRhoLower) {
-			_sectionMidTailRhoLower = sectionMidTailRhoLower;
-			return this;
-		}
-		
-		public FuselageBuilder addSpoilers(JPADXmlReader reader) {
-			
-			NodeList nodelistSpoilers = MyXMLReaderUtils
-					.getXMLNodeListByPath(reader.getXmlDoc(), "//spoilers/spoiler");
-			
-			System.out.println("Spoilers found: " + nodelistSpoilers.getLength());
-			
-			for (int i = 0; i < nodelistSpoilers.getLength(); i++) {
-				Node nodeSpoiler  = nodelistSpoilers.item(i); // .getNodeValue();
-				Element elementSpoiler = (Element) nodeSpoiler;
-	            System.out.println("[" + i + "]\nSlat id: " + elementSpoiler.getAttribute("id"));
-	            
-	            _spoilers.add(SpoilerCreator.importFromSpoilerNode(nodeSpoiler));
-			}
-			
-			return this;
-		}
-		
-		public FuselageCreator build() {
-			return new FuselageCreator(this);
-		}
-	}
-
-	private FuselageCreator(FuselageBuilder builder) {
-		this.id = builder._id;
-		this.deckNumber = builder._deckNumber;
-		this.pressurized = builder._pressurized;
-		this.lenF = builder._lenF;
-		this.lenRatioNF = builder._lenRatioNF;
-		this.lenRatioCF = builder._lenRatioCF;
-		this.sectionCylinderWidth = builder._sectionCylinderWidth;
-		this.sectionCylinderHeight = builder._sectionCylinderHeight;
-		this.heightFromGround = builder._heightFromGround;
-		this.roughness = builder._roughness;
-		this.heightN = builder._heightN;
-		this.heightT = builder._heightT;
-		this.dxNoseCapPercent = builder._dxNoseCapPercent;
-		this.dxTailCapPercent = builder._dxTailCapPercent;
-		this.windshieldType = builder._windshieldType;
-		this.windshieldHeight = builder._windshieldHeight;
-		this.windshieldWidth = builder._windshieldWidth;
-		this.sectionCylinderLowerToTotalHeightRatio = builder._sectionCylinderLowerToTotalHeightRatio;
-		this.sectionCylinderRhoUpper = builder._sectionCylinderRhoUpper;
-		this.sectionCylinderRhoLower = builder._sectionCylinderRhoLower;
-		this.sectionNoseMidLowerToTotalHeightRatio = builder._sectionNoseMidLowerToTotalHeightRatio;
-		this.sectionTailMidLowerToTotalHeightRatio = builder._sectionTailMidLowerToTotalHeightRatio;
-		this.sectionMidNoseRhoUpper = builder._sectionMidNoseRhoUpper;
-		this.sectionMidTailRhoUpper = builder._sectionMidTailRhoUpper;
-		this.sectionMidNoseRhoLower = builder._sectionMidNoseRhoLower;
-		this.sectionMidTailRhoLower = builder._sectionMidTailRhoLower;
-		this.spoilers = builder._spoilers;
-		
-		calculateGeometry();
 	}
 
 	@Override
@@ -2670,28 +2186,29 @@ public class FuselageCreator implements IFuselageCreator {
 				.append("\t-------------------------------------\n")
 				.append("\tFuselage\n")
 				.append("\t-------------------------------------\n")
-				.append("\tID: '" + id + "'\n")
-				.append("\tPressurized: '" + pressurized + "'\n")
-				.append("\tNumber of decks: " + deckNumber + "\n")
-				.append("\tRoughness: " + roughness + "\n")
+				.append("\tID: '" + theFuselageCreatorInterface.getId() + "'\n")
+				.append("\tPressurized: '" + theFuselageCreatorInterface.isPressurized() + "'\n")
+				.append("\tNumber of decks: " + theFuselageCreatorInterface.getDeckNumber() + "\n")
+				.append("\tRoughness: " + theFuselageCreatorInterface.getRoughness() + "\n")
 				.append("\t...............................................................................................................\n")
-				.append("\tLength: " + lenF + "\n")
-				.append("\tNose length: " + lenN + "\n")
-				.append("\tCabin length: " + lenC + "\n")
-				.append("\tTail length: " + lenT + "\n")
+				.append("\tLength: " + theFuselageCreatorInterface.getFuselageLength() + "\n")
+				.append("\tNose length: " + lengthNose + "\n")
+				.append("\tCabin length: " + lengthCylinder + "\n")
+				.append("\tTail length: " + lengthTail + "\n")
 				.append("\t...............................................................................................................\n")
-				.append("\tNose length ratio: " + lenRatioNF + "\n")
-				.append("\tCabin length ratio: " + lenRatioCF + "\n")
-				.append("\tTail length ratio: " + lenRatioTF + "\n")
+				.append("\tNose length ratio: " + theFuselageCreatorInterface.getNoseLengthRatio() + "\n")
+				.append("\tCabin length ratio: " + theFuselageCreatorInterface.getCylinderLengthRatio() + "\n")
+				.append("\tTail length ratio: " + tailLengthRatio + "\n")
 				.append("\t...............................................................................................................\n")
-				.append("\tCabin width: " + sectionCylinderWidth + "\n")
-				.append("\tCabin height: " + sectionCylinderHeight + "\n")
+				.append("\tCabin width: " + theFuselageCreatorInterface.getSectionCylinderWidth() + "\n")
+				.append("\tCabin height: " + theFuselageCreatorInterface.getSectionCylinderHeight() + "\n")
 				.append("\t...............................................................................................................\n")
-				.append("\tNose fineness ratio: " + lambdaN + "\n")
-				.append("\tCabin fineness ratio: " + lambdaC + "\n")
-				.append("\tTail fineness ratio: " + lambdaT + "\n")
+				.append("\tNose fineness ratio: " + noseFinenessRatio + "\n")
+				.append("\tCabin fineness ratio: " + cylinderFinenessRatio + "\n")
+				.append("\tTail fineness ratio: " + tailFinenessRatio + "\n")
+				.append("\tFuselage fineness ratio: " + fuselageFinenessRatio + "\n")
 				.append("\t...............................................................................................................\n")
-				.append("\tHeight from ground: " + heightFromGround + "\n")
+				.append("\tHeight from ground: " + theFuselageCreatorInterface.getHeightFromGround() + "\n")
 				.append("\t...............................................................................................................\n")
 				.append("\tDiscretization\n")
 				.append("\tOutline XY Left Top View - X (m): " + outlineXYSideLCurveX + "\n")
@@ -2708,8 +2225,8 @@ public class FuselageCreator implements IFuselageCreator {
 				.append("\tOutline YZ Upper Section View - Z (m): " + getSectionLowerCurveAmountZ().stream().map(z -> z.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
 				.append("\t...............................................................................................................\n");
 		
-		if(!(spoilers == null)) {
-			for (SpoilerCreator spoilers : spoilers) {
+		if(!(theFuselageCreatorInterface.getSpoilers().isEmpty())) {
+			for (SpoilerCreator spoilers : theFuselageCreatorInterface.getSpoilers()) {
 				sb.append(spoilers.toString());
 			}
 		}
@@ -2717,128 +2234,81 @@ public class FuselageCreator implements IFuselageCreator {
 		return sb.toString();
 	}
 	
-	@Override
+	//---------------------------------------------------------------------------------------------------------------
+	// GETTERS & SETTERS
+	
+	public IFuselageCreator getTheFuselageCreatorInterface() {
+		return theFuselageCreatorInterface;
+	}
+	
+	public void setTheFuselageCreatorInterface(IFuselageCreator theFuselageCreatorInterface) {
+		this.theFuselageCreatorInterface = theFuselageCreatorInterface;
+	}
+	
 	public String getId() {
-		return id;
+		return theFuselageCreatorInterface.getId();
 	}
 	
-	@Override
 	public void setId(String id) {
-		this.id = id;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setId(id).build());
 	}
 	
-	@Override
 	public Boolean getPressurized() {
-		return pressurized;
+		return theFuselageCreatorInterface.isPressurized();
 	}
 
 	public void setPressurized(Boolean pressurized) {
-		this.pressurized = pressurized;
-	}
-
-	@Override
-	public Amount<Length> getLenF() {
-		return lenF;
-	}
-
-	public Amount<Length> getLength() {
-		return lenF;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setPressurized(pressurized).build());
 	}
 	
-	@Override
-	public void setLenF(Amount<Length> lenF) {
-		this.lenF = lenF;
+	public Amount<Length> getRoughness() {
+		return theFuselageCreatorInterface.getRoughness();
 	}
 
-	@Override
-	public Amount<Length> getLenN() {
-		return lenN;
-	}
-
-	public Amount<Length> getLengthNoseTrunk() {
-		return lenN;
+	public void setRoughness(Amount<Length> roughness) {
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setRoughness(roughness).build());
 	}
 	
-	public void setLenN(Amount<Length> lenN) {
-		// check bounds
-		if ( !(lenN.doubleValue(SI.METRE) < lenNMIN.doubleValue(SI.METRE)) 
-				&& !(lenN.doubleValue(SI.METRE) > lenNMAX.doubleValue(SI.METRE)) ) {
-			this.setLenN(lenN);
-			
-			Double value_l_F_METER_1 = 
-					this.getLenN().doubleValue(SI.METRE) 
-					+ this.getLenC().doubleValue(SI.METRE) 
-					+ this.getLenT().doubleValue(SI.METRE);
-			
-			this.setLenN(Amount.valueOf(value_l_F_METER_1, SI.METRE));
-
-			this.calculateDependentData(); 
-		}
+	public Amount<Length> getFuselageLength() {
+		return theFuselageCreatorInterface.getFuselageLength();
 	}
 
-	@Override
-	public Amount<Length> getLenC() {
-		return lenC;
-	}
-
-	public Amount<Length> getLengthCylindricalTrunk() {
-		return lenC;
+	public void setFuselageLength(Amount<Length> lenF) {
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setFuselageLength(lenF).build());
 	}
 	
-	public void setLenC(Amount<Length> lenC) {
-		// check bounds
-		if ( !(lenC.doubleValue(SI.METRE) < lenCMIN.doubleValue(SI.METRE)) 
-				&& !(lenC.doubleValue(SI.METRE) > lenCMAX.doubleValue(SI.METRE)) ) {
-			this.setLenC(lenC);
-			
-			Double value_l_F_METER_1 = 
-					this.getLenN().doubleValue(SI.METRE) 
-					+ this.getLenC().doubleValue(SI.METRE) 
-					+ this.getLenT().doubleValue(SI.METRE);
-			
-			this.setLenN(Amount.valueOf(value_l_F_METER_1, SI.METRE));
+	public Amount<Length> getNoseLength() {
+		return lengthNose;
+	}
 
-			this.calculateDependentData(); 
-		}
+	public void setNoseLength(Amount<Length> lenN) {
+		this.lengthNose = lenN;
 	}
 	
-	@Override
-	public Amount<Length> getLenT() {
-		return lenT;
+	public Amount<Length> getCylinderLength() {
+		return lengthCylinder;
 	}
 
-	public Amount<Length> getLengthTailTrunk() {
-		return lenT;
+	public void setCylinderLength(Amount<Length> lenC) {
+		this.lengthCylinder = lenC;
 	}
 	
-	public void setLenT(Amount<Length> lenT) {
-		// check bounds
-		if ( !(lenT.doubleValue(SI.METRE) < lenTMIN.doubleValue(SI.METRE)) 
-				&& !(lenT.doubleValue(SI.METRE) > lenTMAX.doubleValue(SI.METRE)) ) {
-			this.setLenT(lenT);
-			
-			Double value_l_F_METER_1 = 
-					this.getLenN().doubleValue(SI.METRE) 
-					+ this.getLenC().doubleValue(SI.METRE) 
-					+ this.getLenT().doubleValue(SI.METRE);
-			
-			this.setLenN(Amount.valueOf(value_l_F_METER_1, SI.METRE));
-
-			this.calculateDependentData(); 
-		}
+	public Amount<Length> getTailLength() {
+		return lengthTail;
 	}
 
-	@Override
+	public void setTailLength(Amount<Length> lenT) {
+		this.lengthTail = lenT;
+	}
+	
 	public Amount<Length> getSectionCylinderHeight() {
-		return sectionCylinderHeight;
+		return theFuselageCreatorInterface.getSectionCylinderHeight();
 	}
 
 	public void setSectionCylinderHeight(Amount<Length> sectionCylinderHeight) {
-		
-		this.sectionCylinderHeight = sectionCylinderHeight;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setSectionCylinderHeight(sectionCylinderHeight).build());
 	}
-
-	@Override
+	
 	public Amount<Length> getEquivalentDiameterCylinderGM() {
 		return equivalentDiameterCylinderGM;
 	}
@@ -2847,7 +2317,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.equivalentDiameterCylinderGM = equivalentDiameterCylinderGM;
 	}
 	
-	@Override
+	
 	public Amount<Length> getEquivalentDiameterGM() {
 		return equivalentDiameterGM;
 	}
@@ -2856,7 +2326,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.equivalentDiameterGM = equivalentDiameterGM;
 	}
 
-	@Override
+	
 	public Amount<Length> getEquivalentDiameterCylinderAM() {
 		return equivalentDiameterCylinderAM;
 	}
@@ -2865,12 +2335,12 @@ public class FuselageCreator implements IFuselageCreator {
 		this.equivalentDiameterCylinderAM = equivalentDiameterCylinderAM;
 	}
 
-	public Amount<Area> getAreaC() {
-		return areaC;
+	public Amount<Area> getCylinderSectionArea() {
+		return cylinderSectionArea;
 	}
 
-	public void setAreaC(Amount<Area> areaC) {
-		this.areaC = areaC;
+	public void setCylinderSectionArea(Amount<Area> areaC) {
+		this.cylinderSectionArea = areaC;
 	}
 
 	public Amount<Area> getWindshieldArea() {
@@ -2881,123 +2351,94 @@ public class FuselageCreator implements IFuselageCreator {
 		this.windshieldArea = windshieldArea;
 	}
 
-	@Override
 	public WindshieldTypeEnum getWindshieldType() {
-		return windshieldType;
+		return theFuselageCreatorInterface.getWindshieldType();
 	}
 
 	public void setWindshieldType(WindshieldTypeEnum windshieldType) {
-		this.windshieldType = windshieldType;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setWindshieldType(windshieldType).build());
 	}
 
-	public Amount<Area> getsWetNose() {
+	public Amount<Area> getSWetNose() {
 		return sWetNose;
 	}
 
-	public void setsWetNose(Amount<Area> sWetNose) {
+	public void setSWetNose(Amount<Area> sWetNose) {
 		this.sWetNose = sWetNose;
 	}
 
-	public Amount<Area> getsWetTail() {
+	public Amount<Area> getSWetTail() {
 		return sWetTail;
 	}
 
-	public void setsWetTail(Amount<Area> sWetTail) {
+	public void setSWetTail(Amount<Area> sWetTail) {
 		this.sWetTail = sWetTail;
 	}
 
-	public Amount<Area> getsWetC() {
-		return sWetC;
+	public Amount<Area> getSWetCylinder() {
+		return sWetCylinder;
 	}
 
-	public void setsWetC(Amount<Area> sWetC) {
-		this.sWetC = sWetC;
+	public void setSWetCylinder(Amount<Area> sWetC) {
+		this.sWetCylinder = sWetC;
+	}
+	
+	public Amount<Area> getFrontSurface() {
+		return frontSurface;
 	}
 
-	@Override
-	public Amount<Area> getsFront() {
-		return sFront;
+	public void setFrontSurface(Amount<Area> sFront) {
+		this.frontSurface = sFront;
+	}
+	
+	public Amount<Area> getSWetTotal() {
+		return sWetTotal;
 	}
 
-	public void setsFront(Amount<Area> sFront) {
-		this.sFront = sFront;
+	public void setSWetTotal(Amount<Area> sWet) {
+		this.sWetTotal = sWet;
 	}
-
-	@Override
-	public Amount<Area> getsWet() {
-		return sWet;
-	}
-
-	public void setsWet(Amount<Area> sWet) {
-		this.sWet = sWet;
-	}
-
-	@Override
+	
 	public Amount<Length> getHeightFromGround() {
-		return heightFromGround;
+		return theFuselageCreatorInterface.getHeightFromGround();
 	}
 
 	public void setHeightFromGround(Amount<Length> heightFromGround) {
-		this.heightFromGround = heightFromGround;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setHeightFromGround(heightFromGround).build());
 	}
 
-	public Amount<Angle> getPhi1() {
-		return phi1;
+	public Amount<Angle> getPhiNose() {
+		return phiNose;
 	}
 
-	public void setPhi1(Amount<Angle> phi1) {
-		this.phi1 = phi1;
+	public void setPhiNose(Amount<Angle> phiN) {
+		this.phiNose = phiN;
 	}
 
-	public Amount<Angle> getPhi2() {
-		return phi2;
+	public Amount<Angle> getPhiTail() {
+		return phiTail;
 	}
 
-	public void setPhi2(Amount<Angle> phi2) {
-		this.phi2 = phi2;
+	public void setPhiTail(Amount<Angle> phiT) {
+		this.phiTail = phiT;
 	}
 
-	public Amount<Angle> getPhi3() {
-		return phi3;
+	public Amount<Length> getNoseTipOffset() {
+		return theFuselageCreatorInterface.getNoseTipOffset();
 	}
 
-	public void setPhi3(Amount<Angle> phi3) {
-		this.phi3 = phi3;
+	public void setNoseTipOffset(Amount<Length> heightN) {
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setNoseTipOffset(heightN).build());
 	}
 
-	public Amount<Angle> getPhiN() {
-		return phiN;
+	public Amount<Length> getTailTipOffset() {
+		return theFuselageCreatorInterface.getTailTipOffest();
 	}
 
-	public void setPhiN(Amount<Angle> phiN) {
-		this.phiN = phiN;
+	public void setTailTipOffset(Amount<Length> heightT) {
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setTailTipOffest(heightT).build());
 	}
 
-	public Amount<Angle> getPhiT() {
-		return phiT;
-	}
-
-	public void setPhiT(Amount<Angle> phiT) {
-		this.phiT = phiT;
-	}
-
-	public Amount<Length> getHeightN() {
-		return heightN;
-	}
-
-	public void setHeightN(Amount<Length> heightN) {
-		this.heightN = heightN;
-	}
-
-	public Amount<Length> getHeightT() {
-		return heightT;
-	}
-
-	public void setHeightT(Amount<Length> heightT) {
-		this.heightT = heightT;
-	}
-
-	@Override
 	public Amount<Angle> getUpsweepAngle() {
 		return upsweepAngle;
 	}
@@ -3005,8 +2446,7 @@ public class FuselageCreator implements IFuselageCreator {
 	public void setUpsweepAngle(Amount<Angle> upsweepAngle) {
 		this.upsweepAngle = upsweepAngle;
 	}
-
-	@Override
+	
 	public Amount<Angle> getWindshieldAngle() {
 		return windshieldAngle;
 	}
@@ -3015,76 +2455,60 @@ public class FuselageCreator implements IFuselageCreator {
 		this.windshieldAngle = windshieldAngle;
 	}
 
-	@Override
-	public Amount<Length> getRoughness() {
-		return roughness;
+	public Double getFuselageFinenessRatio() {
+		return fuselageFinenessRatio;
 	}
 
-	public void setRoughness(Amount<Length> roughness) {
-		this.roughness = roughness;
+	public void setFuselageFinenessRatio(Double lambdaF) {
+		this.fuselageFinenessRatio = lambdaF;
 	}
 
-	@Override
-	public Double getLambdaF() {
-		return lambdaF;
+	public Double getNoseFinenessRatio() {
+		return noseFinenessRatio;
 	}
 
-	public void setLambdaF(Double lambdaF) {
-		this.lambdaF = lambdaF;
+	public void setNoseFinenessRatio(Double lambdaN) {
+		this.noseFinenessRatio = lambdaN;
+	}
+	
+	public Double getCylinderFinenessRatio() {
+		return cylinderFinenessRatio;
 	}
 
-	@Override
-	public Double getLambdaN() {
-		return lambdaN;
+	public void setCylinderFinenessRatio(Double lambdaC) {
+		this.cylinderFinenessRatio = lambdaC;
 	}
 
-	public void setLambdaN(Double lambdaN) {
-		this.lambdaN = lambdaN;
+	public Double getTailFinenessRatio() {
+		return tailFinenessRatio;
 	}
 
-	@Override
-	public Double getLambdaC() {
-		return lambdaC;
+	public void setTailFinenessRatio(Double lambdaT) {
+		this.tailFinenessRatio = lambdaT;
 	}
 
-	public void setLambdaC(Double lambdaC) {
-		this.lambdaC = lambdaC;
+	public Double getNoseLengthRatio() {
+		return theFuselageCreatorInterface.getNoseLengthRatio();
 	}
 
-	@Override
-	public Double getLambdaT() {
-		return lambdaT;
+	public void setNoseLengthRatio(Double lenRatioNF) {
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setNoseLengthRatio(lenRatioNF).build());
+	}
+	
+	public Double getCylinderLengthRatio() {
+		return theFuselageCreatorInterface.getCylinderLengthRatio();
 	}
 
-	public void setLambdaT(Double lambdaT) {
-		this.lambdaT = lambdaT;
+	public void setCylinderLengthRatio(Double lenRatioCF) {
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setCylinderLengthRatio(lenRatioCF).build());
 	}
 
-	@Override
-	public Double getLenRatioNF() {
-		return lenRatioNF;
+	public Double getTailLengthRatio() {
+		return tailLengthRatio;
 	}
 
-	public void setLenRatioNF(Double lenRatioNF) {
-		this.lenRatioNF = lenRatioNF;
-	}
-
-	@Override
-	public Double getLenRatioCF() {
-		return lenRatioCF;
-	}
-
-	public void setLenRatioCF(Double lenRatioCF) {
-		this.lenRatioCF = lenRatioCF;
-	}
-
-	@Override
-	public Double getLenRatioTF() {
-		return lenRatioTF;
-	}
-
-	public void setLenRatioTF(Double lenRatioTF) {
-		this.lenRatioTF = lenRatioTF;
+	public void setTailLengthRatio(Double lenRatioTF) {
+		this.tailLengthRatio = lenRatioTF;
 	}
 
 	public Double getFormFactor() {
@@ -3095,117 +2519,116 @@ public class FuselageCreator implements IFuselageCreator {
 		this.formFactor = formFactor;
 	}
 
-	@Override
 	public Amount<Length> getSectionCylinderWidth() {
-		return sectionCylinderWidth;
+		return theFuselageCreatorInterface.getSectionCylinderWidth();
 	}
 
 	public void setSectionCylinderWidth(Amount<Length> sectionCylinderWidth) {
-		this.sectionCylinderWidth = sectionCylinderWidth;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setSectionCylinderWidth(sectionCylinderWidth).build());
 	}
 
 	public Amount<Length> getWindshieldHeight() {
-		return windshieldHeight;
+		return theFuselageCreatorInterface.getWindshieldHeight();
 	}
 
 	public void setWindshieldHeight(Amount<Length> windshieldHeight) {
-		this.windshieldHeight = windshieldHeight;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setWindshieldHeight(windshieldHeight).build());
 	}
 
 	public Amount<Length> getWindshieldWidth() {
-		return windshieldWidth;
+		return theFuselageCreatorInterface.getWindshieldWidth();
 	}
 
 	public void setWindshieldWidth(Amount<Length> windshieldWidth) {
-		this.windshieldWidth = windshieldWidth;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setWindshieldWidth(windshieldWidth).build());
 	}
 
-	public Amount<Length> getDxNoseCap() {
-		return dxNoseCap;
+	public Amount<Length> getNoseCapOffset() {
+		return noseCapOffset;
 	}
 
-	public void setDxNoseCap(Amount<Length> dxNoseCap) {
-		this.dxNoseCap = dxNoseCap;
+	public void setNoseCapOffset(Amount<Length> dxNoseCap) {
+		this.noseCapOffset = dxNoseCap;
 	}
 
-	public Amount<Length> getDxTailCap() {
-		return dxTailCap;
+	public Amount<Length> getTailCapOffset() {
+		return tailCapOffset;
 	}
 
-	public void setDxTailCap(Amount<Length> dxTailCap) {
-		this.dxTailCap = dxTailCap;
+	public void setTailCapOffset(Amount<Length> dxTailCap) {
+		this.tailCapOffset = dxTailCap;
 	}
 
 	public Double getSectionCylinderLowerToTotalHeightRatio() {
-		return sectionCylinderLowerToTotalHeightRatio;
+		return theFuselageCreatorInterface.getSectionCylinderLowerToTotalHeightRatio();
 	}
 
 	public void setSectionCylinderLowerToTotalHeightRatio(Double sectionCylinderLowerToTotalHeightRatio) {
-		this.sectionCylinderLowerToTotalHeightRatio = sectionCylinderLowerToTotalHeightRatio;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setSectionCylinderLowerToTotalHeightRatio(sectionCylinderLowerToTotalHeightRatio).build());
 	}
 
 	public Double getSectionNoseMidLowerToTotalHeightRatio() {
-		return sectionNoseMidLowerToTotalHeightRatio;
+		return theFuselageCreatorInterface.getSectionNoseMidLowerToTotalHeightRatio();
 	}
 
 	public void setSectionNoseMidLowerToTotalHeightRatio(Double sectionNoseMidLowerToTotalHeightRatio) {
-		this.sectionNoseMidLowerToTotalHeightRatio = sectionNoseMidLowerToTotalHeightRatio;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setSectionNoseMidLowerToTotalHeightRatio(sectionNoseMidLowerToTotalHeightRatio).build());
 	}
 
 	public Double getSectionTailMidLowerToTotalHeightRatio() {
-		return sectionTailMidLowerToTotalHeightRatio;
+		return theFuselageCreatorInterface.getSectionTailMidLowerToTotalHeightRatio();
 	}
 
 	public void setSectionTailMidLowerToTotalHeightRatio(Double sectionTailMidLowerToTotalHeightRatio) {
-		this.sectionTailMidLowerToTotalHeightRatio = sectionTailMidLowerToTotalHeightRatio;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setSectionTailMidLowerToTotalHeightRatio(sectionTailMidLowerToTotalHeightRatio).build());
 	}
 
 	public Double getSectionCylinderRhoUpper() {
-		return sectionCylinderRhoUpper;
+		return theFuselageCreatorInterface.getSectionCylinderRhoLower();
 	}
 
 	public void setSectionCylinderRhoUpper(Double sectionCylinderRhoUpper) {
-		this.sectionCylinderRhoUpper = sectionCylinderRhoUpper;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setSectionCylinderRhoUpper(sectionCylinderRhoUpper).build());
 	}
 
 	public Double getSectionCylinderRhoLower() {
-		return sectionCylinderRhoLower;
+		return theFuselageCreatorInterface.getSectionCylinderRhoLower();
 	}
 
 	public void setSectionCylinderRhoLower(Double sectionCylinderRhoLower) {
-		this.sectionCylinderRhoLower = sectionCylinderRhoLower;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setSectionCylinderRhoLower(sectionCylinderRhoLower).build());
 	}
 
 	public Double getSectionMidNoseRhoUpper() {
-		return sectionMidNoseRhoUpper;
+		return theFuselageCreatorInterface.getSectionMidNoseRhoUpper();
 	}
 
 	public void setSectionMidNoseRhoUpper(Double sectionMidNoseRhoUpper) {
-		this.sectionMidNoseRhoUpper = sectionMidNoseRhoUpper;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setSectionMidNoseRhoUpper(sectionMidNoseRhoUpper).build());
 	}
 
 	public Double getSectionMidNoseRhoLower() {
-		return sectionMidNoseRhoLower;
+		return theFuselageCreatorInterface.getSectionMidNoseRhoLower();
 	}
 
 	public void setSectionMidNoseRhoLower(Double sectionMidNoseRhoLower) {
-		this.sectionMidNoseRhoLower = sectionMidNoseRhoLower;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setSectionMidNoseRhoLower(sectionMidNoseRhoLower).build());
 	}
 
 	public Double getSectionMidTailRhoUpper() {
-		return sectionMidTailRhoUpper;
+		return theFuselageCreatorInterface.getSectionMidTailRhoUpper();
 	}
 
 	public void setSectionMidTailRhoUpper(Double sectionMidTailRhoUpper) {
-		this.sectionMidTailRhoUpper = sectionMidTailRhoUpper;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setSectionMidTailRhoUpper(sectionMidTailRhoUpper).build());
 	}
 
 	public Double getSectionMidTailRhoLower() {
-		return sectionMidTailRhoLower;
+		return theFuselageCreatorInterface.getSectionMidTailRhoLower();
 	}
 
 	public void setSectionMidTailRhoLower(Double sectionMidTailRhoLower) {
-		this.sectionMidTailRhoLower = sectionMidTailRhoLower;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setSectionMidTailRhoLower(sectionMidTailRhoLower).build());
 	}
 
 	public int getNpN() {
@@ -3272,20 +2695,20 @@ public class FuselageCreator implements IFuselageCreator {
 		this.deltaXTail = deltaXTail;
 	}
 
-	public double getDxNoseCapPercent() {
-		return dxNoseCapPercent;
+	public double getNoseCapOffsetPercent() {
+		return theFuselageCreatorInterface.getNoseCapOffsetPercent();
 	}
 
-	public void setDxNoseCapPercent(double dxNoseCapPercent) {
-		this.dxNoseCapPercent = dxNoseCapPercent;
+	public void setNoseCapOffsetPercent(double dxNoseCapPercent) {
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setNoseCapOffsetPercent(dxNoseCapPercent).build());
 	}
 
-	public double getDxTailCapPercent() {
-		return dxTailCapPercent;
+	public double getTailCapOffsetPercent() {
+		return theFuselageCreatorInterface.getTailCapOffsetPercent();
 	}
 
-	public void setDxTailCapPercent(double dxTailCapPercent) {
-		this.dxTailCapPercent = dxTailCapPercent;
+	public void setTailCapOffsetPercent(double dxTailCapPercent) {
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setTailCapOffsetPercent(dxTailCapPercent).build());
 	}
 
 	public List<Double> getOutlineXZUpperCurveX() {
@@ -3596,354 +3019,58 @@ public class FuselageCreator implements IFuselageCreator {
 		return NUM_SECTIONS_YZ;
 	}
 
-	@Override
+	
 	public List<SpoilerCreator> getSpoilers() {
-		return spoilers;
+		return theFuselageCreatorInterface.getSpoilers();
 	}
-
-	@Override
+	
 	public int getDeckNumber() {
-		return deckNumber;
+		return theFuselageCreatorInterface.getDeckNumber();
 	}
 
-	@Override
+	
 	public void setDeckNumber(int deckNumber) {
-		this.deckNumber = deckNumber;
+		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setDeckNumber(deckNumber).build());
 	}
 
-	@Override
+	
 	public Amount<Mass> getMassReference() {
 		return massReference;
 	}
 
-	@Override
+	
 	public void setMassReference(Amount<Mass> massReference) {
 		this.massReference = massReference;
 	}
 	
-	@Override
+	
 	public void setSpoilers(List<SpoilerCreator> spoilers) {
-		this.spoilers = spoilers;
+		setTheFuselageCreatorInterface(
+				IFuselageCreator.Builder.from(theFuselageCreatorInterface)
+				.clearSpoilers()
+				.addAllSpoilers(spoilers)
+				.build()
+				);
 	}
 
-	public Amount<Length> getLenFMIN() {
-		return lenFMIN;
+	public int getNumberPointsNose() {
+		return npN;
 	}
 
-	public void setLenFMIN(Amount<Length> lenFMIN) {
-		this.lenFMIN = lenFMIN;
+	public int getNumberPointsCylinder() {
+		return npC;
 	}
 
-	public Amount<Length> getLenFMAX() {
-		return lenFMAX;
+	public int getNumberPointsTail() {
+		return npT;
 	}
 
-	public void setLenFMAX(Amount<Length> lenFMAX) {
-		this.lenFMAX = lenFMAX;
+	public int getNumberPointsSectionUpper() {
+		return npSecUp;
 	}
 
-	public Amount<Length> getLenNMIN() {
-		return lenNMIN;
+	public int getNumberPointsSectionLower() {
+		return npSecLow;
 	}
-
-	public void setLenNMIN(Amount<Length> lenNMIN) {
-		this.lenNMIN = lenNMIN;
-	}
-
-	public Amount<Length> getLenNMAX() {
-		return lenNMAX;
-	}
-
-	public void setLenNMAX(Amount<Length> lenNMAX) {
-		this.lenNMAX = lenNMAX;
-	}
-
-	public Amount<Length> getLenCMIN() {
-		return lenCMIN;
-	}
-
-	public void setLenCMIN(Amount<Length> lenCMIN) {
-		this.lenCMIN = lenCMIN;
-	}
-
-	public Amount<Length> getLenCMAX() {
-		return lenCMAX;
-	}
-
-	public void setLenCMAX(Amount<Length> lenCMAX) {
-		this.lenCMAX = lenCMAX;
-	}
-
-	public Amount<Length> getLenTMIN() {
-		return lenTMIN;
-	}
-
-	public void setLenTMIN(Amount<Length> lenTMIN) {
-		this.lenTMIN = lenTMIN;
-	}
-
-	public Amount<Length> getLenTMAX() {
-		return lenTMAX;
-	}
-
-	public void setLenTMAX(Amount<Length> lenTMAX) {
-		this.lenTMAX = lenTMAX;
-	}
-
-	public Double getLambdaFMIN() {
-		return lambdaFMIN;
-	}
-
-	public void setLambdaFMIN(Double lambdaFMIN) {
-		this.lambdaFMIN = lambdaFMIN;
-	}
-
-	public Double getLambdaFMAX() {
-		return lambdaFMAX;
-	}
-
-	public void setLambdaFMAX(Double lambdaFMAX) {
-		this.lambdaFMAX = lambdaFMAX;
-	}
-
-	public Double getLambdaNMIN() {
-		return lambdaNMIN;
-	}
-
-	public void setLambdaNMIN(Double lambdaNMIN) {
-		this.lambdaNMIN = lambdaNMIN;
-	}
-
-	public Double getLambdaNMAX() {
-		return lambdaNMAX;
-	}
-
-	public void setLambdaNMAX(Double lambdaNMAX) {
-		this.lambdaNMAX = lambdaNMAX;
-	}
-
-	public Double getLambdaCMIN() {
-		return lambdaCMIN;
-	}
-
-	public void setLambdaCMIN(Double lambdaCMIN) {
-		this.lambdaCMIN = lambdaCMIN;
-	}
-
-	public Double getLambdaCMAX() {
-		return lambdaCMAX;
-	}
-
-	public void setLambdaCMAX(Double lambdaCMAX) {
-		this.lambdaCMAX = lambdaCMAX;
-	}
-
-	public Double getLambdaTMIN() {
-		return lambdaTMIN;
-	}
-
-	public void setLambdaTMIN(Double lambdaTMIN) {
-		this.lambdaTMIN = lambdaTMIN;
-	}
-
-	public Double getLambdaTMAX() {
-		return lambdaTMAX;
-	}
-
-	public void setLambdaTMAX(Double lambdaTMAX) {
-		this.lambdaTMAX = lambdaTMAX;
-	}
-
-	public Double getLenRatioNFMIN() {
-		return lenRatioNFMIN;
-	}
-
-	public void setLenRatioNFMIN(Double lenRatioNFMIN) {
-		this.lenRatioNFMIN = lenRatioNFMIN;
-	}
-
-	public Double getLenRatioNFMAX() {
-		return lenRatioNFMAX;
-	}
-
-	public void setLenRatioNFMAX(Double lenRatioNFMAX) {
-		this.lenRatioNFMAX = lenRatioNFMAX;
-	}
-
-	public Double getLenRatioCFMIN() {
-		return lenRatioCFMIN;
-	}
-
-	public void setLenRatioCFMIN(Double lenRatioCFMIN) {
-		this.lenRatioCFMIN = lenRatioCFMIN;
-	}
-
-	public Double getLenRatioCFMAX() {
-		return lenRatioCFMAX;
-	}
-
-	public void setLenRatioCFMAX(Double lenRatioCFMAX) {
-		this.lenRatioCFMAX = lenRatioCFMAX;
-	}
-
-	public Double getLenRatioTFMIN() {
-		return lenRatioTFMIN;
-	}
-
-	public void setLenRatioTFMIN(Double lenRatioTFMIN) {
-		this.lenRatioTFMIN = lenRatioTFMIN;
-	}
-
-	public Double getLenRatioTFMAX() {
-		return lenRatioTFMAX;
-	}
-
-	public void setLenRatioTFMAX(Double lenRatioTFMAX) {
-		this.lenRatioTFMAX = lenRatioTFMAX;
-	}
-
-	public Amount<Length> getDiamCMIN() {
-		return diamCMIN;
-	}
-
-	public void setDiamCMIN(Amount<Length> diamCMIN) {
-		this.diamCMIN = diamCMIN;
-	}
-
-	public Amount<Length> getDiamCMAX() {
-		return diamCMAX;
-	}
-
-	public void setDiamCMAX(Amount<Length> diamCMAX) {
-		this.diamCMAX = diamCMAX;
-	}
-
-	public Amount<Length> getSectionWidthMIN() {
-		return sectionWidthMIN;
-	}
-
-	public void setSectionWidthMIN(Amount<Length> sectionWidthMIN) {
-		this.sectionWidthMIN = sectionWidthMIN;
-	}
-
-	public Amount<Length> getSectionWidthMAX() {
-		return sectionWidthMAX;
-	}
-
-	public void setSectionWidthMAX(Amount<Length> sectionWidthMAX) {
-		this.sectionWidthMAX = sectionWidthMAX;
-	}
-
-	public Amount<Length> getHeightNMIN() {
-		return heightNMIN;
-	}
-
-	public void setHeightNMIN(Amount<Length> heightNMIN) {
-		this.heightNMIN = heightNMIN;
-	}
-
-	public Amount<Length> getHeightNMAX() {
-		return heightNMAX;
-	}
-
-	public void setHeightNMAX(Amount<Length> heightNMAX) {
-		this.heightNMAX = heightNMAX;
-	}
-
-	public Amount<Length> getHeightTMIN() {
-		return heightTMIN;
-	}
-
-	public void setHeightTMIN(Amount<Length> heightTMIN) {
-		this.heightTMIN = heightTMIN;
-	}
-
-	public Amount<Length> getHeightTMAX() {
-		return heightTMAX;
-	}
-
-	public void setHeightTMAX(Amount<Length> heightTMAX) {
-		this.heightTMAX = heightTMAX;
-	}
-
-	public Amount<Length> getDxNoseCapMIN() {
-		return dxNoseCapMIN;
-	}
-
-	public void setDxNoseCapMIN(Amount<Length> dxNoseCapMIN) {
-		this.dxNoseCapMIN = dxNoseCapMIN;
-	}
-
-	public Amount<Length> getDxNoseCapMAX() {
-		return dxNoseCapMAX;
-	}
-
-	public void setDxNoseCapMAX(Amount<Length> dxNoseCapMAX) {
-		this.dxNoseCapMAX = dxNoseCapMAX;
-	}
-
-	public Amount<Length> getDxTailCapMIN() {
-		return dxTailCapMIN;
-	}
-
-	public void setDxTailCapMIN(Amount<Length> dxTailCapMIN) {
-		this.dxTailCapMIN = dxTailCapMIN;
-	}
-
-	public Amount<Length> getDxTailCapMAX() {
-		return dxTailCapMAX;
-	}
-
-	public void setDxTailCapMAX(Amount<Length> dxTailCapMAX) {
-		this.dxTailCapMAX = dxTailCapMAX;
-	}
-
-	public Double getSectionLowerToTotalHeightRatioMIN() {
-		return sectionLowerToTotalHeightRatioMIN;
-	}
-
-	public void setSectionLowerToTotalHeightRatioMIN(Double sectionLowerToTotalHeightRatioMIN) {
-		this.sectionLowerToTotalHeightRatioMIN = sectionLowerToTotalHeightRatioMIN;
-	}
-
-	public Double getSectionLowerToTotalHeightRatioMAX() {
-		return sectionLowerToTotalHeightRatioMAX;
-	}
-
-	public void setSectionLowerToTotalHeightRatioMAX(Double sectionLowerToTotalHeightRatioMAX) {
-		this.sectionLowerToTotalHeightRatioMAX = sectionLowerToTotalHeightRatioMAX;
-	}
-
-	public Double getSectionRhoUpperMIN() {
-		return sectionRhoUpperMIN;
-	}
-
-	public void setSectionRhoUpperMIN(Double sectionRhoUpperMIN) {
-		this.sectionRhoUpperMIN = sectionRhoUpperMIN;
-	}
-
-	public Double getSectionRhoUpperMAX() {
-		return sectionRhoUpperMAX;
-	}
-
-	public void setSectionRhoUpperMAX(Double sectionRhoUpperMAX) {
-		this.sectionRhoUpperMAX = sectionRhoUpperMAX;
-	}
-
-	public Double getSectionRhoLowerMIN() {
-		return sectionRhoLowerMIN;
-	}
-
-	public void setSectionRhoLowerMIN(Double sectionRhoLowerMIN) {
-		this.sectionRhoLowerMIN = sectionRhoLowerMIN;
-	}
-
-	public Double getSectionRhoLowerMAX() {
-		return sectionRhoLowerMAX;
-	}
-
-	public void setSectionRhoLowerMAX(Double sectionRhoLowerMAX) {
-		this.sectionRhoLowerMAX = sectionRhoLowerMAX;
-	}
-
+	
 }

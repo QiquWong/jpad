@@ -20,7 +20,6 @@ import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
@@ -481,9 +480,6 @@ public class AircraftTestFrontView extends Application {
 			
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
-			
-			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
-			System.out.println("SYSTEMS ===> " + dirSystems);
 			
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);

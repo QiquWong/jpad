@@ -20,12 +20,8 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
-import analyses.ACAnalysisManager;
-import analyses.OperatingConditions;
 import calculators.aerodynamics.MomentCalc;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
@@ -34,7 +30,6 @@ import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import standaloneutils.JPADXmlReader;
-import writers.JPADStaticWriteUtils;
 
 class MyArgumentsMulthoppTest {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
@@ -64,10 +59,6 @@ class MyArgumentsMulthoppTest {
 	@Option(name = "-dlg", aliases = { "--dir-landing-gears" }, required = true,
 			usage = "landing gears directory path")
 	private File _landingGearsDirectory;
-	
-	@Option(name = "-ds", aliases = { "--dir-systems" }, required = true,
-			usage = "systems directory path")
-	private File _systemsDirectory;
 	
 	@Option(name = "-dcc", aliases = { "--dir-cabin-configurations" }, required = true,
 			usage = "cabin configurations directory path")
@@ -105,10 +96,6 @@ class MyArgumentsMulthoppTest {
 		return _landingGearsDirectory;
 	}
 
-	public File getSystemsDirectory() {
-		return _systemsDirectory;
-	}
-	
 	public File getCabinConfigurationDirectory() {
 		return _cabinConfigurationsDirectory;
 	}
@@ -194,9 +181,6 @@ public class TestMulthopp extends Application {
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
 			
-			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
-			System.out.println("SYSTEMS ===> " + dirSystems);
-			
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
 			
@@ -272,7 +256,7 @@ public class TestMulthopp extends Application {
 			
 			Amount<?> cMAlphaFuselage = MomentCalc.calculateCMAlphaFuselageOrNacelleMulthopp(
 					theAircraft.getFuselage().getXApexConstructionAxes(),
-					theAircraft.getFuselage().getFuselageCreator().getLenF(),
+					theAircraft.getFuselage().getFuselageCreator().getFuselageLength(),
 					downwashGradientRoskamConstant, 
 					theAircraft.getWing().getAspectRatio(),
 					theAircraft.getWing().getSurface(), 

@@ -3907,7 +3907,7 @@ public class ACPerformanceManager {
 							);
 			
 			double tailConeTipToFuselageRadiusRatio = 
-					_thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getHeightT()
+					_thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailTipOffset()
 					.divide(_thePerformanceInterface.getTheAircraft().getFuselage().getSectionHeight().divide(2))
 					.getEstimatedValue();
 			

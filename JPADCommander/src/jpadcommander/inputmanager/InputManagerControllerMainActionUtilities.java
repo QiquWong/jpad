@@ -1798,10 +1798,10 @@ public class InputManagerControllerMainActionUtilities {
 			}
 		}
 		
-		double xMaxTopView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
-		double xMinTopView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
-		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double xMaxTopView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double xMinTopView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
 			
 		int WIDTH = 650;
 		int HEIGHT = 650;
@@ -2226,10 +2226,10 @@ public class InputManagerControllerMainActionUtilities {
 			});
 		}
 		
-		double xMaxSideView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double xMinSideView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double yMaxSideView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
-		double yMinSideView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		double xMaxSideView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double xMinSideView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double yMaxSideView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double yMinSideView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
 		
 		int WIDTH = 650;
 		int HEIGHT = 650;
@@ -4206,10 +4206,10 @@ public class InputManagerControllerMainActionUtilities {
 			seriesFuselageCurve.add(vX2Right.get(vX2Right.size()-1-i).doubleValue(SI.METRE), vY2Right.get(vY2Right.size()-1-i).doubleValue(SI.METRE));
 		});
 
-		double xMaxTopView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
-		double xMinTopView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
-		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double xMaxTopView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double xMinTopView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
 
 		int WIDTH = 650;
 		int HEIGHT = 650;
@@ -4342,10 +4342,10 @@ public class InputManagerControllerMainActionUtilities {
 			seriesFuselageCurve.add(vX2Lower.get(vX2Lower.size()-1-i).doubleValue(SI.METRE), vZ2Lower.get(vZ2Lower.size()-1-i).doubleValue(SI.METRE));
 		});
 		
-		double xMaxSideView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double xMinSideView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double yMaxSideView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
-		double yMinSideView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		double xMaxSideView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double xMinSideView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double yMaxSideView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double yMinSideView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
 		
 		int WIDTH = 650;
 		int HEIGHT = 650;
@@ -4626,18 +4626,18 @@ public class InputManagerControllerMainActionUtilities {
 							Main.getTheAircraft()
 							.getFuselage()
 							.getFuselageCreator()
-							.getLenF()
+							.getFuselageLength()
 							.getEstimatedValue()
 							)
 					);
 			
 			if(Main.getTheAircraft()
 					.getFuselage().getFuselageCreator()
-					.getLenF().getUnit().toString().equalsIgnoreCase("m"))
+					.getFuselageLength().getUnit().toString().equalsIgnoreCase("m"))
 				theController.getFuselageLengthUnitChoiceBox().getSelectionModel().select(0);
 			else if(Main.getTheAircraft()
 					.getFuselage().getFuselageCreator()
-					.getLenF().getUnit().toString().equalsIgnoreCase("ft"))
+					.getFuselageLength().getUnit().toString().equalsIgnoreCase("ft"))
 				theController.getFuselageLengthUnitChoiceBox().getSelectionModel().select(1);
 			
 		}
@@ -4682,7 +4682,7 @@ public class InputManagerControllerMainActionUtilities {
 					Main.getTheAircraft()
 					.getFuselage()
 					.getFuselageCreator()
-					.getLenRatioNF()
+					.getNoseLengthRatio()
 					.toString()
 					);
 		else
@@ -4699,18 +4699,18 @@ public class InputManagerControllerMainActionUtilities {
 							Main.getTheAircraft()
 							.getFuselage()
 							.getFuselageCreator()
-							.getHeightN()
+							.getNoseTipOffset()
 							.getEstimatedValue()
 							)
 					);
 			
 			if(Main.getTheAircraft()
 					.getFuselage().getFuselageCreator()
-					.getHeightN().getUnit().toString().equalsIgnoreCase("m"))
+					.getNoseTipOffset().getUnit().toString().equalsIgnoreCase("m"))
 				theController.getFuselageNoseTipOffsetZUnitChoiceBox().getSelectionModel().select(0);
 			else if(Main.getTheAircraft()
 					.getFuselage().getFuselageCreator()
-					.getHeightN().getUnit().toString().equalsIgnoreCase("ft"))
+					.getNoseTipOffset().getUnit().toString().equalsIgnoreCase("ft"))
 				theController.getFuselageNoseTipOffsetZUnitChoiceBox().getSelectionModel().select(1);
 			
 		}
@@ -4727,7 +4727,7 @@ public class InputManagerControllerMainActionUtilities {
 							Main.getTheAircraft()
 							.getFuselage()
 							.getFuselageCreator()
-							.getDxNoseCapPercent()
+							.getNoseCapOffsetPercent()
 							)
 					);
 		else
@@ -4862,7 +4862,7 @@ public class InputManagerControllerMainActionUtilities {
 					Main.getTheAircraft()
 					.getFuselage()
 					.getFuselageCreator()
-					.getLenRatioCF()
+					.getCylinderLengthRatio()
 					.toString()
 					);
 		else
@@ -5011,18 +5011,18 @@ public class InputManagerControllerMainActionUtilities {
 							Main.getTheAircraft()
 							.getFuselage()
 							.getFuselageCreator()
-							.getHeightT()
+							.getTailTipOffset()
 							.getEstimatedValue()
 							)
 					);
 			
 			if(Main.getTheAircraft()
 					.getFuselage().getFuselageCreator()
-					.getHeightT().getUnit().toString().equalsIgnoreCase("m"))
+					.getTailTipOffset().getUnit().toString().equalsIgnoreCase("m"))
 				theController.getFuselageTailTipOffsetZUnitChoiceBox().getSelectionModel().select(0);
 			else if(Main.getTheAircraft()
 					.getFuselage().getFuselageCreator()
-					.getHeightT().getUnit().toString().equalsIgnoreCase("ft"))
+					.getTailTipOffset().getUnit().toString().equalsIgnoreCase("ft"))
 				theController.getFuselageTailTipOffsetZUnitChoiceBox().getSelectionModel().select(1);
 			
 		}
@@ -5039,7 +5039,7 @@ public class InputManagerControllerMainActionUtilities {
 							Main.getTheAircraft()
 							.getFuselage()
 							.getFuselageCreator()
-							.getDxTailCapPercent()
+							.getTailCapOffsetPercent()
 							)
 					);
 		else
@@ -5431,9 +5431,9 @@ public class InputManagerControllerMainActionUtilities {
 				);
 		seatBlockSeriesList.add(seriesSeatBlock);
 		
-		double xMaxTopView = Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
-		double xMinTopView = -Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
-		double yMaxTopView = Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double xMaxTopView = Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double xMinTopView = -Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double yMaxTopView = Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
 		double yMinTopView = 0.0;
 
 		int WIDTH = 650;

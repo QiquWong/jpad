@@ -2,10 +2,8 @@ package standaloneutils.cpacs;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -22,8 +20,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
-
-import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
@@ -672,9 +668,9 @@ public class CPACSWriter {
 
 		List<List<PVector>> result = new ArrayList<>();
 		
-		Amount<Length> noseLength = fuselage.getFuselageCreator().getLengthNoseTrunk();
+		Amount<Length> noseLength = fuselage.getFuselageCreator().getNoseLength();
 		System.out.println(">> Nose length: " + noseLength);
-		Amount<Length> noseCapStation = fuselage.getFuselageCreator().getDxNoseCap();
+		Amount<Length> noseCapStation = fuselage.getFuselageCreator().getNoseCapOffset();
 		System.out.println(">> Nose cap x-station: " + noseCapStation);
 		Double xbarNoseCap = fuselage.getNoseDxCapPercent(); // normalized with noseLength
 		System.out.println(">> Nose cap x-station normalized: " + xbarNoseCap);
@@ -757,7 +753,7 @@ public class CPACSWriter {
 //		result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(noseLength));
 		// do not duplicate this section
 
-		Amount<Length> cylinderLength = fuselage.getFuselageCreator().getLengthCylindricalTrunk();
+		Amount<Length> cylinderLength = fuselage.getFuselageCreator().getCylinderLength();
 
 		LOGGER.info("[getFuselageYZSections] Fuselage cylindrical trunk: x=" + noseLength + " to x=" + noseLength.plus(cylinderLength));
 
@@ -786,8 +782,8 @@ public class CPACSWriter {
 				);
 
 		// Tail trunk
-		Amount<Length> tailLength = fuselage.getFuselageCreator().getLengthTailTrunk();
-		Amount<Length> tailCapLength = fuselage.getFuselageCreator().getDxTailCap();
+		Amount<Length> tailLength = fuselage.getFuselageCreator().getTailLength();
+		Amount<Length> tailCapLength = fuselage.getFuselageCreator().getTailCapOffset();
 		Amount<Length> fuselageLength = fuselage.getLength();
 
 		LOGGER.info("[getFuselageYZSections] Tail trunk (no cap): x=" 

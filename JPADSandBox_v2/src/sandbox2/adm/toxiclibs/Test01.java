@@ -10,7 +10,6 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import sandbox2.vt.FuselageTest;
 import standaloneutils.JPADXmlReader;
 import toxi.geom.Line3D;
 import toxi.geom.mesh.STLReader;

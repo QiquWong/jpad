@@ -290,7 +290,7 @@ public class MyFuselageBuilder {
 		PVector p0 = new PVector(
 				(float) 0.0,
 				(float) 0.0,
-				(float) theFuselage.getFuselageCreator().getHeightN().doubleValue(SI.METER)
+				(float) theFuselage.getFuselageCreator().getNoseTipOffset().doubleValue(SI.METER)
 				);
 
 		Double x_C = 
@@ -631,9 +631,9 @@ public class MyFuselageBuilder {
 		System.out.println(xStations);
 
 		PVector p0 = new PVector(
-				(float) theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER),
+				(float) theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER),
 				(float) 0.0,
-				(float) theFuselage.getFuselageCreator().getHeightT().doubleValue(SI.METER)
+				(float) theFuselage.getFuselageCreator().getTailTipOffset().doubleValue(SI.METER)
 				);
 		System.out.println("P at Tail: " + p0);
 
@@ -671,7 +671,7 @@ public class MyFuselageBuilder {
 		PVector p0 = new PVector(
 				(float) 0.0,
 				(float) 0.0,
-				(float) theFuselage.getFuselageCreator().getHeightN().doubleValue(SI.METER)
+				(float) theFuselage.getFuselageCreator().getNoseTipOffset().doubleValue(SI.METER)
 				);
 
 		Double x_C = 

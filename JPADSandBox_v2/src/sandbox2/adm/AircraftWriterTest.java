@@ -4,14 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.measure.unit.SI;
 
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -19,8 +14,6 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
-import analyses.OperatingConditions;
-import calculators.performance.AircraftPointMassPropagator;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -28,8 +21,6 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import standaloneutils.JPADXmlReader;
-import standaloneutils.MyUnits;
-import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.AircraftSaveDirectives;
 import writers.JPADStaticWriteUtils;
 
@@ -61,10 +52,6 @@ class AircraftWriterArguments {
 	@Option(name = "-dlg", aliases = { "--dir-landing-gears" }, required = true,
 			usage = "landing gears directory path")
 	private File _landingGearsDirectory;
-	
-	@Option(name = "-ds", aliases = { "--dir-systems" }, required = true,
-			usage = "systems directory path")
-	private File _systemsDirectory;
 	
 	@Option(name = "-dcc", aliases = { "--dir-cabin-configurations" }, required = true,
 			usage = "cabin configurations directory path")
@@ -102,10 +89,6 @@ class AircraftWriterArguments {
 		return _landingGearsDirectory;
 	}
 
-	public File getSystemsDirectory() {
-		return _systemsDirectory;
-	}
-	
 	public File getCabinConfigurationDirectory() {
 		return _cabinConfigurationsDirectory;
 	}
@@ -165,9 +148,6 @@ public class AircraftWriterTest {
 			
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
-			
-			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
-			System.out.println("SYSTEMS ===> " + dirSystems);
 			
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);

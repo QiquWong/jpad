@@ -44,10 +44,6 @@ public class ArgumentsCADTests { // see CompleteAnalysisTest
 			usage = "landing gears directory path")
 	private File _landingGearsDirectory;
 
-	@Option(name = "-ds", aliases = { "--dir-systems" }, required = true,
-			usage = "systems directory path")
-	private File _systemsDirectory;
-
 	@Option(name = "-dcc", aliases = { "--dir-cabin-configurations" }, required = true,
 			usage = "cabin configurations directory path")
 	private File _cabinConfigurationsDirectory;
@@ -90,10 +86,6 @@ public class ArgumentsCADTests { // see CompleteAnalysisTest
 
 	public File getLandingGearsDirectory() {
 		return _landingGearsDirectory;
-	}
-
-	public File getSystemsDirectory() {
-		return _systemsDirectory;
 	}
 
 	public File getCabinConfigurationDirectory() {

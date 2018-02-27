@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Area;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -24,25 +23,19 @@ import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.validation.ValidationSupport;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.Airfoil;
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
 import aircraft.components.CabinConfiguration.ConfigurationBuilder;
 import aircraft.components.FuelTank;
 import aircraft.components.LandingGears;
 import aircraft.components.LandingGears.LandingGearsBuilder;
-import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
+import aircraft.components.fuselage.creator.IFuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
-import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
-import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
-import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
-import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator.LiftingSurfacePanelBuilder;
 import aircraft.components.nacelles.NacelleCreator;
 import aircraft.components.nacelles.NacelleCreator.NacelleCreatorBuilder;
 import aircraft.components.nacelles.Nacelles;
@@ -54,7 +47,6 @@ import configuration.enumerations.ClassTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
-import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.LandingGearsMountingPositionEnum;
 import configuration.enumerations.NacelleMountingPositionEnum;
 import configuration.enumerations.RegulationsEnum;
@@ -108,7 +100,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import jpadcommander.Main;
 import standaloneutils.MyArrayUtils;
-import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
 /*
@@ -6172,27 +6163,27 @@ public class InputManagerController {
 
 			//.................................................................................................
 			// SETTING NEW MEASURE DATA TO TEXTFIELDS ...
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF() != null) {
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength() != null) {
 				textFieldFuselageLength.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().getEstimatedValue())
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().getEstimatedValue())
 						);
 
-				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF()
+				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength()
 						.getUnit().toString().equalsIgnoreCase("m"))
 					fuselageLengthUnitChoiceBox.getSelectionModel().select(0);
-				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF()
+				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength()
 						.getUnit().toString().equalsIgnoreCase("ft"))
 					fuselageLengthUnitChoiceBox.getSelectionModel().select(1);
 
 			}
 
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioNF() != null) 
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getNoseLengthRatio() != null) 
 				textFieldFuselageNoseLengthRatio.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioNF())
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getNoseLengthRatio())
 						);
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioCF() != null) 
+			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getCylinderLengthRatio() != null) 
 				textFieldFuselageCylinderLengthRatio.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getLenRatioCF())
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getCylinderLengthRatio())
 						);
 
 			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight() != null) {
@@ -6276,7 +6267,7 @@ public class InputManagerController {
 				if (Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSurfacePlanform()
 						.getUnit().toString().equalsIgnoreCase("m²"))
 					equivalentWingAreaUnitChoiceBox.getSelectionModel().select(0);
-				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF()
+				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength()
 						.getUnit().toString().equalsIgnoreCase("ft²"))
 					equivalentWingAreaUnitChoiceBox.getSelectionModel().select(1);
 
@@ -8053,98 +8044,91 @@ public class InputManagerController {
 							).build()
 					);
 		}
+				
+		IFuselageCreator.Builder.from(
+				Main.getTheAircraft().getFuselage().getFuselageCreator().getTheFuselageCreatorInterface()
+				)
+		// GLOBAL DATA
+		.setId("Fuselage Creator - " + Main.getTheAircraft().getId())
+		.setPressurized(fuselagePressurizedFlag)
+		.setFuselageLength(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageLength),
+						Unit.valueOf(fuselageLengthUnit)
+						)
+				)
+		.setDeckNumber(Integer.valueOf(fuselageDeckNumber))
+		.setRoughness(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageRoughness),
+						Unit.valueOf(fuselageRoughnessUnit)
+						)
+				)
+		// NOSE TRUNK
+		.setNoseCapOffsetPercent(Double.valueOf(fuselageNoseDxCapPercent))
+		.setNoseTipOffset(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageNoseTipOffset),
+						Unit.valueOf(fuselageNoseTipOffsetUnit)
+						)
+				)
+		.setNoseLengthRatio(Double.valueOf(fuselageNoseLengthRatio))
+		.setSectionMidNoseRhoLower(Double.valueOf(fuselageNoseSectionRhoUpper))
+		.setSectionMidNoseRhoUpper(Double.valueOf(fuselageNoseSectionRhoLower))
+		.setSectionNoseMidLowerToTotalHeightRatio(Double.valueOf(fuselageNoseMidSectionToTotalSectionHeightRatio))
+		.setWindshieldType(WindshieldTypeEnum.valueOf(fuselageNoseWindshieldType))
+		.setWindshieldHeight(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageNoseWindshieldHeigth),
+						Unit.valueOf(fuselageNoseWindshieldHeightUnit)
+						)
+				)
+		.setWindshieldWidth(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageNoseWindshieldWidth),
+						Unit.valueOf(fuselageNoseWindshieldWidthUnit)
+						)
+				)
+		// CYLINDRICAL TRUNK
+		.setCylinderLengthRatio(Double.valueOf(fuselageCylinderLengthRatio))
+		.setSectionCylinderHeight(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageCylinderSectionHeight),
+						Unit.valueOf(fuselageCylinderSectionHeigthUnit)
+						)
+				)
+		.setSectionCylinderWidth(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageCylinderSectionWidth),
+						Unit.valueOf(fuselageCylinderSectionWidthUnit)
+						)
+				)
+		.setHeightFromGround(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageCylinderHeigthFromGround),
+						Unit.valueOf(fuselageCylinderHeigthFromGroundUnit)
+						)
+				)
+		.setSectionCylinderLowerToTotalHeightRatio(Double.valueOf(fuselageCylinderMidSectionToTotalSectionHeightRatio))
+		.setSectionCylinderRhoLower(Double.valueOf(fuselageCylinderSectionRhoLower))
+		.setSectionCylinderRhoUpper(Double.valueOf(fuselageCylinderSectionRhoUpper))
+		// TAIL TRUNK
+		.setTailTipOffest(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(fuselageTailTipOffset),
+						Unit.valueOf(fuselageTailTipOffsetUnit)
+						)
+				)
+		.setTailCapOffsetPercent(Double.valueOf(fuselageTailDxCapPercent))
+		.setSectionMidTailRhoLower(Double.valueOf(fuselageTailSectionRhoLower))
+		.setSectionMidTailRhoUpper(Double.valueOf(fuselageTailSectionRhoUpper))
+		.setSectionTailMidLowerToTotalHeightRatio(Double.valueOf(fuselageTailMidSectionToTotalSectionHeightRatio))
+		.clearSpoilers()
+		.addAllSpoilers(spoilersList)
+		.build();
 		
-		FuselageCreator fuselageCreator = new FuselageCreator.FuselageBuilder("Fuselage Creator - " + Main.getTheAircraft().getId())
-				// TOP LEVEL
-				.pressurized(fuselagePressurizedFlag)
-				//GLOBAL DATA
-				.length(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(fuselageLength),
-								Unit.valueOf(fuselageLengthUnit)
-								)
-						)
-				.deckNumber(Integer.valueOf(fuselageDeckNumber))
-				.roughness(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(fuselageRoughness),
-								Unit.valueOf(fuselageRoughnessUnit)
-								)
-						)
-				// NOSE TRUNK
-				.dxNoseCapPercent(Double.valueOf(fuselageNoseDxCapPercent))
-				.heightN(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(fuselageNoseTipOffset),
-								Unit.valueOf(fuselageNoseTipOffsetUnit)
-								)
-						)
-				.lenRatioNF(Double.valueOf(fuselageNoseLengthRatio))
-				.sectionMidNoseRhoLower(Double.valueOf(fuselageNoseSectionRhoUpper))
-				.sectionMidNoseRhoUpper(Double.valueOf(fuselageNoseSectionRhoLower))
-				.sectionNoseMidLowerToTotalHeightRatio(Double.valueOf(fuselageNoseMidSectionToTotalSectionHeightRatio))
-				.windshieldType(WindshieldTypeEnum.valueOf(fuselageNoseWindshieldType))
-				.windshieldHeight(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(fuselageNoseWindshieldHeigth),
-								Unit.valueOf(fuselageNoseWindshieldHeightUnit)
-								)
-						)
-				.windshieldWidth(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(fuselageNoseWindshieldWidth),
-								Unit.valueOf(fuselageNoseWindshieldWidthUnit)
-								)
-						)
-				// CYLINDRICAL TRUNK
-				.lenRatioCF(Double.valueOf(fuselageCylinderLengthRatio))
-				.sectionCylinderHeight(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(fuselageCylinderSectionHeight),
-								Unit.valueOf(fuselageCylinderSectionHeigthUnit)
-								)
-						)
-				.sectionCylinderWidth(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(fuselageCylinderSectionWidth),
-								Unit.valueOf(fuselageCylinderSectionWidthUnit)
-								)
-						)
-				.heightFromGround(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(fuselageCylinderHeigthFromGround),
-								Unit.valueOf(fuselageCylinderHeigthFromGroundUnit)
-								)
-						)
-				.sectionCylinderLowerToTotalHeightRatio(Double.valueOf(fuselageCylinderMidSectionToTotalSectionHeightRatio))
-				.sectionCylinderRhoLower(Double.valueOf(fuselageCylinderSectionRhoLower))
-				.sectionCylinderRhoUpper(Double.valueOf(fuselageCylinderSectionRhoUpper))
-				// TAIL TRUNK
-				.heightT(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(fuselageTailTipOffset),
-								Unit.valueOf(fuselageTailTipOffsetUnit)
-								)
-						)
-				.dxTailCapPercent(Double.valueOf(fuselageTailDxCapPercent))
-				.sectionMidTailRhoLower(Double.valueOf(fuselageTailSectionRhoLower))
-				.sectionMidTailRhoUpper(Double.valueOf(fuselageTailSectionRhoUpper))
-				.sectionTailMidLowerToTotalHeightRatio(Double.valueOf(fuselageTailMidSectionToTotalSectionHeightRatio))
-				.build();
 		
-		// SPOILERS
-		fuselageCreator.setSpoilers(spoilersList);
-		
-		Main.getTheAircraft().setFuselage(
-				new Fuselage.FuselageBuilder(
-						"Fuselage",
-						fusDesDatabaseReader
-						)
-				.fuselageCreator(fuselageCreator)
-				.build()
-				);
 		Main.getTheAircraft().getFuselage().getFuselageCreator().calculateGeometry();
-		
 	}
 	
 	@SuppressWarnings({ "unchecked" })

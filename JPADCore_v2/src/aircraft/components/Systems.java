@@ -71,11 +71,11 @@ public class Systems {
 				.plus(_controlSurfaceMass.to(SI.KILOGRAM));
 		
 		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
-		_percentDifference =  new Double[_massMap.size()]; 
 		_massMap.put(
 				MethodEnum.TORENBEEK_1982, 
 				Amount.valueOf(round(_overallMass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM)
 				);
+		_percentDifference =  new Double[_massMap.size()]; 
 
 		_meanMass = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 				_referenceMass, 
@@ -155,8 +155,8 @@ public class Systems {
 				
 				double pel = 0.0;
 				Amount<Volume> fuselageCabinVolume = Amount.valueOf(
-						aircraft.getFuselage().getFuselageCreator().getAreaC().doubleValue(SI.SQUARE_METRE)
-						*aircraft.getFuselage().getFuselageCreator().getLenC().doubleValue(SI.METER), 
+						aircraft.getFuselage().getFuselageCreator().getCylinderSectionArea().doubleValue(SI.SQUARE_METRE)
+						*aircraft.getFuselage().getFuselageCreator().getCylinderLength().doubleValue(SI.METER), 
 						SI.CUBIC_METRE
 						);
 				if(fuselageCabinVolume.doubleValue(SI.CUBIC_METRE) < 227)
@@ -180,7 +180,7 @@ public class Systems {
 		switch (method) {
 		case TORENBEEK_1982 : {
 			_airConditioningAndAntiIcingMass = Amount.valueOf(
-					14.0*Math.pow(aircraft.getFuselage().getFuselageCreator().getLenC().doubleValue(SI.METER), 1.28), 
+					14.0*Math.pow(aircraft.getFuselage().getFuselageCreator().getCylinderLength().doubleValue(SI.METER), 1.28), 
 					SI.KILOGRAM);
 		} break;
 

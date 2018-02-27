@@ -1022,7 +1022,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 
 			_massFurnishingsAndEquipment = Amount.valueOf(
 					(12
-							* aircraft.getFuselage().getFuselageCreator().getLenF().getEstimatedValue()
+							* aircraft.getFuselage().getFuselageCreator().getFuselageLength().getEstimatedValue()
 							* aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 
 							* ( 3
 									* aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 

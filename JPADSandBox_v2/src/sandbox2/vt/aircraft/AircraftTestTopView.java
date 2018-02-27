@@ -67,10 +67,6 @@ class MyArgumentsAircraft {
 			usage = "landing gears directory path")
 	private File _landingGearsDirectory;
 	
-	@Option(name = "-ds", aliases = { "--dir-systems" }, required = true,
-			usage = "systems directory path")
-	private File _systemsDirectory;
-	
 	@Option(name = "-dcc", aliases = { "--dir-cabin-configurations" }, required = true,
 			usage = "cabin configurations directory path")
 	private File _cabinConfigurationsDirectory;
@@ -107,10 +103,6 @@ class MyArgumentsAircraft {
 		return _landingGearsDirectory;
 	}
 
-	public File getSystemsDirectory() {
-		return _systemsDirectory;
-	}
-	
 	public File getCabinConfigurationDirectory() {
 		return _cabinConfigurationsDirectory;
 	}
@@ -357,10 +349,10 @@ public class AircraftTestTopView extends Application {
 		for (int i=0; i<nacellePointsList.size(); i++)
 			listDataArrayTopView.add(nacellePointsList.get(i));
 
-		double xMaxTopView = 1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
-		double xMinTopView = -1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
-		double yMaxTopView = 1.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double yMinTopView = -0.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double xMaxTopView = 1.40*fuselage.getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double xMinTopView = -1.40*fuselage.getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double yMaxTopView = 1.20*fuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double yMinTopView = -0.20*fuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
 			
 		D3PlotterOptions optionsTopView = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
@@ -502,9 +494,6 @@ public class AircraftTestTopView extends Application {
 			
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
-			
-			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
-			System.out.println("SYSTEMS ===> " + dirSystems);
 			
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);

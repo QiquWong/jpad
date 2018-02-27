@@ -1659,14 +1659,20 @@ public class ACWeightsManager implements IACWeightsManager {
 		calculateDependentVariables(aircraft);
 		
 		/*
-		 * Initialization of the _maximumZeroFuelMass. For the first iteration a value equal to 0.75% of the_maximumTakeOffMass has been chosen.
+		 * Initialization of the _maximumZeroFuelMass and _manufacturerEmptyMass. 
+		 * For the first iteration a value equal to 75% and 50% of the_maximumTakeOffMass has been chosen respectively.
 		 * From the second iteration on, the estimated value of the _maximumZeroFuelMass (at iteration i-1) will be used. 
 		 * (_maximumZeroFuelWeight, _maximumTakeOffWeight and _maximumLandingMass must be calculated since they are used by
 		 *  LiftingSurface and LandingGears to estimate their masses)
 		 */
+		_manufacturerEmptyMass = _maximumTakeOffMass.to(SI.KILOGRAM).times(0.5);
 		_maximumZeroFuelMass = _maximumTakeOffMass.to(SI.KILOGRAM).times(0.75);
+		_manufacturerEmptyWeight = Amount.valueOf( 
+				_manufacturerEmptyMass.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+				SI.NEWTON
+				);
 		_maximumZeroFuelWeight = Amount.valueOf( 
-				_maximumTakeOffMass.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+				_maximumZeroFuelMass.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 				SI.NEWTON
 				);
 		_maximumTakeOffWeight = Amount.valueOf( 
@@ -1806,7 +1812,7 @@ public class ACWeightsManager implements IACWeightsManager {
 	private void calculateManufacturerEmptyMass(Aircraft aircraft) {
 		
 		if(aircraft.getSystems() != null)
-			aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
+			aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_1982);
 		if(aircraft.getCabinConfiguration() != null)
 			aircraft.getCabinConfiguration().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
 		

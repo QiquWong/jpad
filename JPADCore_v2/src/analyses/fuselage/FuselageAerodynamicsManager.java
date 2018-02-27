@@ -170,7 +170,7 @@ public class FuselageAerodynamicsManager {
 				AerodynamicCalc.calculateReynolds(
 						_currentAltitude.doubleValue(SI.METER),
 						_currentMachNumber,
-						_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER)
+						_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER)
 						), 
 				_currentMachNumber, 
 				0.
@@ -183,8 +183,8 @@ public class FuselageAerodynamicsManager {
 		_equivalentDiameterBase = 
 				Amount.valueOf(
 						_theFuselage.getFuselageCreator().getEquivalentDiameterAtX(
-								_theFuselage.getFuselageCreator().getLenF()
-								.minus(_theFuselage.getFuselageCreator().getDxTailCap())
+								_theFuselage.getFuselageCreator().getFuselageLength()
+								.minus(_theFuselage.getFuselageCreator().getTailCapOffset())
 								.doubleValue(SI.METER)
 								),
 						SI.METER
@@ -259,8 +259,8 @@ public class FuselageAerodynamicsManager {
 			Amount<Length> zCamber75 = 
 					Amount.valueOf(
 							_theFuselage.getFuselageCreator().getCamberAngleAtX(
-									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER)
-									- (0.25*_theFuselage.getFuselageCreator().getLenT().doubleValue(SI.METER))
+									_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER)
+									- (0.25*_theFuselage.getFuselageCreator().getTailLength().doubleValue(SI.METER))
 									),
 							SI.METER
 							);
@@ -268,9 +268,9 @@ public class FuselageAerodynamicsManager {
 			_cD0Upsweep.put(
 					MethodEnum.SEMIEMPIRICAL, 
 					DragCalc.calculateCD0Upsweep(
-							_theFuselage.getFuselageCreator().getAreaC(),
+							_theFuselage.getFuselageCreator().getCylinderSectionArea(),
 							_theWing.getSurface(),
-							_theFuselage.getFuselageCreator().getLenT(),
+							_theFuselage.getFuselageCreator().getTailLength(),
 							zCamber75
 							)
 					);
@@ -294,7 +294,7 @@ public class FuselageAerodynamicsManager {
 							MethodEnum.SEMIEMPIRICAL,
 							_theFuselage.getFuselageCreator().getWindshieldType(),
 							_theFuselage.getFuselageCreator().getWindshieldArea(),
-							_theFuselage.getFuselageCreator().getAreaC(),
+							_theFuselage.getFuselageCreator().getCylinderSectionArea(),
 							_theWing.getSurface()
 							)
 					);
@@ -361,7 +361,7 @@ public class FuselageAerodynamicsManager {
 					AerodynamicCalc.calculateReynolds(
 							_currentAltitude.doubleValue(SI.METER),
 							_currentMachNumber,
-							_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER)
+							_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER)
 							), 
 					_currentMachNumber
 					);
@@ -371,20 +371,20 @@ public class FuselageAerodynamicsManager {
 					MethodEnum.FUSDES,
 					DragCalc.dragFusDesCalc(
 							_theFuselage.getFusDesDatabaseReader().get_Kn_vs_FRn(
-									_theFuselage.getFuselageCreator().getLambdaN(),
+									_theFuselage.getFuselageCreator().getNoseFinenessRatio(),
 									_theFuselage.getFuselageCreator().getWindshieldAngle().doubleValue(NonSI.DEGREE_ANGLE)
 									),
 							_theFuselage.getFusDesDatabaseReader().get_Kc_vs_FR(
-									_theFuselage.getFuselageCreator().getLambdaF()
+									_theFuselage.getFuselageCreator().getFuselageFinenessRatio()
 									),
 							_theFuselage.getFusDesDatabaseReader().get_Kt_vs_FRt(
-									_theFuselage.getFuselageCreator().getLambdaT(),
+									_theFuselage.getFuselageCreator().getTailFinenessRatio(),
 									_theFuselage.getFuselageCreator().getUpsweepAngle().doubleValue(NonSI.DEGREE_ANGLE)
 									),
-							_theFuselage.getFuselageCreator().getsWet().doubleValue(SI.SQUARE_METRE),
-							_theFuselage.getFuselageCreator().getsWetNose().doubleValue(SI.SQUARE_METRE),
-							_theFuselage.getFuselageCreator().getsWetC().doubleValue(SI.SQUARE_METRE),
-							_theFuselage.getFuselageCreator().getsWetTail().doubleValue(SI.SQUARE_METRE),
+							_theFuselage.getFuselageCreator().getSWetTotal().doubleValue(SI.SQUARE_METRE),
+							_theFuselage.getFuselageCreator().getSWetNose().doubleValue(SI.SQUARE_METRE),
+							_theFuselage.getFuselageCreator().getSWetCylinder().doubleValue(SI.SQUARE_METRE),
+							_theFuselage.getFuselageCreator().getSWetTail().doubleValue(SI.SQUARE_METRE),
 							frontSurface.doubleValue(SI.SQUARE_METRE),
 							cDFlatPlate)
 					*surfaceRatio
@@ -409,7 +409,7 @@ public class FuselageAerodynamicsManager {
 					MyArrayUtils.convertDoubleArrayToListOfAmount(
 							MyArrayUtils.linspace(
 									0,
-									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+									_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 
 									50
 									),
 							SI.METER
@@ -422,7 +422,7 @@ public class FuselageAerodynamicsManager {
 							alphaBody, 
 							currentMach,
 							FusNacGeometryCalc.calculateFuselageVolume(
-									_theFuselage.getFuselageCreator().getLenF(), 
+									_theFuselage.getFuselageCreator().getFuselageLength(), 
 									MyArrayUtils.convertListOfDoubleToDoubleArray(
 											xStations.stream()
 											.map(x -> FusNacGeometryCalc.getWidthAtX(
@@ -434,7 +434,7 @@ public class FuselageAerodynamicsManager {
 											)
 									), 
 							_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
-									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+									_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 
 									_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
 									), 
 							FusNacGeometryCalc.calculateMaxDiameter(
@@ -442,8 +442,8 @@ public class FuselageAerodynamicsManager {
 									_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
 									_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
 									), 
-							_theFuselage.getFuselageCreator().getLenN(),                                    
-							_theFuselage.getFuselageCreator().getLenF(), 
+							_theFuselage.getFuselageCreator().getNoseLength(),                                    
+							_theFuselage.getFuselageCreator().getFuselageLength(), 
 							_theWing.getSurface(), 
 							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
 							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveZ(), 
@@ -479,7 +479,7 @@ public class FuselageAerodynamicsManager {
 					MyArrayUtils.convertDoubleArrayToListOfAmount(
 							MyArrayUtils.linspace(
 									0,
-									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+									_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 
 									50
 									),
 							SI.METER
@@ -490,7 +490,7 @@ public class FuselageAerodynamicsManager {
 					alphaBody, 
 					currentMach,
 					FusNacGeometryCalc.calculateFuselageVolume(
-							_theFuselage.getFuselageCreator().getLenF(), 
+							_theFuselage.getFuselageCreator().getFuselageLength(), 
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
 									xStations.stream()
 									.map(x -> FusNacGeometryCalc.getWidthAtX(
@@ -502,7 +502,7 @@ public class FuselageAerodynamicsManager {
 									)
 							), 
 					_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
-							_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+							_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 
 							_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
 							), 
 					FusNacGeometryCalc.calculateMaxDiameter(
@@ -510,8 +510,8 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
 							), 
-					_theFuselage.getFuselageCreator().getLenN(),                                   
-					_theFuselage.getFuselageCreator().getLenF(), 
+					_theFuselage.getFuselageCreator().getNoseLength(),                                   
+					_theFuselage.getFuselageCreator().getFuselageLength(), 
 					_theWing.getSurface(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveZ(), 
@@ -546,7 +546,7 @@ public class FuselageAerodynamicsManager {
 					MyArrayUtils.convertDoubleArrayToListOfAmount(
 							MyArrayUtils.linspace(
 									0,
-									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+									_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 
 									50
 									),
 							SI.METER
@@ -557,7 +557,7 @@ public class FuselageAerodynamicsManager {
 					alphaBody, 
 					currentMach,
 					FusNacGeometryCalc.calculateFuselageVolume(
-							_theFuselage.getFuselageCreator().getLenF(), 
+							_theFuselage.getFuselageCreator().getFuselageLength(), 
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
 									xStations.stream()
 									.map(x -> FusNacGeometryCalc.getWidthAtX(
@@ -569,7 +569,7 @@ public class FuselageAerodynamicsManager {
 									)
 							), 
 					_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
-							_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+							_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 
 							_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
 							), 
 					FusNacGeometryCalc.calculateMaxDiameter(
@@ -577,8 +577,8 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
 							), 
-					_theFuselage.getFuselageCreator().getLenN(),                       
-					_theFuselage.getFuselageCreator().getLenF(), 
+					_theFuselage.getFuselageCreator().getNoseLength(),                       
+					_theFuselage.getFuselageCreator().getFuselageLength(), 
 					_theWing.getSurface(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveZ(), 
@@ -657,9 +657,9 @@ public class FuselageAerodynamicsManager {
 					MethodEnum.MULTHOPP, 
 					MomentCalc.calculateCM0Multhopp(
 							_theFuselage.getXApexConstructionAxes(),
-							_theFuselage.getFuselageCreator().getLenF(), 
+							_theFuselage.getFuselageCreator().getFuselageLength(), 
 							_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
-									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+									_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 
 									_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
 									),
 							_theWing.getRiggingAngle(),
@@ -684,16 +684,16 @@ public class FuselageAerodynamicsManager {
 					MethodEnum.FUSDES,
 					MomentCalc.calcCM0Fuselage(
 							_theFuselage.getFusDesDatabaseReader().get_CM0_FR_vs_FR(
-									_theFuselage.getFuselageCreator().getLambdaF(), 
+									_theFuselage.getFuselageCreator().getFuselageFinenessRatio(), 
 									_fuselageXPercentPositionPole
 									),
 							_theFuselage.getFusDesDatabaseReader().get_dCM_nose_vs_wshield(
 									_theFuselage.getFuselageCreator().getWindshieldAngle().doubleValue(NonSI.DEGREE_ANGLE),
-									_theFuselage.getFuselageCreator().getLambdaN()
+									_theFuselage.getFuselageCreator().getNoseFinenessRatio()
 									),
 							_theFuselage.getFusDesDatabaseReader().get_dCM_tail_vs_upsweep(
 									_theFuselage.getFuselageCreator().getUpsweepAngle().doubleValue(NonSI.DEGREE_ANGLE),
-									_theFuselage.getFuselageCreator().getLambdaT()
+									_theFuselage.getFuselageCreator().getTailFinenessRatio()
 									)
 							)
 					*_fuselageSurfaceRatio
@@ -728,7 +728,7 @@ public class FuselageAerodynamicsManager {
 					MethodEnum.MULTHOPP, 
 					MomentCalc.calculateCMAlphaFuselageOrNacelleMulthopp(
 							_theFuselage.getXApexConstructionAxes(),
-							_theFuselage.getFuselageCreator().getLenF(),
+							_theFuselage.getFuselageCreator().getFuselageLength(),
 							downwashGradientRoskamConstant, 
 							_theWing.getAspectRatio(),
 							_theWing.getSurface(), 
@@ -749,7 +749,7 @@ public class FuselageAerodynamicsManager {
 			_cMAlpha.put(
 					MethodEnum.GILRUTH, 
 					MomentCalc.calculateCMAlphaFuselageGilruth(
-							_theFuselage.getFuselageCreator().getLenF(),
+							_theFuselage.getFuselageCreator().getFuselageLength(),
 							_theFuselage.getFuselageCreator().getSectionCylinderWidth(),
 							_positionOfC4ToFuselageLength,
 							_kF,
@@ -769,16 +769,16 @@ public class FuselageAerodynamicsManager {
 					Amount.valueOf(
 							MomentCalc.calcCMAlphaFuselage(
 									_theFuselage.getFusDesDatabaseReader().get_CMa_FR_vs_FR(
-											_theFuselage.getFuselageCreator().getLambdaF(), 
+											_theFuselage.getFuselageCreator().getFuselageFinenessRatio(), 
 											_fuselageXPercentPositionPole
 											),
 									_theFuselage.getFusDesDatabaseReader().get_dCMa_nose_vs_wshield(
 											_theFuselage.getFuselageCreator().getWindshieldAngle().doubleValue(NonSI.DEGREE_ANGLE),
-											_theFuselage.getFuselageCreator().getLambdaN()
+											_theFuselage.getFuselageCreator().getNoseFinenessRatio()
 											),
 									_theFuselage.getFusDesDatabaseReader().get_dCMa_tail_vs_upsweep(
 											_theFuselage.getFuselageCreator().getUpsweepAngle().doubleValue(NonSI.DEGREE_ANGLE),
-											_theFuselage.getFuselageCreator().getLambdaT()
+											_theFuselage.getFuselageCreator().getTailFinenessRatio()
 											)
 									)
 							*_fuselageSurfaceRatio

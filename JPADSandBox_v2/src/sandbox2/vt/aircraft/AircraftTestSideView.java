@@ -19,7 +19,6 @@ import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -265,10 +264,10 @@ public class AircraftTestSideView extends Application {
 		for (int i=0; i<nacellePointsList.size(); i++)
 			listDataArraySideView.add(nacellePointsList.get(i));
 		
-		double xMaxSideView = 1.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double xMinSideView = -0.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double yMaxSideView = 1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
-		double yMinSideView = -1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		double xMaxSideView = 1.20*fuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double xMinSideView = -0.20*fuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double yMaxSideView = 1.40*fuselage.getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double yMinSideView = -1.40*fuselage.getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
 		
 		D3PlotterOptions optionsSideView = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
@@ -413,9 +412,6 @@ public class AircraftTestSideView extends Application {
 			
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
-			
-			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
-			System.out.println("SYSTEMS ===> " + dirSystems);
 			
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);

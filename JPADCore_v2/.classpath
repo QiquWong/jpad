@@ -80,5 +80,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jUnit4/junit-4.12.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jUnit4/hamcrest-core-1.3.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/chartsFxHanSolo/smoothcharts-1.0.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/moea_framework/MOEAFramework-2.12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

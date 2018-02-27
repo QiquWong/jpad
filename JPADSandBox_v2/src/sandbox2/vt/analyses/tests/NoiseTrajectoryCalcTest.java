@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Area;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -23,10 +22,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import aircraft.components.Aircraft;
-import aircraft.components.powerplant.PowerPlant;
 import analyses.OperatingConditions;
 import calculators.performance.LandingNoiseTrajectoryCalc;
 import calculators.performance.TakeOffNoiseTrajectoryCalc;
@@ -78,10 +74,6 @@ class MyArgumentsNoiseTrajectory {
 			usage = "landing gears directory path")
 	private File _landingGearsDirectory;
 
-	@Option(name = "-ds", aliases = { "--dir-systems" }, required = true,
-			usage = "systems directory path")
-	private File _systemsDirectory;
-
 	@Option(name = "-dcc", aliases = { "--dir-cabin-configurations" }, required = true,
 			usage = "cabin configurations directory path")
 	private File _cabinConfigurationsDirectory;
@@ -120,10 +112,6 @@ class MyArgumentsNoiseTrajectory {
 
 	public File getLandingGearsDirectory() {
 		return _landingGearsDirectory;
-	}
-
-	public File getSystemsDirectory() {
-		return _systemsDirectory;
 	}
 
 	public File getCabinConfigurationDirectory() {
@@ -213,9 +201,6 @@ public class NoiseTrajectoryCalcTest extends Application {
 
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
-
-			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
-			System.out.println("SYSTEMS ===> " + dirSystems);
 
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);

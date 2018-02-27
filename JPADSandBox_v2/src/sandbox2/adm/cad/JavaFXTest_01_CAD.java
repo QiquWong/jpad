@@ -5,58 +5,17 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javafx.animation.AnimationTimer;
-import javafx.application.Application;
-import javafx.scene.AmbientLight;
-import javafx.scene.Group;
-import javafx.scene.PerspectiveCamera;
-import javafx.scene.PointLight;
-import javafx.scene.Scene;
-import javafx.scene.SceneAntialiasing;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.CullFace;
-import javafx.scene.shape.MeshView;
-import javafx.scene.shape.Sphere;
-import javafx.scene.shape.TriangleMesh;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
-import javafx.stage.Stage;
-import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
-import standaloneutils.JPADXmlReader;
-import writers.JPADStaticWriteUtils;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.fxyz.cameras.CameraTransformer;
 import org.fxyz.geometry.Point3D;
 import org.fxyz.shapes.primitives.BezierMesh;
-import org.fxyz.shapes.primitives.PrismMesh;
-import org.fxyz.shapes.primitives.helper.InterpolateBezier;
-import org.jcae.opencascade.jni.BRep_Builder;
-import org.jcae.opencascade.jni.TopoDS_Compound;
-import org.jcae.opencascade.jni.TopoDS_Edge;
-import org.jcae.opencascade.jni.TopoDS_Face;
-import org.jcae.opencascade.jni.TopoDS_Shape;
-import org.jcae.opencascade.jni.TopoDS_Vertex;
-import org.jcae.opencascade.jni.TopoDS_Wire;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.google.common.primitives.Floats;
-import com.google.common.primitives.Ints;
-
 import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
-import cad.aircraft.MyAircraftBuilder;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import database.DatabaseManager;
@@ -64,6 +23,19 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
+import javafx.application.Application;
+import javafx.scene.AmbientLight;
+import javafx.scene.Group;
+import javafx.scene.PerspectiveCamera;
+import javafx.scene.PointLight;
+import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
+import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
+import javafx.stage.Stage;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
+import standaloneutils.JPADXmlReader;
+import writers.JPADStaticWriteUtils;
 
 public class JavaFXTest_01_CAD extends Application {
 
@@ -515,9 +487,6 @@ public class JavaFXTest_01_CAD extends Application {
 			
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
-			
-			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
-			System.out.println("SYSTEMS ===> " + dirSystems);
 			
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);

@@ -2777,7 +2777,7 @@ public class JPADStaticWriteUtils {
 		
 		// global_data - length
 		JPADStaticWriteUtils.writeSingleNode("length", 
-				aircraft.getFuselage().getFuselageCreator().getLenF(), 
+				aircraft.getFuselage().getFuselageCreator().getFuselageLength(), 
 				globalDataElement, doc);
 		
 		// global_data - roughness
@@ -2791,22 +2791,22 @@ public class JPADStaticWriteUtils {
 		
 		// nose_trunk - length_ratio
 		JPADStaticWriteUtils.writeSingleNode("length_ratio", 
-				aircraft.getFuselage().getFuselageCreator().getLenRatioNF(), 
+				aircraft.getFuselage().getFuselageCreator().getNoseLengthRatio(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - fineness_ratio
 		JPADStaticWriteUtils.writeSingleNode("fineness_ratio", 
-				aircraft.getFuselage().getFuselageCreator().getLambdaN(), 
+				aircraft.getFuselage().getFuselageCreator().getNoseFinenessRatio(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - tip_height_offset
 		JPADStaticWriteUtils.writeSingleNode("tip_height_offset", 
-				aircraft.getFuselage().getFuselageCreator().getHeightN(), 
+				aircraft.getFuselage().getFuselageCreator().getNoseTipOffset(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - dx_cap_percent
 		JPADStaticWriteUtils.writeSingleNode("dx_cap_percent", 
-				aircraft.getFuselage().getFuselageCreator().getDxNoseCapPercent(), 
+				aircraft.getFuselage().getFuselageCreator().getNoseCapOffsetPercent(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - windshield_type
@@ -2845,7 +2845,7 @@ public class JPADStaticWriteUtils {
 		
 		// cylindrical_trunk - length_ratio
 		JPADStaticWriteUtils.writeSingleNode("length_ratio", 
-				aircraft.getFuselage().getFuselageCreator().getLenRatioCF(), 
+				aircraft.getFuselage().getFuselageCreator().getCylinderLengthRatio(), 
 				cylindricalTrunkElement, doc);
 		
 		// cylindrical_trunk - section_width
@@ -2884,12 +2884,12 @@ public class JPADStaticWriteUtils {
 		
 		// tail_trunk - tip_height_offset
 		JPADStaticWriteUtils.writeSingleNode("tip_height_offset", 
-				aircraft.getFuselage().getFuselageCreator().getHeightT(), 
+				aircraft.getFuselage().getFuselageCreator().getTailTipOffset(), 
 				tailTrunkElement, doc);
 		
 		// tail_trunk - dx_cap_percent
 		JPADStaticWriteUtils.writeSingleNode("dx_cap_percent", 
-				aircraft.getFuselage().getFuselageCreator().getDxTailCapPercent(), 
+				aircraft.getFuselage().getFuselageCreator().getTailCapOffsetPercent(), 
 				tailTrunkElement, doc);
 		
 		// tail_trunk - mid_section_lower_to_total_height_ratio
