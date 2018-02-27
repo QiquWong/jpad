@@ -24,7 +24,6 @@ import org.jscience.physics.amount.AmountException;
 
 import aircraft.components.Aircraft;
 import aircraft.components.LandingGears;
-import aircraft.components.LandingGears.MountingPosition;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;

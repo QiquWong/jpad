@@ -169,7 +169,6 @@ public class AircraftUtils {
 					dirEngines,
 					dirNacelles,
 					dirLandingGears,
-					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
 					aeroDatabaseReader,

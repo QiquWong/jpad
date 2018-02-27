@@ -17,7 +17,6 @@ public interface AircraftSaveDirectives {
 	String getNacelleFileName();
 	String getEngineFileName();
 	String getLandingGearFileName();
-	String getSystemFileName();
 	List<String> getWingAirfoilFileNames();
 	List<String> getHTailAirfoilFileNames();
 	List<String> getVTailAirfoilFileNames();
@@ -41,7 +40,6 @@ public interface AircraftSaveDirectives {
 			setNacelleFileName("nacelle"+ appendToName + ".xml");
 			setEngineFileName("engine"+ appendToName + ".xml");
 			setLandingGearFileName("landing_gear"+ appendToName);
-			setSystemFileName("systems"+ appendToName);
 		}
 	}	
 

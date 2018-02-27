@@ -521,7 +521,6 @@ public class AircraftTestFrontView extends Application {
 					dirEngines,
 					dirNacelles,
 					dirLandingGears,
-					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
 					aeroDatabaseReader,

@@ -13,12 +13,12 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
-import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.powerplant.Engine;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
+import configuration.enumerations.NacelleMountingPositionEnum;
 import standaloneutils.customdata.CenterOfGravity;
 
 /** 
@@ -28,7 +28,7 @@ import standaloneutils.customdata.CenterOfGravity;
  * @author Lorenzo Attanasio
  *
  */
-public class Nacelles implements INacelles {
+public class Nacelles {
 
 	private String _id;
 	private int _nacellesNumber;
@@ -90,12 +90,12 @@ public class Nacelles implements INacelles {
 				__nacellesList.get(0).setXApexConstructionAxes(Amount.valueOf(8.56902, SI.METER));
 				__nacellesList.get(0).setYApexConstructionAxes(Amount.valueOf(4.5738, SI.METER));
 				__nacellesList.get(0).setZApexConstructionAxes(Amount.valueOf(1.02895, SI.METER));
-				__nacellesList.get(0).setMountingPosition(MountingPosition.WING);
+				__nacellesList.get(0).setMountingPosition(NacelleMountingPositionEnum.WING);
 
 				__nacellesList.get(1).setXApexConstructionAxes(Amount.valueOf(8.56902, SI.METER));
 				__nacellesList.get(1).setYApexConstructionAxes(Amount.valueOf(-4.5738, SI.METER));
 				__nacellesList.get(1).setZApexConstructionAxes(Amount.valueOf(1.02895, SI.METER));
-				__nacellesList.get(1).setMountingPosition(MountingPosition.WING);
+				__nacellesList.get(1).setMountingPosition(NacelleMountingPositionEnum.WING);
 				break;
 
 			case B747_100B:
@@ -109,22 +109,22 @@ public class Nacelles implements INacelles {
 				__nacellesList.get(0).setXApexConstructionAxes(Amount.valueOf(23.770, SI.METER));
 				__nacellesList.get(0).setYApexConstructionAxes(Amount.valueOf(11.820, SI.METER));
 				__nacellesList.get(0).setZApexConstructionAxes(Amount.valueOf(-2.642, SI.METER));
-				__nacellesList.get(0).setMountingPosition(MountingPosition.WING);
+				__nacellesList.get(0).setMountingPosition(NacelleMountingPositionEnum.WING);
 				
 				__nacellesList.get(1).setXApexConstructionAxes(Amount.valueOf(31.693, SI.METER));
 				__nacellesList.get(1).setYApexConstructionAxes(Amount.valueOf(21.951, SI.METER));
 				__nacellesList.get(1).setZApexConstructionAxes(Amount.valueOf(-2.642, SI.METER));
-				__nacellesList.get(1).setMountingPosition(MountingPosition.WING);
+				__nacellesList.get(1).setMountingPosition(NacelleMountingPositionEnum.WING);
 				
 				__nacellesList.get(2).setXApexConstructionAxes(Amount.valueOf(23.770, SI.METER));
 				__nacellesList.get(2).setYApexConstructionAxes(Amount.valueOf(-11.820, SI.METER));
 				__nacellesList.get(2).setZApexConstructionAxes(Amount.valueOf(-2.642, SI.METER));
-				__nacellesList.get(2).setMountingPosition(MountingPosition.WING);
+				__nacellesList.get(2).setMountingPosition(NacelleMountingPositionEnum.WING);
 				
 				__nacellesList.get(3).setXApexConstructionAxes(Amount.valueOf(31.693, SI.METER));
 				__nacellesList.get(3).setYApexConstructionAxes(Amount.valueOf(-21.951, SI.METER));
 				__nacellesList.get(3).setZApexConstructionAxes(Amount.valueOf(-2.642, SI.METER));
-				__nacellesList.get(3).setMountingPosition(MountingPosition.WING);
+				__nacellesList.get(3).setMountingPosition(NacelleMountingPositionEnum.WING);
 				
 				break;
 				
@@ -139,12 +139,12 @@ public class Nacelles implements INacelles {
 				__nacellesList.get(0).setXApexConstructionAxes(Amount.valueOf(11.84, SI.METER));
 				__nacellesList.get(0).setYApexConstructionAxes(Amount.valueOf(4.91, SI.METER));
 				__nacellesList.get(0).setZApexConstructionAxes(Amount.valueOf(-2.45, SI.METER));
-				__nacellesList.get(0).setMountingPosition(MountingPosition.WING);
+				__nacellesList.get(0).setMountingPosition(NacelleMountingPositionEnum.WING);
 				
 				__nacellesList.get(1).setXApexConstructionAxes(Amount.valueOf(11.84, SI.METER));
 				__nacellesList.get(1).setYApexConstructionAxes(Amount.valueOf(-4.91, SI.METER));
 				__nacellesList.get(1).setZApexConstructionAxes(Amount.valueOf(-2.45, SI.METER));
-				__nacellesList.get(1).setMountingPosition(MountingPosition.WING);
+				__nacellesList.get(1).setMountingPosition(NacelleMountingPositionEnum.WING);
 				
 				break;
 			}
@@ -208,21 +208,21 @@ public class Nacelles implements INacelles {
 		
 	}
 	
-	@Override
+	
 	public void initializeWeights(Aircraft theAircraft) {
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).initializeWeights(theAircraft);
 		}
 	}
 
-	@Override
+	
 	public void initializeBalance() {
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).initializeBalance();
 		}
 	}
 	
-	@Override
+	
 	public void calculateSurfaceWetted() {
 		_surfaceWetted = Amount.valueOf(0., SI.SQUARE_METRE);
 		for(int i=0; i < _nacellesNumber; i++) {
@@ -233,7 +233,7 @@ public class Nacelles implements INacelles {
 	/**
 	 * @author Lorenzo Attanasio
 	 */
-	@Override
+	
 	public void calculateMass(Aircraft theAircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 
 		_totalMass = Amount.valueOf(0., SI.KILOGRAM);
@@ -262,7 +262,7 @@ public class Nacelles implements INacelles {
 				getEstimatedValue()*100.;
 	}
 	
-	@Override
+	
 	public CenterOfGravity calculateCG() {
 
 		_totalCG = new CenterOfGravity();
@@ -280,122 +280,122 @@ public class Nacelles implements INacelles {
 		return _totalCG;
 	}
 
-	@Override
+	
 	public String getId() {
 		return _id;
 	}
 
-	@Override
+	
 	public void setId(String _id) {
 		this._id = _id;
 	}
 
-	@Override
+	
 	public int getNacellesNumber() {
 		return _nacellesNumber;
 	}
 
-	@Override
+	
 	public void setNacellesNumber(int _nacellesNumber) {
 		this._nacellesNumber = _nacellesNumber;
 	}
 
-	@Override
+	
 	public List<NacelleCreator> getNacellesList() {
 		return _nacellesList;
 	}
 
-	@Override
+	
 	public void setNacellesList(List<NacelleCreator> _nacellesList) {
 		this._nacellesList = _nacellesList;
 	}
 
-	@Override
+	
 	public Map<NacelleCreator, Engine> getNacelleEngineMap() {
 		return _nacelleEngineMap;
 	}
 
-	@Override
+	
 	public void setNacelleEngineMap(Map<NacelleCreator, Engine> _nacelleEngineMap) {
 		this._nacelleEngineMap = _nacelleEngineMap;
 	}
 
-	@Override
+	
 	public Amount<Mass> getTotalMass() {
 		return _totalMass;
 	}
 
-	@Override
+	
 	public void setTotalMass(Amount<Mass> _totalMass) {
 		this._totalMass = _totalMass;
 	}
 
-	@Override
+	
 	public List<Amount<Mass>> getMassList() {
 		return _massList;
 	}
 
-	@Override
+	
 	public void setMassList(List<Amount<Mass>> _massList) {
 		this._massList = _massList;
 	}
 
-	@Override
+	
 	public CenterOfGravity getTotalCG() {
 		return _totalCG;
 	}
 
-	@Override
+	
 	public void setTotalCG(CenterOfGravity _totalCG) {
 		this._totalCG = _totalCG;
 	}
 
-	@Override
+	
 	public List<CenterOfGravity> getCGList() {
 		return _cgList;
 	}
 
-	@Override
+	
 	public void setCGList(List<CenterOfGravity> _cgList) {
 		this._cgList = _cgList;
 	}
 
-	@Override
+	
 	public Double getPercentTotalDifference() {
 		return _percentTotalDifference;
 	}
 
-	@Override
+	
 	public Double getCD0Total() {
 		return _cD0Total;
 	}
 
-	@Override
+	
 	public Double getCD0Parasite() {
 		return _cD0Parasite;
 	}
 
-	@Override
+	
 	public Double getCD0Base() {
 		return _cD0Base;
 	}
 
-	@Override
+	
 	public Amount<Mass> getMassReference() {
 		return _massReference;
 	}
 
-	@Override
+	
 	public void setMassReference(Amount<Mass> _massReference) {
 		this._massReference = _massReference;
 	}
 
-	@Override
+	
 	public Amount<Area> getSurfaceWetted() {
 		return _surfaceWetted;
 	}
 
-	@Override
+	
 	public void setSurfaceWetted(Amount<Area> _surfaceWetted) {
 		this._surfaceWetted = _surfaceWetted;
 	}

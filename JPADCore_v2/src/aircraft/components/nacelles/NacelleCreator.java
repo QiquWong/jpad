@@ -20,6 +20,7 @@ import analyses.nacelles.NacelleWeightsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineTypeEnum;
+import configuration.enumerations.NacelleMountingPositionEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyInterpolatingFunction;
@@ -41,17 +42,10 @@ import standaloneutils.MyXMLReaderUtils;
  * @author Vittorio Trifari, Vincenzo Cusati
  *
  */
-public class NacelleCreator implements INacelleCreator {
-
-	public enum MountingPosition {
-		WING,
-		FUSELAGE,
-		HTAIL,
-		UNDERCARRIAGE_HOUSING
-	}
+public class NacelleCreator {
 
 	private String _id;
-	private MountingPosition _mountingPosition;
+	private NacelleMountingPositionEnum _mountingPosition;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
@@ -365,7 +359,6 @@ public class NacelleCreator implements INacelleCreator {
 	 * 
 	 * @see: Behind ADAS - Nacelle Sizing
 	 */
-	@Override
 	public void estimateDimensions (Engine theEngine) {
 				
 		Amount<Length> width;
@@ -483,19 +476,16 @@ public class NacelleCreator implements INacelleCreator {
 		_surfaceWetted = _length.times(_diameterMax.times(Math.PI)).to(SI.SQUARE_METRE); 
 	}
 
-	@Override
 	public void initializeWeights(Aircraft theAircraft) {
 		if (_theWeights == null) 
 			_theWeights = new NacelleWeightsManager(this, theAircraft);
 	}
 
-	@Override
 	public void initializeBalance() {
 		if (_theBalance == null)
 			_theBalance = new NacelleBalanceManager(this);
 	}
 
-	@Override
 	/**
 	 * @author Vittorio Trifari
 	 */
@@ -503,7 +493,6 @@ public class NacelleCreator implements INacelleCreator {
 		calculateGeometry(20);
 	}
 	
-	@Override
 	/**
 	 * This method evaluates the Nacelle wetted surface and the Nacelle outlines for a 3-view
 	 * representation. The X-Z and X-Y outlines are calculated using a cubic spline interpolation
@@ -633,7 +622,6 @@ public class NacelleCreator implements INacelleCreator {
 	 * 
 	 * @author Lorenzo Attanasio
 	 */
-	@Override
 	public void calculateAll(Aircraft theAircraft) {
 		initializeWeights(theAircraft);
 		initializeBalance();
@@ -642,314 +630,312 @@ public class NacelleCreator implements INacelleCreator {
 		_theBalance.calculateAll();
 	}
 
-	@Override
 	public Double calculateFormFactor(){
 		//matlab file ATR72
 		return (1 + 0.165 
 				+ 0.91/(_length.getEstimatedValue()/_diameterMax.getEstimatedValue())); 	
 	}
 	
-	@Override
 	public Amount<Length> getLength() {
 		return _length;
 	}
 
-	@Override
+	
 	public void setLength(Amount<Length> _lenght) {
 		this._length = _lenght;
 	}
 
-	@Override
+	
 	public Amount<Area> getSurfaceWetted() {
 		return _surfaceWetted;
 	}
 
-	@Override
+	
 	public void setSurfaceWetted(Amount<Area> _sWet) {
 		this._surfaceWetted = _sWet;
 	}
 
-	@Override
+	
 	public Amount<Length> getDiameterInlet() {
 		return _diameterInlet;
 	}
 
-	@Override
+	
 	public void setDiameterInlet(Amount<Length> _diameterInlet) {
 		this._diameterInlet = _diameterInlet;
 	}
 
-	@Override
+	
 	public Amount<Length> getDiameterMax() {
 		return _diameterMax;
 	}
 
-	@Override
+	
 	public void setDiameterMean(Amount<Length> _diameter) {
 		this._diameterMax = _diameter;
 	}
 
-	@Override
+	
 	public Amount<Length> getDiameterOutlet() {
 		return _diameterOutlet;
 	}
 
-	@Override
+	
 	public void setDiameterOutlet(Amount<Length> _exitDiameter) {
 		this._diameterOutlet = _exitDiameter;
 	}
 
-	@Override
+	
 	public Double getKInlet() {
 		return _kInlet;
 	}
 
-	@Override
+	
 	public void setKInlet(Double _kInlet) {
 		this._kInlet = _kInlet;
 	}
 
-	@Override
+	
 	public Double getKOutlet() {
 		return _kOutlet;
 	}
 
-	@Override
+	
 	public void setKOutlet(Double _kOutlet) {
 		this._kOutlet = _kOutlet;
 	}
 
-	@Override
+	
 	public Double getKLength() {
 		return _kLength;
 	}
 
-	@Override
+	
 	public void setKLength(Double _kLength) {
 		this._kLength = _kLength;
 	}
 	
-	@Override
+	
 	public Double getKDiameterOutlet() {
 		return _kDiameterOutlet;
 	}
 
-	@Override
+	
 	public void setKDiameterOutlet(Double _kDiameterOutlet) {
 		this._kDiameterOutlet = _kDiameterOutlet;
 	}
 
-	@Override
+	
 	public Amount<Length> getXPositionMaximumDiameterLRF() {
 		return _xPositionMaximumDiameterLRF;
 	}
 
-	@Override
+	
 	public void setXPositionMaximumDiameterLRF(Amount<Length> _xPositionMaximumDiameterLRF) {
 		this._xPositionMaximumDiameterLRF = _xPositionMaximumDiameterLRF;
 	}
 
-	@Override
+	
 	public Amount<Length> getZPositionOutletDiameterLRF() {
 		return _zPositionOutletDiameterLRF;
 	}
 
-	@Override
+	
 	public void setZPositionOutletDiameterLRF(Amount<Length> _zPositionOutletDiameterLRF) {
 		this._zPositionOutletDiameterLRF = _zPositionOutletDiameterLRF;
 	}
 
-	@Override
+	
 	public Amount<Length> getRoughness() {
 		return _roughness;
 	}
 
-	@Override
+	
 	public void setRoughness(Amount<Length> _roughness) {
 		this._roughness = _roughness;
 	}
 
-	@Override
-	public MountingPosition getMountingPosition() {
+	
+	public NacelleMountingPositionEnum getMountingPosition() {
 		return _mountingPosition;
 	}
 
-	@Override
-	public void setMountingPosition(MountingPosition _mounting) {
+	
+	public void setMountingPosition(NacelleMountingPositionEnum _mounting) {
 		this._mountingPosition = _mounting;
 	}
 
-	@Override
+	
 	public Amount<Length> getXApexConstructionAxes() {
 		return _xApexConstructionAxes;
 	}
 
-	@Override
+	
 	public void setXApexConstructionAxes(Amount<Length> _X0) {
 		this._xApexConstructionAxes = _X0;
 	}
 
-	@Override
+	
 	public Amount<Length> getYApexConstructionAxes() {
 		return _yApexConstructionAxes;
 	}
 
-	@Override
+	
 	public void setYApexConstructionAxes(Amount<Length> _Y0) {
 		this._yApexConstructionAxes = _Y0;
 	}
 
-	@Override
+	
 	public Amount<Length> getZApexConstructionAxes() {
 		return _zApexConstructionAxes;
 	}
 
-	@Override
+	
 	public void setZApexConstructionAxes(Amount<Length> _Z0) {
 		this._zApexConstructionAxes = _Z0;
 	}
 
-	@Override
+	
 	public Engine getTheEngine() {
 		return _theEngine;
 	}
 
-	@Override
+	
 	public void setTheEngine(Engine _theEngine) {
 		this._theEngine = _theEngine;
 	}
 
-	@Override
+	
 	public NacelleWeightsManager getWeights() {
 		return _theWeights;
 	}
 
-	@Override
+	
 	public NacelleAerodynamicsManager getAerodynamics() {
 		return _theAerodynamics;
 	}
 
-	@Override
+	
 	public NacelleBalanceManager getBalance() {
 		return _theBalance;
 	}
 	
-	@Override
+	
 	public String getId() {
 		return _id;
 	}
 
-	@Override
+	
 	public void setId(String id) {
 		this._id = id;
 	}
 
-	@Override
+	
 	public Amount<Mass> getMassReference() {
 		return _massReference;
 	}
 
-	@Override
+	
 	public void setMassReference(Amount<Mass> _massReference) {
 		this._massReference = _massReference;
 	}
 
-	@Override
+	
 	public double[] getXCoordinatesOutlineDouble() {
 		return _xCoordinatesOutlineDouble;
 	}
 
-	@Override
+	
 	public void setXCoordinatesOutlineDouble(double[] xCoordinatesOutlineDouble) {
 		_xCoordinatesOutlineDouble = xCoordinatesOutlineDouble;
 	}
 
-	@Override
+	
 	public double[] getZCoordinatesOutlineXZUpperDouble() {
 		return _zCoordinatesOutlineXZUpperDouble;
 	}
 
-	@Override
+	
 	public void setZCoordinatesOutlineXZUpperDouble(double[] zCoordinatesOutlineXZUpperDouble) {
 		_zCoordinatesOutlineXZUpperDouble = zCoordinatesOutlineXZUpperDouble;
 	}
 
-	@Override
+	
 	public double[] getZCoordinatesOutlineXZLowerDouble() {
 		return _zCoordinatesOutlineXZLowerDouble;
 	}
 
-	@Override
+	
 	public void setZCoordinatesOutlineXZLowerDouble(double[] zCoordinatesOutlineXZLowerDouble) {
 		_zCoordinatesOutlineXZLowerDouble = zCoordinatesOutlineXZLowerDouble;
 	}
 
-	@Override
+	
 	public double[] getYCoordinatesOutlineXYRightDouble() {
 		return _yCoordinatesOutlineXYRightDouble;
 	}
 
-	@Override
+	
 	public void setYCoordinatesOutlineXYRightDouble(double[] _yCoordinatesOutlineXYRightDouble) {
 		this._yCoordinatesOutlineXYRightDouble = _yCoordinatesOutlineXYRightDouble;
 	}
 
-	@Override
+	
 	public double[] getYCoordinatesOutlineXYLeftDouble() {
 		return _yCoordinatesOutlineXYLeftDouble;
 	}
 
-	@Override
+	
 	public void setYCoordinatesOutlineXYLeftDouble(double[] _yCoordinatesOutlineXYLeftDouble) {
 		this._yCoordinatesOutlineXYLeftDouble = _yCoordinatesOutlineXYLeftDouble;
 	}
 
-	@Override
+	
 	public List<Amount<Length>> getXCoordinatesOutline() {
 		return _xCoordinatesOutline;
 	}
 
-	@Override
+	
 	public void setXCoordinatesOutline(List<Amount<Length>> xCoordinatesOutline) {
 		_xCoordinatesOutline = xCoordinatesOutline;
 	}
 
-	@Override
+	
 	public List<Amount<Length>> getZCoordinatesOutlineXZUpper() {
 		return _zCoordinatesOutlineXZUpper;
 	}
 	
-	@Override
+	
 	public void setZCoordinatesOutlineXZUpper(List<Amount<Length>> zCoordinatesOutlineXZUpper) {
 		_zCoordinatesOutlineXZUpper = zCoordinatesOutlineXZUpper;
 	}
 
-	@Override
+	
 	public List<Amount<Length>> getZCoordinatesOutlineXZLower() {
 		return _zCoordinatesOutlineXZLower;
 	}
 
-	@Override
+	
 	public void setZCoordinatesOutlineXZLower(List<Amount<Length>> zCoordinatesOutlineXZLower) {
 		_zCoordinatesOutlineXZLower = zCoordinatesOutlineXZLower;
 	}
 
-	@Override
+	
 	public List<Amount<Length>> getYCoordinatesOutlineXYRight() {
 		return _yCoordinatesOutlineXYRight;
 	}
 
-	@Override
+	
 	public void setYCoordinatesOutlineXYRight(List<Amount<Length>> _yCoordinatesOutlineXYRight) {
 		this._yCoordinatesOutlineXYRight = _yCoordinatesOutlineXYRight;
 	}
 
-	@Override
+	
 	public List<Amount<Length>> getYCoordinatesOutlineXYLeft() {
 		return _yCoordinatesOutlineXYLeft;
 	}
 
-	@Override
+	
 	public void setYCoordinatesOutlineXYLeft(List<Amount<Length>> _yCoordinatesOutlineXYLeft) {
 		this._yCoordinatesOutlineXYLeft = _yCoordinatesOutlineXYLeft;
 	}

@@ -12,13 +12,12 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import aircraft.components.nacelles.NacelleCreator;
-import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import analyses.analysismodel.InnerCalculator;
 import analyses.analysismodel.analysiscalcmanager.WeightsManager;
 import configuration.enumerations.AnalysisTypeEnum;
-import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
+import configuration.enumerations.NacelleMountingPositionEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
@@ -26,7 +25,7 @@ public class NacelleWeightsManager extends WeightsManager{
 
 	private Aircraft _theAircraft;
 	private NacelleCreator _theNacelle;
-	private MountingPosition _mountingPosition;
+	private NacelleMountingPositionEnum _mountingPosition;
 	private InnerCalculator calculator;
 	private Turboprop turboprop;
 	private Turbofan turbofan;
@@ -250,12 +249,12 @@ public class NacelleWeightsManager extends WeightsManager{
 	public class Piston extends InnerCalculator{
 
 		public Amount<Mass> kundu() {
-			if (_mountingPosition == MountingPosition.WING) {
+			if (_mountingPosition == NacelleMountingPositionEnum.WING) {
 				_mass = Amount.valueOf(
 						_theNacelle.getTheEngine().getP0()
 						.to(NonSI.HORSEPOWER).times(0.4).getEstimatedValue(),
 						NonSI.POUND_FORCE).to(SI.NEWTON).divide(AtmosphereCalc.g0).to(SI.KILOGRAM);
-			} else if (_mountingPosition == MountingPosition.FUSELAGE) {
+			} else if (_mountingPosition == NacelleMountingPositionEnum.FUSELAGE) {
 				_mass = Amount.valueOf(
 						_theNacelle.getTheEngine().getP0().to(NonSI.HORSEPOWER).times(0.5).getEstimatedValue(),
 						NonSI.POUND_FORCE).to(SI.NEWTON).divide(AtmosphereCalc.g0).to(SI.KILOGRAM);

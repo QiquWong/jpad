@@ -267,7 +267,6 @@ public class DirectionalStabilityTest extends Application {
 					dirEngines,
 					dirNacelles,
 					dirLandingGears,
-					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
 					aeroDatabaseReader,

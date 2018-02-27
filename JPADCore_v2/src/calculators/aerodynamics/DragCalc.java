@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
@@ -18,12 +17,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.LandingGears;
-import aircraft.components.LandingGears.MountingPosition;
 import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.geometry.FusNacGeometryCalc;
 import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.LandingGearsMountingPositionEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import standaloneutils.MyArrayUtils;
@@ -364,7 +363,7 @@ public class DragCalc {
 				+(0.75*rearTiresTotalArea.getEstimatedValue()))
 				/(wing.getSurface().getEstimatedValue());
 				
-		if(landingGears.getMountingPosition() == MountingPosition.WING) {
+		if(landingGears.getMountingPosition() == LandingGearsMountingPositionEnum.WING) {
 		
 			Amount<Area> flapSurface = Amount.valueOf(
 					wing.getSpan().getEstimatedValue()							
@@ -387,8 +386,8 @@ public class DragCalc {
 							)
 							,2);
 		}
-		else if((landingGears.getMountingPosition() == MountingPosition.FUSELAGE)
-				|| (landingGears.getMountingPosition() == MountingPosition.NACELLE)) {
+		else if((landingGears.getMountingPosition() == LandingGearsMountingPositionEnum.FUSELAGE)
+				|| (landingGears.getMountingPosition() == LandingGearsMountingPositionEnum.NACELLE)) {
 		
 			functionAlphaDeltaFlap = 
 					Math.pow(1-(0.04*cL/(landingGears.getMainLegsLenght().getEstimatedValue()

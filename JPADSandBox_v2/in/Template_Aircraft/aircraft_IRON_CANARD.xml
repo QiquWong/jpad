@@ -87,18 +87,19 @@
 		</nacelles> 
 		<landing_gears file="landing_gear_IRON.xml">
 			<position>
-                <x unit="m">22.35</x>
-                <y unit="m">0.0</y>
-                <z unit="m">-1.782</z>
+				<nose_gear>
+					<x unit="m">6.0</x>
+					<y unit="m">0.0</y>
+					<z unit="m">-1.782</z>
+				</nose_gear>
+				<main_gear>
+					<x unit="m">22.35</x>
+					<y unit="m">0.0</y>
+					<z unit="m">-1.782</z>
+				</main_gear>
             </position>
 			<mounting_point>FUSELAGE</mounting_point>
 		</landing_gears>
-		<systems file="systems_IRON.xml">
-			<position>
-                <x unit="m">0.0</x>
-                <y unit="m">0.0</y>
-                <z unit="m">0.0</z>
-            </position>
-		</systems>
+		<systems primary_electrical_systems_type=""/> <!-- AC or DC --> 
     </aircraft>
 </jpad_config>

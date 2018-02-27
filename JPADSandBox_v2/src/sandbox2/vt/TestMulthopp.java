@@ -224,31 +224,30 @@ public class TestMulthopp extends Application {
 			System.setOut(filterStream);
 			
 			// default Aircraft ATR-72 ...
-			theAircraft = new Aircraft.AircraftBuilder(
-					"ATR-72",
-					AircraftEnum.ATR72,
-					aeroDatabaseReader,
-					highLiftDatabaseReader,
-			        fusDesDatabaseReader,
-					veDSCDatabaseReader
-					)
-					.build();
-
-			// reading aircraft from xml ... 
-//			theAircraft = Aircraft.importFromXML(
-//					pathToXML,
-//					dirLiftingSurfaces,
-//					dirFuselages,
-//					dirEngines,
-//					dirNacelles,
-//					dirLandingGears,
-//					dirSystems,
-//					dirCabinConfiguration,
-//					dirAirfoil,
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
 //					aeroDatabaseReader,
 //					highLiftDatabaseReader,
-//					fusDesDatabaseReader,
-//					veDSCDatabaseReader);
+//			        fusDesDatabaseReader,
+//					veDSCDatabaseReader
+//					)
+//					.build();
+
+			// reading aircraft from xml ... 
+			theAircraft = Aircraft.importFromXML(
+					pathToXML,
+					dirLiftingSurfaces,
+					dirFuselages,
+					dirEngines,
+					dirNacelles,
+					dirLandingGears,
+					dirCabinConfiguration,
+					dirAirfoil,
+					aeroDatabaseReader,
+					highLiftDatabaseReader,
+					fusDesDatabaseReader,
+					veDSCDatabaseReader);
 			
 			// activating system.out
 			System.setOut(originalOut);			

@@ -20,6 +20,7 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
+import configuration.enumerations.LandingGearsMountingPositionEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -27,21 +28,19 @@ import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
 
 
-public class LandingGears implements ILandingGear {
+public class LandingGears {
 
-	public enum MountingPosition {
-		FUSELAGE,
-		WING,
-		NACELLE
-	}
-	
 	private String _id;
 	
-	private MountingPosition _mountingPosition;
+	private LandingGearsMountingPositionEnum _mountingPosition;
 	
-	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
-	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
-	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
+	private Amount<Length> _xApexConstructionAxesNoseGear = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _yApexConstructionAxesNoseGear = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _zApexConstructionAxesNoseGear = Amount.valueOf(0.0, SI.METER);
+	private Amount<Length> _xApexConstructionAxesMainGear = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _yApexConstructionAxesMainGear = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _zApexConstructionAxesMainGear = Amount.valueOf(0.0, SI.METER);
+
 	
 	private int _numberOfFrontalWheels,
 				_numberOfRearWheels;
@@ -333,7 +332,6 @@ public class LandingGears implements ILandingGear {
 		
 	}
 	
-	@Override
 	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		calculateMass(aircraft, MethodEnum.ROSKAM);
 		calculateMass(aircraft, MethodEnum.STANFORD);
@@ -351,7 +349,6 @@ public class LandingGears implements ILandingGear {
 		
 	}
 
-	@Override
 	public void calculateMass(Aircraft aircraft, MethodEnum method) {
 		switch (method) {
 		/* Average error > 30 %
@@ -416,7 +413,6 @@ public class LandingGears implements ILandingGear {
 
 	}
 
-	@Override
 	public void calculateCG(Aircraft aircraft) {
 		calculateCG(aircraft, MethodEnum.SFORZA);
 	}
@@ -424,7 +420,6 @@ public class LandingGears implements ILandingGear {
 	/** 
 	 * Overload of the calculate CG method that evaluate the landing gear CG location in LRF.
 	 */
-	@Override
 	public void calculateCG(
 			Aircraft aircraft, 
 			MethodEnum method) {
@@ -432,9 +427,9 @@ public class LandingGears implements ILandingGear {
 		_cg = new CenterOfGravity();
 		
 		 // THESE VALUES WILL COME FROM THE AIRCRAFT CLASS
-		_cg.setLRForigin(_xApexConstructionAxes,
-						 _yApexConstructionAxes,
-						 _zApexConstructionAxes
+		_cg.setLRForigin(_xApexConstructionAxesMainGear,
+						 _yApexConstructionAxesMainGear,
+						 _zApexConstructionAxesMainGear
 						 );
 		_cg.set_xLRFref(Amount.valueOf(0., SI.METER));
 		_cg.set_yLRFref(Amount.valueOf(0., SI.METER));
@@ -493,7 +488,7 @@ public class LandingGears implements ILandingGear {
 		
 		_cg.setXBRF(_xCGMap.get(MethodEnum.SFORZA));
 		_cg.setZBRF(
-				aircraft.getLandingGears().getZApexConstructionAxes().minus(
+				aircraft.getLandingGears().getZApexConstructionAxesMainGear().minus(
 						Amount.valueOf(
 								((zCGNoseLeg.times(noseLegLength))
 										.plus((zCGNoseWheel).times(noseWheelHeight))
@@ -512,48 +507,39 @@ public class LandingGears implements ILandingGear {
 
 	}
 
-	@Override
 	public Amount<Mass> getOverallMass() {
 		return _overallMass;
 	}
 
-	@Override
 	public void setMass(Amount<Mass> mass) {
 		this._overallMass = mass;
 	}
 
-	@Override
 	public Map<MethodEnum, Amount<Mass>> getMassMap() {
 		return _massMap;
 	}
 
-	@Override
 	public void setMassMap(Map<MethodEnum, Amount<Mass>> massMap) {
 		this._massMap = massMap;
 	}
 
-	@Override
 	public Map<AnalysisTypeEnum, List<MethodEnum>> getMethodsMap() {
 		return _methodsMap;
 	}
 
-	@Override
 	public void setMethodsMap(
 			Map<AnalysisTypeEnum, List<MethodEnum>> methodsMap) {
 		this._methodsMap = methodsMap;
 	}
 
-	@Override
 	public Double[] getPercentDifference() {
 		return _percentDifference;
 	}
 
-	@Override
 	public void setPercentDifference(Double[] percentDifference) {
 		this._percentDifference = percentDifference;
 	}
 
-	@Override
 	public Amount<Mass> getMassEstimated() {
 		return _estimatedMass;
 	}
@@ -562,163 +548,155 @@ public class LandingGears implements ILandingGear {
 		this._estimatedMass = estimatedMass;
 	}
 	
-	@Override
 	public Map<MethodEnum, Amount<Length>> getXCGMap() {
 		return _xCGMap;
 	}
 
-	@Override
 	public void setXCGMap(Map<MethodEnum, Amount<Length>> xCGMap) {
 		this._xCGMap = xCGMap;
 	}
 
-	@Override
 	public CenterOfGravity getCG() {
 		return _cg;
 	}
 
-	@Override
 	public void setCg(CenterOfGravity cg) {
 		this._cg = cg;
 	}
 
-	@Override
 	public String getId() {
 		return _id;
 	}
 
-	@Override
 	public void setId (String id) {
 		this._id = id;
 	}
 	
-	@Override
 	public Amount<Length> getMainLegsLenght() {
 		return _mainLegsLenght;
 	}
 
-	@Override
 	public void setMainLegsLenght(Amount<Length> lenght) {
 		this._mainLegsLenght = lenght;
 	}
 	
-	@Override
 	public Double getKMainLegsLength() {
 		return _kMainLegsLength;
 	}
 
-	@Override
 	public void setKMainLegsLength(Double _kMainLegsLength) {
 		this._kMainLegsLength = _kMainLegsLength;
 	}
 
-	@Override
 	public int getNumberOfFrontalWheels() {
 		return _numberOfFrontalWheels;
 	}
 
-	@Override
 	public int getNumberOfRearWheels() {
 		return _numberOfRearWheels;
 	}
 
-	@Override
 	public Amount<Length> getFrontalWheelsHeight() {
 		return _frontalWheelsHeight;
 	}
 
-	@Override
 	public Amount<Length> getFrontalWheelsWidth() {
 		return _frontalWheelsWidth;
 	}
 
-	@Override
 	public Amount<Length> getRearWheelsHeight() {
 		return _rearWheelsHeight;
 	}
 
-	@Override
 	public Amount<Length> getRearWheelsWidth() {
 		return _rearWheelsWidth;
 	}
 
-	@Override
 	public void setNumberOfFrontalWheels(int _numberOfFrontalWheels) {
 		this._numberOfFrontalWheels = _numberOfFrontalWheels;
 	}
 
-	@Override
 	public void setNumberOfRearWheels(int _numberOfRearWheels) {
 		this._numberOfRearWheels = _numberOfRearWheels;
 	}
 
-	@Override
 	public void setFrontalWheelsHeight(Amount<Length> _frontalWheelsHeight) {
 		this._frontalWheelsHeight = _frontalWheelsHeight;
 	}
 
-	@Override
 	public void setFrontalWheelsWidth(Amount<Length> _frontalWheelsWidth) {
 		this._frontalWheelsWidth = _frontalWheelsWidth;
 	}
 
-	@Override
 	public void setRearWheelsHeight(Amount<Length> _rearWheelsHeight) {
 		this._rearWheelsHeight = _rearWheelsHeight;
 	}
 
-	@Override
 	public void setRearWheelsWidth(Amount<Length> _rearWheelsWidth) {
 		this._rearWheelsWidth = _rearWheelsWidth;
 	}
 	
-	@Override
 	public Amount<Mass> getReferenceMass() {
 		return _referenceMass;
 	}
 
-	@Override
 	public void setReferenceMass(Amount<Mass> referenceMass) {
 		this._referenceMass = referenceMass;
 	}
 	
-	@Override
-	public Amount<Length> getXApexConstructionAxes() {
-		return _xApexConstructionAxes;
+	public Amount<Length> getXApexConstructionAxesMainGear() {
+		return _xApexConstructionAxesMainGear;
 	};
 	
-	@Override
-	public void setXApexConstructionAxes (Amount<Length> xApexConstructionAxes) {
-		this._xApexConstructionAxes = xApexConstructionAxes;
+	public void setXApexConstructionAxesMainGear (Amount<Length> xApexConstructionAxes) {
+		this._xApexConstructionAxesMainGear = xApexConstructionAxes;
 	};
 	
-	@Override
-	public Amount<Length> getYApexConstructionAxes() {
-		return _yApexConstructionAxes;
+	public Amount<Length> getYApexConstructionAxesMainGear() {
+		return _yApexConstructionAxesMainGear;
 	};
 	
-	@Override
-	public void setYApexConstructionAxes (Amount<Length> yApexConstructionAxes) {
-		this._yApexConstructionAxes = yApexConstructionAxes; 
+	public void setYApexConstructionAxesMainGear (Amount<Length> yApexConstructionAxes) {
+		this._yApexConstructionAxesMainGear = yApexConstructionAxes; 
 	};
 	
-	@Override 
-	public Amount<Length> getZApexConstructionAxes() {
-		return _zApexConstructionAxes;
+	public Amount<Length> getZApexConstructionAxesMainGear() {
+		return _zApexConstructionAxesMainGear;
 	};
 	
-	@Override
-	public void setZApexConstructionAxes (Amount<Length> zApexConstructionAxes) {
-		this._zApexConstructionAxes = zApexConstructionAxes;
+	public void setZApexConstructionAxesMainGear (Amount<Length> zApexConstructionAxes) {
+		this._zApexConstructionAxesMainGear = zApexConstructionAxes;
 	}
 
-	@Override
-	public MountingPosition getMountingPosition() {
+	public LandingGearsMountingPositionEnum getMountingPosition() {
 		return _mountingPosition;
 	}
 
-	@Override
-	public void setMountingPosition(MountingPosition _mountingPosition) {
+	public Amount<Length> getXApexConstructionAxesNoseGear() {
+		return _xApexConstructionAxesNoseGear;
+	}
+
+	public void setXApexConstructionAxesNoseGear(Amount<Length> _xApexConstructionAxesNoseGear) {
+		this._xApexConstructionAxesNoseGear = _xApexConstructionAxesNoseGear;
+	}
+
+	public Amount<Length> getYApexConstructionAxesNoseGear() {
+		return _yApexConstructionAxesNoseGear;
+	}
+
+	public void setYApexConstructionAxesNoseGear(Amount<Length> _yApexConstructionAxesNoseGear) {
+		this._yApexConstructionAxesNoseGear = _yApexConstructionAxesNoseGear;
+	}
+
+	public Amount<Length> getZApexConstructionAxesNoseGear() {
+		return _zApexConstructionAxesNoseGear;
+	}
+
+	public void setZApexConstructionAxesNoseGear(Amount<Length> _zApexConstructionAxesNoseGear) {
+		this._zApexConstructionAxesNoseGear = _zApexConstructionAxesNoseGear;
+	}
+
+	public void setMountingPosition(LandingGearsMountingPositionEnum _mountingPosition) {
 		this._mountingPosition = _mountingPosition;
 	}
 

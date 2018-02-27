@@ -244,7 +244,6 @@ public class AircraftPointMassPropagatorTest {
 					dirEngines,
 					dirNacelles,
 					dirLandingGears,
-					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
 					aeroDatabaseReader,

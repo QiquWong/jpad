@@ -257,15 +257,15 @@ public class AVLExternalJobTest extends Application {
 //			System.setOut(filterStream);
 			
 			// default Aircraft ATR-72 ...
-			theAircraft = new Aircraft.AircraftBuilder(
-					"ATR-72",
-					AircraftEnum.ATR72,
-					aeroDatabaseReader,
-					highLiftDatabaseReader,
-					fusDesDatabaseReader,
-					veDSCDatabaseReader
-					)
-					.build();
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader,
+//					fusDesDatabaseReader,
+//					veDSCDatabaseReader
+//					)
+//					.build();
 
 			// reading aircraft from xml ... 
 //			theAircraft = Aircraft.importFromXML(

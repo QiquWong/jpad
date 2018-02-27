@@ -610,7 +610,6 @@ public class JavaFXTest_01_CAD extends Application {
 					dirEngines,
 					dirNacelles,
 					dirLandingGears,
-					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
 					aeroDatabaseReader,

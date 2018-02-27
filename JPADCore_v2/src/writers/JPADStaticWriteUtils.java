@@ -12,9 +12,7 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -42,7 +40,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
-import org.apache.poi.openxml4j.opc.TargetMode;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Chart;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -50,32 +47,24 @@ import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.charts.AxisCrossBetween;
 import org.apache.poi.ss.usermodel.charts.AxisCrosses;
 import org.apache.poi.ss.usermodel.charts.AxisPosition;
 import org.apache.poi.ss.usermodel.charts.AxisTickMark;
-import org.apache.poi.ss.usermodel.charts.ChartAxis;
 import org.apache.poi.ss.usermodel.charts.ChartDataSource;
 import org.apache.poi.ss.usermodel.charts.ChartLegend;
 import org.apache.poi.ss.usermodel.charts.DataSources;
 import org.apache.poi.ss.usermodel.charts.LayoutTarget;
 import org.apache.poi.ss.usermodel.charts.LegendPosition;
-import org.apache.poi.ss.usermodel.charts.LineChartData;
-import org.apache.poi.ss.usermodel.charts.LineChartSerie;
 import org.apache.poi.ss.usermodel.charts.ScatterChartData;
-import org.apache.poi.ss.usermodel.charts.ScatterChartSerie;
 import org.apache.poi.ss.usermodel.charts.ValueAxis;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.azeckoski.reflectutils.ReflectUtils;
 import org.jscience.mathematics.vector.DimensionException;
 import org.jscience.physics.amount.Amount;
-import org.omg.PortableInterceptor.NON_EXISTENT;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.google.common.collect.Multimap;
-import com.sun.org.apache.xerces.internal.impl.dv.dtd.NMTOKENDatatypeValidator;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
@@ -87,22 +76,21 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
-import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator.LiftingSurfacePanelBuilder;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import aircraft.components.nacelles.NacelleCreator;
-import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.powerplant.Engine;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import configuration.enumerations.LandingGearsMountingPositionEnum;
 import configuration.enumerations.MethodEnum;
+import configuration.enumerations.NacelleMountingPositionEnum;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple4;
-import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.customdata.MyArray;
@@ -1510,8 +1498,7 @@ public class JPADStaticWriteUtils {
 			    		"fuselages",
 			    		"landing_gears",
 			    		"lifting_surfaces", 
-			    		"nacelles", 
-			    		"systems"
+			    		"nacelles" 
 			    		)
 			    );
 		// create subfolders (if non existent)
@@ -1677,15 +1664,6 @@ public class JPADStaticWriteUtils {
 								aircraftDirPath + File.separator + "landing_gears" + File.separator, 
 								aircraftSaveDirectives.getLandingGearFileName() + ".xml", 
 								ComponentEnum.LANDING_GEAR
-								)
-						);
-			if (theAircraft.getSystems() != null)
-				listDocNameType.add(
-						Tuple.of(
-								docBuilder.newDocument(),
-								aircraftDirPath + File.separator + "systems" + File.separator, 
-								aircraftSaveDirectives.getSystemFileName() + ".xml", 
-								ComponentEnum.SYSTEMS
 								)
 						);
 			if (theAircraft.getCabinConfiguration() != null)
@@ -1862,10 +1840,6 @@ public class JPADStaticWriteUtils {
 		case LANDING_GEAR:
 			if (aircraft.getLandingGears() != null)
 				makeXmlTreeLandingGear(aircraft, docNameType._1());
-			break;
-		case SYSTEMS:
-			if (aircraft.getSystems() != null)
-				makeXmlTreeSystems(aircraft, docNameType._1());
 			break;
 		default:
 			break;
@@ -2576,9 +2550,9 @@ public class JPADStaticWriteUtils {
 				aircraftElement.appendChild(
 						createLandingGearElement(doc, 
 								aircraftSaveDirectives.getLandingGearFileName() + ".xml", 
-								lg.getXApexConstructionAxes(),
-								lg.getYApexConstructionAxes(),
-								lg.getZApexConstructionAxes(),
+								lg.getXApexConstructionAxesMainGear(),
+								lg.getYApexConstructionAxesMainGear(),
+								lg.getZApexConstructionAxesMainGear(),
 								lg.getMountingPosition()
 								)
 						)
@@ -2590,14 +2564,11 @@ public class JPADStaticWriteUtils {
 			.map(comp -> (Systems) comp)
 				.forEach(sys ->
 				aircraftElement.appendChild(
-						createSystemElement(doc, 
-								aircraftSaveDirectives.getSystemFileName() + ".xml", 
-								sys.getXApexConstructionAxes(),
-								sys.getYApexConstructionAxes(),
-								sys.getZApexConstructionAxes()
-								)
+						createXMLElementWithAttributes(doc, "systems", 
+								Tuple.of("primary_electrical_systems_type", aircraft.getTheAircraftInterface().getPrimaryElectricSystemsType().toString())
 						)
-					);
+					)
+				);
 		
 	}
 	
@@ -3230,21 +3201,6 @@ public class JPADStaticWriteUtils {
 		
 	}
 	
-	private static void makeXmlTreeSystems(Aircraft aircraft, Document doc) {
-		
-		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
-		doc.appendChild(rootElement);
-
-		// systems gear
-		org.w3c.dom.Element systemsElement = createXMLElementWithAttributes(doc, "systems", 
-				Tuple.of("id", aircraft.getSystems().getId())
-				);
-		rootElement.appendChild(systemsElement); 
-		
-		// TODO: ADD OTHER TAG WHEN AVAILABLE !!
-		
-	}
-	
 	@SafeVarargs
 	public static org.w3c.dom.Element createXMLElementWithAttributes(Document doc, String elementName, 
 			Tuple2<String,String>... attributeValueTuples) {
@@ -3427,7 +3383,7 @@ public class JPADStaticWriteUtils {
 	public static org.w3c.dom.Element createNacelleElement(Document doc, 
 			String fileName, 
 			Amount<Length> x, Amount<Length> y, Amount<Length> z,
-			MountingPosition mountingPosition) {
+			NacelleMountingPositionEnum mountingPosition) {
 		
 		org.w3c.dom.Element element = createXMLElementWithAttributes(
 				doc,
@@ -3448,7 +3404,7 @@ public class JPADStaticWriteUtils {
 	public static org.w3c.dom.Element createLandingGearElement(Document doc, 
 			String fileName, 
 			Amount<Length> x, Amount<Length> y, Amount<Length> z,
-			aircraft.components.LandingGears.MountingPosition mountingPosition) {
+			LandingGearsMountingPositionEnum mountingPosition) {
 		
 		org.w3c.dom.Element element = createXMLElementWithAttributes(
 				doc,

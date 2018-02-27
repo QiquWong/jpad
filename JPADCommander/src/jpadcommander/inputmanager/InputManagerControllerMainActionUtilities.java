@@ -1081,7 +1081,7 @@ public class InputManagerControllerMainActionUtilities {
 				// write nothing
 			}
 		});
-		System.setOut(filterStream);
+//		System.setOut(filterStream);
 		
 		if(Main.getTheAircraft() != null) {
 			
@@ -1151,7 +1151,6 @@ public class InputManagerControllerMainActionUtilities {
 						String dirEngines = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "engines";
 						String dirNacelles = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "nacelles";
 						String dirLandingGears = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "landing_gears";
-						String dirSystems = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "systems";
 						String dirCabinConfiguration = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "cabin_configurations";
 						String dirAirfoils = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "lifting_surfaces" + File.separator + "airfoils";
 
@@ -1165,7 +1164,6 @@ public class InputManagerControllerMainActionUtilities {
 										dirEngines,
 										dirNacelles,
 										dirLandingGears,
-										dirSystems,
 										dirCabinConfiguration,
 										dirAirfoils,
 										aeroDatabaseReader,
@@ -2212,8 +2210,8 @@ public class InputManagerControllerMainActionUtilities {
 		if (Main.getTheAircraft().getLandingGears() != null) {
 			Amount<Length> radius = Main.getTheAircraft().getLandingGears().getRearWheelsHeight().divide(2);
 			Double[] wheelCenterPosition = new Double[] {
-					Main.getTheAircraft().getLandingGears().getXApexConstructionAxes().doubleValue(SI.METER),
-					Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					Main.getTheAircraft().getLandingGears().getXApexConstructionAxesMainGear().doubleValue(SI.METER),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 					- radius.doubleValue(SI.METER)
 			};
@@ -2767,7 +2765,7 @@ public class InputManagerControllerMainActionUtilities {
 						Main.getTheAircraft().getLandingGears()
 						.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 						+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
-						Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
 				seriesLeftLandingGearCruvesFrontView.add(
@@ -2775,7 +2773,7 @@ public class InputManagerControllerMainActionUtilities {
 						.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 						+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
 						+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
-						Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
 				seriesLeftLandingGearCruvesFrontView.add(
@@ -2783,7 +2781,7 @@ public class InputManagerControllerMainActionUtilities {
 						.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 						+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
 						+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
-						Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
 						);
@@ -2791,7 +2789,7 @@ public class InputManagerControllerMainActionUtilities {
 						Main.getTheAircraft().getLandingGears()
 						.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 						+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
-						Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
 						);
@@ -2799,7 +2797,7 @@ public class InputManagerControllerMainActionUtilities {
 						Main.getTheAircraft().getLandingGears()
 						.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 						+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
-						Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
 
@@ -2808,7 +2806,7 @@ public class InputManagerControllerMainActionUtilities {
 						- (Main.getTheAircraft().getLandingGears()
 								.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 								+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
-						Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
 				seriesRightLandingGearCruvesFrontView.add(
@@ -2816,7 +2814,7 @@ public class InputManagerControllerMainActionUtilities {
 								.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 								+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
 								+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
-						Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
 				seriesRightLandingGearCruvesFrontView.add(
@@ -2824,7 +2822,7 @@ public class InputManagerControllerMainActionUtilities {
 								.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 								+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
 								+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
-						Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
 						);
@@ -2832,7 +2830,7 @@ public class InputManagerControllerMainActionUtilities {
 						- (Main.getTheAircraft().getLandingGears()
 								.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 								+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
-						Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
 						);
@@ -2840,7 +2838,7 @@ public class InputManagerControllerMainActionUtilities {
 						- (Main.getTheAircraft().getLandingGears()
 								.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 								+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
-						Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
 
@@ -2910,7 +2908,7 @@ public class InputManagerControllerMainActionUtilities {
 		if (Main.getTheAircraft().getLandingGears() != null) 
 			serieLandingGearsCruvesFrontViewList.stream().forEach(
 					lg -> componentXList.put(
-							Main.getTheAircraft().getLandingGears().getXApexConstructionAxes().doubleValue(SI.METER)
+							Main.getTheAircraft().getLandingGears().getXApexConstructionAxesMainGear().doubleValue(SI.METER)
 							+ serieLandingGearsCruvesFrontViewList.indexOf(lg)*0.001, 
 							Tuple.of(lg, Color.decode("#404040"))
 							)
@@ -3026,7 +3024,6 @@ public class InputManagerControllerMainActionUtilities {
 		String dirEngines = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "engines";
 		String dirNacelles = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "nacelles";
 		String dirLandingGears = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "landing_gears";
-		String dirSystems = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "systems";
 		String dirCabinConfiguration = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "cabin_configurations";
 		String pathToXML = theController.getTextFieldAircraftInputFile().getText();
 
@@ -3993,18 +3990,18 @@ public class InputManagerControllerMainActionUtilities {
 					String.valueOf(
 							Main.getTheAircraft()
 							.getLandingGears()
-							.getXApexConstructionAxes()
+							.getXApexConstructionAxesMainGear()
 							.getEstimatedValue()
 							)
 					);
 
 			if(Main.getTheAircraft()
 					.getLandingGears()
-					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+					.getXApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("m"))
 				theController.getLandingGearsXUnitChoiceBox().getSelectionModel().select(0);
 			else if(Main.getTheAircraft()
 					.getLandingGears()
-					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+					.getXApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("ft"))
 				theController.getLandingGearsXUnitChoiceBox().getSelectionModel().select(1);
 
 		}
@@ -4019,18 +4016,18 @@ public class InputManagerControllerMainActionUtilities {
 					String.valueOf(
 							Main.getTheAircraft()
 							.getLandingGears()
-							.getYApexConstructionAxes()
+							.getYApexConstructionAxesMainGear()
 							.getEstimatedValue()
 							)
 					);
 
 			if(Main.getTheAircraft()
 					.getLandingGears()
-					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+					.getYApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("m"))
 				theController.getLandingGearsYUnitChoiceBox().getSelectionModel().select(0);
 			else if(Main.getTheAircraft()
 					.getLandingGears()
-					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+					.getYApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("ft"))
 				theController.getLandingGearsYUnitChoiceBox().getSelectionModel().select(1);
 
 		}
@@ -4045,18 +4042,18 @@ public class InputManagerControllerMainActionUtilities {
 					String.valueOf(
 							Main.getTheAircraft()
 							.getLandingGears()
-							.getZApexConstructionAxes()
+							.getZApexConstructionAxesMainGear()
 							.getEstimatedValue()
 							)
 					);
 
 			if(Main.getTheAircraft()
 					.getLandingGears()
-					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+					.getZApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("m"))
 				theController.getLandingGearsZUnitChoiceBox().getSelectionModel().select(0);
 			else if(Main.getTheAircraft()
 					.getLandingGears()
-					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+					.getZApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("ft"))
 				theController.getLandingGearsZUnitChoiceBox().getSelectionModel().select(1);
 
 		}
@@ -4085,99 +4082,99 @@ public class InputManagerControllerMainActionUtilities {
 
 		//---------------------------------------------------------------------------------
 		// SYSTEMS:
-		String systemsFileName =
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//systems/@file");
-		if(systemsFileName != null) 
-			theController.getTextFieldAircraftSystemsFile().setText(
-					dirSystems 
-					+ File.separator
-					+ systemsFileName
-					);
-		else
-			theController.getTextFieldAircraftSystemsFile().setText(
-					"NOT INITIALIZED"
-					);
-		//.................................................................................
-		if(Main.getTheAircraft().getSystems() != null) {
-
-			theController.getTextFieldAircraftSystemsX().setText(
-					String.valueOf(
-							Main.getTheAircraft()
-							.getSystems()
-							.getXApexConstructionAxes()
-							.getEstimatedValue()
-							)
-					);
-
-			if(Main.getTheAircraft()
-					.getSystems()
-					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-				theController.getSystemsXUnitChoiceBox().getSelectionModel().select(0);
-			else if(Main.getTheAircraft()
-					.getSystems()
-					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-				theController.getSystemsXUnitChoiceBox().getSelectionModel().select(1);
-
-		}
-		else {
-			theController.getTextFieldAircraftSystemsX().setText("0.0");
-			theController.getSystemsXUnitChoiceBox().getSelectionModel().select(0);
-		}
-		//.................................................................................
-		if(Main.getTheAircraft().getSystems() != null) {
-
-			theController.getTextFieldAircraftSystemsY().setText(
-					String.valueOf(
-							Main.getTheAircraft()
-							.getSystems()
-							.getYApexConstructionAxes()
-							.getEstimatedValue()
-							)
-					);
-
-			if(Main.getTheAircraft()
-					.getSystems()
-					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-				theController.getSystemsYUnitChoiceBox().getSelectionModel().select(0);
-			else if(Main.getTheAircraft()
-					.getSystems()
-					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-				theController.getSystemsYUnitChoiceBox().getSelectionModel().select(1);
-
-		}
-		else {
-			theController.getTextFieldAircraftSystemsY().setText("0.0");
-			theController.getSystemsYUnitChoiceBox().getSelectionModel().select(0);
-		}
-		//.................................................................................
-		if(Main.getTheAircraft().getSystems() != null) {
-
-			theController.getTextFieldAircraftSystemsZ().setText(
-					String.valueOf(
-							Main.getTheAircraft()
-							.getSystems()
-							.getZApexConstructionAxes()
-							.getEstimatedValue()
-							)
-					);
-
-			if(Main.getTheAircraft()
-					.getSystems()
-					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-				theController.getSystemsZUnitChoiceBox().getSelectionModel().select(0);
-			else if(Main.getTheAircraft()
-					.getSystems()
-					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-				theController.getSystemsZUnitChoiceBox().getSelectionModel().select(1);
-
-		}
-		else {
-			theController.getTextFieldAircraftSystemsZ().setText("0.0");
-			theController.getSystemsZUnitChoiceBox().getSelectionModel().select(0);
-		}
+//		String systemsFileName =
+//				MyXMLReaderUtils
+//				.getXMLPropertyByPath(
+//						reader.getXmlDoc(), reader.getXpath(),
+//						"//systems/@file");
+//		if(systemsFileName != null) 
+//			theController.getTextFieldAircraftSystemsFile().setText(
+//					dirSystems 
+//					+ File.separator
+//					+ systemsFileName
+//					);
+//		else
+//			theController.getTextFieldAircraftSystemsFile().setText(
+//					"NOT INITIALIZED"
+//					);
+//		//.................................................................................
+//		if(Main.getTheAircraft().getSystems() != null) {
+//
+//			theController.getTextFieldAircraftSystemsX().setText(
+//					String.valueOf(
+//							Main.getTheAircraft()
+//							.getSystems()
+//							.getXApexConstructionAxes()
+//							.getEstimatedValue()
+//							)
+//					);
+//
+//			if(Main.getTheAircraft()
+//					.getSystems()
+//					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+//				theController.getSystemsXUnitChoiceBox().getSelectionModel().select(0);
+//			else if(Main.getTheAircraft()
+//					.getSystems()
+//					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+//				theController.getSystemsXUnitChoiceBox().getSelectionModel().select(1);
+//
+//		}
+//		else {
+//			theController.getTextFieldAircraftSystemsX().setText("0.0");
+//			theController.getSystemsXUnitChoiceBox().getSelectionModel().select(0);
+//		}
+//		//.................................................................................
+//		if(Main.getTheAircraft().getSystems() != null) {
+//
+//			theController.getTextFieldAircraftSystemsY().setText(
+//					String.valueOf(
+//							Main.getTheAircraft()
+//							.getSystems()
+//							.getYApexConstructionAxes()
+//							.getEstimatedValue()
+//							)
+//					);
+//
+//			if(Main.getTheAircraft()
+//					.getSystems()
+//					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+//				theController.getSystemsYUnitChoiceBox().getSelectionModel().select(0);
+//			else if(Main.getTheAircraft()
+//					.getSystems()
+//					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+//				theController.getSystemsYUnitChoiceBox().getSelectionModel().select(1);
+//
+//		}
+//		else {
+//			theController.getTextFieldAircraftSystemsY().setText("0.0");
+//			theController.getSystemsYUnitChoiceBox().getSelectionModel().select(0);
+//		}
+//		//.................................................................................
+//		if(Main.getTheAircraft().getSystems() != null) {
+//
+//			theController.getTextFieldAircraftSystemsZ().setText(
+//					String.valueOf(
+//							Main.getTheAircraft()
+//							.getSystems()
+//							.getZApexConstructionAxes()
+//							.getEstimatedValue()
+//							)
+//					);
+//
+//			if(Main.getTheAircraft()
+//					.getSystems()
+//					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+//				theController.getSystemsZUnitChoiceBox().getSelectionModel().select(0);
+//			else if(Main.getTheAircraft()
+//					.getSystems()
+//					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+//				theController.getSystemsZUnitChoiceBox().getSelectionModel().select(1);
+//
+//		}
+//		else {
+//			theController.getTextFieldAircraftSystemsZ().setText("0.0");
+//			theController.getSystemsZUnitChoiceBox().getSelectionModel().select(0);
+//		}
 	}
 	
 	public void createFuselageTopView() {

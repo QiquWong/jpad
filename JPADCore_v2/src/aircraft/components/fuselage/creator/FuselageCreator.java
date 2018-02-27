@@ -60,8 +60,6 @@ public class FuselageCreator implements IFuselageCreator {
 
 	private Amount<Length> lenT, lenTMIN, lenTMAX;
 
-	private Amount<Length> sectionCylinderHeight;
-
 	// GM = Geometric Mean, RMS = Root Mean Square, AM = Arithmetic Mean
 	private Amount<Length> equivalentDiameterCylinderGM,
 		equivalentDiameterGM,
@@ -112,6 +110,7 @@ public class FuselageCreator implements IFuselageCreator {
 
 	// Width and height
 	private Amount<Length> sectionCylinderWidth;
+	private Amount<Length> sectionCylinderHeight;
 
 	private Amount<Length> windshieldHeight, windshieldWidth;
 

@@ -20,16 +20,16 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
-import aircraft.components.LandingGears;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
-import aircraft.components.nacelles.NacelleCreator;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import configuration.enumerations.LandingGearsMountingPositionEnum;
 import configuration.enumerations.MethodEnum;
+import configuration.enumerations.NacelleMountingPositionEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
@@ -282,13 +282,6 @@ public class Fuselage implements IFuselage {
 	// 	END CONSTRUCTOR VIA BUILDER PATTERN
 	//=========================================================================================================================================
 
-
-//	public FuselageAerodynamicsManager initializeAerodynamics(OperatingConditions ops, Aircraft aircraft) {
-//		_aerodynamicDatabaseReader = aircraft.getWing().getAerodynamicDatabaseReader();
-//		aerodynamics = new FuselageAerodynamicsManager(ops, aircraft);
-//		return aerodynamics;
-//	}
-	
 	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		calculateMass(aircraft, MethodEnum.RAYMER);
 		calculateMass(aircraft, MethodEnum.TORENBEEK_1976);
@@ -314,7 +307,6 @@ public class Fuselage implements IFuselage {
 		
 	}
 
-
 	@Override
 	public void calculateMass(Aircraft aircraft,  
 			MethodEnum method
@@ -334,12 +326,12 @@ public class Fuselage implements IFuselage {
 			}
 
 			// NACELLE ON THE H-TAIL IS ASSUMED TO INCREASE THE AIRCRAFT WEIGHT AS THEY ARE MOUNTED ON THE FUSELAGE
-			if (aircraft.getNacelles().getNacellesList().get(0).getMountingPosition() == NacelleCreator.MountingPosition.FUSELAGE
-					|| aircraft.getNacelles().getNacellesList().get(0).getMountingPosition() == NacelleCreator.MountingPosition.HTAIL) {
+			if (aircraft.getNacelles().getNacellesList().get(0).getMountingPosition() == NacelleMountingPositionEnum.FUSELAGE
+					|| aircraft.getNacelles().getNacellesList().get(0).getMountingPosition() == NacelleMountingPositionEnum.HTAIL) {
 				k = k + 0.04;
 			}
 
-			if (aircraft.getLandingGears().getMountingPosition() == LandingGears.MountingPosition.FUSELAGE) {
+			if (aircraft.getLandingGears().getMountingPosition() == LandingGearsMountingPositionEnum.FUSELAGE) {
 				k = k + 0.07;
 			}
 
@@ -463,6 +455,7 @@ public class Fuselage implements IFuselage {
 //
 //		_mass = Amount.valueOf(_massEstimated.getEstimatedValue(), SI.KILOGRAM); 
 	}
+
 
 	private Amount<Mass> calculateMassRaymer(Aircraft aircraft) {
 		double Kdoor = 1.0;

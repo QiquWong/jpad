@@ -262,7 +262,6 @@ public class NoiseTrajectoryCalcTest extends Application {
 					dirEngines,
 					dirNacelles,
 					dirLandingGears,
-					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
 					aeroDatabaseReader,

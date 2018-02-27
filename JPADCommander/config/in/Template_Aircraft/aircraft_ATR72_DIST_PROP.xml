@@ -146,19 +146,20 @@
          </nacelle>
       </nacelles>
       <landing_gears file="landing_gear_ATR72.xml">
-         <position>
-            <x unit="m">12.5000</x>
-            <y unit="m">0.0000</y>
-            <z unit="m">-1.2000</z>
-         </position>
+			<position>
+				<nose_gear>
+					<x unit="m">5.0</x>
+					<y unit="m">0.0</y>
+					<z unit="m">-1.2</z>
+				</nose_gear>
+				<main_gear>
+					<x unit="m">12.5</x>
+					<y unit="m">0.0</y>
+					<z unit="m">-1.2</z>
+				</main_gear>
+            </position>
          <mounting_point>FUSELAGE</mounting_point>
       </landing_gears>
-      <systems file="system_ATR72.xml">
-         <position>
-            <x unit="m">0.0000</x>
-            <y unit="m">0.0000</y>
-            <z unit="m">0.0000</z>
-         </position>
-      </systems>
+	  <systems primary_electrical_systems_type="AC"/> <!-- AC or DC --> 
    </aircraft>
 </jpad_config>

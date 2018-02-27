@@ -44,7 +44,6 @@ import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator.LiftingSurfacePanelBuilder;
 import aircraft.components.nacelles.NacelleCreator;
-import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.nacelles.NacelleCreator.NacelleCreatorBuilder;
 import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerplant.Engine;
@@ -56,6 +55,8 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
+import configuration.enumerations.LandingGearsMountingPositionEnum;
+import configuration.enumerations.NacelleMountingPositionEnum;
 import configuration.enumerations.RegulationsEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -7777,36 +7778,23 @@ public class InputManagerController {
 								)
 						);
 				currentNacelle.setMountingPosition(
-						MountingPosition.valueOf(nacelleMountinPositionValueList.get(i))
+						NacelleMountingPositionEnum.valueOf(nacelleMountinPositionValueList.get(i))
 						);
 			}
 		}
 		//.................................................................................................
 		if(Main.getTheAircraft().getLandingGears() != null) {
 			Main.getTheAircraft().setLandingGearsFilePath(landingGearsFilePath);
-			Main.getTheAircraft().getLandingGears().setXApexConstructionAxes(
+			Main.getTheAircraft().getLandingGears().setXApexConstructionAxesMainGear(
 					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsXPositionValue), Unit.valueOf(landingGearsXPositionUnit))
 					);
-			Main.getTheAircraft().getLandingGears().setYApexConstructionAxes(
+			Main.getTheAircraft().getLandingGears().setYApexConstructionAxesMainGear(
 					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsYPositionValue), Unit.valueOf(landingGearsYPositionUnit))
 					);
-			Main.getTheAircraft().getLandingGears().setZApexConstructionAxes(
+			Main.getTheAircraft().getLandingGears().setZApexConstructionAxesMainGear(
 					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsZPositionValue), Unit.valueOf(landingGearsZPositionUnit))
 					);
-			Main.getTheAircraft().getLandingGears().setMountingPosition(aircraft.components.LandingGears.MountingPosition.valueOf(landingGearsMountinPositionValue));
-		}
-		//.................................................................................................
-		if(Main.getTheAircraft().getSystems() != null) {
-			Main.getTheAircraft().setSystemsFilePath(systemsFilePath);
-			Main.getTheAircraft().getSystems().setXApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsXPositionValue), Unit.valueOf(systemsXPositionUnit))
-					);
-			Main.getTheAircraft().getSystems().setYApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsYPositionValue), Unit.valueOf(systemsYPositionUnit))
-					);
-			Main.getTheAircraft().getSystems().setZApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(systemsZPositionValue), Unit.valueOf(systemsZPositionUnit))
-					);
+			Main.getTheAircraft().getLandingGears().setMountingPosition(LandingGearsMountingPositionEnum.valueOf(landingGearsMountinPositionValue));
 		}
 	}
 	
@@ -10780,7 +10768,7 @@ public class InputManagerController {
 		List<Amount<Length>> nacelleXList = new ArrayList<>();
 		List<Amount<Length>> nacelleYList = new ArrayList<>();
 		List<Amount<Length>> nacelleZList = new ArrayList<>();
-		List<MountingPosition> nacelleMountingPositionList = new ArrayList<>();
+		List<NacelleMountingPositionEnum> nacelleMountingPositionList = new ArrayList<>();
 		
 		Main.getTheAircraft().getNacelles().getNacellesList().stream().forEach(nacelle -> {
 			nacelleXList.add(nacelle.getXApexConstructionAxes());
@@ -10821,7 +10809,7 @@ public class InputManagerController {
 							)
 					);
 			nacelleList.get(i).setMountingPosition(
-					MountingPosition.valueOf(nacelleMountinPositionValueList.get(i))
+					NacelleMountingPositionEnum.valueOf(nacelleMountinPositionValueList.get(i))
 					);
 			
 		}
@@ -10851,45 +10839,45 @@ public class InputManagerController {
 						Double.valueOf(landingGearsZPositionValue),
 						Unit.valueOf(landingGearsZPositionUnit)
 						);
-				aircraft.components.LandingGears.MountingPosition landingGearsMountingPosition =
-						aircraft.components.LandingGears.MountingPosition.valueOf(landingGearsMountinPositionValue);
+				LandingGearsMountingPositionEnum landingGearsMountingPosition =
+						LandingGearsMountingPositionEnum.valueOf(landingGearsMountinPositionValue);
 
 				Main.getTheAircraft().setLandingGears(
 						LandingGears.importFromXML(landingGearsFilePath.getAbsolutePath())
 						);
-				Main.getTheAircraft().getLandingGears().setXApexConstructionAxes(landingGearsXApex);
-				Main.getTheAircraft().getLandingGears().setYApexConstructionAxes(landingGearsYApex);
-				Main.getTheAircraft().getLandingGears().setZApexConstructionAxes(landingGearsZApex);
+				Main.getTheAircraft().getLandingGears().setXApexConstructionAxesMainGear(landingGearsXApex);
+				Main.getTheAircraft().getLandingGears().setYApexConstructionAxesMainGear(landingGearsYApex);
+				Main.getTheAircraft().getLandingGears().setZApexConstructionAxesMainGear(landingGearsZApex);
 				Main.getTheAircraft().getLandingGears().setMountingPosition(landingGearsMountingPosition);
 			}
 		}
 		//....................................................................................
 		// SYSTEMS
-		if (updateSystemsDataFromFile == true) {
-			if (systemsFilePath.exists()) {
-
-				Amount<Length> systemsXApex = (Amount<Length>) Amount.valueOf(
-						Double.valueOf(systemsXPositionValue), 
-						Unit.valueOf(systemsXPositionUnit)
-						);
-				Amount<Length> systemsYApex = (Amount<Length>) Amount.valueOf(
-						Double.valueOf(systemsYPositionValue), 
-						Unit.valueOf(systemsYPositionUnit)
-						);
-				Amount<Length> systemsZApex = (Amount<Length>) Amount.valueOf(
-						Double.valueOf(systemsZPositionValue), 
-						Unit.valueOf(systemsZPositionUnit)
-						);
-
-				Main.getTheAircraft().setSystems(
-						Systems.importFromXML(systemsFilePath.getAbsolutePath())
-						);
-				Main.getTheAircraft().getSystems().setXApexConstructionAxes(systemsXApex);
-				Main.getTheAircraft().getSystems().setYApexConstructionAxes(systemsYApex);
-				Main.getTheAircraft().getSystems().setZApexConstructionAxes(systemsZApex);
-
-			}
-		}
+//		if (updateSystemsDataFromFile == true) {
+//			if (systemsFilePath.exists()) {
+//
+//				Amount<Length> systemsXApex = (Amount<Length>) Amount.valueOf(
+//						Double.valueOf(systemsXPositionValue), 
+//						Unit.valueOf(systemsXPositionUnit)
+//						);
+//				Amount<Length> systemsYApex = (Amount<Length>) Amount.valueOf(
+//						Double.valueOf(systemsYPositionValue), 
+//						Unit.valueOf(systemsYPositionUnit)
+//						);
+//				Amount<Length> systemsZApex = (Amount<Length>) Amount.valueOf(
+//						Double.valueOf(systemsZPositionValue), 
+//						Unit.valueOf(systemsZPositionUnit)
+//						);
+//
+//				Main.getTheAircraft().setSystems(
+//						Systems.importFromXML(systemsFilePath.getAbsolutePath())
+//						);
+//				Main.getTheAircraft().getSystems().setXApexConstructionAxes(systemsXApex);
+//				Main.getTheAircraft().getSystems().setYApexConstructionAxes(systemsYApex);
+//				Main.getTheAircraft().getSystems().setZApexConstructionAxes(systemsZApex);
+//
+//			}
+//		}
 		//....................................................................................
 		// LOGGING AIRCRAFT COMPONENTS DATA TO GUI ...
 		//....................................................................................

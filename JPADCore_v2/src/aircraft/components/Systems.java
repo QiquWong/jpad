@@ -8,207 +8,74 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Volume;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
-import standaloneutils.JPADXmlReader;
-import standaloneutils.MyXMLReaderUtils;
-import standaloneutils.atmosphere.AtmosphereCalc;
+import configuration.enumerations.PrimaryElectricSystemsEnum;
 import writers.JPADStaticWriteUtils;
 
 
-public class Systems implements ISystems {
+public class Systems {
 
-	private String _id;
+	ISystems _theSystemsInterface;
 	
-	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
-	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
-	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
-	
+	//------------------------------------------------------------------------------------------
+	// OUTPUT DATA
+	private Amount<Mass> _apuMass;
+	private Amount<Mass> _airConditioningAndAntiIcingMass;
+	private Amount<Mass> _electricalSystemsMass;
+	private Amount<Mass> _instrumentsAndNavigationMass;
 	private Amount<Mass> _controlSurfaceMass;
-	private Amount<Mass> _referenceMass;
-	private Amount<Mass> _meanMass;
+	private Amount<Mass> _furnishingsAndEquipmentMass;
+	private Amount<Mass> _hydraulicAndPneumaticMass;
 	private Amount<Mass> _overallMass;
 
+	private Amount<Mass> _referenceMass;
+	private Amount<Mass> _meanMass;
 	private Double[] _percentDifference;
 	private Map <MethodEnum, Amount<Mass>> _massMap = new TreeMap<MethodEnum, Amount<Mass>>();
 	private List<MethodEnum> _methodsList = new ArrayList<MethodEnum>();
 	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
 
-	//============================================================================================
-	// Builder pattern 
-	//============================================================================================
-	public static class SystemsBuilder {
-
-		// required parameters
-		private String __id;
-
-		// optional parameters ... defaults
-		// ...
-		private Map <MethodEnum, Amount<Mass>> __massMap = new TreeMap<MethodEnum, Amount<Mass>>();
-		private List<MethodEnum> __methodsList = new ArrayList<MethodEnum>();
-		private Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
-
-		public SystemsBuilder (String id) {
-			this.__id = id;
-//			this.initializeDefaultVariables(AircraftEnum.ATR72);
-		}
+	//------------------------------------------------------------------------------------------
+	// BUILDER
+	public Systems(ISystems theSystemsInterface) {
 		
-		public SystemsBuilder (String id, AircraftEnum aircraftName) {
-			this.__id = id;
-			this.initializeDefaultVariables(aircraftName);
-		}
-
-		public SystemsBuilder referenceMass (Amount<Mass> referenceMass) {
-			return this;
-		}
-
-		public Systems build() {
-			return new Systems (this);
-		}
-		
-		/************************************************************************
-		 * method that recognize aircraft name and sets its 
-		 * systems data.
-		 * 
-		 * @author Vittorio Trifari
-		 */
-		@SuppressWarnings("incomplete-switch")
-		private void initializeDefaultVariables (AircraftEnum aircraftName) {
-
-			switch(aircraftName) {
-
-			case ATR72:
-				break;
-
-			case B747_100B:
-				break;
-
-			case AGILE_DC1:
-				break;
-			}
-		}
-	}
-	
-	private Systems (SystemsBuilder builder) { 
-		
-		this._id = builder.__id;
-		
-		this._methodsMap = builder.__methodsMap;
-		this._massMap = builder.__massMap;
-		this._methodsList = builder.__methodsList;
+		this._theSystemsInterface = theSystemsInterface;
 		
 	}
 	
-	//===================================================================================================
-	// End of builder pattern
-	//===================================================================================================
-	
-	public static Systems importFromXML (String pathToXML) {
-		
-		JPADXmlReader reader = new JPADXmlReader(pathToXML);
-
-		System.out.println("Reading systems data ...");
-		
-		String id = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//@id");
-		
-		Systems aircraftSystems = new SystemsBuilder(id)
-				.build();
-		
-		return aircraftSystems;
-	}
-	
-	@Override
-	public String toString() {
-		
-		MyConfiguration.customizeAmountOutput();
-
-		StringBuilder sb = new StringBuilder()
-				.append("\t-------------------------------------\n")
-				.append("\tSystems\n")
-				.append("\t-------------------------------------\n")
-				.append("\tID: '" + _id + "'\n")
-				.append("\t·····································\n")
-				;
-		
-		return sb.toString();
-		
-	}
-	
-	@Override
+	//------------------------------------------------------------------------------------------
+	// METHODS
 	public void calculateMass(Aircraft aircraft, MethodEnum method) {
 
-		// The user can estimate the overall systems mass (control surfaces systems, apu, de-icing ecc...)
-		// or estimate each component mass separately
-		calculateOverallMass(aircraft, MethodEnum.TORENBEEK_2013);
-	}
-
-	@Override
-	public void calculateControlSurfaceMass(Aircraft aircraft, MethodEnum method) {
-
-		switch (method) {
-		case JENKINSON : {
-			_methodsList.add(method);
-			_controlSurfaceMass = Amount.valueOf(
-					Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().times(0.04).getEstimatedValue(), 0.684),
-					SI.KILOGRAM);
-			_massMap.put(method, Amount.valueOf(round(_controlSurfaceMass.getEstimatedValue()), SI.KILOGRAM));
-		} break;
-
-		case TORENBEEK_1982 : {
-			_controlSurfaceMass = Amount.valueOf(
-					0.4915*Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue(), 2/3), 
-					SI.KILOGRAM);
-			_methodsList.add(method);
-			_massMap.put(method, Amount.valueOf(round(_controlSurfaceMass.getEstimatedValue()), SI.KILOGRAM));
-		} break;
-
-		default : {} break;
-		}
-
-		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
-		_percentDifference =  new Double[_massMap.size()]; 
-
-	}
-	
-	/*****************************************************************************
-	 * Evaluate mass of all the systems on board 
-	 * (APU, air conditioning, hydraulic systems ...)
-	 * 
-	 * @param aircraft
-	 * @param method
-	 */
-	@Override
-	public void calculateOverallMass(Aircraft aircraft, MethodEnum method) {
-
-		switch(method) {
-		case TORENBEEK_2013 : {
-
-			_overallMass = Amount.valueOf((
-					250*aircraft.getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METER)*
-					aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)+
-					150*aircraft.getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METER))/
-					AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND), 
-					SI.KILOGRAM);
-			_methodsList.add(method);
-			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));
-
-		} break;
-		default : break;
-		}	
+		calculateAPUMass(aircraft, method);
+		calculateAirConditionAndAntiIcing(aircraft, method);
+		calculateInstrumentAndNavigationMass(aircraft, method);
+		calculateFurnishingsAndEquipmentsMass(aircraft, method);
+		calculateHydraulicAndPneumaticMass(aircraft, method);
+		calculateElectricalSystemsMass(aircraft, method);
+		calculateControlSurfaceMass(aircraft, method);
+		
+		_overallMass = _apuMass.to(SI.KILOGRAM)
+				.plus(_airConditioningAndAntiIcingMass).to(SI.KILOGRAM)
+				.plus(_instrumentsAndNavigationMass.to(SI.KILOGRAM))
+				.plus(_furnishingsAndEquipmentMass).to(SI.KILOGRAM)
+				.plus(_electricalSystemsMass.to(SI.KILOGRAM))
+				.plus(_hydraulicAndPneumaticMass.to(SI.KILOGRAM))
+				.plus(_controlSurfaceMass.to(SI.KILOGRAM));
 		
 		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
 		_percentDifference =  new Double[_massMap.size()]; 
+		_massMap.put(
+				MethodEnum.TORENBEEK_1982, 
+				Amount.valueOf(round(_overallMass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM)
+				);
 
 		_meanMass = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 				_referenceMass, 
@@ -218,144 +85,262 @@ public class Systems implements ISystems {
 		
 	}
 
-	@Override
-	public void calculateAPUMass() {
-		// TODO
-	}
+	public void calculateControlSurfaceMass(Aircraft aircraft, MethodEnum method) {
 
-	@Override
-	public void calculateInstrumentationMass() {
-		// TODO
-	}
+		switch (method) {
+		case JENKINSON : {
+			_controlSurfaceMass = Amount.valueOf(
+					Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().times(0.04).getEstimatedValue(), 0.684),
+					SI.KILOGRAM);
+		} break;
 
-	@Override
-	public void calculateElectricalMass() {
-		// TODO
-	}
+		case TORENBEEK_1982 : {
+			_controlSurfaceMass = Amount.valueOf(
+					0.4915*Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue(), 2/3), 
+					SI.KILOGRAM);
+		} break;
 
-	@Override
-	public void calculateAntiIceAirCond() {
-		// TODO
-	}
+		default : {} break;
+		}
 
-	@Override
-	public void calculateElectronicsMass() {
-		// TODO
-	}
-
-	@Override
-	public void calculateHydraulicPneumaticMass() {
-		// TODO
 	}
 	
-	@Override
-	public void calculateAbsorbedPower() {
-		// TODO
+	public void calculateAPUMass(Aircraft aircraft, MethodEnum method) {
+
+		switch (method) {
+		case TORENBEEK_1982 : {
+			_apuMass = Amount.valueOf(
+					2.25*1.17*Math.pow(
+							aircraft.getCabinConfiguration().getNPax()*0.5, 
+							3/5
+							), 
+					SI.KILOGRAM);
+		} break;
+
+		default : {} break;
+		}
+		
+	}
+
+	public void calculateInstrumentAndNavigationMass(Aircraft aircraft, MethodEnum method) {
+
+		switch (method) {
+		case TORENBEEK_1982 : {
+			_instrumentsAndNavigationMass = Amount.valueOf(
+					0.347*Math.pow(
+							aircraft.getTheAnalysisManager().getTheWeights().getManufacturerEmptyMass().doubleValue(SI.KILOGRAM), 
+							5/9
+							)*Math.pow(
+									aircraft.getTheAnalysisManager().getTheWeights().getRange().doubleValue(SI.KILOMETER), 
+									0.25
+									), 
+					SI.KILOGRAM);
+		} break;
+
+		default : {} break;
+		}
+		
+	}
+
+	public void calculateElectricalSystemsMass(Aircraft aircraft, MethodEnum method) {
+		
+		switch (method) {
+		case TORENBEEK_1982 : {
+			if(_theSystemsInterface.getPrimaryElectricSystemsType().equals(PrimaryElectricSystemsEnum.DC)) {
+				_electricalSystemsMass = Amount.valueOf(
+						0.02*aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM) + 181,
+						SI.KILOGRAM);
+			}
+			else if(_theSystemsInterface.getPrimaryElectricSystemsType().equals(PrimaryElectricSystemsEnum.AC)) {
+				
+				double pel = 0.0;
+				Amount<Volume> fuselageCabinVolume = Amount.valueOf(
+						aircraft.getFuselage().getFuselageCreator().getAreaC().doubleValue(SI.SQUARE_METRE)
+						*aircraft.getFuselage().getFuselageCreator().getLenC().doubleValue(SI.METER), 
+						SI.CUBIC_METRE
+						);
+				if(fuselageCabinVolume.doubleValue(SI.CUBIC_METRE) < 227)
+					pel = fuselageCabinVolume.doubleValue(SI.CUBIC_METRE)*0.565;
+				else
+					pel = Math.pow(fuselageCabinVolume.doubleValue(SI.CUBIC_METRE), 0.7)*3.64;
+				
+				_electricalSystemsMass = Amount.valueOf(
+						16.3*pel*(1-0.033*Math.sqrt(pel)), 
+						SI.KILOGRAM);
+			}
+		} break;
+
+		default : {} break;
+		}
+		
+	}
+
+	public void calculateAirConditionAndAntiIcing(Aircraft aircraft, MethodEnum method) {
+		
+		switch (method) {
+		case TORENBEEK_1982 : {
+			_airConditioningAndAntiIcingMass = Amount.valueOf(
+					14.0*Math.pow(aircraft.getFuselage().getFuselageCreator().getLenC().doubleValue(SI.METER), 1.28), 
+					SI.KILOGRAM);
+		} break;
+
+		default : {} break;
+		}
+		
+	}
+
+	public void calculateFurnishingsAndEquipmentsMass(Aircraft aircraft, MethodEnum method) {
+		
+		switch (method) {
+		case TORENBEEK_1982 : {
+			_furnishingsAndEquipmentMass = Amount.valueOf(
+					0.196*Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(SI.KILOGRAM), 0.91), 
+					SI.KILOGRAM);
+		} break;
+
+		default : {} break;
+		}
+		
+	}
+
+	public void calculateHydraulicAndPneumaticMass(Aircraft aircraft, MethodEnum method) {
+		
+		switch (method) {
+		case TORENBEEK_1982 : {
+			_hydraulicAndPneumaticMass = Amount.valueOf(
+					0.015*aircraft.getTheAnalysisManager().getTheWeights().getManufacturerEmptyMass().doubleValue(SI.KILOGRAM), 
+					SI.KILOGRAM);
+		} break;
+
+		default : {} break;
+		}
+		
 	}
 	
-	@Override
+	public void calculateAbsorbedPower(Aircraft aircraft, MethodEnum method) {
+		// TODO
+	}
+
+	//-------------------------------------------------------------------------------------
+	// 
+	public ISystems getTheSystemsInterface() {
+		return _theSystemsInterface;
+	}
+
+	public void setTheSystemsInterface(ISystems _theSystemsInterface) {
+		this._theSystemsInterface = _theSystemsInterface;
+	}
+
+	public Amount<Mass> getAPUMass() {
+		return _apuMass;
+	}
+
+	public void setAPUMass(Amount<Mass> _apuMass) {
+		this._apuMass = _apuMass;
+	}
+
+	public Amount<Mass> getAirConditioningAndAntiIcingMass() {
+		return _airConditioningAndAntiIcingMass;
+	}
+
+	public void setAirConditioningAndAntiIcingMass(Amount<Mass> _airConditioningAndAntiIcingMass) {
+		this._airConditioningAndAntiIcingMass = _airConditioningAndAntiIcingMass;
+	}
+
+	public Amount<Mass> getElectricalSystemsMass() {
+		return _electricalSystemsMass;
+	}
+
+	public void setElectricalSystemsMass(Amount<Mass> _electricalSystemsMass) {
+		this._electricalSystemsMass = _electricalSystemsMass;
+	}
+
+	public Amount<Mass> getInstrumentsAndNavigationMass() {
+		return _instrumentsAndNavigationMass;
+	}
+
+	public void setInstrumentsAndNavigationMass(Amount<Mass> _instrumentsAndNavigationMass) {
+		this._instrumentsAndNavigationMass = _instrumentsAndNavigationMass;
+	}
+
 	public Amount<Mass> getControlSurfaceMass() {
 		return _controlSurfaceMass;
 	}
 
-	@Override
-	public void setControlSurfaceMass(Amount<Mass> csMass) {
-		this._controlSurfaceMass = csMass;
+	public void setControlSurfaceMass(Amount<Mass> _controlSurfaceMass) {
+		this._controlSurfaceMass = _controlSurfaceMass;
 	}
 
-	@Override
-	public Map<MethodEnum, Amount<Mass>> getMassMap() {
-		return _massMap;
+	public Amount<Mass> getFurnishingsAndEquipmentMass() {
+		return _furnishingsAndEquipmentMass;
 	}
 
-	@Override
-	public void setMassMap(Map<MethodEnum, Amount<Mass>> _massMap) {
-		this._massMap = _massMap;
+	public void setFurnishingsAndEquipmentMass(Amount<Mass> _furnishingsAndEquipmentMass) {
+		this._furnishingsAndEquipmentMass = _furnishingsAndEquipmentMass;
 	}
 
-	@Override
-	public Map<AnalysisTypeEnum, List<MethodEnum>> getMethodsMap() {
-		return _methodsMap;
+	public Amount<Mass> getHydraulicAndPneumaticMass() {
+		return _hydraulicAndPneumaticMass;
 	}
 
-	@Override
-	public void setMethodsMap(
-			Map<AnalysisTypeEnum, List<MethodEnum>> _methodsMap) {
-		this._methodsMap = _methodsMap;
+	public void setHydraulicAndPneumaticMass(Amount<Mass> _hydraulicAndPneumaticMass) {
+		this._hydraulicAndPneumaticMass = _hydraulicAndPneumaticMass;
 	}
 
-	@Override
-	public Double[] getPercentDifference() {
-		return _percentDifference;
-	}
-
-	@Override
-	public void setPercentDifference(Double[] _percentDifference) {
-		this._percentDifference = _percentDifference;
-	}
-
-	@Override
-	public Amount<Mass> getReferenceMass() {
-		return _referenceMass;
-	}
-
-	@Override
-	public void setReferenceMass(Amount<Mass> _massReference) {
-		this._referenceMass = _massReference;
-	}
-
-	@Override
-	public Amount<Mass> getMeanMass() {
-		return _meanMass;
-	}
-
-	@Override
 	public Amount<Mass> getOverallMass() {
 		return _overallMass;
 	}
 
-	@Override
-	public void setOverallMass(Amount<Mass> _mass) {
-		this._overallMass = _mass;
+	public void setOverallMass(Amount<Mass> _overallMass) {
+		this._overallMass = _overallMass;
 	}
 
-	@Override
-	public String getId() {
-		return _id;
+	public Amount<Mass> getMeanMass() {
+		return _meanMass;
+	}
+
+	public void setMeanMass(Amount<Mass> _meanMass) {
+		this._meanMass = _meanMass;
+	}
+
+	public Double[] getPercentDifference() {
+		return _percentDifference;
+	}
+
+	public void setPercentDifference(Double[] _percentDifference) {
+		this._percentDifference = _percentDifference;
+	}
+
+	public Map<MethodEnum, Amount<Mass>> getMassMap() {
+		return _massMap;
+	}
+
+	public void setMassMap(Map<MethodEnum, Amount<Mass>> _massMap) {
+		this._massMap = _massMap;
+	}
+
+	public List<MethodEnum> getMethodsList() {
+		return _methodsList;
+	}
+
+	public void setMethodsList(List<MethodEnum> _methodsList) {
+		this._methodsList = _methodsList;
+	}
+
+	public Map<AnalysisTypeEnum, List<MethodEnum>> getMethodsMap() {
+		return _methodsMap;
+	}
+
+	public void setMethodsMap(Map<AnalysisTypeEnum, List<MethodEnum>> _methodsMap) {
+		this._methodsMap = _methodsMap;
+	}
+
+	public Amount<Mass> getReferenceMass() {
+		return _referenceMass;
+	}
+
+	public void setReferenceMass(Amount<Mass> _referenceMass) {
+		this._referenceMass = _referenceMass;
 	}
 	
-	@Override
-	public void setId(String id) {
-		this._id = id;
-	}
-	
-	@Override
-	public Amount<Length> getXApexConstructionAxes() {
-		return _xApexConstructionAxes;
-	};
-	
-	@Override
-	public void setXApexConstructionAxes (Amount<Length> xApexConstructionAxes) {
-		this._xApexConstructionAxes = xApexConstructionAxes;
-	};
-	
-	@Override
-	public Amount<Length> getYApexConstructionAxes() {
-		return _yApexConstructionAxes;
-	};
-	
-	@Override
-	public void setYApexConstructionAxes (Amount<Length> yApexConstructionAxes) {
-		this._yApexConstructionAxes = yApexConstructionAxes; 
-	};
-	
-	@Override 
-	public Amount<Length> getZApexConstructionAxes() {
-		return _zApexConstructionAxes;
-	};
-	
-	@Override
-	public void setZApexConstructionAxes (Amount<Length> zApexConstructionAxes) {
-		this._zApexConstructionAxes = zApexConstructionAxes;
-	};
 }

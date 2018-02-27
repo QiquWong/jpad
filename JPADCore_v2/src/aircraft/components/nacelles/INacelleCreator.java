@@ -9,11 +9,11 @@ import javax.measure.quantity.Mass;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
-import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.powerplant.Engine;
 import analyses.nacelles.NacelleAerodynamicsManager;
 import analyses.nacelles.NacelleBalanceManager;
 import analyses.nacelles.NacelleWeightsManager;
+import configuration.enumerations.NacelleMountingPositionEnum;
 
 public interface INacelleCreator {
 
@@ -62,8 +62,8 @@ public interface INacelleCreator {
 	public Amount<Length> getRoughness();
 	public void setRoughness(Amount<Length> _roughness);
 
-	public MountingPosition getMountingPosition();
-	public void setMountingPosition(MountingPosition _mounting);
+	public NacelleMountingPositionEnum getMountingPosition();
+	public void setMountingPosition(NacelleMountingPositionEnum _mounting);
 
 	public Amount<Length> getXApexConstructionAxes();
 	public void setXApexConstructionAxes(Amount<Length> _X0);

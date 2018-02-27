@@ -22,7 +22,6 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
-import aircraft.components.Aircraft.AircraftBuilder;
 import analyses.OperatingConditions;
 import calculators.costs.CostsCalcUtils;
 import configuration.MyConfiguration;

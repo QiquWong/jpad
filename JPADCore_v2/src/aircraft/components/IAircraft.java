@@ -1,86 +1,81 @@
 package aircraft.components;
 
-import java.util.List;
-
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 
+import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerplant.PowerPlant;
-import analyses.ACAnalysisManager;
-import configuration.enumerations.AeroConfigurationTypeEnum;
 import configuration.enumerations.AircraftTypeEnum;
+import configuration.enumerations.LandingGearsMountingPositionEnum;
+import configuration.enumerations.PrimaryElectricSystemsEnum;
+import configuration.enumerations.RegulationsEnum;
 
+@FreeBuilder
 public interface IAircraft {
 
-	public Fuselage getFuselage();
-	public void setFuselage(Fuselage fuselage);
+	String getId();
+	AircraftTypeEnum getTypeVehicle(); 
+	RegulationsEnum getRegulations();
+	PrimaryElectricSystemsEnum getPrimaryElectricSystemsType();
 	
-	public LiftingSurface getWing();
-	public void setWing(LiftingSurface wing);
+	Fuselage getFuselage();
+	Amount<Length> getXApexFuselage();
+	Amount<Length> getYApexFuselage();
+	Amount<Length> getZApexFuselage();
 	
-	public LiftingSurface getExposedWing();
-	public void setExposedWing(LiftingSurface exposedWing);
+	LiftingSurface getWing();
+	Amount<Length> getXApexWing();
+	Amount<Length> getYApexWing();
+	Amount<Length> getZApexWing();
+	Amount<Angle> getRiggingAngleWing();
 	
-	public LiftingSurface getHTail();
-	public void setHTail(LiftingSurface hTail);
+	LiftingSurface getHTail();
+	Amount<Length> getXApexHTail();
+	Amount<Length> getYApexHTail();
+	Amount<Length> getZApexHTail();
+	Amount<Angle> getRiggingAngleHTail();
 	
-	public LiftingSurface getVTail();
-	public void setVTail(LiftingSurface vTail);
+	LiftingSurface getVTail();
+	Amount<Length> getXApexVTail();
+	Amount<Length> getYApexVTail();
+	Amount<Length> getZApexVTail();
+	Amount<Angle> getRiggingAngleVTail();
 	
-	public LiftingSurface getCanard();
-	public void setCanard(LiftingSurface canard);
+	LiftingSurface getCanard();
+	Amount<Length> getXApexCanard();
+	Amount<Length> getYApexCanard();
+	Amount<Length> getZApexCanard();
+	Amount<Angle> getRiggingAngleCanard();
 	
-	public PowerPlant getPowerPlant();
-	public void setPowerPlant(PowerPlant powerPlant);
+	FuelTank getFuelTank();
+	Amount<Length> getXApexFuelTank();
+	Amount<Length> getYApexFuelTank();
+	Amount<Length> getZApexFuelTank();
 	
-	public Nacelles getNacelles();
-	public void setNacelles(Nacelles nacelles);
-
-	public FuelTank getFuelTank();
-	public void setFuelTank(FuelTank fuelTank);
+	PowerPlant getPowerPlant();
+	Nacelles getNacelles();
 	
-	public LandingGears getLandingGears();
-	public void setLandingGears(LandingGears landingGears);
+	LandingGears getLandingGears();
+	Amount<Length> getXApexNoseGear();
+	Amount<Length> getYApexNoseGear();
+	Amount<Length> getZApexNoseGear();
+	Amount<Length> getXApexMainGear();
+	Amount<Length> getYApexMainGear();
+	Amount<Length> getZApexMainGear();
+	LandingGearsMountingPositionEnum getLandingGearsMountingPositionEnum();
 	
-	public Systems getSystems();
-	public void setSystems(Systems systems);
+	Systems getSystems();
+	CabinConfiguration getCabinConfiguration();
 	
-	public void deleteFuselage();
-	public void deleteWing();
-	public void deleteExposedWing();
-	public void deleteHTail();
-	public void deleteVTail();
-	public void deleteCanard();	
-	public void deletePowerPlant();	
-	public void deleteNacelles();	
-	public void deleteFuelTank();
-	public void deleteLandingGears();
-	public void deleteSystems();
-	
-	public ACAnalysisManager getTheAnalysisManager();
-	public void setTheAnalysisManager(ACAnalysisManager theAnalysisManager);
-
-	public CabinConfiguration getCabinConfiguration();
-	public void setCabinConfiguration(CabinConfiguration theCabinConfiguration);
-	
-	public AircraftTypeEnum getTypeVehicle(); 
-	public void setTypeVehicle(AircraftTypeEnum _typeVehicle); 
-
-	public String getId();
-	public void setId(String _name);
-
-	public AeroConfigurationTypeEnum getType();
-
-	public double getLifeSpan();
-	public void setLifeSpan(double _lifeSpan);
-	
-	public List<Object> getComponentsList();
-	
-	public Amount<Length> getWingACToCGDistance();
-	public void setWingACToCGDistance(Amount<Length> _wingACToCGDistance);
+	class Builder extends IAircraft_Builder  { 
+		 public Builder() {
+			 
+		 }
+	}
 	
 }

@@ -16,7 +16,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
-import aircraft.components.LandingGears.MountingPosition;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.Fuselage.FuselageBuilder;
 import aircraft.components.fuselage.creator.FuselageCreator;
@@ -31,11 +30,12 @@ import aircraft.components.powerplant.PowerPlant;
 import analyses.ACAnalysisManager;
 import calculators.aerodynamics.DragCalc;
 import configuration.MyConfiguration;
-import configuration.enumerations.AeroConfigurationTypeEnum;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
+import configuration.enumerations.LandingGearsMountingPositionEnum;
+import configuration.enumerations.NacelleMountingPositionEnum;
+import configuration.enumerations.PrimaryElectricSystemsEnum;
 import configuration.enumerations.RegulationsEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
@@ -55,29 +55,19 @@ import standaloneutils.MyXMLReaderUtils;
  *  	    Manuela Ruocco
  */
 
-public class Aircraft implements IAircraft {
+public class Aircraft {
 
-	private String _id;
-	private AeroConfigurationTypeEnum _type = AeroConfigurationTypeEnum.EMPTY;
-	private RegulationsEnum _regulations;
-	private AircraftTypeEnum _typeVehicle;
+	private IAircraft _theAircraftInterface;
 	
-	private ACAnalysisManager _theAnalysisManager;
+	//-----------------------------------------------------------------------------------
+	// DERIVED DATA
+	private List<Object> _componentsList;
+	private Amount<Area> _sWetTotal = Amount.valueOf(0.0, SI.SQUARE_METRE);
+	private Double _kExcr = 0.0;
+	private Amount<Length> _wingACToCGDistance = Amount.valueOf(0.0, SI.METER);
 	
-	private Fuselage _theFuselage;
-	private LiftingSurface _theWing;
-	private LiftingSurface _theHTail;
-	private LiftingSurface _theVTail;
-	private LiftingSurface _theCanard;
-	private PowerPlant _thePowerPlant;
-	private Nacelles _theNacelles;
-	private FuelTank _theFuelTank;
-	private LandingGears _theLandingGears;
-	private Systems _theSystems;
-	private CabinConfiguration _theCabinConfiguration;
-
 	//--------------------------------------------------------------------------
-	// THIS ARE USED TO STORE THE FILE PATHS FOR THE GUI
+	// COMPONENTS FILE PATHS (GUI)
 	private String _fuselageFilePath;
 	private String _cabinConfigurationFilePath;
 	private String _wingFilePath;
@@ -88,759 +78,99 @@ public class Aircraft implements IAircraft {
 	private List<String> _nacelleFilePathList;
 	private String _landingGearsFilePath;
 	private String _systemsFilePath;
-	//--------------------------------------------------------------------------
 	
-	private List<Object> _componentsList;
+	//-----------------------------------------------------------------------------------
+	// ANALYSES
+	private ACAnalysisManager _theAnalysisManager;
 	
-	private Amount<Area> _sWetTotal = Amount.valueOf(0.0, SI.SQUARE_METRE);
-	private Double _kExcr = 0.0;
-	private Amount<Length> _wingACToCGDistance = Amount.valueOf(0.0, SI.METER);
-	
-	private double _lifeSpan = 14.; //typical life span in year
-
-	//===================================================================================================
-	// Builder pattern 
-	//===================================================================================================
-	public static class AircraftBuilder {
+	//-----------------------------------------------------------------------------------
+	// BUILDER 
+	public Aircraft (IAircraft theAircraftInterface) {
 		
-		// required parameters
-		private String __id;
-		private AircraftTypeEnum __typeVehicle;
-		private RegulationsEnum __regulations;
-
-		// optional parameters ... defaults
-		// ...
-		private List<Object> __componentsList = new ArrayList<Object>();
-		
-		private Fuselage __theFuselage;
-		private LiftingSurface __theWing;
-		private LiftingSurface __theHTail;
-		private LiftingSurface __theVTail;
-		private LiftingSurface __theCanard;
-		private PowerPlant __thePowerPlant;
-		private Nacelles __theNacelles;
-		private FuelTank __theFuelTank;
-		private LandingGears __theLandingGears;
-		private Systems __theSystems;
-		private CabinConfiguration __theCabinConfiguration;
-		
-		private ACAnalysisManager __theAnalysisManager;
-		
-		public AircraftBuilder (
-				String id,
-				AerodynamicDatabaseReader aeroDatabaseReader,
-				HighLiftDatabaseReader highLiftDatabaseReader,
-				FusDesDatabaseReader fusDesDatabaseReader,
-				VeDSCDatabaseReader veDSCDatabaseReader
-				) {
-			this.__id = id;
-//			initialize(AircraftEnum.ATR72, aeroDatabaseReader, highLiftDatabaseReader);
-		}
-		
-		public AircraftBuilder (
-				String id, 
-				AircraftEnum aircraftName, 
-				AerodynamicDatabaseReader aeroDatabaseReader, 
-				HighLiftDatabaseReader highLiftDatabaseReader,
-				FusDesDatabaseReader fusDesDatabaseReader,
-				VeDSCDatabaseReader veDSCDatabaseReader
-				) {
-			this.__id = id;
-			initialize(aircraftName, aeroDatabaseReader, highLiftDatabaseReader, fusDesDatabaseReader, veDSCDatabaseReader);
-		}
-		
-		private void initialize(
-				AircraftEnum aircraftName, 
-				AerodynamicDatabaseReader aeroDatabaseReader, 
-				HighLiftDatabaseReader highLiftDatabaseReader,
-				FusDesDatabaseReader fusDesDatabaseReader, 
-				VeDSCDatabaseReader veDSCDatabaseReader
-				) {
-
-			switch(aircraftName) {
-			case ATR72:
-				__id = "ATR-72";
-				__typeVehicle = AircraftTypeEnum.TURBOPROP;
-				__regulations = RegulationsEnum.FAR_25;
-				__theCabinConfiguration = new CabinConfiguration.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.ATR72).build();
-				
-				__componentsList.clear();
-				
-				createFuselage(aircraftName, fusDesDatabaseReader);
-				__theFuselage.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theFuselage.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theFuselage.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				
-				createWing(aircraftName, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader);
-				__theWing.setXApexConstructionAxes(Amount.valueOf(11.0, SI.METER));
-				__theWing.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theWing.setZApexConstructionAxes(Amount.valueOf(1.6, SI.METER));
-				__theWing.setRiggingAngle(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
-				
-				createVTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader);
-				__theVTail.setXApexConstructionAxes(Amount.valueOf(21.6, SI.METER));
-				__theVTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theVTail.setZApexConstructionAxes(Amount.valueOf(1.3, SI.METER));
-				__theVTail.setRiggingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-				
-				createHTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader);
-				__theHTail.setXApexConstructionAxes(Amount.valueOf(25.3, SI.METER));
-				__theHTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theHTail.setZApexConstructionAxes(Amount.valueOf(5.7374, SI.METER));
-				__theHTail.setRiggingAngle(Amount.valueOf(1.0, NonSI.DEGREE_ANGLE));
-						
-				createPowerPlant(aircraftName);
-				
-				createNacelles(aircraftName);
-				
-				createFuelTank();
-				__theFuelTank.setXApexConstructionAxes(__theWing.getXApexConstructionAxes()
-															.plus(__theWing.getChordRoot()
-																	.times(__theWing.getLiftingSurfaceCreator()
-																						.getMainSparNonDimensionalPosition()
-																						)
-																	)
-															);
-				__theFuelTank.setYApexConstructionAxes(__theWing.getYApexConstructionAxes());
-				__theFuelTank.setZApexConstructionAxes(__theWing.getZApexConstructionAxes());
-				
-				createLandingGears(aircraftName);
-				__theLandingGears.setXApexConstructionAxes(Amount.valueOf(12.5, SI.METER));
-				__theLandingGears.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theLandingGears.setZApexConstructionAxes(Amount.valueOf(-1.2, SI.METER));
-				__theLandingGears.setMountingPosition(LandingGears.MountingPosition.FUSELAGE);
-				
-				createSystems(aircraftName);
-				__theSystems.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-
-				break;
-
-		    // TODO : COMPLETE THIS!
-			case B747_100B:
-				__id = "B747-100B";
-				__typeVehicle = AircraftTypeEnum.JET;
-				__regulations = RegulationsEnum.FAR_25;
-				__theCabinConfiguration = new CabinConfiguration
-						.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.B747_100B)
-							.build();
-				
-				__componentsList.clear();
-				
-				createFuselage(aircraftName, fusDesDatabaseReader);
-				__theFuselage.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theFuselage.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theFuselage.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				
-				createWing(aircraftName, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader);
-				__theWing.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theWing.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theWing.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theWing.setRiggingAngle(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
-				
-				createHTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader);
-				__theHTail.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theHTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theHTail.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theHTail.setRiggingAngle(Amount.valueOf(1.0, NonSI.DEGREE_ANGLE));
-				
-				createVTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader);
-				__theVTail.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theVTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theVTail.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theVTail.setRiggingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-				
-				createPowerPlant(aircraftName);
-				
-				createNacelles(aircraftName);
-				
-				createFuelTank();
-				__theFuelTank.setXApexConstructionAxes(__theWing.getXApexConstructionAxes()
-															.plus(__theWing.getChordRoot()
-																	.times(__theWing.getLiftingSurfaceCreator()
-																						.getMainSparNonDimensionalPosition()
-																						)
-																	)
-															);
-				__theFuelTank.setYApexConstructionAxes(__theWing.getYApexConstructionAxes());
-				__theFuelTank.setZApexConstructionAxes(__theWing.getZApexConstructionAxes());
-				
-				createLandingGears(aircraftName);
-				__theLandingGears.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theLandingGears.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theLandingGears.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theLandingGears.setMountingPosition(LandingGears.MountingPosition.WING);
-				
-				createSystems(aircraftName);
-				__theSystems.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-
-				break;
-				
-			// TODO : COMPLETE THIS!
-			case AGILE_DC1:
-				__id = "AGILE DC-1";
-				__typeVehicle = AircraftTypeEnum.JET;
-				__regulations = RegulationsEnum.FAR_25;
-				__theCabinConfiguration = new CabinConfiguration
-						.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.AGILE_DC1)
-							.build();
-				
-				__componentsList.clear();
-				
-				createFuselage(aircraftName,fusDesDatabaseReader);
-				__theFuselage.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theFuselage.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theFuselage.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				
-				createWing(aircraftName, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader);
-				__theWing.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theWing.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theWing.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theWing.setRiggingAngle(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
-				
-				createHTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader);
-				__theHTail.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theHTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theHTail.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theHTail.setRiggingAngle(Amount.valueOf(1.0, NonSI.DEGREE_ANGLE));
-				
-				createVTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader);
-				__theVTail.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theVTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theVTail.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theVTail.setRiggingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-				
-				createPowerPlant(aircraftName);
-				
-				createNacelles(aircraftName);
-				
-				createFuelTank();
-				__theFuelTank.setXApexConstructionAxes(__theWing.getXApexConstructionAxes()
-															.plus(__theWing.getChordRoot()
-																	.times(__theWing.getLiftingSurfaceCreator()
-																						.getMainSparNonDimensionalPosition()
-																						)
-																	)
-															);
-				__theFuelTank.setYApexConstructionAxes(__theWing.getYApexConstructionAxes());
-				__theFuelTank.setZApexConstructionAxes(__theWing.getZApexConstructionAxes());
-				
-				createLandingGears(aircraftName);
-				__theLandingGears.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theLandingGears.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theLandingGears.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theLandingGears.setMountingPosition(LandingGears.MountingPosition.WING);
-				
-				createSystems(aircraftName);
-				__theSystems.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				
-				break;
-			default:
-				break;
-			
-			}
-		}
-		
-		private void createFuselage(AircraftEnum aircraftName, FusDesDatabaseReader fusDesDatabaseReader) {
-			__theFuselage = new FuselageBuilder("Fuselage", fusDesDatabaseReader)
-					.fuselageCreator(
-							new FuselageCreator
-								.FuselageBuilder("Fuselage", aircraftName)
-									.build()
-							)
-					.build();
-			
-			__theFuselage.getFuselageCreator().calculateGeometry();
-			__componentsList.add(__theFuselage);
-		}
-		
-		private void createWing(
-				AircraftEnum aircraftName,
-				AerodynamicDatabaseReader aeroDatabaseReader,
-				HighLiftDatabaseReader highLiftDatabaseReader,
-				VeDSCDatabaseReader veDSCDatabaseReader) {
-
-			__theWing = new LiftingSurfaceBuilder("Wing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader)
-					.liftingSurfaceCreator(
-							new LiftingSurfaceCreator
-								.LiftingSurfaceCreatorBuilder("Wing", Boolean.TRUE, aircraftName, ComponentEnum.WING)
-									.build()
-							)
-					.build();
-			
-			__theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
-			__componentsList.add(__theWing);
-		}
-		
-		private void createHTail(
-				AircraftEnum aircraftName,
-				AerodynamicDatabaseReader aeroDatabaseReader,
-				HighLiftDatabaseReader highLiftDatabaseReader,
-				VeDSCDatabaseReader veDSCDatabaseReader) {
-
-			__theHTail = new LiftingSurfaceBuilder("Horizontal tail", ComponentEnum.HORIZONTAL_TAIL, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader)
-					.liftingSurfaceCreator(
-							new LiftingSurfaceCreator
-								.LiftingSurfaceCreatorBuilder("Horizontal tail", Boolean.TRUE, aircraftName, ComponentEnum.HORIZONTAL_TAIL)
-									.build()
-							)
-					.build();
-			
-			__theHTail.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
-			__componentsList.add(__theHTail);
-		}
-		
-		private void createVTail(
-				AircraftEnum aircraftName,
-				AerodynamicDatabaseReader aeroDatabaseReader,
-				HighLiftDatabaseReader highLiftDatabaseReader,
-				VeDSCDatabaseReader veDSCDatabaseReader) {
-
-			__theVTail = new LiftingSurfaceBuilder("Vertical tail", ComponentEnum.VERTICAL_TAIL, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader)
-					.liftingSurfaceCreator(
-							new LiftingSurfaceCreator
-								.LiftingSurfaceCreatorBuilder("Vertical tail", Boolean.FALSE, aircraftName, ComponentEnum.VERTICAL_TAIL)
-									.build()
-							)
-					.build();
-			
-			__theVTail.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
-			__componentsList.add(__theVTail);
-		}
-		
-		@SuppressWarnings("unused")
-		private void createCanard(
-				AircraftEnum aircraftName,
-				AerodynamicDatabaseReader aeroDatabaseReader,
-				HighLiftDatabaseReader highLiftDatabaseReader,
-				VeDSCDatabaseReader veDSCDatabaseReader) {
-
-			__theCanard = new LiftingSurfaceBuilder("Canard", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader, veDSCDatabaseReader)
-					.liftingSurfaceCreator(
-							new LiftingSurfaceCreator
-								.LiftingSurfaceCreatorBuilder("Canard", Boolean.TRUE, aircraftName, ComponentEnum.CANARD)
-									.build()
-							)
-					.build();
-			
-			__theCanard.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
-			__componentsList.add(__theCanard);
-		}
-		
-		private void createPowerPlant(AircraftEnum aircraftName) {
-			__thePowerPlant = new PowerPlant.PowerPlantBuilder("Power Plant", aircraftName).build();
-			__componentsList.add(__thePowerPlant);
-		}
-		
-		private void createNacelles(AircraftEnum aircraftName) {
-			__theNacelles = new Nacelles.NacellesBuilder("Nacelles", aircraftName).build();
-			__componentsList.add(__theNacelles);
-		}
-		
-		private void createFuelTank() {
-			__theFuelTank = new FuelTank.FuelTankBuilder("Fuel Tank", __theWing).build();
-			__componentsList.add(__theFuelTank);
-		}
-		
-		private void createLandingGears(AircraftEnum aircraftName) {
-			__theLandingGears = new LandingGears.LandingGearsBuilder("Landing Gears", aircraftName).build();
-			__componentsList.add(__theLandingGears);
-		}
-		
-		private void createSystems(AircraftEnum aircraftName) {
-			__theSystems = new Systems.SystemsBuilder("Systems", aircraftName).build();
-			__componentsList.add(__theSystems);
-		}
-		
-		public AircraftBuilder name(String id) {
-			this.__id = id;
-			return this;
-		}
-		
-		public AircraftBuilder aircraftType(AircraftTypeEnum aircraftType) {
-			this.__typeVehicle = aircraftType;
-			return this;
-		}
-		
-		public AircraftBuilder regulations(RegulationsEnum regulations) {
-			this.__regulations = regulations;
-			return this;
-		}
-		
-		public AircraftBuilder fuselage(Fuselage fuselage) {
-			this.__theFuselage = fuselage;
-			return this;
-		}
-		
-		public AircraftBuilder componentsList (List<Object> componentsList) {
-			this.__componentsList = componentsList;
-			return this;
-		}
-		
-		public AircraftBuilder xApexFuselage(Amount<Length> xApex) {
-			if(__theFuselage != null)
-				this.__theFuselage.setXApexConstructionAxes(xApex);
-			return this;
-		}
-		
-		public AircraftBuilder yApexFuselage(Amount<Length> yApex) {
-			if(__theFuselage != null)
-				this.__theFuselage.setYApexConstructionAxes(yApex);
-			return this;
-		}
-		
-		public AircraftBuilder zApexFuselage(Amount<Length> zApex) {
-			if(__theFuselage != null)
-				this.__theFuselage.setZApexConstructionAxes(zApex);
-			return this;
-		}
-		
-		public AircraftBuilder wing(LiftingSurface wing) {
-			this.__theWing = wing;
-			return this;
-		}
-		
-		public AircraftBuilder xApexWing(Amount<Length> xApex) {
-			if(__theWing != null)
-				this.__theWing.setXApexConstructionAxes(xApex);
-			return this;
-		}
-		
-		public AircraftBuilder yApexWing(Amount<Length> yApex) {
-			if(__theWing != null)
-				this.__theWing.setYApexConstructionAxes(yApex);
-			return this;
-		}
-	
-		public AircraftBuilder zApexWing(Amount<Length> zApex) {
-			if(__theWing != null)
-				this.__theWing.setZApexConstructionAxes(zApex);
-			return this;
-		}
-		
-		public AircraftBuilder horizontalTail(LiftingSurface hTail) {
-			this.__theHTail = hTail;
-			return this;
-		}
-		
-		public AircraftBuilder xApexHTail(Amount<Length> xApex) {
-			if(__theHTail != null)
-				this.__theHTail.setXApexConstructionAxes(xApex);
-			return this;
-		}
-		
-		public AircraftBuilder yApexHTail(Amount<Length> yApex) {
-			if(__theHTail != null)
-				this.__theHTail.setYApexConstructionAxes(yApex);
-			return this;
-		}
-	
-		public AircraftBuilder zApexHTail(Amount<Length> zApex) {
-			if(__theHTail != null)
-				this.__theHTail.setZApexConstructionAxes(zApex);
-			return this;
-		}
-		
-		public AircraftBuilder verticalTail(LiftingSurface vTail) {
-			this.__theVTail = vTail;
-			return this;
-		}
-		
-		public AircraftBuilder xApexVTail(Amount<Length> xApex) {
-			if(__theVTail != null)
-				this.__theVTail.setXApexConstructionAxes(xApex);
-			return this;
-		}
-		
-		public AircraftBuilder yApexVTail(Amount<Length> yApex) {
-			if(__theVTail != null)
-				this.__theVTail.setYApexConstructionAxes(yApex);
-			return this;
-		}
-	
-		public AircraftBuilder zApexVTail(Amount<Length> zApex) {
-			if(__theVTail != null)
-				this.__theVTail.setZApexConstructionAxes(zApex);
-			return this;
-		}
-		
-		public AircraftBuilder canard(LiftingSurface canard) {
-			this.__theCanard = canard;
-			return this;
-		}
-		
-		public AircraftBuilder xApexCanard(Amount<Length> xApex) {
-			if(__theCanard != null)
-				this.__theCanard.setXApexConstructionAxes(xApex);
-			return this;
-		}
-		
-		public AircraftBuilder yApexCanard(Amount<Length> yApex) {
-			if(__theCanard != null)
-				this.__theCanard.setYApexConstructionAxes(yApex);
-			return this;
-		}
-	
-		public AircraftBuilder zApexCanard(Amount<Length> zApex) {
-			if(__theCanard != null)
-				this.__theCanard.setZApexConstructionAxes(zApex);
-			return this;
-		}
-		
-		public AircraftBuilder powerPlant (PowerPlant powerPlant) {
-			this.__thePowerPlant = powerPlant;
-			return this;
-		}
-		
-		public AircraftBuilder nacelles (Nacelles nacelles) {
-			this.__theNacelles = nacelles;
-			return this;
-		}
-		
-		public AircraftBuilder fuelTank (FuelTank fuelTanks) {
-			this.__theFuelTank = fuelTanks;
-			return this;
-		}
-		
-		public AircraftBuilder xApexFuelTank(Amount<Length> xApex) {
-			if(__theFuelTank != null)
-				this.__theFuelTank.setXApexConstructionAxes(xApex);
-			return this;
-		}
-		
-		public AircraftBuilder yApexFuelTank(Amount<Length> yApex) {
-			if(__theFuelTank != null)
-				this.__theFuelTank.setYApexConstructionAxes(yApex);
-			return this;
-		}
-	
-		public AircraftBuilder zApexFuelTank(Amount<Length> zApex) {
-			if(__theFuelTank != null)
-				this.__theFuelTank.setZApexConstructionAxes(zApex);
-			return this;
-		}
-		
-		public AircraftBuilder landingGears (LandingGears landingGears) {
-			this.__theLandingGears = landingGears;
-			return this;
-		}
-		
-		public AircraftBuilder xApexLandingGears(Amount<Length> xApex) {
-			if(__theLandingGears != null)
-				this.__theLandingGears.setXApexConstructionAxes(xApex);
-			return this;
-		}
-		
-		public AircraftBuilder yApexLandingGears(Amount<Length> yApex) {
-			if(__theLandingGears != null)
-				this.__theLandingGears.setYApexConstructionAxes(yApex);
-			return this;
-		}
-	
-		public AircraftBuilder zApexLandingGears(Amount<Length> zApex) {
-			if(__theLandingGears != null)
-				this.__theLandingGears.setZApexConstructionAxes(zApex);
-			return this;
-		}
-		
-		public AircraftBuilder landingGearsMountingPosition(LandingGears.MountingPosition mountingPosition) {
-			if(__theLandingGears != null)
-				this.__theLandingGears.setMountingPosition(mountingPosition);
-			return this;
-		}
-		
-		public AircraftBuilder systems (Systems systems) {
-			this.__theSystems = systems;
-			return this;
-		}
-		
-		public AircraftBuilder xApexSystems(Amount<Length> xApex) {
-			if(__theSystems != null)
-				this.__theSystems.setXApexConstructionAxes(xApex);
-			return this;
-		}
-		
-		public AircraftBuilder yApexSystem(Amount<Length> yApex) {
-			if(__theSystems != null)
-				this.__theSystems.setYApexConstructionAxes(yApex);
-			return this;
-		}
-	
-		public AircraftBuilder zApexSystems(Amount<Length> zApex) {
-			if(__theSystems != null)
-				this.__theSystems.setZApexConstructionAxes(zApex);
-			return this;
-		}
-		
-		public AircraftBuilder cabinConfiguration (CabinConfiguration cabinConfiguration) {
-			this.__theCabinConfiguration = cabinConfiguration;
-			return this;
-		}
-		
-		public Aircraft build() {
-			return new Aircraft(this);
-		}
-	}
-	//===================================================================================================
-	// End of builder pattern
-	//===================================================================================================
-	
-	public Aircraft(AircraftBuilder builder) {
-		
-		this._id = builder.__id;
-		this._typeVehicle = builder.__typeVehicle;
-		this._regulations = builder.__regulations;
-		
-		this._theAnalysisManager = builder.__theAnalysisManager;
-		this._theCabinConfiguration = builder.__theCabinConfiguration;
-		
-		this._theFuselage = builder.__theFuselage;
-		this._theWing = builder.__theWing;
-		this._theHTail = builder.__theHTail;
-		this._theVTail = builder.__theVTail;
-		this._theCanard = builder.__theCanard;
-		this._thePowerPlant = builder.__thePowerPlant;
-		this._theNacelles = builder.__theNacelles;
-		this._theFuelTank = builder.__theFuelTank;
-		this._theLandingGears = builder.__theLandingGears;
-		this._theSystems = builder.__theSystems;
-		
-		this._componentsList = builder.__componentsList;
+		this._theAircraftInterface = theAircraftInterface;
 		
 		//-------------------------------------------------------------		
-		if(_thePowerPlant != null) {
-			if(_theWing != null) {
+		if(_theAircraftInterface.getPowerPlant() != null) {
+			if(_theAircraftInterface.getWing() != null) {
 				int indexOfEngineUpperWing = 0;
-				for(int i=0; i<_thePowerPlant.getEngineNumber(); i++) {
-					if(_thePowerPlant.getEngineList().get(i).getMountingPosition() == EngineMountingPositionEnum.WING)
-						if(_thePowerPlant.getEngineList().get(i).getZApexConstructionAxes().doubleValue(SI.METER)
-								> _theWing.getZApexConstructionAxes().doubleValue(SI.METER))
+				for(int i=0; i<_theAircraftInterface.getPowerPlant().getEngineNumber(); i++) {
+					if(_theAircraftInterface.getPowerPlant().getEngineList().get(i).getMountingPosition() == EngineMountingPositionEnum.WING)
+						if(_theAircraftInterface.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes().doubleValue(SI.METER)
+								> _theAircraftInterface.getWing().getZApexConstructionAxes().doubleValue(SI.METER))
 							indexOfEngineUpperWing += 1;
 				}
-				_theWing.setNumberOfEngineOverTheWing(indexOfEngineUpperWing);
+				_theAircraftInterface.getWing().setNumberOfEngineOverTheWing(indexOfEngineUpperWing);
 			}
 		}
 		//-------------------------------------------------------------
-		updateType();
-		
-		if((this._theFuselage != null) && (this._theWing != null)) { 
-			this._theWing.setExposedWing(calculateExposedWing(this._theWing, this._theFuselage));
-			this._theWing.getLiftingSurfaceCreator().setSurfaceWettedExposed(
-					this._theWing.getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted()
+		if((_theAircraftInterface.getFuselage() != null) && (_theAircraftInterface.getWing() != null)) { 
+			_theAircraftInterface.getWing().setExposedWing(
+					calculateExposedWing(
+							_theAircraftInterface.getWing(), 
+							_theAircraftInterface.getFuselage()
+							)
+					);
+			_theAircraftInterface.getWing().getLiftingSurfaceCreator().setSurfaceWettedExposed(
+					_theAircraftInterface.getWing().getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted()
 					);
 		}
-		else if(this._theWing != null)
-			this._theWing.getLiftingSurfaceCreator().setSurfaceWettedExposed(
-					this._theWing.getLiftingSurfaceCreator().getSurfaceWetted()
+		else if(_theAircraftInterface.getWing() != null)
+			_theAircraftInterface.getWing().getLiftingSurfaceCreator().setSurfaceWettedExposed(
+					_theAircraftInterface.getWing().getLiftingSurfaceCreator().getSurfaceWetted()
 					);
-		
-		if(this._theHTail !=  null)
-			this._theHTail.setExposedWing(_theHTail);
-		if(this._theVTail !=  null)
-			this._theVTail.setExposedWing(_theVTail);
-		if(this._theCanard !=  null)
-			this._theCanard.setExposedWing(_theCanard);
+		if(_theAircraftInterface.getHTail() !=  null)
+			_theAircraftInterface.getHTail().setExposedWing(_theAircraftInterface.getHTail());
+		if(_theAircraftInterface.getVTail() !=  null)
+			_theAircraftInterface.getVTail().setExposedWing(_theAircraftInterface.getVTail());
+		if(_theAircraftInterface.getCanard() !=  null)
+			_theAircraftInterface.getCanard().setExposedWing(_theAircraftInterface.getCanard());
 		
 		// setup the positionRelativeToAttachment variable
-		if(_theWing != null)
-			this._theWing.setPositionRelativeToAttachment(
-					_theWing.getZApexConstructionAxes().doubleValue(SI.METER)
-					/(_theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(2).getEstimatedValue())
+		if(_theAircraftInterface.getWing() != null)
+			_theAircraftInterface.getWing().setPositionRelativeToAttachment(
+					_theAircraftInterface.getWing().getZApexConstructionAxes().doubleValue(SI.METER)
+					/(_theAircraftInterface.getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2).getEstimatedValue())
 					);
 		
-		if(_theHTail != null) {
-			if(_theVTail != null)
-				this._theHTail.setPositionRelativeToAttachment(
-						(_theHTail.getZApexConstructionAxes()
-								.minus(_theVTail
+		if(_theAircraftInterface.getHTail() != null) {
+			if(_theAircraftInterface.getVTail() != null)
+				_theAircraftInterface.getHTail().setPositionRelativeToAttachment(
+						(_theAircraftInterface.getHTail().getZApexConstructionAxes()
+								.minus(_theAircraftInterface.getVTail()
 										.getZApexConstructionAxes()
 										)
-								).divide(_theVTail.getSpan())
+								).divide(_theAircraftInterface.getVTail().getSpan())
 						.getEstimatedValue()
 						);
 			else
-				this._theHTail.setPositionRelativeToAttachment(0.0);
+				_theAircraftInterface.getHTail().setPositionRelativeToAttachment(0.0);
 		}
 		
-		if(_theVTail != null)
-			this._theVTail.setPositionRelativeToAttachment(0.0);
+		if(_theAircraftInterface.getVTail() != null)
+			_theAircraftInterface.getVTail().setPositionRelativeToAttachment(0.0);
 		
-		if(_theCanard != null)
-			this._theCanard.setPositionRelativeToAttachment(
-					_theCanard.getZApexConstructionAxes().doubleValue(SI.METER)
-					/(_theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(2).getEstimatedValue())
+		if(_theAircraftInterface.getCanard() != null)
+			_theAircraftInterface.getCanard().setPositionRelativeToAttachment(
+					_theAircraftInterface.getCanard().getZApexConstructionAxes().doubleValue(SI.METER)
+					/(_theAircraftInterface.getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2).getEstimatedValue())
 					);
 		
 		//----------------------------------------
-		if(_theWing != null)
-			calculateLiftingSurfaceACToWingACdistance(this._theWing);
-		if(_theHTail != null)
-			calculateLiftingSurfaceACToWingACdistance(this._theHTail);
-		if(_theVTail != null)
-			calculateLiftingSurfaceACToWingACdistance(this._theVTail);
-		if(_theCanard != null)
-			calculateLiftingSurfaceACToWingACdistance(this._theCanard);
+		if(_theAircraftInterface.getWing() != null)
+			calculateLiftingSurfaceACToWingACdistance(_theAircraftInterface.getWing());
+		if(_theAircraftInterface.getHTail() != null)
+			calculateLiftingSurfaceACToWingACdistance(_theAircraftInterface.getHTail());
+		if(_theAircraftInterface.getVTail() != null)
+			calculateLiftingSurfaceACToWingACdistance(_theAircraftInterface.getVTail());
+		if(_theAircraftInterface.getCanard() != null)
+			calculateLiftingSurfaceACToWingACdistance(_theAircraftInterface.getCanard());
 
 		//----------------------------------------
 		calculateSWetTotal();
 		calculateKExcrescences();
+		
 	}
 	
-	private void updateType() {
-
-		if (
-				_theFuselage == null &&
-				_theWing == null &&
-				_theNacelles == null
-				) 
-			_type = AeroConfigurationTypeEnum.EMPTY;
-		
-		else if (
-				_theFuselage != null &&
-				_theWing == null &&
-				_theNacelles == null
-				)
-			_type = AeroConfigurationTypeEnum.FUSELAGE_ISOLATED;
-		
-		else if (
-				_theFuselage == null &&
-				_theWing != null &&
-				_theNacelles == null
-				)
-			_type = AeroConfigurationTypeEnum.WING_ISOLATED;
-		
-		else if (
-				_theFuselage != null &&
-				_theWing != null &&
-				_theNacelles == null
-				)
-			_type = AeroConfigurationTypeEnum.WING_FUSELAGE;
-		
-		else if (
-				_theFuselage != null &&
-				_theWing != null &&
-				_theNacelles != null
-				)
-			_type = AeroConfigurationTypeEnum.WING_FUSELAGE_NACELLES;
-		
-		else if (
-				_theFuselage != null &&
-				_theWing != null &&
-				_theNacelles != null &&
-				_theHTail != null
-				)
-			_type = AeroConfigurationTypeEnum.WING_FUSELAGE_HTAIL_NACELLES;
-		
-		else
-			_type = AeroConfigurationTypeEnum.UNKNOWN;
-		
-	} // end of updateType
-
 	private LiftingSurface calculateExposedWing(LiftingSurface theWing, Fuselage theFuselage) {
 		
 		Amount<Length> sectionWidthAtZ = Amount.valueOf(
@@ -920,47 +250,46 @@ public class Aircraft implements IAircraft {
 
 	public void calculateSWetTotal() {
 		
-		if(this._theFuselage != null)
-			this._sWetTotal = this._sWetTotal.plus(this._theFuselage.getsWet());
+		if(this._theAircraftInterface.getFuselage() != null)
+			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getFuselage().getsWet());
 		
-		if(this._theWing != null)
-			this._sWetTotal = this._sWetTotal.plus(this._theWing.getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted());
+		if(this._theAircraftInterface.getWing() != null)
+			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getWing().getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted());
 			
-		// TODO : FOR HTAIL, VTAIL AND CANARD THE EXPOSED WING IS NOT CALCULATED ... IS THIS ACCEPTABLE?
-		if(this._theHTail != null)
-			this._sWetTotal = this._sWetTotal.plus(this._theHTail.getLiftingSurfaceCreator().getSurfaceWetted());
+		if(_theAircraftInterface.getHTail() != null)
+			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().getSurfaceWetted());
 		
-		if(this._theVTail != null)
-			this._sWetTotal = this._sWetTotal.plus(this._theVTail.getLiftingSurfaceCreator().getSurfaceWetted());
+		if(_theAircraftInterface.getVTail() != null)
+			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().getSurfaceWetted());
 		
-		if(this._theCanard != null)
-			this._sWetTotal = this._sWetTotal.plus(this._theCanard.getLiftingSurfaceCreator().getSurfaceWetted());
+		if(_theAircraftInterface.getCanard() != null)
+			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getCanard().getLiftingSurfaceCreator().getSurfaceWetted());
 			
-		if(this._theNacelles != null)
-			this._sWetTotal = this._sWetTotal.plus(this._theNacelles.getSurfaceWetted());
+		if(_theAircraftInterface.getNacelles() != null)
+			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getNacelles().getSurfaceWetted());
 		
 	}
 	
 	public void calculateKExcrescences() {
 		_kExcr = DragCalc.calculateKExcrescences(getSWetTotal().doubleValue(SI.SQUARE_METRE));
 		
-		if(this._theFuselage != null)
-			this._theFuselage.setKExcr(_kExcr);
+		if(_theAircraftInterface.getFuselage() != null)
+			_theAircraftInterface.getFuselage().setKExcr(_kExcr);
 		
-		if(this._theWing != null)
-			this._theWing.setKExcr(_kExcr);
+		if(_theAircraftInterface.getWing() != null)
+			_theAircraftInterface.getWing().setKExcr(_kExcr);
 		
-		if(this._theHTail != null)
-			this._theHTail.setKExcr(_kExcr);
+		if(_theAircraftInterface.getHTail() != null)
+			_theAircraftInterface.getHTail().setKExcr(_kExcr);
 		
-		if(this._theVTail != null)
-			this._theVTail.setKExcr(_kExcr);
+		if(_theAircraftInterface.getVTail() != null)
+			_theAircraftInterface.getVTail().setKExcr(_kExcr);
 		
-		if(this._theCanard != null)
-			this._theCanard.setKExcr(_kExcr);
+		if(_theAircraftInterface.getCanard() != null)
+			_theAircraftInterface.getCanard().setKExcr(_kExcr);
 		
-		if(this._theNacelles != null)
-			this._theNacelles.setKExcr(_kExcr);
+		if(_theAircraftInterface.getNacelles() != null)
+			_theAircraftInterface.getNacelles().setKExcr(_kExcr);
 	}
 	
 	public void calculateArms(LiftingSurface theLiftingSurface, Amount<Length> xcgMTOM){
@@ -973,9 +302,9 @@ public class Aircraft implements IAircraft {
 		}
 		else if( // case CG behind AC wing
 				xcgMTOM.doubleValue(SI.METER) > 
-				(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-						.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
-							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
+				(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+						.plus(_theAircraftInterface.getWing().getXApexConstructionAxes()).getEstimatedValue() + 
+						_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
 				) {
 			
 			if((theLiftingSurface.getType() == ComponentEnum.HORIZONTAL_TAIL)
@@ -1001,9 +330,9 @@ public class Aircraft implements IAircraft {
 		}
 		else if( // case AC wing behind CG
 				xcgMTOM.doubleValue(SI.METER) <= 
-				(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-						.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
-							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
+				(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+						.plus(_theAircraftInterface.getWing().getXApexConstructionAxes()).getEstimatedValue() + 
+						_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
 				) {
 			if((theLiftingSurface.getType() == ComponentEnum.HORIZONTAL_TAIL)
 					|| (theLiftingSurface.getType() == ComponentEnum.VERTICAL_TAIL)) {
@@ -1032,9 +361,9 @@ public class Aircraft implements IAircraft {
 		_wingACToCGDistance = Amount.valueOf(
 				Math.abs(
 						xCGMTOM.doubleValue(SI.METER) -
-						(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-								.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
-									_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
+						(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+								.plus(_theAircraftInterface.getWing().getXApexConstructionAxes()).getEstimatedValue() + 
+								_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
 						), 
 				SI.METER);
 	}
@@ -1048,9 +377,9 @@ public class Aircraft implements IAircraft {
 										.plus(theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25))
 										.getEstimatedValue()
 										) 
-								- (_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-												.plus(_theWing.getXApexConstructionAxes()) 
-												.plus(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25))
+								- (_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+												.plus(_theAircraftInterface.getWing().getXApexConstructionAxes()) 
+												.plus(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25))
 												.getEstimatedValue()
 												)
 								),
@@ -1063,17 +392,17 @@ public class Aircraft implements IAircraft {
 		if ((theLiftingSurface.getType() == ComponentEnum.HORIZONTAL_TAIL)
 				|| (theLiftingSurface.getType() == ComponentEnum.CANARD)) {
 			theLiftingSurface.getLiftingSurfaceCreator().setVolumetricRatio(
-					(theLiftingSurface.getSurface().divide(_theWing.getSurface()))
+					(theLiftingSurface.getSurface().divide(_theAircraftInterface.getWing().getSurface()))
 					.times(theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance()
-							.divide(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord()))
+							.divide(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord()))
 			.getEstimatedValue()
 			);
 		} 
 		else if(theLiftingSurface.getType() == ComponentEnum.VERTICAL_TAIL) {
 			theLiftingSurface.getLiftingSurfaceCreator().setVolumetricRatio(
-					(theLiftingSurface.getSurface().divide(_theWing.getSurface()))
+					(theLiftingSurface.getSurface().divide(_theAircraftInterface.getWing().getSurface()))
 					.times(theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance()
-							.divide(_theWing.getSpan()))
+							.divide(_theAircraftInterface.getWing().getSpan()))
 					.getEstimatedValue()
 					);
 		}
@@ -1085,7 +414,6 @@ public class Aircraft implements IAircraft {
 									      String engineDir,
 									      String nacelleDir,
 									      String landingGearsDir,
-									      String systemsDir,
 									      String cabinConfigurationDir,
 									      String airfoilsDir,
 									      AerodynamicDatabaseReader aeroDatabaseReader,
@@ -1165,6 +493,9 @@ public class Aircraft implements IAircraft {
 			xApexFuselage = reader.getXMLAmountLengthByPath("//fuselage/position/x");
 			yApexFuselage = reader.getXMLAmountLengthByPath("//fuselage/position/y");
 			zApexFuselage = reader.getXMLAmountLengthByPath("//fuselage/position/z");
+			theFuselage.setXApexConstructionAxes(xApexFuselage);
+			theFuselage.setYApexConstructionAxes(yApexFuselage);
+			theFuselage.setZApexConstructionAxes(zApexFuselage);
 		}
 		
 		//---------------------------------------------------------------------------------
@@ -1215,6 +546,9 @@ public class Aircraft implements IAircraft {
 			yApexWing = reader.getXMLAmountLengthByPath("//wing/position/y");
 			zApexWing = reader.getXMLAmountLengthByPath("//wing/position/z");
 			riggingAngleWing = reader.getXMLAmountAngleByPath("//wing/rigging_angle");
+			theWing.setXApexConstructionAxes(xApexWing);
+			theWing.setYApexConstructionAxes(yApexWing);
+			theWing.setZApexConstructionAxes(zApexWing);
 			theWing.setRiggingAngle(riggingAngleWing);
 		}
 		
@@ -1236,7 +570,9 @@ public class Aircraft implements IAircraft {
 							);
 			yApexFuelTank = yApexWing;
 			zApexFuelTank = zApexWing;			
-			
+			theFuelTank.setXApexConstructionAxes(xApexFuelTank);
+			theFuelTank.setYApexConstructionAxes(yApexFuelTank);
+			theFuelTank.setZApexConstructionAxes(zApexFuelTank);
 		}
 		
 		//---------------------------------------------------------------------------------
@@ -1272,6 +608,9 @@ public class Aircraft implements IAircraft {
 			yApexHTail = reader.getXMLAmountLengthByPath("//horizontal_tail/position/y");
 			zApexHTail = reader.getXMLAmountLengthByPath("//horizontal_tail/position/z");
 			riggingAngleHTail = reader.getXMLAmountAngleByPath("//horizontal_tail/rigging_angle");
+			theHorizontalTail.setXApexConstructionAxes(xApexHTail);
+			theHorizontalTail.setYApexConstructionAxes(yApexHTail);
+			theHorizontalTail.setZApexConstructionAxes(zApexHTail);
 			theHorizontalTail.setRiggingAngle(riggingAngleHTail);
 		}
 		
@@ -1308,6 +647,9 @@ public class Aircraft implements IAircraft {
 			yApexVTail = reader.getXMLAmountLengthByPath("//vertical_tail/position/y");
 			zApexVTail = reader.getXMLAmountLengthByPath("//vertical_tail/position/z");
 			riggingAngleVTail = reader.getXMLAmountAngleByPath("//vertical_tail/rigging_angle");
+			theVerticalTail.setXApexConstructionAxes(xApexVTail);
+			theVerticalTail.setYApexConstructionAxes(yApexVTail);
+			theVerticalTail.setZApexConstructionAxes(zApexVTail);
 			theVerticalTail.setRiggingAngle(riggingAngleVTail);
 		}
 		
@@ -1344,6 +686,9 @@ public class Aircraft implements IAircraft {
 			yApexCanard = reader.getXMLAmountLengthByPath("//canard/position/y");
 			zApexCanard = reader.getXMLAmountLengthByPath("//canard/position/z");
 			riggingAngleCanard = reader.getXMLAmountAngleByPath("//canard/rigging_angle");
+			theCanard.setXApexConstructionAxes(xApexCanard);
+			theCanard.setYApexConstructionAxes(yApexCanard);
+			theCanard.setZApexConstructionAxes(zApexCanard);
 			theCanard.setRiggingAngle(riggingAngleCanard);
 		}
 		
@@ -1452,17 +797,17 @@ public class Aircraft implements IAircraft {
 			List<Amount<Length>> xApexNacellesList = new ArrayList<>();
 			List<Amount<Length>> yApexNacellesList = new ArrayList<>();
 			List<Amount<Length>> zApexNacellesList = new ArrayList<>();
-			List<NacelleCreator.MountingPosition> mountingPointNacellesList = new ArrayList<>();
+			List<NacelleMountingPositionEnum> mountingPointNacellesList = new ArrayList<>();
 
 			for(int i=0; i<mountingPointNacellesListProperties.size(); i++) {
 				if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("WING"))
-					mountingPointNacellesList.add(NacelleCreator.MountingPosition.WING);
+					mountingPointNacellesList.add(NacelleMountingPositionEnum.WING);
 				else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("FUSELAGE"))
-					mountingPointNacellesList.add(NacelleCreator.MountingPosition.FUSELAGE);
+					mountingPointNacellesList.add(NacelleMountingPositionEnum.FUSELAGE);
 				else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("UNDERCARRIAGE_HOUSING"))
-					mountingPointNacellesList.add(NacelleCreator.MountingPosition.UNDERCARRIAGE_HOUSING);
+					mountingPointNacellesList.add(NacelleMountingPositionEnum.UNDERCARRIAGE_HOUSING);
 				else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("HTAIL"))
-					mountingPointNacellesList.add(NacelleCreator.MountingPosition.HTAIL);
+					mountingPointNacellesList.add(NacelleMountingPositionEnum.HTAIL);
 				else {
 					System.err.println("INVALID NACELLE MOUNTING POSITION !!! ");
 					return null;
@@ -1518,54 +863,72 @@ public class Aircraft implements IAircraft {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//landing_gears/@file");
 		
-		LandingGears.MountingPosition mountingPosition = null;
+		LandingGearsMountingPositionEnum mountingPosition = null;
 		LandingGears theLandingGears = null;
-		Amount<Length> xApexLandingGears = Amount.valueOf(0.0, SI.METER);
-		Amount<Length> yApexLandingGears = Amount.valueOf(0.0, SI.METER);
-		Amount<Length> zApexLandingGears = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> xApexNoseLandingGears = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> yApexNoseLandingGears = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> zApexNoseLandingGears = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> xApexMainLandingGears = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> yApexMainLandingGears = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> zApexMainLandingGears = Amount.valueOf(0.0, SI.METER);
 		
 		if(landingGearsFileName != null) {
 			String landingGearsPath = landingGearsDir + File.separator + landingGearsFileName;
 			theLandingGears = LandingGears.importFromXML(landingGearsPath);
 			
-			xApexLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/x");
-			yApexLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/y");
-			zApexLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/z");
+			xApexNoseLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/nose_gear/x");
+			yApexNoseLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/nose_gear/y");
+			zApexNoseLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/nose_gear/z");
+			theLandingGears.setXApexConstructionAxesMainGear(xApexMainLandingGears);
+			theLandingGears.setYApexConstructionAxesMainGear(yApexMainLandingGears);
+			theLandingGears.setZApexConstructionAxesMainGear(zApexMainLandingGears);
+			
+			xApexMainLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/main_gear/x");
+			yApexMainLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/main_gear/y");
+			zApexMainLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/main_gear/z");
+			theLandingGears.setXApexConstructionAxesNoseGear(xApexNoseLandingGears);
+			theLandingGears.setYApexConstructionAxesNoseGear(yApexNoseLandingGears);
+			theLandingGears.setZApexConstructionAxesNoseGear(zApexNoseLandingGears);
+			
 			String mountingPositionProperty = reader.getXMLPropertyByPath("//landing_gears/mounting_point");
 			if(mountingPositionProperty.equalsIgnoreCase("FUSELAGE"))
-				mountingPosition = MountingPosition.FUSELAGE;
+				mountingPosition = LandingGearsMountingPositionEnum.FUSELAGE;
 			else if(mountingPositionProperty.equalsIgnoreCase("WING"))
-				mountingPosition = MountingPosition.WING;
+				mountingPosition = LandingGearsMountingPositionEnum.WING;
 			else if(mountingPositionProperty.equalsIgnoreCase("NACELLE"))
-				mountingPosition = MountingPosition.NACELLE;
+				mountingPosition = LandingGearsMountingPositionEnum.NACELLE;
 			else {
 				System.err.println("INVALID LANDING GEARS MOUNTING POSITION !!! ");
 				return null;
 			}
 				
+			theLandingGears.setMountingPosition(mountingPosition);
+			
 		}
 		
 		//---------------------------------------------------------------------------------
 		// SYSTEMS
-		String systemsFileName =
+		String systemsPrimaryElectricalSystemsTypeString =
 				MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//systems/@file");
+						"//systems/@primary_electrical_systems_type");
 		
-		Systems theSystems = null;
-		Amount<Length> xApexSystems = Amount.valueOf(0.0, SI.METER);
-		Amount<Length> yApexSystems = Amount.valueOf(0.0, SI.METER);
-		Amount<Length> zApexSystems = Amount.valueOf(0.0, SI.METER);
+		PrimaryElectricSystemsEnum electricalSystemsType = null;
 		
-		if(systemsFileName != null) {
-			String systemsPath = systemsDir + File.separator + systemsFileName;
-			theSystems = Systems.importFromXML(systemsPath);
+		if(systemsPrimaryElectricalSystemsTypeString != null) {
 			
-			xApexSystems = reader.getXMLAmountLengthByPath("//systems/position/x");
-			yApexSystems = reader.getXMLAmountLengthByPath("//systems/position/y");
-			zApexSystems = reader.getXMLAmountLengthByPath("//systems/position/z");
+			if(systemsPrimaryElectricalSystemsTypeString.equalsIgnoreCase("AC"))
+				electricalSystemsType = PrimaryElectricSystemsEnum.AC;
+			else if(systemsPrimaryElectricalSystemsTypeString.equalsIgnoreCase("DC"))
+				electricalSystemsType = PrimaryElectricSystemsEnum.DC;
+				
 		}
+		
+		ISystems theSystemsInterface = new ISystems.Builder()
+				.setPrimaryElectricSystemsType(electricalSystemsType)
+				.buildPartial();
+		Systems theSystems = new Systems(theSystemsInterface);
 		
 		//---------------------------------------------------------------------------------
 		// COMPONENT LIST:
@@ -1592,51 +955,57 @@ public class Aircraft implements IAircraft {
 			componentList.add(theLandingGears);
 		if(theSystems != null)
 			componentList.add(theSystems);
-		
-		
+
+
 		//---------------------------------------------------------------------------------
-		Aircraft theAircraft = new AircraftBuilder(id, aeroDatabaseReader, highLiftDatabaseReader, fusDesDatabaseReader, veDSCDatabaseReader)
-				.name(id)
-				.aircraftType(type)
-				.regulations(regulations)
-				.componentsList(componentList)
-				.fuselage(theFuselage)
-				.xApexFuselage(xApexFuselage)
-				.yApexFuselage(yApexFuselage)
-				.zApexFuselage(zApexFuselage)
-				.cabinConfiguration(theCabinConfiguration)
-				.wing(theWing)
-				.xApexWing(xApexWing)
-				.yApexWing(yApexWing)
-				.zApexWing(zApexWing)
-				.horizontalTail(theHorizontalTail)
-				.xApexHTail(xApexHTail)
-				.yApexHTail(yApexHTail)
-				.zApexHTail(zApexHTail)
-				.verticalTail(theVerticalTail)
-				.xApexVTail(xApexVTail)
-				.yApexVTail(yApexVTail)
-				.zApexVTail(zApexVTail)
-				.canard(theCanard)
-				.xApexCanard(xApexCanard)
-				.yApexCanard(yApexCanard)
-				.zApexCanard(zApexCanard)
-				.fuelTank(theFuelTank)
-				.xApexFuelTank(xApexFuelTank)
-				.yApexFuelTank(yApexFuelTank)
-				.zApexFuelTank(zApexFuelTank)
-				.powerPlant(thePowerPlant)
-				.nacelles(theNacelles)
-				.landingGears(theLandingGears)
-				.xApexLandingGears(xApexLandingGears)
-				.yApexLandingGears(yApexLandingGears)
-				.zApexLandingGears(zApexLandingGears)
-				.landingGearsMountingPosition(mountingPosition)
-				.systems(theSystems)
-				.xApexSystems(xApexSystems)
-				.yApexSystem(yApexSystems)
-				.zApexSystems(zApexSystems)
-				.build();
+		Aircraft theAircraft = new Aircraft(
+				new IAircraft.Builder()
+				.setId(id)
+				.setTypeVehicle(type)
+				.setRegulations(regulations)
+				.setPrimaryElectricSystemsType(electricalSystemsType)
+				.setCabinConfiguration(theCabinConfiguration)
+				.setFuselage(theFuselage)
+				.setXApexFuselage(xApexFuselage)
+				.setYApexFuselage(yApexFuselage)
+				.setZApexFuselage(zApexFuselage)
+				.setWing(theWing)
+				.setXApexWing(xApexWing)
+				.setYApexWing(yApexWing)
+				.setZApexWing(zApexWing)
+				.setRiggingAngleWing(riggingAngleWing)
+				.setHTail(theHorizontalTail)
+				.setXApexHTail(xApexHTail)
+				.setYApexHTail(yApexHTail)
+				.setZApexHTail(zApexHTail)
+				.setRiggingAngleHTail(riggingAngleHTail)
+				.setVTail(theVerticalTail)
+				.setXApexVTail(xApexVTail)
+				.setYApexVTail(yApexVTail)
+				.setZApexVTail(zApexVTail)
+				.setRiggingAngleVTail(riggingAngleVTail)
+				.setCanard(theCanard)
+				.setXApexCanard(xApexCanard)
+				.setYApexCanard(yApexCanard)
+				.setZApexCanard(zApexCanard)
+				.setRiggingAngleCanard(riggingAngleCanard)
+				.setFuelTank(theFuelTank)
+				.setXApexFuelTank(xApexFuelTank)
+				.setYApexFuelTank(yApexFuelTank)
+				.setZApexFuelTank(zApexFuelTank)
+				.setPowerPlant(thePowerPlant)
+				.setNacelles(theNacelles)
+				.setLandingGears(theLandingGears)
+				.setXApexNoseGear(xApexNoseLandingGears)
+				.setYApexNoseGear(yApexNoseLandingGears)
+				.setZApexNoseGear(zApexNoseLandingGears)
+				.setXApexMainGear(xApexMainLandingGears)
+				.setYApexMainGear(yApexMainLandingGears)
+				.setZApexMainGear(zApexMainLandingGears)
+				.setLandingGearsMountingPositionEnum(mountingPosition)
+				.setSystems(theSystems)
+				.build()
+				);
 		
 		return theAircraft;
 	}
@@ -1651,172 +1020,80 @@ public class Aircraft implements IAircraft {
 		sb.append("\t-------------------------------------\n")
 		  .append("\tThe Aircraft\n")
 		  .append("\t-------------------------------------\n")
-		  .append("\tId: '" + _id + "'\n")
-		  .append("\tType: '" + _typeVehicle + "'\n");
+		  .append("\tId: '" + _theAircraftInterface.getId() + "'\n")
+		  .append("\tType: '" + _theAircraftInterface.getTypeVehicle() + "'\n");
 		
-		if(_theFuselage != null)
-			sb.append(_theFuselage.getFuselageCreator().toString());
+		if(_theAircraftInterface.getFuselage() != null)
+			sb.append(_theAircraftInterface.getFuselage().getFuselageCreator().toString());
 		
-		if(_theWing != null)
-			sb.append(_theWing.getLiftingSurfaceCreator().toString());
+		if(_theAircraftInterface.getWing() != null)
+			sb.append(_theAircraftInterface.getWing().getLiftingSurfaceCreator().toString());
 		
-		if(_theWing.getExposedWing() != null)
-			sb.append(_theWing.getExposedWing().getLiftingSurfaceCreator().toString());
+		if(_theAircraftInterface.getWing().getExposedWing() != null)
+			sb.append(_theAircraftInterface.getWing().getExposedWing().getLiftingSurfaceCreator().toString());
 		
-		if(_theHTail != null)
-			sb.append(_theHTail.getLiftingSurfaceCreator().toString());
+		if(_theAircraftInterface.getHTail() != null)
+			sb.append(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().toString());
 		
-		if(_theVTail != null)
-			sb.append(_theVTail.getLiftingSurfaceCreator().toString());
+		if(_theAircraftInterface.getVTail() != null)
+			sb.append(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().toString());
 		
-		if(_theCanard != null)
-			sb.append(_theCanard.getLiftingSurfaceCreator().toString());
+		if(_theAircraftInterface.getCanard() != null)
+			sb.append(_theAircraftInterface.getCanard().getLiftingSurfaceCreator().toString());
 		
-		if(_theCabinConfiguration != null)
-			sb.append(_theCabinConfiguration.toString());
+		if(_theAircraftInterface.getCabinConfiguration() != null)
+			sb.append(_theAircraftInterface.getCabinConfiguration().toString());
 		
-		if(_theFuelTank != null)
-			sb.append(_theFuelTank.toString());
+		if(_theAircraftInterface.getFuelTank() != null)
+			sb.append(_theAircraftInterface.getFuelTank().toString());
 		
-		if(_thePowerPlant != null)
-			sb.append(_thePowerPlant.toString());
+		if(_theAircraftInterface.getPowerPlant() != null)
+			sb.append(_theAircraftInterface.getPowerPlant().toString());
 		
-		if(_theNacelles != null)
-			sb.append(_theNacelles.toString());
+		if(_theAircraftInterface.getNacelles() != null)
+			sb.append(_theAircraftInterface.getNacelles().toString());
 		
-		if(_theLandingGears != null)
-			sb.append(_theLandingGears.toString());
-		
-		if(_theSystems != null)
-			sb.append(_theSystems.toString());
+		if(_theAircraftInterface.getLandingGears() != null)
+			sb.append(_theAircraftInterface.getLandingGears().toString());
 		
 		return sb.toString();
 		
 	}
-	
-	@Override
-	public void deleteFuselage() {
-		_theFuselage = null;
-		updateType();
-	}
 
-	@Override
-	public void deleteWing()
-	{
-		_theWing = null;
-		updateType();
-	}
-
-	@Override
-	public void deleteExposedWing()
-	{
-		_theWing.setExposedWing(null);
-		updateType();
+	//----------------------------------------------------------------------------------------
+	// GETTERS & SETTERS
+	
+	public IAircraft getTheAircraftInterface() {
+		return _theAircraftInterface;
 	}
 	
-	@Override
-	public void deleteHTail()
-	{
-		_theHTail = null;
-		updateType();
-	}
-
-	@Override
-	public void deleteVTail()
-	{
-		_theVTail = null;
-		updateType();
-	}
-
-	@Override
-	public void deleteCanard()
-	{
-		_theCanard = null;
-		updateType();
+	public void setTheAircraftInterface(IAircraft theAircraftInterface) {
+		this._theAircraftInterface = theAircraftInterface;
+		
 	}
 	
-	@Override
-	public void deletePowerPlant()
-	{
-		_thePowerPlant = null;
-		updateType();
-	}
-	
-	@Override
-	public void deleteNacelles()
-	{
-		_theNacelles = null;
-		updateType();
-	}
-	
-	@Override
-	public void deleteFuelTank()
-	{
-		_theFuelTank = null;
-		updateType();
-	}
-	
-	@Override
-	public void deleteLandingGears()
-	{
-		_theLandingGears= null;
-		updateType();
-	}
-	
-	@Override
-	public void deleteSystems()
-	{
-		_theSystems = null;
-		updateType();
-	}
-	
-	@Override
 	public AircraftTypeEnum getTypeVehicle() {
-		return _typeVehicle;
+		return _theAircraftInterface.getTypeVehicle();
 	}
 
-	@Override
 	public void setTypeVehicle(AircraftTypeEnum _typeVehicle) {
-		this._typeVehicle = _typeVehicle;
+		IAircraft.Builder.from(_theAircraftInterface).setTypeVehicle(_typeVehicle);
 	}
 
-	/**
-	 * @return the _regulations
-	 */
 	public RegulationsEnum getRegulations() {
-		return _regulations;
+		return _theAircraftInterface.getRegulations();
 	}
 
-	/**
-	 * @param _regulations the _regulations to set
-	 */
 	public void setRegulations(RegulationsEnum _regulations) {
-		this._regulations = _regulations;
+		IAircraft.Builder.from(_theAircraftInterface).setRegulations(_regulations);
 	}
 
-	@Override
 	public String getId() {
-		return _id;
+		return _theAircraftInterface.getId();
 	}
 
-	@Override
 	public void setId(String _name) {
-		this._id = _name;
-	}
-	
-	@Override
-	public AeroConfigurationTypeEnum getType() {
-		return _type;
-	}
-
-	@Override
-	public double getLifeSpan() {
-		return _lifeSpan;
-	}
-	
-	@Override
-	public void setLifeSpan(double _lifeSpan) {
-		this._lifeSpan = _lifeSpan;
+		IAircraft.Builder.from(_theAircraftInterface).setId(_name);
 	}
 	
 	public Amount<Area> getSWetTotal() {
@@ -1835,147 +1112,118 @@ public class Aircraft implements IAircraft {
 		this._kExcr = kExcr;
 	}
 
-	@Override
 	public List<Object> getComponentsList() {
 		return _componentsList;
 	}
 	
-	@Override
 	public ACAnalysisManager getTheAnalysisManager() {
 		return this._theAnalysisManager;
 	}
 	
-	@Override
 	public void setTheAnalysisManager(ACAnalysisManager theAnalysisManager) {
 		this._theAnalysisManager = theAnalysisManager;
 	}
 	
-	@Override
 	public Fuselage getFuselage() {
-		return _theFuselage;
+		return _theAircraftInterface.getFuselage();
 	}
 	
-	@Override
 	public void setFuselage(Fuselage fuselage) {
-		this._theFuselage = fuselage;
+		IAircraft.Builder.from(_theAircraftInterface).setFuselage(fuselage);
 	}
 	
-	@Override
 	public LiftingSurface getWing() {
-		return _theWing;
+		return _theAircraftInterface.getWing();
 	}
 	
-	@Override
 	public void setWing(LiftingSurface wing) {
-		this._theWing = wing;
+		IAircraft.Builder.from(_theAircraftInterface).setWing(wing);
 	}
 	
-	@Override
 	public LiftingSurface getExposedWing() {
-		return _theWing.getExposedWing();
+		return _theAircraftInterface.getWing().getExposedWing();
 	}
 	
-	@Override
 	public void setExposedWing(LiftingSurface exposedWing) {
-		this._theWing.setExposedWing(exposedWing);
+		_theAircraftInterface.getWing().setExposedWing(exposedWing);
 	}
 	
-	@Override
 	public LiftingSurface getHTail() {
-		return _theHTail;
+		return _theAircraftInterface.getHTail();
 	}
 
-	@Override
 	public void setHTail(LiftingSurface hTail) {
-		this._theHTail = hTail;
+		IAircraft.Builder.from(_theAircraftInterface).setHTail(hTail);
 	}
 	
-	@Override
 	public LiftingSurface getVTail() {
-		return _theVTail;
+		return _theAircraftInterface.getVTail();
 	}
 
-	@Override
 	public void setVTail(LiftingSurface vTail) {
-		this._theVTail = vTail;
+		IAircraft.Builder.from(_theAircraftInterface).setVTail(vTail);
 	}
 	
-	@Override
 	public LiftingSurface getCanard() {
-		return _theCanard;
+		return _theAircraftInterface.getCanard();
 	}
 
-	@Override
 	public void setCanard(LiftingSurface canard) {
-		this._theCanard = canard;
+		IAircraft.Builder.from(_theAircraftInterface).setCanard(canard);
 	}
 	
-	@Override
 	public PowerPlant getPowerPlant() {
-		return _thePowerPlant;
+		return _theAircraftInterface.getPowerPlant();
 	}
 	
-	@Override
 	public void setPowerPlant(PowerPlant powerPlant) {
-		this._thePowerPlant = powerPlant;
+		IAircraft.Builder.from(_theAircraftInterface).setPowerPlant(powerPlant);
 	}
 	
-	@Override
 	public Nacelles getNacelles() {
-		return _theNacelles;
+		return _theAircraftInterface.getNacelles();
 	}
 	
-	@Override
 	public void setNacelles(Nacelles nacelles) {
-		this._theNacelles = nacelles;
+		IAircraft.Builder.from(_theAircraftInterface).setNacelles(nacelles);
 	}
 	
-	@Override
 	public FuelTank getFuelTank() {
-		return _theFuelTank;
+		return _theAircraftInterface.getFuelTank();
 	}
 	
-	@Override
 	public void setFuelTank(FuelTank fuelTank) {
-		this._theFuelTank = fuelTank;
+		IAircraft.Builder.from(_theAircraftInterface).setFuelTank(fuelTank);
 	}
 	
-	@Override
 	public LandingGears getLandingGears() {
-		return _theLandingGears;
+		return _theAircraftInterface.getLandingGears();
 	}
 	
-	@Override
 	public void setLandingGears(LandingGears landingGears) {
-		this._theLandingGears = landingGears;
+		IAircraft.Builder.from(_theAircraftInterface).setLandingGears(landingGears);
 	}
 	
-	@Override
 	public Systems getSystems() {
-		return _theSystems;
+		return _theAircraftInterface.getSystems();
 	}
 	
-	@Override
 	public void setSystems(Systems systems) {
-		this._theSystems = systems;
+		IAircraft.Builder.from(_theAircraftInterface).setSystems(systems);
 	}
 	
-	@Override
 	public CabinConfiguration getCabinConfiguration() {
-		return _theCabinConfiguration;
+		return _theAircraftInterface.getCabinConfiguration();
 	}
 	
-	@Override
 	public void setCabinConfiguration(CabinConfiguration theCabinConfiguration) {
-		this._theCabinConfiguration = theCabinConfiguration;
+		IAircraft.Builder.from(_theAircraftInterface).setCabinConfiguration(theCabinConfiguration);
 	}
 	
-	@Override
 	public Amount<Length> getWingACToCGDistance() {
 		return _wingACToCGDistance;
 	}
 
-	@Override
 	public void setWingACToCGDistance(Amount<Length> _wingACToCGDistance) {
 		this._wingACToCGDistance = _wingACToCGDistance;
 	}
@@ -2060,4 +1308,4 @@ public class Aircraft implements IAircraft {
 		this._systemsFilePath = _systemsFilePath;
 	}
 	
-} // end of class
+} 
