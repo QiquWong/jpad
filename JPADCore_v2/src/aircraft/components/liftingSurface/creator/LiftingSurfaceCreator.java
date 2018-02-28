@@ -47,6 +47,15 @@ import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
+/**
+ * The LiftingSurfaceCreator class manages all the geometrical data of generic lifting surface.
+ * It reads from the component XML file, calculates all the derived geometrical parameters and builds the lifiting surface.
+ * It also read and populate the airfoil List.
+ * This class is contained within the LiftingSurface class which containes the components position, mass and center of gravity position. 
+ * 
+ * @author Vittorio Trifari
+ *
+ */
 public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	private int _numberOfSpanwisePoints = 15;

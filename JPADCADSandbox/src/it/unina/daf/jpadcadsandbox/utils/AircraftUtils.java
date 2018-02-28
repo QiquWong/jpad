@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -20,16 +19,11 @@ import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
-
-import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
-import calculators.aerodynamics.AirfoilCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
@@ -38,23 +32,19 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
-import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADFace;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
-import it.unina.daf.jpadcad.occ.CADGeomSurface;
 import it.unina.daf.jpadcad.occ.CADShape;
 import it.unina.daf.jpadcad.occ.CADShell;
 import it.unina.daf.jpadcad.occ.CADSolid;
 import it.unina.daf.jpadcad.occ.CADVertex;
 import it.unina.daf.jpadcad.occ.OCCEdge;
-import it.unina.daf.jpadcad.occ.OCCFace;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCVertex;
 import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepBuilderAPI_MakeSolid;
-import opencascade.BRepBuilderAPI_MakeWire;
 import opencascade.BRepBuilderAPI_Sewing;
 import opencascade.BRepBuilderAPI_Transform;
 import opencascade.BRepMesh_IncrementalMesh;
@@ -62,23 +52,17 @@ import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
 import opencascade.BRep_Tool;
-import opencascade.GeomAPI_ProjectPointOnCurve;
 import opencascade.GeomAbs_Shape;
 import opencascade.IFSelect_ReturnStatus;
 import opencascade.STEPControl_StepModelType;
 import opencascade.STEPControl_Writer;
-import opencascade.ShapeExtend_Explorer;
 import opencascade.StlAPI_Writer;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
-import opencascade.TopTools_HSequenceOfShape;
 import opencascade.TopoDS;
 import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
-import opencascade.TopoDS_Face;
 import opencascade.TopoDS_Shape;
-import opencascade.TopoDS_Shell;
-import opencascade.TopoDS_Vertex;
 import opencascade.gp_Ax2;
 import opencascade.gp_Dir;
 import opencascade.gp_Pnt;
@@ -135,9 +119,6 @@ public final class AircraftUtils {
 			String dirLandingGears = CmdLineUtils.va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
 			
-			String dirSystems = CmdLineUtils.va.getSystemsDirectory().getCanonicalPath();
-			System.out.println("SYSTEMS ===> " + dirSystems);
-			
 			String dirCabinConfiguration = CmdLineUtils.va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
 			
@@ -191,38 +172,6 @@ public final class AircraftUtils {
 			
 			// deactivating system.out
 			System.setOut(filterStream);
-			
-			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder(
-//					"ATR-72",
-//					AircraftEnum.ATR72,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader,
-//			        fusDesDatabaseReader,
-//					veDSCDatabaseReader
-//					)
-//					.build();
-
-//			AircraftSaveDirectives asd = new AircraftSaveDirectives
-//					.Builder("_ATR72")
-//					.addAllWingAirfoilFileNames(
-//							theAircraft.getWing().getAirfoilList().stream()
-//									.map(a -> a.getAirfoilCreator().getName() + ".xml")
-//									.collect(Collectors.toList())
-//						)
-//					.addAllHTailAirfoilFileNames(
-//							theAircraft.getHTail().getAirfoilList().stream()
-//									.map(a -> a.getAirfoilCreator().getName() + ".xml")
-//									.collect(Collectors.toList())
-//						)
-//					.addAllVTailAirfoilFileNames(
-//							theAircraft.getVTail().getAirfoilList().stream()
-//									.map(a -> a.getAirfoilCreator().getName() + ".xml")
-//									.collect(Collectors.toList())
-//						)
-//					.build();
-//			
-//			JPADStaticWriteUtils.saveAircraftToXML(theAircraft, MyConfiguration.getDir(FoldersEnum.INPUT_DIR), "aircraft_ATR72", asd);
 			
 			// reading aircraft from xml ... 
 			Aircraft aircraft = Aircraft.importFromXML(
@@ -363,11 +312,11 @@ public final class AircraftUtils {
 		List<OCCShape> result = new ArrayList<>();
 		List<OCCShape> extraShapes = new ArrayList<>();
 		
-		Amount<Length> noseLength = fuselage.getFuselageCreator().getLengthNoseTrunk();
+		Amount<Length> noseLength = fuselage.getFuselageCreator().getNoseLength();
 		System.out.println("Nose length: " + noseLength);
-		Amount<Length> noseCapStation = fuselage.getFuselageCreator().getDxNoseCap();
+		Amount<Length> noseCapStation = fuselage.getFuselageCreator().getNoseCapOffset();
 		System.out.println("Nose cap x-station: " + noseCapStation);
-		Double xbarNoseCap = fuselage.getNoseDxCapPercent(); // normalized with noseLength
+		Double xbarNoseCap = fuselage.getFuselageCreator().getNoseCapOffsetPercent(); // normalized with noseLength
 		System.out.println("Nose cap x-station normalized: " + xbarNoseCap);
 		Amount<Length> zNoseTip = Amount.valueOf( 
 				fuselage.getFuselageCreator().getZOutlineXZLowerAtX(0.0),
@@ -459,7 +408,7 @@ public final class AircraftUtils {
 		CADGeomCurve3D cadCrvCylinderInitialSection = OCCUtils.theFactory
 				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength), false);
 
-		Amount<Length> cylinderLength = fuselage.getFuselageCreator().getLengthCylindricalTrunk();
+		Amount<Length> cylinderLength = fuselage.getFuselageCreator().getCylinderLength();
 		
 		System.out.println("========== [AircraftUtils::getFuselageCAD] Fuselage cylindrical trunk: x=" + noseLength + " to x=" + noseLength.plus(cylinderLength));
 
@@ -489,9 +438,9 @@ public final class AircraftUtils {
 		}
 		
 		// Tail trunk
-		Amount<Length> tailLength = fuselage.getFuselageCreator().getLengthTailTrunk();
-		Amount<Length> tailCapLength = fuselage.getFuselageCreator().getDxTailCap();
-		Amount<Length> fuselageLength = fuselage.getLength();
+		Amount<Length> tailLength = fuselage.getFuselageCreator().getTailLength();
+		Amount<Length> tailCapLength = fuselage.getFuselageCreator().getTailCapOffset();
+		Amount<Length> fuselageLength = fuselage.getFuselageCreator().getFuselageLength();
 
 		System.out.println("========== [AircraftUtils::getFuselageCAD] Tail trunk (no cap): x=" 
 				+ noseLength.plus(cylinderLength) + " to x=" + fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)) + " (fus. length - tail cap length)"

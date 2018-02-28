@@ -1026,7 +1026,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 							* aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 
 							* ( 3
 									* aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 
-									+ 0.5 * aircraft.getFuselage().getDeckNumber() + 1) + 3500) /
+									+ 0.5 * aircraft.getFuselage().getFuselageCreator().getDeckNumber() + 1) + 3500) /
 					AtmosphereCalc.g0.getEstimatedValue(),
 					SI.KILOGRAM);
 

@@ -81,7 +81,7 @@ public interface AVLBody {
 				}
 				try{
 					PrintWriter writer = new PrintWriter(file.getAbsolutePath(), "UTF-8");
-					writer.println("x z ! " + fuselage.getId());
+					writer.println("x z ! " + fuselage.getFuselageCreator().getId());
 					// writer.println("The second line");
 
 

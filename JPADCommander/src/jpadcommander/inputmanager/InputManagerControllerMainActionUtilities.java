@@ -365,7 +365,7 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getTextFieldFuselageTailMidRhoLower().clear();
 		
 		// Spoilers
-		if(!Main.getTheAircraft().getFuselage().getSpoilers().isEmpty()) {
+		if(!Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().isEmpty()) {
 			theController.getFuselageSpoiler1DeltaMaxUnitChoiceBox().getSelectionModel().clearSelection();
 			theController.getFuselageSpoiler1DeltaMinUnitChoiceBox().getSelectionModel().clearSelection();	
 			theController.getTextFieldFuselageInnerSpanwisePositionSpoilerList().stream().forEach(t -> t.clear());
@@ -5094,21 +5094,21 @@ public class InputManagerControllerMainActionUtilities {
 
 		//---------------------------------------------------------------------------------
 		// SPOILERS NUMBER CHECK:
-		if (Main.getTheAircraft().getFuselage().getSpoilers().size() >= 
+		if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().size() >= 
 				theController.getTabPaneFuselageSpoilers().getTabs().size()) {
 			
 			int iStart = theController.getTabPaneFuselageSpoilers().getTabs().size();
 			
-			for(int i=iStart; i<Main.getTheAircraft().getFuselage().getSpoilers().size(); i++)
+			for(int i=iStart; i<Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().size(); i++)
 				theController.addFuselageSpoiler();
 			
 		}
 		
 		//---------------------------------------------------------------------------------
 		// LOOP OVER SPOILERS:
-		for (int i=0; i<Main.getTheAircraft().getFuselage().getSpoilers().size(); i++) {
+		for (int i=0; i<Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().size(); i++) {
 			
-			SpoilerCreator currentSpoiler = Main.getTheAircraft().getFuselage().getSpoilers().get(i);
+			SpoilerCreator currentSpoiler = Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i);
 			
 			//---------------------------------------------------------------------------------
 			// INNER SPANWISE POSITION:
@@ -5366,7 +5366,7 @@ public class InputManagerControllerMainActionUtilities {
 										seatsSeriesList.get(seatsSeriesList.size()-1).getDataItem(0).getXValue()
 										+ breakLengthPitchFraction * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER)
 										+ Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
-										Main.getTheAircraft().getFuselage().getSectionWidht().divide(2).doubleValue(SI.METER)
+										Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().divide(2).doubleValue(SI.METER)
 										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
 										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).divide(2).doubleValue(SI.METER)
 										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
@@ -5377,7 +5377,7 @@ public class InputManagerControllerMainActionUtilities {
 								seriesSeats.add(
 										seatsSeriesList.get(seatsSeriesList.size()-1).getDataItem(0).getXValue()
 										+ Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
-										Main.getTheAircraft().getFuselage().getSectionWidht().divide(2).doubleValue(SI.METER)
+										Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().divide(2).doubleValue(SI.METER)
 										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
 										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).divide(2).doubleValue(SI.METER)
 										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
@@ -5388,7 +5388,7 @@ public class InputManagerControllerMainActionUtilities {
 										+ length.doubleValue(SI.METER)
 										+ Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
 										+ r * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
-										Main.getTheAircraft().getFuselage().getSectionWidht().divide(2).doubleValue(SI.METER)
+										Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().divide(2).doubleValue(SI.METER)
 										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
 										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).divide(2).doubleValue(SI.METER)
 										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)

@@ -9,7 +9,6 @@ import java.util.stream.IntStream;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
-import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -38,6 +37,14 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
 
+/**
+ * The FuselageCreator class manages all the geometrical data of the fuselage.
+ * It reads from the fuselage XML file, calculates all the derived geometrical parameters and builds the fuselage outlines.
+ * This class is contained within the Fuselage class which containes the components position, mass and center of gravity position. 
+ * 
+ * @author Vittorio Trifari
+ *
+ */
 public class FuselageCreator {
 
 	//----------------------------------------------------------------------
@@ -69,6 +76,7 @@ public class FuselageCreator {
 	private Amount<Area> sWetCylinder;
 	private Amount<Area> frontSurface; 
 	private Amount<Area> sWetTotal;
+	private double kExcr;
 	private Amount<Angle> phiNose, phiTail;
 	private Amount<Angle> upsweepAngle, windshieldAngle;
 	private Amount<Length> noseCapOffset, tailCapOffset;
@@ -115,10 +123,6 @@ public class FuselageCreator {
 	List<List<Double>> sectionUpperCurvesZ = new ArrayList<List<Double>>();
 	List<List<Double>> sectionLowerCurvesY = new ArrayList<List<Double>>();
 	List<List<Double>> sectionLowerCurvesZ = new ArrayList<List<Double>>();
-	
-	//----------------------------------------------------------------------
-	// OUTPUT DATA (TO BE MOVED)
-	private Amount<Mass> massReference;
 	
 	//------------------------------------------------------------------------------------------
 	// BUILDER 
@@ -2399,6 +2403,14 @@ public class FuselageCreator {
 		this.sWetTotal = sWet;
 	}
 	
+	public double getKExcr() {
+		return kExcr;
+	}
+
+	public void setKExcr(double kExcr) {
+		this.kExcr = kExcr;
+	}
+
 	public Amount<Length> getHeightFromGround() {
 		return theFuselageCreatorInterface.getHeightFromGround();
 	}
@@ -3032,17 +3044,6 @@ public class FuselageCreator {
 	public void setDeckNumber(int deckNumber) {
 		setTheFuselageCreatorInterface(IFuselageCreator.Builder.from(theFuselageCreatorInterface).setDeckNumber(deckNumber).build());
 	}
-
-	
-	public Amount<Mass> getMassReference() {
-		return massReference;
-	}
-
-	
-	public void setMassReference(Amount<Mass> massReference) {
-		this.massReference = massReference;
-	}
-	
 	
 	public void setSpoilers(List<SpoilerCreator> spoilers) {
 		setTheFuselageCreatorInterface(

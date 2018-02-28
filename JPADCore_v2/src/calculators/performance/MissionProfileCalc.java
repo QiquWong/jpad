@@ -407,8 +407,8 @@ public class MissionProfileCalc {
 			//--------------------------------------------------------------------
 			// TAKE-OFF
 			Amount<Length> wingToGroundDistance = 
-					_theAircraft.getFuselage().getHeightFromGround()
-					.plus(_theAircraft.getFuselage().getSectionHeight().divide(2))
+					_theAircraft.getFuselage().getFuselageCreator().getHeightFromGround()
+					.plus(_theAircraft.getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2))
 					.plus(_theAircraft.getWing().getZApexConstructionAxes()
 							.plus(_theAircraft.getWing().getSemiSpan()
 									.times(

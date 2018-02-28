@@ -2761,7 +2761,7 @@ public class JPADStaticWriteUtils {
 		
 		// fuselage
 		org.w3c.dom.Element fuselageElement = createXMLElementWithAttributes(doc, "fuselage", 
-				Tuple.of("id", aircraft.getFuselage().getId()),
+				Tuple.of("id", aircraft.getFuselage().getFuselageCreator().getId()),
 				Tuple.of("pressurized", aircraft.getFuselage().getFuselageCreator().getPressurized().toString())
 				);
 		rootElement.appendChild(fuselageElement);

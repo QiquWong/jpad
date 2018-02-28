@@ -209,7 +209,7 @@ public class FuselageAerodynamicsManager {
 					DragCalc.calculateCD0Parasite(
 							_theFuselage.getFuselageCreator().getFormFactor(), 
 							_cF,
-							_theFuselage.getsWet().doubleValue(SI.SQUARE_METRE),
+							_theFuselage.getFuselageCreator().getSWetTotal().doubleValue(SI.SQUARE_METRE),
 							_theWing.getSurface().doubleValue(SI.SQUARE_METRE)
 							)
 					);
@@ -335,7 +335,7 @@ public class FuselageAerodynamicsManager {
 			_cD0Total.put(
 					MethodEnum.SEMIEMPIRICAL, 
 					(_cD0Parasite.get(MethodEnum.SEMIEMPIRICAL)
-					*(1 + _theFuselage.getKExcr())
+					*(1 + _theFuselage.getFuselageCreator().getKExcr())
 					) 
 					+ _cD0Upsweep.get(MethodEnum.SEMIEMPIRICAL) 
 					+ _cD0Base.get(MethodEnum.SEMIEMPIRICAL)

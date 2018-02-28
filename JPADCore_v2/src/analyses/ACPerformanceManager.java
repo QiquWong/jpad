@@ -3685,8 +3685,8 @@ public class ACPerformanceManager {
 				) {
 			
 			Amount<Length> wingToGroundDistance = 
-					_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround()
-					.plus(_thePerformanceInterface.getTheAircraft().getFuselage().getSectionHeight().divide(2))
+					_thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getHeightFromGround()
+					.plus(_thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2))
 					.plus(_thePerformanceInterface.getTheAircraft().getWing().getZApexConstructionAxes()
 							.plus(_thePerformanceInterface.getTheAircraft().getWing().getSemiSpan()
 									.times(Math.sin(
@@ -3908,7 +3908,7 @@ public class ACPerformanceManager {
 			
 			double tailConeTipToFuselageRadiusRatio = 
 					_thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailTipOffset()
-					.divide(_thePerformanceInterface.getTheAircraft().getFuselage().getSectionHeight().divide(2))
+					.divide(_thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2))
 					.getEstimatedValue();
 			
 			veDSCDatabaseReader.runAnalysis(
@@ -5721,8 +5721,8 @@ public class ACPerformanceManager {
 		public void performLandingSimulation(Amount<Mass> landingMass, Double xcg) {
 
 			Amount<Length> wingToGroundDistance = 
-					_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround()
-					.plus(_thePerformanceInterface.getTheAircraft().getFuselage().getSectionHeight().divide(2))
+					_thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getHeightFromGround()
+					.plus(_thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2))
 					.plus(_thePerformanceInterface.getTheAircraft().getWing().getZApexConstructionAxes()
 							.plus(_thePerformanceInterface.getTheAircraft().getWing().getSemiSpan()
 									.times(Math.sin(

@@ -295,7 +295,7 @@ public class CPACSWriter {
 		
 		LOGGER.info("[insertFuselage] inserting fuselage into CPACS tree ...");
 		
-		String fuselageID = fuselage.getId() + "_1"; // TODO: parametrize this name getting the trailing part from a function argument
+		String fuselageID = fuselage.getFuselageCreator().getId() + "_1"; // TODO: parametrize this name getting the trailing part from a function argument
 		org.w3c.dom.Element fuselageElement = JPADStaticWriteUtils.createXMLElementWithAttributes(_cpacsDoc, "fuselage",
 				Tuple.of("xsi:type", "fuselageType"),
 				Tuple.of("uID", fuselageID)
@@ -414,9 +414,9 @@ public class CPACSWriter {
 				
 				double zTrans = 0.0;
 				if (i == 0) // <== first collapsed point
-					zTrans = fuselage.getNoseTipHeightOffset().doubleValue(SI.METER);
+					zTrans = fuselage.getFuselageCreator().getNoseTipOffset().doubleValue(SI.METER);
 				if (i == sectionsYZ.size())			
-					zTrans = fuselage.getTailTipHeightOffset().doubleValue(SI.METER);
+					zTrans = fuselage.getFuselageCreator().getTailTipOffset().doubleValue(SI.METER);
 
 				appendNameDescriptionTransformation(_cpacsDoc, sectionElement,
 						listSectionID.get(i) /* name */, "A section created with JPAD" /* description */,
@@ -672,7 +672,7 @@ public class CPACSWriter {
 		System.out.println(">> Nose length: " + noseLength);
 		Amount<Length> noseCapStation = fuselage.getFuselageCreator().getNoseCapOffset();
 		System.out.println(">> Nose cap x-station: " + noseCapStation);
-		Double xbarNoseCap = fuselage.getNoseDxCapPercent(); // normalized with noseLength
+		Double xbarNoseCap = fuselage.getFuselageCreator().getNoseCapOffsetPercent(); // normalized with noseLength
 		System.out.println(">> Nose cap x-station normalized: " + xbarNoseCap);
 		Amount<Length> zNoseTip = Amount.valueOf( 
 				fuselage.getFuselageCreator().getZOutlineXZLowerAtX(0.0),
@@ -784,7 +784,7 @@ public class CPACSWriter {
 		// Tail trunk
 		Amount<Length> tailLength = fuselage.getFuselageCreator().getTailLength();
 		Amount<Length> tailCapLength = fuselage.getFuselageCreator().getTailCapOffset();
-		Amount<Length> fuselageLength = fuselage.getLength();
+		Amount<Length> fuselageLength = fuselage.getFuselageCreator().getFuselageLength();
 
 		LOGGER.info("[getFuselageYZSections] Tail trunk (no cap): x=" 
 				+ noseLength.plus(cylinderLength) + " to x=" + fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)) + " (fus. length - tail cap length)"

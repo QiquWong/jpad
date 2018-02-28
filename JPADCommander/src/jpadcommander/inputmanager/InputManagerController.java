@@ -10420,15 +10420,8 @@ public class InputManagerController {
 						);
 
 				Main.getTheAircraft().setFuselage(
-						new Fuselage.FuselageBuilder(
-								"Fuselage - " + Main.getTheAircraft().getId(),
-								fusDesDatabaseReader
-								)
-						.fuselageCreator(
-								FuselageCreator.importFromXML(fuselageFilePath.getAbsolutePath())
-								)
-						.build()
-						);
+						new Fuselage(FuselageCreator.importFromXML(fuselageFilePath.getAbsolutePath()))
+								);
 				Main.getTheAircraft().getFuselage().getFuselageCreator().calculateGeometry();
 				Main.getTheAircraft().getFuselage().setXApexConstructionAxes(fuselageXApex);
 				Main.getTheAircraft().getFuselage().setYApexConstructionAxes(fuselageYApex);

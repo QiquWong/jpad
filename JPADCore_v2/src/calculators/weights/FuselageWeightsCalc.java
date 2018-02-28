@@ -1,6 +1,6 @@
 package calculators.weights;
 
-public class ComponentsWeightsCalc {
+public class FuselageWeightsCalc {
 
 	
 	

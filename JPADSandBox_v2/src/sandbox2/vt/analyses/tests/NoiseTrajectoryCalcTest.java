@@ -324,8 +324,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 			//======================================================================
 			
 			Amount<Length> wingToGroundDistance = 
-					theAircraft.getFuselage().getHeightFromGround()
-					.plus(theAircraft.getFuselage().getSectionHeight().divide(2))
+					theAircraft.getFuselage().getFuselageCreator().getHeightFromGround()
+					.plus(theAircraft.getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2))
 					.plus(theAircraft.getWing().getZApexConstructionAxes()
 							.plus(theAircraft.getWing().getSemiSpan()
 									.times(Math.sin(

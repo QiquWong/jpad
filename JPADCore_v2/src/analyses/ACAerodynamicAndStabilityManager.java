@@ -24434,7 +24434,7 @@ public class ACAerodynamicAndStabilityManager {
 											((x*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
 													+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)
 													+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER))
-											/_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getLength().doubleValue(SI.METER),
+											/_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER),
 											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterGM(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
@@ -24823,7 +24823,7 @@ public class ACAerodynamicAndStabilityManager {
 											((x*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
 													+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)
 													+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER))
-											/_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getLength().doubleValue(SI.METER),
+											/_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER),
 											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterGM(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),

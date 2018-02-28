@@ -893,8 +893,8 @@ public class ACWeightsManager implements IACWeightsManager {
 							"kg",
 							_theAircraft.getFuselage().getMassEstimated().getEstimatedValue(),
 							_theAircraft.getFuselage().getMassEstimated().
-								minus(_theAircraft.getFuselage().getReferenceMass()).
-								divide(_theAircraft.getFuselage().getReferenceMass()).
+								minus(_theAircraft.getFuselage().getMassReference()).
+								divide(_theAircraft.getFuselage().getMassReference()).
 								getEstimatedValue()*100
 					});
 
@@ -2128,7 +2128,7 @@ public class ACWeightsManager implements IACWeightsManager {
 		if(aircraft.getFuselage() != null) 
 			if(this._fuselageReferenceMass == null) {
 				this._fuselageReferenceMass = _maximumZeroFuelMass.times(.15);
-				aircraft.getFuselage().getFuselageCreator().setMassReference(_fuselageReferenceMass);
+				aircraft.getFuselage().setMassReference(_fuselageReferenceMass);
 			}
 		if(aircraft.getWing() != null)
 			if(this._wingReferenceMass == null) {

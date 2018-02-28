@@ -47,7 +47,15 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
 
-public class LiftingSurface implements ILiftingSurface {
+/**
+ * The LiftingSurface class is in charge of handling each lifting surface parameters (Wing, Horizontal Tail, Vertical Tail and Canard).
+ * It contains the LiftingSurface object which manages all the geometrical parameters. 
+ * It manages the components position in BRF (body reference frame) as well as the mass and center of gravity position.
+ * 
+ * @author Vittorio Trifari
+ *
+ */
+public class LiftingSurface {
 
 	private String _id = null;
 	private ComponentEnum _type;
@@ -182,14 +190,12 @@ public class LiftingSurface implements ILiftingSurface {
 //		_theAerodynamics = new LSAerodynamicsManager(conditions, this, aircraft);
 	}
 	
-	@Override
 	public void calculateThicknessMean() {
 		Airfoil meanAirfoil = new Airfoil(calculateMeanAirfoil(this));
 		
 		_thicknessMean = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
 	}
 	
-	@Override
 	public void calculateFormFactor(double compressibilityFactor) {
 
 		if(this._type == ComponentEnum.WING)
@@ -219,7 +225,6 @@ public class LiftingSurface implements ILiftingSurface {
 					);
 	}
 	
-	@Override
 	public void calculateMass(Aircraft aircraft, ComponentEnum liftingSurfaceType, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		calculateMass(aircraft, MethodEnum.KROO);
 		calculateMass(aircraft, MethodEnum.JENKINSON);
@@ -975,7 +980,6 @@ public class LiftingSurface implements ILiftingSurface {
 
 	}
 	
-	@Override
 	public List<Airfoil> populateAirfoilList(
 			AerodynamicDatabaseReader aeroDatabaseReader,
 			Boolean equivalentWingFlag
@@ -1645,17 +1649,14 @@ public class LiftingSurface implements ILiftingSurface {
 		return influenceFactors;
 }
 	
-	@Override
 	public List<Airfoil> getAirfoilList() {	
 		return this._airfoilList;
 	}
 	
-	@Override
 	public void setAirfoilList(List<Airfoil> airfoilList) {	
 		this._airfoilList = airfoilList;
 	}
 	
-	@Override
 	public double getChordAtYActual(Double y) {
 		return GeometryCalc.getChordAtYActual(
 				MyArrayUtils.convertListOfAmountTodoubleArray(_liftingSurfaceCreator.getDiscretizedYs()), 
@@ -1664,32 +1665,26 @@ public class LiftingSurface implements ILiftingSurface {
 				);
 	}
 
-	@Override
 	public Amount<Area> getSurface() {
 		return _liftingSurfaceCreator.getSurfacePlanform();
 	}
 
-	@Override
 	public double getAspectRatio() {
 		return _liftingSurfaceCreator.getAspectRatio();
 	}
 
-	@Override
 	public Amount<Length> getSpan() {
 		return _liftingSurfaceCreator.getSpan();
 	}
 
-	@Override
 	public Amount<Length> getSemiSpan() {
 		return _liftingSurfaceCreator.getSemiSpan();
 	}
 
-	@Override
 	public double getTaperRatio() {
 		return _liftingSurfaceCreator.getTaperRatio();
 	}
 
-	@Override
 	public double getTaperRatioEquivalent() {
 		if(_type == ComponentEnum.WING)
 			return _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getTaperRatio();
@@ -1703,7 +1698,6 @@ public class LiftingSurface implements ILiftingSurface {
 //		return _liftingSurfaceCreator.getEquivalentWing().getTaperRatio();
 //	}
 
-	@Override
 	public LiftingSurfaceCreator getEquivalentWing() {
 		return _liftingSurfaceCreator.getEquivalentWing();
 	}
@@ -1712,7 +1706,6 @@ public class LiftingSurface implements ILiftingSurface {
 //		return _liftingSurfaceCreator.getEquivalentWing(recalculate);
 //	}
 
-	@Override
 	public Amount<Length> getChordRootEquivalent() {
 		if(_type == ComponentEnum.WING)
 			return _liftingSurfaceCreator
@@ -1733,12 +1726,10 @@ public class LiftingSurface implements ILiftingSurface {
 //		return _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getChordRoot();
 //	}
 
-	@Override
 	public Amount<Length> getChordRoot() {
 		return _liftingSurfaceCreator.getPanels().get(0).getChordRoot();
 	}
 
-	@Override
 	public Amount<Length> getChordTip() {
 		return _liftingSurfaceCreator.getPanels().get(
 				_liftingSurfaceCreator.getPanels().size()-1
@@ -1746,7 +1737,6 @@ public class LiftingSurface implements ILiftingSurface {
 				.getChordTip();
 	}
 
-	@Override
 	public Amount<Angle> getSweepLEEquivalent() {
 		if(this._type == ComponentEnum.WING)
 			return _liftingSurfaceCreator
@@ -1776,7 +1766,6 @@ public class LiftingSurface implements ILiftingSurface {
 //				
 //	}
 
-	@Override
 	public Amount<Angle> getSweepHalfChordEquivalent() {
 		if(this._type == ComponentEnum.WING)
 			return _liftingSurfaceCreator
@@ -1804,7 +1793,6 @@ public class LiftingSurface implements ILiftingSurface {
 //				).to(NonSI.DEGREE_ANGLE);
 //	}
 
-	@Override
 	public Amount<Angle> getSweepQuarterChordEquivalent() {
 		if(this._type == ComponentEnum.WING)
 			return _liftingSurfaceCreator
@@ -1827,42 +1815,34 @@ public class LiftingSurface implements ILiftingSurface {
 //		return _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN);
 //	}
 
-	@Override
 	public LiftingSurfaceCreator getLiftingSurfaceCreator() {
 		return _liftingSurfaceCreator;
 	}
 
-	@Override
 	public void calculateGeometry(ComponentEnum type, Boolean mirrored) {
 		_liftingSurfaceCreator.calculateGeometry(type, mirrored);
 	}
 
-	@Override
 	public void calculateGeometry(int nSections, ComponentEnum type, Boolean mirrored) {
 		_liftingSurfaceCreator.calculateGeometry(nSections, type, mirrored);
 	}
 
-	@Override
 	public String getId() {
 		return _id;
 	}
 
-	@Override
 	public ComponentEnum getType() {
 		return _type;
 	}
 
-	@Override
 	public Amount<Length> getXApexConstructionAxes() {
 		return _xApexConstructionAxes;
 	}
 	
-	@Override
 	public Amount<Length> getYApexConstructionAxes() {
 		return _yApexConstructionAxes;
 	}
 
-	@Override
 	public Amount<Length> getZApexConstructionAxes() {
 		return _zApexConstructionAxes;
 	}
@@ -1875,32 +1855,26 @@ public class LiftingSurface implements ILiftingSurface {
 		this._type = _type;
 	}
 
-	@Override
 	public void setXApexConstructionAxes(Amount<Length> _xApexConstructionAxes) {
 		this._xApexConstructionAxes = _xApexConstructionAxes;
 	}
 
-	@Override
 	public void setYApexConstructionAxes(Amount<Length> _yApexConstructionAxes) {
 		this._yApexConstructionAxes = _yApexConstructionAxes;
 	}
 
-	@Override
 	public void setZApexConstructionAxes(Amount<Length> _zApexConstructionAxes) {
 		this._zApexConstructionAxes = _zApexConstructionAxes;
 	}
 
-	@Override
 	public void setLiftingSurfaceCreator(LiftingSurfaceCreator _liftingSurfaceCreator) {
 		this._liftingSurfaceCreator = _liftingSurfaceCreator;
 	}
 
-	@Override
 	public AerodynamicDatabaseReader getAerodynamicDatabaseReader() {
 		return this._aeroDatabaseReader;
 	}
 	
-	@Override
 	public void setAerodynamicDatabaseReader(AerodynamicDatabaseReader aeroDatabaseReader) {
 		this._aeroDatabaseReader = aeroDatabaseReader;
 	}
@@ -1913,62 +1887,50 @@ public class LiftingSurface implements ILiftingSurface {
 		this._highLiftDatabaseReader = _highLiftDatabaseReader;
 	}
 
-	@Override
 	public Amount<Angle> getRiggingAngle() {
 		return this._riggingAngle;
 	}
 	
-	@Override
 	public void setRiggingAngle (Amount<Angle> iW) {
 		this._riggingAngle = iW;
 	}
 
-	@Override
 	public CenterOfGravity getCG() {
 		return _cg;
 	}
 
-	@Override
 	public Amount<Length> getXCG() {
 		return _xCG;
 	}
 
-	@Override
 	public Amount<Length> getYCG() {
 		return _yCG;
 	}
 
-	@Override
 	public Amount<Length> getZCG() {
 		return _zCG;
 	}
 
-	@Override
 	public void setCG(CenterOfGravity _cg) {
 		this._cg = _cg;
 	}
 
-	@Override
 	public void setXCG(Amount<Length> _xCG) {
 		this._xCG = _xCG;
 	}
 
-	@Override
 	public void setYCG(Amount<Length> _yCG) {
 		this._yCG = _yCG;
 	}
 
-	@Override
 	public void setZCG(Amount<Length> _zCG) {
 		this._zCG = _zCG;
 	}
 
-	@Override
 	public Double getPositionRelativeToAttachment() {
 		return _positionRelativeToAttachment;
 	}
 
-	@Override
 	public void setPositionRelativeToAttachment(Double _positionRelativeToAttachment) {
 		this._positionRelativeToAttachment = _positionRelativeToAttachment;
 	}
@@ -2149,30 +2111,18 @@ public class LiftingSurface implements ILiftingSurface {
 		this._percentDifferenceYCG = _percentDifferenceYCG;
 	}
 
-	/**
-	 * @return the _exposedWing
-	 */
 	public LiftingSurface getExposedWing() {
 		return _exposedWing;
 	}
 
-	/**
-	 * @param _exposedWing the _exposedWing to set
-	 */
 	public void setExposedWing(LiftingSurface _exposedWing) {
 		this._exposedWing = _exposedWing;
 	}
 
-	/**
-	 * @return the _kExcr
-	 */
 	public Double getKExcr() {
 		return _kExcr;
 	}
 
-	/**
-	 * @param _kExcr the _kExcr to set
-	 */
 	public void setKExcr(Double _kExcr) {
 		this._kExcr = _kExcr;
 	}

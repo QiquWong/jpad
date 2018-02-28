@@ -459,9 +459,9 @@ public class LandingGears {
 			}
 			_xCG = Amount.valueOf(
 					(((aircraft.getLandingGears().getNoseMass()
-							.times(aircraft.getFuselage().getLength().times(kFusLengthNoseGear)))
+							.times(aircraft.getFuselage().getFuselageCreator().getFuselageLength().times(kFusLengthNoseGear)))
 					.plus(aircraft.getLandingGears().getMainMass()
-							.times(aircraft.getFuselage().getLength().times(kFusLengthMainGear))))
+							.times(aircraft.getFuselage().getFuselageCreator().getFuselageLength().times(kFusLengthMainGear))))
 					.divide(aircraft.getLandingGears().getMassMap().get(MethodEnum.TORENBEEK_1982)))
 					.getEstimatedValue(),
 					SI.METER

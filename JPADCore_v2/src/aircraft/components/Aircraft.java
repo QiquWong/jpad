@@ -17,7 +17,6 @@ import org.w3c.dom.NodeList;
 
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.fuselage.Fuselage;
-import aircraft.components.fuselage.Fuselage.FuselageBuilder;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
@@ -251,7 +250,7 @@ public class Aircraft {
 	public void calculateSWetTotal() {
 		
 		if(this._theAircraftInterface.getFuselage() != null)
-			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getFuselage().getsWet());
+			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getFuselage().getFuselageCreator().getSWetTotal());
 		
 		if(this._theAircraftInterface.getWing() != null)
 			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getWing().getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted());
@@ -274,7 +273,7 @@ public class Aircraft {
 		_kExcr = DragCalc.calculateKExcrescences(getSWetTotal().doubleValue(SI.SQUARE_METRE));
 		
 		if(_theAircraftInterface.getFuselage() != null)
-			_theAircraftInterface.getFuselage().setKExcr(_kExcr);
+			_theAircraftInterface.getFuselage().getFuselageCreator().setKExcr(_kExcr);
 		
 		if(_theAircraftInterface.getWing() != null)
 			_theAircraftInterface.getWing().setKExcr(_kExcr);
@@ -484,9 +483,7 @@ public class Aircraft {
 		if(fuselageFileName != null) {
 			String fuselagePath = fuselagesDir + File.separator + fuselageFileName;
 			FuselageCreator fuselageCreator = FuselageCreator.importFromXML(fuselagePath);
-			theFuselage = new FuselageBuilder("MyFuselage", fusDesDatabaseReader)
-					.fuselageCreator(fuselageCreator)
-						.build();
+			theFuselage = new Fuselage(fuselageCreator);
 			
 			theFuselage.getFuselageCreator().calculateGeometry();
 			
