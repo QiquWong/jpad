@@ -2,6 +2,7 @@ package aircraft.components.liftingSurface.creator;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.measure.quantity.Length;
 
 import org.inferred.freebuilder.FreeBuilder;
@@ -25,6 +26,7 @@ public interface ILiftingSurfaceCreator {
 	Amount<Length> getWingletHeight();
 	
 	// EQUIVALENT WING
+	@Nullable
 	IEquivalentWing getEquivalentWing();	
 	
 	// PANELS AND CONTROL SURFACE LISTS

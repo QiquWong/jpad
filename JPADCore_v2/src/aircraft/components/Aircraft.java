@@ -19,6 +19,7 @@ import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.creator.IEquivalentWing;
 import aircraft.components.liftingSurface.creator.ILiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
@@ -118,12 +119,60 @@ public class Aircraft {
 			_theAircraftInterface.getWing().getLiftingSurfaceCreator().setSurfaceWettedExposed(
 					_theAircraftInterface.getWing().getLiftingSurfaceCreator().getSurfaceWetted()
 					);
-		if(_theAircraftInterface.getHTail() !=  null)
+		if(_theAircraftInterface.getHTail() !=  null) {
 			_theAircraftInterface.getHTail().setExposedLiftingSurface(_theAircraftInterface.getHTail());
-		if(_theAircraftInterface.getVTail() !=  null)
+			_theAircraftInterface.getHTail().getLiftingSurfaceCreator().setTheLiftingSurfaceInterface(
+					ILiftingSurfaceCreator.Builder
+					.from(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().getTheLiftingSurfaceInterface())
+					.setEquivalentWing(
+							new IEquivalentWing.Builder()
+							.addAllPanels(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().getPanels())
+							.setRealWingDimensionlessXOffsetRootChordLE(0.0)
+							.setRealWingDimensionlessXOffsetRootChordTE(0.0)
+							.setRealWingDimensionlessKinkPosition(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().getEtaBreakPoints().get(0))
+							.setRealWingTwistAtKink(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().getTwistsBreakPoints().get(0))
+							.setEquivalentWingAirfoilKink(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator())
+							.build()
+							)
+					.build()
+					);
+		}
+		if(_theAircraftInterface.getVTail() !=  null) {
 			_theAircraftInterface.getVTail().setExposedLiftingSurface(_theAircraftInterface.getVTail());
-		if(_theAircraftInterface.getCanard() !=  null)
+			_theAircraftInterface.getVTail().getLiftingSurfaceCreator().setTheLiftingSurfaceInterface(
+					ILiftingSurfaceCreator.Builder
+					.from(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().getTheLiftingSurfaceInterface())
+					.setEquivalentWing(
+							new IEquivalentWing.Builder()
+							.addAllPanels(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().getPanels())
+							.setRealWingDimensionlessXOffsetRootChordLE(0.0)
+							.setRealWingDimensionlessXOffsetRootChordTE(0.0)
+							.setRealWingDimensionlessKinkPosition(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().getEtaBreakPoints().get(0))
+							.setRealWingTwistAtKink(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().getTwistsBreakPoints().get(0))
+							.setEquivalentWingAirfoilKink(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator())
+							.build()
+							)
+					.build()
+					);
+		}
+		if(_theAircraftInterface.getCanard() !=  null) {
 			_theAircraftInterface.getCanard().setExposedLiftingSurface(_theAircraftInterface.getCanard());
+			_theAircraftInterface.getCanard().getLiftingSurfaceCreator().setTheLiftingSurfaceInterface(
+					ILiftingSurfaceCreator.Builder
+					.from(_theAircraftInterface.getCanard().getLiftingSurfaceCreator().getTheLiftingSurfaceInterface())
+					.setEquivalentWing(
+							new IEquivalentWing.Builder()
+							.addAllPanels(_theAircraftInterface.getCanard().getLiftingSurfaceCreator().getPanels())
+							.setRealWingDimensionlessXOffsetRootChordLE(0.0)
+							.setRealWingDimensionlessXOffsetRootChordTE(0.0)
+							.setRealWingDimensionlessKinkPosition(_theAircraftInterface.getCanard().getLiftingSurfaceCreator().getEtaBreakPoints().get(0))
+							.setRealWingTwistAtKink(_theAircraftInterface.getCanard().getLiftingSurfaceCreator().getTwistsBreakPoints().get(0))
+							.setEquivalentWingAirfoilKink(_theAircraftInterface.getCanard().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator())
+							.build()
+							)
+					.build()
+					);
+		}
 		
 		// setup the positionRelativeToAttachment variable
 		if(_theAircraftInterface.getWing() != null)
@@ -224,8 +273,13 @@ public class Aircraft {
 						.setId("Exposed Wing")
 						.setType(ComponentEnum.WING)
 						.setMirrored(true)
+						.setEquivalentWingFlag(false)
 						.addAllPanels(exposedWingPanels)
-						.build()
+						.setMainSparDimensionlessPosition(theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition())
+						.setSecondarySparDimensionlessPosition(theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition())
+						.setRoughness(theWing.getLiftingSurfaceCreator().getRoughness())
+						.setWingletHeight(theWing.getLiftingSurfaceCreator().getWingletHeight())
+						.buildPartial()
 						)
 				);
 				
@@ -534,7 +588,7 @@ public class Aircraft {
 			theWing.setAeroDatabaseReader(aeroDatabaseReader);
 			theWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
 			theWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
-			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, true);
+//			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, true);
 			theWing.getLiftingSurfaceCreator().populateAirfoilList(false);
 			
 			xApexWing = reader.getXMLAmountLengthByPath("//wing/position/x");

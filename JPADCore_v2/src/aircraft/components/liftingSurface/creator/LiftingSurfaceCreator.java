@@ -85,27 +85,27 @@ public class LiftingSurfaceCreator {
 	// airfoil span-wise characteristics : 
 	private AirfoilCreator _meanAirfoil;
 	private List<Airfoil> _airfoilList;
-	private List<String> _airfoilPathList = new ArrayList<>();
- 	private List<Double> _maxThicknessVsY = new ArrayList<>();
-	private List<Amount<Length>> _radiusLEVsY = new ArrayList<>();
-	private List<Double> _camberRatioVsY = new ArrayList<>();
-	private List<Amount<Angle>> _alpha0VsY = new ArrayList<>();
-	private List<Amount<Angle>> _alphaStarVsY = new ArrayList<>();
-	private List<Amount<Angle>>_alphaStallVsY = new ArrayList<>();
-	private List<Amount<?>> _clAlphaVsY = new ArrayList<>(); 
-	private List<Double> _cdMinVsY = new ArrayList<>();
-	private List<Double> _clAtCdMinVsY = new ArrayList<>();
-	private List<Double> _cl0VsY = new ArrayList<>();
-	private List<Double> _clStarVsY = new ArrayList<>();
-	private List<Double> _clMaxVsY = new ArrayList<>();
-	private List<Double> _clMaxSweepVsY = new ArrayList<>();
-	private List<Double> _kFactorDragPolarVsY = new ArrayList<>();
-	private List<Double> _mExponentDragPolarVsY = new ArrayList<>();
-	private List<Double> _cmAlphaQuarteChordVsY = new ArrayList<>();
-	private List<Double> _xAcAirfoilVsY = new ArrayList<>();
-	private List<Double> _cmACVsY = new ArrayList<>();
-	private List<Double> _cmACStallVsY = new ArrayList<>();
-	private List<Double> _criticalMachVsY = new ArrayList<>();
+	private List<String> _airfoilPathList;
+ 	private List<Double> _maxThicknessVsY;
+	private List<Amount<Length>> _radiusLEVsY;
+	private List<Double> _camberRatioVsY;
+	private List<Amount<Angle>> _alpha0VsY;
+	private List<Amount<Angle>> _alphaStarVsY;
+	private List<Amount<Angle>>_alphaStallVsY;
+	private List<Amount<?>> _clAlphaVsY; 
+	private List<Double> _cdMinVsY;
+	private List<Double> _clAtCdMinVsY;
+	private List<Double> _cl0VsY;
+	private List<Double> _clStarVsY;
+	private List<Double> _clMaxVsY;
+	private List<Double> _clMaxSweepVsY;
+	private List<Double> _kFactorDragPolarVsY;
+	private List<Double> _mExponentDragPolarVsY;
+	private List<Double> _cmAlphaQuarteChordVsY;
+	private List<Double> _xAcAirfoilVsY;
+	private List<Double> _cmACVsY;
+	private List<Double> _cmACStallVsY;
+	private List<Double> _criticalMachVsY;
 
 	private List<Double> _etaBreakPoints;
 	private List<Amount<Length>> _yBreakPoints;
@@ -161,11 +161,34 @@ public class LiftingSurfaceCreator {
 		_twistsBreakPoints = new ArrayList<Amount<Angle>>();
 		_dihedralsBreakPoints = new ArrayList<Amount<Angle>>();
 
+		_airfoilList = new ArrayList<>();
+		_airfoilPathList = new ArrayList<>();
+		_maxThicknessVsY = new ArrayList<>();
+		_radiusLEVsY = new ArrayList<>();
+		_camberRatioVsY = new ArrayList<>();
+		_alpha0VsY = new ArrayList<>();
+		_alphaStarVsY = new ArrayList<>();
+		_alphaStallVsY = new ArrayList<>();
+		_clAlphaVsY = new ArrayList<>(); 
+		_cdMinVsY = new ArrayList<>();
+		_clAtCdMinVsY = new ArrayList<>();
+		_cl0VsY = new ArrayList<>();
+		_clStarVsY = new ArrayList<>();
+		_clMaxVsY = new ArrayList<>();
+		_clMaxSweepVsY = new ArrayList<>();
+		_kFactorDragPolarVsY = new ArrayList<>();
+		_mExponentDragPolarVsY = new ArrayList<>();
+		_cmAlphaQuarteChordVsY = new ArrayList<>();
+		_xAcAirfoilVsY = new ArrayList<>();
+		_cmACVsY = new ArrayList<>();
+		_cmACStallVsY = new ArrayList<>();
+		_criticalMachVsY = new ArrayList<>();
+
 		_etaStations = new ArrayList<>();
 		_yStations = new ArrayList<Amount<Length>>();
 		_panelToSpanwiseDiscretizedVariables = new ArrayList<>();
 		_spanwiseDiscretizedVariables = new ArrayList<>();
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -173,7 +196,7 @@ public class LiftingSurfaceCreator {
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 		LiftingSurfaceCreator liftingSurfaceCreator = null;
-		
+
 		System.out.println("Reading lifting surface data ...");
 
 		//...................................................................................
@@ -795,11 +818,6 @@ public class LiftingSurfaceCreator {
 		// Mean aerodynamic chord leading-edge coordinates
 		calculateXYZleMAC(mirrored);
 
-		//======================================================
-		// Calculates Mean Airfoil and populates the airfoil list
-		_meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(this);
-		populateAirfoilList(_theLiftingSurfaceInterface.getEquivalentWingFlag());
-		
 		if(type.equals(ComponentEnum.WING)) {
 			//======================================================
 			// Equivalent wing 
@@ -1203,7 +1221,7 @@ public class LiftingSurfaceCreator {
 				ILiftingSurfaceCreator.Builder
 				.from(_theLiftingSurfaceInterface)
 				.setEquivalentWing(equivalentWing)
-				.build()
+				.buildPartial()
 				);
 	}
 	
@@ -2673,7 +2691,7 @@ public class LiftingSurfaceCreator {
 					ILiftingSurfaceCreator.Builder.from(_theLiftingSurfaceInterface)
 					.setEquivalentWingFlag(true)
 					.setEquivalentWing(
-							IEquivalentWing.Builder.from(_theLiftingSurfaceInterface.getEquivalentWing())
+							(IEquivalentWing) IEquivalentWing.Builder.from(_theLiftingSurfaceInterface.getEquivalentWing())
 							.clearPanels()
 							.addPanels(liftingSurfacePanel)
 							)
