@@ -256,7 +256,7 @@ public class Fuselage {
 		double Kws = 0.75*
 				((1+2*aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio())/
 						(1+aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio()))*
-						aircraft.getWing().getSpan().to(NonSI.FOOT).getEstimatedValue()*
+						aircraft.getWing().getLiftingSurfaceCreator().getSpan().to(NonSI.FOOT).getEstimatedValue()*
 						tan(aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN).getEstimatedValue())/
 						_fuselageCreator.getFuselageLength().to(NonSI.FOOT).getEstimatedValue();
 

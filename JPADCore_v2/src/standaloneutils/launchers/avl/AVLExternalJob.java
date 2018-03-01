@@ -2,31 +2,17 @@ package standaloneutils.launchers.avl;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-
-import org.apache.commons.math3.linear.MatrixUtils;
-import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
 import javaslang.Tuple;
-import javaslang.Tuple2;
-import javaslang.Tuple4;
-import javaslang.Tuple6;
 import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.launchers.SystemCommandExecutor;
 
@@ -207,7 +193,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 		if ((theOperatingConditions != null) && (theAircraft != null)) {
 			
 			System.out.println("\n\n\n Aircraft NOT NULL");
-			System.out.println("Span: " + theAircraft.getWing().getSpan().doubleValue(SI.METER));
+			System.out.println("Span: " + theAircraft.getWing().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER));
 			System.out.println("\n\n\n");
 
 			return new AVLMainInputData
@@ -220,7 +206,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 				/*
 				 *    Span (m)
 				 */
-				.setBref(theAircraft.getWing().getSpan().doubleValue(SI.METER))
+				.setBref(theAircraft.getWing().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER))
 				/*
 				 *    Reference chord (m)
 				 */
@@ -228,7 +214,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 				/*
 				 *    Reference surface (m^2)
 				 */
-				.setSref(theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE))
+				.setSref(theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE))
 				/*
 				 *   CG
 				 */
@@ -271,7 +257,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 					.appendWing( //----------------------------------------------- wing 1
 						new AVLWing
 							.Builder()
-							.setDescription(theAircraft.getWing().getId())
+							.setDescription(theAircraft.getWing().getLiftingSurfaceCreator().getId())
 							.setIncidence(theAircraft.getWing().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE))
 							.setOrigin( // wing apex coordinates in BRF 
 									new Double[]{
@@ -282,7 +268,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 								new AVLWingSection
 									.Builder()
 									.setDescription("Wing root section")
-									.setAirfoilObject(theAircraft.getWing().getAirfoilList().get(0)) // 1. set source first
+									.setAirfoilObject(theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0)) // 1. set source first
 									.setAirfoilCoordFile( // 2. set airfoil name
 										new File(this.binDirectory.getAbsolutePath() + File.separator 
 											+ getBaseName() + "_airfoil_wing_root.dat"
@@ -304,7 +290,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 								new AVLWingSection
 									.Builder()
 									.setDescription("Wing kink section")
-									.setAirfoilObject(theAircraft.getWing().getAirfoilList().get(1)) // 2. set source first
+									.setAirfoilObject(theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(1)) // 2. set source first
 									.setAirfoilCoordFile( // 2. set airfoil name
 											new File(this.binDirectory.getAbsolutePath() + File.separator 
 												+ getBaseName() + "_airfoil_wing_kink.dat"
@@ -327,7 +313,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 									new AVLWingSection
 										.Builder()
 										.setDescription("Wing tip section")
-										.setAirfoilObject(theAircraft.getWing().getAirfoilList().get(2)) // 2. set source first
+										.setAirfoilObject(theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(2)) // 2. set source first
 										.setAirfoilCoordFile( // 2. set airfoil name
 												new File(this.binDirectory.getAbsolutePath() + File.separator 
 													+ getBaseName() + "_airfoil_wing_tip.dat"
@@ -351,7 +337,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 					.appendWing( //----------------------------------------------- wing 2
 						new AVLWing
 							.Builder()
-							.setDescription(theAircraft.getHTail().getId())
+							.setDescription(theAircraft.getHTail().getLiftingSurfaceCreator().getId())
 							.setOrigin( // htail apex coordinates in BRF 
 									new Double[]{
 											theAircraft.getHTail().getXApexConstructionAxes().doubleValue(SI.METER), 
@@ -362,7 +348,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 								new AVLWingSection
 									.Builder()
 									.setDescription("HTail root section")
-									.setAirfoilObject(theAircraft.getHTail().getAirfoilList().get(0)) // 2. set source first
+									.setAirfoilObject(theAircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().get(0)) // 2. set source first
 									.setAirfoilCoordFile( // 2. set airfoil name
 											new File(this.binDirectory.getAbsolutePath() + File.separator 
 												+ getBaseName() + "_airfoil_htail_root.dat"
@@ -373,7 +359,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 											theAircraft.getHTail().getLiftingSurfaceCreator().getYBreakPoints().get(0).doubleValue(SI.METER), 
 											theAircraft.getHTail().getLiftingSurfaceCreator().getZLEBreakPoints().get(0).doubleValue(SI.METER)})
 									.setChord(
-											theAircraft.getHTail().getChordRoot().doubleValue(SI.METER)
+											theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 											)
 									.setTwist(
 											- theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
@@ -394,7 +380,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 								new AVLWingSection
 									.Builder()
 									.setDescription("HTail tip section")
-									.setAirfoilObject(theAircraft.getHTail().getAirfoilList().get(1)) // 2. set source first
+									.setAirfoilObject(theAircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().get(1)) // 2. set source first
 									.setAirfoilCoordFile( // 2. set airfoil name
 											new File(this.binDirectory.getAbsolutePath() + File.separator 
 												+ getBaseName() + "_airfoil_htail_tip.dat"
@@ -405,7 +391,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 											theAircraft.getHTail().getLiftingSurfaceCreator().getYBreakPoints().get(1).doubleValue(SI.METER), 
 											theAircraft.getHTail().getLiftingSurfaceCreator().getZLEBreakPoints().get(1).doubleValue(SI.METER)})
 									.setChord(
-											theAircraft.getHTail().getChordRoot().doubleValue(SI.METER)
+											theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 											)
 									.setTwist(
 											theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricAtTip().doubleValue(NonSI.DEGREE_ANGLE)

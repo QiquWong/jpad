@@ -18,14 +18,12 @@ import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -141,8 +139,8 @@ public class HorizontalTailTest extends Application {
 
 		listDataArray.add(xyMAC);
 
-		double yMax = 1.05*hTail.getSemiSpan().doubleValue(SI.METRE);
-		double yMin = -0.05*hTail.getSemiSpan().doubleValue(SI.METRE);
+		double yMax = 1.05*hTail.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+		double yMin = -0.05*hTail.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
 		double xMax = yMax;
 		double xMin = yMin;
 
@@ -259,20 +257,14 @@ public class HorizontalTailTest extends Application {
 			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
 			// read LiftingSurface from xml ...
-			theHorizontalTail = new LiftingSurfaceBuilder(
-					"MyHorizontalTail", 
-					ComponentEnum.HORIZONTAL_TAIL, 
-					aeroDatabaseReader, 
-					highLiftDatabaseReader,
-					veDSCDatabaseReader)
-					.liftingSurfaceCreator(
-							LiftingSurfaceCreator.importFromXML(ComponentEnum.HORIZONTAL_TAIL, pathToXML, dirAirfoil)
-							)
-					.build();
+			theHorizontalTail = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.HORIZONTAL_TAIL, pathToXML, dirAirfoil));
+			theHorizontalTail.setAeroDatabaseReader(aeroDatabaseReader);
+			theHorizontalTail.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			theHorizontalTail.setVeDSCDatabaseReader(veDSCDatabaseReader);
 
-			HorizontalTailTest.theHorizontalTail.calculateGeometry(
+			HorizontalTailTest.theHorizontalTail.getLiftingSurfaceCreator().calculateGeometry(
 					40,
-					theHorizontalTail.getType(),
+					theHorizontalTail.getLiftingSurfaceCreator().getType(),
 					theHorizontalTail.getLiftingSurfaceCreator().isMirrored()
 					);
 

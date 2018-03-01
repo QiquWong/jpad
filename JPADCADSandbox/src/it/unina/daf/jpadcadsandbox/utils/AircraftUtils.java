@@ -956,7 +956,7 @@ public final class AircraftUtils {
 //			zbp = zbp + semiSpanPanel*Math.tan(dihedralPanel);
 //			zbp = zbp + spanPanel*Math.tan(dihedralPanel);
 			zbp = zbp + ybp*Math.tan(dihedralPanel);
-			if(liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+			if(liftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 				ptsLE.add(new double[] {
 						xbp,
 						0,
@@ -1051,7 +1051,7 @@ public final class AircraftUtils {
 		List<CADGeomCurve3D> cadCurveAirfoilBPList = new ArrayList<CADGeomCurve3D>();
 		cadCurveAirfoilBPList = IntStream.range(0, liftingSurface.getLiftingSurfaceCreator().getYBreakPoints().size())
 				.mapToObj(i -> {
-					AirfoilCreator airfoilCoords = liftingSurface.getAirfoilList().get(i).getAirfoilCreator();
+					AirfoilCreator airfoilCoords = liftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator();
 					List<double[]> ptsAirfoil = AircraftUtils.populateCoordinateList(
 							liftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER), 
 							airfoilCoords, 
@@ -1080,7 +1080,7 @@ public final class AircraftUtils {
 			cadCurveAirfoilPanelList.add(cadCurveAirfoilBPList.get(iP-1));
 			cadCurveAirfoilPanelList.addAll(IntStream.range(1, (nSec + 1))
 					.mapToObj(i -> {
-						AirfoilCreator airfoilCoords = liftingSurface.getAirfoilList().get(fIP-1).getAirfoilCreator();
+						AirfoilCreator airfoilCoords = liftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(fIP-1).getAirfoilCreator();
 						List<double[]> ptsAirfoil = AircraftUtils.populateCoordinateList(
 								fSecVec[i], 
 								airfoilCoords, 
@@ -1139,7 +1139,7 @@ public final class AircraftUtils {
 		CADGeomCurve3D airfoilTip = cadCurveAirfoilBPList.get(iTip);      // airfoil CAD curve
 		CADGeomCurve3D airfoilPreTip = cadCurveAirfoilBPList.get(iTip-1); // second to last airfoil CAD curve
 				
-		Double rTh = liftingSurface.getAirfoilList().get(iTip).getAirfoilCreator().getThicknessToChordRatio(); 
+		Double rTh = liftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(iTip).getAirfoilCreator().getThicknessToChordRatio(); 
 		Double eTh = rTh*chords.get(iTip); // effective airfoil thickness
 		
 		// creating the tip chord edge
@@ -1921,7 +1921,7 @@ public final class AircraftUtils {
 //			}
 			
 			// Rotation due to twist
-			if(!theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+			if(!theLiftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 				double r = Math.sqrt(x*x + z*z);
 				x = x - r*(1-Math.cos(twist + theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));
 				z = z - r*Math.sin(twist + theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN));				
@@ -1935,7 +1935,7 @@ public final class AircraftUtils {
 //						* Math.tan(theLiftingSurface.getLiftingSurfaceCreator().getDihedralAtYActual(yStation).doubleValue(SI.RADIAN)));
                         * Math.tan(AircraftUtils.getDihedralAtYActual(theLiftingSurface, yStation).doubleValue(SI.RADIAN)));
 
-			if(theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+			if(theLiftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 				actualAirfoilCoordinates.add(
 						new double[] {
 								x,
@@ -1961,9 +1961,9 @@ public final class AircraftUtils {
 		
 		CADGeomCurve3D[] verSecCrvsList = new CADGeomCurve3D[2];
 		
-		int iTip = theLiftingSurface.getAirfoilList().size() - 1;
-		float tipChordLength = (float) theLiftingSurface
-				.getChordTip().doubleValue(SI.METER);
+		int iTip = theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().size() - 1;
+		float tipChordLength = (float) theLiftingSurface.getLiftingSurfaceCreator().getPanels()
+				.get(theLiftingSurface.getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().doubleValue(SI.METER);
 		float preTipChordLength = (float) theLiftingSurface
 				.getLiftingSurfaceCreator().getChordsBreakPoints().get(iTip-1).doubleValue(SI.METER);
 		
@@ -1980,7 +1980,7 @@ public final class AircraftUtils {
 		PVector constrCrvApexTan = new PVector();
 		PVector.cross(chordTipVector, leVector, constrCrvApexTan).normalize();
 //		PVector.cross(chordTipVector, leVector, chordTipNVector).normalize(); // vector in the airfoil plane, normal to the chord, normalized
-		if(!theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL))
+		if(!theLiftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.VERTICAL_TAIL))
 			axisVector = new PVector(0, 1, 0);
 		else
 			axisVector = new PVector(0, 0, 1);
@@ -1996,7 +1996,7 @@ public final class AircraftUtils {
 		PVector pntOnTipChord = PVector.lerp(le2, te2, (float) chordFrac); // tip chord fraction point
 
 		Double[] tipAirfoilThickAtPnt = AircraftUtils.getThicknessAtX(
-				theLiftingSurface.getAirfoilList().get(iTip).getAirfoilCreator(), 
+				theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(iTip).getAirfoilCreator(), 
 				chordFrac
 				);
 
@@ -2022,7 +2022,7 @@ public final class AircraftUtils {
 		PVector pntOnPreTipChord = PVector.lerp(le1, te1, (float) chordFrac);
 
 		Double[] preTipAirfoilThickAtPnt = AircraftUtils.getThicknessAtX(
-				theLiftingSurface.getAirfoilList().get(iTip-1).getAirfoilCreator(), 
+				theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(iTip-1).getAirfoilCreator(), 
 				chordFrac
 				);
 

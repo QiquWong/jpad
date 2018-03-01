@@ -142,7 +142,7 @@ public class NacelleAerodynamicsManager {
 							_theNacelles.getNacellesList().get(0).calculateFormFactor(), 
 							_cF, 
 							_theNacelles.getNacellesList().get(0).getSurfaceWetted().doubleValue(SI.SQUARE_METRE), 
-							_theWing.getSurface().doubleValue(SI.SQUARE_METRE)
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 							)
 					);
 		}
@@ -169,7 +169,7 @@ public class NacelleAerodynamicsManager {
 					DragCalc.calculateCD0Base(
 							MethodEnum.MATLAB, 
 							_cD0Parasite.get(MethodEnum.SEMIEMPIRICAL), 
-							_theWing.getSurface().doubleValue(SI.SQUARE_METRE),
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 							_theNacelles.getNacellesList().get(0).getDiameterOutlet().doubleValue(SI.METER), 
 							_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
 							)
@@ -243,14 +243,14 @@ public class NacelleAerodynamicsManager {
 											.collect(Collectors.toList())
 											)
 									), 
-							_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+							_theWing.getAeroDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
 									_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
 									_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
 									), 
 							_theNacelles.getNacellesList().get(0).getDiameterMax(), 
 							_theNacelles.getNacellesList().get(0).getXPositionMaximumDiameterLRF(), 
 							_theNacelles.getNacellesList().get(0).getLength(), 
-							_theWing.getSurface(), 
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 							_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()), 
 							_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
 							_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
@@ -307,14 +307,14 @@ public class NacelleAerodynamicsManager {
 									.collect(Collectors.toList())
 									)
 							), 
-					_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+					_theWing.getAeroDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
 							_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
 							_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
 							), 
 					_theNacelles.getNacellesList().get(0).getDiameterMax(), 
 					_theNacelles.getNacellesList().get(0).getXPositionMaximumDiameterLRF(), 
 					_theNacelles.getNacellesList().get(0).getLength(), 
-					_theWing.getSurface(), 
+					_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 					_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()), 
 					_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
 					_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
@@ -383,13 +383,13 @@ public class NacelleAerodynamicsManager {
 						MomentCalc.calculateCM0Multhopp(
 								_theNacelles.getNacellesList().get(0).getXApexConstructionAxes(),
 								_theNacelles.getNacellesList().get(0).getLength(), 
-								_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+								_theWing.getAeroDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
 										_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
 										_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
 										),
 								_theWing.getRiggingAngle(),
 								_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
-								_theWing.getSurface(), 
+								_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 								_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
 								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
 								_theWing.getXApexConstructionAxes(),
@@ -414,13 +414,13 @@ public class NacelleAerodynamicsManager {
 						MomentCalc.calculateCM0Multhopp(
 								_theNacelles.getNacellesList().get(0).getXApexConstructionAxes(),
 								_theNacelles.getNacellesList().get(0).getLength(), 
-								_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+								_theWing.getAeroDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
 										_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
 										_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
 										),
 								_theWing.getRiggingAngle(),
 								_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
-								_theWing.getSurface(), 
+								_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 								_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
 								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
 								_theWing.getXApexConstructionAxes(),
@@ -444,13 +444,13 @@ public class NacelleAerodynamicsManager {
 						MomentCalc.calculateCM0Multhopp(
 								_theNacelles.getNacellesList().get(0).getXApexConstructionAxes(),
 								_theNacelles.getNacellesList().get(0).getLength(), 
-								_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+								_theWing.getAeroDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
 										_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
 										_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
 										),
 								_theWing.getRiggingAngle(),
 								_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
-								_theWing.getSurface(), 
+								_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 								_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
 								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
 								_theWing.getXApexConstructionAxes(),
@@ -500,14 +500,14 @@ public class NacelleAerodynamicsManager {
 							_theNacelles.getNacellesList().get(0).getXApexConstructionAxes(),
 							_theNacelles.getNacellesList().get(0).getLength(),
 							downwashGradientRoskamConstant, 
-							_theWing.getAspectRatio(),
-							_theWing.getSurface(), 
+							_theWing.getLiftingSurfaceCreator().getAspectRatio(),
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
 							_theWingAerodynamicManager.getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
 							_theWing.getXApexConstructionAxes(),
 							wingTrailingEdgeToHTailQuarterChordDistance,
-							_theWing.getAerodynamicDatabaseReader(),
+							_theWing.getAeroDatabaseReader(),
 							_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
 							_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
 							)

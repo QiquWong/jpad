@@ -1,7 +1,6 @@
 package calculators.aerodynamics;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -441,7 +440,7 @@ public class AirfoilCalc {
 
 		int nPan = liftingSurface.getLiftingSurfaceCreator().getPanels().size(); 
 		
-		if (liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+		if (liftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 			x = (float) (liftingSurface.getXApexConstructionAxes().getEstimatedValue()
 					+ liftingSurface.getLiftingSurfaceCreator().getDiscretizedXle().get(liftingSurface.getLiftingSurfaceCreator().getDiscretizedXle().size()-1).getEstimatedValue()
 					+ liftingSurface.getLiftingSurfaceCreator().getPanels().get(nPan - 1).getChordTip().getEstimatedValue()/2);
@@ -468,7 +467,7 @@ public class AirfoilCalc {
 			LiftingSurface theLiftingSurface
 			) {
 
-		float c = (float) theLiftingSurface.getChordAtYActual(yStation);
+		float c = (float) theLiftingSurface.getLiftingSurfaceCreator().getChordAtYActual(yStation);
 		float x, y, z;
 
 		for (int i=0; i<theCreator.getXCoords().length; i++) {
@@ -488,7 +487,7 @@ public class AirfoilCalc {
 					);
 			
 			// Rotation due to twist
-			if (theLiftingSurface.getType().equals(ComponentEnum.WING)) {
+			if (theLiftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.WING)) {
 				float r = (float) Math.sqrt(x*x + z*z);
 				x = (float) (x - r*(1-Math.cos(-twistAtY - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN))));
 				z = (float) (z + r*Math.sin(-twistAtY - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));
@@ -506,7 +505,7 @@ public class AirfoilCalc {
 				theCreator.getCoordinatesLeft().add(new PVector(x, -y, z));
 			}	
 
-			if (theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+			if (theLiftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 				theCreator.getCoordinatesRight().add( 
 						new PVector(
 								x,

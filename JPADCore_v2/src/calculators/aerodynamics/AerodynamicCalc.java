@@ -11,13 +11,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.jscience.physics.amount.Amount;
 
@@ -323,7 +321,7 @@ public class AerodynamicCalc {
 		lambda_opt = 0.45
 				*Math.pow(
 						Math.E,
-						theWing.getSweepQuarterChordEquivalent().doubleValue(SI.RADIAN)
+						theWing.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)
 						);
 		delta_lambda = -0.357 + lambda_opt;
 		f = 0.0524*Math.pow(lambda_opt - delta_lambda,4) 
@@ -332,11 +330,13 @@ public class AerodynamicCalc {
 				- 0.0706*(lambda_opt - delta_lambda)
 				+ 0.0119;
 
-		e_theo = 1/(f*theWing.getAspectRatio());
+		e_theo = 1/(f*theWing.getLiftingSurfaceCreator().getAspectRatio());
 
 		kef = 1 - (2*
 				(Math.pow(
-						theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(theWing.getSpan()).getEstimatedValue(), 2)
+						theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(
+								theWing.getLiftingSurfaceCreator().getSpan()
+								).getEstimatedValue(), 2)
 						)
 				);
 
@@ -362,7 +362,8 @@ public class AerodynamicCalc {
 		double kWL = 2.83;
 
 		oswald = oswald*Math.pow(1+(2./kWL)*
-				(theWing.getLiftingSurfaceCreator().getWingletHeight().divide(theWing.getSpan()).getEstimatedValue()),2);
+				(theWing.getLiftingSurfaceCreator().getWingletHeight()
+						.divide(theWing.getLiftingSurfaceCreator().getSpan()).getEstimatedValue()),2);
 
 		double keGamma = Math.pow(
 				Math.cos(theWing.getLiftingSurfaceCreator().getDihedralMean().doubleValue(SI.RADIAN)),

@@ -32,7 +32,7 @@ import aircraft.components.LandingGears.LandingGearsBuilder;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.fuselage.creator.IFuselageCreator;
-import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
+import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
@@ -5576,17 +5576,17 @@ public class InputManagerController {
 		
 		switch (type) {
 		case WING:
-			String wingAirfoilPathFromList = Main.getTheAircraft().getWing().getAirfoilPathList()
+			String wingAirfoilPathFromList = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilPathList()
 			.stream()
 			.filter(
 					airfoilPath -> Paths.get(airfoilPath).getFileName().toString().equals(airfoilFileName))
 			.findFirst()
 			.get();
 
-			int airfoilWingIndex = Main.getTheAircraft().getWing().getAirfoilPathList().indexOf(wingAirfoilPathFromList);
+			int airfoilWingIndex = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilPathList().indexOf(wingAirfoilPathFromList);
 
 			airfoilInputManagerController.loadAirfoilData(
-					Main.getTheAircraft().getWing().getAirfoilList().get(airfoilWingIndex).getAirfoilCreator()
+					Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().get(airfoilWingIndex).getAirfoilCreator()
 					);
 			airfoilInputManagerController.createAirfoilView();
 			airfoilInputManagerController.createClCurve();
@@ -5600,17 +5600,17 @@ public class InputManagerController {
 			break;
 
 		case HORIZONTAL_TAIL:
-			String hTailAirfoilPathFromList = Main.getTheAircraft().getHTail().getAirfoilPathList()
+			String hTailAirfoilPathFromList = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilPathList()
 			.stream()
 			.filter(
 					airfoilPath -> Paths.get(airfoilPath).getFileName().toString().equals(airfoilFileName))
 			.findFirst()
 			.get();
 
-			int airfoilHTailIndex = Main.getTheAircraft().getHTail().getAirfoilPathList().indexOf(hTailAirfoilPathFromList);
+			int airfoilHTailIndex = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilPathList().indexOf(hTailAirfoilPathFromList);
 
 			airfoilInputManagerController.loadAirfoilData(
-					Main.getTheAircraft().getHTail().getAirfoilList().get(airfoilHTailIndex).getAirfoilCreator()
+					Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList().get(airfoilHTailIndex).getAirfoilCreator()
 					);
 			airfoilInputManagerController.createAirfoilView();
 			airfoilInputManagerController.createClCurve();
@@ -5624,17 +5624,17 @@ public class InputManagerController {
 			break;
 			
 		case VERTICAL_TAIL:
-			String vTailAirfoilPathFromList = Main.getTheAircraft().getVTail().getAirfoilPathList()
+			String vTailAirfoilPathFromList = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilPathList()
 			.stream()
 			.filter(
 					airfoilPath -> Paths.get(airfoilPath).getFileName().toString().equals(airfoilFileName))
 			.findFirst()
 			.get();
 
-			int airfoilVTailIndex = Main.getTheAircraft().getVTail().getAirfoilPathList().indexOf(vTailAirfoilPathFromList);
+			int airfoilVTailIndex = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilPathList().indexOf(vTailAirfoilPathFromList);
 
 			airfoilInputManagerController.loadAirfoilData(
-					Main.getTheAircraft().getVTail().getAirfoilList().get(airfoilVTailIndex).getAirfoilCreator()
+					Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().get(airfoilVTailIndex).getAirfoilCreator()
 					);
 			airfoilInputManagerController.createAirfoilView();
 			airfoilInputManagerController.createClCurve();
@@ -5648,17 +5648,17 @@ public class InputManagerController {
 			break;
 			
 		case CANARD:
-			String canardAirfoilPathFromList = Main.getTheAircraft().getCanard().getAirfoilPathList()
+			String canardAirfoilPathFromList = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilPathList()
 			.stream()
 			.filter(
 					airfoilPath -> Paths.get(airfoilPath).getFileName().toString().equals(airfoilFileName))
 			.findFirst()
 			.get();
 
-			int airfoilCanardIndex = Main.getTheAircraft().getCanard().getAirfoilPathList().indexOf(canardAirfoilPathFromList);
+			int airfoilCanardIndex = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilPathList().indexOf(canardAirfoilPathFromList);
 
 			airfoilInputManagerController.loadAirfoilData(
-					Main.getTheAircraft().getCanard().getAirfoilList().get(airfoilCanardIndex).getAirfoilCreator()
+					Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList().get(airfoilCanardIndex).getAirfoilCreator()
 					);
 			airfoilInputManagerController.createAirfoilView();
 			airfoilInputManagerController.createClCurve();
@@ -6302,9 +6302,9 @@ public class InputManagerController {
 			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING TAPER RATIO:
-			if (Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio() != null) 
+			if (Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio() != null) 
 				textFieldEquivalentWingTaperRatio.setText(
-						String.valueOf(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio())
+						String.valueOf(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio())
 						);
 			
 			for (int i=0; i<Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().size(); i++) {
@@ -7644,7 +7644,7 @@ public class InputManagerController {
 			Main.getTheAircraft().getFuelTank().setXApexConstructionAxes(
 					Main.getTheAircraft().getWing().getXApexConstructionAxes()
 					.plus(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
-							.times(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMainSparNonDimensionalPosition()
+							.times(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMainSparDimensionlessPosition()
 									)
 							)
 					);
@@ -10362,9 +10362,9 @@ public class InputManagerController {
 		File systemsFilePath = null;
 		
 		FusDesDatabaseReader fusDesDatabaseReader = Main.getTheAircraft().getFuselage().getFusDesDatabaseReader();
-		AerodynamicDatabaseReader aerodynamicDatabaseReader = Main.getTheAircraft().getWing().getAerodynamicDatabaseReader();
+		AerodynamicDatabaseReader aerodynamicDatabaseReader = Main.getTheAircraft().getWing().getAeroDatabaseReader();
 		HighLiftDatabaseReader highLiftDatabaseReader = Main.getTheAircraft().getWing().getHighLiftDatabaseReader();
-		VeDSCDatabaseReader veDSCDatabaseReader = Main.getTheAircraft().getWing().getVEDSCDatabaseReader();
+		VeDSCDatabaseReader veDSCDatabaseReader = Main.getTheAircraft().getWing().getVeDSCDatabaseReader();
 		
 		if(!textFieldAircraftCabinConfigurationFile.getText().isEmpty()) 
 			cabinConfigurationFilePath = new File(textFieldAircraftCabinConfigurationFile.getText());
@@ -10451,14 +10451,7 @@ public class InputManagerController {
 						);
 
 				Main.getTheAircraft().setWing(
-						new LiftingSurfaceBuilder(
-								"Wing - " + Main.getTheAircraft().getId(),
-								ComponentEnum.WING,
-								aerodynamicDatabaseReader,
-								highLiftDatabaseReader,
-								veDSCDatabaseReader
-								)
-						.liftingSurfaceCreator(
+						new LiftingSurface(
 								LiftingSurfaceCreator.importFromXML(
 										ComponentEnum.WING,
 										wingFilePath.getAbsolutePath(),
@@ -10468,15 +10461,16 @@ public class InputManagerController {
 										+ "airfoils" + File.separator
 										)
 								)
-						.build()
 						);
+				Main.getTheAircraft().getWing().setAeroDatabaseReader(aerodynamicDatabaseReader);
+				Main.getTheAircraft().getWing().setHighLiftDatabaseReader(highLiftDatabaseReader);
+				Main.getTheAircraft().getWing().setVeDSCDatabaseReader(veDSCDatabaseReader);
 				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().calculateGeometry(
 						ComponentEnum.WING, 
-						Boolean.TRUE
+						true
 						);
-				Main.getTheAircraft().getWing().populateAirfoilList(
-						aerodynamicDatabaseReader,
-						Boolean.FALSE
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().populateAirfoilList(
+						false
 						);
 				Main.getTheAircraft().getWing().setXApexConstructionAxes(wingXApex);
 				Main.getTheAircraft().getWing().setYApexConstructionAxes(wingYApex);
@@ -10492,7 +10486,7 @@ public class InputManagerController {
 				Main.getTheAircraft().getFuelTank().setXApexConstructionAxes(
 						Main.getTheAircraft().getWing().getXApexConstructionAxes()
 						.plus(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
-								.times(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMainSparNonDimensionalPosition()
+								.times(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMainSparDimensionlessPosition()
 										)
 								)
 						);
@@ -10528,14 +10522,7 @@ public class InputManagerController {
 						);
 
 				Main.getTheAircraft().setHTail(
-						new LiftingSurfaceBuilder(
-								"Horizontal Tail - " + Main.getTheAircraft().getId(),
-								ComponentEnum.HORIZONTAL_TAIL,
-								aerodynamicDatabaseReader,
-								highLiftDatabaseReader,
-								veDSCDatabaseReader
-								)
-						.liftingSurfaceCreator(
+						new LiftingSurface(
 								LiftingSurfaceCreator.importFromXML(
 										ComponentEnum.HORIZONTAL_TAIL,
 										hTailFilePath.getAbsolutePath(),
@@ -10545,15 +10532,16 @@ public class InputManagerController {
 										+ "airfoils" + File.separator
 										)
 								)
-						.build()
 						);
+				Main.getTheAircraft().getHTail().setAeroDatabaseReader(aerodynamicDatabaseReader);
+				Main.getTheAircraft().getHTail().setHighLiftDatabaseReader(highLiftDatabaseReader);
+				Main.getTheAircraft().getHTail().setVeDSCDatabaseReader(veDSCDatabaseReader);
 				Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().calculateGeometry(
 						ComponentEnum.HORIZONTAL_TAIL, 
-						Boolean.TRUE
+						true
 						);
-				Main.getTheAircraft().getHTail().populateAirfoilList(
-						aerodynamicDatabaseReader,
-						Boolean.FALSE
+				Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().populateAirfoilList(
+						false
 						);
 				Main.getTheAircraft().getHTail().setXApexConstructionAxes(hTailXApex);
 				Main.getTheAircraft().getHTail().setYApexConstructionAxes(hTailYApex);
@@ -10584,14 +10572,7 @@ public class InputManagerController {
 						);
 
 				Main.getTheAircraft().setVTail(
-						new LiftingSurfaceBuilder(
-								"Vertical Tail - " + Main.getTheAircraft().getId(),
-								ComponentEnum.VERTICAL_TAIL,
-								aerodynamicDatabaseReader,
-								highLiftDatabaseReader,
-								veDSCDatabaseReader
-								)
-						.liftingSurfaceCreator(
+						new LiftingSurface(
 								LiftingSurfaceCreator.importFromXML(
 										ComponentEnum.VERTICAL_TAIL,
 										vTailFilePath.getAbsolutePath(),
@@ -10601,15 +10582,16 @@ public class InputManagerController {
 										+ "airfoils" + File.separator
 										)
 								)
-						.build()
 						);
+				Main.getTheAircraft().getVTail().setAeroDatabaseReader(aerodynamicDatabaseReader);
+				Main.getTheAircraft().getVTail().setHighLiftDatabaseReader(highLiftDatabaseReader);
+				Main.getTheAircraft().getVTail().setVeDSCDatabaseReader(veDSCDatabaseReader);
 				Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().calculateGeometry(
 						ComponentEnum.VERTICAL_TAIL, 
-						Boolean.FALSE
+						false
 						);
-				Main.getTheAircraft().getVTail().populateAirfoilList(
-						aerodynamicDatabaseReader,
-						Boolean.FALSE
+				Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().populateAirfoilList(
+						false
 						);
 				Main.getTheAircraft().getVTail().setXApexConstructionAxes(vTailXApex);
 				Main.getTheAircraft().getVTail().setYApexConstructionAxes(vTailYApex);
@@ -10640,14 +10622,7 @@ public class InputManagerController {
 						);
 
 				Main.getTheAircraft().setCanard(
-						new LiftingSurfaceBuilder(
-								"Canard - " + Main.getTheAircraft().getId(),
-								ComponentEnum.CANARD,
-								aerodynamicDatabaseReader,
-								highLiftDatabaseReader,
-								veDSCDatabaseReader
-								)
-						.liftingSurfaceCreator(
+						new LiftingSurface(
 								LiftingSurfaceCreator.importFromXML(
 										ComponentEnum.CANARD,
 										canardFilePath.getAbsolutePath(),
@@ -10657,15 +10632,16 @@ public class InputManagerController {
 										+ "airfoils" + File.separator
 										)
 								)
-						.build()
 						);
+				Main.getTheAircraft().getCanard().setAeroDatabaseReader(aerodynamicDatabaseReader);
+				Main.getTheAircraft().getCanard().setHighLiftDatabaseReader(highLiftDatabaseReader);
+				Main.getTheAircraft().getCanard().setVeDSCDatabaseReader(veDSCDatabaseReader);
 				Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().calculateGeometry(
 						ComponentEnum.CANARD, 
-						Boolean.TRUE
+						true
 						);
-				Main.getTheAircraft().getCanard().populateAirfoilList(
-						aerodynamicDatabaseReader,
-						Boolean.FALSE
+				Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().populateAirfoilList(
+						false
 						);
 				Main.getTheAircraft().getCanard().setXApexConstructionAxes(canardXApex);
 				Main.getTheAircraft().getCanard().setYApexConstructionAxes(canardYApex);

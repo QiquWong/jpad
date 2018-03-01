@@ -7,7 +7,6 @@ import static java.lang.Math.tan;
 import static java.lang.Math.toRadians;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,6 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.util.MathArrays;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import calculators.geometry.LSGeometryCalc;
@@ -1268,7 +1266,7 @@ public class LiftCalc {
 					etaOutFlap.get(i));
 			
 			try {
-				influenceFactor = LiftingSurface.calculateInfluenceFactorsMeanAirfoilFlap(
+				influenceFactor = LSGeometryCalc.calculateInfluenceFactorsMeanAirfoilFlap(
 						etaInFlap.get(i),
 						etaOutFlap.get(i),
 						etaBreakPoints,
@@ -1346,7 +1344,7 @@ public class LiftCalc {
 						etaOutSlat.get(i));
 
 				try {
-					influenceFactor = LiftingSurface.calculateInfluenceFactorsMeanAirfoilFlap(
+					influenceFactor = LSGeometryCalc.calculateInfluenceFactorsMeanAirfoilFlap(
 							etaInSlat.get(i),
 							etaOutSlat.get(i),
 							etaBreakPoints,

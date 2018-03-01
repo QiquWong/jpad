@@ -124,11 +124,11 @@ public class AircraftTestFrontView extends Application {
 		int nYPointsWing = wingBreakPointsYCoordinates.size();
 		
 		List<Amount<Length>> wingThicknessZCoordinates = new ArrayList<Amount<Length>>();
-		for(int i=0; i<wing.getAirfoilList().size(); i++)
+		for(int i=0; i<wing.getLiftingSurfaceCreator().getAirfoilList().size(); i++)
 			wingThicknessZCoordinates.add(
 					Amount.valueOf(
 							wing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(wing.getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
+							MyArrayUtils.getMax(wing.getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -136,7 +136,7 @@ public class AircraftTestFrontView extends Application {
 			wingThicknessZCoordinates.add(
 					Amount.valueOf(
 							(wing.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsWingTemp-i-1).doubleValue(SI.METER)*
-									MyArrayUtils.getMin(wing.getAirfoilList().get(nYPointsWingTemp-i-1).getAirfoilCreator().getZCoords())),
+									MyArrayUtils.getMin(wing.getLiftingSurfaceCreator().getAirfoilList().get(nYPointsWingTemp-i-1).getAirfoilCreator().getZCoords())),
 							SI.METER
 							)
 					);
@@ -186,11 +186,11 @@ public class AircraftTestFrontView extends Application {
 		int nYPointsHTail = hTailBreakPointsYCoordinates.size();
 		
 		List<Amount<Length>> hTailThicknessZCoordinates = new ArrayList<Amount<Length>>();
-		for(int i=0; i<vTail.getAirfoilList().size(); i++)
+		for(int i=0; i<vTail.getLiftingSurfaceCreator().getAirfoilList().size(); i++)
 			hTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							hTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(hTail.getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
+							MyArrayUtils.getMax(hTail.getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -198,7 +198,7 @@ public class AircraftTestFrontView extends Application {
 			hTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							hTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsHTailTemp-i-1).doubleValue(SI.METER)*
-							MyArrayUtils.getMin(hTail.getAirfoilList().get(nYPointsHTailTemp-i-1).getAirfoilCreator().getZCoords()),
+							MyArrayUtils.getMin(hTail.getLiftingSurfaceCreator().getAirfoilList().get(nYPointsHTailTemp-i-1).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -247,11 +247,11 @@ public class AircraftTestFrontView extends Application {
 		int nYPointsVTail = vTailBreakPointsYCoordinates.size();
 		
 		List<Amount<Length>> vTailThicknessZCoordinates = new ArrayList<Amount<Length>>();
-		for(int i=0; i<vTail.getAirfoilList().size(); i++)
+		for(int i=0; i<vTail.getLiftingSurfaceCreator().getAirfoilList().size(); i++)
 			vTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							vTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(vTail.getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
+							MyArrayUtils.getMax(vTail.getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -259,7 +259,7 @@ public class AircraftTestFrontView extends Application {
 			vTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							vTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsVTailTemp-i-1).doubleValue(SI.METER)*
-							MyArrayUtils.getMin(vTail.getAirfoilList().get(nYPointsVTailTemp-i-1).getAirfoilCreator().getZCoords()),
+							MyArrayUtils.getMin(vTail.getLiftingSurfaceCreator().getAirfoilList().get(nYPointsVTailTemp-i-1).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -338,8 +338,8 @@ public class AircraftTestFrontView extends Application {
 		for (int i=0; i<nacellePointsList.size(); i++)
 			listDataArrayFrontView.add(nacellePointsList.get(i));
 		
-		double yMaxFrontView = 1.20*wing.getSemiSpan().doubleValue(SI.METER);
-		double yMinFrontView = -1.20*wing.getSemiSpan().doubleValue(SI.METRE);
+		double yMaxFrontView = 1.20*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
+		double yMinFrontView = -1.20*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
 		double zMaxFrontView = yMaxFrontView; 
 		double zMinFrontView = yMinFrontView;
 		

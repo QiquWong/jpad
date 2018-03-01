@@ -25,7 +25,6 @@ import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsManager;
@@ -195,7 +194,7 @@ public class WingOptimizationTest extends Application {
 
 		Double[][] eqPts1 = new Double[4][2];
 		eqPts1[0][0] = 0.0;
-		eqPts1[0][1] = wing1.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE();
+		eqPts1[0][1] = wing1.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE();
 		eqPts1[1][0] = wing1.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
 		eqPts1[1][1] = wing1.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec1 - 1).doubleValue(SI.METER);
 		eqPts1[2][0] = wing1.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
@@ -206,7 +205,7 @@ public class WingOptimizationTest extends Application {
 				.doubleValue(SI.METER);
 		eqPts1[3][0] = 0.0;
 		eqPts1[3][1] = wing1.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-				- wing1.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootTE();
+				- wing1.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordTE();
 
 		listDataArray1.add(eqPts1);
 
@@ -218,8 +217,8 @@ public class WingOptimizationTest extends Application {
 
 		listDataArray1.add(xyMAC1);
 
-		double xMax1 = 1.05*wing1.getSemiSpan().doubleValue(SI.METRE);
-		double xMin1 = -0.05*wing1.getSemiSpan().doubleValue(SI.METRE);
+		double xMax1 = 1.05*wing1.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+		double xMin1 = -0.05*wing1.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
 		double yMax1 = xMax1;
 		double yMin1 = xMin1;
 
@@ -232,7 +231,7 @@ public class WingOptimizationTest extends Application {
 
 		Double[][] eqPts2 = new Double[4][2];
 		eqPts2[0][0] = 0.0;
-		eqPts2[0][1] = wing2.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE();
+		eqPts2[0][1] = wing2.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE();
 		eqPts2[1][0] = wing2.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
 		eqPts2[1][1] = wing2.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec2 - 1).doubleValue(SI.METER);
 		eqPts2[2][0] = wing2.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
@@ -243,7 +242,7 @@ public class WingOptimizationTest extends Application {
 				.doubleValue(SI.METER);
 		eqPts2[3][0] = 0.0;
 		eqPts2[3][1] = wing2.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-				- wing2.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootTE();
+				- wing2.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordTE();
 
 		listDataArray2.add(eqPts2);
 
@@ -255,8 +254,8 @@ public class WingOptimizationTest extends Application {
 
 		listDataArray2.add(xyMAC2);
 
-		double xMax2 = 1.05*wing2.getSemiSpan().doubleValue(SI.METRE);
-		double xMin2 = -0.05*wing2.getSemiSpan().doubleValue(SI.METRE);
+		double xMax2 = 1.05*wing2.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+		double xMin2 = -0.05*wing2.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
 		double yMax2 = xMax2;
 		double yMin2 = xMin2;
 		
@@ -461,27 +460,17 @@ public class WingOptimizationTest extends Application {
 			//------------------------------------------------------------------------------------
 			// Reading LiftingSurface from xml  (WING 0 = BASELINE) ...
 			System.setOut(filterStream);
-			baselineWing = new LiftingSurfaceBuilder(
-					"Wing_0",
-					ComponentEnum.WING,
-					aeroDatabaseReader,
-					highLiftDatabaseReader,
-					veDSCDatabaseReader
-					)
-					.liftingSurfaceCreator(
-							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
-							)
-					.build();
+			baselineWing = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil));
+			baselineWing.setAeroDatabaseReader(aeroDatabaseReader);
+			baselineWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			baselineWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
 			theWings.add(baselineWing);
-			baselineWing.calculateGeometry(
+			baselineWing.getLiftingSurfaceCreator().calculateGeometry(
 					40,
-					baselineWing.getType(),
+					baselineWing.getLiftingSurfaceCreator().getType(),
 					baselineWing.getLiftingSurfaceCreator().isMirrored()
 					);
-			baselineWing.populateAirfoilList(
-					aeroDatabaseReader, 
-					Boolean.FALSE
-					); 
+			baselineWing.getLiftingSurfaceCreator().populateAirfoilList(false); 
 			System.setOut(originalOut);
 			//================================================================================
 			// INPUTS
@@ -560,9 +549,9 @@ public class WingOptimizationTest extends Application {
 			
 			Amount<Area> wingSurface = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSurfacePlanform();
 			Amount<Length> wingSpan = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSpan();
-			Double taperRatio = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getTaperRatio();
-			Amount<Angle> sweepQuarterChord = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
-			Double thicknessMean = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getThicknessMean();
+			Double taperRatio = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio();
+			Amount<Angle> sweepQuarterChord = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
+			Double thicknessMean = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getThicknessMean();
 			
 			wingMassBaseline = Amount.valueOf(
 					(4.22*wingSurface.doubleValue(MyUnits.FOOT2) 
@@ -645,26 +634,16 @@ public class WingOptimizationTest extends Application {
 						System.out.println("\t\tWing_" + (i+1) + "_" + (j+1) + "_" + (k+1));
 						System.setOut(filterStream);
 						
-						LiftingSurface currentWing = new LiftingSurfaceBuilder(
-								"Wing_" + (i+1) + "_" + (j+1) + "_" + (k+1),
-								ComponentEnum.WING,
-								aeroDatabaseReader,
-								highLiftDatabaseReader,
-								veDSCDatabaseReader
-								)
-								.liftingSurfaceCreator(
-										LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
-										)
-								.build();
+						LiftingSurface currentWing = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil));
+						currentWing.setAeroDatabaseReader(aeroDatabaseReader);
+						currentWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
+						currentWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
 						
-						currentWing.calculateGeometry(
+						currentWing.getLiftingSurfaceCreator().calculateGeometry(
 								40,
-								currentWing.getType(),
+								currentWing.getLiftingSurfaceCreator().getType(),
 								currentWing.getLiftingSurfaceCreator().isMirrored());
-						currentWing.populateAirfoilList(
-								aeroDatabaseReader,
-								Boolean.FALSE
-								);
+						currentWing.getLiftingSurfaceCreator().populateAirfoilList(false);
 						currentWing.getLiftingSurfaceCreator().adjustDimensions(
 								var1Array[i],
 								baselineWing.getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER),
@@ -760,9 +739,9 @@ public class WingOptimizationTest extends Application {
 			System.out.println("\n\n\t------------------------------------");
 			System.out.println("\tBASELINE DESIGN PARAMETERS: ");
 			System.out.println("\t------------------------------------");
-			System.out.println("\tAR = " + baselineWing.getAspectRatio());
-			System.out.println("\tTaper Ratio = " + baselineWing.getEquivalentWing().getPanels().get(0).getTaperRatio());
-			System.out.println("\tSweep LE = " + baselineWing.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE));
+			System.out.println("\tAR = " + baselineWing.getLiftingSurfaceCreator().getAspectRatio());
+			System.out.println("\tTaper Ratio = " + baselineWing.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio());
+			System.out.println("\tSweep LE = " + baselineWing.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE));
 			System.out.println("\t------------------------------------");
 			// Best Position
 			System.out.println("\n\n\t------------------------------------");
@@ -776,26 +755,15 @@ public class WingOptimizationTest extends Application {
 			//-------------------------------------------------------------------------------
 			// DEFINING THE OPTIMIZED WING ...
 			System.setOut(filterStream);
-			optimizedWing = new LiftingSurfaceBuilder(
-					"Optimized Wing",
-					ComponentEnum.WING,
-					aeroDatabaseReader,
-					highLiftDatabaseReader,
-					veDSCDatabaseReader
-					)
-					.liftingSurfaceCreator(
-							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
-							)
-					.build();
-			
-			optimizedWing.calculateGeometry(
+			optimizedWing = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil));
+			optimizedWing.setAeroDatabaseReader(aeroDatabaseReader);
+			optimizedWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			optimizedWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
+			optimizedWing.getLiftingSurfaceCreator().calculateGeometry(
 					40,
-					optimizedWing.getType(),
+					optimizedWing.getLiftingSurfaceCreator().getType(),
 					optimizedWing.getLiftingSurfaceCreator().isMirrored());
-			optimizedWing.populateAirfoilList(
-					aeroDatabaseReader,
-					Boolean.FALSE
-					);
+			optimizedWing.getLiftingSurfaceCreator().populateAirfoilList(false);
 			optimizedWing.getLiftingSurfaceCreator().adjustDimensions(
 					pso.getBestPosition()[0],
 					baselineWing.getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER),
@@ -855,9 +823,9 @@ public class WingOptimizationTest extends Application {
 					|| costFunctionType.equals(OptimizationEnum.WING_MASS)) {
 				Amount<Area> wingSurfaceOptimized = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSurfacePlanform();
 				Amount<Length> wingSpanOptimized = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSpan();
-				Double taperRatioOptimied = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getTaperRatio();
-				Amount<Angle> sweepQuarterChordOptimized = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
-				Double thicknessMeanOptimized = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getThicknessMean();
+				Double taperRatioOptimied = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio();
+				Amount<Angle> sweepQuarterChordOptimized = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
+				Double thicknessMeanOptimized = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getThicknessMean();
 				
 				wingMassOptimized = Amount.valueOf(
 						(4.22*wingSurfaceOptimized.doubleValue(MyUnits.FOOT2) 

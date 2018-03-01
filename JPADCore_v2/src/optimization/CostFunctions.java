@@ -84,9 +84,9 @@ public class CostFunctions {
 		//..................................................................................................................
 		Amount<Area> wingSurface = wingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSurfacePlanform();
 		Amount<Length> wingSpan = wingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSpan();
-		Double taperRatio = wingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getTaperRatio();
-		Amount<Angle> sweepQuarterChord = wingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
-		Double thicknessMean = wingAerodynamicsManager.getTheLiftingSurface().getThicknessMean();
+		Double taperRatio = wingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio();
+		Amount<Angle> sweepQuarterChord = wingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
+		Double thicknessMean = wingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getThicknessMean();
 		
 		Amount<Mass> wingMass = Amount.valueOf(
 				(4.22*wingSurface.doubleValue(MyUnits.FOOT2) 
@@ -117,9 +117,9 @@ public class CostFunctions {
 		
 		Amount<Area> wingSurface = wingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSurfacePlanform();
 		Amount<Length> wingSpan = wingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSpan();
-		Double taperRatio = wingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getTaperRatio();
-		Amount<Angle> sweepQuarterChord = wingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
-		Double thicknessMean = wingAerodynamicsManager.getTheLiftingSurface().getThicknessMean();
+		Double taperRatio = wingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio();
+		Amount<Angle> sweepQuarterChord = wingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
+		Double thicknessMean = wingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getThicknessMean();
 		
 		Amount<Mass> wingMass = Amount.valueOf(
 				(4.22*wingSurface.doubleValue(MyUnits.FOOT2) 

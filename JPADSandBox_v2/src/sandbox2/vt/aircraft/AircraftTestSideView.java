@@ -116,50 +116,54 @@ public class AircraftTestSideView extends Application {
 		//--------------------------------------------------
 		// get data vectors from wing discretization
 		//--------------------------------------------------
-		Double[] wingRootXCoordinates = wing.getAirfoilList().get(0).getAirfoilCreator().getXCoords();
-		Double[] wingRootZCoordinates = wing.getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+		Double[] wingRootXCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
+		Double[] wingRootZCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
 		Double[][] wingRootAirfoilPoints = new Double[wingRootXCoordinates.length][2];
 		for (int i=0; i<wingRootAirfoilPoints.length; i++) {
-			wingRootAirfoilPoints[i][0] = (wingRootXCoordinates[i]*wing.getChordRoot().getEstimatedValue()) 
+			wingRootAirfoilPoints[i][0] = (wingRootXCoordinates[i]*wing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue()) 
 										  + wing.getXApexConstructionAxes().getEstimatedValue(); 
-			wingRootAirfoilPoints[i][1] = (wingRootZCoordinates[i]*wing.getChordRoot().getEstimatedValue())
+			wingRootAirfoilPoints[i][1] = (wingRootZCoordinates[i]*wing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
 										  + wing.getZApexConstructionAxes().getEstimatedValue();
 		}
 		
 		int nPointsWing = wing.getLiftingSurfaceCreator().getDiscretizedXle().size();
-		Double[] wingTipXCoordinates = wing.getAirfoilList().get(wing.getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
-		Double[] wingTipZCoordinates = wing.getAirfoilList().get(wing.getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+		Double[] wingTipXCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(wing.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
+		Double[] wingTipZCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(wing.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
 		Double[][] wingTipAirfoilPoints = new Double[wingTipXCoordinates.length][2];
 		for (int i=0; i<wingTipAirfoilPoints.length; i++) {
-			wingTipAirfoilPoints[i][0] = (wingTipXCoordinates[i]*wing.getChordTip().getEstimatedValue()) 
+			wingTipAirfoilPoints[i][0] = (wingTipXCoordinates[i]*wing.getLiftingSurfaceCreator().getPanels()
+					.get(wing.getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
 										  + wing.getXApexConstructionAxes().getEstimatedValue()
 										  + wing.getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsWing-1).getEstimatedValue(); 
-			wingTipAirfoilPoints[i][1] = (wingTipZCoordinates[i]*wing.getChordTip().getEstimatedValue())
+			wingTipAirfoilPoints[i][1] = (wingTipZCoordinates[i]*wing.getLiftingSurfaceCreator().getPanels()
+					.get(wing.getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
 										  + wing.getZApexConstructionAxes().getEstimatedValue();
 		}
 		
 		//--------------------------------------------------
 		// get data vectors from hTail discretization
 		//--------------------------------------------------
-		Double[] hTailRootXCoordinates = hTail.getAirfoilList().get(0).getAirfoilCreator().getXCoords();
-		Double[] hTailRootZCoordinates = hTail.getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+		Double[] hTailRootXCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
+		Double[] hTailRootZCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
 		Double[][] hTailRootAirfoilPoints = new Double[hTailRootXCoordinates.length][2];
 		for (int i=0; i<hTailRootAirfoilPoints.length; i++) {
-			hTailRootAirfoilPoints[i][0] = (hTailRootXCoordinates[i]*hTail.getChordRoot().getEstimatedValue())
+			hTailRootAirfoilPoints[i][0] = (hTailRootXCoordinates[i]*hTail.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
 										   + hTail.getXApexConstructionAxes().getEstimatedValue(); 
-			hTailRootAirfoilPoints[i][1] = (hTailRootZCoordinates[i]*hTail.getChordRoot().getEstimatedValue())
+			hTailRootAirfoilPoints[i][1] = (hTailRootZCoordinates[i]*hTail.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
 										   + hTail.getZApexConstructionAxes().getEstimatedValue();
 		}
 		
 		int nPointsHTail = hTail.getLiftingSurfaceCreator().getDiscretizedXle().size();
-		Double[] hTailTipXCoordinates = hTail.getAirfoilList().get(hTail.getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
-		Double[] hTailTipZCoordinates = hTail.getAirfoilList().get(hTail.getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+		Double[] hTailTipXCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(hTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
+		Double[] hTailTipZCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(hTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
 		Double[][] hTailTipAirfoilPoints = new Double[hTailTipXCoordinates.length][2];
 		for (int i=0; i<hTailTipAirfoilPoints.length; i++) {
-			hTailTipAirfoilPoints[i][0] = (hTailTipXCoordinates[i]*hTail.getChordTip().getEstimatedValue()) 
+			hTailTipAirfoilPoints[i][0] = (hTailTipXCoordinates[i]*hTail.getLiftingSurfaceCreator().getPanels()
+					.get(hTail.getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
 										  + hTail.getXApexConstructionAxes().getEstimatedValue()
 										  + hTail.getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(); 
-			hTailTipAirfoilPoints[i][1] = (hTailTipZCoordinates[i]*hTail.getChordTip().getEstimatedValue())
+			hTailTipAirfoilPoints[i][1] = (hTailTipZCoordinates[i]*hTail.getLiftingSurfaceCreator().getPanels()
+					.get(hTail.getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
 										  + hTail.getZApexConstructionAxes().getEstimatedValue();
 		}
 		

@@ -587,10 +587,10 @@ public class AircraftPointMassPropagator {
 			//System.out.println(airspeed);
 			
 			// drag
-			double aspectRatio = theAircraft.getWing().getAspectRatio();
+			double aspectRatio = theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio();
 			double kD = Math.PI * aspectRatio * AircraftPointMassPropagator.this.oswaldFactor;
 			double airDensity = AtmosphereCalc.getDensity(altitude);
-			double surfaceWing = theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE);
+			double surfaceWing = theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
 			double kD0 = 0.5 * airDensity * surfaceWing * AircraftPointMassPropagator.this.cD0;
 			double kD1 = 2.0/(airDensity * surfaceWing * kD);
 			this.drag = kD0 * Math.pow(airspeed, 2) 
@@ -1198,10 +1198,10 @@ public class AircraftPointMassPropagator {
 					xLDot.add(Amount.valueOf(xdot[8],MyUnits.KILOGRAM_METER_PER_SECOND));
 					//----------------------------------------------------------------------------------------
 					// DRAG:
-					double aspectRatio = theAircraft.getWing().getAspectRatio();
+					double aspectRatio = theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio();
 					double kD = Math.PI * aspectRatio * AircraftPointMassPropagator.this.oswaldFactor;
 					double airDensity = AtmosphereCalc.getDensity(x[5]); // f(altitude)
-					double surfaceWing = theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE);
+					double surfaceWing = theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
 					double kD0 = 0.5 * airDensity * surfaceWing * AircraftPointMassPropagator.this.cD0;
 					double kD1 = 2.0/(airDensity * surfaceWing * kD);
 					double drg_ = kD0 * Math.pow(vinf_, 2) 
@@ -1222,10 +1222,10 @@ public class AircraftPointMassPropagator {
 					// CD, CL, Load factor
 					double dynamicPressure = 0.5*airDensity*Math.pow(vinf_, 2);
 					cD.add(
-							drg_/(dynamicPressure*theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE))
+							drg_/(dynamicPressure*theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE))
 							);
 					cL.add(
-							x[9]/(dynamicPressure*theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE))
+							x[9]/(dynamicPressure*theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE))
 							);
 					loadFactor.add(
 							x[9]/(x[11]*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)) // Lift/Weight

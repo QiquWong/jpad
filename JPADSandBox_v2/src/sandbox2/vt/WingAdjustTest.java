@@ -18,7 +18,6 @@ import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
@@ -198,7 +197,7 @@ public class WingAdjustTest extends Application {
 
 		Double[][] eqPts1 = new Double[4][2];
 		eqPts1[0][0] = 0.0;
-		eqPts1[0][1] = wing1.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE();
+		eqPts1[0][1] = wing1.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE();
 		eqPts1[1][0] = wing1.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
 		eqPts1[1][1] = wing1.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec1 - 1).doubleValue(SI.METER);
 		eqPts1[2][0] = wing1.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
@@ -209,7 +208,7 @@ public class WingAdjustTest extends Application {
 				.doubleValue(SI.METER);
 		eqPts1[3][0] = 0.0;
 		eqPts1[3][1] = wing1.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-				- wing1.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootTE();
+				- wing1.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordTE();
 
 		listDataArray1.add(eqPts1);
 
@@ -221,17 +220,10 @@ public class WingAdjustTest extends Application {
 
 		listDataArray1.add(xyMAC1);
 
-		double xMax1 = 1.05*wing1.getSemiSpan().doubleValue(SI.METRE);
-		double xMin1 = -0.05*wing1.getSemiSpan().doubleValue(SI.METRE);
+		double xMax1 = 1.05*wing1.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+		double xMin1 = -0.05*wing1.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
 		double yMax1 = xMax1;
 		double yMin1 = xMin1;
-//		double yMax1 = 1.05*wing1.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METRE);
-//		double yMin1 = -0.05
-//				*(wing1.getLiftingSurfaceCreator()
-//						.getDiscretizedXle().get(wing1.getLiftingSurfaceCreator().getDiscretizedXle().size()-1).doubleValue(SI.METER)
-//				+ wing1.getLiftingSurfaceCreator()
-//						.getDiscretizedChords().get(wing1.getLiftingSurfaceCreator().getDiscretizedChords().size()-1).doubleValue(SI.METER)
-//						);
 
 		List<Double[][]> listDataArray2 = new ArrayList<Double[][]>();
 
@@ -242,7 +234,7 @@ public class WingAdjustTest extends Application {
 
 		Double[][] eqPts2 = new Double[4][2];
 		eqPts2[0][0] = 0.0;
-		eqPts2[0][1] = wing2.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE();
+		eqPts2[0][1] = wing2.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE();
 		eqPts2[1][0] = wing2.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
 		eqPts2[1][1] = wing2.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec2 - 1).doubleValue(SI.METER);
 		eqPts2[2][0] = wing2.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
@@ -253,7 +245,7 @@ public class WingAdjustTest extends Application {
 				.doubleValue(SI.METER);
 		eqPts2[3][0] = 0.0;
 		eqPts2[3][1] = wing2.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-				- wing2.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootTE();
+				- wing2.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordTE();
 
 		listDataArray2.add(eqPts2);
 
@@ -265,17 +257,10 @@ public class WingAdjustTest extends Application {
 
 		listDataArray2.add(xyMAC2);
 
-		double xMax2 = 1.05*wing2.getSemiSpan().doubleValue(SI.METRE);
-		double xMin2 = -0.05*wing2.getSemiSpan().doubleValue(SI.METRE);
+		double xMax2 = 1.05*wing2.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+		double xMin2 = -0.05*wing2.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
 		double yMax2 = xMax2;
 		double yMin2 = xMin2;
-//		double yMax2 = 1.05*wing2.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METRE);
-//		double yMin2 = -0.05
-//				*(wing2.getLiftingSurfaceCreator()
-//						.getDiscretizedXle().get(wing2.getLiftingSurfaceCreator().getDiscretizedXle().size()-1).doubleValue(SI.METER)
-//				+ wing2.getLiftingSurfaceCreator()
-//						.getDiscretizedChords().get(wing2.getLiftingSurfaceCreator().getDiscretizedChords().size()-1).doubleValue(SI.METER)
-//						);
 		
 		D3PlotterOptions options1 = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
@@ -453,72 +438,30 @@ public class WingAdjustTest extends Application {
 			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
 			// read LiftingSurface from xml ...
-			theWing1 = new LiftingSurfaceBuilder(
-					"Wing_1",
-					ComponentEnum.WING,
-					aeroDatabaseReader,
-					highLiftDatabaseReader,
-					veDSCDatabaseReader
-					)
-					.liftingSurfaceCreator(
-							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
-							)
-					.build();
-			theWing2 = new LiftingSurfaceBuilder(
-					"Wing_2",
-					ComponentEnum.WING,
-					aeroDatabaseReader,
-					highLiftDatabaseReader,
-					veDSCDatabaseReader
-					)
-					.liftingSurfaceCreator(
-							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
-							)
-					.build();
+			theWing1 = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil));
+			theWing1.setAeroDatabaseReader(aeroDatabaseReader);
+			theWing1.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			theWing1.setVeDSCDatabaseReader(veDSCDatabaseReader);
 			
-			// default LiftingSurface from xml ...
-//			theWing1 = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
-//					.liftingSurfaceCreator(
-//							new LiftingSurfaceCreator
-//							.LiftingSurfaceCreatorBuilder(
-//									"MyWing",
-//									Boolean.TRUE,
-//									AircraftEnum.ATR72,
-//									ComponentEnum.WING
-//									)
-//							.build()
-//							)
-//					.build();
-//			
-//			theWing2 = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
-//			.liftingSurfaceCreator(
-//					new LiftingSurfaceCreator
-//					.LiftingSurfaceCreatorBuilder(
-//							"MyWing",
-//							Boolean.TRUE,
-//							AircraftEnum.ATR72,
-//							ComponentEnum.WING
-//							)
-//					.build()
-//					)
-//			.build();
+			theWing2 = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil));
+			theWing2.setAeroDatabaseReader(aeroDatabaseReader);
+			theWing2.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			theWing2.setVeDSCDatabaseReader(veDSCDatabaseReader);
 			
-			WingAdjustTest.theWing1.calculateGeometry(
+			WingAdjustTest.theWing1.getLiftingSurfaceCreator().calculateGeometry(
 					40,
-					theWing1.getType(),
+					theWing1.getLiftingSurfaceCreator().getType(),
 					theWing1.getLiftingSurfaceCreator().isMirrored());
-			WingAdjustTest.theWing2.calculateGeometry(
+			WingAdjustTest.theWing2.getLiftingSurfaceCreator().calculateGeometry(
 					40,
-					theWing2.getType(),
+					theWing2.getLiftingSurfaceCreator().getType(),
 					theWing2.getLiftingSurfaceCreator().isMirrored());
 
-			WingAdjustTest.theWing1.populateAirfoilList(
-					aeroDatabaseReader, 
-					theWing1.getLiftingSurfaceCreator().getEquivalentWing().getEquivalentWingFlag()
+			WingAdjustTest.theWing1.getLiftingSurfaceCreator().populateAirfoilList(
+					theWing1.getLiftingSurfaceCreator().getEquivalentWingFlag()
 					);
-			WingAdjustTest.theWing2.populateAirfoilList(
-					aeroDatabaseReader, 
-					theWing2.getLiftingSurfaceCreator().getEquivalentWing().getEquivalentWingFlag()
+			WingAdjustTest.theWing2.getLiftingSurfaceCreator().populateAirfoilList(
+					theWing2.getLiftingSurfaceCreator().getEquivalentWingFlag()
 					);
 			
 			System.out.println("Wing 1...");
