@@ -1,14 +1,39 @@
 package it.unina.daf.jpadcadfx;
 
-//import java.util.ArrayList;
-//import java.util.Collection;
-//import java.util.Collections;
-//import java.util.HashSet;
-//import java.util.LinkedHashSet;
-//
-//import javax.vecmath.Matrix4d;
-//import javax.vecmath.Point3d;
-//
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.vecmath.Matrix4d;
+import javax.vecmath.Point3d;
+
+import it.unina.daf.jpadcad.occ.CADEdge;
+import it.unina.daf.jpadcad.occ.CADVertex;
+import it.unina.daf.jpadcad.occ.OCCDataProvider;
+import it.unina.daf.jpadcad.occ.OCCUtils;
+import javafx.scene.shape.TriangleMesh;
+import opencascade.BRep_Tool;
+import opencascade.GeomLProp_SLProps;
+import opencascade.Geom_Surface;
+import opencascade.Poly_Array1OfTriangle;
+import opencascade.Poly_Triangulation;
+import opencascade.TColgp_Array1OfPnt2d;
+import opencascade.TopAbs_Orientation;
+import opencascade.TopAbs_ShapeEnum;
+import opencascade.TopExp_Explorer;
+import opencascade.TopLoc_Location;
+import opencascade.TopoDS_Edge;
+import opencascade.TopoDS_Face;
+import opencascade.TopoDS_Shape;
+import opencascade.TopoDS_Vertex;
+import opencascade.gp_Pnt;
+import standaloneutils.MyArrayUtils;
+
 //import org.jcae.opencascade.Utilities;
 //import org.jcae.opencascade.jni.BRepBndLib;
 //import org.jcae.opencascade.jni.BRepMesh_IncrementalMesh;
@@ -40,43 +65,48 @@ package it.unina.daf.jpadcadfx;
 // * a TopoDS_Shape.
 // * @author Agodemar
 // */
-////TODO try to remove dependency over java3d (javax.vecmath.*)
-//public class OCCFXMeshExtractor
-//{
-//
-//	public static class VertexData extends OCCDataProvider
-//	{
-//		private final TopoDS_Vertex vertex;
-//		public VertexData(final TopoDS_Vertex vertex)
-//		{
-//			this.vertex = vertex;
-//		}
-//		@Override
-//		public void load()
-//		{
-//			float[] newNodes = new float[3];
-//			double[] pnt = BRep_Tool.pnt(vertex);
-//			newNodes[0] = (float) pnt[0];
-//			newNodes[1] = (float) pnt[1];
-//			newNodes[2] = (float) pnt[2];
-//			setNodes(newNodes);
-//			vertices = new int[2];
-//			vertices[0] = 1;
-//			vertices[1] = 0;
-//			nbrOfVertices = 1;
-//		}
-//	}
-//	public static class EdgeData extends OCCDataProvider
-//	{
-//		private final TopoDS_Edge edge;
-//		public EdgeData(final TopoDS_Edge edge)
-//		{
-//			this.edge = edge;
-//		}
-//		@Override
-//		public void load()
-//		{
-//			double[] range = BRep_Tool.range(edge);
+////TODO try to remove dependency over java3d (javax.vecmath.*) ???
+
+public class OCCFXMeshExtractor
+{
+
+	public static class VertexData extends OCCDataProvider
+	{
+		private final TopoDS_Vertex vertex;
+		public VertexData(final TopoDS_Vertex vertex)
+		{
+			this.vertex = vertex;
+		}
+		@Override
+		public void load()
+		{
+			float[] newNodes = new float[3];
+			double[] pnt = ((CADVertex)OCCUtils.theFactory.newShape(vertex)).pnt();
+			newNodes[0] = (float) pnt[0];
+			newNodes[1] = (float) pnt[1];
+			newNodes[2] = (float) pnt[2];
+			setNodes(newNodes);
+			vertices = new int[2];
+			vertices[0] = 1;
+			vertices[1] = 0;
+			nbrOfVertices = 1;
+		}
+	}
+	public static class EdgeData extends OCCDataProvider
+	{
+		private final TopoDS_Edge edge;
+		public EdgeData(final TopoDS_Edge edge)
+		{
+			this.edge = edge;
+		}
+		@Override
+		public void load()
+		{
+			if (OCCUtils.theFactory == null) OCCUtils.initCADShapeFactory();
+			
+			// double[] range = BRep_Tool.range(edge);
+			double[] range = ((CADEdge)OCCUtils.theFactory.newShape(edge)).range();
+			
 //			Geom_Curve gc = BRep_Tool.curve(edge, range);
 //			Bnd_Box box = new Bnd_Box();
 //			BRepBndLib.add(edge, box);
@@ -116,158 +146,234 @@ package it.unina.daf.jpadcadfx;
 //				newNodes[j++] = (float) values[2];
 //			}
 //			else if (!BRep_Tool.degenerated(edge))
-//			{
-//				// So, there is no curve, and the edge is not degenerated?
-//				// => draw lines between the vertices and ignore curvature
-//				// best approximation we can do
-//				ArrayList<double[]> aa = new ArrayList<double[]>(); // store points here
-//				for (TopExp_Explorer explorer2 = new TopExp_Explorer(edge,
-//						TopAbs_ShapeEnum.VERTEX);
-//						explorer2.more(); explorer2.next())
-//				{
-//					TopoDS_Shape sv = explorer2.current();
-//					if (!(sv instanceof TopoDS_Vertex))
-//						continue; // should not happen!
-//					TopoDS_Vertex v = (TopoDS_Vertex) sv;
-//					aa.add(BRep_Tool.pnt(v));
-//				}
-//				newNodes = new float[aa.size() * 3];
-//				for (int i = 0, j = 0; i <
-//						aa.size(); i++)
-//				{
-//					double[] f = aa.get(i);
-//					newNodes[j++] = (float) f[0];
-//					newNodes[j++] = (float) f[1];
-//					newNodes[j++] = (float) f[2];
-//				}
-//			}
-//			if(newNodes != null)
-//			{
-//				setNodes(newNodes);
-//			}
-//			if (newNodes == null || newNodes.length == 0)
-//			{
-//				unLoad();
-//				return;
-//			}
-//			// Construct the indices
-//			nbrOfLines = newNodes.length / 3 - 1;
-//			lines = new int[nbrOfLines * 3];
-//			int offset = 0;
-//			for (int i = 0; i < nbrOfLines;)
-//			{
-//				lines[offset++] = 2;
-//				lines[offset++] = i++;
-//				lines[offset++] = i;
-//			}
-//		}
-//	}
-//	public static class FaceData extends OCCDataProvider
-//	{
-//		private final TopoDS_Face face;
-//		private final boolean faceReversed;
-//		
-//		private int[] itriangles;
-//		private int[] ifacesFX;
-//		TriangleMesh meshFX;
-//		
-//		public FaceData(final TopoDS_Face face, boolean faceReversed)
-//		{
-//			this.face = face;
-//			this.faceReversed = faceReversed;
-//		}
-//		private boolean checkNormals(double[] normals)
-//		{
-//			for (int i = 0; i < normals.length / 3; i++)
-//				if (normals[3 * i] == 0 & normals[3 * i + 1] == 0 & normals[3 * i + 2] == 0)
-//					return false;
-//			return true;
-//		}
-//		private void transformMesh(TopLoc_Location loc, double[] src, float[] dst)
-//		{
-//			double[] matrix = new double[16];
-//			loc.transformation().getValues(matrix);
-//			Matrix4d m4d = new Matrix4d(matrix);
-//			Point3d p3d = new Point3d();
-//			for (int i = 0; i < src.length; i += 3)
-//			{
-//				p3d.x = src[i + 0];
-//				p3d.y = src[i + 1];
-//				p3d.z = src[i + 2];
-//				m4d.transform(p3d);
-//				dst[i + 0] = (float) p3d.x;
-//				dst[i + 1] = (float) p3d.y;
-//				dst[i + 2] = (float) p3d.z;
-//			}
-//		}
-//		/**
-//		 * @param itriangles
-//		 */
-//		static private void reverseMesh(int[] itriangles)
-//		{
-//			for (int i = 0; i < itriangles.length; i += 3)
-//			{
-//				int tmp = itriangles[i];
-//				itriangles[i] = itriangles[i + 1];
-//				itriangles[i + 1] = tmp;
-//			}
-//		}
-//		@Override
-//		public void load()
-//		{
-//			TopLoc_Location loc = new TopLoc_Location();
-//			Poly_Triangulation pt = BRep_Tool.triangulation(face, loc);
-//			float[] newNodes = null;
-//			if (pt == null)
-//			{
-//				System.err.println("Triangulation failed for face " + face +
-//						". Trying other mesh parameters.");
-//				newNodes = new float[0];
-//				polys = new int[0];
-//				normals = new float[0];
-//				return;
-//			}
-//			double[] dnodes = pt.nodes();
-//			// final int[] itriangles = pt.triangles();
-//			itriangles = pt.triangles();
-//			if ((face.orientation() == TopAbs_Orientation.REVERSED && !this.faceReversed)
-//					|| (face.orientation() != TopAbs_Orientation.REVERSED && this.faceReversed)
-//					)
-//				reverseMesh(itriangles);
-//			// Compute the indices
-//			nbrOfPolys = itriangles.length / 3;
-//			polys = new int[4 * nbrOfPolys];
-//			int offset = 0;
-//			// polys are in DataProvider class, itriangles in FaceData class
-//			for (int i = 0; i < itriangles.length;)
-//			{
-//				polys[offset++] = 3;
-//				polys[offset++] = itriangles[i++];
-//				polys[offset++] = itriangles[i++];
-//				polys[offset++] = itriangles[i++];
-//			}
-//			
-//			// define nodes
-//			newNodes = new float[dnodes.length];
-//			if (loc.isIdentity()) {
-//				for (int j = 0; j < dnodes.length; j++)
-//					newNodes[j] = (float) dnodes[j];
-//			}
-//			else {
-//				transformMesh(loc, dnodes, newNodes);
-//			}
-//			setNodes(newNodes);
-//			
-//			// allocate the JavaFX's TriangleMesh
-//			meshFX = new TriangleMesh();
-//			// add nodes
-//			meshFX.getPoints().addAll(getNodes());
-//			
-//			//for now we'll just make an empty texCoordinate group
-//			meshFX.getTexCoords().addAll(0, 0);
-//
-//			// prepare face indices: p0,t0, p1,t1, p3,t3 ... with t_i=0
-//			ifacesFX = new int[itriangles.length/3 * 6];
+			
+			float[] newNodes = null;
+			if (((CADEdge)OCCUtils.theFactory.newShape(edge)).isDegenerated())
+			{
+				// So, there is no curve, and the edge is not degenerated?
+				// => draw lines between the vertices and ignore curvature
+				// best approximation we can do
+				ArrayList<double[]> aa = new ArrayList<double[]>(); // store points here
+				for (TopExp_Explorer explorer2 = new TopExp_Explorer(edge,TopAbs_ShapeEnum.TopAbs_VERTEX);
+						explorer2.More() == 1; explorer2.Next())
+				{
+					TopoDS_Shape sv = explorer2.Current();
+					if (!(sv instanceof TopoDS_Vertex))
+						continue; // should not happen!
+					TopoDS_Vertex v = (TopoDS_Vertex) sv;
+					aa.add(
+							((CADVertex)OCCUtils.theFactory.newShape(v)).pnt()
+							);
+					
+				}
+				newNodes = new float[aa.size() * 3];
+				for (int i = 0, j = 0; i <
+						aa.size(); i++)
+				{
+					double[] f = aa.get(i);
+					newNodes[j++] = (float) f[0];
+					newNodes[j++] = (float) f[1];
+					newNodes[j++] = (float) f[2];
+				}
+			}
+			if(newNodes != null)
+			{
+				setNodes(newNodes);
+			}
+			if (newNodes == null || newNodes.length == 0)
+			{
+				unLoad();
+				return;
+			}
+			// Construct the indices
+			nbrOfLines = newNodes.length / 3 - 1;
+			lines = new int[nbrOfLines * 3];
+			int offset = 0;
+			for (int i = 0; i < nbrOfLines;)
+			{
+				lines[offset++] = 2;
+				lines[offset++] = i++;
+				lines[offset++] = i;
+			}
+		}
+	}
+	public static class FaceData extends OCCDataProvider
+	{
+		private final TopoDS_Face face;
+		private final boolean faceReversed;
+		
+		private int[] itriangles;
+		private int[] ifacesFX;
+		TriangleMesh meshFX;
+		
+		public FaceData(final TopoDS_Face face, boolean faceReversed)
+		{
+			this.face = face;
+			this.faceReversed = faceReversed;
+		}
+		private boolean checkNormals(double[] normals)
+		{
+			for (int i = 0; i < normals.length / 3; i++)
+				if (normals[3 * i] == 0 & normals[3 * i + 1] == 0 & normals[3 * i + 2] == 0)
+					return false;
+			return true;
+		}
+		private void transformMesh(TopLoc_Location loc, double[] src, float[] dst)
+		{
+			/*  Complex transformations can be obtained by combining the
+			 *  previous elementary transformations using the method
+			 *  Multiply.
+			 *  The transformations can be represented as follow :
+			 * 
+			 *     V1   V2   V3    T       XYZ        XYZ
+			 *  | a11  a12  a13   a14 |   | x |      | x'|
+			 *  | a21  a22  a23   a24 |   | y |      | y'|
+			 *  | a31  a32  a33   a34 |   | z |   =  | z'|
+			 *  |  0    0    0     1  |   | 1 |      | 1 |
+			 * 
+			 *  where {V1, V2, V3} defines the vectorial part of the
+			 *  transformation and T defines the translation part of the
+			 *  transformation.
+			 */			
+			// get the transformation matrix
+			double[] matrix = new double[16];
+			int k=0;
+			for(int i=1; i<=3; i++)
+				for(int j=1; j<=4; j++)
+					matrix[k++]=loc.Transformation().Value(i,j);
+			matrix[12]=0;
+			matrix[13]=0;
+			matrix[14]=0;
+			matrix[15]=1;
+			
+			Matrix4d m4d = new Matrix4d(matrix);
+			Point3d p3d = new Point3d();
+			for (int i = 0; i < src.length; i += 3)
+			{
+				p3d.x = src[i + 0];
+				p3d.y = src[i + 1];
+				p3d.z = src[i + 2];
+				m4d.transform(p3d);
+				dst[i + 0] = (float) p3d.x;
+				dst[i + 1] = (float) p3d.y;
+				dst[i + 2] = (float) p3d.z;
+			}
+		}
+		/**
+		 * @param itriangles
+		 */
+		static private void reverseMesh(int[] itriangles)
+		{
+			for (int i = 0; i < itriangles.length; i += 3)
+			{
+				int tmp = itriangles[i];
+				itriangles[i] = itriangles[i + 1];
+				itriangles[i + 1] = tmp;
+			}
+		}
+		@Override
+		public void load()
+		{
+			TopLoc_Location loc = new TopLoc_Location();
+			Poly_Triangulation pt = BRep_Tool.Triangulation(face, loc);
+			int j0 = 0;
+			float[] newNodes = null;
+			
+			if (pt == null)
+			{
+				System.err.println("Triangulation failed for face " + face +
+						". Trying other mesh parameters.");
+				newNodes = new float[0];
+				polys = new int[0];
+				normals = new float[0];
+				return;
+			}
+			// double[] dnodes = pt.nodes();
+			
+			List<gp_Pnt> gpNodes = new ArrayList<>();
+			for(int k = 0; k < pt.NbNodes(); k++)
+				gpNodes.add(pt.Nodes().Value(k));
+			
+			// // final int[] itriangles = pt.triangles();
+			// itriangles = pt.triangles();
+			
+			Poly_Array1OfTriangle pat = pt.Triangles();
+			int s = pat.Length()*3;
+			itriangles = new int[s];
+			int[] n1 = new int[] {0};
+			int[] n2 = new int[] {0};
+			int[] n3 = new int[] {0};
+			for(int i = pat.Lower(); i <= pat.Upper(); i++) {
+				//Triangles(i).Get(n1,n2,n3);
+				pat.Value(i).Get(n1,n2,n3);
+				itriangles[j0]   = n1[0] - 1;
+				itriangles[j0+1] = n2[0] - 1;
+				itriangles[j0+2] = n3[0] - 1;
+				j0+=3;
+			}
+			
+			if ((face.Orientation() == TopAbs_Orientation.TopAbs_REVERSED && !this.faceReversed)
+					|| (face.Orientation() != TopAbs_Orientation.TopAbs_REVERSED && this.faceReversed)
+					)
+				reverseMesh(itriangles);
+			// Compute the indices
+			nbrOfPolys = itriangles.length / 3;
+			polys = new int[4 * nbrOfPolys];
+			int offset = 0;
+			// polys are in DataProvider class, itriangles in FaceData class
+			for (int i = 0; i < itriangles.length;)
+			{
+				polys[offset++] = 3;
+				polys[offset++] = itriangles[i++];
+				polys[offset++] = itriangles[i++];
+				polys[offset++] = itriangles[i++];
+			}
+			
+			// define nodes
+			//newNodes = new float[dnodes.size()];
+			newNodes = new float[3*gpNodes.size()]; // see array dd to refactor using Java8+ constructs
+			if (loc.IsIdentity() == 1) {
+				j0 = 0;
+				for (int ii = 0; ii < gpNodes.size(); ii++) {
+					newNodes[j0  ] = (float) gpNodes.get(ii).X();
+					newNodes[j0+1] = (float) gpNodes.get(ii).Y();
+					newNodes[j0+2] = (float) gpNodes.get(ii).Z();
+					j0 += 3;
+				}
+			}
+			else {
+				List<Double> dd = gpNodes.stream()
+						.map(gp -> Arrays.stream(new Double[]{gp.X(), gp.Y(), gp.Z()}).collect(Collectors.toList()))
+						.flatMap(List::stream)
+						.collect(Collectors.toList()); 
+				transformMesh(loc, 
+						// gpNodes,
+						MyArrayUtils.convertToDoublePrimitive(dd),
+						newNodes);
+			}
+			setNodes(newNodes);
+			
+			// allocate the JavaFX's TriangleMesh
+			meshFX = new TriangleMesh();
+			// add nodes
+			meshFX.getPoints().addAll(getNodes());
+			
+			//for now we'll just make an empty texCoordinate group
+			meshFX.getTexCoords().addAll(0, 0);
+
+			// prepare face indices: p0,t0, p1,t1, p3,t3 ... with t_i=0
+			ifacesFX = new int[itriangles.length/3 * 6];
+			for (int i = 0; i < itriangles.length; )
+			{
+				// System.out.println("i: " + i);
+				meshFX.getFaces().addAll(
+						itriangles[i++],0,
+						itriangles[i++],0,
+						itriangles[i++],0
+				);
+			}
+			
+			// Add the faces "winding" (see JavaFX TriangleMesh) the points generally counter clock wise
 //			for (int i = 0; i < itriangles.length; )
 //			{
 //				// System.out.println("i: " + i);
@@ -277,63 +383,56 @@ package it.unina.daf.jpadcadfx;
 //						itriangles[i++],0
 //				);
 //			}
-//			
-//			// Add the faces "winding" (see JavaFX TriangleMesh) the points generally counter clock wise
-////			for (int i = 0; i < itriangles.length; )
-////			{
-////				// System.out.println("i: " + i);
-////				meshFX.getFaces().addAll(
-////						itriangles[i++],0,
-////						itriangles[i++],0,
-////						itriangles[i++],0
-////				);
-////			}
-//			meshFX.getFaces().addAll(ifacesFX);
-//			
-//			// Compute the normals
-//			Geom_Surface surf = BRep_Tool.surface(face);
-//			if (surf != null) {
-//				GeomLProp_SLProps geomProp = new GeomLProp_SLProps(1, 0);
-//				geomProp.setSurface(surf);
-//				if (pt.hasUVNodes()) {
-//					double[] n = geomProp.normalArray(pt.uvNodes());
-//					//check the normals
-//					if (!checkNormals(n)) {
-//						// TODO : To be checked
-//						normals = new float[n.length];
-//						for (int i = 0; i < n.length; i++)
-//							normals[i] = (float) 0.;
-//						System.err.println("Normal computation failed " + face + "\n");
-//					} else {
-//						//convert into floats
-//						normals = new float[n.length];
-//						// Inverse normal if the face is inversed
-//						double reverse = 1.;
-//						if ((face.orientation() == TopAbs_Orientation.REVERSED && !this.faceReversed)
-//								|| (face.orientation() != TopAbs_Orientation.REVERSED && this.faceReversed))
-//							reverse = -1.;
-//						for (int i = 0; i < n.length; i++)
-//							normals[i] = (float) (reverse * n[i]);
-//					}
-//				} else
-//					System.err.println("No UV Nodes to the point triangulation !");
-//			} else
-//				System.err.println("Can not compute the Geom_Surface of " + face);
-//		}
-//		public int[] getITriangles() {
-//			return itriangles;
-//		}
-//		public int[] getIFacesFX() {
-//			return ifacesFX;
-//		}
-//		public TriangleMesh getTriangleMesh() {
-//			return meshFX;
-//		}
-//
-//	}// end-of-class FaceData
-//	
-//	private final TopoDS_Shape shape;
-//	private boolean meshCreated;
+			meshFX.getFaces().addAll(ifacesFX);
+			
+			// Compute the normals
+			Geom_Surface surf = BRep_Tool.Surface(face);
+			if (surf != null) {
+				GeomLProp_SLProps geomProp = new GeomLProp_SLProps(1, 0);
+				geomProp.SetSurface(surf);
+				if (pt.HasUVNodes() == 1) {
+					// double[] n = geomProp.normalArray(pt.uvNodes());
+					// see https://github.com/jeromerobert/jCAE/blob/187dab9dbbae4d51e99e28af94a7c1acc72bc697/occjava/src/GeomLProp_SLProps.i
+					// TColgp_Array1OfPnt2d n2d = ...
+					double[] n = null;
+					
+					//check the normals
+					if (!checkNormals(n)) {
+						// TODO : To be checked
+						normals = new float[n.length];
+						for (int i = 0; i < n.length; i++)
+							normals[i] = (float) 0.;
+						System.err.println("Normal computation failed " + face + "\n");
+					} else {
+						//convert into floats
+						normals = new float[n.length];
+						// Inverse normal if the face is inversed
+						double reverse = 1.;
+						if ((face.Orientation() == TopAbs_Orientation.TopAbs_REVERSED && !this.faceReversed)
+								|| (face.Orientation() != TopAbs_Orientation.TopAbs_REVERSED && this.faceReversed))
+							reverse = -1.;
+						for (int i = 0; i < n.length; i++)
+							normals[i] = (float) (reverse * n[i]);
+					}
+				} else
+					System.err.println("No UV Nodes to the point triangulation !");
+			} else
+				System.err.println("Can not compute the Geom_Surface of " + face);
+		}
+		public int[] getITriangles() {
+			return itriangles;
+		}
+		public int[] getIFacesFX() {
+			return ifacesFX;
+		}
+		public TriangleMesh getTriangleMesh() {
+			return meshFX;
+		}
+
+	}// end-of-class FaceData
+	
+	private /* final */ TopoDS_Shape shape;
+	private boolean meshCreated;
 //	/**
 //	 * Create a CAOMeshExtractor from a TopoDS_Shape object
 //	 *
@@ -428,13 +527,13 @@ package it.unina.daf.jpadcadfx;
 //		return edges;
 //	}
 //	
-//	public static void setNodes(float[] nodes)
-//	{
-//		throw new RuntimeException("DataProvider.EMPTY is immutable");
-//	}
-//
-//	public TopoDS_Shape getShape() {
-//		return shape;
-//	}
-//
-//} // end-of-class OCCMeshExtractor
+	public static void setNodes(float[] nodes)
+	{
+		throw new RuntimeException("DataProvider.EMPTY is immutable");
+	}
+
+	public TopoDS_Shape getShape() {
+		return shape;
+	}
+
+} // end-of-class OCCMeshExtractor
