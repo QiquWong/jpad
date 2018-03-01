@@ -20,9 +20,7 @@ import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
-import calculators.aerodynamics.DragCalc;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -254,23 +252,25 @@ public class AircraftTestTopView extends Application {
 		//--------------------------------------------------
 		// get data vectors from vTail discretization
 		//--------------------------------------------------
-		Double[] vTailRootXCoordinates = vTail.getAirfoilList().get(0).getAirfoilCreator().getXCoords();
-		Double[] vTailRootYCoordinates = vTail.getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+		Double[] vTailRootXCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
+		Double[] vTailRootYCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
 		Double[][] vTailRootAirfoilPoints = new Double[vTailRootXCoordinates.length][2];
 		for (int i=0; i<vTailRootAirfoilPoints.length; i++) {
-			vTailRootAirfoilPoints[i][1] = (vTailRootXCoordinates[i]*vTail.getChordRoot().getEstimatedValue()) + vTail.getXApexConstructionAxes().getEstimatedValue(); 
-			vTailRootAirfoilPoints[i][0] = (vTailRootYCoordinates[i]*vTail.getChordRoot().getEstimatedValue());
+			vTailRootAirfoilPoints[i][1] = (vTailRootXCoordinates[i]*vTail.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue()) + vTail.getXApexConstructionAxes().getEstimatedValue(); 
+			vTailRootAirfoilPoints[i][0] = (vTailRootYCoordinates[i]*vTail.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue());
 		}
 		
 		int nPointsVTail = vTail.getLiftingSurfaceCreator().getDiscretizedXle().size();
-		Double[] vTailTipXCoordinates = vTail.getAirfoilList().get(vTail.getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
-		Double[] vTailTipYCoordinates = vTail.getAirfoilList().get(vTail.getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+		Double[] vTailTipXCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(vTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
+		Double[] vTailTipYCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(vTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
 		Double[][] vTailTipAirfoilPoints = new Double[vTailTipXCoordinates.length][2];
 		for (int i=0; i<vTailTipAirfoilPoints.length; i++) {
-			vTailTipAirfoilPoints[i][1] = (vTailTipXCoordinates[i]*vTail.getChordTip().getEstimatedValue()) 
+			vTailTipAirfoilPoints[i][1] = (vTailTipXCoordinates[i]*vTail.getLiftingSurfaceCreator().getPanels()
+					.get(vTail.getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
 										  + vTail.getXApexConstructionAxes().getEstimatedValue()
 										  + vTail.getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsVTail-1).getEstimatedValue(); 
-			vTailTipAirfoilPoints[i][0] = (vTailTipYCoordinates[i]*vTail.getChordTip().getEstimatedValue());
+			vTailTipAirfoilPoints[i][0] = (vTailTipYCoordinates[i]*vTail.getLiftingSurfaceCreator().getPanels()
+					.get(vTail.getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue());
 		}
 		
 		//--------------------------------------------------

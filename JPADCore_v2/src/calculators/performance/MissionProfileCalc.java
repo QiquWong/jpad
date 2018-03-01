@@ -17,10 +17,10 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
-import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
+import calculators.geometry.LSGeometryCalc;
 import calculators.performance.customdata.DragMap;
 import calculators.performance.customdata.DragThrustIntersectionMap;
 import calculators.performance.customdata.ThrustMap;
@@ -410,7 +410,7 @@ public class MissionProfileCalc {
 					_theAircraft.getFuselage().getFuselageCreator().getHeightFromGround()
 					.plus(_theAircraft.getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2))
 					.plus(_theAircraft.getWing().getZApexConstructionAxes()
-							.plus(_theAircraft.getWing().getSemiSpan()
+							.plus(_theAircraft.getWing().getLiftingSurfaceCreator().getSemiSpan()
 									.times(
 											Math.sin(
 													_theAircraft.getWing()	
@@ -423,8 +423,8 @@ public class MissionProfileCalc {
 							);
 
 			TakeOffCalc theTakeOffCalculator = new TakeOffCalc(
-					_theAircraft.getWing().getAspectRatio(),
-					_theAircraft.getWing().getSurface(),
+					_theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
+					_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform(),
 					_theAircraft.getPowerPlant(),
 					_polarCLTakeOff,
 					_polarCDTakeOff,
@@ -544,7 +544,7 @@ public class MissionProfileCalc {
 			cLAtClimbStart = LiftCalc.calculateLiftCoeff(
 					intialClimbMass.times(AtmosphereCalc.g0).getEstimatedValue(),
 					speedAtClimbStart.doubleValue(SI.METERS_PER_SECOND),					
-					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+					_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 					0.0
 					);
 			cLAtClimbEnding = LiftCalc.calculateLiftCoeff(
@@ -553,7 +553,7 @@ public class MissionProfileCalc {
 					.times(AtmosphereCalc.g0)
 					.getEstimatedValue(),
 					speedAtClimbStart.doubleValue(SI.METERS_PER_SECOND),					
-					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+					_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 					);
 			thrustAtClimbStart = theClimbCalculator.getThrustAtClimbStart().to(NonSI.POUND_FORCE);
@@ -591,7 +591,7 @@ public class MissionProfileCalc {
 						5
 						);
 				
-				Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()));
+				Airfoil meanAirfoil = new Airfoil(LSGeometryCalc.calculateMeanAirfoil(_theAircraft.getWing().getLiftingSurfaceCreator()));
 				
 				int nPointSpeed = 1000;
 				double[] speedArray = MyArrayUtils.linspace(
@@ -600,7 +600,7 @@ public class MissionProfileCalc {
 								(intialCruiseMass
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise)
 								),
 						SpeedCalc.calculateTAS(
@@ -619,11 +619,11 @@ public class MissionProfileCalc {
 									.getEstimatedValue()
 									),
 								speedArray,
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+								_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
@@ -656,7 +656,7 @@ public class MissionProfileCalc {
 								_theOperatingConditions.getThrottleCruise(),
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise),
 								dragList,
 								thrustList
@@ -689,7 +689,7 @@ public class MissionProfileCalc {
 								aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
 									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 								cruiseSpeedList.get(0).doubleValue(SI.METERS_PER_SECOND),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 								)
 						);
@@ -701,7 +701,7 @@ public class MissionProfileCalc {
 										aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
 											*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-										_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+										_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 										cruiseSpeedList.get(0).doubleValue(SI.METERS_PER_SECOND),
 										MyMathUtils.getInterpolatedValue1DLinear(
 												MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
@@ -799,11 +799,11 @@ public class MissionProfileCalc {
 										.getEstimatedValue()
 										),
 									speedArray,
-									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 									MyArrayUtils.getMax(_polarCLCruise),
 									MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 									MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-									_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+									_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 									meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 									meanAirfoil.getAirfoilCreator().getType()
 									)
@@ -834,7 +834,7 @@ public class MissionProfileCalc {
 									_theOperatingConditions.getThrottleCruise(),
 									EngineOperatingConditionEnum.CRUISE,
 									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 									MyArrayUtils.getMax(_polarCLCruise),
 									dragList,
 									thrustList
@@ -861,7 +861,7 @@ public class MissionProfileCalc {
 									aircraftMassPerStep.get(j).doubleValue(SI.KILOGRAM)
 									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 									cruiseSpeedList.get(j).doubleValue(SI.METERS_PER_SECOND),
-									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 									)
 							);
@@ -871,7 +871,7 @@ public class MissionProfileCalc {
 											aircraftMassPerStep.get(j).doubleValue(SI.KILOGRAM)
 												*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-											_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+											_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 											cruiseSpeedList.get(j).doubleValue(SI.METERS_PER_SECOND),
 											MyMathUtils.getInterpolatedValue1DLinear(
 													MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
@@ -1070,7 +1070,7 @@ public class MissionProfileCalc {
 					cLAtSecondClimbStart = LiftCalc.calculateLiftCoeff(
 							intialSecondClimbMass.times(AtmosphereCalc.g0).getEstimatedValue(),
 							speedAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND),					
-							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 							_holdingAltitude.doubleValue(SI.METER)
 							);
 					cLAtSecondClimbEnding = LiftCalc.calculateLiftCoeff(
@@ -1079,7 +1079,7 @@ public class MissionProfileCalc {
 							.times(AtmosphereCalc.g0)
 							.getEstimatedValue(),
 							speedAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND),					
-							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 							_alternateCruiseAltitude.doubleValue(SI.METER)
 							);
 					thrustAtSecondClimbStart = theSecondClimbCalculator.getThrustAtClimbStart().to(NonSI.POUND_FORCE);
@@ -1103,7 +1103,7 @@ public class MissionProfileCalc {
 								(intialAlternateCruiseMass
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise)
 								),
 						SpeedCalc.calculateTAS(
@@ -1122,11 +1122,11 @@ public class MissionProfileCalc {
 									.getEstimatedValue()
 									),
 								speedArrayAlternate,
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+								_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
@@ -1159,7 +1159,7 @@ public class MissionProfileCalc {
 								_theOperatingConditions.getThrottleCruise(),
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise),
 								dragListAlternate,
 								thrustListAlternate
@@ -1198,7 +1198,7 @@ public class MissionProfileCalc {
 								aircraftMassPerStepAlternateCruise.get(0).doubleValue(SI.KILOGRAM)
 									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 								alternateCruiseSpeedList.get(0).doubleValue(SI.METERS_PER_SECOND),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								_alternateCruiseAltitude.doubleValue(SI.METER)
 								)
 						);
@@ -1210,7 +1210,7 @@ public class MissionProfileCalc {
 										aircraftMassPerStepAlternateCruise.get(0).doubleValue(SI.KILOGRAM)
 											*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 										_alternateCruiseAltitude.doubleValue(SI.METER),
-										_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+										_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 										alternateCruiseSpeedList.get(0).doubleValue(SI.METERS_PER_SECOND),
 										MyMathUtils.getInterpolatedValue1DLinear(
 												MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
@@ -1309,11 +1309,11 @@ public class MissionProfileCalc {
 										.getEstimatedValue()
 										),
 									speedArrayAlternate,
-									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 									MyArrayUtils.getMax(_polarCLCruise),
 									MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 									MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-									_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+									_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 									meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 									meanAirfoil.getAirfoilCreator().getType()
 									)
@@ -1344,7 +1344,7 @@ public class MissionProfileCalc {
 									_theOperatingConditions.getThrottleCruise(),
 									EngineOperatingConditionEnum.CRUISE,
 									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 									MyArrayUtils.getMax(_polarCLCruise),
 									dragListAlternate,
 									thrustListAlternate
@@ -1371,7 +1371,7 @@ public class MissionProfileCalc {
 									aircraftMassPerStepAlternateCruise.get(j).doubleValue(SI.KILOGRAM)
 										*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 									alternateCruiseSpeedList.get(j).doubleValue(SI.METERS_PER_SECOND),
-									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 									_alternateCruiseAltitude.doubleValue(SI.METER)
 									)
 							);
@@ -1381,7 +1381,7 @@ public class MissionProfileCalc {
 											aircraftMassPerStepAlternateCruise.get(j).doubleValue(SI.KILOGRAM)
 												*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 											_alternateCruiseAltitude.doubleValue(SI.METER),
-											_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+											_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 											alternateCruiseSpeedList.get(j).doubleValue(SI.METERS_PER_SECOND),
 											MyMathUtils.getInterpolatedValue1DLinear(
 													MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
@@ -1579,7 +1579,7 @@ public class MissionProfileCalc {
 						LiftCalc.calculateLiftCoeff(
 								aircraftMassListHolding.get(0).times(AtmosphereCalc.g0).getEstimatedValue(),
 								speedTASHolding,
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								_holdingAltitude.doubleValue(SI.METER)
 								)				
 						);
@@ -1589,7 +1589,7 @@ public class MissionProfileCalc {
 										aircraftMassListHolding.get(0).doubleValue(SI.KILOGRAM)
 											*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 										_holdingAltitude.doubleValue(SI.METER),
-										_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+										_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 										speedTASHolding,
 										MyMathUtils.getInterpolatedValue1DLinear(
 												MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
@@ -1665,7 +1665,7 @@ public class MissionProfileCalc {
 							LiftCalc.calculateLiftCoeff(
 									aircraftMassListHolding.get(j).times(AtmosphereCalc.g0).getEstimatedValue(),
 									speedTASHolding,
-									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 									_holdingAltitude.doubleValue(SI.METER)
 									)				
 							);
@@ -1675,7 +1675,7 @@ public class MissionProfileCalc {
 											aircraftMassListHolding.get(j).doubleValue(SI.KILOGRAM)
 												*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 											_holdingAltitude.doubleValue(SI.METER),
-											_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+											_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 											speedTASHolding,
 											MyMathUtils.getInterpolatedValue1DLinear(
 													MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
@@ -1869,7 +1869,7 @@ public class MissionProfileCalc {
 				cLAtLandingStart = LiftCalc.calculateLiftCoeff(
 						intialLandingMass.times(AtmosphereCalc.g0).getEstimatedValue(),
 						speedAtLandingStart.doubleValue(SI.METERS_PER_SECOND),
-						_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+						_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 						15.24
 						);
 				cLAtLandingEnding = theLandingCalculator.getcLground();

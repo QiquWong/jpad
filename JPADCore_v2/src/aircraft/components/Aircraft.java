@@ -19,7 +19,7 @@ import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
+import aircraft.components.liftingSurface.creator.ILiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.nacelles.NacelleCreator;
@@ -28,6 +28,7 @@ import aircraft.components.powerplant.Engine;
 import aircraft.components.powerplant.PowerPlant;
 import analyses.ACAnalysisManager;
 import calculators.aerodynamics.DragCalc;
+import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.ComponentEnum;
@@ -103,14 +104,14 @@ public class Aircraft {
 		}
 		//-------------------------------------------------------------
 		if((_theAircraftInterface.getFuselage() != null) && (_theAircraftInterface.getWing() != null)) { 
-			_theAircraftInterface.getWing().setExposedWing(
+			_theAircraftInterface.getWing().setExposedLiftingSurface(
 					calculateExposedWing(
 							_theAircraftInterface.getWing(), 
 							_theAircraftInterface.getFuselage()
 							)
 					);
 			_theAircraftInterface.getWing().getLiftingSurfaceCreator().setSurfaceWettedExposed(
-					_theAircraftInterface.getWing().getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted()
+					_theAircraftInterface.getWing().getExposedLiftingSurface().getLiftingSurfaceCreator().getSurfaceWetted()
 					);
 		}
 		else if(_theAircraftInterface.getWing() != null)
@@ -118,11 +119,11 @@ public class Aircraft {
 					_theAircraftInterface.getWing().getLiftingSurfaceCreator().getSurfaceWetted()
 					);
 		if(_theAircraftInterface.getHTail() !=  null)
-			_theAircraftInterface.getHTail().setExposedWing(_theAircraftInterface.getHTail());
+			_theAircraftInterface.getHTail().setExposedLiftingSurface(_theAircraftInterface.getHTail());
 		if(_theAircraftInterface.getVTail() !=  null)
-			_theAircraftInterface.getVTail().setExposedWing(_theAircraftInterface.getVTail());
+			_theAircraftInterface.getVTail().setExposedLiftingSurface(_theAircraftInterface.getVTail());
 		if(_theAircraftInterface.getCanard() !=  null)
-			_theAircraftInterface.getCanard().setExposedWing(_theAircraftInterface.getCanard());
+			_theAircraftInterface.getCanard().setExposedLiftingSurface(_theAircraftInterface.getCanard());
 		
 		// setup the positionRelativeToAttachment variable
 		if(_theAircraftInterface.getWing() != null)
@@ -136,9 +137,9 @@ public class Aircraft {
 				_theAircraftInterface.getHTail().setPositionRelativeToAttachment(
 						(_theAircraftInterface.getHTail().getZApexConstructionAxes()
 								.minus(_theAircraftInterface.getVTail()
-										.getZApexConstructionAxes()
+										.getZApexConstructionAxes().to(SI.METER)
 										)
-								).divide(_theAircraftInterface.getVTail().getSpan())
+								).divide(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().getSpan().to(SI.METER))
 						.getEstimatedValue()
 						);
 			else
@@ -180,15 +181,15 @@ public class Aircraft {
 				SI.METER);
 
 		Amount<Length> chordRootExposed = Amount.valueOf(
-				theWing.getChordAtYActual(sectionWidthAtZ.doubleValue(SI.METER)),
+				theWing.getLiftingSurfaceCreator().getChordAtYActual(sectionWidthAtZ.doubleValue(SI.METER)),
 				SI.METER
 				);
-		AirfoilCreator exposedWingRootAirfoil = LiftingSurface.calculateAirfoilAtY(
+		AirfoilCreator exposedWingRootAirfoil = LSGeometryCalc.calculateAirfoilAtY(
 				theWing,
 				sectionWidthAtZ.doubleValue(SI.METER)
 				);
-		exposedWingRootAirfoil.setXCoords(theWing.getAirfoilList().get(0).getAirfoilCreator().getXCoords());
-		exposedWingRootAirfoil.setZCoords(theWing.getAirfoilList().get(0).getAirfoilCreator().getZCoords());
+		exposedWingRootAirfoil.setXCoords(theWing.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords());
+		exposedWingRootAirfoil.setZCoords(theWing.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords());
 		
 		Amount<Length> exposedWingFirstPanelSpan = theWing.getLiftingSurfaceCreator()
 				.getPanels().get(0)
@@ -217,24 +218,23 @@ public class Aircraft {
 		for(int i=1; i<theWing.getLiftingSurfaceCreator().getPanels().size(); i++)
 			exposedWingPanels.add(theWing.getLiftingSurfaceCreator().getPanels().get(i));
 
-		LiftingSurface theExposedWing = new LiftingSurfaceBuilder(
-				"Exposed wing", 
-				ComponentEnum.WING, 
-				theWing.getAerodynamicDatabaseReader(), 
-				theWing.getHighLiftDatabaseReader(),
-				theWing.getVEDSCDatabaseReader()
-				)
-				.liftingSurfaceCreator(
-						new LiftingSurfaceCreator("Exposed wing", Boolean.TRUE, ComponentEnum.WING)
+		LiftingSurface theExposedWing = new LiftingSurface(
+				new LiftingSurfaceCreator(
+						new ILiftingSurfaceCreator.Builder()
+						.setId("Exposed Wing")
+						.setType(ComponentEnum.WING)
+						.setMirrored(true)
+						.addAllPanels(exposedWingPanels)
+						.build()
 						)
-				.build();
-		theExposedWing.getLiftingSurfaceCreator().getPanels().clear();
-		theExposedWing.getLiftingSurfaceCreator().setPanels(exposedWingPanels);
-		theExposedWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
-		theExposedWing.populateAirfoilList(
-				theWing.getAerodynamicDatabaseReader(),
-				Boolean.FALSE);
+				);
+				
+		theExposedWing.setAeroDatabaseReader(theWing.getAeroDatabaseReader());
+		theExposedWing.setHighLiftDatabaseReader(theWing.getHighLiftDatabaseReader());
+		theExposedWing.setVeDSCDatabaseReader(theWing.getVeDSCDatabaseReader());
 		
+		theExposedWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, true);
+		theExposedWing.getLiftingSurfaceCreator().populateAirfoilList(false);
 		theExposedWing.setXApexConstructionAxes(theWing.getXApexConstructionAxes());
 		theExposedWing.setYApexConstructionAxes(Amount.valueOf(
 				0.5 * theFuselage.getFuselageCreator().getSectionWidthAtZ(
@@ -253,7 +253,7 @@ public class Aircraft {
 			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getFuselage().getFuselageCreator().getSWetTotal());
 		
 		if(this._theAircraftInterface.getWing() != null)
-			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getWing().getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted());
+			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getWing().getExposedLiftingSurface().getLiftingSurfaceCreator().getSurfaceWetted());
 			
 		if(_theAircraftInterface.getHTail() != null)
 			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().getSurfaceWetted());
@@ -276,16 +276,16 @@ public class Aircraft {
 			_theAircraftInterface.getFuselage().getFuselageCreator().setKExcr(_kExcr);
 		
 		if(_theAircraftInterface.getWing() != null)
-			_theAircraftInterface.getWing().setKExcr(_kExcr);
+			_theAircraftInterface.getWing().getLiftingSurfaceCreator().setKExcr(_kExcr);
 		
 		if(_theAircraftInterface.getHTail() != null)
-			_theAircraftInterface.getHTail().setKExcr(_kExcr);
+			_theAircraftInterface.getHTail().getLiftingSurfaceCreator().setKExcr(_kExcr);
 		
 		if(_theAircraftInterface.getVTail() != null)
-			_theAircraftInterface.getVTail().setKExcr(_kExcr);
+			_theAircraftInterface.getVTail().getLiftingSurfaceCreator().setKExcr(_kExcr);
 		
 		if(_theAircraftInterface.getCanard() != null)
-			_theAircraftInterface.getCanard().setKExcr(_kExcr);
+			_theAircraftInterface.getCanard().getLiftingSurfaceCreator().setKExcr(_kExcr);
 		
 		if(_theAircraftInterface.getNacelles() != null)
 			_theAircraftInterface.getNacelles().setKExcr(_kExcr);
@@ -293,64 +293,64 @@ public class Aircraft {
 	
 	public void calculateArms(LiftingSurface theLiftingSurface, Amount<Length> xcgMTOM){
 		
-		if(theLiftingSurface.getType() == ComponentEnum.WING) {
-			calculateAircraftCGToWingACdistance(xcgMTOM);
+		if(theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.WING) {
+			calculateAircraftCGToWingACdistance(xcgMTOM.to(SI.METER));
 			theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceArm(
-					getWingACToCGDistance()
+					getWingACToCGDistance().to(SI.METER)
 					);
 		}
 		else if( // case CG behind AC wing
 				xcgMTOM.doubleValue(SI.METER) > 
-				(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-						.plus(_theAircraftInterface.getWing().getXApexConstructionAxes()).getEstimatedValue() + 
-						_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
+				(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+						.plus(_theAircraftInterface.getWing().getXApexConstructionAxes().to(SI.METER)).getEstimatedValue() + 
+						_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER)*0.25)
 				) {
 			
-			if((theLiftingSurface.getType() == ComponentEnum.HORIZONTAL_TAIL)
-					|| (theLiftingSurface.getType() == ComponentEnum.VERTICAL_TAIL)) {
+			if((theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.HORIZONTAL_TAIL)
+					|| (theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.VERTICAL_TAIL)) {
 			
-				calculateAircraftCGToWingACdistance(xcgMTOM);
+				calculateAircraftCGToWingACdistance(xcgMTOM.to(SI.METER));
 				calculateLiftingSurfaceACToWingACdistance(theLiftingSurface);
 				calculateVolumetricRatio(theLiftingSurface);
 				theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceArm(
-						theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance()
-							.minus(getWingACToCGDistance())
+						theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(SI.METER)
+							.minus(getWingACToCGDistance().to(SI.METER))
 						);
 			}
-			else if (theLiftingSurface.getType() == ComponentEnum.CANARD) {
-				calculateAircraftCGToWingACdistance(xcgMTOM);
+			else if (theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.CANARD) {
+				calculateAircraftCGToWingACdistance(xcgMTOM.to(SI.METER));
 				calculateLiftingSurfaceACToWingACdistance(theLiftingSurface);
 				calculateVolumetricRatio(theLiftingSurface);
 				theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceArm(
-						theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance()
-							.plus(getWingACToCGDistance())
+						theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(SI.METER)
+							.plus(getWingACToCGDistance().to(SI.METER))
 						);
 			}
 		}
 		else if( // case AC wing behind CG
 				xcgMTOM.doubleValue(SI.METER) <= 
-				(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-						.plus(_theAircraftInterface.getWing().getXApexConstructionAxes()).getEstimatedValue() + 
-						_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
+				(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+						.plus(_theAircraftInterface.getWing().getXApexConstructionAxes().to(SI.METER)).getEstimatedValue() + 
+						_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER)*0.25)
 				) {
-			if((theLiftingSurface.getType() == ComponentEnum.HORIZONTAL_TAIL)
-					|| (theLiftingSurface.getType() == ComponentEnum.VERTICAL_TAIL)) {
+			if((theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.HORIZONTAL_TAIL)
+					|| (theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.VERTICAL_TAIL)) {
 			
-				calculateAircraftCGToWingACdistance(xcgMTOM);
+				calculateAircraftCGToWingACdistance(xcgMTOM.to(SI.METER));
 				calculateLiftingSurfaceACToWingACdistance(theLiftingSurface);
 				calculateVolumetricRatio(theLiftingSurface);
 				theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceArm(
-						theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance()
-							.plus(getWingACToCGDistance())
+						theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(SI.METER)
+							.plus(getWingACToCGDistance().to(SI.METER))
 						);
 			}
-			else if (theLiftingSurface.getType() == ComponentEnum.CANARD) {
-				calculateAircraftCGToWingACdistance(xcgMTOM);
+			else if (theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.CANARD) {
+				calculateAircraftCGToWingACdistance(xcgMTOM.to(SI.METER));
 				calculateLiftingSurfaceACToWingACdistance(theLiftingSurface);
 				calculateVolumetricRatio(theLiftingSurface);
 				theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceArm(
-						theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance()
-							.minus(getWingACToCGDistance())
+						theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(SI.METER)
+							.minus(getWingACToCGDistance().to(SI.METER))
 						);
 			}
 		}
@@ -360,9 +360,9 @@ public class Aircraft {
 		_wingACToCGDistance = Amount.valueOf(
 				Math.abs(
 						xCGMTOM.doubleValue(SI.METER) -
-						(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-								.plus(_theAircraftInterface.getWing().getXApexConstructionAxes()).getEstimatedValue() + 
-								_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
+						(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+								.plus(_theAircraftInterface.getWing().getXApexConstructionAxes().to(SI.METER)).getEstimatedValue() + 
+								_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER)*0.25)
 						), 
 				SI.METER);
 	}
@@ -371,14 +371,14 @@ public class Aircraft {
 		theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceACTOWingACDistance(
 				Amount.valueOf(
 						Math.abs(
-								(theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-										.plus(theLiftingSurface.getXApexConstructionAxes())
-										.plus(theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25))
+								(theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+										.plus(theLiftingSurface.getXApexConstructionAxes().to(SI.METER))
+										.plus(theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER).times(0.25))
 										.getEstimatedValue()
 										) 
-								- (_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-												.plus(_theAircraftInterface.getWing().getXApexConstructionAxes()) 
-												.plus(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25))
+								- (_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+												.plus(_theAircraftInterface.getWing().getXApexConstructionAxes().to(SI.METER)) 
+												.plus(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER).times(0.25))
 												.getEstimatedValue()
 												)
 								),
@@ -388,20 +388,22 @@ public class Aircraft {
 
 	private void calculateVolumetricRatio(LiftingSurface theLiftingSurface) {
 		
-		if ((theLiftingSurface.getType() == ComponentEnum.HORIZONTAL_TAIL)
-				|| (theLiftingSurface.getType() == ComponentEnum.CANARD)) {
+		if ((theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.HORIZONTAL_TAIL)
+				|| (theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.CANARD)) {
 			theLiftingSurface.getLiftingSurfaceCreator().setVolumetricRatio(
-					(theLiftingSurface.getSurface().divide(_theAircraftInterface.getWing().getSurface()))
-					.times(theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance()
-							.divide(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord()))
+					(theLiftingSurface.getLiftingSurfaceCreator().getSurfacePlanform().to(SI.SQUARE_METRE)
+							.divide(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getSurfacePlanform().to(SI.SQUARE_METRE)))
+					.times(theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(SI.METER)
+							.divide(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER)))
 			.getEstimatedValue()
 			);
 		} 
-		else if(theLiftingSurface.getType() == ComponentEnum.VERTICAL_TAIL) {
+		else if(theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.VERTICAL_TAIL) {
 			theLiftingSurface.getLiftingSurfaceCreator().setVolumetricRatio(
-					(theLiftingSurface.getSurface().divide(_theAircraftInterface.getWing().getSurface()))
-					.times(theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance()
-							.divide(_theAircraftInterface.getWing().getSpan()))
+					(theLiftingSurface.getLiftingSurfaceCreator().getSurfacePlanform().to(SI.SQUARE_METRE)
+							.divide(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getSurfacePlanform().to(SI.SQUARE_METRE)))
+					.times(theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(SI.SQUARE_METRE)
+							.divide(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getSpan().to(SI.METER)))
 					.getEstimatedValue()
 					);
 		}
@@ -527,17 +529,13 @@ public class Aircraft {
 		if(wingFileName != null) {
 			String wingPath = liftingSurfacesDir + File.separator + wingFileName;
 			LiftingSurfaceCreator wingCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, wingPath, airfoilsDir);
-			theWing = new LiftingSurfaceBuilder(
-					"MyWing",
-					ComponentEnum.WING,
-					aeroDatabaseReader, 
-					highLiftDatabaseReader,
-					veDSCDatabaseReader)
-					.liftingSurfaceCreator(wingCreator)
-						.build();
+			theWing = new LiftingSurface(wingCreator);
 
-			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
-			theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+			theWing.setAeroDatabaseReader(aeroDatabaseReader);
+			theWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			theWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
+			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, true);
+			theWing.getLiftingSurfaceCreator().populateAirfoilList(false);
 			
 			xApexWing = reader.getXMLAmountLengthByPath("//wing/position/x");
 			yApexWing = reader.getXMLAmountLengthByPath("//wing/position/y");
@@ -562,7 +560,7 @@ public class Aircraft {
 			xApexFuelTank = xApexWing
 					.plus(theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
 							.times(theWing.getLiftingSurfaceCreator()
-									.getMainSparNonDimensionalPosition()
+									.getMainSparDimensionlessPosition()
 									)
 							);
 			yApexFuelTank = yApexWing;
@@ -589,17 +587,13 @@ public class Aircraft {
 		if(hTailFileName != null) {
 			String hTailPath = liftingSurfacesDir + File.separator + hTailFileName;
 			LiftingSurfaceCreator hTailCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.HORIZONTAL_TAIL, hTailPath, airfoilsDir);
-			theHorizontalTail = new LiftingSurfaceBuilder(
-					"MyHorizontalTail", 
-					ComponentEnum.HORIZONTAL_TAIL, 
-					aeroDatabaseReader, 
-					highLiftDatabaseReader,
-					veDSCDatabaseReader)
-					.liftingSurfaceCreator(hTailCreator)
-						.build();
-		
-			theHorizontalTail.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.HORIZONTAL_TAIL, Boolean.TRUE);
-			theHorizontalTail.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+			theHorizontalTail = new LiftingSurface(hTailCreator);
+			
+			theHorizontalTail.setAeroDatabaseReader(aeroDatabaseReader);
+			theHorizontalTail.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			theHorizontalTail.setVeDSCDatabaseReader(veDSCDatabaseReader);
+			theHorizontalTail.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.HORIZONTAL_TAIL, true);
+			theHorizontalTail.getLiftingSurfaceCreator().populateAirfoilList(false);
 			
 			xApexHTail = reader.getXMLAmountLengthByPath("//horizontal_tail/position/x");
 			yApexHTail = reader.getXMLAmountLengthByPath("//horizontal_tail/position/y");
@@ -628,17 +622,13 @@ public class Aircraft {
 		if(vTailFileName != null) {
 			String vTailPath = liftingSurfacesDir + File.separator + vTailFileName;
 			LiftingSurfaceCreator vTailCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.VERTICAL_TAIL, vTailPath, airfoilsDir);
-			theVerticalTail = new LiftingSurfaceBuilder(
-					"MyVerticalTail",
-					ComponentEnum.VERTICAL_TAIL,
-					aeroDatabaseReader, 
-					highLiftDatabaseReader,
-					veDSCDatabaseReader)
-					.liftingSurfaceCreator(vTailCreator)
-						.build();
+			theVerticalTail = new LiftingSurface(vTailCreator);
 
-			theVerticalTail.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.VERTICAL_TAIL, Boolean.FALSE);
-			theVerticalTail.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+			theVerticalTail.setAeroDatabaseReader(aeroDatabaseReader);
+			theVerticalTail.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			theVerticalTail.setVeDSCDatabaseReader(veDSCDatabaseReader);
+			theVerticalTail.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.VERTICAL_TAIL, false);
+			theVerticalTail.getLiftingSurfaceCreator().populateAirfoilList(false);
 			
 			xApexVTail = reader.getXMLAmountLengthByPath("//vertical_tail/position/x");
 			yApexVTail = reader.getXMLAmountLengthByPath("//vertical_tail/position/y");
@@ -667,17 +657,13 @@ public class Aircraft {
 		if(canardFileName != null) {
 			String canardPath = liftingSurfacesDir + File.separator + canardFileName;
 			LiftingSurfaceCreator canardCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.CANARD, canardPath, airfoilsDir);
-			theCanard = new LiftingSurfaceBuilder(
-					"MyCanard", 
-					ComponentEnum.CANARD, 
-					aeroDatabaseReader, 
-					highLiftDatabaseReader,
-					veDSCDatabaseReader)
-					.liftingSurfaceCreator(canardCreator)
-						.build();
+			theCanard = new LiftingSurface(canardCreator);
 			
-			theCanard.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.CANARD, Boolean.TRUE);
-			theCanard.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+			theCanard.setAeroDatabaseReader(aeroDatabaseReader);
+			theCanard.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			theCanard.setVeDSCDatabaseReader(veDSCDatabaseReader);
+			theCanard.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.CANARD, true);
+			theCanard.getLiftingSurfaceCreator().populateAirfoilList(false);
 			
 			xApexCanard = reader.getXMLAmountLengthByPath("//canard/position/x");
 			yApexCanard = reader.getXMLAmountLengthByPath("//canard/position/y");
@@ -1027,8 +1013,8 @@ public class Aircraft {
 		if(_theAircraftInterface.getWing() != null)
 			sb.append(_theAircraftInterface.getWing().getLiftingSurfaceCreator().toString());
 		
-		if(_theAircraftInterface.getWing().getExposedWing() != null)
-			sb.append(_theAircraftInterface.getWing().getExposedWing().getLiftingSurfaceCreator().toString());
+		if(_theAircraftInterface.getWing().getExposedLiftingSurface() != null)
+			sb.append(_theAircraftInterface.getWing().getExposedLiftingSurface().toString());
 		
 		if(_theAircraftInterface.getHTail() != null)
 			sb.append(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().toString());
@@ -1139,11 +1125,11 @@ public class Aircraft {
 	}
 	
 	public LiftingSurface getExposedWing() {
-		return _theAircraftInterface.getWing().getExposedWing();
+		return _theAircraftInterface.getWing().getExposedLiftingSurface();
 	}
 	
 	public void setExposedWing(LiftingSurface exposedWing) {
-		_theAircraftInterface.getWing().setExposedWing(exposedWing);
+		_theAircraftInterface.getWing().setExposedLiftingSurface(exposedWing);
 	}
 	
 	public LiftingSurface getHTail() {

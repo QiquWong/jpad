@@ -5,22 +5,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import standaloneutils.JPADXmlReader;
 
@@ -95,38 +91,17 @@ public class JNLWing {
 			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
 //			// read LiftingSurface from xml ...
-			theWing = new LiftingSurfaceBuilder(
-					"MyWing", 
-					ComponentEnum.WING,
-					aeroDatabaseReader,
-					highLiftDatabaseReader,
-					veDSCDatabaseReader
-					)
-					.liftingSurfaceCreator(
-							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
-							)
-					.build();
+			theWing = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil));
+			theWing.setAeroDatabaseReader(aeroDatabaseReader);
+			theWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			theWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
 			
-			// default LiftingSurface from xml ...
-//			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
-//					.liftingSurfaceCreator(
-//							new LiftingSurfaceCreator
-//							.LiftingSurfaceCreatorBuilder(
-//									"MyWing",
-//									Boolean.TRUE,
-//									AircraftEnum.ATR72,
-//									ComponentEnum.WING
-//									)
-//							.build()
-//							)
-//					.build();
-
-			JNLWing.theWing.calculateGeometry(
+			JNLWing.theWing.getLiftingSurfaceCreator().calculateGeometry(
 					40,
-					theWing.getType(),
+					theWing.getLiftingSurfaceCreator().getType(),
 					theWing.getLiftingSurfaceCreator().isMirrored());
 
-			JNLWing.theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+			JNLWing.theWing.getLiftingSurfaceCreator().populateAirfoilList(false);
 			
 			System.out.println("The wing ...");
 			System.out.println(JNLWing.theWing.getLiftingSurfaceCreator().toString());

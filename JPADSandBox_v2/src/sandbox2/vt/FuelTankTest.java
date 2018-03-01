@@ -17,15 +17,12 @@ import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.FuelTank;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -117,21 +114,21 @@ public class FuelTankTest extends Application {
 		for (int i=0; i<nStationFuelTank-1; i++) {
 			fuelTankXCoordinates.add(wing.getLiftingSurfaceCreator().getYBreakPoints().get(i));
 		}
-		fuelTankXCoordinates.add(wing.getSemiSpan().times(0.85));
-		fuelTankXCoordinates.add(wing.getSemiSpan().times(0.85));
+		fuelTankXCoordinates.add(wing.getLiftingSurfaceCreator().getSemiSpan().times(0.85));
+		fuelTankXCoordinates.add(wing.getLiftingSurfaceCreator().getSemiSpan().times(0.85));
 		for (int i=1; i<nStationFuelTank; i++) {
 			fuelTankXCoordinates.add(wing.getLiftingSurfaceCreator().getYBreakPoints().get(nStationFuelTank-i-1));
 		}
 		
 		Amount<Length> xLEAt85Percent = theWing.getLiftingSurfaceCreator()
 												.getXLEAtYActual(
-														theWing.getSemiSpan()
+														theWing.getLiftingSurfaceCreator().getSemiSpan()
 															.times(0.85)
 																.doubleValue(SI.METER)
 																);
 		Amount<Length> chordAt85Percent = Amount.valueOf(
-				theWing.getChordAtYActual(
-						theWing.getSemiSpan().times(0.85).doubleValue(SI.METER)
+				theWing.getLiftingSurfaceCreator().getChordAtYActual(
+						theWing.getLiftingSurfaceCreator().getSemiSpan().times(0.85).doubleValue(SI.METER)
 						),
 				SI.METER
 				);
@@ -182,10 +179,10 @@ public class FuelTankTest extends Application {
 		listDataArray.add(dataTopView);
 		listDataArray.add(dataFuelTank);
 		
-		double xMax = 1.05*wing.getSemiSpan().doubleValue(SI.METRE);
-		double xMin = -0.05*wing.getSemiSpan().doubleValue(SI.METRE);
-		double yMax = 1.30*wing.getSemiSpan().divide(2).doubleValue(SI.METRE);
-		double yMin = -0.80*wing.getSemiSpan().divide(2).doubleValue(SI.METRE);
+		double xMax = 1.05*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+		double xMin = -0.05*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+		double yMax = 1.30*wing.getLiftingSurfaceCreator().getSemiSpan().divide(2).doubleValue(SI.METRE);
+		double yMin = -0.80*wing.getLiftingSurfaceCreator().getSemiSpan().divide(2).doubleValue(SI.METRE);
 
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
@@ -300,39 +297,16 @@ public class FuelTankTest extends Application {
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
-			// default LiftingSurface ATR-72 ...
-			theWing = new LiftingSurfaceBuilder(
-					"ATR-72 Wing", 
-					ComponentEnum.WING, 
-					aeroDatabaseReader, 
-					highLiftDatabaseReader, 
-					veDSCDatabaseReader)
-					.liftingSurfaceCreator(
-							new LiftingSurfaceCreator
-							.LiftingSurfaceCreatorBuilder(
-									"MyWing",
-									Boolean.TRUE,
-									AircraftEnum.ATR72,
-									ComponentEnum.WING
-									)
-							.build()
-							)
-					.build();
-			theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
-			
-			theFuelTank = new FuelTank.FuelTankBuilder("ATR-72 Fuel Tank", theWing).build();
-			
 			// imported wing from xml ...
-//			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
-//					.liftingSurfaceCreator(
-//							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
-//							)
-//					.build();
-//			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
-//			theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
-//			
-//			theFuelTank = new FuelTank.FuelTankBuilder("My Fuel Tank", theWing)
-//										.build();
+			theWing = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil));
+			theWing.setAeroDatabaseReader(aeroDatabaseReader);
+			theWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			theWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
+			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, true);
+			theWing.getLiftingSurfaceCreator().populateAirfoilList(false);
+			
+			theFuelTank = new FuelTank.FuelTankBuilder("My Fuel Tank", theWing)
+										.build();
 			theWing.setXApexConstructionAxes(Amount.valueOf(11.0, SI.METER));
 			theWing.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 			theWing.setZApexConstructionAxes(Amount.valueOf(1.6, SI.METER));

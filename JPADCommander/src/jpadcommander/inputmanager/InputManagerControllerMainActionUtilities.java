@@ -1668,27 +1668,31 @@ public class InputManagerControllerMainActionUtilities {
 		
 		if (Main.getTheAircraft().getVTail() != null) {
 
-			Double[] vTailRootXCoordinates = Main.getTheAircraft().getVTail().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
-			Double[] vTailRootYCoordinates = Main.getTheAircraft().getVTail().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
-			Double[] vTailTipXCoordinates = Main.getTheAircraft().getVTail().getAirfoilList().get(Main.getTheAircraft().getVTail().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
-			Double[] vTailTipYCoordinates = Main.getTheAircraft().getVTail().getAirfoilList().get(Main.getTheAircraft().getVTail().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+			Double[] vTailRootXCoordinates = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
+			Double[] vTailRootYCoordinates = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+			Double[] vTailTipXCoordinates = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().get(Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
+			Double[] vTailTipYCoordinates = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().get(Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
 			int nPointsVTail = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getDiscretizedXle().size();
 
 			IntStream.range(0, vTailRootXCoordinates.length)
 			.forEach(i -> {
 				seriesVTailRootAirfoilTopView.add(
-						(vTailRootXCoordinates[i]*Main.getTheAircraft().getVTail().getChordRoot().getEstimatedValue()) + Main.getTheAircraft().getVTail().getXApexConstructionAxes().getEstimatedValue(),
-						(vTailRootYCoordinates[i]*Main.getTheAircraft().getVTail().getChordRoot().getEstimatedValue())
+						(vTailRootXCoordinates[i]*Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getPanels()
+								.get(Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
+						+ Main.getTheAircraft().getVTail().getXApexConstructionAxes().getEstimatedValue(),
+						(vTailRootYCoordinates[i]*Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
 						);
 			});
 
 			IntStream.range(0, vTailTipXCoordinates.length)
 			.forEach(i -> {
 				seriesVTailTipAirfoilTopView.add(
-						(vTailTipXCoordinates[i]*Main.getTheAircraft().getVTail().getChordTip().getEstimatedValue()) 
+						(vTailTipXCoordinates[i]*Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getPanels()
+								.get(Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
 						+ Main.getTheAircraft().getVTail().getXApexConstructionAxes().getEstimatedValue()
 						+ Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsVTail-1).getEstimatedValue(),
-						(vTailTipYCoordinates[i]*Main.getTheAircraft().getVTail().getChordTip().getEstimatedValue())
+						(vTailTipYCoordinates[i]*Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getPanels()
+								.get(Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
 						);
 			});
 		}
@@ -2008,18 +2012,20 @@ public class InputManagerControllerMainActionUtilities {
 		XYSeries seriesWingTipAirfoil = new XYSeries("Wing Tip - Side View", false);
 
 		if (Main.getTheAircraft().getWing() != null) {
-			Double[] wingRootXCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
-			Double[] wingRootZCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
-			Double[] wingTipXCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(Main.getTheAircraft().getWing().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
-			Double[] wingTipZCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(Main.getTheAircraft().getWing().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+			Double[] wingRootXCoordinates = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
+			Double[] wingRootZCoordinates = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+			Double[] wingTipXCoordinates = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList()
+					.get(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
+			Double[] wingTipZCoordinates = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList()
+					.get(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
 			int nPointsWing = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().size();
 
 			IntStream.range(0, wingRootXCoordinates.length)
 			.forEach(i -> {
 				seriesWingRootAirfoil.add(
-						(wingRootXCoordinates[i]*Main.getTheAircraft().getWing().getChordRoot().getEstimatedValue()) 
+						(wingRootXCoordinates[i]*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue()) 
 						+ Main.getTheAircraft().getWing().getXApexConstructionAxes().getEstimatedValue(),
-						(wingRootZCoordinates[i]*Main.getTheAircraft().getWing().getChordRoot().getEstimatedValue())
+						(wingRootZCoordinates[i]*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
 						+ Main.getTheAircraft().getWing().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -2027,10 +2033,12 @@ public class InputManagerControllerMainActionUtilities {
 			IntStream.range(0, wingTipXCoordinates.length)
 			.forEach(i -> {
 				seriesWingTipAirfoil.add(
-						(wingTipXCoordinates[i]*Main.getTheAircraft().getWing().getChordTip().getEstimatedValue()) 
+						(wingTipXCoordinates[i]*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels()
+								.get(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
 						+ Main.getTheAircraft().getWing().getXApexConstructionAxes().getEstimatedValue()
 						+ Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsWing-1).getEstimatedValue(),
-						(wingTipZCoordinates[i]*Main.getTheAircraft().getWing().getChordTip().getEstimatedValue())
+						(wingTipZCoordinates[i]*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels()
+								.get(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
 						+ Main.getTheAircraft().getWing().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -2042,18 +2050,20 @@ public class InputManagerControllerMainActionUtilities {
 		XYSeries seriesHTailTipAirfoil = new XYSeries("HTail Tip - Side View", false);
 
 		if (Main.getTheAircraft().getHTail() != null) {
-			Double[] hTailRootXCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
-			Double[] hTailRootZCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
-			Double[] hTailTipXCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(Main.getTheAircraft().getHTail().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
-			Double[] hTailTipZCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(Main.getTheAircraft().getHTail().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+			Double[] hTailRootXCoordinates = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
+			Double[] hTailRootZCoordinates = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+			Double[] hTailTipXCoordinates = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList()
+					.get(Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
+			Double[] hTailTipZCoordinates = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList()
+					.get(Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
 			int nPointsHTail = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedXle().size();
 
 			IntStream.range(0, hTailRootXCoordinates.length)
 			.forEach(i -> {
 				seriesHTailRootAirfoil.add(
-						(hTailRootXCoordinates[i]*Main.getTheAircraft().getHTail().getChordRoot().getEstimatedValue())
+						(hTailRootXCoordinates[i]*Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
 						+ Main.getTheAircraft().getHTail().getXApexConstructionAxes().getEstimatedValue(),
-						(hTailRootZCoordinates[i]*Main.getTheAircraft().getHTail().getChordRoot().getEstimatedValue())
+						(hTailRootZCoordinates[i]*Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
 						+ Main.getTheAircraft().getHTail().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -2061,10 +2071,12 @@ public class InputManagerControllerMainActionUtilities {
 			IntStream.range(0, hTailTipXCoordinates.length)
 			.forEach(i -> {
 				seriesHTailTipAirfoil.add(
-						(hTailTipXCoordinates[i]*Main.getTheAircraft().getHTail().getChordTip().getEstimatedValue()) 
+						(hTailTipXCoordinates[i]*Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getPanels()
+								.get(Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
 						+ Main.getTheAircraft().getHTail().getXApexConstructionAxes().getEstimatedValue()
 						+ Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(),
-						(hTailTipZCoordinates[i]*Main.getTheAircraft().getHTail().getChordTip().getEstimatedValue())
+						(hTailTipZCoordinates[i]*Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getPanels()
+								.get(Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
 						+ Main.getTheAircraft().getHTail().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -2076,18 +2088,20 @@ public class InputManagerControllerMainActionUtilities {
 		XYSeries seriesCanardTipAirfoil = new XYSeries("Canard Tip - Side View", false);
 
 		if (Main.getTheAircraft().getCanard() != null) {
-			Double[] canardRootXCoordinates = Main.getTheAircraft().getCanard().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
-			Double[] canardRootZCoordinates = Main.getTheAircraft().getCanard().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
-			Double[] canardTipXCoordinates = Main.getTheAircraft().getCanard().getAirfoilList().get(Main.getTheAircraft().getCanard().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
-			Double[] canardTipZCoordinates = Main.getTheAircraft().getCanard().getAirfoilList().get(Main.getTheAircraft().getCanard().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+			Double[] canardRootXCoordinates = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
+			Double[] canardRootZCoordinates = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+			Double[] canardTipXCoordinates = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList()
+					.get(Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
+			Double[] canardTipZCoordinates = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList()
+					.get(Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
 			int nPointsHTail = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getDiscretizedXle().size();
 
 			IntStream.range(0, canardRootXCoordinates.length)
 			.forEach(i -> {
 				seriesCanardRootAirfoil.add(
-						(canardRootXCoordinates[i]*Main.getTheAircraft().getCanard().getChordRoot().getEstimatedValue())
+						(canardRootXCoordinates[i]*Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
 						+ Main.getTheAircraft().getCanard().getXApexConstructionAxes().getEstimatedValue(),
-						(canardRootZCoordinates[i]*Main.getTheAircraft().getCanard().getChordRoot().getEstimatedValue())
+						(canardRootZCoordinates[i]*Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
 						+ Main.getTheAircraft().getCanard().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -2095,10 +2109,12 @@ public class InputManagerControllerMainActionUtilities {
 			IntStream.range(0, canardTipXCoordinates.length)
 			.forEach(i -> {
 				seriesCanardTipAirfoil.add(
-						(canardTipXCoordinates[i]*Main.getTheAircraft().getCanard().getChordTip().getEstimatedValue()) 
+						(canardTipXCoordinates[i]*Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels()
+								.get(Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
 						+ Main.getTheAircraft().getCanard().getXApexConstructionAxes().getEstimatedValue()
 						+ Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(),
-						(canardTipZCoordinates[i]*Main.getTheAircraft().getCanard().getChordTip().getEstimatedValue())
+						(canardTipZCoordinates[i]*Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels()
+								.get(Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
 						+ Main.getTheAircraft().getCanard().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -2431,11 +2447,11 @@ public class InputManagerControllerMainActionUtilities {
 			int nYPointsWing = wingBreakPointsYCoordinates.size();
 
 			List<Amount<Length>> wingThicknessZCoordinates = new ArrayList<Amount<Length>>();
-			for(int i=0; i<Main.getTheAircraft().getWing().getAirfoilList().size(); i++)
+			for(int i=0; i<Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().size(); i++)
 				wingThicknessZCoordinates.add(
 						Amount.valueOf(
 								Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-								MyArrayUtils.getMax(Main.getTheAircraft().getWing().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
+								MyArrayUtils.getMax(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 								SI.METER
 								)
 						);
@@ -2443,7 +2459,7 @@ public class InputManagerControllerMainActionUtilities {
 				wingThicknessZCoordinates.add(
 						Amount.valueOf(
 								(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsWingTemp-i-1).doubleValue(SI.METER)*
-										MyArrayUtils.getMin(Main.getTheAircraft().getWing().getAirfoilList().get(nYPointsWingTemp-i-1).getAirfoilCreator().getZCoords())),
+										MyArrayUtils.getMin(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().get(nYPointsWingTemp-i-1).getAirfoilCreator().getZCoords())),
 								SI.METER
 								)
 						);
@@ -2505,11 +2521,11 @@ public class InputManagerControllerMainActionUtilities {
 			int nYPointsHTail = hTailBreakPointsYCoordinates.size();
 
 			List<Amount<Length>> hTailThicknessZCoordinates = new ArrayList<Amount<Length>>();
-			for(int i=0; i<Main.getTheAircraft().getHTail().getAirfoilList().size(); i++)
+			for(int i=0; i<Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList().size(); i++)
 				hTailThicknessZCoordinates.add(
 						Amount.valueOf(
 								Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-								MyArrayUtils.getMax(Main.getTheAircraft().getHTail().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
+								MyArrayUtils.getMax(Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 								SI.METER
 								)
 						);
@@ -2517,7 +2533,7 @@ public class InputManagerControllerMainActionUtilities {
 				hTailThicknessZCoordinates.add(
 						Amount.valueOf(
 								Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsHTailTemp-i-1).doubleValue(SI.METER)*
-								MyArrayUtils.getMin(Main.getTheAircraft().getHTail().getAirfoilList().get(nYPointsHTailTemp-i-1).getAirfoilCreator().getZCoords()),
+								MyArrayUtils.getMin(Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList().get(nYPointsHTailTemp-i-1).getAirfoilCreator().getZCoords()),
 								SI.METER
 								)
 						);
@@ -2578,11 +2594,11 @@ public class InputManagerControllerMainActionUtilities {
 			int nYPointsCanard = canardBreakPointsYCoordinates.size();
 
 			List<Amount<Length>> canardThicknessZCoordinates = new ArrayList<Amount<Length>>();
-			for(int i=0; i<Main.getTheAircraft().getCanard().getAirfoilList().size(); i++)
+			for(int i=0; i<Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList().size(); i++)
 				canardThicknessZCoordinates.add(
 						Amount.valueOf(
 								Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-								MyArrayUtils.getMax(Main.getTheAircraft().getCanard().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
+								MyArrayUtils.getMax(Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 								SI.METER
 								)
 						);
@@ -2590,7 +2606,7 @@ public class InputManagerControllerMainActionUtilities {
 				canardThicknessZCoordinates.add(
 						Amount.valueOf(
 								Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsCanardTemp-i-1).doubleValue(SI.METER)*
-								MyArrayUtils.getMin(Main.getTheAircraft().getCanard().getAirfoilList().get(nYPointsCanardTemp-i-1).getAirfoilCreator().getZCoords()),
+								MyArrayUtils.getMin(Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList().get(nYPointsCanardTemp-i-1).getAirfoilCreator().getZCoords()),
 								SI.METER
 								)
 						);
@@ -2651,11 +2667,11 @@ public class InputManagerControllerMainActionUtilities {
 			int nYPointsVTail = vTailBreakPointsYCoordinates.size();
 
 			List<Amount<Length>> vTailThicknessZCoordinates = new ArrayList<Amount<Length>>();
-			for(int i=0; i<Main.getTheAircraft().getVTail().getAirfoilList().size(); i++)
+			for(int i=0; i<Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().size(); i++)
 				vTailThicknessZCoordinates.add(
 						Amount.valueOf(
 								Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-								MyArrayUtils.getMax(Main.getTheAircraft().getVTail().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
+								MyArrayUtils.getMax(Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 								SI.METER
 								)
 						);
@@ -2663,7 +2679,7 @@ public class InputManagerControllerMainActionUtilities {
 				vTailThicknessZCoordinates.add(
 						Amount.valueOf(
 								Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsVTailTemp-i-1).doubleValue(SI.METER)*
-								MyArrayUtils.getMin(Main.getTheAircraft().getVTail().getAirfoilList().get(nYPointsVTailTemp-i-1).getAirfoilCreator().getZCoords()),
+								MyArrayUtils.getMin(Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().get(nYPointsVTailTemp-i-1).getAirfoilCreator().getZCoords()),
 								SI.METER
 								)
 						);
@@ -2847,8 +2863,8 @@ public class InputManagerControllerMainActionUtilities {
 			}
 		}
 		
-		double yMaxFrontView = 1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER);
-		double yMinFrontView = -1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
+		double yMaxFrontView = 1.20*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
+		double yMinFrontView = -1.20*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
 		double zMaxFrontView = yMaxFrontView; 
 		double zMinFrontView = yMinFrontView;
 		
@@ -4478,8 +4494,8 @@ public class InputManagerControllerMainActionUtilities {
 			seriesFuselageCurve.add(vY2Lower.get(vY2Lower.size()-1-i).doubleValue(SI.METRE), vZ2Lower.get(vZ2Lower.size()-1-i).doubleValue(SI.METRE));
 		});
 		
-		double yMaxFrontView = 1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER);
-		double yMinFrontView = -1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
+		double yMaxFrontView = 1.20*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
+		double yMinFrontView = -1.20*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
 		double zMaxFrontView = yMaxFrontView; 
 		double zMinFrontView = yMinFrontView;
 		
@@ -6238,10 +6254,10 @@ public class InputManagerControllerMainActionUtilities {
 		if (!Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().isEmpty()) {
 			for(int i=0; i<Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().size(); i++) {
 				
-				double yIn = Main.getTheAircraft().getWing().getSemiSpan().times(
+				double yIn = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getInnerStationSpanwisePosition()
 						).doubleValue(SI.METER);
-				double yOut = Main.getTheAircraft().getWing().getSemiSpan().times(
+				double yOut = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getOuterStationSpanwisePosition()
 						).doubleValue(SI.METER);
 				
@@ -6298,10 +6314,10 @@ public class InputManagerControllerMainActionUtilities {
 		if (!Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().isEmpty()) {
 			for(int i=0; i<Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().size(); i++) {
 				
-				double yIn = Main.getTheAircraft().getWing().getSemiSpan().times(
+				double yIn = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().get(i).getInnerStationSpanwisePosition()
 						).doubleValue(SI.METER);
-				double yOut = Main.getTheAircraft().getWing().getSemiSpan().times(
+				double yOut = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().get(i).getOuterStationSpanwisePosition()
 						).doubleValue(SI.METER);
 				
@@ -6358,10 +6374,10 @@ public class InputManagerControllerMainActionUtilities {
 		
 		if (!Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().isEmpty()) {
 			
-			double yIn = Main.getTheAircraft().getWing().getSemiSpan().times(
+			double yIn = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().times(
 					Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().get(0).getInnerStationSpanwisePosition()
 					).doubleValue(SI.METER);
-			double yOut = Main.getTheAircraft().getWing().getSemiSpan().times(
+			double yOut = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().times(
 					Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().get(0).getOuterStationSpanwisePosition()
 					).doubleValue(SI.METER);
 
@@ -6415,10 +6431,10 @@ public class InputManagerControllerMainActionUtilities {
 		if (!Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().isEmpty()) {
 			for(int i=0; i<Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().size(); i++) {
 				
-				double yIn = Main.getTheAircraft().getWing().getSemiSpan().times(
+				double yIn = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().get(i).getInnerStationSpanwisePosition()
 						).doubleValue(SI.METER);
-				double yOut = Main.getTheAircraft().getWing().getSemiSpan().times(
+				double yOut = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().get(i).getOuterStationSpanwisePosition()
 						).doubleValue(SI.METER);
 				
@@ -6469,7 +6485,7 @@ public class InputManagerControllerMainActionUtilities {
 			}
 		}
 		
-		double semispan = Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER);
+		double semispan = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
 		double rootChord = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER);
 		double tipChord = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordTip().doubleValue(SI.METER);
 		double xLERoot = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(0).doubleValue(SI.METER);
@@ -6485,12 +6501,12 @@ public class InputManagerControllerMainActionUtilities {
 
 		if ((yMaxTopView - yMinTopView) <= 1.1*semispan) {
 			
-			xMaxTopView = 1.05*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
-			xMinTopView = -0.05*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
-			yMinTopView = -0.55*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE) 
+			xMaxTopView = 1.05*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+			xMinTopView = -0.05*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+			yMinTopView = -0.55*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE) 
 					+ 0.5*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 					+ ((xLETip - xLERoot)/4);
-			yMaxTopView = 1.1*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE) 
+			yMaxTopView = 1.1*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE) 
 					+ yMinTopView;
 			
 		}
@@ -6635,7 +6651,7 @@ public class InputManagerControllerMainActionUtilities {
 
 		XYSeries seriesEquivalentWingTopView = new XYSeries("Equivalent Wing", false);
 		seriesEquivalentWingTopView.add(
-				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE().doubleValue(),
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE(),
 				0.0
 				);
 		seriesEquivalentWingTopView.add(
@@ -6650,11 +6666,11 @@ public class InputManagerControllerMainActionUtilities {
 				);
 		seriesEquivalentWingTopView.add(
 				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-				- Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootTE(),
+				- Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordTE(),
 				0.0
 				);
 		seriesEquivalentWingTopView.add(
-				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE().doubleValue(),
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE(),
 				0.0
 				);
 		
@@ -6669,7 +6685,7 @@ public class InputManagerControllerMainActionUtilities {
 				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE)
 				);
 		
-		double semispan = Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER);
+		double semispan = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
 		double rootChord = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER);
 		double tipChord = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordTip().doubleValue(SI.METER);
 		double xLERoot = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(0).doubleValue(SI.METER);
@@ -6685,12 +6701,12 @@ public class InputManagerControllerMainActionUtilities {
 
 		if ((yMaxTopView - yMinTopView) <= 1.1*semispan) {
 			
-			xMaxTopView = 1.05*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
-			xMinTopView = -0.05*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
-			yMinTopView = -0.55*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE) 
+			xMaxTopView = 1.05*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+			xMinTopView = -0.05*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+			yMinTopView = -0.55*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE) 
 					+ 0.5*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 					+ ((xLETip - xLERoot)/4);
-			yMaxTopView = 1.1*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE) 
+			yMaxTopView = 1.1*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE) 
 					+ yMinTopView;
 			
 		}
@@ -6829,18 +6845,18 @@ public class InputManagerControllerMainActionUtilities {
 			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING FLAG: 
-			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getEquivalentWingFlag().equals(Boolean.TRUE))
+			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWingFlag() == true)
 				theController.getEquivalentWingCheckBox().setSelected(true);
 
 			//---------------------------------------------------------------------------------
 			// MAIN SPAR LOCATION:
-			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMainSparNonDimensionalPosition() != null) 
+			if(Double.valueOf(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMainSparDimensionlessPosition()) != null) 
 				theController.getTextFieldWingMainSparAdimensionalPosition().setText(
 						Double.toString(
 								Main.getTheAircraft()
 								.getWing()
 								.getLiftingSurfaceCreator()
-								.getMainSparNonDimensionalPosition()
+								.getMainSparDimensionlessPosition()
 								)
 						);
 			else
@@ -6850,13 +6866,13 @@ public class InputManagerControllerMainActionUtilities {
 
 			//---------------------------------------------------------------------------------
 			// SECONDARY SPAR LOCATION:
-			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSecondarySparNonDimensionalPosition() != null) 
+			if(Double.valueOf(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition()) != null) 
 				theController.getTextFieldWingSecondarySparAdimensionalPosition().setText(
 						Double.toString(
 								Main.getTheAircraft()
 								.getWing()
 								.getLiftingSurfaceCreator()
-								.getSecondarySparNonDimensionalPosition()
+								.getSecondarySparDimensionlessPosition()
 								)
 						);
 			else
@@ -6864,22 +6880,6 @@ public class InputManagerControllerMainActionUtilities {
 						"NOT INITIALIZED"
 						);
 
-			//---------------------------------------------------------------------------------
-			// COMPOSITE CORRECTION FACTOR:
-			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getCompositeCorrectionFactor() != null) 
-				theController.getTextFieldWingCompositeMassCorrectionFactor().setText(
-						Double.toString(
-								Main.getTheAircraft()
-								.getWing()
-								.getLiftingSurfaceCreator()
-								.getCompositeCorrectionFactor()
-								)
-						);
-			else
-				theController.getTextFieldWingCompositeMassCorrectionFactor().setText(
-						"NOT INITIALIZED"
-						);
-			
 			//---------------------------------------------------------------------------------
 			// ROUGHNESS:
 			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getRoughness() != null) {
@@ -6987,7 +6987,7 @@ public class InputManagerControllerMainActionUtilities {
 			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING KINK POSITION:
-			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getNonDimensionalSpanStationKink() != null) {
+			if(Double.valueOf(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessKinkPosition()) != null) {
 				
 				theController.getTextFieldEquivalentWingKinkPosition().setText(
 						String.valueOf(
@@ -6995,7 +6995,7 @@ public class InputManagerControllerMainActionUtilities {
 								.getWing()
 								.getLiftingSurfaceCreator()
 								.getEquivalentWing()
-								.getNonDimensionalSpanStationKink()
+								.getRealWingDimensionlessKinkPosition()
 								)
 						);
 			}
@@ -7128,7 +7128,7 @@ public class InputManagerControllerMainActionUtilities {
 			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING X OFFSET LE:
-			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE() != null) {
+			if(Double.valueOf(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE()) != null) {
 				
 				theController.getTextFieldEquivalentWingRootXOffsetLE().setText(
 						String.valueOf(
@@ -7136,7 +7136,7 @@ public class InputManagerControllerMainActionUtilities {
 								.getWing()
 								.getLiftingSurfaceCreator()
 								.getEquivalentWing()
-								.getXOffsetEquivalentWingRootLE()
+								.getRealWingDimensionlessXOffsetRootChordLE()
 								)
 						);
 			}
@@ -7147,7 +7147,7 @@ public class InputManagerControllerMainActionUtilities {
 
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING X OFFSET TE:
-			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootTE() != null) {
+			if(Double.valueOf(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordTE()) != null) {
 				
 				theController.getTextFieldEquivalentWingRootXOffsetTE().setText(
 						String.valueOf(
@@ -7155,7 +7155,7 @@ public class InputManagerControllerMainActionUtilities {
 								.getWing()
 								.getLiftingSurfaceCreator()
 								.getEquivalentWing()
-								.getXOffsetEquivalentWingRootTE()
+								.getRealWingDimensionlessXOffsetRootChordTE()
 								)
 						);
 			}
@@ -7196,7 +7196,7 @@ public class InputManagerControllerMainActionUtilities {
 			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING AIRFOIL KINK PATH:
-			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getAirfoilKinkEquivalentWing() != null) {
+			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getEquivalentWingAirfoilKink() != null) {
 				
 				theController.getTextFieldEquivalentWingAirfoilKinkPath().setText(
 						String.valueOf(
@@ -7211,7 +7211,8 @@ public class InputManagerControllerMainActionUtilities {
 								+ Main.getTheAircraft()
 								.getWing()
 								.getLiftingSurfaceCreator()
-								.getAirfoilKinkEquivalentWing()
+								.getEquivalentWing()
+								.getEquivalentWingAirfoilKink()
 								.getName()
 								+ ".xml"
 								)
@@ -8025,10 +8026,10 @@ public class InputManagerControllerMainActionUtilities {
 		if (!Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSymmetricFlaps().isEmpty()) {
 			for(int i=0; i<Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSymmetricFlaps().size(); i++) {
 				
-				double yIn = Main.getTheAircraft().getHTail().getSemiSpan().times(
+				double yIn = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getInnerStationSpanwisePosition()
 						).doubleValue(SI.METER);
-				double yOut = Main.getTheAircraft().getHTail().getSemiSpan().times(
+				double yOut = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getOuterStationSpanwisePosition()
 						).doubleValue(SI.METER);
 				
@@ -8090,7 +8091,7 @@ public class InputManagerControllerMainActionUtilities {
 				Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE)
 				);
 		
-		double semispan = Main.getTheAircraft().getHTail().getSemiSpan().doubleValue(SI.METER);
+		double semispan = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
 		double rootChord = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER);
 		double tipChord = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordTip().doubleValue(SI.METER);
 		double xLERoot = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedXle().get(0).doubleValue(SI.METER);
@@ -8106,12 +8107,12 @@ public class InputManagerControllerMainActionUtilities {
 
 		if ((yMaxTopView - yMinTopView) <= 1.1*semispan) {
 			
-			xMaxTopView = 1.05*Main.getTheAircraft().getHTail().getSemiSpan().doubleValue(SI.METRE);
-			xMinTopView = -0.05*Main.getTheAircraft().getHTail().getSemiSpan().doubleValue(SI.METRE);
-			yMinTopView = -0.55*Main.getTheAircraft().getHTail().getSemiSpan().doubleValue(SI.METRE) 
+			xMaxTopView = 1.05*Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+			xMinTopView = -0.05*Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+			yMinTopView = -0.55*Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE) 
 					+ 0.5*Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 					+ ((xLETip - xLERoot)/4);
-			yMaxTopView = 1.1*Main.getTheAircraft().getHTail().getSemiSpan().doubleValue(SI.METRE) 
+			yMaxTopView = 1.1*Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE) 
 					+ yMinTopView;
 			
 		}
@@ -8247,22 +8248,6 @@ public class InputManagerControllerMainActionUtilities {
 			// ADJUST CRITERION CHOICE BOX:
 			if(Main.getTheAircraft() != null)
 				theController.gethTailAdjustCriterionChoiceBox().setDisable(false);
-			
-			//---------------------------------------------------------------------------------
-			// COMPOSITE CORRECTION FACTOR:
-			if(Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getCompositeCorrectionFactor() != null) 
-				theController.getTextFieldHTailCompositeMassCorrectionFactor().setText(
-						Double.toString(
-								Main.getTheAircraft()
-								.getHTail()
-								.getLiftingSurfaceCreator()
-								.getCompositeCorrectionFactor()
-								)
-						);
-			else
-				theController.getTextFieldHTailCompositeMassCorrectionFactor().setText(
-						"NOT INITIALIZED"
-						);
 			
 			//---------------------------------------------------------------------------------
 			// ROUGHNESS:
@@ -8626,10 +8611,10 @@ public class InputManagerControllerMainActionUtilities {
 		if (!Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().isEmpty()) {
 			for(int i=0; i<Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().size(); i++) {
 				
-				double yIn = Main.getTheAircraft().getVTail().getSemiSpan().times(
+				double yIn = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getInnerStationSpanwisePosition()
 						).doubleValue(SI.METER);
-				double yOut = Main.getTheAircraft().getVTail().getSemiSpan().times(
+				double yOut = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getOuterStationSpanwisePosition()
 						).doubleValue(SI.METER);
 				
@@ -8691,7 +8676,7 @@ public class InputManagerControllerMainActionUtilities {
 				+ Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METRE)
 				);
 		
-		double span = Main.getTheAircraft().getVTail().getSpan().doubleValue(SI.METER);
+		double span = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER);
 		double rootChord = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER);
 		double tipChord = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getPanels().get(0).getChordTip().doubleValue(SI.METER);
 		double xLERoot = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getDiscretizedXle().get(0).doubleValue(SI.METER);
@@ -8707,12 +8692,12 @@ public class InputManagerControllerMainActionUtilities {
 
 		if ((yMaxTopView - yMinTopView) <= 1.1*span) {
 			
-			xMaxTopView = 1.05*Main.getTheAircraft().getVTail().getSpan().doubleValue(SI.METRE);
-			xMinTopView = -0.05*Main.getTheAircraft().getVTail().getSpan().doubleValue(SI.METRE);
-			yMinTopView = -0.55*Main.getTheAircraft().getVTail().getSpan().doubleValue(SI.METRE) 
+			xMaxTopView = 1.05*Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METRE);
+			xMinTopView = -0.05*Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METRE);
+			yMinTopView = -0.55*Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METRE) 
 					+ 0.5*Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 					+ ((xLETip - xLERoot)/4);
-			yMaxTopView = 1.1*Main.getTheAircraft().getVTail().getSpan().doubleValue(SI.METRE) 
+			yMaxTopView = 1.1*Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METRE) 
 					+ yMinTopView;
 			
 		}
@@ -8848,22 +8833,6 @@ public class InputManagerControllerMainActionUtilities {
 			// ADJUST CRITERION CHOICE BOX:
 			if(Main.getTheAircraft() != null)
 				theController.getvTailAdjustCriterionChoiceBox().setDisable(false);
-			
-			//---------------------------------------------------------------------------------
-			// COMPOSITE CORRECTION FACTOR:
-			if(Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getCompositeCorrectionFactor() != null) 
-				theController.getTextFieldVTailCompositeMassCorrectionFactor().setText(
-						Double.toString(
-								Main.getTheAircraft()
-								.getVTail()
-								.getLiftingSurfaceCreator()
-								.getCompositeCorrectionFactor()
-								)
-						);
-			else
-				theController.getTextFieldVTailCompositeMassCorrectionFactor().setText(
-						"NOT INITIALIZED"
-						);
 			
 			//---------------------------------------------------------------------------------
 			// ROUGHNESS:
@@ -9227,10 +9196,10 @@ public class InputManagerControllerMainActionUtilities {
 		if (!Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSymmetricFlaps().isEmpty()) {
 			for(int i=0; i<Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSymmetricFlaps().size(); i++) {
 				
-				double yIn = Main.getTheAircraft().getCanard().getSemiSpan().times(
+				double yIn = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getInnerStationSpanwisePosition()
 						).doubleValue(SI.METER);
-				double yOut = Main.getTheAircraft().getCanard().getSemiSpan().times(
+				double yOut = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSemiSpan().times(
 						Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getOuterStationSpanwisePosition()
 						).doubleValue(SI.METER);
 				
@@ -9292,7 +9261,7 @@ public class InputManagerControllerMainActionUtilities {
 				Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE)
 				);
 		
-		double semispan = Main.getTheAircraft().getCanard().getSemiSpan().doubleValue(SI.METER);
+		double semispan = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
 		double rootChord = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER);
 		double tipChord = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().get(0).getChordTip().doubleValue(SI.METER);
 		double xLERoot = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getDiscretizedXle().get(0).doubleValue(SI.METER);
@@ -9308,12 +9277,12 @@ public class InputManagerControllerMainActionUtilities {
 
 		if ((yMaxTopView - yMinTopView) <= 1.1*semispan) {
 			
-			xMaxTopView = 1.05*Main.getTheAircraft().getCanard().getSemiSpan().doubleValue(SI.METRE);
-			xMinTopView = -0.05*Main.getTheAircraft().getCanard().getSemiSpan().doubleValue(SI.METRE);
-			yMinTopView = -0.55*Main.getTheAircraft().getCanard().getSemiSpan().doubleValue(SI.METRE) 
+			xMaxTopView = 1.05*Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+			xMinTopView = -0.05*Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+			yMinTopView = -0.55*Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE) 
 					+ 0.5*Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 					+ ((xLETip - xLERoot)/4);
-			yMaxTopView = 1.1*Main.getTheAircraft().getCanard().getSemiSpan().doubleValue(SI.METRE) 
+			yMaxTopView = 1.1*Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE) 
 					+ yMinTopView;
 			
 		}
@@ -9449,22 +9418,6 @@ public class InputManagerControllerMainActionUtilities {
 			// ADJUST CRITERION CHOICE BOX:
 			if(Main.getTheAircraft() != null)
 				theController.getCanardAdjustCriterionChoiceBox().setDisable(false);
-			
-			//---------------------------------------------------------------------------------
-			// COMPOSITE CORRECTION FACTOR:
-			if(Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getCompositeCorrectionFactor() != null) 
-				theController.getTextFieldCanardCompositeMassCorrectionFactor().setText(
-						Double.toString(
-								Main.getTheAircraft()
-								.getCanard()
-								.getLiftingSurfaceCreator()
-								.getCompositeCorrectionFactor()
-								)
-						);
-			else
-				theController.getTextFieldCanardCompositeMassCorrectionFactor().setText(
-						"NOT INITIALIZED"
-						);
 			
 			//---------------------------------------------------------------------------------
 			// ROUGHNESS:
@@ -11235,25 +11188,25 @@ public class InputManagerControllerMainActionUtilities {
 
 							if(Main.getTheAircraft().getWing() != null) 
 								wingAirfoilsName.addAll(
-										Main.getTheAircraft().getWing().getAirfoilList().stream()
+										Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().stream()
 										.map(a -> a.getAirfoilCreator().getName() + ".xml")
 										.collect(Collectors.toList())
 										);
 							if(Main.getTheAircraft().getHTail() != null) 
 								hTailAirfoilsName.addAll(
-										Main.getTheAircraft().getHTail().getAirfoilList().stream()
+										Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList().stream()
 										.map(a -> a.getAirfoilCreator().getName() + ".xml")
 										.collect(Collectors.toList())
 										);
 							if(Main.getTheAircraft().getVTail() != null) 
 								vTailAirfoilsName.addAll(
-										Main.getTheAircraft().getVTail().getAirfoilList().stream()
+										Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().stream()
 										.map(a -> a.getAirfoilCreator().getName() + ".xml")
 										.collect(Collectors.toList())
 										);
 							if(Main.getTheAircraft().getCanard() != null) 
 								canardAirfoilsName.addAll(
-										Main.getTheAircraft().getCanard().getAirfoilList().stream()
+										Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList().stream()
 										.map(a -> a.getAirfoilCreator().getName() + ".xml")
 										.collect(Collectors.toList())
 										);

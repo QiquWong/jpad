@@ -16,6 +16,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.aerodynamics.AirfoilCalc;
+import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyUnits;
@@ -106,8 +107,8 @@ public class FuelTank implements IFuelTank {
 		public FuelTankBuilder (String id, LiftingSurface theWing) {
 			this.__id = id;
 			this.__theWing = theWing;
-			this.__mainSparNormalizedStation = theWing.getLiftingSurfaceCreator().getMainSparNonDimensionalPosition();
-			this.__secondarySparNormalizedStation = theWing.getLiftingSurfaceCreator().getSecondarySparNonDimensionalPosition();
+			this.__mainSparNormalizedStation = theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition();
+			this.__secondarySparNormalizedStation = theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition();
 		}
 		
 		public FuelTankBuilder mainSparPosition (Double xMainSpar) {
@@ -161,12 +162,12 @@ public class FuelTank implements IFuelTank {
 	 */
 	private void estimateDimensions(LiftingSurface theWing) {
 
-		for (int i=0; i<theWing.getAirfoilList().size()-1; i++) {
+		for (int i=0; i<theWing.getLiftingSurfaceCreator().getAirfoilList().size()-1; i++) {
 			this._thicknessAtMainSpar.add(
 					Amount.valueOf(
 							AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
 									_mainSparNormalizedStation,
-									theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
+									theWing.getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
 									)
 							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
 							SI.METER)
@@ -175,7 +176,7 @@ public class FuelTank implements IFuelTank {
 					Amount.valueOf(
 							AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
 									_secondarySparNormalizedStation,
-									theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
+									theWing.getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
 									)
 							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
 							SI.METER)
@@ -196,13 +197,13 @@ public class FuelTank implements IFuelTank {
 					.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1))
 					);
 		
-		AirfoilCreator airfoilAt85Percent = LiftingSurface.calculateAirfoilAtY(
+		AirfoilCreator airfoilAt85Percent = LSGeometryCalc.calculateAirfoilAtY(
 				theWing,
-				theWing.getSemiSpan().times(0.85).doubleValue(SI.METER)
+				theWing.getLiftingSurfaceCreator().getSemiSpan().times(0.85).doubleValue(SI.METER)
 				);
 		Amount<Length> chordAt85Percent = Amount.valueOf(
-				theWing.getChordAtYActual(
-						theWing.getSemiSpan().times(0.85).doubleValue(SI.METER)
+				theWing.getLiftingSurfaceCreator().getChordAtYActual(
+						theWing.getLiftingSurfaceCreator().getSemiSpan().times(0.85).doubleValue(SI.METER)
 						),
 				SI.METER
 				);
@@ -232,12 +233,12 @@ public class FuelTank implements IFuelTank {
 						SI.METER
 						)
 				);
-		this._fuelTankStations.add(theWing.getSemiSpan().times(0.85));
+		this._fuelTankStations.add(theWing.getLiftingSurfaceCreator().getSemiSpan().times(0.85));
 		
 		this._wingChordsAtFuelTankStations.add(chordAt85Percent);
 		
 		this._prismoidsLength.add(
-				theWing.getSemiSpan().times(0.85)
+				theWing.getLiftingSurfaceCreator().getSemiSpan().times(0.85)
 				.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(
 						theWing.getLiftingSurfaceCreator().getYBreakPoints().size()-2)
 						)
@@ -453,7 +454,7 @@ public class FuelTank implements IFuelTank {
 																			.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[3]																
 																).doubleValue(SI.METER)
-														+ (this._theWing.getChordAtYActual(
+														+ (this._theWing.getLiftingSurfaceCreator().getChordAtYActual(
 																this._theWing.getLiftingSurfaceCreator()
 																	.getYBreakPoints().get(i)
 																		.doubleValue(SI.METER)
@@ -468,20 +469,20 @@ public class FuelTank implements IFuelTank {
 																			.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[1]																
 																).doubleValue(SI.METER)
-														+ (this._theWing.getChordAtYActual(
+														+ (this._theWing.getLiftingSurfaceCreator().getChordAtYActual(
 																this._theWing.getLiftingSurfaceCreator()
 																		.getYBreakPoints().get(i)
 																			.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[1])
 																* this._mainSparNormalizedStation
 																)
-														+ ((this._theWing.getChordAtYActual(
+														+ ((this._theWing.getLiftingSurfaceCreator().getChordAtYActual(
 																this._theWing.getLiftingSurfaceCreator()
 																		.getYBreakPoints().get(i)
 																			.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[1])
 																* this._secondarySparNormalizedStation)
-															- (this._theWing.getChordAtYActual(
+															- (this._theWing.getLiftingSurfaceCreator().getChordAtYActual(
 																	this._theWing.getLiftingSurfaceCreator()
 																			.getYBreakPoints().get(i)
 																				.doubleValue(SI.METER)

@@ -10,7 +10,6 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsManager;
-import analyses.liftingsurface.LSAerodynamicsManager;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.customdata.MyArray;
@@ -49,9 +48,9 @@ public class AlphaEffective {
 		this.theOperatingConditions = theOperatingConditions;
 
 //		vortexSemiSpanToSemiSpanRatio = theLSManager.get_vortexSemiSpanToSemiSpanRatio();
-		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * theWing.getSemiSpan().getEstimatedValue();
+		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * theWing.getLiftingSurfaceCreator().getSemiSpan().getEstimatedValue();
 		mach = theOperatingConditions.getMachCruise();
-		semispan = theWing.getSemiSpan().getEstimatedValue();
+		semispan = theWing.getLiftingSurfaceCreator().getSemiSpan().getEstimatedValue();
 
 		dihedral = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
@@ -59,7 +58,7 @@ public class AlphaEffective {
 						);
 		alpha0lArray = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
-						theWing.getAlpha0VsY()
+						theWing.getLiftingSurfaceCreator().getAlpha0VsY()
 						);
 		twist = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
@@ -79,7 +78,7 @@ public class AlphaEffective {
 				.convertListOfAmountTodoubleArray(
 						theWing.getLiftingSurfaceCreator().getXLEBreakPoints()
 						);
-		surface = theWing.getSurface().getEstimatedValue();
+		surface = theWing.getLiftingSurfaceCreator().getSurfacePlanform().getEstimatedValue();
 		altitude = theOperatingConditions.getAltitudeCruise().getEstimatedValue();
 
 //		alpha0l = theLSManager.get_alpha0lDistribution().toArray();
@@ -108,7 +107,8 @@ public class AlphaEffective {
 		NasaBlackwell theCalculator = new NasaBlackwell(
 				semispan, surface, yStationsActual,
 				chordsVsYActual, xLEvsYActual,
-				dihedral, theWing.getLiftingSurfaceCreator().getTwistsBreakPoints(),theWing.getAlpha0VsY(), vortexSemiSpanToSemiSpanRatio,
+				dihedral, theWing.getLiftingSurfaceCreator().getTwistsBreakPoints(),
+				theWing.getLiftingSurfaceCreator().getAlpha0VsY(), vortexSemiSpanToSemiSpanRatio,
 				alphaInitial.getEstimatedValue(), mach, altitude);
 
 		theCalculator.calculateVerticalVelocity(alphaInitial);

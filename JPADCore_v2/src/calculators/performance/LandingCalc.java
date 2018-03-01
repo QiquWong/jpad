@@ -160,7 +160,7 @@ public class LandingCalc {
 				SpeedCalc.calculateSpeedStall(
 						theConditions.getAltitudeLanding().getEstimatedValue(),
 						maxLandingMass.times(AtmosphereCalc.g0).getEstimatedValue(),
-						aircraft.getWing().getSurface().getEstimatedValue(),
+						aircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().getEstimatedValue(),
 						cLmaxLanding
 						),
 				SI.METERS_PER_SECOND);
@@ -179,7 +179,7 @@ public class LandingCalc {
 		System.out.println("-----------------------------------------------------------\n");
 
 		// McCormick interpolated function --> See the excel file into JPAD DOCS
-		double hb = wingToGroundDistance.divide(aircraft.getWing().getSpan().times(Math.PI/4)).getEstimatedValue();
+		double hb = wingToGroundDistance.divide(aircraft.getWing().getLiftingSurfaceCreator().getSpan().times(Math.PI/4)).getEstimatedValue();
 		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
 				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
 
@@ -709,7 +709,7 @@ public class LandingCalc {
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = LandingCalc.this.mu;
 			muBrake = LandingCalc.this.muBrake;
-			ar = aircraft.getWing().getAspectRatio();
+			ar = aircraft.getWing().getLiftingSurfaceCreator().getAspectRatio();
 			kGround = LandingCalc.this.getkGround();
 			cLground = LandingCalc.this.getcLground();
 			vWind = LandingCalc.this.getvWind().getEstimatedValue();
@@ -774,7 +774,7 @@ public class LandingCalc {
 			double cDnew = cD0 + cDi;
 
 			return 	0.5
-					*aircraft.getWing().getSurface().getEstimatedValue()
+					*aircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
 							theConditions.getAltitudeLanding().getEstimatedValue())
 					*(Math.pow((speed + vWind), 2))
@@ -791,7 +791,7 @@ public class LandingCalc {
 		public double lift(double speed) {
 
 			return 	0.5
-					*aircraft.getWing().getSurface().getEstimatedValue()
+					*aircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
 							theConditions.getAltitudeLanding().getEstimatedValue())
 					*(Math.pow((speed + vWind), 2))

@@ -18,7 +18,6 @@ import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
@@ -137,7 +136,7 @@ public class WingTest extends Application {
 
 		Double[][] eqPts = new Double[4][2];
 		eqPts[0][0] = 0.0;
-		eqPts[0][1] = theWing.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE();
+		eqPts[0][1] = theWing.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE();
 		eqPts[1][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
 		eqPts[1][1] = theWing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER);
 		eqPts[2][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
@@ -148,7 +147,7 @@ public class WingTest extends Application {
 				.doubleValue(SI.METER);
 		eqPts[3][0] = 0.0;
 		eqPts[3][1] = theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-				- theWing.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootTE();
+				- theWing.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordTE();
 
 		listDataArray.add(eqPts);
 
@@ -160,8 +159,8 @@ public class WingTest extends Application {
 
 		listDataArray.add(xyMAC);
 
-		double yMax = 1.05*wing.getSemiSpan().doubleValue(SI.METRE);
-		double yMin = -0.05*wing.getSemiSpan().doubleValue(SI.METRE);
+		double yMax = 1.05*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+		double yMin = -0.05*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
 		double xMax = yMax;
 		double xMin = yMin;
 
@@ -281,40 +280,18 @@ public class WingTest extends Application {
 			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
 			// read LiftingSurface from xml ...
-			theWing = new LiftingSurfaceBuilder(
-					"MyWing",
-					ComponentEnum.WING,
-					aeroDatabaseReader,
-					highLiftDatabaseReader,
-					veDSCDatabaseReader
-					)
-					.liftingSurfaceCreator(
-							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
-							)
-					.build();
-			
-			// default LiftingSurface from xml ...
-//			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
-//					.liftingSurfaceCreator(
-//							new LiftingSurfaceCreator
-//							.LiftingSurfaceCreatorBuilder(
-//									"MyWing",
-//									Boolean.TRUE,
-//									AircraftEnum.ATR72,
-//									ComponentEnum.WING
-//									)
-//							.build()
-//							)
-//					.build();
+			theWing = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil));
+			theWing.setAeroDatabaseReader(aeroDatabaseReader);
+			theWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
+			theWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
 
-			WingTest.theWing.calculateGeometry(
+			WingTest.theWing.getLiftingSurfaceCreator().calculateGeometry(
 					40,
-					theWing.getType(),
+					theWing.getLiftingSurfaceCreator().getType(),
 					theWing.getLiftingSurfaceCreator().isMirrored());
 
-			WingTest.theWing.populateAirfoilList(
-					aeroDatabaseReader, 
-					theWing.getLiftingSurfaceCreator().getEquivalentWing().getEquivalentWingFlag()
+			WingTest.theWing.getLiftingSurfaceCreator().populateAirfoilList(
+					theWing.getLiftingSurfaceCreator().getEquivalentWingFlag()
 					);
 			
 			System.out.println("The wing ...");

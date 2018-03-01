@@ -177,7 +177,7 @@ public class FuselageAerodynamicsManager {
 				);
 		_fuselageSurfaceRatio = 
 				_fuselageFrontSurface.doubleValue(SI.SQUARE_METRE)/
-				_theWing.getSurface().doubleValue(SI.SQUARE_METRE);
+				_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
 		
 		// value chosen to match matlab file base drag --> lenF - dxTailCap;
 		_equivalentDiameterBase = 
@@ -210,7 +210,7 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getFuselageCreator().getFormFactor(), 
 							_cF,
 							_theFuselage.getFuselageCreator().getSWetTotal().doubleValue(SI.SQUARE_METRE),
-							_theWing.getSurface().doubleValue(SI.SQUARE_METRE)
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 							)
 					);
 		}
@@ -237,7 +237,7 @@ public class FuselageAerodynamicsManager {
 					DragCalc.calculateCD0Base(
 							MethodEnum.MATLAB, 
 							_cD0Parasite.get(MethodEnum.SEMIEMPIRICAL),
-							_theWing.getSurface().doubleValue(SI.SQUARE_METRE), 
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
 							_equivalentDiameterBase.doubleValue(SI.METER),
 							_theFuselage.getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
 							)
@@ -269,7 +269,7 @@ public class FuselageAerodynamicsManager {
 					MethodEnum.SEMIEMPIRICAL, 
 					DragCalc.calculateCD0Upsweep(
 							_theFuselage.getFuselageCreator().getCylinderSectionArea(),
-							_theWing.getSurface(),
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(),
 							_theFuselage.getFuselageCreator().getTailLength(),
 							zCamber75
 							)
@@ -295,7 +295,7 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getFuselageCreator().getWindshieldType(),
 							_theFuselage.getFuselageCreator().getWindshieldArea(),
 							_theFuselage.getFuselageCreator().getCylinderSectionArea(),
-							_theWing.getSurface()
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform()
 							)
 					);
 		}
@@ -355,7 +355,7 @@ public class FuselageAerodynamicsManager {
 			
 			double surfaceRatio = 
 					frontSurface.doubleValue(SI.SQUARE_METRE)
-					/_theWing.getSurface().doubleValue(SI.SQUARE_METRE);
+					/_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
 
 			double cDFlatPlate = AerodynamicCalc.calculateCfTurb(
 					AerodynamicCalc.calculateReynolds(
@@ -433,7 +433,7 @@ public class FuselageAerodynamicsManager {
 											.collect(Collectors.toList())
 											)
 									), 
-							_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+							_theWing.getAeroDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
 									_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 
 									_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
 									), 
@@ -444,7 +444,7 @@ public class FuselageAerodynamicsManager {
 									), 
 							_theFuselage.getFuselageCreator().getNoseLength(),                                    
 							_theFuselage.getFuselageCreator().getFuselageLength(), 
-							_theWing.getSurface(), 
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
 							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveZ(), 
 							_theFuselage.getFuselageCreator().getOutlineXZLowerCurveX(),
@@ -501,7 +501,7 @@ public class FuselageAerodynamicsManager {
 									.collect(Collectors.toList())
 									)
 							), 
-					_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+					_theWing.getAeroDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
 							_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 
 							_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
 							), 
@@ -512,7 +512,7 @@ public class FuselageAerodynamicsManager {
 							), 
 					_theFuselage.getFuselageCreator().getNoseLength(),                                   
 					_theFuselage.getFuselageCreator().getFuselageLength(), 
-					_theWing.getSurface(), 
+					_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveZ(), 
 					_theFuselage.getFuselageCreator().getOutlineXZLowerCurveX(),
@@ -568,7 +568,7 @@ public class FuselageAerodynamicsManager {
 									.collect(Collectors.toList())
 									)
 							), 
-					_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+					_theWing.getAeroDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
 							_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 
 							_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
 							), 
@@ -579,7 +579,7 @@ public class FuselageAerodynamicsManager {
 							), 
 					_theFuselage.getFuselageCreator().getNoseLength(),                       
 					_theFuselage.getFuselageCreator().getFuselageLength(), 
-					_theWing.getSurface(), 
+					_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveZ(), 
 					_theFuselage.getFuselageCreator().getOutlineXZLowerCurveX(),
@@ -658,13 +658,13 @@ public class FuselageAerodynamicsManager {
 					MomentCalc.calculateCM0Multhopp(
 							_theFuselage.getXApexConstructionAxes(),
 							_theFuselage.getFuselageCreator().getFuselageLength(), 
-							_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+							_theWing.getAeroDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
 									_theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 
 									_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
 									),
 							_theWing.getRiggingAngle(),
 							_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
-							_theWing.getSurface(), 
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
 							_theWing.getXApexConstructionAxes(),
@@ -730,14 +730,14 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getXApexConstructionAxes(),
 							_theFuselage.getFuselageCreator().getFuselageLength(),
 							downwashGradientRoskamConstant, 
-							_theWing.getAspectRatio(),
-							_theWing.getSurface(), 
+							_theWing.getLiftingSurfaceCreator().getAspectRatio(),
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
 							_theWingAerodynamicManager.getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
 							_theWing.getXApexConstructionAxes(),
 							wingTrailingEdgeToHTailQuarterChordDistance,
-							_theWing.getAerodynamicDatabaseReader(),
+							_theWing.getAeroDatabaseReader(),
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
 							)
@@ -753,7 +753,7 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getFuselageCreator().getSectionCylinderWidth(),
 							_positionOfC4ToFuselageLength,
 							_kF,
-							_theWing.getSurface(), 
+							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
 							_theWing.getXApexConstructionAxes(), 
 							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
