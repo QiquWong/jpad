@@ -278,6 +278,71 @@
 					<moment_distributions perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
 				</pitching_moment>
 			</vertical_tail_analyses>
+			<canard_analyses>
+				<critical_mach perform="TRUE" method="KROO"></critical_mach>
+				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
+				<lift>
+					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_zero perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_star perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_max perform="TRUE" method="NASA_BLACKWELL"/>
+					<alpha_zero_lift perform="TRUE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_star perform="TRUE" method="MEAN_AIRFOIL_INFLUENCE_AREAS"/>
+					<alpha_stall perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_vs_alpha perform="TRUE" user_defined="FALSE" method="NASA_BLACKWELL">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cL>0.0;0.1;0.5;0.7;0.75;0.7;0.65;0.5</cL>
+                    </cL_vs_alpha>
+					<lift_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
+				</lift>
+				<elevator deflection_angle_degree="5.0">
+					<high_lift_devices_effects perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD_vs_cL perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cM_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cM_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+				</elevator>
+				<drag>
+					<cD_Zero perform="TRUE" method="SEMIEMPIRICAL"/>
+					<oswald_factor perform="TRUE" method="RAYMER"/>
+					<cD_induced perform="TRUE" method="RAYMER"/>
+					<cD_wave perform="TRUE" method="LOCK_KORN_WITH_KROO"/>
+                    <cD_vs_cL perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <cL>0.2;0.3;0.7;0.9;0.95;0.09;0.085;0.07</cL>
+                        <cD>0.02;0.03;0.07;0.09;0.095;0.09;0.085;0.07</cD>
+                    </cD_vs_cL>
+					<drag_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+				</drag>
+				<pitching_moment>
+					<cM_ac perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<cM_alpha perform="TRUE" method="POLHAMUS"/>
+                    <cM_vs_alpha perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cM>
+                    </cM_vs_alpha>
+					<cM_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<moment_distributions perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+				</pitching_moment>
+			</canard_analyses>
 			<fuselage_analyses>
 				<drag>
 					<cD0_parasite perform="TRUE" method="SEMIEMPIRICAL"/>
