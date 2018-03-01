@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wing_executable highLift ="FALSE" plot = "TRUE" verbosity = "TRUE">
+        <operating_conditions>
+                <altitude unit="m">6000</altitude>
+                <mach_number>0.2</mach_number>
+                <number_of_alpha>10</number_of_alpha>
+                <alpha_initial unit="°">0.0</alpha_initial>
+                <alpha_final unit="°">6.0</alpha_final>
+        </operating_conditions>
+       <wing>
+            <global>
+                <surface unit="m²">83.15</surface>
+                <aspect_ratio>9.43</aspect_ratio>
+                <number_of_point_semispan>100</number_of_point_semispan>
+				<momentum_pole>0.2</momentum_pole> <!-- with respect to MAC -->
+             </global>
+             <distribution>
+                <number_of_given_sections>3</number_of_given_sections>
+                <airfoil_family>NACA_65_SERIES</airfoil_family> <!-- NACA_4_DIGIT, NACA_5_DIGIT, NACA_63_SERIES, NACA_64_SERIES, NACA_65_SERIES, NACA_66_SERIES, BICONVEX, DOUBLE_WEDGE -->
+				<airfoil_type>CONVENTIONAL</airfoil_type> <!-- CONVENTIONAL, PEAKY, SUPERCRITICAL, LAMINAR, MODERN_SUPERCRITICAL -->
+                   <geometry>
+						<y_adimensional_stations>[0, 0.399, 1]</y_adimensional_stations>
+						<chord_distribution unit="m">[6.39, 2.72, 1.05]</chord_distribution>
+						<x_le_distribution unit="m">[0.0, 3.71, 8.31]</x_le_distribution>
+						<twist_distribution unit="°">[0, -2, -3]</twist_distribution>
+                    </geometry>
+                    <aerodynamics>
+						<max_thickness_distribution>[0.155964,0.11946,0.119068]</max_thickness_distribution>
+						<leading_edge_radius_distribution unit = "m">[0.038919999999999996,0.042649999999999993;0.029199999999999997]</leading_edge_radius_distribution>
+						<alpha_zero_lift_distribution unit="°">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>
+						<alpha_star_distribution unit="°">[8, 8, 8]</alpha_star_distribution>
+						<alpha_stall_distribution unit="°">[17, 17, 17]</alpha_stall_distribution>
+						<cl_zero_distribution unit="°">[0.2, 0.2, 0.2]</cl_zero_distribution>
+						<cl_alpha_distribution unit="1/°">[0.11, 0.11, 0.11]</cl_alpha_distribution> <!-- do not change unit -->
+						<maximum_lift_coefficient_distribution>[2, 2, 1.8]</maximum_lift_coefficient_distribution>
+						<cd_min_distribution>[0.006, 0.006, 0.006]</cd_min_distribution>
+						<cl_ideal_distribution>[0.006, 0.006, 0.006]</cl_ideal_distribution>
+						<k_distribution>[0.008, 0.008, 0.008]</k_distribution>
+						<cm_c4_distribution>[-0.03, -0.03, -0.03]</cm_c4_distribution>
+                    </aerodynamics>
+             </distribution>
+			 <high_lift_devices>
+			                <flaps>
+                        <flap id = "1">
+                                <flap_type>SINGLE_SLOTTED</flap_type>
+                                <flap_chord_inner_ratio>0.285</flap_chord_inner_ratio>
+								<flap_chord_outer_ratio>0.285</flap_chord_outer_ratio>
+                                <flap_deflection unit = "°">40</flap_deflection>
+                                <flap_non_dimensional_inner_station>0.12</flap_non_dimensional_inner_station>
+                                <flap_non_dimensional_outer_station>0.4</flap_non_dimensional_outer_station>
+                        </flap>
+                        <flap id = "2">
+                                <flap_type>SINGLE_SLOTTED</flap_type>
+                                  <flap_chord_inner_ratio>0.285</flap_chord_inner_ratio>
+								<flap_chord_outer_ratio>0.285</flap_chord_outer_ratio>
+                                <flap_deflection unit = "°">40</flap_deflection>
+                                <flap_non_dimensional_inner_station>0.4</flap_non_dimensional_inner_station>
+                                <flap_non_dimensional_outer_station>0.75</flap_non_dimensional_outer_station>
+                        </flap>
+                </flaps>
+                <slats>
+                        <slat id = "1">
+                                <slat_deflection unit = "°">25</slat_deflection>
+                                <slat_chord_ratio>0.055</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.12</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.33</slat_non_dimensional_outer_station>
+                        </slat>
+                        <slat id = "2">
+                                <slat_deflection unit = "°">25</slat_deflection>
+                                <slat_chord_ratio unit = "">0.085</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.4</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.56</slat_non_dimensional_outer_station>
+                        </slat>
+                        <slat id = "3">
+                                <slat_deflection unit = "°">25</slat_deflection>
+                                <slat_chord_ratio>0.095</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.57</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.73</slat_non_dimensional_outer_station>
+                        </slat>
+						<slat id = "4">
+                                <slat_deflection unit = "°">25</slat_deflection>
+                                <slat_chord_ratio>0.11</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.74</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.95</slat_non_dimensional_outer_station>
+                        </slat>
+                </slats>
+			 </high_lift_devices>
+        </wing>
+</wing_executable>
