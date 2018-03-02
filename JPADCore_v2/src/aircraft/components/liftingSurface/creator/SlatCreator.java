@@ -13,75 +13,25 @@ import org.w3c.dom.Node;
 import configuration.MyConfiguration;
 import standaloneutils.MyXMLReaderUtils;
 
-public class SlatCreator implements ISlatCreator {
-	
-	String _id;
-	
-	private Double _innerStationSpanwisePosition,
-				   _outerStationSpanwisePosition,
-				   _innerChordRatio,
-				   _outerChordRatio,
-				   _meanChordRatio,
-				   _extensionRatio;
-	private Amount<Angle> _minimumDeflection;
-	private Amount<Angle> _maximumDeflection;
+public class SlatCreator {
 
-	//=================================================================
-	// Builder pattern via a nested public static class
-	
-	public static class SlatBuilder {
-		// required parameters
-		private String __id;
-		private Double __innerStationSpanwisePosition;
-		private Double __outerStationSpanwisePosition;
-		private Double __innerChordRatio;
-		private Double __outerChordRatio;
-		private Double __extensionRatio;
-		private Amount<Angle> __minimumDeflection;
-		private Amount<Angle> __maximumDeflection;
+	//-----------------------------------------------------------------
+	// VARIABLE DECLARATION
+	private ISlatCreator _theSlatInterface;
+	private double _meanChordRatio;
 
-		// optional parameters ... defaults
-		// ...
-
-		public SlatBuilder(
-				String id,
-				Double innerStationSpanwisePosition,
-				Double outerStationSpanwisePosition,
-				Double innerChordRatio,
-				Double outerChordRatio,
-				Double extensionRatio,
-				Amount<Angle> minimumDeflection,
-				Amount<Angle> maximumDeflection
-				){
-			this.__id = id;
-			this.__innerStationSpanwisePosition = innerStationSpanwisePosition;
-			this.__outerStationSpanwisePosition = outerStationSpanwisePosition;
-			this.__innerChordRatio = innerChordRatio;
-			this.__outerChordRatio = outerChordRatio;
-			this.__extensionRatio = extensionRatio;
-			this.__minimumDeflection = minimumDeflection;
-			this.__maximumDeflection = maximumDeflection;
-		}
-
-		public SlatCreator build() {
-			return new SlatCreator(this);
-		}
-	}
-	//=================================================================
-	
-	private SlatCreator(SlatBuilder builder) {
-		_id = builder.__id;
-		_innerStationSpanwisePosition = builder.__innerStationSpanwisePosition;
-		_outerStationSpanwisePosition = builder.__outerStationSpanwisePosition;
-		_innerChordRatio = builder.__innerChordRatio;
-		_outerChordRatio = builder.__outerChordRatio;
-		_extensionRatio = builder.__extensionRatio;
-		_minimumDeflection = builder.__minimumDeflection;
-		_maximumDeflection = builder.__maximumDeflection;
-		
-		calculateMeanChordRatio(_innerChordRatio, _outerChordRatio);
+	//-----------------------------------------------------------------
+	// BUILDER
+	public SlatCreator(ISlatCreator theSlatInterface) {
+		this._theSlatInterface = theSlatInterface;
+		calculateMeanChordRatio(
+				_theSlatInterface.getInnerChordRatio(),
+				_theSlatInterface.getOuterChordRatio()
+				);
 	}
 
+	//-----------------------------------------------------------------
+	// METHODS
 	public static SlatCreator importFromSymmetricSlatNode(Node nodeSymmetricFlap) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -125,50 +75,50 @@ public class SlatCreator implements ISlatCreator {
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//slat/inner_chord_ratio/text()");
-		Double innerChordRatio = Double
+		double innerChordRatio = Double
 				.valueOf(innerChordRatioProperty);
 		
 		String outerChordRatioProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//slat/outer_chord_ratio/text()");
-		Double outerChordRatio = Double
+		double outerChordRatio = Double
 				.valueOf(outerChordRatioProperty);
 
 		String extensionRatioProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//slat/extension_ratio/text()");
-		Double extensionRatio = Double
+		double extensionRatio = Double
 				.valueOf(extensionRatioProperty);
 		
 		String innerStationSpanwisePositionProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//slat/inner_station_spanwise_position/text()");
-		Double innerStationSpanwisePosition = Double
+		double innerStationSpanwisePosition = Double
 				.valueOf(innerStationSpanwisePositionProperty);
 		
 		String outerStationSpanwisePositionProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//slat/outer_station_spanwise_position/text()");
-		Double outerStationSpanwisePosition = Double
+		double outerStationSpanwisePosition = Double
 				.valueOf(outerStationSpanwisePositionProperty);
 		
 		// create the wing panel via its builder
-		SlatCreator slat =
-				new SlatBuilder(
-						id,
-						innerStationSpanwisePosition,
-						outerStationSpanwisePosition,
-						innerChordRatio,
-						outerChordRatio,
-						extensionRatio,
-						minimumDeflection,
-						maximumDeflection
-						)
-				.build();
+		SlatCreator slat =	new SlatCreator(
+				new ISlatCreator.Builder()
+				.setId(id)
+				.setInnerStationSpanwisePosition(innerStationSpanwisePosition)
+				.setOuterStationSpanwisePosition(outerStationSpanwisePosition)
+				.setInnerChordRatio(innerChordRatio)
+				.setOuterChordRatio(outerChordRatio)
+				.setExtensionRatio(extensionRatio)
+				.setMinimumDeflection(minimumDeflection)
+				.setMaximumDeflection(maximumDeflection)
+				.build()
+				);
 
 		return slat;
 	}
@@ -182,105 +132,99 @@ public class SlatCreator implements ISlatCreator {
 			.append("\t-------------------------------------\n")
 			.append("\tSlat\n")
 			.append("\t-------------------------------------\n")
-			.append("\tID: '" + _id + "'\n")
-			.append("\tMinimum deflection = " + _minimumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
-			.append("\tMaximum deflection = " + _maximumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
-			.append("\tInner chord ratio = " + _innerChordRatio + "\n")
-			.append("\tOuter chord ratio = " + _outerChordRatio + "\n")
+			.append("\tID: '" + _theSlatInterface.getId() + "'\n")
+			.append("\tMinimum deflection = " + _theSlatInterface.getMinimumDeflection().doubleValue(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tMaximum deflection = " + _theSlatInterface.getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tInner chord ratio = " + _theSlatInterface.getInnerChordRatio() + "\n")
+			.append("\tOuter chord ratio = " + _theSlatInterface.getOuterChordRatio() + "\n")
 			.append("\tMean chord ratio = " + _meanChordRatio + "\n")
-			.append("\tChord extension ratio = " + _extensionRatio + "\n")
-			.append("\tInner station spanwise position = " + _innerStationSpanwisePosition + "\n")
-			.append("\tOuter station spanwise position = " + _outerStationSpanwisePosition + "\n")
+			.append("\tChord extension ratio = " + _theSlatInterface.getExtensionRatio() + "\n")
+			.append("\tInner station spanwise position = " + _theSlatInterface.getInnerStationSpanwisePosition() + "\n")
+			.append("\tOuter station spanwise position = " + _theSlatInterface.getOuterStationSpanwisePosition() + "\n")
 			.append("\t.....................................\n")
 			;
 		return sb.toString();
 		
 	}
 
-	@Override
-	public void calculateMeanChordRatio(Double cfcIn, Double cfcOut) {
+	public void calculateMeanChordRatio(double cfcIn, double cfcOut) {
 		// TODO : WHEN AVAILABLE, IMPLEMENT A METHOD TO EVALUATES EACH cf/c CONTRIBUTION.
 		setMeanChordRatio((cfcIn + cfcOut)/2);
 	}
+
+	//-----------------------------------------------------------------
+	// GETTERS & SETTERS
 	
-	@Override
-	public Double getInnerStationSpanwisePosition() {
-		return _innerStationSpanwisePosition;
+	public ISlatCreator getTheSlatInterface() {
+		return _theSlatInterface;
+	}
+	
+	public void setTheSlatInterface (ISlatCreator theSlatInterface) {
+		this._theSlatInterface = theSlatInterface;
+	}
+	
+	public double getInnerStationSpanwisePosition() {
+		return _theSlatInterface.getInnerStationSpanwisePosition();
 	}
 
-	@Override
-	public void setInnerStationSpanwisePosition(Double etaIn) {
-		_innerStationSpanwisePosition = etaIn;
+	public void setInnerStationSpanwisePosition(double etaIn) {
+		setTheSlatInterface(ISlatCreator.Builder.from(_theSlatInterface).setInnerStationSpanwisePosition(etaIn).build());
 	}
 	
-	@Override
-	public Double getOuterStationSpanwisePosition() {
-		return _outerStationSpanwisePosition;
+	public double getOuterStationSpanwisePosition() {
+		return _theSlatInterface.getOuterStationSpanwisePosition();
 	}
 	
-	@Override
-	public void setOuterStationSpanwisePosition(Double etaOut) {
-		_outerStationSpanwisePosition = etaOut;
+	public void setOuterStationSpanwisePosition(double etaOut) {
+		setTheSlatInterface(ISlatCreator.Builder.from(_theSlatInterface).setOuterStationSpanwisePosition(etaOut).build());
 	}
 
-	@Override
-	public Double getInnerChordRatio() {
-		return _innerChordRatio;
+	public double getInnerChordRatio() {
+		return _theSlatInterface.getInnerChordRatio();
 	}
 
-	@Override
-	public void setInnerChordRatio(Double cfcIn) {
-		_innerChordRatio = cfcIn;
+	public void setInnerChordRatio(double cfcIn) {
+		setTheSlatInterface(ISlatCreator.Builder.from(_theSlatInterface).setInnerChordRatio(cfcIn).build());
 	}
 	
-	@Override
-	public Double getOuterChordRatio() {
-		return _outerChordRatio;
+	public double getOuterChordRatio() {
+		return _theSlatInterface.getOuterChordRatio();
 	}
 
-	@Override
-	public void setOuterChordRatio(Double cfcOut) {
-		_outerChordRatio = cfcOut;
+	public void setOuterChordRatio(double cfcOut) {
+		setTheSlatInterface(ISlatCreator.Builder.from(_theSlatInterface).setOuterChordRatio(cfcOut).build());
 	}
 	
-	@Override
-	public Double getMeanChordRatio() {
+	public double getMeanChordRatio() {
 		return _meanChordRatio;
 	}
 
-	@Override
-	public void setMeanChordRatio(Double cfcMean) {
+	public void setMeanChordRatio(double cfcMean) {
 		_meanChordRatio = cfcMean;
 	}
 	
-	@Override
 	public Amount<Angle> getMinimumDeflection() {
-		return _minimumDeflection;
+		return _theSlatInterface.getMinimumDeflection();
 	}
 
-	@Override
 	public void setMinimumDeflection(Amount<Angle> deltaSlatMin) {
-		_minimumDeflection = deltaSlatMin;
+		setTheSlatInterface(ISlatCreator.Builder.from(_theSlatInterface).setMinimumDeflection(deltaSlatMin).build());
 	}
 	
-	@Override
 	public Amount<Angle> getMaximumDeflection() {
-		return _maximumDeflection;
+		return _theSlatInterface.getMaximumDeflection();
 	}
 
-	@Override
 	public void setMaximumDeflection(Amount<Angle> deltaSlatMax) {
-		_maximumDeflection = deltaSlatMax;
+		setTheSlatInterface(ISlatCreator.Builder.from(_theSlatInterface).setMaximumDeflection(deltaSlatMax).build());
 	}
 	
-	@Override
-	public Double getExtensionRatio() {
-		return _extensionRatio;
+	public double getExtensionRatio() {
+		return _theSlatInterface.getExtensionRatio();
 	}
 
-	@Override
-	public void setExtensionRatio(Double extensionRatio) {
-		_extensionRatio = extensionRatio;
+	public void setExtensionRatio(double extensionRatio) {
+		setTheSlatInterface(ISlatCreator.Builder.from(_theSlatInterface).setExtensionRatio(extensionRatio).build());
 	}
 
 }

@@ -17,75 +17,25 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
 import standaloneutils.MyXMLReaderUtils;
 
-public class SymmetricFlapCreator implements ISymmetricFlapCreator {
+public class SymmetricFlapCreator {
 
-	String _id;
+	//-----------------------------------------------------------------
+	// VARIABLE DECLARATION
+	private ISymmetricFlapCreator _theSymmetricFlapInterface;
+	private double _meanChordRatio;
 	
-	private FlapTypeEnum _type;
-	private Double _innerStationSpanwisePosition,
-				   _outerStationSpanwisePosition,
-				   _innerChordRatio,
-				   _outerChordRatio,
-				   _meanChordRatio;
-	private Amount<Angle> _minimumDeflection;
-	private Amount<Angle> _maximumDeflection;
-	
-	//=================================================================
-	// Builder pattern via a nested public static class
-	
-	public static class SymmetricFlapBuilder {
-		// required parameters
-		private String __id;
-		private FlapTypeEnum __type;
-		private Double __innerStationSpanwisePosition;
-		private Double __outerStationSpanwisePosition;
-		private Double __innerChordRatio;
-		private Double __outerChordRatio;
-		private Amount<Angle> __minimumDeflection;
-		private Amount<Angle> __maximumDeflection;
-
-		// optional parameters ... defaults
-		// ...
-
-		public SymmetricFlapBuilder(
-				String id,
-				FlapTypeEnum type,
-				Double innerStationSpanwisePosition,
-				Double outerStationSpanwisePosition,
-				Double innerChordRatio,
-				Double outerChordRatio,
-				Amount<Angle> minimumDeflection,
-				Amount<Angle> maximumDeflection
-				){
-			this.__id = id;
-			this.__type = type;
-			this.__innerStationSpanwisePosition = innerStationSpanwisePosition;
-			this.__outerStationSpanwisePosition = outerStationSpanwisePosition;
-			this.__innerChordRatio = innerChordRatio;
-			this.__outerChordRatio = outerChordRatio;
-			this.__minimumDeflection = minimumDeflection;
-			this.__maximumDeflection = maximumDeflection;
-		}
-
-		public SymmetricFlapCreator build() {
-			return new SymmetricFlapCreator(this);
-		}
-	}
-	//=================================================================
-	
-	private SymmetricFlapCreator(SymmetricFlapBuilder builder) {
-		_id = builder.__id;
-		_type = builder.__type;
-		_innerStationSpanwisePosition = builder.__innerStationSpanwisePosition;
-		_outerStationSpanwisePosition = builder.__outerStationSpanwisePosition;
-		_innerChordRatio = builder.__innerChordRatio;
-		_outerChordRatio = builder.__outerChordRatio;
-		_minimumDeflection = builder.__minimumDeflection;
-		_maximumDeflection = builder.__maximumDeflection;
-		
-		calculateMeanChordRatio(_innerChordRatio, _outerChordRatio);
+	//-----------------------------------------------------------------
+	// BUILDER
+	public SymmetricFlapCreator(ISymmetricFlapCreator theSymmetricFlapInterface) {
+		this._theSymmetricFlapInterface = theSymmetricFlapInterface;
+		calculateMeanChordRatio(
+				_theSymmetricFlapInterface.getInnerChordRatio(), 
+				_theSymmetricFlapInterface.getOuterChordRatio()
+				);
 	}
 
+	//-----------------------------------------------------------------
+	// METHODS
 	public static SymmetricFlapCreator importFromSymmetricFlapNode(Node nodeSymmetricFlap, ComponentEnum type) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -126,7 +76,7 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 		
 		if(flapTypeProperty.equalsIgnoreCase("SINGLE_SLOTTED"))
 			flapType = FlapTypeEnum.SINGLE_SLOTTED;
-		else if(flapTypeProperty.equalsIgnoreCase("DOUBLE_SLOTTED"))
+		else if(flapTypeProperty.equalsIgnoreCase("double_SLOTTED"))
 			flapType = FlapTypeEnum.DOUBLE_SLOTTED;
 		else if(flapTypeProperty.equalsIgnoreCase("TRIPLE_SLOTTED"))
 			flapType = FlapTypeEnum.TRIPLE_SLOTTED;
@@ -170,28 +120,28 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//symmetric_flap/inner_station_spanwise_position/text()");
-		Double innerStationSpanwisePosition = Double
+		double innerStationSpanwisePosition = Double
 				.valueOf(innerStationSpanwisePositionProperty);
 		
 		String outerStationSpanwisePositionProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//symmetric_flap/outer_station_spanwise_position/text()");
-		Double outerStationSpanwisePosition = Double
+		double outerStationSpanwisePosition = Double
 				.valueOf(outerStationSpanwisePositionProperty);
 		
 		String innerChordRatioProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//symmetric_flap/inner_chord_ratio/text()");
-		Double innerChordRatio = Double
+		double innerChordRatio = Double
 				.valueOf(innerChordRatioProperty);
 		
 		String outerChordRatioProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//symmetric_flap/outer_chord_ratio/text()");
-		Double outerChordRatio = Double
+		double outerChordRatio = Double
 				.valueOf(outerChordRatioProperty);
 		
 		Amount<Angle> minimumDeflection = MyXMLReaderUtils
@@ -205,18 +155,18 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 						"//symmetric_flap/max_deflection");
 		
 		// create the wing panel via its builder
-		SymmetricFlapCreator symmetricFlap =
-				new SymmetricFlapBuilder(
-						id,
-						flapType,
-						innerStationSpanwisePosition,
-						outerStationSpanwisePosition,
-						innerChordRatio,
-						outerChordRatio,
-						minimumDeflection,
-						maximumDeflection
-						)
-				.build();
+		SymmetricFlapCreator symmetricFlap = new SymmetricFlapCreator(
+				new ISymmetricFlapCreator.Builder()
+				.setId(id)
+				.setType(flapType)
+				.setInnerStationSpanwisePosition(innerStationSpanwisePosition)
+				.setOuterStationSpanwisePosition(outerStationSpanwisePosition)
+				.setInnerChordRatio(innerChordRatio)
+				.setOuterChordRatio(outerChordRatio)
+				.setMinimumDeflection(minimumDeflection)
+				.setMaximumDeflection(maximumDeflection)
+				.build()
+				);		
 
 		return symmetricFlap;
 	}
@@ -230,105 +180,106 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 			.append("\t-------------------------------------\n")
 			.append("\tSymmetric flap\n")
 			.append("\t-------------------------------------\n")
-			.append("\tID: '" + _id + "'\n")
-			.append("\tFlap type = " + _type + "\n")
-			.append("\tInner station spanwise position = " + _innerStationSpanwisePosition + "\n")
-			.append("\tOuter station spanwise position = " + _outerStationSpanwisePosition + "\n")
-			.append("\tInner chord ratio = " + _innerChordRatio + "\n")
-			.append("\tOuter chord ratio = " + _outerChordRatio + "\n")
+			.append("\tID: '" + _theSymmetricFlapInterface.getId() + "'\n")
+			.append("\tFlap type = " + _theSymmetricFlapInterface.getType() + "\n")
+			.append("\tInner station spanwise position = " + _theSymmetricFlapInterface.getInnerStationSpanwisePosition() + "\n")
+			.append("\tOuter station spanwise position = " + _theSymmetricFlapInterface.getOuterStationSpanwisePosition() + "\n")
+			.append("\tInner chord ratio = " + _theSymmetricFlapInterface.getInnerChordRatio() + "\n")
+			.append("\tOuter chord ratio = " + _theSymmetricFlapInterface.getOuterChordRatio() + "\n")
 			.append("\tMean chord ratio = " + _meanChordRatio + "\n")
-			.append("\tMinimum deflection = " + _minimumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
-			.append("\tMaximum deflection = " + _maximumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tMinimum deflection = " + _theSymmetricFlapInterface.getMinimumDeflection().doubleValue(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tMaximum deflection = " + _theSymmetricFlapInterface.getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\t.....................................\n")
 			;
 		return sb.toString();
 		
 	}
 
-	@Override
-	public void calculateMeanChordRatio(Double cfcIn, Double cfcOut) {
+	public void calculateMeanChordRatio(double cfcIn, double cfcOut) {
 		// TODO : WHEN AVAILABLE, IMPLEMENT A METHOD TO EVALUATES EACH cf/c CONTRIBUTION.
 		setMeanChordRatio((cfcIn + cfcOut)/2);
 	}
 	
-	@Override
-	public Double getInnerStationSpanwisePosition() {
-		return _innerStationSpanwisePosition;
-	}
-
-	@Override
-	public void setInnerStationSpanwisePosition(Double etaIn) {
-		_innerStationSpanwisePosition = etaIn;
+	//-----------------------------------------------------------------
+	// GETTERS & SETTERS
+	public ISymmetricFlapCreator getTheSymmetricFlapInterface() {
+		return _theSymmetricFlapInterface;
 	}
 	
-	@Override
-	public Double getOuterStationSpanwisePosition() {
-		return _outerStationSpanwisePosition;
+	public void setTheSymmetricFlapInterface (ISymmetricFlapCreator theSymmetricFlapInterface) {
+		this._theSymmetricFlapInterface = theSymmetricFlapInterface;
 	}
 	
-	@Override
-	public void setOuterStationSpanwisePosition(Double etaOut) {
-		_outerStationSpanwisePosition = etaOut;
-	}
-
-	@Override
-	public Double getInnerChordRatio() {
-		return _innerChordRatio;
-	}
-
-	@Override
-	public void setInnerChordRatio(Double cfcIn) {
-		_innerChordRatio = cfcIn;
+	public String getId() {
+		return _theSymmetricFlapInterface.getId();
 	}
 	
-	@Override
-	public Double getOuterChordRatio() {
-		return _outerChordRatio;
-	}
-
-	@Override
-	public void setOuterChordRatio(Double cfcOut) {
-		_outerChordRatio = cfcOut;
+	public void setId (String id) {
+		setTheSymmetricFlapInterface(ISymmetricFlapCreator.Builder.from(_theSymmetricFlapInterface).setId(id).build());
 	}
 	
-	@Override
-	public Double getMeanChordRatio() {
+	public double getInnerStationSpanwisePosition() {
+		return _theSymmetricFlapInterface.getInnerStationSpanwisePosition();
+	}
+
+	public void setInnerStationSpanwisePosition(double etaIn) {
+		setTheSymmetricFlapInterface(ISymmetricFlapCreator.Builder.from(_theSymmetricFlapInterface).setInnerStationSpanwisePosition(etaIn).build());
+	}
+	
+	public double getOuterStationSpanwisePosition() {
+		return _theSymmetricFlapInterface.getOuterStationSpanwisePosition();
+	}
+	
+	public void setOuterStationSpanwisePosition(double etaOut) {
+		setTheSymmetricFlapInterface(ISymmetricFlapCreator.Builder.from(_theSymmetricFlapInterface).setOuterStationSpanwisePosition(etaOut).build());
+	}
+
+	public double getInnerChordRatio() {
+		return _theSymmetricFlapInterface.getInnerChordRatio();
+	}
+
+	public void setInnerChordRatio(double cfcIn) {
+		setTheSymmetricFlapInterface(ISymmetricFlapCreator.Builder.from(_theSymmetricFlapInterface).setInnerChordRatio(cfcIn).build());
+	}
+	
+	public double getOuterChordRatio() {
+		return _theSymmetricFlapInterface.getOuterChordRatio();
+	}
+
+	public void setOuterChordRatio(double cfcOut) {
+		setTheSymmetricFlapInterface(ISymmetricFlapCreator.Builder.from(_theSymmetricFlapInterface).setOuterChordRatio(cfcOut).build());
+	}
+	
+	public double getMeanChordRatio() {
 		return _meanChordRatio;
 	}
 
-	@Override
-	public void setMeanChordRatio(Double cfcMean) {
+	public void setMeanChordRatio(double cfcMean) {
 		_meanChordRatio = cfcMean;
 	}
 	
-	@Override
 	public Amount<Angle> getMinimumDeflection() {
-		return _minimumDeflection;
+		return _theSymmetricFlapInterface.getMinimumDeflection();
 	}
 
-	@Override
 	public void setMinimumDeflection(Amount<Angle> deltaFlapMin) {
-		_minimumDeflection = deltaFlapMin;
+		setTheSymmetricFlapInterface(ISymmetricFlapCreator.Builder.from(_theSymmetricFlapInterface).setMinimumDeflection(deltaFlapMin).build());
 	}
 
-	@Override
 	public Amount<Angle> getMaximumDeflection() {
-		return _maximumDeflection;
+		return _theSymmetricFlapInterface.getMaximumDeflection();
 	}
 
-	@Override
 	public void setMaximumDeflection(Amount<Angle> deltaFlapMax) {
-		_maximumDeflection = deltaFlapMax;
+		setTheSymmetricFlapInterface(ISymmetricFlapCreator.Builder.from(_theSymmetricFlapInterface).setMaximumDeflection(deltaFlapMax).build());
 	}
 	
-	@Override
 	public FlapTypeEnum getType() {
-		return _type;
+		return _theSymmetricFlapInterface.getType();
 	}
 	
-	@Override
 	public void setType(FlapTypeEnum flapType) {
-		_type = flapType;
+		setTheSymmetricFlapInterface(ISymmetricFlapCreator.Builder.from(_theSymmetricFlapInterface).setType(flapType).build());
 	}
 
 }

@@ -2,8 +2,9 @@
 <jpad_config>
    <horizontal_tail id="Horizontal tail" mirrored="true">
       <global_data>
-         <composite_correction_factor>0.000000</composite_correction_factor>
-         <roughness unit="m">0.00000405</roughness>
+        <main_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.25</main_spar_non_dimensional_position>
+		<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.55</secondary_spar_non_dimensional_position>
+        <roughness unit="m">0.00000405</roughness>
       </global_data>
       <panels>
          <panel id="ATR72 horizontal tail">

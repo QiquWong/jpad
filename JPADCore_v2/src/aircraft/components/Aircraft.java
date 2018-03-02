@@ -21,6 +21,7 @@ import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.IEquivalentWing;
 import aircraft.components.liftingSurface.creator.ILiftingSurfaceCreator;
+import aircraft.components.liftingSurface.creator.ILiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.nacelles.NacelleCreator;
@@ -245,20 +246,21 @@ public class Aircraft {
 				.getSpan()
 				.minus(sectionWidthAtZ);	
 
-		LiftingSurfacePanelCreator exposedWingFirstPanel = new LiftingSurfacePanelCreator
-				.LiftingSurfacePanelBuilder(
-						"Exposed wing first panel",
-						false,
-						chordRootExposed,
-						theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordTip(),
-						exposedWingRootAirfoil,
-						theWing.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilTip(),
-						theWing.getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricRoot(),
-						theWing.getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricAtTip(),
-						exposedWingFirstPanelSpan,
-						theWing.getLiftingSurfaceCreator().getPanels().get(0).getSweepLeadingEdge(),
-						theWing.getLiftingSurfaceCreator().getPanels().get(0).getDihedral())
-				.build();
+		LiftingSurfacePanelCreator exposedWingFirstPanel = new LiftingSurfacePanelCreator(
+				new ILiftingSurfacePanelCreator.Builder()
+				.setId("Exposed wing first panel")
+				.setLinkedTo(false)
+				.setChordRoot(chordRootExposed)
+				.setChordTip(theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordTip())
+				.setAirfoilRoot(exposedWingRootAirfoil)
+				.setAirfoilTip(theWing.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilTip())
+				.setTwistGeometricAtRoot(theWing.getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricRoot())
+				.setTwistGeometricAtTip(theWing.getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricAtTip())
+				.setSpan(exposedWingFirstPanelSpan)
+				.setSweepLeadingEdge(theWing.getLiftingSurfaceCreator().getPanels().get(0).getSweepLeadingEdge())
+				.setDihedral(theWing.getLiftingSurfaceCreator().getPanels().get(0).getDihedral())
+				.buildPartial()
+				);
 
 		List<LiftingSurfacePanelCreator> exposedWingPanels = new ArrayList<LiftingSurfacePanelCreator>();
 

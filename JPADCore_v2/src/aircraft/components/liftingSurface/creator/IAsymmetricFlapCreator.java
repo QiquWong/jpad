@@ -2,32 +2,26 @@ package aircraft.components.liftingSurface.creator;
 
 import javax.measure.quantity.Angle;
 
+import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.FlapTypeEnum;
 
+@FreeBuilder
 public interface IAsymmetricFlapCreator {
 
+	String getId();
 	FlapTypeEnum getType();
-	void setType(FlapTypeEnum flapType);
-	
-	Double getInnerStationSpanwisePosition();
-	Double getOuterStationSpanwisePosition();
-	void setInnerStationSpanwisePosition(Double etaIn);
-	void setOuterStationSpanwisePosition(Double etaOut);
-	
-	Double getInnerChordRatio();
-	void setInnerChordRatio(Double cfcIn);
-	Double getOuterChordRatio();
-	void setOuterChordRatio(Double cfcOut);
-	Double getMeanChordRatio();
-	void setMeanChordRatio(Double cfcOut);
-	
+	double getInnerStationSpanwisePosition();
+	double getOuterStationSpanwisePosition();
+	double getInnerChordRatio();
+	double getOuterChordRatio();
 	Amount<Angle> getMinimumDeflection();
-	void setMinimumDeflection(Amount<Angle> deltaFlapMin);
 	Amount<Angle> getMaximumDeflection();
-	void setMaximumDeflection(Amount<Angle> deltaFlapMax);
 	
-	public void calculateMeanChordRatio(Double cfcIn, Double cfcOut);
-	
+	class Builder extends IAsymmetricFlapCreator_Builder {
+		public Builder() {
+			
+		}
+	}
 }

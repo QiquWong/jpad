@@ -24,7 +24,6 @@ import org.w3c.dom.NodeList;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
-import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator.LiftingSurfacePanelBuilder;
 import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
@@ -318,8 +317,9 @@ public class LiftingSurfaceCreator {
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//equivalent_wing/airfoils/airfoil_root/@file");
+				String airFoilPathRoot = "";
 				if(airfoilFileNameRoot != null) {
-					String airFoilPathRoot = airfoilsDir + File.separator + airfoilFileNameRoot;
+					 airFoilPathRoot = airfoilsDir + File.separator + airfoilFileNameRoot;
 					equivalentWingAirfoilRoot = AirfoilCreator.importFromXML(airFoilPathRoot);
 				}
 
@@ -328,8 +328,9 @@ public class LiftingSurfaceCreator {
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//equivalent_wing/airfoils/airfoil_kink/@file");
+				String airFoilPathKink = "";
 				if(airfoilFileNameKink != null) {
-					String airFoilPathKink = airfoilsDir + File.separator + airfoilFileNameKink;
+					airFoilPathKink = airfoilsDir + File.separator + airfoilFileNameKink;
 					equivalentWingAirfoilKink = AirfoilCreator.importFromXML(airFoilPathKink);
 				}
 
@@ -338,8 +339,9 @@ public class LiftingSurfaceCreator {
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//equivalent_wing/airfoils/airfoil_tip/@file");
+				String airFoilPathTip = "";
 				if(airfoilFileNameTip != null) {
-					String airFoilPathTip = airfoilsDir + File.separator + airfoilFileNameTip;
+					airFoilPathTip = airfoilsDir + File.separator + airfoilFileNameTip;
 					equivalentWingAirfoilTip = AirfoilCreator.importFromXML(airFoilPathTip);
 				}
 
@@ -365,20 +367,23 @@ public class LiftingSurfaceCreator {
 								);
 				
 				LiftingSurfacePanelCreator equivalentWingPanel = new 
-						LiftingSurfacePanelBuilder(
-								"Equivalent wing",
-								false,
-								chordRootEquivalentWing.to(SI.METER),
-								chordTipEquivalentWing.to(SI.METER),
-								equivalentWingAirfoilRoot,
-								equivalentWingAirfoilTip,
-								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
-								equivalentWingTwistAtTip,
-								span.divide(2).to(SI.METER),
-								equivalentWingSweepLE.to(SI.RADIAN),
-								equivalentWingDihedralAngle.to(SI.RADIAN)
-								)
-						.build();
+						LiftingSurfacePanelCreator(
+								new ILiftingSurfacePanelCreator.Builder()
+								.setId("Equivalent Wing Panel")
+								.setLinkedTo(false)
+								.setChordRoot(chordRootEquivalentWing.to(SI.METER))
+								.setChordTip(chordTipEquivalentWing.to(SI.METER))
+								.setAirfoilRoot(equivalentWingAirfoilRoot)
+								.setAirfoilRootFilePath(airFoilPathRoot)
+								.setAirfoilTip(equivalentWingAirfoilTip)
+								.setAirfoilTipFilePath(airFoilPathTip)
+								.setTwistGeometricAtRoot(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+								.setTwistGeometricAtTip(equivalentWingTwistAtTip)
+								.setSpan(span.divide(2).to(SI.METER))
+								.setSweepLeadingEdge(equivalentWingSweepLE.to(SI.RADIAN))
+								.setDihedral(equivalentWingDihedralAngle.to(SI.RADIAN))
+								.build()
+								);
 				
 				equivalentWing = new IEquivalentWing.Builder()
 						.addPanels(equivalentWingPanel)
@@ -1061,36 +1066,38 @@ public class LiftingSurfaceCreator {
 		 */
 		// creating the 2 panels ...
 		LiftingSurfacePanelCreator panel1 = new 
-				LiftingSurfacePanelBuilder(
-						"Inner panel from equivalent wing",
-						false,
-						chordRoot,
-						chordKink,
-						_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilRoot(),
-						_theLiftingSurfaceInterface.getEquivalentWing().getEquivalentWingAirfoilKink(),
-						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
-						_theLiftingSurfaceInterface.getEquivalentWing().getRealWingTwistAtKink(),
-						semiSpanInnerPanel,
-						sweepLeadingEdgeInnerPanel.to(NonSI.DEGREE_ANGLE),
-						_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getDihedral()
-						)
-				.build();
+				LiftingSurfacePanelCreator(
+						new ILiftingSurfacePanelCreator.Builder()
+						.setId("Inner panel from equivalent wing")
+						.setLinkedTo(false)
+						.setChordRoot(chordRoot)
+						.setChordTip(chordKink)
+						.setAirfoilRoot(_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilRoot())
+						.setAirfoilTip(_theLiftingSurfaceInterface.getEquivalentWing().getEquivalentWingAirfoilKink())
+						.setTwistGeometricAtRoot(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+						.setTwistGeometricAtTip(_theLiftingSurfaceInterface.getEquivalentWing().getRealWingTwistAtKink())
+						.setSpan(semiSpanInnerPanel)
+						.setSweepLeadingEdge(sweepLeadingEdgeInnerPanel.to(NonSI.DEGREE_ANGLE))
+						.setDihedral(_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getDihedral())
+						.buildPartial()
+						);
 
 		LiftingSurfacePanelCreator panel2 = new 
-				LiftingSurfacePanelBuilder(
-						"Outer panel from equivalent wing",
-						false,
-						chordKink,
-						chordTip,
-						_theLiftingSurfaceInterface.getEquivalentWing().getEquivalentWingAirfoilKink(),
-						_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilTip(),
-						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
-						_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
-						semiSpanOuterPanel,
-						sweepLeadingEdgeOuterPanel.to(NonSI.DEGREE_ANGLE),
-						_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getDihedral()
-						)
-				.build();
+				LiftingSurfacePanelCreator(
+						new ILiftingSurfacePanelCreator.Builder()
+						.setId("Outer panel from equivalent wing")
+						.setLinkedTo(false)
+						.setChordRoot(chordKink)
+						.setChordTip(chordTip)
+						.setAirfoilRoot(_theLiftingSurfaceInterface.getEquivalentWing().getEquivalentWingAirfoilKink())
+						.setAirfoilTip(_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilTip())
+						.setTwistGeometricAtRoot(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+						.setTwistGeometricAtTip(_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip())
+						.setSpan(semiSpanOuterPanel)
+						.setSweepLeadingEdge(sweepLeadingEdgeOuterPanel.to(NonSI.DEGREE_ANGLE))
+						.setDihedral(_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getDihedral())
+						.buildPartial()
+						);
 
 		// creating the wing ...
 		setTheLiftingSurfaceInterface(
@@ -1193,20 +1200,21 @@ public class LiftingSurfaceCreator {
 		//======================================================
 		// creation of the equivalent wing:
 		LiftingSurfacePanelCreator equivalentWingPanel = new 
-				LiftingSurfacePanelBuilder(
-						"Equivalent wing",
-						false,
-						chordRootEquivalentWing,
-						chordTipEquivalentWing,
-						airfoilRootEquivalent,
-						airfoilTipEquivalent,
-						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
-						twistGeometricTipEquivalentWing,
-						getSemiSpan(),
-						sweepLEEquivalentWing,
-						dihedralEquivalentWing
-						)
-				.build();
+				LiftingSurfacePanelCreator(
+						new ILiftingSurfacePanelCreator.Builder()
+						.setId("Equivalent Wing Panel")
+						.setLinkedTo(false)
+						.setChordRoot(chordRootEquivalentWing)
+						.setChordTip(chordTipEquivalentWing)
+						.setAirfoilRoot(airfoilRootEquivalent)
+						.setAirfoilTip(airfoilTipEquivalent)
+						.setTwistGeometricAtRoot(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+						.setTwistGeometricAtTip(twistGeometricTipEquivalentWing)
+						.setSpan(getSemiSpan())
+						.setSweepLeadingEdge(sweepLEEquivalentWing)
+						.setDihedral(dihedralEquivalentWing)
+						.buildPartial()
+						);
 		
 		IEquivalentWing equivalentWing = new IEquivalentWing.Builder()
 				.addPanels(equivalentWingPanel)
@@ -2672,20 +2680,21 @@ public class LiftingSurfaceCreator {
 		
 		if(_theLiftingSurfaceInterface.getType().equals(ComponentEnum.WING)) {
 			
-			liftingSurfacePanel = new LiftingSurfacePanelBuilder(
-					"Equivalent Wing",
-					false,
-					Amount.valueOf(rootChord, SI.METER),
-					Amount.valueOf(tipChord, SI.METER),
-					_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilRoot(),
-					_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilTip(),
-					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
-					equivalentTwistAtTip,
-					Amount.valueOf(0.5*span, SI.METER),
-					equivalentSweepLE,
-					equivalentDihedral
-					)
-					.build(); // build calculates all the derived panel parameters
+			liftingSurfacePanel = new LiftingSurfacePanelCreator(
+					new ILiftingSurfacePanelCreator.Builder()
+					.setId("Equivalent Wing")
+					.setLinkedTo(false)
+					.setChordRoot(Amount.valueOf(rootChord, SI.METER))
+					.setChordTip(Amount.valueOf(tipChord, SI.METER))
+					.setAirfoilRoot(_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilRoot())
+					.setAirfoilTip(_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilTip())
+					.setTwistGeometricAtRoot(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+					.setTwistGeometricAtTip(equivalentTwistAtTip)
+					.setSpan(Amount.valueOf(0.5*span, SI.METER))
+					.setSweepLeadingEdge(equivalentSweepLE)
+					.setDihedral(equivalentDihedral)
+					.buildPartial()
+					);
 			
 			setTheLiftingSurfaceInterface(
 					ILiftingSurfaceCreator.Builder.from(_theLiftingSurfaceInterface)
@@ -2703,20 +2712,21 @@ public class LiftingSurfaceCreator {
 				|| _theLiftingSurfaceInterface.getType().equals(ComponentEnum.HORIZONTAL_TAIL) 
 				|| _theLiftingSurfaceInterface.getType().equals(ComponentEnum.CANARD)) {
 			
-			liftingSurfacePanel = new LiftingSurfacePanelBuilder(
-					"Lifting Surface Panel",
-					false,
-					Amount.valueOf(rootChord, SI.METER),
-					Amount.valueOf(tipChord, SI.METER),
-					_theLiftingSurfaceInterface.getPanels().get(0).getAirfoilRoot(),
-					_theLiftingSurfaceInterface.getPanels().get(0).getAirfoilTip(),
-					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
-					equivalentTwistAtTip,
-					Amount.valueOf(0.5*span, SI.METER),
-					equivalentSweepLE,
-					equivalentDihedral
-					)
-					.build(); // build calculates all the derived panel parameters
+			liftingSurfacePanel = new LiftingSurfacePanelCreator(
+					new ILiftingSurfacePanelCreator.Builder()
+					.setId("Lifting Surface Panel")
+					.setLinkedTo(false)
+					.setChordRoot(Amount.valueOf(rootChord, SI.METER))
+					.setChordTip(Amount.valueOf(tipChord, SI.METER))
+					.setAirfoilRoot(_theLiftingSurfaceInterface.getPanels().get(0).getAirfoilRoot())
+					.setAirfoilTip(_theLiftingSurfaceInterface.getPanels().get(0).getAirfoilTip())
+					.setTwistGeometricAtRoot(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+					.setTwistGeometricAtTip(equivalentTwistAtTip)
+					.setSpan(Amount.valueOf(0.5*span, SI.METER))
+					.setSweepLeadingEdge(equivalentSweepLE)
+					.setDihedral(equivalentDihedral)
+					.buildPartial()
+					);
 
 			setTheLiftingSurfaceInterface(
 					ILiftingSurfaceCreator.Builder.from(_theLiftingSurfaceInterface)

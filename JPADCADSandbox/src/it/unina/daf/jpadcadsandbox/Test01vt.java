@@ -20,17 +20,17 @@ public class Test01vt {
 		System.out.println("========== [main] Getting the aircraft and the fuselage ...");
 		Aircraft theAircraft = AircraftUtils.importAircraft(args);
 		
-		Fuselage fuselage = theAircraft.getFuselage();
-		LiftingSurface wing = theAircraft.getWing();
-		LiftingSurface horTail = theAircraft.getHTail();
-		LiftingSurface verTail = theAircraft.getVTail();
-//		LiftingSurface canard = theAircraft.getCanard();
+//		Fuselage fuselage = theAircraft.getFuselage();
+//		LiftingSurface wing = theAircraft.getWing();
+//		LiftingSurface horTail = theAircraft.getHTail();
+//		LiftingSurface verTail = theAircraft.getVTail();
+		LiftingSurface canard = theAircraft.getCanard();
 		
 //		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, true, true);	
 //		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, true, true, true);
 //		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, true, true, true);
-		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, true, true, true);
-//		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.CANARD, 1e-3, true, true, true);
+//		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, true, true, true);
+		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.CANARD, 1e-3, true, true, true);
 		
 		// Write to a file
 //		String fileName = "test20mds.brep";
@@ -86,11 +86,11 @@ public class Test01vt {
 //		allShapes.addAll(fuselageShapes);
 //		allShapes.addAll(wingShapes);
 //		allShapes.addAll(horTailShapes);
-		allShapes.addAll(verTailShapes);
-//		allShapes.addAll(canardShapes);
+//		allShapes.addAll(verTailShapes);
+		allShapes.addAll(canardShapes);
 		
-		AircraftUtils.getAircraftSolidFile(allShapes, "Test01vt", ".brep");
-//		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds_solids", ".stl");
-//		AircraftUtils.getAircraftSolidFile(allShapes, "Test01vt_solids", ".step");
+//		AircraftUtils.getAircraftSolidFile(allShapes, "Test01vt_brep", ".brep");
+//		AircraftUtils.getAircraftSolidFile(allShapes, "Test01vt_stl", ".stl");
+		AircraftUtils.getAircraftSolidFile(allShapes, "Test01vt_step", ".step");
 	}
 }

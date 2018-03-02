@@ -5128,7 +5128,7 @@ public class InputManagerControllerMainActionUtilities {
 			
 			//---------------------------------------------------------------------------------
 			// INNER SPANWISE POSITION:
-			if(currentSpoiler.getInnerStationSpanwisePosition() != null) {
+			if(Double.valueOf(currentSpoiler.getInnerStationSpanwisePosition()) != null) {
 				theController.getTextFieldFuselageInnerSpanwisePositionSpoilerList().get(i).setText(
 						String.valueOf(currentSpoiler.getInnerStationSpanwisePosition())
 						);
@@ -5140,7 +5140,7 @@ public class InputManagerControllerMainActionUtilities {
 			
 			//---------------------------------------------------------------------------------
 			// OUTER SPANWISE POSITION:
-			if(currentSpoiler.getOuterStationSpanwisePosition() != null) {
+			if(Double.valueOf(currentSpoiler.getOuterStationSpanwisePosition()) != null) {
 				theController.getTextFieldFuselageOuterSpanwisePositionSpoilerList().get(i).setText(
 						String.valueOf(currentSpoiler.getOuterStationSpanwisePosition())
 						);
@@ -5152,7 +5152,7 @@ public class InputManagerControllerMainActionUtilities {
 			
 			//---------------------------------------------------------------------------------
 			// INNER CHORDWISE POSITION:
-			if(currentSpoiler.getInnerStationChordwisePosition() != null) {
+			if(Double.valueOf(currentSpoiler.getInnerStationChordwisePosition()) != null) {
 				theController.getTextFieldFuselageInnerChordwisePositionSpoilerList().get(i).setText(
 						String.valueOf(currentSpoiler.getInnerStationChordwisePosition())
 						);
@@ -5164,7 +5164,7 @@ public class InputManagerControllerMainActionUtilities {
 			
 			//---------------------------------------------------------------------------------
 			// OUTER CHORDWISE POSITION:
-			if(currentSpoiler.getOuterStationChordwisePosition() != null) {
+			if(Double.valueOf(currentSpoiler.getOuterStationChordwisePosition()) != null) {
 				theController.getTextFieldFuselageOuterChordwisePositionSpoilerList().get(i).setText(
 						String.valueOf(currentSpoiler.getOuterStationChordwisePosition())
 						);
@@ -7479,7 +7479,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER POSITION:
-				if(currentFlap.getInnerStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentFlap.getInnerStationSpanwisePosition()) != null) {
 					theController.getTextFieldWingInnerPositionFlapList().get(i).setText(
 							String.valueOf(currentFlap.getInnerStationSpanwisePosition())
 							);
@@ -7491,7 +7491,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER POSITION:
-				if(currentFlap.getOuterStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentFlap.getOuterStationSpanwisePosition()) != null) {
 					theController.getTextFieldWingOuterPositionFlapList().get(i).setText(
 							String.valueOf(currentFlap.getOuterStationSpanwisePosition())
 							);
@@ -7503,7 +7503,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER CHORD RATIO:
-				if(currentFlap.getInnerChordRatio() != null) {
+				if(Double.valueOf(currentFlap.getInnerChordRatio()) != null) {
 					theController.getTextFieldWingInnerChordRatioFlapList().get(i).setText(
 							String.valueOf(currentFlap.getInnerChordRatio())
 							);
@@ -7515,7 +7515,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER CHORD RATIO:
-				if(currentFlap.getOuterChordRatio() != null) {
+				if(Double.valueOf(currentFlap.getOuterChordRatio())!= null) {
 					theController.getTextFieldWingOuterChordRatioFlapList().get(i).setText(
 							String.valueOf(currentFlap.getOuterChordRatio())
 							);
@@ -7587,7 +7587,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER POSITION:
-				if(currentSlat.getInnerStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentSlat.getInnerStationSpanwisePosition()) != null) {
 					theController.getTextFieldWingInnerPositionSlatList().get(i).setText(
 							String.valueOf(currentSlat.getInnerStationSpanwisePosition())
 							);
@@ -7599,7 +7599,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER POSITION:
-				if(currentSlat.getOuterStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentSlat.getOuterStationSpanwisePosition()) != null) {
 					theController.getTextFieldWingOuterPositionSlatList().get(i).setText(
 							String.valueOf(currentSlat.getOuterStationSpanwisePosition())
 							);
@@ -7611,7 +7611,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER CHORD RATIO:
-				if(currentSlat.getInnerChordRatio() != null) {
+				if(Double.valueOf(currentSlat.getInnerChordRatio()) != null) {
 					theController.getTextFieldWingInnerChordRatioSlatList().get(i).setText(
 							String.valueOf(currentSlat.getInnerChordRatio())
 							);
@@ -7623,7 +7623,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER CHORD RATIO:
-				if(currentSlat.getOuterChordRatio() != null) {
+				if(Double.valueOf(currentSlat.getOuterChordRatio()) != null) {
 					theController.getTextFieldWingOuterChordRatioSlatList().get(i).setText(
 							String.valueOf(currentSlat.getOuterChordRatio())
 							);
@@ -7635,7 +7635,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// EXTENSION RATIO:
-				if(currentSlat.getExtensionRatio() != null) {
+				if(Double.valueOf(currentSlat.getExtensionRatio()) != null) {
 					theController.getTextFieldWingExtensionRatioSlatList().get(i).setText(
 							String.valueOf(currentSlat.getExtensionRatio())
 							);
@@ -7702,7 +7702,7 @@ public class InputManagerControllerMainActionUtilities {
 			
 			//---------------------------------------------------------------------------------
 			// INNER POSITION:
-			if(leftAileron.getInnerStationSpanwisePosition() != null) {
+			if(Double.valueOf(leftAileron.getInnerStationSpanwisePosition()) != null) {
 				theController.getTextFieldWingInnerPositionAileronLeft().setText(
 						String.valueOf(leftAileron.getInnerStationSpanwisePosition())
 						);
@@ -7714,7 +7714,7 @@ public class InputManagerControllerMainActionUtilities {
 
 			//---------------------------------------------------------------------------------
 			// OUTER POSITION:
-			if(leftAileron.getOuterStationSpanwisePosition() != null) {
+			if(Double.valueOf(leftAileron.getOuterStationSpanwisePosition()) != null) {
 				theController.getTextFieldWingOuterPositionAileronLeft().setText(
 						String.valueOf(leftAileron.getOuterStationSpanwisePosition())
 						);
@@ -7726,7 +7726,7 @@ public class InputManagerControllerMainActionUtilities {
 
 			//---------------------------------------------------------------------------------
 			// INNER CHORD RATIO:
-			if(leftAileron.getInnerChordRatio() != null) {
+			if(Double.valueOf(leftAileron.getInnerChordRatio()) != null) {
 				theController.getTextFieldWingInnerChordRatioAileronLeft().setText(
 						String.valueOf(leftAileron.getInnerChordRatio())
 						);
@@ -7738,7 +7738,7 @@ public class InputManagerControllerMainActionUtilities {
 
 			//---------------------------------------------------------------------------------
 			// OUTER CHORD RATIO:
-			if(leftAileron.getOuterChordRatio() != null) {
+			if(Double.valueOf(leftAileron.getOuterChordRatio()) != null) {
 				theController.getTextFieldWingOuterChordRatioAileronLeft().setText(
 						String.valueOf(leftAileron.getOuterChordRatio())
 						);
@@ -7802,7 +7802,7 @@ public class InputManagerControllerMainActionUtilities {
 			
 			//---------------------------------------------------------------------------------
 			// INNER POSITION:
-			if(rightAileron.getInnerStationSpanwisePosition() != null) {
+			if(Double.valueOf(rightAileron.getInnerStationSpanwisePosition()) != null) {
 				theController.getTextFieldWingInnerPositionAileronRight().setText(
 						String.valueOf(rightAileron.getInnerStationSpanwisePosition())
 						);
@@ -7814,7 +7814,7 @@ public class InputManagerControllerMainActionUtilities {
 
 			//---------------------------------------------------------------------------------
 			// OUTER POSITION:
-			if(rightAileron.getOuterStationSpanwisePosition() != null) {
+			if(Double.valueOf(rightAileron.getOuterStationSpanwisePosition()) != null) {
 				theController.getTextFieldWingOuterPositionAileronRight().setText(
 						String.valueOf(rightAileron.getOuterStationSpanwisePosition())
 						);
@@ -7826,7 +7826,7 @@ public class InputManagerControllerMainActionUtilities {
 
 			//---------------------------------------------------------------------------------
 			// INNER CHORD RATIO:
-			if(rightAileron.getInnerChordRatio() != null) {
+			if(Double.valueOf(rightAileron.getInnerChordRatio()) != null) {
 				theController.getTextFieldWingInnerChordRatioAileronRight().setText(
 						String.valueOf(rightAileron.getInnerChordRatio())
 						);
@@ -7838,7 +7838,7 @@ public class InputManagerControllerMainActionUtilities {
 
 			//---------------------------------------------------------------------------------
 			// OUTER CHORD RATIO:
-			if(rightAileron.getOuterChordRatio() != null) {
+			if(Double.valueOf(rightAileron.getOuterChordRatio()) != null) {
 				theController.getTextFieldWingOuterChordRatioAileronRight().setText(
 						String.valueOf(rightAileron.getOuterChordRatio())
 						);
@@ -7908,7 +7908,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER SPANWISE POSITION:
-				if(currentSpoiler.getInnerStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentSpoiler.getInnerStationSpanwisePosition()) != null) {
 					theController.getTextFieldWingInnerSpanwisePositionSpoilerList().get(i).setText(
 							String.valueOf(currentSpoiler.getInnerStationSpanwisePosition())
 							);
@@ -7920,7 +7920,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER SPANWISE POSITION:
-				if(currentSpoiler.getOuterStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentSpoiler.getOuterStationSpanwisePosition()) != null) {
 					theController.getTextFieldWingOuterSpanwisePositionSpoilerList().get(i).setText(
 							String.valueOf(currentSpoiler.getOuterStationSpanwisePosition())
 							);
@@ -7932,7 +7932,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER CHORDWISE POSITION:
-				if(currentSpoiler.getInnerStationChordwisePosition() != null) {
+				if(Double.valueOf(currentSpoiler.getInnerStationChordwisePosition()) != null) {
 					theController.getTextFieldWingInnerChordwisePositionSpoilerList().get(i).setText(
 							String.valueOf(currentSpoiler.getInnerStationChordwisePosition())
 							);
@@ -7944,7 +7944,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER CHORDWISE POSITION:
-				if(currentSpoiler.getOuterStationChordwisePosition() != null) {
+				if(Double.valueOf(currentSpoiler.getOuterStationChordwisePosition()) != null) {
 					theController.getTextFieldWingOuterChordwisePositionSpoilerList().get(i).setText(
 							String.valueOf(currentSpoiler.getOuterStationChordwisePosition())
 							);
@@ -8494,7 +8494,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER POSITION:
-				if(currentElevator.getInnerStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentElevator.getInnerStationSpanwisePosition()) != null) {
 					theController.getTextFieldHTailInnerPositionElevatorList().get(i).setText(
 							String.valueOf(currentElevator.getInnerStationSpanwisePosition())
 							);
@@ -8506,7 +8506,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER POSITION:
-				if(currentElevator.getOuterStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentElevator.getOuterStationSpanwisePosition()) != null) {
 					theController.getTextFieldHTailOuterPositionElevatorList().get(i).setText(
 							String.valueOf(currentElevator.getOuterStationSpanwisePosition())
 							);
@@ -8518,7 +8518,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER CHORD RATIO:
-				if(currentElevator.getInnerChordRatio() != null) {
+				if(Double.valueOf(currentElevator.getInnerChordRatio()) != null) {
 					theController.getTextFieldHTailInnerChordRatioElevatorList().get(i).setText(
 							String.valueOf(currentElevator.getInnerChordRatio())
 							);
@@ -8530,7 +8530,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER CHORD RATIO:
-				if(currentElevator.getOuterChordRatio() != null) {
+				if(Double.valueOf(currentElevator.getOuterChordRatio()) != null) {
 					theController.getTextFieldHTailOuterChordRatioElevatorList().get(i).setText(
 							String.valueOf(currentElevator.getOuterChordRatio())
 							);
@@ -9079,7 +9079,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER POSITION:
-				if(currentRudder.getInnerStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentRudder.getInnerStationSpanwisePosition()) != null) {
 					theController.getTextFieldVTailInnerPositionRudderList().get(i).setText(
 							String.valueOf(currentRudder.getInnerStationSpanwisePosition())
 							);
@@ -9091,7 +9091,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER POSITION:
-				if(currentRudder.getOuterStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentRudder.getOuterStationSpanwisePosition()) != null) {
 					theController.getTextFieldVTailOuterPositionRudderList().get(i).setText(
 							String.valueOf(currentRudder.getOuterStationSpanwisePosition())
 							);
@@ -9103,7 +9103,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER CHORD RATIO:
-				if(currentRudder.getInnerChordRatio() != null) {
+				if(Double.valueOf(currentRudder.getInnerChordRatio()) != null) {
 					theController.getTextFieldVTailInnerChordRatioRudderList().get(i).setText(
 							String.valueOf(currentRudder.getInnerChordRatio())
 							);
@@ -9115,7 +9115,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER CHORD RATIO:
-				if(currentRudder.getOuterChordRatio() != null) {
+				if(Double.valueOf(currentRudder.getOuterChordRatio()) != null) {
 					theController.getTextFieldVTailOuterChordRatioRudderList().get(i).setText(
 							String.valueOf(currentRudder.getOuterChordRatio())
 							);
@@ -9664,7 +9664,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER POSITION:
-				if(currentControlSurface.getInnerStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentControlSurface.getInnerStationSpanwisePosition()) != null) {
 					theController.getTextFieldCanardInnerPositionControlSurfaceList().get(i).setText(
 							String.valueOf(currentControlSurface.getInnerStationSpanwisePosition())
 							);
@@ -9676,7 +9676,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER POSITION:
-				if(currentControlSurface.getOuterStationSpanwisePosition() != null) {
+				if(Double.valueOf(currentControlSurface.getOuterStationSpanwisePosition()) != null) {
 					theController.getTextFieldCanardOuterPositionControlSurfaceList().get(i).setText(
 							String.valueOf(currentControlSurface.getOuterStationSpanwisePosition())
 							);
@@ -9688,7 +9688,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// INNER CHORD RATIO:
-				if(currentControlSurface.getInnerChordRatio() != null) {
+				if(Double.valueOf(currentControlSurface.getInnerChordRatio()) != null) {
 					theController.getTextFieldCanardInnerChordRatioControlSurfaceList().get(i).setText(
 							String.valueOf(currentControlSurface.getInnerChordRatio())
 							);
@@ -9700,7 +9700,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// OUTER CHORD RATIO:
-				if(currentControlSurface.getOuterChordRatio() != null) {
+				if(Double.valueOf(currentControlSurface.getOuterChordRatio()) != null) {
 					theController.getTextFieldCanardOuterChordRatioControlSurfaceList().get(i).setText(
 							String.valueOf(currentControlSurface.getOuterChordRatio())
 							);

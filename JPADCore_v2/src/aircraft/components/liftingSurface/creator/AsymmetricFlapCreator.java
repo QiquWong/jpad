@@ -14,75 +14,25 @@ import configuration.MyConfiguration;
 import configuration.enumerations.FlapTypeEnum;
 import standaloneutils.MyXMLReaderUtils;
 
-public class AsymmetricFlapCreator implements IAsymmetricFlapCreator {
+public class AsymmetricFlapCreator {
 
-	String _id;
-	
-	private FlapTypeEnum _type;
-	private Double _innerStationSpanwisePosition,
-				   _outerStationSpanwisePosition,
-				   _innerChordRatio,
-				   _outerChordRatio,
-				   _meanChordRatio;
-	private Amount<Angle> _minimumDeflection;
-	private Amount<Angle> _maximumDeflection;
+	//-----------------------------------------------------------------
+	// VARIABLE DECLARATION
+	private IAsymmetricFlapCreator _theAsymmetricFlapInterface;
+	private double _meanChordRatio;
 
-	//=================================================================
-	// Builder pattern via a nested public static class
-	
-	public static class AsymmetricFlapBuilder {
-		// required parameters
-		private String __id;
-		private FlapTypeEnum __type;
-		private Double __innerStationSpanwisePosition;
-		private Double __outerStationSpanwisePosition;
-		private Double __innerChordRatio;
-		private Double __outerChordRatio;
-		private Amount<Angle> __minimumDeflection;
-		private Amount<Angle> __maximumDeflection;
-
-		// optional parameters ... defaults
-		// ...
-
-		public AsymmetricFlapBuilder(
-				String id,
-				FlapTypeEnum type,
-				Double innerStationSpanwisePosition,
-				Double outerStationSpanwisePosition,
-				Double innerChordRatio,
-				Double outerChordRatio,
-				Amount<Angle> minimumDeflection,
-				Amount<Angle> maximumDeflection
-				){
-			this.__id = id;
-			this.__type = type;
-			this.__innerStationSpanwisePosition = innerStationSpanwisePosition;
-			this.__outerStationSpanwisePosition = outerStationSpanwisePosition;
-			this.__innerChordRatio = innerChordRatio;
-			this.__outerChordRatio = outerChordRatio;
-			this.__minimumDeflection = minimumDeflection;
-			this.__maximumDeflection = maximumDeflection;
-		}
-
-		public AsymmetricFlapCreator build() {
-			return new AsymmetricFlapCreator(this);
-		}
-	}
-	//=================================================================
-	
-	private AsymmetricFlapCreator(AsymmetricFlapBuilder builder) {
-		_id = builder.__id;
-		_type = builder.__type;
-		_innerStationSpanwisePosition = builder.__innerStationSpanwisePosition;
-		_outerStationSpanwisePosition = builder.__outerStationSpanwisePosition;
-		_innerChordRatio = builder.__innerChordRatio;
-		_outerChordRatio = builder.__outerChordRatio;
-		_minimumDeflection = builder.__minimumDeflection;
-		_maximumDeflection = builder.__maximumDeflection;
-		
-		calculateMeanChordRatio(_innerChordRatio, _outerChordRatio);
+	//-----------------------------------------------------------------
+	// BUILDER
+	public AsymmetricFlapCreator(IAsymmetricFlapCreator theAsymmetricFlapInterface) {
+		this._theAsymmetricFlapInterface = theAsymmetricFlapInterface;
+		calculateMeanChordRatio(
+				this._theAsymmetricFlapInterface.getInnerChordRatio(), 
+				this._theAsymmetricFlapInterface.getOuterChordRatio()
+				);
 	}
 
+	//-----------------------------------------------------------------
+	// METHODS
 	public static AsymmetricFlapCreator importFromAsymmetricFlapNode(Node nodeAsymmetricFlap) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -127,28 +77,28 @@ public class AsymmetricFlapCreator implements IAsymmetricFlapCreator {
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//asymmetric_flap/inner_station_spanwise_position/text()");
-		Double innerStationSpanwisePosition = Double
+		double innerStationSpanwisePosition = Double
 				.valueOf(innerStationSpanwisePositionProperty);
 		
 		String outerStationSpanwisePositionProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//asymmetric_flap/outer_station_spanwise_position/text()");
-		Double outerStationSpanwisePosition = Double
+		double outerStationSpanwisePosition = Double
 				.valueOf(outerStationSpanwisePositionProperty);
 		
 		String innerChordRatioProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//asymmetric_flap/inner_chord_ratio/text()");
-		Double innerChordRatio = Double
+		double innerChordRatio = Double
 				.valueOf(innerChordRatioProperty);
 		
 		String outerChordRatioProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//asymmetric_flap/outer_chord_ratio/text()");
-		Double outerChordRatio = Double
+		double outerChordRatio = Double
 				.valueOf(outerChordRatioProperty);
 		
 		Amount<Angle> minimumDeflection = MyXMLReaderUtils
@@ -162,18 +112,18 @@ public class AsymmetricFlapCreator implements IAsymmetricFlapCreator {
 						"//asymmetric_flap/max_deflection");
 		
 		// create the wing panel via its builder
-		AsymmetricFlapCreator asymmetricFlap =
-				new AsymmetricFlapBuilder(
-						id,
-						type,
-						innerStationSpanwisePosition,
-						outerStationSpanwisePosition,
-						innerChordRatio,
-						outerChordRatio,
-						minimumDeflection,
-						maximumDeflection
-						)
-				.build();
+		AsymmetricFlapCreator asymmetricFlap = new AsymmetricFlapCreator(
+				new IAsymmetricFlapCreator.Builder()
+				.setId(id)
+				.setType(type)
+				.setInnerStationSpanwisePosition(innerStationSpanwisePosition)
+				.setOuterStationSpanwisePosition(outerStationSpanwisePosition)
+				.setInnerChordRatio(innerChordRatio)
+				.setOuterChordRatio(outerChordRatio)
+				.setMinimumDeflection(minimumDeflection)
+				.setMaximumDeflection(maximumDeflection)
+				.build()
+				);
 
 		return asymmetricFlap;
 	}
@@ -187,105 +137,120 @@ public class AsymmetricFlapCreator implements IAsymmetricFlapCreator {
 			.append("\t-------------------------------------\n")
 			.append("\tAsymmetric flap\n")
 			.append("\t-------------------------------------\n")
-			.append("\tID: '" + _id + "'\n")
-			.append("\tType = " + _type + "\n")
-			.append("\tInner station spanwise position = " + _innerStationSpanwisePosition + "\n")
-			.append("\tOuter station spanwise position = " + _outerStationSpanwisePosition + "\n")
-			.append("\tInner chord ratio = " + _innerChordRatio + "\n")
-			.append("\tOuter chord ratio = " + _outerChordRatio + "\n")
+			.append("\tID: '" + _theAsymmetricFlapInterface.getId() + "'\n")
+			.append("\tType = " + _theAsymmetricFlapInterface.getType() + "\n")
+			.append("\tInner station spanwise position = " + _theAsymmetricFlapInterface.getInnerStationSpanwisePosition() + "\n")
+			.append("\tOuter station spanwise position = " + _theAsymmetricFlapInterface.getOuterStationSpanwisePosition() + "\n")
+			.append("\tInner chord ratio = " + _theAsymmetricFlapInterface.getInnerChordRatio() + "\n")
+			.append("\tOuter chord ratio = " + _theAsymmetricFlapInterface.getOuterChordRatio() + "\n")
 			.append("\tMean chord ratio = " + _meanChordRatio + "\n")
-			.append("\tMinimum deflection = " + _minimumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
-			.append("\tMaximum deflection = " + _maximumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tMinimum deflection = " + _theAsymmetricFlapInterface.getMinimumDeflection().doubleValue(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tMaximum deflection = " + _theAsymmetricFlapInterface.getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\t.....................................\n")
 			;
 		return sb.toString();
 		
 	}
 
-	@Override
-	public void calculateMeanChordRatio(Double cfcIn, Double cfcOut) {
+	public void calculateMeanChordRatio(double cfcIn, double cfcOut) {
 		// TODO : WHEN AVAILABLE, IMPLEMENT A METHOD TO EVALUATES EACH cf/c CONTRIBUTION.
 		setMeanChordRatio((cfcIn + cfcOut)/2);
 	}
 	
-	@Override
-	public Double getInnerStationSpanwisePosition() {
-		return _innerStationSpanwisePosition;
+	//-----------------------------------------------------------------
+	// GETTERS & SETTERS
+	public IAsymmetricFlapCreator getTheAsymmetricFlapInterface() {
+		return _theAsymmetricFlapInterface;
 	}
 
-	@Override
-	public void setInnerStationSpanwisePosition(Double etaIn) {
-		_innerStationSpanwisePosition = etaIn;
-	}
-	
-	@Override
-	public Double getOuterStationSpanwisePosition() {
-		return _outerStationSpanwisePosition;
-	}
-	
-	@Override
-	public void setOuterStationSpanwisePosition(Double etaOut) {
-		_outerStationSpanwisePosition = etaOut;
+	public void setTheAsymmetricFlapInterface(IAsymmetricFlapCreator theAsymmetricFlapInterface) {
+		this._theAsymmetricFlapInterface = theAsymmetricFlapInterface;
 	}
 
-	@Override
-	public Double getInnerChordRatio() {
-		return _innerChordRatio;
-	}
-
-	@Override
-	public void setInnerChordRatio(Double cfcIn) {
-		_innerChordRatio = cfcIn;
+	public String getId() {
+		return _theAsymmetricFlapInterface.getId();
+	};
+	
+	public void setId (String id) {
+		setTheAsymmetricFlapInterface(IAsymmetricFlapCreator.Builder.from(_theAsymmetricFlapInterface).setId(id).build());
 	}
 	
-	@Override
-	public Double getOuterChordRatio() {
-		return _outerChordRatio;
-	}
-
-	@Override
-	public void setOuterChordRatio(Double cfcOut) {
-		_outerChordRatio = cfcOut;
+	public FlapTypeEnum getType() {
+		return _theAsymmetricFlapInterface.getType();
 	}
 	
-	@Override
-	public Double getMeanChordRatio() {
+	public double getInnerStationSpanwisePosition() {
+		return _theAsymmetricFlapInterface.getInnerStationSpanwisePosition();
+	}
+	
+	public void setInnerStationSpanwisePosition (double _innerStationSpanwisePosition) {
+		setTheAsymmetricFlapInterface(
+				IAsymmetricFlapCreator.Builder.from(_theAsymmetricFlapInterface).setInnerStationSpanwisePosition(_innerStationSpanwisePosition)
+				.build()
+				);
+	}
+	
+	public double getOuterStationSpanwisePosition() {
+		return _theAsymmetricFlapInterface.getInnerStationSpanwisePosition();
+	}
+	
+	public void setOuterStationSpanwisePosition (double _outerStationSpanwisePosition) {
+		setTheAsymmetricFlapInterface(
+				IAsymmetricFlapCreator.Builder.from(_theAsymmetricFlapInterface).setOuterStationSpanwisePosition(_outerStationSpanwisePosition)
+				.build()
+				);
+	}
+	
+	public double getInnerChordRatio() {
+		return _theAsymmetricFlapInterface.getInnerChordRatio();
+	}
+	
+	public void setInnerChordRatio (double innerChordRatio) {
+		setTheAsymmetricFlapInterface(
+				IAsymmetricFlapCreator.Builder.from(_theAsymmetricFlapInterface).setInnerChordRatio(innerChordRatio)
+				.build()
+				);
+	}
+	
+	public double getOuterChordRatio() {
+		return _theAsymmetricFlapInterface.getOuterChordRatio();
+	}
+	
+	public void setOuterChordRatio (double outerChordRatio) {
+		setTheAsymmetricFlapInterface(
+				IAsymmetricFlapCreator.Builder.from(_theAsymmetricFlapInterface).setOuterChordRatio(outerChordRatio)
+				.build()
+				);
+	}
+	
+	public Amount<Angle> getMinimumDeflection() {
+		return _theAsymmetricFlapInterface.getMinimumDeflection();
+	}
+	
+	public void setMinimumDeflection (Amount<Angle> minimumDeflection) {
+		setTheAsymmetricFlapInterface(
+				IAsymmetricFlapCreator.Builder.from(_theAsymmetricFlapInterface).setMinimumDeflection(minimumDeflection)
+				.build()
+				);
+	}
+	
+	public Amount<Angle> getMaximumDeflection() {
+		return _theAsymmetricFlapInterface.getMaximumDeflection();
+	}
+	
+	public void setMaximumDeflection (Amount<Angle> maximumDeflection) {
+		setTheAsymmetricFlapInterface(
+				IAsymmetricFlapCreator.Builder.from(_theAsymmetricFlapInterface).setMaximumDeflection(maximumDeflection)
+				.build()
+				);
+	}
+	
+	public double getMeanChordRatio() {
 		return _meanChordRatio;
 	}
 
-	@Override
-	public void setMeanChordRatio(Double cfcMean) {
+	public void setMeanChordRatio(double cfcMean) {
 		_meanChordRatio = cfcMean;
-	}
-	
-	@Override
-	public Amount<Angle> getMinimumDeflection() {
-		return _minimumDeflection;
-	}
-
-	@Override
-	public void setMinimumDeflection(Amount<Angle> deltaFlapMin) {
-		_minimumDeflection = deltaFlapMin;
-	}
-	
-	@Override
-	public Amount<Angle> getMaximumDeflection() {
-		return _maximumDeflection;
-	}
-
-	@Override
-	public void setMaximumDeflection(Amount<Angle> deltaFlapMax) {
-		_maximumDeflection = deltaFlapMax;
-	}
-	
-	@Override
-	public FlapTypeEnum getType() {
-		return _type;
-	}
-	
-	@Override
-	public void setType(FlapTypeEnum flapType) {
-		_type = flapType;
 	}
 }
 

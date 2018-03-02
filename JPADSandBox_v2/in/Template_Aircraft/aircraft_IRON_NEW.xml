@@ -29,7 +29,7 @@
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>
-			<canard file="canard_IRON_NEW.xml">
+			<canard file="canard_IRON_v2.xml">
                 <position>
                     <x unit="m">6.0</x>
                     <y unit="m">0.0</y>

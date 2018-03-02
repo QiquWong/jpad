@@ -2,23 +2,23 @@ package aircraft.components.liftingSurface.creator;
 
 import javax.measure.quantity.Angle;
 
+import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
+@FreeBuilder
 public interface ISpoilerCreator {
 
-	Double getInnerStationSpanwisePosition();
-	Double getOuterStationSpanwisePosition();
-	void setInnerStationSpanwisePosition(Double etaIn);
-	void setOuterStationSpanwisePosition(Double etaOut);
-	
-	Double getInnerStationChordwisePosition();
-	Double getOuterStationChordwisePosition();
-	void setInnerStationChordwisePosition(Double xIn);
-	void setOuterStationChordwisePosition(Double xOut);
-	
+	String getId();
+	double getInnerStationSpanwisePosition();
+	double getOuterStationSpanwisePosition();
+	double getInnerStationChordwisePosition();
+	double getOuterStationChordwisePosition();
 	Amount<Angle> getMinimumDeflection();
-	void setMinimumDeflection(Amount<Angle> deltaSpoilerMin);
 	Amount<Angle> getMaximumDeflection();
-	void setMaximumDeflection(Amount<Angle> deltaSpoilerMax);
 	
+	class Builder extends ISpoilerCreator_Builder {
+		public Builder() {
+			
+		}
+	}
 }

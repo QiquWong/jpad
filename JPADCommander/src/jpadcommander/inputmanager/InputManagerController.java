@@ -33,6 +33,7 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.fuselage.creator.IFuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.creator.ISpoilerCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
@@ -8027,22 +8028,29 @@ public class InputManagerController {
 		for (int i=0; i<numberOfFilledFuselageSpoilerTabs; i++) {
 		
 			spoilersList.add(
-					new SpoilerCreator.SpoilerBuilder(
-							"Fuselage Spoiler " + (i+1) + " - " + Main.getTheAircraft().getId(), 
-							Double.valueOf(fuselageSpoilersInnerSpanwisePositionList.get(i)), 
-							Double.valueOf(fuselageSpoilersOuterSpanwisePositionList.get(i)), 
-							Double.valueOf(fuselageSpoilersInnerChordwisePositionList.get(i)), 
-							Double.valueOf(fuselageSpoilersOuterChordwisePositionList.get(i)), 
-							(Amount<Angle>) Amount.valueOf(
-									Double.valueOf(fuselageSpoilersMinimumDeflectionAngleList.get(i)),
-									Unit.valueOf(fuselageSpoilersMinimumDeflectionAngleUnitList.get(i))
-									),
-							(Amount<Angle>) Amount.valueOf(
-									Double.valueOf(fuselageSpoilersMaximumDeflectionAngleList.get(i)), 
-									Unit.valueOf(fuselageSpoilersMaximumDeflectionAngleUnitList.get(i))
+					new SpoilerCreator(
+							new ISpoilerCreator.Builder()
+							.setId("Fuselage Spoiler " + (i+1) + " - " + Main.getTheAircraft().getId())
+							.setInnerStationSpanwisePosition(Double.valueOf(fuselageSpoilersInnerSpanwisePositionList.get(i))) 
+							.setOuterStationSpanwisePosition(Double.valueOf(fuselageSpoilersOuterSpanwisePositionList.get(i)))
+							.setInnerStationChordwisePosition(Double.valueOf(fuselageSpoilersInnerChordwisePositionList.get(i)))
+							.setOuterStationChordwisePosition(Double.valueOf(fuselageSpoilersOuterChordwisePositionList.get(i))) 
+							.setMinimumDeflection(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(fuselageSpoilersMinimumDeflectionAngleList.get(i)),
+											Unit.valueOf(fuselageSpoilersMinimumDeflectionAngleUnitList.get(i))
+											)
 									)
-							).build()
+							.setMaximumDeflection(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(fuselageSpoilersMaximumDeflectionAngleList.get(i)), 
+											Unit.valueOf(fuselageSpoilersMaximumDeflectionAngleUnitList.get(i))
+											)
+									)
+							.build()
+							)
 					);
+					
 		}
 				
 		IFuselageCreator.Builder.from(

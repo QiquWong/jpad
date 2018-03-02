@@ -13,67 +13,20 @@ import org.w3c.dom.Node;
 import configuration.MyConfiguration;
 import standaloneutils.MyXMLReaderUtils;
 
-public class SpoilerCreator implements ISpoilerCreator{
+public class SpoilerCreator {
 
-	String _id;
-	
-	private Double _innerStationSpanwisePosition,
-				   _outerStationSpanwisePosition,
-				   _innerStationChordwisePosition,
-				   _outerStationChordwisePosition;
-	private Amount<Angle> _minimumDeflection;
-	private Amount<Angle> _maximumDeflection;
+	//-----------------------------------------------------------------
+	// VARIABLE DECLARATION
+	private ISpoilerCreator _theSpoilerInterface;
 
-	//=================================================================
-	// Builder pattern via a nested public static class
-	
-	public static class SpoilerBuilder {
-		// required parameters
-		private String __id;
-		private Double __innerStationSpanwisePosition;
-		private Double __outerStationSpanwisePosition;
-		private Double __innerStationChordwisePosition;
-		private Double __outerStationChordwisePosition;
-		private Amount<Angle> __minimumDeflection;
-		private Amount<Angle> __maximumDeflection;
-
-		// optional parameters ... defaults
-		// ...
-
-		public SpoilerBuilder(
-				String id,
-				Double innerStationSpanwisePosition,
-				Double outerStationSpanwisePosition,
-				Double innerStationChordwisePosition,
-				Double outerStationChordwisePosition,
-				Amount<Angle> minimumDeflection,
-				Amount<Angle> maximumDeflection
-				){
-			this.__id = id;
-			this.__innerStationSpanwisePosition = innerStationSpanwisePosition;
-			this.__outerStationSpanwisePosition = outerStationSpanwisePosition;
-			this.__innerStationChordwisePosition = innerStationChordwisePosition;
-			this.__outerStationChordwisePosition = outerStationChordwisePosition;
-			this.__minimumDeflection = minimumDeflection;
-			this.__maximumDeflection = maximumDeflection;
-		}
-
-		public SpoilerCreator build() {
-			return new SpoilerCreator(this);
-		}
-	}
-	//=================================================================
-	
-	private SpoilerCreator(SpoilerBuilder builder) {
- 		_id = builder.__id;
-		_innerStationSpanwisePosition = builder.__innerStationSpanwisePosition;
-		_outerStationSpanwisePosition = builder.__outerStationSpanwisePosition;
-		_innerStationChordwisePosition = builder.__innerStationChordwisePosition;
-		_outerStationChordwisePosition = builder.__outerStationChordwisePosition;
-		_minimumDeflection = builder.__minimumDeflection;
-		_maximumDeflection = builder.__maximumDeflection;
+	//-----------------------------------------------------------------
+	// BUILDER
+	public SpoilerCreator(ISpoilerCreator theSpoilerInterface) {
+		this._theSpoilerInterface = theSpoilerInterface;
 	}
 
+	//-----------------------------------------------------------------
+	// METHODS
 	public static SpoilerCreator importFromSpoilerNode(Node nodeSpoiler) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -107,28 +60,28 @@ public class SpoilerCreator implements ISpoilerCreator{
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//spoiler/inner_station_spanwise_position/text()");
-		Double innerStationSpanwisePosition = Double
+		double innerStationSpanwisePosition = Double
 				.valueOf(innerStationSpanwisePositionProperty);
 		
 		String outerStationSpanwisePositionProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//spoiler/outer_station_spanwise_position/text()");
-		Double outerStationSpanwisePosition = Double
+		double outerStationSpanwisePosition = Double
 				.valueOf(outerStationSpanwisePositionProperty);
 		
 		String innerStationChordwisePositionProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//spoiler/inner_station_chordwise_position/text()");
-		Double innerStationChordwisePosition = Double
+		double innerStationChordwisePosition = Double
 				.valueOf(innerStationChordwisePositionProperty);
 		
 		String outerStationChordwisePositionProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//spoiler/outer_station_chordwise_position/text()");
-		Double outerStationChordwisePosition = Double
+		double outerStationChordwisePosition = Double
 				.valueOf(outerStationChordwisePositionProperty);
 		
 		Amount<Angle> minimumDeflection = MyXMLReaderUtils
@@ -142,17 +95,17 @@ public class SpoilerCreator implements ISpoilerCreator{
 						"//spoiler/max_deflection");
 		
 		// create the spoiler via its builder
-		SpoilerCreator spoiler =
-				new SpoilerBuilder(
-						id,
-						innerStationSpanwisePosition,
-						outerStationSpanwisePosition,
-						innerStationChordwisePosition,
-						outerStationChordwisePosition,
-						minimumDeflection,
-						maximumDeflection
-						)
-				.build();
+		SpoilerCreator spoiler = new SpoilerCreator(
+				new ISpoilerCreator.Builder()
+				.setId(id)
+				.setInnerStationSpanwisePosition(innerStationSpanwisePosition)
+				.setOuterStationSpanwisePosition(outerStationSpanwisePosition)
+				.setInnerStationChordwisePosition(innerStationChordwisePosition)
+				.setOuterStationChordwisePosition(outerStationChordwisePosition)
+				.setMinimumDeflection(minimumDeflection)
+				.setMaximumDeflection(maximumDeflection)
+				.build()
+				);
 
 		return spoiler;
 	}
@@ -166,77 +119,83 @@ public class SpoilerCreator implements ISpoilerCreator{
 			.append("\t-------------------------------------\n")
 			.append("\tSpoiler\n")
 			.append("\t-------------------------------------\n")
-			.append("\tID: '" + _id + "'\n")
-			.append("\tInner station spanwise position = " + _innerStationSpanwisePosition + "\n")
-			.append("\tOuter station spanwise position = " + _outerStationSpanwisePosition + "\n")
-			.append("\tInner station spanwise position = " + _innerStationChordwisePosition + "\n")
-			.append("\tOuter station spanwise position = " + _outerStationChordwisePosition + "\n")
-			.append("\tMinimum deflection = " + _minimumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
-			.append("\tMaximum deflection = " + _maximumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tID: '" + _theSpoilerInterface.getId() + "'\n")
+			.append("\tInner station spanwise position = " + _theSpoilerInterface.getInnerStationSpanwisePosition() + "\n")
+			.append("\tOuter station spanwise position = " + _theSpoilerInterface.getOuterStationSpanwisePosition() + "\n")
+			.append("\tInner station spanwise position = " + _theSpoilerInterface.getInnerStationChordwisePosition() + "\n")
+			.append("\tOuter station spanwise position = " + _theSpoilerInterface.getOuterStationChordwisePosition() + "\n")
+			.append("\tMinimum deflection = " + _theSpoilerInterface.getMinimumDeflection().doubleValue(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tMaximum deflection = " + _theSpoilerInterface.getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\t.....................................\n")
 			;
 		return sb.toString();
 		
 	}
 
-	@Override
-	public Double getInnerStationSpanwisePosition() {
-		return _innerStationSpanwisePosition;
+	//-----------------------------------------------------------------
+	// GETTERS & SETTERS
+	public ISpoilerCreator getTheSpoilerInterface() {
+		return _theSpoilerInterface;
+	}
+	
+	public void setTheSpoilerInterface (ISpoilerCreator theSpoilerInterface) {
+		this._theSpoilerInterface = theSpoilerInterface;
+	}
+	
+	public String getId() {
+		return _theSpoilerInterface.getId();
+	};
+	
+	public void setId (String id) {
+		setTheSpoilerInterface(ISpoilerCreator.Builder.from(_theSpoilerInterface).setId(id).build());
+	}
+	
+	public double getInnerStationSpanwisePosition() {
+		return _theSpoilerInterface.getInnerStationSpanwisePosition();
 	}
 
-	@Override
-	public Double getOuterStationSpanwisePosition() {
-		return _outerStationSpanwisePosition;
+	public void setInnerStationSpanwisePosition(double etaIn) {
+		setTheSpoilerInterface(ISpoilerCreator.Builder.from(_theSpoilerInterface).setInnerStationSpanwisePosition(etaIn).build());
+	}
+	
+	public double getOuterStationSpanwisePosition() {
+		return _theSpoilerInterface.getOuterStationSpanwisePosition();
 	}
 
-	@Override
-	public void setInnerStationSpanwisePosition(Double etaIn) {
-		this._innerStationSpanwisePosition = etaIn;
+	public void setOuterStationSpanwisePosition(double etaOut) {
+		setTheSpoilerInterface(ISpoilerCreator.Builder.from(_theSpoilerInterface).setOuterStationSpanwisePosition(etaOut).build());
 	}
 
-	@Override
-	public void setOuterStationSpanwisePosition(Double etaOut) {
-		this._outerStationSpanwisePosition = etaOut;
+	public double getInnerStationChordwisePosition() {
+		return _theSpoilerInterface.getInnerStationChordwisePosition();
 	}
 
-	@Override
-	public Double getInnerStationChordwisePosition() {
-		return _innerStationChordwisePosition;
+	public void setInnerStationChordwisePosition(double xIn) {
+		setTheSpoilerInterface(ISpoilerCreator.Builder.from(_theSpoilerInterface).setInnerStationChordwisePosition(xIn).build());
+	}
+	
+	public double getOuterStationChordwisePosition() {
+		return _theSpoilerInterface.getOuterStationChordwisePosition();
 	}
 
-	@Override
-	public Double getOuterStationChordwisePosition() {
-		return _outerStationChordwisePosition;
+	public void setOuterStationChordwisePosition(double xOut) {
+		setTheSpoilerInterface(ISpoilerCreator.Builder.from(_theSpoilerInterface).setOuterStationChordwisePosition(xOut).build());
 	}
 
-	@Override
-	public void setInnerStationChordwisePosition(Double xIn) {
-		this._innerStationChordwisePosition = xIn;
-	}
-
-	@Override
-	public void setOuterStationChordwisePosition(Double xOut) {
-		this._outerStationChordwisePosition = xOut;
-	}
-
-	@Override
 	public Amount<Angle> getMinimumDeflection() {
-		return _minimumDeflection;
+		return _theSpoilerInterface.getMinimumDeflection();
 	}
 
-	@Override
 	public void setMinimumDeflection(Amount<Angle> deltaSpoilerMin) {
-		this._minimumDeflection = deltaSpoilerMin;
+		setTheSpoilerInterface(ISpoilerCreator.Builder.from(_theSpoilerInterface).setMinimumDeflection(deltaSpoilerMin).build());
 	}
 
-	@Override
 	public Amount<Angle> getMaximumDeflection() {
-		return _maximumDeflection;
+		return _theSpoilerInterface.getMaximumDeflection();
 	}
 
-	@Override
 	public void setMaximumDeflection(Amount<Angle> deltaSpoilerMax) {
-		this._maximumDeflection = deltaSpoilerMax;
+		setTheSpoilerInterface(ISpoilerCreator.Builder.from(_theSpoilerInterface).setMaximumDeflection(deltaSpoilerMax).build());
 	}
 	
 }
