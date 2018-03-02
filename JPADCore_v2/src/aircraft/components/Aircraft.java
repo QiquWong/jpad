@@ -544,6 +544,7 @@ public class Aircraft {
 			theFuselage = new Fuselage(fuselageCreator);
 			
 			theFuselage.getFuselageCreator().calculateGeometry();
+			theFuselage.setFusDesDatabaseReader(fusDesDatabaseReader);
 			
 			xApexFuselage = reader.getXMLAmountLengthByPath("//fuselage/position/x");
 			yApexFuselage = reader.getXMLAmountLengthByPath("//fuselage/position/y");

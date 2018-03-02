@@ -48,10 +48,12 @@ public interface IACAerodynamicAndStabilityManager {
 	int getWingNumberOfPointSemiSpanWise();
 	int getHTailNumberOfPointSemiSpanWise();
 	int getVTailNumberOfPointSemiSpanWise();
+	int getCanardNumberOfPointSemiSpanWise();
 	Amount<Angle> getMaximumElevatorDeflection();
 	List<Amount<Angle>> getAlphaWingForDistribution();
 	List<Amount<Angle>> getAlphaHorizontalTailForDistribution();
 	List<Amount<Angle>> getBetaVerticalTailForDistribution();
+	List<Amount<Angle>> getAlphaCanardForDistribution();
 	Boolean getDownwashConstant(); // if TRUE--> constant, if FALSE--> variable
 	Double getDynamicPressureRatio();
 	MyInterpolatingFunction getTauElevatorFunction();
@@ -66,6 +68,7 @@ public interface IACAerodynamicAndStabilityManager {
 	Amount<Length> getWingMomentumPole();
 	Amount<Length> getHTailMomentumPole();
 	Amount<Length> getVTailMomentumPole();
+	Amount<Length> getCanardMomentumPole();
 	Double getAdimensionalFuselageMomentumPole();
 	//..............................................................................
 	// AUXILIARY DATA
@@ -83,6 +86,10 @@ public interface IACAerodynamicAndStabilityManager {
 	MyInterpolatingFunction getVTailLiftCurveFunction();
 	MyInterpolatingFunction getVTailPolarCurveFunction();
 	MyInterpolatingFunction getVTailMomentCurveFunction();
+	
+	MyInterpolatingFunction getCanardLiftCurveFunction();
+	MyInterpolatingFunction getCanardPolarCurveFunction();
+	MyInterpolatingFunction getCanardMomentCurveFunction();
 	
 	MyInterpolatingFunction getFuselagePolarCurveFunction();
 	MyInterpolatingFunction getFuselageMomentCurveFunction();

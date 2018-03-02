@@ -25,7 +25,7 @@
 			method_systems=""
             /> 
 		<!-- method_XXX="AVERAGED" if empty string -->
-	<balance 
+<!-- 	<balance 
 			file="analysis_balance_IRON.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -34,7 +34,7 @@
             method_htail=""
             method_vtail=""
 			method_canard=""
-		/>
+		/> -->
 	
 	<aerodynamic_and_stability
 			plot="TRUE"

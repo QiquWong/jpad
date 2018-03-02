@@ -27,7 +27,7 @@
 				<nacelle_dimensional_center_of_gravity_x_position unit="m">10.31742</nacelle_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
 				<nacelle_dimensional_center_of_gravity_z_position unit="m">1.02895</nacelle_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
 			</balance>
-			<global_data dynamic_pressure_ratio_from_file="FALSE" tau_elevator_from_file="FALSE" tau_rudder_from_file="FALSE">
+			<global_data dynamic_pressure_ratio_from_file="FALSE" tau_elevator_from_file="FALSE" tau_rudder_from_file="FALSE" tau_canard_control_surface_from_file="FALSE">
 				<alpha_body_initial unit="deg">-10</alpha_body_initial>
 				<alpha_body_final unit="deg">20</alpha_body_final>
 				<number_of_alpha_body>31</number_of_alpha_body>
@@ -37,15 +37,19 @@
 				<alpha_wing_array_for_distributions unit="deg">0.0;2.0;10.0</alpha_wing_array_for_distributions> <!-- these distributions are only in CLEAN configuration -->
 				<alpha_horizontal_tail_array_for_distributions unit="deg">0.0;2.0;10.0</alpha_horizontal_tail_array_for_distributions>
 				<beta_vertical_tail_array_for_distributions unit="deg">0.0;2.0;10.0</beta_vertical_tail_array_for_distributions>
+				<alpha_canard_array_for_distributions unit="deg">0.0;2.0;10.0</alpha_canard_array_for_distributions>
 				<number_of_points_semispawise_wing>50</number_of_points_semispawise_wing>
 				<number_of_points_semispawise_horizontal_tail>50</number_of_points_semispawise_horizontal_tail>
 				<number_of_points_semispawise_vertical_tail>50</number_of_points_semispawise_vertical_tail>
+				<number_of_points_semispawise_canard>50</number_of_points_semispawise_canard>
 				<maximum_elevator_deflection unit="deg">-25.0</maximum_elevator_deflection>
 				<delta_elevator_array unit="deg">5.0;0.0;-5.0;-10.0;-15.0;-20.0;-25.0</delta_elevator_array>
 				<delta_rudder_array unit="deg">5.0;10.0;15.0;20.0;25.0</delta_rudder_array>
+				<delta_canard_control_surface_array unit="deg">5.0;0.0;-5.0;-10.0;-15.0;-20.0;-25.0</delta_canard_control_surface_array>
 				<adimensional_wing_momentum_pole>0.25</adimensional_wing_momentum_pole> 
 				<adimensional_horizontal_tail_momentum_pole>0.25</adimensional_horizontal_tail_momentum_pole> 
 				<adimensional_vertical_tail_momentum_pole>0.25</adimensional_vertical_tail_momentum_pole> 
+				<adimensional_canard_momentum_pole>0.25</adimensional_canard_momentum_pole> 
 				<adimensional_fuselage_momentum_pole>0.5</adimensional_fuselage_momentum_pole> <!-- adimensional: referred to fuselage length -->
 				<!-- optional values which are read only if the related attribute in "global_data" is "FALSE" --> 
 				<horizontal_tail_dynamic_pressure_ratio>0.8</horizontal_tail_dynamic_pressure_ratio>
@@ -57,6 +61,10 @@
 					<tau>0.025</tau>
 					<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
 				</tau_rudder_function>	
+				<tau_canard_control_surface_function>
+					<tau>0.025</tau>
+					<delta_canard_control_surface unit="deg"></delta_canard_control_surface> <!-- if the tau array contains only 1 value this tag can be left empty -->
+				</tau_canard_control_surface_function>
 				<!---->
 			</global_data>
 			<wing_analyses>

@@ -294,15 +294,15 @@ public class LiftingSurfacePanelCreator {
 					.setChordRoot(chordRoot)
 					.setChordTip(chordTip)
 					.setAirfoilRoot(airfoilRoot)
-					.setAirfoilRootFilePath(airfoilRootPath)
+//					.setAirfoilRootFilePath(airfoilRootPath)
 					.setAirfoilTip(airfoilTip)
-					.setAirfoilTipFilePath(airFoilPath2)
+//					.setAirfoilTipFilePath(airFoilPath2)
 					.setTwistGeometricAtRoot(twistGeometricRoot)
 					.setTwistGeometricAtTip(twistGeometricTip)
 					.setSpan(span)
 					.setSweepLeadingEdge(sweepLeadingEdge)
 					.setDihedral(dihedral)
-					.build()
+					.buildPartial()
 					);
 
 		return panel;

@@ -492,7 +492,8 @@ public class LSAerodynamicsManager {
 				_alphaArrayClean = _alphaArray;
 		}
 		else if(_theLiftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.HORIZONTAL_TAIL) 
-				|| _theLiftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.VERTICAL_TAIL))
+				|| _theLiftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.VERTICAL_TAIL)
+				|| _theLiftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.CANARD))
 			_alphaArrayClean = _alphaArray;
 
 
