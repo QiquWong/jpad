@@ -1571,30 +1571,30 @@ public class PayloadRangeCalcMissionProfile{
 		// RANGE AT MAX PAYLOAD
 		_rangeAtMaxPayload = calcRangeAtGivenPayload(
 				_maximumTakeOffMass.to(SI.KILOGRAM),
-				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getMaxPax()),
+				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getMaximumPassengerNumber()),
 				vMC
 				);
-		_maxPayload = _singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getMaxPax());
-		_passengersNumberAtMaxPayload = _theAircraft.getCabinConfiguration().getMaxPax();
+		_maxPayload = _singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getMaximumPassengerNumber());
+		_passengersNumberAtMaxPayload = _theAircraft.getCabinConfiguration().getMaximumPassengerNumber();
 		_requiredMassAtMaxPayload = _maximumTakeOffMass.to(SI.KILOGRAM)
 				.minus(_operatingEmptyMass.to(SI.KILOGRAM))
 				.minus(_singlePassengerMass.to(SI.KILOGRAM)
-						.times(_theAircraft.getCabinConfiguration().getMaxPax()
+						.times(_theAircraft.getCabinConfiguration().getMaximumPassengerNumber()
 								)
 						);
 		
 		// RANGE AT DESIGN PAYLOAD
 		_rangeAtDesignPayload = calcRangeAtGivenPayload(
 				_maximumTakeOffMass.to(SI.KILOGRAM),
-				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getNPax()),
+				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getActualPassengerNumber()),
 				vMC
 				);
-		_designPayload = _singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getNPax());
-		_passengersNumberAtDesignPayload = _theAircraft.getCabinConfiguration().getNPax();
+		_designPayload = _singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getActualPassengerNumber());
+		_passengersNumberAtDesignPayload = _theAircraft.getCabinConfiguration().getActualPassengerNumber();
 		_requiredMassAtDesignPayload = _maximumTakeOffMass.to(SI.KILOGRAM)
 				.minus(_operatingEmptyMass.to(SI.KILOGRAM))
 				.minus(_singlePassengerMass.to(SI.KILOGRAM)
-						.times(_theAircraft.getCabinConfiguration().getNPax()
+						.times(_theAircraft.getCabinConfiguration().getActualPassengerNumber()
 								)
 						);
 		
@@ -1657,11 +1657,11 @@ public class PayloadRangeCalcMissionProfile{
 		_payloadArray = new ArrayList<Double>();
 		
 		// POINT 1
-		_payloadArray.add(Double.valueOf(_theAircraft.getCabinConfiguration().getMaxPax()));
+		_payloadArray.add(Double.valueOf(_theAircraft.getCabinConfiguration().getMaximumPassengerNumber()));
 		// POINT 2
-		_payloadArray.add(Double.valueOf(_theAircraft.getCabinConfiguration().getMaxPax()));
+		_payloadArray.add(Double.valueOf(_theAircraft.getCabinConfiguration().getMaximumPassengerNumber()));
 		// POINT 3
-		_payloadArray.add(Double.valueOf(_theAircraft.getCabinConfiguration().getNPax()));
+		_payloadArray.add(Double.valueOf(_theAircraft.getCabinConfiguration().getMaximumPassengerNumber()));
 		// POINT 4
 		_payloadArray.add(
 				Double.valueOf(

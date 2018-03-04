@@ -2570,7 +2570,7 @@ public class MissionProfileCalc {
 				.append("\t\tInitial fuel mass for the assigned mission = " + _initialFuelMass + "\n")
 				.append("\t\tTotal fuel mass used = " + _totalFuelUsed + "\n")
 				.append("\t\tFuel reserve = " + _fuelReserve*100 + " %\n")
-				.append("\t\tDesign passengers number = " + _theAircraft.getCabinConfiguration().getNPax() + "\n")
+				.append("\t\tDesign passengers number = " + _theAircraft.getCabinConfiguration().getActualPassengerNumber() + "\n")
 				.append("\t\tPassengers number for this mission = " + _passengersNumber + "\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tTake-off range = " + _rangeList.get(1).to(NonSI.NAUTICAL_MILE) + " \n")

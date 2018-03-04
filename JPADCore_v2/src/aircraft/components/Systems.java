@@ -111,7 +111,7 @@ public class Systems {
 		case TORENBEEK_1982 : {
 			_apuMass = Amount.valueOf(
 					2.25*1.17*Math.pow(
-							aircraft.getCabinConfiguration().getNPax()*0.5, 
+							aircraft.getCabinConfiguration().getActualPassengerNumber()*0.5, 
 							3/5
 							), 
 					SI.KILOGRAM);

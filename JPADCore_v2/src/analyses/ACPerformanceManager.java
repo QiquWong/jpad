@@ -3012,7 +3012,7 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Initial fuel mass for the assigned mission","kg", _initialFuelMassMap.get(xcg).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Total fuel used","kg", _totalFuelUsedMap.get(xcg).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Fuel reserve","%", _thePerformanceInterface.getFuelReserve()*100});
-        		dataListMissionProfile.add(new Object[] {"Design passengers number","", _thePerformanceInterface.getTheAircraft().getCabinConfiguration().getNPax().doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Design passengers number","", _thePerformanceInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()});
         		dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", _theMissionProfileCalculatorMap.get(xcg).getPassengersNumber().doubleValue()});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {"Take-off range","nmi", _rangeListMap.get(xcg).get(1).doubleValue(NonSI.NAUTICAL_MILE)});
@@ -6002,7 +6002,7 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getMaximumTakeOffMass(),
 							_thePerformanceInterface.getOperatingEmptyMass(),
 							_thePerformanceInterface.getSinglePassengerMass(),
-							_thePerformanceInterface.getTheAircraft().getCabinConfiguration().getNPax(),
+							_thePerformanceInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber(),
 							_thePerformanceInterface.getFirstGuessInitialMissionFuelMass(),
 							_thePerformanceInterface.getMissionRange(),
 							_thePerformanceInterface.getTakeOffMissionAltitude(),

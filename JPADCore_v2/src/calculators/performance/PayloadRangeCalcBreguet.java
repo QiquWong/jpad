@@ -155,7 +155,7 @@ public class PayloadRangeCalcBreguet{
 		this.maxTakeOffMass = maxTakeOffMass;
 		this.operatingEmptyMass = operatingEmptyMass;
 		this.maxFuelMass = maxFuelMass;
-		this.nPassMax = theAircraft.getCabinConfiguration().getMaxPax();
+		this.nPassMax = theAircraft.getCabinConfiguration().getMaximumPassengerNumber();
 		this.paxSingleMass = passengerSingleMass;				
 		
 		this.surface = theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform();

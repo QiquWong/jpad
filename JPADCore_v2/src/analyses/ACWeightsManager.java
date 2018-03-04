@@ -742,8 +742,8 @@ public class ACWeightsManager implements IACWeightsManager {
 				.append("\tOperating Item Mass: " + _operatingItemMass + "\n")
 				.append("\tOperating Item Weight: " + _operatingItemWeight + "\n")
 				.append("\t·····································\n")
-				.append("\tMass furnishings and equipments: " + _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment() + "\n")
-				.append("\tWeight furnishings and equipments: " + _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().times(AtmosphereCalc.g0).to(SI.NEWTON) + "\n")
+//				.append("\tMass furnishings and equipments: " + _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment() + "\n")
+//				.append("\tWeight furnishings and equipments: " + _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().times(AtmosphereCalc.g0).to(SI.NEWTON) + "\n")
 				.append("\t·····································\n")
 				.append("\tTrapped Fuel Oil Mass: " + _trappedFuelOilMass + "\n")
 				.append("\tTrapped Fuel Oil Weight: " + _trappedFuelOilWeight + "\n")
@@ -797,7 +797,7 @@ public class ACWeightsManager implements IACWeightsManager {
 		dataListGlobal.add(new Object[] {"Empty Mass","kg",_emptyMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Manufacturer Empty Mass","kg",_manufacturerEmptyMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Operating Item Mass","kg",_operatingItemMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Furnishings and Equipments Mass","kg",_theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().doubleValue(SI.KILOGRAM)});
+//		dataListGlobal.add(new Object[] {"Furnishings and Equipments Mass","kg",_theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Trapped Fuel Oil Mass","kg",_trappedFuelOilMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Maximum Take-Off Weight","N",_maximumTakeOffWeight.doubleValue(SI.NEWTON)});
@@ -813,7 +813,7 @@ public class ACWeightsManager implements IACWeightsManager {
 		dataListGlobal.add(new Object[] {"Empty Weight","N",_emptyWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Manufacturer Empty Weight","N",_manufacturerEmptyMass.times(AtmosphereCalc.g0).getEstimatedValue()});
 		dataListGlobal.add(new Object[] {"Operating Item Weight","N",_operatingItemWeight.doubleValue(SI.NEWTON)});
-		dataListGlobal.add(new Object[] {"Furnishings and Equipments Weight","N",_theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().times(AtmosphereCalc.g0).getEstimatedValue()});
+//		dataListGlobal.add(new Object[] {"Furnishings and Equipments Weight","N",_theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().times(AtmosphereCalc.g0).getEstimatedValue()});
 		dataListGlobal.add(new Object[] {"Trapped Fuel Oil Weight","N",_trappedFuelOilWeight.doubleValue(SI.NEWTON)});
 		
 		CellStyle styleHead = wb.createCellStyle();
@@ -1598,12 +1598,12 @@ public class ACWeightsManager implements IACWeightsManager {
 				systemsMass = _theAircraft.getSystems().getOverallMass().doubleValue(SI.KILOGRAM);
 				values.add(systemsMass/maxTakeOffMass*100.0);
 			}
-		if(_theAircraft.getCabinConfiguration() != null)
-			if(_theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment() != null) {
-				labels.add("Furnishings and Equipment");
-				cabinConfigurationMass = _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().doubleValue(SI.KILOGRAM);
-				values.add(cabinConfigurationMass/maxTakeOffMass*100.0);
-			}
+//		if(_theAircraft.getCabinConfiguration() != null)
+//			if(_theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment() != null) {
+//				labels.add("Furnishings and Equipment");
+//				cabinConfigurationMass = _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().doubleValue(SI.KILOGRAM);
+//				values.add(cabinConfigurationMass/maxTakeOffMass*100.0);
+//			}
 		if(_theAircraft.getTheAnalysisManager().getTheWeights().getOperatingItemMass() != null) {
 			labels.add("Operating Items");
 			operatingItemMass = _theAircraft.getTheAnalysisManager().getTheWeights().getOperatingItemMass().doubleValue(SI.KILOGRAM);
@@ -1748,16 +1748,16 @@ public class ACWeightsManager implements IACWeightsManager {
 
 		// Passengers and crew mass
 		// 76.5 kg for each crew member + baggage
-		_paxMass = _paxSingleMass.times(aircraft.getCabinConfiguration().getNPax());
+		_paxMass = _paxSingleMass.times(aircraft.getCabinConfiguration().getActualPassengerNumber());
 		_crewMass = Amount.valueOf(aircraft.getCabinConfiguration().getNCrew() * 76.5145485, SI.KILOGRAM); 
-		_paxMassMax = getPaxSingleMass().times(aircraft.getCabinConfiguration().getMaxPax());
+		_paxMassMax = getPaxSingleMass().times(aircraft.getCabinConfiguration().getMaximumPassengerNumber());
 
 		// Operating items mass
 		if (_referenceRange.doubleValue(NonSI.NAUTICAL_MILE) < 2000) { 
-			_operatingItemMass = Amount.valueOf(8.617*aircraft.getCabinConfiguration().getMaxPax(), SI.KILOGRAM);
+			_operatingItemMass = Amount.valueOf(8.617*aircraft.getCabinConfiguration().getMaximumPassengerNumber(), SI.KILOGRAM);
 			_operatingItemWeight = _operatingItemMass.times(AtmosphereCalc.g0).to(SI.NEWTON);
 		} else {
-			_operatingItemMass = Amount.valueOf(14.97*aircraft.getCabinConfiguration().getMaxPax(), SI.KILOGRAM);
+			_operatingItemMass = Amount.valueOf(14.97*aircraft.getCabinConfiguration().getMaximumPassengerNumber(), SI.KILOGRAM);
 			_operatingItemWeight = _operatingItemMass.times(AtmosphereCalc.g0).to(SI.NEWTON);
 		}
 
@@ -1815,8 +1815,8 @@ public class ACWeightsManager implements IACWeightsManager {
 		_manufacturerEmptyMass = 
 				aircraft.getPowerPlant().getTotalMass().to(SI.KILOGRAM)
 				.plus(_structuralMass.to(SI.KILOGRAM))
-				.plus(aircraft.getSystems().getOverallMass())
-				.plus(aircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment());
+				.plus(aircraft.getSystems().getOverallMass());
+//				.plus(aircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment());
 	}
 	
 	private void calculateOperatingEmptyMass(Aircraft aircraft) {

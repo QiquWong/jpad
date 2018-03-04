@@ -2560,12 +2560,12 @@ public class JPADStaticWriteUtils {
 
 		// global_data - actual_passengers_number
 		JPADStaticWriteUtils.writeSingleNode("actual_passengers_number", 
-				aircraft.getCabinConfiguration().getNPax(), 
+				aircraft.getCabinConfiguration().getActualPassengerNumber(), 
 				globalDataElement, doc);
 		
 		// global_data - maximum_passengers_number
 		JPADStaticWriteUtils.writeSingleNode("maximum_passengers_number", 
-				aircraft.getCabinConfiguration().getMaxPax(), 
+				aircraft.getCabinConfiguration().getMaximumPassengerNumber(), 
 				globalDataElement, doc);
 		
 		// global_data - flight_crew_number
@@ -2580,7 +2580,7 @@ public class JPADStaticWriteUtils {
 		
 		// global_data - classes_type
 		JPADStaticWriteUtils.writeSingleNode("classes_type", 
-				aircraft.getCabinConfiguration().getTypeList(),
+				aircraft.getCabinConfiguration().getClassesType(),
 				globalDataElement, doc);
 		
 		// global_data - aisles_number
@@ -2590,7 +2590,7 @@ public class JPADStaticWriteUtils {
 		
 		// global_data -  x_coordinates_first_row
 		JPADStaticWriteUtils.writeSingleNode("x_coordinates_first_row", 
-				aircraft.getCabinConfiguration().getXCoordinateFirstRow(),
+				aircraft.getCabinConfiguration().getXCoordinatesFirstRow(),
 				globalDataElement, doc);
 		
 		// global_data - missing_seat_row
