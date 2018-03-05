@@ -106,4 +106,4 @@ public class Airfoil {
 		this._theAirfoilCreator = _theAirfoilCreator;
 	}
 
-} // end-of-class
+} 

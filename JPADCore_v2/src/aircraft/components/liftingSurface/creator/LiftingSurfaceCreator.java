@@ -2278,12 +2278,15 @@ public class LiftingSurfaceCreator {
 	
 	public Amount<Angle> getDihedralMean() {
 		
-		for(int i=0; i<_theLiftingSurfaceInterface.getPanels().size(); i++)
+		this._dihedralMean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		
+		for(int i=0; i<_theLiftingSurfaceInterface.getPanels().size(); i++) {
 			this._dihedralMean = this._dihedralMean.plus(this._theLiftingSurfaceInterface.getPanels().get(i).getDihedral());
+		}
 		
 		_dihedralMean = _dihedralMean.divide(_theLiftingSurfaceInterface.getPanels().size());
 		
-		return _dihedralMean;
+		return _dihedralMean.to(NonSI.DEGREE_ANGLE);
 	}
 	
 	public void discretizeGeometry(int numberSpanwiseStations) {

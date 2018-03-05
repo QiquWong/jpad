@@ -458,7 +458,7 @@ public class Aircraft {
 			theLiftingSurface.getLiftingSurfaceCreator().setVolumetricRatio(
 					(theLiftingSurface.getLiftingSurfaceCreator().getSurfacePlanform().to(SI.SQUARE_METRE)
 							.divide(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getSurfacePlanform().to(SI.SQUARE_METRE)))
-					.times(theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(SI.SQUARE_METRE)
+					.times(theLiftingSurface.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(SI.METER)
 							.divide(_theAircraftInterface.getWing().getLiftingSurfaceCreator().getSpan().to(SI.METER)))
 					.getEstimatedValue()
 					);

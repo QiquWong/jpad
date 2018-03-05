@@ -27,9 +27,9 @@
             <panel id="IRON - Inner panel">
                 <span unit="m">5.175</span>
                 <dihedral unit="deg">5.5</dihedral>
-                <sweep_leading_edge unit="deg">2.3</sweep_leading_edge>
+                <sweep_leading_edge unit="deg">10</sweep_leading_edge>
                 <inner_section>
-                    <chord unit="m">4.1952</chord>
+                    <chord unit="m">4.2528</chord>
                     <airfoil file="ROOT_IRON_NEW.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
@@ -42,7 +42,7 @@
             <panel id="IRON - Outer panel" linked_to="IRON - Inner panel">
                 <span unit="m">12.075</span>
                 <dihedral unit="deg">5.5</dihedral>
-                <sweep_leading_edge unit="deg">2.3</sweep_leading_edge>
+                <sweep_leading_edge unit="deg">10</sweep_leading_edge>
                 <outer_section>
                     <chord unit="m">1.584</chord>
                     <airfoil file="TIP_IRON_NEW.xml"/>
