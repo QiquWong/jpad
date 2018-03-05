@@ -1533,7 +1533,7 @@ public class ACWeightsManager implements IACWeightsManager {
 		
 		Double powerPlantMass = 0.0;
 		Double systemsMass = 0.0;
-		Double cabinConfigurationMass = 0.0;
+//		Double cabinConfigurationMass = 0.0;
 		
 		Double operatingItemMass = 0.0;
 		Double crewMass = 0.0;
@@ -1749,7 +1749,7 @@ public class ACWeightsManager implements IACWeightsManager {
 		// Passengers and crew mass
 		// 76.5 kg for each crew member + baggage
 		_paxMass = _paxSingleMass.times(aircraft.getCabinConfiguration().getActualPassengerNumber());
-		_crewMass = Amount.valueOf(aircraft.getCabinConfiguration().getNCrew() * 76.5145485, SI.KILOGRAM); 
+		_crewMass = Amount.valueOf(aircraft.getCabinConfiguration().getTotalCrewNumber() * 76.5145485, SI.KILOGRAM); 
 		_paxMassMax = getPaxSingleMass().times(aircraft.getCabinConfiguration().getMaximumPassengerNumber());
 
 		// Operating items mass

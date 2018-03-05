@@ -1290,13 +1290,12 @@ public class ACBalanceManager implements IACBalanceManager {
 		 */
 		List<Integer> indexOfZeroList = new ArrayList<>();
 		for(int i=0; 
-				i<_theAircraft.getCabinConfiguration().getSeatsBlocksList().get(0).get_rowColumnCoordinate().getXList().size();
+				i<_theAircraft.getCabinConfiguration().getSeatsBlocksList().get(0).getXList().size();
 				i++) {
 			if(_theAircraft
 					.getCabinConfiguration()
 						.getSeatsBlocksList().get(0)
-							.get_rowColumnCoordinate()
-								.getXList().get(i)
+							.getXList().get(i)
 									== 0.0)
 				indexOfZeroList.add(i);
 		}

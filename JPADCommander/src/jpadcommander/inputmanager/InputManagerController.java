@@ -25,8 +25,8 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
-import aircraft.components.CabinConfiguration.ConfigurationBuilder;
 import aircraft.components.FuelTank;
+import aircraft.components.ICabinConfiguration;
 import aircraft.components.LandingGears;
 import aircraft.components.LandingGears.LandingGearsBuilder;
 import aircraft.components.fuselage.Fuselage;
@@ -8328,94 +8328,97 @@ public class InputManagerController {
 		for (int i=0; i<numberOfColumnsFirstClassSplitList.size(); i++)
 			numberOfColumnsFirstClassArray[i] = Integer.valueOf(numberOfColumnsFirstClassSplitList.get(i).trim());
 		
-		CabinConfiguration aircraftCabinConfiguration = new ConfigurationBuilder("Cabin Configuration - " + Main.getTheAircraft().getId())
-				.nPax(Integer.valueOf(actualPassengerNumber))
-				.maxPax(Integer.valueOf(maximumPassengerNumber))
-				.flightCrewNumber(Integer.valueOf(flightCrewNumber))
-				.classesNumber(Integer.valueOf(classesNumber))
-				.typeList(classesType.stream()
+		CabinConfiguration aircraftCabinConfiguration = new CabinConfiguration(
+				new ICabinConfiguration.Builder()
+				.setId("Cabin Configuration - " + Main.getTheAircraft().getId())
+				.setActualPassengerNumber(Integer.valueOf(actualPassengerNumber))
+				.setMaximumPassengerNumber(Integer.valueOf(maximumPassengerNumber))
+				.setFlightCrewNumber(Integer.valueOf(flightCrewNumber))
+				.setClassesNumber(Integer.valueOf(classesNumber))
+				.addAllClassesType(classesType.stream()
 						.map(string -> ClassTypeEnum.valueOf(string))
 						.collect(Collectors.toList())
 						)
-				.aislesNumber(Integer.valueOf(aislesNumber))
-				.xCoordinateFirstRow(
+				.setAislesNumber(Integer.valueOf(aislesNumber))
+				.setXCoordinatesFirstRow(
 						(Amount<Length>) Amount.valueOf(
 								Double.valueOf(xCoordinateFirstRow),
 								Unit.valueOf(xCoordinateFirstRowUnit)
 								)
 						)
-				.missingSeatsRowList(missingSeatsRowsFinal)
-				.numberOfBreaksEconomyClass(Integer.valueOf(numberOfBrakesEconomyClass))
-				.numberOfBreaksBusinessClass(Integer.valueOf(numberOfBrakesBusinessClass))
-				.numberOfBreaksFirstClass(Integer.valueOf(numberOfBrakesFirstClass))
-				.numberOfRowsEconomyClass(Integer.valueOf(numberOfRowsEconomyClass))
-				.numberOfRowsBusinessClass(Integer.valueOf(numberOfRowsBusinessClass))
-				.numberOfRowsFirstClass(Integer.valueOf(numberOfRowsFirstClass))
-				.numberOfColumnsEconomyClass(numberOfColumnsEconomyClassArray)
-				.numberOfColumnsBusinessClass(numberOfColumnsBusinessClassArray)
-				.numberOfColumnsFirstClass(numberOfColumnsFirstClassArray)
-				.pitchEconomyClass(
+				.addAllMissingSeatsRow(missingSeatsRowsFinal)
+				.setNumberOfBreaksEconomyClass(Integer.valueOf(numberOfBrakesEconomyClass))
+				.setNumberOfBreaksBusinessClass(Integer.valueOf(numberOfBrakesBusinessClass))
+				.setNumberOfBreaksFirstClass(Integer.valueOf(numberOfBrakesFirstClass))
+				.setNumberOfRowsEconomyClass(Integer.valueOf(numberOfRowsEconomyClass))
+				.setNumberOfRowsBusinessClass(Integer.valueOf(numberOfRowsBusinessClass))
+				.setNumberOfRowsFirstClass(Integer.valueOf(numberOfRowsFirstClass))
+				.setNumberOfColumnsEconomyClass(numberOfColumnsEconomyClassArray)
+				.setNumberOfColumnsBusinessClass(numberOfColumnsBusinessClassArray)
+				.setNumberOfColumnsFirstClass(numberOfColumnsFirstClassArray)
+				.setPitchEconomyClass(
 						(Amount<Length>) Amount.valueOf(
 								Double.valueOf(seatsPitchEconomyClass),
 								Unit.valueOf(seatsPitchEconomyClassUnit)
 								)
 						)
-				.pitchBusinessClass(
+				.setPitchBusinessClass(
 						(Amount<Length>) Amount.valueOf(
 								Double.valueOf(seatsPitchBusinessClass),
 								Unit.valueOf(seatsPitchBusinessClassUnit)
 								)
 						)
-				.pitchFirstClass(
+				.setPitchFirstClass(
 						(Amount<Length>) Amount.valueOf(
 								Double.valueOf(seatsPitchFirstClass),
 								Unit.valueOf(seatsPitchFirstClassUnit)
 								)
 						)
-				.widthEconomyClass(
+				.setWidthEconomyClass(
 						(Amount<Length>) Amount.valueOf(
 								Double.valueOf(seatsWidthEconomyClass),
 								Unit.valueOf(seatsWidthEconomyClassUnit)
 								)
 						)
-				.widthBusinessClass(
+				.setWidthBusinessClass(
 						(Amount<Length>) Amount.valueOf(
 								Double.valueOf(seatsWidthBusinessClass),
 								Unit.valueOf(seatsWidthBusinessClassUnit)
 								)
 						)
-				.widthFirstClass(
+				.setWidthFirstClass(
 						(Amount<Length>) Amount.valueOf(
 								Double.valueOf(seatsWidthFirstClass),
 								Unit.valueOf(seatsWidthFirstClassUnit)
 								)
 						)
-				.distanceFromWallEconomyClass(
+				.setDistanceFromWallEconomyClass(
 						(Amount<Length>) Amount.valueOf(
 								Double.valueOf(distanceFromWallEconomyClass),
 								Unit.valueOf(distanceFromWallEconomyClassUnit)
 								)
 						)
-				.distanceFromWallBusinessClass(
+				.setDistanceFromWallBusinessClass(
 						(Amount<Length>) Amount.valueOf(
 								Double.valueOf(distanceFromWallBusinessClass),
 								Unit.valueOf(distanceFromWallBusinessClassUnit)
 								)
 						)
-				.distanceFromWallFirstClass(
+				.setDistanceFromWallFirstClass(
 						(Amount<Length>) Amount.valueOf(
 								Double.valueOf(distanceFromWallFirstClass),
 								Unit.valueOf(distanceFromWallFirstClassUnit)
 								)
 						)
-				.massFurnishingsAndEquipmentReference(
+				.setMassFurnishingsAndEquipment(
 						(Amount<Mass>) Amount.valueOf(
 								Double.valueOf(referenceMassFurnishingsAndEquipments),
 								Unit.valueOf(referenceMassFurnishingsAndEquipmentsUnit)
 								)
 						)
-				.build();
-		
+				.build()
+				);
+				
 		Main.getTheAircraft().setCabinConfiguration(aircraftCabinConfiguration);
 
 	}

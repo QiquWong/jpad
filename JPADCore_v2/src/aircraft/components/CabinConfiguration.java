@@ -100,8 +100,8 @@ public class CabinConfiguration {
 		this.setTheCabinConfigurationBuilder(theCabinConfigurationBuilder);
 		
 		this._currentMassList = new ArrayList<>();
-		this._seatsCoGFrontToRear = new ArrayList<>();
-		this._seatsCoGRearToFront = new ArrayList<>();
+		this.setSeatsCoGFrontToRear(new ArrayList<>());
+		this.setSeatsCoGRearToFront(new ArrayList<>());
 		this._currentMassList = new ArrayList<>();
 		this._currentXCoGfrontToRearWindow = new ArrayList<>();
 		this._currentXCoGrearToFrontWindow = new ArrayList<>();
@@ -117,16 +117,16 @@ public class CabinConfiguration {
 		this._methodsList = new ArrayList<>();
 		
 		this._breaksMap = new HashMap<>();
-		this._seatsBlocksList = new ArrayList<>();
-		this._pitchList = new ArrayList<>(); 
-		this._widthList = new ArrayList<>(); 
-		this._distanceFromWallList = new ArrayList<>();
-		this._numberOfBreaksList = new ArrayList<>();
-		this._numberOfRowsList = new ArrayList<>();
-		this._numberOfColumnsList = new ArrayList<>();
-		this._missingSeatsRowList = new ArrayList<>();
-		this._typeList = new ArrayList<>();
-		this._breaksMapList = new ArrayList<>();
+		this.setSeatsBlocksList(new ArrayList<>());
+		this.setPitchList(new ArrayList<>()); 
+		this.setWidthList(new ArrayList<>()); 
+		this.setDistanceFromWallList(new ArrayList<>());
+		this.setNumberOfBreaksList(new ArrayList<>());
+		this.setNumberOfRowsList(new ArrayList<>());
+		this.setNumberOfColumnsList(new ArrayList<>());
+		this.setMissingSeatsRowList(new ArrayList<>());
+		this.setTypeList(new ArrayList<>());
+		this.setBreaksMapList(new ArrayList<>());
 		
 		this.calculateDependentVariables();
 	}
@@ -147,13 +147,13 @@ public class CabinConfiguration {
 		
 		//------------------------------------------------------------------
 		// GLOBAL DATA
-		Integer actualPassengerNumber = null;
-		Integer maximumPassengerNumber = null; 
-		Integer flightCrewNumber = null;
-		Integer classesNumber = null; 
+		int actualPassengerNumber = 0;
+		int maximumPassengerNumber = 0; 
+		int flightCrewNumber = 0;
+		int classesNumber = 0; 
 		List<ClassTypeEnum> classesType = new ArrayList<>();
-		Integer aislesNumber = null; 
-		Amount<Length> xCoordinatesFirstRow = null; 
+		int aislesNumber = 0; 
+		Amount<Length> xCoordinatesFirstRow = Amount.valueOf(0.0, SI.METER); 
 		List<Integer[]> missingSeatsRow = new ArrayList<>();
 		
 		//..................................................................		
@@ -229,24 +229,24 @@ public class CabinConfiguration {
 		
 		//---------------------------------------------------------------
 		// DETAILED DATA
-		Integer numberOfBreaksEconomyClass = null;
-		Integer numberOfBreaksBusinessClass = null;
-		Integer numberOfBreaksFirstClass = null;
-		Integer numberOfRowsEconomyClass = null;
-		Integer numberOfRowsBusinessClass = null;
-		Integer numberOfRowsFirstClass = null;
+		int numberOfBreaksEconomyClass = 0;
+		int numberOfBreaksBusinessClass = 0;
+		int numberOfBreaksFirstClass = 0;
+		int numberOfRowsEconomyClass = 0;
+		int numberOfRowsBusinessClass = 0;
+		int numberOfRowsFirstClass = 0;
 		Integer[] numberOfColumnsEconomyClass = null;
 		Integer[] numberOfColumnsBusinessClass = null;
 		Integer[] numberOfColumnsFirstClass = null;
-		Amount<Length> pitchEconomyClass = null;
-		Amount<Length> pitchBusinessClass = null;
-		Amount<Length> pitchFirstClass = null;
-		Amount<Length> widthEconomyClass = null;
-		Amount<Length> widthBusinessClass = null;
-		Amount<Length> widthFirstClass = null;
-		Amount<Length> distanceFromWallEconomyClass = null;
-		Amount<Length> distanceFromWallBusinessClass = null;
-		Amount<Length> distanceFromWallFirstClass = null;
+		Amount<Length> pitchEconomyClass = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> pitchBusinessClass = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> pitchFirstClass = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> widthEconomyClass = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> widthBusinessClass = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> widthFirstClass = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> distanceFromWallEconomyClass = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> distanceFromWallBusinessClass = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> distanceFromWallFirstClass = Amount.valueOf(0.0, SI.METER);
 
 		//..................................................................
 		String numberOfBreaksEconomyClassProperty = reader.getXMLPropertyByPath("//detailed_data/number_of_breaks_economy_class");
@@ -359,7 +359,7 @@ public class CabinConfiguration {
 		
 		//---------------------------------------------------------------
 		//REFERENCE MASS
-		Amount<Mass> massFurnishingsAndEquipment = null;
+		Amount<Mass> massFurnishingsAndEquipment = Amount.valueOf(0.0, SI.KILOGRAM);
 		
 		String massFurnishingsAndEquipmentProperty = reader.getXMLPropertyByPath("//reference_masses/mass_furnishings_and_equipment");
 		if(massFurnishingsAndEquipmentProperty != null)
@@ -421,42 +421,42 @@ public class CabinConfiguration {
 	
 	public void updateConfiguration() {
 
-		_pitchList = new ArrayList<Amount<Length>>();
-		_pitchList.add(getTheCabinConfigurationBuilder().getPitchEconomyClass());
-		_pitchList.add(getTheCabinConfigurationBuilder().getPitchBusinessClass());
-		_pitchList.add(getTheCabinConfigurationBuilder().getPitchFirstClass());
+		setPitchList(new ArrayList<Amount<Length>>());
+		getPitchList().add(getTheCabinConfigurationBuilder().getPitchEconomyClass());
+		getPitchList().add(getTheCabinConfigurationBuilder().getPitchBusinessClass());
+		getPitchList().add(getTheCabinConfigurationBuilder().getPitchFirstClass());
 
-		_widthList = new ArrayList<Amount<Length>>();
-		_widthList.add(getTheCabinConfigurationBuilder().getWidthEconomyClass());
-		_widthList.add(getTheCabinConfigurationBuilder().getWidthBusinessClass());
-		_widthList.add(getTheCabinConfigurationBuilder().getWidthFirstClass());
+		setWidthList(new ArrayList<Amount<Length>>());
+		getWidthList().add(getTheCabinConfigurationBuilder().getWidthEconomyClass());
+		getWidthList().add(getTheCabinConfigurationBuilder().getWidthBusinessClass());
+		getWidthList().add(getTheCabinConfigurationBuilder().getWidthFirstClass());
 
-		_distanceFromWallList = new ArrayList<Amount<Length>>();
-		_distanceFromWallList.add(getTheCabinConfigurationBuilder().getDistanceFromWallEconomyClass());
-		_distanceFromWallList.add(getTheCabinConfigurationBuilder().getDistanceFromWallBusinessClass());
-		_distanceFromWallList.add(getTheCabinConfigurationBuilder().getDistanceFromWallFirstClass());
+		setDistanceFromWallList(new ArrayList<Amount<Length>>());
+		getDistanceFromWallList().add(getTheCabinConfigurationBuilder().getDistanceFromWallEconomyClass());
+		getDistanceFromWallList().add(getTheCabinConfigurationBuilder().getDistanceFromWallBusinessClass());
+		getDistanceFromWallList().add(getTheCabinConfigurationBuilder().getDistanceFromWallFirstClass());
 
-		_numberOfBreaksList = new ArrayList<Integer>();
-		_numberOfBreaksList.add(getTheCabinConfigurationBuilder().getNumberOfBreaksEconomyClass());
-		_numberOfBreaksList.add(getTheCabinConfigurationBuilder().getNumberOfBreaksBusinessClass());
-		_numberOfBreaksList.add(getTheCabinConfigurationBuilder().getNumberOfBreaksFirstClass());
+		setNumberOfBreaksList(new ArrayList<Integer>());
+		getNumberOfBreaksList().add(getTheCabinConfigurationBuilder().getNumberOfBreaksEconomyClass());
+		getNumberOfBreaksList().add(getTheCabinConfigurationBuilder().getNumberOfBreaksBusinessClass());
+		getNumberOfBreaksList().add(getTheCabinConfigurationBuilder().getNumberOfBreaksFirstClass());
 
-		_numberOfRowsList = new ArrayList<Integer>();
-		_numberOfRowsList.add(getTheCabinConfigurationBuilder().getNumberOfRowsEconomyClass());
-		_numberOfRowsList.add(getTheCabinConfigurationBuilder().getNumberOfRowsBusinessClass());
-		_numberOfRowsList.add(getTheCabinConfigurationBuilder().getNumberOfRowsFirstClass());
+		setNumberOfRowsList(new ArrayList<Integer>());
+		getNumberOfRowsList().add(getTheCabinConfigurationBuilder().getNumberOfRowsEconomyClass());
+		getNumberOfRowsList().add(getTheCabinConfigurationBuilder().getNumberOfRowsBusinessClass());
+		getNumberOfRowsList().add(getTheCabinConfigurationBuilder().getNumberOfRowsFirstClass());
 
-		_numberOfColumnsList = new ArrayList<Integer[]>();
-		_numberOfColumnsList.add(getTheCabinConfigurationBuilder().getNumberOfColumnsEconomyClass());
-		_numberOfColumnsList.add(getTheCabinConfigurationBuilder().getNumberOfColumnsBusinessClass());
-		_numberOfColumnsList.add(getTheCabinConfigurationBuilder().getNumberOfColumnsFirstClass());
+		setNumberOfColumnsList(new ArrayList<Integer[]>());
+		getNumberOfColumnsList().add(getTheCabinConfigurationBuilder().getNumberOfColumnsEconomyClass());
+		getNumberOfColumnsList().add(getTheCabinConfigurationBuilder().getNumberOfColumnsBusinessClass());
+		getNumberOfColumnsList().add(getTheCabinConfigurationBuilder().getNumberOfColumnsFirstClass());
 		
 	}
 
 	public void calculateDependentVariables() {
 
-		_cabinCrewNumber = (int) Math.ceil(getTheCabinConfigurationBuilder().getActualPassengerNumber()/35);
-		_totalCrewNumber = _cabinCrewNumber + getTheCabinConfigurationBuilder().getFlightCrewNumber();
+		setCabinCrewNumber((int) Math.ceil(getTheCabinConfigurationBuilder().getActualPassengerNumber()/35));
+		setTotalCrewNumber(getCabinCrewNumber() + getTheCabinConfigurationBuilder().getFlightCrewNumber());
 		updateConfiguration();
 
 	}
@@ -479,21 +479,21 @@ public class CabinConfiguration {
 
 		for (int i = 0; i < getTheCabinConfigurationBuilder().getClassesNumber(); i++) {
 
-			_breaksMap.put(_numberOfBreaksList.get(i), Amount.valueOf(0., SI.METER));
-			_breaksMapList.add(_breaksMap);
+			_breaksMap.put(getNumberOfBreaksList().get(i), Amount.valueOf(0., SI.METER));
+			getBreaksMapList().add(_breaksMap);
 			
 			_seatsBlockRight = new SeatsBlock(
 					new ISeatBlock.Builder()
 					.setPosition(RelativePositionEnum.LEFT)
 					.setXStart(_theCabinConfigurationBuilder.getXCoordinatesFirstRow().plus(length))
-					.setPitch(_pitchList.get(i))
-					.setWidth(_widthList.get(i))
-					.setDistanceFromWall(_distanceFromWallList.get(i))
-					.putAllBreaksMap(_breaksMapList.get(i))
-					.setRowsNumber(_numberOfRowsList.get(i))
-					.setColumnsNumber(_numberOfColumnsList.get(i)[0])
+					.setPitch(getPitchList().get(i))
+					.setWidth(getWidthList().get(i))
+					.setDistanceFromWall(getDistanceFromWallList().get(i))
+					.putAllBreaksMap(getBreaksMapList().get(i))
+					.setRowsNumber(getNumberOfRowsList().get(i))
+					.setColumnsNumber(getNumberOfColumnsList().get(i)[0])
 					.setMissingSeatRow(_theCabinConfigurationBuilder.getMissingSeatsRow().get(i))
-					.setType(_typeList.get(i))
+					.setType(getTypeList().get(i))
 					.build()
 					);
 //			_seatsBlockLeft.calculateCG(aircraft);
@@ -502,14 +502,14 @@ public class CabinConfiguration {
 					new ISeatBlock.Builder()
 					.setPosition(RelativePositionEnum.RIGHT)
 					.setXStart(_theCabinConfigurationBuilder.getXCoordinatesFirstRow().plus(length))
-					.setPitch(_pitchList.get(i))
-					.setWidth(_widthList.get(i))
-					.setDistanceFromWall(_distanceFromWallList.get(i))
-					.putAllBreaksMap(_breaksMapList.get(i))
-					.setRowsNumber(_numberOfRowsList.get(i))
-					.setColumnsNumber(_numberOfColumnsList.get(i)[1])
-					.setMissingSeatRow(_missingSeatsRowList.get(i))
-					.setType(_typeList.get(i))
+					.setPitch(getPitchList().get(i))
+					.setWidth(getWidthList().get(i))
+					.setDistanceFromWall(getDistanceFromWallList().get(i))
+					.putAllBreaksMap(getBreaksMapList().get(i))
+					.setRowsNumber(getNumberOfRowsList().get(i))
+					.setColumnsNumber(getNumberOfColumnsList().get(i)[1])
+					.setMissingSeatRow(getMissingSeatsRowList().get(i))
+					.setType(getTypeList().get(i))
 					.build()
 					);
 //			_seatsBlockRight.calculateCG(aircraft);
@@ -520,25 +520,25 @@ public class CabinConfiguration {
 						new ISeatBlock.Builder()
 						.setPosition(RelativePositionEnum.CENTER)
 						.setXStart(_theCabinConfigurationBuilder.getXCoordinatesFirstRow().plus(length))
-						.setPitch(_pitchList.get(i))
-						.setWidth(_widthList.get(i))
-						.setDistanceFromWall(_distanceFromWallList.get(i))
-						.putAllBreaksMap(_breaksMapList.get(i))
-						.setRowsNumber(_numberOfRowsList.get(i))
-						.setColumnsNumber(_numberOfColumnsList.get(i)[2])
-						.setMissingSeatRow(_missingSeatsRowList.get(i))
-						.setType(_typeList.get(i))
+						.setPitch(getPitchList().get(i))
+						.setWidth(getWidthList().get(i))
+						.setDistanceFromWall(getDistanceFromWallList().get(i))
+						.putAllBreaksMap(getBreaksMapList().get(i))
+						.setRowsNumber(getNumberOfRowsList().get(i))
+						.setColumnsNumber(getNumberOfColumnsList().get(i)[2])
+						.setMissingSeatRow(getMissingSeatsRowList().get(i))
+						.setType(getTypeList().get(i))
 						.build()
 						);
 
 //				_seatsBlockCenter.calculateCoG(aircraft);
-				_seatsBlocksList.add(_seatsBlockLeft);
-				_seatsBlocksList.add(_seatsBlockRight);
-				_seatsBlocksList.add(_seatsBlockCenter);
+				getSeatsBlocksList().add(_seatsBlockLeft);
+				getSeatsBlocksList().add(_seatsBlockRight);
+				getSeatsBlocksList().add(_seatsBlockCenter);
 
 			} else {
-				_seatsBlocksList.add(_seatsBlockLeft);	
-				_seatsBlocksList.add(_seatsBlockRight);
+				getSeatsBlocksList().add(_seatsBlockLeft);	
+				getSeatsBlocksList().add(_seatsBlockRight);
 			}
 
 			length = _seatsBlockRight.getLenghtOverall();
@@ -549,18 +549,18 @@ public class CabinConfiguration {
 		_currentMassList = new ArrayList<>();
 		_currentMassList.add(aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass());
 		
-		_seatsCoGFrontToRear = new ArrayList<>();
-		_seatsCoGFrontToRear.add(aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF());
+		setSeatsCoGFrontToRear(new ArrayList<>());
+		getSeatsCoGFrontToRear().add(aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF());
 
-		_seatsCoGRearToFront = new ArrayList<>();
-		_seatsCoGRearToFront.add(aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF());
+		setSeatsCoGRearToFront(new ArrayList<>());
+		getSeatsCoGRearToFront().add(aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF());
 		
-		CenterOfGravityCalcUtils.calculateCGBoarding(_seatsBlocksList, aircraft);
-		_seatsCoGFrontToRear.addAll(_currentXCoGfrontToRear);
-		_seatsCoGRearToFront.addAll(_currentXCoGrearToFront);
+		CenterOfGravityCalcUtils.calculateCGBoarding(getSeatsBlocksList(), aircraft);
+		getSeatsCoGFrontToRear().addAll(_currentXCoGfrontToRear);
+		getSeatsCoGRearToFront().addAll(_currentXCoGrearToFront);
 
-		_xLoading.concat(MyArrayUtils.convertListOfAmountToDoubleArray(_seatsCoGFrontToRear));
-		_xLoading.concat(MyArrayUtils.convertListOfAmountToDoubleArray(_seatsCoGRearToFront));
+		_xLoading.concat(MyArrayUtils.convertListOfAmountToDoubleArray(getSeatsCoGFrontToRear()));
+		_xLoading.concat(MyArrayUtils.convertListOfAmountToDoubleArray(getSeatsCoGRearToFront()));
 		
 		_yLoading.concat(MyArrayUtils.convertListOfAmountToDoubleArray(_currentMassList));
 		_yLoading.concat(MyArrayUtils.convertListOfAmountToDoubleArray(_currentMassList));
@@ -620,19 +620,19 @@ public class CabinConfiguration {
 				.append("\tActual number of passengers: " + getTheCabinConfigurationBuilder().getActualPassengerNumber() + "\n")
 				.append("\tMaximum number of passengers: " + getTheCabinConfigurationBuilder().getMaximumPassengerNumber() + "\n")
 				.append("\tFlight crew number: " + getTheCabinConfigurationBuilder().getFlightCrewNumber() + "\n")
-				.append("\tCabin crew number: " + _cabinCrewNumber + "\n")
-				.append("\tTotal crew number: " + _totalCrewNumber + "\n")
+				.append("\tCabin crew number: " + getCabinCrewNumber() + "\n")
+				.append("\tTotal crew number: " + getTotalCrewNumber() + "\n")
 				.append("\tClasses number: " + getTheCabinConfigurationBuilder().getClassesNumber() + "\n")
-				.append("\tClasses type: " + _typeList + "\n")
+				.append("\tClasses type: " + getTypeList() + "\n")
 				.append("\tAisles number: " + _aislesNumber + "\n")
 				.append("\tX coordinates first row: " + getTheCabinConfigurationBuilder().getXCoordinatesFirstRow() + "\n");
 
-		if((_missingSeatsRowList.size() == 1) && (_missingSeatsRowList.get(0).equals(-1)))
+		if((getMissingSeatsRowList().size() == 1) && (getMissingSeatsRowList().get(0).equals(-1)))
 			sb.append("\tMissing seats each row: " + 0 + "\n");
 		else {
 			sb.append("\tMissing seats each row: \n");
-			for (int i=0; i<_missingSeatsRowList.size(); i++)
-				sb.append("\t\t" + Arrays.toString(_missingSeatsRowList.get(i)) + " ");
+			for (int i=0; i<getMissingSeatsRowList().size(); i++)
+				sb.append("\t\t" + Arrays.toString(getMissingSeatsRowList().get(i)) + " ");
 		}
 		
 		sb.append("\n\t.....................................\n")
@@ -966,6 +966,118 @@ public class CabinConfiguration {
 
 	public void setCurrentXCoGrearToFront(List<Amount<Length>> currentXCoGrearToFront) {
 		this._currentXCoGrearToFront = currentXCoGrearToFront;
+	}
+
+	public int getCabinCrewNumber() {
+		return _cabinCrewNumber;
+	}
+
+	public void setCabinCrewNumber(int _cabinCrewNumber) {
+		this._cabinCrewNumber = _cabinCrewNumber;
+	}
+
+	public int getTotalCrewNumber() {
+		return _totalCrewNumber;
+	}
+
+	public void setTotalCrewNumber(int _totalCrewNumber) {
+		this._totalCrewNumber = _totalCrewNumber;
+	}
+
+	public List<Amount<Length>> getSeatsCoGFrontToRear() {
+		return _seatsCoGFrontToRear;
+	}
+
+	public void setSeatsCoGFrontToRear(List<Amount<Length>> _seatsCoGFrontToRear) {
+		this._seatsCoGFrontToRear = _seatsCoGFrontToRear;
+	}
+
+	public List<Amount<Length>> getSeatsCoGRearToFront() {
+		return _seatsCoGRearToFront;
+	}
+
+	public void setSeatsCoGRearToFront(List<Amount<Length>> _seatsCoGRearToFront) {
+		this._seatsCoGRearToFront = _seatsCoGRearToFront;
+	}
+
+	public List<SeatsBlock> getSeatsBlocksList() {
+		return _seatsBlocksList;
+	}
+
+	public void setSeatsBlocksList(List<SeatsBlock> _seatsBlocksList) {
+		this._seatsBlocksList = _seatsBlocksList;
+	}
+
+	public List<Amount<Length>> getPitchList() {
+		return _pitchList;
+	}
+
+	public void setPitchList(List<Amount<Length>> _pitchList) {
+		this._pitchList = _pitchList;
+	}
+
+	public List<Amount<Length>> getWidthList() {
+		return _widthList;
+	}
+
+	public void setWidthList(List<Amount<Length>> _widthList) {
+		this._widthList = _widthList;
+	}
+
+	public List<Amount<Length>> getDistanceFromWallList() {
+		return _distanceFromWallList;
+	}
+
+	public void setDistanceFromWallList(List<Amount<Length>> _distanceFromWallList) {
+		this._distanceFromWallList = _distanceFromWallList;
+	}
+
+	public List<Integer> getNumberOfBreaksList() {
+		return _numberOfBreaksList;
+	}
+
+	public void setNumberOfBreaksList(List<Integer> _numberOfBreaksList) {
+		this._numberOfBreaksList = _numberOfBreaksList;
+	}
+
+	public List<Integer> getNumberOfRowsList() {
+		return _numberOfRowsList;
+	}
+
+	public void setNumberOfRowsList(List<Integer> _numberOfRowsList) {
+		this._numberOfRowsList = _numberOfRowsList;
+	}
+
+	public List<Integer[]> getNumberOfColumnsList() {
+		return _numberOfColumnsList;
+	}
+
+	public void setNumberOfColumnsList(List<Integer[]> _numberOfColumnsList) {
+		this._numberOfColumnsList = _numberOfColumnsList;
+	}
+
+	public List<Integer[]> getMissingSeatsRowList() {
+		return _missingSeatsRowList;
+	}
+
+	public void setMissingSeatsRowList(List<Integer[]> _missingSeatsRowList) {
+		this._missingSeatsRowList = _missingSeatsRowList;
+	}
+
+	public List<ClassTypeEnum> getTypeList() {
+		return _typeList;
+	}
+
+	public void setTypeList(List<ClassTypeEnum> _typeList) {
+		this._typeList = _typeList;
+	}
+
+	public List<Map<Integer, Amount<Length>>> getBreaksMapList() {
+		return _breaksMapList;
+	}
+
+	public void setBreaksMapList(List<Map<Integer, Amount<Length>>> _breaksMapList) {
+		this._breaksMapList = _breaksMapList;
 	}
 
 	

@@ -41,6 +41,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import aircraft.auxiliary.ISeatBlock;
 import aircraft.auxiliary.SeatsBlock;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator;
@@ -5260,69 +5261,73 @@ public class InputManagerControllerMainActionUtilities {
 		
 		for (int i = 0; i < Main.getTheAircraft().getCabinConfiguration().getClassesNumber(); i++) {
 
-			SeatsBlock seatsBlock = new SeatsBlock();
-			
-			breaksMap.put(Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaks().get(classNumber-i), Main.getTheAircraft().getCabinConfiguration().getWidth().get(i));
+			breaksMap.put(
+					Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksList().get(classNumber-i), 
+					Main.getTheAircraft().getCabinConfiguration().getWidthList().get(i)
+					);
 			breaksMapList.add(breaksMap);
-
-			seatsBlock.createSeatsBlock(
-					RelativePositionEnum.RIGHT,
-					Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().plus(length),
-					Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i),
-					Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i),
-					Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i),
-					breaksMapList.get(i),
-					Main.getTheAircraft().getCabinConfiguration().getNumberOfRows().get(classNumber-i),
-					Main.getTheAircraft().getCabinConfiguration().getNumberOfColumns().get(classNumber-i)[0],
-					Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(classNumber-i),
-					Main.getTheAircraft().getCabinConfiguration().getTypeList().get(classNumber-i));
+			
+			SeatsBlock seatsBlock = new SeatsBlock(
+					new ISeatBlock.Builder()
+					.setPosition(RelativePositionEnum.RIGHT)
+					.setXStart(Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow().plus(length))
+					.setPitch(Main.getTheAircraft().getCabinConfiguration().getPitchList().get(classNumber-i))
+					.setWidth(Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i))
+					.setDistanceFromWall(Main.getTheAircraft().getCabinConfiguration().getDistanceFromWallList().get(classNumber-i))
+					.putAllBreaksMap(breaksMapList.get(i))
+					.setRowsNumber(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsList().get(classNumber-i))
+					.setColumnsNumber(Main.getTheAircraft().getCabinConfiguration().getNumberOfColumnsList().get(classNumber-i)[0])
+					.setMissingSeatRow(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRowList().get(classNumber-i))
+					.setType(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(classNumber-i))					
+					.build()
+					);
 
 			seatBlockList.add(seatsBlock);
 			//........................................................................................................
 			XYSeries seriesSeatBlock = new XYSeries("Seat Block " + i + " start", false);
 			seriesSeatBlock.add(
-					Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METRE)
+					Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow().doubleValue(SI.METRE)
 					+ length.doubleValue(SI.METER),
 					- FusNacGeometryCalc.getWidthAtX(
-							Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METRE)
+							Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow().doubleValue(SI.METRE)
 							+ length.doubleValue(SI.METER),
 							Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveX(),
 							Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveY()
 							)/2
-					+ Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
+					+ Main.getTheAircraft().getCabinConfiguration().getDistanceFromWallList().get(classNumber-i).doubleValue(SI.METER)
 					);
 			seriesSeatBlock.add(
-					Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METRE)
+					Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow().doubleValue(SI.METRE)
 					+ length.doubleValue(SI.METER),
 					FusNacGeometryCalc.getWidthAtX(
-							Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METRE)
+							Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow().doubleValue(SI.METRE)
 							+ length.doubleValue(SI.METER),
 							Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveX(),
 							Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveY()
 							)/2
-					- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
+					- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWallList().get(classNumber-i).doubleValue(SI.METER)
 					);
 			//........................................................................................................
 			Amount<Length> aisleWidth = Amount.valueOf(0.0, SI.METER);
 			Amount<Length> currentYPosition = Amount.valueOf(0.0, SI.METER);
 			Double breakLengthPitchFraction = 0.25;
 			List<Integer> breakesPositionsIndexList = new ArrayList<>();
-			for (int iBrake=0; iBrake<Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaks().get(classNumber-i); iBrake++) {
+			for (int iBrake=0; iBrake<Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksList().get(classNumber-i); iBrake++) {
 				Integer brekesInteval = Math.round(
-						(Main.getTheAircraft().getCabinConfiguration().getNumberOfRows().get(classNumber-i)
-						+ Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaks().get(classNumber-i))
-						/ (Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaks().get(classNumber-i) + 1)
+						(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsList().get(classNumber-i)
+						+ Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksList().get(classNumber-i))
+						/ (Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksList().get(classNumber-i) + 1)
 						);
 				breakesPositionsIndexList.add((iBrake+1)*brekesInteval);
 			}
 			
-			for(int j=0; j<Main.getTheAircraft().getCabinConfiguration().getNumberOfColumns().get(classNumber-i).length; j++) {
+			for(int j=0; j<Main.getTheAircraft().getCabinConfiguration().getNumberOfColumnsList().get(classNumber-i).length; j++) {
 				if(j>0) {
 					aisleWidth = Amount.valueOf( 
 							(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().doubleValue(SI.METER) 
-									- (MyArrayUtils.sumArrayElements(Main.getTheAircraft().getCabinConfiguration().getNumberOfColumns().get(classNumber-i))
-											* Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER))
-									- 2*Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER))
+									- (MyArrayUtils.sumArrayElements(Main.getTheAircraft().getCabinConfiguration().getNumberOfColumnsList().get(classNumber-i))
+											* Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER))
+									- 2*Main.getTheAircraft().getCabinConfiguration().getDistanceFromWallList().get(classNumber-i).doubleValue(SI.METER))
 							/Main.getTheAircraft().getCabinConfiguration().getAislesNumber(),
 							SI.METER
 							);
@@ -5331,12 +5336,12 @@ public class InputManagerControllerMainActionUtilities {
 							SI.METER
 							);
 				}
-				for (int k = 0; k <Main.getTheAircraft().getCabinConfiguration().getNumberOfColumns().get(classNumber-i)[j]; k++) {
+				for (int k = 0; k <Main.getTheAircraft().getCabinConfiguration().getNumberOfColumnsList().get(classNumber-i)[j]; k++) {
 					
 					int indexOfCurrentBrake = 10000;
 					
 					for (int r = 0;
-							 r < Main.getTheAircraft().getCabinConfiguration().getNumberOfRows().get(classNumber-i); 
+							 r < Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsList().get(classNumber-i); 
 							 r++) {
 						
 						XYSeries seriesSeats = new XYSeries("Column " + i + j + k + r, false);
@@ -5345,34 +5350,34 @@ public class InputManagerControllerMainActionUtilities {
 							if(breakesPositionsIndexList.stream().anyMatch(x -> x == rowIndex)) {
 								seriesSeats.add(
 										seatsSeriesList.get(seatsSeriesList.size()-1).getDataItem(0).getXValue()
-										+ breakLengthPitchFraction * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER)
-										+ Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										+ breakLengthPitchFraction * Main.getTheAircraft().getCabinConfiguration().getPitchList().get(classNumber-i).doubleValue(SI.METER)
+										+ Main.getTheAircraft().getCabinConfiguration().getPitchList().get(classNumber-i).doubleValue(SI.METER),
 										currentYPosition.doubleValue(SI.METER)
 										- aisleWidth.doubleValue(SI.METER)
-										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
-										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER)
 										);
 								indexOfCurrentBrake = r;
 							}
 							else if (r > indexOfCurrentBrake)
 								seriesSeats.add(
 										seatsSeriesList.get(seatsSeriesList.size()-1).getDataItem(0).getXValue()
-										+ Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										+ Main.getTheAircraft().getCabinConfiguration().getPitchList().get(classNumber-i).doubleValue(SI.METER),
 										currentYPosition.doubleValue(SI.METER)
 										- aisleWidth.doubleValue(SI.METER)
-										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
-										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER)
 										);
 							else
 								seriesSeats.add(
-										Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METER)
+										Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow().doubleValue(SI.METER)
 										+ length.doubleValue(SI.METER)
-										+ Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
-										+ r * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										+ Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER)
+										+ r * Main.getTheAircraft().getCabinConfiguration().getPitchList().get(classNumber-i).doubleValue(SI.METER),
 										currentYPosition.doubleValue(SI.METER)
 										- aisleWidth.doubleValue(SI.METER)
-										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
-										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER)
 										);
 						}
 						else {
@@ -5380,34 +5385,34 @@ public class InputManagerControllerMainActionUtilities {
 							if(breakesPositionsIndexList.stream().anyMatch(x -> x == columnIndex)) {
 								seriesSeats.add(
 										seatsSeriesList.get(seatsSeriesList.size()-1).getDataItem(0).getXValue()
-										+ breakLengthPitchFraction * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER)
-										+ Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										+ breakLengthPitchFraction * Main.getTheAircraft().getCabinConfiguration().getPitchList().get(classNumber-i).doubleValue(SI.METER)
+										+ Main.getTheAircraft().getCabinConfiguration().getPitchList().get(classNumber-i).doubleValue(SI.METER),
 										Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().divide(2).doubleValue(SI.METER)
-										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
-										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).divide(2).doubleValue(SI.METER)
-										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWallList().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).divide(2).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER)
 										);
 								indexOfCurrentBrake = r;
 							}
 							else if (r > indexOfCurrentBrake)
 								seriesSeats.add(
 										seatsSeriesList.get(seatsSeriesList.size()-1).getDataItem(0).getXValue()
-										+ Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										+ Main.getTheAircraft().getCabinConfiguration().getPitchList().get(classNumber-i).doubleValue(SI.METER),
 										Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().divide(2).doubleValue(SI.METER)
-										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
-										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).divide(2).doubleValue(SI.METER)
-										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWallList().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).divide(2).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER)
 										);
 							else
 								seriesSeats.add(
-										Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METER)
+										Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow().doubleValue(SI.METER)
 										+ length.doubleValue(SI.METER)
-										+ Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
-										+ r * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										+ Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER)
+										+ r * Main.getTheAircraft().getCabinConfiguration().getPitchList().get(classNumber-i).doubleValue(SI.METER),
 										Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().divide(2).doubleValue(SI.METER)
-										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
-										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).divide(2).doubleValue(SI.METER)
-										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWallList().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).divide(2).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidthList().get(classNumber-i).doubleValue(SI.METER)
 										);
 								
 						}
@@ -5424,26 +5429,26 @@ public class InputManagerControllerMainActionUtilities {
 		
 		XYSeries seriesSeatBlock = new XYSeries("Seat Block " + classNumber + " ending", false);
 		seriesSeatBlock.add(
-				Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METRE)
+				Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow().doubleValue(SI.METRE)
 				+ length.doubleValue(SI.METER),
 				- FusNacGeometryCalc.getWidthAtX(
-						Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METRE)
+						Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow().doubleValue(SI.METRE)
 						+ length.doubleValue(SI.METER),
 						Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveX(),
 						Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveY()
 						)/2
-				+ Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber).doubleValue(SI.METER)
+				+ Main.getTheAircraft().getCabinConfiguration().getDistanceFromWallList().get(classNumber).doubleValue(SI.METER)
 				);
 		seriesSeatBlock.add(
-				Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METRE)
+				Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow().doubleValue(SI.METRE)
 				+ length.doubleValue(SI.METER),
 				FusNacGeometryCalc.getWidthAtX(
-						Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METRE)
+						Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow().doubleValue(SI.METRE)
 						+ length.doubleValue(SI.METER),
 						Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveX(),
 						Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveY()
 						)/2
-				- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber).doubleValue(SI.METER)
+				- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWallList().get(classNumber).doubleValue(SI.METER)
 				);
 		seatBlockSeriesList.add(seriesSeatBlock);
 		
@@ -5580,31 +5585,31 @@ public class InputManagerControllerMainActionUtilities {
 
 			//---------------------------------------------------------------------------------
 			// ACTUAL PASSENGERS NUMBER:
-			if(Main.getTheAircraft().getCabinConfiguration().getNPax() != null) 
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()) != null) 
 				theController.getTextFieldActualPassengersNumber().setText(
 					Integer.toString(
 							Main.getTheAircraft()
 							.getCabinConfiguration()
-							.getNPax()
+							.getActualPassengerNumber()
 							)
 					);
 			else
 				theController.getTextFieldActualPassengersNumber().setText("0");
 			//---------------------------------------------------------------------------------
 			// MAXIMUM PASSENGERS NUMBER:
-			if(Main.getTheAircraft().getCabinConfiguration().getMaxPax() != null)
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getMaximumPassengerNumber()) != null)
 				theController.getTextFieldMaximumPassengersNumber().setText(
 						Integer.toString(
 								Main.getTheAircraft()
 								.getCabinConfiguration()
-								.getMaxPax()
+								.getMaximumPassengerNumber()
 								)
 						);
 			else
 				theController.getTextFieldMaximumPassengersNumber().setText("0");
 			//---------------------------------------------------------------------------------
 			// FLIGHT CREW NUMBER:
-			if(Main.getTheAircraft().getCabinConfiguration().getFlightCrewNumber() != null)
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getFlightCrewNumber()) != null)
 				theController.getTextFieldFlightCrewNumber().setText(
 						Integer.toString(
 								Main.getTheAircraft()
@@ -5616,7 +5621,7 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getTextFieldFlightCrewNumber().setText("0");
 			//---------------------------------------------------------------------------------
 			// CLASSES NUMBER:
-			if(Main.getTheAircraft().getCabinConfiguration().getClassesNumber() != null) 
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getClassesNumber()) != null) 
 				theController.getTextFieldClassesNumber().setText(
 						Integer.toString(
 								Main.getTheAircraft()
@@ -5691,7 +5696,7 @@ public class InputManagerControllerMainActionUtilities {
 			
 			//---------------------------------------------------------------------------------
 			// AISLES NUMBER:
-			if(Main.getTheAircraft().getCabinConfiguration().getAislesNumber() != null)
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getAislesNumber()) != null)
 				theController.getTextFieldAislesNumber().setText(
 						Integer.toString(
 								Main.getTheAircraft()
@@ -5703,24 +5708,24 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getTextFieldAislesNumber().setText("0");
 			//---------------------------------------------------------------------------------
 			// X COORDINATE FIRST ROW:
-			if(Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow() != null) {
+			if(Main.getTheAircraft().getCabinConfiguration().getXCoordinatesFirstRow() != null) {
 				
 				theController.getTextFieldXCoordinateFirstRow().setText(
 						String.valueOf(
 								Main.getTheAircraft()
 								.getCabinConfiguration()
-								.getXCoordinateFirstRow()
-								.getEstimatedValue()
+								.getXCoordinatesFirstRow()
+								.doubleValue(SI.METER)
 								)
 						);
 				
 				if(Main.getTheAircraft()
 						.getCabinConfiguration()
-						.getXCoordinateFirstRow().getUnit().toString().equalsIgnoreCase("m"))
+						.getXCoordinatesFirstRow().getUnit().toString().equalsIgnoreCase("m"))
 					theController.getCabinConfigurationXCoordinateFirstRowUnitChoiceBox().getSelectionModel().select(0);
 				else if(Main.getTheAircraft()
 						.getCabinConfiguration()
-						.getXCoordinateFirstRow().getUnit().toString().equalsIgnoreCase("ft"))
+						.getXCoordinatesFirstRow().getUnit().toString().equalsIgnoreCase("ft"))
 					theController.getCabinConfigurationXCoordinateFirstRowUnitChoiceBox().getSelectionModel().select(1);
 				
 			}
@@ -5835,7 +5840,7 @@ public class InputManagerControllerMainActionUtilities {
 
 			//---------------------------------------------------------------------------------
 			// NUMBER OF BRAKES ECONOMY:
-			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksEconomyClass() != null)
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksEconomyClass()) != null)
 				theController.getTextFieldNumberOfBrakesEconomy().setText(
 						Integer.toString(
 								Main.getTheAircraft()
@@ -5847,7 +5852,7 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getTextFieldNumberOfBrakesEconomy().setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF BRAKES BUSINESS:
-			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksBusinessClass() != null)
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksBusinessClass()) != null)
 				theController.getTextFieldNumberOfBrakesBusiness().setText(
 						Integer.toString(
 								Main.getTheAircraft()
@@ -5859,7 +5864,7 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getTextFieldNumberOfBrakesBusiness().setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF BRAKES FIRST:
-			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksFirstClass() != null)
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksFirstClass()) != null)
 				theController.getTextFieldNumberOfBrakesFirst().setText(
 						Integer.toString(
 								Main.getTheAircraft()
@@ -5871,7 +5876,7 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getTextFieldNumberOfBrakesFirst().setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF ROWS ECONOMY:
-			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsEconomyClass() != null)
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsEconomyClass()) != null)
 				theController.getTextFieldNumberOfRowsEconomy().setText(
 						Integer.toString(
 								Main.getTheAircraft()
@@ -5883,7 +5888,7 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getTextFieldNumberOfRowsEconomy().setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF ROWS BUSINESS:
-			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsBusinessClass() != null)
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsBusinessClass()) != null)
 				theController.getTextFieldNumberOfRowsBusiness().setText(
 						Integer.toString(
 								Main.getTheAircraft()
@@ -5895,7 +5900,7 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getTextFieldNumberOfRowsBusiness().setText("0");
 			//---------------------------------------------------------------------------------
 			// NUMBER OF ROWS FIRST:
-			if(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsFirstClass() != null)
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsFirstClass()) != null)
 				theController.getTextFieldNumberOfRowsFirst().setText(
 						Integer.toString(
 								Main.getTheAircraft()

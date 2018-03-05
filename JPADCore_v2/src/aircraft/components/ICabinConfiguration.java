@@ -2,6 +2,7 @@ package aircraft.components;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 
@@ -28,9 +29,14 @@ public interface ICabinConfiguration {
 	int getNumberOfRowsEconomyClass();
 	int getNumberOfRowsBusinessClass();
 	int getNumberOfRowsFirstClass();
+	
+	@Nullable
 	Integer[] getNumberOfColumnsEconomyClass();
+	@Nullable
 	Integer[] getNumberOfColumnsBusinessClass();
+	@Nullable
 	Integer[] getNumberOfColumnsFirstClass();
+	
 	Amount<Length> getPitchEconomyClass();
 	Amount<Length> getPitchBusinessClass();
 	Amount<Length> getPitchFirstClass();
