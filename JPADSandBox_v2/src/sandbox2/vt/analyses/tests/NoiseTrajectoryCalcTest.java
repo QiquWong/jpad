@@ -155,9 +155,6 @@ public class NoiseTrajectoryCalcTest extends Application {
 	 */
 	public static void main(String[] args) throws InvalidFormatException {
 
-		// TODO: check out this as an alternative
-		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
-
 		final PrintStream originalOut = System.out;
 		PrintStream filterStream = new PrintStream(new OutputStream() {
 			public void write(int b) {
@@ -228,17 +225,6 @@ public class NoiseTrajectoryCalcTest extends Application {
 			// deactivating system.out
 			System.setOut(filterStream);
 
-			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder(
-//					"ATR-72",
-//					AircraftEnum.ATR72,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader,
-//					fusDesDatabaseReader,
-//					veDSCDatabaseReader
-//					)
-//					.build();
-
 			// reading aircraft from xml ... 
 			theAircraft = Aircraft.importFromXML(
 					pathToXML,
@@ -282,12 +268,12 @@ public class NoiseTrajectoryCalcTest extends Application {
 			// Analyzing the aircraft
 			
 			//======================================================================
-			// TAKE-OFF NOISE TRAJECTORIES
+			// TAKE-OFF NOISE TRAJECTORIES (ISA+10°C)
 			System.out.println("\n\n\tTAKE-OFF NOISE TRAJECTORIES ... \n\n");
 			//======================================================================
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			boolean timeHistories = true;
-			UnitFormatEnum unitFormat = UnitFormatEnum.IMPERIAL;
+			UnitFormatEnum unitFormat = UnitFormatEnum.SI;
 			boolean takeOffSimulation = true;
 			boolean landingSimulation = true;
 			
@@ -295,9 +281,9 @@ public class NoiseTrajectoryCalcTest extends Application {
 			Amount<Length> xEndSimulation = Amount.valueOf(8000, SI.METER);
 			Amount<Length> cutbackAltitude = Amount.valueOf(984, NonSI.FOOT); //  also to be done at 1000ft and 2000ft
 			int numberOfThrustSettingCutback = 3;
-			Amount<Mass> maxTakeOffMass = Amount.valueOf(54500, SI.KILOGRAM);
-			Double[] polarCLTakeOff = new Double[] {-1.024064237,-0.882750413,-0.741378289,-0.599943427,-0.458441424,-0.316867914,-0.175218573,-0.033489115,0.108324705,0.250227087,0.392222187,0.534314117,0.676640473,0.818668509,0.960722621,1.102937968,1.245474454,1.388346414,1.531385114,1.674589688,1.818061748,1.961717376,2.105583653,2.249660071,2.392645609,2.512647424,2.592665502,2.616980286};
-			Double[] polarCDTakeOff = new Double[] {0.103605564,0.096027653,0.08961484,0.084368382,0.080289963,0.077837014,0.076557364,0.076448505,0.077512477,0.079787184,0.083642651,0.088665524,0.094790411,0.101527726,0.109174381,0.118449777,0.129601151,0.142544953,0.156942866,0.172739892,0.190092273,0.208722674,0.228618565,0.249874304,0.272157975,0.291786295,0.306250433,0.314765984};
+			Amount<Mass> maxTakeOffMass = Amount.valueOf(55032, SI.KILOGRAM);
+			Double[] polarCLTakeOff = new Double[] {0.57825266,0.696589758,0.814590688,0.932780557,1.051150342,1.169691,1.288393466,1.407248652,1.526247451,1.645380738,1.764639367,1.884132045,2.003613843,2.123075559,2.242743719,2.362491216,2.482308794,2.602187184,2.722117101,2.842089242,2.851016568};
+			Double[] polarCDTakeOff = new Double[] {0.120319713,0.119352237,0.118990827,0.119228811,0.120067629,0.121508644,0.123553144,0.126202339,0.129457353,0.133319228,0.137788921,0.142868765,0.148556915,0.154853121,0.161761843,0.169281799,0.177413389,0.186156914,0.195512577,0.205480483,0.204259518};
 			Double deltaCD0LandingGear = 0.015;
 			Double deltaCD0OEI = 0.0050;
 			Amount<Duration> dtRot = Amount.valueOf(2, SI.SECOND);
@@ -305,13 +291,13 @@ public class NoiseTrajectoryCalcTest extends Application {
 			Amount<Duration> dtLandingGearRetraction = Amount.valueOf(12, SI.SECOND);
 			Amount<Duration> dtThrustCutback = Amount.valueOf(4, SI.SECOND);
 			Double phi = 1.0;
-			Double kcLMax = 0.85;
+			Double kcLMax = 0.88;
 			Double kRot = 1.05;
-			Double alphaDotInitial = 4.0; // (deg/s)
+			Double alphaDotInitial = 3.0; // (deg/s)
 			Double kAlphaDot = 0.04; // (1/deg)
-			Double cLmaxTO = 2.61;
-			Double cLZeroTO = 1.19;
-			Amount<?> cLalphaFlap = Amount.valueOf(0.1082, NonSI.DEGREE_ANGLE.inverse());
+			Double cLmaxTO = 2.92;
+			Double cLZeroTO = 1.333;
+			Amount<?> cLalphaFlap = Amount.valueOf(0.1303, NonSI.DEGREE_ANGLE.inverse());
 			
 			MyInterpolatingFunction mu = new MyInterpolatingFunction();
 			mu.interpolateLinear(
@@ -374,7 +360,13 @@ public class NoiseTrajectoryCalcTest extends Application {
 				double lowestPhiCutback = theTakeOffNoiseTrajectoryCalculator.getPhiCutback();
 				double[] phiArray = MyArrayUtils.linspace(lowestPhiCutback*1.1, 0.9, numberOfThrustSettingCutback);
 
-				Arrays.stream(phiArray).forEach(throttle -> theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, throttle, timeHistories));
+				Arrays.stream(phiArray).forEach(
+						throttle -> theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(
+								true,
+								throttle, 
+								timeHistories
+								)
+						);
 
 				try {
 					theTakeOffNoiseTrajectoryCalculator.createOutputCharts(outputFolderTakeOff, timeHistories, unitFormat);
@@ -390,20 +382,25 @@ public class NoiseTrajectoryCalcTest extends Application {
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			Amount<Length> initialAltitude = Amount.valueOf(4000, NonSI.FOOT);
 			Amount<Angle> gammaDescent = Amount.valueOf(-3, NonSI.DEGREE_ANGLE);
-			Amount<Mass> maxLandingMass = Amount.valueOf(52865, SI.KILOGRAM);
-			Double[] polarCLLanding = new Double[] {-0.031750302,0.100923075,0.233596452,0.366269828,0.498943205,0.631616582,0.764289959,0.896963335,1.029636712,1.162310089,1.294983465,1.427656842,1.560330219,1.693003595,1.825676972,1.958350349,2.091023726,2.223697102,2.356370479,2.489043856,2.621717232,2.754390609,2.887063986,3.017145378,3.114191869,3.176564974,3.213398273,3.233825349,3.246979785};
-			Double[] polarCDLanding = new Double[] {0.135400883,0.133582443,0.132848483,0.133199003,0.134634042,0.137153575,0.140757223,0.145445151,0.151217648,0.158074035,0.166014619,0.175038985,0.185146827,0.196198286,0.207603396,0.219873902,0.233549812,0.248933639,0.265937067,0.284287369,0.303883008,0.324826902,0.346694324,0.369645716,0.392268833,0.409403904,0.419468091,0.423103066,0.420313086};
+			Amount<Mass> maxLandingMass = Amount.valueOf(53381, SI.KILOGRAM);
+			Double[] polarCLLanding = new Double[] {1.094267779,1.258884296,1.376716801,1.494747857,1.612968439,1.731369507,1.849941995,1.968676819,2.087564876,2.206597043,2.325764178,2.445174996,2.564584571,2.68398371,2.803598946,2.923303179,3.043087164,3.162941642,3.282857337,3.40282496,3.411757482};
+			Double[] polarCDLanding = new Double[] {0.12629755,0.121981303,0.121518064,0.121653573,0.122389314,0.123726701,0.125667072,0.128211686,0.131361726,0.135118289,0.139482389,0.144456549,0.150038726,0.156228739,0.163031363,0.170445256,0.178470883,0.187108615,0.196358721,0.206221376,0.204882932};
 			Amount<Duration> dtFlare = Amount.valueOf(3, SI.SECOND);
 			Amount<Duration> dtFreeRoll = Amount.valueOf(2, SI.SECOND);
-			double cLmaxLND = 3.125;
-			double cLZeroLND = 2.263;
-			Amount<?> cLalphaLND = Amount.valueOf(0.1131, NonSI.DEGREE_ANGLE.inverse());
+			double cLmaxLND = 3.52;
+			double cLZeroLND = 1.89;
+			Amount<?> cLalphaLND = Amount.valueOf(0.1306, NonSI.DEGREE_ANGLE.inverse());
 			
 			MyInterpolatingFunction muBrake = new MyInterpolatingFunction();
+//			muBrake.interpolateLinear(
+//					new double[]{0,5.144,10.228,15.432,20.576,25.72,30.864,36.008,41.152},
+//					new double[]{0.94,0.89,0.85,0.8,0.74,0.68,0.62,0.57,0.52}
+//					);
 			muBrake.interpolateLinear(
-					new double[]{0,5.144,10.228,15.432,20.576,25.72,30.864,36.008,41.152},
-					new double[]{0.94,0.89,0.85,0.8,0.74,0.68,0.62,0.57,0.52}
+					new double[]{0, 10000},
+					new double[]{0.4, 0.4}
 					);
+
 			
 			//======================================================================
 			if(landingSimulation) {
