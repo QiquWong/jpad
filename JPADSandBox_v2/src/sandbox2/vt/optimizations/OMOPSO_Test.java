@@ -1,7 +1,6 @@
 package sandbox2.vt.optimizations;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -12,63 +11,18 @@ import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-import org.moeaframework.algorithm.pso.OMOPSO;
+import org.moeaframework.Executor;
+import org.moeaframework.Instrumenter;
+import org.moeaframework.analysis.collector.Accumulator;
+import org.moeaframework.core.NondominatedPopulation;
+import org.moeaframework.core.Solution;
 
-import aircraft.components.Aircraft;
-import analyses.ACAnalysisManager;
-import analyses.OperatingConditions;
-import configuration.MyConfiguration;
-import configuration.enumerations.FoldersEnum;
-import database.DatabaseManager;
-import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
-import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
-import javafx.application.Application;
-import javafx.stage.Stage;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
-import writers.JPADStaticWriteUtils;
 
 class MyArgumentsAnalysis {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
-
-	@Option(name = "-ia", aliases = { "--input-analyses" }, required = true,
-			usage = "analyses input file")
-	private File _inputFileAnalyses;
-
-	@Option(name = "-ioc", aliases = { "--input-operating-condition" }, required = true,
-			usage = "operating conditions input file")
-	private File _inputFileOperatingCondition;
-
-	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
-			usage = "airfoil directory path")
-	private File _airfoilDirectory;
-
-	@Option(name = "-df", aliases = { "--dir-fuselages" }, required = true,
-			usage = "fuselages directory path")
-	private File _fuselagesDirectory;
-
-	@Option(name = "-dls", aliases = { "--dir-lifting-surfaces" }, required = true,
-			usage = "lifting surfaces directory path")
-	private File _liftingSurfacesDirectory;
-
-	@Option(name = "-de", aliases = { "--dir-engines" }, required = true,
-			usage = "engines directory path")
-	private File _enginesDirectory;
-
-	@Option(name = "-dn", aliases = { "--dir-nacelles" }, required = true,
-			usage = "nacelles directory path")
-	private File _nacellesDirectory;
-
-	@Option(name = "-dlg", aliases = { "--dir-landing-gears" }, required = true,
-			usage = "landing gears directory path")
-	private File _landingGearsDirectory;
-
-	@Option(name = "-dcc", aliases = { "--dir-cabin-configurations" }, required = true,
-			usage = "cabin configurations directory path")
-	private File _cabinConfigurationsDirectory;
 
 	// receives other command line parameters than options
 	@Argument
@@ -78,69 +32,12 @@ class MyArgumentsAnalysis {
 		return _inputFile;
 	}
 
-	public File getInputFileAnalyses() {
-		return _inputFileAnalyses;
-	}
-
-	public File getOperatingConditionsInputFile() {
-		return _inputFileOperatingCondition;
-	}
-
-	public File getAirfoilDirectory() {
-		return _airfoilDirectory;
-	}
-
-	public File getFuselagesDirectory() {
-		return _fuselagesDirectory;
-	}
-
-	public File getLiftingSurfacesDirectory() {
-		return _liftingSurfacesDirectory;
-	}
-
-	public File getEnginesDirectory() {
-		return _enginesDirectory;
-	}
-
-	public File getNacellesDirectory() {
-		return _nacellesDirectory;
-	}
-
-	public File getLandingGearsDirectory() {
-		return _landingGearsDirectory;
-	}
-
-	public File getCabinConfigurationDirectory() {
-		return _cabinConfigurationsDirectory;
-	}
 }
 
-public class OMOPSO_Test extends Application {
+public class OMOPSO_Test  {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
-
-	//-------------------------------------------------------------
-
-	public static Aircraft theAircraft;
-
-	//-------------------------------------------------------------
-
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-
-		//--------------------------------------------------
-		// get the aircraft object
-		System.out.println("\n\n##################");
-		System.out.println("function start :: getting the aircraft object ...");
-
-		Aircraft aircraft = OMOPSO_Test.theAircraft;
-		if (aircraft == null) {
-			System.out.println("aircraft object null, returning.");
-			return;
-		}
-
-	}; // end-of-Runnable
 
 	/**
 	 * Main
@@ -151,9 +48,6 @@ public class OMOPSO_Test extends Application {
 	 */
 	public static void main(String[] args) throws InvalidFormatException, HDF5LibraryException {
 
-		// TODO: check out this as an alternative
-		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
-
 		final PrintStream originalOut = System.out;
 		PrintStream filterStream = new PrintStream(new OutputStream() {
 			public void write(int b) {
@@ -163,7 +57,7 @@ public class OMOPSO_Test extends Application {
 		long startTime = System.currentTimeMillis();        
 
 		System.out.println("-------------------");
-		System.out.println("Complete Analysis Test");
+		System.out.println("OMOPSO Test");
 		System.out.println("-------------------");
 
 		MyArgumentsAnalysis va = new MyArgumentsAnalysis();
@@ -177,156 +71,63 @@ public class OMOPSO_Test extends Application {
 			String pathToXML = va.getInputFile().getAbsolutePath();
 			System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
 
-			String pathToAnalysesXML = va.getInputFileAnalyses().getAbsolutePath();
-			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
-
-			String pathToOperatingConditionsXML = va.getOperatingConditionsInputFile().getAbsolutePath();
-			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
-
-			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
-			System.out.println("AIRFOILS ===> " + dirAirfoil);
-
-			String dirFuselages = va.getFuselagesDirectory().getCanonicalPath();
-			System.out.println("FUSELAGES ===> " + dirFuselages);
-
-			String dirLiftingSurfaces = va.getLiftingSurfacesDirectory().getCanonicalPath();
-			System.out.println("LIFTING SURFACES ===> " + dirLiftingSurfaces);
-
-			String dirEngines = va.getEnginesDirectory().getCanonicalPath();
-			System.out.println("ENGINES ===> " + dirEngines);
-
-			String dirNacelles = va.getNacellesDirectory().getCanonicalPath();
-			System.out.println("NACELLES ===> " + dirNacelles);
-
-			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
-			System.out.println("LANDING GEARS ===> " + dirLandingGears);
-
-			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
-			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
-
 			System.out.println("--------------");
 
-			//------------------------------------------------------------------------------------
-			// Setup database(s)
-			MyConfiguration.initWorkingDirectoryTree(
-					MyConfiguration.databaseDirectory,
-					MyConfiguration.inputDirectory,
-					MyConfiguration.outputDirectory
-					);
-
-			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
-			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
-			String fusDesDatabaseFilename = "FusDes_database.h5";
-			String vedscDatabaseFilename = "VeDSC_database.h5";
-
-			AerodynamicDatabaseReader aeroDatabaseReader = DatabaseManager.initializeAeroDatabase(
-					new AerodynamicDatabaseReader(
-							databaseFolderPath,	aerodynamicDatabaseFileName
-							),
-					databaseFolderPath
-					);
-			HighLiftDatabaseReader highLiftDatabaseReader = DatabaseManager.initializeHighLiftDatabase(
-					new HighLiftDatabaseReader(
-							databaseFolderPath,	highLiftDatabaseFileName
-							),
-					databaseFolderPath
-					);
-			FusDesDatabaseReader fusDesDatabaseReader = DatabaseManager.initializeFusDes(
-					new FusDesDatabaseReader(
-							databaseFolderPath,	fusDesDatabaseFilename
-							),
-					databaseFolderPath
-					);
-			VeDSCDatabaseReader veDSCDatabaseReader = DatabaseManager.initializeVeDSC(
-					new VeDSCDatabaseReader(
-							databaseFolderPath,	vedscDatabaseFilename
-							),
-					databaseFolderPath
-					);
-
 			////////////////////////////////////////////////////////////////////////
-			// Aircraft creation
-			System.out.println("\n\n\tCreating the Aircraft ... \n\n");
-
-			// deactivating system.out
-			System.setOut(filterStream);
-
-			// reading aircraft from xml ... 
-			theAircraft = Aircraft.importFromXML(
-					pathToXML,
-					dirLiftingSurfaces,
-					dirFuselages,
-					dirEngines,
-					dirNacelles,
-					dirLandingGears,
-					dirCabinConfiguration,
-					dirAirfoil,
-					aeroDatabaseReader,
-					highLiftDatabaseReader,
-					fusDesDatabaseReader,
-					veDSCDatabaseReader);
-
-			// activating system.out
-			System.setOut(originalOut);			
-			System.out.println(theAircraft.toString());
-			System.setOut(filterStream);
-
-			////////////////////////////////////////////////////////////////////////
-			// Set the folders tree
-			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
-			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + File.separator);
-			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
-
-			////////////////////////////////////////////////////////////////////////
-			// Defining the operating conditions ...
+			// Optimization ...
 			System.setOut(originalOut);
-			System.out.println("\n\n\tDefining the operating conditions ... \n\n");
-			System.setOut(filterStream);
-			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
-			System.setOut(originalOut);
-			System.out.println(theOperatingConditions.toString());
-			System.setOut(filterStream);
-
-			////////////////////////////////////////////////////////////////////////
-			// Analyzing the aircraft
-			System.setOut(originalOut);
-			System.out.println("\n\n\tRunning requested analyses ... \n\n");
-			System.setOut(filterStream);
-			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
-			System.setOut(originalOut);
-			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
-			System.setOut(originalOut);
-			System.out.println("\n\n\tDone!! \n\n");
-			System.setOut(filterStream);
-
-			////////////////////////////////////////////////////////////////////////
-			// Optimizing the aircraft
-			System.setOut(originalOut);
-			System.out.println("\n\n\tRunning MOPSO ... \n\n");
-			System.setOut(filterStream);
+			System.out.println("\n\n\tRunning OMOPSO ... \n\n");
 			
-
-			// TODO: CONTINUE
+			NondominatedPopulation result = new Executor()
+					.withProblem("UF1")
+					.withAlgorithm("OMOPSO")
+					.withMaxEvaluations(100000)
+					.run();
 			
+			//display the results
+			System.out.format("\tObjective1  Objective2%n\n");
 			
-			System.setOut(originalOut);
-			System.out.println("\n\n\tDone!! \n\n");
-			System.setOut(filterStream);
+			for (Solution solution : result) {
+				System.out.format("\t%.4f      %.4f%n",
+						solution.getObjective(0),
+						solution.getObjective(1));
+			}
 			
-			////////////////////////////////////////////////////////////////////////
-			// Printing results (activating system.out)
-			System.setOut(originalOut);
-			System.out.println("\n\n\tPrinting results ... \n\n");
-			System.out.println(theAircraft.getTheAnalysisManager().toString());
+			// setup the instrumenter to record the generational distance metric
+//			Instrumenter instrumenter = new Instrumenter()
+//					.withProblem("UF1")
+//					.withFrequency(100)
+//					.attachElapsedTimeCollector()
+//					.attachGenerationalDistanceCollector();
+//			
+//			// use the executor to run the algorithm with the instrumenter
+//			new Executor()
+//					.withProblem("UF1")
+//					.withAlgorithm("NSGAII")
+//					.withMaxEvaluations(10000)
+//					.withInstrumenter(instrumenter)
+//					.run();
+//			
+//			Accumulator accumulator = instrumenter.getLastAccumulator();
+//			
+//			// print the runtime dynamics
+//			System.out.format("  NFE    Time      Generational Distance%n");
+//			
+//			for (int i=0; i<accumulator.size("NFE"); i++) {
+//				System.out.format("%5d    %-8.4f  %-8.4f%n",
+//						accumulator.get("NFE", i),
+//						accumulator.get("Elapsed Time", i),
+//						accumulator.get("GenerationalDistance", i));
+//			}
+			
 			System.out.println("\n\n\tDone!! \n\n");
 
 			long estimatedTime = System.currentTimeMillis() - startTime;
-			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
+			System.out.println("\n\n\tTIME ESTIMATED = " + (estimatedTime) + " milliseconds");
 
 			System.setOut(filterStream);
 
-		} catch (CmdLineException | IOException e) {
+		} catch (CmdLineException e) {
 			System.err.println("Error: " + e.getMessage());
 			OMOPSO_Test.theCmdLineParser.printUsage(System.err);
 			System.err.println();
