@@ -93,8 +93,8 @@ public class JFreeSVGTest {
         yAxis.setUpperMargin(0.2);
 
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setDefaultShapesVisible(true);
-        renderer.setDefaultLinesVisible(true);
+//        renderer.setDefaultShapesVisible(true);
+//        renderer.setDefaultLinesVisible(true);
         renderer.setSeriesShape(0, new Ellipse2D.Double(-5.0, -5.0, 10.0, 10.0));
         renderer.setSeriesShape(1, new Ellipse2D.Double(-5.0, -5.0, 10.0, 10.0));
         renderer.setSeriesStroke(0, new BasicStroke(3.0f));
@@ -145,11 +145,11 @@ public class JFreeSVGTest {
         dataset.setValue("Research", 13.2);
         dataset.setValue("Advertising", 20.9);
         PiePlot plot = new PiePlot(dataset);
-        plot.setBackgroundPaint(null);
+//        plot.setBackgroundPaint(null);
         plot.setLabelFont(new Font("Dialog", Font.PLAIN, 18));
         plot.setMaximumLabelWidth(0.25);
         JFreeChart chart = new JFreeChart(plot);
-        chart.setBackgroundPaint(null);
+//        chart.setBackgroundPaint(null);
         chart.removeLegend();
         chart.setPadding(RectangleInsets.ZERO_INSETS);
         return chart;
@@ -168,7 +168,7 @@ public class JFreeSVGTest {
         JFreeChart chart = ChartFactory.createBarChart("Sales 2008", null,
                 null, dataset);
         chart.removeLegend();
-        chart.setBackgroundPaint(null);
+//        chart.setBackgroundPaint(null);
         return chart;
     }
 

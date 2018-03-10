@@ -140,7 +140,7 @@ public class JFreeChartFXTest extends Application {
         XYItemRenderer r = plot.getRenderer();
         if (r instanceof XYLineAndShapeRenderer) {
             XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
-            renderer.setDefaultShapesVisible(false);
+//            renderer.setDefaultShapesVisible(false);
             renderer.setDrawSeriesLineAsPath(true);
             // set the default stroke for all series
             renderer.setAutoPopulateSeriesStroke(false);

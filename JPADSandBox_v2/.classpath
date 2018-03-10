@@ -56,7 +56,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/poi/poi-ooxml-3.10.1-20140818.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/reflectUtils/reflectutils-0.9.16.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/xstream/xstream-1.4.7.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/jfreechart/jfreechart-1.5.0.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jfreechart/jfreesvg-3.3.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jfreechart/jcommon-1.0.23.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/fxyz/FXyzLib.jar"/>
@@ -130,7 +129,12 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/fxyz/fxyz3d-client-0.1.1.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/vvecmath/VVecMath.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/chartsFxHanSolo/smoothcharts-1.0.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/jfreechart/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/moea_framework/MOEAFramework-2.12.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/commons/commons-cli-1.2.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/commons/commons-codec-1.8.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/jcommon/jcommon-1.0.20.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/jfreechart/jfreechart-1.0.15.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/jMetal/JMetal-4.3.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/rsyntaxtextarea.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
