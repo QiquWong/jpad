@@ -50,6 +50,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.ui.HorizontalAlignment;
+import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.time.Month;
 import org.jfree.data.xy.XYSeries;
@@ -264,6 +265,140 @@ public class MyChartToFileUtils {
 				xUnit, yUnit, legend, 
 				path, fileName);
 	}
+	
+	public static void scatterPlot(
+			double[] xArray, double[] yArray,
+			Double xMin, Double xMax,
+			Double yMin, Double yMax,
+			String xLabel, String yLabel,
+			String xUnit, String yUnit,
+			String[] legend,
+			String path, String fileName,
+			boolean createCSV, boolean createSVG) {
+
+		double[][] yArrays = new double[1][yArray.length];
+		for (int i=0; i < yArray.length; i++)
+			yArrays[0][i] = yArray[i];
+
+		scatterPlot(xArray, yArrays, xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
+				legend, path, fileName, createCSV, createSVG);
+	}
+	
+	public static void scatterPlot( //xArrays is 1D
+			double[] xArray, double[][] yArrays,
+			Double xMin, Double xMax,
+			Double yMin, Double yMax,
+			String xLabel, String yLabel,
+			String xUnit, String yUnit,
+			String[] legend,
+			String path,
+			String fileName,
+			boolean createCSV,
+			boolean createSVG) {
+
+		double[][] xArrays = new double[1][xArray.length];
+		for (int i=0; i < xArray.length; i++)
+			xArrays[0][i] = xArray[i];
+
+		scatterPlot(xArrays, yArrays, xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
+				legend, path, fileName, createCSV, createSVG);
+	}
+	
+	public static void scatterPlot(
+			double[][] xArrays, double[][] yArrays,
+			Double xMin, Double xMax,
+			Double yMin, Double yMax,
+			String xLabel, String yLabel,
+			String xUnit, String yUnit,
+			String[] legend, String path,
+			String fileName,
+			boolean createCSV,
+			boolean createSVG
+			) {
+
+		MyChartToFileUtils chartFactory = ChartFactory(xLabel, yLabel, 
+				xUnit, yUnit, legend, path, fileName);
+
+		List<Double> xMinArray = new ArrayList<>();
+		List<Double> xMaxArray = new ArrayList<>();
+		List<Double> yMinArray = new ArrayList<>();
+		List<Double> yMaxArray = new ArrayList<>();
+		
+		if (xMin != null) 
+			chartFactory.setxMin(xMin);
+		else {
+			for(int i=0; i<xArrays.length; i++)
+				xMinArray.add(MyArrayUtils.getMin(xArrays[i]));
+			chartFactory.setxMin(MyArrayUtils.getMin(xMinArray));
+		}
+		if (xMax != null) 
+			chartFactory.setxMax(xMax);
+		else {
+			for(int i=0; i<xArrays.length; i++)
+				xMaxArray.add(MyArrayUtils.getMax(xArrays[i]));
+			chartFactory.setxMax(MyArrayUtils.getMax(xMaxArray));
+		}
+		if (yMin != null)
+			chartFactory.setyMin(yMin);
+		else {
+			for(int i=0; i<yArrays.length; i++)
+				yMinArray.add(MyArrayUtils.getMin(yArrays[i]));
+			chartFactory.setyMin(MyArrayUtils.getMin(yMinArray));
+		}
+		if (yMax != null)
+			chartFactory.setyMax(yMax);
+		else {
+			for(int i=0; i<yArrays.length; i++)
+				yMaxArray.add(MyArrayUtils.getMax(yArrays[i]));
+			chartFactory.setyMax(MyArrayUtils.getMax(yMaxArray));
+		}
+		
+		chartFactory.createMultiTraceScatterPlot(xArrays, yArrays);
+		
+		List<String> legendList = new ArrayList<>();
+		List<String> xListName = new ArrayList<>();
+		List<String> yListName = new ArrayList<>();
+		for(int i=0; i<legend.length; i++) {
+			legendList.add(legend[i]);
+			xListName.add(xLabel);
+			yListName.add(yLabel);
+		}
+		
+		legendList = legendList.stream().map(s -> s.replace(" ", "_")).collect(Collectors.toList());
+		legendList = legendList.stream().map(s -> s.replace("(", "")).collect(Collectors.toList());
+		legendList = legendList.stream().map(s -> s.replace(")", "")).collect(Collectors.toList());
+		legendList = legendList.stream().map(s -> s.replace("/", "")).collect(Collectors.toList());
+		
+		if(createCSV)
+			JPADStaticWriteUtils.exportToCSV(
+					MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
+					MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
+					legendList, 
+					xListName, yListName,
+					MyConfiguration.createNewFolder(
+							path
+							+ File.separator 
+							+ fileName 
+							)
+					);
+		
+		if(createCSV)
+			chartFactory.createMultiTraceScatterPlotSVG(
+					xArrays, 
+					yArrays,
+					path,
+					fileName,
+					xLabel, 
+					yLabel,
+					xUnit,
+					yUnit,
+					width,
+					height
+					);
+		
+		
+	}
+	
 	/**
 	 * A function to handle the creation of plots in a 
 	 * very simple way. It's possible to use xArrays or yArrays as 1D arrays
@@ -1805,6 +1940,21 @@ public class MyChartToFileUtils {
 				width, height);
 	}
 	
+	public void createMultiTraceScatterPlotPng(
+			String path, String fileName,
+		    String[] legendValue,
+			String xLabel, String yLabel,
+			String xUnit, String yUnit, 
+			boolean stripTrailingZeros) {
+
+		createScatterPlotPNG(
+				path + fileName,
+				" ",
+				xLabel, yLabel,
+				xUnit, yUnit,
+				width, height);
+	}
+	
 
 	// Creates plot whit no legend
 	// @author Manuela Ruocco
@@ -2516,6 +2666,96 @@ public class MyChartToFileUtils {
 		}
 	}
 
+	public void createScatterPlotPNG(
+			String filenameWithPath,
+			String title,
+			String xLabel, String yLabel,
+			String xUnit, String yUnit,
+			int width, int height) {
+
+		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
+		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
+
+		PlotOrientation orientation;
+		if (swapXY) orientation = PlotOrientation.HORIZONTAL;
+		else orientation = PlotOrientation.VERTICAL;
+
+		JFreeChart xyScatterPlotChart = ChartFactory.createScatterPlot(
+				title, 
+				xLabel + " " + xUnit,
+				yLabel + " " + yUnit, 
+				datasetLineChart,
+				orientation, 
+				true, true, false);
+
+		xyScatterPlotChart.setBackgroundPaint(Color.WHITE);
+		xyScatterPlotChart.setBackgroundImageAlpha(0.0f);
+		xyScatterPlotChart.setAntiAlias(true);
+
+		xyScatterPlotChart.getPlot().setBackgroundPaint(Color.WHITE);
+		xyScatterPlotChart.getPlot().setBackgroundAlpha(0.0f);
+		xyScatterPlotChart.getXYPlot().setDomainGridlinesVisible(true);
+		xyScatterPlotChart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
+		xyScatterPlotChart.getXYPlot().setRangeGridlinesVisible(true);
+		xyScatterPlotChart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
+
+		final Paint[] paintArray;
+		// create default colors but modify some colors that are hard to see
+		paintArray = ChartColor.createDefaultPaintArray();
+		paintArray[0] = ChartColor.BLACK;
+		paintArray[1] = ChartColor.BLUE;
+		paintArray[2] = ChartColor.RED;
+		paintArray[3] = ChartColor.DARK_GREEN;
+		paintArray[4] = ChartColor.DARK_YELLOW;
+		paintArray[5] = ChartColor.DARK_GRAY;
+		paintArray[6] = ChartColor.DARK_BLUE;
+		paintArray[7] = ChartColor.DARK_RED;
+		paintArray[8] = ChartColor.VERY_DARK_GREEN;
+		paintArray[9] = ChartColor.ORANGE;
+		
+		XYPlot plot = (XYPlot) xyScatterPlotChart.getPlot(); 
+		plot.setDrawingSupplier(new DefaultDrawingSupplier(
+                paintArray,
+                DefaultDrawingSupplier.DEFAULT_FILL_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
+		
+		NumberAxis domain = (NumberAxis) xyScatterPlotChart.getXYPlot().getDomainAxis();
+		domain.setRange(xMin, xMax);
+		NumberAxis range = (NumberAxis) xyScatterPlotChart.getXYPlot().getRangeAxis();
+		range.setRange(yMin, yMax);
+
+//		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+//		renderer.setDefaultShapesVisible(true);
+//		renderer.setDefaultLinesVisible(false);
+//		for(int i=0; i<datasetLineChart.getSeries().size(); i++) {
+//			renderer.setSeriesShape(i, new Ellipse2D.Double(-5.0, -5.0, 10.0, 10.0));
+//			renderer.setSeriesStroke(i, new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
+//					BasicStroke.JOIN_ROUND, 5.0f, new float[] {10.0f, 5.0f}, 0.0f));
+//			renderer.setSeriesFillPaint(i, paintArray[i]);
+//			renderer.setUseFillPaint(true);
+//		}
+//
+//		renderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+//		renderer.setDefaultEntityRadius(6);
+//		
+//		plot.setRenderer(renderer);
+		
+		File xyChart = new File(filenameWithPath + ".png"); 
+
+		try {
+			File f = new File(filenameWithPath + ".png");
+			if(f.exists()) f.delete();
+
+			ChartUtilities.saveChartAsPNG(xyChart, xyScatterPlotChart, width, height);
+			datasetLineChart.removeAllSeries();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 
 	/**
@@ -3132,7 +3372,18 @@ public class MyChartToFileUtils {
 				xLabel, yLabel, xUnit, yUnit, stripTrailingZeros);
 	}
 	
+	public void createMultiTraceScatterPlot(
+			String path, String fileName,
+			String xLabel, String yLabel,
+			String xUnit, String yUnit,
+			String[] legendValue,
+			boolean stripTrailingZeros) {
 
+		createMultiTraceScatterPlotPng(
+				path, fileName,
+				legendValue,
+				xLabel, yLabel, xUnit, yUnit, stripTrailingZeros);
+	}
 
 	public void createMultiTraceChart(boolean stripTrailingZeros) {
 		createMultiTraceChart(path, fileName, 
@@ -3256,6 +3507,103 @@ public class MyChartToFileUtils {
 		}
 	}
 	
+	public void createMultiTraceScatterPlotSVG(
+			double[][] xArrays, double[][] yArrays,
+			String path,
+			String fileName,
+			String xLabel, String yLabel,
+			String xUnit, String yUnit,
+			int width, int height
+			) {
+		
+		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
+		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
+
+		for(int i=0; i<xArrays.length; i++) {
+			XYSeries series = new XYSeries(legendValueString[i], false);
+			for(int j=0; j<xArrays[i].length; j++) {
+				series.add(
+						xArrays[i][j],
+						yArrays[i][j]
+						);
+			}
+			datasetLineChart.addSeries(series);
+		}
+		
+		PlotOrientation orientation;
+		if (swapXY) orientation = PlotOrientation.HORIZONTAL;
+		else orientation = PlotOrientation.VERTICAL;
+
+		final Paint[] paintArray;
+		// create default colors but modify some colors that are hard to see
+		paintArray = ChartColor.createDefaultPaintArray();
+		paintArray[0] = ChartColor.BLACK;
+		paintArray[1] = ChartColor.BLUE;
+		paintArray[2] = ChartColor.RED;
+		paintArray[3] = ChartColor.DARK_GREEN;
+		paintArray[4] = ChartColor.DARK_YELLOW;
+		paintArray[5] = ChartColor.DARK_GRAY;
+		paintArray[6] = ChartColor.DARK_BLUE;
+		paintArray[7] = ChartColor.DARK_RED;
+		paintArray[8] = ChartColor.VERY_DARK_GREEN;
+		paintArray[9] = ChartColor.ORANGE;
+		
+		JFreeChart xylineChart = ChartFactory.createScatterPlot(
+				fileName, 
+				xLabel + " " + xUnit,
+				yLabel + " " + yUnit, 
+				datasetLineChart,
+				orientation, 
+				true, true, false);
+		xylineChart.setBackgroundPaint(Color.WHITE);
+		xylineChart.setBackgroundImageAlpha(0.0f);
+		xylineChart.setAntiAlias(true);
+
+		XYPlot plot = (XYPlot) xylineChart.getPlot();
+		plot.setDrawingSupplier(new DefaultDrawingSupplier(
+				paintArray,
+				DefaultDrawingSupplier.DEFAULT_FILL_PAINT_SEQUENCE,
+				DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE,
+				DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,
+				DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,
+				DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
+		plot.setBackgroundPaint(Color.WHITE);
+		plot.setBackgroundAlpha(0.0f);
+		plot.setDomainGridlinesVisible(true);
+		plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+		plot.setRangeGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
+
+		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
+		domain.setRange(xMin, xMax);
+		NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
+		range.setRange(yMin, yMax);
+
+		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+		renderer.setDefaultShapesVisible(true);
+		renderer.setDefaultLinesVisible(false);
+		renderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		renderer.setDefaultEntityRadius(6);
+
+		plot.setRenderer(renderer);
+
+		try {
+			File f = new File(path + File.separator + fileName + ".svg");
+			if(f.exists()) f.delete();
+
+			SVGGraphics2D g2 = new SVGGraphics2D(width, height);
+			Rectangle r = new Rectangle(width, height);
+			xylineChart.draw(g2, r);
+			SVGUtils.writeToSVG(f, g2.getSVGElement());
+			datasetLineChart.removeAllSeries();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void createMultiTraceSVG(
 			JFreeChart chart,
 			File fileNameWithPath,
@@ -3311,6 +3659,24 @@ public class MyChartToFileUtils {
 			e.printStackTrace();
 		}
 	}
+
+	public void createMultiTraceScatterPlot(double[][]xArrays, double[][]yArrays) {
+		
+		for(int i=0; i<xArrays.length; i++) {
+			XYSeries series = new XYSeries(legendValueString[i], false);
+			for(int j=0; j<xArrays[i].length; j++) {
+				series.add(
+						xArrays[i][j],
+						yArrays[i][j]
+						);
+			}
+			datasetLineChart.addSeries(series);
+		}
+			
+		createMultiTraceScatterPlot(path, fileName, 
+				xLabel, yLabel, xUnit, yUnit, legendValueString,
+				stripTrailingZeros);
+	}
 	
 	public void createMultiTraceChart() {
 
@@ -3323,7 +3689,8 @@ public class MyChartToFileUtils {
 			createMultiTraceChart(path, fileName, 
 					xLabel, yLabel, xUnit, yUnit,legendName, 
 					legendValue, legendUnit, stripTrailingZeros);
-		}}
+		}
+	}
 
 	
 	public void createMultiTraceChartNoLegend() {

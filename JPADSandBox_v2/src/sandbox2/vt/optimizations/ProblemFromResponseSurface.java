@@ -138,4 +138,12 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 		this.variablesUpperBounds = variablesUpperBounds;
 	}
 
+	public double[] getVariablesLowerBounds() {
+		return variablesLowerBounds;
+	}
+
+	public void setVariablesLowerBounds(double[] variablesLowerBounds) {
+		this.variablesLowerBounds = variablesLowerBounds;
+	}
+
 }

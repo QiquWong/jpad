@@ -4,15 +4,25 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.moeaframework.Executor;
+import org.moeaframework.core.NondominatedPopulation;
+import org.moeaframework.core.Solution;
 
+import configuration.MyConfiguration;
+import configuration.enumerations.FoldersEnum;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyChartToFileUtils;
+import writers.JPADStaticWriteUtils;
 
 class MyArgumentsAnalysis {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
@@ -53,10 +63,11 @@ public class MOEAFrameworkOptimization_Test01  {
 
 		MyArgumentsAnalysis va = new MyArgumentsAnalysis();
 		MOEAFrameworkOptimization_Test01.theCmdLineParser = new CmdLineParser(va);
-
-		// populate the wing static object in the class-> start ...)
+		MyConfiguration.initWorkingDirectoryTree();
+		String outputPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
+		String subFolderPath = JPADStaticWriteUtils.createNewFolder(outputPath + "MOEA_Framework_Tests" + File.separator);
+		
 		try {
-			// before launching the JavaFX application thread (launch -
 			MOEAFrameworkOptimization_Test01.theCmdLineParser.parseArgument(args);
 
 			String pathToXML = va.getInputFile().getAbsolutePath();
@@ -65,8 +76,12 @@ public class MOEAFrameworkOptimization_Test01  {
 			System.out.println("--------------");
 
 			// Data from --> https://www.ee.ucl.ac.uk/~mflanaga/java/PolyCubicSplineExample.java
+			
+			//------------------------------------------------------------------------------
 			// TODO: The next step should be to read these data from an external file ...
-	        // Array of x1
+			//------------------------------------------------------------------------------
+			
+			// Array of x1
 	        double[] x1 = {0.0,	1.0, 2.0, 3.0, 4.0, 5.0};
 	        // Array of x2
 	        double[] x2 = {1.0, 5.0, 9.0, 13.0, 17.0, 21.0, 25.0, 29.0, 33.0, 37.0};
@@ -155,16 +170,86 @@ public class MOEAFrameworkOptimization_Test01  {
 	        			}
 	        		};
 
-	        // TODO: CREATE THE SECOND EXAMPLE OBJECTIVE (-2*Obj1)
-	        // double[][][] yObjective2 =  
+	        double[][][] yObjective2 = new double[yObjective1.length][yObjective1[0].length][yObjective1[0][0].length];
+	        for(int i=0; i<yObjective1.length; i++)
+	        	for(int j=0; j<yObjective1[i].length; j++)
+	        		for(int k=0; k<yObjective1[i][j].length; k++)
+	        			yObjective2[i][j][k] = -2*yObjective1[i][j][k];
 	        
 			////////////////////////////////////////////////////////////////////////
 			// Optimization ...
-			System.out.println("\n\n\tRunning MOEA Framework optimization ... \n\n");
+			System.out.println("\n\n\tRunning MOEA Framework optimization ... \n");
 			
-	        // TODO !!
+			//......................................................................
+			// Defining the optimization problem ...
 			
-			System.out.println("\n\n\tDone!! \n\n");
+			//------------------------------------------------------------------------------
+			// TODO: Generalize for n-objectives 
+			//       (also for the plot --> evaluate each combination of objective and generate each pareto front)
+			//------------------------------------------------------------------------------
+			
+			ProblemFromResponseSurface problem = new ProblemFromResponseSurface(
+					3,
+					2
+					);
+			problem.interpolateResponseSurface(0, xArrays, yObjective1);
+			problem.interpolateResponseSurface(1, xArrays, yObjective2);
+			problem.setVariablesUpperBounds(new double[] {5.0, 37.0, 42.5});
+			problem.setVariablesLowerBounds(new double[] {0.0, 1.0, 0.5});
+			
+			//......................................................................
+			// Defining the optimization problem ...
+			String[] algorithms = new String[] {
+					"NSGAII",
+					"OMOPSO"
+					};
+			List<NondominatedPopulation> resultList = new ArrayList<>();
+			for(int i=0; i<algorithms.length; i++)
+				resultList.add(new Executor()
+						.withAlgorithm(algorithms[i])
+						.withProblem("UF1")
+						.withMaxEvaluations(10000)
+						.run()
+						);
+
+			//......................................................................
+			// Print results and plots
+			List<Double> optimumObjective1Values = new ArrayList<>();
+			List<Double> optimumObjective2Values = new ArrayList<>();
+			Map<String, List<Double>> optimumObjective1Map = new HashMap<>();
+			Map<String, List<Double>> optimumObjective2Map = new HashMap<>();
+
+			for (int i=0; i<algorithms.length; i++) {
+				optimumObjective1Values = new ArrayList<>();
+				optimumObjective2Values = new ArrayList<>();
+				for (int j=0; j<resultList.get(i).size(); j++) {
+					// if (!solution.violatesConstraints()) {
+					optimumObjective1Values.add(resultList.get(i).get(j).getObjective(0));
+					optimumObjective2Values.add(resultList.get(i).get(j).getObjective(1));
+				}
+				optimumObjective1Map.put(algorithms[i], optimumObjective1Values);
+				optimumObjective2Map.put(algorithms[i], optimumObjective2Values);
+			}
+
+			double[][] xMatrix = new double[algorithms.length][optimumObjective1Values.size()];
+			double[][] yMatrix = new double[algorithms.length][optimumObjective1Values.size()];
+			for(int i=0; i<algorithms.length; i++) {
+				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(optimumObjective1Map.get(algorithms[i]));
+				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(optimumObjective2Map.get(algorithms[i]));
+			}
+				
+			MyChartToFileUtils.scatterPlot(
+					xMatrix,
+					yMatrix, 
+					null, null, null, null, 
+					"Objective 1", "Objective 2", "", "",
+					algorithms,
+					subFolderPath, "OptimizationTest_Pareto", 
+					true,
+					true
+					);
+			
+			System.out.println("\n\tDone!! \n\n");
 
 			long estimatedTime = System.currentTimeMillis() - startTime;
 			DecimalFormat numberFormat = new DecimalFormat("0.000");
