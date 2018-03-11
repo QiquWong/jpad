@@ -1012,7 +1012,7 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 		System.out.println(" CL curve " + input.getcLVsAlphaVector().toString());
 		System.out.println(" CD parasite curve " + input.getParasitePolar().toString());
 		System.out.println(" CD induced curve " + input.getInducedPolar().toString());
-		System.out.println(" CD wawe curve " + input.getWawePolar());
+		System.out.println(" CD wave curve " + input.getWawePolar());
 		System.out.println(" Polar curve " + input.getPolarClean().toString());
 		System.out.println(" CM curve " + input.getMomentCurveClean() + "\n");
 		

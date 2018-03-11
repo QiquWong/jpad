@@ -16,10 +16,10 @@ import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import aircraft.components.liftingSurface.creator.ISlatCreator;
+import aircraft.components.liftingSurface.creator.ISymmetricFlapCreator;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
-import aircraft.components.liftingSurface.creator.SlatCreator.SlatBuilder;
-import aircraft.components.liftingSurface.creator.SymmetricFlapCreator.SymmetricFlapBuilder;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -410,44 +410,48 @@ public class ReaderWriterWing {
 			input.getEtaOutSlat().add(Double.valueOf(eta_out_slat_property.get(i)));
 		
 		for(int i=0; i<input.getFlapsNumber(); i++) {
-			String id = reader
-					.getXMLPropertyByPath(
-							"//flap/@id");
+			String id = MyXMLReaderUtils.getXMLPropertyByPath(
+					reader.getXmlDoc(),
+					reader.getXpath(),
+					"//flap/@id");
 			
 			SymmetricFlapCreator symmetricFlap =
-					new SymmetricFlapBuilder(
-							id,
-							input.getFlapType().get(i),
-							input.getEtaInFlap().get(i),
-							input.getEtaOutFlap().get(i),
-							input.getCfcInner().get(i),
-							input.getCfcOuter().get(i),
-							Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
-							Amount.valueOf(40.0, NonSI.DEGREE_ANGLE)
-							)
-					.build();
+					new SymmetricFlapCreator(
+							new ISymmetricFlapCreator.Builder()
+							.setId(id)
+							.setType(input.getFlapType().get(i))
+							.setInnerStationSpanwisePosition(input.getEtaInFlap().get(i))
+							.setOuterStationSpanwisePosition(input.getEtaOutFlap().get(i))
+							.setInnerChordRatio(input.getCfcInner().get(i))
+							.setOuterChordRatio(input.getCfcOuter().get(i))
+							.setMinimumDeflection(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+							.setMaximumDeflection(Amount.valueOf(40.0, NonSI.DEGREE_ANGLE))
+							.build()
+							);
+
 			
 			input.getSymmetricFlapCreatorList().add(symmetricFlap);
 		}
-		
+
 		for(int i=0; i<input.getSlatsNumber(); i++) {
-			String id = reader
-					.getXMLPropertyByPath(
-							"//slat/@id");
+			String id = MyXMLReaderUtils.getXMLPropertyByPath(
+					reader.getXmlDoc(),
+					reader.getXpath(),
+					"//slat/@id");
 			
 			SlatCreator slat =
-					new SlatBuilder(
-							id,
-							input.getEtaInSlat().get(i),
-							input.getEtaOutSlat().get(i),
-							input.getCsc().get(i),
-							input.getCsc().get(i),
-							input.getcExtCSlat().get(i),
-							Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
-							Amount.valueOf(40.0, NonSI.DEGREE_ANGLE)
-							)
-					.build();
-		
+					new SlatCreator(
+							new ISlatCreator.Builder()
+							.setId(id)
+							.setInnerStationSpanwisePosition(input.getEtaInSlat().get(i))
+							.setOuterStationSpanwisePosition(input.getEtaOutSlat().get(i))
+							.setInnerChordRatio(input.getCsc().get(i))
+							.setOuterChordRatio(input.getCsc().get(i))
+							.setExtensionRatio(input.getcExtCSlat().get(i))
+							.setMinimumDeflection(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+							.setMaximumDeflection(Amount.valueOf(40.0, NonSI.DEGREE_ANGLE))	
+							.build()
+							);		
 			
 			input.getSlatCreatorList().add(slat);
 		}
@@ -767,6 +771,7 @@ public class ReaderWriterWing {
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("moment_curve", input.getMomentCurveClean(), cleanMomentCurveElement, doc);
 		
 		}
+		if(input.isHighLiftFlag()) {
 		org.w3c.dom.Element wingHLAerodynamicElement = doc.createElement("HIGHLIFT_configuration");
 		wingAerodynamicElement.appendChild(wingHLAerodynamicElement);
 
@@ -796,6 +801,7 @@ public class ReaderWriterWing {
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_array", input.getAlphaVectorHL(), momentElement, doc, "°");
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("CM_curve_High_Lift", input.getMomentCurveHighLift(), momentElement, doc);
 		
+		}
 	}
 
 	public InputOutputTree getInput() {
