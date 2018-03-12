@@ -70,8 +70,8 @@ public class MOEAFrameworkOptimization_Test01  {
 		try {
 			MOEAFrameworkOptimization_Test01.theCmdLineParser.parseArgument(args);
 
-			String pathToXML = va.getInputFile().getAbsolutePath();
-			System.out.println("INPUT FILE ===> " + pathToXML);
+			String inputFilePath = va.getInputFile().getAbsolutePath();
+			System.out.println("INPUT FILE ===> " + inputFilePath);
 
 			System.out.println("--------------");
 
@@ -196,6 +196,8 @@ public class MOEAFrameworkOptimization_Test01  {
 			problem.interpolateResponseSurface(1, xArrays, yObjective2);
 			problem.setVariablesUpperBounds(new double[] {5.0, 37.0, 42.5});
 			problem.setVariablesLowerBounds(new double[] {0.0, 1.0, 0.5});
+			
+			problem.importResponseSurface(inputFilePath);
 			
 			//......................................................................
 			// Defining the optimization problem ...

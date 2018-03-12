@@ -1,13 +1,29 @@
 package sandbox2.vt.optimizations;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.RealVariable;
 import org.moeaframework.problem.AbstractProblem;
 
 import flanagan.interpolation.PolyCubicSpline;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 
 /** 
  * This class generates an optimization problem for the MOEA Framework library starting from a given response surface. 
@@ -35,15 +51,60 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 	public ProblemFromResponseSurface(int numberOfVariables, int numberOfObjectives) {
 		super(numberOfVariables, numberOfObjectives);
 		interpolatedResponseSurfaceMap = new HashMap<>();
-		
-		// TODO: initialize array if needed and perform arrays dimension check
-		
 	}
 
 	//--------------------------------------------------------------------------------------
 	// METHODS
 	
-	// TODO: ADD METHDO TO PARSE DATA FROM FILE (.csv) AND CREATE XArrays YArrays
+	/**
+	 * This method reads from a .csv file and populate the "interpolatedResponseSurfaceMap" for each objective
+	 * 
+	 * @author Vittorio Trifari
+	 * @param filePath
+	 * @throws IOException 
+	 */
+	public void importResponseSurface (String filePath) throws IOException {
+		
+		File inputFile = new File(filePath);
+		if(!inputFile.exists()) {
+			System.err.println("\tThe input file does not exist ... terminating");
+			System.exit(1);;
+		}
+		
+		List<String[]> inputList = new ArrayList<>();
+		InputStream inputFS = new FileInputStream(inputFile);
+		BufferedReader br = new BufferedReader(new InputStreamReader(inputFS));
+		// skip the header of the csv
+		inputList = br.lines()
+				.skip(1)
+				.map(s -> s.split(";"))
+				.collect(Collectors.toList());
+		br.close();
+
+		double[][] xArrays = new double[inputList.size()][numberOfVariables];
+		double[][] yArrays = new double[inputList.size()][numberOfObjectives];
+		
+		for(int i=0; i<inputList.size(); i++ ) {
+			for(int j=0; j<numberOfVariables; j++) {
+				xArrays[i][j] = Double.valueOf(inputList.get(i)[j]);
+			}
+		}
+		
+		RealMatrix xArraysTransposed = MatrixUtils.createRealMatrix(xArrays).transpose();  
+		// TODO: CONTINUE USING REAL MATRIX (easy to fetch columns)
+		//
+		//       From the transposed matrix, for each row distinct elements. This will provide the vairables array to be used for the interpolation.
+		//
+		//       For the yMatrix, search in the xArrays Matrix the line at which the specific x,y and z value are matched.ù
+		//       That index have to be used to build the n-dimensional matrix to be interpolated (one per objective)
+				
+		for(int i=0; i<inputList.size(); i++ ) {
+			for(int j=numberOfVariables; j<numberOfVariables + numberOfObjectives; j++) {
+				yArrays[i][j-numberOfVariables] = Double.valueOf(inputList.get(i)[j]);
+			}
+		}
+		
+	}
 	
 	/**
 	 * @see: Example --> https://www.ee.ucl.ac.uk/~mflanaga/java/PolyCubicSplineExample.java
