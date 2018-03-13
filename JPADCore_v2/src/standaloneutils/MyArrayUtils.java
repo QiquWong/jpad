@@ -406,6 +406,16 @@ public final class MyArrayUtils {
 		return list;
 	}
 	
+	public static List<Integer> convertIntArrayToListInteger(int[] vec){ 
+
+		List<Integer> list = new ArrayList<Integer>();
+
+		for(int i=0; i<vec.length; i++)
+			list.add(vec[i]);
+		
+		return list;
+	}
+	
 	public static <T extends Quantity> List<Amount<T>> convertDoubleArrayToListOfAmount(double[] d, Unit unit) {
 
 		if ( d.length == 0 ) return null;
@@ -749,7 +759,6 @@ public final class MyArrayUtils {
 		return dd;
 	}
 
-
 	public static double[] intersectArraysSimple(double[] d1, double[] d2) {
 
 		if (d1.length != d2.length) {
@@ -881,6 +890,27 @@ public final class MyArrayUtils {
 	public static Double[] linspaceDouble(double start, double end, int nPoints) {
 		Double[] d = new Double[nPoints];
 		Double step = (end-start)/(nPoints-1);
+		d[0] = start;
+		d[d.length-1] = end;
+		for (int i=1; i<nPoints-1; i++)
+			d[i] = d[i-1] + step;
+
+		return d;
+	}
+	
+	/**
+	 * Overload of the double[] linspace method for Double[]
+	 *
+	 * @author Vittorio Trifari
+	 *
+	 * @param start
+	 * @param end
+	 * @param nPoints
+	 * @return
+	 */
+	public static int[] linspaceInt(int start, int end, int nPoints) {
+		int[] d = new int[nPoints];
+		int step = (end-start)/(nPoints-1);
 		d[0] = start;
 		d[d.length-1] = end;
 		for (int i=1; i<nPoints-1; i++)
