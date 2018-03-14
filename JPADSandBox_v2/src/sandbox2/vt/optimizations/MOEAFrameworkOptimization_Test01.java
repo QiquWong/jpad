@@ -153,14 +153,14 @@ public class MOEAFrameworkOptimization_Test01  {
 		//       (also for the plot --> evaluate each combination of objective and generate each pareto front)
 		//------------------------------------------------------------------------------
 
-		ProblemFromResponseSurface problem = new ProblemFromResponseSurface(
-				3,
-				2
-				);
-		problem.interpolateResponseSurface(0, xArrays, yObjective1);
-		problem.interpolateResponseSurface(1, xArrays, yObjective2);
-		problem.setVariablesUpperBounds(new double[] {5.0, 37.0, 42.5});
-		problem.setVariablesLowerBounds(new double[] {0.0, 1.0, 0.5});
+//		ProblemFromResponseSurface problem = new ProblemFromResponseSurface(
+//				3,
+//				2
+//				);
+//		problem.interpolateResponseSurface(0, xArrays, yObjective1);
+//		problem.interpolateResponseSurface(1, xArrays, yObjective2);
+//		problem.setVariablesUpperBounds(new double[] {5.0, 37.0, 42.5});
+//		problem.setVariablesLowerBounds(new double[] {0.0, 1.0, 0.5});
 
 		//......................................................................
 		// Defining the optimization problem ...

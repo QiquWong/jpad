@@ -17,6 +17,7 @@ import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 
 import configuration.MyConfiguration;
+import configuration.enumerations.ConstraintsViolationConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.MyArrayUtils;
@@ -80,24 +81,22 @@ public class MOEAFrameworkOptimization_Test02  {
 			
 			//......................................................................
 			// Defining the optimization problem ...
-			
-			//------------------------------------------------------------------------------
-			// TODO: Generalize for n-objectives 
-			//       (also for the plot --> evaluate each combination of objective and generate each pareto front)
-			//------------------------------------------------------------------------------
-			
 			ProblemFromResponseSurface problem = new ProblemFromResponseSurface(
+					5,
 					3,
-					2
+					1
 					);
+			problem.setMaximizationProblemConditionArray(new boolean[] {true, false, true});
 			problem.importResponseSurface(inputFilePath);
-			problem.setVariablesLowerBounds(new double[] {19.0, 11.0, 4.0});
-			problem.setVariablesUpperBounds(new double[] {22.0, 13.0, 7.0});
+			problem.setVariablesLowerBounds(new double[] {19.0, 0.95, 6.0, 4.0, 1.0});
+			problem.setVariablesUpperBounds(new double[] {20.5, 1.2, 9.0, 7.0, 1.25});
+			problem.setConstraintsValues(new double[] {0.03});
+			problem.setConstraintsViolationConditions(new ConstraintsViolationConditionEnum[] {ConstraintsViolationConditionEnum.LESS_EQUAL_THAN});
 			
 			//......................................................................
 			// Defining the optimization problem ...
 			String[] algorithms = new String[] {
-					"NSGAII",
+					"eNSGAII",
 					"OMOPSO"
 					};
 			List<NondominatedPopulation> resultList = new ArrayList<>();
@@ -109,6 +108,7 @@ public class MOEAFrameworkOptimization_Test02  {
 						.withAlgorithm(algorithms[i])
 						.withProblem(problem)
 						.withMaxEvaluations(10000)
+						.withProperty("population.size", "50")
 						.run()
 						);
 				
@@ -119,41 +119,53 @@ public class MOEAFrameworkOptimization_Test02  {
 			// Print results and plots
 			System.out.println("\n\tCreating Pareto Fronts and printing results ...\n");
 			
-			List<Double> optimumObjective1Values = new ArrayList<>();
-			List<Double> optimumObjective2Values = new ArrayList<>();
-			Map<String, List<Double>> optimumObjective1Map = new HashMap<>();
-			Map<String, List<Double>> optimumObjective2Map = new HashMap<>();
-
-			for (int i=0; i<algorithms.length; i++) {
-				optimumObjective1Values = new ArrayList<>();
-				optimumObjective2Values = new ArrayList<>();
-				for (int j=0; j<resultList.get(i).size(); j++) {
-					// if (!solution.violatesConstraints()) {
-					optimumObjective1Values.add(resultList.get(i).get(j).getObjective(0));
-					optimumObjective2Values.add(resultList.get(i).get(j).getObjective(1));
-				}
-				optimumObjective1Map.put(algorithms[i], optimumObjective1Values);
-				optimumObjective2Map.put(algorithms[i], optimumObjective2Values);
-			}
-
-			double[][] xMatrix = new double[algorithms.length][optimumObjective1Values.size()];
-			double[][] yMatrix = new double[algorithms.length][optimumObjective1Values.size()];
-			for(int i=0; i<algorithms.length; i++) {
-				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(optimumObjective1Map.get(algorithms[i]));
-				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(optimumObjective2Map.get(algorithms[i]));
-			}
-				
-			MyChartToFileUtils.scatterPlot(
-					xMatrix,
-					yMatrix, 
-					null, null, null, null, 
-					"Efficiency", "Static Stability Margin", "", "%",
-					algorithms,
-					subFolderPath, "OptimizationTest_Pareto", 
-					true,
-					true
-					);
+			List<List<Double>> optimumObjectiveValuesList = new ArrayList<>();
+			List<Map<String, List<Double>>> optimumObjectiveMapList = new ArrayList<>();
 			
+			List<Double> optimumCurrentObjectiveValues = new ArrayList<>();
+			Map<String, List<Double>> optimumCurrentObjectiveMap = new HashMap<>();
+
+			for (int obj=0; obj<problem.getNumberOfObjectives(); obj++) {
+				for (int i=0; i<algorithms.length; i++) {
+					optimumCurrentObjectiveValues = new ArrayList<>();
+					for (int j=0; j<resultList.get(i).size(); j++) {
+						if (!resultList.get(i).get(j).violatesConstraints()) 
+						optimumCurrentObjectiveValues.add(resultList.get(i).get(j).getObjective(obj));
+					}
+					optimumCurrentObjectiveMap.put(algorithms[i], optimumCurrentObjectiveValues);
+				}
+				optimumObjectiveValuesList.add(optimumCurrentObjectiveValues);
+				optimumObjectiveMapList.add(optimumCurrentObjectiveMap);
+			}
+
+			for(int i=0; i<problem.getNumberOfObjectives(); i++) {
+				for(int j=i+1; j<problem.getNumberOfObjectives(); j++) {
+					
+					double[][] xMatrix = new double[algorithms.length][optimumObjectiveValuesList.get(i).size()];
+					double[][] yMatrix = new double[algorithms.length][optimumObjectiveValuesList.get(i).size()];
+					
+					for(int k=0; k<algorithms.length; k++) {
+						xMatrix[k] = MyArrayUtils.convertToDoublePrimitive(optimumObjectiveMapList.get(i).get(algorithms[k]));
+						yMatrix[k] = MyArrayUtils.convertToDoublePrimitive(optimumObjectiveMapList.get(j).get(algorithms[k]));
+					}
+					
+					MyChartToFileUtils.scatterPlot(
+							xMatrix,
+							yMatrix, 
+							null, null, null, null, 
+							problem.getObjectivesLabelArray()[i], problem.getObjectivesLabelArray()[j], "", "",
+							algorithms,
+							subFolderPath,
+							("ParetoFront_" 
+									+ problem.getObjectivesLabelArray()[i] + "_" 
+									+ problem.getObjectivesLabelArray()[j]
+									), 
+							true,
+							true
+							);
+				}
+			}
+
 			System.out.println("\n\tDone!! \n\n");
 
 			long estimatedTime = System.currentTimeMillis() - startTime;

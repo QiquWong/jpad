@@ -1,5 +1,6 @@
 package aircraft.components;
 
+import javax.annotation.Nullable;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 
@@ -46,10 +47,15 @@ public interface IAircraft {
 	Amount<Length> getZApexVTail();
 	Amount<Angle> getRiggingAngleVTail();
 	
+	@Nullable
 	LiftingSurface getCanard();
+	@Nullable
 	Amount<Length> getXApexCanard();
+	@Nullable
 	Amount<Length> getYApexCanard();
+	@Nullable
 	Amount<Length> getZApexCanard();
+	@Nullable
 	Amount<Angle> getRiggingAngleCanard();
 	
 	FuelTank getFuelTank();

@@ -24,6 +24,7 @@ import org.moeaframework.problem.AbstractProblem;
 
 import com.google.common.collect.Lists;
 
+import configuration.enumerations.ConstraintsViolationConditionEnum;
 import flanagan.interpolation.PolyCubicSpline;
 import standaloneutils.MyArrayUtils;
 
@@ -32,11 +33,13 @@ import standaloneutils.MyArrayUtils;
  * To use this class the user have follow these steps in the main class:
  * 
  *  - Create an instance of ProblemFromResponseSurface
- *  - For each objective, if it has to be maximized, negate the yArrays. (MOEA Framework works only with minimization problems)
- *  - Invoke the "interpolateResponseSurface" method for each response surface (one per objective). This will populate the "interpolatedResponseSurfaceMap".
+ *  - Set the maximization flag to TRUE (maximize) or FALS (minimize)
+ *  - Invoke the "importResponseSurface" method. This will populate the "interpolatedResponseSurfaceMap" and the "interpolatedConstraintsMap".
  *  - set upper and lower bounds arrays (if needed)
+ *  - set constraints values array (if needed)
+ *  - set the constraints violation condition array
  * 
- * @see: http://keyboardscientist.weebly.com/blog/moea-framework-defining-new-problems
+ * @see: Example of customized problem --> http://keyboardscientist.weebly.com/blog/moea-framework-defining-new-problems
  * @author Vittorio Trifari
  *
  */
@@ -45,14 +48,26 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 	//--------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION
 	private Map<Integer, PolyCubicSpline> interpolatedResponseSurfaceMap;
+	private Map<Integer, PolyCubicSpline> interpolatedConstraintsMap;
 	private double[] variablesUpperBounds;
 	private double[] variablesLowerBounds;
+	private double[] constraintsValues;
+	private ConstraintsViolationConditionEnum[] constraintsViolationConditions;
+	private boolean[] maximizationProblemConditionArray;
+	private String[] objectivesLabelArray;
+	private String[] variablesLabelArray;
 	
 	//--------------------------------------------------------------------------------------
 	// BUILDER
-	public ProblemFromResponseSurface(int numberOfVariables, int numberOfObjectives) {
-		super(numberOfVariables, numberOfObjectives);
+	public ProblemFromResponseSurface(int numberOfVariables, int numberOfObjectives, int numberOfConstraints) {
+		
+		super(numberOfVariables, numberOfObjectives, numberOfConstraints);
+		
 		interpolatedResponseSurfaceMap = new HashMap<>();
+		interpolatedConstraintsMap = new HashMap<>();
+		variablesLabelArray = new String[numberOfVariables];
+		objectivesLabelArray = new String[numberOfObjectives];
+		
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -75,27 +90,45 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 		}
 		
 		List<String[]> inputList = new ArrayList<>();
+		String[] headerList = new String[numberOfVariables+numberOfObjectives+numberOfConstraints];
 		InputStream inputFS = new FileInputStream(inputFile);
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputFS));
 		// skip the header of the csv
+		headerList = br.readLine().split(";");
 		inputList = br.lines()
-				.skip(1)
 				.map(s -> s.split(";"))
 				.collect(Collectors.toList());
-		br.close();
-
+		br.close(); 
+		
+		if(inputList.get(0).length < (numberOfVariables + numberOfObjectives + numberOfConstraints)) {
+			System.err.println("\tERROR: The number of input file colums does not match the declared number of variables, objectives and constraints! ... terminating");
+			System.exit(1);
+		}
+		
 		double[][] xArrays = new double[inputList.size()][numberOfVariables];
 		double[][] yArrays = new double[inputList.size()][numberOfObjectives];
+		double[][] constraintArrays = new double[inputList.size()][numberOfConstraints];
 		
 		for(int i=0; i<inputList.size(); i++ ) {
 			for(int j=0; j<numberOfVariables; j++) {
 				xArrays[i][j] = Double.valueOf(inputList.get(i)[j]);
+				variablesLabelArray[j] = headerList[j];
 			}
 		}
 
 		for(int i=0; i<inputList.size(); i++ ) {
 			for(int j=numberOfVariables; j<numberOfVariables + numberOfObjectives; j++) {
-				yArrays[i][j-numberOfVariables] = Double.valueOf(inputList.get(i)[j]);
+				if(getMaximizationProblemConditionArray()[j-numberOfVariables])
+					yArrays[i][j-numberOfVariables] = -Double.valueOf(inputList.get(i)[j]);
+				else
+					yArrays[i][j-numberOfVariables] = Double.valueOf(inputList.get(i)[j]);
+				objectivesLabelArray[j-numberOfVariables] = headerList[j-numberOfVariables];
+			}
+		}
+		
+		for(int i=0; i<inputList.size(); i++ ) {
+			for(int j=numberOfVariables + numberOfObjectives; j<numberOfVariables + numberOfObjectives + numberOfConstraints; j++) {
+				constraintArrays[i][j-numberOfVariables - numberOfObjectives] = Double.valueOf(inputList.get(i)[j]);
 			}
 		}
 		
@@ -108,7 +141,13 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 		RealMatrix yMatrix = MatrixUtils.createRealMatrix(yArrays);
 		List<double[]> objectiveArrayList = new ArrayList<>();
 		for (int i=0; i<yMatrix.getColumnDimension(); i++) {
-			objectiveArrayList.add(Arrays.stream(yMatrix.getColumn(i)).distinct().toArray());
+			objectiveArrayList.add(Arrays.stream(yMatrix.getColumn(i)).toArray());
+		}
+		
+		RealMatrix constraintsMatrix = MatrixUtils.createRealMatrix(constraintArrays);
+		List<double[]> constraintsArrayList = new ArrayList<>();
+		for (int i=0; i<constraintsMatrix.getColumnDimension(); i++) {
+			constraintsArrayList.add(Arrays.stream(constraintsMatrix.getColumn(i)).toArray());
 		}
 		
 		List<List<List<Integer>>> columnIndexList = new ArrayList<>();
@@ -165,18 +204,30 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					interpolatingMatrixIndexes
 					);
 			System.out.println("\tInput variable combination: " 
-					+ (List<Double>) variableResults.toArray()[i] + " --> Objectives: " 
-					+ Arrays.toString(yArrays[interpolatingMatrixIndexes.get((List<Integer>) permutationResults.toArray()[i])])
+					+ (List<Double>) variableResults.toArray()[i] 
+					+ " --> Objectives: " + Arrays.toString(yArrays[interpolatingMatrixIndexes.get((List<Integer>) permutationResults.toArray()[i])])
+					+ " --> Constraints Values: " + Arrays.toString(constraintArrays[interpolatingMatrixIndexes.get((List<Integer>) permutationResults.toArray()[i])])
 					);
 		}
 		
 		for(int i=0; i<objectiveArrayList.size(); i++)
-			createObjectiveMultiDimensionalMatrix(
+			createMultiDimensionalMatrix(
 					numberOfVariables,
 					i,
 					variableArrayList,
 					objectiveArrayList.get(i),
-					interpolatingMatrixIndexes
+					interpolatingMatrixIndexes,
+					interpolatedResponseSurfaceMap
+					);
+		
+		for(int i=0; i<constraintsArrayList.size(); i++)
+			createMultiDimensionalMatrix(
+					numberOfVariables,
+					i,
+					variableArrayList,
+					constraintsArrayList.get(i),
+					interpolatingMatrixIndexes,
+					interpolatedConstraintsMap
 					);
 		
 	}
@@ -247,19 +298,21 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 		}
 	}
 
-	private void createObjectiveMultiDimensionalMatrix (
+	private void createMultiDimensionalMatrix (
 			int numberOfVariable, 
-			int indexOfobjective,
+			int index,
 			List<double[]> variableArrayList,
-			double[] objectiveValues, 
-			Map<List<Integer>, Integer> interpolatingMatrixIndexes ) {
+			double[] values, 
+			Map<List<Integer>, Integer> interpolatingMatrixIndexes,
+			Map<Integer, PolyCubicSpline> resultMap
+			) {
 
 		if(numberOfVariable != variableArrayList.size()) {
 			System.err.println("\tERROR: The number of variables does not match the size of the variable array! ... terminating");
 			return;
 		}
 		
-		if(objectiveValues.length != interpolatingMatrixIndexes.size()) {
+		if(values.length != interpolatingMatrixIndexes.size()) {
 			System.err.println("\tERROR: The number of objective values does not match the size of the indexes matrix! ... terminating");
 			return;
 		}
@@ -277,64 +330,67 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 			System.err.println("\tERROR: Only one parameter has been assigned! ... terminating");
 			return;
 		case 2:
-			double[][] objectiveMultiDimensionalMatrix2 = new double	
+			double[][] multiDimensionalMatrix2 = new double	
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix2
+				multiDimensionalMatrix2
 					[matrixIndexSet.get(i).get(0)]
-					[matrixIndexSet.get(i).get(1)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(1)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix2
+					multiDimensionalMatrix2,
+					resultMap
 					);
 			
 			break;
 		case 3:
-			double[][][] objectiveMultiDimensionalMatrix3 = new double
+			double[][][] multiDimensionalMatrix3 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix3
+				multiDimensionalMatrix3
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
-					[matrixIndexSet.get(i).get(2)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(2)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix3
+					multiDimensionalMatrix3,
+					resultMap
 					);
 			
 			break;
 		case 4:
-			double[][][][] objectiveMultiDimensionalMatrix4 = new double
+			double[][][][] multiDimensionalMatrix4 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
 					[variableArrayList.get(3).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix4
+				multiDimensionalMatrix4
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
-					[matrixIndexSet.get(i).get(3)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(3)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix4
+					multiDimensionalMatrix4,
+					resultMap
 					);
 			
 			break;
 		case 5:
-			double[][][][][] objectiveMultiDimensionalMatrix5 = new double
+			double[][][][][] multiDimensionalMatrix5 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -342,22 +398,23 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(4).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix5
+				multiDimensionalMatrix5
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
 					[matrixIndexSet.get(i).get(3)]
-					[matrixIndexSet.get(i).get(4)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(4)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix5
+					multiDimensionalMatrix5,
+					resultMap
 					);
 			
 			break;
 		case 6:
-			double[][][][][][] objectiveMultiDimensionalMatrix6 = new double
+			double[][][][][][] multiDimensionalMatrix6 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -366,23 +423,24 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(5).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix6
+				multiDimensionalMatrix6
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
 					[matrixIndexSet.get(i).get(3)]
 					[matrixIndexSet.get(i).get(4)]
-					[matrixIndexSet.get(i).get(5)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(5)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix6
+					multiDimensionalMatrix6,
+					resultMap
 					);
 			
 			break;
 		case 7:
-			double[][][][][][][] objectiveMultiDimensionalMatrix7 = new double
+			double[][][][][][][] multiDimensionalMatrix7 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -392,24 +450,25 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(6).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix7
+				multiDimensionalMatrix7
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
 					[matrixIndexSet.get(i).get(3)]
 					[matrixIndexSet.get(i).get(4)]
 					[matrixIndexSet.get(i).get(5)]
-					[matrixIndexSet.get(i).get(6)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(6)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix7
+					multiDimensionalMatrix7,
+					resultMap
 					);
 			
 			break;
 		case 8:
-			double[][][][][][][][] objectiveMultiDimensionalMatrix8 = new double
+			double[][][][][][][][] multiDimensionalMatrix8 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -420,7 +479,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(7).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix8
+				multiDimensionalMatrix8
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -428,17 +487,18 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(4)]
 					[matrixIndexSet.get(i).get(5)]
 					[matrixIndexSet.get(i).get(6)]
-					[matrixIndexSet.get(i).get(7)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(7)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix8
+					multiDimensionalMatrix8,
+					resultMap
 					);
 			
 			break;
 		case 9:
-			double[][][][][][][][][] objectiveMultiDimensionalMatrix9 = new double
+			double[][][][][][][][][] multiDimensionalMatrix9 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -450,7 +510,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(8).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix9
+				multiDimensionalMatrix9
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -459,17 +519,17 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(5)]
 					[matrixIndexSet.get(i).get(6)]
 					[matrixIndexSet.get(i).get(7)]
-					[matrixIndexSet.get(i).get(8)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(8)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix9
-					);
-			
+					multiDimensionalMatrix9,
+					resultMap
+					);			
 			break;
 		case 10:
-			double[][][][][][][][][][] objectiveMultiDimensionalMatrix10 = new double
+			double[][][][][][][][][][] multiDimensionalMatrix10 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -482,7 +542,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(9).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix10
+				multiDimensionalMatrix10
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -492,17 +552,18 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(6)]
 					[matrixIndexSet.get(i).get(7)]
 					[matrixIndexSet.get(i).get(8)]
-					[matrixIndexSet.get(i).get(9)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(9)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix10
+					multiDimensionalMatrix10,
+					resultMap
 					);
 			
 			break;
 		case 11:
-			double[][][][][][][][][][][] objectiveMultiDimensionalMatrix11 = new double
+			double[][][][][][][][][][][] multiDimensionalMatrix11 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -516,7 +577,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(10).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix11
+				multiDimensionalMatrix11
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -527,17 +588,18 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(7)]
 					[matrixIndexSet.get(i).get(8)]
 					[matrixIndexSet.get(i).get(9)]
-					[matrixIndexSet.get(i).get(10)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(10)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix11
+					multiDimensionalMatrix11,
+					resultMap
 					);
 			
 			break;
 		case 12:
-			double[][][][][][][][][][][][] objectiveMultiDimensionalMatrix12 = new double
+			double[][][][][][][][][][][][] multiDimensionalMatrix12 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -552,7 +614,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(11).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix12
+				multiDimensionalMatrix12
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -564,17 +626,18 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(8)]
 					[matrixIndexSet.get(i).get(9)]
 					[matrixIndexSet.get(i).get(10)]
-					[matrixIndexSet.get(i).get(11)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(11)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix12
+					multiDimensionalMatrix12,
+					resultMap
 					);
 			
 			break;
 		case 13:
-			double[][][][][][][][][][][][][] objectiveMultiDimensionalMatrix13 = new double
+			double[][][][][][][][][][][][][] multiDimensionalMatrix13 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -590,7 +653,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(12).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix13
+				multiDimensionalMatrix13
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -603,17 +666,18 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(9)]
 					[matrixIndexSet.get(i).get(10)]
 					[matrixIndexSet.get(i).get(11)]
-					[matrixIndexSet.get(i).get(12)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(12)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix13
+					multiDimensionalMatrix13,
+					resultMap
 					);
 			
 			break;
 		case 14:
-			double[][][][][][][][][][][][][][] objectiveMultiDimensionalMatrix14 = new double
+			double[][][][][][][][][][][][][][] multiDimensionalMatrix14 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -630,7 +694,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(13).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix14
+				multiDimensionalMatrix14
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -644,17 +708,18 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(10)]
 					[matrixIndexSet.get(i).get(11)]
 					[matrixIndexSet.get(i).get(12)]
-					[matrixIndexSet.get(i).get(13)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(13)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix14
+					multiDimensionalMatrix14,
+					resultMap
 					);
 			
 			break;
 		case 15:
-			double[][][][][][][][][][][][][][][] objectiveMultiDimensionalMatrix15 = new double
+			double[][][][][][][][][][][][][][][] multiDimensionalMatrix15 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -672,7 +737,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(14).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix15
+				multiDimensionalMatrix15
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -687,17 +752,18 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(11)]
 					[matrixIndexSet.get(i).get(12)]
 					[matrixIndexSet.get(i).get(13)]
-					[matrixIndexSet.get(i).get(14)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(14)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix15
+					multiDimensionalMatrix15,
+					resultMap
 					);
 			
 			break;
 		case 16:
-			double[][][][][][][][][][][][][][][][] objectiveMultiDimensionalMatrix16 = new double
+			double[][][][][][][][][][][][][][][][] multiDimensionalMatrix16 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -716,7 +782,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(15).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix16
+				multiDimensionalMatrix16
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -732,17 +798,18 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(12)]
 					[matrixIndexSet.get(i).get(13)]
 					[matrixIndexSet.get(i).get(14)]
-					[matrixIndexSet.get(i).get(15)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(15)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix16
+					multiDimensionalMatrix16,
+					resultMap
 					);
 			
 			break;
 		case 17:
-			double[][][][][][][][][][][][][][][][][] objectiveMultiDimensionalMatrix17 = new double
+			double[][][][][][][][][][][][][][][][][] multiDimensionalMatrix17 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -762,7 +829,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(16).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix17
+				multiDimensionalMatrix17
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -779,17 +846,18 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(13)]
 					[matrixIndexSet.get(i).get(14)]
 					[matrixIndexSet.get(i).get(15)]
-					[matrixIndexSet.get(i).get(16)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(16)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix17
+					multiDimensionalMatrix17,
+					resultMap
 					);
 			
 			break;
 		case 18:
-			double[][][][][][][][][][][][][][][][][][] objectiveMultiDimensionalMatrix18 = new double
+			double[][][][][][][][][][][][][][][][][][] multiDimensionalMatrix18 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -810,7 +878,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(17).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix18
+				multiDimensionalMatrix18
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -828,17 +896,18 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(14)]
 					[matrixIndexSet.get(i).get(15)]
 					[matrixIndexSet.get(i).get(16)]
-					[matrixIndexSet.get(i).get(17)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(17)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix18
+					multiDimensionalMatrix18,
+					resultMap
 					);
 			
 			break;
 		case 19:
-			double[][][][][][][][][][][][][][][][][][][] objectiveMultiDimensionalMatrix19 = new double
+			double[][][][][][][][][][][][][][][][][][][] multiDimensionalMatrix19 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -860,7 +929,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(18).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix19
+				multiDimensionalMatrix19
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -879,17 +948,18 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(15)]
 					[matrixIndexSet.get(i).get(16)]
 					[matrixIndexSet.get(i).get(17)]
-					[matrixIndexSet.get(i).get(18)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(18)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix19
+					multiDimensionalMatrix19,
+					resultMap
 					);
 			
 			break;
 		case 20:
-			double[][][][][][][][][][][][][][][][][][][][] objectiveMultiDimensionalMatrix20 = new double
+			double[][][][][][][][][][][][][][][][][][][][] multiDimensionalMatrix20 = new double
 					[variableArrayList.get(0).length]
 					[variableArrayList.get(1).length]
 					[variableArrayList.get(2).length]
@@ -912,7 +982,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[variableArrayList.get(19).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
-				objectiveMultiDimensionalMatrix20
+				multiDimensionalMatrix20
 					[matrixIndexSet.get(i).get(0)]
 					[matrixIndexSet.get(i).get(1)]
 					[matrixIndexSet.get(i).get(2)] 
@@ -932,12 +1002,13 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					[matrixIndexSet.get(i).get(16)]
 					[matrixIndexSet.get(i).get(17)]
 					[matrixIndexSet.get(i).get(18)]
-					[matrixIndexSet.get(i).get(19)] = objectiveValues[matrixIndexValues.get(i)];
+					[matrixIndexSet.get(i).get(19)] = values[matrixIndexValues.get(i)];
 			
-			interpolateResponseSurface(
-					indexOfobjective, 
+			interpolateMultidimensionalMatrix(
+					index, 
 					variableMatrix, 
-					objectiveMultiDimensionalMatrix20
+					multiDimensionalMatrix20,
+					resultMap
 					);
 			
 			break;
@@ -974,7 +1045,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 					}
 	 * @return the n-dimensional cubic spline
 	 */
-	public void interpolateResponseSurface(int objectiveIndex, Object xValues, Object yValues) {
+	public void interpolateMultidimensionalMatrix(int objectiveIndex, Object xValues, Object yValues, Map<Integer, PolyCubicSpline> resultsMap) {
 		
 		/*
 		 * Creates an instance of the PolyCubicSpline object with its internal data arrays 
@@ -984,7 +1055,7 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 				yValues
 				);
 		
-		interpolatedResponseSurfaceMap.put(objectiveIndex, interpolatedResponseSurface);
+		resultsMap.put(objectiveIndex, interpolatedResponseSurface);
 	}
 	
 	/**
@@ -992,14 +1063,46 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 	 */
 	@Override
 	public void evaluate(Solution solution) {
-		
+
+
 		double[] xArray = new double[solution.getNumberOfVariables()];
 		for(int i=0; i<numberOfVariables; i++) 
 			xArray[i] = ((RealVariable)solution.getVariable(i)).getValue(); 
-		
-		for(int i=0; i<numberOfObjectives; i++) 
-			solution.setObjective(i, getInterpolatedValue(i, xArray));
-		
+
+		for(int obj=0; obj<numberOfObjectives; obj++) {
+			for(int i=0; i<numberOfConstraints; i++) {
+				if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.LESS_THAN)) {
+					double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
+					if(interpolatedConstraint > constraintsValues[i])
+						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
+					else
+						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
+				}
+				else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.LESS_EQUAL_THAN)) {
+					double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
+					if(interpolatedConstraint >= constraintsValues[i])
+						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
+					else
+						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
+				}
+				else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.BIGGER_THAN)) {
+					double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
+					if(interpolatedConstraint < constraintsValues[i])
+						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
+					else
+						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
+				}
+				else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.BIGGER_EQUAL_THAN)) {
+					double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
+					if(interpolatedConstraint <= constraintsValues[i])
+						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
+					else
+						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
+				}
+
+			}
+		}
+
 	}
 
 	/**
@@ -1029,8 +1132,20 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 		this.interpolatedResponseSurfaceMap = interpolatedResponseSurfaceMap;
 	};
 	
-	public double getInterpolatedValue (Integer objectiveIndex, double[] xArray) {
-		return interpolatedResponseSurfaceMap.get(objectiveIndex).interpolate(xArray);
+	public Map<Integer, PolyCubicSpline> getInterpolatedConstraintsMap() {
+		return interpolatedConstraintsMap;
+	}
+
+	public void setInterpolatedConstraintsMap(Map<Integer, PolyCubicSpline> interpolatedConstraintsMap) {
+		this.interpolatedConstraintsMap = interpolatedConstraintsMap;
+	}
+
+	public double getInterpolatedResponseSurfaceValue (Integer index, double[] xArray) {
+		return interpolatedResponseSurfaceMap.get(index).interpolate(xArray);
+	}
+	
+	public double getInterpolatedConstraintsValue (Integer index, double[] xArray) {
+		return interpolatedConstraintsMap.get(index).interpolate(xArray);
 	}
 
 	public double[] getVariablesUpperBounds() {
@@ -1047,6 +1162,46 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 
 	public void setVariablesLowerBounds(double[] variablesLowerBounds) {
 		this.variablesLowerBounds = variablesLowerBounds;
+	}
+
+	public double[] getConstraintsValues() {
+		return constraintsValues;
+	}
+
+	public void setConstraintsValues(double[] constraintsValues) {
+		this.constraintsValues = constraintsValues;
+	}
+
+	public ConstraintsViolationConditionEnum[] getConstraintsViolationConditions() {
+		return constraintsViolationConditions;
+	}
+
+	public void setConstraintsViolationConditions(ConstraintsViolationConditionEnum[] constraintsViolationConditions) {
+		this.constraintsViolationConditions = constraintsViolationConditions;
+	}
+
+	public boolean[] getMaximizationProblemConditionArray() {
+		return maximizationProblemConditionArray;
+	}
+
+	public void setMaximizationProblemConditionArray(boolean[] maximizationProblemConditionArray) {
+		this.maximizationProblemConditionArray = maximizationProblemConditionArray;
+	}
+
+	public String[] getObjectivesLabelArray() {
+		return objectivesLabelArray;
+	}
+
+	public void setObjectivesLabelArray(String[] objectivesLabelArray) {
+		this.objectivesLabelArray = objectivesLabelArray;
+	}
+
+	public String[] getVariablesLabelArray() {
+		return variablesLabelArray;
+	}
+
+	public void setVariablesLabelArray(String[] variablesLabelArray) {
+		this.variablesLabelArray = variablesLabelArray;
 	}
 
 }

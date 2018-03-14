@@ -55,14 +55,14 @@ public class MOEAFrameworkOptimization_Test03  {
 		//------------------------------------------------------------------------------
 
 		ProblemSimpleNash problem = new ProblemSimpleNash(
-				3,
+				2,
 				2
 				);
 
 		//......................................................................
 		// Defining the optimization problem ...
 		String[] algorithms = new String[] {
-				"NSGAII",
+				"eNSGAII",
 				"OMOPSO"
 		};
 		List<NondominatedPopulation> resultList = new ArrayList<>();
@@ -71,6 +71,7 @@ public class MOEAFrameworkOptimization_Test03  {
 					.withAlgorithm(algorithms[i])
 					.withProblem(problem)
 					.withMaxEvaluations(10000)
+					.withProperty("population.size", "10000")
 					.run()
 					);
 
@@ -111,6 +112,30 @@ public class MOEAFrameworkOptimization_Test03  {
 				true
 				);
 
+		System.out.println("\tVARIABLES:");
+		for(int i=0; i<algorithms.length; i++) {
+			for(int j=0; j<resultList.get(i).size(); j++) {
+				System.out.println("\tOptimized Variables with algorithm " 
+						+ algorithms[i] + ":	 " 
+						+ resultList.get(i).get(j).getVariable(0) + ",	"
+						+ resultList.get(i).get(j).getVariable(1) 
+						);
+			}
+			System.out.println("");
+		}
+		
+		System.out.println("\tOBJECTIVES:");
+		for(int i=0; i<algorithms.length; i++) {
+			for(int j=0; j<resultList.get(i).size(); j++) {
+				System.out.println("\tOptimized Variables with algorithm " 
+						+ algorithms[i] + ":	 " 
+						+ resultList.get(i).get(j).getObjective(0) + ",	"
+						+ resultList.get(i).get(j).getObjective(1) 
+						);
+			}
+			System.out.println("");
+		}
+		
 		System.out.println("\n\tDone!! \n\n");
 
 		long estimatedTime = System.currentTimeMillis() - startTime;

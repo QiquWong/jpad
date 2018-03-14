@@ -24,7 +24,7 @@
 			<altitude unit="ft">0.0</altitude> <!-- default = 0.0 -->
 			<throttle></throttle> <!-- default = 1.0 -->
 			<throttle_ground_idle>
-				<throttle>0.0174;-0.0667;-0.2313;-0.4220</throttle>
+				<throttle>0.0174;-0.0669;-0.2321;-0.4235</throttle>
 				<speed unit="kn">0;50;100;150</speed>
 			</throttle_ground_idle> <!-- if the throttle array contains only 1 value this tag can be left empty -->
 			<delta_flap unit="deg">15;15</delta_flap>
@@ -37,7 +37,7 @@
 			<mach>0.172</mach> <!-- default = 0.2 -->
 			<altitude unit="m"></altitude> <!-- default = 0.0 -->
 			<throttle_ground_idle>
-				<throttle>0.0174;-0.0667;-0.2313;-0.4220</throttle>
+				<throttle>0.0174;-0.0669;-0.2321;-0.4235</throttle>
 				<speed unit="kn">0;50;100;150</speed>
 			</throttle_ground_idle> <!-- if the throttle array contains only 1 value this tag can be left empty -->
 			<delta_flap unit="deg">40;40</delta_flap>
