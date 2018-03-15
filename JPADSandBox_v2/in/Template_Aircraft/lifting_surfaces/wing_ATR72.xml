@@ -35,7 +35,7 @@
          </panel>
       </panels>
       <symmetric_flaps>
-         <symmetric_flap type="SINGLE_SLOTTED">
+         <symmetric_flap id="Inner flap" type="SINGLE_SLOTTED">
             <inner_station_spanwise_position>0.0800</inner_station_spanwise_position>
             <outer_station_spanwise_position>0.3500</outer_station_spanwise_position>
             <inner_chord_ratio>0.3500</inner_chord_ratio>
@@ -43,7 +43,7 @@
             <min_deflection unit="deg">0.0000</min_deflection>
             <max_deflection unit="deg">40.0000</max_deflection>
          </symmetric_flap>
-         <symmetric_flap type="SINGLE_SLOTTED">
+         <symmetric_flap id="Outer flap" type="SINGLE_SLOTTED">
             <inner_station_spanwise_position>0.3500</inner_station_spanwise_position>
             <outer_station_spanwise_position>0.8000</outer_station_spanwise_position>
             <inner_chord_ratio>0.3500</inner_chord_ratio>
@@ -53,7 +53,7 @@
          </symmetric_flap>
       </symmetric_flaps>
       <asymmetric_flaps>
-         <asymmetric_flap type="PLAIN">
+         <asymmetric_flap id="Left aileron" type="PLAIN">
             <inner_chord_ratio>0.3300</inner_chord_ratio>
             <outer_chord_ratio>0.3300</outer_chord_ratio>
             <inner_station_spanwise_position>0.8000</inner_station_spanwise_position>
@@ -61,7 +61,7 @@
             <min_deflection unit="deg">-25.0000</min_deflection>
             <max_deflection unit="deg">25.0000</max_deflection>
          </asymmetric_flap>
-         <asymmetric_flap type="PLAIN">
+         <asymmetric_flap id="Right aileron" type="PLAIN">
             <inner_chord_ratio>0.3300</inner_chord_ratio>
             <outer_chord_ratio>0.3300</outer_chord_ratio>
             <inner_station_spanwise_position>0.8000</inner_station_spanwise_position>

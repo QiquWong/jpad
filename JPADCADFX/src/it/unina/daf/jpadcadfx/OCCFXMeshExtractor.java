@@ -13,25 +13,37 @@ import javax.vecmath.Matrix4d;
 import javax.vecmath.Point3d;
 
 import it.unina.daf.jpadcad.occ.CADEdge;
+import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
 import it.unina.daf.jpadcad.occ.CADVertex;
 import it.unina.daf.jpadcad.occ.OCCDataProvider;
 import it.unina.daf.jpadcad.occ.OCCUtils;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.TriangleMesh;
+import opencascade.BRepMesh_IncrementalMesh;
+import opencascade.BRepTools;
 import opencascade.BRep_Tool;
 import opencascade.GeomLProp_SLProps;
 import opencascade.Geom_Surface;
 import opencascade.Poly_Array1OfTriangle;
 import opencascade.Poly_Triangulation;
+import opencascade.ShapeAnalysis_FreeBounds;
 import opencascade.TColgp_Array1OfPnt2d;
 import opencascade.TopAbs_Orientation;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
 import opencascade.TopLoc_Location;
+import opencascade.TopoDS;
+import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
 import opencascade.TopoDS_Face;
 import opencascade.TopoDS_Shape;
 import opencascade.TopoDS_Vertex;
+import opencascade.TopoDS_Wire;
+import opencascade.gp_Dir;
 import opencascade.gp_Pnt;
+import opencascade.gp_Pnt2d;
 import standaloneutils.MyArrayUtils;
 
 //import org.jcae.opencascade.Utilities;
@@ -69,7 +81,6 @@ import standaloneutils.MyArrayUtils;
 
 public class OCCFXMeshExtractor
 {
-
 	public static class VertexData extends OCCDataProvider
 	{
 		private final TopoDS_Vertex vertex;
@@ -80,8 +91,11 @@ public class OCCFXMeshExtractor
 		@Override
 		public void load()
 		{
+			if (OCCUtils.theFactory == null) OCCUtils.initCADShapeFactory();
+			
+			CADVertex cadVertex = (CADVertex)OCCUtils.theFactory.newShape(vertex);
 			float[] newNodes = new float[3];
-			double[] pnt = ((CADVertex)OCCUtils.theFactory.newShape(vertex)).pnt();
+			double[] pnt = cadVertex.pnt();
 			newNodes[0] = (float) pnt[0];
 			newNodes[1] = (float) pnt[1];
 			newNodes[2] = (float) pnt[2];
@@ -105,7 +119,10 @@ public class OCCFXMeshExtractor
 			if (OCCUtils.theFactory == null) OCCUtils.initCADShapeFactory();
 			
 			// double[] range = BRep_Tool.range(edge);
-			double[] range = ((CADEdge)OCCUtils.theFactory.newShape(edge)).range();
+			CADEdge cadEdge = (CADEdge)OCCUtils.theFactory.newShape(edge);
+			double[] range = cadEdge.range();
+			
+			CADGeomCurve3D gc = OCCUtils.theFactory.newCurve3D(cadEdge);
 			
 //			Geom_Curve gc = BRep_Tool.curve(edge, range);
 //			Bnd_Box box = new Bnd_Box();
@@ -114,41 +131,42 @@ public class OCCFXMeshExtractor
 //			double boundingBoxDeflection = 0.0005 *
 //					Math.max(Math.max(bbox[3] - bbox[0], bbox[4] - bbox[1]), bbox[5] -
 //							bbox[2]);
-//			float[] newNodes = null;
-//			if (gc != null)
-//			{
+			float[] newNodes = null;
+			if (gc != null)
+			{
 //				GeomAdaptor_Curve adaptator = new GeomAdaptor_Curve(gc);
 //				GCPnts_UniformDeflection deflector =
 //						new GCPnts_UniformDeflection();
 //				deflector.initialize(adaptator, boundingBoxDeflection, range[0],
 //						range[1]);
 //				int npts = deflector.nbPoints();
+				int npts = gc.nbPoints();
 //				// Allocate one additional point at each end = parametric value 0, 1
-//				newNodes = new float[(npts + 2) * 3];
-//				int j = 0;
+				newNodes = new float[(npts + 2) * 3];
+				int j = 0;
 //				double[] values = adaptator.value(range[0]);
-//				newNodes[j++] = (float) values[0];
-//				newNodes[j++] = (float) values[1];
-//				newNodes[j++] = (float) values[2];
+				double[] values = gc.value(range[0]);
+				newNodes[j++] = (float) values[0];
+				newNodes[j++] = (float) values[1];
+				newNodes[j++] = (float) values[2];
 //				// All intermediary points
-//				for (int i = 0; i <
-//						npts; ++i)
-//				{
+				for (int i = 0; i < npts; ++i)
+				{
 //					values = adaptator.value(deflector.parameter(i + 1));
-//					newNodes[j++] = (float) values[0];
-//					newNodes[j++] = (float) values[1];
-//					newNodes[j++] = (float) values[2];
-//				}
+					values = gc.value(gc.parameter(i + 1));
+					newNodes[j++] = (float) values[0];
+					newNodes[j++] = (float) values[1];
+					newNodes[j++] = (float) values[2];
+				}
 //				// Add last point
 //				values = adaptator.value(range[1]);
-//				newNodes[j++] = (float) values[0];
-//				newNodes[j++] = (float) values[1];
-//				newNodes[j++] = (float) values[2];
-//			}
+				values = gc.value(range[1]);
+				newNodes[j++] = (float) values[0];
+				newNodes[j++] = (float) values[1];
+				newNodes[j++] = (float) values[2];
+			}
 //			else if (!BRep_Tool.degenerated(edge))
-			
-			float[] newNodes = null;
-			if (((CADEdge)OCCUtils.theFactory.newShape(edge)).isDegenerated())
+			else if (!cadEdge.isDegenerated())
 			{
 				// So, there is no curve, and the edge is not degenerated?
 				// => draw lines between the vertices and ignore curvature
@@ -167,13 +185,13 @@ public class OCCFXMeshExtractor
 					
 				}
 				newNodes = new float[aa.size() * 3];
-				for (int i = 0, j = 0; i <
+				for (int i = 0, k = 0; i <
 						aa.size(); i++)
 				{
 					double[] f = aa.get(i);
-					newNodes[j++] = (float) f[0];
-					newNodes[j++] = (float) f[1];
-					newNodes[j++] = (float) f[2];
+					newNodes[k++] = (float) f[0];
+					newNodes[k++] = (float) f[1];
+					newNodes[k++] = (float) f[2];
 				}
 			}
 			if(newNodes != null)
@@ -289,14 +307,14 @@ public class OCCFXMeshExtractor
 				return;
 			}
 			// double[] dnodes = pt.nodes();
-			
+						
 			List<gp_Pnt> gpNodes = new ArrayList<>();
-			for(int k = 0; k < pt.NbNodes(); k++)
+			for(int k = 1; k <= pt.NbNodes(); k++)
 				gpNodes.add(pt.Nodes().Value(k));
 			
 			// // final int[] itriangles = pt.triangles();
 			// itriangles = pt.triangles();
-			
+						
 			Poly_Array1OfTriangle pat = pt.Triangles();
 			int s = pat.Length()*3;
 			itriangles = new int[s];
@@ -311,11 +329,12 @@ public class OCCFXMeshExtractor
 				itriangles[j0+2] = n3[0] - 1;
 				j0+=3;
 			}
-			
+						
 			if ((face.Orientation() == TopAbs_Orientation.TopAbs_REVERSED && !this.faceReversed)
 					|| (face.Orientation() != TopAbs_Orientation.TopAbs_REVERSED && this.faceReversed)
 					)
 				reverseMesh(itriangles);
+			
 			// Compute the indices
 			nbrOfPolys = itriangles.length / 3;
 			polys = new int[4 * nbrOfPolys];
@@ -355,21 +374,20 @@ public class OCCFXMeshExtractor
 			
 			// allocate the JavaFX's TriangleMesh
 			meshFX = new TriangleMesh();
-			// add nodes
-			meshFX.getPoints().addAll(getNodes());
-			
 			//for now we'll just make an empty texCoordinate group
 			meshFX.getTexCoords().addAll(0, 0);
+			// add nodes
+			meshFX.getPoints().addAll(getNodes());
 
 			// prepare face indices: p0,t0, p1,t1, p3,t3 ... with t_i=0
 			ifacesFX = new int[itriangles.length/3 * 6];
 			for (int i = 0; i < itriangles.length; )
 			{
-				// System.out.println("i: " + i);
+				//System.out.println("i: " + i);
 				meshFX.getFaces().addAll(
-						itriangles[i++],0,
-						itriangles[i++],0,
-						itriangles[i++],0
+						itriangles[i++], 0,
+						itriangles[i++], 0,
+						itriangles[i++], 0
 				);
 			}
 			
@@ -383,8 +401,8 @@ public class OCCFXMeshExtractor
 //						itriangles[i++],0
 //				);
 //			}
-			meshFX.getFaces().addAll(ifacesFX);
-			
+//			meshFX.getFaces().addAll(ifacesFX);
+						
 			// Compute the normals
 			Geom_Surface surf = BRep_Tool.Surface(face);
 			if (surf != null) {
@@ -394,7 +412,29 @@ public class OCCFXMeshExtractor
 					// double[] n = geomProp.normalArray(pt.uvNodes());
 					// see https://github.com/jeromerobert/jCAE/blob/187dab9dbbae4d51e99e28af94a7c1acc72bc697/occjava/src/GeomLProp_SLProps.i
 					// TColgp_Array1OfPnt2d n2d = ...
-					double[] n = null;
+					
+					int numNodes = pt.NbNodes();
+					double[] n = new double[3*numNodes];
+					List<gp_Pnt2d> uvNodes = new ArrayList<>();
+					for(int i = 1; i <= numNodes; i++) {
+						uvNodes.add(pt.UVNodes().Value(i));
+					}
+					
+					for(int i = 0; i < numNodes; i++) {
+						geomProp.SetParameters(uvNodes.get(i).X(), uvNodes.get(i).Y());
+						
+						if(geomProp.IsNormalDefined() == 0) {
+							n[3*i  ] = 0;
+							n[3*i+1] = 0;
+							n[3*i+2] = 0;
+						}
+						else {
+							gp_Dir normal = geomProp.Normal();
+							n[3*i  ] = normal.X();
+							n[3*i+1] = normal.Y();
+							n[3*i+2] = normal.Z();
+						}
+					}
 					
 					//check the normals
 					if (!checkNormals(n)) {
@@ -406,7 +446,7 @@ public class OCCFXMeshExtractor
 					} else {
 						//convert into floats
 						normals = new float[n.length];
-						// Inverse normal if the face is inversed
+						// Inverse normal if the face is inverted
 						double reverse = 1.;
 						if ((face.Orientation() == TopAbs_Orientation.TopAbs_REVERSED && !this.faceReversed)
 								|| (face.Orientation() != TopAbs_Orientation.TopAbs_REVERSED && this.faceReversed))
@@ -438,10 +478,10 @@ public class OCCFXMeshExtractor
 //	 *
 //	 * @param shape
 //	 */
-//	public OCCFXMeshExtractor(TopoDS_Shape shape)
-//	{
-//		this.shape = shape;
-//	}
+	public OCCFXMeshExtractor(TopoDS_Shape shape)
+	{
+		this.shape = shape;
+	}
 //	/**
 //	 * Create a CAOMeshExtractor from a BREP, STEP or IGES file.
 //	 * @param fileName
@@ -451,82 +491,89 @@ public class OCCFXMeshExtractor
 //		// TODO: check this
 //		this(Utilities.readFile(fileName));
 //	}
-//	public Collection<TopoDS_Vertex> getVertices()
-//	{
-//		TopExp_Explorer explorer = new TopExp_Explorer();
-//		HashSet<TopoDS_Vertex> vertices = new HashSet<TopoDS_Vertex>();
-//		for (explorer.init(shape, TopAbs_ShapeEnum.VERTEX); explorer.more(); explorer.next())
-//			vertices.add((TopoDS_Vertex) explorer.current());
-//		return vertices;
-//	}
-//	public Collection<TopoDS_Wire> getWires()
-//	{
-//		TopExp_Explorer explorer = new TopExp_Explorer();
-//		HashSet<TopoDS_Wire> wires = new HashSet<TopoDS_Wire>();
-//		for (explorer.init(shape, TopAbs_ShapeEnum.WIRE); explorer.more(); explorer.next())
-//			wires.add((TopoDS_Wire) explorer.current());
-//		return wires;
-//	}
-//	public Collection<TopoDS_Compound> getCompounds()
-//	{
-//		TopExp_Explorer explorer = new TopExp_Explorer();
-//		HashSet<TopoDS_Compound> compounds = new HashSet<TopoDS_Compound>();
-//		for (explorer.init(shape, TopAbs_ShapeEnum.COMPOUND); explorer.more(); explorer.next())
-//			compounds.add((TopoDS_Compound) explorer.current());
-//		return compounds;
-//	}
+	public Collection<TopoDS_Vertex> getVertices()
+	{
+		TopExp_Explorer explorer = new TopExp_Explorer();
+		HashSet<TopoDS_Vertex> vertices = new HashSet<TopoDS_Vertex>();
+		for (explorer.Init(shape, TopAbs_ShapeEnum.TopAbs_VERTEX); explorer.More() == 1; explorer.Next())
+//			vertices.add((TopoDS_Vertex) explorer.Current());
+			vertices.add(TopoDS.ToVertex(explorer.Current()));
+		return vertices;
+	}
+	public Collection<TopoDS_Wire> getWires()
+	{
+		TopExp_Explorer explorer = new TopExp_Explorer();
+		HashSet<TopoDS_Wire> wires = new HashSet<TopoDS_Wire>();
+		for (explorer.Init(shape, TopAbs_ShapeEnum.TopAbs_WIRE); explorer.More() == 1; explorer.Next())
+//			wires.add((TopoDS_Wire) explorer.Current());
+			wires.add(TopoDS.ToWire(explorer.Current()));
+		return wires;
+	}
+	public Collection<TopoDS_Compound> getCompounds()
+	{
+		TopExp_Explorer explorer = new TopExp_Explorer();
+		HashSet<TopoDS_Compound> compounds = new HashSet<TopoDS_Compound>();
+		for (explorer.Init(shape, TopAbs_ShapeEnum.TopAbs_COMPOUND); explorer.More() == 1; explorer.Next())
+//			compounds.add((TopoDS_Compound) explorer.Current());
+			compounds.add(TopoDS.ToCompound(explorer.Current()));
+		return compounds;
+	}
 //	/**
 //	 * Create the mesh by calling BRepMesh_IncrementalMesh
 //	 * Override to call it with custom parameters
 //	 */
-//	protected void createMesh()
-//	{
-//		//Force to recreate the mesh with our parameters
-//		BRepTools.clean(shape);
+	protected void createMesh()
+	{
+		//Force to recreate the mesh with our parameters
+		BRepTools.Clean(shape);
 //		new BRepMesh_IncrementalMesh(shape, 7E-3, true);
-//	}
-//	public Collection<TopoDS_Face> getFaces()
-//	{
-//		if(!meshCreated)
-//		{
-//			createMesh();
-//			meshCreated = true;
-//		}
-//		TopExp_Explorer explorer = new TopExp_Explorer();
-//		HashSet<TopoDS_Face> faces = new LinkedHashSet<TopoDS_Face>();
-//		for (explorer.init(shape, TopAbs_ShapeEnum.FACE); explorer.more(); explorer.next())
-//			faces.add((TopoDS_Face) explorer.current());
-//		return faces;
-//	}
+		new BRepMesh_IncrementalMesh(shape, 7E-3);
+	}
+	public Collection<TopoDS_Face> getFaces()
+	{
+		if(!meshCreated)
+		{
+			createMesh();
+			meshCreated = true;
+		}
+		TopExp_Explorer explorer = new TopExp_Explorer();
+		HashSet<TopoDS_Face> faces = new LinkedHashSet<TopoDS_Face>();
+		for (explorer.Init(shape, TopAbs_ShapeEnum.TopAbs_FACE); explorer.More() == 1; explorer.Next())
+//			faces.add((TopoDS_Face) explorer.Current());
+			faces.add(TopoDS.ToFace(explorer.Current()));
+		return faces;
+	}
 //	/**
 //	 * Get only free edges
 //	 * @return
 //	 */
-//	public Collection<TopoDS_Edge> getFreeEdges()
-//	{
-//		ShapeAnalysis_FreeBounds safb = new ShapeAnalysis_FreeBounds(shape);
-//		TopoDS_Compound closedWires = safb.getClosedWires();
-//		if(closedWires == null)
-//			return Collections.EMPTY_SET;
-//		TopExp_Explorer explorer = new TopExp_Explorer();
-//		HashSet<TopoDS_Edge> freeEdges = new HashSet<TopoDS_Edge>();
-//		for(explorer.init(closedWires, TopAbs_ShapeEnum.EDGE); explorer.more() ; explorer.next())
-//			freeEdges.add((TopoDS_Edge)explorer.current());
-//		return freeEdges;
-//	}
+	public Collection<TopoDS_Edge> getFreeEdges()
+	{
+		ShapeAnalysis_FreeBounds safb = new ShapeAnalysis_FreeBounds(shape);
+		TopoDS_Compound closedWires = safb.GetClosedWires();
+		if(closedWires == null)
+			return Collections.emptySet();
+		TopExp_Explorer explorer = new TopExp_Explorer();
+		HashSet<TopoDS_Edge> freeEdges = new HashSet<TopoDS_Edge>();
+		for(explorer.Init(closedWires, TopAbs_ShapeEnum.TopAbs_EDGE); explorer.More() == 1; explorer.Next())
+//			freeEdges.add((TopoDS_Edge)explorer.Current());
+			freeEdges.add(TopoDS.ToEdge(explorer.Current()));
+		return freeEdges;
+	}
 //	/**
 //	 * Get all the edges (free edges or not)
 //	 * @return
 //	 */
-//	public Collection<TopoDS_Edge> getEdges()
-//	{
-//		TopExp_Explorer explorer = new TopExp_Explorer();
-//		HashSet<TopoDS_Edge> edges = new HashSet<TopoDS_Edge>();
-//		for (explorer.init(shape, TopAbs_ShapeEnum.EDGE); explorer.more(); explorer.next())
-//			edges.add((TopoDS_Edge) explorer.current());
-//		return edges;
-//	}
-//	
+	public Collection<TopoDS_Edge> getEdges()
+	{
+		TopExp_Explorer explorer = new TopExp_Explorer();
+		HashSet<TopoDS_Edge> edges = new HashSet<TopoDS_Edge>();
+		for (explorer.Init(shape, TopAbs_ShapeEnum.TopAbs_EDGE); explorer.More() == 1; explorer.Next())
+//			edges.add((TopoDS_Edge) explorer.Current());
+			edges.add(TopoDS.ToEdge(explorer.Current()));
+		return edges;
+	}
+	
 	public static void setNodes(float[] nodes)
 	{
 		throw new RuntimeException("DataProvider.EMPTY is immutable");

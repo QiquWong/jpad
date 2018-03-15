@@ -24,7 +24,7 @@
          </panel>
       </panels>
       <symmetric_flaps>
-         <symmetric_flap type="PLAIN">
+         <symmetric_flap id="Rudder" type="PLAIN">
             <inner_station_spanwise_position>0.000000</inner_station_spanwise_position>
             <outer_station_spanwise_position>0.9000</outer_station_spanwise_position>
             <inner_chord_ratio>0.3500</inner_chord_ratio>
