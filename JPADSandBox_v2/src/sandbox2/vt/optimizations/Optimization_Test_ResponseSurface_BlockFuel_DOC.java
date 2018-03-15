@@ -19,14 +19,13 @@ import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 
 import configuration.MyConfiguration;
-import configuration.enumerations.ConstraintsViolationConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import writers.JPADStaticWriteUtils;
 
-class MyArgumentsAnalysis {
+class MyArgumentsOptimizationTestResponseSurfaceBlockFuelDOC{
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
@@ -41,7 +40,7 @@ class MyArgumentsAnalysis {
 
 }
 
-public class MOEAFrameworkOptimization_Test02  {
+public class Optimization_Test_ResponseSurface_BlockFuel_DOC  {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
@@ -63,14 +62,14 @@ public class MOEAFrameworkOptimization_Test02  {
 		System.out.println("MOEA Framework Test");
 		System.out.println("-------------------");
 
-		MyArgumentsAnalysis va = new MyArgumentsAnalysis();
-		MOEAFrameworkOptimization_Test02.theCmdLineParser = new CmdLineParser(va);
+		MyArgumentsOptimizationTestResponseSurfaceBlockFuelDOC va = new MyArgumentsOptimizationTestResponseSurfaceBlockFuelDOC();
+		Optimization_Test_ResponseSurface_BlockFuel_DOC.theCmdLineParser = new CmdLineParser(va);
 		MyConfiguration.initWorkingDirectoryTree();
 		String outputPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
-		String subFolderPath = JPADStaticWriteUtils.createNewFolder(outputPath + "MOEA_Framework_Tests_02" + File.separator);
+		String subFolderPath = JPADStaticWriteUtils.createNewFolder(outputPath + "Optimization_Test_ResponseSurface_BlockFuel_DOC" + File.separator);
 		
 		try {
-			MOEAFrameworkOptimization_Test02.theCmdLineParser.parseArgument(args);
+			Optimization_Test_ResponseSurface_BlockFuel_DOC.theCmdLineParser.parseArgument(args);
 
 			String inputFilePath = va.getInputFile().getAbsolutePath();
 			System.out.println("INPUT FILE ===> " + inputFilePath);
@@ -84,22 +83,20 @@ public class MOEAFrameworkOptimization_Test02  {
 			//......................................................................
 			// Defining the optimization problem ...
 			ProblemFromResponseSurface problem = new ProblemFromResponseSurface(
-					5,
-					3,
-					1
+					2,
+					2,
+					0
 					);
-			problem.setMaximizationProblemConditionArray(new boolean[] {true, false, true});
+			problem.setMaximizationProblemConditionArray(new boolean[] {false, false});
 			problem.importResponseSurface(inputFilePath);
-			problem.setVariablesLowerBounds(new double[] {19.0, 0.95, 6.0, 4.0, 1.0});
-			problem.setVariablesUpperBounds(new double[] {20.5, 1.2, 9.0, 7.0, 1.25});
-			problem.setConstraintsValues(new double[] {0.03});
-			problem.setConstraintsViolationConditions(new ConstraintsViolationConditionEnum[] {ConstraintsViolationConditionEnum.LESS_EQUAL_THAN});
+			problem.setVariablesLowerBounds(new double[] {20000.0,0.45});
+			problem.setVariablesUpperBounds(new double[] {31000.0,0.64});
 			
 			//......................................................................
 			// Defining the optimization problem ...
 			String[] algorithms = new String[] {
 					"eNSGAII",
-					"OMOPSO"
+					"OMOPSO",
 					};
 			List<NondominatedPopulation> resultList = new ArrayList<>();
 			for(int i=0; i<algorithms.length; i++) {
@@ -308,7 +305,7 @@ public class MOEAFrameworkOptimization_Test02  {
 
 		} catch (CmdLineException e) {
 			System.err.println("Error: " + e.getMessage());
-			MOEAFrameworkOptimization_Test02.theCmdLineParser.printUsage(System.err);
+			Optimization_Test_ResponseSurface_BlockFuel_DOC.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;

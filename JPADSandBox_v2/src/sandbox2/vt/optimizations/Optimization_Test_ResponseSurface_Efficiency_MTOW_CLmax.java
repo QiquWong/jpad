@@ -26,7 +26,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import writers.JPADStaticWriteUtils;
 
-class MyArgumentsAnalysis {
+class MyArgumentsOptimizationTestResponseSurfaceEfficiencyMTOWCLmax{
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
@@ -41,7 +41,7 @@ class MyArgumentsAnalysis {
 
 }
 
-public class MOEAFrameworkOptimization_Test02  {
+public class Optimization_Test_ResponseSurface_Efficiency_MTOW_CLmax  {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
@@ -63,14 +63,14 @@ public class MOEAFrameworkOptimization_Test02  {
 		System.out.println("MOEA Framework Test");
 		System.out.println("-------------------");
 
-		MyArgumentsAnalysis va = new MyArgumentsAnalysis();
-		MOEAFrameworkOptimization_Test02.theCmdLineParser = new CmdLineParser(va);
+		MyArgumentsOptimizationTestResponseSurfaceEfficiencyMTOWCLmax va = new MyArgumentsOptimizationTestResponseSurfaceEfficiencyMTOWCLmax();
+		Optimization_Test_ResponseSurface_Efficiency_MTOW_CLmax.theCmdLineParser = new CmdLineParser(va);
 		MyConfiguration.initWorkingDirectoryTree();
 		String outputPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
-		String subFolderPath = JPADStaticWriteUtils.createNewFolder(outputPath + "MOEA_Framework_Tests_02" + File.separator);
+		String subFolderPath = JPADStaticWriteUtils.createNewFolder(outputPath + "Optimization_Test_ResponseSurface_Efficiency_MTOW_CLmax" + File.separator);
 		
 		try {
-			MOEAFrameworkOptimization_Test02.theCmdLineParser.parseArgument(args);
+			Optimization_Test_ResponseSurface_Efficiency_MTOW_CLmax.theCmdLineParser.parseArgument(args);
 
 			String inputFilePath = va.getInputFile().getAbsolutePath();
 			System.out.println("INPUT FILE ===> " + inputFilePath);
@@ -308,7 +308,7 @@ public class MOEAFrameworkOptimization_Test02  {
 
 		} catch (CmdLineException e) {
 			System.err.println("Error: " + e.getMessage());
-			MOEAFrameworkOptimization_Test02.theCmdLineParser.printUsage(System.err);
+			Optimization_Test_ResponseSurface_Efficiency_MTOW_CLmax.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;

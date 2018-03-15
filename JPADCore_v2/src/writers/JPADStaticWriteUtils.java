@@ -40,6 +40,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Chart;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -260,6 +262,75 @@ public class JPADStaticWriteUtils {
 
 	}
 
+	public static void exportToCSV (
+			List<List<Double[]>> valueList, 
+			List<String> fileName,
+			List<List<String>> labelsName,
+			String outFileFolderPath 
+			) {
+		
+		for(int i=0; i<valueList.size(); i++)
+			for(int j=i+1; j<valueList.size(); j++)
+				if(valueList.get(i).size() != valueList.get(j).size()) 
+					throw new DimensionException("SOME LISTS DO NOT HAVE THE SAME SIZE !!");
+				
+		
+		for (int i = 0; i < valueList.size(); i++) {
+		
+			File outputFile = new File(outFileFolderPath + File.separator + fileName.get(i) + ".csv");
+			
+			if (outputFile.exists()) {
+				try {
+					Files.delete(outputFile.toPath());
+				} 
+				catch (IOException e) {
+					System.err.println(e + " (Unable to delete file)");
+				}
+			}
+			
+			try{
+
+				PrintWriter writer = new PrintWriter(outputFile.getAbsolutePath(), "UTF-8");
+				for(int j=0; j<valueList.get(i).size(); j++) {
+					writer.print(labelsName.get(i).get(j) + ", ");
+				}
+				writer.println("");
+
+				for(int j=0; j<valueList.get(i).size(); j++)
+					for(int k=j+1; k<valueList.get(i).size(); k++)
+						if(valueList.get(i).get(j).length != valueList.get(i).get(k).length) 
+							throw new DimensionException("CORRESPONDING ELEMENTS OF THE TWO LISTS MUST HAVE THE SAME LENGTH");
+				
+				double[][] valuesArrays = new double[valueList.get(i).size()][];
+				for(int j=0; j<valueList.get(i).size(); j++) {
+					valuesArrays[j] = MyArrayUtils.convertToDoublePrimitive(valueList.get(i).get(j));
+				}
+				
+				RealMatrix valuesMatrix = MatrixUtils.createRealMatrix(valuesArrays);
+				RealMatrix transposedValuesMatrix = valuesMatrix.transpose();
+
+				for(int j=0; j<transposedValuesMatrix.getRowDimension(); j++) {
+					for(int k=0; k<transposedValuesMatrix.getColumnDimension(); k++) {
+						writer.print(
+								String.format(
+										Locale.ROOT,
+										"%.12f,	",
+										transposedValuesMatrix.getData()[j][k]
+										)
+								);
+					}
+					writer.println();
+				}
+				writer.close();
+
+
+			} catch (Exception e) {
+				System.err.format("Unable to write file %1$s\n", outputFile.getAbsolutePath());
+			}
+		}
+
+	}
+	
 	/**
 	 * Add an element nested inside a father element
 	 * Manage the writing to the xls file as well

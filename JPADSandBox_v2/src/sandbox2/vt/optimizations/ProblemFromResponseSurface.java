@@ -109,22 +109,22 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 		double[][] yArrays = new double[inputList.size()][numberOfObjectives];
 		double[][] constraintArrays = new double[inputList.size()][numberOfConstraints];
 		
-		for(int i=0; i<inputList.size(); i++ ) {
-			for(int j=0; j<numberOfVariables; j++) {
+		for(int i=0; i<numberOfVariables; i++)
+			variablesLabelArray[i] = headerList[i];
+			
+		for(int i=numberOfVariables; i<numberOfVariables+numberOfObjectives; i++)
+			objectivesLabelArray[i-numberOfVariables] = headerList[i];
+		
+		for(int i=0; i<inputList.size(); i++ ) 
+			for(int j=0; j<numberOfVariables; j++) 
 				xArrays[i][j] = Double.valueOf(inputList.get(i)[j]);
-				variablesLabelArray[j] = headerList[j];
-			}
-		}
 
-		for(int i=0; i<inputList.size(); i++ ) {
-			for(int j=numberOfVariables; j<numberOfVariables + numberOfObjectives; j++) {
+		for(int i=0; i<inputList.size(); i++ ) 
+			for(int j=numberOfVariables; j<numberOfVariables + numberOfObjectives; j++) 
 				if(getMaximizationProblemConditionArray()[j-numberOfVariables])
 					yArrays[i][j-numberOfVariables] = -Double.valueOf(inputList.get(i)[j]);
 				else
 					yArrays[i][j-numberOfVariables] = Double.valueOf(inputList.get(i)[j]);
-				objectivesLabelArray[j-numberOfVariables] = headerList[j-numberOfVariables];
-			}
-		}
 		
 		for(int i=0; i<inputList.size(); i++ ) {
 			for(int j=numberOfVariables + numberOfObjectives; j<numberOfVariables + numberOfObjectives + numberOfConstraints; j++) {
@@ -144,10 +144,12 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 			objectiveArrayList.add(Arrays.stream(yMatrix.getColumn(i)).toArray());
 		}
 		
-		RealMatrix constraintsMatrix = MatrixUtils.createRealMatrix(constraintArrays);
 		List<double[]> constraintsArrayList = new ArrayList<>();
-		for (int i=0; i<constraintsMatrix.getColumnDimension(); i++) {
-			constraintsArrayList.add(Arrays.stream(constraintsMatrix.getColumn(i)).toArray());
+		if(numberOfConstraints > 0) {
+			RealMatrix constraintsMatrix = MatrixUtils.createRealMatrix(constraintArrays);
+			for (int i=0; i<constraintsMatrix.getColumnDimension(); i++) {
+				constraintsArrayList.add(Arrays.stream(constraintsMatrix.getColumn(i)).toArray());
+			}
 		}
 		
 		List<List<List<Integer>>> columnIndexList = new ArrayList<>();
@@ -1057,52 +1059,55 @@ public class ProblemFromResponseSurface extends AbstractProblem {
 		
 		resultsMap.put(objectiveIndex, interpolatedResponseSurface);
 	}
-	
+
 	/**
 	 * The evaluate method gives a candidate solution to the problem. 
 	 */
 	@Override
 	public void evaluate(Solution solution) {
 
-
 		double[] xArray = new double[solution.getNumberOfVariables()];
 		for(int i=0; i<numberOfVariables; i++) 
 			xArray[i] = ((RealVariable)solution.getVariable(i)).getValue(); 
 
 		for(int obj=0; obj<numberOfObjectives; obj++) {
-			for(int i=0; i<numberOfConstraints; i++) {
-				if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.LESS_THAN)) {
-					double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
-					if(interpolatedConstraint > constraintsValues[i])
-						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
-					else
-						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
-				}
-				else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.LESS_EQUAL_THAN)) {
-					double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
-					if(interpolatedConstraint >= constraintsValues[i])
-						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
-					else
-						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
-				}
-				else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.BIGGER_THAN)) {
-					double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
-					if(interpolatedConstraint < constraintsValues[i])
-						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
-					else
-						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
-				}
-				else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.BIGGER_EQUAL_THAN)) {
-					double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
-					if(interpolatedConstraint <= constraintsValues[i])
-						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
-					else
-						solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
-				}
 
+			if(numberOfConstraints <= 0) {
+				solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
+			}
+			else {
+				for(int i=0; i<numberOfConstraints; i++) {
+					if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.LESS_THAN)) {
+						double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
+						if(interpolatedConstraint > constraintsValues[i])
+							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
+						else
+							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
+					}
+					else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.LESS_EQUAL_THAN)) {
+						double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
+						if(interpolatedConstraint >= constraintsValues[i])
+							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
+						else
+							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
+					}
+					else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.BIGGER_THAN)) {
+						double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
+						if(interpolatedConstraint < constraintsValues[i])
+							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
+						else
+							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
+					}
+					else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.BIGGER_EQUAL_THAN)) {
+						double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
+						if(interpolatedConstraint <= constraintsValues[i])
+							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
+						else
+							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
+					}
+				}
 			}
 		}
-
 	}
 
 	/**
