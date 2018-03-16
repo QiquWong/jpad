@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<JPAD_Optimizer>
+	<number_of_variables>5</number_of_variables> 
+	<number_of_objectives>3</number_of_objectives>
+	<number_of_constraints>1</number_of_constraints>
+	<max_number_of_evaluations></max_number_of_evaluations> <!-- default value: 10000. May be left blank if the user wants to use the default value -->
+	<population_size></population_size> <!-- default value: 50. May be left blank if the user wants to use the default value -->
+	<!--maximization_conditions: an array of booleans (TRUE=maximize, FALSE=minimize). The dimension must be equal to the number of objectives -->
+	<maximization_conditions>TRUE;FALSE;TRUE</maximization_conditions> 
+	<!--variable_lower_bounds: an array of double to define the lower bounds of each variable. The dimension must be equal to the number of variables -->
+	<variable_lower_bounds>19.0;0.95;6.0;4.0;1.0</variable_lower_bounds>
+	<!--variable_upper_bounds: an array of double to define the upper bounds of each variable. The dimension must be equal to the number of variables -->
+	<variable_upper_bounds>20.5;1.2;9.0;7.0;1.25</variable_upper_bounds>
+	<!--constraints_values: an array of double to define the value of each constraints to be monitored. The dimension must be equal to the number of constraints (if = 0, leave it blank)-->
+	<constraints_values>0.03</constraints_values>
+	<!--constraints_violation_conditions: an array of strings to define the each constraints check condition. The dimension must be equal to the number of constraints -->
+	<!-- possible values: LESS_THAN, LESS_EQUAL_THAN, BIGGER_THAN, BIGGER_EQUAL_THAN -->
+	<constraints_violation_conditions>0.03</constraints_violation_conditions>
+	<!--algorithms: an array of strings to assign all the wanted algorithms to be used. These will be used in sequence and compared -->
+	<!-- possible values: see the MOEAFramework_Manual in the doc folder -->
+	<algorithms>eNSGAII;OMOPSO</algorithms>
+</JPAD_Optimizer>

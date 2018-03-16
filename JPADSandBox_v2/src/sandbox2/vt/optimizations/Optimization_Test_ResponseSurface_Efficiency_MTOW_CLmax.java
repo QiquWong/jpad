@@ -307,10 +307,10 @@ public class Optimization_Test_ResponseSurface_Efficiency_MTOW_CLmax  {
 			System.out.println("\n\n\tTIME ESTIMATED = " + numberFormat.format(estimatedTime*0.001) + " seconds");
 
 		} catch (CmdLineException e) {
-			System.err.println("Error: " + e.getMessage());
+			System.err.println("\tError: " + e.getMessage());
 			Optimization_Test_ResponseSurface_Efficiency_MTOW_CLmax.theCmdLineParser.printUsage(System.err);
 			System.err.println();
-			System.err.println("  Must launch this app with proper command line arguments.");
+			System.err.println("\n\tMust launch this app with proper command line arguments.");
 			return;
 		}	
 
