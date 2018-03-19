@@ -326,7 +326,7 @@ public class MOEAProblemResponseSurface extends AbstractProblem {
 		Collection<List<Integer>> permutationResults = permutations(inputPermutationList);
 		Collection<List<Double>> variableResults = permutations(variablePermutationList);
 		
-		System.out.println("\tInterpolating Response Surface ... \n");
+		System.out.println("\n\tInterpolating Response Surface ... \n");
 				
 		Map<List<Integer>, Integer> interpolatingMatrixIndexes = new HashMap<>();
 		for(int i=0; i<permutationResults.size(); i++) {

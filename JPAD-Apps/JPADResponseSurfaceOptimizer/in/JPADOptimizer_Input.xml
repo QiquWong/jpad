@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <JPAD_Optimizer>
 	<number_of_variables>2</number_of_variables> 
-	<number_of_objectives>2</number_of_objectives>
+	<number_of_objectives>1</number_of_objectives>
 	<number_of_constraints>0</number_of_constraints>
 	<max_number_of_evaluations></max_number_of_evaluations> <!-- default value: 10000. May be left blank if the user wants to use the default value -->
 	<population_size></population_size> <!-- default value: 50. May be left blank if the user wants to use the default value -->
 	<!--maximization_conditions: an array of booleans (TRUE=maximize, FALSE=minimize). The dimension must be equal to the number of objectives -->
-	<maximization_conditions>FALSE;FALSE</maximization_conditions> 
+	<maximization_conditions>FALSE</maximization_conditions> 
 	<!--variable_lower_bounds: an array of double to define the lower bounds of each variable. The dimension must be equal to the number of variables -->
 	<variable_lower_bounds>20000.0;0.45</variable_lower_bounds>
 	<!--variable_upper_bounds: an array of double to define the upper bounds of each variable. The dimension must be equal to the number of variables -->

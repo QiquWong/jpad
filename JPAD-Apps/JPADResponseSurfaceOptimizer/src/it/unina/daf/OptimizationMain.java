@@ -65,9 +65,9 @@ public class OptimizationMain  {
 
 		long startTime = System.currentTimeMillis();        
 
-		System.out.println("-------------------");
-		System.out.println("MOEA Framework Test");
-		System.out.println("-------------------");
+		System.out.println("\t-------------------");
+		System.out.println("\tMOEA Framework Test");
+		System.out.println("\t-------------------");
 
 		MyArgumentsOptimization va = new MyArgumentsOptimization();
 		OptimizationMain.theCmdLineParser = new CmdLineParser(va);
@@ -82,13 +82,13 @@ public class OptimizationMain  {
 			OptimizationMain.theCmdLineParser.parseArgument(args);
 
 			String inputFilePath = va.getInputFile().getAbsolutePath();
-			System.out.println("INPUT FILE ===> " + inputFilePath);
+			System.out.println("\tINPUT FILE ===> " + inputFilePath);
 			
 			String responseSurfacePath = va.getResponseSurfaceFile().getAbsolutePath();
-			System.out.println("RESPONSE SURFACE FILE ===> " + responseSurfacePath);
+			System.out.println("\tRESPONSE SURFACE FILE ===> " + responseSurfacePath);
 
 
-			System.out.println("--------------");
+			System.out.println("\t--------------");
 
 			////////////////////////////////////////////////////////////////////////
 			// Optimization ...
@@ -157,60 +157,62 @@ public class OptimizationMain  {
 					optimumCurrentVariableValues = new ArrayList<>();
 					for (int j=0; j<resultList.get(i).size(); j++) {
 						if (!resultList.get(i).get(j).violatesConstraints()) 
-						optimumCurrentVariableValues.add(Double.valueOf(resultList.get(i).get(j).getVariable(var).toString()));
+							optimumCurrentVariableValues.add(Double.valueOf(resultList.get(i).get(j).getVariable(var).toString()));
 					}
 					optimumCurrentVariableMap.put(inputManager.getAlgorithms()[i], optimumCurrentVariableValues);
 				}
 				optimumVariableMapList.put(var, optimumCurrentVariableMap);
 			}
 
-			System.out.println("\n\tCreating Pareto Fronts and printing results ...");
-			for(int i=0; i<problem.getNumberOfObjectives(); i++) {
-				for(int j=i+1; j<problem.getNumberOfObjectives(); j++) {
-					
-					double[][] xMatrix = new double[inputManager.getAlgorithms().length][];
-					double[][] yMatrix = new double[inputManager.getAlgorithms().length][];
-					
-					for(int k=0; k<inputManager.getAlgorithms().length; k++) {
-						
-						if(problem.getMaximizationProblemConditionArray()[i] == false)
-							xMatrix[k] = MyArrayUtils.convertToDoublePrimitive(optimumObjectiveMapList.get(i).get(inputManager.getAlgorithms()[k]));
-						else
-							xMatrix[k] = MyArrayUtils.convertToDoublePrimitive(
-									optimumObjectiveMapList.get(i).get(inputManager.getAlgorithms()[k]).stream()
-									.map(d -> -d)
-									.collect(Collectors.toList())
-									);
-						
-						if(problem.getMaximizationProblemConditionArray()[j] == false)
-							yMatrix[k] = MyArrayUtils.convertToDoublePrimitive(optimumObjectiveMapList.get(j).get(inputManager.getAlgorithms()[k]));
-						else
-							yMatrix[k] = MyArrayUtils.convertToDoublePrimitive(
-									optimumObjectiveMapList.get(j).get(inputManager.getAlgorithms()[k]).stream()
-									.map(d -> -d)
-									.collect(Collectors.toList())
-									);
-						
+			if(problem.getNumberOfObjectives() > 1) {
+				System.out.println("\n\tCreating Pareto Fronts and printing results ...");
+				for(int i=0; i<problem.getNumberOfObjectives(); i++) {
+					for(int j=i+1; j<problem.getNumberOfObjectives(); j++) {
+
+						double[][] xMatrix = new double[inputManager.getAlgorithms().length][];
+						double[][] yMatrix = new double[inputManager.getAlgorithms().length][];
+
+						for(int k=0; k<inputManager.getAlgorithms().length; k++) {
+
+							if(problem.getMaximizationProblemConditionArray()[i] == false)
+								xMatrix[k] = MyArrayUtils.convertToDoublePrimitive(optimumObjectiveMapList.get(i).get(inputManager.getAlgorithms()[k]));
+							else
+								xMatrix[k] = MyArrayUtils.convertToDoublePrimitive(
+										optimumObjectiveMapList.get(i).get(inputManager.getAlgorithms()[k]).stream()
+										.map(d -> -d)
+										.collect(Collectors.toList())
+										);
+
+							if(problem.getMaximizationProblemConditionArray()[j] == false)
+								yMatrix[k] = MyArrayUtils.convertToDoublePrimitive(optimumObjectiveMapList.get(j).get(inputManager.getAlgorithms()[k]));
+							else
+								yMatrix[k] = MyArrayUtils.convertToDoublePrimitive(
+										optimumObjectiveMapList.get(j).get(inputManager.getAlgorithms()[k]).stream()
+										.map(d -> -d)
+										.collect(Collectors.toList())
+										);
+
+						}
+
+						MyChartToFileUtils.scatterPlot(
+								xMatrix,
+								yMatrix, 
+								null, null, null, null, 
+								problem.getObjectivesLabelArray()[i], problem.getObjectivesLabelArray()[j], "", "",
+								inputManager.getAlgorithms(),
+								outputPath,
+								("ParetoFront_" 
+										+ problem.getObjectivesLabelArray()[i] + "_" 
+										+ problem.getObjectivesLabelArray()[j]
+										), 
+								true,
+								true
+								);
 					}
-					
-					MyChartToFileUtils.scatterPlot(
-							xMatrix,
-							yMatrix, 
-							null, null, null, null, 
-							problem.getObjectivesLabelArray()[i], problem.getObjectivesLabelArray()[j], "", "",
-							inputManager.getAlgorithms(),
-							outputPath,
-							("ParetoFront_" 
-									+ problem.getObjectivesLabelArray()[i] + "_" 
-									+ problem.getObjectivesLabelArray()[j]
-									), 
-							true,
-							true
-							);
 				}
 			}
 
-			System.out.println("\tSaving Optimum Variable values to file ...");
+			System.out.println("\n\tSaving Optimum Variable values to file ...");
 			List<List<Double[]>> variableArraysList = new ArrayList<>();
 			List<List<String>> variableNameList = new ArrayList<>();
 			for(int i=0; i<inputManager.getAlgorithms().length; i++) {
