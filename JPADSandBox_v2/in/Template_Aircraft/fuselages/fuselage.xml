@@ -10,7 +10,7 @@
             <length_ratio>0.2</length_ratio>
 			<tip_height_offset unit="m">-0.38</tip_height_offset>
             <dx_cap_percent>0.075</dx_cap_percent>
-            <windshield_type>ROUND</windshield_type>
+            <windshield_type>SINGLE_ROUND</windshield_type>
             <windshield_width unit="m">2.5</windshield_width>
             <windshield_height unit="m">0.8</windshield_height>
             <mid_section_lower_to_total_height_ratio>0.4</mid_section_lower_to_total_height_ratio>
