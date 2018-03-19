@@ -1,34 +1,5 @@
 package writers;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
-import com.sun.corba.se.impl.oa.poa.AOMEntry;
-
-import aircraft.auxiliary.airfoil.Airfoil;
-import aircraft.components.Aircraft;
-import aircraft.components.CabinConfiguration;
-import aircraft.components.FuelTank;
-import aircraft.components.LandingGears;
-import aircraft.components.Systems;
-import aircraft.components.fuselage.Fuselage;
-import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.nacelles.NacelleCreator;
-import aircraft.components.nacelles.Nacelles;
-import aircraft.components.powerplant.Engine;
-import aircraft.components.powerplant.PowerPlant;
-import analyses.ACBalanceManager;
-import analyses.ACPerformanceManager;
-import analyses.ACWeightsManager;
-import analyses.OperatingConditions;
-import configuration.MyConfiguration;
-import configuration.enumerations.AnalysisTypeEnum;
-import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.MethodEnum;
-import standaloneutils.JPADGlobalData;
-import standaloneutils.customdata.MyXmlTree;
-
 public class JPADWriteUtils {
 
 //	public static String createImagesFolder(String folderName) {

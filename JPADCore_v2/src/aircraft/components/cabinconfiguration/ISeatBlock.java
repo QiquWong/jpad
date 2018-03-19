@@ -1,4 +1,4 @@
-package aircraft.auxiliary;
+package aircraft.components.cabinconfiguration;
 
 import java.util.Map;
 

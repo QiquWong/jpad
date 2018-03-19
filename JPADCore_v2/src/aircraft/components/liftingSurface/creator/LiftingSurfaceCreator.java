@@ -22,8 +22,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import aircraft.auxiliary.airfoil.Airfoil;
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
@@ -82,11 +81,11 @@ public class LiftingSurfaceCreator {
 	private double _formFactor;
 
 	// airfoil span-wise characteristics : 
-	private AirfoilCreator _meanAirfoil;
+	private Airfoil _meanAirfoil;
 	private List<Airfoil> _airfoilList;
 	private List<String> _airfoilPathList;
  	private List<Double> _maxThicknessVsY;
-	private List<Amount<Length>> _radiusLEVsY;
+	private List<Double> _radiusLEVsY;
 	private List<Double> _camberRatioVsY;
 	private List<Amount<Angle>> _alpha0VsY;
 	private List<Amount<Angle>> _alphaStarVsY;
@@ -217,9 +216,9 @@ public class LiftingSurfaceCreator {
 		Amount<Angle> realWingTwistAtKink = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		double realWingDimensionlessXOffsetRootChordLE = 0.0;
 		double realWingDimensionlessXOffsetRootChordTE = 0.0;
-		AirfoilCreator equivalentWingAirfoilRoot = null;
-		AirfoilCreator equivalentWingAirfoilKink = null;
-		AirfoilCreator equivalentWingAirfoilTip  = null;
+		Airfoil equivalentWingAirfoilRoot = null;
+		Airfoil equivalentWingAirfoilKink = null;
+		Airfoil equivalentWingAirfoilTip  = null;
 		List<LiftingSurfacePanelCreator> panels = new ArrayList<>();
 		List<SymmetricFlapCreator> symmetricFlaps = new ArrayList<>();
 		List<SlatCreator> slats = new ArrayList<>();
@@ -320,7 +319,7 @@ public class LiftingSurfaceCreator {
 				String airFoilPathRoot = "";
 				if(airfoilFileNameRoot != null) {
 					 airFoilPathRoot = airfoilsDir + File.separator + airfoilFileNameRoot;
-					equivalentWingAirfoilRoot = AirfoilCreator.importFromXML(airFoilPathRoot);
+					equivalentWingAirfoilRoot = Airfoil.importFromXML(airFoilPathRoot);
 				}
 
 				String airfoilFileNameKink =
@@ -331,7 +330,7 @@ public class LiftingSurfaceCreator {
 				String airFoilPathKink = "";
 				if(airfoilFileNameKink != null) {
 					airFoilPathKink = airfoilsDir + File.separator + airfoilFileNameKink;
-					equivalentWingAirfoilKink = AirfoilCreator.importFromXML(airFoilPathKink);
+					equivalentWingAirfoilKink = Airfoil.importFromXML(airFoilPathKink);
 				}
 
 				String airfoilFileNameTip =
@@ -342,7 +341,7 @@ public class LiftingSurfaceCreator {
 				String airFoilPathTip = "";
 				if(airfoilFileNameTip != null) {
 					airFoilPathTip = airfoilsDir + File.separator + airfoilFileNameTip;
-					equivalentWingAirfoilTip = AirfoilCreator.importFromXML(airFoilPathTip);
+					equivalentWingAirfoilTip = Airfoil.importFromXML(airFoilPathTip);
 				}
 
 				//.................................................................
@@ -1175,8 +1174,8 @@ public class LiftingSurfaceCreator {
 				_theLiftingSurfaceInterface.getPanels().size()-1
 				).getChordTip();
 		
-		AirfoilCreator airfoilRootEquivalent = _theLiftingSurfaceInterface.getPanels().get(0).getAirfoilRoot();
-		AirfoilCreator airfoilTipEquivalent = _theLiftingSurfaceInterface.getPanels().get(
+		Airfoil airfoilRootEquivalent = _theLiftingSurfaceInterface.getPanels().get(0).getAirfoilRoot();
+		Airfoil airfoilTipEquivalent = _theLiftingSurfaceInterface.getPanels().get(
 				_theLiftingSurfaceInterface.getPanels().size()-1)
 				.getAirfoilTip();
 		
@@ -1734,8 +1733,8 @@ public class LiftingSurfaceCreator {
 
 	public void calculateThicknessMean() {
 		
-		Airfoil meanAirfoil = new Airfoil(LSGeometryCalc.calculateMeanAirfoil(this));
-		_thicknessMean = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
+		Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(this);
+		_thicknessMean = meanAirfoil.getThicknessToChordRatio();
 		
 	}
 	
@@ -1773,30 +1772,30 @@ public class LiftingSurfaceCreator {
 		int nPanels = _theLiftingSurfaceInterface.getPanels().size();
 
 		if(!equivalentWingFlag) {
-			Airfoil airfoilRoot = new Airfoil(_theLiftingSurfaceInterface.getPanels().get(0).getAirfoilRoot());
+			Airfoil airfoilRoot = new Airfoil(_theLiftingSurfaceInterface.getPanels().get(0).getAirfoilRoot().getTheAirfoilInterface());
 			_airfoilList.add(airfoilRoot);
 			_airfoilPathList.add(_theLiftingSurfaceInterface.getPanels().get(0).getAirfoilRootPath());
 
 			for(int i=0; i<nPanels - 1; i++) {
 
-				Airfoil innerAirfoil = new Airfoil(_theLiftingSurfaceInterface.getPanels().get(i).getAirfoilTip()); 
+				Airfoil innerAirfoil = new Airfoil(_theLiftingSurfaceInterface.getPanels().get(i).getAirfoilTip().getTheAirfoilInterface()); 
 				_airfoilList.add(innerAirfoil);
 				_airfoilPathList.add(_theLiftingSurfaceInterface.getPanels().get(i).getAirfoilTipPath());
 				
 			}
 
-			Airfoil airfoilTip = new Airfoil(_theLiftingSurfaceInterface.getPanels().get(nPanels - 1).getAirfoilTip());
+			Airfoil airfoilTip = new Airfoil(_theLiftingSurfaceInterface.getPanels().get(nPanels - 1).getAirfoilTip().getTheAirfoilInterface());
 			_airfoilList.add(airfoilTip);
 			_airfoilPathList.add(_theLiftingSurfaceInterface.getPanels().get(nPanels - 1).getAirfoilTipPath());
 			
 		}
 
 		else{
-			Airfoil airfoilRoot = new Airfoil(_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilRoot());
+			Airfoil airfoilRoot = new Airfoil(_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilRoot().getTheAirfoilInterface());
 			_airfoilList.add(airfoilRoot);
 			_airfoilPathList.add(_theLiftingSurfaceInterface.getPanels().get(0).getAirfoilRootPath());
 
-			Airfoil airfoilTip = new Airfoil(_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilTip());
+			Airfoil airfoilTip = new Airfoil(_theLiftingSurfaceInterface.getEquivalentWing().getPanels().get(0).getAirfoilTip().getTheAirfoilInterface());
 			_airfoilList.add(airfoilTip);
 			_airfoilPathList.add(_theLiftingSurfaceInterface.getPanels().get(0).getAirfoilTipPath());
 		}
@@ -1811,23 +1810,23 @@ public class LiftingSurfaceCreator {
 		
 		for(int i=0; i<_airfoilList.size(); i++) {
 		
-			this._maxThicknessVsY.add(_airfoilList.get(i).getAirfoilCreator().getThicknessToChordRatio());
-			this._radiusLEVsY.add(_airfoilList.get(i).getAirfoilCreator().getRadiusLeadingEdge());
-			this._alpha0VsY.add(_airfoilList.get(i).getAirfoilCreator().getAlphaZeroLift());
-			this._alphaStarVsY.add(_airfoilList.get(i).getAirfoilCreator().getAlphaEndLinearTrait());
-			this._alphaStallVsY.add(_airfoilList.get(i).getAirfoilCreator().getAlphaStall());
-			this._clAlphaVsY.add(_airfoilList.get(i).getAirfoilCreator().getClAlphaLinearTrait());
-			this._cdMinVsY.add(_airfoilList.get(i).getAirfoilCreator().getCdMin());
-			this._clAtCdMinVsY.add(_airfoilList.get(i).getAirfoilCreator().getClAtCdMin());
-			this._cl0VsY.add(_airfoilList.get(i).getAirfoilCreator().getClAtAlphaZero());
-			this._clStarVsY.add(_airfoilList.get(i).getAirfoilCreator().getClEndLinearTrait());
-			this._clMaxVsY.add(_airfoilList.get(i).getAirfoilCreator().getClMax());
-			this._kFactorDragPolarVsY.add(_airfoilList.get(i).getAirfoilCreator().getKFactorDragPolar());
-			this._cmAlphaQuarteChordVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmAlphaQuarterChord().getEstimatedValue());
-			this._xAcAirfoilVsY.add(_airfoilList.get(i).getAirfoilCreator().getXACNormalized());
-			this._cmACVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmAC());
-			this._cmACStallVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmACAtStall());
-			this._criticalMachVsY.add(_airfoilList.get(i).getAirfoilCreator().getMachCritical());
+			this._maxThicknessVsY.add(_airfoilList.get(i).getThicknessToChordRatio());
+			this._radiusLEVsY.add(_airfoilList.get(i).getRadiusLeadingEdge());
+			this._alpha0VsY.add(_airfoilList.get(i).getAlphaZeroLift());
+			this._alphaStarVsY.add(_airfoilList.get(i).getAlphaEndLinearTrait());
+			this._alphaStallVsY.add(_airfoilList.get(i).getAlphaStall());
+			this._clAlphaVsY.add(_airfoilList.get(i).getClAlphaLinearTrait());
+			this._cdMinVsY.add(_airfoilList.get(i).getCdMin());
+			this._clAtCdMinVsY.add(_airfoilList.get(i).getClAtCdMin());
+			this._cl0VsY.add(_airfoilList.get(i).getClAtAlphaZero());
+			this._clStarVsY.add(_airfoilList.get(i).getClEndLinearTrait());
+			this._clMaxVsY.add(_airfoilList.get(i).getClMax());
+			this._kFactorDragPolarVsY.add(_airfoilList.get(i).getKFactorDragPolar());
+			this._cmAlphaQuarteChordVsY.add(_airfoilList.get(i).getCmAlphaQuarterChord().getEstimatedValue());
+			this._xAcAirfoilVsY.add(_airfoilList.get(i).getXACNormalized());
+			this._cmACVsY.add(_airfoilList.get(i).getCmAC());
+			this._cmACStallVsY.add(_airfoilList.get(i).getCmACAtStall());
+			this._criticalMachVsY.add(_airfoilList.get(i).getMachCritical());
 
 		}
 	}
@@ -1838,8 +1837,8 @@ public class LiftingSurfaceCreator {
 		Double xTransitionLower = 0.0;
 
 		for(int i=0; i<_airfoilList.size(); i++) {
-			xTransitionUpper += _airfoilList.get(i).getAirfoilCreator().getXTransitionUpper();
-			xTransitionLower += _airfoilList.get(i).getAirfoilCreator().getXTransitionLower();
+			xTransitionUpper += _airfoilList.get(i).getXTransitionUpper();
+			xTransitionLower += _airfoilList.get(i).getXTransitionLower();
 		}
 
 		xTransitionUpper = xTransitionUpper/_airfoilList.size();
@@ -3088,11 +3087,11 @@ public class LiftingSurfaceCreator {
 		this._maxThicknessVsY = _maxThicknessVsY;
 	}
 
-	public List<Amount<Length>> getRadiusLEVsY() {
+	public List<Double> getRadiusLEVsY() {
 		return _radiusLEVsY;
 	}
 
-	public void setRadiusLEVsY(List<Amount<Length>> _radiusLEVsY) {
+	public void setRadiusLEVsY(List<Double> _radiusLEVsY) {
 		this._radiusLEVsY = _radiusLEVsY;
 	}
 
@@ -3256,11 +3255,11 @@ public class LiftingSurfaceCreator {
 		this._airfoilPathList = _airfoilPathList;
 	}
 
-	public AirfoilCreator getMeanAirfoil() {
+	public Airfoil getMeanAirfoil() {
 		return _meanAirfoil;
 	}
 
-	public void setMeanAirfoil(AirfoilCreator _meanAirfoil) {
+	public void setMeanAirfoil(Airfoil _meanAirfoil) {
 		this._meanAirfoil = _meanAirfoil;
 	}
 

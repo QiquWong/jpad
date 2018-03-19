@@ -1,4 +1,4 @@
-package aircraft.components;
+package aircraft.components.cabinconfiguration;
 
 import static java.lang.Math.round;
 
@@ -15,8 +15,9 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.ISeatBlock;
-import aircraft.auxiliary.SeatsBlock;
+import aircraft.components.Aircraft;
+import aircraft.components.ICabinConfiguration;
+import aircraft.components.ICabinConfiguration.Builder;
 import calculators.balance.CenterOfGravityCalcUtils;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;

@@ -15,8 +15,8 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
@@ -388,7 +388,7 @@ public class PayloadRangeCalcMissionProfile{
 					.minus(takeOffUsedFuel)
 					.minus(totalClimbFuelUsed);
 			
-			Airfoil meanAirfoil = new Airfoil(LSGeometryCalc.calculateMeanAirfoil(_theAircraft.getWing().getLiftingSurfaceCreator()));
+			Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(_theAircraft.getWing().getLiftingSurfaceCreator());
 			
 			int nPointSpeed = 1000;
 			double[] speedArray = MyArrayUtils.linspace(
@@ -421,8 +421,8 @@ public class PayloadRangeCalcMissionProfile{
 							MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 							MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 							_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-							meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-							meanAirfoil.getAirfoilCreator().getType()
+							meanAirfoil.getThicknessToChordRatio(),
+							meanAirfoil.getType()
 							)
 					);
 			
@@ -605,8 +605,8 @@ public class PayloadRangeCalcMissionProfile{
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 								_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-								meanAirfoil.getAirfoilCreator().getType()
+								meanAirfoil.getThicknessToChordRatio(),
+								meanAirfoil.getType()
 								)
 						);
 				
@@ -855,8 +855,8 @@ public class PayloadRangeCalcMissionProfile{
 							MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 							MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 							_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-							meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-							meanAirfoil.getAirfoilCreator().getType()
+							meanAirfoil.getThicknessToChordRatio(),
+							meanAirfoil.getType()
 							)
 					);
 			
@@ -1041,8 +1041,8 @@ public class PayloadRangeCalcMissionProfile{
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 								_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-								meanAirfoil.getAirfoilCreator().getType()
+								meanAirfoil.getThicknessToChordRatio(),
+								meanAirfoil.getType()
 								)
 						);
 				

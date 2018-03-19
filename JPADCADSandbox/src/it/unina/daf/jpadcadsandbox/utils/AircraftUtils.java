@@ -19,10 +19,10 @@ import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
@@ -1051,7 +1051,7 @@ public final class AircraftUtils {
 		List<CADGeomCurve3D> cadCurveAirfoilBPList = new ArrayList<CADGeomCurve3D>();
 		cadCurveAirfoilBPList = IntStream.range(0, liftingSurface.getLiftingSurfaceCreator().getYBreakPoints().size())
 				.mapToObj(i -> {
-					AirfoilCreator airfoilCoords = liftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator();
+					Airfoil airfoilCoords = liftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(i);
 					List<double[]> ptsAirfoil = AircraftUtils.populateCoordinateList(
 							liftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER), 
 							airfoilCoords, 
@@ -1080,7 +1080,7 @@ public final class AircraftUtils {
 			cadCurveAirfoilPanelList.add(cadCurveAirfoilBPList.get(iP-1));
 			cadCurveAirfoilPanelList.addAll(IntStream.range(1, (nSec + 1))
 					.mapToObj(i -> {
-						AirfoilCreator airfoilCoords = liftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(fIP-1).getAirfoilCreator();
+						Airfoil airfoilCoords = liftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(fIP-1);
 						List<double[]> ptsAirfoil = AircraftUtils.populateCoordinateList(
 								fSecVec[i], 
 								airfoilCoords, 
@@ -1139,7 +1139,7 @@ public final class AircraftUtils {
 		CADGeomCurve3D airfoilTip = cadCurveAirfoilBPList.get(iTip);      // airfoil CAD curve
 		CADGeomCurve3D airfoilPreTip = cadCurveAirfoilBPList.get(iTip-1); // second to last airfoil CAD curve
 				
-		Double rTh = liftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(iTip).getAirfoilCreator().getThicknessToChordRatio(); 
+		Double rTh = liftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(iTip).getThicknessToChordRatio(); 
 		Double eTh = rTh*chords.get(iTip); // effective airfoil thickness
 		
 		// creating the tip chord edge
@@ -1869,15 +1869,15 @@ public final class AircraftUtils {
 	
 	private static List<double[]> populateCoordinateList(
 			double yStation,
-			AirfoilCreator theCreator,
+			Airfoil theCreator,
 			LiftingSurface theLiftingSurface
 			) {
 		
 		List<double[]> actualAirfoilCoordinates = new ArrayList<>();
 		
 		int nPoints = theCreator.getXCoords().length;
-		double[] xCoords = MyArrayUtils.convertToDoublePrimitive(theCreator.getXCoords());
-		double[] zCoords = MyArrayUtils.convertToDoublePrimitive(theCreator.getZCoords());
+		double[] xCoords = theCreator.getXCoords();
+		double[] zCoords = theCreator.getZCoords();
 		
 		double c = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()), 
@@ -1996,7 +1996,7 @@ public final class AircraftUtils {
 		PVector pntOnTipChord = PVector.lerp(le2, te2, (float) chordFrac); // tip chord fraction point
 
 		Double[] tipAirfoilThickAtPnt = AircraftUtils.getThicknessAtX(
-				theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(iTip).getAirfoilCreator(), 
+				theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(iTip),
 				chordFrac
 				);
 
@@ -2022,7 +2022,7 @@ public final class AircraftUtils {
 		PVector pntOnPreTipChord = PVector.lerp(le1, te1, (float) chordFrac);
 
 		Double[] preTipAirfoilThickAtPnt = AircraftUtils.getThicknessAtX(
-				theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(iTip-1).getAirfoilCreator(), 
+				theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(iTip-1), 
 				chordFrac
 				);
 
@@ -2222,11 +2222,11 @@ public final class AircraftUtils {
 		return verSecCrvsList;
 	}
 	
-	private static Double[] getThicknessAtX(AirfoilCreator airfoil, Double xChord) {
+	private static Double[] getThicknessAtX(Airfoil airfoil, Double xChord) {
 		Double[] thickness = new Double[2];
 		
-		Double[] x = airfoil.getXCoords();
-		Double[] z = airfoil.getZCoords();
+		double[] x = airfoil.getXCoords();
+		double[] z = airfoil.getZCoords();
 		
 		int nPnts = x.length;
 		int iXMin = MyArrayUtils.getIndexOfMin(x);

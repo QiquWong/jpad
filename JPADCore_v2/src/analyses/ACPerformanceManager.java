@@ -37,8 +37,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
@@ -1487,8 +1487,8 @@ public class ACPerformanceManager {
 										polarCLCruise.get(xcg)[i],
 										theOperatingConditions.getMachClimb(),
 										theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getType()
+										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getThicknessToChordRatio(),
+										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getType()
 										)
 								);
 						polarCDCruise.get(xcg)[i] = DragCalc.calculateCDTotal(
@@ -1501,8 +1501,8 @@ public class ACPerformanceManager {
 										polarCLCruise.get(xcg)[i],
 										theOperatingConditions.getMachCruise(),
 										theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getType()
+										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getThicknessToChordRatio(),
+										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getType()
 										)
 								);
 						polarCDTakeOff.get(xcg)[i] = DragCalc.calculateCDTotal(
@@ -1515,8 +1515,8 @@ public class ACPerformanceManager {
 										polarCLTakeOff.get(xcg)[i],
 										theOperatingConditions.getMachCruise(),
 										theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getType()
+										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getThicknessToChordRatio(),
+										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getType()
 										)
 								);
 						polarCDLanding.get(xcg)[i] = DragCalc.calculateCDTotal(
@@ -1529,8 +1529,8 @@ public class ACPerformanceManager {
 										polarCLLanding.get(xcg)[i],
 										theOperatingConditions.getMachCruise(),
 										theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getType()
+										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getThicknessToChordRatio(),
+										theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getType()
 										)
 								);
 					}
@@ -3934,7 +3934,7 @@ public class ACPerformanceManager {
 					_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
 					_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 					_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().get(0)
-						.getAirfoilCreator().getClAlphaLinearTrait().to(SI.RADIAN.inverse()).getEstimatedValue(),
+						.getClAlphaLinearTrait().to(SI.RADIAN.inverse()).getEstimatedValue(),
 					_thePerformanceInterface.getTheOperatingConditions().getMachTakeOff(), 
 					veDSCDatabaseReader.getkFv(),
 					veDSCDatabaseReader.getkWv(),
@@ -4213,7 +4213,7 @@ public class ACPerformanceManager {
 			
 			//--------------------------------------------------------------------
 			// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
-			Airfoil meanAirfoil = new Airfoil(LSGeometryCalc.calculateMeanAirfoil(_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator()));
+			Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator());
 
 			_dragListAltitudeParameterizationMap.put(xcg, new ArrayList<DragMap>());
 			_thrustListAltitudeParameterizationMap.put(xcg, new ArrayList<ThrustMap>());
@@ -4258,8 +4258,8 @@ public class ACPerformanceManager {
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCDCruise().get(xcg)),
 								_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-								meanAirfoil.getAirfoilCreator().getType()
+								meanAirfoil.getThicknessToChordRatio(),
+								meanAirfoil.getType()
 								)
 						);
 
@@ -4425,8 +4425,8 @@ public class ACPerformanceManager {
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCDCruise().get(xcg)),
 								_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-								meanAirfoil.getAirfoilCreator().getType()
+								meanAirfoil.getThicknessToChordRatio(),
+								meanAirfoil.getType()
 								)
 						);
 			}
@@ -4460,7 +4460,7 @@ public class ACPerformanceManager {
 
 		public void calculateFlightEnvelope(Amount<Mass> startCruiseMass, Double xcg) {
 
-			Airfoil meanAirfoil = new Airfoil(LSGeometryCalc.calculateMeanAirfoil(_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator()));
+			Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator());
 
 			_intersectionListMap.put(xcg, new ArrayList<>());
 			_cruiseEnvelopeListMap.put(xcg, new ArrayList<>());
@@ -4503,8 +4503,8 @@ public class ACPerformanceManager {
 							MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
 							MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCDCruise().get(xcg)),
 							_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-							meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-							meanAirfoil.getAirfoilCreator().getType()
+							meanAirfoil.getThicknessToChordRatio(),
+							meanAirfoil.getType()
 							)
 					);
 					
@@ -4588,8 +4588,8 @@ public class ACPerformanceManager {
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCDCruise().get(xcg)),
 								_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-								meanAirfoil.getAirfoilCreator().getType()
+								meanAirfoil.getThicknessToChordRatio(),
+								meanAirfoil.getType()
 								)
 						);
 
@@ -4838,7 +4838,7 @@ public class ACPerformanceManager {
 		
 		public void calculateCruiseGrid(Double xcg) {
 
-			Airfoil meanAirfoil = new Airfoil(LSGeometryCalc.calculateMeanAirfoil(_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator()));
+			Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator());
 			
 			List<DragMap> dragListWeightParameterization = new ArrayList<DragMap>();
 			List<ThrustMap> thrustListWeightParameterization = new ArrayList<ThrustMap>();
@@ -4870,8 +4870,8 @@ public class ACPerformanceManager {
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCDCruise().get(xcg)),
 								_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-								meanAirfoil.getAirfoilCreator().getType()
+								meanAirfoil.getThicknessToChordRatio(),
+								meanAirfoil.getType()
 								)
 						);
 			}

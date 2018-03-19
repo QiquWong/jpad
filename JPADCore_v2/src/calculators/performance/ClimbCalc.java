@@ -17,8 +17,8 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
@@ -125,7 +125,7 @@ public class ClimbCalc {
 					SI.METER
 					);
 		
-		Airfoil meanAirfoil = new Airfoil(LSGeometryCalc.calculateMeanAirfoil(_theAircraft.getWing().getLiftingSurfaceCreator()));
+		Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(_theAircraft.getWing().getLiftingSurfaceCreator());
 		
 		double[] altitudeArray = MyArrayUtils.linspace(
 				initialClimbAltitude.doubleValue(SI.METER),
@@ -169,8 +169,8 @@ public class ClimbCalc {
 							MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
 							MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
 							_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-							meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-							meanAirfoil.getAirfoilCreator().getType()
+							meanAirfoil.getThicknessToChordRatio(),
+							meanAirfoil.getType()
 							)
 					);
 					
@@ -322,8 +322,8 @@ public class ClimbCalc {
 								MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
 								MyArrayUtils.sumNumberToArrayEBE(MyArrayUtils.convertToDoublePrimitive(_polarCDClimb), _dragDueToEnigneFailure),
 								_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
-								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-								meanAirfoil.getAirfoilCreator().getType()
+								meanAirfoil.getThicknessToChordRatio(),
+								meanAirfoil.getType()
 								)
 						);
 				//..................................................................................................

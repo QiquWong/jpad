@@ -24,11 +24,11 @@ import org.controlsfx.validation.ValidationSupport;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
-import aircraft.components.CabinConfiguration;
 import aircraft.components.FuelTank;
 import aircraft.components.ICabinConfiguration;
 import aircraft.components.LandingGears;
 import aircraft.components.LandingGears.LandingGearsBuilder;
+import aircraft.components.cabinconfiguration.CabinConfiguration;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.fuselage.creator.IFuselageCreator;

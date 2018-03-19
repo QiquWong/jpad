@@ -13,8 +13,8 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import calculators.aerodynamics.AirfoilCalc;
 import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
@@ -167,7 +167,7 @@ public class FuelTank implements IFuelTank {
 					Amount.valueOf(
 							AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
 									_mainSparNormalizedStation,
-									theWing.getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
+									theWing.getLiftingSurfaceCreator().getAirfoilList().get(i).getThicknessToChordRatio()
 									)
 							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
 							SI.METER)
@@ -176,7 +176,7 @@ public class FuelTank implements IFuelTank {
 					Amount.valueOf(
 							AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
 									_secondarySparNormalizedStation,
-									theWing.getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
+									theWing.getLiftingSurfaceCreator().getAirfoilList().get(i).getThicknessToChordRatio()
 									)
 							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
 							SI.METER)
@@ -197,7 +197,7 @@ public class FuelTank implements IFuelTank {
 					.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1))
 					);
 		
-		AirfoilCreator airfoilAt85Percent = LSGeometryCalc.calculateAirfoilAtY(
+		Airfoil airfoilAt85Percent = LSGeometryCalc.calculateAirfoilAtY(
 				theWing,
 				theWing.getLiftingSurfaceCreator().getSemiSpan().times(0.85).doubleValue(SI.METER)
 				);

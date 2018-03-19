@@ -1,7 +1,8 @@
-package aircraft.auxiliary.airfoil;
+package aircraft.components.liftingSurface.airfoils;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.measure.quantity.Angle;
 
 import org.inferred.freebuilder.FreeBuilder;
@@ -18,23 +19,39 @@ public interface IAirfoil {
 	AirfoilFamilyEnum getFamily();
 	double getThicknessToChordRatio();
 	double getRadiusLeadingEdgeNormalized();
-	Double[] getXCoordinates();
-	Double[] getZCoordinates();
+	double[] getXCoordinates();
+	double[] getZCoordinates();
+	@Nullable
 	Amount<Angle> getAlphaZeroLift();
+	@Nullable
 	Amount<Angle> getAlphaEndLinearTrait();
+	@Nullable
 	Amount<Angle> getAlphaStall();
+	@Nullable
 	Amount<?> getClAlphaLinearTrait();
+	@Nullable
 	double getCdMin();
-	Amount<?> getClAtCdMin();
+	@Nullable
+	double getClAtCdMin();
+	@Nullable
 	double getClAtAlphaZero();
+	@Nullable
 	double getClEndLinearTrait();
+	@Nullable
 	double getClMax();
+	@Nullable
 	double getKFactorDragPolar();
+	@Nullable
 	double getLaminarBucketSemiExtension();
+	@Nullable
 	double getLaminarBucketDepth();
+	@Nullable
 	Amount<?> getCmAlphaQuarterChord();
+	@Nullable
 	double getXACNormalized();
+	@Nullable
 	double getCmAC();
+	@Nullable
 	double getCmACAtStall();
 	double getCriticalMach();
 	double getXTransitionUpper();

@@ -12,8 +12,8 @@ import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
@@ -31,18 +31,16 @@ public class AirfoilCalc {
 	 * @author Manuela Ruocco
 	 */
 
-	public static void calculateClCurve(
+	public static List<Double> calculateClCurve(
 			List<Amount<Angle>> alphaArray,
-			AirfoilCreator theAirfoilCreator
+			double cl0,
+			double clmax,
+			Amount<Angle> alphaStar,
+			Amount<Angle> alphaStall,
+			Amount<?> clAlpha
 			) {
 
 		Double[] cLArray = new Double[alphaArray.size()];
-
-		double cL0 = theAirfoilCreator.getClAtAlphaZero();
-		double cLmax = theAirfoilCreator.getClMax();
-		Amount<Angle> alphaStar = theAirfoilCreator.getAlphaEndLinearTrait();
-		Amount<Angle> alphaStall = theAirfoilCreator.getAlphaStall();
-		Amount<?> cLAlpha = theAirfoilCreator.getClAlphaLinearTrait();
 
 		// fourth order interpolation for non linear trait
 		double a = 0.0;
@@ -51,15 +49,15 @@ public class AirfoilCalc {
 		double d = 0.0;
 //		double e = 0.0;
 
-		double cLStar = (cLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+		double cLStar = (clAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 				* alphaStar.doubleValue(NonSI.DEGREE_ANGLE))
-				+ cL0;
+				+ cl0;
 
 		for(int i=0; i<alphaArray.size(); i++) {
 			if(alphaArray.get(i).doubleValue(NonSI.DEGREE_ANGLE) <= alphaStar.doubleValue(NonSI.DEGREE_ANGLE)) {
-				cLArray[i] = (cLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+				cLArray[i] = (clAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 						* alphaArray.get(i).doubleValue(NonSI.DEGREE_ANGLE))
-						+ cL0;
+						+ cl0;
 			}
 			else {
 				double[][] matrixData = { 
@@ -97,10 +95,10 @@ public class AirfoilCalc {
 				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 
 				double [] vector = {
-						cLmax,
+						clmax,
 						0,
 						cLStar,
-						cLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+						clAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 //						0
 				};
 
@@ -126,7 +124,8 @@ public class AirfoilCalc {
 				
 			}
 		}
-		theAirfoilCreator.setClCurve(MyArrayUtils.convertDoubleArrayToListDouble(cLArray));
+		
+		return MyArrayUtils.convertDoubleArrayToListDouble(cLArray);
 	}
 
 	/**
@@ -135,25 +134,23 @@ public class AirfoilCalc {
 	 * @author Manuela Ruocco
 	 */
 
-	public static void calculateCdvsClCurve(
+	public static List<Double> calculateCdvsClCurve(
 			List<Double> clCurveAirfoil,
-			AirfoilCreator theAirfoilCreator
+			double cdMin,
+			double clAtCdMin,
+			double kFctorDragPolar,
+			double laminarBucketDepth,
+			double laminarBucketSemiExtension
 			) {
 
 		Double [] cdCurve = new Double [clCurveAirfoil.size()];
 
-		double cdMin = theAirfoilCreator.getCdMin();
-		double clAtCdMin = theAirfoilCreator.getClAtCdMin();
-		double kFctorDragPolar = theAirfoilCreator.getKFactorDragPolar();
-		double laminarBucketDept = theAirfoilCreator.getLaminarBucketDepth();
-		double laminarBucketSemiExtension = theAirfoilCreator.getLaminarBucketSemiExtension();
-		
 		for (int i=0; i<clCurveAirfoil.size(); i++){
 			if((clCurveAirfoil.get(i) >= (clAtCdMin + laminarBucketSemiExtension)) || (clCurveAirfoil.get(i) <= (clAtCdMin - laminarBucketSemiExtension))){
 			cdCurve[i] = (
 					cdMin +
 					Math.pow(( clCurveAirfoil.get(i) - clAtCdMin), 2)*kFctorDragPolar)+
-			        laminarBucketDept;
+			        laminarBucketDepth;
 			}
 			else{
 				cdCurve[i] = (
@@ -163,7 +160,9 @@ public class AirfoilCalc {
 			
 		
 		}
-		theAirfoilCreator.setCdCurve(MyArrayUtils.convertDoubleArrayToListDouble(cdCurve));
+		
+		return MyArrayUtils.convertDoubleArrayToListDouble(cdCurve);
+		
 	}
 
 	/**
@@ -172,19 +171,20 @@ public class AirfoilCalc {
 	 * @author Manuela Ruocco
 	 */
 
-	public static void calculateCmvsClCurve(
+	public static List<Double> calculateCmvsClCurve(
 			List<Double> clArray,
-			AirfoilCreator theAirfoilCreator
+			double cmAC,
+			Amount<?> cmAlphaQuarterChord,
+			Amount<?> clAlphaLinearTrait,
+			double cmACStall,
+			double clStar,
+			double clMax
 			) {
 
 		Double [] cmCurve = new Double[clArray.size()];
 
-		double cmAC = theAirfoilCreator.getCmAC();
-		double cmCl = theAirfoilCreator.getCmAlphaQuarterChord().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
-				/theAirfoilCreator.getClAlphaLinearTrait().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
-		double cmACStall = theAirfoilCreator.getCmACAtStall();
-		double clStar = theAirfoilCreator.getClEndLinearTrait();
-		double clMax = theAirfoilCreator.getClMax();
+		double cmCl = cmAlphaQuarterChord.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+				/clAlphaLinearTrait.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 
 		// parabolic interpolation for non linear trait
 		double a = 0.0;
@@ -243,7 +243,7 @@ public class AirfoilCalc {
 						d;
 			}				
 		}		
-		theAirfoilCreator.setCmCurve(MyArrayUtils.convertDoubleArrayToListDouble(cmCurve));
+		return MyArrayUtils.convertDoubleArrayToListDouble(cmCurve);
 	}	
 
 
@@ -254,7 +254,7 @@ public class AirfoilCalc {
 	public static void extractLiftCharacteristicsfromCurve(
 			Double[] clLiftCurve,
 			List<Amount<Angle>> alphaArrayforClCurve,
-			AirfoilCreator theAirfoilCreator
+			Airfoil theAirfoilCreator
 			){
 
 		double clAlpha, clZero, clStar, clMax;
@@ -329,7 +329,7 @@ public class AirfoilCalc {
 	public static void extractPolarCharacteristicsfromCurve(
 			Double[] cdCurve,
 			List<Double> clArrayforCdCurve,
-			AirfoilCreator theAirfoilCreator
+			Airfoil theAirfoilCreator
 			){
 
 		double clAtCdMin;
@@ -366,7 +366,7 @@ public class AirfoilCalc {
 	public static void extractMomentCharacteristicsfromCurve(
 			Double[] cmCurve,
 			List<Double> clArrayforCmCurve,
-			AirfoilCreator theAirfoilCreator
+			Airfoil theAirfoilCreator
 			){
 
 		double cmAC;
@@ -463,7 +463,7 @@ public class AirfoilCalc {
 	
 	public static void populateCoordinateList(
 			double yStation,
-			AirfoilCreator theCreator,
+			Airfoil theCreator,
 			LiftingSurface theLiftingSurface
 			) {
 
@@ -473,9 +473,9 @@ public class AirfoilCalc {
 		for (int i=0; i<theCreator.getXCoords().length; i++) {
 
 			// Scale to actual dimensions
-			x = theCreator.getXCoords()[i].floatValue()*c;
+			x = Double.valueOf(theCreator.getXCoords()[i]).floatValue()*c;
 			y = (float) 0.0;
-			z = theCreator.getZCoords()[i].floatValue()*c;
+			z = Double.valueOf(theCreator.getZCoords()[i]).floatValue()*c;
 
 			double twistAtY = MyMathUtils.getInterpolatedValue1DLinear(
 					MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedYs()),
@@ -509,7 +509,7 @@ public class AirfoilCalc {
 				theCreator.getCoordinatesRight().add( 
 						new PVector(
 								x,
-								theCreator.getZCoords()[i].floatValue()*c, 
+								Double.valueOf(theCreator.getZCoords()[i]).floatValue()*c, 
 								(float) (yStation
 								+ (float) theLiftingSurface.getZApexConstructionAxes().doubleValue(SI.METER))));
 
@@ -521,7 +521,7 @@ public class AirfoilCalc {
 	}
 
 	public static void calculateMachCrShevell(
-			AirfoilCreator theAirfoilCreator, 
+			Airfoil theAirfoilCreator, 
 			double cl
 			) {
 		// Page 409 Sforza
@@ -532,7 +532,7 @@ public class AirfoilCalc {
 	}
 
 	public static void calculateMachCrKorn(
-			AirfoilCreator theAirfoilCreator,
+			Airfoil theAirfoilCreator,
 			double cl
 			) {
 		
@@ -545,7 +545,7 @@ public class AirfoilCalc {
 	
 	/** Page 410 Sforza */
 	public static double calculateCdWaveLockShevell(
-			AirfoilCreator theAirfoilCreator,
+			Airfoil theAirfoilCreator,
 			double cl, 
 			double mach
 			) {
@@ -562,7 +562,7 @@ public class AirfoilCalc {
 	}
 
 	public double calculateCdWaveLockKorn(
-			AirfoilCreator theAirfoilCreator,
+			Airfoil theAirfoilCreator,
 			double cl, 
 			double mach
 			) {

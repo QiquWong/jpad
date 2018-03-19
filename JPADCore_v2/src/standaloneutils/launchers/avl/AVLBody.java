@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -18,10 +16,8 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.fuselage.Fuselage;
 import standaloneutils.MyArrayUtils;
-import standaloneutils.launchers.avl.AVLWingSection.Builder;
 
 
 @FreeBuilder

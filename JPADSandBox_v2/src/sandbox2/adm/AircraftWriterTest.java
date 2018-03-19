@@ -230,7 +230,7 @@ public class AircraftWriterTest {
 					.setAircraftFileName("aircraft_1a.xml")
 					.addAllWingAirfoilFileNames(
 						theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().stream()
-								.map(a -> a.getAirfoilCreator().getName() + ".xml")
+								.map(a -> a.getName() + ".xml")
 								.collect(Collectors.toList())
 					)
 					.build();

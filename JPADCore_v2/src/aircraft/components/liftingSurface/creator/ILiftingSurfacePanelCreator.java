@@ -6,7 +6,7 @@ import javax.measure.quantity.Length;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 
 @FreeBuilder
 public interface ILiftingSurfacePanelCreator {
@@ -15,9 +15,9 @@ public interface ILiftingSurfacePanelCreator {
 	boolean isLinkedTo();
 	Amount<Length> getChordRoot();
 	Amount<Length> getChordTip();
-	AirfoilCreator getAirfoilRoot();
+	Airfoil getAirfoilRoot();
 	String getAirfoilRootFilePath();
-	AirfoilCreator getAirfoilTip();
+	Airfoil getAirfoilTip();
 	String getAirfoilTipFilePath();
 	Amount<Angle> getTwistGeometricAtRoot();
 	Amount<Angle> getTwistGeometricAtTip();

@@ -41,9 +41,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import aircraft.auxiliary.ISeatBlock;
-import aircraft.auxiliary.SeatsBlock;
 import aircraft.components.Aircraft;
+import aircraft.components.cabinconfiguration.ISeatBlock;
+import aircraft.components.cabinconfiguration.SeatsBlock;
 import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.SlatCreator;

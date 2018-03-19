@@ -7,6 +7,7 @@ import javax.measure.quantity.Length;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.cabinconfiguration.CabinConfiguration;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.nacelles.Nacelles;

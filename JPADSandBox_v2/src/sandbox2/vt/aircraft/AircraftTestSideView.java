@@ -116,8 +116,8 @@ public class AircraftTestSideView extends Application {
 		//--------------------------------------------------
 		// get data vectors from wing discretization
 		//--------------------------------------------------
-		Double[] wingRootXCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
-		Double[] wingRootZCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+		double[] wingRootXCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords();
+		double[] wingRootZCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords();
 		Double[][] wingRootAirfoilPoints = new Double[wingRootXCoordinates.length][2];
 		for (int i=0; i<wingRootAirfoilPoints.length; i++) {
 			wingRootAirfoilPoints[i][0] = (wingRootXCoordinates[i]*wing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue()) 
@@ -127,8 +127,8 @@ public class AircraftTestSideView extends Application {
 		}
 		
 		int nPointsWing = wing.getLiftingSurfaceCreator().getDiscretizedXle().size();
-		Double[] wingTipXCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(wing.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
-		Double[] wingTipZCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(wing.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+		double[] wingTipXCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(wing.getLiftingSurfaceCreator().getAirfoilList().size()-1).getXCoords();
+		double[] wingTipZCoordinates = wing.getLiftingSurfaceCreator().getAirfoilList().get(wing.getLiftingSurfaceCreator().getAirfoilList().size()-1).getZCoords();
 		Double[][] wingTipAirfoilPoints = new Double[wingTipXCoordinates.length][2];
 		for (int i=0; i<wingTipAirfoilPoints.length; i++) {
 			wingTipAirfoilPoints[i][0] = (wingTipXCoordinates[i]*wing.getLiftingSurfaceCreator().getPanels()
@@ -143,8 +143,8 @@ public class AircraftTestSideView extends Application {
 		//--------------------------------------------------
 		// get data vectors from hTail discretization
 		//--------------------------------------------------
-		Double[] hTailRootXCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
-		Double[] hTailRootZCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+		double[] hTailRootXCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords();
+		double[] hTailRootZCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords();
 		Double[][] hTailRootAirfoilPoints = new Double[hTailRootXCoordinates.length][2];
 		for (int i=0; i<hTailRootAirfoilPoints.length; i++) {
 			hTailRootAirfoilPoints[i][0] = (hTailRootXCoordinates[i]*hTail.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
@@ -154,8 +154,8 @@ public class AircraftTestSideView extends Application {
 		}
 		
 		int nPointsHTail = hTail.getLiftingSurfaceCreator().getDiscretizedXle().size();
-		Double[] hTailTipXCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(hTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
-		Double[] hTailTipZCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(hTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+		double[] hTailTipXCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(hTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getXCoords();
+		double[] hTailTipZCoordinates = hTail.getLiftingSurfaceCreator().getAirfoilList().get(hTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getZCoords();
 		Double[][] hTailTipAirfoilPoints = new Double[hTailTipXCoordinates.length][2];
 		for (int i=0; i<hTailTipAirfoilPoints.length; i++) {
 			hTailTipAirfoilPoints[i][0] = (hTailTipXCoordinates[i]*hTail.getLiftingSurfaceCreator().getPanels()

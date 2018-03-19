@@ -37,7 +37,7 @@ public class InputTree {
 	private List<Double> etaStations;
 	private List<Amount<Length>> airfoilsChordDistribution;
 	private List<Double> maxThicknessAirfoilsDistribution;
-	private List<Amount<Length>> leadingEdgeRadiusAirfoilsDistribution;
+	private List<Double> leadingEdgeRadiusAirfoilsDistribution;
 	private List<Amount<?>> clAlphaAirfoilsDistribution;
 	private List<Double> cl0AirfoilsDistribution;
 	private AirfoilFamilyEnum airfoilsFamily;
@@ -213,11 +213,11 @@ public class InputTree {
 		this.maxThicknessAirfoilsDistribution = maxThicknessAirfoilsDistribution;
 	}
 
-	public List<Amount<Length>> getLeadingEdgeRadiusAirfoilsDistribution() {
+	public List<Double> getLeadingEdgeRadiusAirfoilsDistribution() {
 		return leadingEdgeRadiusAirfoilsDistribution;
 	}
 
-	public void setLeadingEdgeRadiusAirfoilsDistribution(List<Amount<Length>> leadingEdgeRadiusAirfoilsDistribution) {
+	public void setLeadingEdgeRadiusAirfoilsDistribution(List<Double> leadingEdgeRadiusAirfoilsDistribution) {
 		this.leadingEdgeRadiusAirfoilsDistribution = leadingEdgeRadiusAirfoilsDistribution;
 	}
 

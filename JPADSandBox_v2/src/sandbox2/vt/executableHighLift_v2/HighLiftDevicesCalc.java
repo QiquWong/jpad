@@ -190,7 +190,7 @@ public class HighLiftDevicesCalc {
 		
 		String leadingEdgeRadiusDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/leading_edge_radius_distribution");
 		if(leadingEdgeRadiusDistributionProperty != null)
-			input.setLeadingEdgeRadiusAirfoilsDistribution(reader.readArrayofAmountFromXML("//wing/airfoils_data/leading_edge_radius_distribution"));
+			input.setLeadingEdgeRadiusAirfoilsDistribution(reader.readArrayDoubleFromXML("//wing/airfoils_data/leading_edge_radius_distribution"));
 		
 		String airfoilsChordDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/airfoil_chord_distribution");
 		if(airfoilsChordDistributionProperty != null)

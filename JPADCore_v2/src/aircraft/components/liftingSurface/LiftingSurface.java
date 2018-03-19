@@ -19,8 +19,8 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import calculators.geometry.LSGeometryCalc;
@@ -133,8 +133,8 @@ public class LiftingSurface {
 		double surface = _liftingSurfaceCreator.getSurfacePlanform().doubleValue(MyUnits.FOOT2);
 		double surfaceExposed = aircraft.getExposedWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(MyUnits.FOOT2);
 
-		Airfoil meanAirfoil = new Airfoil(LSGeometryCalc.calculateMeanAirfoil(aircraft.getWing().getLiftingSurfaceCreator()));
-		double thicknessMean = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
+		Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(aircraft.getWing().getLiftingSurfaceCreator());
+		double thicknessMean = meanAirfoil.getThicknessToChordRatio();
 		
 		Amount<Angle> sweepStructuralAxis;
 		if(_liftingSurfaceCreator.getTheLiftingSurfaceInterface().getType() == ComponentEnum.WING)

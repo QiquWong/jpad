@@ -1080,7 +1080,7 @@ public class LiftCalc {
 			List<Amount<?>> clAlphaBreakPoints,
 			List<Double> clZeroBreakPoints,
 			List<Double> maxThicknessRatioBreakPoints,
-			List<Amount<Length>> radiusLeadingEdgeBreakPoints,
+			List<Double> radiusLeadingEdgeBreakPoints,
 			List<Amount<Length>> chordBreakPoints,
 			List<Amount<Angle>> flapDeflections,
 			List<Amount<Angle>> slatDeflections,
@@ -1292,8 +1292,10 @@ public class LiftCalc {
 						MyArrayUtils.convertToDoublePrimitive(
 								etaBreakPoints
 								),
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								radiusLeadingEdgeBreakPoints.stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
+						MyArrayUtils.convertToDoublePrimitive(
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										radiusLeadingEdgeBreakPoints
+										)
 								),
 						etaOutSlat.get(i));
 
@@ -1301,9 +1303,11 @@ public class LiftCalc {
 						MyArrayUtils.convertToDoublePrimitive(
 								etaBreakPoints
 								),
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								radiusLeadingEdgeBreakPoints.stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
-								),
+						MyArrayUtils.convertToDoublePrimitive(
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										radiusLeadingEdgeBreakPoints
+										)
+						),
 						etaInSlat.get(i));
 
 				chordSlatStations[kk] = MyMathUtils.getInterpolatedValue1DLinear( 

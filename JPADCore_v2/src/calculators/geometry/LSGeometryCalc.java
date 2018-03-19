@@ -15,8 +15,9 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
+import aircraft.components.liftingSurface.airfoils.IAirfoil;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -265,7 +266,7 @@ public class LSGeometryCalc {
 		return yACIntegral;
 	}
 
-	public static AirfoilCreator calculateAirfoilAtY (LiftingSurface theWing, double yLoc) {
+	public static Airfoil calculateAirfoilAtY (LiftingSurface theWing, double yLoc) {
 
 		// initializing variables ... 
 		AirfoilTypeEnum type = null;
@@ -331,8 +332,8 @@ public class LSGeometryCalc {
 				yOuter = theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER);
 				thicknessRatioInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getThicknessToChordRatio();
 				thicknessRatioOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getThicknessToChordRatio();
-				leadingEdgeRadiusInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getRadiusLeadingEdge().doubleValue(SI.METER);
-				leadingEdgeRadiusOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getRadiusLeadingEdge().doubleValue(SI.METER);
+				leadingEdgeRadiusInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getRadiusLeadingEdge();
+				leadingEdgeRadiusOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getRadiusLeadingEdge();
 				alphaZeroLiftInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getAlphaZeroLift();
 				alphaZeroLiftOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getAlphaZeroLift();
 				alphaEndLinearityInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getAlphaEndLinearTrait();
@@ -385,14 +386,12 @@ public class LSGeometryCalc {
 
 		//------------------------------------------------------------------------------------------------
 		// INTERMEDIATE LEADING EDGE RADIUS
-		Amount<Length> intermediateAirfoilLeadingEdgeRadius = Amount.valueOf(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						new double[] {yInner, yOuter},
-						new double[] {leadingEdgeRadiusInner, leadingEdgeRadiusOuter},
-						yLoc
-						),
-				SI.METER
+		double intermediateAirfoilLeadingEdgeRadius =MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {leadingEdgeRadiusInner, leadingEdgeRadiusOuter},
+				yLoc
 				);
+				
 
 		//------------------------------------------------------------------------------------------------
 		// INTERMEDIATE ALPHA ZERO LIFT
@@ -564,38 +563,40 @@ public class LSGeometryCalc {
 
 		//------------------------------------------------------------------------------------------------
 		// AIRFOIL CREATION
-		AirfoilCreator intermediateAirfoilCreator = new AirfoilCreator.AirfoilBuilder()
-				.name("Intermediate Airfoil")
-				.type(type)
-				.family(family)
-				.thicknessToChordRatio(intermediateAirfoilThicknessRatio)
-				.radiusLeadingEdge(intermediateAirfoilLeadingEdgeRadius)
-				.alphaZeroLift(intermediateAirfoilAlphaZeroLift)
-				.alphaEndLinearTrait(intermediateAirfoilAlphaEndLinearity)
-				.alphaStall(intermediateAirfoilAlphaStall)
-				.clAlphaLinearTrait(intermediateAirfoilClAlpha)
-				.cdMin(intermediateAirfoilCdMin)
-				.clAtCdMin(intermediateAirfoilClAtCdMin)
-				.clAtAlphaZero(intermediateAirfoilCl0)
-				.clEndLinearTrait(intermediateAirfoilClEndLinearity)
-				.clMax(intermediateAirfoilClMax)
-				.kFactorDragPolar(intermediateAirfoilKFactorDragPolar)
-				.laminarBucketSemiExtension(intermediateLaminarBucketSemiExtension)
-				.laminarBucketDepth(intermediateLaminarBucketDepth)
-				.cmAlphaQuarterChord(intermediateAirfoilCmAlphaQuaterChord)
-				.xACNormalized(intermediateAirfoilXac)
-				.cmAC(intermediateAirfoilCmAC)
-				.cmACAtStall(intermediateAirfoilCmACStall)
-				.machCritical(intermediateAirfoilCriticalMach)
-				.xTransitionUpper(intermediateAirfoilTransitionXUpper)
-				.xTransitionLower(intermediateAirfoilTransitionXLower)
-				.build();
+		Airfoil intermediateAirfoilCreator = new Airfoil(
+				new IAirfoil.Builder()
+				.setName("Intermediate Airfoil")
+				.setType(type)
+				.setFamily(family)
+				.setThicknessToChordRatio(intermediateAirfoilThicknessRatio)
+				.setRadiusLeadingEdgeNormalized(intermediateAirfoilLeadingEdgeRadius)
+				.setAlphaZeroLift(intermediateAirfoilAlphaZeroLift)
+				.setAlphaEndLinearTrait(intermediateAirfoilAlphaEndLinearity)
+				.setAlphaStall(intermediateAirfoilAlphaStall)
+				.setClAlphaLinearTrait(intermediateAirfoilClAlpha)
+				.setCdMin(intermediateAirfoilCdMin)
+				.setClAtCdMin(intermediateAirfoilClAtCdMin)
+				.setClAtAlphaZero(intermediateAirfoilCl0)
+				.setClEndLinearTrait(intermediateAirfoilClEndLinearity)
+				.setClMax(intermediateAirfoilClMax)
+				.setKFactorDragPolar(intermediateAirfoilKFactorDragPolar)
+				.setLaminarBucketSemiExtension(intermediateLaminarBucketSemiExtension)
+				.setLaminarBucketDepth(intermediateLaminarBucketDepth)
+				.setCmAlphaQuarterChord(intermediateAirfoilCmAlphaQuaterChord)
+				.setXACNormalized(intermediateAirfoilXac)
+				.setCmAC(intermediateAirfoilCmAC)
+				.setCmACAtStall(intermediateAirfoilCmACStall)
+				.setCriticalMach(intermediateAirfoilCriticalMach)
+				.setXTransitionUpper(intermediateAirfoilTransitionXUpper)
+				.setXTransitionLower(intermediateAirfoilTransitionXLower)
+				.buildPartial()
+				);
 
 		return intermediateAirfoilCreator;
 
 	}
 
-	public static AirfoilCreator calculateMeanAirfoil (
+	public static Airfoil calculateMeanAirfoil (
 			LiftingSurfaceCreator theLiftingSurface
 			) {
 
@@ -615,18 +616,16 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			maximumThicknessMeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio();
+			*theLiftingSurface.getAirfoilList().get(i).getThicknessToChordRatio();
 
 		//----------------------------------------------------------------------------------------------
 		// Leading edge radius:
-		Amount<Length> leadingEdgeRadiusMeanAirfoil = Amount.valueOf(0.0, SI.METER);
+		double leadingEdgeRadiusMeanAirfoil = 0.0;
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
-			leadingEdgeRadiusMeanAirfoil = leadingEdgeRadiusMeanAirfoil
-			.plus(theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getRadiusLeadingEdge()
-					.times(influenceCoefficients.get(i)
-							)
-					);
+			leadingEdgeRadiusMeanAirfoil = leadingEdgeRadiusMeanAirfoil + 
+			(theLiftingSurface.getAirfoilList().get(i).getRadiusLeadingEdge()
+					*influenceCoefficients.get(i));
 
 		//----------------------------------------------------------------------------------------------
 		// Alpha zero lift:
@@ -634,7 +633,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			alphaZeroLiftMeanAirfoil = alphaZeroLiftMeanAirfoil
-			.plus(theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getAlphaZeroLift()
+			.plus(theLiftingSurface.getAirfoilList().get(i).getAlphaZeroLift()
 					.times(influenceCoefficients.get(i)
 							)
 					);
@@ -645,7 +644,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			alphaStarMeanAirfoil = alphaStarMeanAirfoil
-			.plus(theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getAlphaEndLinearTrait()
+			.plus(theLiftingSurface.getAirfoilList().get(i).getAlphaEndLinearTrait()
 					.times(influenceCoefficients.get(i)
 							)
 					);
@@ -656,7 +655,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			alphaStallMeanAirfoil = alphaStallMeanAirfoil
-			.plus(theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getAlphaStall()
+			.plus(theLiftingSurface.getAirfoilList().get(i).getAlphaStall()
 					.times(influenceCoefficients.get(i)
 							)
 					);
@@ -667,7 +666,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			clAlphaMeanAirfoil = clAlphaMeanAirfoil
-			.plus(theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getClAlphaLinearTrait()
+			.plus(theLiftingSurface.getAirfoilList().get(i).getClAlphaLinearTrait()
 					.times(influenceCoefficients.get(i)
 							)
 					);
@@ -678,7 +677,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			cdMinMeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getCdMin();
+			*theLiftingSurface.getAirfoilList().get(i).getCdMin();
 
 		//----------------------------------------------------------------------------------------------
 		// Cl at Cd min:
@@ -686,7 +685,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			clAtCdMinMeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getClAtCdMin();
+			*theLiftingSurface.getAirfoilList().get(i).getClAtCdMin();
 
 		//----------------------------------------------------------------------------------------------
 		// Cl0:
@@ -694,7 +693,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			cl0MeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getClAtAlphaZero();	
+			*theLiftingSurface.getAirfoilList().get(i).getClAtAlphaZero();	
 
 		//----------------------------------------------------------------------------------------------
 		// Cl star:
@@ -702,7 +701,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			clStarMeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getClEndLinearTrait();	
+			*theLiftingSurface.getAirfoilList().get(i).getClEndLinearTrait();	
 
 		//----------------------------------------------------------------------------------------------
 		// Cl max:
@@ -710,7 +709,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			clMaxMeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getClMax();	
+			*theLiftingSurface.getAirfoilList().get(i).getClMax();	
 
 		//----------------------------------------------------------------------------------------------
 		// K factor drag polar:
@@ -718,7 +717,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			kFactorDragPolarMeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getKFactorDragPolar();	
+			*theLiftingSurface.getAirfoilList().get(i).getKFactorDragPolar();	
 
 		//----------------------------------------------------------------------------------------------
 		// Cm quarter chord:
@@ -726,7 +725,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			cmAlphaQuarteChordMeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getCmAlphaQuarterChord().getEstimatedValue();	
+			*theLiftingSurface.getAirfoilList().get(i).getCmAlphaQuarterChord().getEstimatedValue();	
 
 		//----------------------------------------------------------------------------------------------
 		// x ac:
@@ -734,7 +733,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			xACMeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getXACNormalized();	
+			*theLiftingSurface.getAirfoilList().get(i).getXACNormalized();	
 
 		//----------------------------------------------------------------------------------------------
 		// cm ac:
@@ -742,7 +741,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			cmACMeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getCmAC();	
+			*theLiftingSurface.getAirfoilList().get(i).getCmAC();	
 
 		//----------------------------------------------------------------------------------------------
 		// cm ac stall:
@@ -750,7 +749,7 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			cmACStallMeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getCmACAtStall();	
+			*theLiftingSurface.getAirfoilList().get(i).getCmACAtStall();	
 
 		//----------------------------------------------------------------------------------------------
 		// critical Mach number:
@@ -758,50 +757,51 @@ public class LSGeometryCalc {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			criticalMachMeanAirfoil += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getMachCritical();	
+			*theLiftingSurface.getAirfoilList().get(i).getMachCritical();	
 
 		//----------------------------------------------------------------------------------------------
 		// laminar bucket semi-extension:
 		double laminarBucketSemiExtension= 0;
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			laminarBucketSemiExtension += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getLaminarBucketSemiExtension();
+			*theLiftingSurface.getAirfoilList().get(i).getLaminarBucketSemiExtension();
 
 		//----------------------------------------------------------------------------------------------
 		// laminar bucket depth:
 		double laminarBucketDepth= 0;
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			laminarBucketDepth += influenceCoefficients.get(i)
-			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getLaminarBucketDepth();
+			*theLiftingSurface.getAirfoilList().get(i).getLaminarBucketDepth();
 
 		//----------------------------------------------------------------------------------------------
 		// MEAN AIRFOIL CREATION:
 
-		AirfoilCreator meanAirfoilCreator = new AirfoilCreator.AirfoilBuilder()
-				.name("Mean Airfoil")
-				.type(theLiftingSurface.getAirfoilList().get(0).getAirfoilCreator().getType())
-				.family(theLiftingSurface.getAirfoilList().get(0).getAirfoilCreator().getFamily())
-				.thicknessToChordRatio(maximumThicknessMeanAirfoil)
-				.radiusLeadingEdge(leadingEdgeRadiusMeanAirfoil)
-				.alphaZeroLift(alphaZeroLiftMeanAirfoil)
-				.alphaEndLinearTrait(alphaStarMeanAirfoil)
-				.alphaStall(alphaStallMeanAirfoil)
-				.clAlphaLinearTrait(clAlphaMeanAirfoil)
-				.cdMin(cdMinMeanAirfoil)
-				.clAtCdMin(clAtCdMinMeanAirfoil)
-				.clAtAlphaZero(cl0MeanAirfoil)
-				.clEndLinearTrait(clStarMeanAirfoil)
-				.clMax(clMaxMeanAirfoil)
-				.kFactorDragPolar(kFactorDragPolarMeanAirfoil)
-				.cmAlphaQuarterChord(Amount.valueOf(cmAlphaQuarteChordMeanAirfoil, NonSI.DEGREE_ANGLE.inverse()))
-				.xACNormalized(xACMeanAirfoil)
-				.cmAC(cmACMeanAirfoil)
-				.cmACAtStall(cmACStallMeanAirfoil)
-				.machCritical(criticalMachMeanAirfoil)
-				.laminarBucketSemiExtension(laminarBucketSemiExtension)
-				.laminarBucketDepth(laminarBucketDepth)
-				.build();
-
+		Airfoil meanAirfoilCreator = new Airfoil(new IAirfoil.Builder()
+				.setName("Mean Airfoil")
+				.setType(theLiftingSurface.getAirfoilList().get(0).getType())
+				.setFamily(theLiftingSurface.getAirfoilList().get(0).getFamily())
+				.setThicknessToChordRatio(maximumThicknessMeanAirfoil)
+				.setRadiusLeadingEdgeNormalized(leadingEdgeRadiusMeanAirfoil)
+				.setAlphaZeroLift(alphaZeroLiftMeanAirfoil)
+				.setAlphaEndLinearTrait(alphaStarMeanAirfoil)
+				.setAlphaStall(alphaStallMeanAirfoil)
+				.setClAlphaLinearTrait(clAlphaMeanAirfoil)
+				.setCdMin(cdMinMeanAirfoil)
+				.setClAtCdMin(clAtCdMinMeanAirfoil)
+				.setClAtAlphaZero(cl0MeanAirfoil)
+				.setClEndLinearTrait(clStarMeanAirfoil)
+				.setClMax(clMaxMeanAirfoil)
+				.setKFactorDragPolar(kFactorDragPolarMeanAirfoil)
+				.setCmAlphaQuarterChord(Amount.valueOf(cmAlphaQuarteChordMeanAirfoil, NonSI.DEGREE_ANGLE.inverse()))
+				.setXACNormalized(xACMeanAirfoil)
+				.setCmAC(cmACMeanAirfoil)
+				.setCmACAtStall(cmACStallMeanAirfoil)
+				.setCriticalMach(criticalMachMeanAirfoil)
+				.setLaminarBucketSemiExtension(laminarBucketSemiExtension)
+				.setLaminarBucketDepth(laminarBucketDepth)
+				.buildPartial()
+				);
+		
 		return meanAirfoilCreator;
 
 	}

@@ -15,10 +15,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
+import aircraft.components.cabinconfiguration.CabinConfiguration;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import aircraft.components.liftingSurface.creator.IEquivalentWing;
 import aircraft.components.liftingSurface.creator.ILiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.ILiftingSurfacePanelCreator;
@@ -132,7 +133,7 @@ public class Aircraft {
 							.setRealWingDimensionlessXOffsetRootChordTE(0.0)
 							.setRealWingDimensionlessKinkPosition(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().getEtaBreakPoints().get(0))
 							.setRealWingTwistAtKink(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().getTwistsBreakPoints().get(0))
-							.setEquivalentWingAirfoilKink(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator())
+							.setEquivalentWingAirfoilKink(_theAircraftInterface.getHTail().getLiftingSurfaceCreator().getAirfoilList().get(0))
 							.build()
 							)
 					.build()
@@ -150,7 +151,7 @@ public class Aircraft {
 							.setRealWingDimensionlessXOffsetRootChordTE(0.0)
 							.setRealWingDimensionlessKinkPosition(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().getEtaBreakPoints().get(0))
 							.setRealWingTwistAtKink(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().getTwistsBreakPoints().get(0))
-							.setEquivalentWingAirfoilKink(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator())
+							.setEquivalentWingAirfoilKink(_theAircraftInterface.getVTail().getLiftingSurfaceCreator().getAirfoilList().get(0))
 							.build()
 							)
 					.build()
@@ -168,7 +169,7 @@ public class Aircraft {
 							.setRealWingDimensionlessXOffsetRootChordTE(0.0)
 							.setRealWingDimensionlessKinkPosition(_theAircraftInterface.getCanard().getLiftingSurfaceCreator().getEtaBreakPoints().get(0))
 							.setRealWingTwistAtKink(_theAircraftInterface.getCanard().getLiftingSurfaceCreator().getTwistsBreakPoints().get(0))
-							.setEquivalentWingAirfoilKink(_theAircraftInterface.getCanard().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator())
+							.setEquivalentWingAirfoilKink(_theAircraftInterface.getCanard().getLiftingSurfaceCreator().getAirfoilList().get(0))
 							.build()
 							)
 					.build()
@@ -234,12 +235,12 @@ public class Aircraft {
 				theWing.getLiftingSurfaceCreator().getChordAtYActual(sectionWidthAtZ.doubleValue(SI.METER)),
 				SI.METER
 				);
-		AirfoilCreator exposedWingRootAirfoil = LSGeometryCalc.calculateAirfoilAtY(
+		Airfoil exposedWingRootAirfoil = LSGeometryCalc.calculateAirfoilAtY(
 				theWing,
 				sectionWidthAtZ.doubleValue(SI.METER)
 				);
-		exposedWingRootAirfoil.setXCoords(theWing.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords());
-		exposedWingRootAirfoil.setZCoords(theWing.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords());
+		exposedWingRootAirfoil.setXCoords(theWing.getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords());
+		exposedWingRootAirfoil.setZCoords(theWing.getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords());
 		
 		Amount<Length> exposedWingFirstPanelSpan = theWing.getLiftingSurfaceCreator()
 				.getPanels().get(0)

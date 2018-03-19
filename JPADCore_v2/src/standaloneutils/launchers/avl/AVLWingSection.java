@@ -12,7 +12,7 @@ import java.util.Optional;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.inferred.freebuilder.FreeBuilder;
 
-import aircraft.auxiliary.airfoil.Airfoil;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 
 @FreeBuilder
 public interface AVLWingSection {
@@ -55,11 +55,11 @@ public interface AVLWingSection {
 				}
 				try{
 					PrintWriter writer = new PrintWriter(file.getAbsolutePath(), "UTF-8");
-					writer.println("x z ! " + airfoil.getAirfoilCreator().getName());
+					writer.println("x z ! " + airfoil.getName());
 					// writer.println("The second line");
 
-					Double[] xs = airfoil.getAirfoilCreator().getXCoords();
-					Double[] zs = airfoil.getAirfoilCreator().getZCoords();
+					double[] xs = airfoil.getXCoords();
+					double[] zs = airfoil.getZCoords();
 					for (int i = 0; i < xs.length; i++)
 						writer.println(String.format(Locale.ROOT, "%1$11.4f %2$11.4f", xs[i], zs[i]));					    
 					writer.close();

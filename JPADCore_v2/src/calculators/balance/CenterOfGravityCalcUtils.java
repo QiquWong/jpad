@@ -6,8 +6,8 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.SeatsBlock;
 import aircraft.components.Aircraft;
+import aircraft.components.cabinconfiguration.SeatsBlock;
 import configuration.enumerations.RelativePositionEnum;
 
 public class CenterOfGravityCalcUtils {

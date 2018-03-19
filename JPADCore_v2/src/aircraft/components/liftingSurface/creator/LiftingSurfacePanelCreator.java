@@ -19,7 +19,7 @@ import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import configuration.MyConfiguration;
 import standaloneutils.MyXMLReaderUtils;
 
@@ -155,7 +155,7 @@ public class LiftingSurfacePanelCreator {
 		if(airfoilFileName1 != null)
 			airFoilPath1 = airfoilsDir + File.separator + airfoilFileName1;
 		
-		AirfoilCreator airfoilRoot = AirfoilCreator.importFromXML(airFoilPath1);
+		Airfoil airfoilRoot = Airfoil.importFromXML(airFoilPath1);
 
 		String twistGeometricRootProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//inner_section/geometric_twist/text()");
 		if(twistGeometricRootProperty != null)
@@ -174,7 +174,7 @@ public class LiftingSurfacePanelCreator {
 		if(airfoilFileName2 != null)
 			airFoilPath2 = airfoilsDir + File.separator + airfoilFileName2;
 		
-		AirfoilCreator airfoilTip = AirfoilCreator.importFromXML(airFoilPath2);
+		Airfoil airfoilTip = Airfoil.importFromXML(airFoilPath2);
 
 		String twistGeometricTipProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//outer_section/geometric_twist/text()");
 		if(twistGeometricTipProperty != null)
@@ -261,7 +261,7 @@ public class LiftingSurfacePanelCreator {
 
 		chordRoot = panel0.getChordTip(); // from linked panel
 
-		AirfoilCreator airfoilRoot = panel0.getAirfoilTip(); // from linked panel
+		Airfoil airfoilRoot = panel0.getAirfoilTip(); // from linked panel
 		String airfoilRootPath = panel0.getAirfoilRootPath();
 		
 		twistGeometricRoot = panel0.getTwistAerodynamicAtTip();
@@ -279,7 +279,7 @@ public class LiftingSurfacePanelCreator {
 		if(airfoilFileName2 != null)
 			airFoilPath2 = airfoilsDir + File.separator + airfoilFileName2;
 		
-		AirfoilCreator airfoilTip = AirfoilCreator.importFromXML(airFoilPath2);
+		Airfoil airfoilTip = Airfoil.importFromXML(airFoilPath2);
 
 		String twistGeometricTipProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//outer_section/geometric_twist/text()");
 		if(twistGeometricTipProperty != null)
@@ -425,19 +425,19 @@ public class LiftingSurfacePanelCreator {
 		setTheLiftingSurfacePanelInterface(ILiftingSurfacePanelCreator.Builder.from(_theLiftingSurfacePanelInterface).setChordTip(ct).build());
 	}
 
-	public AirfoilCreator getAirfoilRoot() {
+	public Airfoil getAirfoilRoot() {
 		return _theLiftingSurfacePanelInterface.getAirfoilRoot();
 	}
 
-	public void setAirfoilRoot(AirfoilCreator a) {
+	public void setAirfoilRoot(Airfoil a) {
 		setTheLiftingSurfacePanelInterface(ILiftingSurfacePanelCreator.Builder.from(_theLiftingSurfacePanelInterface).setAirfoilRoot(a).build());
 	}
 
-	public AirfoilCreator getAirfoilTip() {
+	public Airfoil getAirfoilTip() {
 		return _theLiftingSurfacePanelInterface.getAirfoilTip();
 	}
 
-	public void setAirfoilTip(AirfoilCreator a) {
+	public void setAirfoilTip(Airfoil a) {
 		setTheLiftingSurfacePanelInterface(ILiftingSurfacePanelCreator.Builder.from(_theLiftingSurfacePanelInterface).setAirfoilTip(a).build());
 	}
 

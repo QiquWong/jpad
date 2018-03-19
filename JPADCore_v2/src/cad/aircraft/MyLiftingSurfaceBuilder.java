@@ -144,7 +144,7 @@ public class MyLiftingSurfaceBuilder {
 
 		if (theLiftingSurface.getLiftingSurfaceCreator().isMirrored() == true) {
 			for(int i=0; i < theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().size(); i++) {
-				sections.add(theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(i).getAirfoilCreator().getCoordinatesLeft());
+				sections.add(theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(i).getCoordinatesLeft());
 			}
 
 			pL.set(p.x, -p.y, p.z);
@@ -157,7 +157,7 @@ public class MyLiftingSurfaceBuilder {
 			sections.clear();
 
 			for (int j = theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().size()-1; j >= 0 ; j--) {
-				sections.add(theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(j).getAirfoilCreator().getCoordinatesRight());
+				sections.add(theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(j).getCoordinatesRight());
 			}
 			
 			pR = p;
@@ -175,7 +175,7 @@ public class MyLiftingSurfaceBuilder {
 		} else {
 			
 			for (int j = theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().size()-1; j >= 0 ; j--) {
-				sections.add(theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(j).getAirfoilCreator().getCoordinatesRight());
+				sections.add(theLiftingSurface.getLiftingSurfaceCreator().getAirfoilList().get(j).getCoordinatesRight());
 			}
 
 			pR = p;

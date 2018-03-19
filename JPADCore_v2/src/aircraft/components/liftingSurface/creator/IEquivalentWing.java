@@ -7,7 +7,7 @@ import javax.measure.quantity.Angle;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 
 @FreeBuilder
 public interface IEquivalentWing {
@@ -16,7 +16,7 @@ public interface IEquivalentWing {
 	Amount<Angle> getRealWingTwistAtKink();
 	double getRealWingDimensionlessXOffsetRootChordLE();
 	double getRealWingDimensionlessXOffsetRootChordTE();
-	AirfoilCreator getEquivalentWingAirfoilKink();
+	Airfoil getEquivalentWingAirfoilKink();
 	List<LiftingSurfacePanelCreator> getPanels();
 	
 	class Builder extends IEquivalentWing_Builder {

@@ -252,8 +252,8 @@ public class AircraftTestTopView extends Application {
 		//--------------------------------------------------
 		// get data vectors from vTail discretization
 		//--------------------------------------------------
-		Double[] vTailRootXCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
-		Double[] vTailRootYCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+		double[] vTailRootXCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords();
+		double[] vTailRootYCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords();
 		Double[][] vTailRootAirfoilPoints = new Double[vTailRootXCoordinates.length][2];
 		for (int i=0; i<vTailRootAirfoilPoints.length; i++) {
 			vTailRootAirfoilPoints[i][1] = (vTailRootXCoordinates[i]*vTail.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue()) + vTail.getXApexConstructionAxes().getEstimatedValue(); 
@@ -261,8 +261,8 @@ public class AircraftTestTopView extends Application {
 		}
 		
 		int nPointsVTail = vTail.getLiftingSurfaceCreator().getDiscretizedXle().size();
-		Double[] vTailTipXCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(vTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
-		Double[] vTailTipYCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(vTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+		double[] vTailTipXCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(vTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getXCoords();
+		double[] vTailTipYCoordinates = vTail.getLiftingSurfaceCreator().getAirfoilList().get(vTail.getLiftingSurfaceCreator().getAirfoilList().size()-1).getZCoords();
 		Double[][] vTailTipAirfoilPoints = new Double[vTailTipXCoordinates.length][2];
 		for (int i=0; i<vTailTipAirfoilPoints.length; i++) {
 			vTailTipAirfoilPoints[i][1] = (vTailTipXCoordinates[i]*vTail.getLiftingSurfaceCreator().getPanels()

@@ -28,7 +28,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGUtils;
 
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import graphics.ChartCanvas;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -1357,7 +1357,7 @@ public class AirfoilInputManagerController {
 		}
 	}
 	
-	public void loadAirfoilData(AirfoilCreator airfoil) {
+	public void loadAirfoilData(Airfoil airfoil) {
 		
 		//---------------------------------------------------------------------------------
 		// NAME:

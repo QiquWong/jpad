@@ -14,8 +14,8 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
@@ -168,12 +168,12 @@ public class PayloadRangeCalcBreguet{
 		this.cD0 = MyArrayUtils.getMin(this.polarCD);
 		this.etaPropeller = theAircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller();
 		
-		Airfoil meanAirfoil = new Airfoil(LSGeometryCalc.calculateMeanAirfoil(theAircraft.getWing().getLiftingSurfaceCreator()));
-		this.tcMax = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
+		Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(theAircraft.getWing().getLiftingSurfaceCreator());
+		this.tcMax = meanAirfoil.getThicknessToChordRatio();
 		
 		this.aircraftType = theAircraft.getTypeVehicle();
 		this.engineType = theAircraft.getPowerPlant().getEngineType();
-		this.airfoilType = theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getAirfoilCreator().getType();
+		this.airfoilType = theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getType();
 		
 		this.fuelFractionDatabase = DatabaseManager.initializeFuelFractionDatabase(
 				new FuelFractionDatabaseReader(
