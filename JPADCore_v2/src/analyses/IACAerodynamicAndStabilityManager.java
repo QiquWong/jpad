@@ -9,6 +9,8 @@ import javax.measure.quantity.Length;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
+import com.sun.istack.internal.Nullable;
+
 import aircraft.components.Aircraft;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
@@ -34,10 +36,12 @@ public interface IACAerodynamicAndStabilityManager {
 	List<Double> getZCGAircraft();
 	Amount<Length> getXCGFuselage();
 	Amount<Length> getZCGFuselage();
-	Amount<Length> getXCGLandingGear();
-	Amount<Length> getZCGLandingGear();
-	Amount<Length> getXCGNacelles();
+	@Nullable Amount<Length> getXCGLandingGear();
+	@Nullable Amount<Length> getZCGLandingGear();
+	@Nullable Amount<Length> getXCGNacelles();
+	@Nullable
 	Amount<Length> getZCGNacelles();
+	@Nullable
 	Double getLandingGearDragCoefficient();
 	Amount<Angle> getAlphaBodyInitial();
 	Amount<Angle> getAlphaBodyFinal();
@@ -46,28 +50,43 @@ public interface IACAerodynamicAndStabilityManager {
 	Amount<Angle> getBetaFinal();
 	int getNumberOfBeta();
 	int getWingNumberOfPointSemiSpanWise();
+	@Nullable
 	int getHTailNumberOfPointSemiSpanWise();
+	@Nullable
 	int getVTailNumberOfPointSemiSpanWise();
+	@Nullable
 	int getCanardNumberOfPointSemiSpanWise();
+	@Nullable
 	Amount<Angle> getMaximumElevatorDeflection();
 	List<Amount<Angle>> getAlphaWingForDistribution();
 	List<Amount<Angle>> getAlphaHorizontalTailForDistribution();
 	List<Amount<Angle>> getBetaVerticalTailForDistribution();
 	List<Amount<Angle>> getAlphaCanardForDistribution();
+	@Nullable
 	Boolean getDownwashConstant(); // if TRUE--> constant, if FALSE--> variable
+	@Nullable
 	Double getDynamicPressureRatio();
+	@Nullable
 	MyInterpolatingFunction getTauElevatorFunction();
+	@Nullable
 	MyInterpolatingFunction getTauRudderFunction();
+
 	List<Amount<Angle>> getDeltaElevatorList();
+
 	Amount<Angle> getElevatorDeflectionForAnalysis();
 	List<Amount<Angle>> getDeltaRudderList();
+	@Nullable
 	Amount<Angle> getRudderDeflectionForAnalysis();
 	Boolean getFuselageEffectOnWingLiftCurve();
 	Boolean getWingPendularStability();
+	@Nullable
 	Double getDeltaCD0Miscellaneous();
 	Amount<Length> getWingMomentumPole();
+	@Nullable
 	Amount<Length> getHTailMomentumPole();
+	@Nullable
 	Amount<Length> getVTailMomentumPole();
+	@Nullable
 	Amount<Length> getCanardMomentumPole();
 	Double getAdimensionalFuselageMomentumPole();
 	//..............................................................................
@@ -79,24 +98,36 @@ public interface IACAerodynamicAndStabilityManager {
 	MyInterpolatingFunction getWingHighLiftMomentCurveFunction();
 	MyInterpolatingFunction getWingMomentCurveFunction();
 	
+	@Nullable
 	MyInterpolatingFunction getHTailLiftCurveFunction();
+	@Nullable
 	MyInterpolatingFunction getHTailPolarCurveFunction();
+	@Nullable
 	MyInterpolatingFunction getHTailMomentCurveFunction();
 	
+	@Nullable
 	MyInterpolatingFunction getVTailLiftCurveFunction();
+	@Nullable
 	MyInterpolatingFunction getVTailPolarCurveFunction();
+	@Nullable
 	MyInterpolatingFunction getVTailMomentCurveFunction();
 	
+	@Nullable
 	MyInterpolatingFunction getCanardLiftCurveFunction();
+	@Nullable
 	MyInterpolatingFunction getCanardPolarCurveFunction();
+	@Nullable
 	MyInterpolatingFunction getCanardMomentCurveFunction();
 	
 	MyInterpolatingFunction getFuselagePolarCurveFunction();
 	MyInterpolatingFunction getFuselageMomentCurveFunction();
 	
+	@Nullable
 	MyInterpolatingFunction getNacellePolarCurveFunction();
+	@Nullable
 	MyInterpolatingFunction getNacelleMomentCurveFunction();
 	
+	@Nullable
 	MyInterpolatingFunction getAircraftDownwashGradientFunction();
 	
 	/** Builder of ACAErodynamicCalculator instances. */

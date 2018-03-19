@@ -1085,6 +1085,7 @@ public class LSAerodynamicsManager {
 			double[] yStationDistribution = new double[_numberOfPointSemiSpanWise];
 			Double[] chordDistribution = new Double[_numberOfPointSemiSpanWise];
 			Double[] alphaZeroLiftDistribution = new Double[_numberOfPointSemiSpanWise];
+			Double[] twistDistribution = new Double[_numberOfPointSemiSpanWise];
 			
 			if ( _theLiftingSurface.getExposedLiftingSurface() != null && _theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.WING){
 				surface = _theLiftingSurface.getExposedLiftingSurface().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
@@ -1110,6 +1111,26 @@ public class LSAerodynamicsManager {
 				surface = _theLiftingSurface.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
 				semiSpan = _theLiftingSurface.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
 				alphaZeroLiftDistribution = MyArrayUtils.convertListOfAmountToDoubleArray(_alphaZeroLiftDistribution);
+				yStationDistribution = MyArrayUtils.linspace(
+						0,
+						_theLiftingSurface.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER),
+						_numberOfPointSemiSpanWise
+						);
+				alphaZeroLiftDistribution = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getAlpha0VsY()),
+						yStationDistribution
+						);
+				chordDistribution = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints()),
+						yStationDistribution
+						);
+				twistDistribution = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getTwistsBreakPoints()),
+						yStationDistribution
+						);
 				System.out.println(" Exposed wing is the wing. There isn't fuselage in the aircraft.");
 			}
 			

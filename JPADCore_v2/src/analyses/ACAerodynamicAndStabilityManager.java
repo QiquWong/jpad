@@ -117,6 +117,7 @@ public class ACAerodynamicAndStabilityManager {
 	private Boolean _writeWing = Boolean.FALSE;
 	private Boolean _writeHTail = Boolean.FALSE;
 	private Boolean _writeVTail = Boolean.FALSE;
+	private Boolean _writeCanard = Boolean.FALSE;
 	private Boolean _writeFuselage = Boolean.FALSE;
 	private Boolean _writeNacelle = Boolean.FALSE;
 	
@@ -1177,13 +1178,13 @@ public class ACAerodynamicAndStabilityManager {
 				CalcCDInduced calcCDInduced = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.CANARD).new CalcCDInduced();
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.CANARD).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
 				case GROSU:
-					calcCDInduced.grosu(_alphaHTailCurrent);
+					calcCDInduced.grosu(_alphaCanardCurrent);
 					break;
 				case HOWE:
-					calcCDInduced.howe(_alphaHTailCurrent);
+					calcCDInduced.howe(_alphaCanardCurrent);
 					break;
 				case RAYMER:
-					calcCDInduced.raymer(_alphaHTailCurrent);
+					calcCDInduced.raymer(_alphaCanardCurrent);
 					break;
 				default:
 					break;
@@ -1316,14 +1317,14 @@ public class ACAerodynamicAndStabilityManager {
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.CANARD).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
 				case AIRFOIL_DISTRIBUTION:
 					calcCDAtAlpha.fromCdDistribution(
-							_alphaHTailCurrent, 
+							_alphaCanardCurrent, 
 							_currentMachNumber,
 							_currentAltitude
 							);
 					break;
 				case SEMIEMPIRICAL:
 					calcCDAtAlpha.semiempirical(
-							_alphaHTailCurrent, 
+							_alphaCanardCurrent, 
 							_currentMachNumber,
 							_currentAltitude
 							);
@@ -1440,7 +1441,7 @@ public class ACAerodynamicAndStabilityManager {
 				CalcCMAtAlpha calcCMAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.CANARD).new CalcCMAtAlpha();
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.CANARD).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
 				case AIRFOIL_DISTRIBUTION:
-					calcCMAtAlpha.fromAirfoilDistribution(_alphaHTailCurrent);
+					calcCMAtAlpha.fromAirfoilDistribution(_alphaCanardCurrent);
 					break;
 				case INPUT: 
 					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.CANARD).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE).equals(MethodEnum.INPUT))
@@ -1588,7 +1589,7 @@ public class ACAerodynamicAndStabilityManager {
 					List<Amount<Angle>> elevatorDeflection = new ArrayList<>();
 					elevatorDeflection.add(_theAerodynamicBuilderInterface.getElevatorDeflectionForAnalysis().to(NonSI.DEGREE_ANGLE));
 					calcCLAtAlphaHighLift.semiempirical(
-							_alphaHTailCurrent,
+							_alphaCanardCurrent,
 							elevatorDeflection, 
 							new ArrayList<>(), 
 							_currentMachNumber, 
@@ -1610,7 +1611,7 @@ public class ACAerodynamicAndStabilityManager {
 					List<Amount<Angle>> elevatorDeflection = new ArrayList<>();
 					elevatorDeflection.add(_theAerodynamicBuilderInterface.getElevatorDeflectionForAnalysis().to(NonSI.DEGREE_ANGLE));
 					calcCDAtAlphaHighLift.semiempirical(
-							_alphaHTailCurrent,
+							_alphaCanardCurrent,
 							elevatorDeflection, 
 							new ArrayList<>(), 
 							_currentMachNumber,
@@ -1632,7 +1633,7 @@ public class ACAerodynamicAndStabilityManager {
 					List<Amount<Angle>> elevatorDeflection = new ArrayList<>();
 					elevatorDeflection.add(_theAerodynamicBuilderInterface.getElevatorDeflectionForAnalysis().to(NonSI.DEGREE_ANGLE));
 					calcCMAtAlphaHighLift.semiempirical(
-							_alphaHTailCurrent,
+							_alphaCanardCurrent,
 							elevatorDeflection, 
 							new ArrayList<>(), 
 							_currentMachNumber
@@ -12526,6 +12527,8 @@ public class ACAerodynamicAndStabilityManager {
 			_writeHTail = Boolean.TRUE;
 		if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).isEmpty())
 			_writeVTail = Boolean.TRUE;
+		if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.CANARD).isEmpty())
+			_writeCanard = Boolean.TRUE;
 		if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).isEmpty())
 			_writeFuselage = Boolean.TRUE;
 		if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).isEmpty())
@@ -19183,6 +19186,10 @@ public class ACAerodynamicAndStabilityManager {
 				.setCanardPolarCurveFunction(canardPolarCurveFunction)
 				.setCanardMomentCurveFunction(canardMomentCurveFunction)
 				.setRudderDeflectionForAnalysis(rudderDeflectionForAnalysis)
+				.putComponentTaskList(ComponentEnum.CANARD, wingTaskList)
+				.setCanardLiftCurveFunction(canardLiftCurveFunction)
+				.setCanardPolarCurveFunction(canardPolarCurveFunction)
+				.setCanardMomentCurveFunction(canardMomentCurveFunction)
 				.putComponentTaskList(ComponentEnum.FUSELAGE, fuselageTaskList)
 				.setFuselagePolarCurveFunction(fuselagePolarCurveFunction)
 				.setFuselageMomentCurveFunction(fuselageMomentCurveFunction)
