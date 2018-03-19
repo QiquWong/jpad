@@ -9,6 +9,7 @@ import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShell;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
+import it.unina.daf.jpadcadsandbox.utils.AircraftUtils.XSpacingType;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
 import opencascade.TopoDS_Compound;
@@ -46,8 +47,12 @@ public class Test16 {
 
 		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(
 				fuselage, 
-				0.15, 1.0, 3, 13, 7, 1.0, 0.10, 3, 
-				exportLofts, exportSupportShapes);
+				0.15, 1.0, 3, 
+				13, XSpacingType.COSINUS,
+				7, XSpacingType.COSINUS,
+				1.0, 0.10, 3, 
+				exportLofts, false, exportSupportShapes
+				);
 
 		// Write to a file
 		String fileName = "test16.brep";

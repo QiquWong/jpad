@@ -10,6 +10,7 @@ import configuration.enumerations.ComponentEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
+import it.unina.daf.jpadcadsandbox.utils.AircraftUtils.XSpacingType;
 
 public class Test21mds {
 
@@ -27,7 +28,7 @@ public class Test21mds {
 		LiftingSurface verTail = theAircraft.getVTail();
 //		LiftingSurface canard = theAircraft.getCanard();
 		
-		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, true, false);	
+		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, true, true, false);	
 		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, false, true, false);
 		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, false, true, false);
 		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, false, true, false);
@@ -45,8 +46,8 @@ public class Test21mds {
 		allShapes.addAll(horTailShapes);
 		allShapes.addAll(verTailShapes);
 //		allShapes.addAll(canardShapes);
-		AircraftUtils.getAircraftSolidFile(allShapes, "ATR72", ".brep");
-		AircraftUtils.getAircraftSolidFile(allShapes, "ATR72", ".step");
+		AircraftUtils.getAircraftSolidFile(allShapes, "test", ".iges");
+//		AircraftUtils.getAircraftSolidFile(allShapes, "ATR72", ".step");
 	}
 
 }

@@ -6,7 +6,10 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,6 +21,8 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
 
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
@@ -54,6 +59,11 @@ import opencascade.BRep_Builder;
 import opencascade.BRep_Tool;
 import opencascade.GeomAbs_Shape;
 import opencascade.IFSelect_ReturnStatus;
+import opencascade.IGESControl_Controller;
+import opencascade.IGESControl_Writer;
+import opencascade.IGESData_DefList;
+import opencascade.IGESData_DefType;
+import opencascade.IGESData_IGESModel;
 import opencascade.STEPControl_StepModelType;
 import opencascade.STEPControl_Writer;
 import opencascade.StlAPI_Writer;
@@ -66,6 +76,7 @@ import opencascade.TopoDS_Shape;
 import opencascade.gp_Ax2;
 import opencascade.gp_Dir;
 import opencascade.gp_Pnt;
+import opencascade.gp_Pnt2d;
 import opencascade.gp_Trsf;
 import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
@@ -211,8 +222,7 @@ public final class AircraftUtils {
 			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
 //			System.setOut(originalOut);
 			System.out.println(theOperatingConditions.toString());
-//			System.setOut(filterStream);
-			
+//			System.setOut(filterStream);			
 			
 			System.setOut(originalOut);
 			return aircraft;
@@ -223,37 +233,88 @@ public final class AircraftUtils {
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return null;
-		}	
-		
+		}			
 	}
 
 	/**
 	 * Creates a list of shapes, mostly surfaces/shells, representing the fuselage.
-	 * @see getFuselageCAD(Fuselage fuselage, double noseFirstCapSectionFactor1, double noseFirstCapSectionFactor2, int numberNoseCapSections, int numberNosePatch2Sections, boolean exportSupportShapes)
+	 * @see getFuselageCAD(Fuselage fuselage, 
+	 * 			double noseFirstCapSectionFactor1, double noseFirstCapSectionFactor2, int numberNoseCapSections, 
+	 * 			int numberNosePatch2Sections, XSpacingType spacingTypePatch2,
+	 * 			int numberTailPatchSections, XSpacingType spacingTypeTailPatch,
+	 * 			double tailCapSectionFactor1, double tailCapSectionFactor2, int numberTailCapSections,
+	 * 			boolean exportLofts, boolean exportSolids, boolean exportSupportShapes)
 	 * 
-	 * noseFirstCapSectionFactor1 = 0.15, noseFirstCapSectionFactor2 = 1.00, numberNoseCapSections = 3, numberNosePatch2Sections = 9, numberTailPatchSections = 5, numberTailCapSections = 3
+	 * noseFirstCapSectionFactor1 = 0.15, noseFirstCapSectionFactor2 = 1.00, numberNoseCapSections = 3, numberNosePatch2Sections = 7, numberTailPatchSections = 7, tailCapSectionFactor1 = 1.00, tailCapSectionFactor2 = 0.15, numberTailCapSections = 3
 	 * 
 	 * @param fuselage				the fuselage object, extracted from a Aircraft object
 	 * @param exportSupportShapes	include supporting sections, outline curves, etc in the output shape list 
 	 * @return
 	 */
 	public static List<OCCShape> getFuselageCAD(Fuselage fuselage, boolean exportSupportShapes) {
-		return getFuselageCAD(fuselage, 0.15, 1.0, 3, 9, 7, 1.0, 0.10, 3, true, exportSupportShapes);
+		return getFuselageCAD(fuselage, 
+				0.15, 1.0, 3, 
+				7, XSpacingType.COSINUS, 
+				7, XSpacingType.COSINUS, 
+				1.0, 0.15, 3, 
+				true, true, exportSupportShapes);
 	}
 
 	/**
 	 * Creates a list of shapes, mostly surfaces/shells, representing the fuselage.
-	 * @see getFuselageCAD(Fuselage fuselage, double noseFirstCapSectionFactor1, double noseFirstCapSectionFactor2, int numberNoseCapSections, int numberNosePatch2Sections, boolean exportSupportShapes)
+	 * @see getFuselageCAD(Fuselage fuselage, 
+	 * 			double noseFirstCapSectionFactor1, double noseFirstCapSectionFactor2, int numberNoseCapSections, 
+	 * 			int numberNosePatch2Sections, XSpacingType spacingTypePatch2,
+	 * 			int numberTailPatchSections, XSpacingType spacingTypeTailPatch,
+	 * 			double tailCapSectionFactor1, double tailCapSectionFactor2, int numberTailCapSections,
+	 * 			boolean exportLofts, boolean exportSolids, boolean exportSupportShapes)
 	 * 
-	 * noseFirstCapSectionFactor1 = 0.15, noseFirstCapSectionFactor2 = 1.00, numberNoseCapSections = 3, numberNosePatch2Sections = 9, numberTailPatchSections = 5, numberTailCapSections = 3
+	 * noseFirstCapSectionFactor1 = 0.15, noseFirstCapSectionFactor2 = 1.00, numberNoseCapSections = 3, numberNosePatch2Sections = 7, numberTailPatchSections = 7, tailCapSectionFactor1 = 1.00, tailCapSectionFactor2 = 0.15, numberTailCapSections = 3
 	 * 
 	 * @param fuselage				the fuselage object, extracted from a Aircraft object
 	 * @param exportLofts			include fuselage loft in the output shape list 
+	 * @param exportSolids          include fuselage solid in the output shape list
 	 * @param exportSupportShapes	include supporting sections, outline curves, etc in the output shape list 
 	 * @return
 	 */
-	public static List<OCCShape> getFuselageCAD(Fuselage fuselage, boolean exportLofts, boolean exportSupportShapes) {
-		return getFuselageCAD(fuselage, 0.15, 1.0, 3, 9, 7, 1.0, 0.10, 3, exportLofts, exportSupportShapes);
+	public static List<OCCShape> getFuselageCAD(Fuselage fuselage, boolean exportLofts, boolean exportSolids, boolean exportSupportShapes) {
+		return getFuselageCAD(fuselage, 
+				0.15, 1.0, 3, 
+				7, XSpacingType.COSINUS, 
+				7, XSpacingType.COSINUS, 
+				1.0, 0.15, 3, 
+				exportLofts, exportSolids, exportSupportShapes);
+	}
+	
+	/**
+	 * Creates a list of shapes, mostly surfaces/shells, representing the fuselage.
+	 * @see getFuselageCAD(Fuselage fuselage, 
+	 * 			double noseFirstCapSectionFactor1, double noseFirstCapSectionFactor2, int numberNoseCapSections, 
+	 * 			int numberNosePatch2Sections, XSpacingType spacingTypePatch2,
+	 * 			int numberTailPatchSections, XSpacingType spacingTypeTailPatch,
+	 * 			double tailCapSectionFactor1, double tailCapSectionFactor2, int numberTailCapSections,
+	 * 			boolean exportLofts, boolean exportSolids, boolean exportSupportShapes)
+	 * 
+	 * noseFirstCapSectionFactor1 = 0.15, noseFirstCapSectionFactor2 = 1.00, numberNoseCapSections = 3, numberNosePatch2Sections = 7, numberTailPatchSections = 7, tailCapSectionFactor1 = 1.00, tailCapSectionFactor2 = 0.15, numberTailCapSections = 3
+	 * 
+	 * @param fuselage						the fuselage object, extracted from a Aircraft object
+	 * @param numberNosePatch2Sections 		number of Patch-2 supporting sections, e.g. 9
+	 * @param numberTailPatchSections		number of Patch-4 supporting sections, e.g. 5
+	 * @param exportLofts					include fuselage loft in the output shape list 
+	 * @param exportSolids					include fuselage solid in the output shape list
+	 * @param exportSupportShapes			include supporting sections, outline curves, etc in the output shape list 
+	 * @return
+	 */
+	public static List<OCCShape> getFuselageCAD(Fuselage fuselage, 
+			int numberNosePatch2Sections, int numberTailPatchSections, 
+			boolean exportLofts, boolean exportSolids, boolean exportSupportShapes) {
+		
+		return getFuselageCAD(fuselage,
+				0.15, 1.0, 3,
+				numberNosePatch2Sections, XSpacingType.COSINUS,
+				numberTailPatchSections, XSpacingType.COSINUS,
+				1.0, 0.15, 3, 
+				exportLofts, exportSolids, exportSupportShapes);
 	}
 	
 	/**
@@ -275,24 +336,29 @@ public final class AircraftUtils {
 	 * Tail cap patch:
 	 * Patch-5
 	 * 
-	 * @param fuselage 						the fuselage object, extracted from a Aircraft object
+	 * @param fuselage 						the fuselage object, extracted from an Aircraft object
 	 * @param noseCapSectionFactor1 		the factor multiplying xNoseCap/noseCapLength to obtain the first support section of Patch-1, e.g. 0.15
 	 * @param noseCapSectionFactor2			the factor multiplying xNoseCap/noseCapLength to obtain the last support section of Patch-1, e.g. 1.0 (>1.0 means x > xNoseCap) 
 	 * @param numberNoseCapSections			number of Patch-1 supporting sections, e.g. 3 
-	 * @param numberNosePatch2Sections		number of Patch-2 supporting sections, e.g. 9
-	 * @param numberTailPatchSections		number of Patch-4 supporting sections, e.g. 5
+	 * @param numberNosePatch2Sections		number of Patch-2 supporting sections, e.g. 7
+	 * @param spacingTypePatch2             spacing type for Patch-2
+	 * @param numberTailPatchSections		number of Patch-4 supporting sections, e.g. 7
+	 * @param spacingTypeTailPatch          spacing type for Patch-4
 	 * @param tailCapSectionFactor1 		the factor multiplying (fuselageLength - xTailCap)/tailCapLength to obtain the first support section of Patch-5, e.g. 1.0 (>1.0 means x < xFusLength - tailCapLength)
 	 * @param tailCapSectionFactor2 	    the factor multiplying (fuselageLength - xTailCap)/tailCapLength to obtain the last support section of Patch-5, e.g. 0.15
 	 * @param numberTailCapSections			number of Patch-5 supporting sections, e.g. 3 
 	 * @param exportLofts					include fuselage loft in the output shape list 
+	 * @param exportSolids					include fuselage solid in the output shape list
 	 * @param exportSupportShapes			include supporting sections, outline curves, etc in the output shape list 
 	 * @return
 	 */
 	public static List<OCCShape> getFuselageCAD(Fuselage fuselage,
 			double noseCapSectionFactor1, double noseCapSectionFactor2, int numberNoseCapSections, 
-			int numberNosePatch2Sections, int numberTailPatchSections, double tailCapSectionFactor1, double tailCapSectionFactor2, int numberTailCapSections,
-			boolean exportLofts,
-			boolean exportSupportShapes) {
+			int numberNosePatch2Sections, XSpacingType spacingTypePatch2, 
+			int numberTailPatchSections, XSpacingType spacingTypeTailPatch, 
+			double tailCapSectionFactor1, double tailCapSectionFactor2, int numberTailCapSections,
+			boolean exportLofts, boolean exportSolids, boolean exportSupportShapes) {
+		
 		if (fuselage == null)
 			return null;
 		
@@ -304,10 +370,10 @@ public final class AircraftUtils {
 		}
 		
 		OCCShape patch1 = null, // nose cap 
-				patch2 = null, // nose trunk
-				patch3 = null, // cylindrical trunk 
-				patch4 = null, // tail trunk 
-				patch5 = null; // tail cap
+				 patch2 = null, // nose trunk
+				 patch3 = null, // cylindrical trunk 
+				 patch4 = null, // tail trunk 
+				 patch5 = null; // tail cap
 		
 		List<OCCShape> result = new ArrayList<>();
 		List<OCCShape> extraShapes = new ArrayList<>();
@@ -329,9 +395,9 @@ public final class AircraftUtils {
 		// all xbar's are normalized with noseLength
 		List<Double> xbars1 = Arrays.asList(
 				MyArrayUtils
-					// .linspaceDouble(
+//					.linspaceDouble(
 					.halfCosine2SpaceDouble(
-					// .cosineSpaceDouble(
+//					.cosineSpaceDouble(
 					noseCapSectionFactor1*xbarNoseCap, noseCapSectionFactor2*xbarNoseCap, 
 					numberNoseCapSections) // n. points
 				);
@@ -358,7 +424,6 @@ public final class AircraftUtils {
 							new PVector(0.0f, 0.0f, (float) zNoseTip.doubleValue(SI.METER)), // Nose tip vertex
 							sections1
 							);
-
 		}
 		
 		System.out.println("========== [AircraftUtils::getFuselageCAD] Nose trunk (no cap): x=" + noseCapStation + " to x=" + noseLength);
@@ -366,14 +431,19 @@ public final class AircraftUtils {
 		System.out.println("Getting selected sections ...");
 
 		// all xbar's are normalized with noseLength
+//		List<Double> xbars2 = Arrays.asList(
+//				MyArrayUtils
+//				// .linspaceDouble(
+//                // .halfCosine2SpaceDouble(
+//				.cosineSpaceDouble(
+//					noseCapSectionFactor2*xbarNoseCap, 1.0, 
+//					numberNosePatch2Sections) // n. points
+//				);
 		List<Double> xbars2 = Arrays.asList(
-				MyArrayUtils
-				// .linspaceDouble(
-				// .halfCosine1SpaceDouble(
-				.cosineSpaceDouble(
-					noseCapSectionFactor2*xbarNoseCap, 1.0, 
-					numberNosePatch2Sections) // n. points
-				);
+				spacingTypePatch2.calculateSpacing(
+						noseCapSectionFactor2*xbarNoseCap, 1.0,
+						numberNosePatch2Sections
+						));
 
 		// x stations defining nose outlines
 		List<Double> xmtPatch2 = new ArrayList<>();
@@ -446,19 +516,19 @@ public final class AircraftUtils {
 				+ noseLength.plus(cylinderLength) + " to x=" + fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)) + " (fus. length - tail cap length)"
 				);
 
-		// x stations defining cylinder outlines
+		// x stations defining cylinder outlines		
 //		List<Double> xmtPatch4 = Arrays.asList(
-//				MyArrayUtils.halfCosine1SpaceDouble( // cosineSpaceDouble( // 
+//				MyArrayUtils.cosineSpaceDouble(
 //						noseLength.plus(cylinderLength).doubleValue(SI.METER), 
 //						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)).doubleValue(SI.METER),
 //						numberTailPatchSections) // n. points
 //				);
 		List<Double> xmtPatch4 = Arrays.asList(
-		MyArrayUtils.cosineSpaceDouble( // cosineSpaceDouble( // 
-				noseLength.plus(cylinderLength).doubleValue(SI.METER), 
-				fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)).doubleValue(SI.METER),
-				numberTailPatchSections) // n. points
-		);
+				spacingTypeTailPatch.calculateSpacing(
+						noseLength.plus(cylinderLength).doubleValue(SI.METER), 
+						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)).doubleValue(SI.METER), 
+						numberTailPatchSections)
+				);	
 		
 		System.out.println("Tail trunk selected x-stations (m), Patch-4: " + xmtPatch4.toString());
 		
@@ -470,6 +540,7 @@ public final class AircraftUtils {
 							.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(x), false)
 						 	)
 						 );
+		
 		if(exportLofts) {
 			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-4, loft: tail
 			patch4 = OCCUtils.makePatchThruSections(
@@ -477,14 +548,13 @@ public final class AircraftUtils {
 		}
 		
 		// tail cap patch
-
 		System.out.println("========== [AircraftUtils::getFuselageCAD] Fuselage tail cap trunk: x=" 
 				+ fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)) + " to x=" + fuselageLength + " (fus. total length)"
 				);
 
 		// x stations in tail cap
 		List<Double> xmtPatch5 = Arrays.asList(
-				MyArrayUtils.halfCosine2SpaceDouble(
+				MyArrayUtils.halfCosine1SpaceDouble(
 						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)).doubleValue(SI.METER), 
 						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor2)).doubleValue(SI.METER), // tweak to avoid a degenerate section 
 						numberTailCapSections) // n. points
@@ -512,9 +582,6 @@ public final class AircraftUtils {
 			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap
 			patch5 = OCCUtils.makePatchThruSections(cadCurvesTailCapTrunk, vertexTailTip);
 		}
-		
-		// TODO: make this as a parameter
-		boolean exporSolid = true;
 		
 		BRepBuilderAPI_Sewing sewMaker = new BRepBuilderAPI_Sewing();
 		
@@ -572,8 +639,7 @@ public final class AircraftUtils {
 				result.addAll(mirroredShapes);
 				
 				// TODO: make a solid from the two halves (right/left)
-				exporSolid = true;
-				if (exporSolid) {
+				if (exportSolids) {
 					System.out.println("========== [AircraftUtils::getFuselageCAD] Experimental: build a solid ...");
 					CADSolid solidFuselage = null;
 					BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
@@ -596,7 +662,6 @@ public final class AircraftUtils {
 						result.add((OCCShape) solidFuselage);
 						
 						System.out.println(OCCUtils.reportOnShape(((OCCShape) solidFuselage).getShape(), "Fuselage solid (Right + Left)"));
-
 					}
 				}				
 				
@@ -608,7 +673,7 @@ public final class AircraftUtils {
 				result.add(patch4); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-4, loft: tail
 				result.add(patch5); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap				
 				System.out.println("========== [AircraftUtils::getFuselageCAD] Exporting un-sewed lofts.");
-				if (exporSolid)
+				if (exportSolids)
 					System.out.println("========== [AircraftUtils::getFuselageCAD] Sewing failed, solid not created.");
 			}
 		}
@@ -746,14 +811,12 @@ public final class AircraftUtils {
 			.map(c -> (OCCGeomCurve3D)c)
 			.map(crv -> (OCCEdge)(crv.edge()))
 			.forEach(e -> extraShapes.add(e));
-			
-		
+				
 		// support sections of cylinder, patch-3
 		
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderInitialSection).edge());
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderMidSection).edge());
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderTerminalSection).edge());
-
 
 		// points z's on cylinder outline curve, XZ, upper
 		List<double[]> pointsCylinderXZUpper = xmtPatch3.stream()
@@ -763,6 +826,7 @@ public final class AircraftUtils {
 						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
 				})
 				.collect(Collectors.toList());
+		
 		// points z's on cylinder outline curve, XZ, lower
 		List<double[]> pointsCylinderXZLower = xmtPatch3.stream()
 				.map(x -> new double[]{
@@ -804,6 +868,7 @@ public final class AircraftUtils {
 						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
 				})
 				.collect(Collectors.toList());
+		
 		// points z's on nose outline curve, XZ, lower
 		List<double[]> pointsTailXZLower = xmtPatch4.stream()
 				.map(x -> new double[]{
@@ -841,10 +906,9 @@ public final class AircraftUtils {
 		         .forEach(e -> extraShapes.add(e));			
 		
 		// tail cap support entities (outline curves, vertices)
-
 		cadCurvesTailCapTrunk.stream()
-         .map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
-         .forEach(e -> extraShapes.add(e));			
+				.map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
+				.forEach(e -> extraShapes.add(e));			
 		
 		// points z's on tail cap outline curve, XZ, upper
 		List<double[]> pointsTailCapXZUpper = xmtPatch5.stream()
@@ -855,6 +919,7 @@ public final class AircraftUtils {
 				})
 				.collect(Collectors.toList());
 		pointsTailCapXZUpper.add(vertexTailTip.pnt()); // add tail tip point
+		
 		// points z's on nose outline curve, XZ, lower
 		List<double[]> pointsTailCapXZLower = xmtPatch5.stream()
 				.map(x -> new double[]{
@@ -980,10 +1045,6 @@ public final class AircraftUtils {
 			if (em.IsDone() == 1)
 				tdsEdgesLE.add(em.Edge());
 		}
-		
-//		BRepBuilderAPI_MakeWire wm = new BRepBuilderAPI_MakeWire();
-//		tdsEdgesLE.forEach(e -> wm.Add(e));
-//		wm.Build();
 
 		// export
 		tdsEdgesLE.forEach(e -> extraShapes.add((OCCShape)OCCUtils.theFactory.newShape(e)));
@@ -1063,6 +1124,8 @@ public final class AircraftUtils {
 				.collect(Collectors.toList());
 
 		cadCurveAirfoilBPList.forEach(crv -> extraShapes.add((OCCEdge)((OCCGeomCurve3D)crv).edge()));
+		
+		System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] You are here!");
 
 		// airfoils between breakpoints
 		List<CADGeomCurve3D> cadCurveAirfoilBetBPList = new ArrayList<CADGeomCurve3D>();
@@ -1737,8 +1800,7 @@ public final class AircraftUtils {
 			lofts.addAll(sewedWing);
 			
 			// Make a solid from the sewed halves
-			boolean exportSolid = true;
-			if(exportSolid) {
+			if(exportSolids) {
 				System.out.println("========== [AircraftUtils::getLiftingSurfaceCAD] Building the solid");
 				CADSolid solidWing = null;
 				BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
@@ -1775,6 +1837,39 @@ public final class AircraftUtils {
 			result.addAll(extraShapes);
 		}				
 		return result;
+	}
+	
+	public enum XSpacingType {
+		UNIFORM {
+			@Override
+			public Double[] calculateSpacing(double x1, double x2, int n) {
+				Double[] xSpacing = MyArrayUtils.linspaceDouble(x1, x2, n);
+				return xSpacing;
+			}
+		},
+		COSINUS {
+			@Override
+			public Double[] calculateSpacing(double x1, double x2, int n) {
+				Double[] xSpacing = MyArrayUtils.cosineSpaceDouble(x1, x2, n);
+				return xSpacing;
+			}
+		},
+		HALFCOSINUS1 { // finer spacing close to x1
+			@Override
+			public Double[] calculateSpacing(double x1, double x2, int n) {
+				Double[] xSpacing = MyArrayUtils.halfCosine1SpaceDouble(x1, x2, n);
+				return xSpacing;
+			}
+		}, 
+		HALFCOSINUS2 { // finer spacing close to x2
+			@Override
+			public Double[] calculateSpacing(double x1, double x2, int n) {
+				Double[] xSpacing = MyArrayUtils.halfCosine2SpaceDouble(x1, x2, n);
+				return xSpacing;
+			}
+		}; 
+		
+		public abstract Double[] calculateSpacing(double x1, double x2, int n);
 	}
 	
 	public static void getAircraftSolidFile(
@@ -1827,6 +1922,26 @@ public final class AircraftUtils {
 			
 			break;
 			
+		case ".iges":
+			System.out.println("========== [AircraftUtils::getAircraftSolidFile] .iges file extension selected");
+			String fileNameIges = fileName + fileExtension;
+			
+			if(IGESControl_Controller.Init() == 1) {
+				IGESControl_Writer igesWriter = new IGESControl_Writer();
+				tdsSolids.forEach(s -> { 
+					long res = igesWriter.AddShape(s);
+					System.out.println(res);
+				});
+				igesWriter.ComputeModel();
+				
+				System.out.println(".iges file writing ...");
+				result = igesWriter.Write(fileNameIges);
+				System.out.println("========== [AircraftUtils::getAircraftSolidFile] file correctly written? " + (result == 1)); 					
+			} else 
+				System.out.println("========== [AircraftUtils::getAircraftSolidFile] unable to initialize the iges controller");
+			
+			break;
+			
 		case ".stl":
 			System.out.println("========== [AircraftUtils::getAircraftSolidFile] .stl file extension selected");
 			String fileNameStl = fileName + fileExtension;
@@ -1875,9 +1990,37 @@ public final class AircraftUtils {
 		
 		List<double[]> actualAirfoilCoordinates = new ArrayList<>();
 		
-		int nPoints = theCreator.getXCoords().length;
-		double[] xCoords = MyArrayUtils.convertToDoublePrimitive(theCreator.getXCoords());
-		double[] zCoords = MyArrayUtils.convertToDoublePrimitive(theCreator.getZCoords());
+		List<Double> xx = new ArrayList<>();
+		List<Double> zz = new ArrayList<>();
+		
+		// delete duplicates entries in the airfoil coordinates arrays
+		List<PVector> noInternalDuplicatesCoords = IntStream.range(0, theCreator.getXCoords().length)
+				.mapToObj(i -> new PVector(
+						theCreator.getXCoords()[i].floatValue(), 
+						theCreator.getZCoords()[i].floatValue()
+						))
+				.collect(Collectors.toList());
+		
+		Set<PVector> uniqueEntries = new HashSet<>();
+		for(Iterator<PVector> iter = noInternalDuplicatesCoords.listIterator(1); iter.hasNext(); ) { // skipping first coordinate
+			PVector point = (PVector) iter.next();
+			if(!uniqueEntries.add(point))
+				iter.remove();
+		}
+		
+		noInternalDuplicatesCoords.forEach(
+				pnt -> {
+					xx.add((double) pnt.x); 
+					zz.add((double) pnt.y);
+					});
+		
+		int nPoints = xx.size();
+		double[] xCoords = MyArrayUtils.convertToDoublePrimitive(xx);
+		double[] zCoords = MyArrayUtils.convertToDoublePrimitive(zz);
+		
+//		int nPoints = theCreator.getXCoords().length;
+//		double[] xCoords = MyArrayUtils.convertToDoublePrimitive(theCreator.getXCoords());
+//		double[] zCoords = MyArrayUtils.convertToDoublePrimitive(theCreator.getZCoords());
 		
 		double c = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()), 
@@ -1912,13 +2055,6 @@ public final class AircraftUtils {
 			x = xCoords[i]*c;
 			y = 0.0;
 			z = zCoords[i]*c;
-
-//			// Rotation due to twist
-//			if(!theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
-//				double r = Math.sqrt(x*x + z*z);
-//				x = (x - r*(1-Math.cos(-twist - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN))));
-//				z = (z + r*Math.sin(-twist - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));				
-//			}
 			
 			// Rotation due to twist
 			if(!theLiftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.VERTICAL_TAIL)) {

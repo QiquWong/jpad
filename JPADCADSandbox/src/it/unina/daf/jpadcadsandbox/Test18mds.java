@@ -10,6 +10,7 @@ import configuration.enumerations.ComponentEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
+import it.unina.daf.jpadcadsandbox.utils.AircraftUtils.XSpacingType;
 import opencascade.IFSelect_ReturnStatus;
 import opencascade.STEPControl_StepModelType;
 import opencascade.STEPControl_Writer;
@@ -44,10 +45,12 @@ public class Test18mds {
 		fuselage.getFuselageCreator().calculateGeometry(40, 3, 40, 20, 20);
 		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(
 				fuselage, 
-				0.15, 1.0, 3, 13, 7, 1.0, 0.10, 3, 
-				exportLofts, exportSupportShapes);
-
-		
+				0.15, 1.0, 3, 
+				13, XSpacingType.COSINUS, 
+				7, XSpacingType.COSINUS,
+				1.0, 0.10, 3, 
+				exportLofts, exportSolids, exportSupportShapes
+				);		
 		
 		// Write to a file
 		String fileName = "test18mds.brep";

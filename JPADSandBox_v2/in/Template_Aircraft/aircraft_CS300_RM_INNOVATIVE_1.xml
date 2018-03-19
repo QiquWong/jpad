@@ -13,7 +13,7 @@
                 </position>
                 <rigging_angle unit="deg">2.0000</rigging_angle>
             </wing>
-            <horizontal_tail file="htail_CS300_RM_INNOVATIVE.xml">
+            <horizontal_tail file="htail_CS300_RM_INNOVATIVE_1.xml">
                 <position>
                     <x unit="m">31.5</x>
                     <y unit="m">0.0000</y>
