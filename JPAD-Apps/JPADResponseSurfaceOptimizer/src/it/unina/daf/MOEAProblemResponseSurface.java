@@ -26,6 +26,7 @@ import com.google.common.collect.Lists;
 
 import configuration.enumerations.ConstraintsViolationConditionEnum;
 import flanagan.interpolation.PolyCubicSpline;
+import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 
 /** 
@@ -52,8 +53,8 @@ public class MOEAProblemResponseSurface extends AbstractProblem {
 	private double[] variablesUpperBounds;
 	private double[] variablesLowerBounds;
 	private double[] constraintsValues;
-	private ConstraintsViolationConditionEnum[] constraintsViolationConditions;
-	private boolean[] maximizationProblemConditionArray;
+	private List<ConstraintsViolationConditionEnum> constraintsViolationConditions;
+	private Boolean[] maximizationProblemConditionArray;
 	private String[] objectivesLabelArray;
 	private String[] variablesLabelArray;
 	
@@ -83,13 +84,121 @@ public class MOEAProblemResponseSurface extends AbstractProblem {
 	 */
 	public static InputManagerInterface importInputFile(String filePath) {
 		
-		// TODO : READ ALL DATA AND PERFORM ALL THE DIMENSION CHECKS
-		// TODO : CHECK IF IT'S A SINGLE OBJECTIVE PROBLEM AND ALLOW ONLY SINGLE OBJECTIVE OPTIMIZATION ALGORITHMS 
-		//        (MAYBE WITH AN AlgorithmEnum) 
+		JPADXmlReader reader = new JPADXmlReader(filePath);
 		
+		// Values initialization:
+		int numberOfVariables = 0;
+		int numberOfObjectives = 0;
+		int numberOfConstraints = 0;
+		int maxNumberOfEvaluations = 10000;
+		int populationSize = 50;
+		List<Boolean> maximizationConditions = new ArrayList<>();
+		double[] variableLowerBounds = null;
+		double[] variableUpperBounds = null;
+		double[] constraintsValues = null;
+		List<ConstraintsViolationConditionEnum> constraintsViolationConditions = new ArrayList<>();
+		String[] algorithms = null;
 		
+		// Reading all data ...
+		String numberOfVarialbleProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/number_of_variables");
+		if(numberOfVarialbleProperty != null)
+			numberOfVariables = Integer.valueOf(numberOfVarialbleProperty);
+
+		String numberOfObjectiveProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/number_of_objectives");
+		if(numberOfObjectiveProperty != null)
+			numberOfObjectives = Integer.valueOf(numberOfObjectiveProperty);
+		
+		String numberOfConstraintsProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/number_of_constraints");
+		if(numberOfConstraintsProperty != null)
+			numberOfConstraints = Integer.valueOf(numberOfConstraintsProperty);
+		
+		String maxNumberOfEvaluationsProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/max_number_of_evaluations");
+		if(maxNumberOfEvaluationsProperty != null)
+			maxNumberOfEvaluations = Integer.valueOf(maxNumberOfEvaluationsProperty);
+		
+		String populationSizeProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/population_size");
+		if(populationSizeProperty != null)
+			populationSize = Integer.valueOf(populationSizeProperty);
+		
+		String maximizationConditionsProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/maximization_conditions");
+		String[] maximizationConditionsStringArray = null;
+		if(maximizationConditionsProperty != null) {
+			maximizationConditionsStringArray = maximizationConditionsProperty.split(";");
+			maximizationConditions = Arrays.stream(maximizationConditionsStringArray)
+			.map(s -> Boolean.valueOf(s))
+			.collect(Collectors.toList());
+		}
+		
+		String variableLowerBoundsProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/variable_lower_bounds");
+		if(variableLowerBoundsProperty != null)
+			variableLowerBounds = MyArrayUtils.convertToDoublePrimitive(
+					reader.readArrayDoubleFromXML("//JPAD_Optimizer/variable_lower_bounds")
+					);
+		
+		String variableUpperBoundsProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/variable_upper_bounds");
+		if(variableUpperBoundsProperty != null)
+			variableUpperBounds = MyArrayUtils.convertToDoublePrimitive(
+					reader.readArrayDoubleFromXML("//JPAD_Optimizer/variable_upper_bounds")
+					);
+		
+		String constraintsValuesProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/constraints_values");
+		if(constraintsValuesProperty != null)
+			constraintsValues = MyArrayUtils.convertToDoublePrimitive(
+					reader.readArrayDoubleFromXML("//JPAD_Optimizer/constraints_values")
+					);
+		
+		String constraintsViolationConditionsProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/constraints_violation_conditions");
+		if(constraintsViolationConditionsProperty != null)
+			constraintsViolationConditions = reader.getXMLPropertiesByPath("//JPAD_Optimizer/constraints_violation_conditions").stream()
+			.map(s -> ConstraintsViolationConditionEnum.valueOf(s))
+			.collect(Collectors.toList());
+		
+		String algorithmsProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/algorithms");
+		if(algorithmsProperty != null) {
+			algorithms = algorithmsProperty.split(";");
+		}
+		
+		// Performing dimension checks ...
+		if(maximizationConditions.size() != numberOfObjectives) {
+			System.err.println("\n\tERROR: The number of MAXIMIZARTION CONDITIONS does not match the declared NUMBER OF OBJECTIVES! ... terminating");
+			System.exit(1);
+		}
+		
+		if(variableLowerBounds.length != numberOfVariables) {
+			System.err.println("\n\tERROR: The number of VARIABLE LOWER BOUNDS does not match the declared NUMBER OF VARIABLES! ... terminating");
+			System.exit(1);
+		}
+		
+		if(variableUpperBounds.length != numberOfVariables) {
+			System.err.println("\n\tERROR: The number of VARIABLE UPPER BOUNDS does not match the declared NUMBER OF VARIABLES! ... terminating");
+			System.exit(1);
+		}
+		
+		if(numberOfConstraints > 0 ) {
+			if(constraintsValues.length != numberOfConstraints) {
+				System.err.println("\n\tERROR: The number of CONSTRAINTS VALUES does not match the declared NUMBER OF CONSTRAINTS! ... terminating");
+				System.exit(1);
+			}
+
+			if(constraintsViolationConditions.size() != numberOfConstraints) {
+				System.err.println("\n\tERROR: The number of CONSTRAINT VIOLATION CONDITIONS does not match the declared NUMBER OF CONSTRAINTS! ... terminating");
+				System.exit(1);
+			}
+		}
+		
+		// Creating the input manager interface
 		return new InputManagerInterface.Builder()
-				// add all the set methods
+				.setNumberOfVariables(numberOfVariables)
+				.setNumberOfObjectives(numberOfObjectives)
+				.setNumberOfConstraints(numberOfConstraints)
+				.setMaximumNumberOfEvaluations(maxNumberOfEvaluations)
+				.setPopulationSize(populationSize)
+				.setMaximizationProblemConditionArray(maximizationConditions.toArray(new Boolean[numberOfObjectives]))
+				.setVariablesLowerBounds(variableLowerBounds)
+				.setVariablesUpperBounds(variableUpperBounds)
+				.setConstraintsValues(constraintsValues)
+				.setConstraintsViolationConditions(constraintsViolationConditions)
+				.setAlgorithms(algorithms)
 				.build();
 		
 	}
@@ -1098,28 +1207,28 @@ public class MOEAProblemResponseSurface extends AbstractProblem {
 			}
 			else {
 				for(int i=0; i<numberOfConstraints; i++) {
-					if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.LESS_THAN)) {
+					if(constraintsViolationConditions.get(i).equals(ConstraintsViolationConditionEnum.LESS_THAN)) {
 						double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
 						if(interpolatedConstraint > constraintsValues[i])
 							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
 						else
 							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
 					}
-					else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.LESS_EQUAL_THAN)) {
+					else if(constraintsViolationConditions.get(i).equals(ConstraintsViolationConditionEnum.LESS_EQUAL_THAN)) {
 						double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
 						if(interpolatedConstraint >= constraintsValues[i])
 							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
 						else
 							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
 					}
-					else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.BIGGER_THAN)) {
+					else if(constraintsViolationConditions.get(i).equals(ConstraintsViolationConditionEnum.BIGGER_THAN)) {
 						double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
 						if(interpolatedConstraint < constraintsValues[i])
 							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
 						else
 							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
 					}
-					else if(constraintsViolationConditions[i].equals(ConstraintsViolationConditionEnum.BIGGER_EQUAL_THAN)) {
+					else if(constraintsViolationConditions.get(i).equals(ConstraintsViolationConditionEnum.BIGGER_EQUAL_THAN)) {
 						double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
 						if(interpolatedConstraint <= constraintsValues[i])
 							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
@@ -1198,19 +1307,19 @@ public class MOEAProblemResponseSurface extends AbstractProblem {
 		this.constraintsValues = constraintsValues;
 	}
 
-	public ConstraintsViolationConditionEnum[] getConstraintsViolationConditions() {
+	public List<ConstraintsViolationConditionEnum> getConstraintsViolationConditions() {
 		return constraintsViolationConditions;
 	}
 
-	public void setConstraintsViolationConditions(ConstraintsViolationConditionEnum[] constraintsViolationConditions) {
+	public void setConstraintsViolationConditions(List<ConstraintsViolationConditionEnum> constraintsViolationConditions) {
 		this.constraintsViolationConditions = constraintsViolationConditions;
 	}
 
-	public boolean[] getMaximizationProblemConditionArray() {
+	public Boolean[] getMaximizationProblemConditionArray() {
 		return maximizationProblemConditionArray;
 	}
 
-	public void setMaximizationProblemConditionArray(boolean[] maximizationProblemConditionArray) {
+	public void setMaximizationProblemConditionArray(Boolean[] maximizationProblemConditionArray) {
 		this.maximizationProblemConditionArray = maximizationProblemConditionArray;
 	}
 

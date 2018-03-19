@@ -16,6 +16,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.moeaframework.Executor;
+import org.moeaframework.analysis.sensitivity.ResultFileWriter;
 import org.moeaframework.core.NondominatedPopulation;
 
 import configuration.MyConfiguration;

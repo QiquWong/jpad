@@ -1,5 +1,7 @@
 package it.unina.daf;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import org.inferred.freebuilder.FreeBuilder;
@@ -11,14 +13,14 @@ public interface InputManagerInterface {
 	int getNumberOfVariables();
 	int getNumberOfObjectives();
 	int getNumberOfConstraints();
-	boolean[] getMaximizationProblemConditionArray();
+	Boolean[] getMaximizationProblemConditionArray();
 	double[] getVariablesLowerBounds();
 	double[] getVariablesUpperBounds();
 	
 	@Nullable
 	double[] getConstraintsValues();
 	@Nullable
-	ConstraintsViolationConditionEnum[] getConstraintsViolationConditions();
+	List<ConstraintsViolationConditionEnum> getConstraintsViolationConditions();
 	
 	String[] getAlgorithms();
 	int getMaximumNumberOfEvaluations();
@@ -27,9 +29,6 @@ public interface InputManagerInterface {
 	class Builder extends InputManagerInterface_Builder {
 		public Builder() {
 			
-			// Default Values
-			setPopulationSize(50);
-			setMaximumNumberOfEvaluations(10000);
 		}
 	}
 }

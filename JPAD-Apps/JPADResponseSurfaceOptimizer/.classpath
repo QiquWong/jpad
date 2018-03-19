@@ -19,5 +19,10 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/JMetal-4.3.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreechart-1.5.0.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreesvg-3.3.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

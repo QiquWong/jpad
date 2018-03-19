@@ -71,9 +71,12 @@ public class OptimizationMain  {
 
 		MyArgumentsOptimization va = new MyArgumentsOptimization();
 		OptimizationMain.theCmdLineParser = new CmdLineParser(va);
-		MyConfiguration.initWorkingDirectoryTree();
+		MyConfiguration.initWorkingDirectoryTree(
+				MyConfiguration.currentDirectoryString,
+				MyConfiguration.inputDirectory, 
+				MyConfiguration.outputDirectory
+				); 
 		String outputPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
-		String subFolderPath = JPADStaticWriteUtils.createNewFolder(outputPath + "MOEA_Framework_Tests_02" + File.separator);
 		
 		try {
 			OptimizationMain.theCmdLineParser.parseArgument(args);
@@ -89,7 +92,7 @@ public class OptimizationMain  {
 
 			////////////////////////////////////////////////////////////////////////
 			// Optimization ...
-			System.out.println("\n\n\tRunning MOEA Framework optimization ... \n");
+			System.out.println("\n\n\tRunning JPAD response surface optimization ... \n");
 			
 			//......................................................................
 			// Defining the optimization problem ...
@@ -122,7 +125,7 @@ public class OptimizationMain  {
 						.run()
 						);
 				
-				System.out.println("\tDone!! \n");
+				System.out.println("\tDone!!");
 			}
 
 			//......................................................................
@@ -161,7 +164,7 @@ public class OptimizationMain  {
 				optimumVariableMapList.put(var, optimumCurrentVariableMap);
 			}
 
-			System.out.println("\n\tCreating Pareto Fronts and printing results ...\n");
+			System.out.println("\n\tCreating Pareto Fronts and printing results ...");
 			for(int i=0; i<problem.getNumberOfObjectives(); i++) {
 				for(int j=i+1; j<problem.getNumberOfObjectives(); j++) {
 					
@@ -196,7 +199,7 @@ public class OptimizationMain  {
 							null, null, null, null, 
 							problem.getObjectivesLabelArray()[i], problem.getObjectivesLabelArray()[j], "", "",
 							inputManager.getAlgorithms(),
-							subFolderPath,
+							outputPath,
 							("ParetoFront_" 
 									+ problem.getObjectivesLabelArray()[i] + "_" 
 									+ problem.getObjectivesLabelArray()[j]
@@ -207,23 +210,7 @@ public class OptimizationMain  {
 				}
 			}
 
-			System.out.println("\tVARIABLES:");
-			for(int i=0; i<inputManager.getAlgorithms().length; i++) {
-				System.out.println("\t\nOptimized Variables with algorithm "  
-						+ inputManager.getAlgorithms()[i] + ":\n");
-				for(int j=0; j<resultList.get(i).size(); j++) {
-					System.out.print("\tSolution " + (j+1) + " :	");
-					for(int k=0; k<resultList.get(i).get(j).getNumberOfVariables(); k++) {
-						if(!resultList.get(i).get(j).violatesConstraints())
-							System.out.print(resultList.get(i).get(j).getVariable(k) + "	");
-						else
-							System.err.print(resultList.get(i).get(j).getVariable(k) + "	");
-					}
-					System.out.println("");
-				}
-			}
-			
-			System.out.println("\n\tSaving Optimum Variable values to file ...\n");
+			System.out.println("\tSaving Optimum Variable values to file ...");
 			List<List<Double[]>> variableArraysList = new ArrayList<>();
 			List<List<String>> variableNameList = new ArrayList<>();
 			for(int i=0; i<inputManager.getAlgorithms().length; i++) {
@@ -244,35 +231,13 @@ public class OptimizationMain  {
 					Arrays.asList(inputManager.getAlgorithms()), 
 					variableNameList,
 					MyConfiguration.createNewFolder(
-							subFolderPath
+							outputPath
 							+ File.separator 
 							+ "Optimum Variable Values" 
 							)
 					);
 			
-			System.out.println("\n\tOBJECTIVES:");
-			for(int i=0; i<inputManager.getAlgorithms().length; i++) {
-				System.out.println("\t\nOptimized Objectives with algorithm " 
-						+ inputManager.getAlgorithms()[i] + ":\n");
-				for(int j=0; j<resultList.get(i).size(); j++) {
-					System.out.print("\tSolution " + (j+1) + " :	");
-					for(int k=0; k<resultList.get(i).get(j).getNumberOfObjectives(); k++) {
-						if(!resultList.get(i).get(j).violatesConstraints())
-							if(problem.getMaximizationProblemConditionArray()[k] == true)
-								System.out.print(-resultList.get(i).get(j).getObjective(k) + "	");
-							else
-								System.out.print(resultList.get(i).get(j).getObjective(k) + "	");
-						else
-							if(problem.getMaximizationProblemConditionArray()[k] == true)
-								System.err.print(-resultList.get(i).get(j).getObjective(k) + "	");
-							else
-								System.err.print(resultList.get(i).get(j).getObjective(k) + "	");
-					}
-					System.out.println("");
-				}
-			}
-
-			System.out.println("\n\tSaving Optimum Objective values to file ...\n");
+			System.out.println("\tSaving Optimum Objective values to file ...");
 			List<List<Double[]>> objectiveArraysList = new ArrayList<>();
 			List<List<String>> objectiveNameList = new ArrayList<>();
 			for(int i=0; i<inputManager.getAlgorithms().length; i++) {
@@ -302,17 +267,17 @@ public class OptimizationMain  {
 					Arrays.asList(inputManager.getAlgorithms()), 
 					objectiveNameList,
 					MyConfiguration.createNewFolder(
-							subFolderPath
+							outputPath
 							+ File.separator 
 							+ "Optimum Objective Values" 
 							)
 					);
 
-			System.out.println("\n\tDone!! \n\n");
+			System.out.println("\n\tDone!! \n");
 
 			DecimalFormat numberFormat = new DecimalFormat("0.000");
 			long estimatedTime = System.currentTimeMillis() - startTime;
-			System.out.println("\n\n\tTIME ESTIMATED = " + numberFormat.format(estimatedTime*0.001) + " seconds");
+			System.out.println("\n\tTIME ESTIMATED = " + numberFormat.format(estimatedTime*0.001) + " seconds");
 
 		} catch (CmdLineException e) {
 			System.err.println("Error: " + e.getMessage());
