@@ -1673,7 +1673,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// t/c MAX:
-		if (airfoil.getThicknessToChordRatio() != null) 
+		if (Double.valueOf(airfoil.getThicknessToChordRatio()) != null) 
 			textFieldMaximumThicknessRatio.setText(String.valueOf(airfoil.getThicknessToChordRatio()));
 		else
 			textFieldMaximumThicknessRatio.setText(
@@ -1682,7 +1682,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// NORMALIZED LE RADIUS:
-		if (airfoil.getRadiusLeadingEdge() != null) 
+		if (Double.valueOf(airfoil.getRadiusLeadingEdge()) != null) 
 			textFieldNoramlizedLERadius.setText(String.valueOf(airfoil.getRadiusLeadingEdge()));
 		else
 			textFieldNoramlizedLERadius.setText(
@@ -1691,17 +1691,17 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// EXTERNAL Cl CURVE FLAG: 
-		if(airfoil.getClCurveFromFile().equals(Boolean.TRUE))
+		if(airfoil.getClCurveFromFile() == true)
 			checkBoxExternalClCurve.setSelected(true);
 		
 		//---------------------------------------------------------------------------------
 		// EXTERNAL Cd CURVE FLAG: 
-		if(airfoil.getCdCurveFromFile().equals(Boolean.TRUE))
+		if(airfoil.getCdCurveFromFile() == true)
 			checkBoxExternalCdCurve.setSelected(true);
 		
 		//---------------------------------------------------------------------------------
 		// EXTERNAL Cm CURVE FLAG: 
-		if(airfoil.getCmCurveFromFile().equals(Boolean.TRUE))
+		if(airfoil.getCmCurveFromFile() == true)
 			checkBoxExternalCmCurve.setSelected(true);
 		
 		//---------------------------------------------------------------------------------
@@ -1778,7 +1778,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// Cl ZERO: 
-		if(airfoil.getClAtAlphaZero() != null) 
+		if(Double.valueOf(airfoil.getClAtAlphaZero()) != null) 
 			textFieldClZero.setText(String.valueOf(airfoil.getClAtAlphaZero()));
 		else
 			textFieldClZero.setText(
@@ -1787,7 +1787,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// Cl STAR: 
-		if(airfoil.getClEndLinearTrait() != null) 
+		if(Double.valueOf(airfoil.getClEndLinearTrait()) != null) 
 			textFieldClStar.setText(String.valueOf(airfoil.getClEndLinearTrait()));
 		else
 			textFieldClStar.setText(
@@ -1796,7 +1796,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// Cl MAX: 
-		if(airfoil.getClMax() != null) 
+		if(Double.valueOf(airfoil.getClMax()) != null) 
 			textFieldClMax.setText(String.valueOf(airfoil.getClMax()));
 		else
 			textFieldClMax.setText(
@@ -1805,7 +1805,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// Cl AT Cd MIN: 
-		if(airfoil.getClAtCdMin() != null) 
+		if(Double.valueOf(airfoil.getClAtCdMin()) != null) 
 			textFieldClAtCdMin.setText(String.valueOf(airfoil.getClAtCdMin()));
 		else
 			textFieldClAtCdMin.setText(
@@ -1814,7 +1814,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// Cd MIN: 
-		if(airfoil.getCdMin() != null) 
+		if(Double.valueOf(airfoil.getCdMin()) != null) 
 			textFieldCdMin.setText(String.valueOf(airfoil.getCdMin()));
 		else
 			textFieldCdMin.setText(
@@ -1823,7 +1823,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// LAMINAR BUCKET SEMI-EXTENSION: 
-		if(airfoil.getLaminarBucketSemiExtension() != null) 
+		if(Double.valueOf(airfoil.getLaminarBucketSemiExtension()) != null) 
 			textFieldLaminarBucketSemiExtension.setText(String.valueOf(airfoil.getLaminarBucketSemiExtension()));
 		else
 			textFieldLaminarBucketSemiExtension.setText(
@@ -1832,7 +1832,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// LAMINAR BUCKET DEPTH: 
-		if(airfoil.getLaminarBucketDepth() != null) 
+		if(Double.valueOf(airfoil.getLaminarBucketDepth()) != null) 
 			textFieldLaminarBucketDepth.setText(String.valueOf(airfoil.getLaminarBucketDepth()));
 		else
 			textFieldLaminarBucketDepth.setText(
@@ -1841,7 +1841,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// K FACTOR DRAG POLAR: 
-		if(airfoil.getKFactorDragPolar() != null) 
+		if(Double.valueOf(airfoil.getKFactorDragPolar()) != null) 
 			textFieldKFactorDragPolar.setText(String.valueOf(airfoil.getKFactorDragPolar()));
 		else
 			textFieldKFactorDragPolar.setText(
@@ -1868,7 +1868,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// Cm AC: 
-		if(airfoil.getCmAC() != null) 
+		if(Double.valueOf(airfoil.getCmAC()) != null) 
 			textFieldCmAC.setText(String.valueOf(airfoil.getCmAC()));
 		else
 			textFieldCmAC.setText(
@@ -1877,7 +1877,7 @@ public class AirfoilInputManagerController {
 
 		//---------------------------------------------------------------------------------
 		// Cm AC STALL: 
-		if(airfoil.getCmACAtStall() != null) 
+		if(Double.valueOf(airfoil.getCmACAtStall()) != null) 
 			textFieldCmACStall.setText(String.valueOf(airfoil.getCmACAtStall()));
 		else
 			textFieldCmACStall.setText(
@@ -1886,7 +1886,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// NORMALIZED Xac: 
-		if(airfoil.getXACNormalized() != null) 
+		if(Double.valueOf(airfoil.getXACNormalized()) != null) 
 			textFieldAerodynamicCenterAdimensionalPosition.setText(String.valueOf(airfoil.getXACNormalized()));
 		else
 			textFieldAerodynamicCenterAdimensionalPosition.setText(
@@ -1895,7 +1895,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// CRITICAL MACH NUMBER: 
-		if(airfoil.getMachCritical() != null) 
+		if(Double.valueOf(airfoil.getMachCritical()) != null) 
 			textFieldCriticalMachNumber.setText(String.valueOf(airfoil.getMachCritical()));
 		else
 			textFieldCriticalMachNumber.setText(
@@ -1904,7 +1904,7 @@ public class AirfoilInputManagerController {
 
 		//---------------------------------------------------------------------------------
 		// X TRANSITION UPPER: 
-		if(airfoil.getXTransitionUpper() != null) 
+		if(Double.valueOf(airfoil.getXTransitionUpper()) != null) 
 			textFieldXTransitionUpper.setText(String.valueOf(airfoil.getXTransitionUpper()));
 		else
 			textFieldXTransitionUpper.setText(
@@ -1913,7 +1913,7 @@ public class AirfoilInputManagerController {
 		
 		//---------------------------------------------------------------------------------
 		// X TRANSITION LOWER: 
-		if(airfoil.getXTransitionLower() != null) 
+		if(Double.valueOf(airfoil.getXTransitionLower()) != null) 
 			textFieldXTransitionLower.setText(String.valueOf(airfoil.getXTransitionLower()));
 		else
 			textFieldXTransitionLower.setText(

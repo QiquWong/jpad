@@ -5587,7 +5587,7 @@ public class InputManagerController {
 			int airfoilWingIndex = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilPathList().indexOf(wingAirfoilPathFromList);
 
 			airfoilInputManagerController.loadAirfoilData(
-					Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().get(airfoilWingIndex).getAirfoilCreator()
+					Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().get(airfoilWingIndex)
 					);
 			airfoilInputManagerController.createAirfoilView();
 			airfoilInputManagerController.createClCurve();
@@ -5611,7 +5611,7 @@ public class InputManagerController {
 			int airfoilHTailIndex = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilPathList().indexOf(hTailAirfoilPathFromList);
 
 			airfoilInputManagerController.loadAirfoilData(
-					Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList().get(airfoilHTailIndex).getAirfoilCreator()
+					Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getAirfoilList().get(airfoilHTailIndex)
 					);
 			airfoilInputManagerController.createAirfoilView();
 			airfoilInputManagerController.createClCurve();
@@ -5635,7 +5635,7 @@ public class InputManagerController {
 			int airfoilVTailIndex = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilPathList().indexOf(vTailAirfoilPathFromList);
 
 			airfoilInputManagerController.loadAirfoilData(
-					Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().get(airfoilVTailIndex).getAirfoilCreator()
+					Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAirfoilList().get(airfoilVTailIndex)
 					);
 			airfoilInputManagerController.createAirfoilView();
 			airfoilInputManagerController.createClCurve();
@@ -5659,7 +5659,7 @@ public class InputManagerController {
 			int airfoilCanardIndex = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilPathList().indexOf(canardAirfoilPathFromList);
 
 			airfoilInputManagerController.loadAirfoilData(
-					Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList().get(airfoilCanardIndex).getAirfoilCreator()
+					Main.getTheAircraft().getCanard().getLiftingSurfaceCreator().getAirfoilList().get(airfoilCanardIndex)
 					);
 			airfoilInputManagerController.createAirfoilView();
 			airfoilInputManagerController.createClCurve();
