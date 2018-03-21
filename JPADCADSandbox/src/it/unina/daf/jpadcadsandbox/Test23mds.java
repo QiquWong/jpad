@@ -70,7 +70,7 @@ public class Test23mds extends Application {
 		LiftingSurface horTail = theAircraft.getHTail();
 		LiftingSurface verTail = theAircraft.getVTail();
 		
-		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, 12, 5, true, true, false);	
+		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, 7, 7, true, true, false);	
 		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, false, true, false);
 		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, false, true, false);
 		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, false, true, false);
@@ -103,7 +103,7 @@ public class Test23mds extends Application {
 				})
 				.collect(Collectors.toList());
 		
-		System.out.println("========== Number of triangulations executed:" + triangleMeshes.size());
+		System.out.println("========== Number of triangulations executed: " + triangleMeshes.size());
 		
 		triangles = triangleMeshes;
 
@@ -204,7 +204,7 @@ public class Test23mds extends Application {
 
 		// showing the stage
 		stage.setScene(scene);
-		stage.setTitle("Quarter Dome Surface");
+		stage.setTitle("ATR72");
 		stage.show();
 	}
 
