@@ -29,7 +29,7 @@ import org.jscience.economics.money.Currency;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import calculators.costs.CostsCalcUtils;
 import configuration.MyConfiguration;
 import configuration.enumerations.CostsEnum;

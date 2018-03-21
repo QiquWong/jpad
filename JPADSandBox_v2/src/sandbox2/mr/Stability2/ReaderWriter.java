@@ -25,8 +25,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.ui.internal.themes.ThemesExtension;
 import org.jscience.physics.amount.Amount;
 
-
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.AirfoilFamilyEnum;

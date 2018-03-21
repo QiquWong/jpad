@@ -104,13 +104,13 @@ public class NacelleTest extends Application {
 			// the Application.start method
 				
 			// read Engine from xml ...
-//			theNacelle = NacelleCreator.importFromXML(pathToXML, dirEngines);
+			theNacelle = NacelleCreator.importFromXML(pathToXML, dirEngines);
 
 			// default Engine ...
-			theNacelle = new NacelleCreator.NacelleCreatorBuilder(
-					"ATR-72 engine",
-					AircraftEnum.ATR72)
-					.build();
+//			theNacelle = new NacelleCreator.NacelleCreatorBuilder(
+//					"ATR-72 engine",
+//					AircraftEnum.ATR72)
+//					.build();
 			
 			System.out.println("The Nacelle ...");
 			System.out.println(NacelleTest.theNacelle.toString());

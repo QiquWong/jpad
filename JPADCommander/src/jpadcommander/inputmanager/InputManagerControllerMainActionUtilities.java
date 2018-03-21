@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.cabinconfiguration.ISeatBlock;
 import aircraft.components.cabinconfiguration.SeatsBlock;
 import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator;
@@ -10347,7 +10347,7 @@ public class InputManagerControllerMainActionUtilities {
 
 				//---------------------------------------------------------------------------------
 				// K INLET:
-				if(currentNacelle.getKInlet() != null) {
+				if(Double.valueOf(currentNacelle.getKInlet()) != null) {
 					theController.getTextFieldNacelleKInletList().get(i).setText(
 							String.valueOf(currentNacelle.getKInlet()));
 				}
@@ -10358,7 +10358,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// K OULET:
-				if(currentNacelle.getKOutlet() != null) {
+				if(Double.valueOf(currentNacelle.getKOutlet()) != null) {
 					theController.getTextFieldNacelleKOutletList().get(i).setText(
 							String.valueOf(currentNacelle.getKOutlet()));
 				}
@@ -10369,7 +10369,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// K LENGTH:
-				if(currentNacelle.getKLength() != null) {
+				if(Double.valueOf(currentNacelle.getKLength()) != null) {
 					theController.getTextFieldNacelleKLengthList().get(i).setText(
 							String.valueOf(currentNacelle.getKLength()));
 				}
@@ -10380,7 +10380,7 @@ public class InputManagerControllerMainActionUtilities {
 				
 				//---------------------------------------------------------------------------------
 				// K DIAMETER OUTLET:
-				if(currentNacelle.getKDiameterOutlet() != null) {
+				if(Double.valueOf(currentNacelle.getKDiameterOutlet()) != null) {
 					theController.getTextFieldNacelleKDiameterOutletList().get(i).setText(
 							String.valueOf(currentNacelle.getKDiameterOutlet()));
 				}
@@ -10500,7 +10500,7 @@ public class InputManagerControllerMainActionUtilities {
 					
 					//---------------------------------------------------------------------------------
 					// ENGINE BPR:
-					if(currentEngine.getBPR() != null) 
+					if(Double.valueOf(currentEngine.getBPR()) != null) 
 						theController.getEngineTurbojetTurbofanBPRTextFieldMap().get(i).setText(
 								String.valueOf(currentEngine.getBPR())
 								);
@@ -10621,7 +10621,7 @@ public class InputManagerControllerMainActionUtilities {
 					
 					//---------------------------------------------------------------------------------
 					// ENGINE BPR:
-					if(currentEngine.getBPR() != null) 
+					if(Double.valueOf(currentEngine.getBPR()) != null) 
 						theController.getEngineTurbojetTurbofanBPRTextFieldMap().get(i).setText(
 								String.valueOf(currentEngine.getBPR())
 								);
@@ -10969,23 +10969,6 @@ public class InputManagerControllerMainActionUtilities {
 		}
 		else
 			theController.getTextFieldLandingGearsMainLegLength().setText(
-					"NOT INITIALIZED"
-					);
-		
-		//---------------------------------------------------------------------------------
-		// K MAIN LEG LENGTH
-		if(Main.getTheAircraft().getLandingGears().getKMainLegsLength() != null) {
-			
-			theController.getTextFieldLandingGearsKMainLegLength().setText(
-					String.valueOf(
-							Main.getTheAircraft()
-							.getLandingGears()
-							.getKMainLegsLength()
-							)
-					);
-		}
-		else
-			theController.getTextFieldLandingGearsKMainLegLength().setText(
 					"NOT INITIALIZED"
 					);
 		

@@ -11,7 +11,7 @@ import org.jcae.opencascade.jni.STEPControl_Writer;
 import org.jcae.opencascade.jni.StlAPI_Writer;
 import org.jcae.opencascade.jni.TopoDS_Compound;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import configuration.MyConfiguration;
 import writers.JPADStaticWriteUtils;
 

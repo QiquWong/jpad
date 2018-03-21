@@ -2,7 +2,7 @@ package sandbox2.adm.cpacs.writer;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import standaloneutils.cpacs.CPACSWriter;

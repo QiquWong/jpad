@@ -137,22 +137,22 @@ public class FuelTankTest extends Application {
 		for(int i=0; i<nStationFuelTank-1; i++) {
 			fuelTankYCoordinates.add(
 					theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i)
-						.times(theFuelTank.getMainSparNormalizedStation())
+						.times(theFuelTank.getTheWing().getLiftingSurfaceCreator().getMainSparDimensionlessPosition())
 							.plus(theWing.getLiftingSurfaceCreator().getXLEBreakPoints().get(i))
 						);
 		}
 		fuelTankYCoordinates.add(
 				chordAt85Percent
-					.times(theFuelTank.getMainSparNormalizedStation())
+					.times(theFuelTank.getTheWing().getLiftingSurfaceCreator().getMainSparDimensionlessPosition())
 						.plus(xLEAt85Percent));
 		fuelTankYCoordinates.add(
 				chordAt85Percent
-					.times(theFuelTank.getSecondarySparNormalizedStation())
+					.times(theFuelTank.getTheWing().getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition())
 						.plus(xLEAt85Percent));
 		for(int i=1; i<nStationFuelTank; i++) {
 			fuelTankYCoordinates.add(
 					theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(nStationFuelTank-i-1)
-						.times(theFuelTank.getSecondarySparNormalizedStation())
+						.times(theFuelTank.getTheWing().getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition())
 							.plus(theWing.getLiftingSurfaceCreator().getXLEBreakPoints().get(nStationFuelTank-i-1))
 						);
 		}
@@ -305,8 +305,8 @@ public class FuelTankTest extends Application {
 			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, true);
 			theWing.getLiftingSurfaceCreator().populateAirfoilList(false);
 			
-			theFuelTank = new FuelTank.FuelTankBuilder("My Fuel Tank", theWing)
-										.build();
+			theFuelTank = new FuelTank("My Fuel Tank", theWing);
+										
 			theWing.setXApexConstructionAxes(Amount.valueOf(11.0, SI.METER));
 			theWing.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 			theWing.setZApexConstructionAxes(Amount.valueOf(1.6, SI.METER));

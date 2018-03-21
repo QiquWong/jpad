@@ -37,7 +37,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;

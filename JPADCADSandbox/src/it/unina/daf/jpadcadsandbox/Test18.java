@@ -2,7 +2,7 @@ package it.unina.daf.jpadcadsandbox;
 
 import java.util.List;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.ComponentEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;

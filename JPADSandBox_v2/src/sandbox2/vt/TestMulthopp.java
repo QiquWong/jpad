@@ -19,7 +19,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import calculators.aerodynamics.MomentCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;

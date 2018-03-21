@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcCLmax;

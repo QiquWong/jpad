@@ -31,7 +31,7 @@ import org.jscience.physics.amount.Amount;
 
 import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Base;
 import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Parasite;

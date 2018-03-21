@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -15,8 +14,8 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.Aircraft;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
@@ -27,199 +26,45 @@ import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
 
-
 public class LandingGears {
 
-	private String _id;
-	
+	//------------------------------------------------------------------------------------------
+	// VARIABLE DECLARATION
+	private ILandingGear _theLandingGearInterface;
 	private LandingGearsMountingPositionEnum _mountingPosition;
-	
 	private Amount<Length> _xApexConstructionAxesNoseGear = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _yApexConstructionAxesNoseGear = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _zApexConstructionAxesNoseGear = Amount.valueOf(0.0, SI.METER);
 	private Amount<Length> _xApexConstructionAxesMainGear = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _yApexConstructionAxesMainGear = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _zApexConstructionAxesMainGear = Amount.valueOf(0.0, SI.METER);
-
 	
-	private int _numberOfFrontalWheels,
-				_numberOfRearWheels;
-	private Amount<Length> _mainLegsLenght;
-	private Amount<Length> _distanceBetweenWheels;
-	private Amount<Length> _frontalWheelsHeight,
-						   _frontalWheelsWidth,
-						   _rearWheelsHeight,
-						   _rearWheelsWidth;
-	
-	// this K is due to the compression of the landing gears in ground phases
-	private Double _kMainLegsLength;
-	
-	private Amount<Mass> _overallMass,
-						 _mainMass, 
-						 _noseMass;
-
+	// to be moved ... TODO: add methods to calculate main and nose gears masses separately (see EXCEL)
+	private Amount<Mass> _overallMass, _mainMass, _noseMass;
 	private Map <MethodEnum, Amount<Mass>> _massMap;
 	private Map <MethodEnum, Amount<Length>> _xCGMap;
 	private List<MethodEnum> _methodsList;
 	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap;
-
 	private Double[] _percentDifference;
 	private Amount<Mass> _referenceMass, _estimatedMass;
 	private CenterOfGravity _cg;
-
 	private Amount<Length> _xCG;
 
-	//============================================================================================
-	// Builder pattern 
-	//============================================================================================
-	public static class LandingGearsBuilder {
-
-		// required parameters
-		private String __id;
-
-		// optional parameters ... defaults
-		// ...
-		private int __numberOfFrontalWheels,
-					__numberOfRearWheels;
-		private Amount<Length> __mainLegsLenght;
-		private Amount<Length> __distanceBetweenWheels;
-		private Amount<Length> __frontalWheelsHeight,
-							   __frontalWheelsWidth,
-							   __rearWheelsHeight,
-							   __rearWheelsWidth;
-
-		private Double __kMainLegsLength;
+	//------------------------------------------------------------------------------------------
+	// BUILDER
+	public LandingGears (ILandingGear theLandingGearsInterface) {
 		
-		private Map <MethodEnum, Amount<Mass>> __massMap = new TreeMap<MethodEnum, Amount<Mass>>();
-		private Map <MethodEnum, Amount<Length>> __xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
-		private List<MethodEnum> __methodsList = new ArrayList<MethodEnum>();
-		private Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
+		this._theLandingGearInterface = theLandingGearsInterface;
 		
-		public LandingGearsBuilder (String id) {
-			this.__id = id;
-//			this.initializeDefaultVariables(AircraftEnum.ATR72);
-		}
-		
-		public LandingGearsBuilder (String id, AircraftEnum aircraftName) {
-			this.__id = id;
-			this.initializeDefaultVariables(aircraftName);
-		}
-		
-		public LandingGearsBuilder numberOfFrontalWheels (int numberOfFrontalWheels) {
-			this.__numberOfFrontalWheels = numberOfFrontalWheels;
-			return this;
-		}
-		
-		public LandingGearsBuilder numberOfRearWheels (int numberOfRearWheels) {
-			this.__numberOfRearWheels = numberOfRearWheels;
-			return this;
-		}
-		
-		public LandingGearsBuilder mainLegsLength (Amount<Length> mainLegsLength) {
-			this.__mainLegsLenght = mainLegsLength;
-			return this;
-		}
-		
-		public LandingGearsBuilder distanceBetweenWheels (Amount<Length> distanceBetweenWheels) {
-			this.__distanceBetweenWheels = distanceBetweenWheels;
-			return this;
-		}
-		
-		public LandingGearsBuilder kMainLegsLength (Double kMainLegsLength) {
-			this.__kMainLegsLength = kMainLegsLength;
-			return this;
-		}
-		
-		public LandingGearsBuilder frontalWheelsHeight (Amount<Length> frontalWheelsHeight) {
-			this.__frontalWheelsHeight = frontalWheelsHeight;
-			return this;
-		}
-		
-		public LandingGearsBuilder frontalWheelsWidth (Amount<Length> frontalWheelsWidth) {
-			this.__frontalWheelsWidth = frontalWheelsWidth;
-			return this;
-		}
-		
-		public LandingGearsBuilder rearWheelsHeight (Amount<Length> rearWheelsHeight) {
-			this.__rearWheelsHeight = rearWheelsHeight;
-			return this;
-		}
-		
-		public LandingGearsBuilder rearWheelsWidth (Amount<Length> rearWheelsWidht) {
-			this.__rearWheelsWidth = rearWheelsWidht;
-			return this;
-		}
-		
-		public LandingGears build() {
-			return new LandingGears(this);
-		}
-		
-		/**
-		 * Overload of the previous builder that recognize aircraft name and sets 
-		 * it's landing gear data.
-		 * 
-		 * @author Vittorio Trifari
-		 */
-		@SuppressWarnings("incomplete-switch")
-		private void initializeDefaultVariables (AircraftEnum aircraftName) {
-
-			switch(aircraftName) {
-
-			case ATR72:
-				__numberOfFrontalWheels = 2;
-				__numberOfRearWheels = 4;
-				__mainLegsLenght = Amount.valueOf(0.66, SI.METER);
-				__distanceBetweenWheels = Amount.valueOf(4.1, SI.METER);
-				__kMainLegsLength = 0.15; //TODO : CHECK THIS
-				__frontalWheelsHeight = Amount.valueOf(0.450, SI.METER);
-				__frontalWheelsWidth = Amount.valueOf(0.190, SI.METER);
-				__rearWheelsHeight = Amount.valueOf(0.8636, SI.METER);
-				__rearWheelsWidth  = Amount.valueOf(0.254, SI.METER);
-				break;
-
-			case B747_100B:
-				__numberOfFrontalWheels = 2;
-				__numberOfRearWheels = 8;
-				__mainLegsLenght = Amount.valueOf(3.26, SI.METER);
-				__distanceBetweenWheels = Amount.valueOf(4.1, SI.METER);
-				__kMainLegsLength = 0.15; //TODO : CHECK THIS
-				__frontalWheelsHeight = Amount.valueOf(1.245, SI.METER);
-				__frontalWheelsWidth = Amount.valueOf(0.4829, SI.METER);
-				__rearWheelsHeight = Amount.valueOf(1.245, SI.METER);
-				__rearWheelsWidth = Amount.valueOf(0.4829, SI.METER);
-				break;
-
-			case AGILE_DC1:
-				//__referenceMass = Amount.valueOf(1501.6, SI.KILOGRAM);
-				// TODO
-				break;
-			}
-		}
-	}
-	
-	private LandingGears (LandingGearsBuilder builder) {
-		
-		this._id = builder.__id;
-		this._mainLegsLenght = builder.__mainLegsLenght;
-		this._distanceBetweenWheels = builder.__distanceBetweenWheels;
-		this._kMainLegsLength = builder.__kMainLegsLength;
-		this._numberOfFrontalWheels = builder.__numberOfFrontalWheels;
-		this._numberOfRearWheels = builder.__numberOfRearWheels;
-		this._frontalWheelsHeight = builder.__frontalWheelsHeight;
-		this._frontalWheelsWidth = builder.__frontalWheelsWidth;
-		this._rearWheelsHeight = builder.__rearWheelsHeight;
-		this._rearWheelsWidth = builder.__rearWheelsWidth;
-		
-		this._massMap = builder.__massMap;
-		this._xCGMap = builder.__xCGMap;
-		this._methodsList = builder.__methodsList;
-		this._methodsMap = builder.__methodsMap;
+		this._massMap = new HashMap<>();
+		this._xCGMap = new HashMap<>();
+		this._methodsList = new ArrayList<>();
+		this._methodsMap = new HashMap<>();
 		
 	}
-	
-	//===================================================================================================
-	// End of builder pattern
-	//===================================================================================================
+
+	//------------------------------------------------------------------------------------------
+	// METHODS
 	
 	public static LandingGears importFromXML (String pathToXML) {
 		
@@ -236,7 +81,6 @@ public class LandingGears {
 		// GLOBAL DATA
 		Amount<Length> mainGearLegsLength = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> distanceBetweenWheels = Amount.valueOf(0.0, SI.METER);
-		Double kMainLegsLength = 0.0;
 		int numberOfFrontalWheels = 0;
 		int numberOfRearWheels = 0;
 		
@@ -248,10 +92,6 @@ public class LandingGears {
 		String distanceBetweenWheelsProperty = reader.getXMLPropertyByPath("//global_data/distance_between_wheels");
 		if(distanceBetweenWheelsProperty != null)
 			distanceBetweenWheels = reader.getXMLAmountLengthByPath("//global_data/distance_between_wheels");
-		
-		String kMainLegsLengthProperty = reader.getXMLPropertyByPath("//global_data/k_main_gear_legs_length");
-		if(kMainLegsLengthProperty != null)
-			kMainLegsLength = Double.valueOf(kMainLegsLengthProperty);
 		
 		String numberOfFrontalWheelsProperty = reader.getXMLPropertyByPath("//global_data/number_of_frontal_wheels");
 		if(numberOfFrontalWheelsProperty != null)
@@ -287,17 +127,19 @@ public class LandingGears {
 		if(rearWheelsWidthProperty != null)
 			rearWheelsWidth = reader.getXMLAmountLengthByPath("//rear_wheels_data/wheel_width");
 		
-		LandingGears landingGears = new LandingGearsBuilder(id)
-				.mainLegsLength(mainGearLegsLength)
-				.distanceBetweenWheels(distanceBetweenWheels)
-				.kMainLegsLength(kMainLegsLength)
-				.numberOfFrontalWheels(numberOfFrontalWheels)
-				.numberOfRearWheels(numberOfRearWheels)
-				.frontalWheelsHeight(frontalWheelsHeight)
-				.frontalWheelsWidth(frontalWheelsWidth)
-				.rearWheelsHeight(rearWheelsHeight)
-				.rearWheelsWidth(rearWheelsWidth)
-				.build();
+		LandingGears landingGears = new LandingGears(
+				new ILandingGear.Builder()
+				.setId(id)
+				.setMainLegsLenght(mainGearLegsLength)
+				.setDistanceBetweenWheels(distanceBetweenWheels)
+				.setNumberOfFrontalWheels(numberOfFrontalWheels)
+				.setNumberOfRearWheels(numberOfRearWheels)
+				.setFrontalWheelsHeight(frontalWheelsHeight)
+				.setFrontalWheelsWidth(frontalWheelsWidth)
+				.setRearWheelsHeight(rearWheelsHeight)
+				.setRearWheelsWidth(rearWheelsWidth)
+				.build()
+				);
 		
 		return landingGears;
 		
@@ -312,19 +154,18 @@ public class LandingGears {
 				.append("\t-------------------------------------\n")
 				.append("\tLanding gears\n")
 				.append("\t-------------------------------------\n")
-				.append("\tID: '" + _id + "'\n")
+				.append("\tID: '" + _theLandingGearInterface.getId() + "'\n")
 				.append("\t·····································\n")
-				.append("\tMain gear legs length: " + _mainLegsLenght + "\n")
-				.append("\tK Main gear legs length: " + _kMainLegsLength + "\n")
-				.append("\tDistance between wheels: " + _distanceBetweenWheels + "\n")
-				.append("\tNumber of frontal wheels: " + _numberOfFrontalWheels + "\n")
-				.append("\tNumber of rear wheels: " + _numberOfRearWheels + "\n")
+				.append("\tMain gear legs length: " + _theLandingGearInterface.getMainLegsLenght() + "\n")
+				.append("\tDistance between wheels: " + _theLandingGearInterface.getDistanceBetweenWheels() + "\n")
+				.append("\tNumber of frontal wheels: " + _theLandingGearInterface.getNumberOfFrontalWheels() + "\n")
+				.append("\tNumber of rear wheels: " + _theLandingGearInterface.getNumberOfRearWheels() + "\n")
 				.append("\t·····································\n")
-				.append("\tFrontal wheels height: " + _frontalWheelsHeight + "\n")
-				.append("\tFrontal wheels width: " + _frontalWheelsWidth + "\n")
+				.append("\tFrontal wheels height: " + _theLandingGearInterface.getFrontalWheelsHeight() + "\n")
+				.append("\tFrontal wheels width: " + _theLandingGearInterface.getFrontalWheelsWidth() + "\n")
 				.append("\t·····································\n")
-				.append("\tRear wheels height: " + _rearWheelsHeight + "\n")
-				.append("\tRear wheels width: " + _rearWheelsWidth + "\n")
+				.append("\tRear wheels height: " + _theLandingGearInterface.getRearWheelsHeight() + "\n")
+				.append("\tRear wheels width: " + _theLandingGearInterface.getRearWheelsWidth() + "\n")
 				.append("\t·····································\n")
 				;
 		
@@ -448,8 +289,8 @@ public class LandingGears {
 			double kFusLengthMainGear = 0.0;
 			double kFusLengthNoseGear = 0.0;
 			
-			if((aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.WING)
-					|| (aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.BURIED)) {
+			if((aircraft.getPowerPlant().getEngineList().get(0).getMountingPosition() == EngineMountingPositionEnum.WING)
+					|| (aircraft.getPowerPlant().getEngineList().get(0).getMountingPosition() == EngineMountingPositionEnum.BURIED)) {
 				kFusLengthMainGear = 0.55;
 				kFusLengthNoseGear = 0.17;
 			}
@@ -507,6 +348,17 @@ public class LandingGears {
 
 	}
 
+	//------------------------------------------------------------------------------------------
+	// GETTERS & SETTERS
+	
+	public ILandingGear getTheLandingGearsInterface() {
+		return _theLandingGearInterface;
+	}
+	
+	public void setTheLandingGearsInterface (ILandingGear theLandingGearsInterface) {
+		this._theLandingGearInterface = theLandingGearsInterface;
+	}
+	
 	public Amount<Mass> getOverallMass() {
 		return _overallMass;
 	}
@@ -565,75 +417,67 @@ public class LandingGears {
 	}
 
 	public String getId() {
-		return _id;
+		return _theLandingGearInterface.getId();
 	}
 
 	public void setId (String id) {
-		this._id = id;
+		setTheLandingGearsInterface(ILandingGear.Builder.from(_theLandingGearInterface).setId(id).build());
 	}
 	
 	public Amount<Length> getMainLegsLenght() {
-		return _mainLegsLenght;
+		return _theLandingGearInterface.getMainLegsLenght();
 	}
 
 	public void setMainLegsLenght(Amount<Length> lenght) {
-		this._mainLegsLenght = lenght;
+		setTheLandingGearsInterface(ILandingGear.Builder.from(_theLandingGearInterface).setMainLegsLenght(lenght).build());
 	}
 	
-	public Double getKMainLegsLength() {
-		return _kMainLegsLength;
-	}
-
-	public void setKMainLegsLength(Double _kMainLegsLength) {
-		this._kMainLegsLength = _kMainLegsLength;
-	}
-
 	public int getNumberOfFrontalWheels() {
-		return _numberOfFrontalWheels;
+		return _theLandingGearInterface.getNumberOfFrontalWheels();
 	}
 
 	public int getNumberOfRearWheels() {
-		return _numberOfRearWheels;
+		return _theLandingGearInterface.getNumberOfRearWheels();
 	}
 
 	public Amount<Length> getFrontalWheelsHeight() {
-		return _frontalWheelsHeight;
+		return _theLandingGearInterface.getFrontalWheelsHeight();
 	}
 
 	public Amount<Length> getFrontalWheelsWidth() {
-		return _frontalWheelsWidth;
+		return _theLandingGearInterface.getFrontalWheelsWidth();
 	}
 
 	public Amount<Length> getRearWheelsHeight() {
-		return _rearWheelsHeight;
+		return _theLandingGearInterface.getRearWheelsHeight();
 	}
 
 	public Amount<Length> getRearWheelsWidth() {
-		return _rearWheelsWidth;
+		return _theLandingGearInterface.getRearWheelsWidth();
 	}
 
 	public void setNumberOfFrontalWheels(int _numberOfFrontalWheels) {
-		this._numberOfFrontalWheels = _numberOfFrontalWheels;
+		setTheLandingGearsInterface(ILandingGear.Builder.from(_theLandingGearInterface).setNumberOfFrontalWheels(_numberOfFrontalWheels).build());
 	}
 
 	public void setNumberOfRearWheels(int _numberOfRearWheels) {
-		this._numberOfRearWheels = _numberOfRearWheels;
+		setTheLandingGearsInterface(ILandingGear.Builder.from(_theLandingGearInterface).setNumberOfRearWheels(_numberOfRearWheels).build());
 	}
 
 	public void setFrontalWheelsHeight(Amount<Length> _frontalWheelsHeight) {
-		this._frontalWheelsHeight = _frontalWheelsHeight;
+		setTheLandingGearsInterface(ILandingGear.Builder.from(_theLandingGearInterface).setFrontalWheelsHeight(_frontalWheelsHeight).build());
 	}
 
 	public void setFrontalWheelsWidth(Amount<Length> _frontalWheelsWidth) {
-		this._frontalWheelsWidth = _frontalWheelsWidth;
+		setTheLandingGearsInterface(ILandingGear.Builder.from(_theLandingGearInterface).setFrontalWheelsWidth(_frontalWheelsWidth).build());
 	}
 
 	public void setRearWheelsHeight(Amount<Length> _rearWheelsHeight) {
-		this._rearWheelsHeight = _rearWheelsHeight;
+		setTheLandingGearsInterface(ILandingGear.Builder.from(_theLandingGearInterface).setRearWheelsHeight(_rearWheelsHeight).build());
 	}
 
 	public void setRearWheelsWidth(Amount<Length> _rearWheelsWidth) {
-		this._rearWheelsWidth = _rearWheelsWidth;
+		setTheLandingGearsInterface(ILandingGear.Builder.from(_theLandingGearInterface).setRearWheelsWidth(_rearWheelsWidth).build());
 	}
 	
 	public Amount<Mass> getReferenceMass() {
@@ -717,10 +561,10 @@ public class LandingGears {
 	}
 
 	public Amount<Length> getDistanceBetweenWheels() {
-		return _distanceBetweenWheels;
+		return _theLandingGearInterface.getDistanceBetweenWheels();
 	}
 
 	public void setDistanceBetweenWheels(Amount<Length> _distanceBetweenWheels) {
-		this._distanceBetweenWheels = _distanceBetweenWheels;
+		setTheLandingGearsInterface(ILandingGear.Builder.from(_theLandingGearInterface).setDistanceBetweenWheels(_distanceBetweenWheels).build());
 	}
 }

@@ -1,4 +1,4 @@
-package aircraft.components;
+package aircraft;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,6 +15,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import aircraft.components.FuelTank;
+import aircraft.components.ISystems;
+import aircraft.components.LandingGears;
+import aircraft.components.Systems;
 import aircraft.components.cabinconfiguration.CabinConfiguration;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
@@ -239,8 +243,6 @@ public class Aircraft {
 				theWing,
 				sectionWidthAtZ.doubleValue(SI.METER)
 				);
-		exposedWingRootAirfoil.setXCoords(theWing.getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords());
-		exposedWingRootAirfoil.setZCoords(theWing.getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords());
 		
 		Amount<Length> exposedWingFirstPanelSpan = theWing.getLiftingSurfaceCreator()
 				.getPanels().get(0)
@@ -592,7 +594,6 @@ public class Aircraft {
 			theWing.setAeroDatabaseReader(aeroDatabaseReader);
 			theWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
 			theWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
-//			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, true);
 			theWing.getLiftingSurfaceCreator().populateAirfoilList(false);
 			
 			xApexWing = reader.getXMLAmountLengthByPath("//wing/position/x");
@@ -614,7 +615,8 @@ public class Aircraft {
 		
 		if(theWing != null) {
 			
-			theFuelTank = new FuelTank.FuelTankBuilder("Fuel Tank", theWing).build();
+			theFuelTank = new FuelTank("Fuel Tank", theWing);
+			
 			xApexFuelTank = xApexWing
 					.plus(theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
 							.times(theWing.getLiftingSurfaceCreator()
@@ -818,7 +820,7 @@ public class Aircraft {
 
 			}
 
-			thePowerPlant = new PowerPlant.PowerPlantBuilder("MyPowerPlant", engineList).build();
+			thePowerPlant = new PowerPlant(engineList);
 
 		}
 		//---------------------------------------------------------------------------------
@@ -894,7 +896,7 @@ public class Aircraft {
 
 			}
 
-			theNacelles = new Nacelles.NacellesBuilder("MyNacelle", nacelleList).build();
+			theNacelles = new Nacelles(nacelleList);
 		}
 		//---------------------------------------------------------------------------------
 		// LANDING GEARS

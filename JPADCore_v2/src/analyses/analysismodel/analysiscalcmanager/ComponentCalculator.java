@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import analyses.analysismodel.InnerCalculator;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;

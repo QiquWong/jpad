@@ -11,7 +11,7 @@ import org.jscience.physics.amount.Amount;
 
 import com.sun.istack.internal.Nullable;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.ComponentEnum;

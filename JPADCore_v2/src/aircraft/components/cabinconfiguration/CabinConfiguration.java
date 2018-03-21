@@ -15,9 +15,8 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
-import aircraft.components.ICabinConfiguration;
-import aircraft.components.ICabinConfiguration.Builder;
+import aircraft.Aircraft;
+import aircraft.components.cabinconfiguration.ICabinConfiguration.Builder;
 import calculators.balance.CenterOfGravityCalcUtils;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;

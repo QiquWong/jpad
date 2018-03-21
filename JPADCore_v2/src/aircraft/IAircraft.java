@@ -1,4 +1,4 @@
-package aircraft.components;
+package aircraft;
 
 import javax.annotation.Nullable;
 import javax.measure.quantity.Angle;
@@ -7,6 +7,9 @@ import javax.measure.quantity.Length;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.FuelTank;
+import aircraft.components.LandingGears;
+import aircraft.components.Systems;
 import aircraft.components.cabinconfiguration.CabinConfiguration;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;

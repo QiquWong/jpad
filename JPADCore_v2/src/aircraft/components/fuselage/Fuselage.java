@@ -17,7 +17,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;

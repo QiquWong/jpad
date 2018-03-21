@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import analyses.OperatingConditions;
 
 public class JPADXmlReader {

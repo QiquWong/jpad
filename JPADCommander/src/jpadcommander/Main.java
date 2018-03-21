@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.controlsfx.control.StatusBar;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

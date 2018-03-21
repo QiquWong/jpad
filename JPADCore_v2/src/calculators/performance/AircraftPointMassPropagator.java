@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyChartToFileUtils;

@@ -10,15 +10,15 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.powerplant.Engine;
 import analyses.nacelles.NacelleAerodynamicsManager;
 import analyses.nacelles.NacelleBalanceManager;
 import analyses.nacelles.NacelleWeightsManager;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.NacelleMountingPositionEnum;
 import standaloneutils.JPADXmlReader;
@@ -44,24 +44,21 @@ import standaloneutils.MyXMLReaderUtils;
  */
 public class NacelleCreator {
 
-	private String _id;
+	//----------------------------------------------------------------------------------------------
+	// VARIABLE DECLARATION
+	private INacelleCreator _theNacelleCreatorInterface;
+	private Engine _theEngine;
+	
+	// derived input
 	private NacelleMountingPositionEnum _mountingPosition;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
-	
-	private Amount<Length> _roughness;
-	
-	private Amount<Length> _length;
 	private Amount<Length> _diameterInlet;
-	private Amount<Length> _diameterMax;
 	private Amount<Length> _diameterOutlet;
-	private Double _kInlet;
-	private Double _kOutlet;
-	private Double _kLength;
-	private Double _kDiameterOutlet;
 	private Amount<Length> _xPositionMaximumDiameterLRF;
 	private Amount<Length> _zPositionOutletDiameterLRF;
+	private Amount<Area> _surfaceWetted;
 	
 	// outlines
 	private double[] _xCoordinatesOutlineDouble; 
@@ -75,176 +72,37 @@ public class NacelleCreator {
 	private List<Amount<Length>> _yCoordinatesOutlineXYRight;
 	private List<Amount<Length>> _yCoordinatesOutlineXYLeft;
 	
-	private Amount<Area> _surfaceWetted;
-	private Amount<Mass> _massReference;
-	
-	private Engine _theEngine;
-	
+	// calculators
 	private NacelleWeightsManager _theWeights;
 	private NacelleBalanceManager _theBalance;
 	private NacelleAerodynamicsManager _theAerodynamics;
 	
-	//============================================================================================
-	// Builder pattern 
-	//============================================================================================
-	public static class NacelleCreatorBuilder {
+	// to be moved ...
+	private Amount<Mass> _massReference;
 	
-		// required parameters
-		private String __id;
+	//----------------------------------------------------------------------------------------------
+	// BUILDER
+	public NacelleCreator (Engine theEngine, INacelleCreator theNacelleCreatorInterface) {
 		
-		// optional parameters ... defaults
-		// ...
+		this._theNacelleCreatorInterface = theNacelleCreatorInterface;
+		this._theEngine = theEngine;
 		
-		// initialized to ATR-72 engine
-		private Engine __theEngine = new Engine.EngineBuilder("ATR-72", EngineTypeEnum.TURBOPROP, AircraftEnum.ATR72).build();
-		
-		private Amount<Length> __roughness;
-		private Amount<Length> __length = Amount.valueOf(0.0, SI.METER);
-		private Amount<Length> __diameterMax = Amount.valueOf(0.0, SI.METER);
-		private Double __kInlet = 0.8; // default value
-		private Double __kOutlet = 0.2; // default value
-		private Double __kLength = 0.35; // default value
-		private Double __kDiameterOutlet = 0.0; // default value
-		
-		public NacelleCreatorBuilder id (String id) {
-			this.__id = id;
-			return this;
-		}
-	
-		public NacelleCreatorBuilder engine (Engine theEngine) {
-			this.__theEngine = theEngine;
-			return this;
-		}
-		
-		public NacelleCreatorBuilder roughness (Amount<Length> roughness) {
-			this.__roughness = roughness;
-			return this;
-		}
-		
-		public NacelleCreatorBuilder lenght (Amount<Length> lenght) {
-			this.__length = lenght;
-			return this;
-		}
-		
-		public NacelleCreatorBuilder maximumDiameter (Amount<Length> diameterMax) {
-			this.__diameterMax = diameterMax;
-			return this;
-		}
-		
-		public NacelleCreatorBuilder kInlet (Double kInlet) {
-			this.__kInlet = kInlet;
-			return this;
-		}
-		
-		public NacelleCreatorBuilder kOutlet (Double kOutlet) {
-			this.__kOutlet = kOutlet;
-		
-			return this;
-		}
-		
-		public NacelleCreatorBuilder kLength (Double kLength) {
-			this.__kLength = kLength;
-		
-			return this;
-		}
-		
-		public NacelleCreatorBuilder kDiameterOutlet (Double kDiameterOutlet) {
-			this.__kDiameterOutlet = kDiameterOutlet;
-		
-			return this;
-		}
-		
-		public NacelleCreatorBuilder(String id) {
-			this.__id = id;
-		}
-		
-		public NacelleCreatorBuilder(String id, AircraftEnum aircraftName) {
-			this.__id = id;
-			this.initializeDefaultVariables(aircraftName);
-		}
-		
-		/**
-		 * Method that recognize aircraft name and initialize the correct nacelle data.
-		 * 
-		 * @author Vittorio Trifari
-		 */
-		@SuppressWarnings("incomplete-switch")
-		private void initializeDefaultVariables (AircraftEnum aircraftName) {
-			
-			switch(aircraftName) {
-			
-			case ATR72:
-				__theEngine = new Engine.EngineBuilder("ATR-72 engine", EngineTypeEnum.TURBOPROP, AircraftEnum.ATR72).build();
-				__length = Amount.valueOf(4.371,SI.METER);
-				__diameterMax = Amount.valueOf(1.4,SI.METER);
-				__kInlet = 0.857;
-				__kOutlet = 0.143;
-				__kLength = 0.4;
-				__kDiameterOutlet = 1.5;
-				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
-				
-				break;
-				
-			case B747_100B:
-				__theEngine = new Engine.EngineBuilder("B747-100B engine", EngineTypeEnum.TURBOFAN, AircraftEnum.B747_100B).build();
-				__length = Amount.valueOf(7.6,SI.METER);
-				__diameterMax = Amount.valueOf(2.0,SI.METER);
-				__kInlet = 0.6;
-				__kOutlet = 0.1;
-				__kLength = 0.35;
-				__kDiameterOutlet = 0.0;
-				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
-				
-				break;
-				
-			case AGILE_DC1:
-				__theEngine = new Engine.EngineBuilder("AGILE DC-1 engine", EngineTypeEnum.TURBOFAN, AircraftEnum.AGILE_DC1).build();
-				__length = Amount.valueOf(3.,SI.METER);
-				__diameterMax = Amount.valueOf(1.816,SI.METER);
-				__kInlet = 0.847;
-				__kOutlet = 0.33;
-				__kLength = 0.35;
-				__kDiameterOutlet = 0.0;
-				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
-				
-				break;
-			}
-		}
-		
-		public NacelleCreator build () {
-			return new NacelleCreator(this);
-		}
-	}
-	
-	private NacelleCreator (NacelleCreatorBuilder builder) {
-		
-		this._id = builder.__id;
-		this._theEngine = builder.__theEngine;
-		this._roughness = builder.__roughness;
-		this._length = builder.__length;
-		this._diameterMax = builder.__diameterMax;
-		this._kInlet = builder.__kInlet;
-		this._kOutlet = builder.__kOutlet;
-		this._kLength = builder.__kLength;
-		this._kDiameterOutlet = builder.__kDiameterOutlet;
-		
-		if((_length.doubleValue(SI.METER) == 0.0)
-				&& (_diameterMax.doubleValue(SI.METER) == 0.0)) {
+		if((_theNacelleCreatorInterface.getLength().doubleValue(SI.METER) == 0.0)
+				&& (_theNacelleCreatorInterface.getDiameterMax().doubleValue(SI.METER) == 0.0)) {
 			estimateDimensions(_theEngine);
 		}
 		
-		this._diameterInlet = this._diameterMax.times(_kInlet);
-		this._diameterOutlet = this._diameterMax.times(_kOutlet);
-		this._xPositionMaximumDiameterLRF = _length.times(_kLength);
-		this._zPositionOutletDiameterLRF = _diameterOutlet.times(_kDiameterOutlet);
+		this._diameterInlet = _theNacelleCreatorInterface.getDiameterMax().times(_theNacelleCreatorInterface.getKInlet());
+		this._diameterOutlet = _theNacelleCreatorInterface.getDiameterMax().times(_theNacelleCreatorInterface.getKOutlet());
+		this._xPositionMaximumDiameterLRF = _theNacelleCreatorInterface.getLength().times(_theNacelleCreatorInterface.getKLength());
+		this._zPositionOutletDiameterLRF = _theNacelleCreatorInterface.getDiameterMax().times(_theNacelleCreatorInterface.getKDiameterOutlet());
 		
 		calculateGeometry();
+		
 	}
 	
-	//============================================================================================
-	// End of builder pattern 
-	//============================================================================================
-	
+	//----------------------------------------------------------------------------------------------
+	// METHODS	
 	public static NacelleCreator importFromXML (String pathToXML, String engineDirectory) {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -264,11 +122,7 @@ public class NacelleCreator {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@engine");
 		
-		// default engine. This will be updated with the engine from file (if present)
-		Engine engine = new Engine
-				.EngineBuilder("ATR-72 engine", EngineTypeEnum.TURBOPROP, AircraftEnum.ATR72)
-					.build();
-		
+		Engine engine = null;
 		if(engineFileName != null) {
 			String enginePath = engineDirectory + File.separator + engineFileName;
 			engine = Engine.importFromXML(enginePath);
@@ -296,17 +150,19 @@ public class NacelleCreator {
 		if(reader.getXMLPropertyByPath("//geometry/k_diameter_outlet") != null)
 			kDiameterOutlet = Double.valueOf(reader.getXMLPropertyByPath("//geometry/k_diameter_outlet"));
 		
-		theNacelle = new NacelleCreatorBuilder(id)
-				.engine(engine)
-				.roughness(roughness)
-				.lenght(length)
-				.maximumDiameter(diameterMax)
-				.kInlet(kInlet)
-				.kOutlet(kOutlet)
-				.kLength(kLength)
-				.kDiameterOutlet(kDiameterOutlet)
+		theNacelle = new NacelleCreator(
+				engine,
+				new INacelleCreator.Builder()
+				.setId(id)
+				.setRoughness(roughness)
+				.setLength(length)
+				.setDiameterMax(diameterMax)
+				.setKInlet(kInlet)
+				.setKOutlet(kOutlet)
+				.setKLength(kLength)
+				.setKDiameterOutlet(kDiameterOutlet)
 				.build()
-				;
+				);
 		
 		return theNacelle;
 	}
@@ -317,7 +173,7 @@ public class NacelleCreator {
 		MyConfiguration.customizeAmountOutput();
 
 		StringBuilder sb = new StringBuilder()
-				.append("\tID: '" + _id + "'\n")
+				.append("\tID: '" + _theNacelleCreatorInterface.getId() + "'\n")
 				.append("\t·····································\n")
 				;
 		
@@ -326,18 +182,18 @@ public class NacelleCreator {
 			  .append("\tEngine type: " + _theEngine.getEngineType() + "\n")
 			  ;
 				
-		sb.append("\tLength: " + _length + "\n")
-		.append("\tDiameter max: " + _diameterMax + "\n")
-		.append("\tK_inlet: " + _kInlet + "\n")
-		.append("\tK_outlet: " + _kOutlet + "\n")
+		sb.append("\tLength: " + _theNacelleCreatorInterface.getLength() + "\n")
+		.append("\tDiameter max: " + _theNacelleCreatorInterface.getDiameterMax() + "\n")
+		.append("\tK_inlet: " + _theNacelleCreatorInterface.getKInlet() + "\n")
+		.append("\tK_outlet: " + _theNacelleCreatorInterface.getKOutlet() + "\n")
 		.append("\tDiameter inlet: " + _diameterInlet + "\n")
 		.append("\tDiameter outlet: " + _diameterOutlet + "\n")
-		.append("\tK_length: " + _kLength + "\n")
+		.append("\tK_length: " + _theNacelleCreatorInterface.getKLength() + "\n")
 		.append("\tX position of the max diameter in LRF: " + _xPositionMaximumDiameterLRF + "\n")
-		.append("\tK_diameter_outlet: " + _kDiameterOutlet + "\n")
+		.append("\tK_diameter_outlet: " + _theNacelleCreatorInterface.getKDiameterOutlet() + "\n")
 		.append("\tZ position of the outlet diameter in LRF: " + _zPositionOutletDiameterLRF + "\n")
 		.append("\t·····································\n")
-		.append("\tSurface roughness: " + _roughness + "\n")
+		.append("\tSurface roughness: " + _theNacelleCreatorInterface.getRoughness() + "\n")
 		.append("\tSurface wetted: " + _surfaceWetted + "\n")
 		.append("\t·····································\n")	
 		.append("\tDiscretization\n")
@@ -372,14 +228,18 @@ public class NacelleCreator {
 				return;
 			}
 			
-			_length = Amount.valueOf(
-					40 + (0.59 * Math.sqrt(theEngine.getT0().doubleValue(NonSI.POUND_FORCE))),
-					NonSI.INCH)
-					.to(SI.METER);
-			_diameterMax = Amount.valueOf(
-					5 + (0.39 * Math.sqrt(theEngine.getT0().doubleValue(NonSI.POUND_FORCE))),
-					NonSI.INCH)
-					.to(SI.METER); 
+			setLength(
+					Amount.valueOf(
+							40 + (0.59 * Math.sqrt(theEngine.getT0().doubleValue(NonSI.POUND_FORCE))),
+							NonSI.INCH)
+					.to(SI.METER)
+					);
+			setDiameterMax(
+					Amount.valueOf(
+							5 + (0.39 * Math.sqrt(theEngine.getT0().doubleValue(NonSI.POUND_FORCE))),
+							NonSI.INCH)
+					.to(SI.METER)
+					); 
 		}
 		
 		else if(theEngine.getEngineType() == EngineTypeEnum.PISTON) {
@@ -389,14 +249,16 @@ public class NacelleCreator {
 				return;
 			}	
 			
-			_length = Amount.valueOf(
-					4*10e-10*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),4)
-					- 6*10e-7*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),3)
-					+ 8*10e-5*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
-					- 0.2193*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
-					+ 54.097,
-					NonSI.INCH)
-					.to(SI.METER);
+			setLength(
+					Amount.valueOf(
+							4*10e-10*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),4)
+							- 6*10e-7*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),3)
+							+ 8*10e-5*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
+							- 0.2193*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
+							+ 54.097,
+							NonSI.INCH)
+					.to(SI.METER)
+					);
 			
 			if(theEngine.getP0().doubleValue(NonSI.HORSEPOWER) <= 410)
 				width = Amount.valueOf(
@@ -419,11 +281,13 @@ public class NacelleCreator {
 					NonSI.INCH)
 					.to(SI.METER);
 			
-			_diameterMax = Amount.valueOf(
-					Math.sqrt(
-							(width.times(height).times(4).divide(Math.PI).getEstimatedValue())
-							),
-					SI.METER
+			setDiameterMax(
+					Amount.valueOf(
+							Math.sqrt(
+									(width.times(height).times(4).divide(Math.PI).getEstimatedValue())
+									),
+							SI.METER
+							)
 					);
 			}
 		
@@ -434,12 +298,14 @@ public class NacelleCreator {
 				return;
 			}	
 			
-			_length = Amount.valueOf(
-					-(1.28*0.00001*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2))
-					+ (9.273*0.01*theEngine.getP0().doubleValue(NonSI.HORSEPOWER))
-					- 8.3456,
-					NonSI.INCH)
-					.to(SI.METER);
+			setLength(
+					Amount.valueOf(
+							-(1.28*0.00001*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2))
+							+ (9.273*0.01*theEngine.getP0().doubleValue(NonSI.HORSEPOWER))
+							- 8.3456,
+							NonSI.INCH)
+					.to(SI.METER)
+					);
 			
 			width = Amount.valueOf(
 					- 0.95*10e-6*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
@@ -456,11 +322,13 @@ public class NacelleCreator {
 					NonSI.INCH)
 					.to(SI.METER); 
 			
-			_diameterMax = Amount.valueOf(
-					Math.sqrt(
-							(width.times(height).times(4).divide(Math.PI).getEstimatedValue())
-							),
-					SI.METER
+			setDiameterMax(
+					Amount.valueOf(
+							Math.sqrt(
+									(width.times(height).times(4).divide(Math.PI).getEstimatedValue())
+									),
+							SI.METER
+							)
 					);
 		}
 	}
@@ -473,17 +341,9 @@ public class NacelleCreator {
 	 */
 	private void calculateSurfaceWetted() {
 		
-		_surfaceWetted = _length.times(_diameterMax.times(Math.PI)).to(SI.SQUARE_METRE); 
-	}
-
-	public void initializeWeights(Aircraft theAircraft) {
-		if (_theWeights == null) 
-			_theWeights = new NacelleWeightsManager(this, theAircraft);
-	}
-
-	public void initializeBalance() {
-		if (_theBalance == null)
-			_theBalance = new NacelleBalanceManager(this);
+		_surfaceWetted = _theNacelleCreatorInterface.getLength()
+				.times(_theNacelleCreatorInterface.getDiameterMax().times(Math.PI))
+				.to(SI.SQUARE_METRE); 
 	}
 
 	/**
@@ -509,7 +369,7 @@ public class NacelleCreator {
 		//----------------------------------------------------------------------------------------
 		// comparison between the engine length and the nacelle length
 		if(_theEngine.getLength() != null)
-			if(_theEngine.getLength().doubleValue(SI.METER) <= this._length.doubleValue(SI.METER))
+			if(_theEngine.getLength().doubleValue(SI.METER) <= this._theNacelleCreatorInterface.getLength().doubleValue(SI.METER))
 				System.out.println("[Nacelle] Nacelle length bigger than engine length \n\t CHECK PASSED --> proceding ...");
 			else {
 				System.err.println("[Nacelle] Nacelle length lower than engine length \n\t CHECK NOT PASSED --> returning ...");
@@ -526,22 +386,22 @@ public class NacelleCreator {
 		
 		trueXCoordinates[0] = 0.0;
 		trueXCoordinates[1] = this._xPositionMaximumDiameterLRF.doubleValue(SI.METER);
-		trueXCoordinates[2] = this._length.doubleValue(SI.METER);
+		trueXCoordinates[2] = this._theNacelleCreatorInterface.getLength().doubleValue(SI.METER);
 		
 		trueZCoordinatesUpper[0] = this._diameterInlet.divide(2).doubleValue(SI.METER);
-		trueZCoordinatesUpper[1] = this._diameterMax.divide(2).doubleValue(SI.METER);
+		trueZCoordinatesUpper[1] = this._theNacelleCreatorInterface.getDiameterMax().divide(2).doubleValue(SI.METER);
 		trueZCoordinatesUpper[2] = (this._diameterOutlet.divide(2).doubleValue(SI.METER)) 
 									+ this._zPositionOutletDiameterLRF.doubleValue(SI.METER);
 		
 		trueZCoordinatesLower[0] = - this._diameterInlet.divide(2).doubleValue(SI.METER);
-		trueZCoordinatesLower[1] = - this._diameterMax.divide(2).doubleValue(SI.METER);
+		trueZCoordinatesLower[1] = - this._theNacelleCreatorInterface.getDiameterMax().divide(2).doubleValue(SI.METER);
 		trueZCoordinatesLower[2] = (- this._diameterOutlet.divide(2).doubleValue(SI.METER)) 
 									+ this._zPositionOutletDiameterLRF.doubleValue(SI.METER);
 		
 		_xCoordinatesOutlineDouble = MyArrayUtils
 				.linspace(
 						0.0,
-						this._length.doubleValue(SI.METER),
+						this._theNacelleCreatorInterface.getLength().doubleValue(SI.METER),
 						nPoints
 						); 
 		_xCoordinatesOutline = MyArrayUtils
@@ -582,11 +442,11 @@ public class NacelleCreator {
 		double[] trueYCoordinatesLeft = new double[3];
 		
 		trueYCoordinatesRight[0] = this._diameterInlet.divide(2).doubleValue(SI.METER);
-		trueYCoordinatesRight[1] = this._diameterMax.divide(2).doubleValue(SI.METER);
+		trueYCoordinatesRight[1] = this._theNacelleCreatorInterface.getDiameterMax().divide(2).doubleValue(SI.METER);
 		trueYCoordinatesRight[2] = this._diameterOutlet.divide(2).doubleValue(SI.METER); 
 		
 		trueYCoordinatesLeft[0] = - this._diameterInlet.divide(2).doubleValue(SI.METER);
-		trueYCoordinatesLeft[1] = - this._diameterMax.divide(2).doubleValue(SI.METER);
+		trueYCoordinatesLeft[1] = - this._theNacelleCreatorInterface.getDiameterMax().divide(2).doubleValue(SI.METER);
 		trueYCoordinatesLeft[2] = - this._diameterOutlet.divide(2).doubleValue(SI.METER); 
 		
 		_yCoordinatesOutlineXYRightDouble = new double[nPoints];
@@ -616,6 +476,7 @@ public class NacelleCreator {
 		}
 	}
 	
+	// TODO: Move these ...
 	/**
 	 * Invoke all the methods to evaluate 
 	 * nacelle related quantities
@@ -623,6 +484,7 @@ public class NacelleCreator {
 	 * @author Lorenzo Attanasio
 	 */
 	public void calculateAll(Aircraft theAircraft) {
+		
 		initializeWeights(theAircraft);
 		initializeBalance();
 		
@@ -630,312 +492,275 @@ public class NacelleCreator {
 		_theBalance.calculateAll();
 	}
 
-	public Double calculateFormFactor(){
+	public void initializeWeights(Aircraft theAircraft) {
+		if (_theWeights == null) 
+			_theWeights = new NacelleWeightsManager(this, theAircraft);
+	}
+
+	public void initializeBalance() {
+		if (_theBalance == null)
+			_theBalance = new NacelleBalanceManager(this);
+	}
+	
+	// TODO: move in calculators
+	public double calculateFormFactor(){
 		//matlab file ATR72
 		return (1 + 0.165 
-				+ 0.91/(_length.getEstimatedValue()/_diameterMax.getEstimatedValue())); 	
+				+ 0.91/(_theNacelleCreatorInterface.getLength().getEstimatedValue()
+						/_theNacelleCreatorInterface.getDiameterMax().getEstimatedValue())); 	
+	}
+	
+	//----------------------------------------------------------------------------------------------------
+	// GETTERS & SETTERS
+	
+	public INacelleCreator getTheNacelleCreatorInterface() {
+		return _theNacelleCreatorInterface;
+	}
+	
+	public void setTheNacelleCreatorInterface (INacelleCreator theNacelleCreatorInterface) {
+		this._theNacelleCreatorInterface = theNacelleCreatorInterface;
 	}
 	
 	public Amount<Length> getLength() {
-		return _length;
+		return _theNacelleCreatorInterface.getLength();
 	}
-
 	
 	public void setLength(Amount<Length> _lenght) {
-		this._length = _lenght;
+		setTheNacelleCreatorInterface(INacelleCreator.Builder.from(_theNacelleCreatorInterface).setLength(_lenght).build());
 	}
 
-	
 	public Amount<Area> getSurfaceWetted() {
 		return _surfaceWetted;
 	}
-
 	
 	public void setSurfaceWetted(Amount<Area> _sWet) {
 		this._surfaceWetted = _sWet;
 	}
 
-	
 	public Amount<Length> getDiameterInlet() {
 		return _diameterInlet;
 	}
-
 	
 	public void setDiameterInlet(Amount<Length> _diameterInlet) {
 		this._diameterInlet = _diameterInlet;
 	}
-
 	
 	public Amount<Length> getDiameterMax() {
-		return _diameterMax;
+		return _theNacelleCreatorInterface.getDiameterMax();
+	}
+	
+	public void setDiameterMax(Amount<Length> _diameter) {
+		setTheNacelleCreatorInterface(INacelleCreator.Builder.from(_theNacelleCreatorInterface).setDiameterMax(_diameter).build());
 	}
 
-	
-	public void setDiameterMean(Amount<Length> _diameter) {
-		this._diameterMax = _diameter;
-	}
-
-	
 	public Amount<Length> getDiameterOutlet() {
 		return _diameterOutlet;
 	}
-
 	
 	public void setDiameterOutlet(Amount<Length> _exitDiameter) {
 		this._diameterOutlet = _exitDiameter;
 	}
-
 	
-	public Double getKInlet() {
-		return _kInlet;
-	}
-
-	
-	public void setKInlet(Double _kInlet) {
-		this._kInlet = _kInlet;
-	}
-
-	
-	public Double getKOutlet() {
-		return _kOutlet;
-	}
-
-	
-	public void setKOutlet(Double _kOutlet) {
-		this._kOutlet = _kOutlet;
-	}
-
-	
-	public Double getKLength() {
-		return _kLength;
-	}
-
-	
-	public void setKLength(Double _kLength) {
-		this._kLength = _kLength;
+	public double getKInlet() {
+		return _theNacelleCreatorInterface.getKInlet();
 	}
 	
-	
-	public Double getKDiameterOutlet() {
-		return _kDiameterOutlet;
+	public void setKInlet(double _kInlet) {
+		setTheNacelleCreatorInterface(INacelleCreator.Builder.from(_theNacelleCreatorInterface).setKInlet(_kInlet).build());
 	}
 
+	public double getKOutlet() {
+		return _theNacelleCreatorInterface.getKOutlet();
+	}
 	
-	public void setKDiameterOutlet(Double _kDiameterOutlet) {
-		this._kDiameterOutlet = _kDiameterOutlet;
+	public void setKOutlet(double _kOutlet) {
+		setTheNacelleCreatorInterface(INacelleCreator.Builder.from(_theNacelleCreatorInterface).setKOutlet(_kOutlet).build());
+	}
+	
+	public double getKLength() {
+		return _theNacelleCreatorInterface.getKLength();
+	}
+	
+	public void setKLength(double _kLength) {
+		setTheNacelleCreatorInterface(INacelleCreator.Builder.from(_theNacelleCreatorInterface).setKLength(_kLength).build());
+	}
+	
+	public double getKDiameterOutlet() {
+		return _theNacelleCreatorInterface.getKDiameterOutlet();
+	}
+	
+	public void setKDiameterOutlet(double _kDiameterOutlet) {
+		setTheNacelleCreatorInterface(INacelleCreator.Builder.from(_theNacelleCreatorInterface).setKDiameterOutlet(_kDiameterOutlet).build());
 	}
 
-	
 	public Amount<Length> getXPositionMaximumDiameterLRF() {
 		return _xPositionMaximumDiameterLRF;
 	}
-
 	
 	public void setXPositionMaximumDiameterLRF(Amount<Length> _xPositionMaximumDiameterLRF) {
 		this._xPositionMaximumDiameterLRF = _xPositionMaximumDiameterLRF;
 	}
-
 	
 	public Amount<Length> getZPositionOutletDiameterLRF() {
 		return _zPositionOutletDiameterLRF;
 	}
-
 	
 	public void setZPositionOutletDiameterLRF(Amount<Length> _zPositionOutletDiameterLRF) {
 		this._zPositionOutletDiameterLRF = _zPositionOutletDiameterLRF;
 	}
-
 	
 	public Amount<Length> getRoughness() {
-		return _roughness;
+		return _theNacelleCreatorInterface.getRoughness();
 	}
 
-	
 	public void setRoughness(Amount<Length> _roughness) {
-		this._roughness = _roughness;
+		setTheNacelleCreatorInterface(INacelleCreator.Builder.from(_theNacelleCreatorInterface).setRoughness(_roughness).build());
 	}
 
-	
 	public NacelleMountingPositionEnum getMountingPosition() {
 		return _mountingPosition;
 	}
-
 	
 	public void setMountingPosition(NacelleMountingPositionEnum _mounting) {
 		this._mountingPosition = _mounting;
 	}
-
 	
 	public Amount<Length> getXApexConstructionAxes() {
 		return _xApexConstructionAxes;
 	}
-
 	
 	public void setXApexConstructionAxes(Amount<Length> _X0) {
 		this._xApexConstructionAxes = _X0;
 	}
 
-	
 	public Amount<Length> getYApexConstructionAxes() {
 		return _yApexConstructionAxes;
 	}
 
-	
 	public void setYApexConstructionAxes(Amount<Length> _Y0) {
 		this._yApexConstructionAxes = _Y0;
 	}
-
 	
 	public Amount<Length> getZApexConstructionAxes() {
 		return _zApexConstructionAxes;
 	}
-
 	
 	public void setZApexConstructionAxes(Amount<Length> _Z0) {
 		this._zApexConstructionAxes = _Z0;
 	}
-
 	
 	public Engine getTheEngine() {
 		return _theEngine;
 	}
-
 	
 	public void setTheEngine(Engine _theEngine) {
 		this._theEngine = _theEngine;
 	}
-
 	
 	public NacelleWeightsManager getWeights() {
 		return _theWeights;
 	}
 
-	
 	public NacelleAerodynamicsManager getAerodynamics() {
 		return _theAerodynamics;
 	}
-
 	
 	public NacelleBalanceManager getBalance() {
 		return _theBalance;
 	}
 	
-	
 	public String getId() {
-		return _id;
+		return _theNacelleCreatorInterface.getId();
 	}
 
-	
 	public void setId(String id) {
-		this._id = id;
+		setTheNacelleCreatorInterface(INacelleCreator.Builder.from(_theNacelleCreatorInterface).setId(id).build());
 	}
-
 	
 	public Amount<Mass> getMassReference() {
 		return _massReference;
 	}
-
 	
 	public void setMassReference(Amount<Mass> _massReference) {
 		this._massReference = _massReference;
 	}
-
 	
-	public double[] getXCoordinatesOutlineDouble() {
+	public double[] getXCoordinatesOutlinedouble() {
 		return _xCoordinatesOutlineDouble;
 	}
 
-	
-	public void setXCoordinatesOutlineDouble(double[] xCoordinatesOutlineDouble) {
-		_xCoordinatesOutlineDouble = xCoordinatesOutlineDouble;
+	public void setXCoordinatesOutlinedouble(double[] xCoordinatesOutlinedouble) {
+		_xCoordinatesOutlineDouble = xCoordinatesOutlinedouble;
 	}
 
-	
-	public double[] getZCoordinatesOutlineXZUpperDouble() {
+	public double[] getZCoordinatesOutlineXZUpperdouble() {
 		return _zCoordinatesOutlineXZUpperDouble;
 	}
 
-	
-	public void setZCoordinatesOutlineXZUpperDouble(double[] zCoordinatesOutlineXZUpperDouble) {
-		_zCoordinatesOutlineXZUpperDouble = zCoordinatesOutlineXZUpperDouble;
+	public void setZCoordinatesOutlineXZUpperdouble(double[] zCoordinatesOutlineXZUpperdouble) {
+		_zCoordinatesOutlineXZUpperDouble = zCoordinatesOutlineXZUpperdouble;
 	}
 
-	
-	public double[] getZCoordinatesOutlineXZLowerDouble() {
+	public double[] getZCoordinatesOutlineXZLowerdouble() {
 		return _zCoordinatesOutlineXZLowerDouble;
 	}
 
-	
-	public void setZCoordinatesOutlineXZLowerDouble(double[] zCoordinatesOutlineXZLowerDouble) {
-		_zCoordinatesOutlineXZLowerDouble = zCoordinatesOutlineXZLowerDouble;
+	public void setZCoordinatesOutlineXZLowerdouble(double[] zCoordinatesOutlineXZLowerdouble) {
+		_zCoordinatesOutlineXZLowerDouble = zCoordinatesOutlineXZLowerdouble;
 	}
 
-	
-	public double[] getYCoordinatesOutlineXYRightDouble() {
+	public double[] getYCoordinatesOutlineXYRightdouble() {
 		return _yCoordinatesOutlineXYRightDouble;
 	}
 
-	
-	public void setYCoordinatesOutlineXYRightDouble(double[] _yCoordinatesOutlineXYRightDouble) {
-		this._yCoordinatesOutlineXYRightDouble = _yCoordinatesOutlineXYRightDouble;
+	public void setYCoordinatesOutlineXYRightdouble(double[] _yCoordinatesOutlineXYRightdouble) {
+		this._yCoordinatesOutlineXYRightDouble = _yCoordinatesOutlineXYRightdouble;
 	}
 
-	
-	public double[] getYCoordinatesOutlineXYLeftDouble() {
+	public double[] getYCoordinatesOutlineXYLeftdouble() {
 		return _yCoordinatesOutlineXYLeftDouble;
 	}
 
-	
-	public void setYCoordinatesOutlineXYLeftDouble(double[] _yCoordinatesOutlineXYLeftDouble) {
-		this._yCoordinatesOutlineXYLeftDouble = _yCoordinatesOutlineXYLeftDouble;
+	public void setYCoordinatesOutlineXYLeftdouble(double[] _yCoordinatesOutlineXYLeftdouble) {
+		this._yCoordinatesOutlineXYLeftDouble = _yCoordinatesOutlineXYLeftdouble;
 	}
 
-	
 	public List<Amount<Length>> getXCoordinatesOutline() {
 		return _xCoordinatesOutline;
 	}
 
-	
 	public void setXCoordinatesOutline(List<Amount<Length>> xCoordinatesOutline) {
 		_xCoordinatesOutline = xCoordinatesOutline;
 	}
 
-	
 	public List<Amount<Length>> getZCoordinatesOutlineXZUpper() {
 		return _zCoordinatesOutlineXZUpper;
 	}
 	
-	
 	public void setZCoordinatesOutlineXZUpper(List<Amount<Length>> zCoordinatesOutlineXZUpper) {
 		_zCoordinatesOutlineXZUpper = zCoordinatesOutlineXZUpper;
 	}
-
 	
 	public List<Amount<Length>> getZCoordinatesOutlineXZLower() {
 		return _zCoordinatesOutlineXZLower;
 	}
 
-	
 	public void setZCoordinatesOutlineXZLower(List<Amount<Length>> zCoordinatesOutlineXZLower) {
 		_zCoordinatesOutlineXZLower = zCoordinatesOutlineXZLower;
 	}
 
-	
 	public List<Amount<Length>> getYCoordinatesOutlineXYRight() {
 		return _yCoordinatesOutlineXYRight;
 	}
 
-	
 	public void setYCoordinatesOutlineXYRight(List<Amount<Length>> _yCoordinatesOutlineXYRight) {
 		this._yCoordinatesOutlineXYRight = _yCoordinatesOutlineXYRight;
 	}
 
-	
 	public List<Amount<Length>> getYCoordinatesOutlineXYLeft() {
 		return _yCoordinatesOutlineXYLeft;
 	}
 
-	
 	public void setYCoordinatesOutlineXYLeft(List<Amount<Length>> _yCoordinatesOutlineXYLeft) {
 		this._yCoordinatesOutlineXYLeft = _yCoordinatesOutlineXYLeft;
 	}

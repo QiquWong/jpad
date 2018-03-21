@@ -10,7 +10,7 @@ import java.util.Map;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import analyses.OperatingConditions;
 import javaslang.Tuple;
 import standaloneutils.atmosphere.SpeedCalc;

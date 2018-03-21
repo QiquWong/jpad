@@ -11,7 +11,7 @@ import javax.measure.quantity.VolumetricDensity;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 

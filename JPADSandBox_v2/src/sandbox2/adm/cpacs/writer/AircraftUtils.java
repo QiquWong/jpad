@@ -8,7 +8,7 @@ import java.io.PrintStream;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;

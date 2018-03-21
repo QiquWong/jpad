@@ -3,7 +3,7 @@ package it.unina.daf.jpadcadsandbox;
 import java.util.ArrayList;
 import java.util.List;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.ComponentEnum;

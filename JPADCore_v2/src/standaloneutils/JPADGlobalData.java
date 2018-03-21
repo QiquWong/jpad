@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import analyses.ACAnalysisManager;
 import analyses.OperatingConditions;

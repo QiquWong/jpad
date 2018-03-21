@@ -44,29 +44,26 @@ import standaloneutils.atmosphere.AtmosphereCalc;
  * @author Vittorio Trifari
  * 
  */
-public class FuelTank implements IFuelTank {
+public class FuelTank {
 
+	//--------------------------------------------------------------------------------
+	// VARIABLE DECLARATION
 	private String _id;
-	
 	private LiftingSurface _theWing;
-	
 	private Amount<Length> _xApexConstructionAxes;
 	private Amount<Length> _yApexConstructionAxes;
 	private Amount<Length> _zApexConstructionAxes;
+	private List<Amount<Length>> _thicknessAtMainSpar;
+	private List<Amount<Length>> _thicknessAtSecondarySpar;
+	private List<Amount<Length>> _distanceBetweenSpars;
+	private List<Amount<Length>> _prismoidsLength;
+	private List<Amount<Area>> _prismoidsSectionsAreas;
+	private List<Amount<Volume>> _prismoidsVolumes;
+	private List<Amount<Length>> _fuelTankStations;
+	private List<Amount<Length>> _wingChordsAtFuelTankStations;
 	
 	private Amount<Mass> _massEstimated, _massReference;
 
-	private Double _mainSparNormalizedStation;
-	private Double _secondarySparNormalizedStation;
-	List<Amount<Length>> _thicknessAtMainSpar;
-	List<Amount<Length>> _thicknessAtSecondarySpar;
-	List<Amount<Length>> _distanceBetweenSpars;
-	List<Amount<Length>> _prismoidsLength;
-	List<Amount<Area>> _prismoidsSectionsAreas;
-	List<Amount<Volume>> _prismoidsVolumes;
-	List<Amount<Length>> _fuelTankStations;
-	List<Amount<Length>> _wingChordsAtFuelTankStations;
-	
 	private Amount<Length> _xCG;
 	private Amount<Length> _yCG;
 	private Amount<Length> _zCG;
@@ -81,75 +78,29 @@ public class FuelTank implements IFuelTank {
 	private Amount<Mass> _fuelMass = Amount.valueOf(0.0, SI.KILOGRAM);
 	private Amount<Force> _fuelWeight = Amount.valueOf(0.0, SI.NEWTON);
 
-	//============================================================================================
-	// Builder pattern 
-	//============================================================================================
-	public static class FuelTankBuilder {
+	//--------------------------------------------------------------------------------------------
+	// BUILDER
 	
-		// required parameters
-		private String __id;
-
-		// optional parameters ... defaults
-		// ...
-		private Double __mainSparNormalizedStation;
-		private Double __secondarySparNormalizedStation;
-		private LiftingSurface __theWing;
+	public FuelTank(String id, LiftingSurface theWing) {
+			
+		this._theWing = theWing;
 		
-		List<Amount<Length>> __thicknessAtMainSpar = new ArrayList<Amount<Length>>();
-		List<Amount<Length>> __thicknessAtSecondarySpar = new ArrayList<Amount<Length>>();
-		List<Amount<Length>> __distanceBetweenSpars = new ArrayList<Amount<Length>>();
-		List<Amount<Length>> __prismoidsLength = new ArrayList<Amount<Length>>();
-		List<Amount<Area>> __prismoidsSectionsAreas = new ArrayList<Amount<Area>>();
-		List<Amount<Volume>> __prismoidsVolumes = new ArrayList<Amount<Volume>>();
-		List<Amount<Length>> __fuelTankStations = new ArrayList<Amount<Length>>();
-		List<Amount<Length>> __wingChordsAtFuelTankStations = new ArrayList<Amount<Length>>();
-		
-		public FuelTankBuilder (String id, LiftingSurface theWing) {
-			this.__id = id;
-			this.__theWing = theWing;
-			this.__mainSparNormalizedStation = theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition();
-			this.__secondarySparNormalizedStation = theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition();
-		}
-		
-		public FuelTankBuilder mainSparPosition (Double xMainSpar) {
-			this.__mainSparNormalizedStation = xMainSpar;
-			return this;
-		}
-		
-		public FuelTankBuilder secondarySparPosition (Double xSecondarySpar) {
-			this.__secondarySparNormalizedStation = xSecondarySpar;
-			return this;
-		}
-		
-		public FuelTank build() {
-			return new FuelTank (this);
-		}
-		
-	}
-	
-	private FuelTank (FuelTankBuilder builder) {
-	
-		this._id = builder.__id;
-		this._theWing = builder.__theWing;
-		this._mainSparNormalizedStation = builder.__mainSparNormalizedStation;
-		this._secondarySparNormalizedStation = builder.__secondarySparNormalizedStation;
-		this._thicknessAtMainSpar = builder.__thicknessAtMainSpar;
-		this._thicknessAtSecondarySpar = builder.__thicknessAtSecondarySpar;
-		this._distanceBetweenSpars = builder.__distanceBetweenSpars;
-		this._prismoidsLength = builder.__prismoidsLength;
-		this._prismoidsSectionsAreas = builder.__prismoidsSectionsAreas;
-		this._prismoidsVolumes = builder.__prismoidsVolumes;
-		this._fuelTankStations = builder.__fuelTankStations;
-		this._wingChordsAtFuelTankStations = builder.__wingChordsAtFuelTankStations;
+		_thicknessAtMainSpar = new ArrayList<>();
+		_thicknessAtSecondarySpar = new ArrayList<>();
+		_distanceBetweenSpars = new ArrayList<>();
+		_prismoidsLength = new ArrayList<>();
+		_prismoidsSectionsAreas = new ArrayList<>();
+		_prismoidsVolumes = new ArrayList<>();
+		_fuelTankStations = new ArrayList<>();
+		_wingChordsAtFuelTankStations = new ArrayList<>();
 		
 		calculateGeometry(_theWing);
 		calculateFuelMass();
 		
 	}
 	
-	//===================================================================================================
-	// End of builder pattern
-	//===================================================================================================
+	//--------------------------------------------------------------------------------------------
+	// METHODS
 	
 	/************************************************************************************ 
 	 * Estimates dimensions of the fuel tank.
@@ -166,7 +117,7 @@ public class FuelTank implements IFuelTank {
 			this._thicknessAtMainSpar.add(
 					Amount.valueOf(
 							AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
-									_mainSparNormalizedStation,
+									theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition(),
 									theWing.getLiftingSurfaceCreator().getAirfoilList().get(i).getThicknessToChordRatio()
 									)
 							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
@@ -175,7 +126,7 @@ public class FuelTank implements IFuelTank {
 			this._thicknessAtSecondarySpar.add(
 					Amount.valueOf(
 							AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
-									_secondarySparNormalizedStation,
+									theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition(),
 									theWing.getLiftingSurfaceCreator().getAirfoilList().get(i).getThicknessToChordRatio()
 									)
 							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
@@ -183,8 +134,10 @@ public class FuelTank implements IFuelTank {
 					);
 			this._distanceBetweenSpars.add(
 					Amount.valueOf(
-							_secondarySparNormalizedStation*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)
-							-_mainSparNormalizedStation*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
+							theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition()
+							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)
+							- (theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition()
+							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)),
 							SI.METER
 							)
 					);
@@ -211,7 +164,7 @@ public class FuelTank implements IFuelTank {
 		this._thicknessAtMainSpar.add(
 				Amount.valueOf(
 						AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
-								_mainSparNormalizedStation,
+								theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition(),
 								airfoilAt85Percent.getThicknessToChordRatio()
 								)
 						* chordAt85Percent.doubleValue(SI.METER),
@@ -220,7 +173,7 @@ public class FuelTank implements IFuelTank {
 		this._thicknessAtSecondarySpar.add(
 				Amount.valueOf(
 						AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
-								_secondarySparNormalizedStation,
+								theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition(),
 								airfoilAt85Percent.getThicknessToChordRatio()
 								)
 						* chordAt85Percent.doubleValue(SI.METER),
@@ -228,8 +181,8 @@ public class FuelTank implements IFuelTank {
 				);
 		this._distanceBetweenSpars.add(
 				Amount.valueOf(
-						(_secondarySparNormalizedStation*chordAt85Percent.doubleValue(SI.METER))
-						-(_mainSparNormalizedStation*chordAt85Percent.doubleValue(SI.METER)),
+						(theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition()*chordAt85Percent.doubleValue(SI.METER))
+						-(theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition()*chordAt85Percent.doubleValue(SI.METER)),
 						SI.METER
 						)
 				);
@@ -308,7 +261,6 @@ public class FuelTank implements IFuelTank {
 		
 	}
 	
-	@Override
 	public void calculateGeometry(LiftingSurface theWing) {
 		
 		estimateDimensions(theWing);
@@ -316,7 +268,6 @@ public class FuelTank implements IFuelTank {
 		calculateVolume();
 	}
 	
-	@Override
 	public void calculateFuelMass() {
 		_fuelMass = Amount.valueOf(_fuelDensity.times(_fuelVolume).getEstimatedValue(), SI.KILOGRAM);
 		_fuelWeight = _fuelMass.times(AtmosphereCalc.g0).to(SI.NEWTON);
@@ -353,7 +304,6 @@ public class FuelTank implements IFuelTank {
 	 *  
 	 *  @author Vittorio Trifari
 	 */
-	@Override
 	public void calculateCG() {
 
 		//-------------------------------------------------------------
@@ -424,7 +374,7 @@ public class FuelTank implements IFuelTank {
 																this._fuelTankStations.get(i).doubleValue(SI.METER)
 																)
 														.plus(this._wingChordsAtFuelTankStations.get(i)
-																.times(this._mainSparNormalizedStation)
+																.times(_theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition())
 																)
 														.doubleValue(SI.METER) + xCGLateralFacesLFRList.get(i)[0];
 			xCGSegmentOppositeFaceSpanwiseY[1] = this._theWing
@@ -433,7 +383,7 @@ public class FuelTank implements IFuelTank {
 																this._fuelTankStations.get(i+1).doubleValue(SI.METER)
 																)
 														.plus(this._wingChordsAtFuelTankStations.get(i+1)
-																.times(this._mainSparNormalizedStation)
+																.times(_theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition())
 																)
 														.doubleValue(SI.METER) + xCGLateralFacesLFRList.get(i)[2];
 
@@ -459,7 +409,7 @@ public class FuelTank implements IFuelTank {
 																	.getYBreakPoints().get(i)
 																		.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[3])
-																* this._mainSparNormalizedStation
+																* _theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition()
 																);
 			xCGSegmentOppositeFaceChordwiseY[1] = this._theWing
 													.getLiftingSurfaceCreator()
@@ -474,20 +424,20 @@ public class FuelTank implements IFuelTank {
 																		.getYBreakPoints().get(i)
 																			.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[1])
-																* this._mainSparNormalizedStation
+																* _theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition()
 																)
 														+ ((this._theWing.getLiftingSurfaceCreator().getChordAtYActual(
 																this._theWing.getLiftingSurfaceCreator()
 																		.getYBreakPoints().get(i)
 																			.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[1])
-																* this._secondarySparNormalizedStation)
+																* _theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition())
 															- (this._theWing.getLiftingSurfaceCreator().getChordAtYActual(
 																	this._theWing.getLiftingSurfaceCreator()
 																			.getYBreakPoints().get(i)
 																				.doubleValue(SI.METER)
 																	+ xCGLateralFacesLFRList.get(i)[1])
-																	* this._mainSparNormalizedStation));
+																	* _theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition()));
 
 			// check if the chordwise X array is monotonic increasing
 			if(xCGSegmentOppositeFaceChordwiseX[1] - xCGSegmentOppositeFaceChordwiseX[0] < 0.0001)
@@ -541,8 +491,8 @@ public class FuelTank implements IFuelTank {
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
 				.append("\t·····································\n")
-				.append("\tMain spar position (% semispan): " + _mainSparNormalizedStation + "\n")
-				.append("\tSecondary spar position (% semispan): " + _secondarySparNormalizedStation + "\n")
+				.append("\tMain spar position (% local chord): " + _theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition() + "\n")
+				.append("\tSecondary spar position (% local chord): " + _theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition() + "\n")
 				.append("\t·····································\n")
 				.append("\tAirfoils thickness at main spar stations: " + _thicknessAtMainSpar + "\n")
 				.append("\tAirfoils thickness at secondary spar stations: " + _thicknessAtSecondarySpar + "\n")
@@ -563,223 +513,161 @@ public class FuelTank implements IFuelTank {
 		
 	}
 	
-	@Override
+	//--------------------------------------------------------------------------------------------
+	// GETTERS & SETTERS
+	
 	public String getId() {
 		return _id;
 	}
 
-	@Override
 	public void setId(String _id) {
 		this._id = _id;
 	}
 
-	@Override
+	public LiftingSurface getTheWing() {
+		return _theWing;
+	}
+	
+	public void setTheWing (LiftingSurface theWing) {
+		this._theWing = theWing;
+	}
+	
 	public Amount<Length> getXApexConstructionAxes() {
 		return _xApexConstructionAxes;
 	}
 
-	@Override
 	public void setXApexConstructionAxes(Amount<Length> _xApexConstructionAxes) {
 		this._xApexConstructionAxes = _xApexConstructionAxes;
 	}
 
-	@Override
 	public Amount<Length> getYApexConstructionAxes() {
 		return _yApexConstructionAxes;
 	}
 
-	@Override
 	public void setYApexConstructionAxes(Amount<Length> _yApexConstructionAxes) {
 		this._yApexConstructionAxes = _yApexConstructionAxes;
 	}
 
-	@Override
 	public Amount<Length> getZApexConstructionAxes() {
 		return _zApexConstructionAxes;
 	}
 
-	@Override
 	public void setZApexConstructionAxes(Amount<Length> _zApexConstructionAxes) {
 		this._zApexConstructionAxes = _zApexConstructionAxes;
 	}
 
-	@Override
-	public Double getMainSparNormalizedStation() {
-		return _mainSparNormalizedStation;
-	}
-
-	@Override
-	public void setMainSparNormalizedStation(Double _mainSparNormalizedStation) {
-		this._mainSparNormalizedStation = _mainSparNormalizedStation;
-	}
-
-	@Override
-	public Double getSecondarySparNormalizedStation() {
-		return _secondarySparNormalizedStation;
-	}
-
-	@Override
-	public void setSecondarySparNormalizedStation(Double _secondarySparNormalizedStation) {
-		this._secondarySparNormalizedStation = _secondarySparNormalizedStation;
-	}
-
-	@Override
 	public List<Amount<Length>> getDistanceBetweenSpars() {
 		return _distanceBetweenSpars;
 	}
 
-	@Override
 	public void setDistanceBetweenSpars(List<Amount<Length>> _distanceBetweenSpars) {
 		this._distanceBetweenSpars = _distanceBetweenSpars;
 	}
 
-	@Override
 	public List<Amount<Length>> getPrismoidsLength() {
 		return _prismoidsLength;
 	}
 
-	@Override
 	public void setPrismoidsLength(List<Amount<Length>> _prismoidsLength) {
 		this._prismoidsLength = _prismoidsLength;
 	}
 
-	@Override
 	public Amount<Length> getXCG() {
 		return _xCG;
 	}
 
-	@Override
 	public void setXCG(Amount<Length> _xCG) {
 		this._xCG = _xCG;
 	}
 
-	@Override
 	public Amount<Length> getYCG() {
 		return _yCG;
 	}
 
-	@Override
 	public void setYCG(Amount<Length> _yCG) {
 		this._yCG = _yCG;
 	}
 
-	@Override
 	public Amount<Length> getZCG() {
 		return _zCG;
 	}
 
-	@Override
 	public void setZCG(Amount<Length> _zCG) {
 		this._zCG = _zCG;
 	}
 
-	@Override
 	public Amount<VolumetricDensity> getFuelDensity() {
 		return _fuelDensity;
 	}
 
-	@Override
 	public void setFuelDensity(Amount<VolumetricDensity> _fuelDensity) {
 		this._fuelDensity = _fuelDensity;
 	}
 
-	@Override
 	public Amount<Mass> getMassEstimated() {
 		return _massEstimated;
 	}
 
-	@Override
 	public List<Amount<Length>> getThicknessAtMainSpar() {
 		return _thicknessAtMainSpar;
 	}
 
-	@Override
 	public List<Amount<Length>> getThicknessAtSecondarySpar() {
 		return _thicknessAtSecondarySpar;
 	}
 
-	@Override
 	public List<Amount<Area>> getPrismoidsSectionsAreas() {
 		return _prismoidsSectionsAreas;
 	}
 
-	@Override
 	public List<Amount<Volume>> getPrismoidsVolumes() {
 		return _prismoidsVolumes;
 	}
 
-	@Override
 	public Amount<Volume> getFuelVolume() {
 		return _fuelVolume;
 	}
 
-	@Override
 	public Amount<Mass> getFuelMass() {
 		return _fuelMass;
 	}
 
-	@Override
 	public void setFuelMass(Amount<Mass> fuelMass) {
 		this._fuelMass = fuelMass;
 	}
 	
-	/**
-	 * @return the _massReference
-	 */
 	public Amount<Mass> getMassReference() {
 		return _massReference;
 	}
 
-	/**
-	 * @param _massReference the _massReference to set
-	 */
 	public void setMassReference(Amount<Mass> _massReference) {
 		this._massReference = _massReference;
 	}
 
-	@Override
 	public Amount<Force> getFuelWeight() {
 		return _fuelWeight;
 	}
 
-	/**
-	 * @return the _xCGLRF
-	 */
 	public Amount<Length> getXCGLRF() {
 		return _xCGLRF;
 	}
 
-	/**
-	 * @param _xCGLRF the _xCGLRF to set
-	 */
 	public void setXCGLRF(Amount<Length> _xCGLRF) {
 		this._xCGLRF = _xCGLRF;
 	}
 
-	/**
-	 * @return the _yCGLRF
-	 */
 	public Amount<Length> getYCGLRF() {
 		return _yCGLRF;
 	}
 
-	/**
-	 * @param _yCGLRF the _yCGLRF to set
-	 */
 	public void setYCGLRF(Amount<Length> _yCGLRF) {
 		this._yCGLRF = _yCGLRF;
 	}
 
-	/**
-	 * @return the _zCGLRF
-	 */
 	public Amount<Length> getZCGLRF() {
 		return _zCGLRF;
 	}
 
-	/**
-	 * @param _zCGLRF the _zCGLRF to set
-	 */
 	public void setZCGLRF(Amount<Length> _zCGLRF) {
 		this._zCGLRF = _zCGLRF;
 	}

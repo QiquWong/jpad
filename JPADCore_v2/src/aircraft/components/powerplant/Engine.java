@@ -13,287 +13,53 @@ import org.jscience.physics.amount.Amount;
 import analyses.powerplant.EngineBalanceManager;
 import analyses.powerplant.EngineWeightsManager;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
-public class Engine implements IEngine {
+public class Engine {
 
-	private String _id;
-	private EngineTypeEnum _engineType;
-	private String _engineDatabaseName;
+	//------------------------------------------------------------------------------
+	// VARIABLES DECLARATAION
+	private IEngine _theEngineInterface;
 	
 	private EngineMountingPositionEnum _mountingPoint;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
 	private Amount<Angle> _tiltingAngle;
-	private Amount<Length> _length;
 	
-	//------------------------------------------
-	// only for propeller driven engines
-	private Amount<Length> _propellerDiameter;
-	private Double _etaPropeller;
-	private int _numberOfBlades;
-	//------------------------------------------
-	
-	private int _numberOfCompressorStages, _numberOfShafts; 
-	private double _overallPressureRatio;
-	
-	private Double _bpr;
-	private Amount<Power> _p0;
-	private Amount<Force> _t0;
-	private Boolean _calculateDryMass;
-	private Amount<Mass> _dryMassPublicDomain; 
+	// TODO: move these ??
 	private Amount<Mass> _totalMass; // 1.5*dryMass (ref: Aircraft design - Kundu (pag.245) 
-
 	private EngineWeightsManager _theWeights;
 	private EngineBalanceManager _theBalance;
 	
-	//============================================================================================
-	// Builder pattern 
-	//============================================================================================
-	public static class EngineBuilder {
-
-		// required parameters
-		private String __id;
-		private EngineTypeEnum __engineType;
+	//------------------------------------------------------------------------------
+	// BUILDER
+	public Engine (IEngine theEngineInterface) {
 		
-		// optional parameters ... defaults
-		// ...
-		private String __engineDatabaseName;
-		private EngineMountingPositionEnum __mountingPoint;
-		private Amount<Length> __xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
-		private Amount<Length> __yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
-		private Amount<Length> __zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
-		private Amount<Angle> __tiltingAngle;
+		this._theEngineInterface = theEngineInterface;
 		
-		private Amount<Length> __length = Amount.valueOf(0.0, SI.METER);
-		private Amount<Length> __propellerDiameter = Amount.valueOf(0.0, SI.METER);
-		private int __numberOfBlades = 0;
-		private Double __etaPropeller = 0.0;
-		private Double __bpr = 0.0;
-		private Amount<Power> __p0 = Amount.valueOf(0.0, SI.WATT);
-		private Amount<Force> __t0 = Amount.valueOf(0.0, SI.NEWTON);
-		private Boolean __calculateDryMass;
-		private Amount<Mass> __dryMassPublicDomain = Amount.valueOf(0.0, SI.KILOGRAM); 
-		private int __numberOfCompressorStages = 0;
-		private int __numberOfShafts = 0; 
-		private double __overallPressureRatio = 0.0;
-		
-		public EngineBuilder id (String id) {
-			this.__id = id;
-			return this;
-		}
-		
-		public EngineBuilder type (EngineTypeEnum type) {
-			this.__engineType = type;
-			return this;
-		}
-		
-		public EngineBuilder engineDatabaseName (String engineDatabaseName) {
-			this.__engineDatabaseName = engineDatabaseName;
-			return this;
-		}
-		
-		public EngineBuilder length (Amount<Length> length) {
-			this.__length = length;
-			return this;
-		}
-		
-		public EngineBuilder dryMass (Amount<Mass> dryMass) {
-			this.__dryMassPublicDomain = dryMass;
-			return this;
-		}
-		
-		public EngineBuilder calculateDryMass (Boolean calculateDryMass) {
-			this.__calculateDryMass = calculateDryMass;
-			return this;
-		}
-		
-		public EngineBuilder propellerDiameter (Amount<Length> propellerDiameter) {
-			this.__propellerDiameter = propellerDiameter;
-			return this;
-		}
-		
-		public EngineBuilder numberOfBlades (int nBlades) {
-			this.__numberOfBlades = nBlades;
-			return this;
-		}
-		
-		public EngineBuilder etaPropeller (Double eta) {
-			this.__etaPropeller = eta;
-			return this;
-		}
-		
-		public EngineBuilder bpr (Double bpr) {
-			this.__bpr = bpr;
-			return this;
-		}
-		
-		public EngineBuilder p0 (Amount<Power> p0) {
-			this.__p0 = p0;
-			return this;
-		}
-		
-		public EngineBuilder t0 (Amount<Force> t0) {
-			this.__t0 = t0;
-			return this;
-		}
-		
-		public EngineBuilder numberOfCompressorStages (int numberOfCompressorStages) {
-			this.__numberOfCompressorStages = numberOfCompressorStages;
-			return this;
-		}
-		
-		public EngineBuilder numberOfShafts (int numberOfShafts) {
-			this.__numberOfShafts = numberOfShafts;
-			return this;
-		}
-		
-		public EngineBuilder overallPressureRatio (double overallPressureRatio) {
-			this.__overallPressureRatio = overallPressureRatio;
-			return this;
-		}
-		
-		public EngineBuilder mountingPoint (EngineMountingPositionEnum mountingPoint) {
-			this.__mountingPoint = mountingPoint;
-			return this;
-		}
-		
-		public EngineBuilder xApexConstructionAxes (Amount<Length> xApex) {
-			this.__xApexConstructionAxes = xApex;
-			return this;
-		}
-		
-		public EngineBuilder yApexConstructionAxes (Amount<Length> yApex) {
-			this.__yApexConstructionAxes = yApex;
-			return this;
-		}
-		
-		public EngineBuilder zApexConstructionAxes (Amount<Length> zApex) {
-			this.__zApexConstructionAxes = zApex;
-			return this;
-		}
-		
-		public EngineBuilder riggingAngle (Amount<Angle> muT) {
-			this.__tiltingAngle = muT;
-			return this;
-		}
-		
-		public EngineBuilder (String id, EngineTypeEnum engineType) {
-			this.__id = id;
-			this.__engineType = engineType;
-		}
-		
-		public EngineBuilder (String id, EngineTypeEnum engineType, AircraftEnum aircraftName) {
-			this.__id = id;
-			this.__engineType = engineType;
-			this.initializeDefaultVariables(aircraftName);
-		}
-		
-		/**
-		 * Method that recognize aircraft name and initialize the correct engine.
-		 * 
-		 * @author Vittorio Trifari
-		 */
-		@SuppressWarnings("incomplete-switch")
-		private void initializeDefaultVariables (AircraftEnum aircraftName) {
-			
-			switch(aircraftName) {
-			
-			case ATR72:
-				// PW127 Data
-				__engineDatabaseName = "TurbopropEngineDatabase.h5";
-				__engineType = EngineTypeEnum.TURBOPROP;
-				__length = Amount.valueOf(2.13, SI.METER);
-				__propellerDiameter = Amount.valueOf(3.93, SI.METER);
-				__numberOfBlades = 6;
-				__etaPropeller = 0.8;
-				__dryMassPublicDomain = Amount.valueOf(1064., NonSI.POUND).to(SI.KILOGRAM);
-				__calculateDryMass = Boolean.FALSE;
-				__p0 = Amount.valueOf(2750., NonSI.HORSEPOWER).to(SI.WATT);
-				__numberOfCompressorStages = 5;
-				__numberOfShafts = 2;
-				__overallPressureRatio = 15.;
-				
-				break;
-				
-			case B747_100B:
-				// PWJT9D-7 Data
-				__engineDatabaseName = "TurbofanEngineDatabase.h5";
-				__engineType = EngineTypeEnum.TURBOFAN;
-				__length = Amount.valueOf(3.26, SI.METER);
-				__bpr = 5.0;
-				__dryMassPublicDomain = Amount.valueOf(3905.0, NonSI.POUND).to(SI.KILOGRAM);
-				__calculateDryMass = Boolean.FALSE;
-				__t0 = Amount.valueOf(204000.0000, SI.NEWTON);
-				__numberOfCompressorStages = 14;
-				__numberOfShafts = 2;
-				__overallPressureRatio = 23.4;
-				
-				break;
-				
-			case AGILE_DC1:
-				//PW1700G
-				__engineDatabaseName = "TurbofanEngineDatabase.h5";
-				__engineType = EngineTypeEnum.TURBOFAN;
-				__length = Amount.valueOf(2.739, SI.METER);
-				__bpr = 6.0;	
-				__dryMassPublicDomain = Amount.valueOf(1162.6, NonSI.POUND).to(SI.KILOGRAM);
-				__calculateDryMass = Boolean.FALSE;
-				__t0 = Amount.valueOf(7000*AtmosphereCalc.g0.getEstimatedValue(), SI.NEWTON);
-				__numberOfCompressorStages = 5; // TODO: CHECK
-				__numberOfShafts = 2;// TODO: CHECK
-				__overallPressureRatio = 15.;// TODO: CHECK
-				
-				break;
-			}
-		}
-		
-		public Engine build() {
-			return new Engine(this);
-		}
-	}
-	
-	private Engine (EngineBuilder builder) {
-		
-		this._id = builder.__id;
-		this._engineType = builder.__engineType;
-		this._engineDatabaseName = builder.__engineDatabaseName;
-		this._length = builder.__length;
-		this._propellerDiameter = builder.__propellerDiameter;
-		this._numberOfBlades = builder.__numberOfBlades;
-		this._etaPropeller = builder.__etaPropeller;
-		this._bpr = builder.__bpr;
-		this._p0 = builder.__p0;
-		this._t0 = builder.__t0;
-		this._calculateDryMass = builder.__calculateDryMass;
-		this._dryMassPublicDomain = builder.__dryMassPublicDomain;
-		this._numberOfCompressorStages = builder.__numberOfCompressorStages;
-		this._numberOfShafts = builder.__numberOfShafts;
-		this._overallPressureRatio = builder.__overallPressureRatio;
-		this._mountingPoint = builder.__mountingPoint;
-		this._xApexConstructionAxes = builder.__xApexConstructionAxes;
-		this._yApexConstructionAxes = builder.__yApexConstructionAxes;
-		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
-		this._tiltingAngle = builder.__tiltingAngle;
-		
-		if((this._engineType == EngineTypeEnum.TURBOPROP)
-				|| (this._engineType == EngineTypeEnum.PISTON)) {
+		if((this._theEngineInterface.getEngineType().equals(EngineTypeEnum.TURBOPROP))
+				|| (this._theEngineInterface.getEngineType().equals(EngineTypeEnum.PISTON))) {
 			calculateT0FromP0();
 		}
+		else
+			setTheEngineInterface(
+					IEngine.Builder.from(_theEngineInterface)
+					.setStaticPower(Amount.valueOf(0.0, SI.WATT))
+					.build()
+					);
 		
+		// TODO: move these ??
 		this._theWeights = new EngineWeightsManager(this);
 		this._theBalance = new EngineBalanceManager(this);
 	}
 	
-	//===================================================================================================
-	// End of builder pattern
-	//===================================================================================================
+	//------------------------------------------------------------------------------
+	// METHODS
 	
 	@SuppressWarnings("unchecked")
 	public static Engine importFromXML (String pathToXML) {
@@ -396,45 +162,46 @@ public class Engine implements IEngine {
 
 			//..............................................................................
 			// BRR
-			Double bpr = null;
+			double bpr = 0.0;
 			String bprProperty = reader.getXMLPropertyByPath("//specifications/by_pass_ratio");
 			if(bprProperty != null)
 				bpr = Double.valueOf(bprProperty);
 			
 			//..............................................................................
 			// NUMBER OF COMPRESSOR STAGES
-			Integer numberOfCompressorStages = null;
+			int numberOfCompressorStages = 0;
 			String numberOfCompressorStagesProperty = reader.getXMLPropertyByPath("//specifications/number_of_compressor_stages");
 			if(numberOfCompressorStagesProperty != null)
 				numberOfCompressorStages = Integer.valueOf(numberOfCompressorStagesProperty);
 			
 			//..............................................................................
 			// NUMBER OF COMPRESSOR STAGES
-			Integer numberOfShafts = null;
+			int numberOfShafts = 0;
 			String numberOfShaftsProperty = reader.getXMLPropertyByPath("//specifications/number_of_shafts");
 			if(numberOfShaftsProperty != null)
 				numberOfShafts = Integer.valueOf(numberOfShaftsProperty);
 			
 			//..............................................................................
 			// OVERALL PRESSURE RATIO
-			Double overallPressureRatio = null;
+			double overallPressureRatio = 0.0;
 			String overallPressureRatioProperty = reader.getXMLPropertyByPath("//specifications/overall_pressure_ratio");
 			if(overallPressureRatioProperty != null)
 				overallPressureRatio = Double.valueOf(overallPressureRatioProperty);
 			
-			theEngine = new EngineBuilder(id, engineType)
-					.id(id)
-					.length(length)
-					.type(engineType)
-					.engineDatabaseName(engineDatabaseName)
-					.t0(staticThrust)
-					.bpr(bpr)
-					.dryMass(dryMass)
-					.numberOfCompressorStages(numberOfCompressorStages)
-					.numberOfShafts(numberOfShafts)
-					.overallPressureRatio(overallPressureRatio)
-					.build();
-			
+			theEngine = new Engine(
+					new IEngine.Builder()
+					.setId(id)
+					.setEngineType(engineType)
+					.setEngineDatabaseName(engineDatabaseName)
+					.setLength(length)
+					.setStaticThrust(staticThrust)
+					.setBpr(bpr)
+					.setDryMassPublicDomain(dryMass)
+					.setNumberOfCompressorStages(numberOfCompressorStages)
+					.setNumberOfShafts(numberOfShafts)
+					.setOverallPressureRatio(overallPressureRatio)
+					.buildPartial()
+					);
 		}
 		else if(engineType == EngineTypeEnum.TURBOPROP) {
 
@@ -537,20 +304,23 @@ public class Engine implements IEngine {
 			if(overallPressureRatioProperty != null)
 				overallPressureRatio = Double.valueOf(overallPressureRatioProperty);
 			
-			theEngine = new EngineBuilder(id, engineType)
-					.id(id)
-					.type(engineType)
-					.length(length)
-					.engineDatabaseName(engineDatabaseName)
-					.propellerDiameter(propellerDiameter)
-					.numberOfBlades(numberOfPropellerBlades)
-					.etaPropeller(etaPropeller)
-					.p0(staticPower)
-					.dryMass(dryMass)
-					.numberOfCompressorStages(numberOfCompressorStages)
-					.numberOfShafts(numberOfShafts)
-					.overallPressureRatio(overallPressureRatio)
-					.build();
+			theEngine = new Engine(
+					new IEngine.Builder()
+					.setId(id)
+					.setEngineType(engineType)
+					.setEngineDatabaseName(engineDatabaseName)
+					.setLength(length)
+					.setPropellerDiameter(propellerDiameter)
+					.setNumberOfBlades(numberOfPropellerBlades)
+					.setEtaPropeller(etaPropeller)
+					.setStaticPower(staticPower)
+					.setDryMassPublicDomain(dryMass)
+					.setNumberOfCompressorStages(numberOfCompressorStages)
+					.setNumberOfShafts(numberOfShafts)
+					.setOverallPressureRatio(overallPressureRatio)
+					.buildPartial()
+					);
+			
 		}
 		else if(engineType == EngineTypeEnum.PISTON) {
 
@@ -633,67 +403,33 @@ public class Engine implements IEngine {
 			if(etaPropellerProperty != null)
 				etaPropeller = Double.valueOf(etaPropellerProperty);
 			
-			theEngine = new EngineBuilder(id, engineType)
-					.id(id)
-					.type(engineType)
-					.length(length)
-					.engineDatabaseName(engineDatabaseName)
-					.propellerDiameter(propellerDiameter)
-					.numberOfBlades(numberOfPropellerBlades)
-					.etaPropeller(etaPropeller)
-					.p0(staticPower)
-					.dryMass(dryMass)
-					.build();
+			theEngine = new Engine(
+					new IEngine.Builder()
+					.setId(id)
+					.setEngineType(engineType)
+					.setEngineDatabaseName(engineDatabaseName)
+					.setLength(length)
+					.setPropellerDiameter(propellerDiameter)
+					.setNumberOfBlades(numberOfPropellerBlades)
+					.setEtaPropeller(etaPropeller)
+					.setStaticPower(staticPower)
+					.setDryMassPublicDomain(dryMass)
+					.buildPartial()
+					);
+			
 		}
 		
 		return theEngine;
 	}
 	
-	/*************************************************
-	 * This method applies the momentum theory 
-	 * and Bernoulli’s equation for incompressible flow
-	 * to the flow through the propeller in order to
-	 * estimate the static thrust from the static power.
-	 * 
-	 * p0^(2/3)*(2*rhoSL*A)
-	 * 
-	 * with 
-	 * 
-	 * p0 in (lbf*ft/s) = 550*hp
-	 * rhoSL in (slugs/ft^3) = 0.00237717
-	 * A in ft^2
-	 * 
-	 * 
-	 * The actual thrust would be lower since the momentum theory approach
-	 * does not include any propellor blade drag or any losses at the tips
-	 * of the propellor blades (like a 3-D wing).
-	 *  
-	 * We can estimate the actual static thrust is 95% of one calculated before
-	 *  
-	 * @see: thrustmodelsToFromP0.pdf in JPAD DOCS
-	 */
-	@SuppressWarnings("unused")
-	@Deprecated
-	private void calculateT0FromP0Bernoulli () {
-		
-		// this is the maximal static thrust 
-		this._t0 = Amount.valueOf(
-				Math.pow((this._p0.doubleValue(NonSI.HORSEPOWER)*550),(0.6666667))
-				*2
-				*0.00237717
-				*Math.pow(this._propellerDiameter.doubleValue(NonSI.FOOT),2)
-				*Math.PI/4,
-				NonSI.POUND_FORCE);
-		this._t0 = this._t0.times(0.95).to(SI.NEWTON);
-		
-	}
-	
 	private void calculateT0FromP0 () {
 		
 		// this is the maximal static thrust 
-		this._t0 = Amount.valueOf(
-				this._p0.doubleValue(NonSI.HORSEPOWER)*2.8,
-				NonSI.POUND_FORCE
+		setT0(
+				Amount.valueOf(
+						_theEngineInterface.getStaticPower().doubleValue(NonSI.HORSEPOWER)*2.8,
+						NonSI.POUND_FORCE
+						)
 				);
 		
 	}
@@ -704,38 +440,41 @@ public class Engine implements IEngine {
 		MyConfiguration.customizeAmountOutput();
 
 		StringBuilder sb = new StringBuilder()
-				.append("\tID: '" + _id + "'\n")
-				.append("\tType: " + _engineType + "\n")
-				.append("\tEngine database name: " + _engineDatabaseName + "\n")
+				.append("\tID: '" + _theEngineInterface.getId() + "'\n")
+				.append("\tType: " + _theEngineInterface.getEngineType() + "\n")
+				.append("\tEngine database name: " + _theEngineInterface.getEngineDatabaseName() + "\n")
 				.append("\t·····································\n")
-				.append("\tLength: " + _length + "\n")
+				.append("\tLength: " + _theEngineInterface.getLength() + "\n")
 				;
-		if((_engineType == EngineTypeEnum.TURBOFAN) || (_engineType == EngineTypeEnum.TURBOJET))
-			sb.append("\tNumber of compressor stages: " + _numberOfCompressorStages + "\n")
-			.append("\tNumber of shafts: " + _numberOfShafts + "\n")
-			.append("\tOverall pressure ratio: " + _overallPressureRatio + "\n")
+		if((_theEngineInterface.getEngineType() == EngineTypeEnum.TURBOFAN) 
+				|| (_theEngineInterface.getEngineType() == EngineTypeEnum.TURBOJET))
+			sb.append("\tNumber of compressor stages: " + _theEngineInterface.getNumberOfCompressorStages() + "\n")
+			.append("\tNumber of shafts: " + _theEngineInterface.getNumberOfShafts() + "\n")
+			.append("\tOverall pressure ratio: " + _theEngineInterface.getOverallPressureRatio() + "\n")
 			;
-		else if(_engineType == EngineTypeEnum.TURBOPROP) 
-			sb.append("\tPropeller diameter: " + _propellerDiameter + "\n")
-			.append("\tNumber of blades: " + _numberOfBlades + "\n")
-			.append("\tNumber of compressor stages: " + _numberOfCompressorStages + "\n")
-			.append("\tNumber of shafts: " + _numberOfShafts + "\n")
-			.append("\tOverall pressure ratio: " + _overallPressureRatio + "\n")
+		else if(_theEngineInterface.getEngineType() == EngineTypeEnum.TURBOPROP) 
+			sb.append("\tPropeller diameter: " + _theEngineInterface.getPropellerDiameter() + "\n")
+			.append("\tNumber of blades: " + _theEngineInterface.getNumberOfBlades() + "\n")
+			.append("\tNumber of compressor stages: " + _theEngineInterface.getNumberOfCompressorStages() + "\n")
+			.append("\tNumber of shafts: " + _theEngineInterface.getNumberOfShafts() + "\n")
+			.append("\tOverall pressure ratio: " + _theEngineInterface.getOverallPressureRatio() + "\n")
 			;
-		else if(_engineType == EngineTypeEnum.PISTON) 
-			sb.append("\tPropeller diameter: " + _propellerDiameter + "\n")
-			.append("\tNumber of blades: " + _numberOfBlades + "\n")
+		else if(_theEngineInterface.getEngineType() == EngineTypeEnum.PISTON) 
+			sb.append("\tPropeller diameter: " + _theEngineInterface.getPropellerDiameter() + "\n")
+			.append("\tNumber of blades: " + _theEngineInterface.getNumberOfBlades() + "\n")
 			;
 		
 		sb.append("\t·····································\n");
 		
-		if((_engineType == EngineTypeEnum.TURBOFAN) || (_engineType == EngineTypeEnum.TURBOJET))
-			sb.append("\tT0: " + _t0 + "\n")
-			.append("\tBPR: " + _bpr + "\n")
+		if((_theEngineInterface.getEngineType() == EngineTypeEnum.TURBOFAN) 
+				|| (_theEngineInterface.getEngineType() == EngineTypeEnum.TURBOJET))
+			sb.append("\tT0: " + _theEngineInterface.getStaticThrust() + "\n")
+			.append("\tBPR: " + _theEngineInterface.getBpr() + "\n")
 			;
-		else if((_engineType == EngineTypeEnum.PISTON) || (_engineType == EngineTypeEnum.TURBOPROP))
-			sb.append("\tP0: " + _p0.to(NonSI.HORSEPOWER) + "\n")
-			.append("\tT0: " + _t0.to(NonSI.POUND_FORCE) + "\n")
+		else if((_theEngineInterface.getEngineType() == EngineTypeEnum.PISTON) 
+				|| (_theEngineInterface.getEngineType() == EngineTypeEnum.TURBOPROP))
+			sb.append("\tP0: " + _theEngineInterface.getStaticPower().to(NonSI.HORSEPOWER) + "\n")
+			.append("\tT0: " + _theEngineInterface.getStaticThrust().to(NonSI.POUND_FORCE) + "\n")
 			;
 		sb.append("\t·····································\n");
 		;
@@ -743,236 +482,190 @@ public class Engine implements IEngine {
 		return sb.toString();
 	}
 	
-	@Override
-	public String getId() {
-		return _id;
+	//------------------------------------------------------------------------------
+	// GETTERS & SETTERS
+	public IEngine getTheEngineInterface() {
+		return _theEngineInterface;
 	}
 	
-	@Override
+	public void setTheEngineInterface (IEngine theEngineInterface) {
+		this._theEngineInterface = theEngineInterface;
+	}
+	
+	public String getId() {
+		return _theEngineInterface.getId();
+	}
+	
 	public void setId(String id) {
-		this._id = id;
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setId(id).build());
 	}
 
-	@Override
 	public EngineTypeEnum getEngineType() {
-		return _engineType;
+		return _theEngineInterface.getEngineType();
 	}
 	
-	@Override
 	public Amount<Length> getXApexConstructionAxes() {
 		return _xApexConstructionAxes;
 	}
 
-	@Override
 	public void setXApexConstructionAxes(Amount<Length> _X0) {
 		this._xApexConstructionAxes = _X0;
 	}
 
-	@Override
 	public Amount<Length> getYApexConstructionAxes() {
 		return _yApexConstructionAxes;
 	}
 
-	@Override
 	public void setYApexConstructionAxes(Amount<Length> _Y0) {
 		this._yApexConstructionAxes = _Y0;
 	}
 
-	@Override
 	public Amount<Length> getZApexConstructionAxes() {
 		return _zApexConstructionAxes;
 	}
-
-	@Override
+	
 	public void setZApexConstructionAxes(Amount<Length> _Z0) {
 		this._zApexConstructionAxes = _Z0;
 	}
 
-	@Override
 	public Amount<Angle> getTiltingAngle() {
 		return _tiltingAngle;
 	}
-
-	@Override
+	
 	public void setTiltingAngle(Amount<Angle> _muT) {
 		this._tiltingAngle = _muT;
 	}
 	
-	@Override
 	public void setEngineType(EngineTypeEnum _engineType) {
-		this._engineType = _engineType;
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setEngineType(_engineType).build());
 	}
-
-	@Override
+	
 	public EngineMountingPositionEnum getMountingPosition() {
 		return _mountingPoint;
 	}
-
-	@Override
+	
 	public void setMountingPosition(EngineMountingPositionEnum _position) {
 		this._mountingPoint = _position;
 	}
 	
-	@Override
 	public Amount<Length> getLength() {
-		return _length;
+		return _theEngineInterface.getLength();
 	}
-
-	@Override
+	
 	public void setLength(Amount<Length> _length) {
-		this._length = _length;
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setLength(_length).build());
 	}
 
-	@Override
 	public Amount<Power> getP0() {
-		return _p0;
+		return _theEngineInterface.getStaticPower();
 	}
 
-	@Override
 	public void setP0(Amount<Power> _p0) {
-		this._p0 = _p0;
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setStaticPower(_p0).build());
 	}
 
-	@Override
 	public Amount<Force> getT0() {
-		return _t0;
+		return _theEngineInterface.getStaticThrust();
 	}
-
-	@Override
+	
 	public void setT0(Amount<Force> _t0) {
-		this._t0 = _t0;
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setStaticThrust(_t0).build());
 	}
 	
-	@Override
-	public Double getBPR() {
-		return _bpr;
+	public double getBPR() {
+		return _theEngineInterface.getBpr();
+	}
+	
+	public void setBPR(double _BPR) {
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setBpr(_BPR).build());
 	}
 
-	@Override
-	public void setBPR(Double _BPR) {
-		this._bpr = _BPR;
-	}
-
-	@Override
 	public Amount<Mass> getDryMassPublicDomain() {
-		return _dryMassPublicDomain;
+		return _theEngineInterface.getDryMassPublicDomain();
 	}
 
-	@Override
 	public void setDryMassPublicDomain (Amount<Mass> dryMassPublicDomain) {
-		this._dryMassPublicDomain = dryMassPublicDomain;
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setDryMassPublicDomain(dryMassPublicDomain).build());
 	}
 	
-	@Override
 	public Amount<Mass> getTotalMass() {
 		return _totalMass;
 	}
-
-	@Override
+	
 	public void setTotalMass(Amount<Mass> _totalMass) {
 		this._totalMass = _totalMass;
 	}
-
-	@Override
+	
 	public Amount<Length> getPropellerDiameter() {
-		return _propellerDiameter;
-	}
-
-	@Override
-	public void setPropellerDiameter(Amount<Length> _propellerDiameter) {
-		this._propellerDiameter = _propellerDiameter;
+		return _theEngineInterface.getPropellerDiameter();
 	}
 	
-	@Override
+	public void setPropellerDiameter(Amount<Length> _propellerDiameter) {
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setPropellerDiameter(_propellerDiameter).build());
+	}
+	
 	public int getNumberOfBlades() {
-		return _numberOfBlades;
+		return _theEngineInterface.getNumberOfBlades();
 	}
-
-	@Override
+	
 	public void setNumberOfBlades(int _nBlades) {
-		this._numberOfBlades = _nBlades;
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setNumberOfBlades(_nBlades).build());
 	}
 
-	/**
-	 * @return the _etaPropeller
-	 */
-	public Double getEtaPropeller() {
-		return _etaPropeller;
+	public double getEtaPropeller() {
+		return _theEngineInterface.getEtaPropeller();
 	}
 
-	/**
-	 * @param _etaPropeller the _etaPropeller to set
-	 */
-	public void setEtaPropeller(Double _etaPropeller) {
-		this._etaPropeller = _etaPropeller;
+	public void setEtaPropeller(double _etaPropeller) {
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setEtaPropeller(_etaPropeller).build());
 	}
-
-	@Override
+	
 	public int getNumberOfCompressorStages() {
-		return _numberOfCompressorStages;
+		return _theEngineInterface.getNumberOfCompressorStages();
 	}
-
-	@Override
+	
 	public void setNumberOfCompressorStages(int _numberOfCompressorStages) {
-		this._numberOfCompressorStages = _numberOfCompressorStages;
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setNumberOfCompressorStages(_numberOfCompressorStages).build());
 	}
-
-	@Override
+	
 	public int getNumberOfShafts() {
-		return _numberOfShafts;
+		return _theEngineInterface.getNumberOfShafts();
 	}
-
-	@Override
+	
 	public void setNumberOfShafts(int _numberOfShafts) {
-		this._numberOfShafts = _numberOfShafts;
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setNumberOfShafts(_numberOfShafts).build());
 	}
- 
-	@Override
+	
 	public double getOverallPressureRatio() {
-		return _overallPressureRatio;
+		return _theEngineInterface.getOverallPressureRatio();
 	}
-
-	@Override
+	
 	public void setOverallPressureRatio(double _overallPressureRatio) {
-		this._overallPressureRatio = _overallPressureRatio;
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setOverallPressureRatio(_overallPressureRatio).build());
 	}
 
-	@Override
 	public EngineWeightsManager getTheWeights() {
 		return _theWeights;
 	}
-
-	@Override
+	
 	public void setTheWeights(EngineWeightsManager _theWeights) {
 		this._theWeights = _theWeights;
 	}
-
-	@Override
+	
 	public EngineBalanceManager getTheBalance() {
 		return _theBalance;
 	}
-
-	@Override
+	
 	public void setTheBalance(EngineBalanceManager _theBalance) {
 		this._theBalance = _theBalance;
 	}
-
-	@Override
+	
 	public String getEngineDatabaseName() {
-		return _engineDatabaseName;
+		return _theEngineInterface.getEngineDatabaseName();
 	}
-
-	@Override
+	
 	public void setEngineDatabaseName(String _engineDatabaseName) {
-		this._engineDatabaseName = _engineDatabaseName;
-	}
-
-	public Boolean getCalculateDryMass() {
-		return _calculateDryMass;
-	}
-
-	public void setCalculateDryMass(Boolean _calculateDryMass) {
-		this._calculateDryMass = _calculateDryMass;
+		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setEngineDatabaseName(_engineDatabaseName).build());
 	}
 
 }

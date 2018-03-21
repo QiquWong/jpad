@@ -3,7 +3,7 @@ package standaloneutils;
 import java.util.ArrayList;
 import java.util.List;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import analyses.ACAnalysisManager;
 import analyses.OperatingConditions;
 

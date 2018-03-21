@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import javaslang.Tuple;

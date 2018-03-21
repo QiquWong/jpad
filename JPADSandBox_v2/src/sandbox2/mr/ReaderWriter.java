@@ -29,7 +29,7 @@ import org.eclipse.ui.internal.themes.ThemesExtension;
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.AirfoilFamilyEnum;

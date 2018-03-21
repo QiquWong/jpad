@@ -1,4 +1,4 @@
-package aircraft.components;
+package aircraft.components.cabinconfiguration;
 
 import java.util.List;
 

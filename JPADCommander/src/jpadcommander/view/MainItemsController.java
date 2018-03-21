@@ -2,7 +2,7 @@ package jpadcommander.view;
 
 import java.io.IOException;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import analyses.ACAnalysisManager;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;

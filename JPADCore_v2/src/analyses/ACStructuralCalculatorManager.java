@@ -1,6 +1,6 @@
 package analyses;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 
 
 public class ACStructuralCalculatorManager {

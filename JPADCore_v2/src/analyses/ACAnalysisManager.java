@@ -18,7 +18,7 @@ import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;

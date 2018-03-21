@@ -16,7 +16,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;

@@ -22,7 +22,7 @@ import org.jboss.netty.util.internal.SystemPropertyUtil;
 import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountException;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.LandingGears;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;

@@ -23,12 +23,12 @@ import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.validation.ValidationSupport;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.FuelTank;
-import aircraft.components.ICabinConfiguration;
+import aircraft.components.ILandingGear;
 import aircraft.components.LandingGears;
-import aircraft.components.LandingGears.LandingGearsBuilder;
 import aircraft.components.cabinconfiguration.CabinConfiguration;
+import aircraft.components.cabinconfiguration.ICabinConfiguration;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.fuselage.creator.IFuselageCreator;
@@ -37,11 +37,11 @@ import aircraft.components.liftingSurface.creator.ISpoilerCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
+import aircraft.components.nacelles.INacelleCreator;
 import aircraft.components.nacelles.NacelleCreator;
-import aircraft.components.nacelles.NacelleCreator.NacelleCreatorBuilder;
 import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerplant.Engine;
-import aircraft.components.powerplant.Engine.EngineBuilder;
+import aircraft.components.powerplant.IEngine;
 import aircraft.components.powerplant.PowerPlant;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.ClassTypeEnum;
@@ -9562,46 +9562,43 @@ public class InputManagerController {
 		// SETTING ALL DATA INSIDE THE AIRCRAFT OBJECT ...
 		//.................................................................................................
 		List<NacelleCreator> nacelleList = new ArrayList<>();
-		
-		for (int indexOfNacelle=0; indexOfNacelle<numberOfFilledNacelleTabs; indexOfNacelle++) {
+		for (int i=0; i<numberOfFilledNacelleTabs; i++) {
 		
 			nacelleList.add(
-					new NacelleCreatorBuilder(
-							"Nacelle " + indexOfNacelle 
-							+ " - " + Main.getTheAircraft().getId()
-							)
-					.engine(
-							Main.getTheAircraft().getPowerPlant().getEngineList()
-							.get(indexOfNacelle)
-							)
-					.roughness(
-							(Amount<Length>) Amount.valueOf(
-									Double.valueOf(nacelleRoughnessList.get(indexOfNacelle)),
-									Unit.valueOf(nacelleRoughnessUnitList.get(indexOfNacelle))
+					new NacelleCreator(
+							Main.getTheAircraft().getPowerPlant().getEngineList().get(i), 
+							new INacelleCreator.Builder()
+							.setId("Nacelle " + i + " - " + Main.getTheAircraft().getId())
+							.setRoughness(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(nacelleRoughnessList.get(i)),
+											Unit.valueOf(nacelleRoughnessUnitList.get(i))
+											)
 									)
-							)
-					.lenght(
-							(Amount<Length>) Amount.valueOf(
-									Double.valueOf(nacelleLengthList.get(indexOfNacelle)),
-									Unit.valueOf(nacelleLengthUnitList.get(indexOfNacelle))
+							.setLength(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(nacelleLengthList.get(i)),
+											Unit.valueOf(nacelleLengthUnitList.get(i))
+											)
 									)
-							)
-					.maximumDiameter(
-							(Amount<Length>) Amount.valueOf(
-									Double.valueOf(nacelleMaximumDiameterList.get(indexOfNacelle)),
-									Unit.valueOf(nacelleMaximumDiameterUnitList.get(indexOfNacelle))
+							.setDiameterMax(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(nacelleMaximumDiameterList.get(i)),
+											Unit.valueOf(nacelleMaximumDiameterUnitList.get(i))
+											)
 									)
+							.setKInlet(Double.valueOf(nacelleKInletList.get(i)))
+							.setKOutlet(Double.valueOf(nacelleKOutletList.get(i)))
+							.setKLength(Double.valueOf(nacelleKLengthList.get(i)))
+							.setKDiameterOutlet(Double.valueOf(nacelleKDiameterOutletList.get(i)))
+							.build()
 							)
-					.kInlet(Double.valueOf(nacelleKInletList.get(indexOfNacelle)))
-					.kOutlet(Double.valueOf(nacelleKOutletList.get(indexOfNacelle)))
-					.kLength(Double.valueOf(nacelleKLengthList.get(indexOfNacelle)))
-					.kDiameterOutlet(Double.valueOf(nacelleKDiameterOutletList.get(indexOfNacelle)))
-					.build()
 					);
+			
 		}
 		
-		Nacelles theNacelles = new Nacelles.NacellesBuilder("MyNacelle", nacelleList).build();
-		Main.getTheAircraft().setNacelles(theNacelles);
+		Main.getTheAircraft().getNacelles().getNacellesList().clear();
+		Main.getTheAircraft().getNacelles().setNacellesList(nacelleList);
 		
 	}
 	
@@ -10051,97 +10048,95 @@ public class InputManagerController {
 		//........................................................................................
 		for (int i=0; i<numberOfFilledTurbofanTurbojetEngineTabs; i++) {
 
-			Engine	theEngine = new EngineBuilder(
-					"Engine " + i	+ " - " + Main.getTheAircraft().getId(), 
-					EngineTypeEnum.valueOf(enigneTypeTurbofanTurbojetList.get(i))
-					)
-					.id("Engine " + i + " - " + Main.getTheAircraft().getId())
-					.length(
-							(Amount<Length>) Amount.valueOf(
-									Double.valueOf(engineLengthTurbofanTurbojetList.get(i)),
-									Unit.valueOf(engineLengthUnitTurbofanTurbojetList.get(i))											
+			engineList.add(
+					new Engine(
+							new IEngine.Builder()
+							.setId("Engine " + i + " - " + Main.getTheAircraft().getId())
+							.setEngineType(EngineTypeEnum.valueOf(enigneTypeTurbofanTurbojetList.get(i)))
+							.setEngineDatabaseName(engineDatabasePathTurbofanTurbojetList.get(i))
+							.setLength(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(engineLengthTurbofanTurbojetList.get(i)),
+											Unit.valueOf(engineLengthUnitTurbofanTurbojetList.get(i))											
+											)
 									)
-							)
-					.type(EngineTypeEnum.valueOf(enigneTypeTurbofanTurbojetList.get(i)))
-					.engineDatabaseName(engineDatabasePathTurbofanTurbojetList.get(i))
-					.t0(
-							(Amount<Force>) Amount.valueOf(
-									Double.valueOf(engineStaticThrustTurbofanTurbojetList.get(i)),
-									Unit.valueOf(engineStaticThrustUnitTurbofanTurbojetList.get(i))											
+							.setStaticThrust(
+									(Amount<Force>) Amount.valueOf(
+											Double.valueOf(engineStaticThrustTurbofanTurbojetList.get(i)),
+											Unit.valueOf(engineStaticThrustUnitTurbofanTurbojetList.get(i))											
+											)
 									)
-							)
-					.bpr(Double.valueOf(engineBPRTurbofanTurbojetList.get(i)))
-					.dryMass(
-							(Amount<Mass>) Amount.valueOf(
-									Double.valueOf(engineDryMassTurbofanTurbojetList.get(i)),
-									Unit.valueOf(engineDryMassUnitTurbofanTurbojetList.get(i))											
+							.setBpr(Double.valueOf(engineBPRTurbofanTurbojetList.get(i)))
+							.setDryMassPublicDomain(
+									(Amount<Mass>) Amount.valueOf(
+											Double.valueOf(engineDryMassTurbofanTurbojetList.get(i)),
+											Unit.valueOf(engineDryMassUnitTurbofanTurbojetList.get(i))											
+											)
 									)
+							.setNumberOfCompressorStages(
+									Integer.valueOf(engineNumberOfCompressorStagesTurbofanTurbojetList.get(i))
+									)
+							.setNumberOfShafts(
+									Integer.valueOf(engineNumberOfShaftsTurbofanTurbojetList.get(i))
+									)
+							.setOverallPressureRatio(
+									Double.valueOf(engineOverallPressureRatioTurbofanTurbojetList.get(i))
+									)
+							.build()
 							)
-					.numberOfCompressorStages(
-							Integer.valueOf(engineNumberOfCompressorStagesTurbofanTurbojetList.get(i))
-							)
-					.numberOfShafts(
-							Integer.valueOf(engineNumberOfShaftsTurbofanTurbojetList.get(i))
-							)
-					.overallPressureRatio(
-							Double.valueOf(engineOverallPressureRatioTurbofanTurbojetList.get(i))
-							)
-					.build();
+					);
 
-			engineList.add(theEngine);
-			
 		}
-		
+
 		//........................................................................................
 		// TURBOPROP
 		//........................................................................................
 		for (int i=0; i<numberOfFilledTurbopropEngineTabs; i++) {
-			
-			Engine theEngine = new EngineBuilder(
-					"Engine " + i	+ " - " + Main.getTheAircraft().getId(), 
-					EngineTypeEnum.valueOf(enigneTypeTurbopropList.get(i))
-					)
-					.id("Engine " + i	+ " - " + Main.getTheAircraft().getId())
-					.type(EngineTypeEnum.valueOf(enigneTypeTurbopropList.get(i)))
-					.length(
-							(Amount<Length>) Amount.valueOf(
-									Double.valueOf(engineLengthTurbopropList.get(i)),
-									Unit.valueOf(engineLengthUnitTurbopropList.get(i))											
-									)
-							)
-					.engineDatabaseName(engineDatabasePathTurbopropList.get(i))
-					.propellerDiameter(
-							(Amount<Length>) Amount.valueOf(
-									Double.valueOf(enginePropellerDiameterTurbopropList.get(i)),
-									Unit.valueOf(enginePropellerDiameterUnitTurbopropList.get(i))											
-									)
-							)
-					.numberOfBlades(Integer.valueOf(engineNumberOfBladesTurbopropList.get(i)))
-					.etaPropeller(Double.valueOf(enginePropellerEfficiencyTurbopropList.get(i)))
-					.p0(
-							(Amount<Power>) Amount.valueOf(
-									Double.valueOf(engineStaticPowerTurbopropList.get(i)),
-									Unit.valueOf(engineStaticPowerUnitTurbopropList.get(i))											
-									)
-							)
-					.dryMass(
-							(Amount<Mass>) Amount.valueOf(
-									Double.valueOf(engineDryMassTurbopropList.get(i)),
-									Unit.valueOf(engineDryMassUnitTurbopropList.get(i))											
-									)
-							)
-					.numberOfCompressorStages(
-							Integer.valueOf(engineNumberOfCompressorStagesTurbopropList.get(i))
-							)
-					.numberOfShafts(
-							Integer.valueOf(engineNumberOfShaftsTurbopropList.get(i))
-							)
-					.overallPressureRatio(
-							Double.valueOf(engineOverallPressureRatioTurbopropList.get(i))
-							)
-					.build();
 
-			engineList.add(theEngine);
+			engineList.add(
+					new Engine(
+							new IEngine.Builder()
+							.setId("Engine " + i	+ " - " + Main.getTheAircraft().getId()) 
+							.setEngineType(EngineTypeEnum.valueOf(enigneTypeTurbopropList.get(i)))
+							.setEngineDatabaseName(engineDatabasePathTurbopropList.get(i))
+							.setLength(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(engineLengthTurbopropList.get(i)),
+											Unit.valueOf(engineLengthUnitTurbopropList.get(i))											
+											)
+									)
+							.setPropellerDiameter(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(enginePropellerDiameterTurbopropList.get(i)),
+											Unit.valueOf(enginePropellerDiameterUnitTurbopropList.get(i))											
+											)
+									)
+							.setNumberOfBlades(Integer.valueOf(engineNumberOfBladesTurbopropList.get(i)))
+							.setEtaPropeller(Double.valueOf(enginePropellerEfficiencyTurbopropList.get(i)))
+							.setStaticPower(
+									(Amount<Power>) Amount.valueOf(
+											Double.valueOf(engineStaticPowerTurbopropList.get(i)),
+											Unit.valueOf(engineStaticPowerUnitTurbopropList.get(i))											
+											)
+									)
+							.setDryMassPublicDomain(
+									(Amount<Mass>) Amount.valueOf(
+											Double.valueOf(engineDryMassTurbopropList.get(i)),
+											Unit.valueOf(engineDryMassUnitTurbopropList.get(i))											
+											)
+									)
+							.setNumberOfCompressorStages(
+									Integer.valueOf(engineNumberOfCompressorStagesTurbopropList.get(i))
+									)
+							.setNumberOfShafts(
+									Integer.valueOf(engineNumberOfShaftsTurbopropList.get(i))
+									)
+							.setOverallPressureRatio(
+									Double.valueOf(engineOverallPressureRatioTurbopropList.get(i))
+									)
+							.build()
+							)
+					);
 			
 		}
 		
@@ -10150,52 +10145,46 @@ public class InputManagerController {
 		//........................................................................................
 		for (int i=0; i<numberOfFilledPistonEngineTabs; i++) {
 			
-			Engine theEngine = new EngineBuilder(
-					"Engine " + i	+ " - " + Main.getTheAircraft().getId(), 
-					EngineTypeEnum.valueOf(enigneTypePistonList.get(i))
-					)
-					.id("Engine " + i	+ " - " + Main.getTheAircraft().getId())
-					.type(EngineTypeEnum.valueOf(enigneTypePistonList.get(i)))
-					.length(
-							(Amount<Length>) Amount.valueOf(
-									Double.valueOf(engineLengthPistonList.get(i)),
-									Unit.valueOf(engineLengthUnitPistonList.get(i))											
+			engineList.add(
+					new Engine(
+							new IEngine.Builder()
+							.setId("Engine " + i	+ " - " + Main.getTheAircraft().getId())
+							.setEngineType(EngineTypeEnum.valueOf(enigneTypePistonList.get(i)))
+							.setEngineDatabaseName(engineDatabasePathPistonList.get(i))
+							.setLength(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(engineLengthPistonList.get(i)),
+											Unit.valueOf(engineLengthUnitPistonList.get(i))											
+											)
 									)
-							)
-					.engineDatabaseName(engineDatabasePathPistonList.get(i))
-					.propellerDiameter(
-							(Amount<Length>) Amount.valueOf(
-									Double.valueOf(enginePropellerDiameterPistonList.get(i)),
-									Unit.valueOf(enginePropellerDiameterUnitPistonList.get(i))											
+							.setPropellerDiameter(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(enginePropellerDiameterPistonList.get(i)),
+											Unit.valueOf(enginePropellerDiameterUnitPistonList.get(i))											
+											)
 									)
-							)
-					.numberOfBlades(Integer.valueOf(engineNumberOfBladesPistonList.get(i)))
-					.etaPropeller(Double.valueOf(enginePropellerEfficiencyPistonList.get(i)))
-					.p0(
-							(Amount<Power>) Amount.valueOf(
-									Double.valueOf(engineStaticPowerPistonList.get(i)),
-									Unit.valueOf(engineStaticPowerUnitPistonList.get(i))											
+							.setNumberOfBlades(Integer.valueOf(engineNumberOfBladesPistonList.get(i)))
+							.setEtaPropeller(Double.valueOf(enginePropellerEfficiencyPistonList.get(i)))
+							.setStaticPower(
+									(Amount<Power>) Amount.valueOf(
+											Double.valueOf(engineStaticPowerPistonList.get(i)),
+											Unit.valueOf(engineStaticPowerUnitPistonList.get(i))											
+											)
 									)
-							)
-					.dryMass(
-							(Amount<Mass>) Amount.valueOf(
-									Double.valueOf(engineDryMassPistonList.get(i)),
-									Unit.valueOf(engineDryMassUnitPistonList.get(i))											
+							.setDryMassPublicDomain(
+									(Amount<Mass>) Amount.valueOf(
+											Double.valueOf(engineDryMassPistonList.get(i)),
+											Unit.valueOf(engineDryMassUnitPistonList.get(i))											
+											)
 									)
+							.build()
 							)
-					.build();
-
-			engineList.add(theEngine);
+					);
 			
 		}
 		
-		Main.getTheAircraft().setPowerPlant(
-				new PowerPlant.PowerPlantBuilder(
-						"Power Plant - " + Main.getTheAircraft().getId(),
-						engineList
-						).build()
-				);
-		
+		Main.getTheAircraft().getPowerPlant().getEngineList().clear();
+		Main.getTheAircraft().getPowerPlant().setEngineList(engineList);
 		
 		//..................................................................................
 		// ENGINE UPDATE WARNING
@@ -10254,7 +10243,6 @@ public class InputManagerController {
 		//.................................................................................................
 		String landingGearsMainLegLength = "";
 		String landingGearsMainLegLengthUnit = "";
-		String landingGearsKMainLegLength = "";
 		String landingGearsDistanceBetweenWheels = "";
 		String landingGearsDistanceBetweenWheelsUnit = "";
 		String landingGearsNumberOfFrontalWheels = "";
@@ -10277,8 +10265,6 @@ public class InputManagerController {
 			landingGearsMainLegLength = textFieldLandingGearsMainLegLength.getText();
 		if(!landingGearsMainLegLengthUnitChoiceBox.getSelectionModel().isEmpty())
 			landingGearsMainLegLengthUnit = landingGearsMainLegLengthUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-		if(textFieldLandingGearsKMainLegLength.getText() != null)
-			landingGearsKMainLegLength = textFieldLandingGearsKMainLegLength.getText();
 		if(textFieldLandingGearsDistanceBetweenWheels.getText() != null)
 			landingGearsDistanceBetweenWheels = textFieldLandingGearsDistanceBetweenWheels.getText();
 		if(!landingGearsDistanceBetweenWheelsUnitChoiceBox.getSelectionModel().isEmpty())
@@ -10309,52 +10295,50 @@ public class InputManagerController {
 		//.................................................................................................
 		// SETTING ALL DATA INSIDE THE AIRCRAFT OBJECT ...
 		//.................................................................................................
-		LandingGears landingGears = new LandingGearsBuilder("Landing Gears - " + Main.getTheAircraft().getId())
-				.mainLegsLength(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(landingGearsMainLegLength),
-								Unit.valueOf(landingGearsMainLegLengthUnit)
-								)
+		ILandingGear.Builder.from(Main.getTheAircraft().getLandingGears().getTheLandingGearsInterface())
+		.setId("Landing Gears - " + Main.getTheAircraft().getId())
+		.setMainLegsLenght(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(landingGearsMainLegLength),
+						Unit.valueOf(landingGearsMainLegLengthUnit)
 						)
-				.distanceBetweenWheels(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(landingGearsDistanceBetweenWheels),
-								Unit.valueOf(landingGearsDistanceBetweenWheelsUnit)
-								)
+				)
+		.setDistanceBetweenWheels(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(landingGearsDistanceBetweenWheels),
+						Unit.valueOf(landingGearsDistanceBetweenWheelsUnit)
 						)
-				.kMainLegsLength(Double.valueOf(landingGearsKMainLegLength))
-				.numberOfFrontalWheels(Integer.valueOf(landingGearsNumberOfFrontalWheels))
-				.numberOfRearWheels(Integer.valueOf(landingGearsNumberOfRearWheels))
-				.frontalWheelsHeight(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(landingGearsFrontalWheelsHeigth),
-								Unit.valueOf(landingGearsFrontalWheelsHeigthUnit)
-								)
+				)
+		.setNumberOfFrontalWheels(Integer.valueOf(landingGearsNumberOfFrontalWheels))
+		.setNumberOfFrontalWheels(Integer.valueOf(landingGearsNumberOfRearWheels))
+		.setFrontalWheelsHeight(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(landingGearsFrontalWheelsHeigth),
+						Unit.valueOf(landingGearsFrontalWheelsHeigthUnit)
 						)
-				.frontalWheelsWidth(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(landingGearsFrontalWheelsWidth),
-								Unit.valueOf(landingGearsFrontalWheelsWidthUnit)
-								)
+				)
+		.setFrontalWheelsWidth(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(landingGearsFrontalWheelsWidth),
+						Unit.valueOf(landingGearsFrontalWheelsWidthUnit)
 						)
-				.rearWheelsHeight(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(landingGearsRearWheelsHeigth),
-								Unit.valueOf(landingGearsRearWheelsHeigthUnit)
-								)
+				)
+		.setRearWheelsHeight(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(landingGearsRearWheelsHeigth),
+						Unit.valueOf(landingGearsRearWheelsHeigthUnit)
 						)
-				.rearWheelsWidth(
-						(Amount<Length>) Amount.valueOf(
-								Double.valueOf(landingGearsRearWheelsWidth),
-								Unit.valueOf(landingGearsRearWheelsWidthUnit)
-								)
+				)
+		.setRearWheelsWidth(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(landingGearsRearWheelsWidth),
+						Unit.valueOf(landingGearsRearWheelsWidthUnit)
 						)
-				.build();
-		
-		Main.getTheAircraft().setLandingGears(landingGears);
-		
+				)
+		.build();
+
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void createAircraftObjectFromData() {
 		
@@ -10489,10 +10473,10 @@ public class InputManagerController {
 				Main.getTheAircraft().getWing().setRiggingAngle(wingRiggingAngle);
 
 				Main.getTheAircraft().setFuelTank(
-						new FuelTank.FuelTankBuilder(
+						new FuelTank(
 								"Fuel Tank - " + Main.getTheAircraft().getId(),
 								Main.getTheAircraft().getWing()
-								).build()
+								)
 						);
 				Main.getTheAircraft().getFuelTank().setXApexConstructionAxes(
 						Main.getTheAircraft().getWing().getXApexConstructionAxes()
@@ -10717,12 +10701,7 @@ public class InputManagerController {
 
 			}
 
-			Main.getTheAircraft().setPowerPlant(
-					new PowerPlant.PowerPlantBuilder(
-							"Power Plant - " + Main.getTheAircraft().getId(), 
-							engineList
-							).build()
-					);
+			Main.getTheAircraft().setPowerPlant(new PowerPlant(engineList));
 		}
 		//....................................................................................
 		// NACELLES
@@ -10778,12 +10757,7 @@ public class InputManagerController {
 			
 		}
 
-		Main.getTheAircraft().setNacelles(
-				new Nacelles.NacellesBuilder(
-						"Nacelles - " + Main.getTheAircraft().getId(), 
-						nacelleList
-						).build()
-				);
+		Main.getTheAircraft().setNacelles(new Nacelles(nacelleList));
 		
 		}
 		//....................................................................................

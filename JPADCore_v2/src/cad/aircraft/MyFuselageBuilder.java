@@ -27,7 +27,7 @@ import org.jcae.opencascade.jni.TopoDS_Vertex;
 import org.jcae.opencascade.jni.TopoDS_Wire;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import jmatrix.Matrix;
 import processing.core.PVector;

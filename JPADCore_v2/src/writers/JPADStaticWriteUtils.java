@@ -70,7 +70,7 @@ import com.google.common.collect.Multimap;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.LandingGears;
 import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
@@ -3192,11 +3192,6 @@ public class JPADStaticWriteUtils {
 		// global_data - main_gear_legs_length
 		JPADStaticWriteUtils.writeSingleNode("main_gear_legs_length", 
 				aircraft.getLandingGears().getMainLegsLenght(), 
-				globalDataElement, doc);
-		
-		// global_data - k_main_gear_legs_length
-		JPADStaticWriteUtils.writeSingleNode("k_main_gear_legs_length", 
-				aircraft.getLandingGears().getKMainLegsLength(), 
 				globalDataElement, doc);
 		
 		// global_data - distance_between_wheels

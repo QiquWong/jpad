@@ -8,7 +8,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;

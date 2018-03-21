@@ -12,7 +12,7 @@ import javax.measure.quantity.Velocity;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
 import standaloneutils.MyInterpolatingFunction;

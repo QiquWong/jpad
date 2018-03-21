@@ -15,7 +15,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;

@@ -12,7 +12,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAlpha;

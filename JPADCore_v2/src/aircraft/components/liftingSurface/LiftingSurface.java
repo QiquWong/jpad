@@ -19,7 +19,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import analyses.liftingsurface.LSAerodynamicsManager;
@@ -56,6 +56,7 @@ public class LiftingSurface {
 	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
 	private Amount<Angle> _riggingAngle = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+	private int _numberOfEngineOverTheWing = 0; 
 	
 	private AerodynamicDatabaseReader _aeroDatabaseReader;
 	private HighLiftDatabaseReader _highLiftDatabaseReader;
@@ -63,8 +64,6 @@ public class LiftingSurface {
 	
 	private LiftingSurface _exposedLiftingSurface;
 	private LiftingSurfaceCreator _liftingSurfaceCreator;
-	
-	private int _numberOfEngineOverTheWing = 0; 
 	
 	private Map<ConditionEnum, LSAerodynamicsManager> _theAerodynamicsCalculatorMap;
 	
@@ -223,11 +222,11 @@ public class LiftingSurface {
 							if(aircraft.getPowerPlant().getMountingPosition().equals(EngineMountingPositionEnum.WING)) 
 								R = _mass.doubleValue(SI.KILOGRAM) + aircraft.getFuelTank().getFuelMass().doubleValue(SI.KILOGRAM) +
 								((2*(aircraft.getNacelles().getTotalMass().doubleValue(SI.KILOGRAM) + 
-										aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().doubleValue(SI.KILOGRAM))*
+										aircraft.getPowerPlant().getDryMassPublicDomainTotal().doubleValue(SI.KILOGRAM))*
 										aircraft.getNacelles().getDistanceBetweenInboardNacellesY().doubleValue(SI.METER))/
 										(0.4*_liftingSurfaceCreator.getSpan().doubleValue(SI.METER))) + 
 								((2*(aircraft.getNacelles().getTotalMass().doubleValue(SI.KILOGRAM) + 
-										aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().doubleValue(SI.KILOGRAM))*
+										aircraft.getPowerPlant().getDryMassPublicDomainTotal().doubleValue(SI.KILOGRAM))*
 										aircraft.getNacelles().getDistanceBetweenOutboardNacellesY().doubleValue(SI.METER))/
 										(0.4*_liftingSurfaceCreator.getSpan().getEstimatedValue()));
 							else

@@ -44,7 +44,7 @@ public abstract class InnerCalculator {
 
 	public abstract void allMethods();
 
-	public Map<MethodEnum, Double> get_methodsMap() {
+	public Map<MethodEnum, Double> getMethodsMap() {
 		return _methodsMap;
 	}
 

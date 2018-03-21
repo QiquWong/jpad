@@ -14,6 +14,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.Aircraft;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.PrimaryElectricSystemsEnum;

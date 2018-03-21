@@ -11,7 +11,7 @@ import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import configuration.enumerations.CostsEnum;
 import configuration.enumerations.CostsPlotEnum;
 import configuration.enumerations.MethodEnum;

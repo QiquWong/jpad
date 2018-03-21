@@ -22,7 +22,7 @@ import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.airfoils.Airfoil;

@@ -19,7 +19,7 @@ import javax.measure.unit.SI;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.AircraftTypeEnum;

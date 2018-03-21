@@ -24,7 +24,7 @@ import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import analyses.OperatingConditions;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;

@@ -11,7 +11,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.powerplant.Engine;
 import analyses.analysismodel.InnerCalculator;
 import analyses.analysismodel.analysiscalcmanager.WeightsManager;

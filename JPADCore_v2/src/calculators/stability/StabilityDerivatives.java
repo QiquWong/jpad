@@ -9,7 +9,7 @@ import javax.measure.unit.Unit;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
+import aircraft.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.aerodynamics.MomentCalc;
 import calculators.geometry.LSGeometryCalc;
