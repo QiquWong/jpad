@@ -3,7 +3,6 @@
    <nacelle id="Landing Gears - ATR72">
       <global_data>
          <main_gear_legs_length unit="m">0.6600</main_gear_legs_length>
-         <k_main_gear_legs_length>0.1500</k_main_gear_legs_length>
 		 <distance_between_wheels unit="m">4.1</distance_between_wheels>
          <number_of_frontal_wheels>2</number_of_frontal_wheels>
          <number_of_rear_wheels>4</number_of_rear_wheels>

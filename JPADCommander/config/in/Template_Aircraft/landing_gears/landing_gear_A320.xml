@@ -3,7 +3,6 @@
 	<landing_gears id="AIRBUS A-320 Landing Gears">
 		<global_data>
 			<main_gear_legs_length unit="m">2.32</main_gear_legs_length>
-			<k_main_gear_legs_length>0.21</k_main_gear_legs_length>
 			<distance_between_wheels unit="m">7.59</distance_between_wheels>
 			<number_of_frontal_wheels>2</number_of_frontal_wheels>
 			<number_of_rear_wheels>4</number_of_rear_wheels>

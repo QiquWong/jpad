@@ -29,7 +29,7 @@
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>
-			<canard file="canard_IRON_NEW.xml">
+			<canard file="canard_IRON_v2.xml">
                 <position>
                     <x unit="m">6.0</x>
                     <y unit="m">0.0</y>
@@ -48,7 +48,7 @@
             </fuselage>
         </fuselages>
 		<power_plant>
-            <engine file="engine_IRON_NEW.xml">
+            <engine file="engine_IRON.xml">
                 <position>
                     <x unit="m">29.49</x>
                     <y unit="m">4.44</y>
@@ -57,7 +57,7 @@
                 <tilting_angle unit="deg">0.0</tilting_angle>
 				<mounting_point>HTAIL</mounting_point>
             </engine>
-            <engine file="engine_IRON_NEW.xml">
+            <engine file="engine_IRON.xml">
                 <position>
                     <x unit="m">29.49</x>
                     <y unit="m">-4.44</y>

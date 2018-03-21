@@ -7,9 +7,9 @@
         <lifting_surfaces>
             <wing file="wing_IRON_NEW_v2.xml">
                 <position>
-                    <x unit="m">21.6</x>
+                    <x unit="m">20.5</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">-1.32</z>
+                    <z unit="m">-1.33</z>
                 </position>
                 <rigging_angle unit="deg">2</rigging_angle>
             </wing>
@@ -35,7 +35,7 @@
                     <y unit="m">0.0</y>
                     <z unit="m">1.783</z>
                 </position>
-                <rigging_angle unit="deg">4.0</rigging_angle>
+                <rigging_angle unit="deg">0.0</rigging_angle>
             </canard>
         </lifting_surfaces>
         <fuselages>
@@ -48,7 +48,7 @@
             </fuselage>
         </fuselages>
 		<power_plant>
-            <engine file="engine_IRON.xml">
+            <engine file="engine_IRON_NEW.xml">
                 <position>
                     <x unit="m">29.49</x>
                     <y unit="m">4.44</y>
@@ -57,7 +57,7 @@
                 <tilting_angle unit="deg">0.0</tilting_angle>
 				<mounting_point>HTAIL</mounting_point>
             </engine>
-            <engine file="engine_IRON.xml">
+            <engine file="engine_IRON_NEW.xml">
                 <position>
                     <x unit="m">29.49</x>
                     <y unit="m">-4.44</y>
