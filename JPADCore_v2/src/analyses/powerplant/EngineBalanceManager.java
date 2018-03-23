@@ -19,7 +19,7 @@ public class EngineBalanceManager extends BalanceManager{
 	private Engine _theEngine; 
 	
 	private Amount<Length> _xCG;
-	private Double[] _percentDifferenceXCG;
+	private double[] _percentDifferenceXCG;
 	
 	
 	public EngineBalanceManager(Engine engine) {
@@ -59,7 +59,7 @@ public class EngineBalanceManager extends BalanceManager{
 		sforza();
 		
 		_methodsMap.put(AnalysisTypeEnum.BALANCE, _methodsList);
-		_percentDifferenceXCG = new Double[_xCGMap.size()];
+		_percentDifferenceXCG = new double[_xCGMap.size()];
 
 		_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 				_cg.getXLRFref(), 

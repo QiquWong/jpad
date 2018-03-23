@@ -45,7 +45,7 @@ public class LandingGears {
 	private Map <MethodEnum, Amount<Length>> _xCGMap;
 	private List<MethodEnum> _methodsList;
 	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap;
-	private Double[] _percentDifference;
+	private double[] _percentDifference;
 	private Amount<Mass> _referenceMass, _estimatedMass;
 	private CenterOfGravity _cg;
 	private Amount<Length> _xCG;
@@ -244,7 +244,7 @@ public class LandingGears {
 		}
 
 		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
-		_percentDifference =  new Double[_massMap.size()]; 
+		_percentDifference =  new double[_massMap.size()]; 
 
 		_estimatedMass = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 				_referenceMass, 
@@ -384,11 +384,11 @@ public class LandingGears {
 		this._methodsMap = methodsMap;
 	}
 
-	public Double[] getPercentDifference() {
+	public double[] getPercentDifference() {
 		return _percentDifference;
 	}
 
-	public void setPercentDifference(Double[] percentDifference) {
+	public void setPercentDifference(double[] percentDifference) {
 		this._percentDifference = percentDifference;
 	}
 

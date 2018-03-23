@@ -16,7 +16,7 @@ public abstract class ComponentCalculator {
 	protected Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
 	protected List<MethodEnum> _methodsList = new ArrayList<MethodEnum>();
 	protected InnerCalculator calculator;
-	protected Double[] _percentDifference;
+	protected double[] _percentDifference;
 	
 	public abstract void calculateAll(); 
 	

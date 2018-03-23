@@ -29,9 +29,6 @@ import standaloneutils.MyArrayUtils;
 
 /*
  *******************************************************************************
- * THIS CLASS IS A PROTOTYPE OF THE NEW FuselageAerodynmicsManager 
- * (WORK IN PROGRESS)
- * 
  * @author Vittorio Trifari, Agostino De Marco
  *******************************************************************************
  */

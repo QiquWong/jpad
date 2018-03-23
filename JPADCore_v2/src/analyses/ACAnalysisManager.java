@@ -42,7 +42,7 @@ import writers.JPADStaticWriteUtils;
  * @author Lorenzo Attanasio, Vittorio Trifari
  *
  */
-public class ACAnalysisManager implements IACAnalysisManager {
+public class ACAnalysisManager {
 
 	private String _id;
 	private Aircraft _theAircraft;
@@ -1382,7 +1382,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					aircraft,
 					theOperatingConditions
 					);
-			calculateWeights(aircraft, resultsFolderPath); 
+			calculateWeights(aircraft, theOperatingConditions, resultsFolderPath); 
 			_executedAnalysesMap.put(AnalysisTypeEnum.WEIGHTS, true);
 			System.setOut(originalOut);
 			System.out.println("\t\tWeights Analysis :: COMPLETE\n");
@@ -1516,10 +1516,10 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				
 	} // end of constructor
 
-	public void calculateWeights(Aircraft aircraft, String resultsFolderPath) {
+	public void calculateWeights(Aircraft aircraft, OperatingConditions operatingConditions, String resultsFolderPath) {
 
 		// Evaluate aircraft masses
-		aircraft.getTheAnalysisManager().getTheWeights().calculateAllMasses(aircraft, _methodsMapWeights);
+		aircraft.getTheAnalysisManager().getTheWeights().calculateAllMasses(aircraft, operatingConditions, _methodsMapWeights);
 
 		// Plot and print
 		try {

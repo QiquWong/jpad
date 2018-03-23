@@ -19,7 +19,7 @@ public class NacelleBalanceManager extends BalanceManager{
 	private NacelleCreator _theNacelle;
 	
 	private Amount<Length> _xCG;
-	private Double[] _percentDifferenceXCG;
+	private double[] _percentDifferenceXCG;
 
 	public NacelleBalanceManager(NacelleCreator nacelle) {
 		super();
@@ -54,7 +54,7 @@ public class NacelleBalanceManager extends BalanceManager{
 		torenbeek();
 		
 		_methodsMap.put(AnalysisTypeEnum.BALANCE, _methodsList);
-		_percentDifferenceXCG = new Double[_xCGMap.size()];
+		_percentDifferenceXCG = new double[_xCGMap.size()];
 
 		_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 				_cg.getXLRFref(), 

@@ -71,14 +71,14 @@ public class LiftingSurface {
 	private Amount<Mass> _mass, _massReference, _massEstimated;
 	Map <MethodEnum, Amount<Mass>> _massMap = new TreeMap<MethodEnum, Amount<Mass>>();
 	Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
-	Double[] _percentDifference;
+	double[] _percentDifference;
 	
 	private CenterOfGravity _cg;
 	private Amount<Length> _xCG, _yCG, _zCG;
 	Map <MethodEnum, Amount<Length>> _xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
 	Map <MethodEnum, Amount<Length>> _yCGMap = new TreeMap<MethodEnum, Amount<Length>>();
-	Double[] _percentDifferenceXCG;
-	Double[] _percentDifferenceYCG;
+	double[] _percentDifferenceXCG;
+	double[] _percentDifferenceYCG;
 	
 	//------------------------------------------------------------------------------------
 	// BUILDER
@@ -640,7 +640,7 @@ public class LiftingSurface {
 		}
 
 		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, methodsList);
-		_percentDifference =  new Double[_massMap.size()]; 
+		_percentDifference =  new double[_massMap.size()]; 
 
 		_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 				_massReference, 
@@ -665,8 +665,8 @@ public class LiftingSurface {
 			_cg.setYLRF(_yCGMap.get(methodsMap.get(type)));
 		}
 		else {
-			_percentDifferenceXCG = new Double[_xCGMap.size()];
-			_percentDifferenceYCG = new Double[_yCGMap.size()];
+			_percentDifferenceXCG = new double[_xCGMap.size()];
+			_percentDifferenceYCG = new double[_yCGMap.size()];
 
 			_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 					_cg.getXLRFref(), 
@@ -983,11 +983,11 @@ public class LiftingSurface {
 		this._methodsMap = _methodsMap;
 	}
 
-	public Double[] getPercentDifference() {
+	public double[] getPercentDifference() {
 		return _percentDifference;
 	}
 
-	public void setPercentDifference(Double[] _percentDifference) {
+	public void setPercentDifference(double[] _percentDifference) {
 		this._percentDifference = _percentDifference;
 	}
 
@@ -1039,19 +1039,19 @@ public class LiftingSurface {
 		this._yCGMap = _yCGMap;
 	}
 
-	public Double[] getPercentDifferenceXCG() {
+	public double[] getPercentDifferenceXCG() {
 		return _percentDifferenceXCG;
 	}
 
-	public void setPercentDifferenceXCG(Double[] _percentDifferenceXCG) {
+	public void setPercentDifferenceXCG(double[] _percentDifferenceXCG) {
 		this._percentDifferenceXCG = _percentDifferenceXCG;
 	}
 
-	public Double[] getPercentDifferenceYCG() {
+	public double[] getPercentDifferenceYCG() {
 		return _percentDifferenceYCG;
 	}
 
-	public void setPercentDifferenceYCG(Double[] _percentDifferenceYCG) {
+	public void setPercentDifferenceYCG(double[] _percentDifferenceYCG) {
 		this._percentDifferenceYCG = _percentDifferenceYCG;
 	}
 

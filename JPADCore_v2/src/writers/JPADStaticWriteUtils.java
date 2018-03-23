@@ -1447,8 +1447,8 @@ public class JPADStaticWriteUtils {
 	public static JPADStaticWriteUtils.StoreResults<Double> compareMethods(
 			Object refVal, 
 			Object map,
-			Double[] percentDifference, 
-			Double threshold) {
+			double[] percentDifference, 
+			double threshold) {
 
 		Map <MethodEnum, Amount<?>> mapOfEstimatedValues = new TreeMap<MethodEnum, Amount<?>>();
 		Amount<?> referenceValue = Amount.valueOf(0., Unit.ONE);
@@ -1506,7 +1506,7 @@ public class JPADStaticWriteUtils {
 				filteredSum = sum;
 
 			} else if (entry.getValue() == null) {
-				percentDifference[i] = null;
+				percentDifference[i] = 0.0;
 			}
 
 			i++;

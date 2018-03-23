@@ -46,7 +46,7 @@ import standaloneutils.atmosphere.SpeedCalc;
  * 
  * @author Lorenzo Attanasio, Vittorio Trifari
  */
-public class ACWeightsManager implements IACWeightsManager {
+public class ACWeightsManager {
 
 	//------------------------------------------------------------------------------
 	// VARIABLES DECLARATION:
@@ -1644,8 +1644,11 @@ public class ACWeightsManager implements IACWeightsManager {
 	 * @param aircraft
 	 * @param methodsMap
 	 */
-	public void calculateAllMasses(Aircraft aircraft, 
-			Map <ComponentEnum, MethodEnum> methodsMap) {
+	public void calculateAllMasses(
+			Aircraft aircraft,
+			OperatingConditions operatingConditions,
+			Map <ComponentEnum, MethodEnum> methodsMap
+			) {
 
 		System.out.println("\n-----------------------------------------------");
 		System.out.println("----- WEIGHT ESTIMATION PROCEDURE STARTED -----");
@@ -1702,7 +1705,7 @@ public class ACWeightsManager implements IACWeightsManager {
 			/*
 			 * All the following methods are use to estimate all the aircraft masses.
 			 */
-			calculateStructuralMass(aircraft, methodsMap);
+			calculateStructuralMass(aircraft, operatingConditions, methodsMap);
 			// --- END OF STRUCTURE MASS-----------------------------------
 			
 			aircraft.getPowerPlant().calculateMass(aircraft);
@@ -1765,10 +1768,11 @@ public class ACWeightsManager implements IACWeightsManager {
 	
 	private void calculateStructuralMass(
 			Aircraft aircraft, 
+			OperatingConditions operatingConditions,
 			Map <ComponentEnum, MethodEnum> methodsMap) {
 
 		if(aircraft.getFuselage() != null)
-			aircraft.getFuselage().calculateMass(aircraft, methodsMap);
+			aircraft.getFuselage().getTheWeight().calculateMass(aircraft, operatingConditions, methodsMap);
 
 		if(aircraft.getWing() != null)
 			aircraft.getWing().calculateMass(aircraft, ComponentEnum.WING, methodsMap);

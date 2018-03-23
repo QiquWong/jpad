@@ -38,7 +38,7 @@ public class Systems {
 
 	private Amount<Mass> _referenceMass;
 	private Amount<Mass> _meanMass;
-	private Double[] _percentDifference;
+	private double[] _percentDifference;
 	private Map <MethodEnum, Amount<Mass>> _massMap = new TreeMap<MethodEnum, Amount<Mass>>();
 	private List<MethodEnum> _methodsList = new ArrayList<MethodEnum>();
 	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
@@ -76,7 +76,7 @@ public class Systems {
 				MethodEnum.TORENBEEK_1982, 
 				Amount.valueOf(round(_overallMass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM)
 				);
-		_percentDifference =  new Double[_massMap.size()]; 
+		_percentDifference =  new double[_massMap.size()]; 
 
 		_meanMass = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 				_referenceMass, 
@@ -304,11 +304,11 @@ public class Systems {
 		this._meanMass = _meanMass;
 	}
 
-	public Double[] getPercentDifference() {
+	public double[] getPercentDifference() {
 		return _percentDifference;
 	}
 
-	public void setPercentDifference(Double[] _percentDifference) {
+	public void setPercentDifference(double[] _percentDifference) {
 		this._percentDifference = _percentDifference;
 	}
 

@@ -223,11 +223,11 @@ public class EngineWeightsManager extends WeightsManager{
 		this._mass = _mass;
 	}
 	
-	public Double[] getPercentDifference() {
+	public double[] getPercentDifference() {
 		return _percentDifference;
 	}
 	
-	public void setPercentDifference(Double[] _percentDifference) {
+	public void setPercentDifference(double[] _percentDifference) {
 		this._percentDifference =_percentDifference;
 	}
 
