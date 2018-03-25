@@ -10,6 +10,7 @@ import configuration.enumerations.ComponentEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
+import it.unina.daf.jpadcadsandbox.utils.AircraftUtils.FileExtension;
 import opencascade.BRepMesh_IncrementalMesh;
 import opencascade.BRep_Builder;
 import opencascade.StlAPI_Writer;
@@ -94,8 +95,8 @@ public class Test20mds {
 //		allShapes.addAll(horTailShapes);
 //		allShapes.addAll(verTailShapes);
 		
-//		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds", ".brep");
-//		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds_solids", ".stl");
-		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds_solids", ".step");
+//		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds", FileExtension.BREP);
+//		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds_solids", FileExtension.STL);
+		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds_solids", FileExtension.STEP);
 	}
 }

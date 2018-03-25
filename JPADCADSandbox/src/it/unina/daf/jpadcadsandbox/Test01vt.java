@@ -9,6 +9,7 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.ComponentEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
+import it.unina.daf.jpadcadsandbox.utils.AircraftUtils.FileExtension;
 
 public class Test01vt {
 
@@ -89,8 +90,8 @@ public class Test01vt {
 //		allShapes.addAll(verTailShapes);
 		allShapes.addAll(canardShapes);
 		
-//		AircraftUtils.getAircraftSolidFile(allShapes, "Test01vt_brep", ".brep");
-//		AircraftUtils.getAircraftSolidFile(allShapes, "Test01vt_stl", ".stl");
-		AircraftUtils.getAircraftSolidFile(allShapes, "Test01vt_step", ".step");
+//		AircraftUtils.getAircraftSolidFile(allShapes, "Test01vt_brep", FileExtension.BREP);
+//		AircraftUtils.getAircraftSolidFile(allShapes, "Test01vt_stl", FileExtension.STL);
+		AircraftUtils.getAircraftSolidFile(allShapes, "Test01vt_step", FileExtension.STEP);
 	}
 }

@@ -1,18 +1,17 @@
 package it.unina.daf.jpadcadsandbox;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import aircraft.Aircraft;
-import aircraft.components.fuselage.Fuselage;
-import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.ComponentEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
-import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadfx.OCCFXMeshExtractor;
-import it.unina.daf.jpadcadsandbox.Test22mds.Cam;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -36,13 +35,11 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
-import opencascade.TopAbs_ShapeEnum;
-import opencascade.TopoDS_Face;
-import opencascade.TopoDS_Shape;
+import opencascade.TopoDS_Solid;
 
 public class Test23mds extends Application {
 	
-	public static List<TriangleMesh> triangles;
+	public static HashMap<ComponentEnum, List<TriangleMesh>> meshMap;
 	
 	// mouse positions
 	double mousePosX;
@@ -65,47 +62,40 @@ public class Test23mds extends Application {
 		System.out.println("========== [main] Getting the aircraft ...");
 		Aircraft theAircraft = AircraftUtils.importAircraft(args);
 		
-		Fuselage fuselage = theAircraft.getFuselage();
-		LiftingSurface wing = theAircraft.getWing();
-		LiftingSurface horTail = theAircraft.getHTail();
-		LiftingSurface verTail = theAircraft.getVTail();
+		List<ComponentEnum> comps = new ArrayList<>();
+		comps = Arrays.asList(new ComponentEnum[] {
+				ComponentEnum.FUSELAGE, 
+				ComponentEnum.WING, 
+				ComponentEnum.HORIZONTAL_TAIL, 
+				ComponentEnum.VERTICAL_TAIL, 
+				ComponentEnum.CANARD
+		});
 		
-		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, 7, 7, true, true, false);	
-		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, false, true, false);
-		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, false, true, false);
-		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, false, true, false);
+		System.out.println(comps.size());
 		
-		List<OCCShape> allShapes = new ArrayList<>();
-		allShapes.addAll(fuselageShapes);
-		allShapes.addAll(wingShapes);
-		allShapes.addAll(horTailShapes);
-		allShapes.addAll(verTailShapes);
+		// getting the selected shapes
+		List<OCCShape> allShapes = AircraftUtils.getAircraftShapes(theAircraft, comps);
 		
 		// filter the solids
-		List<TopoDS_Shape> solids = allShapes.stream()
-				  .filter(s -> s.getShape().ShapeType().equals(TopAbs_ShapeEnum.TopAbs_SOLID))
-				  .map(s -> s.getShape())
-			      .collect(Collectors.toList());
+		List<TopoDS_Solid> solids = AircraftUtils.getAircraftSolid(allShapes);
 		
-		// pass each solid to the mesh extractor
-		List<OCCFXMeshExtractor> meshExtractors = solids.stream()
-				.map(s -> new OCCFXMeshExtractor(s))
+		// extract the meshes
+		List<List<TriangleMesh>> triangleMeshes = solids.stream()
+				.map(s -> (new OCCFXMeshExtractor(s)).getFaces().stream()
+						.map(f -> {
+							OCCFXMeshExtractor.FaceData faceData = new OCCFXMeshExtractor.FaceData(f, true);
+							faceData.load();
+							return faceData.getTriangleMesh();
+						})
+						.collect(Collectors.toList())
+						)
 				.collect(Collectors.toList());
 		
-		// process each face of the solids
-		List<TriangleMesh> triangleMeshes = meshExtractors.stream()
-				.map(m -> m.getFaces())
-				.flatMap(Collection::stream)
-				.map(f -> {
-					OCCFXMeshExtractor.FaceData faceData = new OCCFXMeshExtractor.FaceData(f, true);
-					faceData.load();
-					return faceData.getTriangleMesh();
-				})
-				.collect(Collectors.toList());
-		
-		System.out.println("========== Number of triangulations executed: " + triangleMeshes.size());
-		
-		triangles = triangleMeshes;
+		HashMap<ComponentEnum, List<TriangleMesh>> map = new HashMap<>(); 
+		for(int i = 0; i < triangleMeshes.size(); i++) {
+			map.put(comps.get(i), triangleMeshes.get(i));
+		}
+		meshMap = map;
 
 		launch();
 	}
@@ -119,27 +109,23 @@ public class Test23mds extends Application {
 		final Scene scene = new Scene(camOffset, 800, 800, true);
 		scene.setFill(new RadialGradient(225, 0.85, 300, 300, 500, false,
                 CycleMethod.NO_CYCLE, new Stop[]
-                { new Stop(0f, Color.BLUE),
+                { new Stop(0f, Color.WHITE),
                   new Stop(1f, Color.LIGHTBLUE) }));
 		scene.setCamera(new PerspectiveCamera());
 		
-		Group objects = new Group();
-		objects.setDepthTest(DepthTest.ENABLE);
-
-		// creating a new material
-		PhongMaterial blueStuff = new PhongMaterial();
-		blueStuff.setDiffuseColor(Color.LIGHTBLUE);
-		blueStuff.setSpecularColor(Color.BLUE);
+		Group components = new Group();
+		components.setDepthTest(DepthTest.ENABLE);
 		
-		// creating the aircraft
-		triangles.forEach(tm -> {
-				MeshView face = new MeshView(tm);
+		// creating the mesh view		
+		meshMap.forEach((e, mL) -> {
+			mL.forEach(m -> {
+				MeshView face = new MeshView(m);
 				face.setDrawMode(DrawMode.FILL);
-				face.setMaterial(blueStuff);
-				face.setCullFace(CullFace.BACK);
-				objects.getChildren().add(face);
-				});
-		cam.getChildren().add(objects);
+				face.setMaterial(setComponentColor(e));
+				components.getChildren().add(face);
+			});
+		});
+		cam.getChildren().add(components);
 		
 		double halfSceneWidth = scene.getWidth()/2;
 		double halfSceneHeigth = scene.getHeight()/2;
@@ -149,33 +135,18 @@ public class Test23mds extends Application {
 		cam.ip.setY(-halfSceneHeigth);
 		
 		frameCam(stage, scene);
-
-		// adding a light source
-//		PointLight light = new PointLight(Color.WHITE);
-//		light.setTranslateX(-10);
-//		light.setTranslateY(-1);
-//		light.setTranslateZ(-10);
-//		cam.getChildren().add(light);
 		
-		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-                mousePosX = me.getX();
-                mousePosY = me.getY();
-                mouseOldX = me.getX();
-                mouseOldY = me.getY();
-                //System.out.println("scene.setOnMousePressed " + me);
-            }
-        });
-		
-		// scale and/or rotate using the mouse
+		// scale, rotate and translate using the mouse
 		scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
+            	
                 mouseOldX = mousePosX;
                 mouseOldY = mousePosY;
                 mousePosX = me.getX();
                 mousePosY = me.getY();
                 mouseDeltaX = mousePosX - mouseOldX;
                 mouseDeltaY = mousePosY - mouseOldY;
+                
                 if (me.isAltDown() && me.isShiftDown() && me.isPrimaryButtonDown()) {
                     double rzAngle = cam.rz.getAngle();
                     cam.rz.setAngle(rzAngle - mouseDeltaX);
@@ -188,7 +159,7 @@ public class Test23mds extends Application {
                 }
                 else if (me.isAltDown() && me.isSecondaryButtonDown()) {
                     double scale = cam.s.getX();
-                    double newScale = scale + mouseDeltaX*1;
+                    double newScale = scale + mouseDeltaX*0.1;
                     cam.s.setX(newScale);
                     cam.s.setY(newScale);
                     cam.s.setZ(newScale);
@@ -204,13 +175,12 @@ public class Test23mds extends Application {
 
 		// showing the stage
 		stage.setScene(scene);
-		stage.setTitle("ATR72");
+		stage.setTitle("Aircraft test");
 		stage.show();
 	}
 
 	public void frameCam(final Stage stage, final Scene scene) {
         setCamOffset(camOffset, scene);
-        // cam.resetTSP();
         setCamPivot(cam);
         setCamTranslate(cam);
         setCamScale(cam, scene);
@@ -274,9 +244,9 @@ public class Test23mds extends Application {
 		cam.t.setY(0.0);
 		cam.t.setZ(0.0);
 		
-		cam.rx.setAngle(45.0);
-		cam.ry.setAngle(-7.0);
-		cam.rz.setAngle(0.0);
+		cam.rx.setAngle(135.0);
+		cam.ry.setAngle(-15.0);
+		cam.rz.setAngle(10.0);
 		
 		cam.s.setX(1.25);
 		cam.s.setY(1.25);
@@ -304,6 +274,50 @@ public class Test23mds extends Application {
 		cam.ip.setZ(-pivotZ);
 	}
 	
+	public PhongMaterial setComponentColor(ComponentEnum component) {
+
+		PhongMaterial material = new PhongMaterial();
+
+		switch(component) {
+
+		case FUSELAGE: 
+			material.setDiffuseColor(Color.BLUE);
+			material.setSpecularColor(Color.LIGHTBLUE);
+
+			break;
+
+		case WING:
+			material.setDiffuseColor(Color.RED);
+			material.setSpecularColor(Color.MAGENTA);
+
+			break;
+
+		case HORIZONTAL_TAIL:
+			material.setDiffuseColor(Color.DARKGREEN);
+			material.setSpecularColor(Color.GREEN);
+
+			break;
+
+		case VERTICAL_TAIL:
+			material.setDiffuseColor(Color.GOLD);
+			material.setSpecularColor(Color.YELLOW);
+
+			break;
+
+		case CANARD:
+			material.setDiffuseColor(Color.BLUEVIOLET);
+			material.setSpecularColor(Color.VIOLET);
+
+			break;
+
+		default:
+
+			break;
+		}
+		
+		return material;
+	}
+	
 	public class Cam extends Group {
 		Translate t  = new Translate();
 		Translate p  = new Translate();
@@ -316,5 +330,5 @@ public class Test23mds extends Application {
 		{rz.setAxis(Rotate.Z_AXIS);}
 		Scale s = new Scale();
 		public Cam() {super(); getTransforms().addAll(t, p, ip, rx, ry, rz, s); }
-	}
+	}	
 }

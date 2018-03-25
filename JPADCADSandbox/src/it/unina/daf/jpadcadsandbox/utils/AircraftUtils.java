@@ -22,6 +22,8 @@ import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import com.sun.org.apache.xerces.internal.impl.xpath.XPath.Step;
+
 import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
@@ -35,6 +37,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
+import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADFace;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
 import it.unina.daf.jpadcad.occ.CADShape;
@@ -46,8 +49,11 @@ import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCVertex;
+import jdk.internal.org.objectweb.asm.Handle;
+import opencascade.BRepAdaptor_CompCurve;
 import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepBuilderAPI_MakeSolid;
+import opencascade.BRepBuilderAPI_MakeWire;
 import opencascade.BRepBuilderAPI_Sewing;
 import opencascade.BRepBuilderAPI_Transform;
 import opencascade.BRepMesh_IncrementalMesh;
@@ -56,18 +62,33 @@ import opencascade.BRepTools;
 import opencascade.BRep_Builder;
 import opencascade.BRep_Tool;
 import opencascade.GeomAbs_Shape;
+import opencascade.Geom_BSplineCurve;
 import opencascade.IFSelect_ReturnStatus;
 import opencascade.IGESControl_Controller;
 import opencascade.IGESControl_Writer;
+import opencascade.IGESData_DefList;
+import opencascade.IGESData_DefType;
+import opencascade.IGESData_IGESModel;
+import opencascade.Interface_Static;
+import opencascade.STEPControl_Controller;
 import opencascade.STEPControl_StepModelType;
 import opencascade.STEPControl_Writer;
+import opencascade.ShapeAnalysis_FreeBounds;
+import opencascade.StepRepr_Representation;
+import opencascade.StepShape_SolidModel;
 import opencascade.StlAPI_Writer;
+import opencascade.TCollection_AsciiString;
+import opencascade.TDF_Label;
 import opencascade.TopAbs_ShapeEnum;
+import opencascade.TopExp;
 import opencascade.TopExp_Explorer;
 import opencascade.TopoDS;
+import opencascade.TopoDS_CompSolid;
 import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
 import opencascade.TopoDS_Shape;
+import opencascade.TopoDS_Solid;
+import opencascade.TopoDS_Wire;
 import opencascade.gp_Ax2;
 import opencascade.gp_Dir;
 import opencascade.gp_Pnt;
@@ -389,9 +410,7 @@ public final class AircraftUtils {
 		// all xbar's are normalized with noseLength
 		List<Double> xbars1 = Arrays.asList(
 				MyArrayUtils
-//					.linspaceDouble(
 					.halfCosine2SpaceDouble(
-//					.cosineSpaceDouble(
 					noseCapSectionFactor1*xbarNoseCap, noseCapSectionFactor2*xbarNoseCap, 
 					numberNoseCapSections) // n. points
 				);
@@ -806,8 +825,7 @@ public final class AircraftUtils {
 			.map(crv -> (OCCEdge)(crv.edge()))
 			.forEach(e -> extraShapes.add(e));
 				
-		// support sections of cylinder, patch-3
-		
+		// support sections of cylinder, patch-3		
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderInitialSection).edge());
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderMidSection).edge());
 		extraShapes.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderTerminalSection).edge());
@@ -1009,11 +1027,8 @@ public final class AircraftUtils {
 			double xbp = liftingSurface.getLiftingSurfaceCreator().getXLEBreakPoints().get(kBP).plus(xApex).doubleValue(SI.METER);
 			double ybp = liftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(kBP).doubleValue(SI.METER);
 			double zbp = zApex.doubleValue(SI.METER);
-//			double semiSpanPanel = liftingSurface.getLiftingSurfaceCreator().getPanels().get(kBP - 1).getSpan().times(0.5).doubleValue(SI.METER);
 			double spanPanel = liftingSurface.getLiftingSurfaceCreator().getPanels().get(kBP - 1).getSpan().doubleValue(SI.METER);
 			double dihedralPanel = liftingSurface.getLiftingSurfaceCreator().getPanels().get(kBP - 1).getDihedral().doubleValue(SI.RADIAN);
-//			zbp = zbp + semiSpanPanel*Math.tan(dihedralPanel);
-//			zbp = zbp + spanPanel*Math.tan(dihedralPanel);
 			zbp = zbp + ybp*Math.tan(dihedralPanel);
 			if(liftingSurface.getLiftingSurfaceCreator().getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 				ptsLE.add(new double[] {
@@ -1124,7 +1139,7 @@ public final class AircraftUtils {
 		// airfoils between breakpoints
 		List<CADGeomCurve3D> cadCurveAirfoilBetBPList = new ArrayList<CADGeomCurve3D>();
 		int nSec = 5; // number of sections between two contiguous breakpoints
-		for(int iP = 1; iP <= liftingSurface.getLiftingSurfaceCreator().getPanels().size(); iP++) {
+		for(int iP = 1; iP <= nPanels; iP++) {
 			List<CADGeomCurve3D> cadCurveAirfoilPanelList = new ArrayList<CADGeomCurve3D>();
 			double[] secVec = new double[nSec + 2];
 			secVec = MyArrayUtils.linspace(
@@ -1188,6 +1203,46 @@ public final class AircraftUtils {
 				patchTEPanel.add((OCCShape)shell);
 			}
 			patchTE.add(patchTEPanel);
+		}
+		
+		// Alternative closing
+		List<List<CADGeomCurve3D>> teShapes = new ArrayList<List<CADGeomCurve3D>>();
+		patchWing.forEach(s -> {
+			List<CADGeomCurve3D> curves = new ArrayList<>();
+			TopoDS_Shape tds = s.getShape();
+			TopExp_Explorer exp = new TopExp_Explorer(tds, TopAbs_ShapeEnum.TopAbs_EDGE);
+			while(exp.More() > 0) {
+				curves.add(OCCUtils.theFactory.newCurve3D(
+						(CADEdge) OCCUtils.theFactory.newShape(exp.Current())));
+				exp.Next();
+			}
+			curves.remove(0);
+			curves.remove(1);
+			teShapes.add(curves);
+			for(int i = 0; i < curves.size(); i++) {
+				System.out.println("Vertices curve #" + (i+1) + ": " + 
+									Arrays.toString(curves.get(i).edge().vertices()[0].pnt()) + ", " + 
+									Arrays.toString(curves.get(i).edge().vertices()[1].pnt()));			
+			}
+			System.out.println("==============================================");
+			System.out.println("===========> Number of edges: " + curves.size());
+			System.out.println("==============================================");
+		});
+		
+		List<OCCShape> patchTE_0 = new ArrayList<>();
+		for(int i = 1; i <= nPanels; i++) {
+			patchTE_0.add((OCCShape) OCCUtils.makeFilledFace(
+					OCCUtils.theFactory.newCurve3D(
+							cadCurveAirfoilBPList.get(i-1).edge().vertices()[0].pnt(), 
+							cadCurveAirfoilBPList.get(i-1).edge().vertices()[1].pnt()
+							),
+					teShapes.get(i-1).get(0),				
+					OCCUtils.theFactory.newCurve3D(
+							cadCurveAirfoilBPList.get(i).edge().vertices()[0].pnt(), 
+							cadCurveAirfoilBPList.get(i).edge().vertices()[1].pnt()
+							),
+					teShapes.get(i-1).get(1)
+					));
 		}
 		
 		// Closing the tip using a filler surface
@@ -1674,7 +1729,7 @@ public final class AircraftUtils {
 		List<OCCShape> wingTip = new ArrayList<>();
 		if(!sewMakerTip.IsNull()) {
 			TopoDS_Shape tds_shape = sewMakerTip.SewedShape();
-			System.out.println(OCCUtils.reportOnShape(tds_shape, "Tip sewed surface"));
+			System.out.println(OCCUtils.reportOnShape(tds_shape, "Tip sewn surface"));
 			TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
 			while(exp.More() > 0) {
 				wingTip.add((OCCShape)OCCUtils.theFactory.newShape(exp.Current()));
@@ -1701,7 +1756,8 @@ public final class AircraftUtils {
 		sewMakerWing.SetTolerance(tipTolerance);
 		
 		patchWing.forEach(p -> sewMakerWing.Add(p.getShape()));
-		patchTE.forEach(pL -> pL.forEach(p -> sewMakerWing.Add(p.getShape())));
+//		patchTE.forEach(pL -> pL.forEach(p -> sewMakerWing.Add(p.getShape())));
+		patchTE_0.forEach(p -> sewMakerWing.Add(p.getShape()));
 		sewMakerWing.Add(wingTip.get(0).getShape());
 		
 		// closing the wing root in case of Vertical Tail
@@ -1866,31 +1922,73 @@ public final class AircraftUtils {
 		public abstract Double[] calculateSpacing(double x1, double x2, int n);
 	}
 	
-	public static void getAircraftSolidFile(
-			List<OCCShape> allShapes,
-			String fileName,
-			String fileExtension
-			) {
+	public enum FileExtension {
+		BREP,
+		STEP,
+		IGES,
+		STL;
+	}
+	
+	public static List<OCCShape> getAircraftShapes(
+			Aircraft theAircraft, 
+			ComponentEnum ... components) {	
+		return getAircraftShapes(theAircraft, Arrays.asList(components));
+	}
+	
+	public static List<OCCShape> getAircraftShapes(
+			Aircraft theAircraft,
+			List<ComponentEnum> components
+			) {		
+		List<OCCShape> allShapes = new ArrayList<>();
 		
-		// filter the shapes in order to obtain just the solids
-		List<TopoDS_Shape> tdsSolids = new ArrayList<>();
-		System.out.println("========== [AircraftUtils::getAircraftSolidFile] Searching for solids");
+		if(theAircraft.getFuselage() != null && components.contains(ComponentEnum.FUSELAGE)) {
+			allShapes.addAll(getFuselageCAD(theAircraft.getFuselage(), true));
+		}		
+		if(theAircraft.getWing() != null && components.contains(ComponentEnum.WING)) {
+			allShapes.addAll(getLiftingSurfaceCAD(theAircraft.getWing(), ComponentEnum.WING, 1e-3, true, true, true));
+		}		
+		if(theAircraft.getHTail() != null && components.contains(ComponentEnum.HORIZONTAL_TAIL)) {		
+			allShapes.addAll(getLiftingSurfaceCAD(theAircraft.getHTail(), ComponentEnum.HORIZONTAL_TAIL, 1e-3, true, true, true));
+		}		
+		if(theAircraft.getVTail() != null && components.contains(ComponentEnum.VERTICAL_TAIL)) {		
+			allShapes.addAll(getLiftingSurfaceCAD(theAircraft.getVTail(), ComponentEnum.VERTICAL_TAIL, 1e-3, true, true, true));
+		}			
+		if(theAircraft.getCanard() != null && components.contains(ComponentEnum.CANARD)) {		
+			allShapes.addAll(getLiftingSurfaceCAD(theAircraft.getCanard(), ComponentEnum.CANARD, 1e-3, true, true, true));
+		}			
+		return allShapes;
+	}
+	
+	public static List<TopoDS_Solid> getAircraftSolid(List<OCCShape> allShapes) {
+		List<TopoDS_Solid> solids = new ArrayList<>();
+		
 		allShapes.forEach(s -> {
-			TopoDS_Shape tdsShape = s.getShape();
-			TopExp_Explorer exp = new TopExp_Explorer(tdsShape, TopAbs_ShapeEnum.TopAbs_SOLID);
+			TopoDS_Shape shape = s.getShape();
+			TopExp_Explorer exp = new TopExp_Explorer(shape, TopAbs_ShapeEnum.TopAbs_SOLID);
 			while(exp.More() > 0) {
-				tdsSolids.add(exp.Current());
+				solids.add(TopoDS.ToSolid(exp.Current()));
 				exp.Next();
 			}
 		});
+		return solids;
+	} 
+	
+	public static void getAircraftSolidFile(
+			List<OCCShape> allShapes,
+			String fileName,
+			FileExtension fileExtension
+			) {
+		
+		// filter the shapes in order to obtain just the solids
+		List<TopoDS_Solid> tdsSolids = getAircraftSolid(allShapes);
 		System.out.println("Solids found: " + tdsSolids.size());
 		
 		// choosing the file extension
 		switch(fileExtension) {
 		
-		case ".brep":
+		case BREP:
 			System.out.println("========== [AircraftUtils::getAircraftSolidFile] .brep file extension selected");
-			String fileNameBrep = fileName + fileExtension;
+			String fileNameBrep = fileName + ".brep";
 			
 			BRep_Builder compoundBrep = new BRep_Builder();
 			TopoDS_Compound solidsCompoundBrep = new TopoDS_Compound();
@@ -1903,12 +2001,26 @@ public final class AircraftUtils {
 			
 			break;
 			
-		case ".step":
+		case STEP:
 			System.out.println("========== [AircraftUtils::getAircraftSolidFile] .step file extension selected");
-			String fileNameStep = fileName + fileExtension;
+			String fileNameStep = fileName + ".step";
 			
 			STEPControl_Writer stepWriter = new STEPControl_Writer();
-			tdsSolids.forEach(s -> stepWriter.Transfer(s, STEPControl_StepModelType.STEPControl_AsIs));
+//			StepRepr_Representation repr = new StepRepr_Representation();
+//			Interface_Static.SetCVal("write.step.unit", "M");
+			Interface_Static.SetCVal("write.step.product.name", "Aircraft");
+			BRep_Builder compoundBuilder = new BRep_Builder();
+			TopoDS_Compound compSolid = new TopoDS_Compound();
+			compoundBuilder.MakeCompound(compSolid);
+			tdsSolids.forEach(s -> {
+//				Interface_Static.SetCVal("write.step.product.name", "IRON " + s.hashCode());
+//				BRepTools.Clean(s);
+//				new BRepMesh_IncrementalMesh(s, 7E-3);
+//				stepWriter.Transfer(s, STEPControl_StepModelType.STEPControl_AsIs);
+				compoundBuilder.Add(compSolid, s);
+			});
+			stepWriter.Transfer(compSolid, STEPControl_StepModelType.STEPControl_AsIs);			
+//			tdsSolids.forEach(s -> stepWriter.Transfer(s, STEPControl_StepModelType.STEPControl_AsIs));
 			
 			System.out.println(".step file writing ...");
 			IFSelect_ReturnStatus statusStep = stepWriter.Write(fileNameStep);
@@ -1916,12 +2028,12 @@ public final class AircraftUtils {
 			
 			break;
 			
-		case ".iges":
+		case IGES:
 			System.out.println("========== [AircraftUtils::getAircraftSolidFile] .iges file extension selected");
-			String fileNameIges = fileName + fileExtension;
+			String fileNameIges = fileName + ".iges";
 			
 			if(IGESControl_Controller.Init() == 1) {
-				IGESControl_Writer igesWriter = new IGESControl_Writer();
+				IGESControl_Writer igesWriter = new IGESControl_Writer("2HM");
 				tdsSolids.forEach(s -> { 
 					long res = igesWriter.AddShape(s);
 					System.out.println(res);
@@ -1936,9 +2048,9 @@ public final class AircraftUtils {
 			
 			break;
 			
-		case ".stl":
+		case STL:
 			System.out.println("========== [AircraftUtils::getAircraftSolidFile] .stl file extension selected");
-			String fileNameStl = fileName + fileExtension;
+			String fileNameStl = fileName + ".stl";
 			
 			BRep_Builder compoundStl = new BRep_Builder();
 			TopoDS_Compound solidsCompoundStl = new TopoDS_Compound();
@@ -1948,25 +2060,25 @@ public final class AircraftUtils {
 			StlAPI_Writer stlWriter = new StlAPI_Writer();		
 			
 			// meshing each solid separately			
-//			tdsSolids.forEach(s -> {
-//				solidMesh.SetShape(s);
-//				solidMesh.Perform();
-//				TopoDS_Shape tdsSolidMeshed = solidMesh.Shape();
-//				tdsSolidMeshed.Reverse();
-//				compoundBuilder.Add(solidsCompoundStl, tdsSolidMeshed);		
-//			});
+			tdsSolids.forEach(s -> {
+				solidMesh.SetShape(s);
+				solidMesh.Perform();
+				TopoDS_Shape tdsSolidMeshed = solidMesh.Shape();
+				tdsSolidMeshed.Reverse();
+				compoundStl.Add(solidsCompoundStl, tdsSolidMeshed);		
+			});
 			
 			// meshing all the solids at the same time
-			System.out.println("creating the mesh ...");
-			tdsSolids.forEach(s -> compoundStl.Add(solidsCompoundStl, s));
-			solidMesh.SetShape(solidsCompoundStl);
-			solidMesh.Perform();
-			TopoDS_Shape tdsSolidMeshed = solidMesh.Shape();
-			tdsSolidMeshed.Reverse();
+//			System.out.println("creating the mesh ...");
+//			tdsSolids.forEach(s -> compoundStl.Add(solidsCompoundStl, s));
+//			solidMesh.SetShape(solidsCompoundStl);
+//			solidMesh.Perform();
+//			TopoDS_Shape tdsSolidMeshed = solidMesh.Shape();
+//			tdsSolidMeshed.Reverse();
 			
 			System.out.println(".step file writing ...");
-			//stlWriter.Write(solidsCompoundStl, fileNameSTL);
-			stlWriter.Write(tdsSolidMeshed, fileNameStl);
+			stlWriter.Write(solidsCompoundStl, fileNameStl);
+//			stlWriter.Write(tdsSolidMeshed, fileNameStl);
 			System.out.println("========== [AircraftUtils::getAircraftSolidFile] file done");
 			
 			break;
@@ -2040,7 +2152,7 @@ public final class AircraftUtils {
 		// checking the trailing edge
 		if(Math.abs(zCoords[0] - zCoords[nPoints - 1]) < 1e-5) {
 			zCoords[0] += 1*1e-3;
-			zCoords[nPoints - 1] -= 1*1e-3; // IRON canard works better with 1 instead of .5
+			zCoords[nPoints - 1] -= 1*1e-3;
 		}
 
 		for (int i = 0; i < nPoints; i++) {
