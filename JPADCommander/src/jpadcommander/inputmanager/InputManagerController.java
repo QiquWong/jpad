@@ -8409,12 +8409,6 @@ public class InputManagerController {
 								Unit.valueOf(distanceFromWallFirstClassUnit)
 								)
 						)
-				.setMassFurnishingsAndEquipment(
-						(Amount<Mass>) Amount.valueOf(
-								Double.valueOf(referenceMassFurnishingsAndEquipments),
-								Unit.valueOf(referenceMassFurnishingsAndEquipmentsUnit)
-								)
-						)
 				.build()
 				);
 				

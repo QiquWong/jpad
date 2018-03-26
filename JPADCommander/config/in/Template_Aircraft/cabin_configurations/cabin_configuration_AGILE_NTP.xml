@@ -43,8 +43,5 @@
 			<distance_from_wall_business_class unit="m">0</distance_from_wall_business_class>
 			<distance_from_wall_first_class unit="m">0</distance_from_wall_first_class>
 		</detailed_data>
-		<reference_masses>
-			<mass_furnishings_and_equipment unit="kg">0.0</mass_furnishings_and_equipment> 
-		</reference_masses>
     </configuration>
 </jpad_config>

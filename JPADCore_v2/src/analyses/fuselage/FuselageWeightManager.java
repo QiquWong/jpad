@@ -14,13 +14,13 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
 import analyses.OperatingConditions;
-import calculators.weights.FuselageWeightsCalc;
+import calculators.weights.FuselageWeightCalc;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
-public class FuselageWeightsManager {
+public class FuselageWeightManager {
 
 	//------------------------------------------------------------------------------
 	// VARIABLES DECLARATION:
@@ -36,7 +36,7 @@ public class FuselageWeightsManager {
 	//------------------------------------------------------------------------------
 	// BUILDER:
 	//------------------------------------------------------------------------------
-	public FuselageWeightsManager () {
+	public FuselageWeightManager () {
 		
 		initializeData();
 		
@@ -85,49 +85,49 @@ public class FuselageWeightsManager {
 		
 		case JENKINSON : { 
 			_methodsList.add(method);
-			_mass = FuselageWeightsCalc.calculateFuselageMassJenkinson(aircraft);
+			_mass = FuselageWeightCalc.calculateFuselageMassJenkinson(aircraft);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 		
 		case NICOLAI_1984 : {
 			_methodsList.add(method);
-			_mass = FuselageWeightsCalc.calculateFuselageMassNicolai(aircraft);
+			_mass = FuselageWeightCalc.calculateFuselageMassNicolai(aircraft);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 	
 		case ROSKAM : { 
 			_methodsList.add(method);
-			FuselageWeightsCalc.calculateFuselageMassRoskam(aircraft);
+			FuselageWeightCalc.calculateFuselageMassRoskam(aircraft);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), _mass.getUnit()));
 		} break;
 		
 		case RAYMER : { 
 			_methodsList.add(method);
-			_mass = FuselageWeightsCalc.calculateFuselageMassRaymer(aircraft);
+			_mass = FuselageWeightCalc.calculateFuselageMassRaymer(aircraft);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 		
 		case SADRAY : { 
 			_methodsList.add(method);
-			_mass = FuselageWeightsCalc.calculateFuselageMassSadray(aircraft);
+			_mass = FuselageWeightCalc.calculateFuselageMassSadray(aircraft);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 		 
 		case KROO : { 
 			_methodsList.add(method);
-			_mass = FuselageWeightsCalc.calculateFuselageMassKroo(aircraft, operatingConditions);
+			_mass = FuselageWeightCalc.calculateFuselageMassKroo(aircraft, operatingConditions);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 		
 		case TORENBEEK_2013 : {
 			_methodsList.add(method);
-			_mass = FuselageWeightsCalc.calculateFuselageMassTorenbeek2013(aircraft);
+			_mass = FuselageWeightCalc.calculateFuselageMassTorenbeek2013(aircraft);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
 		case TORENBEEK_1976 : { 
 			_methodsList.add(method);
-			_mass = FuselageWeightsCalc.calculateFuselageMassTorenbeek1976(aircraft);
+			_mass = FuselageWeightCalc.calculateFuselageMassTorenbeek1976(aircraft);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 

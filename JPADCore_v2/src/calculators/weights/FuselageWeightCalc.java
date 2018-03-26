@@ -16,7 +16,7 @@ import configuration.enumerations.NacelleMountingPositionEnum;
 import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
-public class FuselageWeightsCalc {
+public class FuselageWeightCalc {
 
 	/* 
 	 * 80 percent difference from true mass for some aircraft 

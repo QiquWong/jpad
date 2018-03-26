@@ -46,7 +46,6 @@ public interface ICabinConfiguration {
 	Amount<Length> getDistanceFromWallEconomyClass();
 	Amount<Length> getDistanceFromWallBusinessClass();
 	Amount<Length> getDistanceFromWallFirstClass();
-	Amount<Mass> getMassFurnishingsAndEquipment(); /* TODO: REMOVE THIS */
 
 	class Builder extends ICabinConfiguration_Builder {
 		public Builder() {

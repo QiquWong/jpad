@@ -1,7 +1,5 @@
 package aircraft.components.cabinconfiguration;
 
-import static java.lang.Math.round;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,14 +16,11 @@ import org.jscience.physics.amount.Amount;
 import aircraft.Aircraft;
 import calculators.balance.CenterOfGravityCalcUtils;
 import configuration.MyConfiguration;
-import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ClassTypeEnum;
-import configuration.enumerations.MethodEnum;
 import configuration.enumerations.RelativePositionEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXMLReaderUtils;
-import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.MyArray;
 
 /**
@@ -72,12 +67,6 @@ public class CabinConfiguration {
 	private List<ClassTypeEnum> _typeList;
 	private List<Map<Integer, Amount<Length>>> _breaksMapList;
 
-	private Map<MethodEnum, Amount<?>> _massMap;
-	private Map<AnalysisTypeEnum, List<MethodEnum>> _methodsMap;
-	private List<MethodEnum> _methodsList;
-	private Double[] _percentDifference;
-	private Amount<Mass> _massFurnishingsAndEquipment, _massEstimatedFurnishingsAndEquipment;
-
 	private Amount<Length> _seatsCG;
 	private List<Amount<Length>> _seatsCoGFrontToRear;
 	private List<Amount<Length>> _seatsCoGRearToFront;
@@ -99,8 +88,8 @@ public class CabinConfiguration {
 		this.setTheCabinConfigurationBuilder(theCabinConfigurationBuilder);
 		
 		this._currentMassList = new ArrayList<>();
-		this.setSeatsCoGFrontToRear(new ArrayList<>());
-		this.setSeatsCoGRearToFront(new ArrayList<>());
+		this._seatsCoGFrontToRear = new ArrayList<>();
+		this._seatsCoGRearToFront = new ArrayList<>();
 		this._currentMassList = new ArrayList<>();
 		this._currentXCoGfrontToRearWindow = new ArrayList<>();
 		this._currentXCoGrearToFrontWindow = new ArrayList<>();
@@ -111,28 +100,23 @@ public class CabinConfiguration {
 		this._currentXCoGfrontToRear = new ArrayList<>();
 		this._currentXCoGrearToFront = new ArrayList<>();
 		
-		this._massMap = new HashMap<>();
-		this._methodsMap = new HashMap<>();
-		this._methodsList = new ArrayList<>();
-		
 		this._breaksMap = new HashMap<>();
-		this.setSeatsBlocksList(new ArrayList<>());
-		this.setPitchList(new ArrayList<>()); 
-		this.setWidthList(new ArrayList<>()); 
-		this.setDistanceFromWallList(new ArrayList<>());
-		this.setNumberOfBreaksList(new ArrayList<>());
-		this.setNumberOfRowsList(new ArrayList<>());
-		this.setNumberOfColumnsList(new ArrayList<>());
-		this.setMissingSeatsRowList(new ArrayList<>());
-		this.setTypeList(new ArrayList<>());
-		this.setBreaksMapList(new ArrayList<>());
+		this._seatsBlocksList = new ArrayList<>();
+		this._pitchList = new ArrayList<>(); 
+		this._widthList = new ArrayList<>(); 
+		this._distanceFromWallList = new ArrayList<>();
+		this._numberOfBreaksList = new ArrayList<>();
+		this._numberOfRowsList = new ArrayList<>();
+		this._numberOfColumnsList = new ArrayList<>();
+		this._missingSeatsRowList = new ArrayList<>();
+		this._typeList = new ArrayList<>();
+		this._breaksMapList = new ArrayList<>();
 		
 		this.calculateDependentVariables();
 	}
 	
 	//------------------------------------------------------------------------------------
 	// METHODS
-	@SuppressWarnings("unchecked")
 	public static CabinConfiguration importFromXML (String pathToXML) {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -356,16 +340,6 @@ public class CabinConfiguration {
 		if(distanceFromWallFirstClassProperty != null)
 			distanceFromWallFirstClass = reader.getXMLAmountLengthByPath("//detailed_data/distance_from_wall_first_class");
 		
-		//---------------------------------------------------------------
-		//REFERENCE MASS
-		Amount<Mass> massFurnishingsAndEquipment = Amount.valueOf(0.0, SI.KILOGRAM);
-		
-		String massFurnishingsAndEquipmentProperty = reader.getXMLPropertyByPath("//reference_masses/mass_furnishings_and_equipment");
-		if(massFurnishingsAndEquipmentProperty != null)
-			massFurnishingsAndEquipment = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//reference_masses/mass_furnishings_and_equipment");
-		else
-			massFurnishingsAndEquipment = Amount.valueOf(0.0, SI.KILOGRAM);
-		
 		CabinConfiguration aircraftConfiguration = new CabinConfiguration(
 				new ICabinConfiguration.Builder()
 				.setId(id)
@@ -395,7 +369,6 @@ public class CabinConfiguration {
 				.setDistanceFromWallEconomyClass(distanceFromWallEconomyClass)
 				.setDistanceFromWallBusinessClass(distanceFromWallBusinessClass)
 				.setDistanceFromWallFirstClass(distanceFromWallFirstClass)
-				.setMassFurnishingsAndEquipment(massFurnishingsAndEquipment)
 				.build()
 				);
 		
@@ -572,39 +545,6 @@ public class CabinConfiguration {
 
 	}
 
-	public void calculateMass(Aircraft aircraft, MethodEnum method) {
-		calculateMassFurnishings(aircraft, method);
-	}
-
-	public void calculateMassFurnishings(Aircraft aircraft,	MethodEnum method) {
-		switch (method) {
-		case TORENBEEK_2013: { // page 257 Torenbeek 2013
-
-			_massFurnishingsAndEquipment = Amount.valueOf(
-					(12
-							* aircraft.getFuselage().getFuselageLength().getEstimatedValue()
-							* aircraft.getFuselage().getEquivalentDiameterCylinderGM().getEstimatedValue() 
-							* ( 3
-									* aircraft.getFuselage().getEquivalentDiameterCylinderGM().getEstimatedValue() 
-									+ 0.5 * aircraft.getFuselage().getDeckNumber() + 1) + 3500) /
-					AtmosphereCalc.g0.getEstimatedValue(),
-					SI.KILOGRAM);
-
-			_methodsList.add(method);
-			_massMap.put(method, Amount.valueOf(
-					round(_massFurnishingsAndEquipment.getEstimatedValue()), SI.KILOGRAM));
-		}
-
-		default: {} break;
-
-		}
-
-		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
-		_percentDifference = new Double[_massMap.size()];
-
-		_massEstimatedFurnishingsAndEquipment = _massFurnishingsAndEquipment;
-	}
-	
 	@Override
 	public String toString() {
 
@@ -653,8 +593,6 @@ public class CabinConfiguration {
 		.append("\tDistance from wall economy class: " + getTheCabinConfigurationBuilder().getDistanceFromWallEconomyClass() + "\n")
 		.append("\tDistance from wall business class: " + getTheCabinConfigurationBuilder().getDistanceFromWallBusinessClass() + "\n")
 		.append("\tDistance from wall first class: " + getTheCabinConfigurationBuilder().getDistanceFromWallFirstClass() + "\n")
-		.append("\t.....................................\n")
-		.append("\tReference mass of furnishings and equipments: " + getTheCabinConfigurationBuilder().getMassFurnishingsAndEquipment() + "\n")
 		.append("\t.....................................\n");
 
 		return sb.toString();
@@ -893,14 +831,6 @@ public class CabinConfiguration {
 	
 	public void setDistanceFromWallFirstClass (Amount<Length> distanceFromWallFirstClass) {
 		setTheCabinConfigurationBuilder(ICabinConfiguration.Builder.from(_theCabinConfigurationBuilder).setDistanceFromWallFirstClass(distanceFromWallFirstClass).build());
-	}
-	
-	public Amount<Mass> getMassFurnishingsAndEquipmentReference(){
-		return _theCabinConfigurationBuilder.getMassFurnishingsAndEquipment();
-	}
-	
-	public void setMassFurnishingsAndEquipmentReference (Amount<Mass> massFurnishingsAndEquipmentReference) {
-		setTheCabinConfigurationBuilder(ICabinConfiguration.Builder.from(_theCabinConfigurationBuilder).setMassFurnishingsAndEquipment(massFurnishingsAndEquipmentReference).build());
 	}
 	
 	public List<Amount<Mass>> getCurrentMassList() {

@@ -6201,34 +6201,6 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getTextFieldDistanceFromWallFirst().setText("0.0");
 				theController.getCabinConfigurationDistanceFromWallFirstUnitChoiceBox().getSelectionModel().select(0);
 			}
-			
-			//---------------------------------------------------------------------------------
-			// MASS FURNISHINGS AND EQUIPMENT:
-			if(Main.getTheAircraft().getCabinConfiguration().getMassFurnishingsAndEquipmentReference() != null) {
-				
-				theController.getTextFieldMassFurnishingsAndEquipment().setText(
-						String.valueOf(
-								Main.getTheAircraft()
-								.getCabinConfiguration()
-								.getMassFurnishingsAndEquipmentReference()
-								.getEstimatedValue()
-								)
-						);
-				
-				if(Main.getTheAircraft()
-						.getCabinConfiguration()
-						.getMassFurnishingsAndEquipmentReference().getUnit().toString().equalsIgnoreCase("kg"))
-					theController.getCabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox().getSelectionModel().select(0);
-				else if(Main.getTheAircraft()
-						.getCabinConfiguration()
-						.getMassFurnishingsAndEquipmentReference().getUnit().toString().equalsIgnoreCase("lb"))
-					theController.getCabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox().getSelectionModel().select(1);
-				
-			}
-			else {
-				theController.getTextFieldMassFurnishingsAndEquipment().setText("0.0");
-				theController.getCabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox().getSelectionModel().select(0);
-			}
 		}
 	}
 	

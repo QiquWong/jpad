@@ -1446,14 +1446,14 @@ public class ACWeightsManager {
 			dataListSystems.add(new Object[] {" "});
 			dataListSystems.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
 			int indexSystems=0;
-			for(MethodEnum methods : _theAircraft.getSystems().getMassMap().keySet()) {
-				if(_theAircraft.getSystems().getMassMap().get(methods) != null) 
+			for(MethodEnum methods : _theAircraft.getSystems().getTheWeightManager().getMassMap().keySet()) {
+				if(_theAircraft.getSystems().getTheWeightManager().getMassMap().get(methods) != null) 
 					dataListSystems.add(
 							new Object[] {
 									methods.toString(),
 									"kg",
-									_theAircraft.getSystems().getMassMap().get(methods).getEstimatedValue(),
-									_theAircraft.getSystems().getPercentDifference()[indexSystems]
+									_theAircraft.getSystems().getTheWeightManager().getMassMap().get(methods).getEstimatedValue(),
+									_theAircraft.getSystems().getTheWeightManager().getPercentDifference()[indexSystems]
 							}
 							);
 				indexSystems++;
@@ -1461,10 +1461,10 @@ public class ACWeightsManager {
 			dataListSystems.add(new Object[] 
 					{"Estimated Mass ",
 							"kg",
-							_theAircraft.getSystems().getOverallMass().getEstimatedValue(),
-							_theAircraft.getSystems().getOverallMass().
-								minus(_theAircraft.getSystems().getReferenceMass()).
-								divide(_theAircraft.getSystems().getReferenceMass()).
+							_theAircraft.getSystems().getTheWeightManager().getMassEstimated().getEstimatedValue(),
+							_theAircraft.getSystems().getTheWeightManager().getMassEstimated().
+								minus(_theAircraft.getSystems().getTheWeightManager().getMassReference()).
+								divide(_theAircraft.getSystems().getTheWeightManager().getMassReference()).
 								getEstimatedValue()*100
 					});
 
@@ -1592,17 +1592,11 @@ public class ACWeightsManager {
 				values.add(powerPlantMass/maxTakeOffMass*100.0);
 			}
 		if(_theAircraft.getSystems() != null)
-			if(_theAircraft.getSystems().getOverallMass() != null) {
+			if(_theAircraft.getSystems().getTheWeightManager().getMassEstimated() != null) {
 				labels.add("Systems");
-				systemsMass = _theAircraft.getSystems().getOverallMass().doubleValue(SI.KILOGRAM);
+				systemsMass = _theAircraft.getSystems().getTheWeightManager().getMassEstimated().doubleValue(SI.KILOGRAM);
 				values.add(systemsMass/maxTakeOffMass*100.0);
 			}
-//		if(_theAircraft.getCabinConfiguration() != null)
-//			if(_theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment() != null) {
-//				labels.add("Furnishings and Equipment");
-//				cabinConfigurationMass = _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().doubleValue(SI.KILOGRAM);
-//				values.add(cabinConfigurationMass/maxTakeOffMass*100.0);
-//			}
 		if(_theAircraft.getTheAnalysisManager().getTheWeights().getOperatingItemMass() != null) {
 			labels.add("Operating Items");
 			operatingItemMass = _theAircraft.getTheAnalysisManager().getTheWeights().getOperatingItemMass().doubleValue(SI.KILOGRAM);
@@ -1811,15 +1805,12 @@ public class ACWeightsManager {
 	private void calculateManufacturerEmptyMass(Aircraft aircraft) {
 		
 		if(aircraft.getSystems() != null)
-			aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_1982);
-		if(aircraft.getCabinConfiguration() != null)
-			aircraft.getCabinConfiguration().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
+			aircraft.getSystems().getTheWeightManager().calculateMass(aircraft, MethodEnum.TORENBEEK_1982);
 		
 		_manufacturerEmptyMass = 
 				aircraft.getPowerPlant().getTotalMass().to(SI.KILOGRAM)
 				.plus(_structuralMass.to(SI.KILOGRAM))
-				.plus(aircraft.getSystems().getOverallMass());
-//				.plus(aircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment());
+				.plus(aircraft.getSystems().getTheWeightManager().getMassEstimated());
 	}
 	
 	private void calculateOperatingEmptyMass(Aircraft aircraft) {
@@ -2172,7 +2163,7 @@ public class ACWeightsManager {
 		if(aircraft.getSystems() != null)
 			if(this._systemsReferenceMass == null) {
 				_systemsReferenceMass = _maximumZeroFuelMass.times(.04);
-				aircraft.getSystems().setReferenceMass(_systemsReferenceMass);
+				aircraft.getSystems().getTheWeightManager().setMassReference(_systemsReferenceMass);
 			}
 		
 	}

@@ -2791,11 +2791,6 @@ public class JPADStaticWriteUtils {
 		org.w3c.dom.Element referenceMassElement = doc.createElement("reference_masses");
 		cabinConfigurationElement.appendChild(referenceMassElement);
 		
-		// reference_masses - mass_furnishings_and_equipment
-		JPADStaticWriteUtils.writeSingleNode("mass_furnishings_and_equipment", 
-				aircraft.getCabinConfiguration().getMassFurnishingsAndEquipmentReference(), 
-				referenceMassElement, doc);
-		
 	} 
 	
 	private static void makeXmlTreeFuselage(Aircraft aircraft, Document doc) {

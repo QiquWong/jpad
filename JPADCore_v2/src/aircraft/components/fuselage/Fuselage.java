@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
 
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import analyses.fuselage.FuselageBalanceManager;
-import analyses.fuselage.FuselageWeightsManager;
+import analyses.fuselage.FuselageWeightManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.FuselageAdjustCriteriaEnum;
 import configuration.enumerations.WindshieldTypeEnum;
@@ -57,7 +57,7 @@ public class Fuselage {
 	private Amount<Length> yApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
 	private Amount<Length> zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
 	
-	private FuselageWeightsManager theWeightManger;
+	private FuselageWeightManager theWeightManger;
 	private FuselageBalanceManager theBalanceManager;
 	
 	// calculate geometry parameters
@@ -139,7 +139,7 @@ public class Fuselage {
 	public Fuselage (IFuselage theFuselageCreatorInterface) {
 		
 		this.theFuselageCreatorInterface = theFuselageCreatorInterface;
-		this.theWeightManger = new FuselageWeightsManager();
+		this.theWeightManger = new FuselageWeightManager();
 		this.theBalanceManager= new FuselageBalanceManager();
 		calculateGeometry();
 		
@@ -2257,11 +2257,11 @@ public class Fuselage {
 		return theFuselageCreatorInterface;
 	}
 	
-	public FuselageWeightsManager getTheWeight() {
+	public FuselageWeightManager getTheWeight() {
 		return theWeightManger;
 	}
 
-	public void setTheWeight(FuselageWeightsManager _theWeight) {
+	public void setTheWeight(FuselageWeightManager _theWeight) {
 		this.theWeightManger = _theWeight;
 	}
 
