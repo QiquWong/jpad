@@ -2804,8 +2804,8 @@ public class JPADStaticWriteUtils {
 		
 		// fuselage
 		org.w3c.dom.Element fuselageElement = createXMLElementWithAttributes(doc, "fuselage", 
-				Tuple.of("id", aircraft.getFuselage().getFuselageCreator().getId()),
-				Tuple.of("pressurized", aircraft.getFuselage().getFuselageCreator().getPressurized().toString())
+				Tuple.of("id", aircraft.getFuselage().getId()),
+				Tuple.of("pressurized", aircraft.getFuselage().getPressurized().toString())
 				);
 		rootElement.appendChild(fuselageElement);
 		
@@ -2815,17 +2815,17 @@ public class JPADStaticWriteUtils {
 
 		// global_data - deck_number
 		JPADStaticWriteUtils.writeSingleNode("deck_number", 
-				aircraft.getFuselage().getFuselageCreator().getDeckNumber(), 
+				aircraft.getFuselage().getDeckNumber(), 
 				globalDataElement, doc);
 		
 		// global_data - length
 		JPADStaticWriteUtils.writeSingleNode("length", 
-				aircraft.getFuselage().getFuselageCreator().getFuselageLength(), 
+				aircraft.getFuselage().getFuselageLength(), 
 				globalDataElement, doc);
 		
 		// global_data - roughness
 		JPADStaticWriteUtils.writeSingleNode("roughness", 
-				aircraft.getFuselage().getFuselageCreator().getRoughness(), 
+				aircraft.getFuselage().getRoughness(), 
 				globalDataElement, doc);
 
 		// nose_trunk
@@ -2834,52 +2834,52 @@ public class JPADStaticWriteUtils {
 		
 		// nose_trunk - length_ratio
 		JPADStaticWriteUtils.writeSingleNode("length_ratio", 
-				aircraft.getFuselage().getFuselageCreator().getNoseLengthRatio(), 
+				aircraft.getFuselage().getNoseLengthRatio(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - fineness_ratio
 		JPADStaticWriteUtils.writeSingleNode("fineness_ratio", 
-				aircraft.getFuselage().getFuselageCreator().getNoseFinenessRatio(), 
+				aircraft.getFuselage().getNoseFinenessRatio(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - tip_height_offset
 		JPADStaticWriteUtils.writeSingleNode("tip_height_offset", 
-				aircraft.getFuselage().getFuselageCreator().getNoseTipOffset(), 
+				aircraft.getFuselage().getNoseTipOffset(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - dx_cap_percent
 		JPADStaticWriteUtils.writeSingleNode("dx_cap_percent", 
-				aircraft.getFuselage().getFuselageCreator().getNoseCapOffsetPercent(), 
+				aircraft.getFuselage().getNoseCapOffsetPercent(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - windshield_type
 		JPADStaticWriteUtils.writeSingleNode("windshield_type", 
-				aircraft.getFuselage().getFuselageCreator().getWindshieldType(), 
+				aircraft.getFuselage().getWindshieldType(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - windshield_width
 		JPADStaticWriteUtils.writeSingleNode("windshield_width", 
-				aircraft.getFuselage().getFuselageCreator().getWindshieldWidth(), 
+				aircraft.getFuselage().getWindshieldWidth(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - windshield_height
 		JPADStaticWriteUtils.writeSingleNode("windshield_height", 
-				aircraft.getFuselage().getFuselageCreator().getWindshieldHeight(), 
+				aircraft.getFuselage().getWindshieldHeight(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - mid_section_lower_to_total_height_ratio
 		JPADStaticWriteUtils.writeSingleNode("mid_section_lower_to_total_height_ratio", 
-				aircraft.getFuselage().getFuselageCreator().getSectionNoseMidLowerToTotalHeightRatio(), 
+				aircraft.getFuselage().getSectionNoseMidLowerToTotalHeightRatio(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - mid_section_rho_upper
 		JPADStaticWriteUtils.writeSingleNode("mid_section_rho_upper", 
-				aircraft.getFuselage().getFuselageCreator().getSectionMidNoseRhoUpper(), 
+				aircraft.getFuselage().getSectionMidNoseRhoUpper(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - mid_section_rho_lower
 		JPADStaticWriteUtils.writeSingleNode("mid_section_rho_lower", 
-				aircraft.getFuselage().getFuselageCreator().getSectionMidNoseRhoLower(), 
+				aircraft.getFuselage().getSectionMidNoseRhoLower(), 
 				noseTrunkElement, doc);
 		
 		// cylindrical_trunk
@@ -2888,37 +2888,37 @@ public class JPADStaticWriteUtils {
 		
 		// cylindrical_trunk - length_ratio
 		JPADStaticWriteUtils.writeSingleNode("length_ratio", 
-				aircraft.getFuselage().getFuselageCreator().getCylinderLengthRatio(), 
+				aircraft.getFuselage().getCylinderLengthRatio(), 
 				cylindricalTrunkElement, doc);
 		
 		// cylindrical_trunk - section_width
 		JPADStaticWriteUtils.writeSingleNode("section_width", 
-				aircraft.getFuselage().getFuselageCreator().getSectionCylinderWidth(), 
+				aircraft.getFuselage().getSectionCylinderWidth(), 
 				cylindricalTrunkElement, doc);
 		
 		// cylindrical_trunk - section_height
 		JPADStaticWriteUtils.writeSingleNode("section_height", 
-				aircraft.getFuselage().getFuselageCreator().getSectionCylinderHeight(), 
+				aircraft.getFuselage().getSectionCylinderHeight(), 
 				cylindricalTrunkElement, doc);
 		
 		// cylindrical_trunk - height_from_ground
 		JPADStaticWriteUtils.writeSingleNode("height_from_ground", 
-				aircraft.getFuselage().getFuselageCreator().getHeightFromGround(), 
+				aircraft.getFuselage().getHeightFromGround(), 
 				cylindricalTrunkElement, doc);
 		
 		// cylindrical_trunk - section_lower_to_total_height_ratio
 		JPADStaticWriteUtils.writeSingleNode("section_lower_to_total_height_ratio", 
-				aircraft.getFuselage().getFuselageCreator().getSectionCylinderLowerToTotalHeightRatio(), 
+				aircraft.getFuselage().getSectionCylinderLowerToTotalHeightRatio(), 
 				cylindricalTrunkElement, doc);
 		
 		// cylindrical_trunk - section_rho_upper
 		JPADStaticWriteUtils.writeSingleNode("section_rho_upper", 
-				aircraft.getFuselage().getFuselageCreator().getSectionCylinderRhoUpper(), 
+				aircraft.getFuselage().getSectionCylinderRhoUpper(), 
 				cylindricalTrunkElement, doc);
 		
 		// cylindrical_trunk - section_rho_lower
 		JPADStaticWriteUtils.writeSingleNode("section_rho_lower", 
-				aircraft.getFuselage().getFuselageCreator().getSectionCylinderRhoLower(), 
+				aircraft.getFuselage().getSectionCylinderRhoLower(), 
 				cylindricalTrunkElement, doc);
 		
 		// tail_trunk
@@ -2927,39 +2927,39 @@ public class JPADStaticWriteUtils {
 		
 		// tail_trunk - tip_height_offset
 		JPADStaticWriteUtils.writeSingleNode("tip_height_offset", 
-				aircraft.getFuselage().getFuselageCreator().getTailTipOffset(), 
+				aircraft.getFuselage().getTailTipOffset(), 
 				tailTrunkElement, doc);
 		
 		// tail_trunk - dx_cap_percent
 		JPADStaticWriteUtils.writeSingleNode("dx_cap_percent", 
-				aircraft.getFuselage().getFuselageCreator().getTailCapOffsetPercent(), 
+				aircraft.getFuselage().getTailCapOffsetPercent(), 
 				tailTrunkElement, doc);
 		
 		// tail_trunk - mid_section_lower_to_total_height_ratio
 		JPADStaticWriteUtils.writeSingleNode("mid_section_lower_to_total_height_ratio", 
-				aircraft.getFuselage().getFuselageCreator().getSectionTailMidLowerToTotalHeightRatio(), 
+				aircraft.getFuselage().getSectionTailMidLowerToTotalHeightRatio(), 
 				tailTrunkElement, doc);
 		
 		// tail_trunk - mid_section_rho_upper
 		JPADStaticWriteUtils.writeSingleNode("mid_section_rho_upper", 
-				aircraft.getFuselage().getFuselageCreator().getSectionMidTailRhoUpper(), 
+				aircraft.getFuselage().getSectionMidTailRhoUpper(), 
 				tailTrunkElement, doc);
 		
 		// tail_trunk - mid_section_rho_lower
 		JPADStaticWriteUtils.writeSingleNode("mid_section_rho_lower", 
-				aircraft.getFuselage().getFuselageCreator().getSectionMidTailRhoLower(), 
+				aircraft.getFuselage().getSectionMidTailRhoLower(), 
 				tailTrunkElement, doc);
 		
-		if(!aircraft.getFuselage().getFuselageCreator().getSpoilers().isEmpty()) {
+		if(!aircraft.getFuselage().getSpoilers().isEmpty()) {
 			
 			// spoilers
 			org.w3c.dom.Element spoilersElement = doc.createElement("spoilers");
 			fuselageElement.appendChild(spoilersElement);
 			
-			aircraft.getFuselage().getFuselageCreator().getSpoilers().stream().forEach(
+			aircraft.getFuselage().getSpoilers().stream().forEach(
 					sp -> {
 						
-						int spoilerIndex = aircraft.getFuselage().getFuselageCreator().getSpoilers().indexOf(sp);
+						int spoilerIndex = aircraft.getFuselage().getSpoilers().indexOf(sp);
 						
 						// spoiler
 						org.w3c.dom.Element spoilersInnerElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
@@ -2971,32 +2971,32 @@ public class JPADStaticWriteUtils {
 						
 						// spoiler - inner_station_spanwise_position
 						JPADStaticWriteUtils.writeSingleNode("inner_station_spanwise_position", 
-								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getInnerStationSpanwisePosition(), 
+								aircraft.getFuselage().getSpoilers().get(spoilerIndex).getInnerStationSpanwisePosition(), 
 								spoilersInnerElement, doc);
 						
 						// spoiler - outer_station_spanwise_position
 						JPADStaticWriteUtils.writeSingleNode("outer_station_spanwise_position", 
-								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getOuterStationSpanwisePosition(), 
+								aircraft.getFuselage().getSpoilers().get(spoilerIndex).getOuterStationSpanwisePosition(), 
 								spoilersInnerElement, doc);
 						
 						// spoiler - inner_station_chordwise_position
 						JPADStaticWriteUtils.writeSingleNode("inner_station_chordwise_position", 
-								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getInnerStationChordwisePosition(), 
+								aircraft.getFuselage().getSpoilers().get(spoilerIndex).getInnerStationChordwisePosition(), 
 								spoilersInnerElement, doc);
 						
 						// spoiler - outer_station_chordwise_position
 						JPADStaticWriteUtils.writeSingleNode("outer_station_chordwise_position", 
-								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getOuterStationChordwisePosition(), 
+								aircraft.getFuselage().getSpoilers().get(spoilerIndex).getOuterStationChordwisePosition(), 
 								spoilersInnerElement, doc);
 						
 						// spoiler - min_deflection
 						JPADStaticWriteUtils.writeSingleNode("min_deflection", 
-								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getMinimumDeflection(), 
+								aircraft.getFuselage().getSpoilers().get(spoilerIndex).getMinimumDeflection(), 
 								spoilersInnerElement, doc);
 						
 						// spoiler - max_deflection
 						JPADStaticWriteUtils.writeSingleNode("max_deflection", 
-								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getMaximumDeflection(), 
+								aircraft.getFuselage().getSpoilers().get(spoilerIndex).getMaximumDeflection(), 
 								spoilersInnerElement, doc);
 						
 					});

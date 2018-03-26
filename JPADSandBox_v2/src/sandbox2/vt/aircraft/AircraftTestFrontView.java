@@ -91,9 +91,9 @@ public class AircraftTestFrontView extends Application {
 		// get data vectors from fuselage discretization
 		//--------------------------------------------------
 		// section upper curve
-		List<Amount<Length>> vY1Upper = fuselage.getFuselageCreator().getSectionUpperCurveAmountY();
+		List<Amount<Length>> vY1Upper = fuselage.getSectionUpperCurveAmountY();
 		int nY1Upper = vY1Upper.size();
-		List<Amount<Length>> vZ1Upper = fuselage.getFuselageCreator().getSectionUpperCurveAmountZ();
+		List<Amount<Length>> vZ1Upper = fuselage.getSectionUpperCurveAmountZ();
 
 		Double[][] dataSectionYZUpperCurve = new Double[nY1Upper][2];
 		IntStream.range(0, nY1Upper)
@@ -103,9 +103,9 @@ public class AircraftTestFrontView extends Application {
 		});
 
 		// section lower curve
-		List<Amount<Length>> vY2Lower = fuselage.getFuselageCreator().getSectionLowerCurveAmountY();
+		List<Amount<Length>> vY2Lower = fuselage.getSectionLowerCurveAmountY();
 		int nY2Lower = vY2Lower.size();
-		List<Amount<Length>> vZ2Lower = fuselage.getFuselageCreator().getSectionLowerCurveAmountZ();
+		List<Amount<Length>> vZ2Lower = fuselage.getSectionLowerCurveAmountZ();
 
 		Double[][] dataSectionYZLowerCurve = new Double[nY2Lower][2];
 		IntStream.range(0, nY2Lower)

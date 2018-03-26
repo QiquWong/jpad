@@ -39,9 +39,9 @@ public class EngineBalanceManager extends BalanceManager{
 				_theEngine.getYApexConstructionAxes(), 
 				_theEngine.getZApexConstructionAxes());
 		
-		_cg.set_xLRFref(_theEngine.getLength().divide(2));
-		_cg.set_yLRFref(Amount.valueOf(0., SI.METER));
-		_cg.set_zLRFref(Amount.valueOf(0., SI.METER));
+		_cg.setXLRFref(_theEngine.getLength().divide(2));
+		_cg.setYLRFref(Amount.valueOf(0., SI.METER));
+		_cg.setZLRFref(Amount.valueOf(0., SI.METER));
 	}
 	
 	@Override

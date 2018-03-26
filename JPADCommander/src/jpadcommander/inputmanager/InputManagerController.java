@@ -30,8 +30,7 @@ import aircraft.components.LandingGears;
 import aircraft.components.cabinconfiguration.CabinConfiguration;
 import aircraft.components.cabinconfiguration.ICabinConfiguration;
 import aircraft.components.fuselage.Fuselage;
-import aircraft.components.fuselage.creator.FuselageCreator;
-import aircraft.components.fuselage.creator.IFuselageCreator;
+import aircraft.components.fuselage.IFuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.ISpoilerCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
@@ -6164,52 +6163,52 @@ public class InputManagerController {
 
 			//.................................................................................................
 			// SETTING NEW MEASURE DATA TO TEXTFIELDS ...
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength() != null) {
+			if (Main.getTheAircraft().getFuselage().getFuselageLength() != null) {
 				textFieldFuselageLength.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().getEstimatedValue())
+						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageLength().getEstimatedValue())
 						);
 
-				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength()
+				if (Main.getTheAircraft().getFuselage().getFuselageLength()
 						.getUnit().toString().equalsIgnoreCase("m"))
 					fuselageLengthUnitChoiceBox.getSelectionModel().select(0);
-				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength()
+				else if (Main.getTheAircraft().getFuselage().getFuselageLength()
 						.getUnit().toString().equalsIgnoreCase("ft"))
 					fuselageLengthUnitChoiceBox.getSelectionModel().select(1);
 
 			}
 
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getNoseLengthRatio() != null) 
+			if (Main.getTheAircraft().getFuselage().getNoseLengthRatio() != null) 
 				textFieldFuselageNoseLengthRatio.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getNoseLengthRatio())
+						String.valueOf(Main.getTheAircraft().getFuselage().getNoseLengthRatio())
 						);
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getCylinderLengthRatio() != null) 
+			if (Main.getTheAircraft().getFuselage().getCylinderLengthRatio() != null) 
 				textFieldFuselageCylinderLengthRatio.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getCylinderLengthRatio())
+						String.valueOf(Main.getTheAircraft().getFuselage().getCylinderLengthRatio())
 						);
 
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight() != null) {
+			if (Main.getTheAircraft().getFuselage().getSectionCylinderHeight() != null) {
 				textFieldFuselageCylinderSectionHeight.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().getEstimatedValue())
+						String.valueOf(Main.getTheAircraft().getFuselage().getSectionCylinderHeight().getEstimatedValue())
 						);
 
-				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight()
+				if (Main.getTheAircraft().getFuselage().getSectionCylinderHeight()
 						.getUnit().toString().equalsIgnoreCase("m"))
 					fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().select(0);
-				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight()
+				else if (Main.getTheAircraft().getFuselage().getSectionCylinderHeight()
 						.getUnit().toString().equalsIgnoreCase("ft"))
 					fuselageCylinderSectionHeightUnitChoiceBox.getSelectionModel().select(1);
 
 			}
 
-			if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth() != null) {
+			if (Main.getTheAircraft().getFuselage().getSectionCylinderWidth() != null) {
 				textFieldFuselageCylinderSectionWidth.setText(
-						String.valueOf(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().getEstimatedValue())
+						String.valueOf(Main.getTheAircraft().getFuselage().getSectionCylinderWidth().getEstimatedValue())
 						);
 
-				if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth()
+				if (Main.getTheAircraft().getFuselage().getSectionCylinderWidth()
 						.getUnit().toString().equalsIgnoreCase("m"))
 					fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().select(0);
-				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth()
+				else if (Main.getTheAircraft().getFuselage().getSectionCylinderWidth()
 						.getUnit().toString().equalsIgnoreCase("ft"))
 					fuselageCylinderSectionWidthUnitChoiceBox.getSelectionModel().select(1);
 
@@ -6268,7 +6267,7 @@ public class InputManagerController {
 				if (Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSurfacePlanform()
 						.getUnit().toString().equalsIgnoreCase("m²"))
 					equivalentWingAreaUnitChoiceBox.getSelectionModel().select(0);
-				else if (Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength()
+				else if (Main.getTheAircraft().getFuselage().getFuselageLength()
 						.getUnit().toString().equalsIgnoreCase("ft²"))
 					equivalentWingAreaUnitChoiceBox.getSelectionModel().select(1);
 
@@ -6796,7 +6795,7 @@ public class InputManagerController {
 								@Override
 								public void run() {
 									textAreaFuselageConsoleOutput.setText(
-											Main.getTheAircraft().getFuselage().getFuselageCreator().toString()
+											Main.getTheAircraft().getFuselage().toString()
 											);
 									
 								}
@@ -8053,8 +8052,8 @@ public class InputManagerController {
 					
 		}
 				
-		IFuselageCreator.Builder.from(
-				Main.getTheAircraft().getFuselage().getFuselageCreator().getTheFuselageCreatorInterface()
+		IFuselage.Builder.from(
+				Main.getTheAircraft().getFuselage().getTheFuselageCreatorInterface()
 				)
 		// GLOBAL DATA
 		.setId("Fuselage Creator - " + Main.getTheAircraft().getId())
@@ -8136,7 +8135,7 @@ public class InputManagerController {
 		.build();
 		
 		
-		Main.getTheAircraft().getFuselage().getFuselageCreator().calculateGeometry();
+		Main.getTheAircraft().getFuselage().calculateGeometry();
 	}
 	
 	@SuppressWarnings({ "unchecked" })
@@ -10414,10 +10413,9 @@ public class InputManagerController {
 						Unit.valueOf(fuselageZPositionUnit)
 						);
 
-				Main.getTheAircraft().setFuselage(
-						new Fuselage(FuselageCreator.importFromXML(fuselageFilePath.getAbsolutePath()))
+				Main.getTheAircraft().setFuselage(Fuselage.importFromXML(fuselageFilePath.getAbsolutePath())
 								);
-				Main.getTheAircraft().getFuselage().getFuselageCreator().calculateGeometry();
+				Main.getTheAircraft().getFuselage().calculateGeometry();
 				Main.getTheAircraft().getFuselage().setXApexConstructionAxes(fuselageXApex);
 				Main.getTheAircraft().getFuselage().setYApexConstructionAxes(fuselageYApex);
 				Main.getTheAircraft().getFuselage().setZApexConstructionAxes(fuselageZApex);

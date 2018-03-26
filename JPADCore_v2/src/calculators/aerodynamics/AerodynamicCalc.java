@@ -334,7 +334,7 @@ public class AerodynamicCalc {
 
 		kef = 1 - (2*
 				(Math.pow(
-						theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(
+						theFuselage.getSectionCylinderHeight().divide(
 								theWing.getLiftingSurfaceCreator().getSpan()
 								).getEstimatedValue(), 2)
 						)

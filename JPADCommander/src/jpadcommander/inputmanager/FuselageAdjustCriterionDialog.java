@@ -69,7 +69,7 @@ public class FuselageAdjustCriterionDialog extends Stage {
         					+ String.format(
         							Locale.ROOT,
         							"%.02f",
-        							Main.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER)
+        							Main.getTheAircraft().getFuselage().getFuselageLength().doubleValue(SI.METER)
         							)
         					+ " m"
         			);
@@ -86,7 +86,7 @@ public class FuselageAdjustCriterionDialog extends Stage {
             				+ String.format(
             						Locale.ROOT,
             						"%.02f",
-            						Main.getTheAircraft().getFuselage().getFuselageCreator().getCylinderLength().doubleValue(SI.METER)
+            						Main.getTheAircraft().getFuselage().getCylinderLength().doubleValue(SI.METER)
             						)
             				+ " m"
             		);
@@ -105,7 +105,7 @@ public class FuselageAdjustCriterionDialog extends Stage {
             				+ String.format(
             						Locale.ROOT,
             						"%.02f",
-            						Main.getTheAircraft().getFuselage().getFuselageCreator().getNoseLength().doubleValue(SI.METER)
+            						Main.getTheAircraft().getFuselage().getNoseLength().doubleValue(SI.METER)
             						)
             				+ " m"
             		);
@@ -124,7 +124,7 @@ public class FuselageAdjustCriterionDialog extends Stage {
             		+ String.format(
             						Locale.ROOT, 
             						"%.02f",
-            						Main.getTheAircraft().getFuselage().getFuselageCreator().getTailLength().doubleValue(SI.METER)
+            						Main.getTheAircraft().getFuselage().getTailLength().doubleValue(SI.METER)
             						)
             		+ " m"
             		);
@@ -140,7 +140,7 @@ public class FuselageAdjustCriterionDialog extends Stage {
             		"Current value: "  
             				+ String.format(
             						Locale.ROOT, 
-            						"%.02f", Main.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
+            						"%.02f", Main.getTheAircraft().getFuselage().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
             						)
             				+ " m"
             		);
@@ -153,52 +153,52 @@ public class FuselageAdjustCriterionDialog extends Stage {
         	public void handle(ActionEvent action) {
         	
         		if (adjustCriterion.equalsIgnoreCase("MODIFY TOTAL LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS"))
-        			Main.getTheAircraft().getFuselage().getFuselageCreator().adjustDimensions(
+        			Main.getTheAircraft().getFuselage().adjustDimensions(
         					Amount.valueOf(Double.valueOf(fuselageLengthField.getText()), SI.METER),
         					FuselageAdjustCriteriaEnum.ADJ_TOT_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS
         					);
         		else if (adjustCriterion.equalsIgnoreCase("MODIFY TOTAL LENGTH, CONSTANT FINENESS-RATIOS"))
-        			Main.getTheAircraft().getFuselage().getFuselageCreator().adjustDimensions(
+        			Main.getTheAircraft().getFuselage().adjustDimensions(
         					Amount.valueOf(Double.valueOf(fuselageLengthField.getText()), SI.METER),
         					FuselageAdjustCriteriaEnum.ADJ_TOT_LENGTH_CONST_FINENESS_RATIOS
         					);
         		else if (adjustCriterion.equalsIgnoreCase("MODIFY CYLINDER LENGTH (streching)"))
-        			Main.getTheAircraft().getFuselage().getFuselageCreator().adjustDimensions(
+        			Main.getTheAircraft().getFuselage().adjustDimensions(
         					Amount.valueOf(Double.valueOf(fuselageCylinderLengthField.getText()), SI.METER),
         					FuselageAdjustCriteriaEnum.ADJ_CYL_LENGTH
         					);
         		else if (adjustCriterion.equalsIgnoreCase("MODIFY NOSE LENGTH, CONSTANT TOTAL LENGTH AND DIAMETERS"))
-        			Main.getTheAircraft().getFuselage().getFuselageCreator().adjustDimensions(
+        			Main.getTheAircraft().getFuselage().adjustDimensions(
         					Amount.valueOf(Double.valueOf(fuselageNoseLengthField.getText()), SI.METER),
         					FuselageAdjustCriteriaEnum.ADJ_NOSE_LENGTH_CONST_TOT_LENGTH_DIAMETERS
         					);
         		else if (adjustCriterion.equalsIgnoreCase("MODIFY NOSE LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS"))
-        			Main.getTheAircraft().getFuselage().getFuselageCreator().adjustDimensions(
+        			Main.getTheAircraft().getFuselage().adjustDimensions(
         					Amount.valueOf(Double.valueOf(fuselageNoseLengthField.getText()), SI.METER),
         					FuselageAdjustCriteriaEnum.ADJ_NOSE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS
         					);
         		else if (adjustCriterion.equalsIgnoreCase("MODIFY NOSE LENGTH, CONSTANT FINENESS-RATIOS"))
-        			Main.getTheAircraft().getFuselage().getFuselageCreator().adjustDimensions(
+        			Main.getTheAircraft().getFuselage().adjustDimensions(
         					Amount.valueOf(Double.valueOf(fuselageNoseLengthField.getText()), SI.METER),
         					FuselageAdjustCriteriaEnum.ADJ_NOSE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS
         					);
         		else if (adjustCriterion.equalsIgnoreCase("MODIFY TAILCONE LENGTH, CONSTANT TOTAL LENGTH, DIAMETERS AND NOSE LENGTH RATIO"))
-        			Main.getTheAircraft().getFuselage().getFuselageCreator().adjustDimensions(
+        			Main.getTheAircraft().getFuselage().adjustDimensions(
         					Amount.valueOf(Double.valueOf(fuselageTailLengthField.getText()), SI.METER),
         					FuselageAdjustCriteriaEnum.ADJ_TAILCONE_LENGTH_CONST_TOT_LENGTH_DIAMETERS
         					);
         		else if (adjustCriterion.equalsIgnoreCase("MODIFY TAILCONE LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS"))
-        			Main.getTheAircraft().getFuselage().getFuselageCreator().adjustDimensions(
+        			Main.getTheAircraft().getFuselage().adjustDimensions(
         					Amount.valueOf(Double.valueOf(fuselageTailLengthField.getText()), SI.METER),
         					FuselageAdjustCriteriaEnum.ADJ_TAILCONE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS
         					);
         		else if (adjustCriterion.equalsIgnoreCase("MODIFY TAILCONE LENGTH, CONSTANT FINENESS-RATIOS"))
-        			Main.getTheAircraft().getFuselage().getFuselageCreator().adjustDimensions(
+        			Main.getTheAircraft().getFuselage().adjustDimensions(
         					Amount.valueOf(Double.valueOf(fuselageTailLengthField.getText()), SI.METER),
         					FuselageAdjustCriteriaEnum.ADJ_TAILCONE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS
         					);
         		else if (adjustCriterion.equalsIgnoreCase("MODIFY FUSELAGE DIAMETER, CONSTANT FINENESS-RATIOS"))
-        			Main.getTheAircraft().getFuselage().getFuselageCreator().adjustDimensions(
+        			Main.getTheAircraft().getFuselage().adjustDimensions(
         					Amount.valueOf(Double.valueOf(fuselageDiameterTextField.getText()), SI.METER),
         					FuselageAdjustCriteriaEnum.ADJ_FUS_LENGTH_CONST_FINENESS_RATIOS_VAR_DIAMETERS
         					);

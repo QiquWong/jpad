@@ -16,7 +16,6 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
-import aircraft.components.cabinconfiguration.ICabinConfiguration.Builder;
 import calculators.balance.CenterOfGravityCalcUtils;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -583,11 +582,11 @@ public class CabinConfiguration {
 
 			_massFurnishingsAndEquipment = Amount.valueOf(
 					(12
-							* aircraft.getFuselage().getFuselageCreator().getFuselageLength().getEstimatedValue()
-							* aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 
+							* aircraft.getFuselage().getFuselageLength().getEstimatedValue()
+							* aircraft.getFuselage().getEquivalentDiameterCylinderGM().getEstimatedValue() 
 							* ( 3
-									* aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 
-									+ 0.5 * aircraft.getFuselage().getFuselageCreator().getDeckNumber() + 1) + 3500) /
+									* aircraft.getFuselage().getEquivalentDiameterCylinderGM().getEstimatedValue() 
+									+ 0.5 * aircraft.getFuselage().getDeckNumber() + 1) + 3500) /
 					AtmosphereCalc.g0.getEstimatedValue(),
 					SI.KILOGRAM);
 

@@ -1,4 +1,4 @@
-package aircraft.components.fuselage.creator;
+package aircraft.components.fuselage;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import configuration.enumerations.WindshieldTypeEnum;
 
 @FreeBuilder
-public interface IFuselageCreator {
+public interface IFuselage {
 	
 	String getId();
 	int getDeckNumber();
@@ -45,7 +45,7 @@ public interface IFuselageCreator {
 	
 	List<SpoilerCreator> getSpoilers();
 	
-	class Builder extends IFuselageCreator_Builder  { 
+	class Builder extends IFuselage_Builder  { 
 		 public Builder() {
 			 
 			 

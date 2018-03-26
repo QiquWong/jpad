@@ -17,7 +17,7 @@ import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.fuselage.Fuselage;
-import aircraft.components.fuselage.creator.FuselageCreator;
+import aircraft.components.fuselage.Fuselage;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FoldersEnum;
@@ -95,13 +95,13 @@ public class FuselageAdjustTest extends Application {
 			return;
 		}
 		// ADJUSTING SIDE VIEW
-		fuselage2.getFuselageCreator().adjustDimensions(
-				fuselage2.getFuselageCreator().getTailLength().times(1.2),
+		fuselage2.adjustDimensions(
+				fuselage2.getTailLength().times(1.2),
 				FuselageAdjustCriteriaEnum.ADJ_TAILCONE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS
 				);
 		// ADJUSTING FRONT VIEW
-		fuselage2.getFuselageCreator().adjustSectionShapeParameters(
-				fuselage2.getFuselageCreator().IDX_SECTION_YZ_CYLINDER_1,
+		fuselage2.adjustSectionShapeParameters(
+				fuselage2.IDX_SECTION_YZ_CYLINDER_1,
 				0.8,
 				0.0, 
 				0.0
@@ -112,9 +112,9 @@ public class FuselageAdjustTest extends Application {
 		//--------------------------------------------------
 
 		// upper curve, sideview
-		List<Amount<Length>> vX1Fus1 = fuselage1.getFuselageCreator().getOutlineXZUpperCurveAmountX();
+		List<Amount<Length>> vX1Fus1 = fuselage1.getOutlineXZUpperCurveAmountX();
 		int nX1Fus1 = vX1Fus1.size();
-		List<Amount<Length>> vZ1Fus1 = fuselage1.getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+		List<Amount<Length>> vZ1Fus1 = fuselage1.getOutlineXZUpperCurveAmountZ();
 
 		Double[][] dataOutlineXZUpperCurveFus1 = new Double[nX1Fus1][2];
 		IntStream.range(0, nX1Fus1)
@@ -124,9 +124,9 @@ public class FuselageAdjustTest extends Application {
 		});
 
 		// lower curve, sideview
-		List<Amount<Length>> vX2Fus1 = fuselage1.getFuselageCreator().getOutlineXZLowerCurveAmountX();
+		List<Amount<Length>> vX2Fus1 = fuselage1.getOutlineXZLowerCurveAmountX();
 		int nX2Fus1 = vX2Fus1.size();
-		List<Amount<Length>> vZ2Fus1 = fuselage1.getFuselageCreator().getOutlineXZLowerCurveAmountZ();
+		List<Amount<Length>> vZ2Fus1 = fuselage1.getOutlineXZLowerCurveAmountZ();
 
 		Double[][] dataOutlineXZLowerCurveFus1 = new Double[nX2Fus1][2];
 		IntStream.range(0, nX2Fus1)
@@ -136,9 +136,9 @@ public class FuselageAdjustTest extends Application {
 		});
 
 		// camberline, sideview
-		List<Amount<Length>> vX3Fus1 = fuselage1.getFuselageCreator().getOutlineXZCamberLineAmountX();
+		List<Amount<Length>> vX3Fus1 = fuselage1.getOutlineXZCamberLineAmountX();
 		int nX3Fus1 = vX3Fus1.size();
-		List<Amount<Length>> vZ3Fus1 = fuselage1.getFuselageCreator().getOutlineXZCamberLineAmountZ();
+		List<Amount<Length>> vZ3Fus1 = fuselage1.getOutlineXZCamberLineAmountZ();
 
 		Double[][] dataOutlineXZCamberLineFus1 = new Double[nX3Fus1][2];
 		IntStream.range(0, nX3Fus1)
@@ -151,9 +151,9 @@ public class FuselageAdjustTest extends Application {
 		// get data vectors from fuselage 2 front view discretization
 		//--------------------------------------------------
 		// section upper curve
-		List<Amount<Length>> vY1UpperFus1 = fuselage1.getFuselageCreator().getSectionUpperCurveAmountY();
+		List<Amount<Length>> vY1UpperFus1 = fuselage1.getSectionUpperCurveAmountY();
 		int nY1UpperFus1 = vY1UpperFus1.size();
-		List<Amount<Length>> vZ1UpperFus1 = fuselage1.getFuselageCreator().getSectionUpperCurveAmountZ();
+		List<Amount<Length>> vZ1UpperFus1 = fuselage1.getSectionUpperCurveAmountZ();
 
 		Double[][] dataSectionYZUpperCurveFus1 = new Double[nY1UpperFus1][2];
 		IntStream.range(0, nY1UpperFus1)
@@ -163,9 +163,9 @@ public class FuselageAdjustTest extends Application {
 		});
 
 		// section lower curve
-		List<Amount<Length>> vY2LowerFus1 = fuselage1.getFuselageCreator().getSectionLowerCurveAmountY();
+		List<Amount<Length>> vY2LowerFus1 = fuselage1.getSectionLowerCurveAmountY();
 		int nY2LowerFus1 = vY2LowerFus1.size();
-		List<Amount<Length>> vZ2LowerFus1 = fuselage1.getFuselageCreator().getSectionLowerCurveAmountZ();
+		List<Amount<Length>> vZ2LowerFus1 = fuselage1.getSectionLowerCurveAmountZ();
 
 		Double[][] dataSectionYZLowerCurveFus1 = new Double[nY2LowerFus1][2];
 		IntStream.range(0, nY2LowerFus1)
@@ -179,9 +179,9 @@ public class FuselageAdjustTest extends Application {
 		//--------------------------------------------------
 
 		// upper curve, sideview
-		List<Amount<Length>> vX1Fus2 = fuselage2.getFuselageCreator().getOutlineXZUpperCurveAmountX();
+		List<Amount<Length>> vX1Fus2 = fuselage2.getOutlineXZUpperCurveAmountX();
 		int nX1Fus2 = vX1Fus2.size();
-		List<Amount<Length>> vZ1Fus2 = fuselage2.getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+		List<Amount<Length>> vZ1Fus2 = fuselage2.getOutlineXZUpperCurveAmountZ();
 
 		Double[][] dataOutlineXZUpperCurveFus2 = new Double[nX1Fus2][2];
 		IntStream.range(0, nX1Fus2)
@@ -191,9 +191,9 @@ public class FuselageAdjustTest extends Application {
 		});
 
 		// lower curve, sideview
-		List<Amount<Length>> vX2Fus2 = fuselage2.getFuselageCreator().getOutlineXZLowerCurveAmountX();
+		List<Amount<Length>> vX2Fus2 = fuselage2.getOutlineXZLowerCurveAmountX();
 		int nX2Fus2 = vX2Fus2.size();
-		List<Amount<Length>> vZ2Fus2 = fuselage2.getFuselageCreator().getOutlineXZLowerCurveAmountZ();
+		List<Amount<Length>> vZ2Fus2 = fuselage2.getOutlineXZLowerCurveAmountZ();
 
 		Double[][] dataOutlineXZLowerCurveFus2 = new Double[nX2Fus2][2];
 		IntStream.range(0, nX2Fus2)
@@ -203,9 +203,9 @@ public class FuselageAdjustTest extends Application {
 		});
 
 		// camberline, sideview
-		List<Amount<Length>> vX3Fus2 = fuselage2.getFuselageCreator().getOutlineXZCamberLineAmountX();
+		List<Amount<Length>> vX3Fus2 = fuselage2.getOutlineXZCamberLineAmountX();
 		int nX3Fus2 = vX3Fus2.size();
-		List<Amount<Length>> vZ3Fus2 = fuselage2.getFuselageCreator().getOutlineXZCamberLineAmountZ();
+		List<Amount<Length>> vZ3Fus2 = fuselage2.getOutlineXZCamberLineAmountZ();
 
 		Double[][] dataOutlineXZCamberLineFus2 = new Double[nX3Fus2][2];
 		IntStream.range(0, nX3Fus2)
@@ -218,9 +218,9 @@ public class FuselageAdjustTest extends Application {
 		// get data vectors from fuselage 2 front view discretization
 		//--------------------------------------------------
 		// section upper curve
-		List<Amount<Length>> vY1UpperFus2 = fuselage2.getFuselageCreator().getSectionUpperCurveAmountY();
+		List<Amount<Length>> vY1UpperFus2 = fuselage2.getSectionUpperCurveAmountY();
 		int nY1UpperFus2 = vY1UpperFus2.size();
-		List<Amount<Length>> vZ1UpperFus2 = fuselage2.getFuselageCreator().getSectionUpperCurveAmountZ();
+		List<Amount<Length>> vZ1UpperFus2 = fuselage2.getSectionUpperCurveAmountZ();
 
 		Double[][] dataSectionYZUpperCurveFus2 = new Double[nY1UpperFus2][2];
 		IntStream.range(0, nY1UpperFus2)
@@ -230,9 +230,9 @@ public class FuselageAdjustTest extends Application {
 		});
 
 		// section lower curve
-		List<Amount<Length>> vY2LowerFus2 = fuselage2.getFuselageCreator().getSectionLowerCurveAmountY();
+		List<Amount<Length>> vY2LowerFus2 = fuselage2.getSectionLowerCurveAmountY();
 		int nY2LowerFus2 = vY2LowerFus2.size();
-		List<Amount<Length>> vZ2LowerFus2 = fuselage2.getFuselageCreator().getSectionLowerCurveAmountZ();
+		List<Amount<Length>> vZ2LowerFus2 = fuselage2.getSectionLowerCurveAmountZ();
 
 		Double[][] dataSectionYZLowerCurveFus2 = new Double[nY2LowerFus1][2];
 		IntStream.range(0, nY2LowerFus2)
@@ -270,25 +270,25 @@ public class FuselageAdjustTest extends Application {
 		listDataArray4.add(dataSectionYZUpperCurveFus2);
 		listDataArray4.add(dataSectionYZLowerCurveFus2);
 		
-		double xMax1 = 1.20*fuselage1.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
-		double xMin1 = -0.20*fuselage1.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double xMax1 = 1.20*fuselage1.getFuselageLength().doubleValue(SI.METRE);
+		double xMin1 = -0.20*fuselage1.getFuselageLength().doubleValue(SI.METRE);
 		double yMax1 = 15;
 		double yMin1 = -15;
 		
-		double xMax2 = 1.20*fuselage2.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
-		double xMin2 = -0.20*fuselage2.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double xMax2 = 1.20*fuselage2.getFuselageLength().doubleValue(SI.METRE);
+		double xMin2 = -0.20*fuselage2.getFuselageLength().doubleValue(SI.METRE);
 		double yMax2 = 15;
 		double yMin2 = -15;
 
-		double xMax3 = 1.20*fuselage1.getFuselageCreator().getSectionCylinderWidth().doubleValue(SI.METER);
-		double xMin3 = -1.20*fuselage1.getFuselageCreator().getSectionCylinderWidth().doubleValue(SI.METER);
-		double yMax3 = 1.20*fuselage1.getFuselageCreator().getSectionCylinderWidth().doubleValue(SI.METER); 
-		double yMin3 = -1.20*fuselage1.getFuselageCreator().getSectionCylinderWidth().doubleValue(SI.METER);
+		double xMax3 = 1.20*fuselage1.getSectionCylinderWidth().doubleValue(SI.METER);
+		double xMin3 = -1.20*fuselage1.getSectionCylinderWidth().doubleValue(SI.METER);
+		double yMax3 = 1.20*fuselage1.getSectionCylinderWidth().doubleValue(SI.METER); 
+		double yMin3 = -1.20*fuselage1.getSectionCylinderWidth().doubleValue(SI.METER);
 		
-		double xMax4 = 1.20*fuselage2.getFuselageCreator().getSectionCylinderWidth().doubleValue(SI.METER);
-		double xMin4 = -1.20*fuselage2.getFuselageCreator().getSectionCylinderWidth().doubleValue(SI.METER);
-		double yMax4 = 1.20*fuselage2.getFuselageCreator().getSectionCylinderWidth().doubleValue(SI.METER); 
-		double yMin4 = -1.20*fuselage2.getFuselageCreator().getSectionCylinderWidth().doubleValue(SI.METER);
+		double xMax4 = 1.20*fuselage2.getSectionCylinderWidth().doubleValue(SI.METER);
+		double xMin4 = -1.20*fuselage2.getSectionCylinderWidth().doubleValue(SI.METER);
+		double yMax4 = 1.20*fuselage2.getSectionCylinderWidth().doubleValue(SI.METER); 
+		double yMin4 = -1.20*fuselage2.getSectionCylinderWidth().doubleValue(SI.METER);
 		
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthSVG(1*WIDTH).heightSVG(1*HEIGHT)
@@ -509,11 +509,11 @@ public class FuselageAdjustTest extends Application {
 			theFuselage2 = null;
 
 			System.out.println("The fuselage 1 ...");
-			System.out.println(FuselageAdjustTest.theFuselage1.getFuselageCreator().toString());
+			System.out.println(FuselageAdjustTest.theFuselage1.toString());
 			System.out.println("Details on discretization ...");
 			
 			System.out.println("The fuselage 2 ...");
-			System.out.println(FuselageAdjustTest.theFuselage2.getFuselageCreator().toString());
+			System.out.println(FuselageAdjustTest.theFuselage2.toString());
 			System.out.println("Details on discretization ...");
 
 		} catch (CmdLineException e) {

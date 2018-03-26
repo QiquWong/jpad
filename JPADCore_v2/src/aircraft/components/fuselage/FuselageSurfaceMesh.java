@@ -27,8 +27,8 @@ public class FuselageSurfaceMesh {
 		// EXPERIMENTAL
 		LineMeshYZ lineMesh = new LineMeshYZ(
 				_theFuselage,                          // the fuselage object 
-				_theFuselage.getFuselageCreator().getSectionsYZ().get(3),  // the section XY
-				_theFuselage.getFuselageCreator().getNoseLength(),              // the X-coordinate
+				_theFuselage.getSectionsYZ().get(3),  // the section XY
+				_theFuselage.getNoseLength(),              // the X-coordinate
 				20                                     // number of mesh intervals
 				);
 

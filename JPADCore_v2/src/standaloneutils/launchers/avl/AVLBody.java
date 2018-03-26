@@ -77,7 +77,7 @@ public interface AVLBody {
 				}
 				try{
 					PrintWriter writer = new PrintWriter(file.getAbsolutePath(), "UTF-8");
-					writer.println("x z ! " + fuselage.getFuselageCreator().getId());
+					writer.println("x z ! " + fuselage.getId());
 					// writer.println("The second line");
 
 
@@ -88,14 +88,14 @@ public interface AVLBody {
 					// get data vectors from fuselage discretization
 					//--------------------------------------------------
 					// upper curve, sideview
-					List<Amount<Length>> vXUpper = fuselage.getFuselageCreator().getOutlineXZUpperCurveAmountX();
+					List<Amount<Length>> vXUpper = fuselage.getOutlineXZUpperCurveAmountX();
 					int nXUpper = vXUpper.size();
-					List<Amount<Length>> vZUpper = fuselage.getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+					List<Amount<Length>> vZUpper = fuselage.getOutlineXZUpperCurveAmountZ();
 		
 					// lower curve, sideview
-					List<Amount<Length>> vXLower = fuselage.getFuselageCreator().getOutlineXZLowerCurveAmountX();
+					List<Amount<Length>> vXLower = fuselage.getOutlineXZLowerCurveAmountX();
 					int nXLower = vXLower.size();
-					List<Amount<Length>> vZLower = fuselage.getFuselageCreator().getOutlineXZLowerCurveAmountZ();
+					List<Amount<Length>> vZLower = fuselage.getOutlineXZLowerCurveAmountZ();
 
 					vXLower.remove(0);
 					vZLower.remove(0);

@@ -256,7 +256,7 @@ public class TestMulthopp extends Application {
 			
 			Amount<?> cMAlphaFuselage = MomentCalc.calculateCMAlphaFuselageOrNacelleMulthopp(
 					theAircraft.getFuselage().getXApexConstructionAxes(),
-					theAircraft.getFuselage().getFuselageCreator().getFuselageLength(),
+					theAircraft.getFuselage().getFuselageLength(),
 					downwashGradientRoskamConstant, 
 					theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
 					theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform(), 
@@ -266,8 +266,8 @@ public class TestMulthopp extends Application {
 					theAircraft.getWing().getXApexConstructionAxes(),
 					wingTrailingEdgeToHTailQuarterChordDistance,
 					aeroDatabaseReader,
-					theAircraft.getFuselage().getFuselageCreator().getOutlineXYSideRCurveX(),
-					theAircraft.getFuselage().getFuselageCreator().getOutlineXYSideRCurveY()
+					theAircraft.getFuselage().getOutlineXYSideRCurveX(),
+					theAircraft.getFuselage().getOutlineXYSideRCurveY()
 					);
 			
 			Amount<?> cMAlphaNacelle = MomentCalc.calculateCMAlphaFuselageOrNacelleMulthopp(

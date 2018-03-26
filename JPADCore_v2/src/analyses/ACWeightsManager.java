@@ -872,18 +872,17 @@ public class ACWeightsManager {
 			List<Object[]> dataListFuselage = new ArrayList<>();
 			dataListFuselage.add(new Object[] {"Description","Unit","Value","Percent Error"});
 			dataListFuselage.add(new Object[] {"Reference Mass","kg", _fuselageReferenceMass.doubleValue(SI.KILOGRAM)});
-			dataListFuselage.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getFuselage().getMassCorrectionFactor()});
 			dataListFuselage.add(new Object[] {" "});
 			dataListFuselage.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
 			int indexFuselage=0;
-			for(MethodEnum methods : _theAircraft.getFuselage().getMassMap().keySet()) {
-				if(_theAircraft.getFuselage().getMassMap().get(methods) != null) 
+			for(MethodEnum methods : _theAircraft.getFuselage().getTheWeight().getMassMap().keySet()) {
+				if(_theAircraft.getFuselage().getTheWeight().getMassMap().get(methods) != null) 
 					dataListFuselage.add(
 							new Object[] {
 									methods.toString(),
 									"Kg",
-									_theAircraft.getFuselage().getMassMap().get(methods).getEstimatedValue(),
-									_theAircraft.getFuselage().getPercentDifference()[indexFuselage]
+									_theAircraft.getFuselage().getTheWeight().getMassMap().get(methods).getEstimatedValue(),
+									_theAircraft.getFuselage().getTheWeight().getPercentDifference()[indexFuselage]
 							}
 							);
 				indexFuselage++;
@@ -891,10 +890,10 @@ public class ACWeightsManager {
 			dataListFuselage.add(new Object[] 
 					{"Estimated Mass ",
 							"kg",
-							_theAircraft.getFuselage().getMassEstimated().getEstimatedValue(),
-							_theAircraft.getFuselage().getMassEstimated().
-								minus(_theAircraft.getFuselage().getMassReference()).
-								divide(_theAircraft.getFuselage().getMassReference()).
+							_theAircraft.getFuselage().getTheWeight().getMassEstimated().getEstimatedValue(),
+							_theAircraft.getFuselage().getTheWeight().getMassEstimated().
+								minus(_theAircraft.getFuselage().getTheWeight().getMassReference()).
+								divide(_theAircraft.getFuselage().getTheWeight().getMassReference()).
 								getEstimatedValue()*100
 					});
 
@@ -1545,9 +1544,9 @@ public class ACWeightsManager {
 		Double maxTakeOffMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM);
 		
 		if(_theAircraft.getFuselage() != null)
-			if(_theAircraft.getFuselage().getMassEstimated() != null) {
+			if(_theAircraft.getFuselage().getTheWeight().getMassEstimated() != null) {
 				labels.add("Fuselage");
-				fuselageMass = _theAircraft.getFuselage().getMassEstimated().doubleValue(SI.KILOGRAM);
+				fuselageMass = _theAircraft.getFuselage().getTheWeight().getMassEstimated().doubleValue(SI.KILOGRAM);
 				values.add(fuselageMass/maxTakeOffMass*100.0);
 			}
 		if(_theAircraft.getWing() != null)
@@ -1791,7 +1790,7 @@ public class ACWeightsManager {
 
 		if(aircraft.getCanard() != null)
 			_structuralMass = 
-					aircraft.getFuselage().getMassEstimated().to(SI.KILOGRAM)
+					aircraft.getFuselage().getTheWeight().getMassEstimated().to(SI.KILOGRAM)
 					.plus(aircraft.getWing().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getHTail().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getVTail().getMassEstimated().to(SI.KILOGRAM))
@@ -1800,7 +1799,7 @@ public class ACWeightsManager {
 					.plus(aircraft.getLandingGears().getMassEstimated().to(SI.KILOGRAM));
 		else
 			_structuralMass = 
-					aircraft.getFuselage().getMassEstimated().to(SI.KILOGRAM)
+					aircraft.getFuselage().getTheWeight().getMassEstimated().to(SI.KILOGRAM)
 					.plus(aircraft.getWing().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getHTail().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getVTail().getMassEstimated().to(SI.KILOGRAM))
@@ -2128,7 +2127,7 @@ public class ACWeightsManager {
 		if(aircraft.getFuselage() != null) 
 			if(this._fuselageReferenceMass == null) {
 				this._fuselageReferenceMass = _maximumZeroFuelMass.times(.15);
-				aircraft.getFuselage().setMassReference(_fuselageReferenceMass);
+				aircraft.getFuselage().getTheWeight().setMassReference(_fuselageReferenceMass);
 			}
 		if(aircraft.getWing() != null)
 			if(this._wingReferenceMass == null) {

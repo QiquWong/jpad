@@ -290,7 +290,7 @@ public class ACBalanceManager implements IACBalanceManager {
 					//---------------------------------------------------------------
 					// FUSELAGE MASS
 					if(theAircraft.getFuselage() != null)
-							fuselageMass = theAircraft.getFuselage().getMassEstimated().to(SI.KILOGRAM);
+							fuselageMass = theAircraft.getFuselage().getTheWeight().getMassEstimated().to(SI.KILOGRAM);
 
 					//---------------------------------------------------------------
 					// WING MASS
@@ -599,22 +599,22 @@ public class ACBalanceManager implements IACBalanceManager {
 			Sheet sheetFuselage = wb.createSheet("FUSELAGE");
 			List<Object[]> dataListFuselage = new ArrayList<>();
 			dataListFuselage.add(new Object[] {"Description","Unit","Value"});
-			dataListFuselage.add(new Object[] {"Xcg LRF","m", _theAircraft.getFuselage().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Ycg LRF","m", _theAircraft.getFuselage().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Zcg LRF","m", _theAircraft.getFuselage().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Xcg LRF","m", _theAircraft.getFuselage().getTheBalance().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Ycg LRF","m", _theAircraft.getFuselage().getTheBalance().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Zcg LRF","m", _theAircraft.getFuselage().getTheBalance().getCG().getZLRF().doubleValue(SI.METER)});
 			dataListFuselage.add(new Object[] {" "});
-			dataListFuselage.add(new Object[] {"Xcg BRF","m", _theAircraft.getFuselage().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Ycg BRF","m", _theAircraft.getFuselage().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Zcg BRF","m", _theAircraft.getFuselage().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Xcg BRF","m", _theAircraft.getFuselage().getTheBalance().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Ycg BRF","m", _theAircraft.getFuselage().getTheBalance().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Zcg BRF","m", _theAircraft.getFuselage().getTheBalance().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListFuselage.add(new Object[] {" "});
 			dataListFuselage.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
-			for(MethodEnum methods : _theAircraft.getFuselage().getXCGMap().keySet()) {
-				if(_theAircraft.getFuselage().getXCGMap().get(methods) != null) 
+			for(MethodEnum methods : _theAircraft.getFuselage().getTheBalance().getXCGMap().keySet()) {
+				if(_theAircraft.getFuselage().getTheBalance().getXCGMap().get(methods) != null) 
 					dataListFuselage.add(
 							new Object[] {
 									methods.toString(),
 									"m",
-									_theAircraft.getFuselage().getXCGMap().get(methods).doubleValue(SI.METER),
+									_theAircraft.getFuselage().getTheBalance().getXCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -1375,8 +1375,8 @@ public class ACBalanceManager implements IACBalanceManager {
 	public void calculate(Map<ComponentEnum, MethodEnum> _methodsMapBalance){
 
 		if(_theAircraft.getFuselage() != null) {
-			_theAircraft.getFuselage().setMassEstimated(_fuselageMass);
-			_theAircraft.getFuselage().calculateCG(_theAircraft, _methodsMapBalance);
+			_theAircraft.getFuselage().getTheWeight().setMassEstimated(_fuselageMass);
+			_theAircraft.getFuselage().getTheBalance().calculateCG(_theAircraft, _methodsMapBalance);
 		}
 		
 		if(_theAircraft.getWing() != null) {
@@ -1443,7 +1443,7 @@ public class ACBalanceManager implements IACBalanceManager {
 		// Structural CG
 		_cgStructure = new CenterOfGravity();
 
-		_cgList.add(_theAircraft.getFuselage().getCG());
+		_cgList.add(_theAircraft.getFuselage().getTheBalance().getCG());
 		_cgList.add(_theAircraft.getWing().getCG());
 		_cgList.add(_theAircraft.getHTail().getCG());
 		_cgList.add(_theAircraft.getVTail().getCG());

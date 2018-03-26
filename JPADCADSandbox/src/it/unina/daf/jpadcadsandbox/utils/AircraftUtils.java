@@ -393,14 +393,14 @@ public final class AircraftUtils {
 		List<OCCShape> result = new ArrayList<>();
 		List<OCCShape> extraShapes = new ArrayList<>();
 		
-		Amount<Length> noseLength = fuselage.getFuselageCreator().getNoseLength();
+		Amount<Length> noseLength = fuselage.getNoseLength();
 		System.out.println("Nose length: " + noseLength);
-		Amount<Length> noseCapStation = fuselage.getFuselageCreator().getNoseCapOffset();
+		Amount<Length> noseCapStation = fuselage.getNoseCapOffset();
 		System.out.println("Nose cap x-station: " + noseCapStation);
-		Double xbarNoseCap = fuselage.getFuselageCreator().getNoseCapOffsetPercent(); // normalized with noseLength
+		Double xbarNoseCap = fuselage.getNoseCapOffsetPercent(); // normalized with noseLength
 		System.out.println("Nose cap x-station normalized: " + xbarNoseCap);
 		Amount<Length> zNoseTip = Amount.valueOf( 
-				fuselage.getFuselageCreator().getZOutlineXZLowerAtX(0.0),
+				fuselage.getZOutlineXZLowerAtX(0.0),
 				SI.METER);
 		System.out.println("Nose tip z: " + zNoseTip);
 
@@ -418,7 +418,7 @@ public final class AircraftUtils {
 		List<List<PVector>> sections1 = new ArrayList<List<PVector>>();
 		xbars1.stream()
 			  .forEach(x -> sections1.add(
-					  fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength.times(x)))
+					  fuselage.getUniqueValuesYZSideRCurve(noseLength.times(x)))
 			  );
 
 		// x stations defining cap outlines
@@ -468,7 +468,7 @@ public final class AircraftUtils {
 //		List<List<PVector>> sections2 = new ArrayList<List<PVector>>();
 //		xbars2.stream()
 //			  .forEach(x -> sections2.add(
-//					  fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength.times(x)))
+//					  fuselage.getUniqueValuesYZSideRCurve(noseLength.times(x)))
 //			  );
 
 		List<CADGeomCurve3D> cadCurvesNoseTrunk = new ArrayList<>();
@@ -476,7 +476,7 @@ public final class AircraftUtils {
 				 .map(x -> Amount.valueOf(x, SI.METER))
 				 .forEach(x -> cadCurvesNoseTrunk.add(
 						 OCCUtils.theFactory
-							.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(x), false)
+							.newCurve3DP(fuselage.getUniqueValuesYZSideRCurve(x), false)
 						 	)
 						 );
 		
@@ -489,9 +489,9 @@ public final class AircraftUtils {
 		
 		// nose Patch-2 terminal section
 		CADGeomCurve3D cadCrvCylinderInitialSection = OCCUtils.theFactory
-				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength), false);
+				.newCurve3DP(fuselage.getUniqueValuesYZSideRCurve(noseLength), false);
 
-		Amount<Length> cylinderLength = fuselage.getFuselageCreator().getCylinderLength();
+		Amount<Length> cylinderLength = fuselage.getCylinderLength();
 		
 		System.out.println("========== [AircraftUtils::getFuselageCAD] Fuselage cylindrical trunk: x=" + noseLength + " to x=" + noseLength.plus(cylinderLength));
 
@@ -506,12 +506,12 @@ public final class AircraftUtils {
 		
 		// Cylindrical trunk mid section
 		CADGeomCurve3D cadCrvCylinderMidSection = OCCUtils.theFactory
-				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(
+				.newCurve3DP(fuselage.getUniqueValuesYZSideRCurve(
 						noseLength.plus(cylinderLength.times(0.5))),false);
 
 		// Cylindrical trunk terminal section
 		CADGeomCurve3D cadCrvCylinderTerminalSection = OCCUtils.theFactory
-				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(
+				.newCurve3DP(fuselage.getUniqueValuesYZSideRCurve(
 						noseLength.plus(cylinderLength)), false);
 
 		if (exportLofts) {
@@ -521,9 +521,9 @@ public final class AircraftUtils {
 		}
 		
 		// Tail trunk
-		Amount<Length> tailLength = fuselage.getFuselageCreator().getTailLength();
-		Amount<Length> tailCapLength = fuselage.getFuselageCreator().getTailCapOffset();
-		Amount<Length> fuselageLength = fuselage.getFuselageCreator().getFuselageLength();
+		Amount<Length> tailLength = fuselage.getTailLength();
+		Amount<Length> tailCapLength = fuselage.getTailCapOffset();
+		Amount<Length> fuselageLength = fuselage.getFuselageLength();
 
 		System.out.println("========== [AircraftUtils::getFuselageCAD] Tail trunk (no cap): x=" 
 				+ noseLength.plus(cylinderLength) + " to x=" + fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)) + " (fus. length - tail cap length)"
@@ -550,7 +550,7 @@ public final class AircraftUtils {
 				 .map(x -> Amount.valueOf(x, SI.METER))
 				 .forEach(x -> cadCurvesTailTrunk.add(
 						 OCCUtils.theFactory
-							.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(x), false)
+							.newCurve3DP(fuselage.getUniqueValuesYZSideRCurve(x), false)
 						 	)
 						 );
 		
@@ -576,7 +576,7 @@ public final class AircraftUtils {
 		System.out.println("Tail cap trunk selected x-stations (m), Patch-5: " + xmtPatch5.toString());
 		
 		Amount<Length> zTailTip = Amount.valueOf( 
-				fuselage.getFuselageCreator().getZOutlineXZLowerAtX(fuselageLength.doubleValue(SI.METER)),
+				fuselage.getZOutlineXZLowerAtX(fuselageLength.doubleValue(SI.METER)),
 				SI.METER);
 		
 		CADVertex vertexTailTip = OCCUtils.theFactory.newVertex(
@@ -587,7 +587,7 @@ public final class AircraftUtils {
 				 .map(x -> Amount.valueOf(x, SI.METER))
 				 .forEach(x -> cadCurvesTailCapTrunk.add(
 						 OCCUtils.theFactory
-							.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(x), false)
+							.newCurve3DP(fuselage.getUniqueValuesYZSideRCurve(x), false)
 						 	)
 						 );
 
@@ -694,7 +694,7 @@ public final class AircraftUtils {
 		// other nose cap entities (outline curves, vertices)
 		CADVertex vertexNoseTip = OCCUtils.theFactory.newVertex(0, 0, zNoseTip.doubleValue(SI.METER));
 		// nose cap terminal section
-		List<PVector> sectionCapTerminal = fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseCapStation);
+		List<PVector> sectionCapTerminal = fuselage.getUniqueValuesYZSideRCurve(noseCapStation);
 		CADGeomCurve3D cadCrvNoseCapTerminalSection = OCCUtils.theFactory
 				.newCurve3D(
 						sectionCapTerminal.stream()
@@ -706,7 +706,7 @@ public final class AircraftUtils {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+						fuselage.getZOutlineXZUpperAtX(x)
 				})
 				.collect(Collectors.toList());		
 		// points z's on nose outline curve, XZ, lower
@@ -714,15 +714,15 @@ public final class AircraftUtils {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+						fuselage.getZOutlineXZLowerAtX(x)
 				})
 				.collect(Collectors.toList());
 		// points y's on nose outline curve, XY, right
 		List<double[]> pointsNoseCapSideRight = xmtPatch1.stream()
 				.map(x -> new double[]{
 						x,
-						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-						fuselage.getFuselageCreator().getCamberZAtX(x)
+						fuselage.getYOutlineXYSideRAtX(x),
+						fuselage.getCamberZAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -757,7 +757,7 @@ public final class AircraftUtils {
 //				.map(x -> new double[]{
 //						x,
 //						0.0,
-//						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+//						fuselage.getZOutlineXZUpperAtX(x)
 //				})
 //				.collect(Collectors.toList());
 		// TODO: 
@@ -783,7 +783,7 @@ public final class AircraftUtils {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+						fuselage.getZOutlineXZLowerAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -798,8 +798,8 @@ public final class AircraftUtils {
 		List<double[]> pointsNoseSideRight = xmtPatch2.stream()
 				.map(x -> new double[]{
 						x,
-						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-						fuselage.getFuselageCreator().getCamberZAtX(x)
+						fuselage.getYOutlineXYSideRAtX(x),
+						fuselage.getCamberZAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -835,7 +835,7 @@ public final class AircraftUtils {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+						fuselage.getZOutlineXZUpperAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -844,7 +844,7 @@ public final class AircraftUtils {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+						fuselage.getZOutlineXZLowerAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -861,8 +861,8 @@ public final class AircraftUtils {
 		List<double[]> pointsCylinderSideRight = xmtPatch3.stream()
 				.map(x -> new double[]{
 						x,
-						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-						fuselage.getFuselageCreator().getCamberZAtX(x)
+						fuselage.getYOutlineXYSideRAtX(x),
+						fuselage.getCamberZAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -877,7 +877,7 @@ public final class AircraftUtils {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+						fuselage.getZOutlineXZUpperAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -886,7 +886,7 @@ public final class AircraftUtils {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+						fuselage.getZOutlineXZLowerAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -902,8 +902,8 @@ public final class AircraftUtils {
 		List<double[]> pointsTailSideRight = xmtPatch4.stream()
 				.map(x -> new double[]{
 						x,
-						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-						fuselage.getFuselageCreator().getCamberZAtX(x)
+						fuselage.getYOutlineXYSideRAtX(x),
+						fuselage.getCamberZAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -927,7 +927,7 @@ public final class AircraftUtils {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+						fuselage.getZOutlineXZUpperAtX(x)
 				})
 				.collect(Collectors.toList());
 		pointsTailCapXZUpper.add(vertexTailTip.pnt()); // add tail tip point
@@ -937,7 +937,7 @@ public final class AircraftUtils {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+						fuselage.getZOutlineXZLowerAtX(x)
 				})
 				.collect(Collectors.toList());
 		pointsTailCapXZLower.add(vertexTailTip.pnt()); // add tail tip point
@@ -954,8 +954,8 @@ public final class AircraftUtils {
 		List<double[]> pointsTailCapSideRight = xmtPatch5.stream()
 				.map(x -> new double[]{
 						x,
-						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-						fuselage.getFuselageCreator().getCamberZAtX(x)
+						fuselage.getYOutlineXYSideRAtX(x),
+						fuselage.getCamberZAtX(x)
 				})
 				.collect(Collectors.toList());
 		pointsTailCapSideRight.add(vertexTailTip.pnt()); // add tail tip point

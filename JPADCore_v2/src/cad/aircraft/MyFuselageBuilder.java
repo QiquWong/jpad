@@ -89,7 +89,7 @@ public class MyFuselageBuilder {
 	private void initialize(Fuselage fuselage) {
 
 		theFuselage = fuselage;
-		theFuselage.getFuselageCreator().calculateOutlines(
+		theFuselage.calculateOutlines(
 				20, // num. points Nose
 				4,  // num. points Cylinder
 				10, // num. points Tail
@@ -290,14 +290,14 @@ public class MyFuselageBuilder {
 		PVector p0 = new PVector(
 				(float) 0.0,
 				(float) 0.0,
-				(float) theFuselage.getFuselageCreator().getNoseTipOffset().doubleValue(SI.METER)
+				(float) theFuselage.getNoseTipOffset().doubleValue(SI.METER)
 				);
 
 		Double x_C = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_NOSE_CAP)
+				.get(theFuselage.IDX_SECTION_YZ_NOSE_CAP)
 				.doubleValue(SI.METER);
 		Double x_B = 0.5*x_C;
 		Double x_A = 0.25*x_C;
@@ -325,9 +325,9 @@ public class MyFuselageBuilder {
 		// x-coord of section 1
 		Double x_D = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_CYLINDER_1)
+				.get(theFuselage.IDX_SECTION_YZ_CYLINDER_1)
 				.doubleValue(SI.METER);
 
 		List<Double> xStations0 = Arrays.asList(ArrayUtils.toObject(
@@ -348,9 +348,9 @@ public class MyFuselageBuilder {
 		// The Cylindrical part
 		Double x_E = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_CYLINDER_2)
+				.get(theFuselage.IDX_SECTION_YZ_CYLINDER_2)
 				.doubleValue(SI.METER);
 		List<Double> xStations1 = Arrays.asList(ArrayUtils.toObject(
 				//				Matrix.linspace(
@@ -378,9 +378,9 @@ public class MyFuselageBuilder {
 		// The Tail part
 		Double x_F = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_TAIL_CAP)
+				.get(theFuselage.IDX_SECTION_YZ_TAIL_CAP)
 				.doubleValue(SI.METER);
 
 		List<Double> xStations2 = Arrays.asList(ArrayUtils.toObject(
@@ -546,15 +546,15 @@ public class MyFuselageBuilder {
 		// x-coord of section 1
 		Double x_B = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_CYLINDER_1)
+				.get(theFuselage.IDX_SECTION_YZ_CYLINDER_1)
 				.doubleValue(SI.METER);
 		Double x_C = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_CYLINDER_2)
+				.get(theFuselage.IDX_SECTION_YZ_CYLINDER_2)
 				.doubleValue(SI.METER);
 
 		double[] x = Matrix.linspace(
@@ -593,15 +593,15 @@ public class MyFuselageBuilder {
 
 		Double x_C = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_TAIL_TIP)
+				.get(theFuselage.IDX_SECTION_YZ_TAIL_TIP)
 				.doubleValue(SI.METER);
 		Double x_A = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_TAIL_CAP)
+				.get(theFuselage.IDX_SECTION_YZ_TAIL_CAP)
 				.doubleValue(SI.METER);
 		Double x_B = x_A + 0.25*(x_C - x_A);
 		//		x_C = x_A + 0.90*(x_C - x_A);
@@ -631,9 +631,9 @@ public class MyFuselageBuilder {
 		System.out.println(xStations);
 
 		PVector p0 = new PVector(
-				(float) theFuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METER),
+				(float) theFuselage.getFuselageLength().doubleValue(SI.METER),
 				(float) 0.0,
-				(float) theFuselage.getFuselageCreator().getTailTipOffset().doubleValue(SI.METER)
+				(float) theFuselage.getTailTipOffset().doubleValue(SI.METER)
 				);
 		System.out.println("P at Tail: " + p0);
 
@@ -671,14 +671,14 @@ public class MyFuselageBuilder {
 		PVector p0 = new PVector(
 				(float) 0.0,
 				(float) 0.0,
-				(float) theFuselage.getFuselageCreator().getNoseTipOffset().doubleValue(SI.METER)
+				(float) theFuselage.getNoseTipOffset().doubleValue(SI.METER)
 				);
 
 		Double x_C = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_NOSE_CAP)
+				.get(theFuselage.IDX_SECTION_YZ_NOSE_CAP)
 				.doubleValue(SI.METER);
 		Double x_B = 0.5*x_C;
 		Double x_A = 0.25*x_C;
@@ -729,15 +729,15 @@ public class MyFuselageBuilder {
 		// x-coord of first section
 		Double x_A = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_CYLINDER_2)
+				.get(theFuselage.IDX_SECTION_YZ_CYLINDER_2)
 				.doubleValue(SI.METER);
 		Double x_B = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_TAIL_CAP)
+				.get(theFuselage.IDX_SECTION_YZ_TAIL_CAP)
 				.doubleValue(SI.METER);
 
 		double[] x = Matrix.linspace(
@@ -769,15 +769,15 @@ public class MyFuselageBuilder {
 		// x-coord of section 1
 		Double x_A = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_NOSE_CAP)
+				.get(theFuselage.IDX_SECTION_YZ_NOSE_CAP)
 				.doubleValue(SI.METER);
 		Double x_B = 
 				theFuselage
-				.getFuselageCreator()
+				
 				.getSectionsYZStations()
-				.get(theFuselage.getFuselageCreator().IDX_SECTION_YZ_CYLINDER_1)
+				.get(theFuselage.IDX_SECTION_YZ_CYLINDER_1)
 				.doubleValue(SI.METER);
 
 		double[] x = Matrix.linspace(
@@ -813,7 +813,7 @@ public class MyFuselageBuilder {
 			// Right part of the section (looking from top)
 			List<PVector> c = 					
 					theFuselage
-					.getFuselageCreator()
+					
 					.getUniqueValuesYZSideRCurve(
 							Amount.valueOf(x, SI.METER)						
 							);
@@ -825,7 +825,7 @@ public class MyFuselageBuilder {
 				// Right part of the section (looking from top)
 				List<PVector> cL  = 					
 						theFuselage
-						.getFuselageCreator()
+						
 						.getUniqueValuesYZSideLCurve(
 								Amount.valueOf(x, SI.METER)						
 								);

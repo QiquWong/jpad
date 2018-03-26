@@ -21,7 +21,6 @@ import aircraft.components.LandingGears;
 import aircraft.components.Systems;
 import aircraft.components.cabinconfiguration.CabinConfiguration;
 import aircraft.components.fuselage.Fuselage;
-import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
 import aircraft.components.liftingSurface.creator.IEquivalentWing;
@@ -184,7 +183,7 @@ public class Aircraft {
 		if(_theAircraftInterface.getWing() != null)
 			_theAircraftInterface.getWing().setPositionRelativeToAttachment(
 					_theAircraftInterface.getWing().getZApexConstructionAxes().doubleValue(SI.METER)
-					/(_theAircraftInterface.getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2).getEstimatedValue())
+					/(_theAircraftInterface.getFuselage().getSectionCylinderHeight().divide(2).getEstimatedValue())
 					);
 		
 		if(_theAircraftInterface.getHTail() != null) {
@@ -207,7 +206,7 @@ public class Aircraft {
 		if(_theAircraftInterface.getCanard() != null)
 			_theAircraftInterface.getCanard().setPositionRelativeToAttachment(
 					_theAircraftInterface.getCanard().getZApexConstructionAxes().doubleValue(SI.METER)
-					/(_theAircraftInterface.getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2).getEstimatedValue())
+					/(_theAircraftInterface.getFuselage().getSectionCylinderHeight().divide(2).getEstimatedValue())
 					);
 		
 		//----------------------------------------
@@ -229,8 +228,7 @@ public class Aircraft {
 	private LiftingSurface calculateExposedWing(LiftingSurface theWing, Fuselage theFuselage) {
 		
 		Amount<Length> sectionWidthAtZ = Amount.valueOf(
-				0.5 * theFuselage.getFuselageCreator()
-				.getSectionWidthAtZ(
+				0.5 * theFuselage.getSectionWidthAtZ(
 						theWing.getZApexConstructionAxes()
 						.doubleValue(SI.METER)),
 				SI.METER);
@@ -296,7 +294,7 @@ public class Aircraft {
 		theExposedWing.getLiftingSurfaceCreator().populateAirfoilList(false);
 		theExposedWing.setXApexConstructionAxes(theWing.getXApexConstructionAxes());
 		theExposedWing.setYApexConstructionAxes(Amount.valueOf(
-				0.5 * theFuselage.getFuselageCreator().getSectionWidthAtZ(
+				0.5 * theFuselage.getSectionWidthAtZ(
 						theWing.getZApexConstructionAxes().doubleValue(SI.METER)),
 				SI.METER)
 				);
@@ -309,7 +307,7 @@ public class Aircraft {
 	public void calculateSWetTotal() {
 		
 		if(this._theAircraftInterface.getFuselage() != null)
-			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getFuselage().getFuselageCreator().getSWetTotal());
+			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getFuselage().getSWetTotal());
 		
 		if(this._theAircraftInterface.getWing() != null)
 			this._sWetTotal = this._sWetTotal.plus(_theAircraftInterface.getWing().getExposedLiftingSurface().getLiftingSurfaceCreator().getSurfaceWetted());
@@ -332,7 +330,7 @@ public class Aircraft {
 		_kExcr = DragCalc.calculateKExcrescences(getSWetTotal().doubleValue(SI.SQUARE_METRE));
 		
 		if(_theAircraftInterface.getFuselage() != null)
-			_theAircraftInterface.getFuselage().getFuselageCreator().setKExcr(_kExcr);
+			_theAircraftInterface.getFuselage().setKExcr(_kExcr);
 		
 		if(_theAircraftInterface.getWing() != null)
 			_theAircraftInterface.getWing().getLiftingSurfaceCreator().setKExcr(_kExcr);
@@ -543,10 +541,9 @@ public class Aircraft {
 		
 		if(fuselageFileName != null) {
 			String fuselagePath = fuselagesDir + File.separator + fuselageFileName;
-			FuselageCreator fuselageCreator = FuselageCreator.importFromXML(fuselagePath);
-			theFuselage = new Fuselage(fuselageCreator);
+			theFuselage = Fuselage.importFromXML(fuselagePath);
 			
-			theFuselage.getFuselageCreator().calculateGeometry();
+			theFuselage.calculateGeometry();
 			theFuselage.setFusDesDatabaseReader(fusDesDatabaseReader);
 			
 			xApexFuselage = reader.getXMLAmountLengthByPath("//fuselage/position/x");
@@ -1068,7 +1065,7 @@ public class Aircraft {
 		  .append("\tType: '" + _theAircraftInterface.getTypeVehicle() + "'\n");
 		
 		if(_theAircraftInterface.getFuselage() != null)
-			sb.append(_theAircraftInterface.getFuselage().getFuselageCreator().toString());
+			sb.append(_theAircraftInterface.getFuselage().toString());
 		
 		if(_theAircraftInterface.getWing() != null)
 			sb.append(_theAircraftInterface.getWing().getLiftingSurfaceCreator().toString());

@@ -28,7 +28,7 @@ public class FuselageWeightsCalc {
 		
 		double k = 0.;
 
-		if (aircraft.getFuselage().getFuselageCreator().getPressurized() == true) {
+		if (aircraft.getFuselage().getPressurized() == true) {
 			k = k + 0.08;
 		}
 
@@ -45,8 +45,8 @@ public class FuselageWeightsCalc {
 		return Amount.valueOf(0.039*
 				Math.pow(
 						(1 + k) * 
-						2*aircraft.getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER)
-						* aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
+						2*aircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)
+						* aircraft.getFuselage().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
 						* Math.pow(
 								aircraft.getTheAnalysisManager().getVDiveEAS().doubleValue(SI.METERS_PER_SECOND),
 								0.5
@@ -63,9 +63,9 @@ public class FuselageWeightsCalc {
 		
 		return Amount.valueOf(
 				0.0737*
-				pow(2*aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
+				pow(2*aircraft.getFuselage().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
 						* pow(aircraft.getTheAnalysisManager().getVDiveEAS().doubleValue(SI.METERS_PER_SECOND), 0.338)  
-						* pow(aircraft.getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER), 0.857)
+						* pow(aircraft.getFuselage().getFuselageLength().doubleValue(SI.METER), 0.857)
 						* pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
 								* aircraft.getTheAnalysisManager().getNUltimate(),
 								0.286),
@@ -88,8 +88,8 @@ public class FuselageWeightsCalc {
 						0.283)
 				* pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND)/1000,
 						0.95)
-				* pow(aircraft.getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER)/
-						aircraft.getFuselage().getFuselageCreator().getSectionCylinderHeight().doubleValue(SI.METER),
+				* pow(aircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)/
+						aircraft.getFuselage().getSectionCylinderHeight().doubleValue(SI.METER),
 						0.71), 
 				NonSI.POUND
 				)
@@ -109,20 +109,20 @@ public class FuselageWeightsCalc {
 						/ (1+aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio()))
 				* aircraft.getWing().getLiftingSurfaceCreator().getSpan().doubleValue(NonSI.FOOT)
 				* tan(aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN))
-				/ aircraft.getFuselage().getFuselageCreator().getFuselageLength().doubleValue(NonSI.FOOT);
+				/ aircraft.getFuselage().getFuselageLength().doubleValue(NonSI.FOOT);
 
 		return Amount.valueOf(
 				0.328 * kdoor * klg
 				* pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND)
 						* (aircraft.getTheAnalysisManager().getNUltimate()), 
 						0.5)
-				* pow(aircraft.getFuselage().getFuselageCreator().getFuselageLength().doubleValue(NonSI.FOOT),
+				* pow(aircraft.getFuselage().getFuselageLength().doubleValue(NonSI.FOOT),
 						0.25)
-				* pow(aircraft.getFuselage().getFuselageCreator().getSWetTotal().doubleValue(MyUnits.FOOT2),
+				* pow(aircraft.getFuselage().getSWetTotal().doubleValue(MyUnits.FOOT2),
 						0.302)
 				* pow(1 + kws, 0.04)
-				* pow(aircraft.getFuselage().getFuselageCreator().getFuselageLength().doubleValue(NonSI.FOOT)
-						/ aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(NonSI.FOOT),
+				* pow(aircraft.getFuselage().getFuselageLength().doubleValue(NonSI.FOOT)
+						/ aircraft.getFuselage().getEquivalentDiameterCylinderGM().doubleValue(NonSI.FOOT),
 						0.1), 
 				NonSI.POUND)
 				.to(SI.KILOGRAM);
@@ -133,11 +133,11 @@ public class FuselageWeightsCalc {
 	 */
 	public static Amount<Mass> calculateFuselageMassTorenbeek2013 (Aircraft aircraft) {
 		return Amount.valueOf(
-				(60*pow(aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(SI.METER),2)
-						* (aircraft.getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER) + 1.5)
+				(60*pow(aircraft.getFuselage().getEquivalentDiameterCylinderGM().doubleValue(SI.METER),2)
+						* (aircraft.getFuselage().getFuselageLength().doubleValue(SI.METER) + 1.5)
 				+ 160*pow(aircraft.getTheAnalysisManager().getNUltimate(), 0.5)
-						* aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
-						* aircraft.getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER)
+						* aircraft.getFuselage().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
+						* aircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)
 						),
 				SI.NEWTON)
 				.divide(AtmosphereCalc.g0)
@@ -150,7 +150,7 @@ public class FuselageWeightsCalc {
 	 */
 	public static Amount<Mass> calculateFuselageMassTorenbeek1976 (Aircraft aircraft) {
 		double k = 0.;
-		if (aircraft.getFuselage().getFuselageCreator().getPressurized()) {k = k + 0.08;}
+		if (aircraft.getFuselage().getPressurized()) {k = k + 0.08;}
 		if (aircraft.getLandingGears().getMountingPosition().equals(LandingGearsMountingPositionEnum.FUSELAGE)) {
 			k = k + 0.07;
 		}
@@ -159,9 +159,9 @@ public class FuselageWeightsCalc {
 				Math.sqrt(
 						aircraft.getTheAnalysisManager().getVDiveEAS().doubleValue(SI.METERS_PER_SECOND) 
 						* aircraft.getHTail().getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().doubleValue(SI.METER)
-						/ (2*aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(SI.METER))
+						/ (2*aircraft.getFuselage().getEquivalentDiameterCylinderGM().doubleValue(SI.METER))
 						) 
-				* Math.pow(aircraft.getFuselage().getFuselageCreator().getSWetTotal().doubleValue(SI.SQUARE_METRE), 1.2),
+				* Math.pow(aircraft.getFuselage().getSWetTotal().doubleValue(SI.SQUARE_METRE), 1.2),
 				SI.KILOGRAM
 				);
 	}
@@ -175,8 +175,8 @@ public class FuselageWeightsCalc {
 		double Kinlet = 1.;
 		double kRho = 0.0032;
 		return Amount.valueOf(
-				aircraft.getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER)
-				* pow(aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(SI.METER),2)
+				aircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)
+				* pow(aircraft.getFuselage().getEquivalentDiameterCylinderGM().doubleValue(SI.METER),2)
 				* aircraft.getTheAnalysisManager().getTheWeights().getMaterialDensity().getEstimatedValue()
 				* kRho
 				* pow(aircraft.getTheAnalysisManager().getNUltimate(),0.25)
@@ -194,7 +194,7 @@ public class FuselageWeightsCalc {
 		double Ifuse;
 		double Ip = 1.5e-3 
 				* operatingConditions.getMaxDeltaPressureCruise().doubleValue(MyUnits.LB_FT2)
-				* aircraft.getFuselage().getFuselageCreator().getSectionCylinderWidth().doubleValue(NonSI.FOOT);
+				* aircraft.getFuselage().getSectionCylinderWidth().doubleValue(NonSI.FOOT);
 
 		double Ib = 1.91e-4 
 				* aircraft.getTheAnalysisManager().getPositiveLimitLoadFactor() 
@@ -203,9 +203,9 @@ public class FuselageWeightsCalc {
 						- aircraft.getNacelles().getTotalMass().doubleValue(NonSI.POUND)
 						- aircraft.getPowerPlant().getTotalMass().doubleValue(NonSI.POUND)
 						)
-				* aircraft.getFuselage().getFuselageCreator().getFuselageLength().doubleValue(NonSI.FOOT) 
+				* aircraft.getFuselage().getFuselageLength().doubleValue(NonSI.FOOT) 
 				- (aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(NonSI.FOOT)/2)
-				/ pow(aircraft.getFuselage().getFuselageCreator().getSectionCylinderHeight().doubleValue(NonSI.FOOT),2);
+				/ pow(aircraft.getFuselage().getSectionCylinderHeight().doubleValue(NonSI.FOOT),2);
 
 		if (Ip > Ib) {
 			Ifuse = Ip;
@@ -215,7 +215,7 @@ public class FuselageWeightsCalc {
 
 		return Amount.valueOf(
 				(1.051 + 0.102*Ifuse)
-				* aircraft.getFuselage().getFuselageCreator().getSWetTotal().doubleValue(MyUnits.FOOT2),
+				* aircraft.getFuselage().getSWetTotal().doubleValue(MyUnits.FOOT2),
 				NonSI.POUND)
 				.to(SI.KILOGRAM);
 		

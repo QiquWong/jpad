@@ -284,8 +284,8 @@ public class PayloadRangeCalcMissionProfile{
 			//--------------------------------------------------------------------
 			// TAKE-OFF
 			Amount<Length> wingToGroundDistance = 
-					_theAircraft.getFuselage().getFuselageCreator().getHeightFromGround()
-					.plus(_theAircraft.getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2))
+					_theAircraft.getFuselage().getHeightFromGround()
+					.plus(_theAircraft.getFuselage().getSectionCylinderHeight().divide(2))
 					.plus(_theAircraft.getWing().getZApexConstructionAxes()
 							.plus(_theAircraft.getWing().getLiftingSurfaceCreator().getSemiSpan()
 									.times(

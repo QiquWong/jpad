@@ -90,9 +90,9 @@ public class AircraftTestSideView extends Application {
 		// get data vectors from fuselage discretization
 		//--------------------------------------------------
 		// upper curve, sideview
-		List<Amount<Length>> vX1Upper = fuselage.getFuselageCreator().getOutlineXZUpperCurveAmountX();
+		List<Amount<Length>> vX1Upper = fuselage.getOutlineXZUpperCurveAmountX();
 		int nX1Upper = vX1Upper.size();
-		List<Amount<Length>> vZ1Upper = fuselage.getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+		List<Amount<Length>> vZ1Upper = fuselage.getOutlineXZUpperCurveAmountZ();
 
 		Double[][] dataOutlineXZUpperCurve = new Double[nX1Upper][2];
 		IntStream.range(0, nX1Upper)
@@ -102,9 +102,9 @@ public class AircraftTestSideView extends Application {
 		});
 
 		// lower curve, sideview
-		List<Amount<Length>> vX2Lower = fuselage.getFuselageCreator().getOutlineXZLowerCurveAmountX();
+		List<Amount<Length>> vX2Lower = fuselage.getOutlineXZLowerCurveAmountX();
 		int nX2Lower = vX2Lower.size();
-		List<Amount<Length>> vZ2Lower = fuselage.getFuselageCreator().getOutlineXZLowerCurveAmountZ();
+		List<Amount<Length>> vZ2Lower = fuselage.getOutlineXZLowerCurveAmountZ();
 
 		Double[][] dataOutlineXZLowerCurve = new Double[nX2Lower][2];
 		IntStream.range(0, nX2Lower)
@@ -268,10 +268,10 @@ public class AircraftTestSideView extends Application {
 		for (int i=0; i<nacellePointsList.size(); i++)
 			listDataArraySideView.add(nacellePointsList.get(i));
 		
-		double xMaxSideView = 1.20*fuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
-		double xMinSideView = -0.20*fuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
-		double yMaxSideView = 1.40*fuselage.getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
-		double yMinSideView = -1.40*fuselage.getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double xMaxSideView = 1.20*fuselage.getFuselageLength().doubleValue(SI.METRE);
+		double xMinSideView = -0.20*fuselage.getFuselageLength().doubleValue(SI.METRE);
+		double yMaxSideView = 1.40*fuselage.getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double yMinSideView = -1.40*fuselage.getFuselageLength().divide(2).doubleValue(SI.METRE);
 		
 		D3PlotterOptions optionsSideView = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)

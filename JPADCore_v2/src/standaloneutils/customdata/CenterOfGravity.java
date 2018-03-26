@@ -93,9 +93,9 @@ public class CenterOfGravity {
 		this(Amount.valueOf(0., SI.METER), Amount.valueOf(0., SI.METER), Amount.valueOf(0., SI.METER),
 				Amount.valueOf(0., SI.METER),Amount.valueOf(0., SI.METER),Amount.valueOf(0., SI.METER),
 				Amount.valueOf(0., SI.METER),Amount.valueOf(0., SI.METER),Amount.valueOf(0., SI.METER));
-		set_xLRFref(Amount.valueOf(0., SI.METER));
-		set_yLRFref(Amount.valueOf(0., SI.METER));
-		set_zLRFref(Amount.valueOf(0., SI.METER));
+		setXLRFref(Amount.valueOf(0., SI.METER));
+		setYLRFref(Amount.valueOf(0., SI.METER));
+		setZLRFref(Amount.valueOf(0., SI.METER));
 	}
 
 	/** 
@@ -235,7 +235,7 @@ public class CenterOfGravity {
 		return _xLRFref;
 	}
 
-	public void set_xLRFref(Amount<Length> _xLRFref) {
+	public void setXLRFref(Amount<Length> _xLRFref) {
 		this._xLRFref = _xLRFref;
 	}
 
@@ -243,7 +243,7 @@ public class CenterOfGravity {
 		return _yLRFref;
 	}
 
-	public void set_yLRFref(Amount<Length> _yLRFref) {
+	public void setYLRFref(Amount<Length> _yLRFref) {
 		this._yLRFref = _yLRFref;
 	}
 
@@ -251,7 +251,7 @@ public class CenterOfGravity {
 		return _zLRFref;
 	}
 
-	public void set_zLRFref(Amount<Length> _zLRFref) {
+	public void setZLRFref(Amount<Length> _zLRFref) {
 		this._zLRFref = _zLRFref;
 	}
 

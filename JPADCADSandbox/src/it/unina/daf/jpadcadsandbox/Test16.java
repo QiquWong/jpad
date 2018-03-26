@@ -43,7 +43,7 @@ public class Test16 {
 //		OCCShell.setDefaultMakeSolid(true);
 //		System.out.println(">>>>>> OCCShell default-make-solid: " + OCCShell.isDefaultMakeSolid());
 
-		fuselage.getFuselageCreator().calculateGeometry(40, 3, 40, 20, 20);
+		fuselage.calculateGeometry(40, 3, 40, 20, 20);
 
 		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(
 				fuselage, 

@@ -295,7 +295,7 @@ public class CPACSWriter {
 		
 		LOGGER.info("[insertFuselage] inserting fuselage into CPACS tree ...");
 		
-		String fuselageID = fuselage.getFuselageCreator().getId() + "_1"; // TODO: parametrize this name getting the trailing part from a function argument
+		String fuselageID = fuselage.getId() + "_1"; // TODO: parametrize this name getting the trailing part from a function argument
 		org.w3c.dom.Element fuselageElement = JPADStaticWriteUtils.createXMLElementWithAttributes(_cpacsDoc, "fuselage",
 				Tuple.of("xsi:type", "fuselageType"),
 				Tuple.of("uID", fuselageID)
@@ -414,9 +414,9 @@ public class CPACSWriter {
 				
 				double zTrans = 0.0;
 				if (i == 0) // <== first collapsed point
-					zTrans = fuselage.getFuselageCreator().getNoseTipOffset().doubleValue(SI.METER);
+					zTrans = fuselage.getNoseTipOffset().doubleValue(SI.METER);
 				if (i == sectionsYZ.size())			
-					zTrans = fuselage.getFuselageCreator().getTailTipOffset().doubleValue(SI.METER);
+					zTrans = fuselage.getTailTipOffset().doubleValue(SI.METER);
 
 				appendNameDescriptionTransformation(_cpacsDoc, sectionElement,
 						listSectionID.get(i) /* name */, "A section created with JPAD" /* description */,
@@ -668,14 +668,14 @@ public class CPACSWriter {
 
 		List<List<PVector>> result = new ArrayList<>();
 		
-		Amount<Length> noseLength = fuselage.getFuselageCreator().getNoseLength();
+		Amount<Length> noseLength = fuselage.getNoseLength();
 		System.out.println(">> Nose length: " + noseLength);
-		Amount<Length> noseCapStation = fuselage.getFuselageCreator().getNoseCapOffset();
+		Amount<Length> noseCapStation = fuselage.getNoseCapOffset();
 		System.out.println(">> Nose cap x-station: " + noseCapStation);
-		Double xbarNoseCap = fuselage.getFuselageCreator().getNoseCapOffsetPercent(); // normalized with noseLength
+		Double xbarNoseCap = fuselage.getNoseCapOffsetPercent(); // normalized with noseLength
 		System.out.println(">> Nose cap x-station normalized: " + xbarNoseCap);
 		Amount<Length> zNoseTip = Amount.valueOf( 
-				fuselage.getFuselageCreator().getZOutlineXZLowerAtX(0.0),
+				fuselage.getZOutlineXZLowerAtX(0.0),
 				SI.METER);
 		System.out.println(">> Nose tip z: " + zNoseTip);
 
@@ -700,7 +700,7 @@ public class CPACSWriter {
 		
 		//======================================================================== NOSECAP-TIP-COLLAPSED-SECTION
 		// get the n. point in the sections
-		int nSectionPoints = fuselage.getFuselageCreator()
+		int nSectionPoints = fuselage
 				.getUniqueValuesYZSectionCurve(Amount.valueOf(xmtPatch1.get(1), SI.METER)).size();
 		// add a list of collapsed PVector-s, at (0, 0, z_Nose)
 //		result.add(
@@ -710,7 +710,7 @@ public class CPACSWriter {
 //					);
 		// better this than collapsing
 		result.add(
-				fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(Amount.valueOf(0.5*xmtPatch1.get(1), SI.METER)).stream()
+				fuselage.getUniqueValuesYZSectionCurve(Amount.valueOf(0.5*xmtPatch1.get(1), SI.METER)).stream()
 					.map(pt -> new PVector(0.0f, pt.y, pt.z))
 					.collect(Collectors.toList())
 				);
@@ -718,7 +718,7 @@ public class CPACSWriter {
 		xmtPatch1.stream()
 				 .skip(1) // skip x=0
 				 .map(x -> Amount.valueOf(x, SI.METER))
-				 .forEach(x -> result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(x)));
+				 .forEach(x -> result.add(fuselage.getUniqueValuesYZSectionCurve(x)));
 		
 		System.out.println(">> Nose-cap trunk selected x-stations (m), Patch-1: " + xmtPatch1.toString());
 		
@@ -747,13 +747,13 @@ public class CPACSWriter {
 		xmtPatch2.stream()
 				 .skip(1) // do not duplicate last section of previous patch
 				 .map(x -> Amount.valueOf(x, SI.METER))
-				 .forEach(x -> result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(x)));
+				 .forEach(x -> result.add(fuselage.getUniqueValuesYZSectionCurve(x)));
 		
 		// nose Patch-2 terminal section
-//		result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(noseLength));
+//		result.add(fuselage.getUniqueValuesYZSectionCurve(noseLength));
 		// do not duplicate this section
 
-		Amount<Length> cylinderLength = fuselage.getFuselageCreator().getCylinderLength();
+		Amount<Length> cylinderLength = fuselage.getCylinderLength();
 
 		LOGGER.info("[getFuselageYZSections] Fuselage cylindrical trunk: x=" + noseLength + " to x=" + noseLength.plus(cylinderLength));
 
@@ -769,22 +769,22 @@ public class CPACSWriter {
 		//======================================================================== PATCH-3		
 		// Cylindrical trunk mid section
 		result.add(
-				fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(
+				fuselage.getUniqueValuesYZSectionCurve(
 						noseLength.plus(cylinderLength.times(0.5))
 						)
 				);
 
 		// Cylindrical trunk terminal section
 		result.add(
-				fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(
+				fuselage.getUniqueValuesYZSectionCurve(
 						noseLength.plus(cylinderLength)
 						)
 				);
 
 		// Tail trunk
-		Amount<Length> tailLength = fuselage.getFuselageCreator().getTailLength();
-		Amount<Length> tailCapLength = fuselage.getFuselageCreator().getTailCapOffset();
-		Amount<Length> fuselageLength = fuselage.getFuselageCreator().getFuselageLength();
+		Amount<Length> tailLength = fuselage.getTailLength();
+		Amount<Length> tailCapLength = fuselage.getTailCapOffset();
+		Amount<Length> fuselageLength = fuselage.getFuselageLength();
 
 		LOGGER.info("[getFuselageYZSections] Tail trunk (no cap): x=" 
 				+ noseLength.plus(cylinderLength) + " to x=" + fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)) + " (fus. length - tail cap length)"
@@ -804,7 +804,7 @@ public class CPACSWriter {
 		xmtPatch4.stream()
 		 		 .skip(1) // do not duplicate last section of previous patch
 				 .map(x -> Amount.valueOf(x, SI.METER))
-				 .forEach(x -> result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(x)));
+				 .forEach(x -> result.add(fuselage.getUniqueValuesYZSectionCurve(x)));
 		
 		// tail cap patch
 
@@ -823,7 +823,7 @@ public class CPACSWriter {
 		System.out.println(">> Tail cap trunk selected x-stations (m), Patch-5: " + xmtPatch5.toString());
 		
 		Amount<Length> zTailTip = Amount.valueOf( 
-				fuselage.getFuselageCreator().getZOutlineXZLowerAtX(fuselageLength.doubleValue(SI.METER)),
+				fuselage.getZOutlineXZLowerAtX(fuselageLength.doubleValue(SI.METER)),
 				SI.METER);
 		
 //		CADVertex vertexTailTip = OCCUtils.theFactory.newVertex(
@@ -833,7 +833,7 @@ public class CPACSWriter {
 		xmtPatch5.stream()
 		 		 .skip(1) // do not duplicate last section of previous patch
 				 .map(x -> Amount.valueOf(x, SI.METER))
-				 .forEach(x -> result.add(fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(x)));
+				 .forEach(x -> result.add(fuselage.getUniqueValuesYZSectionCurve(x)));
 
 		
 		//======================================================================== TAIL-TIP-COLLAPSED-SECTION		
@@ -848,7 +848,7 @@ public class CPACSWriter {
 //					);
 		// better this than collapsing
 		result.add(
-				fuselage.getFuselageCreator().getUniqueValuesYZSectionCurve(
+				fuselage.getUniqueValuesYZSectionCurve(
 						Amount.valueOf(xmtPatch5.get(xmtPatch5.size() - 1), SI.METER)).stream()
 					.map(pt -> new PVector((float) fuselageLength.doubleValue(SI.METER), pt.y, pt.z))
 					.collect(Collectors.toList())
@@ -867,7 +867,7 @@ public class CPACSWriter {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+						fuselage.getZOutlineXZUpperAtX(x)
 				})
 				.collect(Collectors.toList());		
 		// points z's on nose outline curve, XZ, lower
@@ -875,15 +875,15 @@ public class CPACSWriter {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+						fuselage.getZOutlineXZLowerAtX(x)
 				})
 				.collect(Collectors.toList());
 		// points y's on nose outline curve, XY, right
 		List<double[]> pointsNoseCapSideRight = xmtPatch1.stream()
 				.map(x -> new double[]{
 						x,
-						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-						fuselage.getFuselageCreator().getCamberZAtX(x)
+						fuselage.getYOutlineXYSideRAtX(x),
+						fuselage.getCamberZAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -893,15 +893,15 @@ public class CPACSWriter {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+						fuselage.getZOutlineXZLowerAtX(x)
 				})
 				.collect(Collectors.toList());
 		
 		List<double[]> pointsNoseSideRight = xmtPatch2.stream()
 				.map(x -> new double[]{
 						x,
-						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-						fuselage.getFuselageCreator().getCamberZAtX(x)
+						fuselage.getYOutlineXYSideRAtX(x),
+						fuselage.getCamberZAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -912,7 +912,7 @@ public class CPACSWriter {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+						fuselage.getZOutlineXZUpperAtX(x)
 				})
 				.collect(Collectors.toList());
 		// points z's on cylinder outline curve, XZ, lower
@@ -920,7 +920,7 @@ public class CPACSWriter {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+						fuselage.getZOutlineXZLowerAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -928,8 +928,8 @@ public class CPACSWriter {
 		List<double[]> pointsCylinderSideRight = xmtPatch3.stream()
 				.map(x -> new double[]{
 						x,
-						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-						fuselage.getFuselageCreator().getCamberZAtX(x)
+						fuselage.getYOutlineXYSideRAtX(x),
+						fuselage.getCamberZAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -939,7 +939,7 @@ public class CPACSWriter {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+						fuselage.getZOutlineXZUpperAtX(x)
 				})
 				.collect(Collectors.toList());
 		// points z's on nose outline curve, XZ, lower
@@ -947,7 +947,7 @@ public class CPACSWriter {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+						fuselage.getZOutlineXZLowerAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -955,8 +955,8 @@ public class CPACSWriter {
 		List<double[]> pointsTailSideRight = xmtPatch4.stream()
 				.map(x -> new double[]{
 						x,
-						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-						fuselage.getFuselageCreator().getCamberZAtX(x)
+						fuselage.getYOutlineXYSideRAtX(x),
+						fuselage.getCamberZAtX(x)
 				})
 				.collect(Collectors.toList());
 		
@@ -965,7 +965,7 @@ public class CPACSWriter {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+						fuselage.getZOutlineXZUpperAtX(x)
 				})
 				.collect(Collectors.toList());
 //		pointsTailCapXZUpper.add(vertexTailTip.pnt()); // add tail tip point
@@ -975,7 +975,7 @@ public class CPACSWriter {
 				.map(x -> new double[]{
 						x,
 						0.0,
-						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+						fuselage.getZOutlineXZLowerAtX(x)
 				})
 				.collect(Collectors.toList());
 //		pointsTailCapXZLower.add(vertexTailTip.pnt()); // add tail tip point
@@ -984,8 +984,8 @@ public class CPACSWriter {
 		List<double[]> pointsTailCapSideRight = xmtPatch5.stream()
 				.map(x -> new double[]{
 						x,
-						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-						fuselage.getFuselageCreator().getCamberZAtX(x)
+						fuselage.getYOutlineXYSideRAtX(x),
+						fuselage.getCamberZAtX(x)
 				})
 				.collect(Collectors.toList());
 //		pointsTailCapSideRight.add(vertexTailTip.pnt()); // add tail tip point

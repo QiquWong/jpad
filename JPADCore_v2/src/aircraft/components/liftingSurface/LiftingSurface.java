@@ -381,7 +381,7 @@ public class LiftingSurface {
 						pow(0.3*_liftingSurfaceCreator.getLiftingSurfaceACToWingACdistance().doubleValue(NonSI.FOOT), 0.704) * 
 						pow(cos(_liftingSurfaceCreator.getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)), -1) *
 						pow(_liftingSurfaceCreator.getAspectRatio(), 0.166) * 
-						pow(1 + aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(NonSI.FOOT)/
+						pow(1 + aircraft.getFuselage().getEquivalentDiameterCylinderGM().doubleValue(NonSI.FOOT)/
 								_liftingSurfaceCreator.getSpan().doubleValue(NonSI.FOOT), -0.25) * 
 						pow(1 + _liftingSurfaceCreator.getTotalControlSurfaceArea().doubleValue(MyUnits.FOOT2)/
 								_liftingSurfaceCreator.getSurfacePlanform().doubleValue(MyUnits.FOOT2), 0.1),
@@ -577,7 +577,7 @@ public class LiftingSurface {
 						pow(0.3*_liftingSurfaceCreator.getLiftingSurfaceACToWingACdistance().doubleValue(NonSI.FOOT), 0.704) * 
 						pow(cos(_liftingSurfaceCreator.getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)), -1) *
 						pow(_liftingSurfaceCreator.getAspectRatio(), 0.166) * 
-						pow(1 + aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(NonSI.FOOT)/
+						pow(1 + aircraft.getFuselage().getEquivalentDiameterCylinderGM().doubleValue(NonSI.FOOT)/
 								_liftingSurfaceCreator.getSpan().doubleValue(NonSI.FOOT), -0.25) * 
 						pow(1 +_liftingSurfaceCreator.getTotalControlSurfaceArea().doubleValue(MyUnits.FOOT2)/
 								_liftingSurfaceCreator.getSurfacePlanform().doubleValue(MyUnits.FOOT2), 0.1),
@@ -694,9 +694,9 @@ public class LiftingSurface {
 						 _zApexConstructionAxes
 				);
 
-		_cg.set_xLRFref(_liftingSurfaceCreator.getPanels().get(0).getChordRoot().to(SI.METER).times(0.4));
-		_cg.set_yLRFref(_liftingSurfaceCreator.getSpan().to(SI.METER).times(0.5*0.4));
-		_cg.set_zLRFref(Amount.valueOf(0., SI.METER));
+		_cg.setXLRFref(_liftingSurfaceCreator.getPanels().get(0).getChordRoot().to(SI.METER).times(0.4));
+		_cg.setYLRFref(_liftingSurfaceCreator.getSpan().to(SI.METER).times(0.5*0.4));
+		_cg.setZLRFref(Amount.valueOf(0., SI.METER));
 
 		// Initialize _methodsList again to clear it
 		// from old entries

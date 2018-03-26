@@ -272,9 +272,9 @@ public class LandingGears {
 						 _yApexConstructionAxesMainGear,
 						 _zApexConstructionAxesMainGear
 						 );
-		_cg.set_xLRFref(Amount.valueOf(0., SI.METER));
-		_cg.set_yLRFref(Amount.valueOf(0., SI.METER));
-		_cg.set_zLRFref(Amount.valueOf(0., SI.METER));
+		_cg.setXLRFref(Amount.valueOf(0., SI.METER));
+		_cg.setYLRFref(Amount.valueOf(0., SI.METER));
+		_cg.setZLRFref(Amount.valueOf(0., SI.METER));
 
 		// Initialize _methodsList again to clear it
 		// from old entries
@@ -300,9 +300,9 @@ public class LandingGears {
 			}
 			_xCG = Amount.valueOf(
 					(((aircraft.getLandingGears().getNoseMass()
-							.times(aircraft.getFuselage().getFuselageCreator().getFuselageLength().times(kFusLengthNoseGear)))
+							.times(aircraft.getFuselage().getFuselageLength().times(kFusLengthNoseGear)))
 					.plus(aircraft.getLandingGears().getMainMass()
-							.times(aircraft.getFuselage().getFuselageCreator().getFuselageLength().times(kFusLengthMainGear))))
+							.times(aircraft.getFuselage().getFuselageLength().times(kFusLengthMainGear))))
 					.divide(aircraft.getLandingGears().getMassMap().get(MethodEnum.TORENBEEK_1982)))
 					.getEstimatedValue(),
 					SI.METER

@@ -156,8 +156,8 @@ public class Systems {
 				
 				double pel = 0.0;
 				Amount<Volume> fuselageCabinVolume = Amount.valueOf(
-						aircraft.getFuselage().getFuselageCreator().getCylinderSectionArea().doubleValue(SI.SQUARE_METRE)
-						*aircraft.getFuselage().getFuselageCreator().getCylinderLength().doubleValue(SI.METER), 
+						aircraft.getFuselage().getCylinderSectionArea().doubleValue(SI.SQUARE_METRE)
+						*aircraft.getFuselage().getCylinderLength().doubleValue(SI.METER), 
 						SI.CUBIC_METRE
 						);
 				if(fuselageCabinVolume.doubleValue(SI.CUBIC_METRE) < 227)
@@ -181,7 +181,7 @@ public class Systems {
 		switch (method) {
 		case TORENBEEK_1982 : {
 			_airConditioningAndAntiIcingMass = Amount.valueOf(
-					14.0*Math.pow(aircraft.getFuselage().getFuselageCreator().getCylinderLength().doubleValue(SI.METER), 1.28), 
+					14.0*Math.pow(aircraft.getFuselage().getCylinderLength().doubleValue(SI.METER), 1.28), 
 					SI.KILOGRAM);
 		} break;
 

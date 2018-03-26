@@ -162,9 +162,9 @@ public class AircraftTestTopView extends Application {
 		// get data vectors from fuselage discretization
 		//--------------------------------------------------
 		// left curve, upperview
-		List<Amount<Length>> vX1Left = fuselage.getFuselageCreator().getOutlineXYSideLCurveAmountX();
+		List<Amount<Length>> vX1Left = fuselage.getOutlineXYSideLCurveAmountX();
 		int nX1Left = vX1Left.size();
-		List<Amount<Length>> vY1Left = fuselage.getFuselageCreator().getOutlineXYSideLCurveAmountY();
+		List<Amount<Length>> vY1Left = fuselage.getOutlineXYSideLCurveAmountY();
 
 		Double[][] dataOutlineXYLeftCurve = new Double[nX1Left][2];
 		IntStream.range(0, nX1Left)
@@ -174,9 +174,9 @@ public class AircraftTestTopView extends Application {
 		});
 
 		// right curve, upperview
-		List<Amount<Length>> vX2Right = fuselage.getFuselageCreator().getOutlineXYSideRCurveAmountX();
+		List<Amount<Length>> vX2Right = fuselage.getOutlineXYSideRCurveAmountX();
 		int nX2Right = vX2Right.size();
-		List<Amount<Length>> vY2Right = fuselage.getFuselageCreator().getOutlineXYSideRCurveAmountY();
+		List<Amount<Length>> vY2Right = fuselage.getOutlineXYSideRCurveAmountY();
 
 		Double[][] dataOutlineXYRightCurve = new Double[nX2Right][2];
 		IntStream.range(0, nX2Right)
@@ -349,10 +349,10 @@ public class AircraftTestTopView extends Application {
 		for (int i=0; i<nacellePointsList.size(); i++)
 			listDataArrayTopView.add(nacellePointsList.get(i));
 
-		double xMaxTopView = 1.40*fuselage.getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
-		double xMinTopView = -1.40*fuselage.getFuselageCreator().getFuselageLength().divide(2).doubleValue(SI.METRE);
-		double yMaxTopView = 1.20*fuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
-		double yMinTopView = -0.20*fuselage.getFuselageCreator().getFuselageLength().doubleValue(SI.METRE);
+		double xMaxTopView = 1.40*fuselage.getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double xMinTopView = -1.40*fuselage.getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double yMaxTopView = 1.20*fuselage.getFuselageLength().doubleValue(SI.METRE);
+		double yMinTopView = -0.20*fuselage.getFuselageLength().doubleValue(SI.METRE);
 			
 		D3PlotterOptions optionsTopView = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
