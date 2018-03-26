@@ -4912,7 +4912,7 @@ public class ACAerodynamicAndStabilityManager {
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().get(
 												MethodEnum.SEMIEMPIRICAL),
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(), 
-										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
 												SI.METER)
 										);
@@ -5037,7 +5037,7 @@ public class ACAerodynamicAndStabilityManager {
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().get(
 												MethodEnum.INPUT),
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(), 
-										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
 												SI.METER)
 										);
@@ -5131,7 +5131,7 @@ public class ACAerodynamicAndStabilityManager {
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
 												MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC),
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(), 
-										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
 												SI.METER)
 										);
@@ -5180,7 +5180,7 @@ public class ACAerodynamicAndStabilityManager {
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
 												MethodEnum.NASA_BLACKWELL),
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(), 
-										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
 												SI.METER)
 										);
@@ -5292,7 +5292,7 @@ public class ACAerodynamicAndStabilityManager {
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
 												MethodEnum.INPUT),
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(), 
-										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
 												SI.METER)
 										);
@@ -5386,7 +5386,7 @@ public class ACAerodynamicAndStabilityManager {
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
 												MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC),
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(), 
-										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
 												SI.METER)
 										);
@@ -5435,7 +5435,7 @@ public class ACAerodynamicAndStabilityManager {
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
 												MethodEnum.NASA_BLACKWELL),
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(), 
-										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
 												SI.METER)
 										);
@@ -5547,7 +5547,7 @@ public class ACAerodynamicAndStabilityManager {
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
 												MethodEnum.INPUT),
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(), 
-										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
 												SI.METER)
 										);
@@ -5647,7 +5647,7 @@ public class ACAerodynamicAndStabilityManager {
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().get(
 												MethodEnum.SEMIEMPIRICAL),
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(), 
-										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
 												SI.METER)
 										);
@@ -5772,7 +5772,7 @@ public class ACAerodynamicAndStabilityManager {
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().get(
 												MethodEnum.INPUT),
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(), 
-										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
 												SI.METER)
 										);
@@ -12777,8 +12777,8 @@ public class ACAerodynamicAndStabilityManager {
 					//---------------------------------------------------------------
 					// XCG AND ZCG POSITIONS FUSELAGE
 					if(theAircraft.getFuselage() != null) {
-						xCGFuselage = theAircraft.getFuselage().getCG().getXBRF().to(SI.METER);
-						zCGFuselage = theAircraft.getFuselage().getCG().getZBRF().to(SI.METER);
+						xCGFuselage = theAircraft.getFuselage().getTheBalance().getCG().getXBRF().to(SI.METER);
+						zCGFuselage = theAircraft.getFuselage().getTheBalance().getCG().getZBRF().to(SI.METER);
 					}
 
 					//---------------------------------------------------------------
@@ -26349,19 +26349,19 @@ public class ACAerodynamicAndStabilityManager {
 									MomentCalc.calcCNBetaFuselage(
 											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFusDesDatabaseReader(), 
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getVeDSCDatabaseReader(),
-											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getFuselageFinenessRatio(), 
-											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getNoseFinenessRatio(), 
-											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailFinenessRatio(), 
+											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageFinenessRatio(), 
+											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getNoseFinenessRatio(), 
+											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getTailFinenessRatio(), 
 											((x*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
 													+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)
 													+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER))
-											/_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER),
-											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterGM(),
+											/_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageLength().doubleValue(SI.METER),
+											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterGM(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSurfacePlanform(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSpan(),
 											Amount.valueOf(
-													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 															_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
 															.getXacLRF().get(
 																	_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
@@ -26370,8 +26370,8 @@ public class ACAerodynamicAndStabilityManager {
 															),
 													SI.METER
 													), 
-											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailTipOffset().doubleValue(SI.METER)
-											/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().doubleValue(SI.METER)/2),
+											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getTailTipOffset().doubleValue(SI.METER)
+											/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight().doubleValue(SI.METER)/2),
 											_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getPositionRelativeToAttachment(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAspectRatio(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPositionRelativeToAttachment()
@@ -26422,26 +26422,26 @@ public class ACAerodynamicAndStabilityManager {
 											mach, 
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getVeDSCDatabaseReader().get_KFv_vs_bv_over_dfv(
 													_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER), 
-													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 															_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
 															.getXacLRF().get(
 																	_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
 																	).plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes())
 															.doubleValue(SI.METER)
 															), 
-													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailTipOffset().doubleValue(SI.METER)
-													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().doubleValue(SI.METER)/2)
+													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getTailTipOffset().doubleValue(SI.METER)
+													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight().doubleValue(SI.METER)/2)
 													),
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getVeDSCDatabaseReader().get_KWv_vs_zw_over_rf(
 													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPositionRelativeToAttachment(),
 													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getAspectRatio(),
-													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailTipOffset().doubleValue(SI.METER)
-													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().doubleValue(SI.METER)/2)),
+													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getTailTipOffset().doubleValue(SI.METER)
+													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight().doubleValue(SI.METER)/2)),
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getVeDSCDatabaseReader().get_KHv_vs_zh_over_bv1(
 													_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getPositionRelativeToAttachment(),
 													_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAspectRatio(),
-													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailTipOffset().doubleValue(SI.METER)
-													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().doubleValue(SI.METER)/2), 
+													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getTailTipOffset().doubleValue(SI.METER)
+													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight().doubleValue(SI.METER)/2), 
 													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPositionRelativeToAttachment())
 
 											)
@@ -26739,19 +26739,19 @@ public class ACAerodynamicAndStabilityManager {
 									MomentCalc.calcCNBetaFuselage(
 											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFusDesDatabaseReader(), 
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getVeDSCDatabaseReader(),
-											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getFuselageFinenessRatio(), 
-											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getNoseFinenessRatio(), 
-											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailFinenessRatio(), 
+											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageFinenessRatio(), 
+											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getNoseFinenessRatio(), 
+											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getTailFinenessRatio(), 
 											((x*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
 													+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)
 													+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER))
-											/_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getFuselageLength().doubleValue(SI.METER),
-											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterGM(),
+											/_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageLength().doubleValue(SI.METER),
+											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterGM(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSurfacePlanform(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpan(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSpan(),
 											Amount.valueOf(
-													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 															_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
 															.getXacLRF().get(
 																	_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
@@ -26760,8 +26760,8 @@ public class ACAerodynamicAndStabilityManager {
 															),
 													SI.METER
 													), 
-											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailTipOffset().doubleValue(SI.METER)
-											/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().doubleValue(SI.METER)/2),
+											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getTailTipOffset().doubleValue(SI.METER)
+											/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight().doubleValue(SI.METER)/2),
 											_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getPositionRelativeToAttachment(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAspectRatio(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPositionRelativeToAttachment()
@@ -26823,26 +26823,26 @@ public class ACAerodynamicAndStabilityManager {
 											mach, 
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getVeDSCDatabaseReader().get_KFv_vs_bv_over_dfv(
 													_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER), 
-													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 															_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
 															.getXacLRF().get(
 																	_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
 																	).plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes())
 															.doubleValue(SI.METER)
 															), 
-													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailTipOffset().doubleValue(SI.METER)
-													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().doubleValue(SI.METER)/2)
+													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getTailTipOffset().doubleValue(SI.METER)
+													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight().doubleValue(SI.METER)/2)
 													),
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getVeDSCDatabaseReader().get_KWv_vs_zw_over_rf(
 													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPositionRelativeToAttachment(),
 													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getAspectRatio(),
-													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailTipOffset().doubleValue(SI.METER)
-													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().doubleValue(SI.METER)/2)),
+													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getTailTipOffset().doubleValue(SI.METER)
+													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight().doubleValue(SI.METER)/2)),
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getVeDSCDatabaseReader().get_KHv_vs_zh_over_bv1(
 													_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getPositionRelativeToAttachment(),
 													_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getAspectRatio(),
-													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getTailTipOffset().doubleValue(SI.METER)
-													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().doubleValue(SI.METER)/2), 
+													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getTailTipOffset().doubleValue(SI.METER)
+													/(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight().doubleValue(SI.METER)/2), 
 													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPositionRelativeToAttachment())
 
 											)
