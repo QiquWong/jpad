@@ -200,7 +200,7 @@ public class WingAerodynamicCalc {
 		input.setLeRadiusDistributionActual(MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyMathUtils.getInterpolatedValue1DLinear(
 						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationInput())), 
-				        MyArrayUtils.convertListOfAmountTodoubleArray(input.getLeRadiusDistribution()),
+				        MyArrayUtils.convertToDoublePrimitive(input.getLeRadiusDistribution()),
 						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual()))
 						), SI.METER));
 		

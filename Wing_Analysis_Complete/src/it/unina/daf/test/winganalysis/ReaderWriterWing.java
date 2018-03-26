@@ -259,7 +259,7 @@ public class ReaderWriterWing {
 		
 		List<String> leRadiusAirfoil = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//leading_edge_radius_distribution").get(0));
 		for(int i=0; i<leRadiusAirfoil.size(); i++)
-			input.getLeRadiusDistribution().add(Amount.valueOf(Double.valueOf(leRadiusAirfoil.get(i)), SI.METER));
+			input.getLeRadiusDistribution().add(Double.valueOf(leRadiusAirfoil.get(i)));
 
 
 	// WARNINGS

@@ -44,8 +44,9 @@ public class InputOutputTree {
 	private double  meanThickness;
 	
 	private List<Double> yAdimensionalStationInput;
+	List<Double> leRadiusDistribution;
 	private List<Amount<Length>> chordDistributionInput,
-	xLEDistributionInput, leRadiusDistribution;;
+	xLEDistributionInput;
 	
 	
 	private List<Amount<Angle>> alphaZeroLiftDistributionInput,
@@ -1253,12 +1254,12 @@ public class InputOutputTree {
 	}
 
 
-	public List<Amount<Length>> getLeRadiusDistribution() {
+	public List<Double> getLeRadiusDistribution() {
 		return leRadiusDistribution;
 	}
 
 
-	public void setLeRadiusDistribution(List<Amount<Length>> leRadiusDistribution) {
+	public void setLeRadiusDistribution(List<Double> leRadiusDistribution) {
 		this.leRadiusDistribution = leRadiusDistribution;
 	}
 
