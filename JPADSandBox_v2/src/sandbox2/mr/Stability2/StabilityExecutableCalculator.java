@@ -32,10 +32,10 @@ import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-import jahuwaldt.aero.StdAtmos1976;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyVariableToWrite;
+import standaloneutils.aerotools.aero.StdAtmos1976;
 
 /************************************************************************************************************************
  * This class contains all the calculators for the stability	

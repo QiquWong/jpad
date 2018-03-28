@@ -9,7 +9,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import jahuwaldt.aero.StdAtmos1976;
+import standaloneutils.aerotools.aero.StdAtmos1976;
 
 /**
  * Hold atmosphere model and sea level constants (temperature = 15 °C).

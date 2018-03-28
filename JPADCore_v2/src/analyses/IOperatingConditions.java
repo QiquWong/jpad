@@ -12,8 +12,8 @@ import javax.measure.quantity.VolumetricDensity;
 
 import org.jscience.physics.amount.Amount;
 
-import jahuwaldt.aero.StdAtmos1976;
 import standaloneutils.MyInterpolatingFunction;
+import standaloneutils.aerotools.aero.StdAtmos1976;
 
 public interface IOperatingConditions {
 

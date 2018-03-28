@@ -18,11 +18,12 @@ import org.jscience.physics.amount.Amount;
 
 import configuration.MyConfiguration;
 //WARNING: Density is in g/cm3 ( = 1000 kg/m3)
-import jahuwaldt.aero.StdAtmos1976;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyXMLReaderUtils;
+import standaloneutils.aerotools.aero.StdAtmos;
+import standaloneutils.aerotools.aero.StdAtmos1976;
 import standaloneutils.atmosphere.PressureCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.atmosphere.TemperatureCalc;

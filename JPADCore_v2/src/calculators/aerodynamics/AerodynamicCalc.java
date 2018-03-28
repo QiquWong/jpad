@@ -24,9 +24,9 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.AirfoilTypeEnum;
-import jahuwaldt.aero.StdAtmos1976;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
+import standaloneutils.aerotools.aero.StdAtmos1976;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
 /**
@@ -232,7 +232,7 @@ public class AerodynamicCalc {
 	 * This static method allows users to calculate the crest critical Mach number using the 
 	 * Kroo graph which adapts the Shevell graph for swept wing. From this graph the following
 	 * equation has been derived (see CIORNEI, Simona: Mach Number, Relative Thickness, Sweep 
-	 * and Lift Coefficient Of The Wing – An Empirical Investigation of Parameters and Equations.
+	 * and Lift Coefficient Of The Wing ï¿½ An Empirical Investigation of Parameters and Equations.
 	 * Hamburg University of Applied Sciences, Department of Automotive and Aeronautical 
 	 * Engineering, Project, 2005). Furthermore a correction for the modern supercritical 
 	 * airfoils have been added in order to make results more reliable.
