@@ -54,21 +54,21 @@
 	-->
 	<performance 
 			file="analysis_performance_CS300.xml"
-			plot="TRUE"
-			create_CSV="TRUE"
+			plot="FALSE"
+			create_CSV="FALSE"
 			take_off="FALSE"
-			climb="TRUE"
+			climb="FALSE"
 			cruise="FALSE"
 			descent="FALSE"
 			landing="FALSE"
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
-			mission_profile="FALSE"
+			mission_profile="TRUE"
 	/>
 	<costs 
 			file="analysis_costs_CS300.xml"
-			plot="FALSE"
-			create_CSV="FALSE"
+			plot="TRUE"
+			create_CSV="TRUE"
 			doc_capital="TRUE"
 			doc_capital_method="AEA"
 			doc_crew="TRUE"

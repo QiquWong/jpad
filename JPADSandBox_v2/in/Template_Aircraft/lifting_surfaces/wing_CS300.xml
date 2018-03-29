@@ -26,22 +26,22 @@
 		</equivalent_wing>
 		<panels>
             <panel id="CS300 - Inner panel">
-                <span unit="m">6.05475</span>
+                <span unit="m">6.05</span>
                 <dihedral unit="deg">5.5</dihedral>
                 <sweep_leading_edge unit="deg">30</sweep_leading_edge>
                 <inner_section>
-                    <chord unit="m">6.743</chord>
+                    <chord unit="m">6.74</chord>
                     <airfoil file="ROOT_CS300.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
-                    <chord unit="m">3.261</chord>
+                    <chord unit="m">3.26</chord>
                     <airfoil file="ROOT_CS300.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
             </panel>
             <panel id="CS300 - Outer panel" linked_to="CS300 - Inner panel">
-                <span unit="m">11.49525</span>
+                <span unit="m">11.5</span>
                 <dihedral unit="deg">5.5</dihedral>
                 <sweep_leading_edge unit="deg">30</sweep_leading_edge>
                 <outer_section>

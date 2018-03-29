@@ -29,12 +29,12 @@
                 <dihedral unit="deg">5.5</dihedral>
                 <sweep_leading_edge unit="deg">10</sweep_leading_edge>
                 <inner_section>
-                    <chord unit="m">4.48</chord>
+                    <chord unit="m">4.37</chord>
                     <airfoil file="ROOT_IRON.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
-                    <chord unit="m">3.47</chord>
+                    <chord unit="m">3.45</chord>
                     <airfoil file="ROOT_IRON.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
