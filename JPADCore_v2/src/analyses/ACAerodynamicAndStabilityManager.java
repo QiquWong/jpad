@@ -30,6 +30,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
 import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import aircraft.Aircraft;
 import analyses.fuselage.FuselageAerodynamicsManager;
@@ -201,8 +202,8 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<Amount<Angle>, List<Double>> _3DHorizontalTailPolarCurveForElevatorDeflection;
 
 	Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable;
-	private Map<ComponentEnum, Map<Boolean, Map<MethodEnum, List<Double>>>> _downwashGradientMap;
-	private Map<ComponentEnum, Map<Boolean, Map<MethodEnum, List<Amount<Angle>>>>> _downwashAngleMap;
+	private Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Double>>>> _downwashGradientMap;
+	private Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Amount<Angle>>>>> _downwashAngleMap;
 	private List<Tuple3<MethodEnum, Double, Double>> _buffetBarrierCurve = new ArrayList<>();
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbFuselage = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbVertical = new HashMap<>();
@@ -301,13 +302,12 @@ public class ACAerodynamicAndStabilityManager {
 		
 	}
 
+	private void initializeDataForDownwashCanard() {
+		
+	}
+	
 	private void initializeDataForDownwash() {
 
-		if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard() != null) {
-		//TODO initialize distances canard wing 
-		}
-		
-		
 		//...................................................................................
 		// PRELIMINARY CHECKS
 		//...................................................................................
@@ -589,11 +589,11 @@ public class ACAerodynamicAndStabilityManager {
 		
 		//Initializing Maps
 		
-		Map<MethodEnum, List<Amount<Angle>>> downwashAngleMethod = new HashMap<>();
-		Map<MethodEnum, List<Double>> downwashGradientMethod = new HashMap<>();
+		Map<Boolean, List<Amount<Angle>>> downwashAngleConstant = new HashMap<>();
+		Map<Boolean, List<Double>> downwashGradientConstant = new HashMap<>();
 		
-		Map<Boolean, Map<MethodEnum, List<Amount<Angle>>>> downwashAngleConstant = new HashMap<>();
-		Map<Boolean, Map<MethodEnum, List<Double>>> downwashGradientConstant = new HashMap<>();
+		Map<MethodEnum, Map<Boolean, List<Amount<Angle>>>> downwashAngleMethod = new HashMap<>();
+		Map<MethodEnum, Map<Boolean, List<Double>>> downwashGradientMethod = new HashMap<>();
 		
 		//...................................................................................		
 		// ROSKAM (constant gradient)
@@ -631,12 +631,11 @@ public class ACAerodynamicAndStabilityManager {
 					);
 
 		
-		downwashGradientMethod.put(MethodEnum.ROSKAM, downwashGradientConstantList);	
-		downwashGradientConstant.put(Boolean.TRUE, downwashGradientMethod);
-		
+		downwashGradientConstant.put(Boolean.TRUE, downwashGradientConstantList);
 
 
-		double epsilonZeroRoskam = - downwashGradientMethod.get(MethodEnum.ROSKAM).get(0)
+
+		double epsilonZeroRoskam = - downwashGradientConstant.get(Boolean.TRUE).get(0)
 				* alphaZeroLiftWingCurrent.doubleValue(NonSI.DEGREE_ANGLE);
 
 		List<Amount<Angle>> downwashAngleConstantList = new ArrayList<>();
@@ -644,71 +643,17 @@ public class ACAerodynamicAndStabilityManager {
 			downwashAngleConstantList.add(
 					Amount.valueOf(
 							epsilonZeroRoskam 
-							+ downwashGradientMethod.get(MethodEnum.ROSKAM).get(0)
+							+ downwashGradientConstant.get(Boolean.TRUE).get(0)
 							* _alphaWingList.get(i).doubleValue(NonSI.DEGREE_ANGLE),
 							NonSI.DEGREE_ANGLE
 							)	
 					);
 
-		downwashAngleMethod.put(
-				MethodEnum.ROSKAM,
+		downwashAngleConstant.put(
+				Boolean.TRUE,
 				downwashAngleConstantList
 				);
 
-		downwashAngleConstant.put(Boolean.TRUE, downwashAngleMethod);
-		
-		//.....................................................................................
-		// Filling the global maps ...
-		_downwashAngleMap.put(ComponentEnum.WING,downwashAngleConstant);
-		_downwashGradientMap.put(ComponentEnum.WING, downwashGradientConstant);
-		
-		//...................................................................................
-		// SLINGERLAND (constant gradient)
-		//...................................................................................
-		downwashAngleConstantList.clear();
-		for (int i=0; i<this._theAerodynamicBuilderInterface.getNumberOfAlphasBody(); i++){
-			double cl = 
-					cLAlphaWingCurrent.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue() 
-					* _alphaWingList.get(i).doubleValue(NonSI.DEGREE_ANGLE) 
-					+ cL0WingCurrent;
-
-			downwashAngleConstantList.add(
-					AerodynamicCalc.calculateDownwashAngleLinearSlingerland(
-							_horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER), 
-							_verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE.doubleValue(SI.METER), 
-							cl, 
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getAspectRatio(), 
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan()
-							).to(NonSI.DEGREE_ANGLE)
-					);
-		}
-
-		downwashAngleMethod.put(MethodEnum.SLINGERLAND, downwashAngleConstantList);
-		downwashAngleConstant.put(Boolean.TRUE, downwashAngleMethod);
-		
-
-		downwashGradientMethod.put(
-				MethodEnum.SLINGERLAND,
-				MyArrayUtils.convertDoubleArrayToListDouble(
-						MyArrayUtils.convertFromDoubleToPrimitive(
-								MyMathUtils.calculateArrayFirstDerivative(
-										MyArrayUtils.convertListOfAmountTodoubleArray(_alphaBodyList),
-										MyArrayUtils.convertListOfAmountTodoubleArray(
-												downwashAngleMethod
-												.get(MethodEnum.SLINGERLAND)
-												)
-										)
-								)
-						)
-				);
-		
-		downwashGradientConstant.put(Boolean.TRUE, downwashGradientMethod);
-
-		//.....................................................................................
-		// Filling the global maps ...
-		_downwashGradientMap.put(ComponentEnum.WING, downwashGradientConstant);
-		_downwashAngleMap.put(ComponentEnum.WING, downwashAngleConstant);
 
 		//...................................................................................
 		// ROSKAM (non linear gradient)
@@ -763,11 +708,56 @@ public class ACAerodynamicAndStabilityManager {
 //						)	
 //				);
 
+		//------------- filling global for Roskam
+		downwashGradientMethod.put(MethodEnum.ROSKAM, downwashGradientConstant);	
+		downwashAngleMethod.put(MethodEnum.ROSKAM, downwashAngleConstant);
+		
+		
+		//...................................................................................
+		// SLINGERLAND (constant gradient)
+		//...................................................................................
+		downwashAngleConstantList.clear();
+		for (int i=0; i<this._theAerodynamicBuilderInterface.getNumberOfAlphasBody(); i++){
+			double cl = 
+					cLAlphaWingCurrent.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue() 
+					* _alphaWingList.get(i).doubleValue(NonSI.DEGREE_ANGLE) 
+					+ cL0WingCurrent;
+
+			downwashAngleConstantList.add(
+					AerodynamicCalc.calculateDownwashAngleLinearSlingerland(
+							_horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER), 
+							_verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE.doubleValue(SI.METER), 
+							cl, 
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getAspectRatio(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan()
+							).to(NonSI.DEGREE_ANGLE)
+					);
+		}
+
+		downwashAngleConstant.put(Boolean.TRUE, downwashAngleConstantList);
+		
+
+		downwashGradientConstant.put(
+				Boolean.TRUE,
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						MyArrayUtils.convertFromDoubleToPrimitive(
+								MyMathUtils.calculateArrayFirstDerivative(
+										MyArrayUtils.convertListOfAmountTodoubleArray(_alphaBodyList),
+										MyArrayUtils.convertListOfAmountTodoubleArray(
+												downwashAngleConstant
+												.get(Boolean.TRUE)
+												)
+										)
+								)
+						)
+				);
+
 		//...................................................................................
 		// SLINGERLAND (non linear gradient)
 		//...................................................................................
-		downwashAngleMethod.put(
-				MethodEnum.SLINGERLAND,
+		downwashAngleConstant.put(
+				Boolean.FALSE,
 				AerodynamicCalc.calculateDownwashAngleNonLinearSlingerland(
 						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle(),
 						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(),
@@ -791,8 +781,6 @@ public class ACAerodynamicAndStabilityManager {
 								))
 						)
 				);
-		
-		downwashAngleConstant.put(Boolean.FALSE, downwashAngleMethod);
 
 //		downwashAngleNonLinear.put(
 //				MethodEnum.SLINGERLAND,
@@ -820,21 +808,21 @@ public class ACAerodynamicAndStabilityManager {
 //						)
 //				);
 
-		downwashGradientMethod.put(
-				MethodEnum.SLINGERLAND,
+		downwashGradientConstant.put(
+				Boolean.FALSE,
 				MyArrayUtils.convertDoubleArrayToListDouble(
 						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyMathUtils.calculateArrayFirstDerivative(
 										MyArrayUtils.convertListOfAmountTodoubleArray(_alphaBodyList),
 										MyArrayUtils.convertListOfAmountTodoubleArray(
-												downwashAngleMethod
-												.get(MethodEnum.SLINGERLAND)
+												downwashAngleConstant
+												.get(Boolean.FALSE)
 												)
 										)
 								)
 						)
 				);
-		downwashGradientConstant.put(Boolean.FALSE, downwashGradientMethod);
+
 		
 		_verticalDistanceZeroLiftDirectionWingHTailVariable.put(
 				MethodEnum.SLINGERLAND,
@@ -844,44 +832,50 @@ public class ACAerodynamicAndStabilityManager {
 						_horizontalDistanceQuarterChordWingHTail,
 						_verticalDistanceZeroLiftDirectionWingHTailPARTIAL, 
 						_alphaBodyList, 
-						downwashAngleMethod.get(MethodEnum.SLINGERLAND)
+						downwashAngleConstant.get(Boolean.FALSE)
 						)	
 				);
 		
-		// Filling the global maps ...
-		_downwashGradientMap.put(ComponentEnum.WING, downwashGradientConstant);
-		_downwashAngleMap.put(ComponentEnum.WING, downwashAngleConstant);
-
+		
+		//----------filling slingerland maps
+		
+		downwashAngleMethod.put(MethodEnum.SLINGERLAND, downwashAngleConstant);
+		downwashGradientMethod.put(MethodEnum.SLINGERLAND, downwashGradientConstant);
+		
 		//...................................................................................
 		// FROM INPUT (non linear downwash gradient assigned by the user)
 		//...................................................................................
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DOWNWASH))
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).equals(MethodEnum.INPUT)) {
 				
-				downwashGradientMethod.put(
-						MethodEnum.INPUT,
+				downwashGradientConstant.remove(Boolean.TRUE);
+				downwashAngleConstant.remove(Boolean.TRUE);
+				
+				downwashGradientConstant.put(
+						Boolean.FALSE,
 						_alphaBodyList.stream()
 						.map(ab -> _theAerodynamicBuilderInterface.getAircraftDownwashGradientFunction().value(ab.doubleValue(NonSI.DEGREE_ANGLE)))
 						.collect(Collectors.toList())
 						);
 				
-				downwashAngleMethod.put(
-						MethodEnum.INPUT,
+				downwashAngleConstant.put(
+						Boolean.FALSE,
 						AerodynamicCalc.calculateDownwashAngleFromDownwashGradient(
-								downwashGradientMethod.get(MethodEnum.INPUT),
+								downwashGradientConstant.get(Boolean.FALSE),
 								_alphaBodyList,
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle(),
 								alphaZeroLiftWingCurrent
 								)
 						);
-				downwashAngleConstant.put(Boolean.FALSE, downwashAngleMethod);
-				downwashGradientConstant.put(Boolean.FALSE, downwashGradientMethod);
+				
+				downwashAngleMethod.put(MethodEnum.INPUT, downwashAngleConstant);
+				downwashGradientMethod.put(MethodEnum.INPUT, downwashGradientConstant);
 				
 			}
 		
 		// Filling the global maps ...
-		_downwashGradientMap.put(ComponentEnum.WING, downwashGradientConstant);
-		_downwashAngleMap.put(ComponentEnum.WING, downwashAngleConstant);
+		_downwashGradientMap.put(ComponentEnum.WING, downwashGradientMethod);
+		_downwashAngleMap.put(ComponentEnum.WING, downwashAngleMethod);
 		
 	}
 
@@ -1672,21 +1666,31 @@ public class ACAerodynamicAndStabilityManager {
 			// DOWNWASH CANARD
 			
 		}
-		
-		
-		
-		
+				
 		//========================================================================================================================
 		// WING
 		if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null) {
 
-			if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard()!= null) {
-			initializeDataForDownwash();
-			calculateDownwashDueToCanard();
-			
-			
-			
-			}
+//			if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard()!= null) {
+//			initializeDataForDownwashCanard();
+//			calculateDownwashDueToCanard();
+//			
+//
+//			for (int i=0; i< _alphaWingList.size(); i++) {
+//				_alphaWingList = _alphaBodyList.stream()
+//						.map(x -> x.to(NonSI.DEGREE_ANGLE).minus(_downwashAngleMap.get(ComponentEnum.CANARD).get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//								.get(ComponentEnum.AIRCRAFT)
+//								.get(AerodynamicAndStabilityEnum.DOWNWASH)).get(_theAerodynamicBuilderInterface.getDownwashConstant()).get(i)).plus(
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE))
+//								)
+//						.collect(Collectors.toList()); 
+//
+//
+//				_alphaWingCurrent = _alphaBodyCurrent.to(NonSI.DEGREE_ANGLE)
+//						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
+//
+//			}
+//			}
 			
 			_alphaWingList = _alphaBodyList.stream()
 					.map(x -> x.to(NonSI.DEGREE_ANGLE).plus(
@@ -2665,12 +2669,12 @@ public class ACAerodynamicAndStabilityManager {
 									_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
 									- _downwashAngleMap
 									.get(ComponentEnum.WING)
-									.get(_theAerodynamicBuilderInterface.getDownwashConstant())
 									.get(
 											_theAerodynamicBuilderInterface.getComponentTaskList()
 											.get(ComponentEnum.AIRCRAFT)
 											.get(AerodynamicAndStabilityEnum.DOWNWASH)
 											)
+									.get(_theAerodynamicBuilderInterface.getDownwashConstant())
 									.get(i)
 									.doubleValue(NonSI.DEGREE_ANGLE)
 									+ _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
@@ -2683,8 +2687,8 @@ public class ACAerodynamicAndStabilityManager {
 									_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
 									- _downwashAngleMap
 									.get(ComponentEnum.WING)
-									.get(Boolean.FALSE)
 									.get(MethodEnum.SLINGERLAND)
+									.get(Boolean.FALSE)
 									.get(i)
 									.doubleValue(NonSI.DEGREE_ANGLE)
 									+ _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
@@ -2700,31 +2704,30 @@ public class ACAerodynamicAndStabilityManager {
 				_alphaHTailList = _alphaHTailList.subList(0, lastSortedIndex);
 				
 
-				_downwashAngleMap.get(ComponentEnum.WING).get(Boolean.TRUE).put(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH), 
-						_downwashAngleMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).subList(0, lastSortedIndex)
+				_downwashAngleMap.get(ComponentEnum.WING).get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).put(
+						Boolean.TRUE, 
+						_downwashAngleMap.get(ComponentEnum.WING).get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).get(
+								Boolean.TRUE).subList(0, lastSortedIndex)
 						);
 				
-				_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.TRUE).put(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH), 
-						_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).subList(0, lastSortedIndex)
+				_downwashGradientMap.get(ComponentEnum.WING).get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).put(
+						Boolean.TRUE, 
+						_downwashGradientMap.get(ComponentEnum.WING).get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).get(
+								Boolean.TRUE).subList(0, lastSortedIndex)
 						);
-				
 				
 				if(!_theAerodynamicBuilderInterface.getDownwashConstant()) {
-				_downwashAngleMap.get(ComponentEnum.WING).get(Boolean.FALSE).put(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH), 
-						_downwashAngleMap.get(ComponentEnum.WING).get(Boolean.FALSE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).subList(0, lastSortedIndex)
-						);
-				
-				_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.FALSE).put(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH), 
-						_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.FALSE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).subList(0, lastSortedIndex)
-						);
+					_downwashAngleMap.get(ComponentEnum.WING).get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).put(
+							Boolean.FALSE, 
+							_downwashAngleMap.get(ComponentEnum.WING).get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).get(
+									Boolean.FALSE).subList(0, lastSortedIndex)
+							);
+					
+					_downwashGradientMap.get(ComponentEnum.WING).get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).put(
+							Boolean.FALSE, 
+							_downwashGradientMap.get(ComponentEnum.WING).get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).get(
+									Boolean.FALSE).subList(0, lastSortedIndex)
+							);
 				}
 			}		
 //----------------------------------------------------------------------			
@@ -4698,7 +4701,10 @@ public class ACAerodynamicAndStabilityManager {
 									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
 									.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().to(SI.METER))
 									),
-							_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+							_downwashGradientMap.get(ComponentEnum.WING)
+							.get(MethodEnum.ROSKAM)
+							.get(Boolean.TRUE)
+							.get(0)
 							);
 					break;
 				default:
@@ -4732,7 +4738,7 @@ public class ACAerodynamicAndStabilityManager {
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
 										.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().to(SI.METER))
 										),
-								_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+								_downwashGradientMap.get(ComponentEnum.WING).get(MethodEnum.ROSKAM).get(Boolean.TRUE).get(0)
 								);
 						break;
 					default:
@@ -4756,7 +4762,7 @@ public class ACAerodynamicAndStabilityManager {
 									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
 									.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().to(SI.METER))
 									),
-							_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+							_downwashGradientMap.get(ComponentEnum.WING).get(MethodEnum.ROSKAM).get(Boolean.TRUE).get(0)
 							);
 					break;
 				case INPUT: 
@@ -6659,12 +6665,11 @@ public class ACAerodynamicAndStabilityManager {
 							MyArrayUtils.convertListOfAmountTodoubleArray(
 									_downwashAngleMap
 									.get(ComponentEnum.WING)
-									.get(_theAerodynamicBuilderInterface.getDownwashConstant())
 									.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 											.get(ComponentEnum.AIRCRAFT)
-											.get(AerodynamicAndStabilityEnum.DOWNWASH)
-											)
-									),
+											.get(AerodynamicAndStabilityEnum.DOWNWASH))
+											.get(_theAerodynamicBuilderInterface.getDownwashConstant())
+											),
 							_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
 							),
 					NonSI.DEGREE_ANGLE
@@ -6679,8 +6684,8 @@ public class ACAerodynamicAndStabilityManager {
 							MyArrayUtils.convertListOfAmountTodoubleArray(
 									_downwashAngleMap
 									.get(ComponentEnum.WING)
-									.get(Boolean.FALSE)
 									.get(MethodEnum.SLINGERLAND)
+									.get(Boolean.FALSE)
 									),
 							_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
 							),
@@ -11145,12 +11150,14 @@ public class ACAerodynamicAndStabilityManager {
 
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
-							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							)));
-					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(ComponentEnum.WING).get(Boolean.FALSE).get(
-							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(ComponentEnum.WING).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH))
+							.get(Boolean.TRUE)
+							));
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(ComponentEnum.WING).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH))
+							.get(Boolean.FALSE)
+							));
 					legend.add("Constant downwash gradient");
 					legend.add("Linear downwash gradient");
 
@@ -11201,12 +11208,12 @@ public class ACAerodynamicAndStabilityManager {
 
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(ComponentEnum.WING).get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							)));
-					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.FALSE).get(
+							).get(Boolean.TRUE)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(ComponentEnum.WING).get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							)));
+							).get(Boolean.FALSE)));
 					legend.add("Constant downwash gradient");
 					legend.add("Linear downwash gradient");
 
@@ -23017,40 +23024,40 @@ public class ACAerodynamicAndStabilityManager {
 					currentBoldIndex = currentBoldIndex+1;
 					boldRowIndex.add(currentBoldIndex);
 
-					Object[] downwashConstantGradientArray = new Object[_downwashGradientMap.get(Boolean.TRUE).get(
+					Object[] downwashConstantGradientArray = new Object[_downwashGradientMap.get(ComponentEnum.WING).get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							).size()+2];
+							).get(Boolean.TRUE).size()+2];
 					downwashConstantGradientArray[0] = "Downwash gradient (" 
 							+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
 							+ ")";
 					downwashConstantGradientArray[1] = "";
 					for(int i=0; 
-							i<_downwashGradientMap.get(Boolean.TRUE).get(
+							i<_downwashGradientMap.get(ComponentEnum.WING).get(
 									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-									).size();
+									).get(Boolean.TRUE).size();
 							i++) 
-						downwashConstantGradientArray[i+2] = _downwashGradientMap.get(Boolean.TRUE).get(
+						downwashConstantGradientArray[i+2] = _downwashGradientMap.get(ComponentEnum.WING).get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								).get(i);
+								).get(Boolean.TRUE).get(i);
 
 					dataListDownwash.add(downwashConstantGradientArray);
 					currentBoldIndex = currentBoldIndex+1;
 
-					Object[] downwashAngleConstantGradientArray = new Object[_downwashAngleMap.get(Boolean.TRUE).get(
+					Object[] downwashAngleConstantGradientArray = new Object[_downwashAngleMap.get(ComponentEnum.WING).get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							).size()+2];
+							).get(Boolean.TRUE).size()+2];
 					downwashAngleConstantGradientArray[0] = "Downwash angle (" 
 							+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
 							+ ")";
 					downwashAngleConstantGradientArray[1] = "deg";
 					for(int i=0; 
-							i<_downwashAngleMap.get(Boolean.TRUE).get(
+							i<_downwashAngleMap.get(ComponentEnum.WING).get(
 									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-									).size();
+									).get(Boolean.TRUE).size();
 							i++) 
-						downwashAngleConstantGradientArray[i+2] = _downwashAngleMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
+						downwashAngleConstantGradientArray[i+2] = _downwashAngleMap.get(ComponentEnum.WING).get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								).get(i).doubleValue(NonSI.DEGREE_ANGLE);
+								).get(Boolean.TRUE).get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 					dataListDownwash.add(downwashAngleConstantGradientArray);
 					currentBoldIndex = currentBoldIndex+1;
@@ -23069,9 +23076,9 @@ public class ACAerodynamicAndStabilityManager {
 													.map(a -> a.to(NonSI.DEGREE_ANGLE))
 													.collect(Collectors.toList())
 													),
-											_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
+											_downwashGradientMap.get(ComponentEnum.WING).get(
 													_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-													).stream()
+													).get(Boolean.TRUE).stream()
 											.mapToDouble(dg -> dg)
 											.toArray(),
 											_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
@@ -23090,9 +23097,9 @@ public class ACAerodynamicAndStabilityManager {
 													.map(a -> a.to(NonSI.DEGREE_ANGLE))
 													.collect(Collectors.toList())
 													),
-											_downwashAngleMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
+											_downwashAngleMap.get(ComponentEnum.WING).get(
 													_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-													).stream()
+													).get(Boolean.TRUE).stream()
 											.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
 											.toArray(),
 											_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
@@ -23109,40 +23116,40 @@ public class ACAerodynamicAndStabilityManager {
 					currentBoldIndex = currentBoldIndex+1;
 					boldRowIndex.add(currentBoldIndex);
 
-					Object[] downwashNonLinearGradientArray = new Object[_downwashGradientMap.get(Boolean.FALSE).get(
+					Object[] downwashNonLinearGradientArray = new Object[_downwashGradientMap.get(ComponentEnum.WING).get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							).size()+2];
+							).get(Boolean.FALSE).size()+2];
 					downwashNonLinearGradientArray[0] = "Downwash gradient (" 
 							+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString() 
 							+ ")";
 					downwashNonLinearGradientArray[1] = "";
 					for(int i=0; 
-							i<_downwashGradientMap.get(Boolean.FALSE).get(
+							i<_downwashGradientMap.get(ComponentEnum.WING).get(
 									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-									).size();
+									).get(Boolean.FALSE).size();
 							i++) 
-						downwashNonLinearGradientArray[i+2] = _downwashGradientMap.get(Boolean.FALSE).get(
+						downwashNonLinearGradientArray[i+2] = _downwashGradientMap.get(ComponentEnum.WING).get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								).get(i);
+								).get(Boolean.FALSE).get(i);
 
 					dataListDownwash.add(downwashNonLinearGradientArray);
 					currentBoldIndex = currentBoldIndex+1;
 
-					Object[] downwashAngleNonLinearGradientArray = new Object[_downwashAngleMap.get(Boolean.FALSE).get(
+					Object[] downwashAngleNonLinearGradientArray = new Object[_downwashAngleMap.get(ComponentEnum.WING).get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							).size()+2];
+							).get(Boolean.FALSE).size()+2];
 					downwashAngleNonLinearGradientArray[0] = "Downwash angle (" 
 							+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString() 
 							+ ")";
 					downwashAngleNonLinearGradientArray[1] = "deg";
 					for(int i=0; 
-							i<_downwashAngleMap.get(Boolean.FALSE).get(
+							i<_downwashAngleMap.get(ComponentEnum.WING).get(
 									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-									).size();
+									).get(Boolean.FALSE).size();
 							i++) 
-						downwashAngleNonLinearGradientArray[i+2] = _downwashAngleMap.get(ComponentEnum.WING).get(Boolean.FALSE).get(
+						downwashAngleNonLinearGradientArray[i+2] = _downwashAngleMap.get(ComponentEnum.WING).get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								).get(i).doubleValue(NonSI.DEGREE_ANGLE);
+								).get(Boolean.FALSE).get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 					dataListDownwash.add(downwashAngleNonLinearGradientArray);
 					currentBoldIndex = currentBoldIndex+1;
@@ -23161,9 +23168,9 @@ public class ACAerodynamicAndStabilityManager {
 													.map(a -> a.to(NonSI.DEGREE_ANGLE))
 													.collect(Collectors.toList())
 													),
-											_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.FALSE).get(
+											_downwashGradientMap.get(ComponentEnum.WING).get(
 													_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-													).stream()
+													).get(Boolean.FALSE).stream()
 											.mapToDouble(dg -> dg)
 											.toArray(),
 											_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
@@ -23181,9 +23188,9 @@ public class ACAerodynamicAndStabilityManager {
 													.map(a -> a.to(NonSI.DEGREE_ANGLE))
 													.collect(Collectors.toList())
 													),
-											_downwashAngleMap.get(ComponentEnum.WING).get(Boolean.FALSE).get(
+											_downwashAngleMap.get(ComponentEnum.WING).get(
 													_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-													).stream()
+													).get(Boolean.FALSE).stream()
 											.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
 											.toArray(),
 											_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
@@ -25146,16 +25153,16 @@ public class ACAerodynamicAndStabilityManager {
 					sb.append("\t\tDownwash gradient " +
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
 							+ " (1/deg) = "
-							+ _downwashGradientMap.get(Boolean.TRUE).get(
+							+ _downwashGradientMap.get(ComponentEnum.WING).get(
 									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-									) + "\n");
+									).get(Boolean.TRUE) + "\n");
 
 					sb.append("\t\tDownwash angle " +
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
 							+ " (deg) = "
-							+ _downwashAngleMap.get(Boolean.TRUE).get(
+							+ _downwashAngleMap.get(ComponentEnum.WING).get(
 									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-									) + "\n");
+									).get(Boolean.TRUE) + "\n");
 
 					sb.append("\n\t\tDownwash gradient " +
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
@@ -25166,9 +25173,9 @@ public class ACAerodynamicAndStabilityManager {
 											.map(a -> a.to(NonSI.DEGREE_ANGLE))
 											.collect(Collectors.toList())
 											),
-									_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
+									_downwashGradientMap.get(ComponentEnum.WING).get(
 											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-											).stream()
+											).get(Boolean.TRUE).stream()
 									.mapToDouble(dg -> dg)
 									.toArray(),
 									_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
@@ -25183,9 +25190,9 @@ public class ACAerodynamicAndStabilityManager {
 											.map(a -> a.to(NonSI.DEGREE_ANGLE))
 											.collect(Collectors.toList())
 											),
-									_downwashAngleMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
+									_downwashAngleMap.get(ComponentEnum.WING).get(
 											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-											).stream()
+											).get(Boolean.TRUE).stream()
 									.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
 									.toArray(),
 									_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
@@ -25196,16 +25203,16 @@ public class ACAerodynamicAndStabilityManager {
 					sb.append("\t\tDownwash gradient " +
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
 							+ " (1/deg) = "
-							+ _downwashGradientMap.get(Boolean.FALSE).get(
+							+ _downwashGradientMap.get(ComponentEnum.WING).get(
 									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-									) + "\n");
+									).get(Boolean.FALSE) + "\n");
 
 					sb.append("\t\tDownwash angle " +
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
 							+ " (deg) = "
-							+ _downwashAngleMap.get(Boolean.FALSE).get(
+							+ _downwashAngleMap.get(ComponentEnum.WING).get(
 									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-									) + "\n");
+									).get(Boolean.FALSE) + "\n");
 
 					sb.append("\n\t\tDownwash gradient " +
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
@@ -25216,9 +25223,9 @@ public class ACAerodynamicAndStabilityManager {
 											.map(a -> a.to(NonSI.DEGREE_ANGLE))
 											.collect(Collectors.toList())
 											),
-									_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.FALSE).get(
+									_downwashGradientMap.get(ComponentEnum.WING).get(
 											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-											).stream()
+											).get(Boolean.FALSE).stream()
 									.mapToDouble(dg -> dg)
 									.toArray(),
 									_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
@@ -25233,9 +25240,9 @@ public class ACAerodynamicAndStabilityManager {
 											.map(a -> a.to(NonSI.DEGREE_ANGLE))
 											.collect(Collectors.toList())
 											),
-									_downwashAngleMap.get(ComponentEnum.WING).get(Boolean.FALSE).get(
+									_downwashAngleMap.get(ComponentEnum.WING).get(
 											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-											).stream()
+											).get(Boolean.FALSE).stream()
 									.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
 									.toArray(),
 									_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
@@ -27359,19 +27366,19 @@ public class ACAerodynamicAndStabilityManager {
 		this._verticalDistanceZeroLiftDirectionWingHTailVariable = _verticalDistanceZeroLiftDirectionWingHTailVariable;
 	}
 
-	public Map<ComponentEnum, Map<Boolean, Map<MethodEnum, List<Double>>>> getDownwashGradientMap() {
+	public Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Double>>>> getDownwashGradientMap() {
 		return _downwashGradientMap;
 	}
 
-	public void setDownwashGradientMap(Map<ComponentEnum, Map<Boolean, Map<MethodEnum, List<Double>>>> _downwashGradientMap) {
+	public void setDownwashGradientMap(Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Double>>>> _downwashGradientMap) {
 		this._downwashGradientMap = _downwashGradientMap;
 	}
 
-	public Map<ComponentEnum, Map<Boolean, Map<MethodEnum, List<Amount<Angle>>>>> getDownwashAngleMap() {
+	public Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Amount<Angle>>>>> getDownwashAngleMap() {
 		return _downwashAngleMap;
 	}
 
-	public void setDownwashAngleMap(Map<ComponentEnum, Map<Boolean, Map<MethodEnum, List<Amount<Angle>>>>> _downwashAngleMap) {
+	public void setDownwashAngleMap(Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Amount<Angle>>>>> _downwashAngleMap) {
 		this._downwashAngleMap = _downwashAngleMap;
 	}
 
