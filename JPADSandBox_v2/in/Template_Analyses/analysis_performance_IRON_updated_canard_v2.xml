@@ -8,27 +8,27 @@
 			> 
 			<weights>
 				<!-- MTOM -->
-				<maximum_take_off_mass unit="kg">55027</maximum_take_off_mass> 
-				<operating_empty_mass unit="kg">34020</operating_empty_mass> 
+				<maximum_take_off_mass unit="kg">55105</maximum_take_off_mass> 
+				<operating_empty_mass unit="kg">34098</operating_empty_mass> 
 				<maximum_fuel_mass unit="kg">7251.52</maximum_fuel_mass> 
 				<single_passenger_mass unit="kg">108</single_passenger_mass> 
 			</weights>
 			<aerodynamics> 
 				<xcg value="-0.34" parabolicDragPolar="FALSE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
 					<!-- NORMAL CLIMB -->
-					<cLmax_clean_configuration>1.90445</cLmax_clean_configuration>
+					<cLmax_clean_configuration>1.90</cLmax_clean_configuration>
 					<!-- SECOND SEGMENT CLIMB --> 
 					<!--
-					<cLmax_clean_configuration>2.91</cLmax_clean_configuration>
+					<cLmax_clean_configuration>2.89744</cLmax_clean_configuration>
 					-->
-					<cL_alpha_clean_configuration unit="1/deg">0.1309</cL_alpha_clean_configuration>
-					<cLmax_take_off_configuration>2.90247</cLmax_take_off_configuration>
-					<cL_alpha_take_off unit="1/deg">0.1307</cL_alpha_take_off> 
-					<cL0_take_off_configuration>1.3324</cL0_take_off_configuration>
+					<cL_alpha_clean_configuration unit="1/deg">0.1323</cL_alpha_clean_configuration>
+					<cLmax_take_off_configuration>2.89744</cLmax_take_off_configuration>
+					<cL_alpha_take_off unit="1/deg">0.1321</cL_alpha_take_off> 
+					<cL0_take_off_configuration>1.3328</cL0_take_off_configuration>
 					<!---->
-					<cLmax_landing_configuration>3.42185</cLmax_landing_configuration> 
-					<cL_alpha_landing unit="1/deg">0.1312</cL_alpha_landing> 
-					<cL0_landing_configuration>1.8895</cL0_landing_configuration> 
+					<cLmax_landing_configuration>3.416</cLmax_landing_configuration> 
+					<cL_alpha_landing unit="1/deg">0.1329</cL_alpha_landing> 
+					<cL0_landing_configuration>1.8091</cL0_landing_configuration> 
 					<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
 					<cD0></cD0>
 					<oswald_cruise></oswald_cruise> 
@@ -42,28 +42,28 @@
 					<!---->
 					<polar_curves>
 						<cruise>
-							<polar_curve_CL>-0.279599404;-0.191249807;-0.10292031;-0.014613475;0.073668145;0.161921997;0.250145532;0.338336206;0.426491478;0.514608811;0.60268567;0.690719527;0.778707853;0.866648127;0.954537828;1.04237444;1.130155451;1.217878351;1.305540635;1.316091299;1.349348176</polar_curve_CL>
-							<polar_curve_CD>0.033491209;0.030890095;0.02888084;0.027462642;0.026634538;0.026395408;0.026743972;0.027678794;0.02919828;0.031300684;0.033984107;0.037246498;0.041085655;0.045499231;0.05048473;0.056039512;0.062160795;0.068845655;0.076091029;0.076380255;0.078907582</polar_curve_CD>
+							<polar_curve_CL>-0.279709208;-0.19133469;-0.102979213;-0.014645343;0.073664362;0.161947344;0.25020105;0.338422932;0.426610444;0.514761043;0.602872191;0.690941353;0.778965998;0.866943596;0.954871624;1.042747559;1.130568885;1.218333086;1.306037652;1.316603762;1.349884533</polar_curve_CL>
+							<polar_curve_CD>0.033503045;0.030897896;0.028885318;0.02746456;0.026634706;0.026394683;0.026743258;0.027679038;0.029200477;0.031305872;0.033993366;0.037260948;0.04110646;0.045527592;0.050521886;0.05608674;0.062219408;0.068917;0.076176488;0.076470467;0.079005902</polar_curve_CD>
 						</cruise>
 						<!-- NORMAL CLIMB --> 
 						<climb>
-							<polar_curve_CL>-0.26647809;-0.147849023;-0.029047453;0.089917458;0.209036524;0.328300533;0.447700252;0.567226421;0.68686976;0.806620965;0.92647071;1.046529963;1.166548725;1.286517607;1.406667828;1.526869643;1.647113603;1.767390237;1.887690059;2.008003562;2.017044093</polar_curve_CL>
-							<polar_curve_CD>0.031891235;0.028859324;0.026821974;0.025790586;0.025775879;0.026787869;0.028835849;0.03192837;0.036073225;0.041277429;0.04754721;0.054904022;0.063323133;0.0728001;0.083378136;0.095040546;0.107788545;0.121622482;0.136541828;0.152545178;0.154169904</polar_curve_CD>
+							<polar_curve_CL>-0.266561157;-0.147896165;-0.029058557;0.089942487;0.209097766;0.328398053;0.447834095;0.567396619;0.687076328;0.8068639;0.926749995;1.046845599;1.166900625;1.286905668;1.407092003;1.527329831;1.647609688;1.767922087;1.888257524;2.008606477;2.017648914</polar_curve_CL>
+							<polar_curve_CD>0.031900213;0.028863427;0.026822704;0.025789477;0.025774493;0.026787793;0.02883869;0.031935756;0.036086798;0.041298845;0.047578133;0.054946176;0.063378146;0.072869581;0.083463815;0.095144087;0.107911601;0.121766693;0.136708821;0.152736557;0.154366649</polar_curve_CD>
 						</climb>
 						<!--SECOND SEGMENT CLIMB (TO no LAND.GEAR) --> 
 						<!--
 						<climb>
-							<polar_curve_CL>0.575730834;0.694359901;0.81264582;0.931124491;1.04978673;1.168623329;1.287625056;1.406782662;1.526086875;1.645528401;1.765097931;1.884906445;2.004703966;2.124481124;2.244469162;2.364538361;2.484679298;2.604882536;2.72513862;2.845438079;2.854494298</polar_curve_CL>
-							<polar_curve_CD>0.105358922;0.104381345;0.104011461;0.104242287;0.105075316;0.106511967;0.108553577;0.111201403;0.114456614;0.118320294;0.122793437;0.127878458;0.133573465;0.139878203;0.146797281;0.154329384;0.162474929;0.171234233;0.180607512;0.190594876;0.189381563</polar_curve_CD>
+							<polar_curve_CL>0.575917122;0.694582114;0.812903866;0.931418485;1.050116771;1.168989498;1.28802742;1.407221271;1.526561762;1.646039583;1.765645408;1.885490239;2.005324008;2.12513733;2.245161503;2.365266755;2.485443649;2.60568273;2.725974526;2.846309551;2.855367811</polar_curve_CL>
+							<polar_curve_CD>0.105355994;0.104378411;0.104008691;0.104239865;0.10507343;0.106510808;0.10855334;0.111202283;0.11445881;0.118324007;0.122798869;0.127885823;0.133582957;0.139890013;0.146811625;0.154346465;0.162494949;0.171257395;0.180634014;0.190624917;0.189412499</polar_curve_CD>
 						</climb>
 						-->
 						<take_off>
-							<polar_curve_CL>0.575730834;0.694359901;0.81264582;0.931124491;1.04978673;1.168623329;1.287625056;1.406782662;1.526086875;1.645528401;1.765097931;1.884906445;2.004703966;2.124481124;2.244469162;2.364538361;2.484679298;2.604882536;2.72513862;2.845438079;2.854494298</polar_curve_CL>
-							<polar_curve_CD>0.120358922;0.119381345;0.119011461;0.119242287;0.120075316;0.121511967;0.123553577;0.126201403;0.129456614;0.133320294;0.137793437;0.142878458;0.148573465;0.154878203;0.161797281;0.169329384;0.177474929;0.186234233;0.195607512;0.205594876;0.204381563</polar_curve_CD>
+							<polar_curve_CL>0.575917122;0.694582114;0.812903866;0.931418485;1.050116771;1.168989498;1.28802742;1.407221271;1.526561762;1.646039583;1.765645408;1.885490239;2.005324008;2.12513733;2.245161503;2.365266755;2.485443649;2.60568273;2.725974526;2.846309551;2.855367811</polar_curve_CL>
+							<polar_curve_CD>0.120355994;0.119378411;0.119008691;0.119239865;0.12007343;0.121510808;0.12355334;0.126202283;0.12945881;0.133324007;0.137798869;0.142885823;0.148582957;0.154890013;0.161811625;0.169346465;0.177494949;0.186257395;0.195634014;0.205624917;0.204412499</polar_curve_CD>
 						</take_off>
 						<landing>
-							<polar_curve_CL>1.091624718;1.256533205;1.374647239;1.492963831;1.611473795;1.730167922;1.849036986;1.968071738;2.087262908;2.206601209;2.326077333;2.445802268;2.565526041;2.685239292;2.805173269;2.925198262;3.045304859;3.165483631;3.285725136;3.406019913;3.415081361</polar_curve_CL>
-							<polar_curve_CD>0.126335307;0.122009024;0.12153746;0.121665925;0.12239596;0.123729035;0.12566654;0.128209786;0.131359999;0.135118323;0.139485813;0.144465074;0.150054021;0.156252469;0.163065346;0.170491278;0.178530753;0.187184158;0.196451779;0.2063338;0.205003001</polar_curve_CD>
+							<polar_curve_CL>1.091986408;1.25693082;1.375080619;1.493433097;1.611979051;1.730709258;1.849614474;1.968685434;2.087912852;2.207287424;2.326799825;2.446561065;2.566321081;2.686070496;2.806040615;2.926101676;3.046244249;3.16645889;3.28673614;3.407066522;3.416130056</polar_curve_CL>
+							<polar_curve_CD>0.126330079;0.122004279;0.121533346;0.12166263;0.122393677;0.123727957;0.125666865;0.128211714;0.131363732;0.135124065;0.13949377;0.144475465;0.15006704;0.156268307;0.163084225;0.170513405;0.178556333;0.187213395;0.196484876;0.206370958;0.205041223</polar_curve_CD>
 						</landing>
 					</polar_curves>
 					<tau_rudder_function calculate="FALSE">
@@ -133,26 +133,26 @@
 			</flight_maneuvering_and_gust_envelope>
 			<mission_profile_and_payload_range>
 			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
-				<mission_range unit="nmi">400</mission_range> 
-				<alternate_cruise_length unit="nmi"></alternate_cruise_length> <!-- (default = 0.0) -->
-				<alternate_cruise_altitude unit="ft"></alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
-				<holding_duration unit="min"></holding_duration> <!-- (default = 0.0) -->
-				<holding_altitude unit="ft"></holding_altitude> <!-- (default = 0.0) -->
-				<holding_mach_number></holding_mach_number>
+				<mission_range unit="nmi">1600</mission_range> 
+				<alternate_cruise_length unit="nmi">100</alternate_cruise_length> <!-- (default = 0.0) -->
+				<alternate_cruise_altitude unit="ft">15000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
+				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
+				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
+				<holding_mach_number>0.3</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
 				<cruise_sfc_function calculate="FALSE">
-					<sfc>0.374</sfc> <!-- old deck: 0.47;0.435;0.429 -->
-					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
+					<sfc>0.47;0.435;0.429</sfc> <!-- old deck: 0.47;0.435;0.429 -->
+					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</cruise_sfc_function>
 				<alternate_cruise_sfc_function calculate="FALSE">
-					<sfc>0.47</sfc> <!-- old deck: 0.51036;0.46433;0.45617 -->
-					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
+					<sfc>0.51036;0.46433;0.45617</sfc> <!-- old deck: 0.51036;0.46433;0.45617 -->
+					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</alternate_cruise_sfc_function>
 				<holding_sfc_function calculate="FALSE">
-					<sfc>0.36</sfc> <!-- old deck: 0.444;0.3285;0.3047 -->
-					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
+					<sfc>0.444;0.3285;0.3047</sfc> <!-- old deck: 0.444;0.3285;0.3047 -->
+					<throttle>0.4;0.75;0.95</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
 				</holding_sfc_function>
-				<take_off_mission_altitude unit="ft">0.0</take_off_mission_altitude>
+				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
 				<landing_ground_idle_fuel_flow unit="kg/min"></landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile_and_payload_range>
         </performance>

@@ -6,8 +6,8 @@
 			performance_from_previous_analysis="true"
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg">67585</maximum_take_off_mass>
-				<operating_empty_mass unit="kg">37081</operating_empty_mass>
+				<maximum_take_off_mass unit="kg">65161</maximum_take_off_mass>
+				<operating_empty_mass unit="kg">36514</operating_empty_mass>
 				<payload unit="kg">13260</payload>
 			</weights>
 			<performance>
@@ -59,7 +59,7 @@
 					<maintenance>
 						<airframe_labour_rate unit="USD/h"></airframe_labour_rate> <!-- Default: 40 $/hr --> 
 						<engine_labour_rate unit="USD/h"></engine_labour_rate> <!-- Default: 40 $/hr -->					
-						<engine_price calculate="TRUE" method="SFORZA" unit="USD">7000000</engine_price>
+						<engine_price calculate="TRUE" method="SFORZA" unit="USD"></engine_price>
 					</maintenance>
 				</doc>
 			<!-- add ioc tags when available-->

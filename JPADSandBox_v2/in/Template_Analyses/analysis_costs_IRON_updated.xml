@@ -6,9 +6,9 @@
 			performance_from_previous_analysis="true"
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg">55239</maximum_take_off_mass>
-				<operating_empty_mass unit="kg">34679</operating_empty_mass>
-				<payload unit="kg">13650</payload>
+				<maximum_take_off_mass unit="kg">55043</maximum_take_off_mass>
+				<operating_empty_mass unit="kg">34036</operating_empty_mass>
+				<payload unit="kg">14040</payload>
 			</weights>
 			<performance>
 				<range unit="nmi"></range>				
