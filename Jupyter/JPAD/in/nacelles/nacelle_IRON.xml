@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<nacelle id="IRON Nacelle" engine="engine_IRON.xml">
+		<global_data>
+			<roughness unit="m">0.405e-5</roughness>
+		</global_data>
+		<geometry>
+			<length unit="m">4.371</length>
+			<maximum_diameter unit="m">1.4</maximum_diameter>
+			<k_inlet>0.857</k_inlet>
+			<k_outlet>0.143</k_outlet>
+			<k_length>0.44</k_length>
+			<k_diameter_outlet>1.28</k_diameter_outlet>
+		</geometry>
+	</nacelle>
+</jpad_config>
