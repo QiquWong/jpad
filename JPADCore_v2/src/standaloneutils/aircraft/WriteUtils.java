@@ -40,6 +40,7 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
 import javaslang.Tuple;
 import javaslang.Tuple2;
+import standaloneutils.MyArrayUtils;
 
 public final class WriteUtils {
 	
@@ -556,6 +557,428 @@ public final class WriteUtils {
 			status = false;
 		}
 		return status;
-	}	
+	}
+
+	public static boolean writeAircraftSideViewToSVG(String pathToSVG, String title,  
+			Aircraft aircraft) {
+		int WIDTH = 650;
+		int HEIGHT = 650;
+		return writeAircraftSideViewToSVG(pathToSVG, title, WIDTH, HEIGHT, aircraft);
+	}
+
+	public static boolean writeAircraftSideViewToSVG(String pathToSVG, String title, 
+			int WIDTH, int HEIGHT, 
+			Aircraft aircraft) {
+		
+		boolean status = false;
+		
+		if (aircraft == null) return status;
+		
+		//--------------------------------------------------
+		// get data vectors from fuselage discretization
+		//--------------------------------------------------
+		XYSeries seriesFuselageCurve = new XYSeries("Fuselage - Side View", false);
+		
+		if (aircraft.getFuselage() != null) {
+			// upper curve, sideview
+			List<Amount<Length>> vX1Upper = new ArrayList<>(); 
+			aircraft.getFuselage().getOutlineXZUpperCurveAmountX().stream().forEach(x -> vX1Upper.add(x));
+			int nX1Upper = vX1Upper.size();
+			List<Amount<Length>> vZ1Upper = new ArrayList<>(); 
+			aircraft.getFuselage().getOutlineXZUpperCurveAmountZ().stream().forEach(z -> vZ1Upper.add(z));
+
+			// lower curve, sideview
+			List<Amount<Length>> vX2Lower = new ArrayList<>(); 
+			aircraft.getFuselage().getOutlineXZLowerCurveAmountX().stream().forEach(x -> vX2Lower.add(x));
+			int nX2Lower = vX2Lower.size();
+			List<Amount<Length>> vZ2Lower = new ArrayList<>(); 
+			aircraft.getFuselage().getOutlineXZLowerCurveAmountZ().stream().forEach(z -> vZ2Lower.add(z));
+
+			IntStream.range(0, nX1Upper)
+			.forEach(i -> {
+				seriesFuselageCurve.add(vX1Upper.get(i).doubleValue(SI.METRE), vZ1Upper.get(i).doubleValue(SI.METRE));
+			});
+			IntStream.range(0, nX2Lower)
+			.forEach(i -> {
+				seriesFuselageCurve.add(vX2Lower.get(vX2Lower.size()-1-i).doubleValue(SI.METRE), vZ2Lower.get(vZ2Lower.size()-1-i).doubleValue(SI.METRE));
+			});
+		}
+		//--------------------------------------------------
+		// get data vectors from wing discretization
+		//--------------------------------------------------
+		XYSeries seriesWingRootAirfoil = new XYSeries("Wing Root - Side View", false);
+		XYSeries seriesWingTipAirfoil = new XYSeries("Wing Tip - Side View", false);
+
+		if (aircraft.getWing() != null) {
+			double[] wingRootXCoordinates = aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords();
+			double[] wingRootZCoordinates = aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords();
+			double[] wingTipXCoordinates = aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList()
+					.get(aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().size()-1).getXCoords();
+			double[] wingTipZCoordinates = aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList()
+					.get(aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().size()-1).getZCoords();
+			int nPointsWing = aircraft.getWing().getLiftingSurfaceCreator().getDiscretizedXle().size();
+
+			IntStream.range(0, wingRootXCoordinates.length)
+			.forEach(i -> {
+				seriesWingRootAirfoil.add(
+						(wingRootXCoordinates[i]*aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue()) 
+						+ aircraft.getWing().getXApexConstructionAxes().getEstimatedValue(),
+						(wingRootZCoordinates[i]*aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
+						+ aircraft.getWing().getZApexConstructionAxes().getEstimatedValue()
+						);
+			});
+
+			IntStream.range(0, wingTipXCoordinates.length)
+			.forEach(i -> {
+				seriesWingTipAirfoil.add(
+						(wingTipXCoordinates[i]*aircraft.getWing().getLiftingSurfaceCreator().getPanels()
+								.get(aircraft.getWing().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
+						+ aircraft.getWing().getXApexConstructionAxes().getEstimatedValue()
+						+ aircraft.getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsWing-1).getEstimatedValue(),
+						(wingTipZCoordinates[i]*aircraft.getWing().getLiftingSurfaceCreator().getPanels()
+								.get(aircraft.getWing().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
+						+ aircraft.getWing().getZApexConstructionAxes().getEstimatedValue()
+						);
+			});
+		}
+		//--------------------------------------------------
+		// get data vectors from hTail discretization
+		//--------------------------------------------------
+		XYSeries seriesHTailRootAirfoil = new XYSeries("HTail Root - Side View", false);
+		XYSeries seriesHTailTipAirfoil = new XYSeries("HTail Tip - Side View", false);
+
+		if (aircraft.getHTail() != null) {
+			double[] hTailRootXCoordinates = aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords();
+			double[] hTailRootZCoordinates = aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords();
+			double[] hTailTipXCoordinates = aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList()
+					.get(aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().size()-1).getXCoords();
+			double[] hTailTipZCoordinates = aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList()
+					.get(aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().size()-1).getZCoords();
+			int nPointsHTail = aircraft.getHTail().getLiftingSurfaceCreator().getDiscretizedXle().size();
+
+			IntStream.range(0, hTailRootXCoordinates.length)
+			.forEach(i -> {
+				seriesHTailRootAirfoil.add(
+						(hTailRootXCoordinates[i]*aircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
+						+ aircraft.getHTail().getXApexConstructionAxes().getEstimatedValue(),
+						(hTailRootZCoordinates[i]*aircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
+						+ aircraft.getHTail().getZApexConstructionAxes().getEstimatedValue()
+						);
+			});
+
+			IntStream.range(0, hTailTipXCoordinates.length)
+			.forEach(i -> {
+				seriesHTailTipAirfoil.add(
+						(hTailTipXCoordinates[i]*aircraft.getHTail().getLiftingSurfaceCreator().getPanels()
+								.get(aircraft.getHTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
+						+ aircraft.getHTail().getXApexConstructionAxes().getEstimatedValue()
+						+ aircraft.getHTail().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(),
+						(hTailTipZCoordinates[i]*aircraft.getHTail().getLiftingSurfaceCreator().getPanels()
+								.get(aircraft.getHTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
+						+ aircraft.getHTail().getZApexConstructionAxes().getEstimatedValue()
+						);
+			});
+		}
+		//--------------------------------------------------
+		// get data vectors from canard discretization
+		//--------------------------------------------------
+		XYSeries seriesCanardRootAirfoil = new XYSeries("Canard Root - Side View", false);
+		XYSeries seriesCanardTipAirfoil = new XYSeries("Canard Tip - Side View", false);
+
+		if (aircraft.getCanard() != null) {
+			double[] canardRootXCoordinates = aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords();
+			double[] canardRootZCoordinates = aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords();
+			double[] canardTipXCoordinates = aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList()
+					.get(aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList().size()-1).getXCoords();
+			double[] canardTipZCoordinates = aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList()
+					.get(aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList().size()-1).getZCoords();
+			int nPointsHTail = aircraft.getCanard().getLiftingSurfaceCreator().getDiscretizedXle().size();
+
+			IntStream.range(0, canardRootXCoordinates.length)
+			.forEach(i -> {
+				seriesCanardRootAirfoil.add(
+						(canardRootXCoordinates[i]*aircraft.getCanard().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
+						+ aircraft.getCanard().getXApexConstructionAxes().getEstimatedValue(),
+						(canardRootZCoordinates[i]*aircraft.getCanard().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
+						+ aircraft.getCanard().getZApexConstructionAxes().getEstimatedValue()
+						);
+			});
+
+			IntStream.range(0, canardTipXCoordinates.length)
+			.forEach(i -> {
+				seriesCanardTipAirfoil.add(
+						(canardTipXCoordinates[i]*aircraft.getCanard().getLiftingSurfaceCreator().getPanels()
+								.get(aircraft.getCanard().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
+						+ aircraft.getCanard().getXApexConstructionAxes().getEstimatedValue()
+						+ aircraft.getCanard().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(),
+						(canardTipZCoordinates[i]*aircraft.getCanard().getLiftingSurfaceCreator().getPanels()
+								.get(aircraft.getCanard().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
+						+ aircraft.getCanard().getZApexConstructionAxes().getEstimatedValue()
+						);
+			});
+		}
+		//--------------------------------------------------
+		// get data vectors from vTail discretization
+		//--------------------------------------------------
+		XYSeries seriesVTailSideView = new XYSeries("VTail - Side View", false);
+
+		if (aircraft.getVTail() != null) {
+			Double[][] dataTopViewVTail = aircraft.getVTail().getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.VERTICAL_TAIL);
+
+			IntStream.range(0, dataTopViewVTail.length)
+			.forEach(i -> {
+				seriesVTailSideView.add(
+						dataTopViewVTail[i][0] + aircraft.getVTail().getXApexConstructionAxes().doubleValue(SI.METER),
+						dataTopViewVTail[i][1] + aircraft.getVTail().getZApexConstructionAxes().doubleValue(SI.METER)
+						);
+			});
+		}
+
+		//--------------------------------------------------
+		// get data vectors from nacelle discretization
+		//--------------------------------------------------
+		List<XYSeries> seriesNacelleCruvesSideViewList = new ArrayList<>();
+
+		if (aircraft.getNacelles() != null) {
+			for(int i=0; i<aircraft.getNacelles().getNacellesList().size(); i++) {
+
+				// upper curve, sideview
+				List<Amount<Length>> nacelleCurveX = new ArrayList<>(); 
+				aircraft.getNacelles().getNacellesList().get(i).getXCoordinatesOutline().stream().forEach(x -> nacelleCurveX.add(x));
+				int nacelleCurveXPoints = nacelleCurveX.size();
+				List<Amount<Length>> nacelleCurveUpperZ = new ArrayList<>(); 
+				aircraft.getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZUpper().stream().forEach(z -> nacelleCurveUpperZ.add(z));
+
+				// lower curve, sideview
+				List<Amount<Length>> nacelleCurveLowerZ = new ArrayList<>(); 
+				aircraft.getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZLower().stream().forEach(z -> nacelleCurveLowerZ.add(z));;
+
+				List<Amount<Length>> dataOutlineXZCurveNacelleX = new ArrayList<>();
+				List<Amount<Length>> dataOutlineXZCurveNacelleZ = new ArrayList<>();
+
+				for(int j=0; j<nacelleCurveXPoints; j++) {
+					dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(j)
+							.plus(aircraft.getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+					dataOutlineXZCurveNacelleZ.add(nacelleCurveUpperZ.get(j)
+							.plus(aircraft.getNacelles().getNacellesList().get(i).getZApexConstructionAxes()));
+				}
+
+				for(int j=0; j<nacelleCurveXPoints; j++) {
+					dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(nacelleCurveXPoints-j-1) 
+							.plus(aircraft.getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+					dataOutlineXZCurveNacelleZ.add(nacelleCurveLowerZ.get(nacelleCurveXPoints-j-1)
+							.plus(aircraft.getNacelles().getNacellesList().get(i).getZApexConstructionAxes()));
+				}
+
+				dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(0)
+						.plus(aircraft.getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+				dataOutlineXZCurveNacelleZ.add(nacelleCurveUpperZ.get(0)
+						.plus(aircraft.getNacelles().getNacellesList().get(i).getZApexConstructionAxes()));
+
+
+				XYSeries seriesNacelleCruvesSideView = new XYSeries("Nacelle " + i + " XY Curve - Side View", false);
+				IntStream.range(0, dataOutlineXZCurveNacelleX.size())
+				.forEach(j -> {
+					seriesNacelleCruvesSideView.add(
+							dataOutlineXZCurveNacelleX.get(j).doubleValue(SI.METER),
+							dataOutlineXZCurveNacelleZ.get(j).doubleValue(SI.METER)
+							);
+				});
+
+				seriesNacelleCruvesSideViewList.add(seriesNacelleCruvesSideView);
+
+			}
+		}
+		//-------------------------------------------------------------------------------
+		// get data vectors from power plant propellers (only for PISTON and TURBOPROP)
+		//-------------------------------------------------------------------------------
+		List<XYSeries> seriesPropellerSideViewList = new ArrayList<>();
+		
+		if(aircraft.getPowerPlant() != null) {
+			for(int i=0; i<aircraft.getPowerPlant().getEngineList().size(); i++) {
+
+				if (aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
+						|| aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+
+					XYSeries seriesPropellerCruvesSideView = new XYSeries("Propeller " + i, false);
+					seriesPropellerCruvesSideView.add(
+							aircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER),
+							1.0015*aircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes().doubleValue(SI.METER)
+							+ aircraft.getPowerPlant().getEngineList().get(i).getPropellerDiameter().divide(2).doubleValue(SI.METER)
+							);
+					seriesPropellerCruvesSideView.add(
+							aircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER),
+							1.0015*aircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes().doubleValue(SI.METER)
+							- aircraft.getPowerPlant().getEngineList().get(i).getPropellerDiameter().divide(2).doubleValue(SI.METER)
+							);
+
+					seriesPropellerSideViewList.add(seriesPropellerCruvesSideView);
+				}
+			}
+		}		
+		//--------------------------------------------------
+		// get data vectors from landing gears 
+		//--------------------------------------------------
+		XYSeries seriesLandingGearSideView = new XYSeries("Landing Gears - Side View", false);
+		
+		if (aircraft.getLandingGears() != null) {
+			Amount<Length> radius = aircraft.getLandingGears().getRearWheelsHeight().divide(2);
+			Double[] wheelCenterPosition = new Double[] {
+					aircraft.getLandingGears().getXApexConstructionAxesMainGear().doubleValue(SI.METER),
+					aircraft.getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
+					- aircraft.getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					- radius.doubleValue(SI.METER)
+			};
+			Double[] thetaArray = MyArrayUtils.linspaceDouble(0, 2*Math.PI, 360);
+
+			IntStream.range(0, thetaArray.length)
+			.forEach(i -> {
+				seriesLandingGearSideView.add(
+						radius.doubleValue(SI.METER)*Math.cos(thetaArray[i]) + wheelCenterPosition[0],
+						radius.doubleValue(SI.METER)*Math.sin(thetaArray[i]) + wheelCenterPosition[1]
+						);
+			});
+		}
+		
+		double xMaxSideView = 1.20*aircraft.getFuselage().getFuselageLength().doubleValue(SI.METRE);
+		double xMinSideView = -0.20*aircraft.getFuselage().getFuselageLength().doubleValue(SI.METRE);
+		double yMaxSideView = 1.40*aircraft.getFuselage().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		double yMinSideView = -1.40*aircraft.getFuselage().getFuselageLength().divide(2).doubleValue(SI.METRE);
+		
+		//-------------------------------------------------------------------------------------
+		// DATASET CRATION
+		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+		if (aircraft.getPowerPlant() != null)
+			seriesPropellerSideViewList.stream().forEach(
+					prop -> seriesAndColorList.add(Tuple.of(prop, Color.BLACK))
+					);
+		if (aircraft.getNacelles() != null)
+			seriesNacelleCruvesSideViewList.stream().forEach(
+					nac -> seriesAndColorList.add(Tuple.of(nac, Color.decode("#FF7F50")))
+					);
+		if (aircraft.getWing() != null) {
+			seriesAndColorList.add(Tuple.of(seriesWingRootAirfoil, Color.decode("#87CEFA")));
+			seriesAndColorList.add(Tuple.of(seriesWingTipAirfoil, Color.decode("#87CEFA")));
+		}
+		if (aircraft.getHTail() != null) {
+			seriesAndColorList.add(Tuple.of(seriesHTailRootAirfoil, Color.decode("#00008B")));
+			seriesAndColorList.add(Tuple.of(seriesHTailTipAirfoil, Color.decode("#00008B")));
+		}
+		if (aircraft.getCanard() != null) {
+			seriesAndColorList.add(Tuple.of(seriesCanardRootAirfoil, Color.decode("#228B22")));
+			seriesAndColorList.add(Tuple.of(seriesCanardTipAirfoil, Color.decode("#228B22")));
+		}
+		if (aircraft.getLandingGears() != null) 
+			seriesAndColorList.add(Tuple.of(seriesLandingGearSideView, Color.decode("#404040")));
+		if (aircraft.getFuselage() != null)
+			seriesAndColorList.add(Tuple.of(seriesFuselageCurve, Color.WHITE));
+		if (aircraft.getVTail() != null)
+			seriesAndColorList.add(Tuple.of(seriesVTailSideView, Color.decode("#FFD700")));
+		
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+		
+		//-------------------------------------------------------------------------------------
+		// CHART CRATION
+		JFreeChart chart = ChartFactory.createXYAreaChart(
+				"Aircraft data representation - Side View", 
+				"x (m)", 
+				"z (m)",
+				(XYDataset) dataset,
+				PlotOrientation.VERTICAL,
+                false, // legend
+                true,  // tooltips
+                false  // urls
+				);
+
+		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+		chart.setAntiAlias(true);
+		
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundAlpha(0.0f);
+		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+		plot.setDomainGridlinesVisible(true);
+		plot.setDomainGridlinePaint(Color.GRAY);
+		plot.setRangeGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.GRAY);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
+
+		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+		domain.setRange(xMinSideView, xMaxSideView);
+		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+		range.setRange(yMinSideView, yMaxSideView);
+
+		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		xyAreaRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyAreaRenderer.setSeriesPaint(
+					i,
+					seriesAndColorList.get(i)._2()
+					);
+		}
+		XYLineAndShapeRenderer xyLineAndShapePropRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapePropRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapePropRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapePropRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			if (i < aircraft.getPowerPlant().getEngineNumber()) {
+				xyLineAndShapePropRenderer.setSeriesVisible(i, true);
+				xyLineAndShapePropRenderer.setSeriesPaint(i, Color.BLACK);
+				xyLineAndShapePropRenderer.setSeriesStroke(
+						i, 
+						new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+						false
+						);
+			}
+			else
+				xyLineAndShapePropRenderer.setSeriesVisible(i, false);
+		}
+		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
+			xyLineAndShapeRenderer.setSeriesStroke(
+					i, 
+					new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+					false
+					);
+		}
+
+		if (aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
+				|| aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+			plot.setRenderer(2, xyLineAndShapeRenderer);
+			plot.setDataset(2, dataset);
+			plot.setRenderer(1, xyAreaRenderer);
+			plot.setDataset(1, dataset);
+			plot.setRenderer(0, xyLineAndShapePropRenderer);
+			plot.setDataset(0, dataset);
+		}
+		else {
+			plot.setRenderer(1, xyLineAndShapeRenderer);
+			plot.setDataset(1, dataset);
+			plot.setRenderer(0, xyAreaRenderer);
+			plot.setDataset(0, dataset);
+		}
+
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+		File outputFile = new File(pathToSVG);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+			status = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			status = false;
+		}
+		return status;
+	}
 	
 }
