@@ -30,47 +30,72 @@ import javaslang.Tuple2;
 public final class WriteUtils {
 	
 	private WriteUtils() {}
-	
-	public static boolean writeSVG(String pathToSVG, Airfoil airfoil, String extraID) {
-		
-		boolean status = false;
-		
-		List<Double> xCoordinates = Arrays.stream(airfoil.getXCoords())
-			      .boxed()
-			      .collect(Collectors.toList()); 
-		List<Double> zCoordinates = Arrays.stream(airfoil.getZCoords())
-			      .boxed()
-			      .collect(Collectors.toList()); 
 
-		XYSeries seriesAirfoil = new XYSeries("Airfoil", false);
-		IntStream.range(0, xCoordinates.size())
-		.forEach(i -> {
-			seriesAirfoil.add(
-					xCoordinates.get(i),
-					zCoordinates.get(i)
-					);
-		});
-		
-		double xMax = 1.1;
+	public static boolean writeAirfoilSVG(String pathToSVG, String title, Airfoil airfoil) {
+		return writeAirfoilsToSVG(pathToSVG, title, new Airfoil[] {airfoil});
+	}
+
+	public static boolean writeAirfoilSVG(String pathToSVG, String title,
+			int WIDTH, int HEIGHT, double xMin, double xMax, double yMin, double yMax,
+			Airfoil airfoil) {
+		return writeAirfoilsToSVG(pathToSVG, title,
+				WIDTH, HEIGHT, xMin, xMax, yMin, yMax,
+				new Airfoil[] {airfoil});
+	}
+	
+	public static boolean writeAirfoilsToSVG(String pathToSVG, String title, Airfoil ... airfoils) {
 		double xMin = -0.1;
-		double yMax = 0.575;
+		double xMax = 1.1;
 		double yMin = -0.575;
-		
+		double yMax = 0.575;
 		int WIDTH = 550;
 		int HEIGHT = 600;
+		return writeAirfoilsToSVG(pathToSVG, title, 
+				WIDTH, HEIGHT, xMin, xMax, yMin, yMax,
+				airfoils);
+	}
+	
+	public static boolean writeAirfoilsToSVG(String pathToSVG, String title, 
+			int WIDTH, int HEIGHT, double xMin, double xMax, double yMin, double yMax,
+			Airfoil ... airfoils) {
 		
-		//-------------------------------------------------------------------------------------
-		// DATASET CRATION
-		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
-		seriesAndColorList.add(Tuple.of(seriesAirfoil, Color.decode("#87CEFA")));
-		
+		boolean status = false;
 		XYSeriesCollection dataset = new XYSeriesCollection();
-		seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
 		
+		//Arrays.asList(airfoils).stream()
+		IntStream.range(0, airfoils.length)
+			.forEach(kAirfoil -> {
+				
+				Airfoil airfoil = airfoils[kAirfoil];
+				
+				List<Double> xCoordinates = Arrays.stream(airfoil.getXCoords())
+						.boxed()
+						.collect(Collectors.toList()); 
+				List<Double> zCoordinates = Arrays.stream(airfoil.getZCoords())
+						.boxed()
+						.collect(Collectors.toList()); 
+
+				XYSeries seriesAirfoil = new XYSeries("Airfoil-"+kAirfoil, false);
+				IntStream.range(0, xCoordinates.size())
+				.forEach(i -> {
+					seriesAirfoil.add(
+							xCoordinates.get(i),
+							zCoordinates.get(i)
+							);
+				});
+
+				//-------------------------------------------------------------------------------------
+				// DATASET UPDATE
+				List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+				seriesAndColorList.add(Tuple.of(seriesAirfoil, Color.decode("#87CEFA")));
+
+				seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+			});
 		//-------------------------------------------------------------------------------------
-		// CHART CRATION
+		// CHART CREATION
+
 		JFreeChart chart = ChartFactory.createXYAreaChart(
-				"Airfoil " + extraID + " coordinates representation", 
+				title, 
 				"x (m)", 
 				"z (m)",
 				(XYDataset) dataset,
