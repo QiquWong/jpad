@@ -75,6 +75,33 @@ public final class WriteUtils {
 			Airfoil ... airfoils) {
 		
 		boolean status = false;
+
+		JFreeChart chart = airfoilsToChart(pathToSVG, title, 
+				xMin, xMax, yMin, yMax,
+				airfoils);
+
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+
+		File outputFile = new File(pathToSVG);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+			status = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			status = false;
+		}
+		return status;
+	}
+
+	public static JFreeChart airfoilsToChart(String pathToSVG, String title, 
+			double xMin, double xMax, double yMin, double yMax,
+			Airfoil ... airfoils) {
+
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		
 		//Arrays.asList(airfoils).stream()
@@ -154,24 +181,34 @@ public final class WriteUtils {
 		plot.setRenderer(xyLineAndShapeRenderer);
 		plot.setDataset(dataset);
 
-		//-------------------------------------------------------------------------------------
-		// EXPORT TO SVG
-
-		File outputFile = new File(pathToSVG);
-		if(outputFile.exists()) outputFile.delete();
-		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
-		Rectangle r = new Rectangle(WIDTH, HEIGHT);
-		chart.draw(g2, r);
-		try {
-			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
-			status = true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			status = false;
-		}
-		return status;
+		return chart;
 	}
 
+	public static JFreeChart airfoilsToChart(String pathToSVG, String title, 
+			Airfoil ... airfoils) {
+		double xMin = -0.1;
+		double xMax = 1.1;
+		double yMin = -0.575;
+		double yMax = 0.575;
+		return airfoilsToChart(pathToSVG, title, 
+				xMin, xMax, yMin, yMax,
+				airfoils);
+	}
+
+	public static JFreeChart airfoilToChart(String pathToSVG, String title,
+			int WIDTH, int HEIGHT, double xMin, double xMax, double yMin, double yMax,
+			Airfoil airfoil) {
+		return airfoilsToChart(pathToSVG, title, 
+				xMin, xMax, yMin, yMax,
+				new Airfoil[] {airfoil});
+	}
+
+	public static JFreeChart airfoilToChart(String pathToSVG, String title,
+			Airfoil airfoil) {
+		return airfoilsToChart(pathToSVG, title, 
+				new Airfoil[] {airfoil});
+	}
+	
 	public static boolean writeAircraftTopViewToSVG(String pathToSVG, String title,  
 			Aircraft aircraft) {
 		int WIDTH = 650;
@@ -187,6 +224,29 @@ public final class WriteUtils {
 		
 		if (aircraft == null) return status;
 		
+		JFreeChart chart = aircraftTopViewToChart(pathToSVG, title, aircraft);
+		
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+		File outputFile = new File(pathToSVG);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+			status = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			status = false;
+		}
+		return status;
+	}
+
+	public static JFreeChart aircraftTopViewToChart(String pathToSVG, String title, Aircraft aircraft) {
+		
+		if (aircraft == null) return null;
+
 		//--------------------------------------------------
 		// get data vectors from fuselage discretization
 		//--------------------------------------------------
@@ -542,6 +602,26 @@ public final class WriteUtils {
 		plot.setRenderer(1, xyLineAndShapeRenderer);
 		plot.setDataset(1, dataset);
 
+		return chart;
+	}
+	
+	public static boolean writeAircraftSideViewToSVG(String pathToSVG, String title,  
+			Aircraft aircraft) {
+		int WIDTH = 650;
+		int HEIGHT = 650;
+		return writeAircraftSideViewToSVG(pathToSVG, title, WIDTH, HEIGHT, aircraft);
+	}
+
+	public static boolean writeAircraftSideViewToSVG(String pathToSVG, String title, 
+			int WIDTH, int HEIGHT, 
+			Aircraft aircraft) {
+		
+		boolean status = false;
+		
+		if (aircraft == null) return status;
+		
+		JFreeChart chart = aircraftSideViewToChart(pathToSVG, title, aircraft);
+
 		//-------------------------------------------------------------------------------------
 		// EXPORT TO SVG
 		File outputFile = new File(pathToSVG);
@@ -559,21 +639,10 @@ public final class WriteUtils {
 		return status;
 	}
 
-	public static boolean writeAircraftSideViewToSVG(String pathToSVG, String title,  
-			Aircraft aircraft) {
-		int WIDTH = 650;
-		int HEIGHT = 650;
-		return writeAircraftSideViewToSVG(pathToSVG, title, WIDTH, HEIGHT, aircraft);
-	}
+	public static JFreeChart aircraftSideViewToChart(String pathToSVG, String title, Aircraft aircraft) {
+		
+		if (aircraft == null) return null;
 
-	public static boolean writeAircraftSideViewToSVG(String pathToSVG, String title, 
-			int WIDTH, int HEIGHT, 
-			Aircraft aircraft) {
-		
-		boolean status = false;
-		
-		if (aircraft == null) return status;
-		
 		//--------------------------------------------------
 		// get data vectors from fuselage discretization
 		//--------------------------------------------------
@@ -964,21 +1033,7 @@ public final class WriteUtils {
 			plot.setDataset(0, dataset);
 		}
 
-		//-------------------------------------------------------------------------------------
-		// EXPORT TO SVG
-		File outputFile = new File(pathToSVG);
-		if(outputFile.exists()) outputFile.delete();
-		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
-		Rectangle r = new Rectangle(WIDTH, HEIGHT);
-		chart.draw(g2, r);
-		try {
-			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
-			status = true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			status = false;
-		}
-		return status;
+		return chart;
 	}
 	
 }
