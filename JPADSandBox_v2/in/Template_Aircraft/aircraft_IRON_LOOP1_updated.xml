@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <aircraft id="IRON_LOOP1_UPDATED" type="TURBOPROP" regulations="FAR_25">
+		<global_data>
+			<cabin_configuration file="cabin_configuration_IRON.xml"></cabin_configuration>
+		</global_data>
+        <lifting_surfaces>
+            <wing file="wing_IRON_LOOP1_UPDATED.xml">
+                <position>
+                    <x unit="m">20.5</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">-1.02</z>
+                </position>
+                <rigging_angle unit="deg">2</rigging_angle>
+            </wing>
+            <horizontal_tail file="htail_IRON_LOOP1_UPDATED.xml">
+                <position>
+                    <x unit="m">31.54</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">1.02</z>
+                </position>
+                <rigging_angle unit="deg">-2.0</rigging_angle>
+            </horizontal_tail>
+            <vertical_tail file="vtail_IRON.xml">
+                <position>
+                    <x unit="m">31.37</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">1.56</z>
+                </position>
+                <rigging_angle unit="deg">0.0</rigging_angle>
+            </vertical_tail>
+			<!-- <canard file="canard_IRON_v2.xml">
+                <position>
+                    <x unit="m">6.0</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">1.783</z>
+                </position>
+                <rigging_angle unit="deg">0.0</rigging_angle>
+            </canard> -->
+        </lifting_surfaces>
+        <fuselages>
+            <fuselage file="fuselage_IRON.xml">
+                <position>
+                    <x unit="m">0.0</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">0.0</z>
+                </position>
+            </fuselage>
+        </fuselages>
+		<power_plant>
+            <engine file="engine_IRON_NEW.xml">
+                <position>
+                    <x unit="m">29.49</x>
+                    <y unit="m">4.44</y>
+                    <z unit="m">1.089</z>
+                </position>
+                <tilting_angle unit="deg">0.0</tilting_angle>
+				<mounting_point>HTAIL</mounting_point>
+            </engine>
+            <engine file="engine_IRON_NEW.xml">
+                <position>
+                    <x unit="m">29.49</x>
+                    <y unit="m">-4.44</y>
+                    <z unit="m">1.089</z>
+                </position>
+                <tilting_angle unit="deg">0.0</tilting_angle>
+                <mounting_point>HTAIL</mounting_point>
+            </engine>
+		</power_plant> 
+		<nacelles>
+            <nacelle file="nacelle_IRON.xml">
+                <position>
+                    <x unit="m">29.49</x>
+                    <y unit="m">4.44</y>
+                    <z unit="m">1.089</z>
+                </position>
+                <mounting_point>HTAIL</mounting_point>
+            </nacelle>
+            <nacelle file="nacelle_IRON.xml">
+                <position>
+                    <x unit="m">29.49</x>
+                    <y unit="m">-4.44</y>
+                    <z unit="m">1.089</z>
+                </position>
+                <mounting_point>HTAIL</mounting_point>
+            </nacelle>
+		</nacelles> 
+		<landing_gears file="landing_gear_IRON.xml">
+			<position>
+				<nose_gear>
+					<x unit="m">6.0</x>
+					<y unit="m">0.0</y>
+					<z unit="m">-1.782</z>
+				</nose_gear>
+				<main_gear>
+					<x unit="m">23.66</x>
+					<y unit="m">0.0</y>
+					<z unit="m">-1.782</z>
+				</main_gear>
+            </position>
+			<mounting_point>FUSELAGE</mounting_point>
+		</landing_gears>
+		<systems primary_electrical_systems_type="AC"/> <!-- AC or DC --> 
+    </aircraft>
+</jpad_config>
