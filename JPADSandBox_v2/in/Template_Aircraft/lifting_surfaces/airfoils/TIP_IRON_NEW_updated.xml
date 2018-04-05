@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <airfoil name="NACA66_209" family="NACA_66_Series" type="LAMINAR">
+        <geometry>
+            <thickness_to_chord_ratio_max>0.14</thickness_to_chord_ratio_max>
+            <radius_leading_edge_normalized>0.01</radius_leading_edge_normalized>
+            <x_coordinates>[1 , 0.994006 , 0.983386 , 0.970838 , 0.956749 , 0.941664 , 0.926069 , 0.910206 , 0.894206 , 0.878188 , 0.862181 , 0.846135 , 0.830169 ,
+							0.814353 , 0.798675 , 0.783203 , 0.767887 , 0.75264 , 0.737487 , 0.722361 , 0.707239 , 0.692153 , 0.677029 , 0.661927 , 0.646819 ,
+							0.631622 , 0.61641 , 0.601129 , 0.585763 , 0.570377 , 0.554889 , 0.539335 , 0.523758 , 0.508071 , 0.492338 , 0.476598 , 0.460783 ,
+							0.444983 , 0.4292 , 0.41334 , 0.397526 , 0.381718 , 0.365856 , 0.350067 , 0.334254 , 0.318437 , 0.302698 , 0.286939 , 0.271235 , 
+							0.255626 , 0.240016 , 0.224544 , 0.209135 , 0.193824 , 0.178699 , 0.163656 , 0.148894 , 0.134303 , 0.120093 , 0.106264 , 0.093014 ,
+							0.080466 , 0.068817 , 0.058277 , 0.048968 , 0.04095 , 0.034107 , 0.028318 , 0.023422 , 0.019268 , 0.015742 , 0.012736 , 0.010163 , 
+							0.007973 , 0.006131 , 0.004588 , 0.003305 , 0.002258 , 0.001429 , 0.000804 , 0.000367 , 0.000134 , 0.000124 , 0.000385 , 0.001067 ,
+							0.002323 , 0.004054 , 0.006076 , 0.008322 , 0.010813 , 0.013638 , 0.016901 , 0.020701 , 0.025156 , 0.030445 , 0.03683 , 0.044552 , 
+							0.053784 , 0.064671 , 0.076984 , 0.090477 , 0.104731 , 0.119555 , 0.134719 , 0.150121 , 0.165678 , 0.181294 , 0.197029 , 0.212727 ,
+							0.228544 , 0.244373 , 0.260305 , 0.276313 , 0.292258 , 0.308313 , 0.324361 , 0.34039 , 0.356505 , 0.372578 , 0.388641 , 0.40479 , 
+							0.420893 , 0.437035 , 0.453272 , 0.469419 , 0.485522 , 0.50161 , 0.517623 , 0.533645 , 0.549641 , 0.56555 , 0.581512 , 0.597505 ,
+							0.613415 , 0.629357 , 0.645398 , 0.66153 , 0.67775 , 0.693923 , 0.710115 , 0.726467 , 0.742884 , 0.759307 , 0.775785 , 0.792255 , 
+							0.808645 , 0.824889 , 0.841141 , 0.857372 , 0.873509 , 0.889399 , 0.904773 , 0.919496 , 0.933608 , 0.94713 , 0.960087 , 0.972396 ,
+							0.983792 , 0.993971 , 1]
+			</x_coordinates>
+            <z_coordinates>[-0.003551 , -0.002179 , 0.000336 , 0.00337 , 0.006834 , 0.01058 , 0.014491 , 0.018507 , 0.02258 , 0.026678 , 0.030812 , 0.034976 ,
+							0.039128 , 0.043224 , 0.04722 , 0.05107 , 0.054741 , 0.058241 , 0.061558 , 0.064679 , 0.067625 , 0.070369 , 0.072928 , 0.075295 , 
+							0.077451 , 0.079424 , 0.08121 , 0.082806 , 0.084234 , 0.085486 , 0.086567 , 0.087501 , 0.088274 , 0.088896 , 0.089393 , 0.089745 , 
+							0.089969 , 0.090072 , 0.090032 , 0.089867 ,	0.089585 , 0.089164 , 0.08862 , 0.087959 , 0.087155 , 0.086239 , 0.085195 , 0.08401 ,
+							0.082716 , 0.081272 , 0.079693 , 0.077978 , 0.076102 , 0.074082 , 0.071897 , 0.069537 , 0.067014 , 0.064293 , 0.061408 , 0.058329 ,
+							0.055095 , 0.051707 , 0.04825 , 0.044773 , 0.041397 , 0.038155 , 0.035079 , 0.032155 , 0.029325 , 0.02656 , 0.023842 , 0.021184 ,
+							0.018614 , 0.016132 , 0.013724 , 0.011397 , 0.009156 , 0.006998 , 0.00492 , 0.00292 , 0.000999 , -0.000845 , -0.002625 , -0.004408 , 
+							-0.006138 , -0.00762 , -0.008786 , -0.009835 , -0.010945 , -0.012144 , -0.013347 , -0.014503 , -0.015682 , -0.016979 , -0.018414,
+							-0.020007 , -0.02184 , -0.023856 , -0.026013 , -0.028252 , -0.030466 , -0.032594 , -0.034597 , -0.036481 , -0.038218 , -0.039846 ,
+							-0.04132 , -0.042688 , -0.043908 , -0.045006 , -0.04598 , -0.046836 , -0.047605 , -0.048264 , -0.048812 , -0.049282 , -0.049637 ,
+							-0.049901 , -0.050085 , -0.050153 , -0.050139, -0.050038 , -0.049835 , -0.049562 , -0.049224 , -0.048791 , -0.04827 , -0.047653 ,
+							-0.046925 , -0.046111 , -0.045183 , -0.044129 , -0.042985 , -0.041738, -0.040364 , -0.038878 , -0.037299 , -0.035652 , -0.03395 ,
+							-0.032155 , -0.030283 , -0.028382 , -0.026443 , -0.024472 , -0.022487 , -0.020493 , -0.018462, -0.016363 , -0.014223 , -0.012053 ,
+							-0.009906 , -0.007901 , -0.006158 , -0.004753 , -0.003726 , -0.003105 , -0.002855 , -0.002918 , -0.003229 , -0.003551]
+			</z_coordinates>
+        </geometry>
+        <aerodynamics 
+			external_cl_curve="FALSE"
+			external_cd_curve="FALSE"
+			external_cm_curve="FALSE"
+			>
+            <!-- the following data are used to generate the airfoil aerodynamic curves if the "external_cl_curve" flag is "FALSE"; 
+				 otherwise the "airfoil_curves" tag will be read and the data below can be left empty -->
+            <alpha_zero_lift unit="deg">-4.668</alpha_zero_lift>
+            <alpha_end_linear_trait unit="deg">10</alpha_end_linear_trait>
+            <alpha_stall unit="deg">17.0</alpha_stall>
+            <Cl_alpha_linear_trait unit="1/rad">6.50</Cl_alpha_linear_trait>
+            <Cl_at_alpha_zero>0.542</Cl_at_alpha_zero>
+            <Cl_end_linear_trait>1.5</Cl_end_linear_trait>
+            <Cl_max>1.82</Cl_max>
+            <!-- the following data are used to generate the airfoil aerodynamic curves if the "external_cd_curve" flag is "FALSE"; 
+				 otherwise the "airfoil_curves" tag will be read and the data below can be left empty -->
+			<Cd_min>0.0047</Cd_min>
+            <Cl_at_Cdmin>0.5</Cl_at_Cdmin>
+			<laminar_bucket_semi_extension></laminar_bucket_semi_extension>
+			<laminar_bucket_depth></laminar_bucket_depth>
+            <K_factor_drag_polar>0.0024</K_factor_drag_polar>
+            <!-- the following data are used to generate the airfoil aerodynamic curves if the "external_cm_curve" flag is "FALSE"; 
+				 otherwise the "airfoil_curves" tag will be read and the data below can be left empty -->			
+            <Cm_alpha_quarter_chord unit="1/°">0.0</Cm_alpha_quarter_chord>
+            <Cm_ac>-0.1229</Cm_ac>
+            <Cm_ac_at_stall>-0.05</Cm_ac_at_stall>
+            <!---->
+			<airfoil_curves>
+				<Cl_curve></Cl_curve>
+				<alpha_for_Cl_curve unit="deg"></alpha_for_Cl_curve>
+				<Cd_curve></Cd_curve>
+				<Cl_for_Cd_curve></Cl_for_Cd_curve>
+				<Cm_curve></Cm_curve>
+				<Cl_for_Cm_curve></Cl_for_Cm_curve>
+			</airfoil_curves>
+			<!---->
+			<!-- these data are always needed -->            
+			<x_ac_normalized unit="">0.2586</x_ac_normalized>
+			<mach_critical>0.76</mach_critical>
+			<x_transition_upper>0.60</x_transition_upper>
+            <x_transition_lower>0.60</x_transition_lower>
+        </aerodynamics>
+    </airfoil>
+</jpad_config>

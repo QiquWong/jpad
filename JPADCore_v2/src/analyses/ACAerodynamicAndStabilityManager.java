@@ -7946,17 +7946,34 @@ public class ACAerodynamicAndStabilityManager {
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean()
 							));
-					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().subList(0, indexOfMaxHighLift+3)));
 					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
 							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+					if(indexOfMaxHighLift+3<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().size()) {
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().subList(0, indexOfMaxHighLift+3)));
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray((MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
 							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D))).subList(0, indexOfMaxHighLift+3))));
-
+					}
+					else if(indexOfMaxHighLift+1<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().size()) {
+						xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().subList(0, indexOfMaxHighLift+1)));
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray((MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.WING)
+								.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D))).subList(0, indexOfMaxHighLift+1))));
+					}
+					else { 
+						xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().subList(0, indexOfMaxHighLift)));
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray((MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.WING)
+								.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D))).subList(0, indexOfMaxHighLift))));
+					}
 					legend.add("Clean configuration");
 					legend.add("Configuration with high lift devices");
 
@@ -11651,7 +11668,7 @@ public class ACAerodynamicAndStabilityManager {
 							null, 
 							"deg",
 							"", 
-							false,
+							true,
 							legend,
 							aircraftPlotFolderPath,
 							"Total_Equilibrium_Lift_Coefficient", 
@@ -11722,7 +11739,7 @@ public class ACAerodynamicAndStabilityManager {
 							null, 
 							"",
 							"", 
-							false,
+							true,
 							legend,
 							aircraftPlotFolderPath,
 							"Total_Equilibrium_Polar_Curve", 
@@ -11788,7 +11805,7 @@ public class ACAerodynamicAndStabilityManager {
 							null, 
 							"deg",
 							"", 
-							false,
+							true,
 							legend,
 							aircraftPlotFolderPath,
 							"Htail_Equilibrium_Lift_Coefficient", 
@@ -11858,7 +11875,7 @@ public class ACAerodynamicAndStabilityManager {
 							null, 
 							"",
 							"", 
-							false,
+							true,
 							legend,
 							aircraftPlotFolderPath,
 							"Htail_Equilibrium_Drag_Coefficient", 
@@ -11924,7 +11941,7 @@ public class ACAerodynamicAndStabilityManager {
 							null, 
 							"deg",
 							"", 
-							false,
+							true,
 							legend,
 							aircraftPlotFolderPath,
 							"Total_Equilibrium_Efficiency_vs_Alpha_Body", 
@@ -11992,7 +12009,7 @@ public class ACAerodynamicAndStabilityManager {
 							null, 
 							"",
 							"", 
-							false,
+							true,
 							legend,
 							aircraftPlotFolderPath,
 							"Total_Equilibrium_Efficiency_vs_CLe", 
@@ -12060,7 +12077,7 @@ public class ACAerodynamicAndStabilityManager {
 							null, 
 							"",
 							"deg", 
-							false,
+							true,
 							legend,
 							aircraftPlotFolderPath,
 							"Delta_Elevator_Equilibrium", 
@@ -12124,7 +12141,7 @@ public class ACAerodynamicAndStabilityManager {
 							null, 
 							"deg",
 							"", 
-							false,
+							true,
 							legend,
 							aircraftPlotFolderPath,
 							"Neutral_Point_vs_Alpha", 
@@ -12191,7 +12208,7 @@ public class ACAerodynamicAndStabilityManager {
 								null, 
 								"",
 								"", 
-								false,
+								true,
 								legend,
 								aircraftPlotFolderPath,
 								"Neutral_Point_vs_CLe", 
@@ -12255,7 +12272,7 @@ public class ACAerodynamicAndStabilityManager {
 								null, 
 								"deg",
 								"", 
-								false,
+								true,
 								legend,
 								aircraftPlotFolderPath,
 								"Static_Stability_Margin_vs_Alpha", 
@@ -12323,7 +12340,7 @@ public class ACAerodynamicAndStabilityManager {
 								null, 
 								"",
 								"", 
-								false,
+								true,
 								legend,
 								aircraftPlotFolderPath,
 								"Static_Stability_Margin_vs_CLe", 
