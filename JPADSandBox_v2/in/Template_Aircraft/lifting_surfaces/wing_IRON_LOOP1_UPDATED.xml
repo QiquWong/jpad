@@ -30,12 +30,12 @@
                 <sweep_leading_edge unit="deg">2.25</sweep_leading_edge>
                 <inner_section>
                     <chord unit="m">4.5</chord>
-                    <airfoil file="ROOT_IRON_NEW_updated.xml"/>
+                    <airfoil file="ROOT_IRON_NEW_updated_cruise.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
                     <chord unit="m">3.4</chord>
-                    <airfoil file="ROOT_IRON_NEW_updated.xml"/>
+                    <airfoil file="ROOT_IRON_NEW_updated_cruise.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
             </panel>
@@ -45,7 +45,7 @@
                 <sweep_leading_edge unit="deg">2.25</sweep_leading_edge>
                 <outer_section>
                     <chord unit="m">1.65</chord>
-                    <airfoil file="TIP_IRON_NEW_updated.xml"/>
+                    <airfoil file="TIP_IRON_NEW_updated_cruise.xml"/>
                     <geometric_twist unit="deg">-2</geometric_twist>
                 </outer_section>
             </panel>

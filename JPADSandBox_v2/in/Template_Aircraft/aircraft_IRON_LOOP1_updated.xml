@@ -11,7 +11,7 @@
                     <y unit="m">0.0</y>
                     <z unit="m">-1.02</z>
                 </position>
-                <rigging_angle unit="deg">2</rigging_angle>
+                <rigging_angle unit="deg">0.0</rigging_angle>
             </wing>
             <horizontal_tail file="htail_IRON_LOOP1_UPDATED.xml">
                 <position>
@@ -19,7 +19,7 @@
                     <y unit="m">0.0</y>
                     <z unit="m">1.02</z>
                 </position>
-                <rigging_angle unit="deg">-2.0</rigging_angle>
+                <rigging_angle unit="deg">0.0</rigging_angle>
             </horizontal_tail>
             <vertical_tail file="vtail_IRON.xml">
                 <position>
