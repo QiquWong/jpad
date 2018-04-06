@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analysis>
+        <performance
+			id="IRON - PERFORMANCE" 
+			weights_from_previous_file="false" 
+			aerodynamics_from_previous_file="false" 
+			> 
+			<weights>
+				<!-- MTOM -->
+				<maximum_take_off_mass unit="kg">55901</maximum_take_off_mass> 
+				<operating_empty_mass unit="kg">34849</operating_empty_mass> 
+				<maximum_fuel_mass unit="kg">7251.52</maximum_fuel_mass> 
+				<single_passenger_mass unit="kg">108</single_passenger_mass> 
+			</weights>
+			<aerodynamics> 
+				<xcg value="-0.3" parabolicDragPolar="FALSE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
+					<!-- NORMAL CLIMB -->
+					<cLmax_clean_configuration>1.91</cLmax_clean_configuration>
+					<!-- SECOND SEGMENT CLIMB --> 
+					<!--
+					<cLmax_clean_configuration>2.89744</cLmax_clean_configuration>
+					-->
+					<cL_alpha_clean_configuration unit="1/deg">0.1322</cL_alpha_clean_configuration>
+					<cLmax_take_off_configuration>2.91</cLmax_take_off_configuration>
+					<cL_alpha_take_off unit="1/deg">0.1320</cL_alpha_take_off> 
+					<cL0_take_off_configuration>1.3318</cL0_take_off_configuration>
+					<!---->
+					<cLmax_landing_configuration>3.43</cLmax_landing_configuration> 
+					<cL_alpha_landing unit="1/deg">0.1328</cL_alpha_landing> 
+					<cL0_landing_configuration>1.8887</cL0_landing_configuration> 
+					<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
+					<cD0></cD0>
+					<oswald_cruise></oswald_cruise> 
+					<oswald_climb></oswald_climb>
+					<oswald_take_off></oswald_take_off>
+					<oswald_landing></oswald_landing>
+					<delta_CD0_flap_take_off></delta_CD0_flap_take_off>
+					<delta_CD0_flap_landing></delta_CD0_flap_landing>
+					<delta_CD0_landing_gears></delta_CD0_landing_gears>
+					<delta_CD0_spoilers></delta_CD0_spoilers>
+					<!---->
+					<polar_curves>
+						<cruise>
+							<polar_curve_CL>-0.279457078;-0.191163926;-0.102889405;-0.014636067;0.073593543;0.161796879;0.249971403;0.338114577;0.426223868;0.514296747;0.602330689;0.69032317;0.778271672;0.866173679;0.954026678;1.041828162;1.129575624;1.217266562;1.304898478;1.315460187;1.348716892</polar_curve_CL>
+							<polar_curve_CD>0.03347589;0.030882212;0.028878492;0.027464001;0.026637853;0.026399;0.026746239;0.027678211;0.0291934;0.031290138;0.033966605;0.037220829;0.04105069;0.045453918;0.050428101;0.055970678;0.06207895;0.068750074;0.075981069;0.076269604;0.078792318</polar_curve_CD>
+						</cruise>
+						<!-- NORMAL CLIMB --> 
+						<climb>
+							<polar_curve_CL>-0.266354795;-0.147779052;-0.029030971;0.089880307;0.208945622;0.328155786;0.447501589;0.566973797;0.686563154;0.806260378;0.926056171;1.046061468;1.166026403;1.285941612;1.406038231;1.526186591;1.646377269;1.766600819;1.886847777;2.007108661;2.016146361</polar_curve_CL>
+							<polar_curve_CD>0.031877924;0.028853239;0.02682089;0.025792233;0.025777945;0.026788005;0.028831673;0.031917474;0.036053176;0.041245777;0.047501489;0.05484168;0.06324176;0.072697313;0.083251375;0.094887347;0.107606458;0.121409076;0.136294699;0.152261948;0.153878714</polar_curve_CD>
+						</climb>
+						<!--SECOND SEGMENT CLIMB (TO no LAND.GEAR) --> 
+						<!--
+						<climb>
+							<polar_curve_CL>0.575454329;0.694030073;0.812262805;0.93068812;1.049296855;1.168079828;1.287027831;1.40613164;1.525382005;1.644769659;1.764285315;1.884039925;2.003783644;2.123507125;2.243441528;2.363457212;2.48354478;2.603694817;2.723897893;2.844144562;2.853197751</polar_curve_CL>
+							<polar_curve_CD>0.105363279;0.104385713;0.104015591;0.104245905;0.105078145;0.106513724;0.108553975;0.111200149;0.114453415;0.118314853;0.122785455;0.127867618;0.133559482;0.139860791;0.146776122;0.154304176;0.162445372;0.171200029;0.180568365;0.190550493;0.189335853</polar_curve_CD>
+						</climb>
+						-->
+						<take_off>
+							<polar_curve_CL>0.575454329;0.694030073;0.812262805;0.93068812;1.049296855;1.168079828;1.287027831;1.40613164;1.525382005;1.644769659;1.764285315;1.884039925;2.003783644;2.123507125;2.243441528;2.363457212;2.48354478;2.603694817;2.723897893;2.844144562;2.853197751</polar_curve_CL>
+							<polar_curve_CD>0.120363279;0.119385713;0.119015591;0.119245905;0.120078145;0.121513724;0.123553975;0.126200149;0.129453415;0.133314853;0.137785455;0.142867618;0.148559482;0.154860791;0.161776122;0.169304176;0.177445372;0.186200029;0.195568365;0.205550493;0.204335853</polar_curve_CD>
+						</take_off>
+						<landing>
+							<polar_curve_CL>1.091087866;1.255943029;1.374003978;1.492267305;1.610723847;1.729364423;1.848179827;1.967160835;2.086298203;2.205582667;2.325004944;2.444675993;2.564345971;2.684005543;2.803885875;2.923857333;3.043910531;3.164036064;3.284224513;3.404466443;3.413524795</polar_curve_CL>
+							<polar_curve_CD>0.126343102;0.122016112;0.121543618;0.121670875;0.12239942;0.123730716;0.125666149;0.128207027;0.131354573;0.135109929;0.139474146;0.144449808;0.150034871;0.156229149;0.16303753;0.170458659;0.178493026;0.187141021;0.196402933;0.206278948;0.204946569</polar_curve_CD>
+						</landing>
+					</polar_curves>
+					<tau_rudder_function calculate="FALSE">
+						<tau>0.0000;0.5359;0.5648;0.5502;0.5261</tau>
+						<delta_rudder unit="deg">0.0;10.0;20.0;25.0;30.0</delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
+					</tau_rudder_function>
+				</xcg>
+			</aerodynamics>
+			<!-- the following data can be assigned between tags, or not. If not, default values are used -->
+			<takeoff_landing>
+				<!-- general data -->
+				<wind_speed_along_runway unit="m/s"></wind_speed_along_runway> <!-- positive if behind the aircraft (default = 0m/s)-->
+					<!-- here is possible to assign the friction coefficient function of the speed. If only one value is given, the function is constant -->
+				<wheels_friction_coefficient_function>
+					<friction_coefficient>0.025</friction_coefficient>
+					<speed unit="m/s"></speed> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+				</wheels_friction_coefficient_function>
+					<!-- here is possible to assign the friction coefficient (with brakes) function of the speed. If only one value is given, the function is constant -->
+				<wheels_friction_coefficient_with_brakes_function>
+				<!--
+					<friction_coefficient_with_brakes>0.94;0.89;0.85;0.8;0.74;0.68;0.62;0.57;0.52</friction_coefficient_with_brakes>
+					<speed unit="m/s">0;10;20;30;40;50;60;70;80</speed>
+				-->
+					<friction_coefficient_with_brakes>0.4</friction_coefficient_with_brakes>
+					<speed unit="m/s"></speed>
+				<!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+				</wheels_friction_coefficient_with_brakes_function>
+				<!-- take-off data -->
+				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
+				<alpha_ground unit="deg"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
+				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
+				<k_rotation>1.06</k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
+				<alpha_dot_rotation></alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
+				<k_cLmax>0.88</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
+				<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
+				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
+				<!-- landing data -->
+				<k_landing_weight></k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->
+				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->
+				<theta_approach unit="deg"></theta_approach> <!-- default = 3deg -->
+				<k_approach>1.23</k_approach> <!-- V_approach/V_stall in landing (default = 1.3) -->
+				<k_flare>1.16</k_flare> <!-- V_flare/V_stall in landing (default = 1.23) -->
+				<k_touch_down>1.09</k_touch_down> <!-- V_touch_down/V_stall in landing (default = 1.15) -->
+				<free_roll_duration unit="s"></free_roll_duration> <!-- default = 2s -->
+			</takeoff_landing>
+			<climb>
+				<k_climb_weight_AEO></k_climb_weight_AEO> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
+				<!-- k_weigth_OEI = 0.926733537 for SECOND SEGMENT CLIMB (FROM LOOP1 UNINA) -->
+				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
+				<initial_climb_altitude unit="ft">1500</initial_climb_altitude>
+				<final_climb_altitude unit="ft">25000</final_climb_altitude>
+				<climb_speed_CAS unit="kn">190</climb_speed_CAS>
+			</climb>
+			<cruise>
+				<altitudes_array unit="ft">25000;30000</altitudes_array>
+				<k_cruise_weight></k_cruise_weight> <!-- percentage of the maximum take-off weight to be used for the cruise performance - (default = 0.97) -->
+			</cruise>
+			<descent>
+				<rate_of_descent unit="ft/min">1500</rate_of_descent>
+				<descent_speed_CAS unit="kn">220</descent_speed_CAS>
+				<k_descent_weight></k_descent_weight> <!-- percentage of the maximum take-off weight to be used for the descent performance - (default = 0.9) -->
+				<initial_descent_altitude unit="ft">30000</initial_descent_altitude>
+				<final_descent_altitude unit="ft">1500.0</final_descent_altitude>
+			</descent>
+			<flight_maneuvering_and_gust_envelope>
+				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the manoeuvring flight and gust envelope (default = -1.0) --> 
+			</flight_maneuvering_and_gust_envelope>
+			<mission_profile_and_payload_range>
+			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
+				<mission_range unit="nmi">1600</mission_range> 
+				<alternate_cruise_length unit="nmi">100</alternate_cruise_length> <!-- (default = 0.0) -->
+				<alternate_cruise_altitude unit="ft">15000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
+				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
+				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
+				<holding_mach_number>0.3</holding_mach_number>
+				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
+				<cruise_sfc_function calculate="FALSE">
+					<sfc>0.47;0.435;0.429</sfc> <!-- old deck: 0.47;0.435;0.429 -->
+					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
+				</cruise_sfc_function>
+				<alternate_cruise_sfc_function calculate="FALSE">
+					<sfc>0.51036;0.46433;0.45617</sfc> <!-- old deck: 0.51036;0.46433;0.45617 -->
+					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
+				</alternate_cruise_sfc_function>
+				<holding_sfc_function calculate="FALSE">
+					<sfc>0.444;0.3285;0.3047</sfc> <!-- old deck: 0.444;0.3285;0.3047 -->
+					<throttle>0.4;0.75;0.95</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
+				</holding_sfc_function>
+				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
+				<landing_ground_idle_fuel_flow unit="kg/min"></landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
+			</mission_profile_and_payload_range>
+        </performance>
+    </analysis>
+	<plot>
+		<takeoff>
+			<simulations perform="TRUE"/>
+			<balanced_field_length perform="TRUE"/>
+			<vMC perform="TRUE"/>
+		</takeoff>
+		<climb>
+			<thrust_drag perform="TRUE"/>
+			<power_needed_and_available perform="TRUE"/>
+			<efficiency perform="TRUE"/>
+			<rate_of_climb_curves perform="TRUE"/>
+			<climb_angle_curves perform="TRUE"/>
+			<max_rate_of_climb_envelope perform="TRUE"/>
+			<max_climb_angle_envelope perform="TRUE"/>
+			<climb_time perform="TRUE"/>
+			<fuel_used perform="TRUE"/>
+		</climb>
+		<cruise>
+			<thrust_drag perform="TRUE"/>
+			<power_needed_and_available perform="TRUE"/>
+			<efficiency perform="TRUE"/>
+			<cruise_grid perform="TRUE"/>
+			<flight_envelope perform="TRUE"/>
+		</cruise>
+		<descent perform="TRUE"/>
+		<landing>
+			<simulations perform="TRUE"/>
+		</landing>
+		<payload_range perform="TRUE"/>
+		<maneuvering_flight_and_gust_envelope perform="TRUE"/>
+		<mission_profile>
+			<range_profile perform="TRUE"/>
+			<time_profile perform="TRUE"/>
+			<fuel_used_profile perform="TRUE"/>
+			<weight_profile perform="TRUE"/>
+		</mission_profile>
+	</plot>
+</jpad_config>

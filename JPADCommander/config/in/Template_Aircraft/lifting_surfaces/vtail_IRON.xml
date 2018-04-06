@@ -16,7 +16,7 @@
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
-                    <chord unit="m">3.31</chord>
+                    <chord unit="m">3.3</chord>
                     <airfoil file="naca0012.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
