@@ -2709,10 +2709,9 @@ public class LSAerodynamicsManager {
 			}
 
 			// TODO : CHECK WHICH OSWALD IS BETTER !
-			if(_cDInduced.get(MethodEnum.RAYMER) == null) {
 				CalcCDInduced calcCDInduced = new CalcCDInduced(); 
 				calcCDInduced.raymer(alpha);
-			}
+			
 
 			if(_cDWave.get(MethodEnum.LOCK_KORN_WITH_KROO) == null) {
 				CalcCDWave calcCDWave = new CalcCDWave(); 
