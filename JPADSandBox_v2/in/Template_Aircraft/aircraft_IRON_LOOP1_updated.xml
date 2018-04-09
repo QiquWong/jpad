@@ -48,7 +48,7 @@
             </fuselage>
         </fuselages>
 		<power_plant>
-            <engine file="engine_IRON_NEW.xml">
+            <engine file="engine_IRON_LOOP1_updated.xml">
                 <position>
                     <x unit="m">29.44</x>
                     <y unit="m">4.53</y>
@@ -57,7 +57,7 @@
                 <tilting_angle unit="deg">0.0</tilting_angle>
 				<mounting_point>HTAIL</mounting_point>
             </engine>
-            <engine file="engine_IRON_NEW.xml">
+            <engine file="engine_IRON_LOOP1_updated.xml">
                 <position>
                     <x unit="m">29.44</x>
                     <y unit="m">-4.53</y>
@@ -68,7 +68,7 @@
             </engine>
 		</power_plant> 
 		<nacelles>
-            <nacelle file="nacelle_IRON.xml">
+            <nacelle file="nacelle_IRON_LOOP1_updated.xml">
                 <position>
                     <x unit="m">29.44</x>
                     <y unit="m">4.53</y>
@@ -76,7 +76,7 @@
                 </position>
                 <mounting_point>HTAIL</mounting_point>
             </nacelle>
-            <nacelle file="nacelle_IRON.xml">
+            <nacelle file="nacelle_IRON_LOOP1_updated.xml">
                 <position>
                     <x unit="m">29.44</x>
                     <y unit="m">-4.53</y>
@@ -98,7 +98,7 @@
 					<z unit="m">-1.782</z>
 				</main_gear>
             </position>
-			<mounting_point>FUSELAGE</mounting_point>
+			<mounting_point>WING</mounting_point>
 		</landing_gears>
 		<systems primary_electrical_systems_type="AC"/> <!-- AC or DC --> 
     </aircraft>
