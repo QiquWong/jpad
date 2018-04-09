@@ -4784,6 +4784,37 @@ public class ACAerodynamicAndStabilityManager {
 			
 		}
 		
+		//-------------------------- LANDING GEARS ----------------------------------------
+		if(_theAerodynamicBuilderInterface.getLandingGearDragCoefficient() == null) {
+			
+			if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlpha();
+				calcCLAtAlpha.nasaBlackwellCompleteCurve(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCurrentAlpha());
+			}
+			
+			if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL) == null) {
+				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
+				calcHighLiftDevicesEffects.semiempirical(
+						_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+						_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+						_currentMachNumber
+						);
+
+			}
+			
+			setTheAerodynamicBuilderInterface(
+					IACAerodynamicAndStabilityManager.Builder.from(_theAerodynamicBuilderInterface).setLandingGearDragCoefficient(
+							DragCalc.calculateDeltaCD0LandingGears(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing(), 
+									_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears(), 
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL), 
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL)
+									)
+							).build()
+					);
+			
+		}
+		
 		//--------------------------AIRCRAFT---------------------------------------- 
 		//.........................................................................................................................
 		//	WING AERODYNAMIC_CENTER
@@ -14204,7 +14235,6 @@ public class ACAerodynamicAndStabilityManager {
 		MethodEnum hTailPolarCurveMethod = null;
 		MethodEnum hTailDragDistributionMethod = null;
 		MethodEnum hTailCDAtAlphaMethod = null;
-		MethodEnum hTailElevatorEffectsMethod = null;
 		MethodEnum hTailElevatorLiftCurveMethod = null;
 		MethodEnum hTailElevatorPolarCurveMethod = null;
 		MethodEnum hTailElevatorMomentCurveMethod = null;
@@ -14597,30 +14627,6 @@ public class ACAerodynamicAndStabilityManager {
 					NonSI.DEGREE_ANGLE);
 		
 		//---------------------------------------------------------------
-		// ELEVATOR EFFECTS
-		String hTailElevatorEffectsPerformString = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//horizontal_tail_analyses/elevator/high_lift_devices_effects/@perform");
-		
-		if(hTailElevatorEffectsPerformString.equalsIgnoreCase("TRUE")){
-			
-			String hTailElevatorEffectsMethodString = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//horizontal_tail_analyses/elevator/high_lift_devices_effects/@method");
-			
-			if(hTailElevatorEffectsMethodString != null) {
-				
-				if(hTailElevatorEffectsMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-					hTailElevatorEffectsMethod = MethodEnum.SEMIEMPIRICAL;
-				
-				hTailTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS, hTailElevatorEffectsMethod);
-				
-			}
-		}
-		
-		//---------------------------------------------------------------
 		// ELEVATOR LIFT CURVE
 		String hTailElevatorLiftCurvePerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -14645,7 +14651,7 @@ public class ACAerodynamicAndStabilityManager {
 		}
 		
 		//---------------------------------------------------------------
-		// ELEVATOR LIFT CURVE
+		// ELEVATOR POLAR CURVE
 		String hTailElevatorPolarCurvePerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
@@ -15167,7 +15173,6 @@ public class ACAerodynamicAndStabilityManager {
 		MethodEnum vTailPolarCurveMethod = null;
 		MethodEnum vTailDragDistributionMethod = null;
 		MethodEnum vTailCDAtAlphaMethod = null;
-		MethodEnum vTailRudderEffectsMethod = null;
 		MethodEnum vTailRudderLiftCurveMethod = null;
 		MethodEnum vTailRudderPolarCurveMethod = null;
 		MethodEnum vTailRudderMomentCurveMethod = null;
@@ -15549,30 +15554,6 @@ public class ACAerodynamicAndStabilityManager {
 			rudderDeflectionForAnalysis = Amount.valueOf(
 					Double.valueOf(rudderDeflectionForAnalysisString), 
 					NonSI.DEGREE_ANGLE);
-		
-		//---------------------------------------------------------------
-		// RUDDER EFFECTS
-		String vTailRudderEffectsPerformString = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//vertical_tail_analyses/rudder/high_lift_devices_effects/@perform");
-		
-		if(vTailRudderEffectsPerformString.equalsIgnoreCase("TRUE")){
-			
-			String vTailRudderEffectsMethodString = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//vertical_tail_analyses/rudder/high_lift_devices_effects/@method");
-			
-			if(vTailRudderEffectsMethodString != null) {
-				
-				if(vTailRudderEffectsMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-					vTailRudderEffectsMethod = MethodEnum.SEMIEMPIRICAL;
-				
-				vTailTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS, vTailRudderEffectsMethod);
-				
-			}
-		}
 		
 		//---------------------------------------------------------------
 		// RUDDER LIFT CURVE
@@ -16121,7 +16102,6 @@ public class ACAerodynamicAndStabilityManager {
 		MethodEnum canardPolarCurveMethod = null;
 		MethodEnum canardDragDistributionMethod = null;
 		MethodEnum canardCDAtAlphaMethod = null;
-		MethodEnum canardElevatorEffectsMethod = null;
 		MethodEnum canardElevatorLiftCurveMethod = null;
 		MethodEnum canardElevatorPolarCurveMethod = null;
 		MethodEnum canardElevatorMomentCurveMethod = null;
@@ -16135,930 +16115,903 @@ public class ACAerodynamicAndStabilityManager {
 		MethodEnum canardMomentDistributionMethod = null;
 		//---------------------------------------------------------------
 		// CRITICAL MACH
-				String canardCriticalMachPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/critical_mach/@perform");
-				
-				if(canardCriticalMachPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCriticalMachMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/critical_mach/@method");
-					
-					if(canardCriticalMachMethodString != null) {
-						
-						if(canardCriticalMachMethodString.equalsIgnoreCase("KORN_MASON")) 
-							canardCriticalMachMethod = MethodEnum.KORN_MASON;
-						
-						if(canardCriticalMachMethodString.equalsIgnoreCase("KROO"))  
-							canardCriticalMachMethod = MethodEnum.KROO;
-							
-						canardTaskList.put(AerodynamicAndStabilityEnum.CRITICAL_MACH, canardCriticalMachMethod);
-					}
-				}
-				
-				
-				//---------------------------------------------------------------
-				// AERODYNAMIC CENTER
-				String canardAerodynamicCenterPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/aerodynamic_center/@perform");
-				
-				if(canardAerodynamicCenterPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardAerodynamicCenterMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/aerodynamic_center/@method");
-					
-					if(canardAerodynamicCenterMethodString != null) {
-						
-						if(canardAerodynamicCenterMethodString.equalsIgnoreCase("QUARTER")) 
-							canardAerodynamicCenterMethod = MethodEnum.QUARTER;
-						
-						if(canardAerodynamicCenterMethodString.equalsIgnoreCase("DEYOUNG_HARPER"))  
-							canardAerodynamicCenterMethod = MethodEnum.DEYOUNG_HARPER;
-						
-						if(canardAerodynamicCenterMethodString.equalsIgnoreCase("NAPOLITANO_DATCOM"))  
-							canardAerodynamicCenterMethod = MethodEnum.NAPOLITANO_DATCOM;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER, canardAerodynamicCenterMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CL ALPHA
-				String canardCLAlphaPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/lift/cL_alpha/@perform");
-				
-				if(canardCLAlphaPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCLAlphaMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/lift/cL_alpha/@method");
-					
-					if(canardCLAlphaMethodString != null) {
-						
-						if(canardCLAlphaMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
-							canardCLAlphaMethod = MethodEnum.NASA_BLACKWELL;
-						
-						if(canardCLAlphaMethodString.equalsIgnoreCase("POLHAMUS"))  
-							canardCLAlphaMethod = MethodEnum.POLHAMUS;
-						
-						if(canardCLAlphaMethodString.equalsIgnoreCase("ANDERSON_COMPRESSIBLE_SUBSONIC"))  
-							canardCLAlphaMethod = MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC;
-						
-						if(canardCLAlphaMethodString.equalsIgnoreCase("INTEGRAL_MEAN"))  
-							canardCLAlphaMethod = MethodEnum.INTEGRAL_MEAN;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CL_ALPHA, canardCLAlphaMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CL ZERO
-				String canardCLZeroPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/lift/cL_zero/@perform");
-				
-				if(canardCLZeroPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCLZeroMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/lift/cL_zero/@method");
-					
-					if(canardCLZeroMethodString != null) {
-						
-						if(canardCLZeroMethodString.equalsIgnoreCase("ANDERSON_COMPRESSIBLE_SUBSONIC")) 
-							canardCLZeroMethod = MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC;
-						
-						if(canardCLZeroMethodString.equalsIgnoreCase("NASA_BLACKWELL"))  
-							canardCLZeroMethod = MethodEnum.NASA_BLACKWELL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CL_ZERO, canardCLZeroMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CL STAR
-				String canardCLStarPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/lift/cL_star/@perform");
-				
-				if(canardCLStarPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCLStarMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/lift/cL_star/@method");
-					
-					if(canardCLStarMethodString != null) {
-						
-						if(canardCLStarMethodString.equalsIgnoreCase("ANDERSON_COMPRESSIBLE_SUBSONIC")) 
-							canardCLStarMethod = MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC;
-						
-						if(canardCLStarMethodString.equalsIgnoreCase("NASA_BLACKWELL"))  
-							canardCLStarMethod = MethodEnum.NASA_BLACKWELL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CL_STAR, canardCLStarMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CL MAX
-				String canardCLMaxPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/lift/cL_max/@perform");
-				
-				if(canardCLMaxPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCLMaxMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/lift/cL_max/@method");
-					
-					if(canardCLMaxMethodString != null) {
-						
-						if(canardCLMaxMethodString.equalsIgnoreCase("PHILLIPS_ALLEY")) 
-							canardCLMaxMethod = MethodEnum.PHILLIPS_ALLEY;
-						
-						if(canardCLMaxMethodString.equalsIgnoreCase("NASA_BLACKWELL"))  
-							canardCLMaxMethod = MethodEnum.NASA_BLACKWELL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CL_MAX, canardCLMaxMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// ALPHA ZERO LIFT
-				String canardAlphaZeroLiftPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/lift/alpha_zero_lift/@perform");
-				
-				if(canardAlphaZeroLiftPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardAlphaZeroLiftMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/lift/alpha_zero_lift/@method");
-					
-					if(canardAlphaZeroLiftMethodString != null) {
-						
-						if(canardAlphaZeroLiftMethodString.equalsIgnoreCase("INTEGRAL_MEAN_NO_TWIST")) 
-							canardAlphaZeroLiftMethod = MethodEnum.INTEGRAL_MEAN_NO_TWIST;
-						
-						if(canardAlphaZeroLiftMethodString.equalsIgnoreCase("INTEGRAL_MEAN_TWIST"))  
-							canardAlphaZeroLiftMethod = MethodEnum.INTEGRAL_MEAN_TWIST;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT, canardAlphaZeroLiftMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// ALPHA STAR
-				String canardAlphaStarPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/lift/alpha_star/@perform");
-				
-				if(canardAlphaStarPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardAlphaStarMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/lift/alpha_star/@method");
-					
-					if(canardAlphaStarMethodString != null) {
-						
-						if(canardAlphaStarMethodString.equalsIgnoreCase("MEAN_AIRFOIL_INFLUENCE_AREAS")) 
-							canardAlphaStarMethod = MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.ALPHA_STAR, canardAlphaStarMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// ALPHA STALL
-				String canardAlphaStallPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/lift/alpha_stall/@perform");
-				
-				if(canardAlphaStallPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardAlphaStallMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/lift/alpha_stall/@method");
-					
-					if(canardAlphaStallMethodString != null) {
-						
-						if(canardAlphaStallMethodString.equalsIgnoreCase("PHILLIPS_ALLEY")) 
-							canardAlphaStallMethod = MethodEnum.PHILLIPS_ALLEY;
-						
-						if(canardAlphaStallMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
-							canardAlphaStallMethod = MethodEnum.NASA_BLACKWELL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.ALPHA_STALL, canardAlphaStallMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// LIFT CURVE
-				String canardLiftCurvePerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/lift/cL_vs_alpha/@perform");
-				
-				if(canardLiftCurvePerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardLiftCurveUserDefinedString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/lift/cL_vs_alpha/@user_defined");
-					
-					if(canardLiftCurveUserDefinedString != null) {
-						
-						if(canardLiftCurveUserDefinedString.equalsIgnoreCase("TRUE")) {
-							
-							canardLiftCurveFunction = new MyInterpolatingFunction();
-							List<Amount<Angle>> canardLiftCurveAlpha = reader.readArrayofAmountFromXML("//canard_analyses/lift/cL_vs_alpha/alpha");
-							List<Double> canardLiftCurveCL = reader.readArrayDoubleFromXML("//canard_analyses/lift/cL_vs_alpha/cL");
-							canardLiftCurveFunction.interpolate(
-									MyArrayUtils.convertListOfAmountTodoubleArray(
-											canardLiftCurveAlpha.stream()
-											.map(a -> a.to(NonSI.DEGREE_ANGLE))
-											.collect(Collectors.toList())
-											), 
-									MyArrayUtils.convertToDoublePrimitive(canardLiftCurveCL)
-									);
-						
-							canardTaskList.put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, MethodEnum.INPUT);
-							
-						}
-						else if(canardLiftCurveUserDefinedString.equalsIgnoreCase("FALSE")) {
-							
-							String canardLiftCurveMethodString = MyXMLReaderUtils
-									.getXMLPropertyByPath(
-											reader.getXmlDoc(), reader.getXpath(),
-											"//canard_analyses/lift/cL_vs_alpha/@method");
-							
-							if(canardLiftCurveMethodString != null) {
-								
-								if(canardLiftCurveMethodString.equalsIgnoreCase("PHILLIPS_ALLEY")) 
-									canardLiftCurveMethod = MethodEnum.PHILLIPS_ALLEY;
-								
-								if(canardLiftCurveMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
-									canardLiftCurveMethod = MethodEnum.NASA_BLACKWELL;
-								
-								canardTaskList.put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, canardLiftCurveMethod);
-								
-							}
-						}
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// LIFT DISTRIBUTION
-				String canardLiftDistributionPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/lift/lift_distributions/@perform");
+		String canardCriticalMachPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/critical_mach/@perform");
 
-				if(canardLiftDistributionPerformString.equalsIgnoreCase("TRUE")){
+		if(canardCriticalMachPerformString.equalsIgnoreCase("TRUE")){
 
-					String canardLiftDistributionMethodString = MyXMLReaderUtils
+			String canardCriticalMachMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/critical_mach/@method");
+
+			if(canardCriticalMachMethodString != null) {
+
+				if(canardCriticalMachMethodString.equalsIgnoreCase("KORN_MASON")) 
+					canardCriticalMachMethod = MethodEnum.KORN_MASON;
+
+				if(canardCriticalMachMethodString.equalsIgnoreCase("KROO"))  
+					canardCriticalMachMethod = MethodEnum.KROO;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CRITICAL_MACH, canardCriticalMachMethod);
+			}
+		}
+
+
+		//---------------------------------------------------------------
+		// AERODYNAMIC CENTER
+		String canardAerodynamicCenterPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/aerodynamic_center/@perform");
+
+		if(canardAerodynamicCenterPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardAerodynamicCenterMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/aerodynamic_center/@method");
+
+			if(canardAerodynamicCenterMethodString != null) {
+
+				if(canardAerodynamicCenterMethodString.equalsIgnoreCase("QUARTER")) 
+					canardAerodynamicCenterMethod = MethodEnum.QUARTER;
+
+				if(canardAerodynamicCenterMethodString.equalsIgnoreCase("DEYOUNG_HARPER"))  
+					canardAerodynamicCenterMethod = MethodEnum.DEYOUNG_HARPER;
+
+				if(canardAerodynamicCenterMethodString.equalsIgnoreCase("NAPOLITANO_DATCOM"))  
+					canardAerodynamicCenterMethod = MethodEnum.NAPOLITANO_DATCOM;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER, canardAerodynamicCenterMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CL ALPHA
+		String canardCLAlphaPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/lift/cL_alpha/@perform");
+
+		if(canardCLAlphaPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCLAlphaMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/lift/cL_alpha/@method");
+
+			if(canardCLAlphaMethodString != null) {
+
+				if(canardCLAlphaMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
+					canardCLAlphaMethod = MethodEnum.NASA_BLACKWELL;
+
+				if(canardCLAlphaMethodString.equalsIgnoreCase("POLHAMUS"))  
+					canardCLAlphaMethod = MethodEnum.POLHAMUS;
+
+				if(canardCLAlphaMethodString.equalsIgnoreCase("ANDERSON_COMPRESSIBLE_SUBSONIC"))  
+					canardCLAlphaMethod = MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC;
+
+				if(canardCLAlphaMethodString.equalsIgnoreCase("INTEGRAL_MEAN"))  
+					canardCLAlphaMethod = MethodEnum.INTEGRAL_MEAN;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CL_ALPHA, canardCLAlphaMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CL ZERO
+		String canardCLZeroPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/lift/cL_zero/@perform");
+
+		if(canardCLZeroPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCLZeroMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/lift/cL_zero/@method");
+
+			if(canardCLZeroMethodString != null) {
+
+				if(canardCLZeroMethodString.equalsIgnoreCase("ANDERSON_COMPRESSIBLE_SUBSONIC")) 
+					canardCLZeroMethod = MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC;
+
+				if(canardCLZeroMethodString.equalsIgnoreCase("NASA_BLACKWELL"))  
+					canardCLZeroMethod = MethodEnum.NASA_BLACKWELL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CL_ZERO, canardCLZeroMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CL STAR
+		String canardCLStarPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/lift/cL_star/@perform");
+
+		if(canardCLStarPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCLStarMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/lift/cL_star/@method");
+
+			if(canardCLStarMethodString != null) {
+
+				if(canardCLStarMethodString.equalsIgnoreCase("ANDERSON_COMPRESSIBLE_SUBSONIC")) 
+					canardCLStarMethod = MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC;
+
+				if(canardCLStarMethodString.equalsIgnoreCase("NASA_BLACKWELL"))  
+					canardCLStarMethod = MethodEnum.NASA_BLACKWELL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CL_STAR, canardCLStarMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CL MAX
+		String canardCLMaxPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/lift/cL_max/@perform");
+
+		if(canardCLMaxPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCLMaxMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/lift/cL_max/@method");
+
+			if(canardCLMaxMethodString != null) {
+
+				if(canardCLMaxMethodString.equalsIgnoreCase("PHILLIPS_ALLEY")) 
+					canardCLMaxMethod = MethodEnum.PHILLIPS_ALLEY;
+
+				if(canardCLMaxMethodString.equalsIgnoreCase("NASA_BLACKWELL"))  
+					canardCLMaxMethod = MethodEnum.NASA_BLACKWELL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CL_MAX, canardCLMaxMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// ALPHA ZERO LIFT
+		String canardAlphaZeroLiftPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/lift/alpha_zero_lift/@perform");
+
+		if(canardAlphaZeroLiftPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardAlphaZeroLiftMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/lift/alpha_zero_lift/@method");
+
+			if(canardAlphaZeroLiftMethodString != null) {
+
+				if(canardAlphaZeroLiftMethodString.equalsIgnoreCase("INTEGRAL_MEAN_NO_TWIST")) 
+					canardAlphaZeroLiftMethod = MethodEnum.INTEGRAL_MEAN_NO_TWIST;
+
+				if(canardAlphaZeroLiftMethodString.equalsIgnoreCase("INTEGRAL_MEAN_TWIST"))  
+					canardAlphaZeroLiftMethod = MethodEnum.INTEGRAL_MEAN_TWIST;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT, canardAlphaZeroLiftMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// ALPHA STAR
+		String canardAlphaStarPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/lift/alpha_star/@perform");
+
+		if(canardAlphaStarPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardAlphaStarMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/lift/alpha_star/@method");
+
+			if(canardAlphaStarMethodString != null) {
+
+				if(canardAlphaStarMethodString.equalsIgnoreCase("MEAN_AIRFOIL_INFLUENCE_AREAS")) 
+					canardAlphaStarMethod = MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.ALPHA_STAR, canardAlphaStarMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// ALPHA STALL
+		String canardAlphaStallPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/lift/alpha_stall/@perform");
+
+		if(canardAlphaStallPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardAlphaStallMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/lift/alpha_stall/@method");
+
+			if(canardAlphaStallMethodString != null) {
+
+				if(canardAlphaStallMethodString.equalsIgnoreCase("PHILLIPS_ALLEY")) 
+					canardAlphaStallMethod = MethodEnum.PHILLIPS_ALLEY;
+
+				if(canardAlphaStallMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
+					canardAlphaStallMethod = MethodEnum.NASA_BLACKWELL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.ALPHA_STALL, canardAlphaStallMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// LIFT CURVE
+		String canardLiftCurvePerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/lift/cL_vs_alpha/@perform");
+
+		if(canardLiftCurvePerformString.equalsIgnoreCase("TRUE")){
+
+			String canardLiftCurveUserDefinedString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/lift/cL_vs_alpha/@user_defined");
+
+			if(canardLiftCurveUserDefinedString != null) {
+
+				if(canardLiftCurveUserDefinedString.equalsIgnoreCase("TRUE")) {
+
+					canardLiftCurveFunction = new MyInterpolatingFunction();
+					List<Amount<Angle>> canardLiftCurveAlpha = reader.readArrayofAmountFromXML("//canard_analyses/lift/cL_vs_alpha/alpha");
+					List<Double> canardLiftCurveCL = reader.readArrayDoubleFromXML("//canard_analyses/lift/cL_vs_alpha/cL");
+					canardLiftCurveFunction.interpolate(
+							MyArrayUtils.convertListOfAmountTodoubleArray(
+									canardLiftCurveAlpha.stream()
+									.map(a -> a.to(NonSI.DEGREE_ANGLE))
+									.collect(Collectors.toList())
+									), 
+							MyArrayUtils.convertToDoublePrimitive(canardLiftCurveCL)
+							);
+
+					canardTaskList.put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, MethodEnum.INPUT);
+
+				}
+				else if(canardLiftCurveUserDefinedString.equalsIgnoreCase("FALSE")) {
+
+					String canardLiftCurveMethodString = MyXMLReaderUtils
 							.getXMLPropertyByPath(
 									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/lift/lift_distributions/@method");
+									"//canard_analyses/lift/cL_vs_alpha/@method");
 
-					if(canardLiftDistributionMethodString != null) {
+					if(canardLiftCurveMethodString != null) {
 
-						if(canardLiftDistributionMethodString.equalsIgnoreCase("SCHRENK")) 
-							canardLiftDistributionMethod = MethodEnum.SCHRENK;
+						if(canardLiftCurveMethodString.equalsIgnoreCase("PHILLIPS_ALLEY")) 
+							canardLiftCurveMethod = MethodEnum.PHILLIPS_ALLEY;
 
-						if(canardLiftDistributionMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
-							canardLiftDistributionMethod = MethodEnum.NASA_BLACKWELL;
+						if(canardLiftCurveMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
+							canardLiftCurveMethod = MethodEnum.NASA_BLACKWELL;
 
-						canardTaskList.put(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION, canardLiftDistributionMethod);
+						canardTaskList.put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, canardLiftCurveMethod);
 
 					}
 				}
+			}
+		}
 
-				//---------------------------------------------------------------
-				// CL AT ALPHA
-				String canardCLAtAlphaPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/lift/cL_at_alpha_current/@perform");
+		//---------------------------------------------------------------
+		// LIFT DISTRIBUTION
+		String canardLiftDistributionPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/lift/lift_distributions/@perform");
 
-				if(canardCLAtAlphaPerformString.equalsIgnoreCase("TRUE")){
+		if(canardLiftDistributionPerformString.equalsIgnoreCase("TRUE")){
 
-					String canardCLAtAlphaMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/lift/cL_at_alpha_current/@method");
+			String canardLiftDistributionMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/lift/lift_distributions/@method");
 
-					if(canardCLAtAlphaMethodString != null) {
+			if(canardLiftDistributionMethodString != null) {
 
-						if(canardCLAtAlphaMethodString.equalsIgnoreCase("LINEAR_DLR")) 
-							canardCLAtAlphaMethod = MethodEnum.LINEAR_DLR;
+				if(canardLiftDistributionMethodString.equalsIgnoreCase("SCHRENK")) 
+					canardLiftDistributionMethod = MethodEnum.SCHRENK;
 
-						if(canardCLAtAlphaMethodString.equalsIgnoreCase("ANDERSON_COMPRESSIBLE_SUBSONIC")) 
-							canardCLAtAlphaMethod = MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC;
-						
-						if(canardCLAtAlphaMethodString.equalsIgnoreCase("LINEAR_NASA_BLACKWELL")) 
-							canardCLAtAlphaMethod = MethodEnum.LINEAR_NASA_BLACKWELL;
-						
-						if(canardCLAtAlphaMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
-							canardCLAtAlphaMethod = MethodEnum.NASA_BLACKWELL;
+				if(canardLiftDistributionMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
+					canardLiftDistributionMethod = MethodEnum.NASA_BLACKWELL;
 
-						if(canardCLAtAlphaMethodString.equalsIgnoreCase("INPUT")) 
-							canardCLAtAlphaMethod = MethodEnum.INPUT;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CL_AT_ALPHA, canardCLAtAlphaMethod);
+				canardTaskList.put(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION, canardLiftDistributionMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CL AT ALPHA
+		String canardCLAtAlphaPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/lift/cL_at_alpha_current/@perform");
+
+		if(canardCLAtAlphaPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCLAtAlphaMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/lift/cL_at_alpha_current/@method");
+
+			if(canardCLAtAlphaMethodString != null) {
+
+				if(canardCLAtAlphaMethodString.equalsIgnoreCase("LINEAR_DLR")) 
+					canardCLAtAlphaMethod = MethodEnum.LINEAR_DLR;
+
+				if(canardCLAtAlphaMethodString.equalsIgnoreCase("ANDERSON_COMPRESSIBLE_SUBSONIC")) 
+					canardCLAtAlphaMethod = MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC;
+
+				if(canardCLAtAlphaMethodString.equalsIgnoreCase("LINEAR_NASA_BLACKWELL")) 
+					canardCLAtAlphaMethod = MethodEnum.LINEAR_NASA_BLACKWELL;
+
+				if(canardCLAtAlphaMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
+					canardCLAtAlphaMethod = MethodEnum.NASA_BLACKWELL;
+
+				if(canardCLAtAlphaMethodString.equalsIgnoreCase("INPUT")) 
+					canardCLAtAlphaMethod = MethodEnum.INPUT;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CL_AT_ALPHA, canardCLAtAlphaMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// ELEVATOR DEFLECTION FOR ANALYSIS
+		String canardControlSurfaceDeflectionForAnalysisString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/elevator/@deflection_angle_degree");
+
+		if(canardControlSurfaceDeflectionForAnalysisString != null)
+			canardControlSurfaceDeflectionForAnalysis = Amount.valueOf(
+					Double.valueOf(canardControlSurfaceDeflectionForAnalysisString), 
+					NonSI.DEGREE_ANGLE);
+
+
+		//---------------------------------------------------------------
+		// CONTROL SURFACE LIFT CURVE
+		String canardElevatorLiftCurvePerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/elevator/cL_vs_alpha/@perform");
+
+		if(canardElevatorLiftCurvePerformString.equalsIgnoreCase("TRUE")){
+
+			String canardElevatorLiftCurveMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/elevator/cL_vs_alpha/@method");
+
+			if(canardElevatorLiftCurveMethodString != null) {
+
+				if(canardElevatorLiftCurveMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
+					canardElevatorLiftCurveMethod = MethodEnum.SEMIEMPIRICAL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D, canardElevatorLiftCurveMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CONTROL SURFACE LIFT CURVE
+		String canardElevatorPolarCurvePerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/elevator/cD_vs_cL/@perform");
+
+		if(canardElevatorPolarCurvePerformString.equalsIgnoreCase("TRUE")){
+
+			String canardElevatorPolarCurveMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/elevator/cD_vs_cL/@method");
+
+			if(canardElevatorPolarCurveMethodString != null) {
+
+				if(canardElevatorPolarCurveMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
+					canardElevatorPolarCurveMethod = MethodEnum.SEMIEMPIRICAL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D, canardElevatorPolarCurveMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CONTROL SURFACE MOMENT CURVE
+		String canardElevatorMomentCurvePerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/elevator/cM_vs_alpha/@perform");
+
+		if(canardElevatorMomentCurvePerformString.equalsIgnoreCase("TRUE")){
+
+			String canardElevatorMomentCurveMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/elevator/cM_vs_alpha/@method");
+
+			if(canardElevatorMomentCurveMethodString != null) {
+
+				if(canardElevatorMomentCurveMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
+					canardElevatorMomentCurveMethod = MethodEnum.SEMIEMPIRICAL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D, canardElevatorMomentCurveMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CL AT ALPHA ELEVATOR
+		String canardCLAtAlphaElevatorPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/elevator/cL_at_alpha_current/@perform");
+
+		if(canardCLAtAlphaElevatorPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCLAtAlphaElevatorMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/elevator/cL_at_alpha_current/@method");
+
+			if(canardCLAtAlphaElevatorMethodString != null) {
+
+				if(canardCLAtAlphaElevatorMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
+					canardCLAtAlphaElevatorMethod = MethodEnum.SEMIEMPIRICAL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT, canardCLAtAlphaElevatorMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CD AT ALPHA ELEVATOR
+		String canardCDAtAlphaElevatorPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/elevator/cD_at_alpha_current/@perform");
+
+		if(canardCDAtAlphaElevatorPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCDAtAlphaElevatorMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/elevator/cD_at_alpha_current/@method");
+
+			if(canardCDAtAlphaElevatorMethodString != null) {
+
+				if(canardCDAtAlphaElevatorMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
+					canardCDAtAlphaElevatorMethod = MethodEnum.SEMIEMPIRICAL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CD_AT_ALPHA_HIGH_LIFT, canardCDAtAlphaElevatorMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CM AT ALPHA ELEVATOR
+		String canardCMAtAlphaElevatorPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/elevator/cM_at_alpha_current/@perform");
+
+		if(canardCMAtAlphaElevatorPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCMAtAlphaElevatorMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/elevator/cM_at_alpha_current/@method");
+
+			if(canardCMAtAlphaElevatorMethodString != null) {
+
+				if(canardCMAtAlphaElevatorMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
+					canardCMAtAlphaElevatorMethod = MethodEnum.SEMIEMPIRICAL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CM_AT_ALPHA_HIGH_LIFT, canardCMAtAlphaElevatorMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CD0
+		String canardCD0PerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/drag/cD_Zero/@perform");
+
+		if(canardCD0PerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCD0MethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/drag/cD_Zero/@method");
+
+			if(canardCD0MethodString != null) {
+
+				if(canardCD0MethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
+					canardCD0Method = MethodEnum.SEMIEMPIRICAL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CD0, canardCD0Method);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// OSWALD FACTOR
+		String canardOswaldFactorPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/drag/oswald_factor/@perform");
+
+		if(canardOswaldFactorPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardOswaldFactorMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/drag/oswald_factor/@method");
+
+			if(canardOswaldFactorMethodString != null) {
+
+				if(canardOswaldFactorMethodString.equalsIgnoreCase("GROSU")) 
+					canardOswaldFactorMethod = MethodEnum.GROSU;
+
+				if(canardOswaldFactorMethodString.equalsIgnoreCase("HOWE")) 
+					canardOswaldFactorMethod = MethodEnum.HOWE;
+
+				if(canardOswaldFactorMethodString.equalsIgnoreCase("RAYMER")) 
+					canardOswaldFactorMethod = MethodEnum.RAYMER;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.OSWALD_FACTOR, canardOswaldFactorMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CDi
+		String canardCDInducedPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/drag/cD_induced/@perform");
+
+		if(canardCDInducedPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCDInducedMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/drag/cD_induced/@method");
+
+			if(canardCDInducedMethodString != null) {
+
+				if(canardCDInducedMethodString.equalsIgnoreCase("GROSU")) 
+					canardCDInducedMethod = MethodEnum.GROSU;
+
+				if(canardCDInducedMethodString.equalsIgnoreCase("HOWE")) 
+					canardCDInducedMethod = MethodEnum.HOWE;
+
+				if(canardCDInducedMethodString.equalsIgnoreCase("RAYMER")) 
+					canardCDInducedMethod = MethodEnum.RAYMER;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE, canardCDInducedMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CD WAVE
+		String canardCDWavePerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/drag/cD_wave/@perform");
+
+		if(canardCDWavePerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCDWaveMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/drag/cD_wave/@method");
+
+			if(canardCDWaveMethodString != null) {
+
+				if(canardCDWaveMethodString.equalsIgnoreCase("LOCK_KORN_WITH_KORN_MASON")) 
+					canardCDWaveMethod = MethodEnum.LOCK_KORN_WITH_KORN_MASON;
+
+				if(canardCDWaveMethodString.equalsIgnoreCase("LOCK_KORN_WITH_KROO")) 
+					canardCDWaveMethod = MethodEnum.LOCK_KORN_WITH_KROO;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CD_WAVE, canardCDWaveMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// POLAR CURVE
+		String canardPolarCurvePerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/drag/cD_vs_cL/@perform");
+
+		if(canardPolarCurvePerformString.equalsIgnoreCase("TRUE")){
+
+			String canardPolarCurveUserDefinedString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/drag/cD_vs_cL/@user_defined");
+
+			if(canardPolarCurveUserDefinedString != null) {
+
+				if(canardPolarCurveUserDefinedString.equalsIgnoreCase("TRUE")) {
+
+					canardPolarCurveFunction = new MyInterpolatingFunction();
+					List<Double> canardPolarCurveCL = reader.readArrayDoubleFromXML("//canard_analyses/drag/cD_vs_cL/cL");
+					List<Double> canardPolarCurveCD = reader.readArrayDoubleFromXML("//canard_analyses/drag/cD_vs_cL/cD");
+					canardPolarCurveFunction.interpolate(
+							MyArrayUtils.convertToDoublePrimitive(canardPolarCurveCL), 
+							MyArrayUtils.convertToDoublePrimitive(canardPolarCurveCD)
+							);
+
+					canardTaskList.put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE, MethodEnum.INPUT);
+
+				}
+				else if(canardPolarCurveUserDefinedString.equalsIgnoreCase("FALSE")) {
+
+					String canardPolarCurveMethodString = MyXMLReaderUtils
+							.getXMLPropertyByPath(
+									reader.getXmlDoc(), reader.getXpath(),
+									"//canard_analyses/drag/cD_vs_cL/@method");
+
+					if(canardPolarCurveMethodString != null) {
+
+						if(canardPolarCurveMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
+							canardPolarCurveMethod = MethodEnum.SEMIEMPIRICAL;
+
+						if(canardPolarCurveMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
+							canardPolarCurveMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
+
+						canardTaskList.put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE, canardPolarCurveMethod);
 
 					}
 				}
-				
-				//---------------------------------------------------------------
-				// ELEVATOR DEFLECTION FOR ANALYSIS
-				String canardControlSurfaceDeflectionForAnalysisString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/elevator/@deflection_angle_degree");
-				
-				if(canardControlSurfaceDeflectionForAnalysisString != null)
-					canardControlSurfaceDeflectionForAnalysis = Amount.valueOf(
-							Double.valueOf(canardControlSurfaceDeflectionForAnalysisString), 
-							NonSI.DEGREE_ANGLE);
-				
+			}
+		}
 
-				//---------------------------------------------------------------
-				// CONTROL SURFACE EFFECTS
-				String canardElevatorEffectsPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/elevator/high_lift_devices_effects/@perform");
-				
-				if(canardElevatorEffectsPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardElevatorEffectsMethodString = MyXMLReaderUtils
+		//---------------------------------------------------------------
+		// DRAG DISTRIBUTION
+		String canardDragDistributionPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/drag/drag_distributions/@perform");
+
+		if(canardDragDistributionPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardDragDistributionMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/drag/drag_distributions/@method");
+
+			if(canardDragDistributionMethodString != null) {
+
+				if(canardDragDistributionMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
+					canardDragDistributionMethod = MethodEnum.NASA_BLACKWELL;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION, canardDragDistributionMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CD AT ALPHA
+		String canardCDAtAlphaPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/drag/cD_at_alpha_current/@perform");
+
+		if(canardCDAtAlphaPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCDAtAlphaMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/drag/cD_at_alpha_current/@method");
+
+			if(canardCDAtAlphaMethodString != null) {
+
+				if(canardCDAtAlphaMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
+					canardCDAtAlphaMethod = MethodEnum.SEMIEMPIRICAL;
+
+				if(canardCDAtAlphaMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
+					canardCDAtAlphaMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
+
+				if(canardCDAtAlphaMethodString.equalsIgnoreCase("INPUT")) 
+					canardCDAtAlphaMethod = MethodEnum.INPUT;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE, canardCDAtAlphaMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CM_ac
+		String canardCMacPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/pitching_moment/cM_ac/@perform");
+
+		if(canardCMacPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCMacMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/pitching_moment/cM_ac/@method");
+
+			if(canardCMacMethodString != null) {
+
+				if(canardCMacMethodString.equalsIgnoreCase("BASIC_AND_ADDITIONAL")) 
+					canardCMacMethod = MethodEnum.BASIC_AND_ADDITIONAL;
+
+				if(canardCMacMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
+					canardCMacMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
+
+				if(canardCMacMethodString.equalsIgnoreCase("INTEGRAL_MEAN")) 
+					canardCMacMethod = MethodEnum.INTEGRAL_MEAN;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE, canardCMacMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CM ALPHA
+		String canardCMAlphaPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/pitching_moment/cM_alpha/@perform");
+
+		if(canardCMAlphaPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCMAlphaMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/pitching_moment/cM_alpha/@method");
+
+			if(canardCMAlphaMethodString != null) {
+
+				if(canardCMAlphaMethodString.equalsIgnoreCase("ANDERSON_COMPRESSIBLE_SUBSONIC")) 
+					canardCMAlphaMethod = MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC;
+
+				if(canardCMAlphaMethodString.equalsIgnoreCase("POLHAMUS")) 
+					canardCMAlphaMethod = MethodEnum.POLHAMUS;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE, canardCMAlphaMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// MOMENT CURVE
+		String canardMomentCurvePerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/pitching_moment/cM_vs_alpha/@perform");
+
+		if(canardMomentCurvePerformString.equalsIgnoreCase("TRUE")){
+
+			String canardMomentCurveUserDefinedString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/pitching_moment/cM_vs_alpha/@user_defined");
+
+			if(canardMomentCurveUserDefinedString != null) {
+
+				if(canardMomentCurveUserDefinedString.equalsIgnoreCase("TRUE")) {
+
+					canardMomentCurveFunction = new MyInterpolatingFunction();
+					List<Amount<Angle>> canardMomentCurveAlpha = reader.readArrayofAmountFromXML("//canard_analyses/pitching_moment/cM_vs_alpha/alpha");
+					List<Double> canardMomentCurveCM = reader.readArrayDoubleFromXML("//canard_analyses/pitching_moment/cM_vs_alpha/cM");
+					canardMomentCurveFunction.interpolate(
+							MyArrayUtils.convertListOfAmountTodoubleArray(
+									canardMomentCurveAlpha.stream()
+									.map(a -> a.to(NonSI.DEGREE_ANGLE))
+									.collect(Collectors.toList())
+									), 
+							MyArrayUtils.convertToDoublePrimitive(canardMomentCurveCM)
+							);
+
+					canardTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE, MethodEnum.INPUT);
+
+				}
+				else if(canardMomentCurveUserDefinedString.equalsIgnoreCase("FALSE")) {
+
+					String canardMomentCurveMethodString = MyXMLReaderUtils
 							.getXMLPropertyByPath(
 									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/elevator/high_lift_devices_effects/@method");
-					
-					if(canardElevatorEffectsMethodString != null) {
-						
-						if(canardElevatorEffectsMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-							canardElevatorEffectsMethod = MethodEnum.SEMIEMPIRICAL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS, canardElevatorEffectsMethod);
-						
+									"//canard_analyses/pitching_moment/cM_vs_alpha/@method");
+
+					if(canardMomentCurveMethodString != null) {
+
+						if(canardMomentCurveMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
+							canardMomentCurveMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
+
+						canardTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE, canardMomentCurveMethod);
+
 					}
 				}
-				
-				//---------------------------------------------------------------
-				// CONTROL SURFACE LIFT CURVE
-				String canardElevatorLiftCurvePerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/elevator/cL_vs_alpha/@perform");
-				
-				if(canardElevatorLiftCurvePerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardElevatorLiftCurveMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/elevator/cL_vs_alpha/@method");
-					
-					if(canardElevatorLiftCurveMethodString != null) {
-						
-						if(canardElevatorLiftCurveMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-							canardElevatorLiftCurveMethod = MethodEnum.SEMIEMPIRICAL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D, canardElevatorLiftCurveMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CONTROL SURFACE LIFT CURVE
-				String canardElevatorPolarCurvePerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/elevator/cD_vs_cL/@perform");
-				
-				if(canardElevatorPolarCurvePerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardElevatorPolarCurveMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/elevator/cD_vs_cL/@method");
-					
-					if(canardElevatorPolarCurveMethodString != null) {
-						
-						if(canardElevatorPolarCurveMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-							canardElevatorPolarCurveMethod = MethodEnum.SEMIEMPIRICAL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D, canardElevatorPolarCurveMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CONTROL SURFACE MOMENT CURVE
-				String canardElevatorMomentCurvePerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/elevator/cM_vs_alpha/@perform");
-				
-				if(canardElevatorMomentCurvePerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardElevatorMomentCurveMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/elevator/cM_vs_alpha/@method");
-					
-					if(canardElevatorMomentCurveMethodString != null) {
-						
-						if(canardElevatorMomentCurveMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-							canardElevatorMomentCurveMethod = MethodEnum.SEMIEMPIRICAL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D, canardElevatorMomentCurveMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CL AT ALPHA ELEVATOR
-				String canardCLAtAlphaElevatorPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/elevator/cL_at_alpha_current/@perform");
-				
-				if(canardCLAtAlphaElevatorPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCLAtAlphaElevatorMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/elevator/cL_at_alpha_current/@method");
-					
-					if(canardCLAtAlphaElevatorMethodString != null) {
-						
-						if(canardCLAtAlphaElevatorMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-							canardCLAtAlphaElevatorMethod = MethodEnum.SEMIEMPIRICAL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT, canardCLAtAlphaElevatorMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CD AT ALPHA ELEVATOR
-				String canardCDAtAlphaElevatorPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/elevator/cD_at_alpha_current/@perform");
-				
-				if(canardCDAtAlphaElevatorPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCDAtAlphaElevatorMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/elevator/cD_at_alpha_current/@method");
-					
-					if(canardCDAtAlphaElevatorMethodString != null) {
-						
-						if(canardCDAtAlphaElevatorMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-							canardCDAtAlphaElevatorMethod = MethodEnum.SEMIEMPIRICAL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CD_AT_ALPHA_HIGH_LIFT, canardCDAtAlphaElevatorMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CM AT ALPHA ELEVATOR
-				String canardCMAtAlphaElevatorPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/elevator/cM_at_alpha_current/@perform");
-				
-				if(canardCMAtAlphaElevatorPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCMAtAlphaElevatorMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/elevator/cM_at_alpha_current/@method");
-					
-					if(canardCMAtAlphaElevatorMethodString != null) {
-						
-						if(canardCMAtAlphaElevatorMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-							canardCMAtAlphaElevatorMethod = MethodEnum.SEMIEMPIRICAL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CM_AT_ALPHA_HIGH_LIFT, canardCMAtAlphaElevatorMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CD0
-				String canardCD0PerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/drag/cD_Zero/@perform");
-				
-				if(canardCD0PerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCD0MethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/drag/cD_Zero/@method");
-					
-					if(canardCD0MethodString != null) {
-						
-						if(canardCD0MethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-							canardCD0Method = MethodEnum.SEMIEMPIRICAL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CD0, canardCD0Method);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// OSWALD FACTOR
-				String canardOswaldFactorPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/drag/oswald_factor/@perform");
-				
-				if(canardOswaldFactorPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardOswaldFactorMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/drag/oswald_factor/@method");
-					
-					if(canardOswaldFactorMethodString != null) {
-						
-						if(canardOswaldFactorMethodString.equalsIgnoreCase("GROSU")) 
-							canardOswaldFactorMethod = MethodEnum.GROSU;
-						
-						if(canardOswaldFactorMethodString.equalsIgnoreCase("HOWE")) 
-							canardOswaldFactorMethod = MethodEnum.HOWE;
-						
-						if(canardOswaldFactorMethodString.equalsIgnoreCase("RAYMER")) 
-							canardOswaldFactorMethod = MethodEnum.RAYMER;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.OSWALD_FACTOR, canardOswaldFactorMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CDi
-				String canardCDInducedPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/drag/cD_induced/@perform");
-				
-				if(canardCDInducedPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCDInducedMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/drag/cD_induced/@method");
-					
-					if(canardCDInducedMethodString != null) {
-						
-						if(canardCDInducedMethodString.equalsIgnoreCase("GROSU")) 
-							canardCDInducedMethod = MethodEnum.GROSU;
-						
-						if(canardCDInducedMethodString.equalsIgnoreCase("HOWE")) 
-							canardCDInducedMethod = MethodEnum.HOWE;
-						
-						if(canardCDInducedMethodString.equalsIgnoreCase("RAYMER")) 
-							canardCDInducedMethod = MethodEnum.RAYMER;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE, canardCDInducedMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CD WAVE
-				String canardCDWavePerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/drag/cD_wave/@perform");
-				
-				if(canardCDWavePerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCDWaveMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/drag/cD_wave/@method");
-					
-					if(canardCDWaveMethodString != null) {
-						
-						if(canardCDWaveMethodString.equalsIgnoreCase("LOCK_KORN_WITH_KORN_MASON")) 
-							canardCDWaveMethod = MethodEnum.LOCK_KORN_WITH_KORN_MASON;
-						
-						if(canardCDWaveMethodString.equalsIgnoreCase("LOCK_KORN_WITH_KROO")) 
-							canardCDWaveMethod = MethodEnum.LOCK_KORN_WITH_KROO;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CD_WAVE, canardCDWaveMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// POLAR CURVE
-				String canardPolarCurvePerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/drag/cD_vs_cL/@perform");
-				
-				if(canardPolarCurvePerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardPolarCurveUserDefinedString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/drag/cD_vs_cL/@user_defined");
-					
-					if(canardPolarCurveUserDefinedString != null) {
-						
-						if(canardPolarCurveUserDefinedString.equalsIgnoreCase("TRUE")) {
-							
-							canardPolarCurveFunction = new MyInterpolatingFunction();
-							List<Double> canardPolarCurveCL = reader.readArrayDoubleFromXML("//canard_analyses/drag/cD_vs_cL/cL");
-							List<Double> canardPolarCurveCD = reader.readArrayDoubleFromXML("//canard_analyses/drag/cD_vs_cL/cD");
-							canardPolarCurveFunction.interpolate(
-									MyArrayUtils.convertToDoublePrimitive(canardPolarCurveCL), 
-									MyArrayUtils.convertToDoublePrimitive(canardPolarCurveCD)
-									);
-							
-							canardTaskList.put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE, MethodEnum.INPUT);
-							
-						}
-						else if(canardPolarCurveUserDefinedString.equalsIgnoreCase("FALSE")) {
-							
-							String canardPolarCurveMethodString = MyXMLReaderUtils
-									.getXMLPropertyByPath(
-											reader.getXmlDoc(), reader.getXpath(),
-											"//canard_analyses/drag/cD_vs_cL/@method");
-							
-							if(canardPolarCurveMethodString != null) {
-								
-								if(canardPolarCurveMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-									canardPolarCurveMethod = MethodEnum.SEMIEMPIRICAL;
-								
-								if(canardPolarCurveMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
-									canardPolarCurveMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
-								
-								canardTaskList.put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE, canardPolarCurveMethod);
-								
-							}
-						}
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// DRAG DISTRIBUTION
-				String canardDragDistributionPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/drag/drag_distributions/@perform");
-				
-				if(canardDragDistributionPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardDragDistributionMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/drag/drag_distributions/@method");
-					
-					if(canardDragDistributionMethodString != null) {
-						
-						if(canardDragDistributionMethodString.equalsIgnoreCase("NASA_BLACKWELL")) 
-							canardDragDistributionMethod = MethodEnum.NASA_BLACKWELL;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION, canardDragDistributionMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CD AT ALPHA
-				String canardCDAtAlphaPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/drag/cD_at_alpha_current/@perform");
-				
-				if(canardCDAtAlphaPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCDAtAlphaMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/drag/cD_at_alpha_current/@method");
-					
-					if(canardCDAtAlphaMethodString != null) {
-						
-						if(canardCDAtAlphaMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-							canardCDAtAlphaMethod = MethodEnum.SEMIEMPIRICAL;
-						
-						if(canardCDAtAlphaMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
-							canardCDAtAlphaMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
-						
-						if(canardCDAtAlphaMethodString.equalsIgnoreCase("INPUT")) 
-							canardCDAtAlphaMethod = MethodEnum.INPUT;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE, canardCDAtAlphaMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CM_ac
-				String canardCMacPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/pitching_moment/cM_ac/@perform");
-				
-				if(canardCMacPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCMacMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/pitching_moment/cM_ac/@method");
-					
-					if(canardCMacMethodString != null) {
-						
-						if(canardCMacMethodString.equalsIgnoreCase("BASIC_AND_ADDITIONAL")) 
-							canardCMacMethod = MethodEnum.BASIC_AND_ADDITIONAL;
-						
-						if(canardCMacMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
-							canardCMacMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
-						
-						if(canardCMacMethodString.equalsIgnoreCase("INTEGRAL_MEAN")) 
-							canardCMacMethod = MethodEnum.INTEGRAL_MEAN;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE, canardCMacMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CM ALPHA
-				String canardCMAlphaPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/pitching_moment/cM_alpha/@perform");
-				
-				if(canardCMAlphaPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCMAlphaMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/pitching_moment/cM_alpha/@method");
-					
-					if(canardCMAlphaMethodString != null) {
-						
-						if(canardCMAlphaMethodString.equalsIgnoreCase("ANDERSON_COMPRESSIBLE_SUBSONIC")) 
-							canardCMAlphaMethod = MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC;
-						
-						if(canardCMAlphaMethodString.equalsIgnoreCase("POLHAMUS")) 
-							canardCMAlphaMethod = MethodEnum.POLHAMUS;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE, canardCMAlphaMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// MOMENT CURVE
-				String canardMomentCurvePerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/pitching_moment/cM_vs_alpha/@perform");
-				
-				if(canardMomentCurvePerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardMomentCurveUserDefinedString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/pitching_moment/cM_vs_alpha/@user_defined");
-					
-					if(canardMomentCurveUserDefinedString != null) {
-						
-						if(canardMomentCurveUserDefinedString.equalsIgnoreCase("TRUE")) {
-							
-							canardMomentCurveFunction = new MyInterpolatingFunction();
-							List<Amount<Angle>> canardMomentCurveAlpha = reader.readArrayofAmountFromXML("//canard_analyses/pitching_moment/cM_vs_alpha/alpha");
-							List<Double> canardMomentCurveCM = reader.readArrayDoubleFromXML("//canard_analyses/pitching_moment/cM_vs_alpha/cM");
-							canardMomentCurveFunction.interpolate(
-									MyArrayUtils.convertListOfAmountTodoubleArray(
-											canardMomentCurveAlpha.stream()
-											.map(a -> a.to(NonSI.DEGREE_ANGLE))
-											.collect(Collectors.toList())
-											), 
-									MyArrayUtils.convertToDoublePrimitive(canardMomentCurveCM)
-									);
-							
-							canardTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE, MethodEnum.INPUT);
-							
-						}
-						else if(canardMomentCurveUserDefinedString.equalsIgnoreCase("FALSE")) {
-							
-							String canardMomentCurveMethodString = MyXMLReaderUtils
-									.getXMLPropertyByPath(
-											reader.getXmlDoc(), reader.getXpath(),
-											"//canard_analyses/pitching_moment/cM_vs_alpha/@method");
-							
-							if(canardMomentCurveMethodString != null) {
-								
-								if(canardMomentCurveMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
-									canardMomentCurveMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
-								
-								canardTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE, canardMomentCurveMethod);
-								
-							}
-						}
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// CM AT ALPHA
-				String canardCMAtAlphaPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/pitching_moment/cM_at_alpha_current/@perform");
-				
-				if(canardCMAtAlphaPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardCMAtAlphaMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/pitching_moment/cM_at_alpha_current/@method");
-					
-					if(canardCMAtAlphaMethodString != null) {
-						
-						if(canardCMAtAlphaMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
-							canardCMAtAlphaMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
-						
-						if(canardCMAtAlphaMethodString.equalsIgnoreCase("INPUT")) 
-							canardCMAtAlphaMethod = MethodEnum.INPUT;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE, canardCMAtAlphaMethod);
-						
-					}
-				}
-				
-				//---------------------------------------------------------------
-				// MOMENT DISTRIBUTION
-				String canardMomentDistributionPerformString = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//canard_analyses/pitching_moment/moment_distributions/@perform");
-				
-				if(canardMomentDistributionPerformString.equalsIgnoreCase("TRUE")){
-					
-					String canardMomentDistributionMethodString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//canard_analyses/pitching_moment/moment_distributions/@method");
-					
-					if(canardMomentDistributionMethodString != null) {
-						
-						if(canardMomentDistributionMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
-							canardMomentDistributionMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
-						
-						canardTaskList.put(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE, canardMomentDistributionMethod);
-						
-					}
-				}
-		//---------------------------------------------------------
-		//-END CANARD
-		//---------------------------------------------------------
+			}
+		}
+
+		//---------------------------------------------------------------
+		// CM AT ALPHA
+		String canardCMAtAlphaPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/pitching_moment/cM_at_alpha_current/@perform");
+
+		if(canardCMAtAlphaPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardCMAtAlphaMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/pitching_moment/cM_at_alpha_current/@method");
+
+			if(canardCMAtAlphaMethodString != null) {
+
+				if(canardCMAtAlphaMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
+					canardCMAtAlphaMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
+
+				if(canardCMAtAlphaMethodString.equalsIgnoreCase("INPUT")) 
+					canardCMAtAlphaMethod = MethodEnum.INPUT;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE, canardCMAtAlphaMethod);
+
+			}
+		}
+
+		//---------------------------------------------------------------
+		// MOMENT DISTRIBUTION
+		String canardMomentDistributionPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//canard_analyses/pitching_moment/moment_distributions/@perform");
+
+		if(canardMomentDistributionPerformString.equalsIgnoreCase("TRUE")){
+
+			String canardMomentDistributionMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//canard_analyses/pitching_moment/moment_distributions/@method");
+
+			if(canardMomentDistributionMethodString != null) {
+
+				if(canardMomentDistributionMethodString.equalsIgnoreCase("AIRFOIL_DISTRIBUTION")) 
+					canardMomentDistributionMethod = MethodEnum.AIRFOIL_DISTRIBUTION;
+
+				canardTaskList.put(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE, canardMomentDistributionMethod);
+
+			}
+		}
 		//...............................................................
 		// FUSELAGE:
 		//...............................................................
@@ -17932,22 +17885,51 @@ public class ACAerodynamicAndStabilityManager {
 		
 		if(aircraftTotalPolarCurvePerformString.equalsIgnoreCase("TRUE")){
 			
-			String aircraftDeltaCD0MiscellaneousString = MyXMLReaderUtils
+			String aircraftCalculateDeltaCD0MiscellaneousString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
-							"//aircraft_analyses/drag_polar/@delta_CD0_miscellaneous");
+							"//aircraft_analyses/drag_polar/@calculate_delta_CD0_miscellaneous");
 			
-			if(aircraftDeltaCD0MiscellaneousString != null) 
-				aircraftDeltaCD0Miscellaneous = Double.valueOf(aircraftDeltaCD0MiscellaneousString);
+			if(aircraftCalculateDeltaCD0MiscellaneousString != null) {
+				
+				if(aircraftCalculateDeltaCD0MiscellaneousString.equalsIgnoreCase("TRUE")) 
+					aircraftDeltaCD0Miscellaneous = null;
+				else {
+					
+					String aircraftDeltaCD0MiscellaneousString = MyXMLReaderUtils
+							.getXMLPropertyByPath(
+									reader.getXmlDoc(), reader.getXpath(),
+									"//aircraft_analyses/drag_polar/@delta_CD0_miscellaneous");
+					
+					if(aircraftDeltaCD0MiscellaneousString != null) 
+						aircraftDeltaCD0Miscellaneous = Double.valueOf(aircraftDeltaCD0MiscellaneousString);
+					
+				}
+				
+			}
 			
-			String aircraftDeltaCD0LandingGearsString = MyXMLReaderUtils
+			String aircraftCalculateDeltaCD0LandingGearsString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
-							"//aircraft_analyses/drag_polar/@delta_CD0_landing_gears");
+							"//aircraft_analyses/drag_polar/@calculate_delta_CD0_landing_gears");
 			
-			if(aircraftDeltaCD0LandingGearsString != null) 
-				aircraftDeltaCD0LandingGears = Double.valueOf(aircraftDeltaCD0MiscellaneousString);
-			
+			if(aircraftCalculateDeltaCD0LandingGearsString != null) {
+				
+				if(aircraftCalculateDeltaCD0LandingGearsString.equalsIgnoreCase("FALSE")) {
+					
+					String aircraftDeltaCD0LandingGearsString = MyXMLReaderUtils
+							.getXMLPropertyByPath(
+									reader.getXmlDoc(), reader.getXpath(),
+									"//aircraft_analyses/drag_polar/@delta_CD0_landing_gears");
+					
+					if(aircraftDeltaCD0LandingGearsString != null) 
+						aircraftDeltaCD0LandingGears = Double.valueOf(aircraftDeltaCD0LandingGearsString);
+					
+				}
+				else 
+					aircraftDeltaCD0LandingGears = null;
+				
+			}
 			
 			String aircraftTotalPolarCurveMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
@@ -19109,6 +19091,7 @@ public class ACAerodynamicAndStabilityManager {
 
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	public void toXLSFile(String filenameWithPathAndExt) throws InvalidFormatException, IOException {
 
 		Workbook wb;
@@ -21022,96 +21005,6 @@ public class ACAerodynamicAndStabilityManager {
 			currentBoldIndex = currentBoldIndex+3;
 			boldRowIndex.add(currentBoldIndex);
 
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-
-				dataListHTail.add(new Object[] {""});
-				dataListHTail.add(new Object[] {"ELEVATOR EFFECTS (2D)"});
-
-				//.........................................................................................................................................
-				dataListHTail.add(new Object[] {
-						"Delta Cl0",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaCl0Flap().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				//.........................................................................................................................................
-				dataListHTail.add(new Object[] {
-						"Delta Clmax",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaClmaxFlap().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-
-				dataListHTail.add(new Object[] {""});
-				dataListHTail.add(new Object[] {"ELEVATOR EFFECTS (3D)"});
-
-				//.........................................................................................................................................
-				dataListHTail.add(new Object[] {
-						"Delta CL0",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaCL0Flap().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				//.........................................................................................................................................
-				dataListHTail.add(new Object[] {
-						"Delta CLmax",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaCLmaxFlap().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				//.........................................................................................................................................
-				dataListHTail.add(new Object[] {
-						"Delta CD0",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaCD0().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				//.........................................................................................................................................
-				dataListHTail.add(new Object[] {
-						"Delta CM_c/4",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaCMc4().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				//.........................................................................................................................................
-
-				dataListHTail.add(new Object[] {""});
-				dataListHTail.add(new Object[] {"GLOBAL ELEVATOR EFFECTS"});
-				dataListHTail.add(new Object[] {
-						"Alpha stall (with Elevator)",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaStallHighLift().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								).doubleValue(NonSI.DEGREE_ANGLE)});
-				dataListHTail.add(new Object[] {
-						"Alpha star (with Elevator)",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaStarHighLift().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								).doubleValue(NonSI.DEGREE_ANGLE)});
-				dataListHTail.add(new Object[] {
-						"CL_max (with Elevator)",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCLMaxHighLift().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				dataListHTail.add(new Object[] {
-						"CL_star (with Elevator)",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCLStarHighLift().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				dataListHTail.add(new Object[] {
-						"CL_alpha (with Elevator)",
-						"1/deg",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCLAlphaHighLift().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()});
-
-				currentBoldIndex = currentBoldIndex+15;
-
-			}
-
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
 
 				dataListHTail.add(new Object[] {""});
@@ -22017,96 +21910,6 @@ public class ACAerodynamicAndStabilityManager {
 			dataListVTail.add(new Object[] {"RUDDER EFFECTS AT dr = " + _theAerodynamicBuilderInterface.getRudderDeflectionForAnalysis().doubleValue(NonSI.DEGREE_ANGLE) + "°"});
 			currentBoldIndex = currentBoldIndex+3;
 			boldRowIndex.add(currentBoldIndex);
-
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-
-				dataListVTail.add(new Object[] {""});
-				dataListVTail.add(new Object[] {"RUDDER EFFECTS (2D)"});
-
-				//.........................................................................................................................................
-				dataListVTail.add(new Object[] {
-						"Delta Cl0",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaCl0Flap().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				//.........................................................................................................................................
-				dataListVTail.add(new Object[] {
-						"Delta Clmax",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaClmaxFlap().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-
-				dataListVTail.add(new Object[] {""});
-				dataListVTail.add(new Object[] {"RUDDER EFFECTS (3D)"});
-
-				//.........................................................................................................................................
-				dataListVTail.add(new Object[] {
-						"Delta CL0",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaCL0Flap().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				//.........................................................................................................................................
-				dataListVTail.add(new Object[] {
-						"Delta CLmax",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaCLmaxFlap().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				//.........................................................................................................................................
-				dataListVTail.add(new Object[] {
-						"Delta CD0",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaCD0().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				//.........................................................................................................................................
-				dataListVTail.add(new Object[] {
-						"Delta CM_c/4",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaCMc4().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				//.........................................................................................................................................
-
-				dataListVTail.add(new Object[] {""});
-				dataListVTail.add(new Object[] {"GLOBAL RUDDER EFFECTS"});
-				dataListVTail.add(new Object[] {
-						"Alpha stall (with Rudder)",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaStallHighLift().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								).doubleValue(NonSI.DEGREE_ANGLE)});
-				dataListVTail.add(new Object[] {
-						"Alpha star (with Rudder)",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaStarHighLift().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								).doubleValue(NonSI.DEGREE_ANGLE)});
-				dataListVTail.add(new Object[] {
-						"CL_max (with Rudder)",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLMaxHighLift().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				dataListVTail.add(new Object[] {
-						"CL_star (with Rudder)",
-						"",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLStarHighLift().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								)});
-				dataListVTail.add(new Object[] {
-						"CL_alpha (with Rudder)",
-						"1/deg",
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLAlphaHighLift().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-								).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()});
-
-				currentBoldIndex = currentBoldIndex+15;
-
-			}
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
 
@@ -23308,7 +23111,7 @@ public class ACAerodynamicAndStabilityManager {
 
 			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
-				int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
+				int indexOfFirstMaximumDeltaElevatorOfEquilibrium = getAlphaBodyList().size()-1;
 				
 				for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
 					if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
@@ -23806,6 +23609,7 @@ public class ACAerodynamicAndStabilityManager {
         
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public String toString() {
 
@@ -24388,29 +24192,6 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
 
-				sb.append("\n\t\tELEVATOR EFFECTS (2D)\n");
-				sb.append("\t\tDelta Cl0 = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaCl0Flap().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
-				sb.append("\t\tDelta Clmax = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaClmaxFlap().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
-
-				sb.append("\n\t\tELEVATOR EFFECTS (3D)\n");
-
-				sb.append("\t\tDelta CL0 = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaCL0Flap().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
-				sb.append("\t\tDelta CLmax = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaCLmaxFlap().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
-				sb.append("\t\tDelta CD0 = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaCD0().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
-				sb.append("\t\tDelta CM_c/4 = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDeltaCMc4().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
-
 				sb.append("\n\t\tGLOBAL ELEVATOR EFFECTS\n");
 
 				sb.append("\t\tAlpha stall (with Elevator) = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaStallHighLift().get(
@@ -24695,29 +24476,6 @@ public class ACAerodynamicAndStabilityManager {
 			sb.append("\n\tRUDDER EFFECTS AT de = " + _theAerodynamicBuilderInterface.getRudderDeflectionForAnalysis().to(NonSI.DEGREE_ANGLE) + "\n");
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-
-				sb.append("\n\t\tRUDDER EFFECTS (2D)\n");
-				sb.append("\t\tDelta Cl0 = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaCl0Flap().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
-				sb.append("\t\tDelta Clmax = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaClmaxFlap().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
-
-				sb.append("\n\t\tRUDDER EFFECTS (3D)\n");
-
-				sb.append("\t\tDelta CL0 = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaCL0Flap().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
-				sb.append("\t\tDelta CLmax = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaCLmaxFlap().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
-				sb.append("\t\tDelta CD0 = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaCD0().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
-				sb.append("\t\tDelta CM_c/4 = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDeltaCMc4().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
-						) + "\n");
 
 				sb.append("\n\t\tGLOBAL RUDDER EFFECTS\n");
 
@@ -25175,7 +24933,7 @@ public class ACAerodynamicAndStabilityManager {
 			
 			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 				
-				int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
+				int indexOfFirstMaximumDeltaElevatorOfEquilibrium = _alphaBodyList.size()-1;
 				
 				for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
 					if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
@@ -25383,6 +25141,98 @@ public class ACAerodynamicAndStabilityManager {
 	public class CalcTotalDragCoefficient {
 
 		public void fromAircraftComponents() {
+
+			if(_theAerodynamicBuilderInterface.getDeltaCD0Miscellaneous() == null) {
+
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null) {
+					if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCD0().get(MethodEnum.SEMIEMPIRICAL) == null) {
+						CalcCD0 calcCD0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCD0();
+						calcCD0.semiempirical(
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCurrentMachNumber(),
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCurrentAltitude()
+								);
+					}
+				}
+
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null) {
+					if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL) == null) {
+						CalcCD0 calcCD0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCD0();
+						calcCD0.semiempirical(
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCurrentMachNumber(),
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCurrentAltitude()
+								);
+					}
+				}
+
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getVTail() != null) {
+					if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL) == null) {
+						CalcCD0 calcCD0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcCD0();
+						calcCD0.semiempirical(
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCurrentMachNumber(),
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCurrentAltitude()
+								);
+					}
+				}
+
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard() != null) {
+					if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.CANARD).getCD0().get(MethodEnum.SEMIEMPIRICAL) == null) {
+						CalcCD0 calcCD0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.CANARD).new CalcCD0();
+						calcCD0.semiempirical(
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.CANARD).getCurrentMachNumber(),
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.CANARD).getCurrentAltitude()
+								);
+					}
+				}
+
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage() != null) {
+					if(_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL) == null) {
+						analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Total calcCD0 = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Total();
+						calcCD0.semiempirical();
+					}
+				}
+
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getNacelles() != null) {
+					if(_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL) == null) {
+						analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Total calcCD0 = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Total();
+						calcCD0.semiempirical();
+					}
+				}
+
+				double cD0WingFuselageInterference = (
+						(0.5*Math.pow(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPositionRelativeToAttachment(), 2) 
+								+1.25*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPositionRelativeToAttachment()
+								+0.75)
+						*2.16
+						*Math.pow(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER), 2)
+						*Math.pow(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getThicknessToChordRatio(), 3)
+						)
+						/_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
+
+				double cD0Total = 0.0;
+
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null)
+					cD0Total += _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCD0().get(MethodEnum.SEMIEMPIRICAL);
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null)
+					cD0Total += _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL);
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getVTail() != null)
+					cD0Total += _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL);
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard() != null)
+					cD0Total += _liftingSurfaceAerodynamicManagers.get(ComponentEnum.CANARD).getCD0().get(MethodEnum.SEMIEMPIRICAL);
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage() != null)
+					cD0Total += _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL);
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getNacelles() != null)
+					cD0Total += _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL);
+
+				double cD0Excrescences = _theAerodynamicBuilderInterface.getTheAircraft().getKExcr()*cD0Total;
+				
+				double deltaCD0Miscellaneous = cD0WingFuselageInterference + cD0Excrescences;
+				
+				setTheAerodynamicBuilderInterface(
+						IACAerodynamicAndStabilityManager.Builder.from(_theAerodynamicBuilderInterface).setDeltaCD0Miscellaneous(
+								deltaCD0Miscellaneous
+								).build()
+						);
+			}
 			
 			_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> 
 			_totalDragCoefficient.put(
@@ -25407,7 +25257,7 @@ public class ACAerodynamicAndStabilityManager {
 											.get(ComponentEnum.NACELLE)
 											.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
 							_landingGearUsedDrag,
-							_theAerodynamicBuilderInterface.getDeltaCD0Miscellaneous(),  // FIX THIS
+							_theAerodynamicBuilderInterface.getDeltaCD0Miscellaneous(),
 							_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
 							_alphaBodyList)
 					)

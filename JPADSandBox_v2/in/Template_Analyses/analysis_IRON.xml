@@ -40,18 +40,18 @@
 	
 	<aerodynamic_and_stability
 			plot="TRUE"
-			create_CSV="FALSE"
-			take_off_condition="TRUE"
-			file_take_off_condition="analysis_aerodynamics_Prototype.xml"
+			create_CSV="TRUE"
+			take_off_condition="FALSE"
+			file_take_off_condition="analysis_aerodynamics_Prototype_LOOP1_updated_takeoff.xml"
 			climb_condition="FALSE"
-			file_climb_condition="analysis_aerodynamics_Prototype.xml"
-			cruise_condition="FALSE"
-			file_cruise_condition="analysis_aerodynamics_IRON_cruise.xml"
+			file_climb_condition="analysis_aerodynamics_Prototype_LOOP1_updated_climb.xml"
+			cruise_condition="TRUE"
+			file_cruise_condition="analysis_aerodynamics_Prototype_LOOP1_updated_cruise.xml"
 			landing_condition="FALSE"
-			file_landing_condition="analysis_aerodynamics_Prototype.xml"
+			file_landing_condition="analysis_aerodynamics_Prototype_LOOP1_updated_landing.xml"
 	/>
-	
-<!-- 	<performance
+	<!-- 
+	<performance
 			file="analysis_performance_IRON_updated_canard_v2.xml"
 			plot="FALSE"
 			create_CSV="FALSE"
@@ -63,7 +63,8 @@
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
 			mission_profile="TRUE"
-	/> -->
+	/> 
+	-->
 	<!--
  	<costs 
 			file="analysis_costs_IRON_updated_canard.xml"

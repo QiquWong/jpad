@@ -7,7 +7,7 @@
         <lifting_surfaces>
             <wing file="wing_IRON_LOOP1_UPDATED.xml">
                 <position>
-                    <x unit="m">20.5</x>
+                    <x unit="m">20.0</x>
                     <y unit="m">0.0</y>
                     <z unit="m">-1.02</z>
                 </position>
@@ -23,9 +23,9 @@
             </horizontal_tail>
             <vertical_tail file="vtail_IRON.xml">
                 <position>
-                    <x unit="m">31.37</x>
+                    <x unit="m">33.00</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">1.56</z>
+                    <z unit="m">1.52</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>
@@ -50,7 +50,7 @@
 		<power_plant>
             <engine file="engine_IRON_NEW.xml">
                 <position>
-                    <x unit="m">29.43</x>
+                    <x unit="m">29.44</x>
                     <y unit="m">4.53</y>
                     <z unit="m">0.272</z>
                 </position>
@@ -59,7 +59,7 @@
             </engine>
             <engine file="engine_IRON_NEW.xml">
                 <position>
-                    <x unit="m">29.43</x>
+                    <x unit="m">29.44</x>
                     <y unit="m">-4.53</y>
                     <z unit="m">0.272</z>
                 </position>
@@ -70,7 +70,7 @@
 		<nacelles>
             <nacelle file="nacelle_IRON.xml">
                 <position>
-                    <x unit="m">29.43</x>
+                    <x unit="m">29.44</x>
                     <y unit="m">4.53</y>
                     <z unit="m">0.272</z>
                 </position>
@@ -78,7 +78,7 @@
             </nacelle>
             <nacelle file="nacelle_IRON.xml">
                 <position>
-                    <x unit="m">29.43</x>
+                    <x unit="m">29.44</x>
                     <y unit="m">-4.53</y>
                     <z unit="m">0.272</z>
                 </position>
