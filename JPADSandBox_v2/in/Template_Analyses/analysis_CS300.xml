@@ -54,8 +54,8 @@
 	-->
 	<performance 
 			file="analysis_performance_CS300.xml"
-			plot="FALSE"
-			create_CSV="FALSE"
+			plot="TRUE"
+			create_CSV="TRUE"
 			take_off="FALSE"
 			climb="FALSE"
 			cruise="FALSE"
