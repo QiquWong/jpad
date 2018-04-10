@@ -386,13 +386,12 @@ public class MissionProfileCalc {
 		_totalFuelUsed = Amount.valueOf(0.0, SI.KILOGRAM);
 		int i = 0;
 		
-		while (
-				(Math.abs(
+		while ( Math.abs(
 						(_initialFuelMass.to(SI.KILOGRAM).minus(_totalFuelUsed.to(SI.KILOGRAM)))
 						.divide(_initialFuelMass.to(SI.KILOGRAM))
 						.times(100)
 						.getEstimatedValue()
-						)- (_fuelReserve*100))
+						)- (_fuelReserve*100)
 				>= 0.01
 				) {
 			

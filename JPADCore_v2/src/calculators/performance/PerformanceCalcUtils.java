@@ -9,12 +9,7 @@ import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import org.apache.commons.math3.analysis.solvers.AllowedSolution;
 import org.jscience.physics.amount.Amount;
-
-import com.sun.org.apache.bcel.internal.generic.RET;
-import com.sun.org.apache.regexp.internal.recompile;
-import com.sun.org.glassfish.external.amx.AMX;
 
 import aircraft.components.powerplant.PowerPlant;
 import analyses.OperatingConditions;
@@ -28,7 +23,6 @@ import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import standaloneutils.MyArrayUtils;
-import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -235,7 +229,7 @@ public class PerformanceCalcUtils {
 				bpr, flightCondition);
 	}
 
-	public static CeilingMap calculateCeiling(List<RCMap> listRC) {
+	public static CeilingMap calculateCeiling(List<RCMap> listRC, boolean isOEI) {
 		
 		int nAlt = listRC.size();
 		double[] altitude = new double[nAlt];
@@ -262,7 +256,14 @@ public class PerformanceCalcUtils {
 		
 		int M=0;
 		for (int i=0; i < altitudeFitted.length; i++){
-			if (rcMaxAtAltitudeFitted[i] > 0.) M=M+1;
+			if (isOEI == false) {
+				if (rcMaxAtAltitudeFitted[i] > 0.) 
+					M=M+1;
+			}
+			else {
+				if (rcMaxAtAltitudeFitted[i] > 0.5) 
+					M=M+1;
+			}
 		}
 
 		double K = MyMathUtils.calculateSlopeLinear( rcMaxAtAltitudeFitted[M-1], rcMaxAtAltitudeFitted[M-2], 

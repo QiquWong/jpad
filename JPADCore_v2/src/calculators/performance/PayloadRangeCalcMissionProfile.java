@@ -263,14 +263,11 @@ public class PayloadRangeCalcMissionProfile{
 		
 		Amount<Mass> totalFuelUsed = Amount.valueOf(0.0, SI.KILOGRAM);
 		
-		while (
-				(Math.abs(
-						(targetFuelMass.to(SI.KILOGRAM).minus(totalFuelUsed.to(SI.KILOGRAM)))
-						.divide(targetFuelMass.to(SI.KILOGRAM))
-						.times(100)
-						.getEstimatedValue()
-						) - (_fuelReserve*100))
-				>= 0.01
+		while ( Math.abs(
+				targetFuelMass.times(1-_fuelReserve).to(SI.KILOGRAM).minus(totalFuelUsed.to(SI.KILOGRAM))
+				.getEstimatedValue()
+				)
+				>= 1
 				) {
 			
 			if(i >= 1)
@@ -588,7 +585,9 @@ public class PayloadRangeCalcMissionProfile{
 				
 				aircraftMassPerStep.add(
 						aircraftMassPerStep.get(j-1)
-						.minus(fuelUsedPerStep.get(j-1)
+						.minus(Amount.valueOf(
+								fuelUsedPerStep.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum(),
+								SI.KILOGRAM)
 								)
 						);
 				
@@ -813,7 +812,7 @@ public class PayloadRangeCalcMissionProfile{
 					);
 
 			Amount<Length> totalSecondClimbRange = theSecondClimbCalculator.getClimbTotalRange();
-			Amount<Mass> totalSecondClimbFuelUsed = theClimbCalculator.getClimbTotalFuelUsed();
+			Amount<Mass> totalSecondClimbFuelUsed = theSecondClimbCalculator.getClimbTotalFuelUsed();
 			
 			//--------------------------------------------------------------------
 			// ALTERNATE CRUISE
@@ -1540,7 +1539,7 @@ public class PayloadRangeCalcMissionProfile{
 
 			//.....................................................................
 			// NEW CRUISE LENGTH
-			Amount<Mass> deltaFuel = targetFuelMass.minus(totalFuelUsed);
+			Amount<Mass> deltaFuel = targetFuelMass.times(1-_fuelReserve).minus(totalFuelUsed);
 			Amount<Length> deltaCruiseLength = 
 					Amount.valueOf(
 							(deltaFuel.doubleValue(SI.KILOGRAM)/meanFuelFlow)
