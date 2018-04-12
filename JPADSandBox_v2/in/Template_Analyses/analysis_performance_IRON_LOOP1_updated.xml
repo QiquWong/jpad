@@ -110,7 +110,7 @@
 				<k_climb_weight_AEO></k_climb_weight_AEO> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
 				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
 				<initial_climb_altitude unit="ft">1500.0</initial_climb_altitude>
-				<final_climb_altitude unit="ft">25000.0</final_climb_altitude>
+				<final_climb_altitude unit="ft">16500.0</final_climb_altitude>
 				<climb_speed_CAS unit="kn">190</climb_speed_CAS>
 			</climb>
 			<cruise>
@@ -129,7 +129,7 @@
 			</flight_maneuvering_and_gust_envelope>
 			<mission_profile_and_payload_range>
 			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
-				<mission_range unit="nmi">1600</mission_range> 
+				<mission_range unit="nmi">400</mission_range> 
 				<alternate_cruise_length unit="nmi">100</alternate_cruise_length> <!-- (default = 0.0) -->
 				<alternate_cruise_altitude unit="ft">15000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
@@ -137,15 +137,15 @@
 				<holding_mach_number>0.3</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
 				<cruise_sfc_function calculate="FALSE">
-					<sfc>0.3995;0.36975;0.36465</sfc> <!-- OLD: 0.47;0.435;0.429 -->
+					<sfc>0.47;0.435;0.429</sfc> <!-- OLD: 0.47;0.435;0.429 -->
 					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</cruise_sfc_function>
 				<alternate_cruise_sfc_function calculate="FALSE">
-					<sfc>0.433806;0.394681;0.387745</sfc> <!-- OLD: 0.51036;0.46433;0.456176 -->
+					<sfc>0.51036;0.46433;0.456176</sfc> <!-- OLD: 0.51036;0.46433;0.456176 -->
 					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</alternate_cruise_sfc_function>
 				<holding_sfc_function calculate="FALSE">
-					<sfc>0.3774;0.279225;0.258995</sfc> <!-- OLD: 0.444;0.3285;0.3047 -->
+					<sfc>0.444;0.3285;0.3047</sfc> <!-- OLD: 0.444;0.3285;0.3047 -->
 					<throttle>0.4;0.75;0.95</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
 				</holding_sfc_function>
 				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>

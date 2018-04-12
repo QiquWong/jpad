@@ -21,7 +21,7 @@
 					<capital>
 						<life_span unit="year"></life_span> <!-- Default values: 16 years-->
 						<residual_value></residual_value> <!-- aircraft value percentage of the initial value at the end of life. Default value: 0.1 -->
-						<aircraft_price calculate="TRUE" method="SFORZA" unit="USD"></aircraft_price> <!-- Methods: SFORZA -->
+						<aircraft_price calculate="FALSE" method="SFORZA" unit="USD">82000000</aircraft_price> <!-- Methods: SFORZA -->
 						<airframe_relative_spares_costs></airframe_relative_spares_costs> <!-- default = 0.1 -->
 						<engines_relative_spares_costs></engines_relative_spares_costs>	<!-- default = 0.3 -->
 						<interest></interest> <!-- percentage of the total investment. Default: 0.054 = 5.4% -->
@@ -59,7 +59,7 @@
 					<maintenance>
 						<airframe_labour_rate unit="USD/h"></airframe_labour_rate> <!-- Default: 40 $/hr --> 
 						<engine_labour_rate unit="USD/h"></engine_labour_rate> <!-- Default: 40 $/hr -->					
-						<engine_price calculate="TRUE" method="SFORZA" unit="USD"></engine_price>
+						<engine_price calculate="FALSE" method="SFORZA" unit="USD">10000000</engine_price>
 					</maintenance>
 				</doc>
 			<!-- add ioc tags when available-->
