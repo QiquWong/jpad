@@ -44,7 +44,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jUnit4/hamcrest-core-1.3.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/guava/guava-20.0-rc1.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/args4j/args4j-2.0.21.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/jahuwaldt/units.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/colapi.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/trove/junit.jar"/>

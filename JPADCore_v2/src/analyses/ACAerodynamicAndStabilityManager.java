@@ -6251,6 +6251,11 @@ public class ACAerodynamicAndStabilityManager {
 								)
 						.collect(Collectors.toList());
 
+				double tau;
+				for(int i=0; i< _theAerodynamicBuilderInterface.getDeltaElevatorList().size(); i++) {
+					tau = _theAerodynamicBuilderInterface.getTauElevatorFunction().value(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i).doubleValue(NonSI.DEGREE_ANGLE));
+				}
+				
 				_current3DHorizontalTailLiftCurve.put(
 						de, 
 						temporaryLiftHorizontalTail);

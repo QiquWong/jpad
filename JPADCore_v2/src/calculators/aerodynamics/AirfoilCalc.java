@@ -729,6 +729,12 @@ public class AirfoilCalc {
 		List<List<Double>> cdArrayBreakPoints = new ArrayList<>();
 
 		for (int i=0; i<numberOfGivenSection; i++){
+			
+			for (int j=0; j<clArrayInput.get(i).size()-1; j++) {
+				if(clArrayInput.get(i).get(j+1) <= clArrayInput.get(i).get(j))
+					clArrayInput.get(i).set(j+1, clArrayInput.get(i).get(j)+0.01);
+			}
+			
 			cdArrayBreakPoints.add(i, 
 					MyArrayUtils.convertDoubleArrayToListDouble(MyMathUtils.getInterpolatedValue1DLinear(
 							MyArrayUtils.convertToDoublePrimitive(clArrayInput.get(i)),
