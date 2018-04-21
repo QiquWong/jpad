@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analysis>
+        <costs id="IRON - COSTS"
+			weights_from_previous_analysis="false" 
+			performance_from_previous_analysis="true"
+			>
+			<weights>
+				<maximum_take_off_mass unit="kg">54976</maximum_take_off_mass>
+				<operating_empty_mass unit="kg">34229</operating_empty_mass>
+				<payload unit="kg">14040</payload>
+			</weights>
+			<performance>
+				<range unit="nmi"></range>				
+				<block_fuel unit="kg"></block_fuel>
+				<flight_time unit="min"></flight_time>
+			</performance>
+			<global_data>
+				<utilization calculate="TRUE" method="AEA" unit="h/year"></utilization> <!-- Methods: AEA or SFORZA  -->
+				<doc>
+					<capital>
+						<life_span unit="year"></life_span> <!-- Default values: 16 years-->
+						<residual_value></residual_value> <!-- aircraft value percentage of the initial value at the end of life. Default value: 0.1 -->
+						<aircraft_price calculate="TRUE" method="SFORZA" unit="USD"></aircraft_price> <!-- Methods: SFORZA -->
+						<airframe_relative_spares_costs></airframe_relative_spares_costs> <!-- default = 0.1 -->
+						<engines_relative_spares_costs></engines_relative_spares_costs>	<!-- default = 0.3 -->
+						<interest></interest> <!-- percentage of the total investment. Default: 0.054 = 5.4% -->
+						<insurance></insurance> <!-- percentage of the sum of the airframe and engines prices. Default: 0.005 = 0.5%  -->
+					</capital>
+					<crew>
+						<cabin_labour_rate unit="USD/h"></cabin_labour_rate> <!-- Default values: 90 $/hr (each flight attendant) -->
+						<cockpit_labour_rate unit="USD/h"></cockpit_labour_rate> <!-- Default values: 360 $/hr (each pilot) -->
+					</crew>
+					<fuel>
+					<!-- the unit "USD" is used instead of "USD/barrel" which cannot be recognized -->
+						<unit_price unit="USD"></unit_price> <!-- Default values: 59.2 $/barrel (07/2017) http://www.iata.org/publications/economics/fuel-monitor/Pages/price-analysis.aspx -->
+					</fuel>
+					<charges>
+					<!-- the unit "USD" is used instead of "USD/Flight" which cannot be recognized -->
+						<landing calculate="TRUE" method="AEA" unit="USD"></landing>
+						<navigation calculate="TRUE" method="AEA" unit="USD"></navigation>
+						<ground_handling calculate="TRUE" method="AEA" unit="USD"></ground_handling>
+						<!-- NOISE CONSTANTS
+						noise_constant: 4.12$  
+						arrival_threshold: 91 EPNdB (Stockholm-Arlanda Airport) 
+						departure_threshold: 86 EPNdB (Stockholm-Arlanda Airport)	
+						flyover_Certified_Noise_Level (EPNdB), lateral_Certified_Noise_Level (EPNdB), approach_Certified_Noise_Level (EPNdB) see http://noisedb.stac.aviation-civile.gouv.fr/find.php 						
+						-->
+						<noise calculate="TRUE" noise_constant="" flyover_Certified_Noise_Level="78.0" lateral_Certified_Noise_Level="80.0" approach_Certified_Noise_Level="87.0" departure_threshold="" arrival_threshold="" unit="USD"></noise> 
+						<!-- EMISSION CONSTANTS
+						emission_constant: 3.7$ (Stockholm-Arlanda airport)  	
+						massNOx (kg), massCO (kg), massCO2 (kg), massHC (kg), DpHC_Foo (gr/kN) see https://www.easa.europa.eu/document-library/icao-aircraft-engine-emissions-databank
+						-->
+						<emissions_NOx calculate="TRUE" emission_constant="3.7" massNOx="4.125" DpHC_Foo="37.9" unit="USD"></emissions_NOx>
+						<emissions_CO calculate="TRUE" emission_constant="3.7" massCO="1.719" DpHC_Foo="61.9" unit="USD"></emissions_CO>
+						<emissions_CO2 calculate="TRUE" emission_constant="0" massCO2="0" DpHC_Foo="0" unit="USD"></emissions_CO2>
+						<emissions_HC calculate="TRUE" emission_constant="3.7" massHC="0.03" DpHC_Foo="15.7" unit="USD"></emissions_HC>
+					</charges>
+					<maintenance>
+						<airframe_labour_rate unit="USD/h"></airframe_labour_rate> <!-- Default: 40 $/hr --> 
+						<engine_labour_rate unit="USD/h"></engine_labour_rate> <!-- Default: 40 $/hr -->					
+						<engine_price calculate="FALSE" method="SFORZA" unit="USD">7000000</engine_price>
+					</maintenance>
+				</doc>
+			<!-- add ioc tags when available-->
+			</global_data>
+        </costs>
+    </analysis>
+	<plot>
+		<doc_Breakdown perform="TRUE"/>
+		<doc_vs_Range perform="FALSE"/>
+		<doc_vs_BlockFuel perform="FALSE"/>
+		<doc_vs_BlockTime perform="FALSE"/>
+		<profitability perform="FALSE"/>
+	</plot>
+</jpad_config>

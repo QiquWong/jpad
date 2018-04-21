@@ -8,8 +8,8 @@
 			> 
 			<weights>
 				<!-- MTOM -->
-				<maximum_take_off_mass unit="kg">55105</maximum_take_off_mass> 
-				<operating_empty_mass unit="kg">34098</operating_empty_mass> 
+				<maximum_take_off_mass unit="kg">55026</maximum_take_off_mass> 
+				<operating_empty_mass unit="kg">34019</operating_empty_mass> 
 				<maximum_fuel_mass unit="kg">7251.52</maximum_fuel_mass> 
 				<single_passenger_mass unit="kg">108</single_passenger_mass> 
 			</weights>

@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <aircraft id="IRON_NEW" type="TURBOPROP" regulations="FAR_25">
+    <aircraft id="IRON_CANARD" type="TURBOPROP" regulations="FAR_25">
 		<global_data>
 			<cabin_configuration file="cabin_configuration_IRON.xml"></cabin_configuration>
 		</global_data>
         <lifting_surfaces>
-            <wing file="wing_IRON.xml">
+            <wing file="wing_IRON_CANARD.xml">
                 <position>
-                    <x unit="m">19.09</x>
+                    <x unit="m">21.00</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">-1.32</z>
+                    <z unit="m">-1.33</z>
                 </position>
-                <rigging_angle unit="deg">2</rigging_angle>
+                <rigging_angle unit="deg">0</rigging_angle>
             </wing>
-            <horizontal_tail file="htail_IRON.xml">
+            <horizontal_tail file="htail_IRON_CANARD.xml">
                 <position>
                     <x unit="m">31.54</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">1.34</z>
+                    <z unit="m">1.02</z>
                 </position>
-                <rigging_angle unit="deg">0.0</rigging_angle>
+                <rigging_angle unit="deg">-2.0</rigging_angle>
             </horizontal_tail>
             <vertical_tail file="vtail_IRON.xml">
                 <position>
-                    <x unit="m">29.12</x>
+                    <x unit="m">32.00</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">1.5</z>
+                    <z unit="m">1.52</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>
-			<canard file="canard_IRON.xml">
+			<canard file="canard_IRON_CANARD.xml">
                 <position>
                     <x unit="m">6.0</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">1.8</z>
+                    <z unit="m">1.75</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </canard>
@@ -48,41 +48,41 @@
             </fuselage>
         </fuselages>
 		<power_plant>
-            <engine file="engine_IRON.xml">
+            <engine file="engine_IRON_LOOP1_updated.xml">
                 <position>
-                    <x unit="m">31.0</x>
-                    <y unit="m">4.4375</y>
-                    <z unit="m">1.65</z>
+                    <x unit="m">29.48</x>
+                    <y unit="m">4.53</y>
+                    <z unit="m">0.272</z>
                 </position>
                 <tilting_angle unit="deg">0.0</tilting_angle>
-				<mounting_point>WING</mounting_point>
+				<mounting_point>HTAIL</mounting_point>
             </engine>
-            <engine file="engine_IRON.xml">
+            <engine file="engine_IRON_LOOP1_updated.xml">
                 <position>
-                    <x unit="m">31.0</x>
-                    <y unit="m">-4.4375</y>
-                    <z unit="m">1.65</z>
+                    <x unit="m">29.48</x>
+                    <y unit="m">-4.53</y>
+                    <z unit="m">0.272</z>
                 </position>
                 <tilting_angle unit="deg">0.0</tilting_angle>
-                <mounting_point>WING</mounting_point>
+                <mounting_point>HTAIL</mounting_point>
             </engine>
 		</power_plant> 
 		<nacelles>
-            <nacelle file="nacelle_IRON.xml">
+            <nacelle file="nacelle_IRON_LOOP1_updated.xml">
                 <position>
-                    <x unit="m">31.22</x>
-                    <y unit="m">4.4375</y>
-                    <z unit="m">1.65</z>
+                    <x unit="m">29.48</x>
+                    <y unit="m">4.53</y>
+                    <z unit="m">0.272</z>
                 </position>
-                <mounting_point>WING</mounting_point>
+                <mounting_point>HTAIL</mounting_point>
             </nacelle>
-            <nacelle file="nacelle_IRON.xml">
+            <nacelle file="nacelle_IRON_LOOP1_updated.xml">
                 <position>
-                   <x unit="m">31.22</x>
-                   <y unit="m">-4.4375</y>
-                   <z unit="m">1.65</z>
+                    <x unit="m">29.48</x>
+                    <y unit="m">-4.53</y>
+                    <z unit="m">0.272</z>
                 </position>
-                <mounting_point>WING</mounting_point>
+                <mounting_point>HTAIL</mounting_point>
             </nacelle>
 		</nacelles> 
 		<landing_gears file="landing_gear_IRON.xml">
