@@ -33,11 +33,13 @@ public class Test20mds {
 		LiftingSurface wing = theAircraft.getWing();
 		LiftingSurface horTail = theAircraft.getHTail();
 		LiftingSurface verTail = theAircraft.getVTail();
+		LiftingSurface canard = theAircraft.getCanard();
 		
 		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, true, true, true);	
 		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, true, true, true);
 		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, true, true, true);
 		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, true, true, true);
+		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.CANARD, 1e-3, true, true, true);
 		
 		// Write to a file
 //		String fileName = "test20mds.brep";
@@ -90,13 +92,14 @@ public class Test20mds {
 		
 		// write to a file
 		List<OCCShape> allShapes = new ArrayList<>();
-//		allShapes.addAll(fuselageShapes);
+		allShapes.addAll(fuselageShapes);
 		allShapes.addAll(wingShapes);
-//		allShapes.addAll(horTailShapes);
-//		allShapes.addAll(verTailShapes);
+		allShapes.addAll(horTailShapes);
+		allShapes.addAll(verTailShapes);
+		allShapes.addAll(canardShapes);
 		
 //		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds", FileExtension.BREP);
 //		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds_solids", FileExtension.STL);
-		AircraftUtils.getAircraftSolidFile(allShapes, "Test20mds_solids", FileExtension.STEP);
+		AircraftUtils.getAircraftSolidFile(allShapes, (theAircraft.getId() + "_CAD"), FileExtension.STEP);
 	}
 }
