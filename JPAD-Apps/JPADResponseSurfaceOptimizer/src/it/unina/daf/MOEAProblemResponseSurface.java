@@ -148,11 +148,14 @@ public class MOEAProblemResponseSurface extends AbstractProblem {
 					);
 		
 		String constraintsViolationConditionsProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/constraints_violation_conditions");
-		if(constraintsViolationConditionsProperty != null)
-			constraintsViolationConditions = reader.getXMLPropertiesByPath("//JPAD_Optimizer/constraints_violation_conditions").stream()
-			.map(s -> ConstraintsViolationConditionEnum.valueOf(s))
-			.collect(Collectors.toList());
-		
+		String[] constraintsViolationConditionsArray = null;
+		if(constraintsViolationConditionsProperty != null) {
+			constraintsViolationConditionsArray = constraintsViolationConditionsProperty.split(";");
+			constraintsViolationConditions = Arrays.stream(constraintsViolationConditionsArray)
+					.map(s -> ConstraintsViolationConditionEnum.valueOf(s))
+					.collect(Collectors.toList());
+		}
+
 		String algorithmsProperty = reader.getXMLPropertyByPath("//JPAD_Optimizer/algorithms");
 		if(algorithmsProperty != null) {
 			algorithms = algorithmsProperty.split(";");

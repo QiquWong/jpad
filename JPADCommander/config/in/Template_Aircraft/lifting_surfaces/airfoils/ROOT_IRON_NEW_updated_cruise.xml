@@ -2,7 +2,7 @@
 <jpad_config>
     <airfoil name="NACA66_209" family="NACA_66_Series" type="LAMINAR">
         <geometry>
-            <thickness_to_chord_ratio_max>0.16</thickness_to_chord_ratio_max>
+            <thickness_to_chord_ratio_max>0.17</thickness_to_chord_ratio_max>
             <radius_leading_edge_normalized>0.01</radius_leading_edge_normalized>
             <x_coordinates>[1 , 0.993531 , 0.982616 , 0.970154 , 0.956216 , 0.941046 , 0.924944 , 0.908124 , 0.890848 , 0.873273 ,
 							0.855581 , 0.837864 , 0.820321 , 0.803072 , 0.786126 , 0.76948 , 0.753018 , 0.736736 , 0.720538 , 0.704417 ,
@@ -74,7 +74,7 @@
 			</airfoil_curves>
 			<!---->
 			<!-- these data are always needed -->
-			<x_ac_normalized unit="">0.2625</x_ac_normalized>
+			<x_ac_normalized unit="">0.25</x_ac_normalized>
 			<mach_critical>0.72</mach_critical>
 			<x_transition_upper>0.6</x_transition_upper>
             <x_transition_lower>0.53</x_transition_lower>
