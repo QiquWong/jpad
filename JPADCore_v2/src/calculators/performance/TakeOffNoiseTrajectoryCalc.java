@@ -71,6 +71,7 @@ public class TakeOffNoiseTrajectoryCalc {
 	//-------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION
 	private boolean createCSV;
+	private boolean targetSpeedFlag;
 	
 	public boolean isCreateCSV() {
 		return createCSV;
@@ -310,12 +311,16 @@ public class TakeOffNoiseTrajectoryCalc {
 		double newAlphaRed = 0.0;
 		alphaRed = 0.0;
 
+		targetSpeedFlag = false;
+		StepHandler continuousOutputModel = null;
+		
 		vClimb = Amount.valueOf(10000, SI.METERS_PER_SECOND); // initialization to impossible values
 		while (Math.abs(
-				(vClimb.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
-				- 1.13 
-				- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
-				) >= 0.01) {
+				vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
+				- (1.13 
+						+ Amount.valueOf(20, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
+						)
+				) >= 0.01) { 
 
 			if(i >= 1) {
 				if(newAlphaRed <= 0.0)
@@ -327,10 +332,10 @@ public class TakeOffNoiseTrajectoryCalc {
 			initialize();
 
 			theIntegrator = new HighamHall54Integrator(
-					1e-15,
+					1e-16,
 					1,
-					1e-17,
-					1e-17
+					1e-16,
+					1e-16
 					);
 			ode = new DynamicsEquationsTakeOffNoiseTrajectory();
 
@@ -878,40 +883,34 @@ public class TakeOffNoiseTrajectoryCalc {
 
 			System.out.println("=================================================");
 			System.out.println("Integration #" + (i+1) + "\n\n");
-			theIntegrator.addStepHandler(new ContinuousOutputModel());
+			continuousOutputModel = new ContinuousOutputModel();
+			theIntegrator.addStepHandler(continuousOutputModel);
 
 			//##############################################################################################
 
 			double[] xAt0 = new double[] {0.0, 0.0, 0.0, 0.0, 0.0}; // initial state
 			theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
 
-			if((vClimb.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
-					- 1.13 
-					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
-					>= 0.0)
+			if(Math.abs(
+					vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
+					- (1.13 
+							+ Amount.valueOf(10, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
+							)
+					) >= 0.0) 
 				newAlphaRed = alphaRed + 0.2;
 			else
 			    newAlphaRed = alphaRed - 0.2;
 
-			if(Math.abs(
-					(vClimb.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
-					- 1.13 
-					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
-					) < 0.01) {
-				
-				/*
-				 * ENABLE PRINT OUT ONLY ON LAST ITERATION
-				 */
-				System.setOut(originalOut);
-				
-				if(cutback==false && phiCutback==null)
-					manageOutputData(1.0, 1.0, timeHistories);
-				else if(cutback==true && phiCutback==null)
-					manageOutputData(1.0, TakeOffNoiseTrajectoryCalc.this.getPhiCutback(), timeHistories);
-				else if(cutback==true && phiCutback!=null)
-					manageOutputData(1.0, phiCutback, timeHistories);
-				
-			}
+			if (vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
+					<= (1.13 
+							+ Amount.valueOf(20, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
+							)
+					&& vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
+					>= (1.13 
+							+ Amount.valueOf(10, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
+							)
+					) 
+				setTargetSpeedFlag(true);
 			
 			theIntegrator.clearEventHandlers();
 			theIntegrator.clearStepHandlers();
@@ -919,6 +918,27 @@ public class TakeOffNoiseTrajectoryCalc {
 			i++;
 		} 
 
+		if (isTargetSpeedFlag() == false)
+			System.err.println("ERROR: THE FINAL CLIMB SPEED EXCEEDS THE MAXIMUM LIMITATION OF V2 + 20 knots --> " 
+					+ vClimb.to(NonSI.KNOT)
+					+ " > "
+					+ vSTakeOff.to(NonSI.KNOT).times(1.13).plus(Amount.valueOf(20, NonSI.KNOT))
+					);
+		else {
+			/*
+			 * ENABLE PRINT OUT ONLY ON LAST ITERATION
+			 */
+			System.setOut(originalOut);
+			
+			
+			if(cutback==false && phiCutback==null)
+				manageOutputData(1.0, 1.0, timeHistories, continuousOutputModel);
+			else if(cutback==true && phiCutback==null)
+				manageOutputData(1.0, TakeOffNoiseTrajectoryCalc.this.getPhiCutback(), timeHistories, continuousOutputModel);
+			else if(cutback==true && phiCutback!=null)
+				manageOutputData(1.0, phiCutback, timeHistories, continuousOutputModel);
+		}
+		
 		System.out.println("\n---------------------------END!!-------------------------------\n\n");
 	}
 		
@@ -929,7 +949,7 @@ public class TakeOffNoiseTrajectoryCalc {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public void manageOutputData(double dt, double phi, boolean timeHistories) {
+	public void manageOutputData(double dt, double phi, boolean timeHistories, StepHandler handler) {
 		
 		List<Amount<Length>> groundDistance = new ArrayList<Amount<Length>>();
 		List<Amount<Length>> verticalDistance = new ArrayList<Amount<Length>>();
@@ -960,14 +980,14 @@ public class TakeOffNoiseTrajectoryCalc {
 		List<Amount<Velocity>> rateOfClimb = new ArrayList<Amount<Velocity>>();
 		List<Amount<Mass>> fuelUsed = new ArrayList<Amount<Mass>>();
 		List<Amount<Force>> weight = new ArrayList<Amount<Force>>();
-		
+
 		alphaFunction.interpolateLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
 				MyArrayUtils.convertListOfAmountTodoubleArray(this.alpha)
 				);
-		
+
 		if(timeHistories) {
-			
+
 			loadFactorFunction.interpolateLinear(
 					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
 					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.loadFactor))
@@ -985,7 +1005,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					MyArrayUtils.convertListOfAmountTodoubleArray(this.weight)
 					);
 		}
-		
+
 		//#############################################################################
 		// Collect the array of times and associated state vector values according
 		// to the given dt and keeping the the discrete event-times (breakpoints)
@@ -993,251 +1013,249 @@ public class TakeOffNoiseTrajectoryCalc {
 		List<Amount<Duration>> times = new ArrayList<Amount<Duration>>();
 		List<double[]> states = new ArrayList<double[]>();
 		List<double[]> stateDerivatives = new ArrayList<double[]>();
-		for (  StepHandler handler : this.theIntegrator.getStepHandlers() ) {
 
-			// There is only ONE ContinuousOutputModel handler, get it
-			if (handler instanceof ContinuousOutputModel) {
-				System.out.println("Found handler instanceof ContinuousOutputModel");
-				System.out.println("=== Stored state variables ===");
-				ContinuousOutputModel cm = (ContinuousOutputModel) handler;
-				System.out.println("Initial time: " + cm.getInitialTime());
-				System.out.println("Final time: " + cm.getFinalTime());
+		// There is only ONE ContinuousOutputModel handler, get it
+		if (handler instanceof ContinuousOutputModel) {
+			System.out.println("Found handler instanceof ContinuousOutputModel");
+			System.out.println("=== Stored state variables ===");
+			ContinuousOutputModel cm = (ContinuousOutputModel) handler;
+			System.out.println("Initial time: " + cm.getInitialTime());
+			System.out.println("Final time: " + cm.getFinalTime());
 
-				// build time vector keeping event-times as breakpoints
-				double t = cm.getInitialTime();
-				do {
-					times.add(Amount.valueOf(t, SI.SECOND));
-					cm.setInterpolatedTime(t);
-					states.add(cm.getInterpolatedState());
-					stateDerivatives.add(cm.getInterpolatedDerivatives());
+			// build time vector keeping event-times as breakpoints
+			double t = cm.getInitialTime();
+			do {
+				times.add(Amount.valueOf(t, SI.SECOND));
+				cm.setInterpolatedTime(t);
+				states.add(cm.getInterpolatedState());
+				stateDerivatives.add(cm.getInterpolatedDerivatives());
 
-					t += dt;
-                    // System.out.println("Current time: " + t);
-					// detect breakpoints adjusting time as appropriate
-					for(int i=0; i<timeBreakPoints.size(); i++) {
-						double t_ = timeBreakPoints.get(i);
-						//  bracketing
-						if ((t-dt < t_) && (t > t_)) {
-							// set back time to breakpoint-time
-							t = t_;
-						}
+				t += dt;
+				// System.out.println("Current time: " + t);
+				// detect breakpoints adjusting time as appropriate
+				for(int i=0; i<timeBreakPoints.size(); i++) {
+					double t_ = timeBreakPoints.get(i);
+					//  bracketing
+					if ((t-dt < t_) && (t > t_)) {
+						// set back time to breakpoint-time
+						t = t_;
 					}
-					
-				} while (t <= cm.getFinalTime());
+				}
 
+			} while (t <= cm.getFinalTime());
+
+			//--------------------------------------------------------------------------------
+			// Reconstruct the auxiliary/derived variables
+			for(int i = 0; i < times.size(); i++) {
+
+				double[] x = states.get(i);
+				double[] xDot = stateDerivatives.get(i);
+				//========================================================================================
+				// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
+				//----------------------------------------------------------------------------------------
+				// GROUND DISTANCE:
+				groundDistance.add(Amount.valueOf(
+						x[0],
+						SI.METER)
+						);
+				//----------------------------------------------------------------------------------------
+				// VERTICAL DISTANCE:
+				verticalDistance.add(Amount.valueOf(
+						x[3],
+						SI.METER)
+						);
+				//----------------------------------------------------------------------------------------
+				// THRUST:
+				thrust.add(Amount.valueOf(
+						((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3]),
+						SI.NEWTON)
+						);
 				//--------------------------------------------------------------------------------
-				// Reconstruct the auxiliary/derived variables
-				for(int i = 0; i < times.size(); i++) {
-
-					double[] x = states.get(i);
-					double[] xDot = stateDerivatives.get(i);
-					//========================================================================================
-					// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
+				// FUEL USED (kg/s):
+				fuelUsed.add(Amount.valueOf(x[4], SI.KILOGRAM));
+				//----------------------------------------------------------------------------------------
+				if(timeHistories) {
 					//----------------------------------------------------------------------------------------
-					// GROUND DISTANCE:
-					groundDistance.add(Amount.valueOf(
-							x[0],
-							SI.METER)
+					// WEIGHT:
+					weight.add(
+							Amount.valueOf(
+									weightFunction.value(times.get(i).doubleValue(SI.SECOND)),
+									SI.NEWTON
+									)
 							);
 					//----------------------------------------------------------------------------------------
-					// VERTICAL DISTANCE:
-					verticalDistance.add(Amount.valueOf(
-							x[3],
-							SI.METER)
+					// SPEED:
+					speed.add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+					//----------------------------------------------------------------------------------------
+					// THRUST HORIZONTAL:
+					thrustHorizontal.add(Amount.valueOf(
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.cos(
+									Amount.valueOf(
+											alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+									),
+							SI.NEWTON)
 							);
 					//----------------------------------------------------------------------------------------
-					// THRUST:
-					thrust.add(Amount.valueOf(
-							((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3]),
+					// THRUST VERTICAL:
+					thrustVertical.add(Amount.valueOf(
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.sin(
+									Amount.valueOf(
+											alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+									),
 							SI.NEWTON)
 							);
 					//--------------------------------------------------------------------------------
-					// FUEL USED (kg/s):
-					fuelUsed.add(Amount.valueOf(x[4], SI.KILOGRAM));
-					//----------------------------------------------------------------------------------------
-					if(timeHistories) {
-						//----------------------------------------------------------------------------------------
-						// WEIGHT:
-						weight.add(
-								Amount.valueOf(
-										weightFunction.value(times.get(i).doubleValue(SI.SECOND)),
-										SI.NEWTON
-										)
-								);
-						//----------------------------------------------------------------------------------------
-						// SPEED:
-						speed.add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
-						//----------------------------------------------------------------------------------------
-						// THRUST HORIZONTAL:
-						thrustHorizontal.add(Amount.valueOf(
-								((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.cos(
-										Amount.valueOf(
-												alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-										),
-								SI.NEWTON)
-								);
-						//----------------------------------------------------------------------------------------
-						// THRUST VERTICAL:
-						thrustVertical.add(Amount.valueOf(
-								((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.sin(
-										Amount.valueOf(
-												alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-										),
-								SI.NEWTON)
-								);
-						//--------------------------------------------------------------------------------
-						// FRICTION:
-						if(times.get(i).doubleValue(SI.SECOND) < tEndRot.getEstimatedValue())
-							friction.add(Amount.valueOf(
-									((DynamicsEquationsTakeOffNoiseTrajectory)ode).mu(x[1])
-									*(((DynamicsEquationsTakeOffNoiseTrajectory)ode).weight
-											- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
-													x[1],
-													alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-													x[2],
-													times.get(i).doubleValue(SI.SECOND),
-													x[3])),
-									SI.NEWTON)
-									);
-						else
-							friction.add(Amount.valueOf(0.0, SI.NEWTON));
-						//----------------------------------------------------------------------------------------
-						// LIFT:
-						lift.add(Amount.valueOf(
-								((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
-										x[1],
-										alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-										x[2],
-										times.get(i).doubleValue(SI.SECOND),
-										x[3]),
-								SI.NEWTON)
-								);
-						//----------------------------------------------------------------------------------------
-						// DRAG:
-						drag.add(Amount.valueOf(
-								((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
-										x[1],
-										alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-										x[2],
-										times.get(i).doubleValue(SI.SECOND),
-										x[3]),
-								SI.NEWTON)
-								);
-						//----------------------------------------------------------------------------------------
-						// TOTAL FORCE:
-						totalForce.add(Amount.valueOf(
-								((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.cos(
-										Amount.valueOf(
-												alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-										)
-								- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
-										x[1],
-										alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-										x[2],
-										times.get(i).doubleValue(SI.SECOND),
-										x[3])
-								- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).mu(x[1])
+					// FRICTION:
+					if(times.get(i).doubleValue(SI.SECOND) < tEndRot.getEstimatedValue())
+						friction.add(Amount.valueOf(
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).mu(x[1])
 								*(((DynamicsEquationsTakeOffNoiseTrajectory)ode).weight
 										- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
 												x[1],
 												alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 												x[2],
 												times.get(i).doubleValue(SI.SECOND),
-												x[3]))
-								- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).weight*Math.sin(
-										Amount.valueOf(
-												x[2],
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
+												x[3])),
 								SI.NEWTON)
 								);
-						//----------------------------------------------------------------------------------------
-						// LOAD FACTOR:
-						loadFactor.add(loadFactorFunction.value(times.get(i).doubleValue(SI.SECOND)));
-						//----------------------------------------------------------------------------------------
-						// RATE OF CLIMB:
-						rateOfClimb.add(Amount.valueOf(
-								xDot[3],
-								SI.METERS_PER_SECOND)
-								);
-						//----------------------------------------------------------------------------------------
-						// ACCELERATION:
-						acceleration.add(Amount.valueOf(
-								accelerationFunction.value(times.get(i).doubleValue(SI.SECOND)),
-								SI.METERS_PER_SQUARE_SECOND)
-								);
-						//----------------------------------------------------------------------------------------
-						// ALPHA:
-						alpha.add(Amount.valueOf(
-								alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-								NonSI.DEGREE_ANGLE)
-								);
-						//----------------------------------------------------------------------------------------
-						// GAMMA:
-						gamma.add(Amount.valueOf(
-								x[2],
-								NonSI.DEGREE_ANGLE)
-								);
-						//----------------------------------------------------------------------------------------
-						// ALPHA DOT:
-						if((times.get(i).doubleValue(SI.SECOND) > tRot.getEstimatedValue()) 
-								&& (times.get(i).doubleValue(SI.SECOND) < tHold.getEstimatedValue())) {
-							alphaDot.add(
-									TakeOffNoiseTrajectoryCalc.this.getAlphaDotInitial()
-									*(1-(TakeOffNoiseTrajectoryCalc.this.getkAlphaDot()
-											*alphaFunction.value(times.get(i).doubleValue(SI.SECOND))
-											)
-											)
-									);
-						}
-						else if((times.get(i).doubleValue(SI.SECOND) > tEndHold.getEstimatedValue())
-								&& (times.get(i).doubleValue(SI.SECOND) < tZeroAccelration.getEstimatedValue())) {
-							alphaDot.add(alphaRed);
-						}
-						else if(times.get(i).doubleValue(SI.SECOND) > tZeroAccelration.doubleValue(SI.SECOND)) {
-							double deltaAlpha = 
-									alpha.get(i).doubleValue(NonSI.DEGREE_ANGLE)
-									- alpha.get(i-1).doubleValue(NonSI.DEGREE_ANGLE);
-							double deltaTime = 
-									times.get(i).doubleValue(SI.SECOND)
-									- times.get(i-1).doubleValue(SI.SECOND);
-							alphaDot.add(deltaAlpha/deltaTime);
-						}
-						else
-							alphaDot.add(0.0);
-						//----------------------------------------------------------------------------------------
-						// GAMMA DOT:
-						gammaDot.add(xDot[2]);
-						//----------------------------------------------------------------------------------------
-						// THETA:
-						theta.add(Amount.valueOf(
-								x[2] + alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-								NonSI.DEGREE_ANGLE)
-								);
-						//----------------------------------------------------------------------------------------
-						// CL:				
-						cL.add(cLFunction.value(times.get(i).doubleValue(SI.SECOND)));
-						//----------------------------------------------------------------------------------------
-						// CD:
-						cD.add(
-								((DynamicsEquationsTakeOffNoiseTrajectory)ode).cD(
-										((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(
-												x[1],
-												alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-												x[2],
-												times.get(i).doubleValue(SI.SECOND),
-												x[3]
-												),
-										times.get(i).doubleValue(SI.SECOND),
-										x[1],
-										x[3]
+					else
+						friction.add(Amount.valueOf(0.0, SI.NEWTON));
+					//----------------------------------------------------------------------------------------
+					// LIFT:
+					lift.add(Amount.valueOf(
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
+									x[1],
+									alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+									x[2],
+									times.get(i).doubleValue(SI.SECOND),
+									x[3]),
+							SI.NEWTON)
+							);
+					//----------------------------------------------------------------------------------------
+					// DRAG:
+					drag.add(Amount.valueOf(
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
+									x[1],
+									alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+									x[2],
+									times.get(i).doubleValue(SI.SECOND),
+									x[3]),
+							SI.NEWTON)
+							);
+					//----------------------------------------------------------------------------------------
+					// TOTAL FORCE:
+					totalForce.add(Amount.valueOf(
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.cos(
+									Amount.valueOf(
+											alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+									)
+							- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
+									x[1],
+									alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+									x[2],
+									times.get(i).doubleValue(SI.SECOND),
+									x[3])
+							- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).mu(x[1])
+							*(((DynamicsEquationsTakeOffNoiseTrajectory)ode).weight
+									- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
+											x[1],
+											alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+											x[2],
+											times.get(i).doubleValue(SI.SECOND),
+											x[3]))
+							- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).weight*Math.sin(
+									Amount.valueOf(
+											x[2],
+											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
+							SI.NEWTON)
+							);
+					//----------------------------------------------------------------------------------------
+					// LOAD FACTOR:
+					loadFactor.add(loadFactorFunction.value(times.get(i).doubleValue(SI.SECOND)));
+					//----------------------------------------------------------------------------------------
+					// RATE OF CLIMB:
+					rateOfClimb.add(Amount.valueOf(
+							xDot[3],
+							SI.METERS_PER_SECOND)
+							);
+					//----------------------------------------------------------------------------------------
+					// ACCELERATION:
+					acceleration.add(Amount.valueOf(
+							accelerationFunction.value(times.get(i).doubleValue(SI.SECOND)),
+							SI.METERS_PER_SQUARE_SECOND)
+							);
+					//----------------------------------------------------------------------------------------
+					// ALPHA:
+					alpha.add(Amount.valueOf(
+							alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+							NonSI.DEGREE_ANGLE)
+							);
+					//----------------------------------------------------------------------------------------
+					// GAMMA:
+					gamma.add(Amount.valueOf(
+							x[2],
+							NonSI.DEGREE_ANGLE)
+							);
+					//----------------------------------------------------------------------------------------
+					// ALPHA DOT:
+					if((times.get(i).doubleValue(SI.SECOND) > tRot.getEstimatedValue()) 
+							&& (times.get(i).doubleValue(SI.SECOND) < tHold.getEstimatedValue())) {
+						alphaDot.add(
+								TakeOffNoiseTrajectoryCalc.this.getAlphaDotInitial()
+								*(1-(TakeOffNoiseTrajectoryCalc.this.getkAlphaDot()
+										*alphaFunction.value(times.get(i).doubleValue(SI.SECOND))
+										)
 										)
 								);
-
-						//----------------------------------------------------------------------------------------
 					}
+					else if((times.get(i).doubleValue(SI.SECOND) > tEndHold.getEstimatedValue())
+							&& (times.get(i).doubleValue(SI.SECOND) < tZeroAccelration.getEstimatedValue())) {
+						alphaDot.add(alphaRed);
+					}
+					else if(times.get(i).doubleValue(SI.SECOND) > tZeroAccelration.doubleValue(SI.SECOND)) {
+						double deltaAlpha = 
+								alpha.get(i).doubleValue(NonSI.DEGREE_ANGLE)
+								- alpha.get(i-1).doubleValue(NonSI.DEGREE_ANGLE);
+						double deltaTime = 
+								times.get(i).doubleValue(SI.SECOND)
+								- times.get(i-1).doubleValue(SI.SECOND);
+						alphaDot.add(deltaAlpha/deltaTime);
+					}
+					else
+						alphaDot.add(0.0);
+					//----------------------------------------------------------------------------------------
+					// GAMMA DOT:
+					gammaDot.add(xDot[2]);
+					//----------------------------------------------------------------------------------------
+					// THETA:
+					theta.add(Amount.valueOf(
+							x[2] + alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+							NonSI.DEGREE_ANGLE)
+							);
+					//----------------------------------------------------------------------------------------
+					// CL:				
+					cL.add(cLFunction.value(times.get(i).doubleValue(SI.SECOND)));
+					//----------------------------------------------------------------------------------------
+					// CD:
+					cD.add(
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).cD(
+									((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(
+											x[1],
+											alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+											x[2],
+											times.get(i).doubleValue(SI.SECOND),
+											x[3]
+											),
+									times.get(i).doubleValue(SI.SECOND),
+									x[1],
+									x[3]
+									)
+							);
+
+					//----------------------------------------------------------------------------------------
 				}
 			}
 		}
@@ -3130,5 +3148,13 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	public void setWeightMap(Map<Double, List<Amount<Force>>> weightMap) {
 		this.weightMap = weightMap;
+	}
+
+	public boolean isTargetSpeedFlag() {
+		return targetSpeedFlag;
+	}
+
+	public void setTargetSpeedFlag(boolean targetSpeedFlag) {
+		this.targetSpeedFlag = targetSpeedFlag;
 	}
 }
