@@ -9,6 +9,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import standaloneutils.MyUnits;
 import standaloneutils.aerotools.aero.StdAtmos1976;
 
 /**
@@ -41,6 +42,11 @@ public class AtmosphereCalc {
 		return atmosphere.getDensity()*1000.;
 	}
 
+	public static double getTemperature(double altitude) {
+		atmosphere.setAltitude(altitude);
+		return atmosphere.getTemperature();
+	}	
+	
 	public static double getSpeedOfSound(double altitude) {
 		atmosphere.setAltitude(altitude);
 		return atmosphere.getSpeedOfSound();
@@ -180,4 +186,17 @@ public class AtmosphereCalc {
 	private static double getAltitudeWithNoTemperatureLapseFromPressure(double pressure, double pb, double Tb, double hb) {
 		return -R*Tb/(g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)*M) * Math.log(pressure/pb) + hb;
 	}
+
+	// Dynamic viscosity accordring to Sutherland Law
+	// https://www.cfd-online.com/Wiki/Sutherland%27s_law
+	public static double getDynamicViscosity(double altitude) {
+		double t = getTemperature(altitude); 
+		double muRef = 1.716E-5;
+		double tRef = 273.15;
+		double s = 110.4;
+		return muRef*Math.pow(t / tRef, 1.5)
+				* (tRef + s)
+				/ (t + s);
+	}
+	
 }

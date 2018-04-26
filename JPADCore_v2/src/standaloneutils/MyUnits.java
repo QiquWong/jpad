@@ -76,6 +76,9 @@ public class MyUnits {
 	public static final Unit KILOGRAM_PER_SECOND = SI.KILOGRAM.divide(SI.SECOND);
 	public static final Unit KILOGRAM_PER_SECOND_PER_NEWTON = SI.KILOGRAM.divide(SI.SECOND).divide(SI.NEWTON);
 	public static final Unit SLUG_PER_SECOND_PER_POUND = MyUnits.SLUG.divide(SI.SECOND).divide(NonSI.POUND_FORCE);
+
+	public static final Unit NEWTON_SECOND_PER_METER_SQUARED = 
+			SI.NEWTON.times(SI.SECOND).divide(SI.SQUARE_METRE); // dynamic viscosity
 	
 	public static final Unit HOURS_PER_YEAR = NonSI.HOUR.divide(NonSI.YEAR);
 	
