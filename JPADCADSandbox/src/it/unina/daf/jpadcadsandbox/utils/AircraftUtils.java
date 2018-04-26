@@ -2088,7 +2088,7 @@ public final class AircraftUtils {
 		}
 	}
 	
-	private static List<double[]> populateCoordinateList(
+	public static List<double[]> populateCoordinateList(
 			double yStation,
 			Airfoil theCreator,
 			LiftingSurface theLiftingSurface

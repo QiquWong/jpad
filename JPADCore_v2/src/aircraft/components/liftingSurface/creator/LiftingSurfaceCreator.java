@@ -2702,9 +2702,10 @@ public class LiftingSurfaceCreator {
 					ILiftingSurfaceCreator.Builder.from(_theLiftingSurfaceInterface)
 					.setEquivalentWingFlag(true)
 					.setEquivalentWing(
-							(IEquivalentWing) IEquivalentWing.Builder.from(_theLiftingSurfaceInterface.getEquivalentWing())
+							IEquivalentWing.Builder.from(_theLiftingSurfaceInterface.getEquivalentWing())
 							.clearPanels()
 							.addPanels(liftingSurfacePanel)
+							.build()
 							)
 					.build()
 					);
