@@ -9,6 +9,8 @@
 /JPADConfigs/bin/
 /JPADCore_v2/bin/
 /JPADSandbox_v2/bin/
+/JPADSandbox_v2/out/take_off_noise_trajectory
+/JPADSandbox_v2/out/landing_noise_trajectory
 /JPADSandbox_v2/out/IRON
 /JPADSandbox_v2/out/IRON_NEW
 /JPADSandbox_v2/out/_IRON_LOOP1
