@@ -64,6 +64,7 @@
 			V_n_diagram="FALSE"
 			mission_profile="TRUE"
 	/> 
+	<!--
  	<costs 
 			file="analysis_costs_IRON_CANARD.xml"
 			plot="TRUE"
@@ -79,6 +80,7 @@
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
 	/>
+	-->
 	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>

@@ -73,6 +73,50 @@
 						<delta_rudder unit="deg">0.0;10.0;20.0;25.0;30.0</delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
 					</tau_rudder_function>
 				</xcg>
+				<!-- EFFICIENCY LIKE NO CANARD -->
+				<!--
+				<xcg value="0.09" parabolicDragPolar="FALSE"> 
+					<cLmax_clean_configuration>1.697</cLmax_clean_configuration>
+					<cL_alpha_clean_configuration unit="1/deg">0.0989</cL_alpha_clean_configuration>
+					<cLmax_take_off_configuration>2.63</cLmax_take_off_configuration>
+					<cL_alpha_take_off unit="1/deg">0.0987</cL_alpha_take_off> 
+					<cL0_take_off_configuration>1.2374</cL0_take_off_configuration>
+					<cLmax_landing_configuration>3.19</cLmax_landing_configuration>
+					<cL_alpha_landing unit="1/deg">0.0987</cL_alpha_landing>
+					<cL0_landing_configuration>1.7961</cL0_landing_configuration>
+					<cD0></cD0>
+					<oswald_cruise></oswald_cruise> 
+					<oswald_climb></oswald_climb>
+					<oswald_take_off></oswald_take_off>
+					<oswald_landing></oswald_landing>
+					<delta_CD0_flap_take_off></delta_CD0_flap_take_off>
+					<delta_CD0_flap_landing></delta_CD0_flap_landing>
+					<delta_CD0_landing_gears></delta_CD0_landing_gears>
+					<delta_CD0_spoilers></delta_CD0_spoilers>
+					<polar_curves>
+						<cruise>
+							<polar_curve_CL>-0.071703234;-0.004726124;0.06226299;0.129264611;0.196279243;0.263307386;0.33034954;0.397406203;0.464477873;0.531565044;0.598668212;0.665787869;0.732924506;0.800078614;0.867250681;0.934441193;1.001650637;1.068879496;1.136128252;1.203397386;1.243249476</polar_curve_CL>
+							<polar_curve_CD>0.022215878;0.022286851;0.022622107;0.023221658;0.024085518;0.0252137;0.026606221;0.028263102;0.030184364;0.032370031;0.034820128;0.037534684;0.04051373;0.043757299;0.047265427;0.051038152;0.055075515;0.059377559;0.063944331;0.068775878;0.071569053</polar_curve_CD>
+						</cruise>
+						<climb>
+							<polar_curve_CL>-0.062390607;0.027516492;0.117275596;0.206888254;0.296356053;0.385680619;0.474863614;0.56390674;0.652811737;0.741580381;0.830214486;0.91872318;1.007093796;1.095328258;1.183443081;1.271432983;1.359299996;1.447046187;1.534673658;1.648549079;1.686489693</polar_curve_CL>
+							<polar_curve_CD>0.02430003;0.02429035;0.024808241;0.025852897;0.02742356;0.029519519;0.032140108;0.035284704;0.03895273;0.043143648;0.047856964;0.053092057;0.058848841;0.065126915;0.071925628;0.079244824;0.087084223;0.095443579;0.104322673;0.116857356;0.120790224</polar_curve_CD>									
+						</climb>
+						<take_off>
+							<polar_curve_CL>0.864072097;0.953979196;1.043738301;1.133350959;1.222818758;1.312143323;1.401326318;1.490369444;1.579274441;1.668043085;1.75667719;1.845185884;1.9335565;2.021790963;2.109905786;2.197895688;2.285762701;2.373508892;2.461136363;2.575011783;2.612952397</polar_curve_CL>
+							<polar_curve_CD>0.101337531;0.10119618;0.101588915;0.102514863;0.103973195;0.105963129;0.108483925;0.111534887;0.11511536;0.119224729;0.123862418;0.129027405;0.134720163;0.140940206;0.147686155;0.154958085;0.16275563;0.171078451;0.179926236;0.192495141;0.19629277</polar_curve_CD>
+						</take_off>
+						<landing>
+							<polar_curve_CL>1.422707369;1.512614467;1.602373572;1.69198623;1.781454029;1.870778594;1.959961589;2.049004716;2.137909712;2.226678356;2.315312461;2.403821155;2.492191772;2.580426234;2.668541057;2.756530959;2.844397972;2.932144163;3.019771634;3.133647055;3.171587668</polar_curve_CL>
+							<polar_curve_CD>0.183564109;0.183348692;0.183671027;0.184530202;0.185925348;0.187855643;0.190320306;0.193318599;0.196849823;0.20091332;0.205508469;0.210634023;0.216290766;0.222478166;0.229194434;0.236439779;0.24421378;0.25251605;0.261346224;0.273934379;0.277655935</polar_curve_CD>
+						</landing>
+					</polar_curves>
+					<tau_rudder_function calculate="FALSE">
+						<tau>0.0000;0.5359;0.5648;0.5502;0.5261</tau>
+						<delta_rudder unit="deg">0.0;10.0;20.0;25.0;30.0</delta_rudder>
+					</tau_rudder_function>
+				</xcg>
+				-->
 			</aerodynamics>
 			<!-- the following data can be assigned between tags, or not. If not, default values are used -->
 			<takeoff_landing>
@@ -138,16 +182,16 @@
 				<holding_mach_number>0.3</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
 				<cruise_sfc_function calculate="FALSE">
-					<sfc>0.47;0.435;0.429</sfc> <!-- OLD: 0.47;0.435;0.429 -->
-					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
+					<sfc>0.44</sfc> <!-- OLD: 0.47;0.435;0.429 -->
+					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</cruise_sfc_function>
-				<alternate_cruise_sfc_function calculate="FALSE">
-					<sfc>0.51036;0.46433;0.456176</sfc> <!-- OLD: 0.51036;0.46433;0.456176 -->
-					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
+				<alternate_cruise_sfc_function calculate="TRUE">
+					<sfc></sfc> <!-- OLD: 0.51036;0.46433;0.456176 -->
+					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</alternate_cruise_sfc_function>
-				<holding_sfc_function calculate="FALSE">
-					<sfc>0.444;0.3285;0.3047</sfc> <!-- OLD: 0.444;0.3285;0.3047 -->
-					<throttle>0.4;0.75;0.95</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
+				<holding_sfc_function calculate="TRUE">
+					<sfc></sfc> <!-- OLD: 0.444;0.3285;0.3047 -->
+					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
 				</holding_sfc_function>
 				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
 				<landing_ground_idle_fuel_flow unit="kg/min"></landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->

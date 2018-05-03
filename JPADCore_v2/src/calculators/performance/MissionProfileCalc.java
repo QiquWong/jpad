@@ -511,7 +511,7 @@ public class MissionProfileCalc {
 			theClimbCalculator.calculateClimbPerformance(
 					intialClimbMass,
 					intialClimbMass,
-					Amount.valueOf(0.0, SI.METER),
+					_obstacleTakeOff.to(SI.METER),
 					_theOperatingConditions.getAltitudeCruise().to(SI.METER),
 					false
 					);

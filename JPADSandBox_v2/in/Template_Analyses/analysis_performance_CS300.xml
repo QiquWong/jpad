@@ -120,15 +120,15 @@
 				<holding_mach_number>0.3</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
 				<cruise_sfc_function calculate="TRUE">
-					<sfc>0.56</sfc>
+					<sfc>0.57</sfc>
 					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</cruise_sfc_function>
 				<alternate_cruise_sfc_function calculate="TRUE">
-					<sfc>0.56</sfc>
+					<sfc>0.57</sfc>
 					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</alternate_cruise_sfc_function>
 				<holding_sfc_function calculate="TRUE">
-					<sfc>0.5</sfc>
+					<sfc>0.57</sfc>
 					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
 				</holding_sfc_function>
 				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
