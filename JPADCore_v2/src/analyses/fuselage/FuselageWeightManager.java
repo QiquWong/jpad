@@ -59,14 +59,14 @@ public class FuselageWeightManager {
 		calculateMass(aircraft, operatingConditions, MethodEnum.NICOLAI_1984);
 		calculateMass(aircraft, operatingConditions, MethodEnum.ROSKAM);
 		calculateMass(aircraft, operatingConditions, MethodEnum.RAYMER);
-		calculateMass(aircraft, operatingConditions, MethodEnum.SADRAY);
+		calculateMass(aircraft, operatingConditions, MethodEnum.SADRAEY);
 		calculateMass(aircraft, operatingConditions, MethodEnum.KROO);
 		calculateMass(aircraft, operatingConditions, MethodEnum.TORENBEEK_1976);
 		calculateMass(aircraft, operatingConditions, MethodEnum.TORENBEEK_2013);
 		
 		if(!methodsMapWeights.get(ComponentEnum.FUSELAGE).equals(MethodEnum.AVERAGE)) { 
-			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.FUSELAGE));
 			_percentDifference =  new double[_massMap.size()];
+			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.FUSELAGE));
 		}
 		else {
 			_percentDifference =  new double[_massMap.size()];
@@ -107,7 +107,7 @@ public class FuselageWeightManager {
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 		
-		case SADRAY : { 
+		case SADRAEY : { 
 			_methodsList.add(method);
 			_mass = FuselageWeightCalc.calculateFuselageMassSadray(aircraft);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));

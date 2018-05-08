@@ -16,9 +16,9 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
-import analyses.liftingsurface.LSAerodynamicsManager;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAlpha;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlpha0L;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLAlpha;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.MomentCalc;
@@ -40,7 +40,7 @@ public class FuselageAerodynamicsManager {
 	//------------------------------------------------------------------------------
 	private Fuselage _theFuselage;
 	private LiftingSurface _theWing;
-	private LSAerodynamicsManager _theWingAerodynamicManager;
+	private LiftingSurfaceAerodynamicsManager _theWingAerodynamicManager;
 	private OperatingConditions _theOperatingConditions;
 	private List<Amount<Angle>> _alphaArray;
 	private ConditionEnum _theCondition;
@@ -82,7 +82,7 @@ public class FuselageAerodynamicsManager {
 	public FuselageAerodynamicsManager(
 			Fuselage theFuselage,
 			LiftingSurface theWing,
-			LSAerodynamicsManager theWingAerodynamicManager,
+			LiftingSurfaceAerodynamicsManager theWingAerodynamicManager,
 			OperatingConditions theOperatingConditions,
 			List<Amount<Angle>> alphaArray,
 			ConditionEnum theCondition,
@@ -174,7 +174,7 @@ public class FuselageAerodynamicsManager {
 				);
 		_fuselageSurfaceRatio = 
 				_fuselageFrontSurface.doubleValue(SI.SQUARE_METRE)/
-				_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
+				_theWing.getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
 		
 		// value chosen to match matlab file base drag --> lenF - dxTailCap;
 		_equivalentDiameterBase = 
@@ -207,7 +207,7 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getFormFactor(), 
 							_cF,
 							_theFuselage.getSWetTotal().doubleValue(SI.SQUARE_METRE),
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+							_theWing.getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 							)
 					);
 		}
@@ -234,7 +234,7 @@ public class FuselageAerodynamicsManager {
 					DragCalc.calculateCD0Base(
 							MethodEnum.MATLAB, 
 							_cD0Parasite.get(MethodEnum.SEMIEMPIRICAL),
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
+							_theWing.getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
 							_equivalentDiameterBase.doubleValue(SI.METER),
 							_theFuselage.getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
 							)
@@ -266,7 +266,7 @@ public class FuselageAerodynamicsManager {
 					MethodEnum.SEMIEMPIRICAL, 
 					DragCalc.calculateCD0Upsweep(
 							_theFuselage.getCylinderSectionArea(),
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(),
+							_theWing.getSurfacePlanform(),
 							_theFuselage.getTailLength(),
 							zCamber75
 							)
@@ -292,7 +292,7 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getWindshieldType(),
 							_theFuselage.getWindshieldArea(),
 							_theFuselage.getCylinderSectionArea(),
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform()
+							_theWing.getSurfacePlanform()
 							)
 					);
 		}
@@ -352,7 +352,7 @@ public class FuselageAerodynamicsManager {
 			
 			double surfaceRatio = 
 					frontSurface.doubleValue(SI.SQUARE_METRE)
-					/_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
+					/_theWing.getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
 
 			double cDFlatPlate = AerodynamicCalc.calculateCfTurb(
 					AerodynamicCalc.calculateReynolds(
@@ -441,7 +441,7 @@ public class FuselageAerodynamicsManager {
 									), 
 							_theFuselage.getNoseLength(),                                    
 							_theFuselage.getFuselageLength(), 
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
+							_theWing.getSurfacePlanform(), 
 							_theFuselage.getOutlineXZUpperCurveX(), 
 							_theFuselage.getOutlineXZUpperCurveZ(), 
 							_theFuselage.getOutlineXZLowerCurveX(),
@@ -509,7 +509,7 @@ public class FuselageAerodynamicsManager {
 							), 
 					_theFuselage.getNoseLength(),                                   
 					_theFuselage.getFuselageLength(), 
-					_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
+					_theWing.getSurfacePlanform(), 
 					_theFuselage.getOutlineXZUpperCurveX(), 
 					_theFuselage.getOutlineXZUpperCurveZ(), 
 					_theFuselage.getOutlineXZLowerCurveX(),
@@ -576,7 +576,7 @@ public class FuselageAerodynamicsManager {
 							), 
 					_theFuselage.getNoseLength(),                       
 					_theFuselage.getFuselageLength(), 
-					_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
+					_theWing.getSurfacePlanform(), 
 					_theFuselage.getOutlineXZUpperCurveX(), 
 					_theFuselage.getOutlineXZUpperCurveZ(), 
 					_theFuselage.getOutlineXZLowerCurveX(),
@@ -661,9 +661,9 @@ public class FuselageAerodynamicsManager {
 									),
 							_theWing.getRiggingAngle(),
 							_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
-							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
-							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+							_theWing.getSurfacePlanform(), 
+							_theWing.getPanels().get(0).getChordRoot(), 
+							_theWing.getMeanAerodynamicChord(), 
 							_theWing.getXApexConstructionAxes(),
 							_theFuselage.getOutlineXYSideRCurveX(),
 							_theFuselage.getOutlineXYSideRCurveY(),
@@ -695,7 +695,7 @@ public class FuselageAerodynamicsManager {
 							)
 					*_fuselageSurfaceRatio
 					*_theFuselage.getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
-					/_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METRE)
+					/_theWing.getMeanAerodynamicChord().doubleValue(SI.METRE)
 					);
 			
 		}
@@ -727,10 +727,10 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getXApexConstructionAxes(),
 							_theFuselage.getFuselageLength(),
 							downwashGradientRoskamConstant, 
-							_theWing.getLiftingSurfaceCreator().getAspectRatio(),
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
-							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
-							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
+							_theWing.getAspectRatio(),
+							_theWing.getSurfacePlanform(), 
+							_theWing.getPanels().get(0).getChordRoot(), 
+							_theWing.getMeanAerodynamicChord(),
 							_theWingAerodynamicManager.getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
 							_theWing.getXApexConstructionAxes(),
 							wingTrailingEdgeToHTailQuarterChordDistance,
@@ -750,10 +750,10 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getSectionCylinderWidth(),
 							_positionOfC4ToFuselageLength,
 							_kF,
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
-							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
+							_theWing.getSurfacePlanform(), 
+							_theWing.getMeanAerodynamicChord(),
 							_theWing.getXApexConstructionAxes(), 
-							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
+							_theWing.getPanels().get(0).getChordRoot()
 							)
 					);
 			
@@ -780,7 +780,7 @@ public class FuselageAerodynamicsManager {
 									)
 							*_fuselageSurfaceRatio
 							*_theFuselage.getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
-							/_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METRE),
+							/_theWing.getMeanAerodynamicChord().doubleValue(SI.METRE),
 							NonSI.DEGREE_ANGLE.inverse()
 							)
 					);
@@ -1158,11 +1158,11 @@ public class FuselageAerodynamicsManager {
 		return _kF;
 	}
 
-	public LSAerodynamicsManager getTheWingAerodynamicManager() {
+	public LiftingSurfaceAerodynamicsManager getTheWingAerodynamicManager() {
 		return _theWingAerodynamicManager;
 	}
 
-	public void setTheWingAerodynamicManager(LSAerodynamicsManager _theWingAerodynamicManager) {
+	public void setTheWingAerodynamicManager(LiftingSurfaceAerodynamicsManager _theWingAerodynamicManager) {
 		this._theWingAerodynamicManager = _theWingAerodynamicManager;
 	}
 

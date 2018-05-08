@@ -313,10 +313,10 @@ public class NoiseTrajectoryCalcTest extends Application {
 					theAircraft.getFuselage().getHeightFromGround()
 					.plus(theAircraft.getFuselage().getSectionCylinderHeight().divide(2))
 					.plus(theAircraft.getWing().getZApexConstructionAxes()
-							.plus(theAircraft.getWing().getLiftingSurfaceCreator().getSemiSpan()
+							.plus(theAircraft.getWing().getSemiSpan()
 									.times(Math.sin(
 											theAircraft.getWing()	
-											.getLiftingSurfaceCreator()	
+												
 											.getDihedralMean()
 											.doubleValue(SI.RADIAN)
 											)
@@ -334,8 +334,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 						polarCDTakeOff, 
 						deltaCD0LandingGear,
 						deltaCD0OEI,
-						theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
-						theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform(), 
+						theAircraft.getWing().getAspectRatio(),
+						theAircraft.getWing().getSurfacePlanform(), 
 						dtRot, 
 						dtHold, 
 						dtLandingGearRetraction,
@@ -416,8 +416,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 						theAircraft.getPowerPlant(),
 						polarCLLanding,
 						polarCDLanding,
-						theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(), 
-						theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform(),
+						theAircraft.getWing().getAspectRatio(), 
+						theAircraft.getWing().getSurfacePlanform(),
 						dtFlare, 
 						dtFreeRoll,
 						mu, 

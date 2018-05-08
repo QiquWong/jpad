@@ -18,7 +18,7 @@ import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
@@ -94,14 +94,14 @@ public class HorizontalTailTest extends Application {
 		System.out.println("The horizontal tail ...");
 		System.out.println(hTail);
 		System.out.println("Details on panel discretization ...");
-		hTail.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
+		hTail.reportPanelsToSpanwiseDiscretizedVariables();
 
 		//--------------------------------------------------
 		// get data vectors from wing discretization
-		List<Amount<Length>> vY = hTail.getLiftingSurfaceCreator().getDiscretizedYs();
+		List<Amount<Length>> vY = hTail.getDiscretizedYs();
 		int nY = vY.size();
-		List<Amount<Length>> vChords = hTail.getLiftingSurfaceCreator().getDiscretizedChords();
-		List<Amount<Length>> vXle = hTail.getLiftingSurfaceCreator().getDiscretizedXle();
+		List<Amount<Length>> vChords = hTail.getDiscretizedChords();
+		List<Amount<Length>> vXle = hTail.getDiscretizedXle();
 
 		Double[][] dataChordsVsY = new Double[nY][2];
 		Double[][] dataXleVsY = new Double[nY][2];
@@ -115,7 +115,7 @@ public class HorizontalTailTest extends Application {
 
 		System.out.println("##################\n\n");
 
-		Double[][] dataTopView = hTail.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.HORIZONTAL_TAIL);
+		Double[][] dataTopView = hTail.getDiscretizedTopViewAsArray(ComponentEnum.HORIZONTAL_TAIL);
 
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
@@ -132,15 +132,15 @@ public class HorizontalTailTest extends Application {
 		listDataArray.add(dataTopView);
 
 		Double[][] xyMAC = new Double[2][2];
-		xyMAC[0][0] = hTail.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
-		xyMAC[0][1] = hTail.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE);
+		xyMAC[0][0] = hTail.getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
+		xyMAC[0][1] = hTail.getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE);
 		xyMAC[1][0] = xyMAC[0][0];
-		xyMAC[1][1] = xyMAC[0][1] + hTail.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METRE);
+		xyMAC[1][1] = xyMAC[0][1] + hTail.getMeanAerodynamicChord().doubleValue(SI.METRE);
 
 		listDataArray.add(xyMAC);
 
-		double yMax = 1.05*hTail.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
-		double yMin = -0.05*hTail.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+		double yMax = 1.05*hTail.getSemiSpan().doubleValue(SI.METRE);
+		double yMin = -0.05*hTail.getSemiSpan().doubleValue(SI.METRE);
 		double xMax = yMax;
 		double xMin = yMin;
 
@@ -257,21 +257,21 @@ public class HorizontalTailTest extends Application {
 			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
 			// read LiftingSurface from xml ...
-			theHorizontalTail = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.HORIZONTAL_TAIL, pathToXML, dirAirfoil));
+			theHorizontalTail = LiftingSurface.importFromXML(ComponentEnum.HORIZONTAL_TAIL, pathToXML, dirAirfoil);
 			theHorizontalTail.setAeroDatabaseReader(aeroDatabaseReader);
 			theHorizontalTail.setHighLiftDatabaseReader(highLiftDatabaseReader);
 			theHorizontalTail.setVeDSCDatabaseReader(veDSCDatabaseReader);
 
-			HorizontalTailTest.theHorizontalTail.getLiftingSurfaceCreator().calculateGeometry(
+			HorizontalTailTest.theHorizontalTail.calculateGeometry(
 					40,
-					theHorizontalTail.getLiftingSurfaceCreator().getType(),
-					theHorizontalTail.getLiftingSurfaceCreator().isMirrored()
+					theHorizontalTail.getType(),
+					theHorizontalTail.isMirrored()
 					);
 
 			System.out.println("The horizontal tail ...");
-			System.out.println(HorizontalTailTest.theHorizontalTail.getLiftingSurfaceCreator().toString());
+			System.out.println(HorizontalTailTest.theHorizontalTail.toString());
 			System.out.println("Details on panel discretization ...");
-			HorizontalTailTest.theHorizontalTail.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
+			HorizontalTailTest.theHorizontalTail.reportPanelsToSpanwiseDiscretizedVariables();
 
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

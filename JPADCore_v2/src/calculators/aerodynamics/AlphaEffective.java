@@ -9,7 +9,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
-import analyses.liftingsurface.LSAerodynamicsManager;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.customdata.MyArray;
@@ -27,7 +27,7 @@ public class AlphaEffective {
 
 	int numberOfPoints = 30; //the same of static final  _numberOfPointsChordDistribution
 	OperatingConditions theOperatingConditions;
-	LSAerodynamicsManager theLSManager;
+	LiftingSurfaceAerodynamicsManager theLSManager;
 	LiftingSurface theWing;
 
 	double vortexSemiSpan, vortexSemiSpanToSemiSpanRatio, surface, semispan, mach, altitude ;
@@ -41,44 +41,44 @@ public class AlphaEffective {
 	//--------------------------------------------------------
 	//builder
 
-	public AlphaEffective(LSAerodynamicsManager theLSManager, LiftingSurface theWing,
+	public AlphaEffective(LiftingSurfaceAerodynamicsManager theLSManager, LiftingSurface theWing,
 			OperatingConditions theOperatingConditions){
 		this.theLSManager = theLSManager;
 		this.theWing = theWing;
 		this.theOperatingConditions = theOperatingConditions;
 
 //		vortexSemiSpanToSemiSpanRatio = theLSManager.get_vortexSemiSpanToSemiSpanRatio();
-		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * theWing.getLiftingSurfaceCreator().getSemiSpan().getEstimatedValue();
+		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * theWing.getSemiSpan().getEstimatedValue();
 		mach = theOperatingConditions.getMachCruise();
-		semispan = theWing.getLiftingSurfaceCreator().getSemiSpan().getEstimatedValue();
+		semispan = theWing.getSemiSpan().getEstimatedValue();
 
 		dihedral = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
-						theWing.getLiftingSurfaceCreator().getDihedralsBreakPoints()
+						theWing.getDihedralsBreakPoints()
 						);
 		alpha0lArray = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
-						theWing.getLiftingSurfaceCreator().getAlpha0VsY()
+						theWing.getAlpha0VsY()
 						);
 		twist = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
-						theWing.getLiftingSurfaceCreator().getTwistsBreakPoints()
+						theWing.getTwistsBreakPoints()
 						);
 		chordsVsYActual = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
-						theWing.getLiftingSurfaceCreator().getChordsBreakPoints()
+						theWing.getChordsBreakPoints()
 						);
 		yStationsActual = MyArrayUtils.linspace(0., semispan, numberOfPoints);
 		yStationsAlpha = MyArrayUtils.linspace(0., semispan, 50);
 		yStationsAirfoil = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
-						theWing.getLiftingSurfaceCreator().getYBreakPoints()
+						theWing.getYBreakPoints()
 						);
 		xLEvsYActual = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
-						theWing.getLiftingSurfaceCreator().getXLEBreakPoints()
+						theWing.getXLEBreakPoints()
 						);
-		surface = theWing.getLiftingSurfaceCreator().getSurfacePlanform().getEstimatedValue();
+		surface = theWing.getSurfacePlanform().getEstimatedValue();
 		altitude = theOperatingConditions.getAltitudeCruise().getEstimatedValue();
 
 //		alpha0l = theLSManager.get_alpha0lDistribution().toArray();
@@ -107,8 +107,8 @@ public class AlphaEffective {
 		NasaBlackwell theCalculator = new NasaBlackwell(
 				semispan, surface, yStationsActual,
 				chordsVsYActual, xLEvsYActual,
-				dihedral, theWing.getLiftingSurfaceCreator().getTwistsBreakPoints(),
-				theWing.getLiftingSurfaceCreator().getAlpha0VsY(), vortexSemiSpanToSemiSpanRatio,
+				dihedral, theWing.getTwistsBreakPoints(),
+				theWing.getAlpha0VsY(), vortexSemiSpanToSemiSpanRatio,
 				alphaInitial.getEstimatedValue(), mach, altitude);
 
 		theCalculator.calculateVerticalVelocity(alphaInitial);
@@ -121,7 +121,7 @@ public class AlphaEffective {
 
 		Double[] twistDistribution = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
-						theWing.getLiftingSurfaceCreator().getYBreakPoints()
+						theWing.getYBreakPoints()
 						),
 				twist,
 				yStationsActual

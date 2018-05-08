@@ -113,50 +113,50 @@ public class FuelTank {
 	 */
 	private void estimateDimensions(LiftingSurface theWing) {
 
-		for (int i=0; i<theWing.getLiftingSurfaceCreator().getAirfoilList().size()-1; i++) {
+		for (int i=0; i<theWing.getAirfoilList().size()-1; i++) {
 			this._thicknessAtMainSpar.add(
 					Amount.valueOf(
 							AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
-									theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition(),
-									theWing.getLiftingSurfaceCreator().getAirfoilList().get(i).getThicknessToChordRatio()
+									theWing.getMainSparDimensionlessPosition(),
+									theWing.getAirfoilList().get(i).getThicknessToChordRatio()
 									)
-							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
+							* theWing.getChordsBreakPoints().get(i).doubleValue(SI.METER),
 							SI.METER)
 					);
 			this._thicknessAtSecondarySpar.add(
 					Amount.valueOf(
 							AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
-									theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition(),
-									theWing.getLiftingSurfaceCreator().getAirfoilList().get(i).getThicknessToChordRatio()
+									theWing.getSecondarySparDimensionlessPosition(),
+									theWing.getAirfoilList().get(i).getThicknessToChordRatio()
 									)
-							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
+							* theWing.getChordsBreakPoints().get(i).doubleValue(SI.METER),
 							SI.METER)
 					);
 			this._distanceBetweenSpars.add(
 					Amount.valueOf(
-							theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition()
-							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)
-							- (theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition()
-							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)),
+							theWing.getSecondarySparDimensionlessPosition()
+							* theWing.getChordsBreakPoints().get(i).doubleValue(SI.METER)
+							- (theWing.getMainSparDimensionlessPosition()
+							* theWing.getChordsBreakPoints().get(i).doubleValue(SI.METER)),
 							SI.METER
 							)
 					);
-			this._fuelTankStations.add(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i));
-			this._wingChordsAtFuelTankStations.add(theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i));
+			this._fuelTankStations.add(theWing.getYBreakPoints().get(i));
+			this._wingChordsAtFuelTankStations.add(theWing.getChordsBreakPoints().get(i));
 		}
-		for(int i=1; i<theWing.getLiftingSurfaceCreator().getYBreakPoints().size()-1; i++)
+		for(int i=1; i<theWing.getYBreakPoints().size()-1; i++)
 			this._prismoidsLength.add(
-					theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i)
-					.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1))
+					theWing.getYBreakPoints().get(i)
+					.minus(theWing.getYBreakPoints().get(i-1))
 					);
 		
 		Airfoil airfoilAt85Percent = LSGeometryCalc.calculateAirfoilAtY(
 				theWing,
-				theWing.getLiftingSurfaceCreator().getSemiSpan().times(0.85).doubleValue(SI.METER)
+				theWing.getSemiSpan().times(0.85).doubleValue(SI.METER)
 				);
 		Amount<Length> chordAt85Percent = Amount.valueOf(
-				theWing.getLiftingSurfaceCreator().getChordAtYActual(
-						theWing.getLiftingSurfaceCreator().getSemiSpan().times(0.85).doubleValue(SI.METER)
+				theWing.getChordAtYActual(
+						theWing.getSemiSpan().times(0.85).doubleValue(SI.METER)
 						),
 				SI.METER
 				);
@@ -164,7 +164,7 @@ public class FuelTank {
 		this._thicknessAtMainSpar.add(
 				Amount.valueOf(
 						AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
-								theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition(),
+								theWing.getMainSparDimensionlessPosition(),
 								airfoilAt85Percent.getThicknessToChordRatio()
 								)
 						* chordAt85Percent.doubleValue(SI.METER),
@@ -173,7 +173,7 @@ public class FuelTank {
 		this._thicknessAtSecondarySpar.add(
 				Amount.valueOf(
 						AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
-								theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition(),
+								theWing.getSecondarySparDimensionlessPosition(),
 								airfoilAt85Percent.getThicknessToChordRatio()
 								)
 						* chordAt85Percent.doubleValue(SI.METER),
@@ -181,19 +181,19 @@ public class FuelTank {
 				);
 		this._distanceBetweenSpars.add(
 				Amount.valueOf(
-						(theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition()*chordAt85Percent.doubleValue(SI.METER))
-						-(theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition()*chordAt85Percent.doubleValue(SI.METER)),
+						(theWing.getSecondarySparDimensionlessPosition()*chordAt85Percent.doubleValue(SI.METER))
+						-(theWing.getMainSparDimensionlessPosition()*chordAt85Percent.doubleValue(SI.METER)),
 						SI.METER
 						)
 				);
-		this._fuelTankStations.add(theWing.getLiftingSurfaceCreator().getSemiSpan().times(0.85));
+		this._fuelTankStations.add(theWing.getSemiSpan().times(0.85));
 		
 		this._wingChordsAtFuelTankStations.add(chordAt85Percent);
 		
 		this._prismoidsLength.add(
-				theWing.getLiftingSurfaceCreator().getSemiSpan().times(0.85)
-				.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(
-						theWing.getLiftingSurfaceCreator().getYBreakPoints().size()-2)
+				theWing.getSemiSpan().times(0.85)
+				.minus(theWing.getYBreakPoints().get(
+						theWing.getYBreakPoints().size()-2)
 						)
 				);
 	}
@@ -369,75 +369,75 @@ public class FuelTank {
 			xCGSegmentOppositeFaceSpanwiseX[0] = this._fuelTankStations.get(i).doubleValue(SI.METER);
 			xCGSegmentOppositeFaceSpanwiseX[1] = this._fuelTankStations.get(i+1).doubleValue(SI.METER);
 			xCGSegmentOppositeFaceSpanwiseY[0] = this._theWing
-													.getLiftingSurfaceCreator()
+													
 														.getXLEAtYActual(
 																this._fuelTankStations.get(i).doubleValue(SI.METER)
 																)
 														.plus(this._wingChordsAtFuelTankStations.get(i)
-																.times(_theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition())
+																.times(_theWing.getMainSparDimensionlessPosition())
 																)
 														.doubleValue(SI.METER) + xCGLateralFacesLFRList.get(i)[0];
 			xCGSegmentOppositeFaceSpanwiseY[1] = this._theWing
-													.getLiftingSurfaceCreator()
+													
 														.getXLEAtYActual(
 																this._fuelTankStations.get(i+1).doubleValue(SI.METER)
 																)
 														.plus(this._wingChordsAtFuelTankStations.get(i+1)
-																.times(_theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition())
+																.times(_theWing.getMainSparDimensionlessPosition())
 																)
 														.doubleValue(SI.METER) + xCGLateralFacesLFRList.get(i)[2];
 
-			xCGSegmentOppositeFaceChordwiseX[0] = this._theWing.getLiftingSurfaceCreator()
+			xCGSegmentOppositeFaceChordwiseX[0] = this._theWing
 																	.getYBreakPoints().get(i)
 																		.doubleValue(SI.METER)
 												  + xCGLateralFacesLFRList.get(i)[3]; 
-			xCGSegmentOppositeFaceChordwiseX[1] = this._theWing.getLiftingSurfaceCreator()
+			xCGSegmentOppositeFaceChordwiseX[1] = this._theWing
 																	.getYBreakPoints().get(i)
 																		.doubleValue(SI.METER)
 												  + xCGLateralFacesLFRList.get(i)[1];
 			
 			xCGSegmentOppositeFaceChordwiseY[0] = this._theWing
-													.getLiftingSurfaceCreator()
+													
 														.getXLEAtYActual(
-																this._theWing.getLiftingSurfaceCreator()
+																this._theWing
 																		.getYBreakPoints().get(i)
 																			.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[3]																
 																).doubleValue(SI.METER)
-														+ (this._theWing.getLiftingSurfaceCreator().getChordAtYActual(
-																this._theWing.getLiftingSurfaceCreator()
+														+ (this._theWing.getChordAtYActual(
+																this._theWing
 																	.getYBreakPoints().get(i)
 																		.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[3])
-																* _theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition()
+																* _theWing.getMainSparDimensionlessPosition()
 																);
 			xCGSegmentOppositeFaceChordwiseY[1] = this._theWing
-													.getLiftingSurfaceCreator()
+													
 														.getXLEAtYActual(
-																this._theWing.getLiftingSurfaceCreator()
+																this._theWing
 																		.getYBreakPoints().get(i)	
 																			.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[1]																
 																).doubleValue(SI.METER)
-														+ (this._theWing.getLiftingSurfaceCreator().getChordAtYActual(
-																this._theWing.getLiftingSurfaceCreator()
+														+ (this._theWing.getChordAtYActual(
+																this._theWing
 																		.getYBreakPoints().get(i)
 																			.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[1])
-																* _theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition()
+																* _theWing.getMainSparDimensionlessPosition()
 																)
-														+ ((this._theWing.getLiftingSurfaceCreator().getChordAtYActual(
-																this._theWing.getLiftingSurfaceCreator()
+														+ ((this._theWing.getChordAtYActual(
+																this._theWing
 																		.getYBreakPoints().get(i)
 																			.doubleValue(SI.METER)
 																+ xCGLateralFacesLFRList.get(i)[1])
-																* _theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition())
-															- (this._theWing.getLiftingSurfaceCreator().getChordAtYActual(
-																	this._theWing.getLiftingSurfaceCreator()
+																* _theWing.getSecondarySparDimensionlessPosition())
+															- (this._theWing.getChordAtYActual(
+																	this._theWing
 																			.getYBreakPoints().get(i)
 																				.doubleValue(SI.METER)
 																	+ xCGLateralFacesLFRList.get(i)[1])
-																	* _theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition()));
+																	* _theWing.getMainSparDimensionlessPosition()));
 
 			// check if the chordwise X array is monotonic increasing
 			if(xCGSegmentOppositeFaceChordwiseX[1] - xCGSegmentOppositeFaceChordwiseX[0] < 0.0001)
@@ -475,8 +475,8 @@ public class FuelTank {
 		_yCGLRF = Amount.valueOf(0.0, SI.METER);
 		_yCG = Amount.valueOf(0.0, SI.METER);
 		
-		_zCGLRF = _theWing.getCG().getZLRF();
-		_zCG = _theWing.getCG().getZBRF();
+		_zCGLRF = _theWing.getTheBalanceManager().getCG().getZLRF();
+		_zCG = _theWing.getTheBalanceManager().getCG().getZBRF();
 		
 	}
 
@@ -491,8 +491,8 @@ public class FuelTank {
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
 				.append("\t·····································\n")
-				.append("\tMain spar position (% local chord): " + _theWing.getLiftingSurfaceCreator().getMainSparDimensionlessPosition() + "\n")
-				.append("\tSecondary spar position (% local chord): " + _theWing.getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition() + "\n")
+				.append("\tMain spar position (% local chord): " + _theWing.getMainSparDimensionlessPosition() + "\n")
+				.append("\tSecondary spar position (% local chord): " + _theWing.getSecondarySparDimensionlessPosition() + "\n")
 				.append("\t·····································\n")
 				.append("\tAirfoils thickness at main spar stations: " + _thicknessAtMainSpar + "\n")
 				.append("\tAirfoils thickness at secondary spar stations: " + _thicknessAtSecondarySpar + "\n")

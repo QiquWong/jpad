@@ -18,7 +18,7 @@ import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
@@ -94,14 +94,14 @@ public class WingTest extends Application {
 		System.out.println("The wing ...");
 		System.out.println(wing);
 		System.out.println("Details on panel discretization ...");
-		wing.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
+		wing.reportPanelsToSpanwiseDiscretizedVariables();
 
 		//--------------------------------------------------
 		// get data vectors from wing discretization
-		List<Amount<Length>> vY = wing.getLiftingSurfaceCreator().getDiscretizedYs();
+		List<Amount<Length>> vY = wing.getDiscretizedYs();
 		int nY = vY.size();
-		List<Amount<Length>> vChords = wing.getLiftingSurfaceCreator().getDiscretizedChords();
-		List<Amount<Length>> vXle = wing.getLiftingSurfaceCreator().getDiscretizedXle();
+		List<Amount<Length>> vChords = wing.getDiscretizedChords();
+		List<Amount<Length>> vXle = wing.getDiscretizedXle();
 
 		Double[][] dataChordsVsY = new Double[nY][2];
 		Double[][] dataXleVsY = new Double[nY][2];
@@ -115,7 +115,7 @@ public class WingTest extends Application {
 
 		System.out.println("##################\n\n");
 
-		Double[][] dataTopView = wing.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.WING);
+		Double[][] dataTopView = wing.getDiscretizedTopViewAsArray(ComponentEnum.WING);
 
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
@@ -131,36 +131,36 @@ public class WingTest extends Application {
 
 		listDataArray.add(dataTopView);
 
-		int nSec = theWing.getLiftingSurfaceCreator().getDiscretizedXle().size();
-		int nPanels = theWing.getLiftingSurfaceCreator().getPanels().size();
+		int nSec = theWing.getDiscretizedXle().size();
+		int nPanels = theWing.getPanels().size();
 
 		Double[][] eqPts = new Double[4][2];
 		eqPts[0][0] = 0.0;
-		eqPts[0][1] = theWing.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE();
-		eqPts[1][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
-		eqPts[1][1] = theWing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER);
-		eqPts[2][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
-		eqPts[2][1] = theWing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1)
+		eqPts[0][1] = theWing.getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE();
+		eqPts[1][0] = theWing.getSemiSpan().doubleValue(SI.METER);
+		eqPts[1][1] = theWing.getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER);
+		eqPts[2][0] = theWing.getSemiSpan().doubleValue(SI.METER);
+		eqPts[2][1] = theWing.getDiscretizedXle().get(nSec - 1)
 				.plus(
-						theWing.getLiftingSurfaceCreator().getPanels().get(nPanels - 1).getChordTip()
+						theWing.getPanels().get(nPanels - 1).getChordTip()
 						)
 				.doubleValue(SI.METER);
 		eqPts[3][0] = 0.0;
-		eqPts[3][1] = theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-				- theWing.getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordTE();
+		eqPts[3][1] = theWing.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+				- theWing.getEquivalentWing().getRealWingDimensionlessXOffsetRootChordTE();
 
 		listDataArray.add(eqPts);
 
 		Double[][] xyMAC = new Double[2][2];
-		xyMAC[0][0] = wing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
-		xyMAC[0][1] = wing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE);
+		xyMAC[0][0] = wing.getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
+		xyMAC[0][1] = wing.getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE);
 		xyMAC[1][0] = xyMAC[0][0];
-		xyMAC[1][1] = xyMAC[0][1] + wing.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METRE);
+		xyMAC[1][1] = xyMAC[0][1] + wing.getMeanAerodynamicChord().doubleValue(SI.METRE);
 
 		listDataArray.add(xyMAC);
 
-		double yMax = 1.05*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
-		double yMin = -0.05*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+		double yMax = 1.05*wing.getSemiSpan().doubleValue(SI.METRE);
+		double yMin = -0.05*wing.getSemiSpan().doubleValue(SI.METRE);
 		double xMax = yMax;
 		double xMin = yMin;
 
@@ -280,24 +280,24 @@ public class WingTest extends Application {
 			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
 			// read LiftingSurface from xml ...
-			theWing = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil));
+			theWing = LiftingSurface.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil);
 			theWing.setAeroDatabaseReader(aeroDatabaseReader);
 			theWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
 			theWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
 
-			WingTest.theWing.getLiftingSurfaceCreator().calculateGeometry(
+			WingTest.theWing.calculateGeometry(
 					40,
-					theWing.getLiftingSurfaceCreator().getType(),
-					theWing.getLiftingSurfaceCreator().isMirrored());
+					theWing.getType(),
+					theWing.isMirrored());
 
-			WingTest.theWing.getLiftingSurfaceCreator().populateAirfoilList(
-					theWing.getLiftingSurfaceCreator().getEquivalentWingFlag()
+			WingTest.theWing.populateAirfoilList(
+					theWing.getEquivalentWingFlag()
 					);
 			
 			System.out.println("The wing ...");
-			System.out.println(WingTest.theWing.getLiftingSurfaceCreator().toString());
+			System.out.println(WingTest.theWing.toString());
 			System.out.println("Details on panel discretization ...");
-			WingTest.theWing.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
+			WingTest.theWing.reportPanelsToSpanwiseDiscretizedVariables();
 
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

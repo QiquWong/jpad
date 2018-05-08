@@ -17,7 +17,7 @@ import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.FuelTank;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
@@ -72,7 +72,7 @@ public class FuelTankTest extends Application {
 		System.out.println("The wing ...");
 		System.out.println(wing);
 		System.out.println("Details on panel discretization ...");
-		wing.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
+		wing.reportPanelsToSpanwiseDiscretizedVariables();
 
 		System.out.println("\n\n##################");
 		System.out.println("getting the fuel tank object ...");
@@ -88,10 +88,10 @@ public class FuelTankTest extends Application {
 		
 		//--------------------------------------------------
 		// get data vectors from wing discretization
-		List<Amount<Length>> vY = wing.getLiftingSurfaceCreator().getDiscretizedYs();
+		List<Amount<Length>> vY = wing.getDiscretizedYs();
 		int nY = vY.size();
-		List<Amount<Length>> vChords = wing.getLiftingSurfaceCreator().getDiscretizedChords();
-		List<Amount<Length>> vXle = wing.getLiftingSurfaceCreator().getDiscretizedXle();
+		List<Amount<Length>> vChords = wing.getDiscretizedChords();
+		List<Amount<Length>> vXle = wing.getDiscretizedXle();
 
 		Double[][] dataChordsVsY = new Double[nY][2];
 		Double[][] dataXleVsY = new Double[nY][2];
@@ -105,30 +105,30 @@ public class FuelTankTest extends Application {
 
 		System.out.println("##################\n\n");
 
-		Double[][] dataTopView = wing.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.WING);
+		Double[][] dataTopView = wing.getDiscretizedTopViewAsArray(ComponentEnum.WING);
 
 		//--------------------------------------------------
 		// get data vectors from fuel tank discretization
 		List<Amount<Length>> fuelTankXCoordinates = new ArrayList<Amount<Length>>();
-		int nStationFuelTank = wing.getLiftingSurfaceCreator().getYBreakPoints().size();
+		int nStationFuelTank = wing.getYBreakPoints().size();
 		for (int i=0; i<nStationFuelTank-1; i++) {
-			fuelTankXCoordinates.add(wing.getLiftingSurfaceCreator().getYBreakPoints().get(i));
+			fuelTankXCoordinates.add(wing.getYBreakPoints().get(i));
 		}
-		fuelTankXCoordinates.add(wing.getLiftingSurfaceCreator().getSemiSpan().times(0.85));
-		fuelTankXCoordinates.add(wing.getLiftingSurfaceCreator().getSemiSpan().times(0.85));
+		fuelTankXCoordinates.add(wing.getSemiSpan().times(0.85));
+		fuelTankXCoordinates.add(wing.getSemiSpan().times(0.85));
 		for (int i=1; i<nStationFuelTank; i++) {
-			fuelTankXCoordinates.add(wing.getLiftingSurfaceCreator().getYBreakPoints().get(nStationFuelTank-i-1));
+			fuelTankXCoordinates.add(wing.getYBreakPoints().get(nStationFuelTank-i-1));
 		}
 		
-		Amount<Length> xLEAt85Percent = theWing.getLiftingSurfaceCreator()
+		Amount<Length> xLEAt85Percent = theWing
 												.getXLEAtYActual(
-														theWing.getLiftingSurfaceCreator().getSemiSpan()
+														theWing.getSemiSpan()
 															.times(0.85)
 																.doubleValue(SI.METER)
 																);
 		Amount<Length> chordAt85Percent = Amount.valueOf(
-				theWing.getLiftingSurfaceCreator().getChordAtYActual(
-						theWing.getLiftingSurfaceCreator().getSemiSpan().times(0.85).doubleValue(SI.METER)
+				theWing.getChordAtYActual(
+						theWing.getSemiSpan().times(0.85).doubleValue(SI.METER)
 						),
 				SI.METER
 				);
@@ -136,24 +136,24 @@ public class FuelTankTest extends Application {
 		List<Amount<Length>> fuelTankYCoordinates = new ArrayList<Amount<Length>>();
 		for(int i=0; i<nStationFuelTank-1; i++) {
 			fuelTankYCoordinates.add(
-					theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i)
-						.times(theFuelTank.getTheWing().getLiftingSurfaceCreator().getMainSparDimensionlessPosition())
-							.plus(theWing.getLiftingSurfaceCreator().getXLEBreakPoints().get(i))
+					theWing.getChordsBreakPoints().get(i)
+						.times(theFuelTank.getTheWing().getMainSparDimensionlessPosition())
+							.plus(theWing.getXLEBreakPoints().get(i))
 						);
 		}
 		fuelTankYCoordinates.add(
 				chordAt85Percent
-					.times(theFuelTank.getTheWing().getLiftingSurfaceCreator().getMainSparDimensionlessPosition())
+					.times(theFuelTank.getTheWing().getMainSparDimensionlessPosition())
 						.plus(xLEAt85Percent));
 		fuelTankYCoordinates.add(
 				chordAt85Percent
-					.times(theFuelTank.getTheWing().getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition())
+					.times(theFuelTank.getTheWing().getSecondarySparDimensionlessPosition())
 						.plus(xLEAt85Percent));
 		for(int i=1; i<nStationFuelTank; i++) {
 			fuelTankYCoordinates.add(
-					theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(nStationFuelTank-i-1)
-						.times(theFuelTank.getTheWing().getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition())
-							.plus(theWing.getLiftingSurfaceCreator().getXLEBreakPoints().get(nStationFuelTank-i-1))
+					theWing.getChordsBreakPoints().get(nStationFuelTank-i-1)
+						.times(theFuelTank.getTheWing().getSecondarySparDimensionlessPosition())
+							.plus(theWing.getXLEBreakPoints().get(nStationFuelTank-i-1))
 						);
 		}
 		
@@ -179,10 +179,10 @@ public class FuelTankTest extends Application {
 		listDataArray.add(dataTopView);
 		listDataArray.add(dataFuelTank);
 		
-		double xMax = 1.05*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
-		double xMin = -0.05*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
-		double yMax = 1.30*wing.getLiftingSurfaceCreator().getSemiSpan().divide(2).doubleValue(SI.METRE);
-		double yMin = -0.80*wing.getLiftingSurfaceCreator().getSemiSpan().divide(2).doubleValue(SI.METRE);
+		double xMax = 1.05*wing.getSemiSpan().doubleValue(SI.METRE);
+		double xMin = -0.05*wing.getSemiSpan().doubleValue(SI.METRE);
+		double yMax = 1.30*wing.getSemiSpan().divide(2).doubleValue(SI.METRE);
+		double yMin = -0.80*wing.getSemiSpan().divide(2).doubleValue(SI.METRE);
 
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
@@ -298,12 +298,12 @@ public class FuelTankTest extends Application {
 			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
 			// imported wing from xml ...
-			theWing = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil));
+			theWing = LiftingSurface.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil);
 			theWing.setAeroDatabaseReader(aeroDatabaseReader);
 			theWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
 			theWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
-			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, true);
-			theWing.getLiftingSurfaceCreator().populateAirfoilList(false);
+			theWing.calculateGeometry(ComponentEnum.WING, true);
+			theWing.populateAirfoilList(false);
 			
 			theFuelTank = new FuelTank("My Fuel Tank", theWing);
 										
@@ -313,9 +313,9 @@ public class FuelTankTest extends Application {
 			theFuelTank.calculateCG();
 			
 			System.out.println("The wing ...");
-			System.out.println(FuelTankTest.theWing.getLiftingSurfaceCreator().toString());
+			System.out.println(FuelTankTest.theWing.toString());
 			System.out.println("Details on panel discretization ...");
-			FuelTankTest.theWing.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
+			FuelTankTest.theWing.reportPanelsToSpanwiseDiscretizedVariables();
 			
 			System.out.println("The fuel tank ...");
 			System.out.println(FuelTankTest.theFuelTank.toString());

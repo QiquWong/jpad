@@ -117,41 +117,41 @@ public class AircraftTestFrontView extends Application {
 		//--------------------------------------------------
 		// get data vectors from wing discretization
 		//--------------------------------------------------
-		List<Amount<Length>> wingBreakPointsYCoordinates = wing.getLiftingSurfaceCreator().getYBreakPoints();
+		List<Amount<Length>> wingBreakPointsYCoordinates = wing.getYBreakPoints();
 		int nYPointsWingTemp = wingBreakPointsYCoordinates.size();
 		for(int i=0; i<nYPointsWingTemp; i++)
-			wingBreakPointsYCoordinates.add(wing.getLiftingSurfaceCreator().getYBreakPoints().get(nYPointsWingTemp-i-1));
+			wingBreakPointsYCoordinates.add(wing.getYBreakPoints().get(nYPointsWingTemp-i-1));
 		int nYPointsWing = wingBreakPointsYCoordinates.size();
 		
 		List<Amount<Length>> wingThicknessZCoordinates = new ArrayList<Amount<Length>>();
-		for(int i=0; i<wing.getLiftingSurfaceCreator().getAirfoilList().size(); i++)
+		for(int i=0; i<wing.getAirfoilList().size(); i++)
 			wingThicknessZCoordinates.add(
 					Amount.valueOf(
-							wing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(wing.getLiftingSurfaceCreator().getAirfoilList().get(i).getZCoords()),
+							wing.getChordsBreakPoints().get(i).doubleValue(SI.METER)*
+							MyArrayUtils.getMax(wing.getAirfoilList().get(i).getZCoords()),
 							SI.METER
 							)
 					);
 		for(int i=0; i<nYPointsWingTemp; i++) {
 			wingThicknessZCoordinates.add(
 					Amount.valueOf(
-							(wing.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsWingTemp-i-1).doubleValue(SI.METER)*
-									MyArrayUtils.getMin(wing.getLiftingSurfaceCreator().getAirfoilList().get(nYPointsWingTemp-i-1).getZCoords())),
+							(wing.getChordsBreakPoints().get(nYPointsWingTemp-i-1).doubleValue(SI.METER)*
+									MyArrayUtils.getMin(wing.getAirfoilList().get(nYPointsWingTemp-i-1).getZCoords())),
 							SI.METER
 							)
 					);
 		}
 		
 		List<Amount<Angle>> dihedralList = new ArrayList<>();
-		for (int i = 0; i < wing.getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+		for (int i = 0; i < wing.getDihedralsBreakPoints().size(); i++) {
 			dihedralList.add(
-					wing.getLiftingSurfaceCreator().getDihedralsBreakPoints().get(i)
+					wing.getDihedralsBreakPoints().get(i)
 					);
 		}
-		for (int i = 0; i < wing.getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+		for (int i = 0; i < wing.getDihedralsBreakPoints().size(); i++) {
 			dihedralList.add(
-					wing.getLiftingSurfaceCreator().getDihedralsBreakPoints().get(
-							wing.getLiftingSurfaceCreator().getDihedralsBreakPoints().size()-1-i)
+					wing.getDihedralsBreakPoints().get(
+							wing.getDihedralsBreakPoints().size()-1-i)
 					);
 		}
 		
@@ -179,40 +179,40 @@ public class AircraftTestFrontView extends Application {
 		//--------------------------------------------------
 		// get data vectors from hTail discretization
 		//--------------------------------------------------
-		List<Amount<Length>> hTailBreakPointsYCoordinates = hTail.getLiftingSurfaceCreator().getYBreakPoints();
+		List<Amount<Length>> hTailBreakPointsYCoordinates = hTail.getYBreakPoints();
 		int nYPointsHTailTemp = hTailBreakPointsYCoordinates.size();
 		for(int i=0; i<nYPointsHTailTemp; i++)
-			hTailBreakPointsYCoordinates.add(hTail.getLiftingSurfaceCreator().getYBreakPoints().get(nYPointsHTailTemp-i-1));
+			hTailBreakPointsYCoordinates.add(hTail.getYBreakPoints().get(nYPointsHTailTemp-i-1));
 		int nYPointsHTail = hTailBreakPointsYCoordinates.size();
 		
 		List<Amount<Length>> hTailThicknessZCoordinates = new ArrayList<Amount<Length>>();
-		for(int i=0; i<vTail.getLiftingSurfaceCreator().getAirfoilList().size(); i++)
+		for(int i=0; i<vTail.getAirfoilList().size(); i++)
 			hTailThicknessZCoordinates.add(
 					Amount.valueOf(
-							hTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(hTail.getLiftingSurfaceCreator().getAirfoilList().get(i).getZCoords()),
+							hTail.getChordsBreakPoints().get(i).doubleValue(SI.METER)*
+							MyArrayUtils.getMax(hTail.getAirfoilList().get(i).getZCoords()),
 							SI.METER
 							)
 					);
 		for(int i=0; i<nYPointsHTailTemp; i++)
 			hTailThicknessZCoordinates.add(
 					Amount.valueOf(
-							hTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsHTailTemp-i-1).doubleValue(SI.METER)*
-							MyArrayUtils.getMin(hTail.getLiftingSurfaceCreator().getAirfoilList().get(nYPointsHTailTemp-i-1).getZCoords()),
+							hTail.getChordsBreakPoints().get(nYPointsHTailTemp-i-1).doubleValue(SI.METER)*
+							MyArrayUtils.getMin(hTail.getAirfoilList().get(nYPointsHTailTemp-i-1).getZCoords()),
 							SI.METER
 							)
 					);
 		
 		List<Amount<Angle>> dihedralListHTail = new ArrayList<>();
-		for (int i = 0; i < hTail.getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+		for (int i = 0; i < hTail.getDihedralsBreakPoints().size(); i++) {
 			dihedralListHTail.add(
-					hTail.getLiftingSurfaceCreator().getDihedralsBreakPoints().get(i)
+					hTail.getDihedralsBreakPoints().get(i)
 					);
 		}
-		for (int i = 0; i < hTail.getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+		for (int i = 0; i < hTail.getDihedralsBreakPoints().size(); i++) {
 			dihedralListHTail.add(
-					hTail.getLiftingSurfaceCreator().getDihedralsBreakPoints().get(
-							hTail.getLiftingSurfaceCreator().getDihedralsBreakPoints().size()-1-i)
+					hTail.getDihedralsBreakPoints().get(
+							hTail.getDihedralsBreakPoints().size()-1-i)
 					);
 		}
 		
@@ -240,26 +240,26 @@ public class AircraftTestFrontView extends Application {
 		//--------------------------------------------------
 		// get data vectors from vTail discretization
 		//--------------------------------------------------
-		List<Amount<Length>> vTailBreakPointsYCoordinates = vTail.getLiftingSurfaceCreator().getYBreakPoints();
+		List<Amount<Length>> vTailBreakPointsYCoordinates = vTail.getYBreakPoints();
 		int nYPointsVTailTemp = vTailBreakPointsYCoordinates.size();
 		for(int i=0; i<nYPointsVTailTemp; i++)
-			vTailBreakPointsYCoordinates.add(vTail.getLiftingSurfaceCreator().getYBreakPoints().get(nYPointsVTailTemp-i-1));
+			vTailBreakPointsYCoordinates.add(vTail.getYBreakPoints().get(nYPointsVTailTemp-i-1));
 		int nYPointsVTail = vTailBreakPointsYCoordinates.size();
 		
 		List<Amount<Length>> vTailThicknessZCoordinates = new ArrayList<Amount<Length>>();
-		for(int i=0; i<vTail.getLiftingSurfaceCreator().getAirfoilList().size(); i++)
+		for(int i=0; i<vTail.getAirfoilList().size(); i++)
 			vTailThicknessZCoordinates.add(
 					Amount.valueOf(
-							vTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(vTail.getLiftingSurfaceCreator().getAirfoilList().get(i).getZCoords()),
+							vTail.getChordsBreakPoints().get(i).doubleValue(SI.METER)*
+							MyArrayUtils.getMax(vTail.getAirfoilList().get(i).getZCoords()),
 							SI.METER
 							)
 					);
 		for(int i=0; i<nYPointsVTailTemp; i++)
 			vTailThicknessZCoordinates.add(
 					Amount.valueOf(
-							vTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsVTailTemp-i-1).doubleValue(SI.METER)*
-							MyArrayUtils.getMin(vTail.getLiftingSurfaceCreator().getAirfoilList().get(nYPointsVTailTemp-i-1).getZCoords()),
+							vTail.getChordsBreakPoints().get(nYPointsVTailTemp-i-1).doubleValue(SI.METER)*
+							MyArrayUtils.getMin(vTail.getAirfoilList().get(nYPointsVTailTemp-i-1).getZCoords()),
 							SI.METER
 							)
 					);
@@ -338,8 +338,8 @@ public class AircraftTestFrontView extends Application {
 		for (int i=0; i<nacellePointsList.size(); i++)
 			listDataArrayFrontView.add(nacellePointsList.get(i));
 		
-		double yMaxFrontView = 1.20*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
-		double yMinFrontView = -1.20*wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METRE);
+		double yMaxFrontView = 1.20*wing.getSemiSpan().doubleValue(SI.METER);
+		double yMinFrontView = -1.20*wing.getSemiSpan().doubleValue(SI.METRE);
 		double zMaxFrontView = yMaxFrontView; 
 		double zMinFrontView = yMinFrontView;
 		

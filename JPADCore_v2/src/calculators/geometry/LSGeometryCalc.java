@@ -16,9 +16,9 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
 import aircraft.components.liftingSurface.airfoils.IAirfoil;
-import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -321,57 +321,57 @@ public class LSGeometryCalc {
 			return null;
 		}
 
-		for(int i=1; i<theWing.getLiftingSurfaceCreator().getYBreakPoints().size(); i++) {
+		for(int i=1; i<theWing.getYBreakPoints().size(); i++) {
 
-			if((yLoc > theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1).doubleValue(SI.METER))
-					&& (yLoc < theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER))) {
+			if((yLoc > theWing.getYBreakPoints().get(i-1).doubleValue(SI.METER))
+					&& (yLoc < theWing.getYBreakPoints().get(i).doubleValue(SI.METER))) {
 
-				type = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getType();
-				family = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getFamily();
-				yInner = theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1).doubleValue(SI.METER);
-				yOuter = theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER);
-				thicknessRatioInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getThicknessToChordRatio();
-				thicknessRatioOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getThicknessToChordRatio();
-				leadingEdgeRadiusInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getRadiusLeadingEdge();
-				leadingEdgeRadiusOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getRadiusLeadingEdge();
-				alphaZeroLiftInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getAlphaZeroLift();
-				alphaZeroLiftOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getAlphaZeroLift();
-				alphaEndLinearityInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getAlphaEndLinearTrait();
-				alphaEndLinearityOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getAlphaEndLinearTrait();
-				alphaStallInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getAlphaStall();
-				alphaStallOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getAlphaStall();
-				clAlphaInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClAlphaLinearTrait().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(); 
-				clAlphaOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClAlphaLinearTrait().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
-				cdMinInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCdMin();
-				cdMinOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCdMin();
-				clAtCdMinInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClAtCdMin();
-				clAtCdMinOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClAtCdMin();
-				cl0Inner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClAtAlphaZero();
-				cl0Outer = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClAtAlphaZero();
-				clEndLinearityInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClEndLinearTrait(); 
-				clEndLinearityOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClEndLinearTrait();
-				clMaxInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClMax();
-				clMaxOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClMax();
-				kFactorDragPolarInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getKFactorDragPolar();
-				kFactorDragPolarOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getKFactorDragPolar();
-				laminarBucketSemiExtensionInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getLaminarBucketSemiExtension();
-				laminarBucketSemiExtensionOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getLaminarBucketSemiExtension();
-				laminarBucketDepthInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getLaminarBucketDepth();
-				laminarBucketDepthOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getLaminarBucketDepth();
-				cmAlphaQuarterChordInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCmAlphaQuarterChord().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
-				cmAlphaQuarterChordOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCmAlphaQuarterChord().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
-				normalizedXacInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getXACNormalized();
-				normalizedXacOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getXACNormalized();
-				cmACInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCmAC();
-				cmACOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCmAC();
-				cmACStallInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCmACAtStall();
-				cmACStallOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCmACAtStall();
-				criticalMachInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getMachCritical();
-				criticalMachOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getMachCritical();
-				xTransitionUpperInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getXTransitionUpper();
-				xTransitionUpperOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getXTransitionUpper();
-				xTransitionLowerInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getXTransitionLower();
-				xTransitionLowerOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getXTransitionLower();
+				type = theWing.getPanels().get(i-1).getAirfoilRoot().getType();
+				family = theWing.getPanels().get(i-1).getAirfoilRoot().getFamily();
+				yInner = theWing.getYBreakPoints().get(i-1).doubleValue(SI.METER);
+				yOuter = theWing.getYBreakPoints().get(i).doubleValue(SI.METER);
+				thicknessRatioInner = theWing.getPanels().get(i-1).getAirfoilRoot().getThicknessToChordRatio();
+				thicknessRatioOuter = theWing.getPanels().get(i-1).getAirfoilTip().getThicknessToChordRatio();
+				leadingEdgeRadiusInner = theWing.getPanels().get(i-1).getAirfoilRoot().getRadiusLeadingEdge();
+				leadingEdgeRadiusOuter = theWing.getPanels().get(i-1).getAirfoilTip().getRadiusLeadingEdge();
+				alphaZeroLiftInner = theWing.getPanels().get(i-1).getAirfoilRoot().getAlphaZeroLift();
+				alphaZeroLiftOuter = theWing.getPanels().get(i-1).getAirfoilTip().getAlphaZeroLift();
+				alphaEndLinearityInner = theWing.getPanels().get(i-1).getAirfoilRoot().getAlphaEndLinearTrait();
+				alphaEndLinearityOuter = theWing.getPanels().get(i-1).getAirfoilTip().getAlphaEndLinearTrait();
+				alphaStallInner = theWing.getPanels().get(i-1).getAirfoilRoot().getAlphaStall();
+				alphaStallOuter = theWing.getPanels().get(i-1).getAirfoilTip().getAlphaStall();
+				clAlphaInner = theWing.getPanels().get(i-1).getAirfoilRoot().getClAlphaLinearTrait().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(); 
+				clAlphaOuter = theWing.getPanels().get(i-1).getAirfoilTip().getClAlphaLinearTrait().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+				cdMinInner = theWing.getPanels().get(i-1).getAirfoilRoot().getCdMin();
+				cdMinOuter = theWing.getPanels().get(i-1).getAirfoilTip().getCdMin();
+				clAtCdMinInner = theWing.getPanels().get(i-1).getAirfoilRoot().getClAtCdMin();
+				clAtCdMinOuter = theWing.getPanels().get(i-1).getAirfoilTip().getClAtCdMin();
+				cl0Inner = theWing.getPanels().get(i-1).getAirfoilRoot().getClAtAlphaZero();
+				cl0Outer = theWing.getPanels().get(i-1).getAirfoilTip().getClAtAlphaZero();
+				clEndLinearityInner = theWing.getPanels().get(i-1).getAirfoilRoot().getClEndLinearTrait(); 
+				clEndLinearityOuter = theWing.getPanels().get(i-1).getAirfoilTip().getClEndLinearTrait();
+				clMaxInner = theWing.getPanels().get(i-1).getAirfoilRoot().getClMax();
+				clMaxOuter = theWing.getPanels().get(i-1).getAirfoilTip().getClMax();
+				kFactorDragPolarInner = theWing.getPanels().get(i-1).getAirfoilRoot().getKFactorDragPolar();
+				kFactorDragPolarOuter = theWing.getPanels().get(i-1).getAirfoilTip().getKFactorDragPolar();
+				laminarBucketSemiExtensionInner = theWing.getPanels().get(i-1).getAirfoilRoot().getLaminarBucketSemiExtension();
+				laminarBucketSemiExtensionOuter = theWing.getPanels().get(i-1).getAirfoilTip().getLaminarBucketSemiExtension();
+				laminarBucketDepthInner = theWing.getPanels().get(i-1).getAirfoilRoot().getLaminarBucketDepth();
+				laminarBucketDepthOuter = theWing.getPanels().get(i-1).getAirfoilTip().getLaminarBucketDepth();
+				cmAlphaQuarterChordInner = theWing.getPanels().get(i-1).getAirfoilRoot().getCmAlphaQuarterChord().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+				cmAlphaQuarterChordOuter = theWing.getPanels().get(i-1).getAirfoilTip().getCmAlphaQuarterChord().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+				normalizedXacInner = theWing.getPanels().get(i-1).getAirfoilRoot().getXACNormalized();
+				normalizedXacOuter = theWing.getPanels().get(i-1).getAirfoilTip().getXACNormalized();
+				cmACInner = theWing.getPanels().get(i-1).getAirfoilRoot().getCmAC();
+				cmACOuter = theWing.getPanels().get(i-1).getAirfoilTip().getCmAC();
+				cmACStallInner = theWing.getPanels().get(i-1).getAirfoilRoot().getCmACAtStall();
+				cmACStallOuter = theWing.getPanels().get(i-1).getAirfoilTip().getCmACAtStall();
+				criticalMachInner = theWing.getPanels().get(i-1).getAirfoilRoot().getMachCritical();
+				criticalMachOuter = theWing.getPanels().get(i-1).getAirfoilTip().getMachCritical();
+				xTransitionUpperInner = theWing.getPanels().get(i-1).getAirfoilRoot().getXTransitionUpper();
+				xTransitionUpperOuter = theWing.getPanels().get(i-1).getAirfoilTip().getXTransitionUpper();
+				xTransitionLowerInner = theWing.getPanels().get(i-1).getAirfoilRoot().getXTransitionLower();
+				xTransitionLowerOuter = theWing.getPanels().get(i-1).getAirfoilTip().getXTransitionLower();
 
 			}	
 		}
@@ -597,7 +597,7 @@ public class LSGeometryCalc {
 	}
 
 	public static Airfoil calculateMeanAirfoil (
-			LiftingSurfaceCreator theLiftingSurface
+			LiftingSurface theLiftingSurface
 			) {
 
 		List<Double> influenceCoefficients = LSGeometryCalc.calculateInfluenceCoefficients(

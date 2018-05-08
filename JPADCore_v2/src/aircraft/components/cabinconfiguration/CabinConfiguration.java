@@ -14,7 +14,7 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
-import calculators.balance.CenterOfGravityCalcUtils;
+import calculators.balance.BoardingCenterOfGravityCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.ClassTypeEnum;
 import configuration.enumerations.RelativePositionEnum;
@@ -527,7 +527,7 @@ public class CabinConfiguration {
 		setSeatsCoGRearToFront(new ArrayList<>());
 		getSeatsCoGRearToFront().add(aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF());
 		
-		CenterOfGravityCalcUtils.calculateCGBoarding(getSeatsBlocksList(), aircraft);
+		BoardingCenterOfGravityCalc.calculateCGBoarding(getSeatsBlocksList(), aircraft);
 		getSeatsCoGFrontToRear().addAll(_currentXCoGfrontToRear);
 		getSeatsCoGRearToFront().addAll(_currentXCoGrearToFront);
 

@@ -14,9 +14,6 @@ import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.jscience.physics.amount.Amount;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
-import aircraft.components.fuselage.FuselageCurvesSection;
 import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;

@@ -4,7 +4,7 @@ import java.util.Locale;
 
 import javax.measure.unit.SI;
 
-import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.WingAdjustCriteriaEnum;
 import javafx.beans.binding.Bindings;
@@ -33,7 +33,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 	private TextField liftingSurfaceRootChordTextField;
 	private TextField liftingSurfaceTipChordTextField;
 	private TextField liftingSurfaceTaperRatioTextField;
-	private LiftingSurfaceCreator currentLiftingSurface;
+	private LiftingSurface currentLiftingSurface;
 
 	public LiftingSurfaceAdjustCriterionDialog(Stage owner, String adjustCriterion, ComponentEnum type) {
 
@@ -63,16 +63,16 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 		switch (type) {
 		case WING:
 			// TODO: FIX EQUIVALENT WING ISSUE 
-			currentLiftingSurface = Main.getTheAircraft().getWing().getLiftingSurfaceCreator();
+			currentLiftingSurface = Main.getTheAircraft().getWing();
 			break;
 		case HORIZONTAL_TAIL:
-			currentLiftingSurface = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator();
+			currentLiftingSurface = Main.getTheAircraft().getHTail();
 			break;
 		case VERTICAL_TAIL:
-			currentLiftingSurface = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator();
+			currentLiftingSurface = Main.getTheAircraft().getVTail();
 			break;
 		case CANARD:
-			currentLiftingSurface = Main.getTheAircraft().getCanard().getLiftingSurfaceCreator();
+			currentLiftingSurface = Main.getTheAircraft().getCanard();
 			break;
 		default:
 			break;

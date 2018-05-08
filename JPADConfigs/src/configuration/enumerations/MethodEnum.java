@@ -63,7 +63,7 @@ public enum MethodEnum {
 	POLHAMUS,
 	RAYMER,
 	ROSKAM,
-	SADRAY,
+	SADRAEY,
 	SCHRENK, 
 	SEMIEMPIRICAL,
 	SFORZA, 

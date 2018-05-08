@@ -1,4 +1,4 @@
-package aircraft.components.liftingSurface.creator;
+package aircraft.components.liftingSurface;
 
 import java.util.List;
 
@@ -8,10 +8,16 @@ import javax.measure.quantity.Length;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator;
+import aircraft.components.liftingSurface.creator.IEquivalentWing;
+import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
+import aircraft.components.liftingSurface.creator.SlatCreator;
+import aircraft.components.liftingSurface.creator.SpoilerCreator;
+import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import configuration.enumerations.ComponentEnum;
 
 @FreeBuilder
-public interface ILiftingSurfaceCreator {
+public interface ILiftingSurface {
 
 	// GENERAL INFORMATION
 	String getId();
@@ -36,7 +42,7 @@ public interface ILiftingSurfaceCreator {
 	List<AsymmetricFlapCreator> getAsymmetricFlaps();
 	List<SpoilerCreator> getSpoilers();
 	
-	class Builder extends ILiftingSurfaceCreator_Builder {
+	class Builder extends ILiftingSurface_Builder {
 		public Builder() {
 			
 		}

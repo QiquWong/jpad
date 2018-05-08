@@ -10,7 +10,7 @@ import aircraft.Aircraft;
 import aircraft.components.cabinconfiguration.SeatsBlock;
 import configuration.enumerations.RelativePositionEnum;
 
-public class CenterOfGravityCalcUtils {
+public class BoardingCenterOfGravityCalc {
 
 	/** 
 	 * Evaluate center of gravity variation during boarding procedure

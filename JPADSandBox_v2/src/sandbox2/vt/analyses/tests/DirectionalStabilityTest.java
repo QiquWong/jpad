@@ -25,11 +25,11 @@ import analyses.ACAerodynamicAndStabilityManager.CalcDirectionalStability;
 import analyses.ACAnalysisManager;
 import analyses.IACAerodynamicAndStabilityManager;
 import analyses.OperatingConditions;
-import analyses.liftingsurface.LSAerodynamicsManager;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcAlphaStall;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcAlphaStar;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcCLmax;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcXAC;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlphaStall;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlphaStar;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLmax;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcXAC;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.AircraftEnum;
@@ -335,10 +335,10 @@ public class DirectionalStabilityTest extends Application {
 			theAerodynamicCalculator.setTheAerodynamicBuilderInterface(theAerodynamicBuilderInterface);
 			
 			// Defining VTail analysis of the Xac ...
-			Map<ComponentEnum, LSAerodynamicsManager> liftingSurfaceAerodynamicManagers = new HashMap<>();
+			Map<ComponentEnum, LiftingSurfaceAerodynamicsManager> liftingSurfaceAerodynamicManagers = new HashMap<>();
 			liftingSurfaceAerodynamicManagers.put(
 					ComponentEnum.VERTICAL_TAIL, 
-					new LSAerodynamicsManager(
+					new LiftingSurfaceAerodynamicsManager(
 							theAircraft.getVTail(),
 							theOperatingConditions,
 							ConditionEnum.CRUISE,
@@ -363,7 +363,7 @@ public class DirectionalStabilityTest extends Application {
 			// Defining Wing analysis of the Xac ...
 			liftingSurfaceAerodynamicManagers.put(
 					ComponentEnum.WING, 
-					new LSAerodynamicsManager(
+					new LiftingSurfaceAerodynamicsManager(
 							theAircraft.getWing(),
 							theOperatingConditions,
 							ConditionEnum.CRUISE,

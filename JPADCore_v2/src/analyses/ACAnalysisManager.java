@@ -405,8 +405,8 @@ public class ACAnalysisManager {
 					else if(fuselageWeightsMethod.equalsIgnoreCase("KROO")) {
 						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.KROO);
 					}
-					else if(fuselageWeightsMethod.equalsIgnoreCase("SADRAY")) {
-						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.SADRAY);
+					else if(fuselageWeightsMethod.equalsIgnoreCase("SADRAEY")) {
+						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.SADRAEY);
 					}
 					else if(fuselageWeightsMethod.equalsIgnoreCase("NICOLAI_1984")) {
 						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.NICOLAI_1984);
@@ -439,8 +439,8 @@ public class ACAnalysisManager {
 					else if(wingWeightsMethod.equalsIgnoreCase("RAYMER")) {
 						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.RAYMER);
 					}
-					else if(wingWeightsMethod.equalsIgnoreCase("SADRAY")) {
-						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.SADRAY);
+					else if(wingWeightsMethod.equalsIgnoreCase("SADRAEY")) {
+						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.SADRAEY);
 					}
 					else if(wingWeightsMethod.equalsIgnoreCase("ROSKAM")) {
 						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.ROSKAM);
@@ -470,8 +470,8 @@ public class ACAnalysisManager {
 					else if(hTailWeightsMethod.equalsIgnoreCase("RAYMER")) {
 						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.RAYMER);
 					}
-					else if(hTailWeightsMethod.equalsIgnoreCase("SADRAY")) {
-						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.SADRAY);
+					else if(hTailWeightsMethod.equalsIgnoreCase("SADRAEY")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.SADRAEY);
 					}
 					else if(hTailWeightsMethod.equalsIgnoreCase("ROSKAM")) {
 						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.ROSKAM);
@@ -501,8 +501,8 @@ public class ACAnalysisManager {
 					else if(vTailWeightsMethod.equalsIgnoreCase("RAYMER")) {
 						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.RAYMER);
 					}
-					else if(vTailWeightsMethod.equalsIgnoreCase("SADRAY")) {
-						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.SADRAY);
+					else if(vTailWeightsMethod.equalsIgnoreCase("SADRAEY")) {
+						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.SADRAEY);
 					}
 					else if(vTailWeightsMethod.equalsIgnoreCase("ROSKAM")) {
 						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.ROSKAM);
@@ -532,8 +532,8 @@ public class ACAnalysisManager {
 					else if(canardWeightsMethod.equalsIgnoreCase("RAYMER")) {
 						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.RAYMER);
 					}
-					else if(canardWeightsMethod.equalsIgnoreCase("SADRAY")) {
-						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.SADRAY);
+					else if(canardWeightsMethod.equalsIgnoreCase("SADRAEY")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.SADRAEY);
 					}
 					else if(canardWeightsMethod.equalsIgnoreCase("ROSKAM")) {
 						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.ROSKAM);

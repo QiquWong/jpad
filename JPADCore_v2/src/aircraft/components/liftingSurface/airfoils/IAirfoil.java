@@ -19,7 +19,9 @@ public interface IAirfoil {
 	AirfoilFamilyEnum getFamily();
 	double getThicknessToChordRatio();
 	double getRadiusLeadingEdgeNormalized();
+	@Nullable
 	double[] getXCoordinates();
+	@Nullable
 	double[] getZCoordinates();
 	@Nullable
 	Amount<Angle> getAlphaZeroLift();

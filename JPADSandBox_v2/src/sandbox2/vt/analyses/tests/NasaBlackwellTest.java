@@ -7,8 +7,8 @@ import java.util.Map;
 
 import aircraft.Aircraft;
 import analyses.OperatingConditions;
-import analyses.liftingsurface.LSAerodynamicsManager;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcCLmax;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLmax;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ConditionEnum;

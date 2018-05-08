@@ -125,7 +125,7 @@ public class ClimbCalc {
 					SI.METER
 					);
 		
-		Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(_theAircraft.getWing().getLiftingSurfaceCreator());
+		Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(_theAircraft.getWing());
 		
 		double[] altitudeArray = MyArrayUtils.linspace(
 				initialClimbAltitude.doubleValue(SI.METER),
@@ -149,7 +149,7 @@ public class ClimbCalc {
 					SpeedCalc.calculateSpeedStall(
 							altitudeArray[i],
 							startClimbMassAEO.times(AtmosphereCalc.g0).getEstimatedValue(),
-							_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+							_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 							_cLmaxClean
 							),
 					SpeedCalc.calculateTAS(
@@ -164,11 +164,11 @@ public class ClimbCalc {
 							altitudeArray[i],
 							startClimbMassAEO.times(AtmosphereCalc.g0).getEstimatedValue(),
 							speedArrayAEO,
-							_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+							_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 							_cLmaxClean,
 							MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
 							MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
-							_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
+							_theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 							meanAirfoil.getThicknessToChordRatio(),
 							meanAirfoil.getType()
 							)
@@ -195,12 +195,12 @@ public class ClimbCalc {
 				liftAltitudeParameterization.add(
 						LiftCalc.calculateLift(
 								_dragListAEO.get(i).getSpeed()[j],
-								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								_dragListAEO.get(i).getAltitude(),
 								LiftCalc.calculateLiftCoeff(
 										startClimbMassAEO.times(AtmosphereCalc.g0).getEstimatedValue(),
 										_dragListAEO.get(i).getSpeed()[j],
-										_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+										_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 										_dragListAEO.get(i).getAltitude()
 										)
 								)			
@@ -302,7 +302,7 @@ public class ClimbCalc {
 						SpeedCalc.calculateSpeedStall(
 								altitudeArray[i],
 								startClimbMassOEI.times(AtmosphereCalc.g0).getEstimatedValue(),
-								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								_cLmaxClean
 								),
 						SpeedCalc.calculateTAS(
@@ -317,11 +317,11 @@ public class ClimbCalc {
 								altitudeArray[i],
 								startClimbMassOEI.times(AtmosphereCalc.g0).getEstimatedValue(),
 								speedArrayOEI,
-								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								_cLmaxClean,
 								MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
 								MyArrayUtils.sumNumberToArrayEBE(MyArrayUtils.convertToDoublePrimitive(_polarCDClimb), _dragDueToEnigneFailure),
-								_theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
+								_theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 								meanAirfoil.getThicknessToChordRatio(),
 								meanAirfoil.getType()
 								)
@@ -347,12 +347,12 @@ public class ClimbCalc {
 					liftAltitudeParameterization.add(
 							LiftCalc.calculateLift(
 									_dragListOEI.get(i).getSpeed()[j],
-									_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 									_dragListOEI.get(i).getAltitude(),
 									LiftCalc.calculateLiftCoeff(
 											startClimbMassOEI.times(AtmosphereCalc.g0).getEstimatedValue(),
 											_dragListOEI.get(i).getSpeed()[j],
-											_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+											_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 											_dragListOEI.get(i).getAltitude()
 											)
 									)			

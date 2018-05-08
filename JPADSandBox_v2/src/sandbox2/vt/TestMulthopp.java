@@ -242,10 +242,10 @@ public class TestMulthopp extends Application {
 			// Evaluating CMalpha of the Fuselage
 			Amount<Length> wingTrailingEdgeToHTailQuarterChordDistance = 
 					theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
-					.plus(theAircraft.getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER).divide(4))
+					.plus(theAircraft.getHTail().getMeanAerodynamicChord().to(SI.METER).divide(4))
 					.minus(
 							theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-							.plus(theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().to(SI.METER))
+							.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER))
 							);
 			
 			double downwashGradientRoskamConstant = 0.253;
@@ -258,10 +258,10 @@ public class TestMulthopp extends Application {
 					theAircraft.getFuselage().getXApexConstructionAxes(),
 					theAircraft.getFuselage().getFuselageLength(),
 					downwashGradientRoskamConstant, 
-					theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
-					theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform(), 
-					theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
-					theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(),
+					theAircraft.getWing().getAspectRatio(),
+					theAircraft.getWing().getSurfacePlanform(), 
+					theAircraft.getWing().getPanels().get(0).getChordRoot(), 
+					theAircraft.getWing().getMeanAerodynamicChord(),
 					wingCLAlpha,
 					theAircraft.getWing().getXApexConstructionAxes(),
 					wingTrailingEdgeToHTailQuarterChordDistance,
@@ -274,10 +274,10 @@ public class TestMulthopp extends Application {
 					theAircraft.getNacelles().getNacellesList().get(0).getXApexConstructionAxes(),
 					theAircraft.getNacelles().getNacellesList().get(0).getLength(),
 					downwashGradientRoskamConstant, 
-					theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
-					theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform(), 
-					theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
-					theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(),
+					theAircraft.getWing().getAspectRatio(),
+					theAircraft.getWing().getSurfacePlanform(), 
+					theAircraft.getWing().getPanels().get(0).getChordRoot(), 
+					theAircraft.getWing().getMeanAerodynamicChord(),
 					wingCLAlpha,
 					theAircraft.getWing().getXApexConstructionAxes(),
 					wingTrailingEdgeToHTailQuarterChordDistance,

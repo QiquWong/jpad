@@ -321,7 +321,7 @@ public class AerodynamicCalc {
 		lambda_opt = 0.45
 				*Math.pow(
 						Math.E,
-						theWing.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)
+						theWing.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)
 						);
 		delta_lambda = -0.357 + lambda_opt;
 		f = 0.0524*Math.pow(lambda_opt - delta_lambda,4) 
@@ -330,12 +330,12 @@ public class AerodynamicCalc {
 				- 0.0706*(lambda_opt - delta_lambda)
 				+ 0.0119;
 
-		e_theo = 1/(f*theWing.getLiftingSurfaceCreator().getAspectRatio());
+		e_theo = 1/(f*theWing.getAspectRatio());
 
 		kef = 1 - (2*
 				(Math.pow(
 						theFuselage.getSectionCylinderHeight().divide(
-								theWing.getLiftingSurfaceCreator().getSpan()
+								theWing.getSpan()
 								).getEstimatedValue(), 2)
 						)
 				);
@@ -362,11 +362,11 @@ public class AerodynamicCalc {
 		double kWL = 2.83;
 
 		oswald = oswald*Math.pow(1+(2./kWL)*
-				(theWing.getLiftingSurfaceCreator().getWingletHeight()
-						.divide(theWing.getLiftingSurfaceCreator().getSpan()).getEstimatedValue()),2);
+				(theWing.getWingletHeight()
+						.divide(theWing.getSpan()).getEstimatedValue()),2);
 
 		double keGamma = Math.pow(
-				Math.cos(theWing.getLiftingSurfaceCreator().getDihedralMean().doubleValue(SI.RADIAN)),
+				Math.cos(theWing.getDihedralMean().doubleValue(SI.RADIAN)),
 				-2);
 		//			double keGamma = Math.pow((1 + (1/kWL)*(1/Math.cos(_dihedral) - 1)),2);
 		double eWingletGamma = oswald*keGamma;

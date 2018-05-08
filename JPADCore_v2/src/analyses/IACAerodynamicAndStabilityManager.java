@@ -3,13 +3,12 @@ package analyses;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
-
-import com.sun.istack.internal.Nullable;
 
 import aircraft.Aircraft;
 import configuration.enumerations.AerodynamicAndStabilityEnum;

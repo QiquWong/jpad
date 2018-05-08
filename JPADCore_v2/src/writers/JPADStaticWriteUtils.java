@@ -1616,8 +1616,8 @@ public class JPADStaticWriteUtils {
 								ComponentEnum.WING
 								)
 						);
-				if (!theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().isEmpty())
-					for(int i=0; i<theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().size(); i++)
+				if (!theAircraft.getWing().getAirfoilList().isEmpty())
+					for(int i=0; i<theAircraft.getWing().getAirfoilList().size(); i++)
 					listDocNameType.add(
 							Tuple.of(
 									docBuilder.newDocument(),
@@ -1637,7 +1637,7 @@ public class JPADStaticWriteUtils {
 								ComponentEnum.HORIZONTAL_TAIL
 								)
 						);
-				for(int i=0; i<theAircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().size(); i++)
+				for(int i=0; i<theAircraft.getHTail().getAirfoilList().size(); i++)
 					listDocNameType.add(
 							Tuple.of(
 									docBuilder.newDocument(),
@@ -1656,7 +1656,7 @@ public class JPADStaticWriteUtils {
 								ComponentEnum.VERTICAL_TAIL
 								)
 						);
-				for(int i=0; i<theAircraft.getVTail().getLiftingSurfaceCreator().getAirfoilList().size(); i++)
+				for(int i=0; i<theAircraft.getVTail().getAirfoilList().size(); i++)
 					listDocNameType.add(
 							Tuple.of(
 									docBuilder.newDocument(),
@@ -1675,7 +1675,7 @@ public class JPADStaticWriteUtils {
 								ComponentEnum.CANARD
 								)
 						);
-				for(int i=0; i<theAircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList().size(); i++)
+				for(int i=0; i<theAircraft.getCanard().getAirfoilList().size(); i++)
 					listDocNameType.add(
 							Tuple.of(
 									docBuilder.newDocument(),
@@ -1806,7 +1806,7 @@ public class JPADStaticWriteUtils {
 			break;
 		case WING_AIRFOIL:
 			if (aircraft.getWing() != null) {
-				aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().stream().filter(
+				aircraft.getWing().getAirfoilList().stream().filter(
 						airfoil -> airfoil.getName().equalsIgnoreCase(
 								docNameType._3().substring(0, docNameType._3().length()-4)
 								)
@@ -1825,7 +1825,7 @@ public class JPADStaticWriteUtils {
 			break;
 		case HORIZONTAL_TAIL_AIRFOIL:
 			if (aircraft.getHTail() != null) {
-				aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().stream().filter(
+				aircraft.getHTail().getAirfoilList().stream().filter(
 						airfoil -> airfoil.getName().equalsIgnoreCase(
 								docNameType._3().substring(0, docNameType._3().length()-4)
 								)
@@ -1844,7 +1844,7 @@ public class JPADStaticWriteUtils {
 			break;
 		case VERTICAL_TAIL_AIRFOIL:
 			if (aircraft.getVTail() != null) {
-				aircraft.getVTail().getLiftingSurfaceCreator().getAirfoilList().stream().filter(
+				aircraft.getVTail().getAirfoilList().stream().filter(
 						airfoil -> airfoil.getName().equalsIgnoreCase(
 								docNameType._3().substring(0, docNameType._3().length()-4)
 								)
@@ -1863,7 +1863,7 @@ public class JPADStaticWriteUtils {
 			break;
 		case CANARD_AIRFOIL:
 			if (aircraft.getCanard() != null) {
-				aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList().stream().filter(
+				aircraft.getCanard().getAirfoilList().stream().filter(
 						airfoil -> airfoil.getName().equalsIgnoreCase(
 								docNameType._3().substring(0, docNameType._3().length()-4)
 								)
@@ -1937,9 +1937,9 @@ public class JPADStaticWriteUtils {
 			liftingSurfaceTag = "wing";
 			// make wing
 			liftingSurfaceElement = createXMLElementWithAttributes(doc, liftingSurfaceTag, // "wing" 
-					Tuple.of("id", aircraft.getWing().getLiftingSurfaceCreator().getId()),
-					Tuple.of("mirrored", String.valueOf(aircraft.getWing().getLiftingSurfaceCreator().isMirrored())),
-					Tuple.of("equivalent", String.valueOf(aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWingFlag()))
+					Tuple.of("id", aircraft.getWing().getId()),
+					Tuple.of("mirrored", String.valueOf(aircraft.getWing().isMirrored())),
+					Tuple.of("equivalent", String.valueOf(aircraft.getWing().getEquivalentWingFlag()))
 			);
 			rootElement.appendChild(liftingSurfaceElement);
 			
@@ -1949,7 +1949,7 @@ public class JPADStaticWriteUtils {
 			// global_data - main_spar_non_dimensional_position
 			globalDataElement.appendChild(
 				createXMLElementWithValueAndAttributes(doc, "main_spar_non_dimensional_position",
-						aircraft.getWing().getLiftingSurfaceCreator().getMainSparDimensionlessPosition(), 
+						aircraft.getWing().getMainSparDimensionlessPosition(), 
 						4, 6, // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
 						Tuple.of("type", "PERCENT_CHORD"),
 						Tuple.of("ref_to", "LOCAL_CHORD")
@@ -1958,7 +1958,7 @@ public class JPADStaticWriteUtils {
 			// global_data - secondary_spar_non_dimensional_position
 			globalDataElement.appendChild(
 				createXMLElementWithValueAndAttributes(doc, "secondary_spar_non_dimensional_position",
-						aircraft.getWing().getLiftingSurfaceCreator().getSecondarySparDimensionlessPosition(),
+						aircraft.getWing().getSecondarySparDimensionlessPosition(),
 						4, 6, // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
 						Tuple.of("type", "PERCENT_CHORD"),
 						Tuple.of("ref_to", "LOCAL_CHORD")
@@ -1967,35 +1967,35 @@ public class JPADStaticWriteUtils {
 			// global_data - roughness
 			globalDataElement.appendChild(
 				createXMLElementWithValueAndAttributes(doc, "roughness",
-						aircraft.getWing().getLiftingSurfaceCreator().getRoughness(),
+						aircraft.getWing().getRoughness(),
 						8, 6  // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
 				)
 			);
 			// global_data - winglet_height
 			globalDataElement.appendChild(
 				createXMLElementWithValueAndAttributes(doc, "winglet_height",
-						aircraft.getWing().getLiftingSurfaceCreator().getWingletHeight(),
+						aircraft.getWing().getWingletHeight(),
 						4, 6  // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
 				)
 			);
-			if (aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWingFlag()) 
+			if (aircraft.getWing().getEquivalentWingFlag()) 
 				liftingSurfaceElement.appendChild(
 					createEquivalentWingElement(doc, 
-							aircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform(), 
-							aircraft.getWing().getLiftingSurfaceCreator().getSpan(), 
-							aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio(),
-							aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE),
-							aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip().to(NonSI.DEGREE_ANGLE),
-							aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getDihedral().to(NonSI.DEGREE_ANGLE),
-							aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getRealWingDimensionlessKinkPosition(),
-							aircraft.getWing().getLiftingSurfaceCreator().getTaperRatio(),
-							aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricAtTip().to(NonSI.DEGREE_ANGLE),
-							aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE),
-							aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(1).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE),
+							aircraft.getWing().getSurfacePlanform(), 
+							aircraft.getWing().getSpan(), 
+							aircraft.getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
+							aircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE),
+							aircraft.getWing().getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip().to(NonSI.DEGREE_ANGLE),
+							aircraft.getWing().getEquivalentWing().getPanels().get(0).getDihedral().to(NonSI.DEGREE_ANGLE),
+							aircraft.getWing().getEquivalentWing().getRealWingDimensionlessKinkPosition(),
+							aircraft.getWing().getTaperRatio(),
+							aircraft.getWing().getPanels().get(0).getTwistGeometricAtTip().to(NonSI.DEGREE_ANGLE),
+							aircraft.getWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE),
+							aircraft.getWing().getPanels().get(1).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE),
 							Arrays.asList(new String[]{
-									aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getName()+".xml",
-									aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(1).getName()+".xml",
-									aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(2).getName()+".xml"
+									aircraft.getWing().getAirfoilList().get(0).getName()+".xml",
+									aircraft.getWing().getAirfoilList().get(1).getName()+".xml",
+									aircraft.getWing().getAirfoilList().get(2).getName()+".xml"
 									})
 							)
 						);
@@ -2005,19 +2005,19 @@ public class JPADStaticWriteUtils {
 				panelsElement = doc.createElement("panels");
 				liftingSurfaceElement.appendChild(panelsElement);
 				
-				for(int i=0; i<aircraft.getWing().getLiftingSurfaceCreator().getPanels().size(); i++) {
+				for(int i=0; i<aircraft.getWing().getPanels().size(); i++) {
 
 					Boolean isLinked = Boolean.FALSE;
 					String linkedPanelName = "";
 					if(i > 0) {
 						isLinked = Boolean.TRUE;
-						linkedPanelName = aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(i-1).getId();
+						linkedPanelName = aircraft.getWing().getPanels().get(i-1).getId();
 					}
 
 					panelsElement.appendChild(
 							createLiftingSurfacePanelElement(
 									doc,
-									aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(i),
+									aircraft.getWing().getPanels().get(i),
 									isLinked,
 									linkedPanelName
 									)
@@ -2025,57 +2025,57 @@ public class JPADStaticWriteUtils {
 				}
 			}
 			
-			if(!aircraft.getWing().getLiftingSurfaceCreator().getSymmetricFlaps().isEmpty()) {
+			if(!aircraft.getWing().getSymmetricFlaps().isEmpty()) {
 				symmetricFlapsElement = doc.createElement("symmetric_flaps");
 				liftingSurfaceElement.appendChild(symmetricFlapsElement);
 
-				for(int i=0; i<aircraft.getWing().getLiftingSurfaceCreator().getSymmetricFlaps().size(); i++) {
+				for(int i=0; i<aircraft.getWing().getSymmetricFlaps().size(); i++) {
 					symmetricFlapsElement.appendChild(
 							createLiftingSurfaceSymmetricFlapsElement(
 									doc,
-									aircraft.getWing().getLiftingSurfaceCreator().getSymmetricFlaps().get(i)
+									aircraft.getWing().getSymmetricFlaps().get(i)
 									)
 							);
 				}
 			}
 			
-			if(!aircraft.getWing().getLiftingSurfaceCreator().getSlats().isEmpty()) {
+			if(!aircraft.getWing().getSlats().isEmpty()) {
 				slatsElement = doc.createElement("slats");
 				liftingSurfaceElement.appendChild(slatsElement);
 
-				for(int i=0; i<aircraft.getWing().getLiftingSurfaceCreator().getSlats().size(); i++) {
+				for(int i=0; i<aircraft.getWing().getSlats().size(); i++) {
 					slatsElement.appendChild(
 							createLiftingSurfaceSlatsElement(
 									doc,
-									aircraft.getWing().getLiftingSurfaceCreator().getSlats().get(i)
+									aircraft.getWing().getSlats().get(i)
 									)
 							);
 				}
 			}
 
-			if(!aircraft.getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().isEmpty()) {
+			if(!aircraft.getWing().getAsymmetricFlaps().isEmpty()) {
 				asymmetricFlapsElement = doc.createElement("asymmetric_flaps");
 				liftingSurfaceElement.appendChild(asymmetricFlapsElement);
 
-				for(int i=0; i<aircraft.getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().size(); i++) {
+				for(int i=0; i<aircraft.getWing().getAsymmetricFlaps().size(); i++) {
 					asymmetricFlapsElement.appendChild(
 							createLiftingSurfaceAsymmetricFlapElement(
 									doc,
-									aircraft.getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().get(i)
+									aircraft.getWing().getAsymmetricFlaps().get(i)
 									)
 							);
 				}
 			}
 
-			if(!aircraft.getWing().getLiftingSurfaceCreator().getSpoilers().isEmpty()) {
+			if(!aircraft.getWing().getSpoilers().isEmpty()) {
 				spoilersElement = doc.createElement("spoilers");
 				liftingSurfaceElement.appendChild(spoilersElement);
 
-				for(int i=0; i<aircraft.getWing().getLiftingSurfaceCreator().getSpoilers().size(); i++) {
+				for(int i=0; i<aircraft.getWing().getSpoilers().size(); i++) {
 					spoilersElement.appendChild(
 							createLiftingSurfaceSpolierElement(
 									doc,
-									aircraft.getWing().getLiftingSurfaceCreator().getSpoilers().get(i)
+									aircraft.getWing().getSpoilers().get(i)
 									)
 							);
 				}
@@ -2087,8 +2087,8 @@ public class JPADStaticWriteUtils {
 			liftingSurfaceTag = "horizontal_tail";
 			// make horizontal_tail
 			liftingSurfaceElement = createXMLElementWithAttributes(doc, liftingSurfaceTag, // "horizontal_tail" 
-					Tuple.of("id", aircraft.getHTail().getLiftingSurfaceCreator().getId()),
-					Tuple.of("mirrored", String.valueOf(aircraft.getHTail().getLiftingSurfaceCreator().isMirrored()))
+					Tuple.of("id", aircraft.getHTail().getId()),
+					Tuple.of("mirrored", String.valueOf(aircraft.getHTail().isMirrored()))
 			);
 			rootElement.appendChild(liftingSurfaceElement);
 			
@@ -2098,7 +2098,7 @@ public class JPADStaticWriteUtils {
 			// global_data - roughness
 			globalDataElement.appendChild(
 				createXMLElementWithValueAndAttributes(doc, "roughness",
-						aircraft.getHTail().getLiftingSurfaceCreator().getRoughness(),
+						aircraft.getHTail().getRoughness(),
 						8, 6  // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
 				)
 			);
@@ -2106,34 +2106,34 @@ public class JPADStaticWriteUtils {
 			panelsElement = doc.createElement("panels");
 			liftingSurfaceElement.appendChild(panelsElement);
 			
-			for(int i=0; i<aircraft.getHTail().getLiftingSurfaceCreator().getPanels().size(); i++) {
+			for(int i=0; i<aircraft.getHTail().getPanels().size(); i++) {
 
 				Boolean isLinked = Boolean.FALSE;
 				String linkedPanelName = "";
 				if(i > 0) {
 					isLinked = Boolean.TRUE;
-					linkedPanelName = aircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(i).getId();
+					linkedPanelName = aircraft.getHTail().getPanels().get(i).getId();
 				}
 
 				panelsElement.appendChild(
 						createLiftingSurfacePanelElement(
 								doc,
-								aircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(i),
+								aircraft.getHTail().getPanels().get(i),
 								isLinked,
 								linkedPanelName
 								)
 						);
 			}
 			
-			if(!aircraft.getHTail().getLiftingSurfaceCreator().getSymmetricFlaps().isEmpty()) {
+			if(!aircraft.getHTail().getSymmetricFlaps().isEmpty()) {
 				symmetricFlapsElement = doc.createElement("symmetric_flaps");
 				liftingSurfaceElement.appendChild(symmetricFlapsElement);
 
-				for(int i=0; i<aircraft.getHTail().getLiftingSurfaceCreator().getSymmetricFlaps().size(); i++) {
+				for(int i=0; i<aircraft.getHTail().getSymmetricFlaps().size(); i++) {
 					symmetricFlapsElement.appendChild(
 							createLiftingSurfaceSymmetricFlapsElement(
 									doc,
-									aircraft.getHTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(i)
+									aircraft.getHTail().getSymmetricFlaps().get(i)
 									)
 							);
 				}
@@ -2143,8 +2143,8 @@ public class JPADStaticWriteUtils {
 			liftingSurfaceTag = "vertical_tail";
 			// make vertical_tail
 			liftingSurfaceElement = createXMLElementWithAttributes(doc, liftingSurfaceTag, // "vertical_tail" 
-					Tuple.of("id", aircraft.getVTail().getLiftingSurfaceCreator().getId()),
-					Tuple.of("mirrored", String.valueOf(aircraft.getVTail().getLiftingSurfaceCreator().isMirrored()))
+					Tuple.of("id", aircraft.getVTail().getId()),
+					Tuple.of("mirrored", String.valueOf(aircraft.getVTail().isMirrored()))
 			);
 			rootElement.appendChild(liftingSurfaceElement);
 			
@@ -2154,7 +2154,7 @@ public class JPADStaticWriteUtils {
 			// global_data - roughness
 			globalDataElement.appendChild(
 				createXMLElementWithValueAndAttributes(doc, "roughness",
-						aircraft.getVTail().getLiftingSurfaceCreator().getRoughness(),
+						aircraft.getVTail().getRoughness(),
 						8, 6  // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
 				)
 			);
@@ -2162,34 +2162,34 @@ public class JPADStaticWriteUtils {
 			panelsElement = doc.createElement("panels");
 			liftingSurfaceElement.appendChild(panelsElement);
 			
-			for(int i=0; i<aircraft.getVTail().getLiftingSurfaceCreator().getPanels().size(); i++) {
+			for(int i=0; i<aircraft.getVTail().getPanels().size(); i++) {
 
 				Boolean isLinked = Boolean.FALSE;
 				String linkedPanelName = "";
 				if(i > 0) {
 					isLinked = Boolean.TRUE;
-					linkedPanelName = aircraft.getVTail().getLiftingSurfaceCreator().getPanels().get(i).getId();
+					linkedPanelName = aircraft.getVTail().getPanels().get(i).getId();
 				}
 
 				panelsElement.appendChild(
 						createLiftingSurfacePanelElement(
 								doc,
-								aircraft.getVTail().getLiftingSurfaceCreator().getPanels().get(i),
+								aircraft.getVTail().getPanels().get(i),
 								isLinked,
 								linkedPanelName
 								)
 						);
 			}
 			
-			if(!aircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().isEmpty()) {
+			if(!aircraft.getVTail().getSymmetricFlaps().isEmpty()) {
 				symmetricFlapsElement = doc.createElement("symmetric_flaps");
 				liftingSurfaceElement.appendChild(symmetricFlapsElement);
 
-				for(int i=0; i<aircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().size(); i++) {
+				for(int i=0; i<aircraft.getVTail().getSymmetricFlaps().size(); i++) {
 					symmetricFlapsElement.appendChild(
 							createLiftingSurfaceSymmetricFlapsElement(
 									doc,
-									aircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(i)
+									aircraft.getVTail().getSymmetricFlaps().get(i)
 									)
 							);
 				}
@@ -2200,8 +2200,8 @@ public class JPADStaticWriteUtils {
 			liftingSurfaceTag = "canard";
 			// make canard
 			liftingSurfaceElement = createXMLElementWithAttributes(doc, liftingSurfaceTag, // "canard" 
-					Tuple.of("id", aircraft.getCanard().getLiftingSurfaceCreator().getId()),
-					Tuple.of("mirrored", String.valueOf(aircraft.getCanard().getLiftingSurfaceCreator().isMirrored()))
+					Tuple.of("id", aircraft.getCanard().getId()),
+					Tuple.of("mirrored", String.valueOf(aircraft.getCanard().isMirrored()))
 			);
 			rootElement.appendChild(liftingSurfaceElement);
 			
@@ -2211,7 +2211,7 @@ public class JPADStaticWriteUtils {
 			// global_data - roughness
 			globalDataElement.appendChild(
 				createXMLElementWithValueAndAttributes(doc, "roughness",
-						aircraft.getCanard().getLiftingSurfaceCreator().getRoughness(),
+						aircraft.getCanard().getRoughness(),
 						8, 6  // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
 				)
 			);
@@ -2219,34 +2219,34 @@ public class JPADStaticWriteUtils {
 			panelsElement = doc.createElement("panels");
 			liftingSurfaceElement.appendChild(panelsElement);
 			
-			for(int i=0; i<aircraft.getCanard().getLiftingSurfaceCreator().getPanels().size(); i++) {
+			for(int i=0; i<aircraft.getCanard().getPanels().size(); i++) {
 
 				Boolean isLinked = Boolean.FALSE;
 				String linkedPanelName = "";
 				if(i > 0) {
 					isLinked = Boolean.TRUE;
-					linkedPanelName = aircraft.getCanard().getLiftingSurfaceCreator().getPanels().get(i).getId();
+					linkedPanelName = aircraft.getCanard().getPanels().get(i).getId();
 				}
 
 				panelsElement.appendChild(
 						createLiftingSurfacePanelElement(
 								doc,
-								aircraft.getCanard().getLiftingSurfaceCreator().getPanels().get(i),
+								aircraft.getCanard().getPanels().get(i),
 								isLinked,
 								linkedPanelName
 								)
 						);
 			}
 			
-			if(!aircraft.getCanard().getLiftingSurfaceCreator().getSymmetricFlaps().isEmpty()) {
+			if(!aircraft.getCanard().getSymmetricFlaps().isEmpty()) {
 				symmetricFlapsElement = doc.createElement("symmetric_flaps");
 				liftingSurfaceElement.appendChild(symmetricFlapsElement);
 
-				for(int i=0; i<aircraft.getCanard().getLiftingSurfaceCreator().getSymmetricFlaps().size(); i++) {
+				for(int i=0; i<aircraft.getCanard().getSymmetricFlaps().size(); i++) {
 					symmetricFlapsElement.appendChild(
 							createLiftingSurfaceSymmetricFlapsElement(
 									doc,
-									aircraft.getCanard().getLiftingSurfaceCreator().getSymmetricFlaps().get(i)
+									aircraft.getCanard().getSymmetricFlaps().get(i)
 									)
 							);
 				}
@@ -2491,13 +2491,13 @@ public class JPADStaticWriteUtils {
 		List<String> liftingSurfacesFileNames = new ArrayList<>();
 		liftingSurfacesList.stream()
 			.forEach(ls -> {
-				if(ls.getLiftingSurfaceCreator().getType().equals(ComponentEnum.WING))
+				if(ls.getType().equals(ComponentEnum.WING))
 					liftingSurfacesFileNames.add(aircraftSaveDirectives.getWingFileName() + ".xml");
-				else if(ls.getLiftingSurfaceCreator().getType().equals(ComponentEnum.HORIZONTAL_TAIL))
+				else if(ls.getType().equals(ComponentEnum.HORIZONTAL_TAIL))
 					liftingSurfacesFileNames.add(aircraftSaveDirectives.getHTailFileName() + ".xml");
-				else if(ls.getLiftingSurfaceCreator().getType().equals(ComponentEnum.VERTICAL_TAIL))
+				else if(ls.getType().equals(ComponentEnum.VERTICAL_TAIL))
 					liftingSurfacesFileNames.add(aircraftSaveDirectives.getVTailFileName() + ".xml");
-				else if(ls.getLiftingSurfaceCreator().getType().equals(ComponentEnum.CANARD))
+				else if(ls.getType().equals(ComponentEnum.CANARD))
 					liftingSurfacesFileNames.add(aircraftSaveDirectives.getCanardFileName() + ".xml");
 			});
 		
@@ -2505,7 +2505,7 @@ public class JPADStaticWriteUtils {
 			.forEach(ls -> 
 				liftingSurfacesElement.appendChild(
 						createLiftingSurfaceElement(doc, 
-								ls.getLiftingSurfaceCreator().getType(),  
+								ls.getType(),  
 								liftingSurfacesFileNames.get(liftingSurfacesList.indexOf(ls)), 
 								ls.getXApexConstructionAxes(),
 								ls.getYApexConstructionAxes(),

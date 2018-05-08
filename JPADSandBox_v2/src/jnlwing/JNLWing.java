@@ -11,7 +11,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
@@ -91,22 +91,22 @@ public class JNLWing {
 			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
 //			// read LiftingSurface from xml ...
-			theWing = new LiftingSurface(LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil));
+			theWing = LiftingSurface.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil);
 			theWing.setAeroDatabaseReader(aeroDatabaseReader);
 			theWing.setHighLiftDatabaseReader(highLiftDatabaseReader);
 			theWing.setVeDSCDatabaseReader(veDSCDatabaseReader);
 			
-			JNLWing.theWing.getLiftingSurfaceCreator().calculateGeometry(
+			JNLWing.theWing.calculateGeometry(
 					40,
-					theWing.getLiftingSurfaceCreator().getType(),
-					theWing.getLiftingSurfaceCreator().isMirrored());
+					theWing.getType(),
+					theWing.isMirrored());
 
-			JNLWing.theWing.getLiftingSurfaceCreator().populateAirfoilList(false);
+			JNLWing.theWing.populateAirfoilList(false);
 			
 			System.out.println("The wing ...");
-			System.out.println(JNLWing.theWing.getLiftingSurfaceCreator().toString());
+			System.out.println(JNLWing.theWing.toString());
 			System.out.println("Details on panel discretization ...");
-			JNLWing.theWing.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
+			JNLWing.theWing.reportPanelsToSpanwiseDiscretizedVariables();
 
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

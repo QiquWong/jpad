@@ -214,8 +214,8 @@ public class AircraftWriterTest {
 			
 			// 1. change some a/c parameters
 			// TODO
-			// theAircraft.getWing().getLiftingSurfaceCreator().setSurfacePlanform(value, criterion);
-			// theAircraft.getWing().getLiftingSurfaceCreator().setSpanPlanform(value, criterion);
+			// theAircraft.getWing().setSurfacePlanform(value, criterion);
+			// theAircraft.getWing().setSpanPlanform(value, criterion);
 			// ...
 			
 			// 2. update a/c data structure
@@ -229,7 +229,7 @@ public class AircraftWriterTest {
 					.Builder("_1")
 					.setAircraftFileName("aircraft_1a.xml")
 					.addAllWingAirfoilFileNames(
-						theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().stream()
+						theAircraft.getWing().getAirfoilList().stream()
 								.map(a -> a.getName() + ".xml")
 								.collect(Collectors.toList())
 					)

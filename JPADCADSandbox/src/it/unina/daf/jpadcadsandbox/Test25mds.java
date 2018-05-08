@@ -63,10 +63,10 @@ public class Test25mds {
 		double fuselageZApex = fuselage.getZApexConstructionAxes().doubleValue(SI.METER);
 		double fuselageCylinderWidth = fuselage.getSectionCylinderWidth().doubleValue(SI.METER);
 		
-		double rootChord = wing.getLiftingSurfaceCreator().getChordsBreakPoints().get(0).doubleValue(SI.METER);
-		double secondChord = wing.getLiftingSurfaceCreator().getChordAtYActual(fuselageCylinderWidth/2);
+		double rootChord = wing.getChordsBreakPoints().get(0).doubleValue(SI.METER);
+		double secondChord = wing.getChordAtYActual(fuselageCylinderWidth/2);
 		
-		Airfoil baseRootAirfoil = wing.getLiftingSurfaceCreator().getAirfoilList().get(0);
+		Airfoil baseRootAirfoil = wing.getAirfoilList().get(0);
 		
 		// Creating points for the fairing profile
 		List<double[]> rootAirfoil = AircraftUtils.populateCoordinateList(

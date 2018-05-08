@@ -6,6 +6,8 @@ import javax.measure.quantity.Length;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
+import com.sun.istack.internal.Nullable;
+
 import aircraft.components.liftingSurface.airfoils.Airfoil;
 
 @FreeBuilder
@@ -16,8 +18,10 @@ public interface ILiftingSurfacePanelCreator {
 	Amount<Length> getChordRoot();
 	Amount<Length> getChordTip();
 	Airfoil getAirfoilRoot();
+	@Nullable
 	String getAirfoilRootFilePath();
 	Airfoil getAirfoilTip();
+	@Nullable
 	String getAirfoilTipFilePath();
 	Amount<Angle> getTwistGeometricAtRoot();
 	Amount<Angle> getTwistGeometricAtTip();

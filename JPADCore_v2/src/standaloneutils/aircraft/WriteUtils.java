@@ -282,7 +282,7 @@ public final class WriteUtils {
 		XYSeries seriesWingTopView = new XYSeries("Wing - Top View", false);
 		
 		if (aircraft.getWing() != null) {
-			Double[][] dataTopViewIsolated = aircraft.getWing().getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.WING);
+			Double[][] dataTopViewIsolated = aircraft.getWing().getDiscretizedTopViewAsArray(ComponentEnum.WING);
 
 			IntStream.range(0, dataTopViewIsolated.length)
 			.forEach(i -> {
@@ -305,7 +305,7 @@ public final class WriteUtils {
 		XYSeries seriesHTailTopView = new XYSeries("HTail - Top View", false);
 		
 		if (aircraft.getHTail() != null) {
-			Double[][] dataTopViewIsolatedHTail = aircraft.getHTail().getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.HORIZONTAL_TAIL);
+			Double[][] dataTopViewIsolatedHTail = aircraft.getHTail().getDiscretizedTopViewAsArray(ComponentEnum.HORIZONTAL_TAIL);
 
 			IntStream.range(0, dataTopViewIsolatedHTail.length)
 			.forEach(i -> {
@@ -330,31 +330,31 @@ public final class WriteUtils {
 		
 		if (aircraft.getVTail() != null) {
 
-			double[] vTailRootXCoordinates = aircraft.getVTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords();
-			double[] vTailRootYCoordinates = aircraft.getVTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords();
-			double[] vTailTipXCoordinates = aircraft.getVTail().getLiftingSurfaceCreator().getAirfoilList().get(aircraft.getVTail().getLiftingSurfaceCreator().getAirfoilList().size()-1).getXCoords();
-			double[] vTailTipYCoordinates = aircraft.getVTail().getLiftingSurfaceCreator().getAirfoilList().get(aircraft.getVTail().getLiftingSurfaceCreator().getAirfoilList().size()-1).getZCoords();
-			int nPointsVTail = aircraft.getVTail().getLiftingSurfaceCreator().getDiscretizedXle().size();
+			double[] vTailRootXCoordinates = aircraft.getVTail().getAirfoilList().get(0).getXCoords();
+			double[] vTailRootYCoordinates = aircraft.getVTail().getAirfoilList().get(0).getZCoords();
+			double[] vTailTipXCoordinates = aircraft.getVTail().getAirfoilList().get(aircraft.getVTail().getAirfoilList().size()-1).getXCoords();
+			double[] vTailTipYCoordinates = aircraft.getVTail().getAirfoilList().get(aircraft.getVTail().getAirfoilList().size()-1).getZCoords();
+			int nPointsVTail = aircraft.getVTail().getDiscretizedXle().size();
 
 			IntStream.range(0, vTailRootXCoordinates.length)
 			.forEach(i -> {
 				seriesVTailRootAirfoilTopView.add(
-						(vTailRootXCoordinates[i]*aircraft.getVTail().getLiftingSurfaceCreator().getPanels()
-								.get(aircraft.getVTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
+						(vTailRootXCoordinates[i]*aircraft.getVTail().getPanels()
+								.get(aircraft.getVTail().getPanels().size()-1).getChordTip().getEstimatedValue())
 						+ aircraft.getVTail().getXApexConstructionAxes().getEstimatedValue(),
-						(vTailRootYCoordinates[i]*aircraft.getVTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
+						(vTailRootYCoordinates[i]*aircraft.getVTail().getPanels().get(0).getChordRoot().getEstimatedValue())
 						);
 			});
 
 			IntStream.range(0, vTailTipXCoordinates.length)
 			.forEach(i -> {
 				seriesVTailTipAirfoilTopView.add(
-						(vTailTipXCoordinates[i]*aircraft.getVTail().getLiftingSurfaceCreator().getPanels()
-								.get(aircraft.getVTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
+						(vTailTipXCoordinates[i]*aircraft.getVTail().getPanels()
+								.get(aircraft.getVTail().getPanels().size()-1).getChordTip().getEstimatedValue()) 
 						+ aircraft.getVTail().getXApexConstructionAxes().getEstimatedValue()
-						+ aircraft.getVTail().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsVTail-1).getEstimatedValue(),
-						(vTailTipYCoordinates[i]*aircraft.getVTail().getLiftingSurfaceCreator().getPanels()
-								.get(aircraft.getVTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
+						+ aircraft.getVTail().getDiscretizedXle().get(nPointsVTail-1).getEstimatedValue(),
+						(vTailTipYCoordinates[i]*aircraft.getVTail().getPanels()
+								.get(aircraft.getVTail().getPanels().size()-1).getChordTip().getEstimatedValue())
 						);
 			});
 		}
@@ -364,7 +364,7 @@ public final class WriteUtils {
 		XYSeries seriesCanardTopView = new XYSeries("Canard - Top View", false);
 		
 		if (aircraft.getCanard() != null) {
-			Double[][] dataTopViewIsolatedCanard = aircraft.getCanard().getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.CANARD);
+			Double[][] dataTopViewIsolatedCanard = aircraft.getCanard().getDiscretizedTopViewAsArray(ComponentEnum.CANARD);
 
 			IntStream.range(0, dataTopViewIsolatedCanard.length)
 			.forEach(i -> {
@@ -504,7 +504,7 @@ public final class WriteUtils {
 		if (aircraft.getVTail() != null)
 			componentZList.put(
 					aircraft.getVTail().getZApexConstructionAxes().doubleValue(SI.METER) 
-					+ aircraft.getVTail().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER), 
+					+ aircraft.getVTail().getSpan().doubleValue(SI.METER), 
 					Tuple.of(seriesVTailTipAirfoilTopView, Color.decode("#FFD700"))
 					);
 		if (aircraft.getNacelles() != null) 
@@ -679,20 +679,20 @@ public final class WriteUtils {
 		XYSeries seriesWingTipAirfoil = new XYSeries("Wing Tip - Side View", false);
 
 		if (aircraft.getWing() != null) {
-			double[] wingRootXCoordinates = aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords();
-			double[] wingRootZCoordinates = aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords();
-			double[] wingTipXCoordinates = aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList()
-					.get(aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().size()-1).getXCoords();
-			double[] wingTipZCoordinates = aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList()
-					.get(aircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().size()-1).getZCoords();
-			int nPointsWing = aircraft.getWing().getLiftingSurfaceCreator().getDiscretizedXle().size();
+			double[] wingRootXCoordinates = aircraft.getWing().getAirfoilList().get(0).getXCoords();
+			double[] wingRootZCoordinates = aircraft.getWing().getAirfoilList().get(0).getZCoords();
+			double[] wingTipXCoordinates = aircraft.getWing().getAirfoilList()
+					.get(aircraft.getWing().getAirfoilList().size()-1).getXCoords();
+			double[] wingTipZCoordinates = aircraft.getWing().getAirfoilList()
+					.get(aircraft.getWing().getAirfoilList().size()-1).getZCoords();
+			int nPointsWing = aircraft.getWing().getDiscretizedXle().size();
 
 			IntStream.range(0, wingRootXCoordinates.length)
 			.forEach(i -> {
 				seriesWingRootAirfoil.add(
-						(wingRootXCoordinates[i]*aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue()) 
+						(wingRootXCoordinates[i]*aircraft.getWing().getPanels().get(0).getChordRoot().getEstimatedValue()) 
 						+ aircraft.getWing().getXApexConstructionAxes().getEstimatedValue(),
-						(wingRootZCoordinates[i]*aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
+						(wingRootZCoordinates[i]*aircraft.getWing().getPanels().get(0).getChordRoot().getEstimatedValue())
 						+ aircraft.getWing().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -700,12 +700,12 @@ public final class WriteUtils {
 			IntStream.range(0, wingTipXCoordinates.length)
 			.forEach(i -> {
 				seriesWingTipAirfoil.add(
-						(wingTipXCoordinates[i]*aircraft.getWing().getLiftingSurfaceCreator().getPanels()
-								.get(aircraft.getWing().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
+						(wingTipXCoordinates[i]*aircraft.getWing().getPanels()
+								.get(aircraft.getWing().getPanels().size()-1).getChordTip().getEstimatedValue()) 
 						+ aircraft.getWing().getXApexConstructionAxes().getEstimatedValue()
-						+ aircraft.getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsWing-1).getEstimatedValue(),
-						(wingTipZCoordinates[i]*aircraft.getWing().getLiftingSurfaceCreator().getPanels()
-								.get(aircraft.getWing().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
+						+ aircraft.getWing().getDiscretizedXle().get(nPointsWing-1).getEstimatedValue(),
+						(wingTipZCoordinates[i]*aircraft.getWing().getPanels()
+								.get(aircraft.getWing().getPanels().size()-1).getChordTip().getEstimatedValue())
 						+ aircraft.getWing().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -717,20 +717,20 @@ public final class WriteUtils {
 		XYSeries seriesHTailTipAirfoil = new XYSeries("HTail Tip - Side View", false);
 
 		if (aircraft.getHTail() != null) {
-			double[] hTailRootXCoordinates = aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords();
-			double[] hTailRootZCoordinates = aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords();
-			double[] hTailTipXCoordinates = aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList()
-					.get(aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().size()-1).getXCoords();
-			double[] hTailTipZCoordinates = aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList()
-					.get(aircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().size()-1).getZCoords();
-			int nPointsHTail = aircraft.getHTail().getLiftingSurfaceCreator().getDiscretizedXle().size();
+			double[] hTailRootXCoordinates = aircraft.getHTail().getAirfoilList().get(0).getXCoords();
+			double[] hTailRootZCoordinates = aircraft.getHTail().getAirfoilList().get(0).getZCoords();
+			double[] hTailTipXCoordinates = aircraft.getHTail().getAirfoilList()
+					.get(aircraft.getHTail().getAirfoilList().size()-1).getXCoords();
+			double[] hTailTipZCoordinates = aircraft.getHTail().getAirfoilList()
+					.get(aircraft.getHTail().getAirfoilList().size()-1).getZCoords();
+			int nPointsHTail = aircraft.getHTail().getDiscretizedXle().size();
 
 			IntStream.range(0, hTailRootXCoordinates.length)
 			.forEach(i -> {
 				seriesHTailRootAirfoil.add(
-						(hTailRootXCoordinates[i]*aircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
+						(hTailRootXCoordinates[i]*aircraft.getHTail().getPanels().get(0).getChordRoot().getEstimatedValue())
 						+ aircraft.getHTail().getXApexConstructionAxes().getEstimatedValue(),
-						(hTailRootZCoordinates[i]*aircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
+						(hTailRootZCoordinates[i]*aircraft.getHTail().getPanels().get(0).getChordRoot().getEstimatedValue())
 						+ aircraft.getHTail().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -738,12 +738,12 @@ public final class WriteUtils {
 			IntStream.range(0, hTailTipXCoordinates.length)
 			.forEach(i -> {
 				seriesHTailTipAirfoil.add(
-						(hTailTipXCoordinates[i]*aircraft.getHTail().getLiftingSurfaceCreator().getPanels()
-								.get(aircraft.getHTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
+						(hTailTipXCoordinates[i]*aircraft.getHTail().getPanels()
+								.get(aircraft.getHTail().getPanels().size()-1).getChordTip().getEstimatedValue()) 
 						+ aircraft.getHTail().getXApexConstructionAxes().getEstimatedValue()
-						+ aircraft.getHTail().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(),
-						(hTailTipZCoordinates[i]*aircraft.getHTail().getLiftingSurfaceCreator().getPanels()
-								.get(aircraft.getHTail().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
+						+ aircraft.getHTail().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(),
+						(hTailTipZCoordinates[i]*aircraft.getHTail().getPanels()
+								.get(aircraft.getHTail().getPanels().size()-1).getChordTip().getEstimatedValue())
 						+ aircraft.getHTail().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -755,20 +755,20 @@ public final class WriteUtils {
 		XYSeries seriesCanardTipAirfoil = new XYSeries("Canard Tip - Side View", false);
 
 		if (aircraft.getCanard() != null) {
-			double[] canardRootXCoordinates = aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList().get(0).getXCoords();
-			double[] canardRootZCoordinates = aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList().get(0).getZCoords();
-			double[] canardTipXCoordinates = aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList()
-					.get(aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList().size()-1).getXCoords();
-			double[] canardTipZCoordinates = aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList()
-					.get(aircraft.getCanard().getLiftingSurfaceCreator().getAirfoilList().size()-1).getZCoords();
-			int nPointsHTail = aircraft.getCanard().getLiftingSurfaceCreator().getDiscretizedXle().size();
+			double[] canardRootXCoordinates = aircraft.getCanard().getAirfoilList().get(0).getXCoords();
+			double[] canardRootZCoordinates = aircraft.getCanard().getAirfoilList().get(0).getZCoords();
+			double[] canardTipXCoordinates = aircraft.getCanard().getAirfoilList()
+					.get(aircraft.getCanard().getAirfoilList().size()-1).getXCoords();
+			double[] canardTipZCoordinates = aircraft.getCanard().getAirfoilList()
+					.get(aircraft.getCanard().getAirfoilList().size()-1).getZCoords();
+			int nPointsHTail = aircraft.getCanard().getDiscretizedXle().size();
 
 			IntStream.range(0, canardRootXCoordinates.length)
 			.forEach(i -> {
 				seriesCanardRootAirfoil.add(
-						(canardRootXCoordinates[i]*aircraft.getCanard().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
+						(canardRootXCoordinates[i]*aircraft.getCanard().getPanels().get(0).getChordRoot().getEstimatedValue())
 						+ aircraft.getCanard().getXApexConstructionAxes().getEstimatedValue(),
-						(canardRootZCoordinates[i]*aircraft.getCanard().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().getEstimatedValue())
+						(canardRootZCoordinates[i]*aircraft.getCanard().getPanels().get(0).getChordRoot().getEstimatedValue())
 						+ aircraft.getCanard().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -776,12 +776,12 @@ public final class WriteUtils {
 			IntStream.range(0, canardTipXCoordinates.length)
 			.forEach(i -> {
 				seriesCanardTipAirfoil.add(
-						(canardTipXCoordinates[i]*aircraft.getCanard().getLiftingSurfaceCreator().getPanels()
-								.get(aircraft.getCanard().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue()) 
+						(canardTipXCoordinates[i]*aircraft.getCanard().getPanels()
+								.get(aircraft.getCanard().getPanels().size()-1).getChordTip().getEstimatedValue()) 
 						+ aircraft.getCanard().getXApexConstructionAxes().getEstimatedValue()
-						+ aircraft.getCanard().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(),
-						(canardTipZCoordinates[i]*aircraft.getCanard().getLiftingSurfaceCreator().getPanels()
-								.get(aircraft.getCanard().getLiftingSurfaceCreator().getPanels().size()-1).getChordTip().getEstimatedValue())
+						+ aircraft.getCanard().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(),
+						(canardTipZCoordinates[i]*aircraft.getCanard().getPanels()
+								.get(aircraft.getCanard().getPanels().size()-1).getChordTip().getEstimatedValue())
 						+ aircraft.getCanard().getZApexConstructionAxes().getEstimatedValue()
 						);
 			});
@@ -792,7 +792,7 @@ public final class WriteUtils {
 		XYSeries seriesVTailSideView = new XYSeries("VTail - Side View", false);
 
 		if (aircraft.getVTail() != null) {
-			Double[][] dataTopViewVTail = aircraft.getVTail().getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.VERTICAL_TAIL);
+			Double[][] dataTopViewVTail = aircraft.getVTail().getDiscretizedTopViewAsArray(ComponentEnum.VERTICAL_TAIL);
 
 			IntStream.range(0, dataTopViewVTail.length)
 			.forEach(i -> {

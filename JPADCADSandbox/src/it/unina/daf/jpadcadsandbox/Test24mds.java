@@ -10,7 +10,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.WingAdjustCriteriaEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
@@ -21,9 +21,9 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 public class Test24mds {
 
 	public static void main(String[] args) {
-		System.out.println("-------------------");
+
 		System.out.println("JPADCADSandbox Test");
-		System.out.println("-------------------");
+
 		
 //		StdAtmos1976 atmo = AtmosphereCalc.getAtmosphere(1000);
 		
@@ -31,40 +31,40 @@ public class Test24mds {
 		
 		Fuselage fuselage = aircraft.getFuselage();		
 		LiftingSurface wing1 = AircraftUtils.importAircraft(args).getWing();		
-		LiftingSurface wing2 = new LiftingSurface(AircraftUtils.importAircraft(args).getWing().getLiftingSurfaceCreator());	
+		LiftingSurface wing2 = AircraftUtils.importAircraft(args).getWing();	
 //		LiftingSurface horizontal = aircraft.getHTail();
 //		LiftingSurface vertical = aircraft.getVTail();
 //		LiftingSurface canard = aircraft.getCanard();
 		
 		System.out.println("Fuselage Length: " + fuselage.getFuselageLength().doubleValue(SI.METER));
-		System.out.println("Wing MAC: " + wing1.getLiftingSurfaceCreator().getMeanAerodynamicChord());
-		System.out.println("Wing MAC LE coordinates: " + wing1.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdge());
-		System.out.println("Wing S planform: " + wing1.getLiftingSurfaceCreator().getSurfacePlanform());
-		System.out.println("Wing Span: " + wing1.getLiftingSurfaceCreator().getSpan());
+		System.out.println("Wing MAC: " + wing1.getMeanAerodynamicChord());
+		System.out.println("Wing MAC LE coordinates: " + wing1.getMeanAerodynamicChordLeadingEdge());
+		System.out.println("Wing S planform: " + wing1.getSurfacePlanform());
+		System.out.println("Wing Span: " + wing1.getSpan());
 		System.out.println("Wing Moment Pole X coordinate: " + 
 				(wing1.getXApexConstructionAxes().doubleValue(SI.METER) + 
-				 wing1.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER) + 
-				 wing1.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER)*0.25)
+				 wing1.getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER) + 
+				 wing1.getMeanAerodynamicChord().doubleValue(SI.METER)*0.25)
 				);
 		
 		// Modify wing 2
-		wing2.getLiftingSurfaceCreator().adjustDimensions(
-				wing1.getLiftingSurfaceCreator()
+		wing2.adjustDimensions(
+				wing1
 							.getAspectRatio()*1.3,
-				wing1.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0)
+				wing1.getEquivalentWing().getPanels().get(0)
 							.getChordRoot().doubleValue(SI.METER)*1.1,
-				wing1.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0)
+				wing1.getEquivalentWing().getPanels().get(0)
 							.getChordTip().doubleValue(SI.METER)*0.9,
-				wing1.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0)
+				wing1.getEquivalentWing().getPanels().get(0)
 							.getSweepLeadingEdge().times(0.75),
-				wing1.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0)
+				wing1.getEquivalentWing().getPanels().get(0)
 							.getDihedral().times(0), 
-				wing1.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0)
+				wing1.getEquivalentWing().getPanels().get(0)
 							.getTwistGeometricAtTip(),
 				WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
 				);	
 		
-		wing2.getLiftingSurfaceCreator().setAirfoilList(wing1.getLiftingSurfaceCreator().getAirfoilList());	
+		wing2.setAirfoilList(wing1.getAirfoilList());	
 		wing2.setXApexConstructionAxes(wing1.getXApexConstructionAxes().minus(Amount.valueOf(6, SI.METER)));
 		wing2.setYApexConstructionAxes(wing1.getYApexConstructionAxes());
 		wing2.setZApexConstructionAxes(wing1.getZApexConstructionAxes().minus(Amount.valueOf(0.1, SI.METER)));

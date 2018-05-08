@@ -14,9 +14,9 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.nacelles.Nacelles;
 import analyses.OperatingConditions;
-import analyses.liftingsurface.LSAerodynamicsManager;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAlpha;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlpha0L;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLAlpha;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.MomentCalc;
@@ -34,7 +34,7 @@ public class NacelleAerodynamicsManager {
 	private Nacelles _theNacelles;
 	private LiftingSurface _theWing;
 	private OperatingConditions _theOperatingConditions;
-	private LSAerodynamicsManager _theWingAerodynamicManager;
+	private LiftingSurfaceAerodynamicsManager _theWingAerodynamicManager;
 	private List<Amount<Angle>> _alphaArray;
 	private ConditionEnum _theCondition;
 	private Double _reynolds;
@@ -64,7 +64,7 @@ public class NacelleAerodynamicsManager {
 	public NacelleAerodynamicsManager(
 			Nacelles nacelles,
 			LiftingSurface theWing,
-			LSAerodynamicsManager theWingAerodynamicManager,
+			LiftingSurfaceAerodynamicsManager theWingAerodynamicManager,
 			OperatingConditions operationConditions,
 			ConditionEnum theCondition,
 			List<Amount<Angle>> alphaArray
@@ -142,7 +142,7 @@ public class NacelleAerodynamicsManager {
 							_theNacelles.getNacellesList().get(0).calculateFormFactor(), 
 							_cF, 
 							_theNacelles.getNacellesList().get(0).getSurfaceWetted().doubleValue(SI.SQUARE_METRE), 
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+							_theWing.getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 							)
 					);
 		}
@@ -169,7 +169,7 @@ public class NacelleAerodynamicsManager {
 					DragCalc.calculateCD0Base(
 							MethodEnum.MATLAB, 
 							_cD0Parasite.get(MethodEnum.SEMIEMPIRICAL), 
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+							_theWing.getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 							_theNacelles.getNacellesList().get(0).getDiameterOutlet().doubleValue(SI.METER), 
 							_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
 							)
@@ -250,7 +250,7 @@ public class NacelleAerodynamicsManager {
 							_theNacelles.getNacellesList().get(0).getDiameterMax(), 
 							_theNacelles.getNacellesList().get(0).getXPositionMaximumDiameterLRF(), 
 							_theNacelles.getNacellesList().get(0).getLength(), 
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
+							_theWing.getSurfacePlanform(), 
 							_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()), 
 							_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
 							_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
@@ -314,7 +314,7 @@ public class NacelleAerodynamicsManager {
 					_theNacelles.getNacellesList().get(0).getDiameterMax(), 
 					_theNacelles.getNacellesList().get(0).getXPositionMaximumDiameterLRF(), 
 					_theNacelles.getNacellesList().get(0).getLength(), 
-					_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
+					_theWing.getSurfacePlanform(), 
 					_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()), 
 					_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
 					_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
@@ -389,9 +389,9 @@ public class NacelleAerodynamicsManager {
 										),
 								_theWing.getRiggingAngle(),
 								_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
-								_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
-								_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
-								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theWing.getSurfacePlanform(), 
+								_theWing.getPanels().get(0).getChordRoot(), 
+								_theWing.getMeanAerodynamicChord(), 
 								_theWing.getXApexConstructionAxes(),
 								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
 								_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
@@ -420,9 +420,9 @@ public class NacelleAerodynamicsManager {
 										),
 								_theWing.getRiggingAngle(),
 								_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
-								_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
-								_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
-								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theWing.getSurfacePlanform(), 
+								_theWing.getPanels().get(0).getChordRoot(), 
+								_theWing.getMeanAerodynamicChord(), 
 								_theWing.getXApexConstructionAxes(),
 								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
 								_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
@@ -450,9 +450,9 @@ public class NacelleAerodynamicsManager {
 										),
 								_theWing.getRiggingAngle(),
 								_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
-								_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
-								_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
-								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theWing.getSurfacePlanform(), 
+								_theWing.getPanels().get(0).getChordRoot(), 
+								_theWing.getMeanAerodynamicChord(), 
 								_theWing.getXApexConstructionAxes(),
 								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
 								_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
@@ -500,10 +500,10 @@ public class NacelleAerodynamicsManager {
 							_theNacelles.getNacellesList().get(0).getXApexConstructionAxes(),
 							_theNacelles.getNacellesList().get(0).getLength(),
 							downwashGradientRoskamConstant, 
-							_theWing.getLiftingSurfaceCreator().getAspectRatio(),
-							_theWing.getLiftingSurfaceCreator().getSurfacePlanform(), 
-							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
-							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
+							_theWing.getAspectRatio(),
+							_theWing.getSurfacePlanform(), 
+							_theWing.getPanels().get(0).getChordRoot(), 
+							_theWing.getMeanAerodynamicChord(),
 							_theWingAerodynamicManager.getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
 							_theWing.getXApexConstructionAxes(),
 							wingTrailingEdgeToHTailQuarterChordDistance,
@@ -772,11 +772,11 @@ public class NacelleAerodynamicsManager {
 		this._moment3DCurve = _moment3DCurve;
 	}
 
-	public LSAerodynamicsManager getTheWingAerodynamicManager() {
+	public LiftingSurfaceAerodynamicsManager getTheWingAerodynamicManager() {
 		return _theWingAerodynamicManager;
 	}
 
-	public void setTheWingAerodynamicManager(LSAerodynamicsManager _theWingAerodynamicManager) {
+	public void setTheWingAerodynamicManager(LiftingSurfaceAerodynamicsManager _theWingAerodynamicManager) {
 		this._theWingAerodynamicManager = _theWingAerodynamicManager;
 	}
 

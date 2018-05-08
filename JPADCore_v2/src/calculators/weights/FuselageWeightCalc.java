@@ -105,10 +105,10 @@ public class FuselageWeightCalc {
 		double kdoor = 1.0;
 		double klg = 1.12;
 		double kws = 0.75
-				* ((1+2*aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio())
-						/ (1+aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio()))
-				* aircraft.getWing().getLiftingSurfaceCreator().getSpan().doubleValue(NonSI.FOOT)
-				* tan(aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN))
+				* ((1+2*aircraft.getWing().getEquivalentWing().getPanels().get(0).getTaperRatio())
+						/ (1+aircraft.getWing().getEquivalentWing().getPanels().get(0).getTaperRatio()))
+				* aircraft.getWing().getSpan().doubleValue(NonSI.FOOT)
+				* tan(aircraft.getWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN))
 				/ aircraft.getFuselage().getFuselageLength().doubleValue(NonSI.FOOT);
 
 		return Amount.valueOf(
@@ -158,7 +158,7 @@ public class FuselageWeightCalc {
 		return Amount.valueOf((1 + k) * 0.23 * 
 				Math.sqrt(
 						aircraft.getTheAnalysisManager().getVDiveEAS().doubleValue(SI.METERS_PER_SECOND) 
-						* aircraft.getHTail().getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().doubleValue(SI.METER)
+						* aircraft.getHTail().getLiftingSurfaceACToWingACdistance().doubleValue(SI.METER)
 						/ (2*aircraft.getFuselage().getEquivalentDiameterCylinderGM().doubleValue(SI.METER))
 						) 
 				* Math.pow(aircraft.getFuselage().getSWetTotal().doubleValue(SI.SQUARE_METRE), 1.2),
@@ -199,12 +199,12 @@ public class FuselageWeightCalc {
 		double Ib = 1.91e-4 
 				* aircraft.getTheAnalysisManager().getPositiveLimitLoadFactor() 
 				* (aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(NonSI.POUND)
-						- aircraft.getWing().getMassEstimated().doubleValue(NonSI.POUND)
+						- aircraft.getWing().getTheWeightManager().getMassEstimated().doubleValue(NonSI.POUND)
 						- aircraft.getNacelles().getTotalMass().doubleValue(NonSI.POUND)
 						- aircraft.getPowerPlant().getTotalMass().doubleValue(NonSI.POUND)
 						)
 				* aircraft.getFuselage().getFuselageLength().doubleValue(NonSI.FOOT) 
-				- (aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(NonSI.FOOT)/2)
+				- (aircraft.getWing().getPanels().get(0).getChordRoot().doubleValue(NonSI.FOOT)/2)
 				/ pow(aircraft.getFuselage().getSectionCylinderHeight().doubleValue(NonSI.FOOT),2);
 
 		if (Ip > Ib) {

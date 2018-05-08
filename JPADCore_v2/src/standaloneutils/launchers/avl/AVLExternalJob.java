@@ -193,7 +193,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 		if ((theOperatingConditions != null) && (theAircraft != null)) {
 			
 			System.out.println("\n\n\n Aircraft NOT NULL");
-			System.out.println("Span: " + theAircraft.getWing().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER));
+			System.out.println("Span: " + theAircraft.getWing().getSpan().doubleValue(SI.METER));
 			System.out.println("\n\n\n");
 
 			return new AVLMainInputData
@@ -206,15 +206,15 @@ public class AVLExternalJob implements IAVLExternalJob {
 				/*
 				 *    Span (m)
 				 */
-				.setBref(theAircraft.getWing().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER))
+				.setBref(theAircraft.getWing().getSpan().doubleValue(SI.METER))
 				/*
 				 *    Reference chord (m)
 				 */
-				.setCref(theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+				.setCref(theAircraft.getWing().getMeanAerodynamicChord().doubleValue(SI.METER))
 				/*
 				 *    Reference surface (m^2)
 				 */
-				.setSref(theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE))
+				.setSref(theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE))
 				/*
 				 *   CG
 				 */
@@ -257,7 +257,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 					.appendWing( //----------------------------------------------- wing 1
 						new AVLWing
 							.Builder()
-							.setDescription(theAircraft.getWing().getLiftingSurfaceCreator().getId())
+							.setDescription(theAircraft.getWing().getId())
 							.setIncidence(theAircraft.getWing().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE))
 							.setOrigin( // wing apex coordinates in BRF 
 									new Double[]{
@@ -268,21 +268,21 @@ public class AVLExternalJob implements IAVLExternalJob {
 								new AVLWingSection
 									.Builder()
 									.setDescription("Wing root section")
-									.setAirfoilObject(theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0)) // 1. set source first
+									.setAirfoilObject(theAircraft.getWing().getAirfoilList().get(0)) // 1. set source first
 									.setAirfoilCoordFile( // 2. set airfoil name
 										new File(this.binDirectory.getAbsolutePath() + File.separator 
 											+ getBaseName() + "_airfoil_wing_root.dat"
 										)
 									)
 									.setOrigin(new Double[]{
-											theAircraft.getWing().getLiftingSurfaceCreator().getXLEBreakPoints().get(0).doubleValue(SI.METER), // x l.e. root in LRF 
-											theAircraft.getWing().getLiftingSurfaceCreator().getYBreakPoints().get(0).doubleValue(SI.METER), 
-											theAircraft.getWing().getLiftingSurfaceCreator().getZLEBreakPoints().get(0).doubleValue(SI.METER)})
+											theAircraft.getWing().getXLEBreakPoints().get(0).doubleValue(SI.METER), // x l.e. root in LRF 
+											theAircraft.getWing().getYBreakPoints().get(0).doubleValue(SI.METER), 
+											theAircraft.getWing().getZLEBreakPoints().get(0).doubleValue(SI.METER)})
 									.setChord(
-											theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+											theAircraft.getWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 											)
 									.setTwist(
-											- theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
+											- theAircraft.getWing().getPanels().get(0).getAirfoilRoot().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
 											)
 									.build()
 								)
@@ -290,22 +290,22 @@ public class AVLExternalJob implements IAVLExternalJob {
 								new AVLWingSection
 									.Builder()
 									.setDescription("Wing kink section")
-									.setAirfoilObject(theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(1)) // 2. set source first
+									.setAirfoilObject(theAircraft.getWing().getAirfoilList().get(1)) // 2. set source first
 									.setAirfoilCoordFile( // 2. set airfoil name
 											new File(this.binDirectory.getAbsolutePath() + File.separator 
 												+ getBaseName() + "_airfoil_wing_kink.dat"
 											)
 										)
 									.setOrigin(new Double[]{
-											theAircraft.getWing().getLiftingSurfaceCreator().getXLEBreakPoints().get(1).doubleValue(SI.METER), // x l.e. of kink section in LRF 
-											theAircraft.getWing().getLiftingSurfaceCreator().getYBreakPoints().get(1).doubleValue(SI.METER), 
-											theAircraft.getWing().getLiftingSurfaceCreator().getZLEBreakPoints().get(1).doubleValue(SI.METER)})
+											theAircraft.getWing().getXLEBreakPoints().get(1).doubleValue(SI.METER), // x l.e. of kink section in LRF 
+											theAircraft.getWing().getYBreakPoints().get(1).doubleValue(SI.METER), 
+											theAircraft.getWing().getZLEBreakPoints().get(1).doubleValue(SI.METER)})
 									.setChord(
-											theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordTip().doubleValue(SI.METER)
+											theAircraft.getWing().getPanels().get(0).getChordTip().doubleValue(SI.METER)
 											)
 									.setTwist(
-											theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricAtTip().doubleValue(NonSI.DEGREE_ANGLE)
-											- theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getAirfoilTip().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
+											theAircraft.getWing().getPanels().get(0).getTwistGeometricAtTip().doubleValue(NonSI.DEGREE_ANGLE)
+											- theAircraft.getWing().getPanels().get(0).getAirfoilTip().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
 											)
 									.build()
 								)
@@ -313,22 +313,22 @@ public class AVLExternalJob implements IAVLExternalJob {
 									new AVLWingSection
 										.Builder()
 										.setDescription("Wing tip section")
-										.setAirfoilObject(theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(2)) // 2. set source first
+										.setAirfoilObject(theAircraft.getWing().getAirfoilList().get(2)) // 2. set source first
 										.setAirfoilCoordFile( // 2. set airfoil name
 												new File(this.binDirectory.getAbsolutePath() + File.separator 
 													+ getBaseName() + "_airfoil_wing_tip.dat"
 												)
 											)
 										.setOrigin(new Double[]{
-												theAircraft.getWing().getLiftingSurfaceCreator().getXLEBreakPoints().get(2).doubleValue(SI.METER), // x l.e. of tip section in LRF 
-												theAircraft.getWing().getLiftingSurfaceCreator().getYBreakPoints().get(2).doubleValue(SI.METER), 
-												theAircraft.getWing().getLiftingSurfaceCreator().getZLEBreakPoints().get(2).doubleValue(SI.METER)})
+												theAircraft.getWing().getXLEBreakPoints().get(2).doubleValue(SI.METER), // x l.e. of tip section in LRF 
+												theAircraft.getWing().getYBreakPoints().get(2).doubleValue(SI.METER), 
+												theAircraft.getWing().getZLEBreakPoints().get(2).doubleValue(SI.METER)})
 										.setChord(
-												theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(1).getChordTip().doubleValue(SI.METER)
+												theAircraft.getWing().getPanels().get(1).getChordTip().doubleValue(SI.METER)
 												)
 										.setTwist(
-												theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(1).getTwistGeometricAtTip().doubleValue(NonSI.DEGREE_ANGLE)
-												- theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(1).getAirfoilTip().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
+												theAircraft.getWing().getPanels().get(1).getTwistGeometricAtTip().doubleValue(NonSI.DEGREE_ANGLE)
+												- theAircraft.getWing().getPanels().get(1).getAirfoilTip().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
 												)
 										.build()
 									)
@@ -337,7 +337,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 					.appendWing( //----------------------------------------------- wing 2
 						new AVLWing
 							.Builder()
-							.setDescription(theAircraft.getHTail().getLiftingSurfaceCreator().getId())
+							.setDescription(theAircraft.getHTail().getId())
 							.setOrigin( // htail apex coordinates in BRF 
 									new Double[]{
 											theAircraft.getHTail().getXApexConstructionAxes().doubleValue(SI.METER), 
@@ -348,21 +348,21 @@ public class AVLExternalJob implements IAVLExternalJob {
 								new AVLWingSection
 									.Builder()
 									.setDescription("HTail root section")
-									.setAirfoilObject(theAircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().get(0)) // 2. set source first
+									.setAirfoilObject(theAircraft.getHTail().getAirfoilList().get(0)) // 2. set source first
 									.setAirfoilCoordFile( // 2. set airfoil name
 											new File(this.binDirectory.getAbsolutePath() + File.separator 
 												+ getBaseName() + "_airfoil_htail_root.dat"
 											)
 										)
 									.setOrigin(new Double[]{
-											theAircraft.getHTail().getLiftingSurfaceCreator().getXLEBreakPoints().get(0).doubleValue(SI.METER), // x l.e. root in LRF 
-											theAircraft.getHTail().getLiftingSurfaceCreator().getYBreakPoints().get(0).doubleValue(SI.METER), 
-											theAircraft.getHTail().getLiftingSurfaceCreator().getZLEBreakPoints().get(0).doubleValue(SI.METER)})
+											theAircraft.getHTail().getXLEBreakPoints().get(0).doubleValue(SI.METER), // x l.e. root in LRF 
+											theAircraft.getHTail().getYBreakPoints().get(0).doubleValue(SI.METER), 
+											theAircraft.getHTail().getZLEBreakPoints().get(0).doubleValue(SI.METER)})
 									.setChord(
-											theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+											theAircraft.getHTail().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 											)
 									.setTwist(
-											- theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
+											- theAircraft.getHTail().getPanels().get(0).getAirfoilRoot().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
 											)
 									.addControlSurfaces(
 										new AVLWingSectionControlSurface
@@ -380,22 +380,22 @@ public class AVLExternalJob implements IAVLExternalJob {
 								new AVLWingSection
 									.Builder()
 									.setDescription("HTail tip section")
-									.setAirfoilObject(theAircraft.getHTail().getLiftingSurfaceCreator().getAirfoilList().get(1)) // 2. set source first
+									.setAirfoilObject(theAircraft.getHTail().getAirfoilList().get(1)) // 2. set source first
 									.setAirfoilCoordFile( // 2. set airfoil name
 											new File(this.binDirectory.getAbsolutePath() + File.separator 
 												+ getBaseName() + "_airfoil_htail_tip.dat"
 											)
 										)
 									.setOrigin(new Double[]{
-											theAircraft.getHTail().getLiftingSurfaceCreator().getXLEBreakPoints().get(1).doubleValue(SI.METER), // x l.e. tip in LRF 
-											theAircraft.getHTail().getLiftingSurfaceCreator().getYBreakPoints().get(1).doubleValue(SI.METER), 
-											theAircraft.getHTail().getLiftingSurfaceCreator().getZLEBreakPoints().get(1).doubleValue(SI.METER)})
+											theAircraft.getHTail().getXLEBreakPoints().get(1).doubleValue(SI.METER), // x l.e. tip in LRF 
+											theAircraft.getHTail().getYBreakPoints().get(1).doubleValue(SI.METER), 
+											theAircraft.getHTail().getZLEBreakPoints().get(1).doubleValue(SI.METER)})
 									.setChord(
-											theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+											theAircraft.getHTail().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 											)
 									.setTwist(
-											theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricAtTip().doubleValue(NonSI.DEGREE_ANGLE)
-											- theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
+											theAircraft.getHTail().getPanels().get(0).getTwistGeometricAtTip().doubleValue(NonSI.DEGREE_ANGLE)
+											- theAircraft.getHTail().getPanels().get(0).getAirfoilRoot().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
 											)
 									.addControlSurfaces(
 											new AVLWingSectionControlSurface

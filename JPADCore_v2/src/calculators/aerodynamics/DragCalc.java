@@ -182,54 +182,54 @@ public class DragCalc {
 		Double reynolds = AerodynamicCalc.calculateReynolds(
 				altitude.doubleValue(SI.METER),
 				mach,
-				theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()
+				theLiftingSurface.getMeanAerodynamicChord().getEstimatedValue()
 				);
 		
 		if (AerodynamicCalc.calculateReCutOff(
 				mach,
 				machTransonicThreshold,
-				theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), 
-				theLiftingSurface.getLiftingSurfaceCreator().getRoughness().getEstimatedValue()) < 
+				theLiftingSurface.getMeanAerodynamicChord().getEstimatedValue(), 
+				theLiftingSurface.getRoughness().getEstimatedValue()) < 
 				reynolds) {
 
 			reynolds = AerodynamicCalc.calculateReCutOff(
 					mach,
 					machTransonicThreshold,
-					theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), 
-					theLiftingSurface.getLiftingSurfaceCreator().getRoughness().getEstimatedValue());
+					theLiftingSurface.getMeanAerodynamicChord().getEstimatedValue(), 
+					theLiftingSurface.getRoughness().getEstimatedValue());
 
 			cF  = (AerodynamicCalc.calculateCf(
 					reynolds, mach, 
-					theLiftingSurface.getLiftingSurfaceCreator().getXTransitionUpper()) 
+					theLiftingSurface.getXTransitionUpper()) 
 					+ AerodynamicCalc.calculateCf(
 							reynolds, 
 							mach,
-							theLiftingSurface.getLiftingSurfaceCreator().getXTransitionLower()))/2;
+							theLiftingSurface.getXTransitionLower()))/2;
 
 		} else // XTRANSITION!!!
 		{
 			cF  = (AerodynamicCalc.calculateCf(
 					reynolds,
 					mach,
-					theLiftingSurface.getLiftingSurfaceCreator().getXTransitionUpper()) + 
+					theLiftingSurface.getXTransitionUpper()) + 
 					AerodynamicCalc.calculateCf(
 							reynolds,
 							mach,
-							theLiftingSurface.getLiftingSurfaceCreator().getXTransitionLower()))/2; 
+							theLiftingSurface.getXTransitionLower()))/2; 
 
 		}
 
-		if (theLiftingSurface.getLiftingSurfaceCreator().getType() == ComponentEnum.WING) {
+		if (theLiftingSurface.getType() == ComponentEnum.WING) {
 			cD0Parasite = 
-					cF * theLiftingSurface.getLiftingSurfaceCreator().getFormFactor() 
-					* theLiftingSurface.getLiftingSurfaceCreator().getSurfaceWettedExposed().getEstimatedValue()
-					/ theLiftingSurface.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);			
+					cF * theLiftingSurface.getFormFactor() 
+					* theLiftingSurface.getSurfaceWettedExposed().getEstimatedValue()
+					/ theLiftingSurface.getSurfacePlanform().doubleValue(SI.SQUARE_METRE);			
 
 		} else { //TODO NEED TO EVALUATE Exposed Wetted surface also for Vtail and Htail
 			cD0Parasite = 
-					cF * theLiftingSurface.getLiftingSurfaceCreator().getFormFactor() 
-					* theLiftingSurface.getLiftingSurfaceCreator().getSurfaceWetted().doubleValue(SI.SQUARE_METRE)
-					/ theLiftingSurface.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
+					cF * theLiftingSurface.getFormFactor() 
+					* theLiftingSurface.getSurfaceWetted().doubleValue(SI.SQUARE_METRE)
+					/ theLiftingSurface.getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
 		}
 
 		return cD0Parasite;
@@ -256,10 +256,10 @@ public class DragCalc {
 
 	public static Double calculateCDGap(LiftingSurface theLiftingSurface) {
 		Double cDGap = 0.0002*(
-				Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)) ,2))
+				Math.pow(Math.cos(theLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)) ,2))
 				* 0.3 
-				* theLiftingSurface.getExposedLiftingSurface().getLiftingSurfaceCreator().getSurfaceWetted().doubleValue(SI.SQUARE_METRE)
-				/ theLiftingSurface.getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
+				* theLiftingSurface.getExposedLiftingSurface().getSurfaceWetted().doubleValue(SI.SQUARE_METRE)
+				/ theLiftingSurface.getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
 
 		return cDGap; 
 	}
@@ -361,28 +361,28 @@ public class DragCalc {
 		
 		deltaCD0Basic = ((1.5*frontalTiresTotalArea.getEstimatedValue())
 				+(0.75*rearTiresTotalArea.getEstimatedValue()))
-				/(wing.getLiftingSurfaceCreator().getSurfacePlanform().getEstimatedValue());
+				/(wing.getSurfacePlanform().getEstimatedValue());
 				
 		if(landingGears.getMountingPosition() == LandingGearsMountingPositionEnum.WING) {
 		
 			Amount<Area> flapSurface = Amount.valueOf(
-					wing.getLiftingSurfaceCreator().getSpan().getEstimatedValue()							
-					/2*wing.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-					*(2-((1-wing.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio())
-							*(wing.getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getOuterStationSpanwisePosition()
-									+wing.getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getInnerStationSpanwisePosition())))
-					*(wing.getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getOuterStationSpanwisePosition()
-							-wing.getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getInnerStationSpanwisePosition()),
+					wing.getSpan().getEstimatedValue()							
+					/2*wing.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+					*(2-((1-wing.getEquivalentWing().getPanels().get(0).getTaperRatio())
+							*(wing.getSymmetricFlaps().get(0).getOuterStationSpanwisePosition()
+									+wing.getSymmetricFlaps().get(0).getInnerStationSpanwisePosition())))
+					*(wing.getSymmetricFlaps().get(0).getOuterStationSpanwisePosition()
+							-wing.getSymmetricFlaps().get(0).getInnerStationSpanwisePosition()),
 					SI.SQUARE_METRE
 					);
 			
 			functionAlphaDeltaFlap = 
 					Math.pow(1-(0.04
-							*(cL+(deltaCL0flap*((1.5*(wing.getLiftingSurfaceCreator().getSurfacePlanform().divide(flapSurface).getEstimatedValue()))-1))
+							*(cL+(deltaCL0flap*((1.5*(wing.getSurfacePlanform().divide(flapSurface).getEstimatedValue()))-1))
 									)
 							/(landingGears.getMainLegsLenght().getEstimatedValue()
-									/(wing.getLiftingSurfaceCreator().getSurfacePlanform().getEstimatedValue()
-											/wing.getLiftingSurfaceCreator().getSpan().getEstimatedValue())
+									/(wing.getSurfacePlanform().getEstimatedValue()
+											/wing.getSpan().getEstimatedValue())
 									)
 							)
 							,2);
@@ -392,8 +392,8 @@ public class DragCalc {
 		
 			functionAlphaDeltaFlap = 
 					Math.pow(1-(0.04*cL/(landingGears.getMainLegsLenght().getEstimatedValue()
-									/(wing.getLiftingSurfaceCreator().getSurfacePlanform().getEstimatedValue()
-											/wing.getLiftingSurfaceCreator().getSpan().getEstimatedValue())
+									/(wing.getSurfacePlanform().getEstimatedValue()
+											/wing.getSpan().getEstimatedValue())
 									)
 							)
 							,2);		

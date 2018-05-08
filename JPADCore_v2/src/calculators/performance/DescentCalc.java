@@ -188,7 +188,7 @@ public class DescentCalc {
 						aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
 							*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 						_speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND),
-						_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+						_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 						_initialDescentAltitude.doubleValue(SI.METER)
 						)
 				);
@@ -207,7 +207,7 @@ public class DescentCalc {
 						DragCalc.calculateDragAtSpeed(
 								aircraftMassPerStep.get(0).times(AtmosphereCalc.g0).getEstimatedValue(),
 								_descentAltitudes.get(0).doubleValue(SI.METER),
-								_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								_speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND),
 								cDSteps.get(0)
 								),
@@ -465,7 +465,7 @@ public class DescentCalc {
 							aircraftMassPerStep.get(i).doubleValue(SI.KILOGRAM)
 								*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 							_speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND),
-							_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+							_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 							_descentAltitudes.get(i).doubleValue(SI.METER)
 							)
 					);
@@ -484,7 +484,7 @@ public class DescentCalc {
 							DragCalc.calculateDragAtSpeed(
 									aircraftMassPerStep.get(i).times(AtmosphereCalc.g0).getEstimatedValue(),
 									_descentAltitudes.get(i).doubleValue(SI.METER),
-									_theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 									_speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND),
 									cDSteps.get(i)
 									),

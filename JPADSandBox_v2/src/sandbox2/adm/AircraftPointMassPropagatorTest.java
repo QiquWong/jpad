@@ -304,15 +304,15 @@ public class AircraftPointMassPropagatorTest {
 			double cL0 = lift0
 					/(0.5*rho0
 							*Math.pow(propagator.getSpeedInertial0(), 2)
-							*theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+							*theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 							);
 			// initial drag
 			double cD0 = 0.025;
-			double aspectRatio = theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio();
+			double aspectRatio = theAircraft.getWing().getAspectRatio();
 			double oswaldFactor = 0.85;
 			double kD = Math.PI * aspectRatio * oswaldFactor;
 			double airDensity = AtmosphereCalc.getDensity(propagator.getAltitude0());
-			double surfaceWing = theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
+			double surfaceWing = theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
 			double kD0 = 0.5 * airDensity * surfaceWing * cD0;
 			double kD1 = 2.0/(airDensity * surfaceWing * kD);
 			double drag0 = kD0 * Math.pow(propagator.getSpeedInertial0(), 2) 

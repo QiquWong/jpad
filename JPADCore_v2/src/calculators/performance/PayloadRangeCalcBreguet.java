@@ -158,22 +158,22 @@ public class PayloadRangeCalcBreguet{
 		this.nPassMax = theAircraft.getCabinConfiguration().getMaximumPassengerNumber();
 		this.paxSingleMass = passengerSingleMass;				
 		
-		this.surface = theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform();
-		this.ar = theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio();
+		this.surface = theAircraft.getWing().getSurfacePlanform();
+		this.ar = theAircraft.getWing().getAspectRatio();
 		this.cruiseMach = cruiseMach;
 		this.altitude = altitude;
-		this.sweepHalfChordEquivalent = theAircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepHalfChord();
+		this.sweepHalfChordEquivalent = theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord();
 		this.polarCL = polarCL;
 		this.polarCD = polarCD;
 		this.cD0 = MyArrayUtils.getMin(this.polarCD);
 		this.etaPropeller = theAircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller();
 		
-		Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(theAircraft.getWing().getLiftingSurfaceCreator());
+		Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(theAircraft.getWing());
 		this.tcMax = meanAirfoil.getThicknessToChordRatio();
 		
 		this.aircraftType = theAircraft.getTypeVehicle();
 		this.engineType = theAircraft.getPowerPlant().getEngineType();
-		this.airfoilType = theAircraft.getWing().getLiftingSurfaceCreator().getAirfoilList().get(0).getType();
+		this.airfoilType = theAircraft.getWing().getAirfoilList().get(0).getType();
 		
 		this.fuelFractionDatabase = DatabaseManager.initializeFuelFractionDatabase(
 				new FuelFractionDatabaseReader(
@@ -269,12 +269,12 @@ public class PayloadRangeCalcBreguet{
 				engineType == EngineTypeEnum.TURBOPROP) {
 			
 			Map<String,Double> pointE = DragCalc.calculateMaximumEfficiency(
-					theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
+					theAircraft.getWing().getAspectRatio(),
 					oswald,
 					cD0,
 					theOperatingConditions.getDensityCruise().getEstimatedValue(),
 					maxTakeOffMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-					theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+					theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 					);
 			
 			if(oswald != 0.0)
@@ -291,12 +291,12 @@ public class PayloadRangeCalcBreguet{
 				engineType == EngineTypeEnum.PROPFAN)  {
 			
 			Map<String,Double> pointA = DragCalc.calculateMaximumRange(
-					theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
+					theAircraft.getWing().getAspectRatio(),
 					oswald,
 					cD0,
 					theOperatingConditions.getDensityCruise().getEstimatedValue(),
 					maxTakeOffMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-					theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+					theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 					);
 			
 			if(oswald != 0.0)
@@ -395,12 +395,12 @@ public class PayloadRangeCalcBreguet{
 			////////////////////////////////////////////////////////////////////////////////////
 			// Calculating the drag polar characteristic points of interest
 			Map<String, Double> pointE = DragCalc.calculateMaximumEfficiency(
-					theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
+					theAircraft.getWing().getAspectRatio(),
 					oswald,
 					cD0,
 					theOperatingConditions.getDensityCruise().getEstimatedValue(),
 					maxTakeOffMassCurrent.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-					theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+					theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 					);
 			
 			cLAtMaxPayloadBestRange = pointE.get("CL_E");
@@ -491,12 +491,12 @@ public class PayloadRangeCalcBreguet{
 			////////////////////////////////////////////////////////////////////////////////////
 			// Calculating the drag polar characteristic points of interest
 			Map<String, Double> pointA = DragCalc.calculateMaximumRange(
-					theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
+					theAircraft.getWing().getAspectRatio(),
 					oswald,
 					cD0,
 					theOperatingConditions.getDensityCruise().getEstimatedValue(),
 					maxTakeOffMassCurrent.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-					theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+					theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 					);
 			
 			cLAtMaxPayloadBestRange = pointA.get("CL_A");
@@ -629,12 +629,12 @@ public class PayloadRangeCalcBreguet{
 			////////////////////////////////////////////////////////////////////////////////////
 			// Calculating the drag polar characteristic points of interest
 			Map<String, Double> pointE = DragCalc.calculateMaximumEfficiency(
-					theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
+					theAircraft.getWing().getAspectRatio(),
 					oswald,
 					cD0,
 					theOperatingConditions.getDensityCruise().getEstimatedValue(),
 					maxTakeOffMassCurrent.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-					theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+					theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 					);
 			
 			cLAtMaxFuelBestRange = pointE.get("CL_E");
@@ -725,12 +725,12 @@ public class PayloadRangeCalcBreguet{
 			////////////////////////////////////////////////////////////////////////////////////
 			// Calculating the drag polar characteristic points of interest
 			Map<String, Double> pointA = DragCalc.calculateMaximumRange(
-					theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
+					theAircraft.getWing().getAspectRatio(),
 					oswald,
 					cD0,
 					theOperatingConditions.getDensityCruise().getEstimatedValue(),
 					maxTakeOffMassCurrent.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-					theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+					theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 					);
 			
 			cLAtMaxFuelBestRange = pointA.get("CL_A");
@@ -859,12 +859,12 @@ public class PayloadRangeCalcBreguet{
 			////////////////////////////////////////////////////////////////////////////////////
 			// Calculating the drag polar characteristic points of interest
 			Map<String, Double> pointE = DragCalc.calculateMaximumEfficiency(
-					theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
+					theAircraft.getWing().getAspectRatio(),
 					oswald,
 					cD0,
 					theOperatingConditions.getDensityCruise().getEstimatedValue(),
 					takeOffMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-					theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+					theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 					);
 			
 			cLAtZeroPayloadBestRange = pointE.get("CL_E");
@@ -955,12 +955,12 @@ public class PayloadRangeCalcBreguet{
 			////////////////////////////////////////////////////////////////////////////////////
 			// Calculating the drag polar characteristic points of interest
 			Map<String, Double> pointA = DragCalc.calculateMaximumRange(
-					theAircraft.getWing().getLiftingSurfaceCreator().getAspectRatio(),
+					theAircraft.getWing().getAspectRatio(),
 					oswald,
 					cD0,
 					theOperatingConditions.getDensityCruise().getEstimatedValue(),
 					takeOffMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-					theAircraft.getWing().getLiftingSurfaceCreator().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+					theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 					);
 			
 			cLAtZeroPayloadBestRange = pointA.get("CL_A");
