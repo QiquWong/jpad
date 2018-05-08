@@ -32,6 +32,7 @@ public class Test24mds {
 		Fuselage fuselage = aircraft.getFuselage();		
 		LiftingSurface wing1 = AircraftUtils.importAircraft(args).getWing();		
 		LiftingSurface wing2 = AircraftUtils.importAircraft(args).getWing();	
+
 //		LiftingSurface horizontal = aircraft.getHTail();
 //		LiftingSurface vertical = aircraft.getVTail();
 //		LiftingSurface canard = aircraft.getCanard();
