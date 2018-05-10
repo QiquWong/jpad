@@ -415,7 +415,7 @@
 				</pitching_moment>
 			</nacelle_analyses>
 			<aircraft_analyses>
-                <downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="FALSE" method="SLINGERLAND"> <!-- ROSKAM NON LINEAR GIVES PROBLEM: DISABLED TEMPORARY --> 
+                <wing_downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="FALSE" method="SLINGERLAND"> <!-- ROSKAM NON LINEAR GIVES PROBLEM: DISABLED TEMPORARY --> 
 				<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is FALSE, "user_defined" allows to choose between the calculation with the specified method and type of gradient (FALSE)
@@ -425,7 +425,7 @@
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
                         <downwash_gradient>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</downwash_gradient>
                     </downwash_gradient_vs_alpha>
-                </downwash>
+                </wing_downwash>
 				<buffet_barrier perform="FALSE" method="KROO"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 				<lift_curve perform="TRUE" fuselage_effects="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<drag_polar perform="TRUE" calculate_delta_CD0_miscellaneous="TRUE" delta_CD0_miscellaneous="0.00358" calculate_delta_CD0_landing_gears="FALSE" delta_CD0_landing_gears="0.0" method="FROM_BALANCE_EQUATION"/>

@@ -66,7 +66,8 @@ public enum AerodynamicAndStabilityEnum {
 	
 	////////////////////////////////////////////////
 	// Aircraft
-	DOWNWASH,
+	WING_DOWNWASH,
+	CANARD_DOWNWASH,
 	CL_TOTAL,
 	CD_TOTAL,
 	CM_TOTAL,
