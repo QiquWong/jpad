@@ -32,6 +32,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
+import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -108,6 +109,7 @@ public class MissionProfileCalc {
 	private List<Amount<Duration>> _timeList;
 	private List<Amount<Mass>> _fuelUsedList;
 	private List<Amount<Mass>> _massList;
+	private List<Amount<Velocity>> _speedCASMissionList;
 	private List<Amount<Velocity>> _speedTASMissionList;
 	private List<Double> _machMissionList;
 	private List<Double> _liftingCoefficientMissionList;
@@ -115,11 +117,17 @@ public class MissionProfileCalc {
 	private List<Double> _efficiencyMissionList;
 	private List<Amount<Force>> _thrustMissionList;
 	private List<Amount<Force>> _dragMissionList;
+	private List<Amount<Velocity>> _rateOfClimbMissionList;
+	private List<Amount<Angle>> _climbAngleMissionList;
+	private List<Double> _fuelFlowMissionList;
+	private List<Double> _sfcMissionList;
 	
 	private Amount<Mass> _initialFuelMass;
-	private Amount<Mass> _totalFuelUsed;
-	private Amount<Duration> _totalMissionTime;
-	private Amount<Length> _totalMissionRange;
+	private Amount<Mass> _totalFuel;
+	private Amount<Mass> _blockFuel;
+	private Amount<Duration> _totalTime;
+	private Amount<Duration> _blockTime;
+	private Amount<Length> _totalRange;
 	private Amount<Mass> _initialMissionMass;
 	private Amount<Mass> _endMissionMass;
 	
@@ -248,6 +256,7 @@ public class MissionProfileCalc {
 		this._timeList = new ArrayList<>();
 		this._fuelUsedList = new ArrayList<>();
 		this._massList = new ArrayList<>();
+		this._speedCASMissionList = new ArrayList<>();
 		this._speedTASMissionList = new ArrayList<>();
 		this._machMissionList = new ArrayList<>();
 		this._liftingCoefficientMissionList = new ArrayList<>();
@@ -255,6 +264,10 @@ public class MissionProfileCalc {
 		this._efficiencyMissionList = new ArrayList<>();
 		this._thrustMissionList = new ArrayList<>();
 		this._dragMissionList = new ArrayList<>();
+		this._rateOfClimbMissionList = new ArrayList<>();
+		this._climbAngleMissionList = new ArrayList<>();
+		this._fuelFlowMissionList = new ArrayList<>();
+		this._sfcMissionList = new ArrayList<>();
 				
 	}
 	
@@ -273,104 +286,274 @@ public class MissionProfileCalc {
 		// QUANTITES TO BE ADDED IN LISTS AT THE END OF THE ITERATION
 		//----------------------------------------------------------------------
 		// TAKE-OFF
-		Amount<Velocity> speedAtTakeOffEnding = Amount.valueOf(0.0, NonSI.KNOT);
-		Double cLAtTakeOffStart = 0.0;
-		Double cLAtTakeOffEnding = 0.0;
-		Double cDAtTakeOffStart = 0.0;
-		Double cDAtTakeOffEnding = 0.0;
+		Amount<Length> rangeTakeOff = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+		Amount<Duration> timeTakeOff = Amount.valueOf(0.0, NonSI.MINUTE);
+		Amount<Mass> fuelTakeOff = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtTakeOffStart = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtTakeOffEnding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Velocity> speedTASAtTakeOffStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedTASAtTakeOffEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtTakeOffStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtTakeOffEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		double cLAtTakeOffStart = 0.0;
+		double cLAtTakeOffEnding = 0.0;
+		double cDAtTakeOffStart = 0.0;
+		double cDAtTakeOffEnding = 0.0;
 		Amount<Force> thrustAtTakeOffStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtTakeOffEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Force> dragAtTakeOffStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtTakeOffEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Velocity> rateOfClimbAtTakeOffStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Velocity> rateOfClimbAtTakeOffEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Angle> climbAngleAtTakeOffStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> climbAngleAtTakeOffEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double fuelFlowAtTakeOffStart = 0.0;
+		double fuelFlowAtTakeOffEnding = 0.0;
+		double sfcAtTakeOffStart = 0.0;
+		double sfcAtTakeOffEnding = 0.0;
 		//......................................................................
 		// CLIMB
-		Amount<Velocity> speedAtClimbStart = Amount.valueOf(0.0, NonSI.KNOT);
-		Amount<Velocity> speedAtClimbEnding = Amount.valueOf(0.0, NonSI.KNOT);
-		Double cLAtClimbStart = 0.0;
-		Double cLAtClimbEnding = 0.0;
+		Amount<Length> rangeClimb = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+		Amount<Duration> timeClimb = Amount.valueOf(0.0, NonSI.MINUTE);
+		Amount<Mass> fuelClimb = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtClimbStart = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtClimbEnding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Velocity> speedTASAtClimbStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedTASAtClimbEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtClimbStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtClimbEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		double cLAtClimbStart = 0.0;
+		double cLAtClimbEnding = 0.0;
+		double cDAtClimbStart = 0.0;
+		double cDAtClimbEnding = 0.0;
 		Amount<Force> thrustAtClimbStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtClimbEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
-		Amount<Force> dragAtClimbStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtClimbEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Force> dragAtClimbStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Velocity> rateOfClimbAtClimbStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Velocity> rateOfClimbAtClimbEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Angle> climbAngleAtClimbStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> climbAngleAtClimbEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double fuelFlowAtClimbStart = 0.0;
+		double fuelFlowAtClimbEnding = 0.0;
+		double sfcAtClimbStart = 0.0;
+		double sfcAtClimbEnding = 0.0;
 		//......................................................................
 		// CRUISE
-		Amount<Velocity> speedAtCruiseStart = Amount.valueOf(0.0, NonSI.KNOT);
-		Amount<Velocity> speedAtCruiseEnding = Amount.valueOf(0.0, NonSI.KNOT);
-		Double cLAtCruiseStart = 0.0;
-		Double cLAtCruiseEnding = 0.0;
+		Amount<Length> rangeCruise = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+		Amount<Duration> timeCruise = Amount.valueOf(0.0, NonSI.MINUTE);
+		Amount<Mass> fuelCruise = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtCruiseStart = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtCruiseEnding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Velocity> speedTASAtCruiseStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedTASAtCruiseEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtCruiseStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtCruiseEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		double cLAtCruiseStart = 0.0;
+		double cLAtCruiseEnding = 0.0;
+		double cDAtCruiseStart = 0.0;
+		double cDAtCruiseEnding = 0.0;
 		Amount<Force> thrustAtCruiseStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtCruiseEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtCruiseStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtCruiseEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Velocity> rateOfClimbAtCruiseStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Velocity> rateOfClimbAtCruiseEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Angle> climbAngleAtCruiseStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> climbAngleAtCruiseEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double fuelFlowAtCruiseStart = 0.0;
+		double fuelFlowAtCruiseEnding = 0.0;
+		double sfcAtCruiseStart = 0.0;
+		double sfcAtCruiseEnding = 0.0;
 		//......................................................................
 		// FIRST DESCENT
-		Amount<Velocity> speedAtFirstDescentStart = Amount.valueOf(0.0, NonSI.KNOT);
-		Amount<Velocity> speedAtFirstDescentEnding = Amount.valueOf(0.0, NonSI.KNOT);
-		Double cLAtFirstDescentStart = 0.0;
-		Double cLAtFirstDescentEnding = 0.0;
+		Amount<Length> rangeFirstDescent = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+		Amount<Duration> timeFirstDescent = Amount.valueOf(0.0, NonSI.MINUTE);
+		Amount<Mass> fuelFirstDescent = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtFirstDescentStart = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtFirstDescentEnding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Velocity> speedTASAtFirstDescentStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedTASAtFirstDescentEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtFirstDescentStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtFirstDescentEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		double cLAtFirstDescentStart = 0.0;
+		double cLAtFirstDescentEnding = 0.0;
+		double cDAtFirstDescentStart = 0.0;
+		double cDAtFirstDescentEnding = 0.0;
 		Amount<Force> thrustAtFirstDescentStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtFirstDescentEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtFirstDescentStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtFirstDescentEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Velocity> rateOfClimbAtFirstDescentStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Velocity> rateOfClimbAtFirstDescentEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Angle> climbAngleAtFirstDescentStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> climbAngleAtFirstDescentEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double fuelFlowAtFirstDescentStart = 0.0;
+		double fuelFlowAtFirstDescentEnding = 0.0;
+		double sfcAtFirstDescentStart = 0.0;
+		double sfcAtFirstDescentEnding = 0.0;
 		//......................................................................
 		// SECOND CLIMB
-		Amount<Velocity> speedAtSecondClimbStart = Amount.valueOf(0.0, NonSI.KNOT);
-		Amount<Velocity> speedAtSecondClimbEnding = Amount.valueOf(0.0, NonSI.KNOT);
-		Double cLAtSecondClimbStart = 0.0;
-		Double cLAtSecondClimbEnding = 0.0;
+		Amount<Length> rangeSecondClimb = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+		Amount<Duration> timeSecondClimb = Amount.valueOf(0.0, NonSI.MINUTE);
+		Amount<Mass> fuelSecondClimb = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtSecondClimbStart = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtSecondClimbEnding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Velocity> speedTASAtSecondClimbStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedTASAtSecondClimbEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtSecondClimbStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtSecondClimbEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		double cLAtSecondClimbStart = 0.0;
+		double cLAtSecondClimbEnding = 0.0;
+		double cDAtSecondClimbStart = 0.0;
+		double cDAtSecondClimbEnding = 0.0;
 		Amount<Force> thrustAtSecondClimbStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtSecondClimbEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtSecondClimbStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtSecondClimbEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Velocity> rateOfClimbAtSecondClimbStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Velocity> rateOfClimbAtSecondClimbEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Angle> climbAngleAtSecondClimbStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> climbAngleAtSecondClimbEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double fuelFlowAtSecondClimbStart = 0.0;
+		double fuelFlowAtSecondClimbEnding = 0.0;
+		double sfcAtSecondClimbStart = 0.0;
+		double sfcAtSecondClimbEnding = 0.0;
 		//......................................................................
 		// ALTERNATE CRUISE
-		Amount<Velocity> speedAtAlternateCruiseStart = Amount.valueOf(0.0, NonSI.KNOT);
-		Amount<Velocity> speedAtAlternateCruiseEnding = Amount.valueOf(0.0, NonSI.KNOT);
-		Double cLAtAlternateCruiseStart = 0.0;
-		Double cLAtAlternateCruiseEnding = 0.0;
+		Amount<Length> rangeAlternateCruise = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+		Amount<Duration> timeAlternateCruise = Amount.valueOf(0.0, NonSI.MINUTE);
+		Amount<Mass> fuelAlternateCruise = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtAlternateCruiseStart = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtAlternateCruiseEnding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Velocity> speedTASAtAlternateCruiseStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedTASAtAlternateCruiseEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtAlternateCruiseStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtAlternateCruiseEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		double cLAtAlternateCruiseStart = 0.0;
+		double cLAtAlternateCruiseEnding = 0.0;
+		double cDAtAlternateCruiseStart = 0.0;
+		double cDAtAlternateCruiseEnding = 0.0;
 		Amount<Force> thrustAtAlternateCruiseStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtAlternateCruiseEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtAlternateCruiseStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtAlternateCruiseEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Velocity> rateOfClimbAtAlternateCruiseStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Velocity> rateOfClimbAtAlternateCruiseEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Angle> climbAngleAtAlternateCruiseStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> climbAngleAtAlternateCruiseEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double fuelFlowAtAlternateCruiseStart = 0.0;
+		double fuelFlowAtAlternateCruiseEnding = 0.0;
+		double sfcAtAlternateCruiseStart = 0.0;
+		double sfcAtAlternateCruiseEnding = 0.0;
 		//......................................................................
 		// SECOND DESCENT
-		Amount<Velocity> speedAtSecondDescentStart = Amount.valueOf(0.0, NonSI.KNOT);
-		Amount<Velocity> speedAtSecondDescentEnding = Amount.valueOf(0.0, NonSI.KNOT);
-		Double cLAtSecondDescentStart = 0.0;
-		Double cLAtSecondDescentEnding = 0.0;
+		Amount<Length> rangeSecondDescent = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+		Amount<Duration> timeSecondDescent = Amount.valueOf(0.0, NonSI.MINUTE);
+		Amount<Mass> fuelSecondDescent = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtSecondDescentStart = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtSecondDescentEnding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Velocity> speedTASAtSecondDescentStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedTASAtSecondDescentEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtSecondDescentStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtSecondDescentEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		double cLAtSecondDescentStart = 0.0;
+		double cLAtSecondDescentEnding = 0.0;
+		double cDAtSecondDescentStart = 0.0;
+		double cDAtSecondDescentEnding = 0.0;
 		Amount<Force> thrustAtSecondDescentStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtSecondDescentEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtSecondDescentStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtSecondDescentEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Velocity> rateOfClimbAtSecondDescentStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Velocity> rateOfClimbAtSecondDescentEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Angle> climbAngleAtSecondDescentStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> climbAngleAtSecondDescentEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double fuelFlowAtSecondDescentStart = 0.0;
+		double fuelFlowAtSecondDescentEnding = 0.0;
+		double sfcAtSecondDescentStart = 0.0;
+		double sfcAtSecondDescentEnding = 0.0;
 		//......................................................................
 		// HOLDING
-		Amount<Velocity> speedAtHoldingStart = Amount.valueOf(0.0, NonSI.KNOT);
-		Amount<Velocity> speedAtHoldingEnding = Amount.valueOf(0.0, NonSI.KNOT);
-		Double cLAtHoldingStart = 0.0;
-		Double cLAtHoldingEnding = 0.0;
+		Amount<Length> rangeHolding = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+		Amount<Duration> timeHolding = Amount.valueOf(0.0, NonSI.MINUTE);
+		Amount<Mass> fuelHolding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtHoldingStart = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtHoldingEnding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Velocity> speedTASAtHoldingStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedTASAtHoldingEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtHoldingStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtHoldingEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		double cLAtHoldingStart = 0.0;
+		double cLAtHoldingEnding = 0.0;
+		double cDAtHoldingStart = 0.0;
+		double cDAtHoldingEnding = 0.0;
 		Amount<Force> thrustAtHoldingStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtHoldingEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtHoldingStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtHoldingEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Velocity> rateOfClimbAtHoldingStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Velocity> rateOfClimbAtHoldingEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Angle> climbAngleAtHoldingStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> climbAngleAtHoldingEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double fuelFlowAtHoldingStart = 0.0;
+		double fuelFlowAtHoldingEnding = 0.0;
+		double sfcAtHoldingStart = 0.0;
+		double sfcAtHoldingEnding = 0.0;
 		//......................................................................
 		// THIRD DESCENT
-		Amount<Velocity> speedAtThirdDescentStart = Amount.valueOf(0.0, NonSI.KNOT);
-		Amount<Velocity> speedAtThirdDescentEnding = Amount.valueOf(0.0, NonSI.KNOT);
-		Double cLAtThirdDescentStart = 0.0;
-		Double cLAtThirdDescentEnding = 0.0;
+		Amount<Length> rangeThirdDescent = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+		Amount<Duration> timeThirdDescent = Amount.valueOf(0.0, NonSI.MINUTE);
+		Amount<Mass> fuelThirdDescent = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtThirdDescentStart = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtThirdDescentEnding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Velocity> speedTASAtThirdDescentStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedTASAtThirdDescentEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtThirdDescentStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtThirdDescentEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		double cLAtThirdDescentStart = 0.0;
+		double cLAtThirdDescentEnding = 0.0;
+		double cDAtThirdDescentStart = 0.0;
+		double cDAtThirdDescentEnding = 0.0;
 		Amount<Force> thrustAtThirdDescentStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtThirdDescentEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtThirdDescentStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtThirdDescentEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Velocity> rateOfClimbAtThirdDescentStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Velocity> rateOfClimbAtThirdDescentEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Angle> climbAngleAtThirdDescentStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> climbAngleAtThirdDescentEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double fuelFlowAtThirdDescentStart = 0.0;
+		double fuelFlowAtThirdDescentEnding = 0.0;
+		double sfcAtThirdDescentStart = 0.0;
+		double sfcAtThirdDescentEnding = 0.0;
 		//......................................................................
 		// LANDING
-		Amount<Velocity> speedAtLandingStart = Amount.valueOf(0.0, NonSI.KNOT);
-		Double cLAtLandingStart = 0.0;
-		Double cLAtLandingEnding = 0.0;
-		Double cDAtLandingStart = 0.0;
-		Double cDAtLandingEnding = 0.0;
-		Amount<Force> thrustAtLandingGroundRollStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
-		Amount<Force> thrustAtLandingGroundRollEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Length> rangeLanding = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+		Amount<Duration> timeLanding = Amount.valueOf(0.0, NonSI.MINUTE);
+		Amount<Mass> fuelLanding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtLandingStart = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> aircraftMassAtLandingEnding = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Velocity> speedTASAtLandingStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedTASAtLandingEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtLandingStart = Amount.valueOf(0.0, NonSI.KNOT);
+		Amount<Velocity> speedCASAtLandingEnding = Amount.valueOf(0.0, NonSI.KNOT);
+		double cLAtLandingStart = 0.0;
+		double cLAtLandingEnding = 0.0;
+		double cDAtLandingStart = 0.0;
+		double cDAtLandingEnding = 0.0;
+		Amount<Force> thrustAtLandingStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Force> thrustAtLandingEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Force> dragAtLandingEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtLandingStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
+		Amount<Velocity> rateOfClimbAtLandingStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Velocity> rateOfClimbAtLandingEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+		Amount<Angle> climbAngleAtLandingStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> climbAngleAtLandingEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double fuelFlowAtLandingStart = 0.0;
+		double fuelFlowAtLandingEnding = 0.0;
+		double sfcAtLandingStart = 0.0;
+		double sfcAtLandingEnding = 0.0;
 		
 		//----------------------------------------------------------------------
 		// ITERATION START ...
@@ -383,11 +566,11 @@ public class MissionProfileCalc {
 		}
 		
 		Amount<Mass> newInitialFuelMass = Amount.valueOf(0.0, SI.KILOGRAM);
-		_totalFuelUsed = Amount.valueOf(0.0, SI.KILOGRAM);
+		_totalFuel = Amount.valueOf(0.0, SI.KILOGRAM);
 		int i = 0;
 		
 		while ( Math.abs(
-						(_initialFuelMass.to(SI.KILOGRAM).minus(_totalFuelUsed.to(SI.KILOGRAM)))
+						(_initialFuelMass.to(SI.KILOGRAM).minus(_totalFuel.to(SI.KILOGRAM)))
 						.divide(_initialFuelMass.to(SI.KILOGRAM))
 						.times(100)
 						.getEstimatedValue()
@@ -405,6 +588,8 @@ public class MissionProfileCalc {
 			
 			//--------------------------------------------------------------------
 			// TAKE-OFF
+			aircraftMassAtTakeOffStart = _initialMissionMass.to(SI.KILOGRAM);
+			
 			Amount<Length> wingToGroundDistance = 
 					_theAircraft.getFuselage().getHeightFromGround()
 					.plus(_theAircraft.getFuselage().getSectionCylinderHeight().divide(2))
@@ -459,13 +644,10 @@ public class MissionProfileCalc {
 					theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(2)
 					.minus(rotationDistanceTakeOff)
 					.minus(groundRollDistanceTakeOff);
-			Amount<Length> takeOffDistanceAOE = 
-					groundRollDistanceTakeOff
-					.plus(rotationDistanceTakeOff)
-					.plus(airborneDistanceTakeOff);			
-			Amount<Duration> takeOffDuration = theTakeOffCalculator.getTakeOffResults().getTime().get(2);
-
-			Amount<Mass> takeOffUsedFuel = Amount.valueOf(
+			
+			rangeTakeOff = groundRollDistanceTakeOff.plus(rotationDistanceTakeOff).plus(airborneDistanceTakeOff);			
+			timeTakeOff = theTakeOffCalculator.getTakeOffResults().getTime().get(2);
+			fuelTakeOff = Amount.valueOf(
 					MyMathUtils.integrate1DSimpsonSpline(
 							MyArrayUtils.convertListOfAmountTodoubleArray(
 									theTakeOffCalculator.getTime().stream()
@@ -473,25 +655,68 @@ public class MissionProfileCalc {
 									.collect(Collectors.toList()
 											)
 									),
-							MyArrayUtils.convertToDoublePrimitive(theTakeOffCalculator.getSfc())
+							MyArrayUtils.convertToDoublePrimitive(theTakeOffCalculator.getFuelFlow())
 							),
 					SI.KILOGRAM					
 					);
+			aircraftMassAtTakeOffEnding = aircraftMassAtTakeOffStart.to(SI.KILOGRAM).minus(fuelTakeOff.to(SI.KILOGRAM));
 					
-			speedAtTakeOffEnding = theTakeOffCalculator.getSpeed()
+			speedTASAtTakeOffStart = theTakeOffCalculator.getSpeed()
+					.get(0)
+					.to(NonSI.KNOT);
+			speedCASAtTakeOffStart = theTakeOffCalculator.getSpeed()
+					.get(0)
+					.to(NonSI.KNOT)
+					.times(
+							Math.sqrt(
+									AtmosphereCalc.getDensity(_obstacleTakeOff.doubleValue(SI.METER))
+									/_theOperatingConditions.getDensityTakeOff().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
+									)
+							);
+			speedTASAtTakeOffEnding = theTakeOffCalculator.getSpeed()
 					.get(theTakeOffCalculator.getSpeed().size()-1)
 					.to(NonSI.KNOT);
-			cLAtTakeOffStart = theTakeOffCalculator.getcLground();
+			speedCASAtTakeOffEnding = theTakeOffCalculator.getSpeed()
+					.get(theTakeOffCalculator.getSpeed().size()-1)
+					.to(NonSI.KNOT)
+					.times(
+							Math.sqrt(
+									AtmosphereCalc.getDensity(_obstacleTakeOff.doubleValue(SI.METER))
+									/_theOperatingConditions.getDensityTakeOff().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
+									)
+							);
+			cLAtTakeOffStart = theTakeOffCalculator.getcL().get(0);
 			cLAtTakeOffEnding = theTakeOffCalculator.getcL().get(theTakeOffCalculator.getcL().size()-1);
-			cDAtTakeOffStart = theTakeOffCalculator.getcD().get(0);
-			cDAtTakeOffEnding = theTakeOffCalculator.getcD().get(theTakeOffCalculator.getcD().size()-1);
+			cDAtTakeOffStart = 
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(_polarCLTakeOff),
+							MyArrayUtils.convertToDoublePrimitive(_polarCDTakeOff),
+							cLAtTakeOffStart
+							);
+			cDAtTakeOffEnding = 
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(_polarCLTakeOff),
+							MyArrayUtils.convertToDoublePrimitive(_polarCDTakeOff),
+							cLAtTakeOffEnding
+							);
 			thrustAtTakeOffStart = theTakeOffCalculator.getThrust().get(0).to(NonSI.POUND_FORCE);
 			thrustAtTakeOffEnding = theTakeOffCalculator.getThrust()
 					.get(theTakeOffCalculator.getThrust().size()-1)
 					.to(NonSI.POUND_FORCE);
+			dragAtTakeOffStart = theTakeOffCalculator.getDrag().get(0).to(NonSI.POUND_FORCE);
 			dragAtTakeOffEnding = theTakeOffCalculator.getDrag()
 					.get(theTakeOffCalculator.getDrag().size()-1)
 					.to(NonSI.POUND_FORCE);
+			rateOfClimbAtTakeOffStart = theTakeOffCalculator.getRateOfClimb().get(0).to(MyUnits.FOOT_PER_MINUTE);
+			rateOfClimbAtTakeOffEnding = theTakeOffCalculator.getRateOfClimb()
+					.get(theTakeOffCalculator.getRateOfClimb().size()-1)
+					.to(MyUnits.FOOT_PER_MINUTE);
+			climbAngleAtTakeOffStart = theTakeOffCalculator.getGamma().get(0).to(NonSI.DEGREE_ANGLE);
+			climbAngleAtTakeOffEnding = theTakeOffCalculator.getGamma().get(theTakeOffCalculator.getGamma().size()-1).to(NonSI.DEGREE_ANGLE);
+			fuelFlowAtTakeOffStart = theTakeOffCalculator.getFuelFlow().get(0)*2.20462/0.016667;
+			fuelFlowAtTakeOffEnding = theTakeOffCalculator.getFuelFlow().get(theTakeOffCalculator.getFuelFlow().size()-1)*2.20462/0.016667;
+			sfcAtTakeOffStart = fuelFlowAtTakeOffStart/thrustAtTakeOffStart.doubleValue(NonSI.POUND_FORCE);
+			sfcAtTakeOffEnding = fuelFlowAtTakeOffEnding/thrustAtTakeOffEnding.doubleValue(NonSI.POUND_FORCE);
 			
 			//--------------------------------------------------------------------
 			// CLIMB
@@ -505,32 +730,37 @@ public class MissionProfileCalc {
 					_dragDueToEnigneFailure 
 					);
 
-			Amount<Mass> intialClimbMass = _initialMissionMass.minus(takeOffUsedFuel);
+			aircraftMassAtClimbStart = _initialMissionMass.minus(fuelTakeOff.to(SI.KILOGRAM));
 
 			theClimbCalculator.calculateClimbPerformance(
-					intialClimbMass,
-					intialClimbMass,
+					aircraftMassAtClimbStart,
+					aircraftMassAtClimbStart,
 					_obstacleTakeOff.to(SI.METER),
 					_theOperatingConditions.getAltitudeCruise().to(SI.METER),
 					false
 					);
 
-			Amount<Length> totalClimbRange = theClimbCalculator.getClimbTotalRange();
-			Amount<Duration> totalClimbTime = null;
+			rangeClimb = theClimbCalculator.getClimbTotalRange();
+			timeClimb = null;
 			if(_climbSpeed != null)
-				totalClimbTime = theClimbCalculator.getClimbTimeAtSpecificClimbSpeedAEO();
+				timeClimb = theClimbCalculator.getClimbTimeAtSpecificClimbSpeedAEO();
 			else
-				totalClimbTime = theClimbCalculator.getMinimumClimbTimeAEO();
-			Amount<Mass> totalClimbFuelUsed = theClimbCalculator.getClimbTotalFuelUsed();
+				timeClimb = theClimbCalculator.getMinimumClimbTimeAEO();
+			fuelClimb = theClimbCalculator.getClimbTotalFuelUsed();
 
-			speedAtClimbStart = theClimbCalculator.getClimbSpeed().to(NonSI.KNOT)
+			aircraftMassAtClimbEnding = aircraftMassAtClimbStart.to(SI.KILOGRAM).minus(fuelClimb.to(SI.KILOGRAM));
+			
+			speedTASAtClimbStart = theClimbCalculator.getClimbSpeed().to(NonSI.KNOT)
 					.divide(
 							Math.sqrt(
-									OperatingConditions.getAtmosphere(0.0)
+									OperatingConditions.getAtmosphere(
+											_obstacleTakeOff.doubleValue(SI.METER)
+											)
 									.getDensityRatio()
 									)
 							);
-			speedAtClimbEnding = theClimbCalculator.getClimbSpeed().to(NonSI.KNOT)
+			speedCASAtClimbStart = theClimbCalculator.getClimbSpeed().to(NonSI.KNOT);
+			speedTASAtClimbEnding = theClimbCalculator.getClimbSpeed().to(NonSI.KNOT)
 					.divide(
 							Math.sqrt(
 									OperatingConditions.getAtmosphere(
@@ -539,44 +769,95 @@ public class MissionProfileCalc {
 									.getDensityRatio()
 									)
 							);
+			speedCASAtClimbEnding = theClimbCalculator.getClimbSpeed().to(NonSI.KNOT);
+			
 			cLAtClimbStart = LiftCalc.calculateLiftCoeff(
-					intialClimbMass.times(AtmosphereCalc.g0).getEstimatedValue(),
-					speedAtClimbStart.doubleValue(SI.METERS_PER_SECOND),					
+					aircraftMassAtClimbStart.times(AtmosphereCalc.g0).getEstimatedValue(),
+					speedTASAtClimbStart.doubleValue(SI.METERS_PER_SECOND),					
 					_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 					0.0
 					);
 			cLAtClimbEnding = LiftCalc.calculateLiftCoeff(
-					intialClimbMass
-					.minus(totalClimbFuelUsed)
+					aircraftMassAtClimbEnding
 					.times(AtmosphereCalc.g0)
 					.getEstimatedValue(),
-					speedAtClimbStart.doubleValue(SI.METERS_PER_SECOND),					
+					speedTASAtClimbEnding.doubleValue(SI.METERS_PER_SECOND),					
 					_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+					);
+			cDAtClimbStart = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+					MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+					cLAtClimbStart
+					);
+			cDAtClimbEnding = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+					MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+					cLAtClimbEnding
 					);
 			thrustAtClimbStart = theClimbCalculator.getThrustAtClimbStart().to(NonSI.POUND_FORCE);
 			thrustAtClimbEnding = theClimbCalculator.getThrustAtClimbEnding().to(NonSI.POUND_FORCE);
 			dragAtClimbStart = theClimbCalculator.getDragAtClimbStart().to(NonSI.POUND_FORCE);
 			dragAtClimbEnding = theClimbCalculator.getDragAtClimbEnding().to(NonSI.POUND_FORCE);
+			rateOfClimbAtClimbStart = Amount.valueOf(
+					MyMathUtils.getInterpolatedValue1DLinear(
+					theClimbCalculator.getRCMapAEO().get(0).getSpeed(), 
+					theClimbCalculator.getRCMapAEO().get(0).getRC(),
+					speedTASAtClimbStart.doubleValue(SI.METERS_PER_SECOND)
+					),
+					SI.METERS_PER_SECOND).to(MyUnits.FOOT_PER_MINUTE);
+			rateOfClimbAtClimbEnding = Amount.valueOf(
+					MyMathUtils.getInterpolatedValue1DLinear(
+					theClimbCalculator.getRCMapAEO().get(theClimbCalculator.getRCMapAEO().size()-1).getSpeed(), 
+					theClimbCalculator.getRCMapAEO().get(theClimbCalculator.getRCMapAEO().size()-1).getRC(),
+					speedTASAtClimbEnding.doubleValue(SI.METERS_PER_SECOND)
+					),
+					SI.METERS_PER_SECOND).to(MyUnits.FOOT_PER_MINUTE);
+			climbAngleAtClimbStart = Amount.valueOf(
+					MyMathUtils.getInterpolatedValue1DLinear(
+					theClimbCalculator.getRCMapAEO().get(0).getSpeed(), 
+					theClimbCalculator.getRCMapAEO().get(0).getGamma(),
+					speedTASAtClimbStart.doubleValue(SI.METERS_PER_SECOND)
+					),
+					SI.RADIAN).to(NonSI.DEGREE_ANGLE);
+			climbAngleAtClimbEnding = Amount.valueOf(
+					MyMathUtils.getInterpolatedValue1DLinear(
+					theClimbCalculator.getRCMapAEO().get(theClimbCalculator.getRCMapAEO().size()-1).getSpeed(), 
+					theClimbCalculator.getRCMapAEO().get(theClimbCalculator.getRCMapAEO().size()-1).getGamma(),
+					speedTASAtClimbEnding.doubleValue(SI.METERS_PER_SECOND)
+					),
+					SI.RADIAN).to(NonSI.DEGREE_ANGLE);
+			fuelFlowAtClimbStart = theClimbCalculator.getFuelFlowList().get(0)*2.20462/0.016667;
+			fuelFlowAtClimbEnding = theClimbCalculator.getFuelFlowList().get(theClimbCalculator.getFuelFlowList().size()-1)*2.20462/0.016667;
+			sfcAtClimbStart = fuelFlowAtClimbStart/thrustAtClimbStart.doubleValue(NonSI.POUND_FORCE);
+			sfcAtClimbEnding = fuelFlowAtClimbEnding/thrustAtClimbEnding.doubleValue(NonSI.POUND_FORCE);
 			
 			//--------------------------------------------------------------------
-			// CRUISE
-			
-			Amount<Mass> intialCruiseMass = 
+			// CRUISE (CONSTANT MACH AND ALTITUDE)
+			aircraftMassAtCruiseStart = 
 					_initialMissionMass
-					.minus(takeOffUsedFuel)
-					.minus(totalClimbFuelUsed);
+					.minus(fuelTakeOff.to(SI.KILOGRAM))
+					.minus(fuelClimb.to(SI.KILOGRAM));
 			
-			Amount<Length> cruiseLength = _firstGuessCruiseLength;
-			_totalMissionRange = Amount.valueOf(0.0, SI.METER);
+			rangeCruise = _firstGuessCruiseLength;
+			_totalRange = Amount.valueOf(0.0, SI.METER);
 			
 			while (
 					Math.abs(
 							(_missionRange.to(NonSI.NAUTICAL_MILE)
+									.plus(rangeSecondClimb.to(NonSI.NAUTICAL_MILE))
 									.plus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE))
-							.minus(_totalMissionRange.to(NonSI.NAUTICAL_MILE)))
+									.plus(rangeSecondDescent.to(NonSI.NAUTICAL_MILE))
+									.plus(rangeHolding.to(NonSI.NAUTICAL_MILE))
+									.plus(rangeThirdDescent.to(NonSI.NAUTICAL_MILE))
+							.minus(_totalRange.to(NonSI.NAUTICAL_MILE)))
 							.divide(_missionRange.to(NonSI.NAUTICAL_MILE)
-									.plus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE)))
+									.plus(rangeSecondClimb.to(NonSI.NAUTICAL_MILE))
+									.plus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE))
+									.plus(rangeSecondDescent.to(NonSI.NAUTICAL_MILE))
+									.plus(rangeHolding.to(NonSI.NAUTICAL_MILE))
+									.plus(rangeThirdDescent.to(NonSI.NAUTICAL_MILE))
+									)
 							.getEstimatedValue()
 							*100
 							) 
@@ -585,7 +866,7 @@ public class MissionProfileCalc {
 				
 				double[] cruiseSteps = MyArrayUtils.linspace(
 						0.0,
-						cruiseLength.doubleValue(SI.METER),
+						rangeCruise.doubleValue(SI.METER),
 						5
 						);
 				
@@ -595,7 +876,7 @@ public class MissionProfileCalc {
 				double[] speedArray = MyArrayUtils.linspace(
 						SpeedCalc.calculateSpeedStall(
 								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-								(intialCruiseMass
+								(aircraftMassAtCruiseStart
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()),
 								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
@@ -612,7 +893,7 @@ public class MissionProfileCalc {
 				dragList.add(
 						DragCalc.calculateDragAndPowerRequired(
 								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-								(intialCruiseMass
+								(aircraftMassAtCruiseStart
 									.times(AtmosphereCalc.g0)
 									.getEstimatedValue()
 									),
@@ -631,7 +912,7 @@ public class MissionProfileCalc {
 				thrustList.add(
 						ThrustCalc.calculateThrustAndPowerAvailable(
 								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-								_theOperatingConditions.getThrottleCruise(),
+								1.0,
 								speedArray,
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineType(), 
@@ -647,12 +928,11 @@ public class MissionProfileCalc {
 						PerformanceCalcUtils.calculateDragThrustIntersection(
 								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
 								speedArray,
-								(intialCruiseMass
-										
+								(aircraftMassAtCruiseStart
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()
 										),
-								_theOperatingConditions.getThrottleCruise(),
+								1.0,
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
@@ -669,18 +949,31 @@ public class MissionProfileCalc {
 				}
 				
 				List<Double> cruiseMissionMachNumber = new ArrayList<>();
-				cruiseMissionMachNumber.add(intersectionList.get(0).getMaxMach());
-				
 				List<Amount<Velocity>> cruiseSpeedList = new ArrayList<>();
-				cruiseSpeedList.add(
-						Amount.valueOf(
-								intersectionList.get(0).getMaxSpeed(),
-								SI.METERS_PER_SECOND
-								).to(NonSI.KNOT)
-						);
+				if(_theOperatingConditions.getMachCruise() <= intersectionList.get(0).getMaxMach()) {
+					cruiseMissionMachNumber.add(_theOperatingConditions.getMachCruise());
+					cruiseSpeedList.add(
+							Amount.valueOf(
+							SpeedCalc.calculateTAS(
+							_theOperatingConditions.getMachCruise(),
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+							),
+							SI.METERS_PER_SECOND).to(NonSI.KNOT)
+							);
+				}
+				else {
+					cruiseMissionMachNumber.add(intersectionList.get(0).getMaxMach());
+					cruiseSpeedList.add(
+							Amount.valueOf(
+									intersectionList.get(0).getMaxSpeed(),
+									SI.METERS_PER_SECOND
+									).to(NonSI.KNOT)
+							);
+					System.err.println("WARNING: (CRUISE - MISSION PROFILE) THE ASSIGNED CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. \nMAXIMUM MACH NUMBER WILL BE USED.");
+				}
 				
 				List<Amount<Mass>> aircraftMassPerStep = new ArrayList<>();
-				aircraftMassPerStep.add(intialCruiseMass);
+				aircraftMassPerStep.add(aircraftMassAtCruiseStart);
 				
 				List<Double> cLSteps = new ArrayList<>();
 				cLSteps.add(
@@ -811,7 +1104,7 @@ public class MissionProfileCalc {
 					thrustList.add(
 							ThrustCalc.calculateThrustAndPowerAvailable(
 									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-									_theOperatingConditions.getThrottleCruise(),
+									1.0,
 									speedArray,
 									EngineOperatingConditionEnum.CRUISE,
 									_theAircraft.getPowerPlant().getEngineType(), 
@@ -830,7 +1123,7 @@ public class MissionProfileCalc {
 											.times(AtmosphereCalc.g0)
 											.getEstimatedValue()
 											),
-									_theOperatingConditions.getThrottleCruise(),
+									1.0,
 									EngineOperatingConditionEnum.CRUISE,
 									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
@@ -846,14 +1139,27 @@ public class MissionProfileCalc {
 						return;
 					}
 					
-					cruiseMissionMachNumber.add(intersectionList.get(j).getMaxMach());
-					
-					cruiseSpeedList.add(
-							Amount.valueOf(
-									intersectionList.get(j).getMaxSpeed(),
-									SI.METERS_PER_SECOND
-									).to(NonSI.KNOT)
-							);
+					if(_theOperatingConditions.getMachCruise() <= intersectionList.get(j).getMaxMach()) {
+						cruiseMissionMachNumber.add(_theOperatingConditions.getMachCruise());
+						cruiseSpeedList.add(
+								Amount.valueOf(
+								SpeedCalc.calculateTAS(
+								_theOperatingConditions.getMachCruise(),
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+								),
+								SI.METERS_PER_SECOND).to(NonSI.KNOT)
+								);
+					}
+					else {
+						cruiseMissionMachNumber.add(intersectionList.get(j).getMaxMach());
+						cruiseSpeedList.add(
+								Amount.valueOf(
+										intersectionList.get(j).getMaxSpeed(),
+										SI.METERS_PER_SECOND
+										).to(NonSI.KNOT)
+								);
+						System.err.println("WARNING: (CRUISE - MISSION PROFILE) THE ASSIGNED CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. \nMAXIMUM MACH NUMBER WILL BE USED.");
+					}
 					
 					cLSteps.add(
 							LiftCalc.calculateLiftCoeff(
@@ -947,38 +1253,68 @@ public class MissionProfileCalc {
 							);
 				}
 				
-				Amount<Mass> totalCruiseFuelUsed =
-						Amount.valueOf(
-								fuelUsedPerStep.stream()
-								.mapToDouble( f -> f.doubleValue(SI.KILOGRAM))
-								.sum(),
-								SI.KILOGRAM
-								); 
-				
-				Amount<Duration> cruiseTime =
+				timeCruise =
 						Amount.valueOf(
 								times.stream()
 								.mapToDouble( t -> t.doubleValue(NonSI.MINUTE))
 								.sum(),
 								NonSI.MINUTE
 								); 
+				fuelCruise =
+						Amount.valueOf(
+								fuelUsedPerStep.stream()
+								.mapToDouble( f -> f.doubleValue(SI.KILOGRAM))
+								.sum(),
+								SI.KILOGRAM
+								);
+				aircraftMassAtCruiseEnding = aircraftMassAtCruiseStart.to(SI.KILOGRAM).minus(fuelCruise.to(SI.KILOGRAM));
 
-				speedAtCruiseStart = cruiseSpeedList.get(0).to(NonSI.KNOT);
-				speedAtCruiseEnding = cruiseSpeedList.get(cruiseSpeedList.size()-1).to(NonSI.KNOT);
+				speedTASAtCruiseStart = cruiseSpeedList.get(0).to(NonSI.KNOT);
+				speedCASAtCruiseStart = cruiseSpeedList.get(0).times(
+						Math.sqrt(
+								AtmosphereCalc.getDensity(_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER))
+								/_theOperatingConditions.getDensityTakeOff().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
+								)
+						).to(NonSI.KNOT);
+				speedTASAtCruiseEnding = cruiseSpeedList.get(cruiseSpeedList.size()-1).to(NonSI.KNOT);
+				speedCASAtCruiseEnding = cruiseSpeedList.get(cruiseSpeedList.size()-1).times(
+						Math.sqrt(
+								AtmosphereCalc.getDensity(_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER))
+								/_theOperatingConditions.getDensityTakeOff().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
+								)
+						).to(NonSI.KNOT);
 				cLAtCruiseStart = cLSteps.get(0);
 				cLAtCruiseEnding = cLSteps.get(cLSteps.size()-1);
+				cDAtCruiseStart = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+						cLAtCruiseStart
+						);
+				cDAtCruiseEnding = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+						cLAtCruiseEnding
+						);
 				dragAtCruiseStart = dragPerStep.get(0).to(NonSI.POUND_FORCE);
 				dragAtCruiseEnding = dragPerStep.get(dragPerStep.size()-1).to(NonSI.POUND_FORCE);
 				thrustAtCruiseStart = dragAtCruiseStart;
 				thrustAtCruiseEnding = dragAtCruiseEnding;
+				rateOfClimbAtCruiseStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+				rateOfClimbAtCruiseEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+				climbAngleAtCruiseStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+				climbAngleAtCruiseEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+				fuelFlowAtCruiseStart = fuelFlows.get(0)*2.20462/0.016667;
+				fuelFlowAtCruiseEnding = fuelFlows.get(fuelFlows.size()-1)*2.20462/0.016667;
+				sfcAtCruiseStart = fuelFlowAtCruiseStart/thrustAtCruiseStart.doubleValue(NonSI.POUND_FORCE);
+				sfcAtCruiseEnding = fuelFlowAtCruiseEnding/thrustAtCruiseEnding.doubleValue(NonSI.POUND_FORCE);
 				
 				//--------------------------------------------------------------------
 				// DESCENT (up to HOLDING altitude)
-				Amount<Mass> intialFirstDescentMass = 
+				aircraftMassAtFirstDescentStart = 
 						_initialMissionMass
-						.minus(takeOffUsedFuel)
-						.minus(totalClimbFuelUsed)
-						.minus(totalCruiseFuelUsed);
+						.minus(fuelTakeOff.to(SI.KILOGRAM))
+						.minus(fuelClimb.to(SI.KILOGRAM))
+						.minus(fuelCruise.to(SI.KILOGRAM));
 
 				DescentCalc theFirstDescentCalculator = new DescentCalc(
 						_theAircraft,
@@ -986,23 +1322,36 @@ public class MissionProfileCalc {
 						_rateOfDescent,
 						_theOperatingConditions.getAltitudeCruise().to(SI.METER),
 						_holdingAltitude.to(SI.METER),
-						intialFirstDescentMass,
+						aircraftMassAtFirstDescentStart,
 						_polarCLClimb,
 						_polarCDClimb
 						);
 
-
 				theFirstDescentCalculator.calculateDescentPerformance();
-				Amount<Length> firstDescentLength = theFirstDescentCalculator.getTotalDescentLength();
-				Amount<Duration> firstDescentTime = theFirstDescentCalculator.getTotalDescentTime();
-				Amount<Mass> firstDescentFuelUsed = theFirstDescentCalculator.getTotalDescentFuelUsed();
+				
+				rangeFirstDescent = theFirstDescentCalculator.getTotalDescentLength().to(NonSI.NAUTICAL_MILE);
+				timeFirstDescent = theFirstDescentCalculator.getTotalDescentTime().to(NonSI.MINUTE);
+				fuelFirstDescent = theFirstDescentCalculator.getTotalDescentFuelUsed().to(SI.KILOGRAM);
+				aircraftMassAtFirstDescentEnding = aircraftMassAtFirstDescentStart.to(SI.KILOGRAM).minus(fuelFirstDescent.to(SI.KILOGRAM));
 
-				speedAtFirstDescentStart = theFirstDescentCalculator.getSpeedListTAS().get(0).to(NonSI.KNOT);
-				speedAtFirstDescentEnding = theFirstDescentCalculator.getSpeedListTAS()
+				speedTASAtFirstDescentStart = theFirstDescentCalculator.getSpeedListTAS().get(0).to(NonSI.KNOT);
+				speedCASAtFirstDescentStart = theFirstDescentCalculator.getSpeedDescentCAS().to(NonSI.KNOT);
+				speedTASAtFirstDescentEnding = theFirstDescentCalculator.getSpeedListTAS()
 						.get(theFirstDescentCalculator.getSpeedListTAS().size()-1)
 						.to(NonSI.KNOT);
+				speedCASAtFirstDescentEnding = theFirstDescentCalculator.getSpeedDescentCAS().to(NonSI.KNOT);
 				cLAtFirstDescentStart = theFirstDescentCalculator.getCLSteps().get(0);
 				cLAtFirstDescentEnding = theFirstDescentCalculator.getCLSteps().get(theFirstDescentCalculator.getCLSteps().size()-1);
+				cDAtFirstDescentStart = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+						MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+						cLAtFirstDescentStart
+						);
+				cDAtFirstDescentEnding = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+						MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+						cLAtFirstDescentEnding
+						);
 				thrustAtFirstDescentStart = theFirstDescentCalculator.getThrustPerStep().get(0).to(NonSI.POUND_FORCE);
 				thrustAtFirstDescentEnding = theFirstDescentCalculator.getThrustPerStep()
 						.get(theFirstDescentCalculator.getThrustPerStep().size()-1)
@@ -1011,6 +1360,20 @@ public class MissionProfileCalc {
 				dragAtFirstDescentEnding = theFirstDescentCalculator.getDragPerStep()
 						.get(theFirstDescentCalculator.getDragPerStep().size()-1)
 						.to(NonSI.POUND_FORCE);
+				rateOfClimbAtFirstDescentStart = theFirstDescentCalculator.getRateOfDescentList().get(0).to(MyUnits.FOOT_PER_MINUTE);
+				rateOfClimbAtFirstDescentEnding = theFirstDescentCalculator.getRateOfDescentList()
+						.get(theFirstDescentCalculator.getRateOfDescentList().size()-1)
+						.to(MyUnits.FOOT_PER_MINUTE);
+				climbAngleAtFirstDescentStart = theFirstDescentCalculator.getDescentAngles().get(0).to(NonSI.DEGREE_ANGLE);
+				climbAngleAtFirstDescentEnding = theFirstDescentCalculator.getDescentAngles()
+						.get(theFirstDescentCalculator.getDescentAngles().size()-1)
+						.to(NonSI.DEGREE_ANGLE);
+				fuelFlowAtFirstDescentStart = theFirstDescentCalculator.getInterpolatedFuelFlowList().get(0)*2.20462/0.016667;
+				fuelFlowAtFirstDescentEnding = theFirstDescentCalculator.getInterpolatedFuelFlowList()
+						.get(theFirstDescentCalculator.getInterpolatedFuelFlowList().size()-1)
+						*2.20462/0.016667;
+				sfcAtFirstDescentStart = fuelFlowAtFirstDescentStart/thrustAtFirstDescentStart.doubleValue(NonSI.POUND_FORCE);
+				sfcAtFirstDescentEnding = fuelFlowAtFirstDescentEnding/thrustAtFirstDescentEnding.doubleValue(NonSI.POUND_FORCE);
 				
 				//--------------------------------------------------------------------
 				// SECOND CLIMB (up to ALTERNATE altitude)
@@ -1024,82 +1387,122 @@ public class MissionProfileCalc {
 						_dragDueToEnigneFailure 
 						);
 
-				Amount<Mass> intialSecondClimbMass = 
-						_initialMissionMass
-						.minus(takeOffUsedFuel)
-						.minus(totalClimbFuelUsed)
-						.minus(totalCruiseFuelUsed)
-						.minus(firstDescentFuelUsed);
+				aircraftMassAtSecondClimbStart = _initialMissionMass.minus(fuelTakeOff.to(SI.KILOGRAM));
 
 				theSecondClimbCalculator.calculateClimbPerformance(
-						intialSecondClimbMass,
-						intialSecondClimbMass,
+						aircraftMassAtSecondClimbStart,
+						aircraftMassAtSecondClimbStart,
 						_holdingAltitude.to(SI.METER),
 						_alternateCruiseAltitude.to(SI.METER),
 						false
 						);
 
-				Amount<Length> totalSecondClimbRange = theSecondClimbCalculator.getClimbTotalRange();
-				Amount<Duration> totalSecondClimbTime = null;
+				rangeSecondClimb = theSecondClimbCalculator.getClimbTotalRange();
+				timeSecondClimb = null;
 				if(_climbSpeed != null)
-					totalSecondClimbTime = theSecondClimbCalculator.getClimbTimeAtSpecificClimbSpeedAEO();
+					timeSecondClimb = theSecondClimbCalculator.getClimbTimeAtSpecificClimbSpeedAEO();
 				else
-					totalSecondClimbTime = theSecondClimbCalculator.getMinimumClimbTimeAEO();
-				Amount<Mass> totalSecondClimbFuelUsed = theSecondClimbCalculator.getClimbTotalFuelUsed();
-				
+					timeSecondClimb = theSecondClimbCalculator.getMinimumClimbTimeAEO();
+				fuelSecondClimb = theSecondClimbCalculator.getClimbTotalFuelUsed();
+
+				aircraftMassAtSecondClimbEnding = aircraftMassAtSecondClimbStart.to(SI.KILOGRAM).minus(fuelSecondClimb.to(SI.KILOGRAM));
+
 				if (_alternateCruiseAltitude.doubleValue(SI.METER) != 15.24) {
-					speedAtSecondClimbStart = theSecondClimbCalculator.getClimbSpeed().to(NonSI.KNOT)
+					speedTASAtSecondClimbStart = theSecondClimbCalculator.getClimbSpeed().to(NonSI.KNOT)
+							.divide(
+									Math.sqrt(
+											OperatingConditions.getAtmosphere(_obstacleLanding.doubleValue(SI.METER))
+											.getDensityRatio()
+											)
+									);
+					speedCASAtSecondClimbStart = theSecondClimbCalculator.getClimbSpeed().to(NonSI.KNOT);
+					speedTASAtSecondClimbEnding = theSecondClimbCalculator.getClimbSpeed().to(NonSI.KNOT)
 							.divide(
 									Math.sqrt(
 											OperatingConditions.getAtmosphere(
-													_holdingAltitude.doubleValue(SI.METER)
+													_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 													)
 											.getDensityRatio()
 											)
 									);
-					speedAtSecondClimbEnding = theSecondClimbCalculator.getClimbSpeed().to(NonSI.KNOT)
-							.divide(
-									Math.sqrt(
-											OperatingConditions.getAtmosphere(
-													_alternateCruiseAltitude.doubleValue(SI.METER)
-													)
-											.getDensityRatio()
-											)
-									);
+					speedCASAtSecondClimbEnding = theSecondClimbCalculator.getClimbSpeed().to(NonSI.KNOT);
+
 					cLAtSecondClimbStart = LiftCalc.calculateLiftCoeff(
-							intialSecondClimbMass.times(AtmosphereCalc.g0).getEstimatedValue(),
-							speedAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND),					
+							aircraftMassAtSecondClimbStart.times(AtmosphereCalc.g0).getEstimatedValue(),
+							speedTASAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND),					
 							_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-							_holdingAltitude.doubleValue(SI.METER)
+							0.0
 							);
 					cLAtSecondClimbEnding = LiftCalc.calculateLiftCoeff(
-							intialSecondClimbMass
-							.minus(totalSecondClimbFuelUsed)
+							aircraftMassAtSecondClimbEnding
 							.times(AtmosphereCalc.g0)
 							.getEstimatedValue(),
-							speedAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND),					
+							speedTASAtSecondClimbEnding.doubleValue(SI.METERS_PER_SECOND),					
 							_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-							_alternateCruiseAltitude.doubleValue(SI.METER)
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+							);
+					cDAtSecondClimbStart = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+							MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+							cLAtSecondClimbStart
+							);
+					cDAtSecondClimbEnding = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+							MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+							cLAtSecondClimbEnding
 							);
 					thrustAtSecondClimbStart = theSecondClimbCalculator.getThrustAtClimbStart().to(NonSI.POUND_FORCE);
 					thrustAtSecondClimbEnding = theSecondClimbCalculator.getThrustAtClimbEnding().to(NonSI.POUND_FORCE);
 					dragAtSecondClimbStart = theSecondClimbCalculator.getDragAtClimbStart().to(NonSI.POUND_FORCE);
 					dragAtSecondClimbEnding = theSecondClimbCalculator.getDragAtClimbEnding().to(NonSI.POUND_FORCE);
+					rateOfClimbAtSecondClimbStart = Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									theSecondClimbCalculator.getRCMapAEO().get(0).getSpeed(), 
+									theSecondClimbCalculator.getRCMapAEO().get(0).getRC(),
+									speedTASAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND)
+									),
+							SI.METERS_PER_SECOND).to(MyUnits.FOOT_PER_MINUTE);
+					rateOfClimbAtSecondClimbEnding = Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getSpeed(), 
+									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getRC(),
+									speedTASAtSecondClimbEnding.doubleValue(SI.METERS_PER_SECOND)
+									),
+							SI.METERS_PER_SECOND).to(MyUnits.FOOT_PER_MINUTE);
+					climbAngleAtSecondClimbStart = Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									theSecondClimbCalculator.getRCMapAEO().get(0).getSpeed(), 
+									theSecondClimbCalculator.getRCMapAEO().get(0).getGamma(),
+									speedTASAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND)
+									),
+							SI.RADIAN).to(NonSI.DEGREE_ANGLE);
+					climbAngleAtSecondClimbStart = Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getSpeed(), 
+									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getGamma(),
+									speedTASAtSecondClimbEnding.doubleValue(SI.METERS_PER_SECOND)
+									),
+							SI.RADIAN).to(NonSI.DEGREE_ANGLE);
+					fuelFlowAtSecondClimbStart = theSecondClimbCalculator.getFuelFlowList().get(0)*2.20462/0.016667;
+					fuelFlowAtSecondClimbEnding = theSecondClimbCalculator.getFuelFlowList().get(theSecondClimbCalculator.getFuelFlowList().size()-1)*2.20462/0.016667;
+					sfcAtSecondClimbStart = fuelFlowAtSecondClimbStart/thrustAtSecondClimbStart.doubleValue(NonSI.POUND_FORCE);
+					sfcAtSecondClimbEnding = fuelFlowAtSecondClimbEnding/thrustAtSecondClimbEnding.doubleValue(NonSI.POUND_FORCE);
 				}
+				
 				//--------------------------------------------------------------------
-				// ALTERNATE CRUISE
-				Amount<Mass> intialAlternateCruiseMass = 
+				// ALTERNATE CRUISE (AT MAX EFFICIENCY)
+				aircraftMassAtAlternateCruiseStart = 
 						_initialMissionMass
-						.minus(takeOffUsedFuel)
-						.minus(totalClimbFuelUsed)
-						.minus(totalCruiseFuelUsed)
-						.minus(firstDescentFuelUsed)
-						.minus(totalSecondClimbFuelUsed);
+						.minus(fuelTakeOff.to(SI.KILOGRAM))
+						.minus(fuelClimb.to(SI.KILOGRAM))
+						.minus(fuelCruise.to(SI.KILOGRAM))
+						.minus(fuelFirstDescent.to(SI.KILOGRAM))
+						.minus(fuelSecondClimb.to(SI.KILOGRAM));
 				
 				double[] speedArrayAlternate = MyArrayUtils.linspace(
 						SpeedCalc.calculateSpeedStall(
 								_alternateCruiseAltitude.doubleValue(SI.METER),
-								(intialAlternateCruiseMass
+								(aircraftMassAtAlternateCruiseStart
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()),
 								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
@@ -1116,7 +1519,7 @@ public class MissionProfileCalc {
 				dragListAlternate.add(
 						DragCalc.calculateDragAndPowerRequired(
 								_alternateCruiseAltitude.doubleValue(SI.METER),
-								(intialAlternateCruiseMass
+								(aircraftMassAtAlternateCruiseStart
 									.times(AtmosphereCalc.g0)
 									.getEstimatedValue()
 									),
@@ -1135,7 +1538,7 @@ public class MissionProfileCalc {
 				thrustListAlternate.add(
 						ThrustCalc.calculateThrustAndPowerAvailable(
 								_alternateCruiseAltitude.doubleValue(SI.METER),
-								_theOperatingConditions.getThrottleCruise(),
+								1.0,
 								speedArrayAlternate,
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineType(), 
@@ -1151,11 +1554,11 @@ public class MissionProfileCalc {
 						PerformanceCalcUtils.calculateDragThrustIntersection(
 								_alternateCruiseAltitude.doubleValue(SI.METER),
 								speedArrayAlternate,
-								(intialAlternateCruiseMass
+								(aircraftMassAtAlternateCruiseStart
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()
 										),
-								_theOperatingConditions.getThrottleCruise(),
+								1.0,
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
@@ -1171,25 +1574,79 @@ public class MissionProfileCalc {
 					return;
 				}
 				
-				List<Double> alternateCruiseMachNumberList = new ArrayList<>();
-				alternateCruiseMachNumberList.add(intersectionListAlternate.get(0).getMaxMach());
+				List<Amount<Mass>> aircraftMassPerStepAlternateCruise = new ArrayList<>();
+				aircraftMassPerStepAlternateCruise.add(aircraftMassAtAlternateCruiseStart);
 				
-				List<Amount<Velocity>> alternateCruiseSpeedList = new ArrayList<>();
-				alternateCruiseSpeedList.add(
-						Amount.valueOf(
-								intersectionListAlternate.get(0).getMaxSpeed(),
-								SI.METERS_PER_SECOND
-								).to(NonSI.KNOT)
+				List<Double> efficiencyAlternateCruiseList = new ArrayList<>();
+				double[] speedEfficiencyArray = MyArrayUtils.linspace(
+						SpeedCalc.calculateSpeedAtCL(
+								aircraftMassPerStepAlternateCruise.get(0).times(AtmosphereCalc.g0).getEstimatedValue(),
+								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
+								AtmosphereCalc.getDensity(_alternateCruiseAltitude.doubleValue(SI.METER)),
+								MyArrayUtils.getMax(_polarCLCruise)
+								),
+						SpeedCalc.calculateSpeedAtCL(
+								aircraftMassPerStepAlternateCruise.get(0).times(AtmosphereCalc.g0).getEstimatedValue(),
+								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
+								AtmosphereCalc.getDensity(_alternateCruiseAltitude.doubleValue(SI.METER)),
+								MyArrayUtils.getMin(_polarCLCruise)
+								),
+						500
+						); 
+				double[] cLEfficiencyAlternateCruiseArray = MyArrayUtils.linspace(
+						MyArrayUtils.getMin(_polarCLCruise),
+						MyArrayUtils.getMax(_polarCLCruise),
+						500
+						); 
+				
+				for (int iSpeed=0; iSpeed<speedEfficiencyArray.length; iSpeed++) {
+					
+					efficiencyAlternateCruiseList.add(
+							cLEfficiencyAlternateCruiseArray[iSpeed]
+							/ MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+									MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+									cLEfficiencyAlternateCruiseArray[iSpeed]
+									)
+							);
+					
+				}
+				
+				int iBestSpeedAlternate = MyArrayUtils.getIndexOfMax(MyArrayUtils.convertToDoublePrimitive(efficiencyAlternateCruiseList));
+				double bestMach = SpeedCalc.calculateMach(
+						_alternateCruiseAltitude.doubleValue(SI.METER), 
+						speedArrayAlternate[iBestSpeedAlternate]
 						);
+				
+				List<Double> alternateCruiseMachNumberList = new ArrayList<>();
+				List<Amount<Velocity>> alternateCruiseSpeedList = new ArrayList<>();
+				if(bestMach <= intersectionListAlternate.get(0).getMaxMach()) {
+					alternateCruiseMachNumberList.add(bestMach);
+					alternateCruiseSpeedList.add(
+							Amount.valueOf(
+							SpeedCalc.calculateTAS(
+									bestMach,
+									_alternateCruiseAltitude.doubleValue(SI.METER)
+							),
+							SI.METERS_PER_SECOND).to(NonSI.KNOT)
+							);
+				}
+				else {
+					alternateCruiseMachNumberList.add(intersectionListAlternate.get(0).getMaxMach());
+					alternateCruiseSpeedList.add(
+							Amount.valueOf(
+									intersectionListAlternate.get(0).getMaxSpeed(),
+									SI.METERS_PER_SECOND
+									).to(NonSI.KNOT)
+							);
+					System.err.println("WARNING: (ALTERNATE CRUISE - MISSION PROFILE) THE BEST ALTERNATE CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. \nMAXIMUM MACH NUMBER WILL BE USED.");
+				}
 				
 				double[] alternateCruiseSteps = MyArrayUtils.linspace(
 						0.0,
 						_alternateCruiseLength.doubleValue(SI.METER),
 						5
 						);
-				
-				List<Amount<Mass>> aircraftMassPerStepAlternateCruise = new ArrayList<>();
-				aircraftMassPerStepAlternateCruise.add(intialAlternateCruiseMass);
 				
 				List<Double> cLStepsAlternateCruise = new ArrayList<>();
 				cLStepsAlternateCruise.add(
@@ -1321,7 +1778,7 @@ public class MissionProfileCalc {
 					thrustListAlternate.add(
 							ThrustCalc.calculateThrustAndPowerAvailable(
 									_alternateCruiseAltitude.doubleValue(SI.METER),
-									_theOperatingConditions.getThrottleCruise(),
+									1.0,
 									speedArrayAlternate,
 									EngineOperatingConditionEnum.CRUISE,
 									_theAircraft.getPowerPlant().getEngineType(), 
@@ -1340,7 +1797,7 @@ public class MissionProfileCalc {
 											.times(AtmosphereCalc.g0)
 											.getEstimatedValue()
 											),
-									_theOperatingConditions.getThrottleCruise(),
+									1.0,
 									EngineOperatingConditionEnum.CRUISE,
 									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
@@ -1352,18 +1809,73 @@ public class MissionProfileCalc {
 					
 					if(intersectionListAlternate.get(j).getMaxSpeed() < 0.01) {
 						_missionProfileStopped = Boolean.TRUE;
-						System.err.println("WARNING: (ALTERNATE CRUISE - MISSION PROFILE) CRUISE MACH NUMBER = 0.0. RETURNING ... ");
+						System.err.println("WARNING: (ALTERNATE CRUISE - MISSION PROFILE) ALTERNATE CRUISE MACH NUMBER = 0.0. RETURNING ... ");
 						return;
 					}
 					
-					alternateCruiseMachNumberList.add(intersectionListAlternate.get(j).getMaxMach());
+					efficiencyAlternateCruiseList = new ArrayList<>();
 					
-					alternateCruiseSpeedList.add(
-							Amount.valueOf(
-									intersectionListAlternate.get(j).getMaxSpeed(),
-									SI.METERS_PER_SECOND
-									).to(NonSI.KNOT)
+					speedEfficiencyArray = MyArrayUtils.linspace(
+							SpeedCalc.calculateSpeedAtCL(
+									aircraftMassPerStepAlternateCruise.get(j).times(AtmosphereCalc.g0).getEstimatedValue(),
+									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
+									AtmosphereCalc.getDensity(_alternateCruiseAltitude.doubleValue(SI.METER)),
+									MyArrayUtils.getMax(_polarCLCruise)
+									),
+							SpeedCalc.calculateSpeedAtCL(
+									aircraftMassPerStepAlternateCruise.get(j).times(AtmosphereCalc.g0).getEstimatedValue(),
+									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
+									AtmosphereCalc.getDensity(_alternateCruiseAltitude.doubleValue(SI.METER)),
+									MyArrayUtils.getMin(_polarCLCruise)
+									),
+							500
+							); 
+					cLEfficiencyAlternateCruiseArray = MyArrayUtils.linspace(
+							MyArrayUtils.getMin(_polarCLCruise),
+							MyArrayUtils.getMax(_polarCLCruise),
+							500
+							); 
+					
+					for (int iSpeed=0; iSpeed<speedEfficiencyArray.length; iSpeed++) {
+						
+						efficiencyAlternateCruiseList.add(
+								cLEfficiencyAlternateCruiseArray[iSpeed]
+								/ MyMathUtils.getInterpolatedValue1DLinear(
+										MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+										MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+										cLEfficiencyAlternateCruiseArray[iSpeed]
+										)
+								);
+						
+					}
+					
+					iBestSpeedAlternate = MyArrayUtils.getIndexOfMax(MyArrayUtils.convertToDoublePrimitive(efficiencyAlternateCruiseList));
+					bestMach = SpeedCalc.calculateMach(
+							_alternateCruiseAltitude.doubleValue(SI.METER), 
+							speedArrayAlternate[iBestSpeedAlternate]
 							);
+					
+					if(bestMach <= intersectionListAlternate.get(j).getMaxMach()) {
+						alternateCruiseMachNumberList.add(bestMach);
+						alternateCruiseSpeedList.add(
+								Amount.valueOf(
+								SpeedCalc.calculateTAS(
+										bestMach,
+										_alternateCruiseAltitude.doubleValue(SI.METER)
+								),
+								SI.METERS_PER_SECOND).to(NonSI.KNOT)
+								);
+					}
+					else {
+						alternateCruiseMachNumberList.add(intersectionListAlternate.get(j).getMaxMach());
+						alternateCruiseSpeedList.add(
+								Amount.valueOf(
+										intersectionListAlternate.get(j).getMaxSpeed(),
+										SI.METERS_PER_SECOND
+										).to(NonSI.KNOT)
+								);
+						System.err.println("WARNING: (ALTERNATE CRUISE - MISSION PROFILE) THE BEST ALTERNATE CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. \nMAXIMUM MACH NUMBER WILL BE USED.");
+					}
 					
 					cLStepsAlternateCruise.add(
 							LiftCalc.calculateLiftCoeff(
@@ -1459,57 +1971,74 @@ public class MissionProfileCalc {
 							);
 				}
 				
-				Amount<Mass> totalAlternateCruiseFuelUsed =
-						Amount.valueOf(
-								fuelUsedPerStepAlternateCruise.stream()
-								.mapToDouble( f -> f.doubleValue(SI.KILOGRAM))
-								.sum(),
-								SI.KILOGRAM
-								); 
-				
-				Amount<Duration> alternateCruiseTime =
+				rangeAlternateCruise = _alternateCruiseLength.to(NonSI.NAUTICAL_MILE);
+				timeAlternateCruise =
 						Amount.valueOf(
 								timesAlternateCruise.stream()
 								.mapToDouble( t -> t.doubleValue(NonSI.MINUTE))
 								.sum(),
 								NonSI.MINUTE
 								);
+				fuelAlternateCruise =
+						Amount.valueOf(
+								fuelUsedPerStepAlternateCruise.stream()
+								.mapToDouble( f -> f.doubleValue(SI.KILOGRAM))
+								.sum(),
+								SI.KILOGRAM
+								);
+				aircraftMassAtAlternateCruiseEnding = aircraftMassAtAlternateCruiseStart.to(SI.KILOGRAM).minus(fuelAlternateCruise.to(SI.KILOGRAM));
 
 				if (_alternateCruiseAltitude.doubleValue(SI.METER) != 15.24) {
-					speedAtAlternateCruiseStart =
-							Amount.valueOf(
-									SpeedCalc.calculateTAS(
-											alternateCruiseMachNumberList.get(0),
-											_alternateCruiseAltitude.doubleValue(SI.METER)
-											),
-									SI.METERS_PER_SECOND
-									).to(NonSI.KNOT);
-					speedAtAlternateCruiseEnding = 
-							Amount.valueOf(
-									SpeedCalc.calculateTAS(
-											alternateCruiseMachNumberList.get(0),
-											_alternateCruiseAltitude.doubleValue(SI.METER)
-											),
-									SI.METERS_PER_SECOND
-									).to(NonSI.KNOT);
+					speedTASAtAlternateCruiseStart = alternateCruiseSpeedList.get(0).to(NonSI.KNOT);
+					speedTASAtAlternateCruiseEnding = alternateCruiseSpeedList.get(alternateCruiseSpeedList.size()-1).to(NonSI.KNOT);
+					speedCASAtAlternateCruiseStart = alternateCruiseSpeedList.get(0).times(
+							Math.sqrt(
+									AtmosphereCalc.getDensity(_alternateCruiseAltitude.doubleValue(SI.METER))
+									/_theOperatingConditions.getDensityTakeOff().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
+									)
+							).to(NonSI.KNOT);
+					speedCASAtAlternateCruiseEnding = alternateCruiseSpeedList.get(alternateCruiseSpeedList.size()-1).times(
+							Math.sqrt(
+									AtmosphereCalc.getDensity(_alternateCruiseAltitude.doubleValue(SI.METER))
+									/_theOperatingConditions.getDensityTakeOff().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
+									)
+							).to(NonSI.KNOT);
 					cLAtAlternateCruiseStart = cLStepsAlternateCruise.get(0);
 					cLAtAlternateCruiseEnding = cLStepsAlternateCruise.get(cLStepsAlternateCruise.size()-1);
+					cDAtAlternateCruiseStart = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+							MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+							cLAtAlternateCruiseStart
+							);
+					cDAtAlternateCruiseEnding = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+							MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+							cLAtAlternateCruiseEnding
+							);
 					dragAtAlternateCruiseStart = dragPerStepAlternateCruise.get(0).to(NonSI.POUND_FORCE);
 					dragAtAlternateCruiseEnding = dragPerStepAlternateCruise.get(dragPerStepAlternateCruise.size()-1).to(NonSI.POUND_FORCE);
 					thrustAtAlternateCruiseStart = dragAtAlternateCruiseStart;
 					thrustAtAlternateCruiseEnding = dragAtAlternateCruiseEnding;
+					rateOfClimbAtAlternateCruiseStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+					rateOfClimbAtAlternateCruiseEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+					climbAngleAtAlternateCruiseStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+					climbAngleAtAlternateCruiseEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+					fuelFlowAtAlternateCruiseStart = fuelFlowsAlternateCruise.get(0)*2.20462/0.016667;
+					fuelFlowAtAlternateCruiseEnding = fuelFlowsAlternateCruise.get(fuelFlowsAlternateCruise.size()-1)*2.20462/0.016667;
+					sfcAtAlternateCruiseStart = fuelFlowAtAlternateCruiseStart/thrustAtAlternateCruiseStart.doubleValue(NonSI.POUND_FORCE);
+					sfcAtAlternateCruiseEnding = fuelFlowAtAlternateCruiseEnding/thrustAtAlternateCruiseEnding.doubleValue(NonSI.POUND_FORCE);
 				}
-				
+
 				//--------------------------------------------------------------------
 				// DESCENT (up to HOLDING altitude)
-				Amount<Mass> intialSecondDescentMass = 
+				aircraftMassAtSecondDescentStart = 
 						_initialMissionMass
-						.minus(takeOffUsedFuel)
-						.minus(totalClimbFuelUsed)
-						.minus(totalCruiseFuelUsed)
-						.minus(firstDescentFuelUsed)
-						.minus(totalSecondClimbFuelUsed)
-						.minus(totalAlternateCruiseFuelUsed);
+						.minus(fuelTakeOff.to(SI.KILOGRAM))
+						.minus(fuelClimb.to(SI.KILOGRAM))
+						.minus(fuelCruise.to(SI.KILOGRAM))
+						.minus(fuelFirstDescent.to(SI.KILOGRAM))
+						.minus(fuelSecondClimb.to(SI.KILOGRAM))
+						.minus(fuelAlternateCruise.to(SI.KILOGRAM));
 
 				DescentCalc theSecondDescentCalculator = new DescentCalc(
 						_theAircraft,
@@ -1517,22 +2046,36 @@ public class MissionProfileCalc {
 						_rateOfDescent,
 						_alternateCruiseAltitude.to(SI.METER),
 						_holdingAltitude.to(SI.METER),
-						intialSecondDescentMass,
+						aircraftMassAtSecondDescentStart,
 						_polarCLClimb,
 						_polarCDClimb
 						);
 
 				theSecondDescentCalculator.calculateDescentPerformance();
-				Amount<Length> secondDescentLength = theSecondDescentCalculator.getTotalDescentLength();
-				Amount<Duration> secondDescentTime = theSecondDescentCalculator.getTotalDescentTime();
-				Amount<Mass> secondDescentFuelUsed = theSecondDescentCalculator.getTotalDescentFuelUsed();
+				
+				rangeSecondDescent = theSecondDescentCalculator.getTotalDescentLength().to(NonSI.NAUTICAL_MILE);
+				timeSecondDescent = theSecondDescentCalculator.getTotalDescentTime().to(NonSI.MINUTE);
+				fuelSecondDescent = theSecondDescentCalculator.getTotalDescentFuelUsed().to(SI.KILOGRAM);
+				aircraftMassAtSecondDescentEnding = aircraftMassAtSecondDescentStart.to(SI.KILOGRAM).minus(fuelSecondDescent.to(SI.KILOGRAM));
 
-				speedAtSecondDescentStart = theSecondDescentCalculator.getSpeedListTAS().get(0).to(NonSI.KNOT);
-				speedAtSecondDescentEnding = theSecondDescentCalculator.getSpeedListTAS()
+				speedTASAtSecondDescentStart = theSecondDescentCalculator.getSpeedListTAS().get(0).to(NonSI.KNOT);
+				speedTASAtSecondDescentEnding = theSecondDescentCalculator.getSpeedListTAS()
 						.get(theSecondDescentCalculator.getSpeedListTAS().size()-1)
 						.to(NonSI.KNOT);
+				speedCASAtSecondDescentStart = theSecondDescentCalculator.getSpeedDescentCAS().to(NonSI.KNOT);
+				speedCASAtSecondDescentEnding = theSecondDescentCalculator.getSpeedDescentCAS().to(NonSI.KNOT);
 				cLAtSecondDescentStart = theSecondDescentCalculator.getCLSteps().get(0);
 				cLAtSecondDescentEnding = theSecondDescentCalculator.getCLSteps().get(theSecondDescentCalculator.getCLSteps().size()-1);
+				cDAtSecondDescentStart = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+						MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+						cLAtSecondDescentStart
+						);
+				cDAtSecondDescentEnding = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+						MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+						cLAtSecondDescentEnding
+						);
 				thrustAtSecondDescentStart = theSecondDescentCalculator.getThrustPerStep().get(0).to(NonSI.POUND_FORCE);
 				thrustAtSecondDescentEnding = theSecondDescentCalculator.getThrustPerStep()
 						.get(theSecondDescentCalculator.getThrustPerStep().size()-1)
@@ -1541,65 +2084,212 @@ public class MissionProfileCalc {
 				dragAtSecondDescentEnding = theSecondDescentCalculator.getDragPerStep()
 						.get(theSecondDescentCalculator.getDragPerStep().size()-1)
 						.to(NonSI.POUND_FORCE);
+				rateOfClimbAtSecondDescentStart = theSecondDescentCalculator.getRateOfDescentList().get(0).to(MyUnits.FOOT_PER_MINUTE);
+				rateOfClimbAtSecondDescentEnding = theSecondDescentCalculator.getRateOfDescentList()
+						.get(theSecondDescentCalculator.getRateOfDescentList().size()-1)
+						.to(MyUnits.FOOT_PER_MINUTE);
+				climbAngleAtSecondDescentStart = theSecondDescentCalculator.getDescentAngles().get(0).to(NonSI.DEGREE_ANGLE);
+				climbAngleAtSecondDescentEnding = theSecondDescentCalculator.getDescentAngles()
+						.get(theSecondDescentCalculator.getDescentAngles().size()-1)
+						.to(NonSI.DEGREE_ANGLE);
+				fuelFlowAtSecondDescentStart = theSecondDescentCalculator.getInterpolatedFuelFlowList().get(0)*2.20462/0.016667;
+				fuelFlowAtSecondDescentEnding = theSecondDescentCalculator.getInterpolatedFuelFlowList()
+						.get(theSecondDescentCalculator.getInterpolatedFuelFlowList().size()-1)
+						*2.20462/0.016667;
+				sfcAtSecondDescentStart = fuelFlowAtSecondDescentStart/thrustAtSecondDescentStart.doubleValue(NonSI.POUND_FORCE);
+				sfcAtSecondDescentEnding = fuelFlowAtSecondDescentEnding/thrustAtSecondDescentEnding.doubleValue(NonSI.POUND_FORCE);
 				
 				//--------------------------------------------------------------------
-				// HOLDING
-				Amount<Mass> intialHoldingMass = 
+				// HOLDING (BEST ENDURANCE)
+				aircraftMassAtHoldingStart = 
 						_initialMissionMass
-						.minus(takeOffUsedFuel)
-						.minus(totalClimbFuelUsed)
-						.minus(totalCruiseFuelUsed)
-						.minus(firstDescentFuelUsed)
-						.minus(totalSecondClimbFuelUsed)
-						.minus(totalAlternateCruiseFuelUsed)
-						.minus(secondDescentFuelUsed);
+						.minus(fuelTakeOff.to(SI.KILOGRAM))
+						.minus(fuelClimb.to(SI.KILOGRAM))
+						.minus(fuelCruise.to(SI.KILOGRAM))
+						.minus(fuelFirstDescent.to(SI.KILOGRAM))
+						.minus(fuelSecondClimb.to(SI.KILOGRAM))
+						.minus(fuelAlternateCruise.to(SI.KILOGRAM))
+						.minus(fuelSecondDescent.to(SI.KILOGRAM));
 
-				List<Amount<Mass>> aircraftMassListHolding = new ArrayList<>();
-				List<Double> cLListHolding = new ArrayList<>();
-				List<Amount<Force>> dragListHolding = new ArrayList<>();
-				List<Double> phiListHolding = new ArrayList<>();
-				List<Double> fuelFlowListHolding = new ArrayList<>();
-				List<Amount<Mass>> fuelUsedPerStepHolding = new ArrayList<>();
-				
-				double[] timeHolding = MyArrayUtils.linspace(
+				double[] timeHoldingArray = MyArrayUtils.linspace(
 						0.0,
 						_holdingDuration.doubleValue(NonSI.MINUTE),
 						5
 						);
 				
-				double speedTASHolding = SpeedCalc.calculateTAS(
-						_holdingMachNumber,
-						_holdingAltitude.doubleValue(SI.METER)
+				double[] speedArrayHolding = MyArrayUtils.linspace(
+						SpeedCalc.calculateSpeedStall(
+								_holdingAltitude.doubleValue(SI.METER),
+								(aircraftMassAtHoldingStart
+										.times(AtmosphereCalc.g0)
+										.getEstimatedValue()),
+								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+								MyArrayUtils.getMax(_polarCLClimb)
+								),
+						SpeedCalc.calculateTAS(
+								1.0,
+								_holdingAltitude.doubleValue(SI.METER)
+								),
+						nPointSpeed
 						);
 				
-				aircraftMassListHolding.add(intialHoldingMass);
+				List<DragMap> dragListHolding = new ArrayList<>();
+				dragListHolding.add(
+						DragCalc.calculateDragAndPowerRequired(
+								_holdingAltitude.doubleValue(SI.METER),
+								(aircraftMassAtHoldingStart
+									.times(AtmosphereCalc.g0)
+									.getEstimatedValue()
+									),
+								speedArrayHolding,
+								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+								MyArrayUtils.getMax(_polarCLClimb),
+								MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+								MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+								_theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
+								meanAirfoil.getThicknessToChordRatio(),
+								meanAirfoil.getType()
+								)
+						);
 				
-				cLListHolding.add(
+				List<ThrustMap> thrustListHolding = new ArrayList<>();
+				thrustListHolding.add(
+						ThrustCalc.calculateThrustAndPowerAvailable(
+								_holdingAltitude.doubleValue(SI.METER),
+								1.0,
+								speedArrayHolding,
+								EngineOperatingConditionEnum.CRUISE,
+								_theAircraft.getPowerPlant().getEngineType(), 
+								_theAircraft.getPowerPlant(),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_theAircraft.getPowerPlant().getEngineNumber(),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+								)
+						);
+
+				List<DragThrustIntersectionMap> intersectionListHolding = new ArrayList<>();
+				intersectionListHolding.add(
+						PerformanceCalcUtils.calculateDragThrustIntersection(
+								_holdingAltitude.doubleValue(SI.METER),
+								speedArrayHolding,
+								(aircraftMassAtHoldingStart
+										.times(AtmosphereCalc.g0)
+										.getEstimatedValue()
+										),
+								1.0,
+								EngineOperatingConditionEnum.CRUISE,
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+								MyArrayUtils.getMax(_polarCLClimb),
+								dragListHolding,
+								thrustListHolding
+								)
+						);
+				
+				if(intersectionListHolding.get(0).getMaxSpeed() < 0.01) {
+					_missionProfileStopped = Boolean.TRUE;
+					System.err.println("WARNING: (HOLDING - MISSION PROFILE) HOLDING MACH NUMBER = 0.0. RETURNING ... ");
+					return;
+				}
+				
+				List<Amount<Mass>> aircraftMassPerStepHolding = new ArrayList<>();
+				aircraftMassPerStepHolding.add(aircraftMassAtHoldingStart);
+				
+				List<Double> efficiencyHoldingList = new ArrayList<>();
+				double[] speedEfficiencyHoldingArray = MyArrayUtils.linspace(
+						SpeedCalc.calculateSpeedAtCL(
+								aircraftMassPerStepHolding.get(0).times(AtmosphereCalc.g0).getEstimatedValue(),
+								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
+								AtmosphereCalc.getDensity(_alternateCruiseAltitude.doubleValue(SI.METER)),
+								MyArrayUtils.getMax(_polarCLCruise)
+								),
+						SpeedCalc.calculateSpeedAtCL(
+								aircraftMassPerStepHolding.get(0).times(AtmosphereCalc.g0).getEstimatedValue(),
+								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
+								AtmosphereCalc.getDensity(_alternateCruiseAltitude.doubleValue(SI.METER)),
+								MyArrayUtils.getMin(_polarCLCruise)
+								),
+						500
+						); 
+				double[] cLEfficiencyHoldingArray = MyArrayUtils.linspace(
+						MyArrayUtils.getMin(_polarCLClimb),
+						MyArrayUtils.getMax(_polarCLClimb),
+						500
+						); 
+				for (int iSpeed=0; iSpeed<speedEfficiencyHoldingArray.length; iSpeed++) {
+					
+					efficiencyHoldingList.add(
+							cLEfficiencyHoldingArray[iSpeed]
+							/ MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+									MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+									cLEfficiencyHoldingArray[iSpeed]
+									)
+							);
+					
+				}
+				
+				int iBestSpeedHolding = MyArrayUtils.getIndexOfMax(MyArrayUtils.convertToDoublePrimitive(efficiencyHoldingList));
+				double bestMachHolding = SpeedCalc.calculateMach(
+						_holdingAltitude.doubleValue(SI.METER), 
+						speedArrayHolding[iBestSpeedHolding]
+						);
+				
+				List<Double> holdingMachNumberList = new ArrayList<>();
+				List<Amount<Velocity>> holdingSpeedList = new ArrayList<>();
+				if(bestMachHolding <= intersectionListHolding.get(0).getMaxMach()) {
+					holdingMachNumberList.add(bestMach);
+					holdingSpeedList.add(
+							Amount.valueOf(
+							SpeedCalc.calculateTAS(
+									bestMachHolding,
+									_holdingAltitude.doubleValue(SI.METER)
+							),
+							SI.METERS_PER_SECOND).to(NonSI.KNOT)
+							);
+				}
+				else {
+					holdingMachNumberList.add(intersectionListHolding.get(0).getMaxMach());
+					holdingSpeedList.add(
+							Amount.valueOf(
+									intersectionListHolding.get(0).getMaxSpeed(),
+									SI.METERS_PER_SECOND
+									).to(NonSI.KNOT)
+							);
+					System.err.println("WARNING: (HOLDING - MISSION PROFILE) THE BEST HOLDING MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. \nMAXIMUM MACH NUMBER WILL BE USED.");
+				}
+				
+				List<Double> cLStepsHolding = new ArrayList<>();
+				cLStepsHolding.add(
 						LiftCalc.calculateLiftCoeff(
-								aircraftMassListHolding.get(0).times(AtmosphereCalc.g0).getEstimatedValue(),
-								speedTASHolding,
+								aircraftMassPerStepHolding.get(0).doubleValue(SI.KILOGRAM)
+									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+								holdingSpeedList.get(0).doubleValue(SI.METERS_PER_SECOND),
 								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								_holdingAltitude.doubleValue(SI.METER)
-								)				
+								)
 						);
-				dragListHolding.add(
+				
+				List<Amount<Force>> dragPerStepHolding = new ArrayList<>();
+				dragPerStepHolding.add(
 						Amount.valueOf(
 								DragCalc.calculateDragAtSpeed(
-										aircraftMassListHolding.get(0).doubleValue(SI.KILOGRAM)
+										aircraftMassPerStepHolding.get(0).doubleValue(SI.KILOGRAM)
 											*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 										_holdingAltitude.doubleValue(SI.METER),
 										_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-										speedTASHolding,
+										holdingSpeedList.get(0).doubleValue(SI.METERS_PER_SECOND),
 										MyMathUtils.getInterpolatedValue1DLinear(
-												MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-												MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-												cLListHolding.get(0))
+												MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+												MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+												cLStepsHolding.get(0))
 										),
 								SI.NEWTON
 								)
 						);
-				phiListHolding.add(
-						dragListHolding.get(0).to(SI.NEWTON)
+				
+				List<Double> phiHolding = new ArrayList<>();
+				phiHolding.add(dragPerStepHolding.get(0).to(SI.NEWTON)
 						.divide(
 								ThrustCalc.calculateThrustDatabase(
 										_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
@@ -1610,22 +2300,240 @@ public class MissionProfileCalc {
 										EngineOperatingConditionEnum.CRUISE,
 										_theAircraft.getPowerPlant(),
 										_holdingAltitude.doubleValue(SI.METER), 
-										_holdingMachNumber
+										holdingMachNumberList.get(0)
 										)
 								)
 						.getEstimatedValue()
 						);
-				if(phiListHolding.get(0) < 1.0) {
+				
+				List<Double> fuelFlowsHolding = new ArrayList<>();
+				if(phiHolding.get(0) > 1.0) {
+					phiHolding.remove(0);
+					phiHolding.add(0, 1.0);
+				}
+				if(_calculateSFCHolding)
+					fuelFlowsHolding.add(
+							dragPerStepHolding.get(0).doubleValue(SI.NEWTON)
+							*(0.224809)*(0.454/60)
+							*phiHolding.get(0)
+							*EngineDatabaseManager.getSFC(
+									holdingMachNumberList.get(0),
+									_holdingAltitude.doubleValue(SI.METER), 
+									EngineDatabaseManager.getThrustRatio(
+											holdingMachNumberList.get(0),
+											_holdingAltitude.doubleValue(SI.METER), 
+											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+											_theAircraft.getPowerPlant().getEngineType(), 
+											EngineOperatingConditionEnum.CRUISE, 
+											_theAircraft.getPowerPlant()
+											),
+									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+									_theAircraft.getPowerPlant().getEngineType(), 
+									EngineOperatingConditionEnum.CRUISE, 
+									_theAircraft.getPowerPlant()
+									)
+							);
+				else
+					fuelFlowsHolding.add(
+							dragPerStepHolding.get(0).doubleValue(SI.NEWTON)
+							*(0.224809)*(0.454/60)
+							*_sfcFunctionHolding.value(phiHolding.get(0))
+							);
+				
+				List<Amount<Mass>> fuelUsedPerStepHolding = new ArrayList<>();
+				fuelUsedPerStepHolding.add(
+						Amount.valueOf(
+								fuelFlowsHolding.get(0)
+								*(timeHoldingArray[1]-timeHoldingArray[0]),
+								SI.KILOGRAM
+								)
+						);
+				
+				for(int j=1; j<timeHoldingArray.length-1; j++) {
+					
+					aircraftMassPerStepHolding.add(
+							aircraftMassPerStepHolding.get(j-1)
+							.minus(Amount.valueOf(
+									fuelUsedPerStepHolding.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum(),
+									SI.KILOGRAM)
+									)
+							);
+					
+					dragListHolding.add(
+							DragCalc.calculateDragAndPowerRequired(
+									_holdingAltitude.doubleValue(SI.METER),
+									(aircraftMassPerStepHolding.get(j)
+										.times(AtmosphereCalc.g0)
+										.getEstimatedValue()
+										),
+									speedArrayHolding,
+									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+									MyArrayUtils.getMax(_polarCLClimb),
+									MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+									MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+									_theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
+									meanAirfoil.getThicknessToChordRatio(),
+									meanAirfoil.getType()
+									)
+							);
+					
+					thrustListHolding.add(
+							ThrustCalc.calculateThrustAndPowerAvailable(
+									_holdingAltitude.doubleValue(SI.METER),
+									1.0,
+									speedArrayHolding,
+									EngineOperatingConditionEnum.CRUISE,
+									_theAircraft.getPowerPlant().getEngineType(), 
+									_theAircraft.getPowerPlant(),
+									_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+									_theAircraft.getPowerPlant().getEngineNumber(),
+									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+									)
+							);
+
+					intersectionListHolding.add(
+							PerformanceCalcUtils.calculateDragThrustIntersection(
+									_holdingAltitude.doubleValue(SI.METER),
+									speedArrayHolding,
+									(aircraftMassPerStepHolding.get(j)
+											.times(AtmosphereCalc.g0)
+											.getEstimatedValue()
+											),
+									1.0,
+									EngineOperatingConditionEnum.CRUISE,
+									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+									MyArrayUtils.getMax(_polarCLClimb),
+									dragListHolding,
+									thrustListHolding
+									)
+							);
+					
+					if(intersectionListHolding.get(j).getMaxSpeed() < 0.01) {
+						_missionProfileStopped = Boolean.TRUE;
+						System.err.println("WARNING: (HOLDING - MISSION PROFILE) HOLDING MACH NUMBER = 0.0. RETURNING ... ");
+						return;
+					}
+					
+					efficiencyHoldingList = new ArrayList<>();
+					speedEfficiencyHoldingArray = MyArrayUtils.linspace(
+							SpeedCalc.calculateSpeedAtCL(
+									aircraftMassPerStepHolding.get(j).times(AtmosphereCalc.g0).getEstimatedValue(),
+									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
+									AtmosphereCalc.getDensity(_alternateCruiseAltitude.doubleValue(SI.METER)),
+									MyArrayUtils.getMax(_polarCLCruise)
+									),
+							SpeedCalc.calculateSpeedAtCL(
+									aircraftMassPerStepHolding.get(j).times(AtmosphereCalc.g0).getEstimatedValue(),
+									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
+									AtmosphereCalc.getDensity(_alternateCruiseAltitude.doubleValue(SI.METER)),
+									MyArrayUtils.getMin(_polarCLCruise)
+									),
+							500
+							); 
+					cLEfficiencyHoldingArray = MyArrayUtils.linspace(
+							MyArrayUtils.getMin(_polarCLClimb),
+							MyArrayUtils.getMax(_polarCLClimb),
+							500
+							); 
+					for (int iSpeed=0; iSpeed<speedEfficiencyHoldingArray.length; iSpeed++) {
+						
+						efficiencyHoldingList.add(
+								cLEfficiencyHoldingArray[iSpeed]
+								/ MyMathUtils.getInterpolatedValue1DLinear(
+										MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+										MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+										cLEfficiencyHoldingArray[iSpeed]
+										)
+								);
+					}
+					
+					iBestSpeedHolding = MyArrayUtils.getIndexOfMax(MyArrayUtils.convertToDoublePrimitive(efficiencyHoldingList));
+					bestMachHolding = SpeedCalc.calculateMach(
+							_holdingAltitude.doubleValue(SI.METER), 
+							speedArrayHolding[iBestSpeedHolding]
+							);
+					
+					if(bestMachHolding <= intersectionListHolding.get(j).getMaxMach()) {
+						holdingMachNumberList.add(bestMach);
+						holdingSpeedList.add(
+								Amount.valueOf(
+								SpeedCalc.calculateTAS(
+										bestMachHolding,
+										_holdingAltitude.doubleValue(SI.METER)
+								),
+								SI.METERS_PER_SECOND).to(NonSI.KNOT)
+								);
+					}
+					else {
+						holdingMachNumberList.add(intersectionListHolding.get(j).getMaxMach());
+						holdingSpeedList.add(
+								Amount.valueOf(
+										intersectionListHolding.get(j).getMaxSpeed(),
+										SI.METERS_PER_SECOND
+										).to(NonSI.KNOT)
+								);
+						System.err.println("WARNING: (HOLDING - MISSION PROFILE) THE BEST HOLDING CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. \nMAXIMUM MACH NUMBER WILL BE USED.");
+					}
+					
+					cLStepsHolding.add(
+							LiftCalc.calculateLiftCoeff(
+									aircraftMassPerStepHolding.get(j).doubleValue(SI.KILOGRAM)
+										*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+									holdingSpeedList.get(j).doubleValue(SI.METERS_PER_SECOND),
+									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+									_holdingAltitude.doubleValue(SI.METER)
+									)
+							);
+					dragPerStepHolding.add(
+							Amount.valueOf(
+									DragCalc.calculateDragAtSpeed(
+											aircraftMassPerStepHolding.get(j).doubleValue(SI.KILOGRAM)
+												*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+											_holdingAltitude.doubleValue(SI.METER),
+											_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+											holdingSpeedList.get(j).doubleValue(SI.METERS_PER_SECOND),
+											MyMathUtils.getInterpolatedValue1DLinear(
+													MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+													MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+													cLStepsHolding.get(j))
+											),
+									SI.NEWTON
+									)
+							);
+					
+					phiHolding.add(dragPerStepHolding.get(j).to(SI.NEWTON)
+							.divide(
+									ThrustCalc.calculateThrustDatabase(
+											_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+											_theAircraft.getPowerPlant().getEngineNumber(),
+											1.0,
+											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+											_theAircraft.getPowerPlant().getEngineType(),
+											EngineOperatingConditionEnum.CRUISE,
+											_theAircraft.getPowerPlant(),
+											_holdingAltitude.doubleValue(SI.METER), 
+											holdingMachNumberList.get(j)
+											)
+									)
+							.getEstimatedValue()
+							);
+					
+					if(phiHolding.get(j) > 1.0) {
+						phiHolding.remove(j);
+						phiHolding.add(j, 1.0);
+					}
+					
 					if(_calculateSFCHolding)
-						fuelFlowListHolding.add(
-								dragListHolding.get(0).doubleValue(SI.NEWTON)
+						fuelFlowsHolding.add(
+								dragPerStepHolding.get(j).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
-								*phiListHolding.get(0)
+								*phiHolding.get(j)
 								*EngineDatabaseManager.getSFC(
-										_holdingMachNumber,
+										holdingMachNumberList.get(j),
 										_holdingAltitude.doubleValue(SI.METER), 
 										EngineDatabaseManager.getThrustRatio(
-												_holdingMachNumber,
+												holdingMachNumberList.get(j),
 												_holdingAltitude.doubleValue(SI.METER), 
 												_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 												_theAircraft.getPowerPlant().getEngineType(), 
@@ -1639,151 +2547,85 @@ public class MissionProfileCalc {
 										)
 								);
 					else
-						fuelFlowListHolding.add(
-								dragListHolding.get(0).doubleValue(SI.NEWTON)
+						fuelFlowsHolding.add(
+								dragPerStepHolding.get(j).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
-								*_sfcFunctionHolding.value(phiListHolding.get(0))
+								*_sfcFunctionHolding.value(phiHolding.get(j))
 								);
-				}
-				fuelUsedPerStepHolding.add(
-						Amount.valueOf(
-								fuelFlowListHolding.get(0)
-								*(timeHolding[1]-timeHolding[0]),
-								SI.KILOGRAM
-								)
-						);
-				
-				for(int j=1; j<timeHolding.length-1; j++) {
 					
-					aircraftMassListHolding.add(
-							aircraftMassListHolding.get(j-1)
-							.minus(fuelUsedPerStepHolding.get(j-1))
-							);
-					
-					cLListHolding.add(
-							LiftCalc.calculateLiftCoeff(
-									aircraftMassListHolding.get(j).times(AtmosphereCalc.g0).getEstimatedValue(),
-									speedTASHolding,
-									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-									_holdingAltitude.doubleValue(SI.METER)
-									)				
-							);
-					dragListHolding.add(
-							Amount.valueOf(
-									DragCalc.calculateDragAtSpeed(
-											aircraftMassListHolding.get(j).doubleValue(SI.KILOGRAM)
-												*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-											_holdingAltitude.doubleValue(SI.METER),
-											_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-											speedTASHolding,
-											MyMathUtils.getInterpolatedValue1DLinear(
-													MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-													MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-													cLListHolding.get(j))
-											),
-									SI.NEWTON
-									)
-							);
-					phiListHolding.add(
-							dragListHolding.get(j).to(SI.NEWTON)
-							.divide(
-									ThrustCalc.calculateThrustDatabase(
-											_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-											_theAircraft.getPowerPlant().getEngineNumber(),
-											1.0,
-											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-											_theAircraft.getPowerPlant().getEngineType(),
-											EngineOperatingConditionEnum.CRUISE,
-											_theAircraft.getPowerPlant(),
-											_holdingAltitude.doubleValue(SI.METER), 
-											_holdingMachNumber
-											)
-									)
-							.getEstimatedValue()
-							);
-					if(phiListHolding.get(j) < 1.0) {
-						if(_calculateSFCHolding)
-							fuelFlowListHolding.add(
-									dragListHolding.get(j).doubleValue(SI.NEWTON)
-									*(0.224809)*(0.454/60)
-									*phiListHolding.get(j)
-									*EngineDatabaseManager.getSFC(
-											_holdingMachNumber,
-											_holdingAltitude.doubleValue(SI.METER), 
-											EngineDatabaseManager.getThrustRatio(
-													_holdingMachNumber,
-													_holdingAltitude.doubleValue(SI.METER), 
-													_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-													_theAircraft.getPowerPlant().getEngineType(), 
-													EngineOperatingConditionEnum.CRUISE, 
-													_theAircraft.getPowerPlant()
-													),
-											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-											_theAircraft.getPowerPlant().getEngineType(), 
-											EngineOperatingConditionEnum.CRUISE, 
-											_theAircraft.getPowerPlant()
-											)
-									);
-						else
-							fuelFlowListHolding.add(
-									dragListHolding.get(j).doubleValue(SI.NEWTON)
-									*(0.224809)*(0.454/60)
-									*_sfcFunctionHolding.value(phiListHolding.get(j))
-									);
-					}
 					fuelUsedPerStepHolding.add(
 							Amount.valueOf(
-									fuelFlowListHolding.get(j)
-									*(timeHolding[j+1]-timeHolding[j]),
+									fuelFlowsHolding.get(j)
+									*(timeHoldingArray[j+1]-timeHoldingArray[j]),
 									SI.KILOGRAM
 									)
 							);
-					
 				}
 				
-				Amount<Mass> totalHoldingFuelUsed = 
+				rangeHolding = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+				timeHolding = _holdingDuration.to(NonSI.MINUTE);
+				fuelHolding =
 						Amount.valueOf(
 								fuelUsedPerStepHolding.stream()
 								.mapToDouble( f -> f.doubleValue(SI.KILOGRAM))
 								.sum(),
 								SI.KILOGRAM
-								); 
+								);
+				aircraftMassAtHoldingEnding = aircraftMassAtHoldingStart.to(SI.KILOGRAM).minus(fuelHolding.to(SI.KILOGRAM));
 
-				speedAtHoldingStart = 
-						Amount.valueOf(
-								SpeedCalc.calculateTAS(
-										_holdingMachNumber,
-										_holdingAltitude.doubleValue(SI.METER)
-										),
-								SI.METERS_PER_SECOND
-								).to(NonSI.KNOT);
-				speedAtHoldingEnding = 
-						Amount.valueOf(
-								SpeedCalc.calculateTAS(
-										_holdingMachNumber,
-										_holdingAltitude.doubleValue(SI.METER)
-										),
-								SI.METERS_PER_SECOND
-								).to(NonSI.KNOT);
-				cLAtHoldingStart = cLListHolding.get(0);
-				cLAtHoldingEnding = cLListHolding.get(cLListHolding.size()-1);
-				dragAtHoldingStart = dragListHolding.get(0).to(NonSI.POUND_FORCE);
-				dragAtHoldingEnding = dragListHolding.get(dragListHolding.size()-1).to(NonSI.POUND_FORCE);
-				thrustAtHoldingStart = dragAtHoldingStart;
-				thrustAtHoldingEnding = dragAtHoldingEnding;
+				if (_holdingDuration.doubleValue(NonSI.MINUTE) != 0.0) {
+					speedTASAtHoldingStart = holdingSpeedList.get(0).to(NonSI.KNOT);
+					speedTASAtHoldingEnding = holdingSpeedList.get(holdingSpeedList.size()-1).to(NonSI.KNOT);
+					speedCASAtHoldingStart = holdingSpeedList.get(0).times(
+							Math.sqrt(
+									AtmosphereCalc.getDensity(_holdingAltitude.doubleValue(SI.METER))
+									/_theOperatingConditions.getDensityTakeOff().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
+									)
+							).to(NonSI.KNOT);
+					speedCASAtHoldingEnding = holdingSpeedList.get(holdingSpeedList.size()-1).times(
+							Math.sqrt(
+									AtmosphereCalc.getDensity(_holdingAltitude.doubleValue(SI.METER))
+									/_theOperatingConditions.getDensityTakeOff().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
+									)
+							).to(NonSI.KNOT);
+					cLAtHoldingStart = cLStepsHolding.get(0);
+					cLAtHoldingEnding = cLStepsHolding.get(cLStepsHolding.size()-1);
+					cDAtHoldingStart = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+							MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+							cLAtHoldingStart
+							);
+					cDAtHoldingEnding = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+							MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+							cLAtHoldingEnding
+							);
+					dragAtHoldingStart = dragPerStepHolding.get(0).to(NonSI.POUND_FORCE);
+					dragAtHoldingEnding = dragPerStepHolding.get(dragPerStepHolding.size()-1).to(NonSI.POUND_FORCE);
+					thrustAtHoldingStart = dragAtHoldingStart;
+					thrustAtHoldingEnding = dragAtHoldingEnding;
+					rateOfClimbAtHoldingStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+					rateOfClimbAtHoldingEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+					climbAngleAtHoldingStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+					climbAngleAtHoldingEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+					fuelFlowAtHoldingStart = fuelFlowsHolding.get(0)*2.20462/0.016667;
+					fuelFlowAtHoldingEnding = fuelFlowsHolding.get(fuelFlowsHolding.size()-1)*2.20462/0.016667;
+					sfcAtHoldingStart = fuelFlowAtHoldingStart/thrustAtHoldingStart.doubleValue(NonSI.POUND_FORCE);
+					sfcAtHoldingEnding = fuelFlowAtHoldingEnding/thrustAtHoldingEnding.doubleValue(NonSI.POUND_FORCE);
+				}
 				
 				//--------------------------------------------------------------------
 				// DESCENT (up to LANDING altitude)
-				Amount<Mass> intialThirdDescentMass = 
+				aircraftMassAtThirdDescentStart = 
 						_initialMissionMass
-						.minus(takeOffUsedFuel)
-						.minus(totalClimbFuelUsed)
-						.minus(totalCruiseFuelUsed)
-						.minus(firstDescentFuelUsed)
-						.minus(totalSecondClimbFuelUsed)
-						.minus(totalAlternateCruiseFuelUsed)
-						.minus(secondDescentFuelUsed)
-						.minus(totalHoldingFuelUsed);
+						.minus(fuelTakeOff.to(SI.KILOGRAM))
+						.minus(fuelClimb.to(SI.KILOGRAM))
+						.minus(fuelCruise.to(SI.KILOGRAM))
+						.minus(fuelFirstDescent.to(SI.KILOGRAM))
+						.minus(fuelSecondClimb.to(SI.KILOGRAM))
+						.minus(fuelAlternateCruise.to(SI.KILOGRAM))
+						.minus(fuelSecondDescent.to(SI.KILOGRAM))
+						.minus(fuelHolding.to(SI.KILOGRAM));
 
 				DescentCalc theThirdDescentCalculator = new DescentCalc(
 						_theAircraft,
@@ -1791,22 +2633,36 @@ public class MissionProfileCalc {
 						_rateOfDescent,
 						_holdingAltitude.to(SI.METER),
 						Amount.valueOf(15.24, SI.METER),
-						intialThirdDescentMass,
+						aircraftMassAtThirdDescentStart,
 						_polarCLClimb,
 						_polarCDClimb
 						);
 
 				theThirdDescentCalculator.calculateDescentPerformance();
-				Amount<Length> thirdDescentLength = theThirdDescentCalculator.getTotalDescentLength();
-				Amount<Duration> thirdDescentTime = theThirdDescentCalculator.getTotalDescentTime();
-				Amount<Mass> thirdDescentFuelUsed = theThirdDescentCalculator.getTotalDescentFuelUsed();
+				
+				rangeThirdDescent = theThirdDescentCalculator.getTotalDescentLength().to(NonSI.NAUTICAL_MILE);
+				timeThirdDescent = theThirdDescentCalculator.getTotalDescentTime().to(NonSI.MINUTE);
+				fuelThirdDescent = theThirdDescentCalculator.getTotalDescentFuelUsed().to(SI.KILOGRAM);
+				aircraftMassAtThirdDescentEnding = aircraftMassAtThirdDescentStart.to(SI.KILOGRAM).minus(fuelThirdDescent.to(SI.KILOGRAM));
 
-				speedAtThirdDescentStart = theThirdDescentCalculator.getSpeedListTAS().get(0).to(NonSI.KNOT);
-				speedAtThirdDescentEnding = theThirdDescentCalculator.getSpeedListTAS()
+				speedTASAtThirdDescentStart = theThirdDescentCalculator.getSpeedListTAS().get(0).to(NonSI.KNOT);
+				speedTASAtThirdDescentEnding = theThirdDescentCalculator.getSpeedListTAS()
 						.get(theThirdDescentCalculator.getSpeedListTAS().size()-1)
 						.to(NonSI.KNOT);
+				speedCASAtThirdDescentStart = theThirdDescentCalculator.getSpeedDescentCAS().to(NonSI.KNOT);
+				speedCASAtThirdDescentEnding = theThirdDescentCalculator.getSpeedDescentCAS().to(NonSI.KNOT);
 				cLAtThirdDescentStart = theThirdDescentCalculator.getCLSteps().get(0);
 				cLAtThirdDescentEnding = theThirdDescentCalculator.getCLSteps().get(theThirdDescentCalculator.getCLSteps().size()-1);
+				cDAtThirdDescentStart = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+						MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+						cLAtThirdDescentStart
+						);
+				cDAtThirdDescentEnding = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+						MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+						cLAtThirdDescentEnding
+						);
 				thrustAtThirdDescentStart = theThirdDescentCalculator.getThrustPerStep().get(0).to(NonSI.POUND_FORCE);
 				thrustAtThirdDescentEnding = theThirdDescentCalculator.getThrustPerStep()
 						.get(theThirdDescentCalculator.getThrustPerStep().size()-1)
@@ -1815,25 +2671,39 @@ public class MissionProfileCalc {
 				dragAtThirdDescentEnding = theThirdDescentCalculator.getDragPerStep()
 						.get(theThirdDescentCalculator.getDragPerStep().size()-1)
 						.to(NonSI.POUND_FORCE);
+				rateOfClimbAtThirdDescentStart = theThirdDescentCalculator.getRateOfDescentList().get(0).to(MyUnits.FOOT_PER_MINUTE);
+				rateOfClimbAtThirdDescentEnding = theThirdDescentCalculator.getRateOfDescentList()
+						.get(theThirdDescentCalculator.getRateOfDescentList().size()-1)
+						.to(MyUnits.FOOT_PER_MINUTE);
+				climbAngleAtThirdDescentStart = theThirdDescentCalculator.getDescentAngles().get(0).to(NonSI.DEGREE_ANGLE);
+				climbAngleAtThirdDescentEnding = theThirdDescentCalculator.getDescentAngles()
+						.get(theThirdDescentCalculator.getDescentAngles().size()-1)
+						.to(NonSI.DEGREE_ANGLE);
+				fuelFlowAtThirdDescentStart = theThirdDescentCalculator.getInterpolatedFuelFlowList().get(0)*2.20462/0.016667;
+				fuelFlowAtThirdDescentEnding = theThirdDescentCalculator.getInterpolatedFuelFlowList()
+						.get(theThirdDescentCalculator.getInterpolatedFuelFlowList().size()-1)
+						*2.20462/0.016667;
+				sfcAtThirdDescentStart = fuelFlowAtThirdDescentStart/thrustAtThirdDescentStart.doubleValue(NonSI.POUND_FORCE);
+				sfcAtThirdDescentEnding = fuelFlowAtThirdDescentEnding/thrustAtThirdDescentEnding.doubleValue(NonSI.POUND_FORCE);
 				
 				//--------------------------------------------------------------------
 				// LANDING
-				Amount<Mass> intialLandingMass = 
+				aircraftMassAtLandingStart = 
 						_initialMissionMass
-						.minus(takeOffUsedFuel)
-						.minus(totalClimbFuelUsed)
-						.minus(totalCruiseFuelUsed)
-						.minus(firstDescentFuelUsed)
-						.minus(totalSecondClimbFuelUsed)
-						.minus(totalAlternateCruiseFuelUsed)
-						.minus(secondDescentFuelUsed)
-						.minus(totalHoldingFuelUsed)
-						.minus(thirdDescentFuelUsed);
+						.minus(fuelTakeOff.to(SI.KILOGRAM))
+						.minus(fuelClimb.to(SI.KILOGRAM))
+						.minus(fuelCruise.to(SI.KILOGRAM))
+						.minus(fuelFirstDescent.to(SI.KILOGRAM))
+						.minus(fuelSecondClimb.to(SI.KILOGRAM))
+						.minus(fuelAlternateCruise.to(SI.KILOGRAM))
+						.minus(fuelSecondDescent.to(SI.KILOGRAM))
+						.minus(fuelHolding.to(SI.KILOGRAM))
+						.minus(fuelThirdDescent.to(SI.KILOGRAM));
 
 				LandingCalc theLandingCalculator = new LandingCalc(
 						_theAircraft, 
 						_theOperatingConditions,
-						intialLandingMass,
+						aircraftMassAtLandingStart,
 						_kApproach,
 						_kFlare,
 						_kTouchDown,
@@ -1856,20 +2726,43 @@ public class MissionProfileCalc {
 
 				theLandingCalculator.calculateLandingDistance();
 
-				Amount<Length> landingDistance = theLandingCalculator.getsTotal();
-				Amount<Duration> landingDuration = theLandingCalculator.getTime().get(theLandingCalculator.getTime().size()-1);
-				Amount<Mass> landingFuelUsed = 
-						Amount.valueOf(
-								landingDuration.to(NonSI.MINUTE).times(_landingFuelFlow).getEstimatedValue(),
-								SI.KILOGRAM
+				rangeLanding = theLandingCalculator.getsTotal().to(NonSI.NAUTICAL_MILE);			
+				timeLanding = theLandingCalculator.getTime().get(theLandingCalculator.getTime().size()-1);
+				fuelLanding = Amount.valueOf(
+						timeLanding.to(NonSI.MINUTE).times(_landingFuelFlow).getEstimatedValue(),
+						SI.KILOGRAM
+						);
+				aircraftMassAtLandingEnding = aircraftMassAtLandingStart.to(SI.KILOGRAM).minus(fuelLanding.to(SI.KILOGRAM));
+						
+				speedTASAtLandingStart = theLandingCalculator.getSpeed()
+						.get(0)
+						.to(NonSI.KNOT);
+				speedCASAtLandingStart = theLandingCalculator.getSpeed()
+						.get(0)
+						.to(NonSI.KNOT)
+						.times(
+								Math.sqrt(
+										AtmosphereCalc.getDensity(_obstacleLanding.doubleValue(SI.METER))
+										/_theOperatingConditions.getDensityLanding().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
+										)
 								);
-
-				speedAtLandingStart = theLandingCalculator.getvA().to(NonSI.KNOT);
+				speedTASAtLandingEnding = theLandingCalculator.getSpeed()
+						.get(theLandingCalculator.getSpeed().size()-1)
+						.to(NonSI.KNOT);
+				speedCASAtLandingEnding = theLandingCalculator.getSpeed()
+						.get(theLandingCalculator.getSpeed().size()-1)
+						.to(NonSI.KNOT)
+						.times(
+								Math.sqrt(
+										AtmosphereCalc.getDensity(_obstacleLanding.doubleValue(SI.METER))
+										/_theOperatingConditions.getDensityLanding().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
+										)
+								);
 				cLAtLandingStart = LiftCalc.calculateLiftCoeff(
-						intialLandingMass.times(AtmosphereCalc.g0).getEstimatedValue(),
-						speedAtLandingStart.doubleValue(SI.METERS_PER_SECOND),
+						aircraftMassAtLandingStart.to(SI.KILOGRAM).times(AtmosphereCalc.g0.to(SI.METERS_PER_SQUARE_SECOND)).getEstimatedValue(),
+						theLandingCalculator.getvA().doubleValue(SI.METERS_PER_SECOND),
 						_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-						15.24
+						_obstacleLanding.doubleValue(SI.METER)
 						);
 				cLAtLandingEnding = theLandingCalculator.getcLground();
 				cDAtLandingStart = 
@@ -1884,109 +2777,148 @@ public class MissionProfileCalc {
 								MyArrayUtils.convertToDoublePrimitive(_polarCDLanding),
 								cLAtLandingEnding
 								);
-				thrustAtLandingGroundRollStart = theLandingCalculator.getThrust().get(0).to(NonSI.POUND_FORCE);
-				thrustAtLandingGroundRollEnding = theLandingCalculator.getThrust()
+				rateOfClimbAtLandingStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+				rateOfClimbAtLandingEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
+				climbAngleAtLandingStart = Amount.valueOf(-3.0, NonSI.DEGREE_ANGLE);
+				climbAngleAtLandingEnding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+				dragAtLandingStart = Amount.valueOf( 
+						DragCalc.calculateDragAtSpeed(
+						aircraftMassAtLandingStart.to(SI.KILOGRAM).times(AtmosphereCalc.g0.to(SI.METERS_PER_SQUARE_SECOND)).getEstimatedValue(), 
+						_obstacleLanding.doubleValue(SI.METER),
+						_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+						theLandingCalculator.getvA().doubleValue(SI.METERS_PER_SECOND),
+						cDAtLandingStart
+						),
+						SI.NEWTON
+						).to(NonSI.POUND_FORCE);
+				dragAtLandingEnding = theLandingCalculator.getDrag()
+						.get(theLandingCalculator.getDrag().size()-1)
+						.to(NonSI.POUND_FORCE);
+				thrustAtLandingStart = Amount.valueOf(
+						(climbAngleAtLandingStart.doubleValue(SI.RADIAN)
+						*aircraftMassAtLandingStart.to(SI.KILOGRAM).times(AtmosphereCalc.g0.to(SI.METERS_PER_SQUARE_SECOND)).getEstimatedValue())
+						+ (cDAtLandingStart/cLAtLandingStart),
+						SI.NEWTON
+						).to(NonSI.POUND_FORCE);
+				thrustAtLandingEnding = theLandingCalculator.getThrust()
 						.get(theLandingCalculator.getThrust().size()-1)
 						.to(NonSI.POUND_FORCE);
-				dragAtLandingStart = theLandingCalculator.getDrag().get(0).to(NonSI.POUND_FORCE);
+				fuelFlowAtLandingStart = _landingFuelFlow*2.20462/0.016667;
+				fuelFlowAtLandingEnding = _landingFuelFlow*2.20462/0.016667;
+				sfcAtLandingStart = fuelFlowAtLandingStart/thrustAtLandingStart.doubleValue(NonSI.POUND_FORCE);
+				sfcAtLandingEnding = fuelFlowAtLandingEnding/thrustAtLandingEnding.doubleValue(NonSI.POUND_FORCE);
 
 				//--------------------------------------------------------------------
 				// ALTITUDE
 				_altitudeList.clear();
 				
-				_altitudeList.add(Amount.valueOf(0.0, SI.METER));
-				_altitudeList.add(theTakeOffCalculator.getObstacle().to(SI.METER));
-				_altitudeList.add(_theOperatingConditions.getAltitudeCruise().to(SI.METER));
-				_altitudeList.add(_theOperatingConditions.getAltitudeCruise().to(SI.METER));
-				_altitudeList.add(_holdingAltitude.to(SI.METER));
-				_altitudeList.add(_alternateCruiseAltitude.to(SI.METER));
-				_altitudeList.add(_alternateCruiseAltitude.to(SI.METER));
-				_altitudeList.add(_holdingAltitude.to(SI.METER));
-				_altitudeList.add(_holdingAltitude.to(SI.METER));
-				_altitudeList.add(Amount.valueOf(15.24, SI.METER)); // landing obstacle
+				_altitudeList.add(Amount.valueOf(0.0, NonSI.FOOT));
+				_altitudeList.add(_obstacleTakeOff.to(NonSI.FOOT));
+				_altitudeList.add(_theOperatingConditions.getAltitudeCruise().to(NonSI.FOOT));
+				_altitudeList.add(_theOperatingConditions.getAltitudeCruise().to(NonSI.FOOT));
+				_altitudeList.add(_holdingAltitude.to(NonSI.FOOT));
+				_altitudeList.add(_alternateCruiseAltitude.to(NonSI.FOOT));
+				_altitudeList.add(_alternateCruiseAltitude.to(NonSI.FOOT));
+				_altitudeList.add(_holdingAltitude.to(NonSI.FOOT));
+				_altitudeList.add(_holdingAltitude.to(NonSI.FOOT));
+				_altitudeList.add(_obstacleLanding.to(NonSI.FOOT)); 
 				_altitudeList.add(Amount.valueOf(0.0, SI.METER)); 
 
 				//--------------------------------------------------------------------
 				// RANGE
 				_rangeList.clear();
 				
-				_rangeList.add(Amount.valueOf(0.0, SI.KILOMETER));
-				_rangeList.add(_rangeList.get(0).plus(takeOffDistanceAOE.to(SI.KILOMETER)));
-				_rangeList.add(_rangeList.get(1).plus(totalClimbRange.to(SI.KILOMETER)));
-				_rangeList.add(_rangeList.get(2).plus(cruiseLength.to(SI.KILOMETER)));
-				_rangeList.add(_rangeList.get(3).plus(firstDescentLength.to(SI.KILOMETER)));
-				_rangeList.add(_rangeList.get(4).plus(totalSecondClimbRange.to(SI.KILOMETER)));
-				_rangeList.add(_rangeList.get(5).plus(_alternateCruiseLength.to(SI.KILOMETER)));
-				_rangeList.add(_rangeList.get(6).plus(secondDescentLength.to(SI.KILOMETER)));
-				_rangeList.add(_rangeList.get(7));
-				_rangeList.add(_rangeList.get(8).plus(thirdDescentLength).to(SI.KILOMETER));
-				_rangeList.add(_rangeList.get(9).plus(landingDistance).to(SI.KILOMETER));
+				_rangeList.add(Amount.valueOf(0.0, NonSI.NAUTICAL_MILE));
+				_rangeList.add(_rangeList.get(0).plus(rangeTakeOff.to(NonSI.NAUTICAL_MILE)));
+				_rangeList.add(_rangeList.get(1).plus(rangeClimb.to(NonSI.NAUTICAL_MILE)));
+				_rangeList.add(_rangeList.get(2).plus(rangeCruise.to(NonSI.NAUTICAL_MILE)));
+				_rangeList.add(_rangeList.get(3).plus(rangeFirstDescent.to(NonSI.NAUTICAL_MILE)));
+				_rangeList.add(_rangeList.get(4).plus(rangeSecondClimb.to(NonSI.NAUTICAL_MILE)));
+				_rangeList.add(_rangeList.get(5).plus(rangeAlternateCruise.to(NonSI.NAUTICAL_MILE)));
+				_rangeList.add(_rangeList.get(6).plus(rangeSecondDescent.to(NonSI.NAUTICAL_MILE)));
+				_rangeList.add(_rangeList.get(7).plus(rangeHolding.to(NonSI.NAUTICAL_MILE)));
+				_rangeList.add(_rangeList.get(8).plus(rangeThirdDescent).to(NonSI.NAUTICAL_MILE));
+				_rangeList.add(_rangeList.get(9).plus(rangeLanding).to(NonSI.NAUTICAL_MILE));
 
-				_totalMissionRange = _rangeList.get(_rangeList.size()-1);
+				_totalRange = _rangeList.get(_rangeList.size()-1);
 
 				//--------------------------------------------------------------------
 				// TIME
 				_timeList.clear();
 				
 				_timeList.add(Amount.valueOf(0.0, NonSI.MINUTE));
-				_timeList.add(_timeList.get(0).plus(takeOffDuration.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(1).plus(totalClimbTime.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(2).plus(cruiseTime.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(3).plus(firstDescentTime.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(4).plus(totalSecondClimbTime.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(5).plus(alternateCruiseTime.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(6).plus(secondDescentTime.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(7).plus(_holdingDuration.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(8).plus(thirdDescentTime.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(9).plus(landingDuration.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(0).plus(timeTakeOff.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(1).plus(timeClimb.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(2).plus(timeCruise.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(3).plus(timeFirstDescent.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(4).plus(timeSecondClimb.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(5).plus(timeAlternateCruise.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(6).plus(timeSecondDescent.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(7).plus(timeHolding.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(8).plus(timeThirdDescent.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(9).plus(timeLanding.to(NonSI.MINUTE)));
 
-				_totalMissionTime = _timeList.get(_timeList.size()-1);
+				_totalTime = _timeList.get(_timeList.size()-1);
+				_blockTime = timeTakeOff.to(NonSI.MINUTE)
+						.plus(timeClimb.to(NonSI.MINUTE))
+						.plus(timeCruise.to(NonSI.MINUTE))
+						.plus(timeFirstDescent.to(NonSI.MINUTE))
+						.plus(timeLanding.to(NonSI.MINUTE));
 
 				//--------------------------------------------------------------------
 				// USED FUEL
 				_fuelUsedList.clear();
 				
 				_fuelUsedList.add(Amount.valueOf(0.0, SI.KILOGRAM));
-				_fuelUsedList.add(_fuelUsedList.get(0).plus(takeOffUsedFuel.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(1).plus(totalClimbFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(2).plus(totalCruiseFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(3).plus(firstDescentFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(4).plus(totalSecondClimbFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(5).plus(totalAlternateCruiseFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(6).plus(secondDescentFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(7).plus(totalHoldingFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(8).plus(thirdDescentFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(9).plus(landingFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(0).plus(fuelTakeOff.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(1).plus(fuelClimb.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(2).plus(fuelCruise.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(3).plus(fuelFirstDescent.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(4).plus(fuelSecondClimb.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(5).plus(fuelAlternateCruise.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(6).plus(fuelSecondDescent.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(7).plus(fuelHolding.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(8).plus(fuelThirdDescent.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(9).plus(fuelLanding.to(SI.KILOGRAM)));
 
-
-				_totalFuelUsed = _fuelUsedList.get(_fuelUsedList.size()-1);
+				_totalFuel = _fuelUsedList.get(_fuelUsedList.size()-1);
+				_blockFuel = fuelTakeOff.to(SI.KILOGRAM)
+						.plus(fuelClimb.to(SI.KILOGRAM))
+						.plus(fuelCruise.to(SI.KILOGRAM))
+						.plus(fuelFirstDescent.to(SI.KILOGRAM))
+						.plus(fuelLanding.to(SI.KILOGRAM));
 
 				//--------------------------------------------------------------------
 				// WEIGHT VARIATION
 				_massList.clear();
 				
-				_massList.add(_initialMissionMass);
-				_massList.add(intialClimbMass);
-				_massList.add(intialCruiseMass);
-				_massList.add(intialFirstDescentMass);
-				_massList.add(intialSecondClimbMass);
-				_massList.add(intialAlternateCruiseMass);
-				_massList.add(intialSecondDescentMass);
-				_massList.add(intialHoldingMass);
-				_massList.add(intialThirdDescentMass);
-				_massList.add(intialLandingMass);
-				_massList.add(intialLandingMass.minus(landingFuelUsed));
+				_massList.add(_initialMissionMass.to(SI.KILOGRAM));
+				_massList.add(aircraftMassAtTakeOffEnding.to(SI.KILOGRAM));
+				_massList.add(aircraftMassAtClimbEnding.to(SI.KILOGRAM));
+				_massList.add(aircraftMassAtCruiseEnding.to(SI.KILOGRAM));
+				_massList.add(aircraftMassAtFirstDescentEnding.to(SI.KILOGRAM));
+				_massList.add(aircraftMassAtSecondClimbEnding.to(SI.KILOGRAM));
+				_massList.add(aircraftMassAtAlternateCruiseEnding.to(SI.KILOGRAM));
+				_massList.add(aircraftMassAtSecondDescentEnding.to(SI.KILOGRAM));
+				_massList.add(aircraftMassAtHoldingEnding.to(SI.KILOGRAM));
+				_massList.add(aircraftMassAtThirdDescentEnding.to(SI.KILOGRAM));
+				_massList.add(aircraftMassAtLandingEnding.to(SI.KILOGRAM));
 
 				_endMissionMass = _massList.get(_massList.size()-1);
 			
 				//.....................................................................
 				// NEW ITERATION CRUISE LENGTH
-				cruiseLength = cruiseLength.to(NonSI.NAUTICAL_MILE).plus( 
+				rangeCruise = rangeCruise.to(NonSI.NAUTICAL_MILE).plus( 
 						(_missionRange.to(NonSI.NAUTICAL_MILE)
-								.plus(_alternateCruiseLength).to(NonSI.NAUTICAL_MILE))
-						.minus(_totalMissionRange).to(NonSI.NAUTICAL_MILE)
+								.plus(rangeSecondClimb).to(NonSI.NAUTICAL_MILE)
+								.plus(_alternateCruiseLength).to(NonSI.NAUTICAL_MILE)
+								.plus(rangeSecondDescent).to(NonSI.NAUTICAL_MILE)
+								.plus(rangeHolding).to(NonSI.NAUTICAL_MILE)
+								.plus(rangeThirdDescent).to(NonSI.NAUTICAL_MILE)
+								)
+						.minus(_totalRange).to(NonSI.NAUTICAL_MILE)
 						);
-				if(cruiseLength.doubleValue(NonSI.NAUTICAL_MILE) <= 0.0) {
+				if(rangeCruise.doubleValue(NonSI.NAUTICAL_MILE) <= 0.0) {
 					_missionProfileStopped = Boolean.TRUE;
 					System.err.println("WARNING: (NEW CRUISE LENGTH EVALUATION - MISSION PROFILE) THE NEW CRUISE LENGTH IS LESS OR EQUAL TO ZERO, RETURNING ... ");
 					return;
@@ -1995,7 +2927,7 @@ public class MissionProfileCalc {
 			
 			//.....................................................................
 			// NEW INITIAL MISSION MASS
-			newInitialFuelMass = _totalFuelUsed.to(SI.KILOGRAM).divide(1-_fuelReserve); 
+			newInitialFuelMass = _totalFuel.to(SI.KILOGRAM).divide(1-_fuelReserve); 
 			_initialMissionMass = _operatingEmptyMass
 					.plus(_singlePassengerMass.times(_passengersNumber))
 					.plus(newInitialFuelMass); 
@@ -2022,26 +2954,48 @@ public class MissionProfileCalc {
 		//----------------------------------------------------------------------
 		
 		//......................................................................
-		_speedTASMissionList.add(Amount.valueOf(0.0, NonSI.KNOT));
-		_speedTASMissionList.add(speedAtTakeOffEnding.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtClimbStart.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtClimbEnding.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtCruiseStart.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtCruiseEnding.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtFirstDescentStart.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtFirstDescentEnding.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtSecondClimbStart.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtSecondClimbEnding.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtAlternateCruiseStart.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtAlternateCruiseEnding.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtSecondDescentStart.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtSecondDescentEnding.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtHoldingStart.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtHoldingEnding.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtThirdDescentStart.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtThirdDescentEnding.to(NonSI.KNOT));
-		_speedTASMissionList.add(speedAtLandingStart.to(NonSI.KNOT));
-		_speedTASMissionList.add(Amount.valueOf(0.0, NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtTakeOffStart.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtTakeOffEnding.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtClimbStart.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtClimbEnding.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtCruiseStart.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtCruiseEnding.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtFirstDescentStart.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtFirstDescentEnding.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtSecondClimbStart.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtSecondClimbEnding.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtAlternateCruiseStart.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtAlternateCruiseEnding.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtSecondDescentStart.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtSecondDescentEnding.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtHoldingStart.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtHoldingEnding.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtThirdDescentStart.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtThirdDescentEnding.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtLandingStart.to(NonSI.KNOT));
+		_speedCASMissionList.add(speedCASAtLandingEnding.to(NonSI.KNOT));
+		
+		//......................................................................
+		_speedTASMissionList.add(speedTASAtTakeOffStart.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtTakeOffEnding.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtClimbStart.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtClimbEnding.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtCruiseStart.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtCruiseEnding.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtFirstDescentStart.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtFirstDescentEnding.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtSecondClimbStart.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtSecondClimbEnding.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtAlternateCruiseStart.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtAlternateCruiseEnding.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtSecondDescentStart.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtSecondDescentEnding.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtHoldingStart.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtHoldingEnding.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtThirdDescentStart.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtThirdDescentEnding.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtLandingStart.to(NonSI.KNOT));
+		_speedTASMissionList.add(speedTASAtLandingEnding.to(NonSI.KNOT));
 		
 		//......................................................................
 		_machMissionList.add(0.0);
@@ -2180,122 +3134,25 @@ public class MissionProfileCalc {
 		//......................................................................
 		_dragCoefficientMissionList.add(cDAtTakeOffStart);
 		_dragCoefficientMissionList.add(cDAtTakeOffEnding);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
-						cLAtClimbStart
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
-						cLAtClimbEnding
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtCruiseStart
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtCruiseEnding
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtFirstDescentStart
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtFirstDescentEnding
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
-						cLAtSecondClimbStart
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
-						cLAtSecondClimbEnding
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtAlternateCruiseStart
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtAlternateCruiseEnding
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtSecondDescentStart
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtSecondDescentEnding
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtHoldingStart
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtHoldingEnding
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtThirdDescentStart
-						)
-				);
-		_dragCoefficientMissionList.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
-						MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-						cLAtThirdDescentEnding
-						)
-				);
+		_dragCoefficientMissionList.add(cDAtClimbStart);
+		_dragCoefficientMissionList.add(cDAtClimbEnding);
+		_dragCoefficientMissionList.add(cDAtCruiseStart);
+		_dragCoefficientMissionList.add(cDAtCruiseEnding);
+		_dragCoefficientMissionList.add(cDAtFirstDescentStart);
+		_dragCoefficientMissionList.add(cDAtFirstDescentEnding);
+		_dragCoefficientMissionList.add(cDAtSecondClimbStart);
+		_dragCoefficientMissionList.add(cDAtSecondClimbEnding);
+		_dragCoefficientMissionList.add(cDAtAlternateCruiseStart);
+		_dragCoefficientMissionList.add(cDAtAlternateCruiseEnding);
+		_dragCoefficientMissionList.add(cDAtSecondDescentStart);
+		_dragCoefficientMissionList.add(cDAtSecondDescentEnding);
+		_dragCoefficientMissionList.add(cDAtHoldingStart);
+		_dragCoefficientMissionList.add(cDAtHoldingEnding);
+		_dragCoefficientMissionList.add(cDAtThirdDescentStart);
+		_dragCoefficientMissionList.add(cDAtThirdDescentEnding);
 		_dragCoefficientMissionList.add(cDAtLandingStart);
 		_dragCoefficientMissionList.add(cDAtLandingEnding);
-		
-		
+
 		//......................................................................
 		_efficiencyMissionList.add(_liftingCoefficientMissionList.get(0)/_dragCoefficientMissionList.get(0));
 		_efficiencyMissionList.add(_liftingCoefficientMissionList.get(1)/_dragCoefficientMissionList.get(1));
@@ -2337,11 +3194,11 @@ public class MissionProfileCalc {
 		_thrustMissionList.add(thrustAtHoldingEnding.to(NonSI.POUND_FORCE));
 		_thrustMissionList.add(thrustAtThirdDescentStart.to(NonSI.POUND_FORCE));
 		_thrustMissionList.add(thrustAtThirdDescentEnding.to(NonSI.POUND_FORCE));
-		_thrustMissionList.add(thrustAtLandingGroundRollStart.to(NonSI.POUND_FORCE));
-		_thrustMissionList.add(thrustAtLandingGroundRollEnding.to(NonSI.POUND_FORCE));
+		_thrustMissionList.add(thrustAtLandingStart.to(NonSI.POUND_FORCE));
+		_thrustMissionList.add(thrustAtLandingEnding.to(NonSI.POUND_FORCE));
 		
 		//......................................................................
-		_dragMissionList.add(Amount.valueOf(0.0, NonSI.POUND_FORCE));
+		_dragMissionList.add(dragAtTakeOffStart.to(NonSI.POUND_FORCE));
 		_dragMissionList.add(dragAtTakeOffEnding.to(NonSI.POUND_FORCE));
 		_dragMissionList.add(dragAtClimbStart.to(NonSI.POUND_FORCE));
 		_dragMissionList.add(dragAtClimbEnding.to(NonSI.POUND_FORCE));
@@ -2360,7 +3217,97 @@ public class MissionProfileCalc {
 		_dragMissionList.add(dragAtThirdDescentStart.to(NonSI.POUND_FORCE));
 		_dragMissionList.add(dragAtThirdDescentEnding.to(NonSI.POUND_FORCE));
 		_dragMissionList.add(dragAtLandingStart.to(NonSI.POUND_FORCE));
-		_dragMissionList.add(Amount.valueOf(0.0, NonSI.POUND_FORCE));
+		_dragMissionList.add(dragAtLandingEnding.to(NonSI.POUND_FORCE));
+		
+		//......................................................................
+		_rateOfClimbMissionList.add(rateOfClimbAtTakeOffStart.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtTakeOffEnding.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtClimbStart.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtClimbEnding.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtCruiseStart.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtCruiseEnding.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtFirstDescentStart.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtFirstDescentEnding.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtSecondClimbStart.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtSecondClimbEnding.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtAlternateCruiseStart.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtAlternateCruiseEnding.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtSecondDescentStart.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtSecondDescentEnding.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtHoldingStart.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtHoldingEnding.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtThirdDescentStart.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtThirdDescentEnding.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtLandingStart.to(MyUnits.FOOT_PER_MINUTE));
+		_rateOfClimbMissionList.add(rateOfClimbAtLandingEnding.to(MyUnits.FOOT_PER_MINUTE));
+		
+		//......................................................................
+		_climbAngleMissionList.add(climbAngleAtTakeOffStart.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtTakeOffEnding.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtClimbStart.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtClimbEnding.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtCruiseStart.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtCruiseEnding.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtFirstDescentStart.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtFirstDescentEnding.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtSecondClimbStart.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtSecondClimbEnding.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtAlternateCruiseStart.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtAlternateCruiseEnding.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtSecondDescentStart.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtSecondDescentEnding.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtHoldingStart.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtHoldingEnding.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtThirdDescentStart.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtThirdDescentEnding.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtLandingStart.to(NonSI.DEGREE_ANGLE));
+		_climbAngleMissionList.add(climbAngleAtLandingEnding.to(NonSI.DEGREE_ANGLE));
+		
+		//......................................................................
+		// in (lb/hr)
+		_fuelFlowMissionList.add(fuelFlowAtTakeOffStart);
+		_fuelFlowMissionList.add(fuelFlowAtTakeOffEnding);
+		_fuelFlowMissionList.add(fuelFlowAtClimbStart);
+		_fuelFlowMissionList.add(fuelFlowAtClimbEnding);
+		_fuelFlowMissionList.add(fuelFlowAtCruiseStart);
+		_fuelFlowMissionList.add(fuelFlowAtCruiseEnding);
+		_fuelFlowMissionList.add(fuelFlowAtFirstDescentStart);
+		_fuelFlowMissionList.add(fuelFlowAtFirstDescentEnding);
+		_fuelFlowMissionList.add(fuelFlowAtSecondClimbStart);
+		_fuelFlowMissionList.add(fuelFlowAtSecondClimbEnding);
+		_fuelFlowMissionList.add(fuelFlowAtAlternateCruiseStart);
+		_fuelFlowMissionList.add(fuelFlowAtAlternateCruiseEnding);
+		_fuelFlowMissionList.add(fuelFlowAtSecondDescentStart);
+		_fuelFlowMissionList.add(fuelFlowAtSecondDescentEnding);
+		_fuelFlowMissionList.add(fuelFlowAtHoldingStart);
+		_fuelFlowMissionList.add(fuelFlowAtHoldingEnding);
+		_fuelFlowMissionList.add(fuelFlowAtThirdDescentStart);
+		_fuelFlowMissionList.add(fuelFlowAtThirdDescentEnding);
+		_fuelFlowMissionList.add(fuelFlowAtLandingStart);
+		_fuelFlowMissionList.add(fuelFlowAtLandingEnding);
+		
+		//......................................................................
+		// in (lb/(lb*hr))
+		_sfcMissionList.add(sfcAtTakeOffStart);
+		_sfcMissionList.add(sfcAtTakeOffEnding);
+		_sfcMissionList.add(sfcAtClimbStart);
+		_sfcMissionList.add(sfcAtClimbEnding);
+		_sfcMissionList.add(sfcAtCruiseStart);
+		_sfcMissionList.add(sfcAtCruiseEnding);
+		_sfcMissionList.add(sfcAtFirstDescentStart);
+		_sfcMissionList.add(sfcAtFirstDescentEnding);
+		_sfcMissionList.add(sfcAtSecondClimbStart);
+		_sfcMissionList.add(sfcAtSecondClimbEnding);
+		_sfcMissionList.add(sfcAtAlternateCruiseStart);
+		_sfcMissionList.add(sfcAtAlternateCruiseEnding);
+		_sfcMissionList.add(sfcAtSecondDescentStart);
+		_sfcMissionList.add(sfcAtSecondDescentEnding);
+		_sfcMissionList.add(sfcAtHoldingStart);
+		_sfcMissionList.add(sfcAtHoldingEnding);
+		_sfcMissionList.add(sfcAtThirdDescentStart);
+		_sfcMissionList.add(sfcAtThirdDescentEnding);
+		_sfcMissionList.add(sfcAtLandingStart);
+		_sfcMissionList.add(sfcAtLandingEnding);
 		
 		_initialFuelMass = newInitialFuelMass;
 	}
@@ -2561,13 +3508,15 @@ public class MissionProfileCalc {
 
 		StringBuilder sb = new StringBuilder()
 				.append("\t-------------------------------------\n")
-				.append("\t\tTotal mission distance = " + _missionRange.to(NonSI.NAUTICAL_MILE)
-				.plus(_alternateCruiseLength) + "\n")
-				.append("\t\tTotal mission duration = " + _totalMissionTime + "\n")
+				.append("\t\tMission distance = " + _missionRange.to(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\tTotal mission distance (plus alternate) = " + _totalRange.to(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\tBlock time = " + _blockTime + "\n")
+				.append("\t\tTotal mission duration = " + _totalTime + "\n")
 				.append("\t\tAircraft mass at mission start = " + _initialMissionMass + "\n")
 				.append("\t\tAircraft mass at mission end = " + _endMissionMass + "\n")
 				.append("\t\tInitial fuel mass for the assigned mission = " + _initialFuelMass + "\n")
-				.append("\t\tTotal fuel mass used = " + _totalFuelUsed + "\n")
+				.append("\t\tBlock fuel = " + _blockFuel + "\n")
+				.append("\t\tTotal fuel = " + _totalFuel + "\n")
 				.append("\t\tFuel reserve = " + _fuelReserve*100 + " %\n")
 				.append("\t\tDesign passengers number = " + _theAircraft.getCabinConfiguration().getActualPassengerNumber() + "\n")
 				.append("\t\tPassengers number for this mission = " + _passengersNumber + "\n")
@@ -2582,6 +3531,17 @@ public class MissionProfileCalc {
 				.append("\t\tHolding range = " + _rangeList.get(8).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(7).to(NonSI.NAUTICAL_MILE)) + " \n")
 				.append("\t\tThird descent range = " + _rangeList.get(9).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(8).to(NonSI.NAUTICAL_MILE)) + " \n")
 				.append("\t\tLanding range = " + _rangeList.get(10).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(9).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\t.....................................\n")
+				.append("\t\tAltitude at take-off ending = " + _altitudeList.get(1).to(NonSI.FOOT) + " \n")
+				.append("\t\tAltitude at climb ending = " + _altitudeList.get(2).to(NonSI.FOOT) + " \n")
+				.append("\t\tAltitude at cruise ending = " + _altitudeList.get(3).to(NonSI.FOOT) + " \n")
+				.append("\t\tAltitude at first descent ending = " + _altitudeList.get(4).to(NonSI.FOOT) + " \n")
+				.append("\t\tAltitude at second climb ending = " + _altitudeList.get(5).to(NonSI.FOOT) + " \n")
+				.append("\t\tAltitude at alternate cruise ending = " + _altitudeList.get(6).to(NonSI.FOOT) + " \n")
+				.append("\t\tAltitude at second descent ending = " + _altitudeList.get(7).to(NonSI.FOOT) + " \n")
+				.append("\t\tAltitude at holding ending = " + _altitudeList.get(8).to(NonSI.FOOT) + " \n")
+				.append("\t\tAltitude at third descent ending = " + _altitudeList.get(9).to(NonSI.FOOT) + " \n")
+				.append("\t\tAltitude at landing ending = " + _altitudeList.get(10).to(NonSI.FOOT) + " \n")
 				.append("\t\t.....................................\n")
 				.append("\t\tTake-off duration = " + _timeList.get(1).to(NonSI.MINUTE) + " \n")
 				.append("\t\tClimb duration = " + _timeList.get(2).to(NonSI.MINUTE).minus(_timeList.get(1).to(NonSI.MINUTE)) + " \n")
@@ -2620,6 +3580,8 @@ public class MissionProfileCalc {
 				.append("\t\t.....................................\n")
 				.append("\t\tSpeed (TAS) at take-off start  = " + _speedTASMissionList.get(0).to(NonSI.KNOT) + " \n")
 				.append("\t\tSpeed (TAS) at take-off ending  = " + _speedTASMissionList.get(1).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at take-off start  = " + _speedCASMissionList.get(0).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at take-off ending  = " + _speedCASMissionList.get(1).to(NonSI.KNOT) + " \n")
 				.append("\t\tMach at take-off start  = " + _machMissionList.get(0) + " \n")
 				.append("\t\tMach at take-off ending  = " + _machMissionList.get(1) + " \n")
 				.append("\t\tCL at take-off start  = " + _liftingCoefficientMissionList.get(0) + " \n")
@@ -2632,11 +3594,21 @@ public class MissionProfileCalc {
 				.append("\t\tThrust at take-off ending  = " + _thrustMissionList.get(1).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at take-off start  = " + _dragMissionList.get(0).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at take-off ending  = " + _dragMissionList.get(1).to(NonSI.POUND_FORCE) + " \n")
+				.append("\t\tRate of climb at take-off start  = " + _rateOfClimbMissionList.get(0).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tRate of climb at take-off ending  = " + _rateOfClimbMissionList.get(1).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tClimb angle at take-off start  = " + _climbAngleMissionList.get(0).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tClimb angle at take-off ending  = " + _climbAngleMissionList.get(1).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tFuel flow at take-off start  = " + _fuelFlowMissionList.get(0) + " lb/hr\n")
+				.append("\t\tFuel flow at take-off ending  = " + _fuelFlowMissionList.get(1) + " lb/hr\n")
+				.append("\t\tSFC at take-off start  = " + _sfcMissionList.get(0) + " lb/(lb*hr)\n")
+				.append("\t\tSFC at take-off ending  = " + _sfcMissionList.get(1) + " lb/(lb*hr)\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tCLIMB\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tSpeed (TAS) at climb start  = " + _speedTASMissionList.get(2).to(NonSI.KNOT) + " \n")
 				.append("\t\tSpeed (TAS) at climb ending  = " + _speedTASMissionList.get(3).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at climb start  = " + _speedCASMissionList.get(2).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at climb ending  = " + _speedCASMissionList.get(3).to(NonSI.KNOT) + " \n")
 				.append("\t\tMach at climb start  = " + _machMissionList.get(2) + " \n")
 				.append("\t\tMach at climb ending  = " + _machMissionList.get(3) + " \n")
 				.append("\t\tCL at climb start  = " + _liftingCoefficientMissionList.get(2) + " \n")
@@ -2649,11 +3621,21 @@ public class MissionProfileCalc {
 				.append("\t\tThrust at climb ending  = " + _thrustMissionList.get(3).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at climb start  = " + _dragMissionList.get(2).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at climb ending  = " + _dragMissionList.get(3).to(NonSI.POUND_FORCE) + " \n")
+				.append("\t\tRate of climb at climb start  = " + _rateOfClimbMissionList.get(2).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tRate of climb at climb ending  = " + _rateOfClimbMissionList.get(3).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tClimb angle at climb start  = " + _climbAngleMissionList.get(2).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tClimb angle at climb ending  = " + _climbAngleMissionList.get(3).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tFuel flow at climb start  = " + _fuelFlowMissionList.get(2) + " lb/hr\n")
+				.append("\t\tFuel flow at climb ending  = " + _fuelFlowMissionList.get(3) + " lb/hr\n")
+				.append("\t\tSFC at climb start  = " + _sfcMissionList.get(2) + " lb/(lb*hr)\n")
+				.append("\t\tSFC at climb ending  = " + _sfcMissionList.get(3) + " lb/(lb*hr)\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tCRUISE\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tSpeed (TAS) at cruise start  = " + _speedTASMissionList.get(4).to(NonSI.KNOT) + " \n")
 				.append("\t\tSpeed (TAS) at cruise ending  = " + _speedTASMissionList.get(5).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at cruise start  = " + _speedCASMissionList.get(4).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at cruise ending  = " + _speedCASMissionList.get(5).to(NonSI.KNOT) + " \n")
 				.append("\t\tMach at cruise start  = " + _machMissionList.get(4) + " \n")
 				.append("\t\tMach at cruise ending  = " + _machMissionList.get(5) + " \n")
 				.append("\t\tCL at cruise start  = " + _liftingCoefficientMissionList.get(4) + " \n")
@@ -2666,11 +3648,21 @@ public class MissionProfileCalc {
 				.append("\t\tThrust at cruise ending  = " + _thrustMissionList.get(5).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at cruise start  = " + _dragMissionList.get(4).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at cruise ending  = " + _dragMissionList.get(5).to(NonSI.POUND_FORCE) + " \n")
+				.append("\t\tRate of climb at cruise start  = " + _rateOfClimbMissionList.get(4).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tRate of climb at cruise ending  = " + _rateOfClimbMissionList.get(5).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tClimb angle at cruise start  = " + _climbAngleMissionList.get(4).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tClimb angle at cruise ending  = " + _climbAngleMissionList.get(5).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tFuel flow at cruise start  = " + _fuelFlowMissionList.get(4) + " lb/hr\n")
+				.append("\t\tFuel flow at cruise ending  = " + _fuelFlowMissionList.get(5) + " lb/hr\n")
+				.append("\t\tSFC at cruise start  = " + _sfcMissionList.get(4) + " lb/(lb*hr)\n")
+				.append("\t\tSFC at cruise ending  = " + _sfcMissionList.get(5) + " lb/(lb*hr)\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tFIRST DESCENT\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tSpeed (TAS) at first descent start  = " + _speedTASMissionList.get(6).to(NonSI.KNOT) + " \n")
 				.append("\t\tSpeed (TAS) at first descent ending  = " + _speedTASMissionList.get(7).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at first descent start  = " + _speedCASMissionList.get(6).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at first descent ending  = " + _speedCASMissionList.get(7).to(NonSI.KNOT) + " \n")
 				.append("\t\tMach at first descent start  = " + _machMissionList.get(6) + " \n")
 				.append("\t\tMach at first descent ending  = " + _machMissionList.get(7) + " \n")
 				.append("\t\tCL at first descent start  = " + _liftingCoefficientMissionList.get(6) + " \n")
@@ -2682,7 +3674,15 @@ public class MissionProfileCalc {
 				.append("\t\tThrust at first descent start  = " + _thrustMissionList.get(6).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tThrust at first descent ending  = " + _thrustMissionList.get(7).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at first descent start  = " + _dragMissionList.get(6).to(NonSI.POUND_FORCE) + " \n")
-				.append("\t\tDrag at first descent ending  = " + _dragMissionList.get(7).to(NonSI.POUND_FORCE) + " \n");
+				.append("\t\tDrag at first descent ending  = " + _dragMissionList.get(7).to(NonSI.POUND_FORCE) + " \n")
+				.append("\t\tRate of climb at first descent start  = " + _rateOfClimbMissionList.get(6).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tRate of climb at first descent ending  = " + _rateOfClimbMissionList.get(7).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tClimb angle at first descent start  = " + _climbAngleMissionList.get(6).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tClimb angle at first descent ending  = " + _climbAngleMissionList.get(7).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tFuel flow at first descent start  = " + _fuelFlowMissionList.get(6) + " lb/hr\n")
+				.append("\t\tFuel flow at first descent ending  = " + _fuelFlowMissionList.get(7) + " lb/hr\n")
+				.append("\t\tSFC at first descent start  = " + _sfcMissionList.get(6) + " lb/(lb*hr)\n")
+				.append("\t\tSFC at first desecnt ending  = " + _sfcMissionList.get(7) + " lb/(lb*hr)\n");
 		
 		if(_alternateCruiseAltitude.doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
 			sb.append("\t\t.....................................\n")
@@ -2690,6 +3690,8 @@ public class MissionProfileCalc {
 			.append("\t\t.....................................\n")
 			.append("\t\tSpeed (TAS) at second climb start  = " + _speedTASMissionList.get(8).to(NonSI.KNOT) + " \n")
 			.append("\t\tSpeed (TAS) at second climb ending  = " + _speedTASMissionList.get(9).to(NonSI.KNOT) + " \n")
+			.append("\t\tSpeed (CAS) at second climb start  = " + _speedCASMissionList.get(8).to(NonSI.KNOT) + " \n")
+			.append("\t\tSpeed (CAS) at second climb ending  = " + _speedCASMissionList.get(9).to(NonSI.KNOT) + " \n")
 			.append("\t\tMach at second climb start  = " + _machMissionList.get(8) + " \n")
 			.append("\t\tMach at second climb ending  = " + _machMissionList.get(9) + " \n")
 			.append("\t\tCL at second climb start  = " + _liftingCoefficientMissionList.get(8) + " \n")
@@ -2702,11 +3704,21 @@ public class MissionProfileCalc {
 			.append("\t\tThrust at second climb ending  = " + _thrustMissionList.get(9).to(NonSI.POUND_FORCE) + " \n")
 			.append("\t\tDrag at second climb start  = " + _dragMissionList.get(8).to(NonSI.POUND_FORCE) + " \n")
 			.append("\t\tDrag at second climb ending  = " + _dragMissionList.get(9).to(NonSI.POUND_FORCE) + " \n")
+			.append("\t\tRate of climb at second climb start  = " + _rateOfClimbMissionList.get(8).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+			.append("\t\tRate of climb at second climb ending  = " + _rateOfClimbMissionList.get(9).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+			.append("\t\tClimb angle at second climb start  = " + _climbAngleMissionList.get(8).to(NonSI.DEGREE_ANGLE) + " \n")
+			.append("\t\tClimb angle at second climb ending  = " + _climbAngleMissionList.get(9).to(NonSI.DEGREE_ANGLE) + " \n")
+			.append("\t\tFuel flow at second climb start  = " + _fuelFlowMissionList.get(8) + " lb/hr\n")
+			.append("\t\tFuel flow at second climb ending  = " + _fuelFlowMissionList.get(9) + " lb/hr\n")
+			.append("\t\tSFC at second climb start  = " + _sfcMissionList.get(8) + " lb/(lb*hr)\n")
+			.append("\t\tSFC at second climb ending  = " + _sfcMissionList.get(9) + " lb/(lb*hr)\n")
 			.append("\t\t.....................................\n")
 			.append("\t\tALTERNATE CRUISE\n")
 			.append("\t\t.....................................\n")
 			.append("\t\tSpeed (TAS) at alternate cruise start  = " + _speedTASMissionList.get(10).to(NonSI.KNOT) + " \n")
 			.append("\t\tSpeed (TAS) at alternate cruise ending  = " + _speedTASMissionList.get(11).to(NonSI.KNOT) + " \n")
+			.append("\t\tSpeed (CAS) at alternate cruise start  = " + _speedCASMissionList.get(10).to(NonSI.KNOT) + " \n")
+			.append("\t\tSpeed (CAS) at alternate cruise ending  = " + _speedCASMissionList.get(11).to(NonSI.KNOT) + " \n")
 			.append("\t\tMach at alternate cruise start  = " + _machMissionList.get(10) + " \n")
 			.append("\t\tMach at alternate cruise ending  = " + _machMissionList.get(11) + " \n")
 			.append("\t\tCL at alternate cruise start  = " + _liftingCoefficientMissionList.get(10) + " \n")
@@ -2719,11 +3731,21 @@ public class MissionProfileCalc {
 			.append("\t\tThrust at alternate cruise ending  = " + _thrustMissionList.get(11).to(NonSI.POUND_FORCE) + " \n")
 			.append("\t\tDrag at alternate cruise start  = " + _dragMissionList.get(10).to(NonSI.POUND_FORCE) + " \n")
 			.append("\t\tDrag at alternate cruise ending  = " + _dragMissionList.get(11).to(NonSI.POUND_FORCE) + " \n")
+			.append("\t\tRate of climb at alternate cruise start  = " + _rateOfClimbMissionList.get(10).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+			.append("\t\tRate of climb at alternate cruise ending  = " + _rateOfClimbMissionList.get(11).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+			.append("\t\tClimb angle at alternate cruise start  = " + _climbAngleMissionList.get(10).to(NonSI.DEGREE_ANGLE) + " \n")
+			.append("\t\tClimb angle at alternate cruise ending  = " + _climbAngleMissionList.get(11).to(NonSI.DEGREE_ANGLE) + " \n")
+			.append("\t\tFuel flow at alternate cruise start  = " + _fuelFlowMissionList.get(10) + " lb/hr\n")
+			.append("\t\tFuel flow at alternate cruise ending  = " + _fuelFlowMissionList.get(11) + " lb/hr\n")
+			.append("\t\tSFC at alternate cruise start  = " + _sfcMissionList.get(10) + " lb/(lb*hr)\n")
+			.append("\t\tSFC at alternate cruise ending  = " + _sfcMissionList.get(11) + " lb/(lb*hr)\n")
 			.append("\t\t.....................................\n")
 			.append("\t\tSECOND DESCENT\n")
 			.append("\t\t.....................................\n")
 			.append("\t\tSpeed (TAS) at second descent start  = " + _speedTASMissionList.get(12).to(NonSI.KNOT) + " \n")
 			.append("\t\tSpeed (TAS) at second descent ending  = " + _speedTASMissionList.get(13).to(NonSI.KNOT) + " \n")
+			.append("\t\tSpeed (CAS) at second descent start  = " + _speedCASMissionList.get(12).to(NonSI.KNOT) + " \n")
+			.append("\t\tSpeed (CAS) at second descent ending  = " + _speedCASMissionList.get(13).to(NonSI.KNOT) + " \n")
 			.append("\t\tMach at second descent start  = " + _machMissionList.get(12) + " \n")
 			.append("\t\tMach at second descent ending  = " + _machMissionList.get(13) + " \n")
 			.append("\t\tCL at second descent start  = " + _liftingCoefficientMissionList.get(12) + " \n")
@@ -2735,7 +3757,15 @@ public class MissionProfileCalc {
 			.append("\t\tThrust at second descent start  = " + _thrustMissionList.get(12).to(NonSI.POUND_FORCE) + " \n")
 			.append("\t\tThrust at second descent ending  = " + _thrustMissionList.get(13).to(NonSI.POUND_FORCE) + " \n")
 			.append("\t\tDrag at second descent start  = " + _dragMissionList.get(12).to(NonSI.POUND_FORCE) + " \n")
-			.append("\t\tDrag at second descent ending  = " + _dragMissionList.get(13).to(NonSI.POUND_FORCE) + " \n");
+			.append("\t\tDrag at second descent ending  = " + _dragMissionList.get(13).to(NonSI.POUND_FORCE) + " \n")
+			.append("\t\tRate of climb at second descent start = " + _rateOfClimbMissionList.get(12).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+			.append("\t\tRate of climb at second descent ending  = " + _rateOfClimbMissionList.get(13).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+			.append("\t\tClimb angle at second descent start  = " + _climbAngleMissionList.get(12).to(NonSI.DEGREE_ANGLE) + " \n")
+			.append("\t\tClimb angle at second descent ending  = " + _climbAngleMissionList.get(13).to(NonSI.DEGREE_ANGLE) + " \n")
+			.append("\t\tFuel flow at second descent start  = " + _fuelFlowMissionList.get(12) + " lb/hr\n")
+			.append("\t\tFuel flow at second descent ending  = " + _fuelFlowMissionList.get(13) + " lb/hr\n")
+			.append("\t\tSFC at second descent start  = " + _sfcMissionList.get(12) + " lb/(lb*hr)\n")
+			.append("\t\tSFC at second descent ending  = " + _sfcMissionList.get(13) + " lb/(lb*hr)\n");
 		}
 		if(_holdingDuration.doubleValue(NonSI.MINUTE) != 0.0) {
 				sb.append("\t\t.....................................\n")
@@ -2743,6 +3773,8 @@ public class MissionProfileCalc {
 				.append("\t\t.....................................\n")
 				.append("\t\tSpeed (TAS) at holding start  = " + _speedTASMissionList.get(14).to(NonSI.KNOT) + " \n")
 				.append("\t\tSpeed (TAS) at holding ending  = " + _speedTASMissionList.get(15).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at holding start  = " + _speedCASMissionList.get(14).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at holding ending  = " + _speedCASMissionList.get(15).to(NonSI.KNOT) + " \n")
 				.append("\t\tMach at holding start  = " + _machMissionList.get(14) + " \n")
 				.append("\t\tMach at holding ending  = " + _machMissionList.get(15) + " \n")
 				.append("\t\tCL at holding start  = " + _liftingCoefficientMissionList.get(14) + " \n")
@@ -2755,11 +3787,21 @@ public class MissionProfileCalc {
 				.append("\t\tThrust at holding ending  = " + _thrustMissionList.get(15).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at holding start  = " + _dragMissionList.get(14).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at holding ending  = " + _dragMissionList.get(15).to(NonSI.POUND_FORCE) + " \n")
+				.append("\t\tRate of climb at holding start = " + _rateOfClimbMissionList.get(14).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tRate of climb at holding ending  = " + _rateOfClimbMissionList.get(15).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tClimb angle at holding start  = " + _climbAngleMissionList.get(14).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tClimb angle at holding ending  = " + _climbAngleMissionList.get(15).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tFuel flow at holding start  = " + _fuelFlowMissionList.get(14) + " lb/hr\n")
+				.append("\t\tFuel flow at holding ending  = " + _fuelFlowMissionList.get(15) + " lb/hr\n")
+				.append("\t\tSFC at holding start  = " + _sfcMissionList.get(14) + " lb/(lb*hr)\n")
+				.append("\t\tSFC at holding ending  = " + _sfcMissionList.get(15) + " lb/(lb*hr)\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tTHIRD DESCENT\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tSpeed (TAS) at third descent start  = " + _speedTASMissionList.get(16).to(NonSI.KNOT) + " \n")
 				.append("\t\tSpeed (TAS) at third descent ending  = " + _speedTASMissionList.get(17).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at third descent start  = " + _speedCASMissionList.get(16).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at third descent ending  = " + _speedCASMissionList.get(17).to(NonSI.KNOT) + " \n")
 				.append("\t\tMach at third descent start  = " + _machMissionList.get(16) + " \n")
 				.append("\t\tMach at third descent ending  = " + _machMissionList.get(17) + " \n")
 				.append("\t\tCL at third descent start  = " + _liftingCoefficientMissionList.get(16) + " \n")
@@ -2771,7 +3813,15 @@ public class MissionProfileCalc {
 				.append("\t\tThrust at third descent start  = " + _thrustMissionList.get(16).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tThrust at third descent ending  = " + _thrustMissionList.get(17).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at third descent start  = " + _dragMissionList.get(16).to(NonSI.POUND_FORCE) + " \n")
-				.append("\t\tDrag at third descent ending  = " + _dragMissionList.get(17).to(NonSI.POUND_FORCE) + " \n");
+				.append("\t\tDrag at third descent ending  = " + _dragMissionList.get(17).to(NonSI.POUND_FORCE) + " \n")
+				.append("\t\tRate of climb at third descent start = " + _rateOfClimbMissionList.get(16).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tRate of climb at third descent ending  = " + _rateOfClimbMissionList.get(17).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tClimb angle at third descent start  = " + _climbAngleMissionList.get(16).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tClimb angle at third descent ending  = " + _climbAngleMissionList.get(17).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tFuel flow at third descent start  = " + _fuelFlowMissionList.get(16) + " lb/hr\n")
+				.append("\t\tFuel flow at third descent ending  = " + _fuelFlowMissionList.get(17) + " lb/hr\n")
+				.append("\t\tSFC at third descent start  = " + _sfcMissionList.get(16) + " lb/(lb*hr)\n")
+				.append("\t\tSFC at third descent ending  = " + _sfcMissionList.get(17) + " lb/(lb*hr)\n");
 		}
 		
 				sb.append("\t\t.....................................\n")
@@ -2779,6 +3829,8 @@ public class MissionProfileCalc {
 				.append("\t\t.....................................\n")
 				.append("\t\tSpeed (TAS) at landing start  = " + _speedTASMissionList.get(18).to(NonSI.KNOT) + " \n")
 				.append("\t\tSpeed (TAS) at landing ending  = " + _speedTASMissionList.get(19).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at landing start  = " + _speedCASMissionList.get(18).to(NonSI.KNOT) + " \n")
+				.append("\t\tSpeed (CAS) at landing ending  = " + _speedCASMissionList.get(19).to(NonSI.KNOT) + " \n")
 				.append("\t\tMach at landing start  = " + _machMissionList.get(18) + " \n")
 				.append("\t\tMach at landing ending  = " + _machMissionList.get(19) + " \n")
 				.append("\t\tCL at landing start  = " + _liftingCoefficientMissionList.get(18) + " \n")
@@ -2787,10 +3839,18 @@ public class MissionProfileCalc {
 				.append("\t\tCD at landing ending  = " + _dragCoefficientMissionList.get(19) + " \n")
 				.append("\t\tEfficiency at landing start  = " + _efficiencyMissionList.get(18) + " \n")
 				.append("\t\tEfficiency at landing ending  = " + _efficiencyMissionList.get(19) + " \n")
-				.append("\t\tThrust at landing ground-roll start  = " + _thrustMissionList.get(18).to(NonSI.POUND_FORCE) + " \n")
-				.append("\t\tThrust at landing ground-roll ending  = " + _thrustMissionList.get(19).to(NonSI.POUND_FORCE) + " \n")
-				.append("\t\tDrag at landing ground-roll start  = " + _dragMissionList.get(18).to(NonSI.POUND_FORCE) + " \n")
-				.append("\t\tDrag at landing ground-roll ending  = " + _dragMissionList.get(19).to(NonSI.POUND_FORCE) + " \n")
+				.append("\t\tThrust at landing start  = " + _thrustMissionList.get(18).to(NonSI.POUND_FORCE) + " \n")
+				.append("\t\tThrust at landing ending  = " + _thrustMissionList.get(19).to(NonSI.POUND_FORCE) + " \n")
+				.append("\t\tDrag at landing start  = " + _dragMissionList.get(18).to(NonSI.POUND_FORCE) + " \n")
+				.append("\t\tDrag at landing ending  = " + _dragMissionList.get(19).to(NonSI.POUND_FORCE) + " \n")
+				.append("\t\tRate of climb at landing start = " + _rateOfClimbMissionList.get(18).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tRate of climb at landing ending  = " + _rateOfClimbMissionList.get(19).to(MyUnits.FOOT_PER_MINUTE) + " \n")
+				.append("\t\tClimb angle at landing start  = " + _climbAngleMissionList.get(18).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tClimb angle at landing ending  = " + _climbAngleMissionList.get(19).to(NonSI.DEGREE_ANGLE) + " \n")
+				.append("\t\tFuel flow at landing start  = " + _fuelFlowMissionList.get(18) + " lb/hr\n")
+				.append("\t\tFuel flow at landing ending  = " + _fuelFlowMissionList.get(19) + " lb/hr\n")
+				.append("\t\tSFC at landing start  = " + _sfcMissionList.get(18) + " lb/(lb*hr)\n")
+				.append("\t\tSFC at landing ending  = " + _sfcMissionList.get(19) + " lb/(lb*hr)\n")
 				.append("\t-------------------------------------\n")
 				;
 		
@@ -3129,28 +4189,44 @@ public class MissionProfileCalc {
 		this._massList = _massList;
 	}
 
-	public Amount<Mass> getTotalFuelUsed() {
-		return _totalFuelUsed;
+	public Amount<Mass> getTotalFuel() {
+		return _totalFuel;
 	}
 
-	public void setTotalFuelUsed(Amount<Mass> _totalFuelUsed) {
-		this._totalFuelUsed = _totalFuelUsed;
+	public void setTotalFuel(Amount<Mass> _totalFuelUsed) {
+		this._totalFuel= _totalFuelUsed;
+	}
+	
+	public Amount<Mass> getBlockFuel() {
+		return _blockFuel;
 	}
 
-	public Amount<Duration> getTotalMissionTime() {
-		return _totalMissionTime;
+	public void setBlockFuel(Amount<Mass> _blockFuel) {
+		this._blockFuel= _blockFuel;
 	}
 
-	public void setTotalMissionTime(Amount<Duration> _totalMissionTime) {
-		this._totalMissionTime = _totalMissionTime;
+	public Amount<Duration> getTotalTime() {
+		return _totalTime;
 	}
 
-	public Amount<Length> getTotalMissionRange() {
-		return _totalMissionRange;
+	public void setTotalTime(Amount<Duration> _totalMissionTime) {
+		this._totalTime = _totalMissionTime;
 	}
 
-	public void setTotalMissionRange(Amount<Length> _totalMissionRange) {
-		this._totalMissionRange = _totalMissionRange;
+	public Amount<Duration> getBlockTime() {
+		return _blockTime;
+	}
+
+	public void setBlockTime(Amount<Duration> _blockTime) {
+		this._blockTime = _blockTime;
+	}
+	
+	public Amount<Length> getTotalRange() {
+		return _totalRange;
+	}
+
+	public void setTotalRange(Amount<Length> _totalMissionRange) {
+		this._totalRange = _totalMissionRange;
 	}
 
 	public Amount<Mass> getEndMissionMass() {
@@ -3297,6 +4373,14 @@ public class MissionProfileCalc {
 		this._speedTASMissionList = _speedTASMissionList;
 	}
 
+	public List<Amount<Velocity>> getSpeedCASMissionList() {
+		return _speedCASMissionList;
+	}
+
+	public void setSpeedCASMissionList(List<Amount<Velocity>> _speedCASMissionList) {
+		this._speedCASMissionList = _speedCASMissionList;
+	}
+
 	public List<Double> getMachMissionList() {
 		return _machMissionList;
 	}
@@ -3407,6 +4491,38 @@ public class MissionProfileCalc {
 
 	public void setMissionProfileStopped(Boolean missionProfileStopped) {
 		this._missionProfileStopped = missionProfileStopped;
+	}
+
+	public List<Amount<Velocity>> getRateOfClimbMissionList() {
+		return _rateOfClimbMissionList;
+	}
+
+	public void setRateOfClimbMissionList(List<Amount<Velocity>> _rateOfClimbMissionList) {
+		this._rateOfClimbMissionList = _rateOfClimbMissionList;
+	}
+
+	public List<Amount<Angle>> getClimbAngleMissionList() {
+		return _climbAngleMissionList;
+	}
+
+	public void setClimbAngleMissionList(List<Amount<Angle>> _climbAngleMissionList) {
+		this._climbAngleMissionList = _climbAngleMissionList;
+	}
+
+	public List<Double> getFuelFlowMissionList() {
+		return _fuelFlowMissionList;
+	}
+
+	public void setFuelFlowMissionList(List<Double> _fuelFlowMissionList) {
+		this._fuelFlowMissionList = _fuelFlowMissionList;
+	}
+
+	public List<Double> getSFCMissionList() {
+		return _sfcMissionList;
+	}
+
+	public void setSFCMissionList(List<Double> _sfcMissionList) {
+		this._sfcMissionList = _sfcMissionList;
 	}
 
 }

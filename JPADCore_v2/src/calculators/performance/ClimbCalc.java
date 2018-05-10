@@ -65,6 +65,7 @@ public class ClimbCalc {
 	private List<Amount<Duration>> _climbTimeListAEO;
 	private List<Amount<Duration>> _climbTimeListRCmax;
 	private List<Amount<Mass>> _fuelUsedList;
+	private List<Double> _fuelFlowList;
 	private Amount<Length> _absoluteCeilingAEO;
 	private Amount<Length> _serviceCeilingAEO;
 	private Amount<Duration> _minimumClimbTimeAEO;
@@ -475,7 +476,7 @@ public class ClimbCalc {
 		
 		//----------------------------------------------------------------------------------
 		// SFC, TIME AND RANGE IN AEO CONDITION (for the mission profile)
-		List<Double> fuelFlowListClimb = new ArrayList<>();
+		_fuelFlowList = new ArrayList<>();
 		List<Amount<Duration>> climbTimeListAEO = new ArrayList<>();
 		List<Amount<Length>> rangeArrayClimb = new ArrayList<>();
 		
@@ -556,7 +557,7 @@ public class ClimbCalc {
 		for(int i=0; i<_rcMapAEO.size(); i++) {
 
 			if(_climbSpeed == null) {
-				fuelFlowListClimb.add(
+				_fuelFlowList.add(
 						MyMathUtils.getInterpolatedValue1DLinear(
 								_thrustListAEO.get(i).getSpeed(),
 								_thrustListAEO.get(i).getThrust(),
@@ -582,13 +583,13 @@ public class ClimbCalc {
 						);
 				_fuelUsedList.add(
 						Amount.valueOf(
-								fuelFlowListClimb.get(i)*_climbTimeListRCmax.get(i).doubleValue(NonSI.MINUTE),
+								_fuelFlowList.get(i)*_climbTimeListRCmax.get(i).doubleValue(NonSI.MINUTE),
 								SI.KILOGRAM
 								)
 						);
 			}
 			else {
-				fuelFlowListClimb.add(
+				_fuelFlowList.add(
 						MyMathUtils.getInterpolatedValue1DLinear(
 								_thrustListAEO.get(i).getSpeed(),
 								_thrustListAEO.get(i).getThrust(),
@@ -614,7 +615,7 @@ public class ClimbCalc {
 						);
 				_fuelUsedList.add(
 						Amount.valueOf(
-								fuelFlowListClimb.get(i)*_climbTimeListAEO.get(i).doubleValue(NonSI.MINUTE),
+								_fuelFlowList.get(i)*_climbTimeListAEO.get(i).doubleValue(NonSI.MINUTE),
 								SI.KILOGRAM
 								)
 						);
@@ -629,7 +630,7 @@ public class ClimbCalc {
 										.collect(Collectors.toList()
 												)
 										),
-						MyArrayUtils.convertToDoublePrimitive(fuelFlowListClimb)
+						MyArrayUtils.convertToDoublePrimitive(_fuelFlowList)
 						),
 				SI.KILOGRAM					
 				);
@@ -2242,6 +2243,14 @@ public class ClimbCalc {
 
 	public void setFuelUsedList(List<Amount<Mass>> _fuelUsedList) {
 		this._fuelUsedList = _fuelUsedList;
+	}
+
+	public List<Double> getFuelFlowList() {
+		return _fuelFlowList;
+	}
+
+	public void setFuelFlowList(List<Double> _fuelFlowList) {
+		this._fuelFlowList = _fuelFlowList;
 	}
 	
 }

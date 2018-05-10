@@ -135,7 +135,6 @@
 				<alternate_cruise_altitude unit="ft">15000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
 				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
-				<holding_mach_number>0.3</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
 				<cruise_sfc_function calculate="FALSE">
 					<sfc>0.47;0.435;0.429</sfc> <!-- OLD: 0.47;0.435;0.429 -->

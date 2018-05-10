@@ -79,7 +79,7 @@ public class TakeOffCalc {
 	private Amount<Velocity> vSTakeOff, vRot, vMC, vLO, vWind, v1, v2;
 	private Amount<Length> altitude, wingToGroundDistance, obstacle, balancedFieldLength;
 	private Amount<Angle> alphaGround, iw;
-	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, sfc;
+	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, fuelFlow;
 	private List<Amount<Angle>> alpha, theta, gamma;
 	private List<Amount<Duration>> time;
 	private List<Amount<Velocity>> speed, rateOfClimb;
@@ -193,10 +193,14 @@ public class TakeOffCalc {
 		System.out.println("VsTO = " + vSTakeOff);
 		System.out.println("-----------------------------------------------------------\n");
 
-		// McCormick interpolated function --> See the excel file into JPAD DOCS
-		double hb = wingToGroundDistance.divide(this.span.times(Math.PI/4)).getEstimatedValue();
-		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
-				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
+		// Aerodynamics For Naval Aviators: (Hurt)
+		double hb = wingToGroundDistance.to(SI.METER).divide(this.span.to(SI.METER)).getEstimatedValue();
+		kGround = 1- (-4.48276577 * Math.pow(hb, 5) 
+				+ 15.61174376 * Math.pow(hb, 4)
+				- 21.20171050 * Math.pow(hb, 3)
+				+ 14.39438721 * Math.pow(hb, 2)
+				- 5.20913465 * hb
+				+ 0.90793397);
 		
 		// List initialization
 		this.time = new ArrayList<Amount<Duration>>();
@@ -220,7 +224,7 @@ public class TakeOffCalc {
 		this.rateOfClimb = new ArrayList<Amount<Velocity>>();
 		this.groundDistance = new ArrayList<Amount<Length>>();
 		this.verticalDistance = new ArrayList<Amount<Length>>();
-		this.sfc = new ArrayList<Double>();
+		this.fuelFlow = new ArrayList<Double>();
 		
 		takeOffResults.initialize();
 	}
@@ -257,7 +261,7 @@ public class TakeOffCalc {
 		rateOfClimb.clear();
 		groundDistance.clear();
 		verticalDistance.clear();
-		sfc.clear();
+		fuelFlow.clear();
 		
 		tHold = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 		tEndHold = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
@@ -736,8 +740,8 @@ public class TakeOffCalc {
 							SI.NEWTON)
 							);
 					//--------------------------------------------------------------------------------
-					// SFC:
-					TakeOffCalc.this.getSfc().add(
+					// FUEL FLOW:
+					TakeOffCalc.this.getFuelFlow().add(
 							(TakeOffCalc.this.getThrust().get(
 									TakeOffCalc.this.getThrust().size()-1
 									)
@@ -2750,12 +2754,12 @@ public class TakeOffCalc {
 		this.mach = mach;
 	}
 
-	public List<Double> getSfc() {
-		return sfc;
+	public List<Double> getFuelFlow() {
+		return fuelFlow;
 	}
 
-	public void setSfc(List<Double> sfc) {
-		this.sfc = sfc;
+	public void setFuelFlow(List<Double> fuelFlow) {
+		this.fuelFlow = fuelFlow;
 	}
 
 	public MyInterpolatingFunction getGroundIdlePhi() {

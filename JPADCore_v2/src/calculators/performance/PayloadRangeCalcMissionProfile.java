@@ -348,7 +348,7 @@ public class PayloadRangeCalcMissionProfile{
 									.collect(Collectors.toList()
 											)
 									),
-							MyArrayUtils.convertToDoublePrimitive(theTakeOffCalculator.getSfc())
+							MyArrayUtils.convertToDoublePrimitive(theTakeOffCalculator.getFuelFlow())
 							),
 					SI.KILOGRAM					
 					);

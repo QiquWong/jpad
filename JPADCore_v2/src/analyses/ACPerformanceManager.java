@@ -75,6 +75,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
+import standaloneutils.MyUnits;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
@@ -242,18 +243,26 @@ public class ACPerformanceManager {
 	private Map<Double, List<Amount<Mass>>> _fuelUsedListMap;
 	private Map<Double, List<Amount<Mass>>> _massListMap;
 	private Map<Double, List<Amount<Velocity>>> _speedTASMissionListMap;
+	private Map<Double, List<Amount<Velocity>>> _speedCASMissionListMap;
 	private Map<Double, List<Double>> _machMissionListMap;
 	private Map<Double, List<Double>> _liftingCoefficientMissionListMap;
 	private Map<Double, List<Double>> _dragCoefficientMissionListMap;
 	private Map<Double, List<Double>> _efficiencyMissionListMap;
 	private Map<Double, List<Amount<Force>>> _thrustMissionListMap;
 	private Map<Double, List<Amount<Force>>> _dragMissionListMap;
+	private Map<Double, List<Amount<Velocity>>> _rateOfClimbMissionListMap;
+	private Map<Double, List<Amount<Angle>>> _climbAngleMissionListMap;
+	private Map<Double, List<Double>> _fuelFlowMissionListMap;
+	private Map<Double, List<Double>>_sfcMissionListMap;
 	
 	private Map<Double, Amount<Mass>> _initialFuelMassMap;
 	private Map<Double, Amount<Mass>> _totalFuelUsedMap;
+	private Map<Double, Amount<Mass>> _blockFuelMap;
 	private Map<Double, Amount<Duration>> _totalMissionTimeMap;
+	private Map<Double, Amount<Duration>> _blockTimeMap;
 	private Map<Double, Amount<Mass>> _initialMissionMassMap;
 	private Map<Double, Amount<Mass>> _endMissionMassMap;
+	private Map<Double, Amount<Length>> _totalMissionRangeMap;
 	
 	//------------------------------------------------------------------------------
 	// METHODS:
@@ -399,25 +408,33 @@ public class ACPerformanceManager {
 		_negativeLoadFactorDesignFlapSpeedWithGustMap = new HashMap<>();
 		//..............................................................................
 		// Mission profile
-		_theMissionProfileCalculatorMap = new HashMap<>();
-		_altitudeListMap = new HashMap<>();
-		_rangeListMap = new HashMap<>();
-		_timeListMap = new HashMap<>();
-		_fuelUsedListMap = new HashMap<>();
-		_massListMap = new HashMap<>();
-		_speedTASMissionListMap = new HashMap<>();
-		_machMissionListMap = new HashMap<>();
-		_liftingCoefficientMissionListMap = new HashMap<>();
-		_dragCoefficientMissionListMap = new HashMap<>();
-		_efficiencyMissionListMap = new HashMap<>();
-		_thrustMissionListMap = new HashMap<>();
-		_dragMissionListMap = new HashMap<>();
-	
-		_initialFuelMassMap = new HashMap<>();
-		_totalFuelUsedMap = new HashMap<>();
-		_totalMissionTimeMap = new HashMap<>();
-		_initialMissionMassMap = new HashMap<>();
-		_endMissionMassMap = new HashMap<>();
+		this._theMissionProfileCalculatorMap= new HashMap<>();
+		this._altitudeListMap= new HashMap<>();
+		this._rangeListMap= new HashMap<>();
+		this._timeListMap= new HashMap<>();
+		this._fuelUsedListMap= new HashMap<>();
+		this._massListMap= new HashMap<>();
+		this._speedTASMissionListMap= new HashMap<>();
+		this._speedCASMissionListMap= new HashMap<>();
+		this._machMissionListMap= new HashMap<>();
+		this._liftingCoefficientMissionListMap= new HashMap<>();
+		this._dragCoefficientMissionListMap= new HashMap<>();
+		this._efficiencyMissionListMap= new HashMap<>();
+		this._thrustMissionListMap= new HashMap<>();
+		this._dragMissionListMap= new HashMap<>();
+		this._rateOfClimbMissionListMap= new HashMap<>();
+		this._climbAngleMissionListMap= new HashMap<>();
+		this._fuelFlowMissionListMap= new HashMap<>();
+		this._sfcMissionListMap= new HashMap<>();
+		
+		this._initialFuelMassMap= new HashMap<>();
+		this._totalFuelUsedMap= new HashMap<>();
+		this._blockFuelMap= new HashMap<>();
+		this._totalMissionTimeMap= new HashMap<>();
+		this._blockTimeMap= new HashMap<>();
+		this._initialMissionMassMap= new HashMap<>();
+		this._endMissionMassMap= new HashMap<>();
+		this._totalMissionRangeMap= new HashMap<>();
 		
 	}
 	
@@ -3003,16 +3020,17 @@ public class ACPerformanceManager {
         	if(_theMissionProfileCalculatorMap.get(xcg).getMissionProfileStopped().equals(Boolean.FALSE)) {
 
         		dataListMissionProfile.add(new Object[] {"Description","Unit","Value"});
-        		dataListMissionProfile.add(new Object[] {"Total mission distance","nmi", _thePerformanceInterface.getMissionRange().to(NonSI.NAUTICAL_MILE)
-        				.plus(_thePerformanceInterface.getAlternateCruiseLength()).to(NonSI.NAUTICAL_MILE)
-        				.doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Mission distance","nmi", _thePerformanceInterface.getMissionRange().doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Total mission distance (plus reserves)","nmi", _totalMissionRangeMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Block time","min", _blockTimeMap.get(xcg).doubleValue(NonSI.MINUTE)});
         		dataListMissionProfile.add(new Object[] {"Total mission duration","min", _totalMissionTimeMap.get(xcg).doubleValue(NonSI.MINUTE)});
         		dataListMissionProfile.add(new Object[] {"Aircraft mass at mission start","kg", _initialMissionMassMap.get(xcg).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Aircraft mass at mission end","kg", _endMissionMassMap.get(xcg).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Initial fuel mass for the assigned mission","kg", _initialFuelMassMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        		dataListMissionProfile.add(new Object[] {"Block fuel","kg", _blockFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Total fuel used","kg", _totalFuelUsedMap.get(xcg).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Fuel reserve","%", _thePerformanceInterface.getFuelReserve()*100});
-        		dataListMissionProfile.add(new Object[] {"Design passengers number","", _thePerformanceInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()});
+        		dataListMissionProfile.add(new Object[] {"Design passengers number","", Integer.valueOf(_thePerformanceInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", _theMissionProfileCalculatorMap.get(xcg).getPassengersNumber().doubleValue()});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {"Take-off range","nmi", _rangeListMap.get(xcg).get(1).doubleValue(NonSI.NAUTICAL_MILE)});
@@ -3025,6 +3043,17 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Holding range","nmi", _rangeListMap.get(xcg).get(8).to(NonSI.NAUTICAL_MILE).minus(_rangeListMap.get(xcg).get(7).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
         		dataListMissionProfile.add(new Object[] {"Third descent range","nmi", _rangeListMap.get(xcg).get(9).to(NonSI.NAUTICAL_MILE).minus(_rangeListMap.get(xcg).get(8).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
         		dataListMissionProfile.add(new Object[] {"Landing range","nmi", _rangeListMap.get(xcg).get(10).to(NonSI.NAUTICAL_MILE).minus(_rangeListMap.get(xcg).get(9).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {" "});
+        		dataListMissionProfile.add(new Object[] {"Altitude at take-off ending","ft", _altitudeListMap.get(xcg).get(1).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Altitude at climb ending","ft", _altitudeListMap.get(xcg).get(2).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Altitude at cruise ending","ft", _altitudeListMap.get(xcg).get(3).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Altitude at first descent ending","ft", _altitudeListMap.get(xcg).get(4).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Altitude at second climb ending","ft", _altitudeListMap.get(xcg).get(5).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Altitude at alternate cruise ending","ft", _altitudeListMap.get(xcg).get(6).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Altitude at second descent ending","ft", _altitudeListMap.get(xcg).get(7).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Altitude at holding ending","ft", _altitudeListMap.get(xcg).get(8).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Altitude at third descent ending","ft", _altitudeListMap.get(xcg).get(9).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListMissionProfile.add(new Object[] {"Altitude at landing ending","ft", _altitudeListMap.get(xcg).get(10).doubleValue(NonSI.NAUTICAL_MILE)});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {"Take-off duration","min", _timeListMap.get(xcg).get(1).doubleValue(NonSI.MINUTE)});
         		dataListMissionProfile.add(new Object[] {"Climb duration","min", _timeListMap.get(xcg).get(2).to(NonSI.MINUTE).minus(_timeListMap.get(xcg).get(1).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
@@ -3062,6 +3091,8 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"TAKE-OFF"});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at take-off start","kn", _speedTASMissionListMap.get(xcg).get(0).doubleValue(NonSI.KNOT)});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at take-off ending","kn", _speedTASMissionListMap.get(xcg).get(1).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (CAS) at take-off start","kn", _speedCASMissionListMap.get(xcg).get(0).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (CAS) at take-off ending","kn", _speedCASMissionListMap.get(xcg).get(1).doubleValue(NonSI.KNOT)});
         		dataListMissionProfile.add(new Object[] {"Mach at take-off start"," ", _machMissionListMap.get(xcg).get(0).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"Mach at take-off ending"," ", _machMissionListMap.get(xcg).get(1).doubleValue()});        	
         		dataListMissionProfile.add(new Object[] {"CL at take-off start"," ", _liftingCoefficientMissionListMap.get(xcg).get(0).doubleValue()});
@@ -3074,10 +3105,20 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Thrust at take-off ending","lbf", _thrustMissionListMap.get(xcg).get(1).doubleValue(NonSI.POUND_FORCE)});
         		dataListMissionProfile.add(new Object[] {"Drag at take-off start","lbf", _dragMissionListMap.get(xcg).get(0).doubleValue(NonSI.POUND_FORCE)});
         		dataListMissionProfile.add(new Object[] {"Drag at take-off ending","lbf", _dragMissionListMap.get(xcg).get(1).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Rate of climb at take-off start","ft/min", _rateOfClimbMissionListMap.get(xcg).get(0).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Rate of climb at take-off ending","ft/min", _rateOfClimbMissionListMap.get(xcg).get(1).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Climb angle at take-off start","deg", _climbAngleMissionListMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListMissionProfile.add(new Object[] {"Climb angle at take-off ending","deg", _climbAngleMissionListMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListMissionProfile.add(new Object[] {"Fuel flow at take-off start","lb/hr", _fuelFlowMissionListMap.get(xcg).get(0).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Fuel flow at take-off ending","lb/hr", _fuelFlowMissionListMap.get(xcg).get(1).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"SFC at take-off start","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(0).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"SFC at take-off ending","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(1).doubleValue()});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {"CLIMB"});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at climb start","kn", _speedTASMissionListMap.get(xcg).get(2).doubleValue(NonSI.KNOT)});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at climb ending","kn", _speedTASMissionListMap.get(xcg).get(3).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (CAS) at climb start","kn", _speedCASMissionListMap.get(xcg).get(2).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (CAS) at climb ending","kn", _speedCASMissionListMap.get(xcg).get(3).doubleValue(NonSI.KNOT)});
         		dataListMissionProfile.add(new Object[] {"Mach at climb start"," ", _machMissionListMap.get(xcg).get(2).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"Mach at climb ending"," ", _machMissionListMap.get(xcg).get(3).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"CL at climb start"," ", _liftingCoefficientMissionListMap.get(xcg).get(2).doubleValue()});
@@ -3090,10 +3131,20 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Thrust at climb ending","lbf", _thrustMissionListMap.get(xcg).get(3).doubleValue(NonSI.POUND_FORCE)});
         		dataListMissionProfile.add(new Object[] {"Drag at climb start","lbf", _dragMissionListMap.get(xcg).get(2).doubleValue(NonSI.POUND_FORCE)});
         		dataListMissionProfile.add(new Object[] {"Drag at climb ending","lbf", _dragMissionListMap.get(xcg).get(3).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Rate of climb at climb start","ft/min", _rateOfClimbMissionListMap.get(xcg).get(2).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Rate of climb at climb ending","ft/min", _rateOfClimbMissionListMap.get(xcg).get(3).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Climb angle at climb start","deg", _climbAngleMissionListMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListMissionProfile.add(new Object[] {"Climb angle at climb ending","deg", _climbAngleMissionListMap.get(xcg).get(3).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListMissionProfile.add(new Object[] {"Fuel flow at climb start","lb/hr", _fuelFlowMissionListMap.get(xcg).get(2).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Fuel flow at climb ending","lb/hr", _fuelFlowMissionListMap.get(xcg).get(3).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"SFC at climb start","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(2).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"SFC at climb ending","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(3).doubleValue()});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {"CRUISE"});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at cruise start","kn", _speedTASMissionListMap.get(xcg).get(4).doubleValue(NonSI.KNOT)});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at cruise ending","kn", _speedTASMissionListMap.get(xcg).get(5).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (CAS) at cruise start","kn", _speedCASMissionListMap.get(xcg).get(4).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (CAS) at cruise ending","kn", _speedCASMissionListMap.get(xcg).get(5).doubleValue(NonSI.KNOT)});
         		dataListMissionProfile.add(new Object[] {"Mach at cruise start"," ", _machMissionListMap.get(xcg).get(4).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"Mach at cruise ending"," ", _machMissionListMap.get(xcg).get(5).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"CL at cruise start"," ", _liftingCoefficientMissionListMap.get(xcg).get(4).doubleValue()});
@@ -3106,10 +3157,20 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Thrust at cruise ending","lbf", _thrustMissionListMap.get(xcg).get(5).doubleValue(NonSI.POUND_FORCE)});
         		dataListMissionProfile.add(new Object[] {"Drag at cruise start","lbf", _dragMissionListMap.get(xcg).get(4).doubleValue(NonSI.POUND_FORCE)});
         		dataListMissionProfile.add(new Object[] {"Drag at cruise ending","lbf", _dragMissionListMap.get(xcg).get(5).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Rate of climb at cruise start","ft/min", _rateOfClimbMissionListMap.get(xcg).get(4).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Rate of climb at cruise ending","ft/min", _rateOfClimbMissionListMap.get(xcg).get(5).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Climb angle at cruise start","deg", _climbAngleMissionListMap.get(xcg).get(4).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListMissionProfile.add(new Object[] {"Climb angle at cruise ending","deg", _climbAngleMissionListMap.get(xcg).get(5).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListMissionProfile.add(new Object[] {"Fuel flow at cruise start","lb/hr", _fuelFlowMissionListMap.get(xcg).get(4).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Fuel flow at cruise ending","lb/hr", _fuelFlowMissionListMap.get(xcg).get(5).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"SFC at cruise start","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(4).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"SFC at cruise ending","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(5).doubleValue()});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {"FIRST DESCENT"});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at first descent start","kn", _speedTASMissionListMap.get(xcg).get(6).doubleValue(NonSI.KNOT)});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at first descent ending","kn", _speedTASMissionListMap.get(xcg).get(7).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (CAS) at first descent start","kn", _speedCASMissionListMap.get(xcg).get(6).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (CAS) at first descent ending","kn", _speedCASMissionListMap.get(xcg).get(7).doubleValue(NonSI.KNOT)});
         		dataListMissionProfile.add(new Object[] {"Mach at first descent start"," ", _machMissionListMap.get(xcg).get(6).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"Mach at first descent ending"," ", _machMissionListMap.get(xcg).get(7).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"CL at first descent start"," ", _liftingCoefficientMissionListMap.get(xcg).get(6).doubleValue()});
@@ -3120,14 +3181,24 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Efficiency at first descent ending"," ", _efficiencyMissionListMap.get(xcg).get(7).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"Thrust at first descent start","lbf", _thrustMissionListMap.get(xcg).get(6).doubleValue(NonSI.POUND_FORCE)});
         		dataListMissionProfile.add(new Object[] {"Thrust at first descent ending","lbf", _thrustMissionListMap.get(xcg).get(7).doubleValue(NonSI.POUND_FORCE)});
-        		dataListMissionProfile.add(new Object[] {"Drag at second climb start", "lbf", _dragMissionListMap.get(xcg).get(6).doubleValue(NonSI.POUND_FORCE)});
-        		dataListMissionProfile.add(new Object[] {"Drag at second climb ending", "lbf", _dragMissionListMap.get(xcg).get(7).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at first descent start", "lbf", _dragMissionListMap.get(xcg).get(6).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at first descent ending", "lbf", _dragMissionListMap.get(xcg).get(7).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Rate of climb at first descent start","ft/min", _rateOfClimbMissionListMap.get(xcg).get(6).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Rate of climb at first descent ending","ft/min", _rateOfClimbMissionListMap.get(xcg).get(7).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Climb angle at first descent start","deg", _climbAngleMissionListMap.get(xcg).get(6).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListMissionProfile.add(new Object[] {"Climb angle at first descent ending","deg", _climbAngleMissionListMap.get(xcg).get(7).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListMissionProfile.add(new Object[] {"Fuel flow at first descent start","lb/hr", _fuelFlowMissionListMap.get(xcg).get(6).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Fuel flow at first descent ending","lb/hr", _fuelFlowMissionListMap.get(xcg).get(7).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"SFC at first descent start","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(6).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"SFC at first descent ending","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(7).doubleValue()});
         		dataListMissionProfile.add(new Object[] {" "});
 
         		if(_thePerformanceInterface.getAlternateCruiseAltitude().doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
         			dataListMissionProfile.add(new Object[] {"SECOND CLIMB"});
         			dataListMissionProfile.add(new Object[] {"Speed (TAS) at second climb start","kn", _speedTASMissionListMap.get(xcg).get(8).doubleValue(NonSI.KNOT)});
         			dataListMissionProfile.add(new Object[] {"Speed (TAS) at second climb ending","kn", _speedTASMissionListMap.get(xcg).get(9).doubleValue(NonSI.KNOT)});
+        			dataListMissionProfile.add(new Object[] {"Speed (CAS) at second climb start","kn", _speedCASMissionListMap.get(xcg).get(8).doubleValue(NonSI.KNOT)});
+        			dataListMissionProfile.add(new Object[] {"Speed (CAS) at second climb ending","kn", _speedCASMissionListMap.get(xcg).get(9).doubleValue(NonSI.KNOT)});
         			dataListMissionProfile.add(new Object[] {"Mach at second climb start"," ", _machMissionListMap.get(xcg).get(8).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Mach at second climb ending"," ", _machMissionListMap.get(xcg).get(9).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"CL at second climb start", " ", _liftingCoefficientMissionListMap.get(xcg).get(8).doubleValue()});
@@ -3138,12 +3209,22 @@ public class ACPerformanceManager {
         			dataListMissionProfile.add(new Object[] {"Efficiency at second climb ending", " ", _efficiencyMissionListMap.get(xcg).get(9).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Thrust at second climb start", "lbf", _thrustMissionListMap.get(xcg).get(8).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Thrust at second climb ending", "lbf", _thrustMissionListMap.get(xcg).get(9).doubleValue(NonSI.POUND_FORCE)});
-        			dataListMissionProfile.add(new Object[] {"Drag at first descent start","lbf", _dragMissionListMap.get(xcg).get(8).doubleValue(NonSI.POUND_FORCE)});
-        			dataListMissionProfile.add(new Object[] {"Drag at first descent ending","lbf", _dragMissionListMap.get(xcg).get(9).doubleValue(NonSI.POUND_FORCE)});
+        			dataListMissionProfile.add(new Object[] {"Drag at second climb start","lbf", _dragMissionListMap.get(xcg).get(8).doubleValue(NonSI.POUND_FORCE)});
+        			dataListMissionProfile.add(new Object[] {"Drag at second climb ending","lbf", _dragMissionListMap.get(xcg).get(9).doubleValue(NonSI.POUND_FORCE)});
+        			dataListMissionProfile.add(new Object[] {"Rate of climb at second climb start","ft/min", _rateOfClimbMissionListMap.get(xcg).get(8).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+            		dataListMissionProfile.add(new Object[] {"Rate of climb at second climb ending","ft/min", _rateOfClimbMissionListMap.get(xcg).get(9).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+            		dataListMissionProfile.add(new Object[] {"Climb angle at second climb start","deg", _climbAngleMissionListMap.get(xcg).get(8).doubleValue(NonSI.DEGREE_ANGLE)});
+            		dataListMissionProfile.add(new Object[] {"Climb angle at second climb ending","deg", _climbAngleMissionListMap.get(xcg).get(9).doubleValue(NonSI.DEGREE_ANGLE)});
+            		dataListMissionProfile.add(new Object[] {"Fuel flow at second climb start","lb/hr", _fuelFlowMissionListMap.get(xcg).get(8).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"Fuel flow at second climb ending","lb/hr", _fuelFlowMissionListMap.get(xcg).get(9).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"SFC at second climb start","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(8).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"SFC at second climb ending","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(9).doubleValue()});
         			dataListMissionProfile.add(new Object[] {" "});
         			dataListMissionProfile.add(new Object[] {"ALTERNATE CRUISE"});
         			dataListMissionProfile.add(new Object[] {"Speed (TAS) at alternate cruise start","kn", _speedTASMissionListMap.get(xcg).get(10).doubleValue(NonSI.KNOT)});
         			dataListMissionProfile.add(new Object[] {"Speed (TAS) at alternate cruise ending","kn", _speedTASMissionListMap.get(xcg).get(11).doubleValue(NonSI.KNOT)});
+        			dataListMissionProfile.add(new Object[] {"Speed (CAS) at alternate cruise start","kn", _speedCASMissionListMap.get(xcg).get(10).doubleValue(NonSI.KNOT)});
+        			dataListMissionProfile.add(new Object[] {"Speed (CAS) at alternate cruise ending","kn", _speedCASMissionListMap.get(xcg).get(11).doubleValue(NonSI.KNOT)});
         			dataListMissionProfile.add(new Object[] {"Mach at alternate cruise start"," ", _machMissionListMap.get(xcg).get(10).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Mach at alternate cruise ending"," ", _machMissionListMap.get(xcg).get(11).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"CL at alternate cruise start"," ", _liftingCoefficientMissionListMap.get(xcg).get(10).doubleValue()});
@@ -3156,10 +3237,20 @@ public class ACPerformanceManager {
         			dataListMissionProfile.add(new Object[] {"Thrust at alternate cruise ending","lbf", _thrustMissionListMap.get(xcg).get(11).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Drag at alternate cruise start","lbf", _dragMissionListMap.get(xcg).get(10).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Drag at alternate cruise ending","lbf", _dragMissionListMap.get(xcg).get(11).doubleValue(NonSI.POUND_FORCE)});
+        			dataListMissionProfile.add(new Object[] {"Rate of climb at alternate cruise start","ft/min", _rateOfClimbMissionListMap.get(xcg).get(10).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+            		dataListMissionProfile.add(new Object[] {"Rate of climb at alternate cruise ending","ft/min", _rateOfClimbMissionListMap.get(xcg).get(11).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+            		dataListMissionProfile.add(new Object[] {"Climb angle at alternate cruise start","deg", _climbAngleMissionListMap.get(xcg).get(10).doubleValue(NonSI.DEGREE_ANGLE)});
+            		dataListMissionProfile.add(new Object[] {"Climb angle at alternate cruise ending","deg", _climbAngleMissionListMap.get(xcg).get(11).doubleValue(NonSI.DEGREE_ANGLE)});
+            		dataListMissionProfile.add(new Object[] {"Fuel flow at alternate cruise start","lb/hr", _fuelFlowMissionListMap.get(xcg).get(10).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"Fuel flow at alternate cruise ending","lb/hr", _fuelFlowMissionListMap.get(xcg).get(11).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"SFC at alternate cruise start","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(10).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"SFC at alternate cruise ending","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(11).doubleValue()});
         			dataListMissionProfile.add(new Object[] {" "});
         			dataListMissionProfile.add(new Object[] {"SECOND DESCENT"});
         			dataListMissionProfile.add(new Object[] {"Speed (TAS) at second descent start","kn", _speedTASMissionListMap.get(xcg).get(12).doubleValue(NonSI.KNOT)});
         			dataListMissionProfile.add(new Object[] {"Speed (TAS) at second descent ending","kn", _speedTASMissionListMap.get(xcg).get(13).doubleValue(NonSI.KNOT)});
+        			dataListMissionProfile.add(new Object[] {"Speed (CAS) at second descent start","kn", _speedCASMissionListMap.get(xcg).get(12).doubleValue(NonSI.KNOT)});
+        			dataListMissionProfile.add(new Object[] {"Speed (CAS) at second descent ending","kn", _speedCASMissionListMap.get(xcg).get(13).doubleValue(NonSI.KNOT)});
         			dataListMissionProfile.add(new Object[] {"Mach at second descent start"," ", _machMissionListMap.get(xcg).get(12).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Mach at second descent ending"," ", _machMissionListMap.get(xcg).get(13).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"CL at second descent start"," ", _liftingCoefficientMissionListMap.get(xcg).get(12).doubleValue()});
@@ -3172,12 +3263,22 @@ public class ACPerformanceManager {
         			dataListMissionProfile.add(new Object[] {"Thrust at second descent ending","lbf", _thrustMissionListMap.get(xcg).get(13).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Drag at second descent start","lbf", _dragMissionListMap.get(xcg).get(12).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Drag at second descent ending","lbf", _dragMissionListMap.get(xcg).get(13).doubleValue(NonSI.POUND_FORCE)});
+        			dataListMissionProfile.add(new Object[] {"Rate of climb at second descent start","ft/min", _rateOfClimbMissionListMap.get(xcg).get(12).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+            		dataListMissionProfile.add(new Object[] {"Rate of climb at second descent ending","ft/min", _rateOfClimbMissionListMap.get(xcg).get(13).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+            		dataListMissionProfile.add(new Object[] {"Climb angle at second descent start","deg", _climbAngleMissionListMap.get(xcg).get(12).doubleValue(NonSI.DEGREE_ANGLE)});
+            		dataListMissionProfile.add(new Object[] {"Climb angle at second descent ending","deg", _climbAngleMissionListMap.get(xcg).get(13).doubleValue(NonSI.DEGREE_ANGLE)});
+            		dataListMissionProfile.add(new Object[] {"Fuel flow at second descent start","lb/hr", _fuelFlowMissionListMap.get(xcg).get(12).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"Fuel flow at second descent ending","lb/hr", _fuelFlowMissionListMap.get(xcg).get(13).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"SFC at second descent start","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(12).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"SFC at second descent ending","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(13).doubleValue()});
         			dataListMissionProfile.add(new Object[] {" "});
         		}
         		if(_thePerformanceInterface.getHoldingDuration().doubleValue(NonSI.MINUTE) != 0.0) {
         			dataListMissionProfile.add(new Object[] {"HOLDING"});
         			dataListMissionProfile.add(new Object[] {"Speed (TAS) at holding start","kn", _speedTASMissionListMap.get(xcg).get(14).doubleValue(NonSI.KNOT)});
         			dataListMissionProfile.add(new Object[] {"Speed (TAS) at holding ending","kn", _speedTASMissionListMap.get(xcg).get(15).doubleValue(NonSI.KNOT)});
+        			dataListMissionProfile.add(new Object[] {"Speed (CAS) at holding start","kn", _speedCASMissionListMap.get(xcg).get(14).doubleValue(NonSI.KNOT)});
+        			dataListMissionProfile.add(new Object[] {"Speed (CAS) at holding ending","kn", _speedCASMissionListMap.get(xcg).get(15).doubleValue(NonSI.KNOT)});
         			dataListMissionProfile.add(new Object[] {"Mach at holding start"," ", _machMissionListMap.get(xcg).get(14).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Mach at holding ending"," ", _machMissionListMap.get(xcg).get(15).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"CL at holding start"," ", _liftingCoefficientMissionListMap.get(xcg).get(14).doubleValue()});
@@ -3190,10 +3291,20 @@ public class ACPerformanceManager {
         			dataListMissionProfile.add(new Object[] {"Thrust at holding ending","lbf", _thrustMissionListMap.get(xcg).get(15).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Drag at holding start","lbf", _dragMissionListMap.get(xcg).get(14).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Drag at holding ending","lbf", _dragMissionListMap.get(xcg).get(15).doubleValue(NonSI.POUND_FORCE)});
+        			dataListMissionProfile.add(new Object[] {"Rate of climb at holding start","ft/min", _rateOfClimbMissionListMap.get(xcg).get(14).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+            		dataListMissionProfile.add(new Object[] {"Rate of climb at holding ending","ft/min", _rateOfClimbMissionListMap.get(xcg).get(15).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+            		dataListMissionProfile.add(new Object[] {"Climb angle at holding start","deg", _climbAngleMissionListMap.get(xcg).get(14).doubleValue(NonSI.DEGREE_ANGLE)});
+            		dataListMissionProfile.add(new Object[] {"Climb angle at holding ending","deg", _climbAngleMissionListMap.get(xcg).get(15).doubleValue(NonSI.DEGREE_ANGLE)});
+            		dataListMissionProfile.add(new Object[] {"Fuel flow at holding start","lb/hr", _fuelFlowMissionListMap.get(xcg).get(14).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"Fuel flow at holding ending","lb/hr", _fuelFlowMissionListMap.get(xcg).get(15).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"SFC at holding start","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(14).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"SFC at holding ending","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(15).doubleValue()});
         			dataListMissionProfile.add(new Object[] {" "});
         			dataListMissionProfile.add(new Object[] {"THIRD DESCENT"});
         			dataListMissionProfile.add(new Object[] {"Speed (TAS) at third descent start","kn", _speedTASMissionListMap.get(xcg).get(16).doubleValue(NonSI.KNOT)});
         			dataListMissionProfile.add(new Object[] {"Speed (TAS) at third descent ending","kn", _speedTASMissionListMap.get(xcg).get(17).doubleValue(NonSI.KNOT)});
+        			dataListMissionProfile.add(new Object[] {"Speed (CAS) at third descent start","kn", _speedCASMissionListMap.get(xcg).get(16).doubleValue(NonSI.KNOT)});
+        			dataListMissionProfile.add(new Object[] {"Speed (CAS) at third descent ending","kn", _speedCASMissionListMap.get(xcg).get(17).doubleValue(NonSI.KNOT)});
         			dataListMissionProfile.add(new Object[] {"Mach at third descent start"," ", _machMissionListMap.get(xcg).get(16).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Mach at third descent ending"," ", _machMissionListMap.get(xcg).get(17).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"CL at third descent start"," ", _liftingCoefficientMissionListMap.get(xcg).get(16).doubleValue()});
@@ -3206,11 +3317,21 @@ public class ACPerformanceManager {
         			dataListMissionProfile.add(new Object[] {"Thrust at third descent ending","lbf", _thrustMissionListMap.get(xcg).get(17).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Drag at third descent start","lbf", _dragMissionListMap.get(xcg).get(16).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Drag at third descent ending","lbf", _dragMissionListMap.get(xcg).get(17).doubleValue(NonSI.POUND_FORCE)});
+        			dataListMissionProfile.add(new Object[] {"Rate of climb at third descent start","ft/min", _rateOfClimbMissionListMap.get(xcg).get(16).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+            		dataListMissionProfile.add(new Object[] {"Rate of climb at third descent ending","ft/min", _rateOfClimbMissionListMap.get(xcg).get(17).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+            		dataListMissionProfile.add(new Object[] {"Climb angle at third descent start","deg", _climbAngleMissionListMap.get(xcg).get(16).doubleValue(NonSI.DEGREE_ANGLE)});
+            		dataListMissionProfile.add(new Object[] {"Climb angle at third descent ending","deg", _climbAngleMissionListMap.get(xcg).get(17).doubleValue(NonSI.DEGREE_ANGLE)});
+            		dataListMissionProfile.add(new Object[] {"Fuel flow at third descent start","lb/hr", _fuelFlowMissionListMap.get(xcg).get(16).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"Fuel flow at third descent ending","lb/hr", _fuelFlowMissionListMap.get(xcg).get(17).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"SFC at third descent start","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(16).doubleValue()});
+            		dataListMissionProfile.add(new Object[] {"SFC at third descent ending","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(17).doubleValue()});
         			dataListMissionProfile.add(new Object[] {" "});
         		}
         		dataListMissionProfile.add(new Object[] {"LANDING"});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at landing start","kn", _speedTASMissionListMap.get(xcg).get(18).doubleValue(NonSI.KNOT)});        	
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at landing ending","kn", _speedTASMissionListMap.get(xcg).get(19).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (CAS) at landing start","kn", _speedCASMissionListMap.get(xcg).get(18).doubleValue(NonSI.KNOT)});        	
+        		dataListMissionProfile.add(new Object[] {"Speed (CAS) at landing ending","kn", _speedCASMissionListMap.get(xcg).get(19).doubleValue(NonSI.KNOT)});
         		dataListMissionProfile.add(new Object[] {"Mach at landing start"," ", _machMissionListMap.get(xcg).get(18).doubleValue()});        	
         		dataListMissionProfile.add(new Object[] {"Mach at landing ending"," ", _machMissionListMap.get(xcg).get(19).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"CL at landing start", " ", _liftingCoefficientMissionListMap.get(xcg).get(18).doubleValue()});        	
@@ -3223,6 +3344,14 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Thrust at landing ending", "lbf", _thrustMissionListMap.get(xcg).get(19).doubleValue(NonSI.POUND_FORCE)});
         		dataListMissionProfile.add(new Object[] {"Drag at landing start", "lbf", _dragMissionListMap.get(xcg).get(18).doubleValue(NonSI.POUND_FORCE)});        	
         		dataListMissionProfile.add(new Object[] {"Drag at landing ending", "lbf", _dragMissionListMap.get(xcg).get(19).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Rate of climb at landing start","ft/min", _rateOfClimbMissionListMap.get(xcg).get(18).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Rate of climb at landing ending","ft/min", _rateOfClimbMissionListMap.get(xcg).get(19).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Climb angle at landing start","deg", _climbAngleMissionListMap.get(xcg).get(18).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListMissionProfile.add(new Object[] {"Climb angle at landing ending","deg", _climbAngleMissionListMap.get(xcg).get(19).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListMissionProfile.add(new Object[] {"Fuel flow at landing start","lb/hr", _fuelFlowMissionListMap.get(xcg).get(18).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Fuel flow at landing ending","lb/hr", _fuelFlowMissionListMap.get(xcg).get(19).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"SFC at landing start","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(18).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"SFC at landing ending","lb/(lb*hr)", _sfcMissionListMap.get(xcg).get(19).doubleValue()});
 
         		Row rowMissionProfile = sheetMissionProfile.createRow(0);
         		Object[] objArrMissionProfile = dataListMissionProfile.get(0);
@@ -6064,20 +6193,28 @@ public class ACPerformanceManager {
 			_timeListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTimeList());
 			_fuelUsedListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getFuelUsedList());
 			_massListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getMassList());
+			
 			_speedTASMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getSpeedTASMissionList());
+			_speedCASMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getSpeedCASMissionList());
 			_machMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getMachMissionList());
 			_liftingCoefficientMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getLiftingCoefficientMissionList());
 			_dragCoefficientMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getDragCoefficientMissionList());
 			_efficiencyMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getEfficiencyMissionList());
 			_thrustMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getThrustMissionList());
 			_dragMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getDragMissionList());
+			_rateOfClimbMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getRateOfClimbMissionList());
+			_climbAngleMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getClimbAngleMissionList());
+			_fuelFlowMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getFuelFlowMissionList());
+			_sfcMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getSFCMissionList());
 			
 			_initialFuelMassMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getInitialFuelMass());
-			_totalFuelUsedMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalFuelUsed());
-			_totalMissionTimeMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalMissionTime());
+			_totalFuelUsedMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalFuel());
+			_blockFuelMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getBlockFuel());
+			_totalMissionTimeMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalTime());
+			_blockTimeMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getBlockTime());
 			_initialMissionMassMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getInitialMissionMass());
 			_endMissionMassMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getEndMissionMass());
-			
+			_totalMissionRangeMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalRange());
 		}
 		
 		public void plotProfiles(String missionProfilesFolderPath, Double xcg) {
@@ -7175,6 +7312,70 @@ public class ACPerformanceManager {
 
 	public void setEndMissionMassMap(Map<Double, Amount<Mass>> _endMissionMassMap) {
 		this._endMissionMassMap = _endMissionMassMap;
+	}
+
+	public Map<Double, List<Amount<Velocity>>> getSpeedCASMissionListMap() {
+		return _speedCASMissionListMap;
+	}
+
+	public void setSpeedCASMissionListMap(Map<Double, List<Amount<Velocity>>> _speedCASMissionListMap) {
+		this._speedCASMissionListMap = _speedCASMissionListMap;
+	}
+
+	public Map<Double, List<Amount<Velocity>>> getRateOfClimbMissionListMap() {
+		return _rateOfClimbMissionListMap;
+	}
+
+	public void setRateOfClimbMissionListMap(Map<Double, List<Amount<Velocity>>> _rateOfClimbMissionListMap) {
+		this._rateOfClimbMissionListMap = _rateOfClimbMissionListMap;
+	}
+
+	public Map<Double, List<Amount<Angle>>> getClimbAngleMissionListMap() {
+		return _climbAngleMissionListMap;
+	}
+
+	public void setClimbAngleMissionListMap(Map<Double, List<Amount<Angle>>> _climbAngleMissionListMap) {
+		this._climbAngleMissionListMap = _climbAngleMissionListMap;
+	}
+
+	public Map<Double, List<Double>> getFuelFlowMissionListMap() {
+		return _fuelFlowMissionListMap;
+	}
+
+	public void setFuelFlowMissionListMap(Map<Double, List<Double>> _fuelFlowMissionListMap) {
+		this._fuelFlowMissionListMap = _fuelFlowMissionListMap;
+	}
+
+	public Map<Double, List<Double>> getSFCMissionListMap() {
+		return _sfcMissionListMap;
+	}
+
+	public void setSFCMissionListMap(Map<Double, List<Double>> _sfcMissionListMap) {
+		this._sfcMissionListMap = _sfcMissionListMap;
+	}
+
+	public Map<Double, Amount<Mass>> getBlockFuelMap() {
+		return _blockFuelMap;
+	}
+
+	public void setBlockFuelMap(Map<Double, Amount<Mass>> _blockFuelMap) {
+		this._blockFuelMap = _blockFuelMap;
+	}
+
+	public Map<Double, Amount<Duration>> getBlockTimeMap() {
+		return _blockTimeMap;
+	}
+
+	public void setBlockTimeMap(Map<Double, Amount<Duration>> _blockTimeMap) {
+		this._blockTimeMap = _blockTimeMap;
+	}
+
+	public Map<Double, Amount<Length>> getTotalMissionRangeMap() {
+		return _totalMissionRangeMap;
+	}
+
+	public void setTotalMissionRangeMap(Map<Double, Amount<Length>> _totalMissionRangeMap) {
+		this._totalMissionRangeMap = _totalMissionRangeMap;
 	}
 
 }

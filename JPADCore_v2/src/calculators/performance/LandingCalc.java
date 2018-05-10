@@ -178,10 +178,14 @@ public class LandingCalc {
 		System.out.println("V_TouchDown = " + vTD);
 		System.out.println("-----------------------------------------------------------\n");
 
-		// McCormick interpolated function --> See the excel file into JPAD DOCS
-		double hb = wingToGroundDistance.divide(aircraft.getWing().getSpan().times(Math.PI/4)).getEstimatedValue();
-		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
-				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
+		// Aerodynamics For Naval Aviators: (Hurt)
+		double hb = wingToGroundDistance.to(SI.METER).divide(aircraft.getWing().getSpan().to(SI.METER)).getEstimatedValue();
+		kGround = 1- (-4.48276577 * Math.pow(hb, 5) 
+				+ 15.61174376 * Math.pow(hb, 4)
+				- 21.20171050 * Math.pow(hb, 3)
+				+ 14.39438721 * Math.pow(hb, 2)
+				- 5.20913465 * hb
+				+ 0.90793397);
 
 		// List initialization
 		this.time = new ArrayList<Amount<Duration>>();

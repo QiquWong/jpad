@@ -45,7 +45,7 @@ public class DescentCalc {
 	private Double[] _polarCDClean;
 	private MyInterpolatingFunction _sfcFunctionDescent;
 
-	private final int maxIterationNumber = 50;
+	private final int maxIterationNumber = 100;
 	
 	//............................................................................................
 	// Output:
@@ -54,6 +54,7 @@ public class DescentCalc {
 	private List<Amount<Duration>> _descentTimes;
 	private List<Amount<Angle>> _descentAngles;
 	private List<Amount<Velocity>> _speedListTAS;
+	private List<Amount<Velocity>> _rateOfDescentList;
 	private List<Double> _cLSteps;
 	private List<Amount<Force>> _cruiseThrustFromDatabase;
 	private List<Amount<Force>> _flightIdleThrustFromDatabase;
@@ -103,6 +104,8 @@ public class DescentCalc {
 		this._fuelFlowFlightIdleList = new ArrayList<>();
 		this._interpolatedFuelFlowList = new ArrayList<>();
 		this._fuelUsedPerStep = new ArrayList<>();
+		this._rateOfDescentList = new ArrayList<>();
+		this._interpolatedFuelFlowList = new ArrayList<>();
 	}
 	
 	//--------------------------------------------------------------------------------------------
@@ -117,7 +120,6 @@ public class DescentCalc {
 		List<Double> cDSteps = new ArrayList<>();
 		List<Double> efficiencyPerStep = new ArrayList<>();
 		List<Amount<Force>> interpolatedThrustList = new ArrayList<>();
-		List<Amount<Velocity>> rateOfDescentList = new ArrayList<>();
 		List<Double> weightCruise = new ArrayList<>();
 		List<Double> weightFlightIdle = new ArrayList<>();
 		
@@ -260,7 +262,7 @@ public class DescentCalc {
 				.plus(_flightIdleThrustFromDatabase.get(0).times(weightFlightIdle.get(0)))
 				);
 		
-		rateOfDescentList.add(
+		_rateOfDescentList.add(
 				Amount.valueOf(
 						(interpolatedThrustList.get(0).to(SI.NEWTON)
 						.minus(_dragPerStep.get(0).to(SI.NEWTON)))
@@ -279,7 +281,7 @@ public class DescentCalc {
 		while (
 				(Math.abs(
 						(-_rateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)
-								-rateOfDescentList.get(0).doubleValue(MyUnits.FOOT_PER_MINUTE))
+								-_rateOfDescentList.get(0).doubleValue(MyUnits.FOOT_PER_MINUTE))
 						) 
 						/ _rateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)
 						)
@@ -294,7 +296,7 @@ public class DescentCalc {
 			}
 			
 			double rateOfDescentRatio = Math.abs(
-					rateOfDescentList.get(0).doubleValue(SI.METERS_PER_SECOND)/
+					_rateOfDescentList.get(0).doubleValue(SI.METERS_PER_SECOND)/
 					(-_rateOfDescent.doubleValue(SI.METERS_PER_SECOND))
 					);
 			
@@ -321,8 +323,8 @@ public class DescentCalc {
 					.plus(_flightIdleThrustFromDatabase.get(0).times(weightFlightIdle.get(0)))
 					);
 			
-			rateOfDescentList.remove(0);
-			rateOfDescentList.add(
+			_rateOfDescentList.remove(0);
+			_rateOfDescentList.add(
 					Amount.valueOf(
 							(interpolatedThrustList.get(0).to(SI.NEWTON)
 							.minus(_dragPerStep.get(0).to(SI.NEWTON)))
@@ -540,7 +542,7 @@ public class DescentCalc {
 					.plus(_flightIdleThrustFromDatabase.get(i).times(weightFlightIdle.get(i)))
 					);
 			
-			rateOfDescentList.add(
+			_rateOfDescentList.add(
 					i,
 					Amount.valueOf(
 							(interpolatedThrustList.get(i).to(SI.NEWTON)
@@ -560,7 +562,7 @@ public class DescentCalc {
 			while (
 					(Math.abs(
 							(-_rateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)
-									-rateOfDescentList.get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
+									-_rateOfDescentList.get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
 							) 
 							/ _rateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)
 							)
@@ -575,7 +577,7 @@ public class DescentCalc {
 				}
 
 				double rateOfDescentRatio = Math.abs(
-						rateOfDescentList.get(i).doubleValue(SI.METERS_PER_SECOND)/
+						_rateOfDescentList.get(i).doubleValue(SI.METERS_PER_SECOND)/
 						(-_rateOfDescent.doubleValue(SI.METERS_PER_SECOND))
 						);
 
@@ -603,8 +605,8 @@ public class DescentCalc {
 						.plus(_flightIdleThrustFromDatabase.get(i).times(weightFlightIdle.get(i)))
 						);
 
-				rateOfDescentList.remove(i);
-				rateOfDescentList.add(
+				_rateOfDescentList.remove(i);
+				_rateOfDescentList.add(
 						i,
 						Amount.valueOf(
 								(interpolatedThrustList.get(i).to(SI.NEWTON)
@@ -1043,5 +1045,13 @@ public class DescentCalc {
 
 	public int getMaxIterationNumber() {
 		return maxIterationNumber;
+	}
+
+	public List<Amount<Velocity>> getRateOfDescentList() {
+		return _rateOfDescentList;
+	}
+
+	public void setRateOfDescentList(List<Amount<Velocity>> _rateOfDescentList) {
+		this._rateOfDescentList = _rateOfDescentList;
 	}
 }

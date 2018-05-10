@@ -12,8 +12,8 @@
 			</weights>
 			<performance>
 				<range unit="nmi">400</range>				
-				<block_fuel unit="kg">2836</block_fuel>
-				<flight_time unit="min">111.32</flight_time>
+				<block_fuel unit="kg">1453</block_fuel>
+				<flight_time unit="min">69</flight_time>
 			</performance>
 			<global_data>
 				<utilization calculate="TRUE" method="AEA" unit="h/year"></utilization> <!-- Methods: AEA or SFORZA  -->

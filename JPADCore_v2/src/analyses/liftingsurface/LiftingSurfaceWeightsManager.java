@@ -233,17 +233,7 @@ public class LiftingSurfaceWeightsManager {
 
 			case RAYMER : { // Raymer page 211 pdf
 				_methodsList.add(method);
-				_mass = Amount.valueOf(0.0026 * 
-						pow(aircraft.get_weights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 0.556)*
-						pow(aircraft.get_performances().get_nUltimate(), 0.536) * 
-						pow(_ACw_ACdistance.to(NonSI.FOOT).getEstimatedValue(), -0.5) *
-						pow(_surface.to(MyUnits.FOOT2).getEstimatedValue(), 0.5) * 
-						pow(0.3*_ACw_ACdistance.to(NonSI.FOOT).getEstimatedValue(), 0.875) * 
-						pow(cos(_sweepQuarterChordEq.to(SI.RADIAN).getEstimatedValue()), -1.) *
-						pow(_aspectRatio, 0.35) * 
-						pow(_tc_root, -0.5) *
-						pow(1 + _positionRelativeToAttachment, 0.225),
-						NonSI.POUND).to(SI.KILOGRAM);
+				_mass = 
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			} break;
 
