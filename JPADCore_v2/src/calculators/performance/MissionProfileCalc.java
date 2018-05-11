@@ -52,7 +52,6 @@ public class MissionProfileCalc {
 	private Integer _passengersNumber;
 	private Amount<Mass> _firstGuessInitialFuelMass;
 	private Amount<Length> _missionRange;
-	private Amount<Length> _firstGuessCruiseLength;
 	private MyInterpolatingFunction _sfcFunctionCruise;
 	private MyInterpolatingFunction _sfcFunctionAlternateCruise;
 	private MyInterpolatingFunction _sfcFunctionHolding;
@@ -203,7 +202,6 @@ public class MissionProfileCalc {
 		this._firstGuessInitialFuelMass = firstGuessInitialFuelMass;
 		this._missionRange = missionRange;
 		this._takeOffMissionAltitude = takeOffMissionAltitude;
-		this._firstGuessCruiseLength = firstGuessCruiseLength;
 		this._calculateSFCCruise = calculateSFCCruise;
 		this._calculateSFCAlternateCruise = calculateSFCAlternateCruise;
 		this._calculateSFCHolding = calculateSFCHolding;
@@ -570,14 +568,7 @@ public class MissionProfileCalc {
 		_totalFuel = Amount.valueOf(0.0, SI.KILOGRAM);
 		int i = 0;
 
-		while ( Math.abs(
-				(_initialFuelMass.to(SI.KILOGRAM).minus(_totalFuel.to(SI.KILOGRAM)))
-				.divide(_initialFuelMass.to(SI.KILOGRAM))
-				.times(100)
-				.getEstimatedValue()
-				)- (_fuelReserve*100)
-				>= 0.01
-				) {
+		do {
 
 			if(i >= 1)
 				_initialFuelMass = newInitialFuelMass;
@@ -843,26 +834,8 @@ public class MissionProfileCalc {
 			rangeCruise = _missionRange;
 			_totalRange = Amount.valueOf(0.0, SI.METER);
 
-			while (
-					Math.abs(
-							(rangeCruise.to(NonSI.NAUTICAL_MILE)
-									.plus(rangeTakeOff.to(NonSI.NAUTICAL_MILE))
-									.plus(rangeClimb.to(NonSI.NAUTICAL_MILE))
-									.plus(rangeFirstDescent.to(NonSI.NAUTICAL_MILE))
-									.plus(rangeLanding.to(NonSI.NAUTICAL_MILE))
-									.minus(_missionRange.to(NonSI.NAUTICAL_MILE)))
-							.divide(rangeCruise.to(NonSI.NAUTICAL_MILE)
-									.plus(rangeTakeOff.to(NonSI.NAUTICAL_MILE))
-									.plus(rangeClimb.to(NonSI.NAUTICAL_MILE))
-									.plus(rangeFirstDescent.to(NonSI.NAUTICAL_MILE))
-									.plus(rangeLanding.to(NonSI.NAUTICAL_MILE))
-									)
-							.getEstimatedValue()
-							*100
-							)
-					>= 0.001
-					) {
-
+			for (int iCruise=0; iCruise < 5; iCruise++) {
+//			do {
 				double[] cruiseSteps = MyArrayUtils.linspace(
 						0.0,
 						rangeCruise.doubleValue(SI.METER),
@@ -1500,25 +1473,8 @@ public class MissionProfileCalc {
 
 				rangeAlternateCruise = _alternateCruiseLength;
 
-				while (
-						Math.abs(
-								(rangeAlternateCruise.to(NonSI.NAUTICAL_MILE)
-										.plus(rangeSecondClimb.to(NonSI.NAUTICAL_MILE))
-										.plus(rangeSecondDescent.to(NonSI.NAUTICAL_MILE))
-										.plus(rangeHolding.to(NonSI.NAUTICAL_MILE))
-										.plus(rangeThirdDescent.to(NonSI.NAUTICAL_MILE))
-										.minus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE)))
-								.divide(rangeAlternateCruise.to(NonSI.NAUTICAL_MILE)
-										.plus(rangeSecondClimb.to(NonSI.NAUTICAL_MILE))
-										.plus(rangeSecondDescent.to(NonSI.NAUTICAL_MILE))
-										.plus(rangeHolding.to(NonSI.NAUTICAL_MILE))
-										.plus(rangeThirdDescent.to(NonSI.NAUTICAL_MILE))
-										)
-								.getEstimatedValue()
-								*100
-								) 
-						>= 0.001
-						) {
+				for (int iAlternate=0; iAlternate < 5; iAlternate++) {
+//				do {
 
 					double[] speedArrayAlternate = MyArrayUtils.linspace(
 							SpeedCalc.calculateSpeedStall(
@@ -2857,6 +2813,25 @@ public class MissionProfileCalc {
 						return;
 					}
 				}
+//				while (
+//						Math.abs(
+//								(rangeAlternateCruise.to(NonSI.NAUTICAL_MILE)
+//										.plus(rangeSecondClimb.to(NonSI.NAUTICAL_MILE))
+//										.plus(rangeSecondDescent.to(NonSI.NAUTICAL_MILE))
+//										.plus(rangeHolding.to(NonSI.NAUTICAL_MILE))
+//										.plus(rangeThirdDescent.to(NonSI.NAUTICAL_MILE))
+//										.minus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE)))
+//								.divide(rangeAlternateCruise.to(NonSI.NAUTICAL_MILE)
+//										.plus(rangeSecondClimb.to(NonSI.NAUTICAL_MILE))
+//										.plus(rangeSecondDescent.to(NonSI.NAUTICAL_MILE))
+//										.plus(rangeHolding.to(NonSI.NAUTICAL_MILE))
+//										.plus(rangeThirdDescent.to(NonSI.NAUTICAL_MILE))
+//										)
+//								.getEstimatedValue()
+//								*100
+//								) 
+//						>= 0.0001
+//						);
 				
 				//.....................................................................
 				// NEW ITERATION CRUISE LENGTH
@@ -2973,7 +2948,26 @@ public class MissionProfileCalc {
 
 				_endMissionMass = _massList.get(_massList.size()-1);
 				
-			}
+			} 
+//			while (
+//					Math.abs(
+//							(rangeCruise.to(NonSI.NAUTICAL_MILE)
+//									.plus(rangeTakeOff.to(NonSI.NAUTICAL_MILE))
+//									.plus(rangeClimb.to(NonSI.NAUTICAL_MILE))
+//									.plus(rangeFirstDescent.to(NonSI.NAUTICAL_MILE))
+//									.plus(rangeLanding.to(NonSI.NAUTICAL_MILE))
+//									.minus(_missionRange.to(NonSI.NAUTICAL_MILE)))
+//							.divide(rangeCruise.to(NonSI.NAUTICAL_MILE)
+//									.plus(rangeTakeOff.to(NonSI.NAUTICAL_MILE))
+//									.plus(rangeClimb.to(NonSI.NAUTICAL_MILE))
+//									.plus(rangeFirstDescent.to(NonSI.NAUTICAL_MILE))
+//									.plus(rangeLanding.to(NonSI.NAUTICAL_MILE))
+//									)
+//							.getEstimatedValue()
+//							*100
+//							)
+//					>= 0.0001
+//					);
 			
 			//.....................................................................
 			// NEW INITIAL MISSION MASS
@@ -2998,7 +2992,15 @@ public class MissionProfileCalc {
 			
 			i++;
 			
-		}
+		} while ( Math.abs(
+				(_initialFuelMass.to(SI.KILOGRAM).minus(_totalFuel.to(SI.KILOGRAM)))
+				.divide(_initialFuelMass.to(SI.KILOGRAM))
+				.times(100)
+				.getEstimatedValue()
+				)- (_fuelReserve*100)
+				>= 0.01
+				);
+		
 		//----------------------------------------------------------------------
 		// ITERATION ENDING ... collecting results
 		//----------------------------------------------------------------------
@@ -3935,14 +3937,6 @@ public class MissionProfileCalc {
 
 	public void setTheOperatingConditions(OperatingConditions _theOperatingConditions) {
 		this._theOperatingConditions = _theOperatingConditions;
-	}
-
-	public Amount<Length> getFirstGuessCruiseLength() {
-		return _firstGuessCruiseLength;
-	}
-
-	public void setFirstGuessCruiseLength(Amount<Length> _firstGuessCruiseLength) {
-		this._firstGuessCruiseLength = _firstGuessCruiseLength;
 	}
 
 	public Amount<Length> getAlternateCruiseLength() {

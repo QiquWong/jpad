@@ -52,17 +52,17 @@
 	/>
 	-->
 	<performance
-			file="analysis_performance_IRON_NO_CANARD_cut.xml"
+			file="analysis_performance_IRON_NO_CANARD_no_cut.xml"
 			plot="FALSE"
 			create_CSV="FALSE"
 			take_off="FALSE"
 			climb="FALSE"
 			cruise="FALSE"
 			descent="FALSE"
-			landing="TRUE"
+			landing="FALSE"
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
-			mission_profile="FALSE"
+			mission_profile="TRUE"
 	/> 
 	<!--
  	<costs 

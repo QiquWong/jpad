@@ -3070,7 +3070,7 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Climb used fuel","kg", _fuelUsedListMap.get(xcg).get(2).to(SI.KILOGRAM).minus(_fuelUsedListMap.get(xcg).get(1).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Cruise used fuel","kg", _fuelUsedListMap.get(xcg).get(3).to(SI.KILOGRAM).minus(_fuelUsedListMap.get(xcg).get(2).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"First descent used fuel","kg", _fuelUsedListMap.get(xcg).get(4).to(SI.KILOGRAM).minus(_fuelUsedListMap.get(xcg).get(3).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
-        		dataListMissionProfile.add(new Object[] {"Climb used fuel","kg", _fuelUsedListMap.get(xcg).get(5).to(SI.KILOGRAM).minus(_fuelUsedListMap.get(xcg).get(4).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
+        		dataListMissionProfile.add(new Object[] {"Second Climb used fuel","kg", _fuelUsedListMap.get(xcg).get(5).to(SI.KILOGRAM).minus(_fuelUsedListMap.get(xcg).get(4).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Alternate cruise used fuel","kg", _fuelUsedListMap.get(xcg).get(6).to(SI.KILOGRAM).minus(_fuelUsedListMap.get(xcg).get(5).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Second descent used fuel","kg", _fuelUsedListMap.get(xcg).get(7).to(SI.KILOGRAM).minus(_fuelUsedListMap.get(xcg).get(6).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Holding used fuel","kg", _fuelUsedListMap.get(xcg).get(8).to(SI.KILOGRAM).minus(_fuelUsedListMap.get(xcg).get(7).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});

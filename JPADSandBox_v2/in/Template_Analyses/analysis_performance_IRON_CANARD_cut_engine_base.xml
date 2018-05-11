@@ -8,12 +8,12 @@
 			>
 			<weights>
 				<!-- MTOM -->
-				<maximum_take_off_mass unit="kg">55101</maximum_take_off_mass>
+				<maximum_take_off_mass unit="kg">55100</maximum_take_off_mass>
 				<!-- TOM (400 nmi xcg/c = 10%) -->
 				<!--
 				<maximum_take_off_mass unit="kg">50364</maximum_take_off_mass>
 				-->
-				<operating_empty_mass unit="kg">34094</operating_empty_mass> 
+				<operating_empty_mass unit="kg">34100</operating_empty_mass> 
 				<maximum_fuel_mass unit="kg">7252</maximum_fuel_mass> 
 				<single_passenger_mass unit="kg">108</single_passenger_mass> 
 			</weights>
@@ -23,9 +23,9 @@
 					<!--
 					<cLmax_clean_configuration>2.63</cLmax_clean_configuration>
 					-->
-					<cLmax_clean_configuration>1.9084</cLmax_clean_configuration>
+					<cLmax_clean_configuration>1.91</cLmax_clean_configuration>
 					<cL_alpha_clean_configuration unit="1/deg">0.1087</cL_alpha_clean_configuration>
-					<cLmax_take_off_configuration>2.838</cLmax_take_off_configuration>
+					<cLmax_take_off_configuration>2.8</cLmax_take_off_configuration>
 					<cL_alpha_take_off unit="1/deg">0.108</cL_alpha_take_off> 
 					<cL0_take_off_configuration>1.4485</cL0_take_off_configuration>
 					<!---->
@@ -94,7 +94,7 @@
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
 				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
 				<alpha_dot_rotation></alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
-				<k_cLmax>0.8</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
+				<k_cLmax>0.85</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
 				<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
 				<k_alpha_dot>0.06</k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
 				<!-- landing data -->
@@ -130,7 +130,7 @@
 			</flight_maneuvering_and_gust_envelope>
 			<mission_profile_and_payload_range>
 			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
-				<mission_range unit="nmi">400</mission_range> 
+				<mission_range unit="nmi">1600</mission_range> 
 				<alternate_cruise_length unit="nmi">100</alternate_cruise_length> <!-- (default = 0.0) -->
 				<alternate_cruise_altitude unit="ft">15000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
