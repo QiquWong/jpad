@@ -52,7 +52,6 @@
 			file_landing_condition="analysis_aerodynamics_Prototype.xml"
 	/>
 	-->
-	<!--
 	<performance 
 			file="analysis_performance_CS300.xml"
 			plot="FALSE"
@@ -66,7 +65,7 @@
 			V_n_diagram="FALSE"
 			mission_profile="TRUE"
 	/>
-	-->
+	<!--
 	<costs 
 			file="analysis_costs_CS300.xml"
 			plot="TRUE"
@@ -82,6 +81,7 @@
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
 	/>
+	-->
 	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>

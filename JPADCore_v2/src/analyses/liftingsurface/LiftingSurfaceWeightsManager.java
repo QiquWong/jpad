@@ -1,33 +1,22 @@
 package analyses.liftingsurface;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.pow;
 import static java.lang.Math.round;
-import static java.lang.Math.sqrt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.measure.quantity.Angle;
 import javax.measure.quantity.Mass;
-import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
-import aircraft.components.liftingSurface.airfoils.Airfoil;
-import calculators.geometry.LSGeometryCalc;
 import calculators.weights.LiftingSurfaceWeightCalc;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.EngineMountingPositionEnum;
-import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
-import standaloneutils.MyUnits;
-import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
 public class LiftingSurfaceWeightsManager {
@@ -231,55 +220,27 @@ public class LiftingSurfaceWeightsManager {
 				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 
-			case RAYMER : { // Raymer page 211 pdf
+			case RAYMER : {  
 				_methodsList.add(method);
-				_mass = 
+				_mass = LiftingSurfaceWeightCalc.calculateVTailMassRaymer(aircraft);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			} break;
 
-			case TORENBEEK_1976 : { // Roskam page 90 (pdf) part V
+			case ROSKAM : {  
 				_methodsList.add(method);
-				double kv = 1.;
-				if (_positionRelativeToAttachment == 1.) { 
-					kv = 1 + 0.15*
-							(aircraft.getHTail().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)/
-									_liftingSurfaceCreator.getSurfacePlanform().doubleValue(SI.SQUARE_METRE));}
-				_mass = Amount.valueOf(kv*3.81*
-						aircraft.getTheAnalysisManager().getVDiveEAS().doubleValue(NonSI.KNOT)*
-						pow(_liftingSurfaceCreator.getSurfacePlanform().doubleValue(MyUnits.FOOT2), 1.2)/
-						(1000*sqrt(cos(_liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN)))) 
-								- 0.287,
-						NonSI.POUND).to(SI.KILOGRAM);
+				_mass = LiftingSurfaceWeightCalc.calculateVTailMassRoskam(aircraft);
 				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 
 			case KROO : {
 				_methodsList.add(method);
-				_mass = Amount.valueOf((2.62*surface +
-						1.5e-5*
-						(aircraft.getTheAnalysisManager().getNUltimate()*
-								Math.pow(_liftingSurfaceCreator.getSpan().doubleValue(NonSI.FOOT), 3)*(
-										8.0 + 0.44*aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().doubleValue(NonSI.POUND_FORCE)/
-										aircraft.getWing().getSurfacePlanform().doubleValue(MyUnits.FOOT2))/
-								(thicknessMean*Math.pow(Math.cos(sweepStructuralAxis.doubleValue(SI.RADIAN)),2)))),
-						NonSI.POUND).to(SI.KILOGRAM);
+				_mass = LiftingSurfaceWeightCalc.calculateVTailMassKroo(aircraft);
 				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 
-			case SADRAEY : { // page 584 pdf Sadray Aircraft Design System Engineering Approach
+			case SADRAEY : { 
 				_methodsList.add(method);
-				// TODO ADD kRho table
-				Double _kRho = 0.05;
-				_mass = Amount.valueOf(
-						_surface.getEstimatedValue()*
-						_meanAerodChordCk.getEstimatedValue()*
-						(_tc_root)*aircraft.get_weights().get_materialDensity().getEstimatedValue()*
-						_kRho*
-						pow(_aspectRatio/
-								cos(_sweepQuarterChordEq.getEstimatedValue()),0.6)*
-								pow(_taperRatioEquivalent, 0.04)*
-								pow(_volumetricRatio, 0.2)*
-								pow(_CeCt, 0.4), SI.KILOGRAM);
+				_mass = LiftingSurfaceWeightCalc.calculateVTailMassSadraey(aircraft);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			}break;
 

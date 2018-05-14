@@ -508,19 +508,125 @@ public class LiftingSurfaceWeightCalc {
 		
 	}
 	
+	/*
+	 * Raymer - Aircraft Design a Conceptual Approach - page 403
+	 */
 	public static Amount<Mass> calculateVTailMassRaymer (Aircraft aircraft) {
 		
-		return Amount.valueOf(0.0026 * 
-				pow(aircraft.get_weights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 0.556)*
-				pow(aircraft.get_performances().get_nUltimate(), 0.536) * 
-				pow(_ACw_ACdistance.to(NonSI.FOOT).getEstimatedValue(), -0.5) *
-				pow(_surface.to(MyUnits.FOOT2).getEstimatedValue(), 0.5) * 
-				pow(0.3*_ACw_ACdistance.to(NonSI.FOOT).getEstimatedValue(), 0.875) * 
-				pow(cos(_sweepQuarterChordEq.to(SI.RADIAN).getEstimatedValue()), -1.) *
-				pow(_aspectRatio, 0.35) * 
-				pow(_tc_root, -0.5) *
-				pow(1 + _positionRelativeToAttachment, 0.225),
+		return Amount.valueOf(0.0026 
+				* pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 0.556)
+				* pow(aircraft.getTheAnalysisManager().getNUltimate(), 0.536) 
+				* pow(aircraft.getVTail().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue(), -0.5) 
+				* pow(aircraft.getVTail().getSurfacePlanform().to(MyUnits.FOOT2).getEstimatedValue(), 0.5) 
+				* pow(0.3*aircraft.getVTail().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue(), 0.875) 
+				* pow(cos(aircraft.getVTail().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN).getEstimatedValue()), -1.) 
+				* pow(aircraft.getVTail().getAspectRatio(), 0.35) 
+				* pow(aircraft.getVTail().getAirfoilList().get(0).getThicknessToChordRatio(), -0.5) 
+				* pow(1 + aircraft.getHTail().getPositionRelativeToAttachment(), 0.225),
+				NonSI.POUND
+				).to(SI.KILOGRAM);
+		
+	}
+	
+	/*
+	 * Roskam page 90 (pdf) part V
+	 */
+	public static Amount<Mass> calculateVTailMassRoskam (Aircraft aircraft) {
+		
+		double kvMax = 1 + 0.15*(aircraft.getHTail().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+				/aircraft.getVTail().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+				);
+		
+		double[] kvArray = new double[] {1.0, kvMax};
+		double[] positionRelativeToAttachmentArray = new double[] {0.0, 1.0};
+		
+		double kv = 1.0;
+		if(aircraft.getHTail().getPositionRelativeToAttachment() >= 0.0 && aircraft.getHTail().getPositionRelativeToAttachment() <= 1.0)
+			kv = MyMathUtils.getInterpolatedValue1DLinear(
+					positionRelativeToAttachmentArray,
+					kvArray, 
+					aircraft.getHTail().getPositionRelativeToAttachment()
+					);
+		
+		return  Amount.valueOf(
+				kv
+				* aircraft.getHTail().getSurfacePlanform().doubleValue(MyUnits.FOOT2)
+				* (((3.81
+						* aircraft.getTheAnalysisManager().getVDiveEAS().doubleValue(NonSI.KNOT)
+						* pow(aircraft.getHTail().getSurfacePlanform().doubleValue(MyUnits.FOOT2), 0.2)
+						) 
+						/ (1000*sqrt(cos(aircraft.getHTail().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN))))  
+						)
+						- 0.287
+						),
 				NonSI.POUND).to(SI.KILOGRAM);
+		
+	}
+	
+	/*
+	 * page 431 Aircraft design synthesis
+	 */
+	public static Amount<Mass> calculateVTailMassKroo (Aircraft aircraft) {
+		
+		Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(aircraft.getVTail());
+		double thicknessMean = meanAirfoil.getThicknessToChordRatio();
+		
+		Amount<Angle> sweepStructuralAxis = Amount.valueOf(
+				Math.atan(
+						Math.tan(aircraft.getVTail().getPanels().get(0).getSweepLeadingEdge().doubleValue(SI.RADIAN))
+						- (4./aircraft.getWing().getAspectRatio())
+						* (0.25
+								*(1 - aircraft.getVTail().getPanels().get(0).getTaperRatio())
+								/(1 + aircraft.getVTail().getPanels().get(0).getTaperRatio()))
+						),
+				1e-9, // precision
+				SI.RADIAN);
+		
+		return Amount.valueOf(
+				(2.62
+						* aircraft.getVTail().getSurfacePlanform().doubleValue(MyUnits.FOOT2)
+						)
+				+ (1.5e-5
+						* (aircraft.getTheAnalysisManager().getNUltimate()
+								* Math.pow(aircraft.getVTail().getSpan().doubleValue(NonSI.FOOT), 3)
+								* (8.0 + 0.44*aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND)
+										/ aircraft.getWing().getSurfacePlanform().doubleValue(MyUnits.FOOT2)
+										))
+						/ (thicknessMean*Math.pow(Math.cos(sweepStructuralAxis.doubleValue(SI.RADIAN)),2))
+						),
+				NonSI.POUND).to(SI.KILOGRAM);
+		
+	}
+	
+	/*
+	 * Sadraey Aircraft Design System Engineering Approach - page 561
+	 */
+	public static Amount<Mass> calculateVTailMassSadraey (Aircraft aircraft) {
+		
+		double[] _kRhoArray = new double[] {0.04, 0.045};
+		double[] _positionRelativeToAttachmentArray = new double[] {0.0, 1.0};
+		
+		double _kRhoVTailPosition = 1.0;
+		if(aircraft.getHTail().getPositionRelativeToAttachment() >= 0.0 && aircraft.getHTail().getPositionRelativeToAttachment() <= 1.0)
+			_kRhoVTailPosition = MyMathUtils.getInterpolatedValue1DLinear(
+					_positionRelativeToAttachmentArray,
+					_kRhoArray, 
+					aircraft.getHTail().getPositionRelativeToAttachment()
+					);
+		
+		return  Amount.valueOf(
+				aircraft.getVTail().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+				* aircraft.getVTail().getMeanAerodynamicChord().doubleValue(SI.METER)
+				* aircraft.getVTail().getAirfoilList().get(0).getThicknessToChordRatio()
+				* aircraft.getTheAnalysisManager().getTheWeights().getMaterialDensity().getEstimatedValue()
+				* _kRhoVTailPosition
+				* pow(aircraft.getVTail().getAspectRatio()
+						/ cos(aircraft.getVTail().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)), 0.6)
+				* pow(aircraft.getVTail().getPanels().get(0).getTaperRatio(), 0.04)
+				* pow(aircraft.getVTail().getVolumetricRatio(), 0.2)
+				* pow(aircraft.getVTail().getSymmetricFlaps().get(0).getMeanChordRatio(), 0.4),
+				SI.KILOGRAM
+				);
 		
 	}
 	
