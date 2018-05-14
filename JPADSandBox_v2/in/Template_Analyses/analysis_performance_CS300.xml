@@ -10,7 +10,7 @@
 				<maximum_take_off_mass unit="kg">65183</maximum_take_off_mass>
 				<operating_empty_mass unit="kg">36536</operating_empty_mass>
 				<maximum_fuel_mass unit="kg">17213</maximum_fuel_mass>
-				<single_passenger_mass unit="kg">102</single_passenger_mass>
+				<single_passenger_mass unit="kg">108</single_passenger_mass>
 			</weights>
 			<aerodynamics>
 				<xcg value="0.2" parabolicDragPolar="FALSE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
@@ -112,7 +112,7 @@
 			</flight_maneuvering_and_gust_envelope>
 			<mission_profile_and_payload_range>
 			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
-				<mission_range unit="nmi">1600</mission_range> 
+				<mission_range unit="nmi">400</mission_range> 
 				<alternate_cruise_length unit="nmi">100</alternate_cruise_length> <!-- (default = 0.0) -->
 				<alternate_cruise_altitude unit="ft">15000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->

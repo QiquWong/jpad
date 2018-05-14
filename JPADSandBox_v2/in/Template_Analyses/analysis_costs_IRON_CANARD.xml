@@ -3,17 +3,17 @@
     <analysis>
         <costs id="IRON - COSTS"
 			weights_from_previous_analysis="false" 
-			performance_from_previous_analysis="true"
+			performance_from_previous_analysis="false"
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg">54894</maximum_take_off_mass>
-				<operating_empty_mass unit="kg">33887</operating_empty_mass>
+				<maximum_take_off_mass unit="kg">55100</maximum_take_off_mass>
+				<operating_empty_mass unit="kg">34100</operating_empty_mass>
 				<payload unit="kg">14040</payload>
 			</weights>
 			<performance>
-				<range unit="nmi"></range>				
-				<block_fuel unit="kg"></block_fuel>
-				<flight_time unit="min"></flight_time>
+				<range unit="nmi">400</range>				
+				<block_fuel unit="kg">1555</block_fuel>
+				<flight_time unit="min">74</flight_time>
 			</performance>
 			<global_data>
 				<utilization calculate="TRUE" method="AEA" unit="h/year"></utilization> <!-- Methods: AEA or SFORZA  -->

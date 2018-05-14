@@ -66,7 +66,7 @@
 	/> 
 	<!--
  	<costs 
-			file="analysis_costs_IRON_NO_CANARD_cut.xml"
+			file="analysis_costs_IRON_CANARD.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
 			doc_capital="TRUE"
