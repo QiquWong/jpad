@@ -58,16 +58,16 @@ public class Test25mds {
 		// Import the aircraft
 		Aircraft aircraft = AircraftUtils.importAircraft(args);
 		Fuselage fuselage = aircraft.getFuselage();
-		LiftingSurface canard = aircraft.getCanard();
+		LiftingSurface canard = aircraft.getWing();
 		
 		// Fairing parameters
-		double frontLengthFactor = 1.25; // 0.75
-		double backLengthFactor = 1.25;  // 0.75
+		double frontLengthFactor = 0.50; // 0.75
+		double backLengthFactor = 0.50;  // 0.75
 		double sideSizeFactor = 0.75;    // 0.75
 		
-		double heigthAboveRootFactor = 0.10;
-		double heigthAvoveMinimumFactor = 0.30;
-		double heigthBelowMinimumFactor = 0.20;
+		double heigthAboveRootFactor = 0.05;
+		double heigthAvoveMinimumFactor = 0.50;
+		double heigthBelowMinimumFactor = 0.30;
 		
 		// Geometric data collection
 		double liftingSurfaceXApex = canard.getXApexConstructionAxes().doubleValue(SI.METER);
@@ -115,7 +115,7 @@ public class Test25mds {
 		double[] fuselageSidePoint;
 		if(fuselageMaximumYPointFront[1] < fuselageMaximumYPointBack[2]) {
 			
-			zMaxAdmissibleFuselageWidth = fuselageMaximumYPointFront[1];
+			zMaxAdmissibleFuselageWidth = fuselageMaximumYPointFront[2];
 			fuselageSidePoint = fuselageSideCurveFront.stream()
 						.map(pv -> new double[] {pv.x, pv.y, pv.z})
 						.filter(coord -> coord[1] > fuselageMaximumYPointFront[1]*sideSizeFactor)
@@ -175,13 +175,13 @@ public class Test25mds {
 		double[] pointE = new double[] {
 				leadingEdgeRoot[0],
 				leadingEdgeRoot[1],
-				pointB[2] - (pointB[2] - leadingEdgeRoot[2])*0.15
+				pointB[2] - (pointB[2] - leadingEdgeRoot[2])*0.25
 		};
 		
 		double[] pointF = new double[] {
 				trailingEdgeRoot[0],
 				trailingEdgeRoot[1],
-				pointB[2] - (pointB[2] - trailingEdgeRoot[2])*0.15
+				pointB[2] - (pointB[2] - trailingEdgeRoot[2])*0.65
 		};
 		
 		double[] pointA2 = new double[] {
@@ -380,7 +380,7 @@ public class Test25mds {
 		
 		// Apply a fillet to specific edges
 		BRepFilletAPI_MakeFillet filletMaker = new BRepFilletAPI_MakeFillet(rightShell.getShape());
-		double filletRadius = (pointA2[2] - pointA[2])*0.8;
+		double filletRadius = (pointA2[2] - pointA[2])*1.00;
 		
 		List<TopoDS_Edge> shellEdges = new ArrayList<>();
 		TopExp_Explorer shellExplorer = new TopExp_Explorer(rightShell.getShape(), TopAbs_ShapeEnum.TopAbs_EDGE);
@@ -437,7 +437,7 @@ public class Test25mds {
 		shapes.add(solidFairing);
 		
 		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, 7, 7, true, true, false);
-		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.CANARD, 1e-3, false, true, false);
+		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.WING, 1e-3, false, true, false);
 		
 		shapes.addAll(fuselageShapes);
 		shapes.addAll(canardShapes);

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<stringAttribute key="bad_container_name" value="\JPADCADSandb"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/JPADCADSandbox/src/it/unina/daf/jpadcadsandbox/Test27mds.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="false"/>
+<mapAttribute key="org.eclipse.debug.core.environmentVariables">
+<mapEntry key="MMGT_OPT" value="1"/>
+<mapEntry key="Path" value="${JPAD_ROOT}\libraries\occjava\OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64;${JPAD_ROOT}\libraries\occjava\OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64\jre1.8.0_91\bin;${JPAD_ROOT}\libraries\hdf;"/>
+</mapAttribute>
+<stringAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING" value="UTF-8"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="it.unina.daf.jpadcadsandbox.Test27mds"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/aircraft_IRON_CANARD.xml &#13;&#10;-ia ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Analyses/analysis_IRON_CANARD.xml &#13;&#10;-ioc ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Analyses/operating_conditions_IRON_CANARD.xml &#13;&#10;--database-dir ${JPAD_ROOT}/JPADSandBox_v2/data &#13;&#10;-da ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/lifting_surfaces/airfoils &#13;&#10;-df ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/fuselages &#13;&#10;-dls ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/lifting_surfaces &#13;&#10;-de ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/engines &#13;&#10;-dn ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/nacelles &#13;&#10;-dlg ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/landing_gears&#13;&#10;-dcc ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/cabin_configurations"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADCADSandbox"/>
+</launchConfiguration>
