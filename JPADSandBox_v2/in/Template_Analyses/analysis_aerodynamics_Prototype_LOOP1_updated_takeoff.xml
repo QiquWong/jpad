@@ -415,6 +415,17 @@
 				</pitching_moment>
 			</nacelle_analyses>
 			<aircraft_analyses>
+			    <canard_downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="FALSE" >
+				<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is FALSE, "user_defined" allows to choose between the calculation with the specified method and type of gradient (FALSE)
+					or the assignment of the gradient by the user (FALSE)
+				-->
+                    <downwash_gradient_vs_alpha>
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <downwash_gradient>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</downwash_gradient>
+                    </downwash_gradient_vs_alpha>
+                </canard_downwash>
                 <wing_downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="FALSE" method="SLINGERLAND"> <!-- ROSKAM NON LINEAR GIVES PROBLEM: DISABLED TEMPORARY --> 
 				<!-- 
 					"perform" allows to do or not this analysis. 
@@ -497,6 +508,31 @@
 				<moment_distributions perform="TRUE"/>
 			</pitching_moment>
 		</horizontal_tail>
+		<canard>
+			<lift>
+				<cL_vs_alpha perform="TRUE"/>
+				<stall_path perform="TRUE"/> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
+				<cl_distribution perform="TRUE"/>
+				<ccl_distribution perform="TRUE"/>
+				<gamma_distribution perform="TRUE"/>
+				<total_load_distribution perform="TRUE"/>
+			</lift>
+			<elevator>
+				<cL_vs_alpha_elevator perform="TRUE"/>
+				<cD_vs_cL_elevator perform="TRUE"/>
+				<cM_vs_alpha_elevator perform="TRUE"/>
+			</elevator>
+			<drag>
+				<cD_vs_cL_breakdown perform="TRUE"/>
+				<cD_distributions perform="TRUE"/>
+				<drag_distributions perform="TRUE"/>
+			</drag>
+			<pitching_moment>
+				<cM_vs_alpha perform="TRUE"/>
+				<cM_distributions perform="TRUE"/>
+				<moment_distributions perform="TRUE"/>
+			</pitching_moment>
+		</canard>
 		<vertical_tail>
 			<lift>
 				<cL_vs_alpha perform="TRUE"/>
