@@ -190,13 +190,13 @@ public class Test28mds {
 		List<OCCShape> shapes = new ArrayList<>();
 		
 		// Fairing parameters definition
-		double frontLengthFactor = 1.00;
-		double backLengthFactor = 1.00;
-		double sideSizeFactor = 0.50;              // This needs to be less than one, otherwise it will exceed fuselage diameter		
+		double frontLengthFactor = 1.25;
+		double backLengthFactor = 1.25;
+		double sideSizeFactor = 0.40;              // This needs to be less than one, otherwise it will exceed fuselage diameter		
 		double heightAboveAirfoilTopFactor = 0.10;
 		double heightBelowContactFactor = 0.10;    // Again, needs to be less than one, in order to not exceed fuselage limits
-		double heigthAboveContactFactor = 0.90;    // """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-		double filletRadiusFactor = 0.45;
+		double heightAboveContactFactor = 0.80;    // """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+		double filletRadiusFactor = 0.40;
 		
 		// Geometric data collection
 		Airfoil genAirfoil = wing.getAirfoilList().get(0);
@@ -331,7 +331,7 @@ public class Test28mds {
 		double[] pntA = new double[] {
 				rootLeadingEdge[0] - frontLengthFactor*rootChord,
 				rootLeadingEdge[1],
-				fuselageUppContactPnt[2] + (fuselageMaximumZ - fuselageUppContactPnt[2])*heigthAboveContactFactor
+				fuselageUppContactPnt[2] + (fuselageMaximumZ - fuselageUppContactPnt[2])*heightAboveContactFactor
 		};
 		
 		double[] pntB = new double[] {
@@ -355,7 +355,7 @@ public class Test28mds {
 		double[] pntE = new double[] {
 				rootTrailingEdge[0] + backLengthFactor*rootChord,
 				rootTrailingEdge[1],
-				fuselageUppContactPnt[2] + (fuselageMaximumZ - fuselageUppContactPnt[2])*heigthAboveContactFactor
+				fuselageUppContactPnt[2] + (fuselageMaximumZ - fuselageUppContactPnt[2])*heightAboveContactFactor
 		};
 		
 		double[] pntF = new double[] {
@@ -389,7 +389,7 @@ public class Test28mds {
 		CADGeomCurve3D sideCurve = OCCUtils.theFactory.newCurve3D(false, pntA, pntI, pntL, pntM, pntE);
 		
 		// Create curves to patch through
-		int nMain = 10; // number of discretization points for the main curve
+		int nMain = 15; // number of discretization points for the main curve
 		mainCurve.discretize(nMain);
 		
 		List<double[]> mainCurvePnts = ((OCCGeomCurve3D) mainCurve).getDiscretizedCurve().getPoints().stream()
@@ -530,12 +530,12 @@ public class Test28mds {
 		List<OCCShape> shapes = new ArrayList<>();
 		
 		// Fairing parameters definition
-		double frontLengthFactor = 1.25;
-		double backLengthFactor = 1.25;
+		double frontLengthFactor = 1.00;
+		double backLengthFactor = 1.00;
 		double sideSizeFactor = 0.95;              // This needs to be less than one, otherwise fairing will exceed fuselage diameter		
 		double heightBelowFuselageFactor = 0.25;
-		double heightBelowContactFactor = 0.85;    // Again, needs to be less than one, in order to not exceed fuselage limits
-		double heigthAboveContactFactor = 0.10;    // """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+		double heightBelowContactFactor = 0.95;    // Again, needs to be less than one, in order to not exceed fuselage limits
+		double heightAboveContactFactor = 0.10;    // """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 		double filletRadiusFactor = 0.50;
 		
 		// Geometric data collection
@@ -674,7 +674,7 @@ public class Test28mds {
 		double[] pntG = new double[] {
 				rootLeadingEdge[0] - rootChord*frontLengthFactor,
 				rootLeadingEdge[1],
-				fuselageLowContactPnt[2] + (fairingMaximumZ - fuselageLowContactPnt[2])*heigthAboveContactFactor
+				fuselageLowContactPnt[2] + (fairingMaximumZ - fuselageLowContactPnt[2])*heightAboveContactFactor
 		};
 		
 		double[] pntA = new double[] {
@@ -710,7 +710,7 @@ public class Test28mds {
 		double[] pntF = new double[] {
 				rootTrailingEdge[0] + rootChord*backLengthFactor,
 				rootTrailingEdge[1],
-				fuselageLowContactPnt[2] + (fairingMaximumZ - fuselageLowContactPnt[2])*heigthAboveContactFactor
+				fuselageLowContactPnt[2] + (fairingMaximumZ - fuselageLowContactPnt[2])*heightAboveContactFactor
 		};
 		
 		double[] pntI = new double[] {
@@ -738,7 +738,7 @@ public class Test28mds {
 		CADGeomCurve3D sideCurve = OCCUtils.theFactory.newCurve3D(false, pntA, pntI, pntL, pntM, pntE);
 
 		// Create curves to patch through
-		int nMain = 10; // number of discretization points for the main curve
+		int nMain = 15; // number of discretization points for the main curve
 		mainCurve.discretize(nMain);
 
 		List<double[]> mainCurvePnts = ((OCCGeomCurve3D) mainCurve).getDiscretizedCurve().getPoints().stream()
