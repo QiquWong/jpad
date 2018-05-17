@@ -64,10 +64,21 @@ public class LiftingSurfaceWeightsManager {
 			calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
 		}
 		else if (liftingSurfaceType.equals(ComponentEnum.HORIZONTAL_TAIL) || liftingSurfaceType.equals(ComponentEnum.CANARD)) {
-			// TODO: DEFINE THE CORRECT METHODOLOGIES FOR EACH LIFTING SURFACE TYPE
+			calculateMass(aircraft, MethodEnum.HOWE);
+			calculateMass(aircraft, MethodEnum.JENKINSON);
+			calculateMass(aircraft, MethodEnum.NICOLAI_2013);
+			calculateMass(aircraft, MethodEnum.RAYMER);
+			calculateMass(aircraft, MethodEnum.KROO);
+			calculateMass(aircraft, MethodEnum.SADRAEY);
+			calculateMass(aircraft, MethodEnum.ROSKAM);
 		}
 		else if (liftingSurfaceType.equals(ComponentEnum.VERTICAL_TAIL)) {
-			// TODO: DEFINE THE CORRECT METHODOLOGIES FOR EACH LIFTING SURFACE TYPE
+			calculateMass(aircraft, MethodEnum.HOWE);
+			calculateMass(aircraft, MethodEnum.JENKINSON);
+			calculateMass(aircraft, MethodEnum.RAYMER);
+			calculateMass(aircraft, MethodEnum.ROSKAM);
+			calculateMass(aircraft, MethodEnum.KROO);
+			calculateMass(aircraft, MethodEnum.SADRAEY);
 		}
 		
 		
@@ -98,8 +109,6 @@ public class LiftingSurfaceWeightsManager {
 			Aircraft aircraft, 
 			MethodEnum method) {
 
-//		double surfaceExposed = aircraft.getExposedWing().getSurfacePlanform().doubleValue(MyUnits.FOOT2);
-//
 		switch(aircraft.getWing().getType()) {
 		
 		//---------------------------------------------------------------------------------------------------

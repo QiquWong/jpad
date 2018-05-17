@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.Aircraft;
+import calculators.balance.LiftingSurfaceBalanceCalc;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
@@ -52,13 +53,35 @@ public class LiftingSurfaceBalanceManager {
 		
 	}
 
-	public void calculateCG(ComponentEnum type, Map<ComponentEnum, MethodEnum> methodsMap) {
-//		calculateCG(MethodEnum.SFORZA, type);
-		calculateCG(MethodEnum.TORENBEEK_1982, type);
+	@SuppressWarnings("unlikely-arg-type")
+	public void calculateCG(Aircraft aircraft, ComponentEnum liftingSurfaceType, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		
-		if(!methodsMap.get(type).equals(MethodEnum.AVERAGE)) { 
-			_cg.setXLRF(_xCGMap.get(methodsMap.get(type)));
-			_cg.setYLRF(_yCGMap.get(methodsMap.get(type)));
+		switch(aircraft.getWing().getType()) {
+		
+		case WING:
+			calculateCG(aircraft, MethodEnum.SFORZA, liftingSurfaceType);
+			calculateCG(aircraft, MethodEnum.TORENBEEK_1982, liftingSurfaceType);
+		break;
+		case HORIZONTAL_TAIL:
+			calculateCG(aircraft, MethodEnum.SFORZA, liftingSurfaceType);
+			calculateCG(aircraft, MethodEnum.TORENBEEK_1982, liftingSurfaceType);
+		break;
+		case VERTICAL_TAIL:
+			calculateCG(aircraft, MethodEnum.SFORZA, liftingSurfaceType);
+			calculateCG(aircraft, MethodEnum.TORENBEEK_1982, liftingSurfaceType);
+		break;
+		case CANARD:
+			calculateCG(aircraft, MethodEnum.SFORZA, liftingSurfaceType);
+			calculateCG(aircraft, MethodEnum.TORENBEEK_1982, liftingSurfaceType);
+		break;
+		default:
+			break;
+
+		}
+		
+		if(!_methodsMap.get(liftingSurfaceType).equals(MethodEnum.AVERAGE)) { 
+			_cg.setXLRF(_xCGMap.get(_methodsMap.get(liftingSurfaceType)));
+			_cg.setYLRF(_yCGMap.get(_methodsMap.get(liftingSurfaceType)));
 		}
 		else {
 			_percentDifferenceXCG = new double[_xCGMap.size()];
@@ -76,79 +99,39 @@ public class LiftingSurfaceBalanceManager {
 					_percentDifferenceYCG,
 					100.).getFilteredMean(), SI.METER));
 		}
-		_cg.calculateCGinBRF(type);
+		_cg.calculateCGinBRF(liftingSurfaceType);
 	}
 	
-	private void calculateCG(MethodEnum method, ComponentEnum type) {
-
-		List<MethodEnum> methodsList = new ArrayList<MethodEnum>();
-
-		_cg = new CenterOfGravity();
-		
-		_cg.setLRForigin(_xApexConstructionAxes,
-						 _yApexConstructionAxes,
-						 _zApexConstructionAxes
-				);
-
-		_cg.setXLRFref(_liftingSurfaceCreator.getPanels().get(0).getChordRoot().to(SI.METER).times(0.4));
-		_cg.setYLRFref(_liftingSurfaceCreator.getSpan().to(SI.METER).times(0.5*0.4));
-		_cg.setZLRFref(Amount.valueOf(0., SI.METER));
-
-		// Initialize _methodsList again to clear it
-		// from old entries
-		methodsList = new ArrayList<MethodEnum>();
-
-		_xCG = Amount.valueOf(0., SI.METER);
-		_yCG = Amount.valueOf(0., SI.METER);
-		_zCG = Amount.valueOf(0., SI.METER);
-
-		@SuppressWarnings("unused")
-		Double lambda = 0.0;
-		if(type.equals(ComponentEnum.WING))
-			lambda = _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getTaperRatio();
-		else
-			lambda = _liftingSurfaceCreator.getPanels().get(0).getTaperRatio();
-		Double span = _liftingSurfaceCreator.getSpan().doubleValue(SI.METER);
-		Double xRearSpar = _liftingSurfaceCreator.getSecondarySparDimensionlessPosition();
-		Double xFrontSpar = _liftingSurfaceCreator.getMainSparDimensionlessPosition();
+	private void calculateCG(Aircraft aircraft, MethodEnum method, ComponentEnum type) {
 
 		switch (type) {
 		case WING : {
+			
+			_cg = new CenterOfGravity();
+			_cg.setLRForigin(
+					aircraft.getWing().getXApexConstructionAxes(),
+					aircraft.getWing().getYApexConstructionAxes(),
+					aircraft.getWing().getZApexConstructionAxes()
+					);
+
+			_cg.setXLRFref(aircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.4));
+			_cg.setYLRFref(aircraft.getWing().getSpan().to(SI.METER).times(0.5*0.4));
+			_cg.setZLRFref(Amount.valueOf(0., SI.METER));
+			
 			switch(method) {
 
-//			//		 Bad results ...
-//			case SFORZA : { // page 359 Sforza (2014) - Aircraft Design
-//				methodsList.add(method);
-//				_yCG = Amount.valueOf(
-//						(span/6) * 
-//						((1+2*lambda)/(1-lambda)),
-//						SI.METER);
-//
-//				_xCG = Amount.valueOf(
-//						(_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.getEstimatedValue())/2)
-//						+ _liftingSurfaceCreator.getXLEAtYEquivalent(_yCG.getEstimatedValue())
-//						, SI.METER);
-//				_xCGMap.put(method, _xCG);
-//				_yCGMap.put(method, _yCG);
-//			} break;
+			case SFORZA : { 
+				_methodsList.add(method);
+				_xCG = LiftingSurfaceBalanceCalc.calculateWingXCGSforza(aircraft);
+				_yCG = LiftingSurfaceBalanceCalc.calculateWingYCGSforza(aircraft);
+				_xCGMap.put(method, _xCG);
+				_yCGMap.put(method, _yCG);
+			} break;
 
-			// page 359 Sforza (2014) - Aircraft Design
-			// page 313 Torenbeek (1982)
 			case TORENBEEK_1982 : { 
-				methodsList.add(method);
-				_yCG = Amount.valueOf(
-						0.35*(span/2) 
-						, SI.METER);
-
-				xRearSpar = 0.6*_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.doubleValue(SI.METER));
-				xFrontSpar = 0.25*_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.doubleValue(SI.METER));
-
-				_xCG = Amount.valueOf(
-						0.7*(xRearSpar - xFrontSpar)
-						+ 0.25*_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.doubleValue(SI.METER))
-						+ _liftingSurfaceCreator.getXLEAtYEquivalent(_yCG.doubleValue(SI.METER))
-						, SI.METER);
-
+				_methodsList.add(method);
+				_xCG = LiftingSurfaceBalanceCalc.calculateWingXCGTorenbeek(aircraft);
+				_yCG = LiftingSurfaceBalanceCalc.calculateWingYCGTorenbeek(aircraft); 
 				_xCGMap.put(method, _xCG);
 				_yCGMap.put(method, _yCG);
 			} break;
@@ -161,21 +144,23 @@ public class LiftingSurfaceBalanceManager {
 
 		case HORIZONTAL_TAIL : {
 
+			_cg = new CenterOfGravity();
+			_cg.setLRForigin(
+					aircraft.getHTail().getXApexConstructionAxes(),
+					aircraft.getHTail().getYApexConstructionAxes(),
+					aircraft.getHTail().getZApexConstructionAxes()
+					);
+
+			_cg.setXLRFref(aircraft.getHTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.4));
+			_cg.setYLRFref(aircraft.getHTail().getSpan().to(SI.METER).times(0.5*0.4));
+			_cg.setZLRFref(Amount.valueOf(0., SI.METER));
+			
 			switch(method) {
 
-			// page 359 Sforza (2014) - Aircraft Design
-			// page 313 Torenbeek (1982)
 			case TORENBEEK_1982 : { 
-				methodsList.add(method);
-				_yCG = Amount.valueOf(
-						0.38*(span/2) 
-						, SI.METER);
-
-				_xCG = Amount.valueOf(
-						(0.42*_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.doubleValue(SI.METER)))
-						+ _liftingSurfaceCreator.getXLEAtYEquivalent(_yCG.doubleValue(SI.METER))
-						, SI.METER);
-
+				_methodsList.add(method);
+				_xCG = LiftingSurfaceBalanceCalc.calculateHTailXCGTorenbeek(aircraft);
+				_yCG = LiftingSurfaceBalanceCalc.calculateHTailYCGTorenbeek(aircraft);
 				_xCGMap.put(method, _xCG);
 				_yCGMap.put(method, _yCG);
 			} break;
@@ -186,31 +171,23 @@ public class LiftingSurfaceBalanceManager {
 
 		case VERTICAL_TAIL : {
 
+			_cg = new CenterOfGravity();
+			_cg.setLRForigin(
+					aircraft.getVTail().getXApexConstructionAxes(),
+					aircraft.getVTail().getYApexConstructionAxes(),
+					aircraft.getVTail().getZApexConstructionAxes()
+					);
+
+			_cg.setXLRFref(aircraft.getVTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.4));
+			_cg.setYLRFref(aircraft.getVTail().getSpan().to(SI.METER).times(0.5*0.4));
+			_cg.setZLRFref(Amount.valueOf(0., SI.METER));
+			
 			switch(method) {
 
-			// page 359 Sforza (2014) - Aircraft Design
-			// page 313 Torenbeek (1982)
 			case TORENBEEK_1982 : { 
-				methodsList.add(method);
-
-				if (_positionRelativeToAttachment > 0.8) {
-					_yCG = Amount.valueOf(
-							0.55*(span) 
-							, SI.METER);
-					_xCG = Amount.valueOf(
-							0.42*_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.doubleValue(SI.METER))
-							+ _liftingSurfaceCreator.getXLEAtYEquivalent(_yCG.doubleValue(SI.METER))
-							, SI.METER);
-				} else {
-					_yCG = Amount.valueOf(
-							0.38*(span) 
-							, SI.METER);
-					_xCG = Amount.valueOf(
-							0.42*_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.doubleValue(SI.METER))
-							+ _liftingSurfaceCreator.getXLEAtYEquivalent(_yCG.doubleValue(SI.METER))
-							, SI.METER);
-				}
-
+				_methodsList.add(method);
+				_xCG = LiftingSurfaceBalanceCalc.calculateVTailXCGTorenbeek(aircraft); 
+				_yCG = LiftingSurfaceBalanceCalc.calculateVTailYCGTorenbeek(aircraft);
 				_xCGMap.put(method, _xCG);
 				_yCGMap.put(method, _yCG);
 			} break;
@@ -220,14 +197,37 @@ public class LiftingSurfaceBalanceManager {
 		} break;
 
 		case CANARD : {
+			
+			_cg = new CenterOfGravity();
+			_cg.setLRForigin(
+					aircraft.getCanard().getXApexConstructionAxes(),
+					aircraft.getCanard().getYApexConstructionAxes(),
+					aircraft.getCanard().getZApexConstructionAxes()
+					);
 
+			_cg.setXLRFref(aircraft.getCanard().getPanels().get(0).getChordRoot().to(SI.METER).times(0.4));
+			_cg.setYLRFref(aircraft.getCanard().getSpan().to(SI.METER).times(0.5*0.4));
+			_cg.setZLRFref(Amount.valueOf(0., SI.METER));
+			
+			switch(method) {
+
+			case TORENBEEK_1982 : { 
+				_methodsList.add(method);
+				_xCG = LiftingSurfaceBalanceCalc.calculateCanardXCGTorenbeek(aircraft);
+				_yCG = LiftingSurfaceBalanceCalc.calculateCanardYCGTorenbeek(aircraft);
+				_xCGMap.put(method, _xCG);
+				_yCGMap.put(method, _yCG);
+			} break;
+
+			default : break;
+			}
 		} break;
 
 		default : {} break;
 
 		}
 
-		_methodsMap.put(AnalysisTypeEnum.BALANCE, methodsList);
+		_methodsMap.put(AnalysisTypeEnum.BALANCE, _methodsList);
 
 	}
 	

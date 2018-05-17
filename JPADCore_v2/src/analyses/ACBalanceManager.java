@@ -1381,22 +1381,22 @@ public class ACBalanceManager implements IACBalanceManager {
 		
 		if(_theAircraft.getWing() != null) {
 			_theAircraft.getWing().getTheWeightManager().setMassEstimated(_wingMass);
-			_theAircraft.getWing().getTheBalanceManager().calculateCG(ComponentEnum.WING, _methodsMapBalance);
+			_theAircraft.getWing().getTheBalanceManager().calculateCG(_theAircraft, ComponentEnum.WING, _methodsMapBalance);
 		}
 		
 		if(_theAircraft.getHTail() != null) {
 			_theAircraft.getHTail().getTheWeightManager().setMassEstimated(_horizontalTailMass);
-			_theAircraft.getHTail().getTheBalanceManager().calculateCG(ComponentEnum.HORIZONTAL_TAIL, _methodsMapBalance);
+			_theAircraft.getHTail().getTheBalanceManager().calculateCG(_theAircraft, ComponentEnum.HORIZONTAL_TAIL, _methodsMapBalance);
 		}
 		
 		if(_theAircraft.getVTail() != null) {
 			_theAircraft.getVTail().getTheWeightManager().setMassEstimated(_verticalTailMass);
-			_theAircraft.getVTail().getTheBalanceManager().calculateCG(ComponentEnum.VERTICAL_TAIL, _methodsMapBalance);
+			_theAircraft.getVTail().getTheBalanceManager().calculateCG(_theAircraft, ComponentEnum.VERTICAL_TAIL, _methodsMapBalance);
 		}
 		
 		if(_theAircraft.getCanard() != null) {
 			_theAircraft.getCanard().getTheWeightManager().setMassEstimated(_canardMass);
-			_theAircraft.getCanard().getTheBalanceManager().calculateCG(ComponentEnum.CANARD, _methodsMapBalance);
+			_theAircraft.getCanard().getTheBalanceManager().calculateCG(_theAircraft, ComponentEnum.CANARD, _methodsMapBalance);
 		}
 		
 		if(_theAircraft.getNacelles() != null) {

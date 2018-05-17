@@ -12,7 +12,7 @@
 			</weights>
 			<performance>
 				<range unit="nmi">400</range>				
-				<block_fuel unit="kg">1620</block_fuel>
+				<block_fuel unit="kg">1619</block_fuel>
 				<flight_time unit="min">74</flight_time>
 			</performance>
 			<global_data>

@@ -77,9 +77,8 @@ public class LiftingSurfaceAerodynamicsManager {
 	private List<Double> _clMaxDistribution;
 	private List<Double> _cmACDistribution;
 	private List<Amount<Length>> _airfoilACToWingACDistribution;
-	private double[] twistDistributionRadians;
-	private double[] alphaZeroLiftDistributionRadians;
 	private double[] dihedralDistributionRadians;
+	private Double[] twistDistribution;
 	
 	private NasaBlackwell theNasaBlackwellCalculator;
 	NasaBlackwell theNasaBlackwellCalculatorAlphaZeroLift;
@@ -1085,7 +1084,6 @@ public class LiftingSurfaceAerodynamicsManager {
 			double[] yStationDistribution = new double[_numberOfPointSemiSpanWise];
 			Double[] chordDistribution = new Double[_numberOfPointSemiSpanWise];
 			Double[] alphaZeroLiftDistribution = new Double[_numberOfPointSemiSpanWise];
-			Double[] twistDistribution = new Double[_numberOfPointSemiSpanWise];
 			
 			if ( _theLiftingSurface.getExposedLiftingSurface() != null && _theLiftingSurface.getType() == ComponentEnum.WING){
 				surface = _theLiftingSurface.getExposedLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
