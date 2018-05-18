@@ -7,17 +7,12 @@ import java.util.stream.Collectors;
 
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
-import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.Aircraft;
 import aircraft.components.powerplant.Engine;
-import analyses.nacelles.NacelleAerodynamicsManager;
-import analyses.nacelles.NacelleBalanceManager;
-import analyses.nacelles.NacelleWeightsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.NacelleMountingPositionEnum;
@@ -71,14 +66,6 @@ public class NacelleCreator {
 	private List<Amount<Length>> _zCoordinatesOutlineXZLower;
 	private List<Amount<Length>> _yCoordinatesOutlineXYRight;
 	private List<Amount<Length>> _yCoordinatesOutlineXYLeft;
-	
-	// calculators
-	private NacelleWeightsManager _theWeights;
-	private NacelleBalanceManager _theBalance;
-	private NacelleAerodynamicsManager _theAerodynamics;
-	
-	// to be moved ...
-	private Amount<Mass> _massReference;
 	
 	//----------------------------------------------------------------------------------------------
 	// BUILDER
@@ -476,40 +463,6 @@ public class NacelleCreator {
 		}
 	}
 	
-	// TODO: Move these ...
-	/**
-	 * Invoke all the methods to evaluate 
-	 * nacelle related quantities
-	 * 
-	 * @author Lorenzo Attanasio
-	 */
-	public void calculateAll(Aircraft theAircraft) {
-		
-		initializeWeights(theAircraft);
-		initializeBalance();
-		
-		_theWeights.calculateAll();
-		_theBalance.calculateAll();
-	}
-
-	public void initializeWeights(Aircraft theAircraft) {
-		if (_theWeights == null) 
-			_theWeights = new NacelleWeightsManager(this, theAircraft);
-	}
-
-	public void initializeBalance() {
-		if (_theBalance == null)
-			_theBalance = new NacelleBalanceManager(this);
-	}
-	
-	// TODO: move in calculators
-	public double calculateFormFactor(){
-		//matlab file ATR72
-		return (1 + 0.165 
-				+ 0.91/(_theNacelleCreatorInterface.getLength().getEstimatedValue()
-						/_theNacelleCreatorInterface.getDiameterMax().getEstimatedValue())); 	
-	}
-	
 	//----------------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS
 	
@@ -657,32 +610,12 @@ public class NacelleCreator {
 		this._theEngine = _theEngine;
 	}
 	
-	public NacelleWeightsManager getWeights() {
-		return _theWeights;
-	}
-
-	public NacelleAerodynamicsManager getAerodynamics() {
-		return _theAerodynamics;
-	}
-	
-	public NacelleBalanceManager getBalance() {
-		return _theBalance;
-	}
-	
 	public String getId() {
 		return _theNacelleCreatorInterface.getId();
 	}
 
 	public void setId(String id) {
 		setTheNacelleCreatorInterface(INacelleCreator.Builder.from(_theNacelleCreatorInterface).setId(id).build());
-	}
-	
-	public Amount<Mass> getMassReference() {
-		return _massReference;
-	}
-	
-	public void setMassReference(Amount<Mass> _massReference) {
-		this._massReference = _massReference;
 	}
 	
 	public double[] getXCoordinatesOutlinedouble() {

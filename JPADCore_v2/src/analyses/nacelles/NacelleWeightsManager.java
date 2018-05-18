@@ -83,7 +83,6 @@ public class NacelleWeightsManager extends WeightsManager{
 
 		public Turbofan() { }
 
-		// page 150 Jenkinson - Civil Jet Aircraft Design
 		public Amount<Mass> jenkinson() {
 
 			if (_theNacelle.getTheEngine().getT0().getEstimatedValue() < 600000.){
@@ -120,19 +119,6 @@ public class NacelleWeightsManager extends WeightsManager{
 		} 
 		*/
 		
-		/*
-		 *  It includes The engine structural section, or nacelle group, and the propulsion group which includes the engines, engine exhaust,
-			reverser, starting, controls, lubricating, and fuel systems are handled together as the total propulsion
-			weight. Therefore is NOT applicable!
-		 
-		public Amount<Mass> kroo() { // page 434 Stanford
-			_methodsList.add(MethodEnum.KUNDU);
-			_mass = _theAircraft.get_powerPlant().get_dryMassPublicDomain().times(1.6);
-			_massMap.put(MethodEnum.KROO, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
-			return _mass;
-		};
-		*/
-
 		public Amount<Mass> torenbeek1976 () {
 			_mass = Amount.valueOf(0.405*
 					Math.sqrt(_theAircraft.getTheAnalysisManager().getVDiveEAS().getEstimatedValue())*

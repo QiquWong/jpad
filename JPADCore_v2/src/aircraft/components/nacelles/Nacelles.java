@@ -1,6 +1,5 @@
 package aircraft.components.nacelles;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,14 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
 import aircraft.components.powerplant.Engine;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
+import analyses.nacelles.NacelleAerodynamicsManager;
+import analyses.nacelles.NacelleBalanceManager;
+import analyses.nacelles.NacelleWeightManager;
+import analyses.nacelles.NacelleWeightsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.CenterOfGravity;
 
@@ -36,16 +41,11 @@ public class Nacelles {
 	private Amount<Area> _surfaceWetted;
 	private Amount<Length> _distanceBetweenInboardNacellesY, _distanceBetweenOutboardNacellesY;
 	
-	private Amount<Mass> _totalMass;
-	private List<Amount<Mass>> _massList;
-	private CenterOfGravity _totalCG;
-	private List<CenterOfGravity> _cgList;
-	private double _percentTotalDifference;
-	private Amount<Mass> _massReference;
-
-	// TODO : move these ??? These should be retrieved from the NacelleAerodynamicManager
-	private double _cD0Total, _cD0Parasite, _cD0Base;
 	private double _kExcr = 0.0;
+	
+	// calculators
+	private NacelleWeightManager _theWeights;
+	private NacelleBalanceManager _theBalance;
 	
 	//--------------------------------------------------------------------------------------------------
 	// BUILDER
@@ -54,9 +54,10 @@ public class Nacelles {
 		this._nacellesList = theNacelleCreatorList;
 		this._nacellesNumber = theNacelleCreatorList.size();
 		
+		this._theWeights = new NacelleWeightManager();
+		this._theBalance = new NacelleBalanceManager(theNacelleCreatorList.get(0)); // TODO: TO BE MODIFIED
+		
 		this._nacelleEngineMap = new HashMap<>();
-		this._massList = new ArrayList<>();
-		this._cgList = new ArrayList<>();
 		
 		this._distanceBetweenInboardNacellesY = _nacellesList.get(0).getYApexConstructionAxes().times(2);
 		if (_nacellesNumber>2)
@@ -105,47 +106,6 @@ public class Nacelles {
 		
 		return sb.toString();
 		
-	}
-	
-	// TODO : move these ??
-	public void initializeWeights(Aircraft theAircraft) {
-		for(int i=0; i < _nacellesNumber; i++) {
-			_nacellesList.get(i).initializeWeights(theAircraft);
-		}
-	}
-	
-	public void initializeBalance() {
-		for(int i=0; i < _nacellesNumber; i++) {
-			_nacellesList.get(i).initializeBalance();
-		}
-	}
-	
-	public void calculateMass(Aircraft theAircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
-
-		_totalMass = Amount.valueOf(0., SI.KILOGRAM);
-		_massReference = theAircraft.getTheAnalysisManager().getTheWeights().getNacelleReferenceMass();
-		initializeWeights(theAircraft);
-
-		for(int i=0; i < _nacellesNumber; i++) {
-			_nacellesList.get(i).getWeights().setMassReference(
-					theAircraft.getTheAnalysisManager().getTheWeights().getNacelleReferenceMass()
-						.divide(_nacellesNumber));
-			_nacellesList.get(i).getWeights().calculateAll();
-			if(!methodsMapWeights.get(ComponentEnum.NACELLE).equals(MethodEnum.AVERAGE))
-				_nacellesList.get(i).getWeights().setMassEstimated(
-						_nacellesList.get(i).getWeights().getMassMap().get(
-								methodsMapWeights.get(ComponentEnum.NACELLE)
-								)
-						);
-			_massList.add(_nacellesList.get(i).getWeights().getMassEstimated());
-			_totalMass = _totalMass.plus(_nacellesList.get(i).getWeights().getMassEstimated());
-			_massReference = _massReference.plus(theAircraft.getTheAnalysisManager().getTheWeights().getNacelleReferenceMass());
-		}
-		
-		_percentTotalDifference = _totalMass.
-				minus(_massReference).
-				divide(_massReference).
-				getEstimatedValue()*100.;
 	}
 	
 	public CenterOfGravity calculateCG() {
@@ -226,18 +186,6 @@ public class Nacelles {
 	
 	public double getPercentTotalDifference() {
 		return _percentTotalDifference;
-	}
-	
-	public double getCD0Total() {
-		return _cD0Total;
-	}
-	
-	public double getCD0Parasite() {
-		return _cD0Parasite;
-	}
-	
-	public double getCD0Base() {
-		return _cD0Base;
 	}
 	
 	public Amount<Mass> getMassReference() {

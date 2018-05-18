@@ -14,6 +14,7 @@ import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.nacelles.NacelleCreator;
 import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -524,6 +525,14 @@ public class FusNacGeometryCalc {
 				SI.METER
 				);
 		
+	}
+	
+	public static double calculateNacelleFormFactor(NacelleCreator nacelle){
+
+		//matlab file ATR72
+		return (1 + 0.165 
+				+ 0.91/(nacelle.getTheNacelleCreatorInterface().getLength().getEstimatedValue()
+						/nacelle.getTheNacelleCreatorInterface().getDiameterMax().getEstimatedValue())); 	
 	}
 	
 }

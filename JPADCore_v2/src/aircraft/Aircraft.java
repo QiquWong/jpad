@@ -24,7 +24,6 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.ILiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
-import aircraft.components.liftingSurface.airfoils.IAirfoil;
 import aircraft.components.liftingSurface.creator.IEquivalentWing;
 import aircraft.components.liftingSurface.creator.ILiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;

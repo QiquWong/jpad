@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -31,13 +30,11 @@ import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
 import analyses.liftingsurface.LiftingSurfaceBalanceManager;
-import analyses.liftingsurface.LiftingSurfaceWeightsManager;
+import analyses.liftingsurface.LiftingSurfaceWeightManager;
 import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.WingAdjustCriteriaEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
@@ -81,8 +78,7 @@ public class LiftingSurface {
 	
 	private LiftingSurface _exposedLiftingSurface;
 	
-	private Map<ConditionEnum, LiftingSurfaceAerodynamicsManager> _theAerodynamicsCalculatorMap;
-	private LiftingSurfaceWeightsManager _theWeightManager;
+	private LiftingSurfaceWeightManager _theWeightManager;
 	private LiftingSurfaceBalanceManager _theBalanceManager;
 	
 	//-----------------------------------------------------------------------------------------
@@ -176,6 +172,8 @@ public class LiftingSurface {
 	public LiftingSurface(ILiftingSurface theLiftingSurfaceInterface) {
 		
 		this._theLiftingSurfaceInterface = theLiftingSurfaceInterface;
+		this._theWeightManager = new LiftingSurfaceWeightManager();
+		this._theBalanceManager = new LiftingSurfaceBalanceManager();
 		initializeData();
 		calculateGeometry(_theLiftingSurfaceInterface.getType(), _theLiftingSurfaceInterface.isMirrored());
 		
@@ -3394,19 +3392,11 @@ public class LiftingSurface {
 		this._exposedLiftingSurface = _exposedLiftingSurface;
 	}
 
-	public Map<ConditionEnum, LiftingSurfaceAerodynamicsManager> getTheAerodynamicsCalculatorMap() {
-		return _theAerodynamicsCalculatorMap;
-	}
-
-	public void setTheAerodynamicsCalculatorMap(Map<ConditionEnum, LiftingSurfaceAerodynamicsManager> _theAerodynamicsCalculatorMap) {
-		this._theAerodynamicsCalculatorMap = _theAerodynamicsCalculatorMap;
-	}
-
-	public LiftingSurfaceWeightsManager getTheWeightManager() {
+	public LiftingSurfaceWeightManager getTheWeightManager() {
 		return _theWeightManager;
 	}
 
-	public void setTheWeightManager(LiftingSurfaceWeightsManager _theWeightManager) {
+	public void setTheWeightManager(LiftingSurfaceWeightManager _theWeightManager) {
 		this._theWeightManager = _theWeightManager;
 	}
 

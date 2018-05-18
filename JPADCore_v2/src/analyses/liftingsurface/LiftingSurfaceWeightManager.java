@@ -19,7 +19,7 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
-public class LiftingSurfaceWeightsManager {
+public class LiftingSurfaceWeightManager {
 
 	//------------------------------------------------------------------------------
 	// VARIABLES DECLARATION:
@@ -35,7 +35,7 @@ public class LiftingSurfaceWeightsManager {
 	//------------------------------------------------------------------------------
 	// BUILDER:
 	//------------------------------------------------------------------------------
-	public LiftingSurfaceWeightsManager () {
+	public LiftingSurfaceWeightManager () {
 		
 		initializeData();
 		
@@ -93,7 +93,7 @@ public class LiftingSurfaceWeightsManager {
 					_massReference,
 					_massMap,
 					_percentDifference,
-					20.).getMean(), SI.KILOGRAM);
+					100.).getMean(), SI.KILOGRAM);
 		}
 		
 	}

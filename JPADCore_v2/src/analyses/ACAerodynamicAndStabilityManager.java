@@ -13777,8 +13777,8 @@ public class ACAerodynamicAndStabilityManager {
 					//---------------------------------------------------------------
 					// XCG AND ZCG POSITIONS NACELLE
 					if(theAircraft.getNacelles() != null) {
-						xCGNacelles = theAircraft.getNacelles().getNacellesList().get(0).getBalance().getCG().getXBRF().to(SI.METER);
-						zCGNacelles = theAircraft.getNacelles().getNacellesList().get(0).getBalance().getCG().getZBRF().to(SI.METER);
+						xCGNacelles = theAircraft.getNacelles().getTheBalance().getCG().getXBRF().to(SI.METER);
+						zCGNacelles = theAircraft.getNacelles().getTheBalance().getCG().getZBRF().to(SI.METER);
 					}
 				}
 				else {

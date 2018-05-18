@@ -139,7 +139,7 @@ public class NacelleAerodynamicsManager {
 			_cD0Parasite.put(
 					MethodEnum.SEMIEMPIRICAL, 
 					DragCalc.calculateCD0Parasite(
-							_theNacelles.getNacellesList().get(0).calculateFormFactor(), 
+							FusNacGeometryCalc.calculateNacelleFormFactor(_theNacelles.getNacellesList().get(0)), 
 							_cF, 
 							_theNacelles.getNacellesList().get(0).getSurfaceWetted().doubleValue(SI.SQUARE_METRE), 
 							_theWing.getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
