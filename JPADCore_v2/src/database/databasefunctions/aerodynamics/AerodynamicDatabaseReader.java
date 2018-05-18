@@ -1,7 +1,9 @@
 package database.databasefunctions.aerodynamics;
 
 
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
@@ -9,6 +11,7 @@ import org.jscience.physics.amount.Amount;
 import configuration.enumerations.AirfoilFamilyEnum;
 import database.databasefunctions.DatabaseReader;
 import standaloneutils.MyInterpolatingFunction;
+import standaloneutils.database.hdf.MyHDFReader;
 
 public class AerodynamicDatabaseReader extends DatabaseReader {
 
@@ -18,7 +21,8 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	 x_bar_ac_w_k1_vs_lambda, x_bar_ac_w_k2_vs_L_LE_AR_lambda,
 	 d_Alpha_Vs_LambdaLE_VsDy, d_Alpha_d_Delta_2d_VS_cf_c, d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio,
 	 d_epsilon_d_alpha_VS_position_aspectRatio, deltaYvsThicknessRatio, kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR,
-	 clmaxCLmaxVsLambdaLEVsDeltaY, cmAlphaBodyUpwashVsXiOverRootChord, cmAlphaBodyNearUpwashVsXiOverRootChord;
+	 clmaxCLmaxVsLambdaLEVsDeltaY, cmAlphaBodyUpwashVsXiOverRootChord, cmAlphaBodyNearUpwashVsXiOverRootChord,
+	 C_l_beta_w_b_C_l_beta_over_C_Lift1_L_c2_vs_L_c2_AR_lambda;
 	
 	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE, deltaYvsThickness, clmaxCLmaxVsLambdaLE;
  
@@ -26,36 +30,59 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 
 		super(databaseFolderPath, databaseFileName);
 
-		c_m0_b_k2_minus_k1_vs_FFR = database.interpolate1DFromDatasetFunction("(C_m0_b)_k2_minus_k1_vs_FFR");
-		ar_v_eff_c2_vs_Z_h_over_b_v_x_ac_h_v_over_c_bar_v = database.interpolate2DFromDatasetFunction("(AR_v_eff)_c2_vs_Z_h_over_b_v_(x_ac_h--v_over_c_bar_v)");
+		c_m0_b_k2_minus_k1_vs_FFR
+						= database.interpolate1DFromDatasetFunction("(C_m0_b)_k2_minus_k1_vs_FFR");
 		
-		x_bar_ac_w_k1_vs_lambda=database.interpolate1DFromDatasetFunction("(x_bar_ac_w)_k1_vs_lambda");
-		x_bar_ac_w_k2_vs_L_LE_AR_lambda=database.interpolate3DFromDatasetFunction ("(x_bar_ac_w)_k2_vs_L_LE_(AR)_(lambda)");
-		x_bar_ac_w_x_ac_over_root_chord_vs_tan_L_LE_over_beta_AR_times_tan_L_LE_lambda= database.interpolate3DFromDatasetFunction("(x_bar_ac_w)_x'_ac_over_root_chord_vs_tan_(L_LE)_over_beta_(AR_times_tan_(L_LE))_(lambda)");
-		  
+		ar_v_eff_c2_vs_Z_h_over_b_v_x_ac_h_v_over_c_bar_v 
+						= database.interpolate2DFromDatasetFunction("(AR_v_eff)_c2_vs_Z_h_over_b_v_(x_ac_h--v_over_c_bar_v)");
 		
-		d_Alpha_Vs_LambdaLE_VsDy = database.interpolate2DFromDatasetFunction("DAlphaVsLambdaLEVsDy");
+		x_bar_ac_w_k1_vs_lambda
+						= database.interpolate1DFromDatasetFunction("(x_bar_ac_w)_k1_vs_lambda");
 		
-		d_Alpha_d_Delta_2d_VS_cf_c = database.interpolate1DFromDatasetFunction("c_c1_deltaalpha2d");
+		x_bar_ac_w_k2_vs_L_LE_AR_lambda
+						= database.interpolate3DFromDatasetFunction ("(x_bar_ac_w)_k2_vs_L_LE_(AR)_(lambda)");
 		
-		d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio = database.interpolate2DFromDatasetFunction("DAlphaDdeltavsAspectratio");
+		x_bar_ac_w_x_ac_over_root_chord_vs_tan_L_LE_over_beta_AR_times_tan_L_LE_lambda
+						= database.interpolate3DFromDatasetFunction("(x_bar_ac_w)_x'_ac_over_root_chord_vs_tan_(L_LE)_over_beta_(AR_times_tan_(L_LE))_(lambda)");
 		
-		d_epsilon_d_alpha_VS_position_aspectRatio = database.interpolate2DFromDatasetFunction("upwashvsposition");
-		deltaYvsThicknessRatio  =database.interpolate2DFromDatasetFunction("DeltaYvsThicknessRatio");
+		d_Alpha_Vs_LambdaLE_VsDy 
+						= database.interpolate2DFromDatasetFunction("DAlphaVsLambdaLEVsDy");
 		
-		kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR = database.interpolate3DFromDatasetFunction("K_Omega_vs_CLalphaOmegaFracClmax_(taperRatio)_(AR)");
+		d_Alpha_d_Delta_2d_VS_cf_c 
+						= database.interpolate1DFromDatasetFunction("c_c1_deltaalpha2d");
 		
-		clmaxCLmaxVsLambdaLEVsDeltaY = database.interpolate2DFromDatasetFunction("Clmax_CLmax_vs_LambdaLE_vs_dy");
+		d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio 
+						= database.interpolate2DFromDatasetFunction("DAlphaDdeltavsAspectratio");
 		
-		cmAlphaBodyUpwashVsXiOverRootChord = database.interpolate1DFromDatasetFunction("(C_m_alpha_b)_upwash_vs_x_i_over_root_chord");
+		d_epsilon_d_alpha_VS_position_aspectRatio 
+						= database.interpolate2DFromDatasetFunction("upwashvsposition");
 		
-		cmAlphaBodyNearUpwashVsXiOverRootChord = database.interpolate1DFromDatasetFunction("(C_m_alpha_b)_upwash_(NTWLE)_vs_x_i_over_root_chord");
+		deltaYvsThicknessRatio 
+						= database.interpolate2DFromDatasetFunction("DeltaYvsThicknessRatio");
+		
+		kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR 
+						= database.interpolate3DFromDatasetFunction("K_Omega_vs_CLalphaOmegaFracClmax_(taperRatio)_(AR)");
+		
+		clmaxCLmaxVsLambdaLEVsDeltaY 
+						= database.interpolate2DFromDatasetFunction("Clmax_CLmax_vs_LambdaLE_vs_dy");
+		
+		cmAlphaBodyUpwashVsXiOverRootChord 
+						= database.interpolate1DFromDatasetFunction("(C_m_alpha_b)_upwash_vs_x_i_over_root_chord");
+		
+		cmAlphaBodyNearUpwashVsXiOverRootChord 
+						= database.interpolate1DFromDatasetFunction("(C_m_alpha_b)_upwash_(NTWLE)_vs_x_i_over_root_chord");
+		
+		// agodemar + cavas
+		
+		C_l_beta_w_b_C_l_beta_over_C_Lift1_L_c2_vs_L_c2_AR_lambda 
+						= database.interpolate3DFromDatasetFunction("(C_l_beta_w_b)_C_l_beta_over_C_Lift1_(L_c2)_vs_L_c2_(AR)_(lambda)");
 		
 		//TODO Insert other aerodynamic functions (see "Aerodynamic_Database_Ultimate.h5")
 	}
 	
-	
-
+	public MyHDFReader getHDFReader() {
+		return database;
+	}
 
 	public void runAnalysis(double diameter, double length, double zH, double bV, double xACHV, double cV){
 		cM0_b_k2_minus_k1 = get_C_m0_b_k2_minus_k1_vs_FFR(length, diameter);
@@ -210,8 +237,6 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	}
 
 
-
-
 	public double getCmAlphaBodyUpwashVsXiOverRootChord(Amount<Length> wingRootChord, Amount<Length> xi) {
 		return cmAlphaBodyUpwashVsXiOverRootChord.value(xi.doubleValue(SI.METER)/wingRootChord.doubleValue(SI.METER));
 	}
@@ -222,5 +247,19 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		return cmAlphaBodyNearUpwashVsXiOverRootChord.value(xi.doubleValue(SI.METER)/wingRootChord.doubleValue(SI.METER));
 	}
 
+	public double getClbetaWBClbetaOverCLift1Lc2VsLc2ARlambda(double taperRatio, double aspectRatio, Amount<Angle> sweepAngleC2) { // var0, var1, var2
+		double ar = aspectRatio;
+		ar = Math.min(8.0, ar);
+		ar = Math.max(1.0, ar);
+		System.out.println(">>>>> lambda: " + taperRatio);
+		System.out.println(">>>>> ar: " + ar);
+		System.out.println(">>>>> LambdaC2 (deg): " + sweepAngleC2.doubleValue(NonSI.DEGREE_ANGLE));
+		
+		return C_l_beta_w_b_C_l_beta_over_C_Lift1_L_c2_vs_L_c2_AR_lambda.valueTrilinear(
+				sweepAngleC2.doubleValue(NonSI.DEGREE_ANGLE), // var2
+				ar, // var1
+				taperRatio // var0 
+				);
+	}
 
 }

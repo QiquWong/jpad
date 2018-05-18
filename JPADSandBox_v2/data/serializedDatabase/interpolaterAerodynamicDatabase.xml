@@ -1,12 +1,12 @@
 <database.databasefunctions.aerodynamics.AerodynamicDatabaseReader>
-  <databaseFolderPath>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\</databaseFolderPath>
+  <databaseFolderPath>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data</databaseFolderPath>
   <databaseFileName>Aerodynamic_Database_Ultimate.h5</databaseFileName>
   <database>
-    <__fileName>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</__fileName>
+    <__fileName>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</__fileName>
     <__fileH5 serialization="custom">
       <file>
         <default>
-          <path>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</path>
+          <path>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</path>
         </default>
         <char>\</char>
       </file>
@@ -16,7 +16,7 @@
           <isReadOnly>true</isReadOnly>
           <max__members>1000000</max__members>
           <start__members>0</start__members>
-          <fullFileName>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</fullFileName>
+          <fullFileName>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</fullFileName>
         </default>
       </ncsa.hdf.object.FileFormat>
       <ncsa.hdf.object.h5.H5File>
@@ -33,7 +33,7 @@
       </ncsa.hdf.object.h5.H5File>
     </__fileH5>
     <__rootGroup>
-      <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+      <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
       <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../__fileH5"/>
       <name>/</name>
       <fullName>/</fullName>
@@ -42,7 +42,7 @@
       </oid>
       <memberList class="vector">
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(AR_v_eff)_c1_vs_b_v_over_2_times_r1_(lambda_v)</name>
           <path>/</path>
@@ -66,7 +66,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(AR_v_eff)_c2_vs_Z_h_over_b_v_(x_ac_h--v_over_c_bar_v)</name>
           <path>/</path>
@@ -90,7 +90,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(AR_v_eff)_k_h_v_vs_S_h_over_S_v</name>
           <path>/</path>
@@ -114,7 +114,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_C_l_beta_over_C_Lift1_(AR)_vs_AR_(lambda)</name>
           <path>/</path>
@@ -138,7 +138,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_C_l_beta_over_C_Lift1_(L_c2)_vs_L_c2_(AR)_(lambda)</name>
           <path>/</path>
@@ -162,7 +162,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_C_l_beta_over_Gamma_w_vs_AR_(L_c2)_(lambda)</name>
           <path>/</path>
@@ -186,7 +186,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_dC_l_beta_over_eps_w_times_tan_(L_c4)_vs_AR_(lambda)</name>
           <path>/</path>
@@ -210,7 +210,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_k_M_Gamma_vs_Mach_times_cos(L_c2)_(AR_over_cos(L_c2))</name>
           <path>/</path>
@@ -234,7 +234,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_k_M_L_vs_Mach_times_cos(L_c2)_(AR_over_cos(L_c2))</name>
           <path>/</path>
@@ -258,7 +258,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_k_f_vs_A_over_b_(AR_over_cos(L_c2))</name>
           <path>/</path>
@@ -282,7 +282,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_delta_a)_RME_vs_eta_(Lambda_beta)_(beta_times_AR_over_k)_(lambda)</name>
           <path>/</path>
@@ -306,7 +306,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_p_w)_RDP_vs_Lambda_beta_(beta_times_AR_over_k)_(lambda)</name>
           <path>/</path>
@@ -330,7 +330,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_r_w)_C_l_r_over_C_Lift1_vs_AR_(lambda)_(L_c2)</name>
           <path>/</path>
@@ -354,7 +354,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_r_w)_dC_l_r_over_eps_w_vs_AR_(lambda)</name>
           <path>/</path>
@@ -378,7 +378,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_m0_b)_k2_minus_k1_vs_FFR</name>
           <path>/</path>
@@ -402,7 +402,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_m_alpha_b)_upwash_(NTWLE)_vs_x_i_over_root_chord</name>
           <path>/</path>
@@ -426,7 +426,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_m_alpha_b)_upwash_vs_x_i_over_root_chord</name>
           <path>/</path>
@@ -450,7 +450,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_m_q_w)_k_q_vs_AR</name>
           <path>/</path>
@@ -474,7 +474,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_beta_b)_K_N_times_1e-3_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)</name>
           <path>/</path>
@@ -498,7 +498,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_beta_b)_K_Re_b_vs_Re_l_b_times_1e-6</name>
           <path>/</path>
@@ -522,7 +522,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_delta_a)_k_n_a_vs_eta_(AR)_(lambda)</name>
           <path>/</path>
@@ -546,7 +546,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_delta_r)_K_R_vs_eta_(lambda_v)</name>
           <path>/</path>
@@ -570,7 +570,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_p_w)_dC_n_p_over_eps_w_vs_AR_(lambda)</name>
           <path>/</path>
@@ -594,7 +594,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_r_w)_C_n_r_over_C_D0_bar_vs_AR_(L_c4)_(x_bar_ac_minus_x_bar_cg)</name>
           <path>/</path>
@@ -618,7 +618,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_r_w)_C_n_r_over_squared_(C_Lift1)_vs_AR_(lambda)_(L_c4)_(x_bar_ac_minus_x_bar_cg)</name>
           <path>/</path>
@@ -642,7 +642,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_y_beta_v)_K_Y_V_vs_b_v_over_2_times_r1</name>
           <path>/</path>
@@ -666,7 +666,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(alpha0_L)_alpha0_lift_over_alpha0_lift_(M_=_0.3)_vs_mach_times_cos_(L_c4)_(t_over_c)</name>
           <path>/</path>
@@ -690,7 +690,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(alpha0_L)_dalpha0_lift_over_epsT_vs_L_c4_(AR)_(lambda)</name>
           <path>/</path>
@@ -714,7 +714,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(control_surface)_C_h_alpha_vs_flap_chord_over_airfoil_chord</name>
           <path>/</path>
@@ -738,7 +738,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(control_surface)_C_h_delta_vs_flap_chord_over_airfoil_chord</name>
           <path>/</path>
@@ -762,7 +762,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(control_surface)_tau_e_vs_c_control_surface_over_c_horizontal_tail</name>
           <path>/</path>
@@ -786,7 +786,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(twin_vertical_tails)_AR_v_eff_over_AR_v_vs_b&apos;_v_over_ b_v</name>
           <path>/</path>
@@ -810,7 +810,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(twin_vertical_tails)_C_y_beta_v_eff_vs_AR_eff_(Gamma_v)</name>
           <path>/</path>
@@ -834,7 +834,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(twin_vertical_tails)_c_v_t_vs_2_times_r1_over_b_v_(b_h_over_l_b)</name>
           <path>/</path>
@@ -858,7 +858,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(x_bar_ac_w)_k1_vs_lambda</name>
           <path>/</path>
@@ -882,7 +882,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(x_bar_ac_w)_k2_vs_L_LE_(AR)_(lambda)</name>
           <path>/</path>
@@ -906,7 +906,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(x_bar_ac_w)_x&apos;_ac_over_root_chord_vs_tan_(L_LE)_over_beta_(AR_times_tan_(L_LE))_(lambda)</name>
           <path>/</path>
@@ -930,7 +930,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>Clmax_CLmax_vs_LambdaLE_vs_dy</name>
           <path>/</path>
@@ -954,7 +954,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>DAlphaDdeltavsAspectratio</name>
           <path>/</path>
@@ -978,7 +978,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>DAlphaVsLambdaLEVsDy</name>
           <path>/</path>
@@ -1002,7 +1002,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>DeltaYvsThicknessRatio</name>
           <path>/</path>
@@ -1026,7 +1026,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>K_Omega_vs_CLalphaOmegaFracClmax_(taperRatio)_(AR)</name>
           <path>/</path>
@@ -1050,7 +1050,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>c_c1_deltaalpha2d</name>
           <path>/</path>
@@ -1074,7 +1074,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>upwashvsposition</name>
           <path>/</path>
@@ -29884,6 +29884,1884 @@
     <zMin>0.0</zMin>
     <zMax>0.0</zMax>
   </cmAlphaBodyNearUpwashVsXiOverRootChord>
+  <C__l__beta__w__b__C__l__beta__over__C__Lift1__L__c2__vs__L__c2__AR__lambda>
+    <tif>
+      <x>
+        <double>0.0</double>
+        <double>0.5</double>
+        <double>1.0</double>
+      </x>
+      <xMin>0.0</xMin>
+      <xMax>1.0</xMax>
+      <y>
+        <double>-20.0</double>
+        <double>-15.0</double>
+        <double>-10.0</double>
+        <double>-5.0</double>
+        <double>0.0</double>
+        <double>5.0</double>
+        <double>10.0</double>
+        <double>15.0</double>
+        <double>20.0</double>
+        <double>25.0</double>
+        <double>30.0</double>
+        <double>35.0</double>
+        <double>40.0</double>
+        <double>45.0</double>
+        <double>50.0</double>
+        <double>55.0</double>
+        <double>60.0</double>
+      </y>
+      <yMin>-20.0</yMin>
+      <yMax>60.0</yMax>
+      <z>
+        <double>1.0</double>
+        <double>2.0</double>
+        <double>3.0</double>
+        <double>6.0</double>
+        <double>8.0</double>
+      </z>
+      <zMin>1.0</zMin>
+      <zMax>8.0</zMax>
+      <interpolatedDataAlongYAndZ>
+        <standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+          <x reference="../../../y"/>
+          <xMin>-20.0</xMin>
+          <xMax>60.0</xMax>
+          <y reference="../../../z"/>
+          <yMin>1.0</yMin>
+          <yMax>8.0</yMax>
+          <interpolatedDataAlongX>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0010999999940395355</double>
+                    <double>1.0000006295740604E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0012000000569969416</double>
+                    <double>1.9999989308416843E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.00139999995008111</double>
+                    <double>6.666666983316342E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0015999999595806003</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>7.999999797903001E-4</double>
+                    <double>1.0000000474974513E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>8.999999845400453E-4</double>
+                    <double>2.0000000949949026E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0010999999940395355</double>
+                    <double>3.3333354319135346E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0012000000569969416</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>5.000000237487257E-4</double>
+                    <double>1.9999995129182935E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>6.99999975040555E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>6.99999975040555E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>6.99999975040555E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>1.9999999494757503E-4</double>
+                    <double>1.0000001930166036E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>3.000000142492354E-4</double>
+                    <double>9.999997564591467E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>3.9999998989515007E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>3.9999998989515007E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-1.9999999494757503E-4</double>
+                    <double>-1.9999999494757503E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-3.9999998989515007E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-3.9999998989515007E-4</double>
+                    <double>-3.333334461785853E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-5.000000237487257E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-5.000000237487257E-4</double>
+                    <double>-1.9999995129182935E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-6.99999975040555E-4</double>
+                    <double>-1.0000000474974513E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-7.999999797903001E-4</double>
+                    <double>-3.333333491658171E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-8.999999845400453E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-7.999999797903001E-4</double>
+                    <double>-2.0000006770715117E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0010000000474974513</double>
+                    <double>-2.0000000949949026E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0012000000569969416</double>
+                    <double>-3.333331551402807E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0013000000035390258</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0010999999940395355</double>
+                    <double>-2.999999560415745E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00139999995008111</double>
+                    <double>-1.0000006295740604E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.001500000013038516</double>
+                    <double>-6.666666983316342E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0017000000225380063</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00139999995008111</double>
+                    <double>-4.000000189989805E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0017999999690800905</double>
+                    <double>-1.0000006295740604E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0019000000320374966</double>
+                    <double>-6.666663102805614E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002099999925121665</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0017999999690800905</double>
+                    <double>-4.000000189989805E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002199999988079071</double>
+                    <double>-2.000001259148121E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002400000113993883</double>
+                    <double>-3.33332767089208E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0024999999441206455</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002199999988079071</double>
+                    <double>-4.000000189989805E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0026000000070780516</double>
+                    <double>-1.9999989308416843E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00279999990016222</double>
+                    <double>-3.3333354319135346E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002899999963119626</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0026000000070780516</double>
+                    <double>-5.000000819563866E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003100000089034438</double>
+                    <double>-1.9999989308416843E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0032999999821186066</double>
+                    <double>-6.666670863827069E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0035000001080334187</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003100000089034438</double>
+                    <double>-4.999998491257429E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003599999938160181</double>
+                    <double>-2.999999560415745E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0038999998942017555</double>
+                    <double>-9.99999853471915E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00419999985024333</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003599999938160181</double>
+                    <double>-7.000002078711987E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00430000014603138</double>
+                    <double>-3.9999978616833687E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.004699999932199717</double>
+                    <double>-1.3333341727654138E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.005100000184029341</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.004000000189989805</double>
+                    <double>-0.0010999999940395355</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.005100000184029341</double>
+                    <double>-5.99999912083149E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00570000009611249</double>
+                    <double>-1.333332620561123E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.006099999882280827</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00430000014603138</double>
+                    <double>-0.0016999999061226845</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.006000000052154064</double>
+                    <double>-8.00000037997961E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.006800000090152025</double>
+                    <double>-1.666666939854622E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.007300000172108412</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+          </interpolatedDataAlongX>
+        </standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+        <standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+          <x reference="../../../y"/>
+          <xMin>-20.0</xMin>
+          <xMax>60.0</xMax>
+          <y reference="../../../z"/>
+          <yMin>1.0</yMin>
+          <yMax>8.0</yMax>
+          <interpolatedDataAlongX>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0010999999940395355</double>
+                    <double>1.0000006295740604E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0012000000569969416</double>
+                    <double>9.999994654208422E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0013000000035390258</double>
+                    <double>6.666666983316342E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.001500000013038516</double>
+                    <double>1.0000000474974513E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>6.99999975040555E-4</double>
+                    <double>2.0000000949949026E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>8.999999845400453E-4</double>
+                    <double>1.0000006295740604E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0010000000474974513</double>
+                    <double>3.333331551402807E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0010999999940395355</double>
+                    <double>1.0000000474974513E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>3.9999998989515007E-4</double>
+                    <double>2.0000003860332072E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>6.000000284984708E-4</double>
+                    <double>9.999994654208422E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>6.99999975040555E-4</double>
+                    <double>3.333333491658171E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>7.999999797903001E-4</double>
+                    <double>5.0000002374872565E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>1.9999999494757503E-4</double>
+                    <double>1.0000001930166036E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>3.000000142492354E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>3.000000142492354E-4</double>
+                    <double>3.333332521530489E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>3.9999998989515007E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-1.9999999494757503E-4</double>
+                    <double>-1.0000001930166036E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-3.000000142492354E-4</double>
+                    <double>-9.999997564591467E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-3.9999998989515007E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-3.9999998989515007E-4</double>
+                    <double>-5.0000016926787794E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-5.000000237487257E-4</double>
+                    <double>-1.0000000474974513E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-6.000000284984708E-4</double>
+                    <double>-1.9999995129182935E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-7.999999797903001E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-7.999999797903001E-4</double>
+                    <double>-1.0000003385357559E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-7.999999797903001E-4</double>
+                    <double>-1.0000000474974513E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-8.999999845400453E-4</double>
+                    <double>-3.000000724568963E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0012000000569969416</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0012000000569969416</double>
+                    <double>-9.999994654208422E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0010999999940395355</double>
+                    <double>-2.0000000949949026E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0013000000035390258</double>
+                    <double>-2.999999560415745E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0015999999595806003</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0015999999595806003</double>
+                    <double>-1.0000000474974513E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00139999995008111</double>
+                    <double>-3.000000724568963E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0017000000225380063</double>
+                    <double>-3.000000724568963E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0020000000949949026</double>
+                    <double>-6.666663102805614E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002199999988079071</double>
+                    <double>-5.000003147870302E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0017999999690800905</double>
+                    <double>-4.000000189989805E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002199999988079071</double>
+                    <double>-2.000001259148121E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002400000113993883</double>
+                    <double>-9.99999853471915E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0027000000700354576</double>
+                    <double>-4.9999915063381195E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002199999988079071</double>
+                    <double>-5.000000819563866E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0027000000700354576</double>
+                    <double>-2.999999560415745E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003000000026077032</double>
+                    <double>-3.3333354319135346E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003100000089034438</double>
+                    <double>-9.999994654208422E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0026000000070780516</double>
+                    <double>-5.99999912083149E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0031999999191612005</double>
+                    <double>-4.000000189989805E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003599999938160181</double>
+                    <double>-6.666670863827069E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003800000064074993</double>
+                    <double>-1.4999997802078724E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003100000089034438</double>
+                    <double>-6.99999975040555E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003800000064074993</double>
+                    <double>-5.99999912083149E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.004399999976158142</double>
+                    <double>-1.3333341727654138E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.004800000227987766</double>
+                    <double>-4.9999915063381195E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0035000001080334187</double>
+                    <double>-9.999996982514858E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0044999998062849045</double>
+                    <double>-0.0010000001639127731</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.005499999970197678</double>
+                    <double>-6.666670863827069E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00570000009611249</double>
+                    <double>-1.0000006295740604E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0038999998942017555</double>
+                    <double>-0.00139999995008111</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0052999998442828655</double>
+                    <double>-0.0013000001199543476</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.006599999964237213</double>
+                    <double>-1.3333341727654138E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.007000000216066837</double>
+                    <double>-9.999983012676239E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.004399999976158142</double>
+                    <double>-0.0019000000320374966</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.006300000008195639</double>
+                    <double>-0.0017000003717839718</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00800000037997961</double>
+                    <double>-1.333331068356832E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00839999970048666</double>
+                    <double>-1.500002108514309E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+          </interpolatedDataAlongX>
+        </standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+        <standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+          <x reference="../../../y"/>
+          <xMin>-20.0</xMin>
+          <xMax>60.0</xMax>
+          <y reference="../../../z"/>
+          <yMin>1.0</yMin>
+          <yMax>8.0</yMax>
+          <interpolatedDataAlongX>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0019000000320374966</double>
+                    <double>-6.99999975040555E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0012000000569969416</double>
+                    <double>9.999994654208422E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0013000000035390258</double>
+                    <double>9.99999853471915E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0015999999595806003</double>
+                    <double>-2.999999560415745E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.001500000013038516</double>
+                    <double>-6.000000284984708E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>8.999999845400453E-4</double>
+                    <double>1.0000006295740604E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0010000000474974513</double>
+                    <double>6.666666983316342E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0012000000569969416</double>
+                    <double>-2.0000003860332072E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0010000000474974513</double>
+                    <double>-4.000000189989805E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>6.000000284984708E-4</double>
+                    <double>9.999994654208422E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>6.99999975040555E-4</double>
+                    <double>3.333333491658171E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>7.999999797903001E-4</double>
+                    <double>-1.4999997802078724E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>5.000000237487257E-4</double>
+                    <double>-2.0000000949949026E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>3.000000142492354E-4</double>
+                    <double>9.999997564591467E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>3.9999998989515007E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>3.9999998989515007E-4</double>
+                    <double>-9.999999747378752E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.0</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-5.000000237487257E-4</double>
+                    <double>2.0000000949949026E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-3.000000142492354E-4</double>
+                    <double>-9.999997564591467E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-3.9999998989515007E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-3.9999998989515007E-4</double>
+                    <double>9.999999747378752E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-8.999999845400453E-4</double>
+                    <double>2.0000000949949026E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-6.99999975040555E-4</double>
+                    <double>-1.0000000474974513E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-7.999999797903001E-4</double>
+                    <double>-3.333333491658171E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-8.999999845400453E-4</double>
+                    <double>2.499999973224476E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00139999995008111</double>
+                    <double>3.999999025836587E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0010000000474974513</double>
+                    <double>-2.0000000949949026E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0012000000569969416</double>
+                    <double>-3.333331551402807E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0013000000035390258</double>
+                    <double>3.000000142492354E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0019000000320374966</double>
+                    <double>6.000000284984708E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0013000000035390258</double>
+                    <double>-2.999999560415745E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0015999999595806003</double>
+                    <double>-6.666666983316342E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0017999999690800905</double>
+                    <double>3.999999607913196E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002300000051036477</double>
+                    <double>7.000000914558768E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0015999999595806003</double>
+                    <double>-3.000000724568963E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0019000000320374966</double>
+                    <double>-6.666663102805614E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002099999925121665</double>
+                    <double>3.999999607913196E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00279999990016222</double>
+                    <double>6.99999975040555E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.002099999925121665</double>
+                    <double>-4.000000189989805E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0024999999441206455</double>
+                    <double>-3.3333354319135346E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0026000000070780516</double>
+                    <double>5.000000237487257E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0034000000450760126</double>
+                    <double>9.000001009553671E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0024999999441206455</double>
+                    <double>-6.000001449137926E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003100000089034438</double>
+                    <double>-3.33332767089208E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0031999999191612005</double>
+                    <double>5.99999912083149E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00419999985024333</double>
+                    <double>0.001199999824166298</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003000000026077032</double>
+                    <double>-6.99999975040555E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.003700000001117587</double>
+                    <double>-6.666663102805614E-5</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0038999998942017555</double>
+                    <double>7.999999215826392E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.005100000184029341</double>
+                    <double>0.001600000075995922</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.0035000001080334187</double>
+                    <double>-8.00000037997961E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00430000014603138</double>
+                    <double>-1.666666939854622E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.004800000227987766</double>
+                    <double>0.0010500000789761543</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.006300000008195639</double>
+                    <double>0.0021000001579523087</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00419999985024333</double>
+                    <double>-8.00000037997961E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.004999999888241291</double>
+                    <double>-2.333334026237329E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.00570000009611249</double>
+                    <double>0.0013500000350177288</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.007899999618530273</double>
+                    <double>0.0028999997302889824</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.004999999888241291</double>
+                    <double>-0.0010000001639127731</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.006000000052154064</double>
+                    <double>-2.999999560415745E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.006899999920278788</double>
+                    <double>0.0017999999690800905</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>1.0</double>
+                <double>2.0</double>
+                <double>3.0</double>
+                <double>6.0</double>
+                <double>8.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.009999999776482582</double>
+                    <double>0.003999999724328518</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.006000000052154064</double>
+                    <double>-0.00139999995008111</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.007400000002235174</double>
+                    <double>-3.666668199002743E-4</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.008500000461935997</double>
+                    <double>0.002400000230409205</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>4</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+          </interpolatedDataAlongX>
+        </standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+      </interpolatedDataAlongYAndZ>
+    </tif>
+    <x reference="../tif/x"/>
+    <y reference="../tif/y"/>
+    <z reference="../tif/z"/>
+    <xMin>0.0</xMin>
+    <xMax>1.0</xMax>
+    <yMin>-20.0</yMin>
+    <yMax>60.0</yMax>
+    <zMin>1.0</zMin>
+    <zMax>8.0</zMax>
+  </C__l__beta__w__b__C__l__beta__over__C__Lift1__L__c2__vs__L__c2__AR__lambda>
   <cM0__b__k2__minus__k1>0.0</cM0__b__k2__minus__k1>
   <ar__v__eff__c2>0.0</ar__v__eff__c2>
   <x__bar__ac__w__k1>0.0</x__bar__ac__w__k1>
