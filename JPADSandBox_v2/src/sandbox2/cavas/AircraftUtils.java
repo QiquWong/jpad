@@ -42,11 +42,11 @@ public final class AircraftUtils {
 			String pathToXML = CmdLineUtils.va.getInputFile().getAbsolutePath();
 			System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
 
-			String pathToAnalysesXML = CmdLineUtils.va.getInputFileAnalyses().getAbsolutePath();
-			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
-			
-			String pathToOperatingConditionsXML = CmdLineUtils.va.getOperatingConditionsInputFile().getAbsolutePath();
-			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
+//			String pathToAnalysesXML = CmdLineUtils.va.getInputFileAnalyses().getAbsolutePath();
+//			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
+//			
+//			String pathToOperatingConditionsXML = CmdLineUtils.va.getOperatingConditionsInputFile().getAbsolutePath();
+//			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
 			
 			String dirAirfoil = CmdLineUtils.va.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
@@ -137,29 +137,9 @@ public final class AircraftUtils {
 					veDSCDatabaseReader);
 			
 			// activating system.out
-//			System.setOut(originalOut);			
-//			System.out.println(aircraft.toString());
-//			System.setOut(filterStream);
-			
-			////////////////////////////////////////////////////////////////////////
-			// Set the folders tree
-			MyConfiguration.initWorkingDirectoryTree(
-					MyConfiguration.currentDirectoryString,
-					MyConfiguration.inputDirectory, 
-					MyConfiguration.outputDirectory);
-			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
-			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + aircraft.getId() + File.separator);
-			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
-
-			////////////////////////////////////////////////////////////////////////
-			// Defining the operating conditions ...
-			System.setOut(originalOut);
-			System.out.println("Defining the operating conditions ... ");
+			System.setOut(originalOut);			
+			System.out.println(aircraft.toString());
 			System.setOut(filterStream);
-			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
-//			System.setOut(originalOut);
-			System.out.println(theOperatingConditions.toString());
-//			System.setOut(filterStream);			
 			
 			System.setOut(originalOut);
 			return aircraft;
@@ -173,4 +153,49 @@ public final class AircraftUtils {
 		}			
 	}
 
+	@SuppressWarnings("resource")
+	public static OperatingConditions importOperatingCondition(String[] args) {
+		
+		// redirect console output
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+		
+		CmdLineUtils.va = new ArgumentsCavasSandbox();
+		CmdLineUtils.theCmdLineParser = new CmdLineParser(CmdLineUtils.va);
+		
+		// populate the wing static object in the class
+		// before launching the JavaFX application thread (launch --> start ...)
+		try {
+			CmdLineUtils.theCmdLineParser.parseArgument(args);
+			
+			String pathToOperatingConditionsXML = CmdLineUtils.va.getOperatingConditionsInputFile().getAbsolutePath();
+			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
+			
+			System.out.println("--------------");
+
+			////////////////////////////////////////////////////////////////////////
+			// Defining the operating conditions ...
+			System.setOut(originalOut);
+			System.out.println("Defining the operating conditions ... ");
+			System.setOut(filterStream);
+			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
+			System.setOut(originalOut);
+			System.out.println(theOperatingConditions.toString());
+			System.setOut(filterStream);			
+			
+			System.setOut(originalOut);
+			return theOperatingConditions;
+			
+		} catch (CmdLineException e) {
+			System.err.println("Error: " + e.getMessage());
+			CmdLineUtils.theCmdLineParser.printUsage(System.err);
+			System.err.println();
+			System.err.println("  Must launch this app with proper command line arguments.");
+			return null;
+		}			
+	}
 }

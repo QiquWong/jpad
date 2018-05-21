@@ -16,13 +16,15 @@ import standaloneutils.database.hdf.MyHDFReader;
 public class AerodynamicDatabaseReader extends DatabaseReader {
 
 	private MyInterpolatingFunction c_m0_b_k2_minus_k1_vs_FFR, 
-	ar_v_eff_c2_vs_Z_h_over_b_v_x_ac_h_v_over_c_bar_v,
-	 x_bar_ac_w_x_ac_over_root_chord_vs_tan_L_LE_over_beta_AR_times_tan_L_LE_lambda,
-	 x_bar_ac_w_k1_vs_lambda, x_bar_ac_w_k2_vs_L_LE_AR_lambda,
-	 d_Alpha_Vs_LambdaLE_VsDy, d_Alpha_d_Delta_2d_VS_cf_c, d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio,
-	 d_epsilon_d_alpha_VS_position_aspectRatio, deltaYvsThicknessRatio, kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR,
-	 clmaxCLmaxVsLambdaLEVsDeltaY, cmAlphaBodyUpwashVsXiOverRootChord, cmAlphaBodyNearUpwashVsXiOverRootChord,
-	 C_l_beta_w_b_C_l_beta_over_C_Lift1_L_c2_vs_L_c2_AR_lambda;
+		ar_v_eff_c2_vs_Z_h_over_b_v_x_ac_h_v_over_c_bar_v,
+		 x_bar_ac_w_x_ac_over_root_chord_vs_tan_L_LE_over_beta_AR_times_tan_L_LE_lambda,
+		 x_bar_ac_w_k1_vs_lambda, x_bar_ac_w_k2_vs_L_LE_AR_lambda,
+		 d_Alpha_Vs_LambdaLE_VsDy, d_Alpha_d_Delta_2d_VS_cf_c, d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio,
+		 d_epsilon_d_alpha_VS_position_aspectRatio, deltaYvsThicknessRatio, kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR,
+		 clmaxCLmaxVsLambdaLEVsDeltaY, cmAlphaBodyUpwashVsXiOverRootChord, cmAlphaBodyNearUpwashVsXiOverRootChord,
+		 C_l_beta_w_b_C_l_beta_over_C_Lift1_L_c2_vs_L_c2_AR_lambda,
+		 C_l_beta_w_b_k_M_L_vs_Mach_times_cosL_c2_AR_over_cosL_c2,
+		 C_l_beta_w_b_C_l_beta_over_Gamma_w_vs_AR_L_c2_lambda;
 	
 	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE, deltaYvsThickness, clmaxCLmaxVsLambdaLE;
  
@@ -76,6 +78,12 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		
 		C_l_beta_w_b_C_l_beta_over_C_Lift1_L_c2_vs_L_c2_AR_lambda 
 						= database.interpolate3DFromDatasetFunction("(C_l_beta_w_b)_C_l_beta_over_C_Lift1_(L_c2)_vs_L_c2_(AR)_(lambda)");
+		
+		C_l_beta_w_b_C_l_beta_over_Gamma_w_vs_AR_L_c2_lambda
+						= database.interpolate3DFromDatasetFunction("(C_l_beta_w_b)_C_l_beta_over_Gamma_w_vs_AR_(L_c2)_(lambda)");
+		
+		C_l_beta_w_b_k_M_L_vs_Mach_times_cosL_c2_AR_over_cosL_c2 
+						= database.interpolate2DFromDatasetFunction("(C_l_beta_w_b)_k_M_L_vs_Mach_times_cos(L_c2)_(AR_over_cos(L_c2))");
 		
 		//TODO Insert other aerodynamic functions (see "Aerodynamic_Database_Ultimate.h5")
 	}
@@ -248,17 +256,25 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	}
 
 	public double getClbetaWBClbetaOverCLift1Lc2VsLc2ARlambda(double taperRatio, double aspectRatio, Amount<Angle> sweepAngleC2) { // var0, var1, var2
-		double ar = aspectRatio;
-		ar = Math.min(8.0, ar);
-		ar = Math.max(1.0, ar);
-		System.out.println(">>>>> lambda: " + taperRatio);
-		System.out.println(">>>>> ar: " + ar);
-		System.out.println(">>>>> LambdaC2 (deg): " + sweepAngleC2.doubleValue(NonSI.DEGREE_ANGLE));
-		
 		return C_l_beta_w_b_C_l_beta_over_C_Lift1_L_c2_vs_L_c2_AR_lambda.valueTrilinear(
+				taperRatio, // var0 
 				sweepAngleC2.doubleValue(NonSI.DEGREE_ANGLE), // var2
-				ar, // var1
-				taperRatio // var0 
+				aspectRatio // var1
+				);
+	}
+	
+	public double getClbetaWBClbetaOverGammaWVsARLc2lambda(double taperRatio, Amount<Angle> sweepAngleC2, double aspectRatio) {  // var0, var1, var2
+		return C_l_beta_w_b_C_l_beta_over_Gamma_w_vs_AR_L_c2_lambda.valueTrilinear(
+				taperRatio, // var0 
+				aspectRatio, // var2
+				sweepAngleC2.doubleValue(NonSI.DEGREE_ANGLE) // var1
+				);
+	}
+	
+	public double getClbetaWBKMLVsMachTimesCosLc2AROverCosLc2(double aspectRatioOverCosSweepAngleC2, double machTimesCosSweepAngleC2) { // var0, var1
+		return C_l_beta_w_b_k_M_L_vs_Mach_times_cosL_c2_AR_over_cosL_c2.valueBilinear(
+				machTimesCosSweepAngleC2, // var1
+				aspectRatioOverCosSweepAngleC2 // var0
 				);
 	}
 
