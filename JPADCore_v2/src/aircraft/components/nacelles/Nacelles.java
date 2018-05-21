@@ -6,23 +6,14 @@ import java.util.Map;
 
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
-import javax.measure.quantity.Mass;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.Aircraft;
 import aircraft.components.powerplant.Engine;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
-import analyses.nacelles.NacelleAerodynamicsManager;
 import analyses.nacelles.NacelleBalanceManager;
 import analyses.nacelles.NacelleWeightManager;
-import analyses.nacelles.NacelleWeightsManager;
 import configuration.MyConfiguration;
-import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.ConditionEnum;
-import configuration.enumerations.MethodEnum;
-import standaloneutils.customdata.CenterOfGravity;
 
 /** 
  * Manage all the nacelles of the aircraft
@@ -55,7 +46,7 @@ public class Nacelles {
 		this._nacellesNumber = theNacelleCreatorList.size();
 		
 		this._theWeights = new NacelleWeightManager();
-		this._theBalance = new NacelleBalanceManager(theNacelleCreatorList.get(0)); // TODO: TO BE MODIFIED
+		this._theBalance = new NacelleBalanceManager();
 		
 		this._nacelleEngineMap = new HashMap<>();
 		
@@ -108,23 +99,6 @@ public class Nacelles {
 		
 	}
 	
-	public CenterOfGravity calculateCG() {
-
-		_totalCG = new CenterOfGravity();
-		initializeBalance();
-		
-		for(int i=0; i < _nacellesNumber; i++) {
-			_nacellesList.get(i).initializeBalance();
-			_nacellesList.get(i).getBalance().calculateAll();
-			_cgList.add(_nacellesList.get(i).getBalance().getCG());
-			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().getCG()
-					.times(_nacellesList.get(i).getWeights().getMassEstimated().doubleValue(SI.KILOGRAM)));
-		}
-
-		_totalCG = _totalCG.divide(_totalMass.doubleValue(SI.KILOGRAM));
-		return _totalCG;
-	}
-
 	//--------------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS
 
@@ -152,50 +126,6 @@ public class Nacelles {
 		this._nacelleEngineMap = _nacelleEngineMap;
 	}
 
-	public Amount<Mass> getTotalMass() {
-		return _totalMass;
-	}
-	
-	public void setTotalMass(Amount<Mass> _totalMass) {
-		this._totalMass = _totalMass;
-	}
-	
-	public List<Amount<Mass>> getMassList() {
-		return _massList;
-	}
-	
-	public void setMassList(List<Amount<Mass>> _massList) {
-		this._massList = _massList;
-	}
-	
-	public CenterOfGravity getTotalCG() {
-		return _totalCG;
-	}
-	
-	public void setTotalCG(CenterOfGravity _totalCG) {
-		this._totalCG = _totalCG;
-	}
-
-	public List<CenterOfGravity> getCGList() {
-		return _cgList;
-	}
-	
-	public void setCGList(List<CenterOfGravity> _cgList) {
-		this._cgList = _cgList;
-	}
-	
-	public double getPercentTotalDifference() {
-		return _percentTotalDifference;
-	}
-	
-	public Amount<Mass> getMassReference() {
-		return _massReference;
-	}
-	
-	public void setMassReference(Amount<Mass> _massReference) {
-		this._massReference = _massReference;
-	}
-	
 	public Amount<Area> getSurfaceWetted() {
 		return _surfaceWetted;
 	}
@@ -226,5 +156,21 @@ public class Nacelles {
 
 	public void setKExcr(double _kExcr) {
 		this._kExcr = _kExcr;
+	}
+
+	public NacelleWeightManager getTheWeights() {
+		return _theWeights;
+	}
+
+	public void setTheWeights(NacelleWeightManager _theWeights) {
+		this._theWeights = _theWeights;
+	}
+
+	public NacelleBalanceManager getTheBalance() {
+		return _theBalance;
+	}
+
+	public void setTheBalance(NacelleBalanceManager _theBalance) {
+		this._theBalance = _theBalance;
 	}
 }

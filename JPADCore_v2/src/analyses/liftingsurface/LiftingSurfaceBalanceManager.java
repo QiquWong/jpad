@@ -12,7 +12,6 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
 import calculators.balance.LiftingSurfaceBalanceCalc;
-import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.CenterOfGravity;
@@ -25,7 +24,6 @@ public class LiftingSurfaceBalanceManager {
 	//------------------------------------------------------------------------------
 	private Map <MethodEnum, Amount<Length>> _xCGMap;
 	private Map <MethodEnum, Amount<Length>> _yCGMap;
-	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap; 
 	private List<MethodEnum> _methodsList;
 	private Amount<Length> _xCG, _yCG;
 	private CenterOfGravity _cg;
@@ -48,12 +46,10 @@ public class LiftingSurfaceBalanceManager {
 		
 		this._xCGMap = new HashMap<>();
 		this._yCGMap = new HashMap<>();
-		this._methodsMap = new HashMap<>();
 		this._methodsList = new ArrayList<>();
 		
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
 	public void calculateCG(Aircraft aircraft, ComponentEnum liftingSurfaceType, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		
 		switch(aircraft.getWing().getType()) {
@@ -79,9 +75,9 @@ public class LiftingSurfaceBalanceManager {
 
 		}
 		
-		if(!_methodsMap.get(liftingSurfaceType).equals(MethodEnum.AVERAGE)) { 
-			_cg.setXLRF(_xCGMap.get(_methodsMap.get(liftingSurfaceType)));
-			_cg.setYLRF(_yCGMap.get(_methodsMap.get(liftingSurfaceType)));
+		if(!methodsMapWeights.get(liftingSurfaceType).equals(MethodEnum.AVERAGE)) { 
+			_cg.setXLRF(_xCGMap.get(methodsMapWeights.get(liftingSurfaceType)));
+			_cg.setYLRF(_yCGMap.get(methodsMapWeights.get(liftingSurfaceType)));
 		}
 		else {
 			_percentDifferenceXCG = new double[_xCGMap.size()];
@@ -227,8 +223,6 @@ public class LiftingSurfaceBalanceManager {
 
 		}
 
-		_methodsMap.put(AnalysisTypeEnum.BALANCE, _methodsList);
-
 	}
 	
 	//------------------------------------------------------------------------------
@@ -251,14 +245,6 @@ public class LiftingSurfaceBalanceManager {
 		this._yCGMap = _yCGMap;
 	}
 	
-	public Map<AnalysisTypeEnum, List<MethodEnum>> getMethodsMap() {
-		return _methodsMap;
-	}
-
-	public void setMethodsMap(Map<AnalysisTypeEnum, List<MethodEnum>> _methodsMap) {
-		this._methodsMap = _methodsMap;
-	}
-
 	public List<MethodEnum> getMethodsList() {
 		return _methodsList;
 	}

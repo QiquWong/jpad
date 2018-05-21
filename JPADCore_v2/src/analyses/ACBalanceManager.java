@@ -315,7 +315,7 @@ public class ACBalanceManager implements IACBalanceManager {
 					//---------------------------------------------------------------
 					// NACELLES MASS
 					if(theAircraft.getNacelles() != null)
-						theAircraft.getNacelles().getNacellesList().stream().forEach(nac -> nacellesMassList.add(nac.getWeights().getMassEstimated()));
+						theAircraft.getNacelles().getTheWeights().getTotalMassEstimated();
 
 					//---------------------------------------------------------------
 					// ENGINES MASS
@@ -1040,13 +1040,13 @@ public class ACBalanceManager implements IACBalanceManager {
 			dataListNacelles.add(new Object[] {" "});
 			for(int iNacelle = 0; iNacelle < _theAircraft.getNacelles().getNacellesNumber(); iNacelle++) {
 				dataListNacelles.add(new Object[] {"NACELLE " + (iNacelle+1)});
-				dataListNacelles.add(new Object[] {"Xcg LRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getXLRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {"Ycg LRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getYLRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {"Zcg LRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getZLRF().doubleValue(SI.METER)});
+				dataListNacelles.add(new Object[] {"Xcg LRF","m", _theAircraft.getNacelles().getTheBalance().getCGList().get(iNacelle).getXLRF().doubleValue(SI.METER)});
+				dataListNacelles.add(new Object[] {"Ycg LRF","m", _theAircraft.getNacelles().getTheBalance().getCGList().get(iNacelle).getYLRF().doubleValue(SI.METER)});
+				dataListNacelles.add(new Object[] {"Zcg LRF","m", _theAircraft.getNacelles().getTheBalance().getCGList().get(iNacelle).getZLRF().doubleValue(SI.METER)});
 				dataListNacelles.add(new Object[] {" "});
-				dataListNacelles.add(new Object[] {"Xcg BRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getXBRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {"Ycg BRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getYBRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {"Zcg BRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getZBRF().doubleValue(SI.METER)});
+				dataListNacelles.add(new Object[] {"Xcg BRF","m", _theAircraft.getNacelles().getTheBalance().getCGList().get(iNacelle).getXBRF().doubleValue(SI.METER)});
+				dataListNacelles.add(new Object[] {"Ycg BRF","m", _theAircraft.getNacelles().getTheBalance().getCGList().get(iNacelle).getYBRF().doubleValue(SI.METER)});
+				dataListNacelles.add(new Object[] {"Zcg BRF","m", _theAircraft.getNacelles().getTheBalance().getCGList().get(iNacelle).getZBRF().doubleValue(SI.METER)});
 				dataListNacelles.add(new Object[] {" "});
 				dataListNacelles.add(new Object[] {" "});
 				dataListNacelles.add(new Object[] {" "});
@@ -1400,15 +1400,13 @@ public class ACBalanceManager implements IACBalanceManager {
 		}
 		
 		if(_theAircraft.getNacelles() != null) {
-			_theAircraft.getNacelles().initializeWeights(_theAircraft);
-			Amount<Mass> nacellesTotalMass = Amount.valueOf(0.0, SI.KILOGRAM);
-			for(int i=0; i<_theAircraft.getNacelles().getNacellesNumber(); i++) { 
-				_theAircraft.getNacelles().getNacellesList().get(i).getWeights().setMassEstimated(_nacellesMassList.get(i));
-				nacellesTotalMass = nacellesTotalMass.plus(_nacellesMassList.get(i));
-			}
-			_theAircraft.getNacelles().setTotalMass(nacellesTotalMass);
-			
-			_theAircraft.getNacelles().calculateCG();
+			_theAircraft.getNacelles().getTheWeights().setTotalMassEstimated(
+					Amount.valueOf(
+							_nacellesMassList.stream().mapToDouble(d -> d.doubleValue(SI.KILOGRAM)).sum(),
+							SI.KILOGRAM
+							)
+					);
+			_theAircraft.getNacelles().getTheBalance().calculateTotalCG(_theAircraft, _methodsMapBalance);
 		}
 
 		if(_theAircraft.getFuelTank() != null)
@@ -1448,7 +1446,7 @@ public class ACBalanceManager implements IACBalanceManager {
 		_cgList.add(_theAircraft.getHTail().getTheBalanceManager().getCG());
 		_cgList.add(_theAircraft.getVTail().getTheBalanceManager().getCG());
 		_cgList.add(_theAircraft.getLandingGears().getCG());
-		_cgList.addAll(_theAircraft.getNacelles().getCGList());
+		_cgList.addAll(_theAircraft.getNacelles().getTheBalance().getCGList());
 		
 		System.out.println("\n \nCG COMPONENTS LOCATION IN BRF");
 		System.out.println("fuselage (X_BRF) --> " + _cgList.get(0).getXBRF());
@@ -1461,7 +1459,7 @@ public class ACBalanceManager implements IACBalanceManager {
 		System.out.println("VTail (Z_BRF) --> " + _cgList.get(3).getZBRF());
 		System.out.println("Landing gear (X_BRF) --> " + _cgList.get(4).getXBRF());
 		System.out.println("Landing gear (Z_BRF) --> " + _cgList.get(4).getZBRF());
-		for(int i=0 ;  i<_theAircraft.getNacelles().getCGList().size() ; i++){
+		for(int i=0 ;  i<_theAircraft.getNacelles().getTheBalance().getCGList().size() ; i++){
 		System.out.println("Nacelle  "+  i + " (X_BRF) --> " + _cgList.get(i+5).getXBRF());
 		System.out.println("Nacelle  "+  i + " (Z_BRF) --> " + _cgList.get(i+5).getZBRF());
 		}

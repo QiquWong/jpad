@@ -14,7 +14,6 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
 import calculators.weights.SystemsWeightCalc;
-import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
@@ -34,7 +33,6 @@ public class SystemsWeightManager {
 	private Amount<Mass> _massEstimated;
 	private Amount<Mass> _massReference;
 	private Map <MethodEnum, Amount<Mass>> _massMap;
-	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap; 
 	private List<MethodEnum> _methodsList;  
 	private double[] _percentDifference;       
 	
@@ -53,7 +51,6 @@ public class SystemsWeightManager {
 	private void initializeData() {
 		
 		this._massMap = new HashMap<>();
-		this._methodsMap = new HashMap<>();
 		this._methodsList = new ArrayList<>();
 		
 	}
@@ -76,7 +73,6 @@ public class SystemsWeightManager {
 				.plus(_hydraulicAndPneumaticMass.to(SI.KILOGRAM))
 				.plus(_controlSurfaceMass.to(SI.KILOGRAM));
 		
-		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
 		_massMap.put(
 				MethodEnum.TORENBEEK_1982, 
 				Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM)
@@ -271,14 +267,6 @@ public class SystemsWeightManager {
 
 	public void setMassMap(Map<MethodEnum, Amount<Mass>> _massMap) {
 		this._massMap = _massMap;
-	}
-
-	public Map<AnalysisTypeEnum, List<MethodEnum>> getMethodsMap() {
-		return _methodsMap;
-	}
-
-	public void setMethodsMap(Map<AnalysisTypeEnum, List<MethodEnum>> _methodsMap) {
-		this._methodsMap = _methodsMap;
 	}
 
 	public List<MethodEnum> getMethodsList() {

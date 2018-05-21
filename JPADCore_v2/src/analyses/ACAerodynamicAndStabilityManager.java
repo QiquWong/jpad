@@ -29,9 +29,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
-import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import aircraft.Aircraft;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Base;
@@ -13777,8 +13774,8 @@ public class ACAerodynamicAndStabilityManager {
 					//---------------------------------------------------------------
 					// XCG AND ZCG POSITIONS NACELLE
 					if(theAircraft.getNacelles() != null) {
-						xCGNacelles = theAircraft.getNacelles().getTheBalance().getCG().getXBRF().to(SI.METER);
-						zCGNacelles = theAircraft.getNacelles().getTheBalance().getCG().getZBRF().to(SI.METER);
+						xCGNacelles = theAircraft.getNacelles().getTheBalance().getTotalCG().getXBRF().to(SI.METER);
+						zCGNacelles = theAircraft.getNacelles().getTheBalance().getTotalCG().getZBRF().to(SI.METER);
 					}
 				}
 				else {

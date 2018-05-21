@@ -15,7 +15,6 @@ import org.jscience.physics.amount.Amount;
 import aircraft.Aircraft;
 import analyses.OperatingConditions;
 import calculators.weights.FuselageWeightCalc;
-import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
@@ -29,7 +28,6 @@ public class FuselageWeightManager {
 	private Amount<Mass> _massEstimated;
 	private Amount<Mass> _massReference;
 	private Map <MethodEnum, Amount<Mass>> _massMap;
-	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap; 
 	private List<MethodEnum> _methodsList;  
 	private double[] _percentDifference;       
 	
@@ -48,7 +46,6 @@ public class FuselageWeightManager {
 	private void initializeData() {
 		
 		this._massMap = new HashMap<>();
-		this._methodsMap = new HashMap<>();
 		this._methodsList = new ArrayList<>();
 		
 	}
@@ -135,7 +132,6 @@ public class FuselageWeightManager {
 
 		}
 		
-		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
 	}
 
 	//------------------------------------------------------------------------------
@@ -172,14 +168,6 @@ public class FuselageWeightManager {
 
 	public void setMassMap(Map<MethodEnum, Amount<Mass>> _massMap) {
 		this._massMap = _massMap;
-	}
-
-	public Map<AnalysisTypeEnum, List<MethodEnum>> getMethodsMap() {
-		return _methodsMap;
-	}
-
-	public void setMethodsMap(Map<AnalysisTypeEnum, List<MethodEnum>> _methodsMap) {
-		this._methodsMap = _methodsMap;
 	}
 
 	public List<MethodEnum> getMethodsList() {

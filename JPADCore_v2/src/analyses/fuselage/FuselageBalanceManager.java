@@ -12,7 +12,6 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
 import calculators.balance.FuselageBalanceCalc;
-import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.CenterOfGravity;
@@ -24,7 +23,6 @@ public class FuselageBalanceManager {
 	// VARIABLES DECLARATION:
 	//------------------------------------------------------------------------------
 	private Map <MethodEnum, Amount<Length>> _xCGMap;
-	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap; 
 	private List<MethodEnum> _methodsList;
 	private Amount<Length> _xCG, _xCGReference, _xCGEstimated, _zCGEstimated;
 	private CenterOfGravity _cg;
@@ -45,7 +43,6 @@ public class FuselageBalanceManager {
 	private void initializeData() {
 		
 		this._xCGMap = new HashMap<>();
-		this._methodsMap = new HashMap<>();
 		this._methodsList = new ArrayList<>();
 		
 	}
@@ -105,8 +102,6 @@ public class FuselageBalanceManager {
 
 		}
 
-		_methodsMap.put(AnalysisTypeEnum.BALANCE, _methodsList);
-
 	}
 	
 	//------------------------------------------------------------------------------
@@ -119,14 +114,6 @@ public class FuselageBalanceManager {
 
 	public void setXCGMap(Map<MethodEnum, Amount<Length>> _xCGMap) {
 		this._xCGMap = _xCGMap;
-	}
-
-	public Map<AnalysisTypeEnum, List<MethodEnum>> getMethodsMap() {
-		return _methodsMap;
-	}
-
-	public void setMethodsMap(Map<AnalysisTypeEnum, List<MethodEnum>> _methodsMap) {
-		this._methodsMap = _methodsMap;
 	}
 
 	public List<MethodEnum> getMethodsList() {

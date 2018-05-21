@@ -1234,28 +1234,28 @@ public class ACWeightsManager {
 			Sheet sheetNacelles = wb.createSheet("NACELLES");
 			List<Object[]> dataListNacelles = new ArrayList<>();
 			dataListNacelles.add(new Object[] {"Description","Unit","Value","Percent Error"});
-			dataListNacelles.add(new Object[] {"Total Reference Mass","kg", _nacelleReferenceMass.doubleValue(SI.KILOGRAM)});
-			dataListNacelles.add(new Object[] {"Total mass estimated","kg",_theAircraft.getNacelles().getTotalMass().getEstimatedValue(),_theAircraft.getNacelles().getPercentTotalDifference()});
+			dataListNacelles.add(new Object[] {"Total Reference Mass","kg", _theAircraft.getNacelles().getTheWeights().getTotalMassReference().doubleValue(SI.KILOGRAM)});
+			dataListNacelles.add(new Object[] {"Total mass estimated","kg", _theAircraft.getNacelles().getTheWeights().getTotalMassEstimated().doubleValue(SI.KILOGRAM), _theAircraft.getNacelles().getTheWeights().getTotalPercentDifference()});
 			dataListNacelles.add(new Object[] {" "});
 			dataListNacelles.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON FOR EACH NACELLE"});
 			dataListNacelles.add(new Object[] {" "});
 			for(int iNacelle = 0; iNacelle < _theAircraft.getNacelles().getNacellesNumber(); iNacelle++) {
 				dataListNacelles.add(new Object[] {"NACELLE " + (iNacelle+1)});
-				dataListNacelles.add(new Object[] {"Reference Mass","kg", _nacelleReferenceMass.divide(_theAircraft.getNacelles().getNacellesNumber())});
+				dataListNacelles.add(new Object[] {"Reference Mass","kg", _theAircraft.getNacelles().getTheWeights().getMassRefereceList().get(0)});
 				int indexNacelles=0;
-				for(MethodEnum methods : _theAircraft.getNacelles().getNacellesList().get(iNacelle).getWeights().getMassMap().keySet()) {
-					if(_theAircraft.getNacelles().getNacellesList().get(iNacelle).getWeights().getMassMap().get(methods) != null) 
+				for(MethodEnum methods : _theAircraft.getNacelles().getTheWeights().getMassMap().keySet()) {
+					if(_theAircraft.getNacelles().getTheWeights().getMassMap().get(methods) != null) 
 						dataListNacelles.add(
 								new Object[] {
 										methods.toString(),
 										"Kg",
-										_theAircraft.getNacelles().getNacellesList().get(iNacelle).getWeights().getMassMap().get(methods).getEstimatedValue(),
-										_theAircraft.getNacelles().getNacellesList().get(iNacelle).getWeights().getPercentDifference()[indexNacelles]
+										_theAircraft.getNacelles().getTheWeights().getMassMap().get(methods).getEstimatedValue(),
+										_theAircraft.getNacelles().getTheWeights().getPercentDifference()[indexNacelles]
 								}
 								);
 					indexNacelles++;
 				}
-				dataListNacelles.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getNacelles().getNacellesList().get(iNacelle).getWeights().getMassEstimated().getEstimatedValue()});
+				dataListNacelles.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getNacelles().getTheWeights().getMassEstimatedList().get(0).doubleValue(SI.KILOGRAM)});
 				dataListNacelles.add(new Object[] {" "});
 				}
 			
@@ -1570,9 +1570,9 @@ public class ACWeightsManager {
 				values.add(canardMass/maxTakeOffMass*100.0);
 			}
 		if(_theAircraft.getNacelles() != null)
-			if(_theAircraft.getNacelles().getTotalMass() != null) {
+			if(_theAircraft.getNacelles().getTheWeights().getTotalMassEstimated() != null) {
 				labels.add("Nacelles");
-				nacellesMass = _theAircraft.getNacelles().getTotalMass().doubleValue(SI.KILOGRAM);
+				nacellesMass = _theAircraft.getNacelles().getTheWeights().getTotalMassEstimated().doubleValue(SI.KILOGRAM);
 				values.add(nacellesMass/maxTakeOffMass*100.0);
 			}
 		if(_theAircraft.getLandingGears() != null)
@@ -1773,7 +1773,7 @@ public class ACWeightsManager {
 			aircraft.getCanard().getTheWeightManager().calculateMass(aircraft, ComponentEnum.CANARD, methodsMap);
 		
 		if(aircraft.getNacelles() != null)
-			aircraft.getNacelles().calculateMass(aircraft, methodsMap);
+			aircraft.getNacelles().getTheWeights().calculateTotalMass(aircraft, methodsMap);
 
 		if(aircraft.getLandingGears() != null)
 			aircraft.getLandingGears().calculateMass(aircraft, methodsMap);
@@ -1785,7 +1785,7 @@ public class ACWeightsManager {
 					.plus(aircraft.getHTail().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getVTail().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getCanard().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM))
-					.plus(aircraft.getNacelles().getTotalMass().to(SI.KILOGRAM))
+					.plus(aircraft.getNacelles().getTheWeights().getTotalMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getLandingGears().getMassEstimated().to(SI.KILOGRAM));
 		else
 			_structuralMass = 
@@ -1793,7 +1793,7 @@ public class ACWeightsManager {
 					.plus(aircraft.getWing().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getHTail().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getVTail().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM))
-					.plus(aircraft.getNacelles().getTotalMass().to(SI.KILOGRAM))
+					.plus(aircraft.getNacelles().getTheWeights().getTotalMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getLandingGears().getMassEstimated().to(SI.KILOGRAM));
 
 	}
@@ -2144,7 +2144,7 @@ public class ACWeightsManager {
 		if(aircraft.getNacelles() != null)
 			if(this._nacelleReferenceMass == null) {
 				this._nacelleReferenceMass = _maximumZeroFuelMass.times(.015);
-				aircraft.getNacelles().setMassReference(_nacelleReferenceMass);
+				aircraft.getNacelles().getTheWeights().estimateReferenceMasses(_theAircraft);
 			}
 		if(aircraft.getFuelTank() != null)
 			if(this._fuelTankReferenceMass == null) {
