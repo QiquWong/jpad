@@ -329,7 +329,7 @@ public class ACBalanceManager implements IACBalanceManager {
 					//---------------------------------------------------------------
 					// LANDING GEARS MASS
 					if(theAircraft.getLandingGears() != null)
-							landingGearsMass = theAircraft.getLandingGears().getMassEstimated();
+							landingGearsMass = theAircraft.getLandingGears().getTheWeigths().getMassEstimated();
 				}
 				else {
 					System.err.println("WARNING!! THE WEIGHTS ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");
@@ -1166,9 +1166,9 @@ public class ACBalanceManager implements IACBalanceManager {
 			Sheet sheetLandingGears = wb.createSheet("LANDING GEARS");
 			List<Object[]> dataListLandingGears = new ArrayList<>();
 			dataListLandingGears.add(new Object[] {"Description","Unit","Value"});
-			dataListLandingGears.add(new Object[] {"Xcg BRF","m", _theAircraft.getLandingGears().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListLandingGears.add(new Object[] {"Ycg BRF","m", _theAircraft.getLandingGears().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListLandingGears.add(new Object[] {"Zcg BRF","m", _theAircraft.getLandingGears().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Xcg BRF","m", _theAircraft.getLandingGears().getTheBalance().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Ycg BRF","m", _theAircraft.getLandingGears().getTheBalance().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Zcg BRF","m", _theAircraft.getLandingGears().getTheBalance().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListLandingGears.add(new Object[] {" "});
 
 			Row rowLandingGears = sheetLandingGears.createRow(0);
@@ -1417,8 +1417,8 @@ public class ACBalanceManager implements IACBalanceManager {
 			_theAircraft.getFuelTank().calculateCG();
 
 		if(_theAircraft.getLandingGears() != null) {
-			_theAircraft.getLandingGears().setMassEstimated(_landingGearsMass);
-			_theAircraft.getLandingGears().calculateCG(_theAircraft);
+			_theAircraft.getLandingGears().getTheWeigths().setMassEstimated(_landingGearsMass);
+			_theAircraft.getLandingGears().getTheBalance().calculateCG(_theAircraft, _methodsMapBalance);
 		}
 
 		// --- END OF STRUCTURE MASS-----------------------------------
@@ -1449,7 +1449,7 @@ public class ACBalanceManager implements IACBalanceManager {
 		_cgList.add(_theAircraft.getWing().getTheBalanceManager().getCG());
 		_cgList.add(_theAircraft.getHTail().getTheBalanceManager().getCG());
 		_cgList.add(_theAircraft.getVTail().getTheBalanceManager().getCG());
-		_cgList.add(_theAircraft.getLandingGears().getCG());
+		_cgList.add(_theAircraft.getLandingGears().getTheBalance().getCG());
 		_cgList.addAll(_theAircraft.getNacelles().getTheBalance().getCGList());
 		
 		System.out.println("\n \nCG COMPONENTS LOCATION IN BRF");

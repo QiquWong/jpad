@@ -1,4 +1,4 @@
-package analyses.fuselage;
+package analyses.landinggears;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,27 +11,27 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
-import calculators.balance.FuselageBalanceCalc;
+import calculators.balance.LandingGearsBalanceCalc;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
 
-public class FuselageBalanceManager {
+public class LandingGearsBalanceManager {
 
 	//------------------------------------------------------------------------------
 	// VARIABLES DECLARATION:
 	//------------------------------------------------------------------------------
 	private Map <MethodEnum, Amount<Length>> _xCGMap;
+	private Map <MethodEnum, Amount<Length>> _zCGMap;
 	private List<MethodEnum> _methodsList;
-	private Amount<Length> _xCG;
+	private Amount<Length> _xCG, _zCG;
 	private CenterOfGravity _cg;
-	private double[] _percentDifferenceXCG;
 	
 	//------------------------------------------------------------------------------
 	// BUILDER:
 	//------------------------------------------------------------------------------
-	public FuselageBalanceManager () {
+	public LandingGearsBalanceManager () {
 		
 		initializeData();
 		
@@ -48,20 +48,26 @@ public class FuselageBalanceManager {
 	}
 	
 	public void calculateCG(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMap) {
-		calculateCG(aircraft, MethodEnum.SFORZA);
-		calculateCG(aircraft, MethodEnum.TORENBEEK_1982);
 		
-		if(!methodsMap.get(ComponentEnum.FUSELAGE).equals(MethodEnum.AVERAGE)) 
-			_cg.setXLRF(_xCGMap.get(methodsMap.get(ComponentEnum.FUSELAGE)));
+		calculateCG(aircraft, MethodEnum.SFORZA);
+		
+		if(!methodsMap.get(ComponentEnum.LANDING_GEAR).equals(MethodEnum.AVERAGE)) { 
+			_cg.setXLRF(_xCGMap.get(methodsMap.get(ComponentEnum.LANDING_GEAR)));
+			_cg.setZLRF(_zCGMap.get(methodsMap.get(ComponentEnum.LANDING_GEAR)));
+		}
 		else {
-			_percentDifferenceXCG = new double[_xCGMap.size()];
 			_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 					_cg.getXLRFref(), 
 					_xCGMap,
-					_percentDifferenceXCG,
-					30.).getFilteredMean(), SI.METER));
+					new double[_xCGMap.size()],
+					100.).getFilteredMean(), SI.METER));
+			_cg.setZLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+					_cg.getZLRFref(), 
+					_zCGMap,
+					new double[_zCGMap.size()],
+					100.).getFilteredMean(), SI.METER));
 		}
-		_cg.calculateCGinBRF(ComponentEnum.FUSELAGE);
+		_cg.calculateCGinBRF(ComponentEnum.LANDING_GEAR);
 	}
 	
 	public void calculateCG(
@@ -75,9 +81,9 @@ public class FuselageBalanceManager {
 				aircraft.getFuselage().getYApexConstructionAxes(), 
 				aircraft.getFuselage().getZApexConstructionAxes()
 				);
-		_cg.setXLRFref(aircraft.getFuselage().getFuselageLength().times(0.45));
+		_cg.setXLRFref(LandingGearsBalanceCalc.calculateXCGLandingGears(aircraft));
 		_cg.setYLRFref(Amount.valueOf(0., SI.METER));
-		_cg.setZLRFref(aircraft.getFuselage().getZApexConstructionAxes().to(SI.METER));
+		_cg.setZLRFref(LandingGearsBalanceCalc.calculateZCGLandingGears(aircraft));
 
 		// Initialize _methodsList again to clear it
 		// from old entries
@@ -87,15 +93,10 @@ public class FuselageBalanceManager {
 
 		case SFORZA : { 
 			_methodsList.add(method);
-			_xCG = FuselageBalanceCalc.calculateFuselageXCGSforza(aircraft);
+			_xCG = LandingGearsBalanceCalc.calculateXCGLandingGears(aircraft);
 			_xCGMap.put(method, _xCG);
-		} break;
-
-		// page 313 Torenbeek (1982)
-		case TORENBEEK_1982 : { 
-			_methodsList.add(method);
-			_xCG = FuselageBalanceCalc.calculateFuselageXCGTorenbeek(aircraft);
-			_xCGMap.put(method, _xCG);
+			_zCG = LandingGearsBalanceCalc.calculateZCGLandingGears(aircraft);
+			_zCGMap.put(method, _zCG);
 		} break;
 
 		default : break;
@@ -140,12 +141,20 @@ public class FuselageBalanceManager {
 		this._cg = _cg;
 	}
 
-	public double[] getPercentDifferenceXCG() {
-		return _percentDifferenceXCG;
+	public Amount<Length> getZCG() {
+		return _zCG;
 	}
 
-	public void setPercentDifferenceXCG(double[] _percentDifferenceXCG) {
-		this._percentDifferenceXCG = _percentDifferenceXCG;
+	public void setZCG(Amount<Length> _zCG) {
+		this._zCG = _zCG;
 	}
-	
+
+	public Map <MethodEnum, Amount<Length>> getZCGMap() {
+		return _zCGMap;
+	}
+
+	public void setZCGMap(Map <MethodEnum, Amount<Length>> _zCGMap) {
+		this._zCGMap = _zCGMap;
+	}
+
 }

@@ -1381,25 +1381,43 @@ public class ACWeightsManager {
 			dataListLandingGears.add(new Object[] {" "});
 			dataListLandingGears.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
 			int indexLandingGears=0;
-			for(MethodEnum methods : _theAircraft.getLandingGears().getMassMap().keySet()) {
-				if(_theAircraft.getLandingGears().getMassMap().get(methods) != null) 
+			for(MethodEnum methods : _theAircraft.getLandingGears().getTheWeigths().getMassMap().keySet()) {
+				if(_theAircraft.getLandingGears().getTheWeigths().getMassMap().get(methods) != null) {
+					dataListLandingGears.add(new Object[] {"OVERALL WEIGHT:"});
 					dataListLandingGears.add(
 							new Object[] {
 									methods.toString(),
 									"kg",
-									_theAircraft.getLandingGears().getMassMap().get(methods).getEstimatedValue(),
-									_theAircraft.getLandingGears().getPercentDifference()[indexLandingGears]
+									_theAircraft.getLandingGears().getTheWeigths().getMassMap().get(methods).doubleValue(SI.KILOGRAM),
+									_theAircraft.getLandingGears().getTheWeigths().getPercentDifference()[indexLandingGears]
 							}
 							);
+					dataListLandingGears.add(new Object[] {"FRONT GEAR WEIGHT:"});
+					dataListLandingGears.add(
+							new Object[] {
+									methods.toString(),
+									"kg",
+									_theAircraft.getLandingGears().getTheWeigths().getFrontGearMassMap().get(methods).doubleValue(SI.KILOGRAM)
+							}
+							);
+					dataListLandingGears.add(new Object[] {"MAIN GEAR WEIGHT:"});
+					dataListLandingGears.add(
+							new Object[] {
+									methods.toString(),
+									"kg",
+									_theAircraft.getLandingGears().getTheWeigths().getMainGearMassMap().get(methods).doubleValue(SI.KILOGRAM)
+							}
+							);
+				}
 				indexLandingGears++;
 			}
 			dataListLandingGears.add(new Object[] 
-					{"Estimated Mass ",
+					{"Estimated Overall Mass ",
 							"kg",
-							_theAircraft.getLandingGears().getMassEstimated().getEstimatedValue(),
-							_theAircraft.getLandingGears().getMassEstimated().
-								minus(_theAircraft.getLandingGears().getReferenceMass()).
-								divide(_theAircraft.getLandingGears().getReferenceMass()).
+							_theAircraft.getLandingGears().getTheWeigths().getMassEstimated().getEstimatedValue(),
+							_theAircraft.getLandingGears().getTheWeigths().getMassEstimated().
+								minus(_theAircraft.getLandingGears().getTheWeigths().getMassReference()).
+								divide(_theAircraft.getLandingGears().getTheWeigths().getMassReference()).
 								getEstimatedValue()*100
 					});
 
@@ -1588,9 +1606,9 @@ public class ACWeightsManager {
 				values.add(nacellesMass/maxTakeOffMass*100.0);
 			}
 		if(_theAircraft.getLandingGears() != null)
-			if(_theAircraft.getLandingGears().getMassEstimated() != null) {
+			if(_theAircraft.getLandingGears().getTheWeigths().getMassEstimated() != null) {
 				labels.add("Landing Gears");
-				landingGearsMass = _theAircraft.getLandingGears().getMassEstimated().doubleValue(SI.KILOGRAM);
+				landingGearsMass = _theAircraft.getLandingGears().getTheWeigths().getMassEstimated().doubleValue(SI.KILOGRAM);
 				values.add(landingGearsMass/maxTakeOffMass*100.0);
 			}
 		if(_theAircraft.getPowerPlant() != null)
@@ -1788,7 +1806,7 @@ public class ACWeightsManager {
 			aircraft.getNacelles().getTheWeights().calculateTotalMass(aircraft, methodsMap);
 
 		if(aircraft.getLandingGears() != null)
-			aircraft.getLandingGears().calculateMass(aircraft, methodsMap);
+			aircraft.getLandingGears().getTheWeigths().calculateMass(aircraft, methodsMap);
 
 		if(aircraft.getCanard() != null)
 			_structuralMass = 
@@ -1798,7 +1816,7 @@ public class ACWeightsManager {
 					.plus(aircraft.getVTail().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getCanard().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getNacelles().getTheWeights().getTotalMassEstimated().to(SI.KILOGRAM))
-					.plus(aircraft.getLandingGears().getMassEstimated().to(SI.KILOGRAM));
+					.plus(aircraft.getLandingGears().getTheWeigths().getMassEstimated().to(SI.KILOGRAM));
 		else
 			_structuralMass = 
 					aircraft.getFuselage().getTheWeight().getMassEstimated().to(SI.KILOGRAM)
@@ -1806,7 +1824,7 @@ public class ACWeightsManager {
 					.plus(aircraft.getHTail().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getVTail().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM))
 					.plus(aircraft.getNacelles().getTheWeights().getTotalMassEstimated().to(SI.KILOGRAM))
-					.plus(aircraft.getLandingGears().getMassEstimated().to(SI.KILOGRAM));
+					.plus(aircraft.getLandingGears().getTheWeigths().getMassEstimated().to(SI.KILOGRAM));
 
 	}
 
@@ -2166,7 +2184,7 @@ public class ACWeightsManager {
 		if(aircraft.getLandingGears() != null) 
 			if(this._landingGearsReferenceMass == null) {
 				this._landingGearsReferenceMass = _maximumZeroFuelMass.times(.04);
-				aircraft.getLandingGears().setReferenceMass(_landingGearsReferenceMass);
+				aircraft.getLandingGears().getTheWeigths().setMassReference(_landingGearsReferenceMass);
 			}
 		if(aircraft.getSystems() != null)
 			if(this._systemsReferenceMass == null) {

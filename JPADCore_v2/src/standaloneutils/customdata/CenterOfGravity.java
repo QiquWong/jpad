@@ -203,7 +203,7 @@ public class CenterOfGravity {
 		return _zLRF;
 	}
 
-	public void set_zLRF(Amount<Length> _zLRF) {
+	public void setZLRF(Amount<Length> _zLRF) {
 		this._zLRF = _zLRF;
 	}
 
@@ -247,7 +247,7 @@ public class CenterOfGravity {
 		this._yLRFref = _yLRFref;
 	}
 
-	public Amount<Length> get_zLRFref() {
+	public Amount<Length> getZLRFref() {
 		return _zLRFref;
 	}
 

@@ -1,4 +1,4 @@
-package analyses.fuselage;
+package analyses.landinggears;
 
 import static java.lang.Math.round;
 
@@ -13,28 +13,31 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
-import analyses.OperatingConditions;
-import calculators.weights.FuselageWeightCalc;
+import calculators.weights.LandingGearsWeightCalc;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
-public class FuselageWeightManager {
+public class LandingGearsWeightManager {
 
 	//------------------------------------------------------------------------------
 	// VARIABLES DECLARATION:
 	//------------------------------------------------------------------------------
 	private Amount<Mass> _mass;
 	private Amount<Mass> _massEstimated;
+	private Amount<Mass> _mainGearMassEstimated;
+	private Amount<Mass> _frontGearMassEstimated;
 	private Amount<Mass> _massReference;
 	private Map <MethodEnum, Amount<Mass>> _massMap;
+	private Map <MethodEnum, Amount<Mass>> _mainGearMassMap;
+	private Map <MethodEnum, Amount<Mass>> _frontGearMassMap;
 	private List<MethodEnum> _methodsList;  
 	private double[] _percentDifference;       
 	
 	//------------------------------------------------------------------------------
 	// BUILDER:
 	//------------------------------------------------------------------------------
-	public FuselageWeightManager () {
+	public LandingGearsWeightManager () {
 		
 		initializeData();
 		
@@ -46,24 +49,19 @@ public class FuselageWeightManager {
 	private void initializeData() {
 		
 		this._massMap = new HashMap<>();
+		this._mainGearMassMap = new HashMap<>();
+		this._frontGearMassMap = new HashMap<>();
 		this._methodsList = new ArrayList<>();
 		
 	}
 	
-	public void calculateMass(Aircraft aircraft, OperatingConditions operatingConditions, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		
-		calculateMass(aircraft, operatingConditions, MethodEnum.JENKINSON);
-		calculateMass(aircraft, operatingConditions, MethodEnum.NICOLAI_1984);
-		calculateMass(aircraft, operatingConditions, MethodEnum.ROSKAM);
-		calculateMass(aircraft, operatingConditions, MethodEnum.RAYMER);
-		calculateMass(aircraft, operatingConditions, MethodEnum.SADRAEY);
-		calculateMass(aircraft, operatingConditions, MethodEnum.KROO);
-		calculateMass(aircraft, operatingConditions, MethodEnum.TORENBEEK_1976);
-		calculateMass(aircraft, operatingConditions, MethodEnum.TORENBEEK_2013);
+		calculateMass(aircraft, MethodEnum.TORENBEEK_1976);
 		
-		if(!methodsMapWeights.get(ComponentEnum.FUSELAGE).equals(MethodEnum.AVERAGE)) { 
+		if(!methodsMapWeights.get(ComponentEnum.LANDING_GEAR).equals(MethodEnum.AVERAGE)) { 
 			_percentDifference =  new double[_massMap.size()];
-			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.FUSELAGE));
+			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.LANDING_GEAR));
 		}
 		else {
 			_percentDifference =  new double[_massMap.size()];
@@ -76,56 +74,18 @@ public class FuselageWeightManager {
 		
 	}
 	
-	public void calculateMass(Aircraft aircraft, OperatingConditions operatingConditions, MethodEnum method) {
+	public void calculateMass(Aircraft aircraft, MethodEnum method) {
 
 		switch (method){
 		
-		case JENKINSON : { 
-			_methodsList.add(method);
-			_mass = FuselageWeightCalc.calculateFuselageMassJenkinson(aircraft);
-			_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-		} break;
-		
-		case NICOLAI_1984 : {
-			_methodsList.add(method);
-			_mass = FuselageWeightCalc.calculateFuselageMassNicolai(aircraft);
-			_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-		} break;
-	
-		case ROSKAM : { 
-			_methodsList.add(method);
-			FuselageWeightCalc.calculateFuselageMassRoskam(aircraft);
-			_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), _mass.getUnit()));
-		} break;
-		
-		case RAYMER : { 
-			_methodsList.add(method);
-			_mass = FuselageWeightCalc.calculateFuselageMassRaymer(aircraft);
-			_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-		} break;
-		
-		case SADRAEY : { 
-			_methodsList.add(method);
-			_mass = FuselageWeightCalc.calculateFuselageMassSadray(aircraft);
-			_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-		} break;
-		 
-		case KROO : { 
-			_methodsList.add(method);
-			_mass = FuselageWeightCalc.calculateFuselageMassKroo(aircraft, operatingConditions);
-			_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-		} break;
-		
 		case TORENBEEK_2013 : {
 			_methodsList.add(method);
-			_mass = FuselageWeightCalc.calculateFuselageMassTorenbeek2013(aircraft);
+			_mainGearMassEstimated = LandingGearsWeightCalc.calculateMainGearMassTorenbeek1976(aircraft);
+			_frontGearMassEstimated = LandingGearsWeightCalc.calculateFrontGearMassTorenbeek1976(aircraft);
+			_mass = _mainGearMassEstimated.to(SI.KILOGRAM).plus(_frontGearMassEstimated.to(SI.KILOGRAM));
 			_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-		} break;
-
-		case TORENBEEK_1976 : { 
-			_methodsList.add(method);
-			_mass = FuselageWeightCalc.calculateFuselageMassTorenbeek1976(aircraft);
-			_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
+			_mainGearMassMap.put(method, Amount.valueOf(round(_mainGearMassEstimated.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
+			_frontGearMassMap.put(method, Amount.valueOf(round(_frontGearMassEstimated.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 		} break;
 
 		default : { } break;
@@ -184,6 +144,38 @@ public class FuselageWeightManager {
 
 	public void setPercentDifference(double[] _percentDifference) {
 		this._percentDifference = _percentDifference;
+	}
+
+	public Amount<Mass> getMainGearMassEstimated() {
+		return _mainGearMassEstimated;
+	}
+
+	public void setMainGearMassEstimated(Amount<Mass> _mainGearMassEstimated) {
+		this._mainGearMassEstimated = _mainGearMassEstimated;
+	}
+
+	public Amount<Mass> getFrontGearMassEstimated() {
+		return _frontGearMassEstimated;
+	}
+
+	public void setFrontGearMassEstimated(Amount<Mass> _frontGearMassEstimated) {
+		this._frontGearMassEstimated = _frontGearMassEstimated;
+	}
+
+	public Map <MethodEnum, Amount<Mass>> getMainGearMassMap() {
+		return _mainGearMassMap;
+	}
+
+	public void setMainGearMassMap(Map <MethodEnum, Amount<Mass>> _mainGearMassMap) {
+		this._mainGearMassMap = _mainGearMassMap;
+	}
+
+	public Map <MethodEnum, Amount<Mass>> getFrontGearMassMap() {
+		return _frontGearMassMap;
+	}
+
+	public void setFrontGearMassMap(Map <MethodEnum, Amount<Mass>> _frontGearMassMap) {
+		this._frontGearMassMap = _frontGearMassMap;
 	}
 	
 }

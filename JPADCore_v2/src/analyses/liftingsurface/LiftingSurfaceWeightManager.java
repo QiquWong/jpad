@@ -115,43 +115,43 @@ public class LiftingSurfaceWeightManager {
 			case ROSKAM : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateWingMassRoskam(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 			
 			case KROO : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateWingMassKroo(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 			
 			case JENKINSON : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateWingMassJenkinson(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 
 			case RAYMER : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateWingMassRaymer(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 
 			case SADRAEY : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateWingMassSadraey(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 
 			case TORENBEEK_1982 : {
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateWingMassTorenbeek1982(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 
 			case TORENBEEK_2013 : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateWingMassTorenbeek2013(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 
 			}
 
@@ -166,7 +166,7 @@ public class LiftingSurfaceWeightManager {
 			case HOWE : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateHTailMassHowe(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 			
 			case JENKINSON : { 
@@ -196,13 +196,13 @@ public class LiftingSurfaceWeightManager {
 			case SADRAEY : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateHTailMassSadraey(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 			
 			case ROSKAM : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calcuateHTailMassRoskam(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 			
 			default : { } break;
@@ -229,7 +229,7 @@ public class LiftingSurfaceWeightManager {
 			case RAYMER : {  
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateVTailMassRaymer(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 
 			case ROSKAM : {  
@@ -247,7 +247,7 @@ public class LiftingSurfaceWeightManager {
 			case SADRAEY : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateVTailMassSadraey(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			}break;
 
 			default : { } break;
@@ -261,7 +261,7 @@ public class LiftingSurfaceWeightManager {
 			case HOWE : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateCanardMassHowe(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 			
 			case JENKINSON : { 
@@ -291,13 +291,13 @@ public class LiftingSurfaceWeightManager {
 			case SADRAEY : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calculateCanardMassSadraey(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 			
 			case ROSKAM : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calcuateCanardMassRoskam(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 			
 			default:

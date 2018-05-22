@@ -13767,8 +13767,8 @@ public class ACAerodynamicAndStabilityManager {
 					//---------------------------------------------------------------
 					// XCG AND ZCG POSITIONS LANDING GEAR
 					if(theAircraft.getLandingGears() != null) {
-						xCGLandingGears = theAircraft.getLandingGears().getCG().getXBRF().to(SI.METER);
-						zCGLandingGears = theAircraft.getLandingGears().getCG().getZBRF().to(SI.METER);
+						xCGLandingGears = theAircraft.getLandingGears().getTheBalance().getCG().getXBRF().to(SI.METER);
+						zCGLandingGears = theAircraft.getLandingGears().getTheBalance().getCG().getZBRF().to(SI.METER);
 					}
 
 					//---------------------------------------------------------------
