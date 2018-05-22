@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.measure.quantity.Length;
-import javax.measure.quantity.Mass;
 
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;

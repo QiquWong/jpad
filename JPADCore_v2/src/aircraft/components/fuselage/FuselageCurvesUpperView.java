@@ -3,7 +3,6 @@ package aircraft.components.fuselage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math3.util.ArithmeticUtils;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import processing.core.PVector;
@@ -81,7 +80,7 @@ public class FuselageCurvesUpperView {
 		_l_C = l_C;
 		_l_T = _l_F - _l_N - _l_C;
 		_half_w_B = half_w_B;
-		_w_B = 2.0*_half_w_B;
+		setWB(2.0*_half_w_B);
 
 		// fixed number of control points: 6
 
@@ -92,8 +91,6 @@ public class FuselageCurvesUpperView {
 
 		// Parameters tail curve 
 		Double dxTail               = 0.4*_l_T; // TODO: parametrize!
-		Double ratioWidthTailLength = _half_w_B / _l_T;
-//		Double dyTail               = _half_w_B - ratioWidthTailLength*(_l_T - dxTail); // TODO: why?!
 		Double dyTail               = 0.30*_half_w_B; // TODO: parametrize!
 		
 		//  Nose Control Points, Right side
@@ -171,7 +168,6 @@ public class FuselageCurvesUpperView {
 		PVector p11l = new PVector((float) (1.0*((_l_F-_l_T)+dxTail)),(float)    (-1.0*_half_w_B));                            
 		PVector p12l = new PVector((float)                 (1.0*_l_F),(float)       (-1.0*dyTail));                           
 		PVector p13l = new PVector((float)                 (1.0*_l_F),(float)     (-1.0*dyTail)/2);
-		PVector p14l = new PVector((float)                 (1.0*_l_F),(float)               (0.0));
 
 		_cTailLowerPoints.add(p9l);
 		_cTailLowerPoints.add(p10l);
@@ -351,6 +347,14 @@ public class FuselageCurvesUpperView {
 			_pTailLowerPoints.clear();
 			bezier();
 		}
+	}
+
+	public Double getWB() {
+		return _w_B;
+	}
+
+	public void setWB(Double _w_B) {
+		this._w_B = _w_B;
 	}
 
 } // end-of-class MyFuselageCurvesUpperView

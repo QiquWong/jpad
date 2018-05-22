@@ -6,7 +6,6 @@ import java.util.List;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
-import org.apache.commons.math3.util.ArithmeticUtils;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.jscience.physics.amount.Amount;
 

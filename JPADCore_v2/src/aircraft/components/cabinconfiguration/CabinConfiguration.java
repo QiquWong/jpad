@@ -67,7 +67,6 @@ public class CabinConfiguration {
 	private List<ClassTypeEnum> _typeList;
 	private List<Map<Integer, Amount<Length>>> _breaksMapList;
 
-	private Amount<Length> _seatsCG;
 	private List<Amount<Length>> _seatsCoGFrontToRear;
 	private List<Amount<Length>> _seatsCoGRearToFront;
 	private List<Amount<Mass>> _currentMassList;
