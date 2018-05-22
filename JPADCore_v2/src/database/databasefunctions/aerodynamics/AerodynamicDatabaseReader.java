@@ -17,14 +17,19 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 
 	private MyInterpolatingFunction c_m0_b_k2_minus_k1_vs_FFR, 
 		ar_v_eff_c2_vs_Z_h_over_b_v_x_ac_h_v_over_c_bar_v,
-		 x_bar_ac_w_x_ac_over_root_chord_vs_tan_L_LE_over_beta_AR_times_tan_L_LE_lambda,
-		 x_bar_ac_w_k1_vs_lambda, x_bar_ac_w_k2_vs_L_LE_AR_lambda,
-		 d_Alpha_Vs_LambdaLE_VsDy, d_Alpha_d_Delta_2d_VS_cf_c, d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio,
-		 d_epsilon_d_alpha_VS_position_aspectRatio, deltaYvsThicknessRatio, kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR,
-		 clmaxCLmaxVsLambdaLEVsDeltaY, cmAlphaBodyUpwashVsXiOverRootChord, cmAlphaBodyNearUpwashVsXiOverRootChord,
-		 C_l_beta_w_b_C_l_beta_over_C_Lift1_L_c2_vs_L_c2_AR_lambda,
-		 C_l_beta_w_b_k_M_L_vs_Mach_times_cosL_c2_AR_over_cosL_c2,
-		 C_l_beta_w_b_C_l_beta_over_Gamma_w_vs_AR_L_c2_lambda;
+		x_bar_ac_w_x_ac_over_root_chord_vs_tan_L_LE_over_beta_AR_times_tan_L_LE_lambda,
+		x_bar_ac_w_k1_vs_lambda, x_bar_ac_w_k2_vs_L_LE_AR_lambda,
+		d_Alpha_Vs_LambdaLE_VsDy, d_Alpha_d_Delta_2d_VS_cf_c, d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio,
+		d_epsilon_d_alpha_VS_position_aspectRatio, deltaYvsThicknessRatio, kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR,
+		clmaxCLmaxVsLambdaLEVsDeltaY, cmAlphaBodyUpwashVsXiOverRootChord, cmAlphaBodyNearUpwashVsXiOverRootChord,
+		C_l_beta_w_b_C_l_beta_over_C_Lift1_L_c2_vs_L_c2_AR_lambda,
+		C_l_beta_w_b_k_M_L_vs_Mach_times_cosL_c2_AR_over_cosL_c2,
+		C_l_beta_w_b_k_f_vs_A_over_b_AR_over_cosL_c2,
+		C_l_beta_w_b_C_l_beta_over_C_Lift1_AR_vs_AR_lambda,
+		C_l_beta_w_b_C_l_beta_over_Gamma_w_vs_AR_L_c2_lambda,
+		C_l_beta_w_b_k_M_Gamma_vs_Mach_times_cosL_c2_AR_over_cosL_c2,
+		C_l_beta_w_b_dC_l_beta_over_eps_w_times_tan_L_c4_vs_AR_lambda,
+		C_y_beta_v_K_Y_V_vs_b_v_over_2_times_r1;
 	
 	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE, deltaYvsThickness, clmaxCLmaxVsLambdaLE;
  
@@ -79,11 +84,26 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		C_l_beta_w_b_C_l_beta_over_C_Lift1_L_c2_vs_L_c2_AR_lambda 
 						= database.interpolate3DFromDatasetFunction("(C_l_beta_w_b)_C_l_beta_over_C_Lift1_(L_c2)_vs_L_c2_(AR)_(lambda)");
 		
+		C_l_beta_w_b_k_M_L_vs_Mach_times_cosL_c2_AR_over_cosL_c2 
+						= database.interpolate2DFromDatasetFunction("(C_l_beta_w_b)_k_M_L_vs_Mach_times_cos(L_c2)_(AR_over_cos(L_c2))");
+		
+		C_l_beta_w_b_k_f_vs_A_over_b_AR_over_cosL_c2
+						= database.interpolate2DFromDatasetFunction("(C_l_beta_w_b)_k_f_vs_A_over_b_(AR_over_cos(L_c2))");
+		
+		C_l_beta_w_b_C_l_beta_over_C_Lift1_AR_vs_AR_lambda
+						= database.interpolate2DFromDatasetFunction("(C_l_beta_w_b)_C_l_beta_over_C_Lift1_(AR)_vs_AR_(lambda)");
+		
 		C_l_beta_w_b_C_l_beta_over_Gamma_w_vs_AR_L_c2_lambda
 						= database.interpolate3DFromDatasetFunction("(C_l_beta_w_b)_C_l_beta_over_Gamma_w_vs_AR_(L_c2)_(lambda)");
 		
-		C_l_beta_w_b_k_M_L_vs_Mach_times_cosL_c2_AR_over_cosL_c2 
-						= database.interpolate2DFromDatasetFunction("(C_l_beta_w_b)_k_M_L_vs_Mach_times_cos(L_c2)_(AR_over_cos(L_c2))");
+		C_l_beta_w_b_k_M_Gamma_vs_Mach_times_cosL_c2_AR_over_cosL_c2
+						= database.interpolate2DFromDatasetFunction("(C_l_beta_w_b)_k_M_Gamma_vs_Mach_times_cos(L_c2)_(AR_over_cos(L_c2))");
+		
+		C_l_beta_w_b_dC_l_beta_over_eps_w_times_tan_L_c4_vs_AR_lambda
+						= database.interpolate2DFromDatasetFunction("(C_l_beta_w_b)_dC_l_beta_over_eps_w_times_tan_(L_c4)_vs_AR_(lambda)");
+		
+		C_y_beta_v_K_Y_V_vs_b_v_over_2_times_r1
+						= database.interpolate1DFromDatasetFunction("(C_y_beta_v)_K_Y_V_vs_b_v_over_2_times_r1");
 		
 		//TODO Insert other aerodynamic functions (see "Aerodynamic_Database_Ultimate.h5")
 	}
@@ -263,6 +283,27 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 				);
 	}
 	
+	public double getClbetaWBKMLVsMachTimesCosLc2AROverCosLc2(double aspectRatioOverCosSweepAngleC2, double machTimesCosSweepAngleC2) { // var0, var1
+		return C_l_beta_w_b_k_M_L_vs_Mach_times_cosL_c2_AR_over_cosL_c2.valueBilinear(
+				machTimesCosSweepAngleC2, // var1
+				aspectRatioOverCosSweepAngleC2 // var0
+				);
+	}
+	
+	public double getClbetaWBKfVsAOverBAROverCosLc2(double aspectRatioOverCosSweepAngleC2, double aOverB) { // var0, var1
+		return C_l_beta_w_b_k_f_vs_A_over_b_AR_over_cosL_c2.valueBilinear(
+				aOverB, // var1
+				aspectRatioOverCosSweepAngleC2 // var0
+				);
+	}
+	
+	public double getClbetaWBClbetaOverCLift1ARVsARlambda(double taperRatio, double aspectRatio) { // var0, var1
+		return C_l_beta_w_b_C_l_beta_over_C_Lift1_AR_vs_AR_lambda.valueBilinear(
+				aspectRatio, // var1
+				taperRatio // var0
+				);
+	}
+	
 	public double getClbetaWBClbetaOverGammaWVsARLc2lambda(double taperRatio, Amount<Angle> sweepAngleC2, double aspectRatio) {  // var0, var1, var2
 		return C_l_beta_w_b_C_l_beta_over_Gamma_w_vs_AR_L_c2_lambda.valueTrilinear(
 				taperRatio, // var0 
@@ -270,12 +311,24 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 				sweepAngleC2.doubleValue(NonSI.DEGREE_ANGLE) // var1
 				);
 	}
-	
-	public double getClbetaWBKMLVsMachTimesCosLc2AROverCosLc2(double aspectRatioOverCosSweepAngleC2, double machTimesCosSweepAngleC2) { // var0, var1
-		return C_l_beta_w_b_k_M_L_vs_Mach_times_cosL_c2_AR_over_cosL_c2.valueBilinear(
+
+	public double getClbetaWBKMGammaVsMachTimesCosLc2AROverCosLc2(double aspectRatioOverCosSweepAngleC2, double machTimesCosSweepAngleC2) { // var0, var1
+		return C_l_beta_w_b_k_M_Gamma_vs_Mach_times_cosL_c2_AR_over_cosL_c2.valueBilinear(
 				machTimesCosSweepAngleC2, // var1
 				aspectRatioOverCosSweepAngleC2 // var0
 				);
 	}
-
+	
+	
+	public double getClbetaWBDClbetaOverEpsWTimesTanLc4VsARlambda(double taperRatio, double aspectRatio) { // var0, var1
+		return C_l_beta_w_b_dC_l_beta_over_eps_w_times_tan_L_c4_vs_AR_lambda.valueBilinear(
+				aspectRatio, // var1
+				taperRatio // var0
+				);
+	}
+	
+	public double getCybetaVKYVVsBVOver2TimesR1(double bVOver2TimesR1) { // var0
+		return C_y_beta_v_K_Y_V_vs_b_v_over_2_times_r1.value(bVOver2TimesR1); // var0
+	}
+	
 }
