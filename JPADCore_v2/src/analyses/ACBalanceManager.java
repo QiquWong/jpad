@@ -315,12 +315,16 @@ public class ACBalanceManager implements IACBalanceManager {
 					//---------------------------------------------------------------
 					// NACELLES MASS
 					if(theAircraft.getNacelles() != null)
-						theAircraft.getNacelles().getTheWeights().getTotalMassEstimated();
+						nacellesMassList.addAll(
+								theAircraft.getNacelles().getTheWeights().getMassEstimatedList()
+								);
 
 					//---------------------------------------------------------------
 					// ENGINES MASS
 					if(theAircraft.getPowerPlant() != null)
-						theAircraft.getPowerPlant().getEngineList().stream().forEach(eng -> enginesMassList.add(eng.getTheWeights().getMassEstimated()));
+						enginesMassList.addAll(
+								theAircraft.getPowerPlant().getTheWeights().getMassEstimatedList()
+								);
 
 					//---------------------------------------------------------------
 					// LANDING GEARS MASS
@@ -1103,13 +1107,13 @@ public class ACBalanceManager implements IACBalanceManager {
 			dataListPowerPlant.add(new Object[] {" "});
 			for(int iEngines = 0; iEngines < _theAircraft.getPowerPlant().getEngineNumber(); iEngines++) {
 				dataListPowerPlant.add(new Object[] {"ENGINE " + (iEngines+1)});
-				dataListPowerPlant.add(new Object[] {"Xcg LRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getXLRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {"Ycg LRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getYLRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {"Zcg LRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getZLRF().doubleValue(SI.METER)});
+				dataListPowerPlant.add(new Object[] {"Xcg LRF","m", _theAircraft.getPowerPlant().getTheBalance().getCGList().get(iEngines).getXLRF().doubleValue(SI.METER)});
+				dataListPowerPlant.add(new Object[] {"Ycg LRF","m", _theAircraft.getPowerPlant().getTheBalance().getCGList().get(iEngines).getYLRF().doubleValue(SI.METER)});
+				dataListPowerPlant.add(new Object[] {"Zcg LRF","m", _theAircraft.getPowerPlant().getTheBalance().getCGList().get(iEngines).getZLRF().doubleValue(SI.METER)});
 				dataListPowerPlant.add(new Object[] {" "});
-				dataListPowerPlant.add(new Object[] {"Xcg BRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getXBRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {"Ycg BRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getYBRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {"Zcg BRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getZBRF().doubleValue(SI.METER)});
+				dataListPowerPlant.add(new Object[] {"Xcg BRF","m", _theAircraft.getPowerPlant().getTheBalance().getCGList().get(iEngines).getXBRF().doubleValue(SI.METER)});
+				dataListPowerPlant.add(new Object[] {"Ycg BRF","m", _theAircraft.getPowerPlant().getTheBalance().getCGList().get(iEngines).getYBRF().doubleValue(SI.METER)});
+				dataListPowerPlant.add(new Object[] {"Zcg BRF","m", _theAircraft.getPowerPlant().getTheBalance().getCGList().get(iEngines).getZBRF().doubleValue(SI.METER)});
 				dataListPowerPlant.add(new Object[] {" "});	
 				dataListPowerPlant.add(new Object[] {" "});	
 				dataListPowerPlant.add(new Object[] {" "});	
@@ -1421,11 +1425,11 @@ public class ACBalanceManager implements IACBalanceManager {
 		if(_theAircraft.getPowerPlant() != null) {
 			Amount<Mass> powerPlantTotalMass = Amount.valueOf(0.0, SI.KILOGRAM);
 			for(int i=0; i<_theAircraft.getPowerPlant().getEngineNumber(); i++) {
-				_theAircraft.getPowerPlant().getEngineList().get(i).setTotalMass(_enginesMassList.get(i));
+				_theAircraft.getPowerPlant().getTheWeights().getMassEstimatedList().add(_enginesMassList.get(i));
 				powerPlantTotalMass = powerPlantTotalMass.plus(_enginesMassList.get(i));
 			}
-			_theAircraft.getPowerPlant().setTotalMass(powerPlantTotalMass);
-			_theAircraft.getPowerPlant().calculateCG();
+			_theAircraft.getPowerPlant().getTheWeights().setTotalMassEstimated(powerPlantTotalMass);
+			_theAircraft.getPowerPlant().getTheBalance().calculateTotalCG(_theAircraft, _methodsMapBalance);
 		}
 
 		calculateTotalCG();
@@ -1514,12 +1518,12 @@ public class ACBalanceManager implements IACBalanceManager {
 		
 		for(int i=0 ; i< _theAircraft.getPowerPlant().getEngineNumber(); i++){
 			powerPlantMass = powerPlantMass.to(SI.KILOGRAM).plus(_enginesMassList.get(i).to(SI.KILOGRAM));
-			xCGPowerPlantContribute = xCGPowerPlantContribute + (_theAircraft.getPowerPlant().getCGList().get(i).getXBRF().doubleValue(SI.METER)*
+			xCGPowerPlantContribute = xCGPowerPlantContribute + (_theAircraft.getPowerPlant().getTheBalance().getCGList().get(i).getXBRF().doubleValue(SI.METER)*
 					_enginesMassList.get(i).doubleValue(SI.KILOGRAM));
-			zCGPowerPlantContribute = zCGPowerPlantContribute + (_theAircraft.getPowerPlant().getCGList().get(i).getZBRF().doubleValue(SI.METER)*
+			zCGPowerPlantContribute = zCGPowerPlantContribute + (_theAircraft.getPowerPlant().getTheBalance().getCGList().get(i).getZBRF().doubleValue(SI.METER)*
 					_enginesMassList.get(i).doubleValue(SI.KILOGRAM));
-			System.out.println("Engine " + i + " (X_BRF) --> " + _theAircraft.getPowerPlant().getCGList().get(i).getXBRF());
-			System.out.println("Engine " + i + " (Z_BRF) --> " + _theAircraft.getPowerPlant().getCGList().get(i).getZBRF());
+			System.out.println("Engine " + i + " (X_BRF) --> " + _theAircraft.getPowerPlant().getTheBalance().getCGList().get(i).getXBRF());
+			System.out.println("Engine " + i + " (Z_BRF) --> " + _theAircraft.getPowerPlant().getTheBalance().getCGList().get(i).getZBRF());
 		}
 		_cgStructureAndPower.setXBRF(
 				Amount.valueOf(

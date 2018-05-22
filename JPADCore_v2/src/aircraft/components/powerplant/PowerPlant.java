@@ -1,16 +1,15 @@
 package aircraft.components.powerplant;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.quantity.Force;
-import javax.measure.quantity.Mass;
 import javax.measure.quantity.Power;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.Aircraft;
+import analyses.powerplant.EngineBalanceManager;
+import analyses.powerplant.EngineWeightManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -19,7 +18,6 @@ import database.DatabaseManager;
 import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
 import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
-import standaloneutils.customdata.CenterOfGravity;
 
 /** 
  * The Propulsion System includes engines, engine exhaust, 
@@ -41,10 +39,8 @@ public class PowerPlant {
 	private Amount<Force> _t0Total;
 	private Amount<Power> _p0Total;
 	
-	// TODO: move these ??
-	private Amount<Mass> _totalMass, _dryMassPublicDomainTotal;
-	private List<CenterOfGravity> _cgList;
-	private CenterOfGravity _totalCG;
+	private EngineWeightManager _theWeights;
+	private EngineBalanceManager _theBalance;
 	
 	//--------------------------------------------------------------------------------------------------
 	// BUILDER
@@ -67,13 +63,10 @@ public class PowerPlant {
 				engineList.stream().mapToDouble(eng -> eng.getP0().doubleValue(SI.WATT)).sum(),
 				SI.WATT
 				);
-		this._dryMassPublicDomainTotal = Amount.valueOf(
-				engineList.stream().mapToDouble(eng -> eng.getDryMassPublicDomain().doubleValue(SI.KILOGRAM)).sum(),
-				SI.KILOGRAM
-				); 
 
-		_cgList = new ArrayList<>();
-
+		this._theWeights = new EngineWeightManager();
+		this._theBalance = new EngineBalanceManager();
+		
 		//TODO: the two database reader should be a list of readers since each engine can be different
 		//      (to be changed in future to account for different architectures (mixed engines))
 		if((this._engineList.get(0).getEngineType().equals(EngineTypeEnum.TURBOPROP))
@@ -129,43 +122,6 @@ public class PowerPlant {
 		
 	}
 	
-	public void calculateMass(Aircraft theAircraft) {
-
-		_totalMass = Amount.valueOf(0., SI.KILOGRAM);
-		_dryMassPublicDomainTotal = Amount.valueOf(0., SI.KILOGRAM);
-
-		for(int i=0; i < _engineNumber; i++) {
-			_engineList.get(i).getTheWeights().calculateTotalMass(theAircraft);
-			_totalMass = _totalMass.plus(_engineList.get(i).getTheWeights().getTotalMass());
-			_dryMassPublicDomainTotal = _dryMassPublicDomainTotal.plus(_engineList.get(i).getTheWeights().getDryMassPublicDomain());
-		}
-	}
-
-	public CenterOfGravity calculateCG() {
-
-		_totalCG = new CenterOfGravity();
-		
-		
-		for(int i=0; i < _engineNumber; i++) {
-			_engineList.get(i).getTheBalance().getCG().setX0(
-					_engineList.get(i).getXApexConstructionAxes()
-					);
-			_engineList.get(i).getTheBalance().getCG().setY0(
-					_engineList.get(i).getYApexConstructionAxes()
-					);
-			_engineList.get(i).getTheBalance().getCG().setZ0(
-					_engineList.get(i).getZApexConstructionAxes()
-					);
-			_engineList.get(i).getTheBalance().calculateAll();
-			_cgList.add(_engineList.get(i).getTheBalance().getCG());
-			_totalCG = _totalCG.plus(_engineList.get(i).getTheBalance().getCG()
-					.times(_engineList.get(i).getTotalMass().doubleValue(SI.KILOGRAM)));
-		}
-		
-		_totalCG = _totalCG.divide(_totalMass.doubleValue(SI.KILOGRAM));
-		return _totalCG;
-	}
-
 	//--------------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS
 	
@@ -191,30 +147,6 @@ public class PowerPlant {
 	
 	public Amount<Power> getP0Total() {
 		return _p0Total;
-	}
-	
-	public List<CenterOfGravity> getCGList() {
-		return _cgList;
-	}
-	
-	public Amount<Mass> getTotalMass() {
-		return _totalMass;
-	}
-	
-	public void setTotalMass(Amount<Mass> totalMass) {
-		this._totalMass = totalMass;
-	}
-	
-	public Amount<Mass> getDryMassPublicDomainTotal() {
-		return _dryMassPublicDomainTotal;
-	}
-	
-	public void setDryMassPublicDomainTotal(Amount<Mass> dryMassTotal) {
-		this._dryMassPublicDomainTotal = dryMassTotal;
-	}
-	
-	public CenterOfGravity getTotalCG() {
-		return _totalCG;
 	}
 	
 	public EngineTypeEnum getEngineType() {
@@ -247,6 +179,22 @@ public class PowerPlant {
 
 	public void setTurbopropEngineDatabaseReader(TurbopropEngineDatabaseReader _turbopropEngineDatabaseReader) {
 		this._turbopropEngineDatabaseReader = _turbopropEngineDatabaseReader;
+	}
+
+	public EngineWeightManager getTheWeights() {
+		return _theWeights;
+	}
+
+	public void setTheWeights(EngineWeightManager _theWeights) {
+		this._theWeights = _theWeights;
+	}
+
+	public EngineBalanceManager getTheBalance() {
+		return _theBalance;
+	}
+
+	public void setTheBalance(EngineBalanceManager _theBalance) {
+		this._theBalance = _theBalance;
 	}
 
 }

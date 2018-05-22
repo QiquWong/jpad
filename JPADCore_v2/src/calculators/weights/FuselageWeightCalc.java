@@ -201,7 +201,7 @@ public class FuselageWeightCalc {
 				* (aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(NonSI.POUND)
 						- aircraft.getWing().getTheWeightManager().getMassEstimated().doubleValue(NonSI.POUND)
 						- aircraft.getNacelles().getTheWeights().getTotalMassEstimated().doubleValue(NonSI.POUND)
-						- aircraft.getPowerPlant().getTotalMass().doubleValue(NonSI.POUND)
+						- aircraft.getPowerPlant().getTheWeights().getTotalMassEstimated().doubleValue(NonSI.POUND)
 						)
 				* aircraft.getFuselage().getFuselageLength().doubleValue(NonSI.FOOT) 
 				- (aircraft.getWing().getPanels().get(0).getChordRoot().doubleValue(NonSI.FOOT)/2)

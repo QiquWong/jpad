@@ -1,4 +1,4 @@
-package analyses.nacelles;
+package analyses.powerplant;
 
 import static java.lang.Math.round;
 
@@ -13,13 +13,13 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
-import calculators.weights.NacelleWeightCalc;
+import calculators.weights.EngineWeightCalc;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
-public class NacelleWeightManager {
+public class EngineWeightManager {
 
 	//------------------------------------------------------------------------------
 	// VARIABLES DECLARATION:
@@ -38,7 +38,7 @@ public class NacelleWeightManager {
 	//------------------------------------------------------------------------------
 	// BUILDER:
 	//------------------------------------------------------------------------------
-	public NacelleWeightManager () {
+	public EngineWeightManager () {
 		
 		initializeData();
 		
@@ -61,23 +61,23 @@ public class NacelleWeightManager {
 	public void estimateReferenceMasses (Aircraft theAircraft) {
 		
 		_massRefereceList.add(
-				theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015)
-					.divide(theAircraft.getNacelles().getNacellesNumber()));
+				theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.05)
+					.divide(theAircraft.getPowerPlant().getEngineNumber()));
 		
 	}
 	
 	public void calculateTotalMass(Aircraft theAircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 
 		_totalMassEstimated = Amount.valueOf(0., SI.KILOGRAM);
-		_totalMassReference = theAircraft.getTheAnalysisManager().getTheWeights().getNacelleReferenceMass();
+		_totalMassReference = theAircraft.getTheAnalysisManager().getTheWeights().getEngineReferenceMass();
 
-		theAircraft.getNacelles().getNacellesList().stream().forEach(nac -> {
+		theAircraft.getPowerPlant().getEngineList().stream().forEach(eng -> {
 			calculateMass(theAircraft, theAircraft.getPowerPlant().getEngineType(), methodsMapWeights);
 		});
 		
-		if(!methodsMapWeights.get(ComponentEnum.NACELLE).equals(MethodEnum.AVERAGE)) {
+		if(!methodsMapWeights.get(ComponentEnum.POWER_PLANT).equals(MethodEnum.AVERAGE)) {
 			_totalPercentDifference =  new double[_totalMassMap.size()];
-			_totalMassEstimated = _totalMassMap.get(methodsMapWeights.get(ComponentEnum.NACELLE)).to(SI.KILOGRAM);
+			_totalMassEstimated = _totalMassMap.get(methodsMapWeights.get(ComponentEnum.POWER_PLANT)).to(SI.KILOGRAM);
 		}
 		else {
 			_totalPercentDifference =  new double[_totalMassMap.size()];
@@ -93,9 +93,9 @@ public class NacelleWeightManager {
 	private void calculateMass (Aircraft theAircraft, EngineTypeEnum engineType, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		
 		if (engineType.equals(EngineTypeEnum.TURBOFAN) || engineType.equals(EngineTypeEnum.TURBOJET)) {
-			calculateMass(theAircraft, engineType, MethodEnum.JENKINSON);
+			calculateMass(theAircraft, engineType, MethodEnum.TORENBEEK_1976);
+			calculateMass(theAircraft, engineType, MethodEnum.TORENBEEK_2013);
 			calculateMass(theAircraft, engineType, MethodEnum.KUNDU);
-			calculateMass(theAircraft, engineType, MethodEnum.ROSKAM);
 		}
 		else if (engineType.equals(EngineTypeEnum.TURBOPROP)) {
 			calculateMass(theAircraft, engineType, MethodEnum.KUNDU);
@@ -105,9 +105,9 @@ public class NacelleWeightManager {
 			calculateMass(theAircraft, engineType, MethodEnum.KUNDU);
 		}
 		
-		if(!methodsMapWeights.get(ComponentEnum.NACELLE).equals(MethodEnum.AVERAGE)) {
+		if(!methodsMapWeights.get(ComponentEnum.POWER_PLANT).equals(MethodEnum.AVERAGE)) {
 			_percentDifference = new double[_massMap.size()];
-			_massEstimatedList.add(_massMap.get(methodsMapWeights.get(ComponentEnum.NACELLE)));
+			_massEstimatedList.add(_massMap.get(methodsMapWeights.get(ComponentEnum.POWER_PLANT)));
 		}
 		else {
 			_percentDifference = new double[_massMap.size()];
@@ -130,21 +130,21 @@ public class NacelleWeightManager {
 		case TURBOFAN:
 			
 			switch (method) {
-			case JENKINSON:
+			case TORENBEEK_1976:
 				_methodsList.add(method);
-				mass = NacelleWeightCalc.calculateTurbofanNacelleMassJenkinson(theAircraft);
+				mass = EngineWeightCalc.calculateTurbofanEngineMassTorenbeek1976(theAircraft);
+				_massList.add(mass);
+				_massMap.put(method, Amount.valueOf(round(mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
+				break;
+			case TORENBEEK_2013:
+				_methodsList.add(method);
+				mass = EngineWeightCalc.calculateTurbofanEngineMassTorenbeek2013(theAircraft);
 				_massList.add(mass);
 				_massMap.put(method, Amount.valueOf(round(mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 				break;
 			case KUNDU:
 				_methodsList.add(method);
-				mass = NacelleWeightCalc.calculateTurbofanNacelleMassKundu(theAircraft);
-				_massList.add(mass);
-				_massMap.put(method, Amount.valueOf(round(mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-				break;
-			case ROSKAM:
-				_methodsList.add(method);
-				mass = NacelleWeightCalc.calculateTurbofanNacelleMassRoskam(theAircraft);
+				mass = EngineWeightCalc.calculateTurbofanEngineMassKundu(theAircraft);
 				_massList.add(mass);
 				_massMap.put(method, Amount.valueOf(round(mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 				break;
@@ -154,31 +154,7 @@ public class NacelleWeightManager {
 
 			break;
 
-		case TURBOJET:
-			
-			switch (method) {
-			case JENKINSON:
-				_methodsList.add(method);
-				mass = NacelleWeightCalc.calculateTurbofanNacelleMassJenkinson(theAircraft);
-				_massList.add(mass);
-				_massMap.put(method, Amount.valueOf(round(mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-				break;
-			case KUNDU:
-				_methodsList.add(method);
-				mass = NacelleWeightCalc.calculateTurbofanNacelleMassKundu(theAircraft);
-				_massList.add(mass);
-				_massMap.put(method, Amount.valueOf(round(mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-				break;
-			case ROSKAM:
-				_methodsList.add(method);
-				mass = NacelleWeightCalc.calculateTurbofanNacelleMassRoskam(theAircraft);
-				_massList.add(mass);
-				_massMap.put(method, Amount.valueOf(round(mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-				break;
-			default:
-				break;
-			}
-
+		default:
 			break;
 
 		case TURBOPROP:
@@ -186,13 +162,13 @@ public class NacelleWeightManager {
 			switch (method) {
 			case KUNDU:
 				_methodsList.add(method);
-				mass = NacelleWeightCalc.calculateTurbopropNacelleMassKundu(theAircraft);
+				mass = EngineWeightCalc.calculateTurbopropEngineMassKundu(theAircraft);
 				_massList.add(mass);
 				_massMap.put(method, Amount.valueOf(round(mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 				break;
 			case TORENBEEK_1976:
 				_methodsList.add(method);
-				mass = NacelleWeightCalc.calculateTurbopropNacelleMassTorenbeek1976(theAircraft);
+				mass = EngineWeightCalc.calculateTurbopropEngineMassTorenbeek1976(theAircraft);
 				_massList.add(mass);
 				_massMap.put(method, Amount.valueOf(round(mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 				break;
@@ -207,7 +183,7 @@ public class NacelleWeightManager {
 			switch (method) {
 			case KUNDU:
 				_methodsList.add(method);
-				mass = NacelleWeightCalc.calculatePistonNacelleMassKundu(theAircraft);
+				mass = EngineWeightCalc.calculatePistonEngineMassKundu(theAircraft);
 				_massList.add(mass);
 				_massMap.put(method, Amount.valueOf(round(mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 				break;
@@ -216,9 +192,7 @@ public class NacelleWeightManager {
 			}
 
 			break;
-		
-		default:
-			break;
+			
 		}
 
 	}

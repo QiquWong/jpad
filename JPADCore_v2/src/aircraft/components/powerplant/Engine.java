@@ -10,8 +10,6 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import analyses.powerplant.EngineBalanceManager;
-import analyses.powerplant.EngineWeightsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -31,11 +29,6 @@ public class Engine {
 	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
 	private Amount<Angle> _tiltingAngle;
 	
-	// TODO: move these ??
-	private Amount<Mass> _totalMass; // 1.5*dryMass (ref: Aircraft design - Kundu (pag.245) 
-	private EngineWeightsManager _theWeights;
-	private EngineBalanceManager _theBalance;
-	
 	//------------------------------------------------------------------------------
 	// BUILDER
 	public Engine (IEngine theEngineInterface) {
@@ -52,10 +45,6 @@ public class Engine {
 					.setStaticPower(Amount.valueOf(0.0, SI.WATT))
 					.build()
 					);
-		
-		// TODO: move these ??
-		this._theWeights = new EngineWeightsManager(this);
-		this._theBalance = new EngineBalanceManager(this);
 	}
 	
 	//------------------------------------------------------------------------------
@@ -588,14 +577,6 @@ public class Engine {
 		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setDryMassPublicDomain(dryMassPublicDomain).build());
 	}
 	
-	public Amount<Mass> getTotalMass() {
-		return _totalMass;
-	}
-	
-	public void setTotalMass(Amount<Mass> _totalMass) {
-		this._totalMass = _totalMass;
-	}
-	
 	public Amount<Length> getPropellerDiameter() {
 		return _theEngineInterface.getPropellerDiameter();
 	}
@@ -644,22 +625,6 @@ public class Engine {
 		setTheEngineInterface(IEngine.Builder.from(_theEngineInterface).setOverallPressureRatio(_overallPressureRatio).build());
 	}
 
-	public EngineWeightsManager getTheWeights() {
-		return _theWeights;
-	}
-	
-	public void setTheWeights(EngineWeightsManager _theWeights) {
-		this._theWeights = _theWeights;
-	}
-	
-	public EngineBalanceManager getTheBalance() {
-		return _theBalance;
-	}
-	
-	public void setTheBalance(EngineBalanceManager _theBalance) {
-		this._theBalance = _theBalance;
-	}
-	
 	public String getEngineDatabaseName() {
 		return _theEngineInterface.getEngineDatabaseName();
 	}

@@ -1241,7 +1241,7 @@ public class ACWeightsManager {
 			dataListNacelles.add(new Object[] {" "});
 			for(int iNacelle = 0; iNacelle < _theAircraft.getNacelles().getNacellesNumber(); iNacelle++) {
 				dataListNacelles.add(new Object[] {"NACELLE " + (iNacelle+1)});
-				dataListNacelles.add(new Object[] {"Reference Mass","kg", _theAircraft.getNacelles().getTheWeights().getMassRefereceList().get(0)});
+				dataListNacelles.add(new Object[] {"Reference Mass","kg", _theAircraft.getNacelles().getTheWeights().getMassRefereceList().get(iNacelle)});
 				int indexNacelles=0;
 				for(MethodEnum methods : _theAircraft.getNacelles().getTheWeights().getMassMap().keySet()) {
 					if(_theAircraft.getNacelles().getTheWeights().getMassMap().get(methods) != null) 
@@ -1249,7 +1249,7 @@ public class ACWeightsManager {
 								new Object[] {
 										methods.toString(),
 										"Kg",
-										_theAircraft.getNacelles().getTheWeights().getMassMap().get(methods).getEstimatedValue(),
+										_theAircraft.getNacelles().getTheWeights().getMassMap().get(methods).doubleValue(SI.KILOGRAM),
 										_theAircraft.getNacelles().getTheWeights().getPercentDifference()[indexNacelles]
 								}
 								);
@@ -1306,15 +1306,27 @@ public class ACWeightsManager {
 			Sheet sheetPowerPlant = wb.createSheet("POWER PLANT");
 			List<Object[]> dataListPowerPlant = new ArrayList<>();
 			dataListPowerPlant.add(new Object[] {"Description","Unit","Value"});
-			dataListPowerPlant.add(new Object[] {"Total Dry Mass","kg", _theAircraft.getPowerPlant().getDryMassPublicDomainTotal().doubleValue(SI.KILOGRAM)});
-			dataListPowerPlant.add(new Object[] {"Total mass estimated","kg",_theAircraft.getPowerPlant().getTotalMass().getEstimatedValue()});
+			dataListPowerPlant.add(new Object[] {"Total mass estimated","kg",_theAircraft.getPowerPlant().getTheWeights().getTotalMassEstimated().doubleValue(SI.KILOGRAM)});
 			dataListPowerPlant.add(new Object[] {" "});
 			dataListPowerPlant.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON FOR EACH ENGINE"});
 			dataListPowerPlant.add(new Object[] {" "});
 			for(int iEngine = 0; iEngine < _theAircraft.getPowerPlant().getEngineNumber(); iEngine++) {
 				dataListPowerPlant.add(new Object[] {"ENGINE " + (iEngine+1)});
-				dataListPowerPlant.add(new Object[] {"Dry Mass","kg", _theAircraft.getPowerPlant().getEngineList().get(iEngine).getDryMassPublicDomain().doubleValue(SI.KILOGRAM)});
-				dataListPowerPlant.add(new Object[] {"Total Mass","kg", _theAircraft.getPowerPlant().getEngineList().get(iEngine).getTheWeights().getTotalMass().getEstimatedValue()});			
+				dataListPowerPlant.add(new Object[] {"Reference Mass","kg", _theAircraft.getPowerPlant().getTheWeights().getMassRefereceList().get(iEngine)});
+				int indexEngine=0;
+				for(MethodEnum methods : _theAircraft.getPowerPlant().getTheWeights().getMassMap().keySet()) {
+					if(_theAircraft.getPowerPlant().getTheWeights().getMassMap().get(methods) != null) 
+						dataListPowerPlant.add(
+								new Object[] {
+										methods.toString(),
+										"Kg",
+										_theAircraft.getPowerPlant().getTheWeights().getMassMap().get(methods).doubleValue(SI.KILOGRAM),
+										_theAircraft.getPowerPlant().getTheWeights().getPercentDifference()[indexEngine]
+								}
+								);
+					indexEngine++;
+				}
+				dataListPowerPlant.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getNacelles().getTheWeights().getMassEstimatedList().get(0).doubleValue(SI.KILOGRAM)});
 				dataListPowerPlant.add(new Object[] {" "});
 				}
 			
@@ -1582,9 +1594,9 @@ public class ACWeightsManager {
 				values.add(landingGearsMass/maxTakeOffMass*100.0);
 			}
 		if(_theAircraft.getPowerPlant() != null)
-			if(_theAircraft.getPowerPlant().getTotalMass() != null) {
+			if(_theAircraft.getPowerPlant().getTheWeights().getTotalMassEstimated() != null) {
 				labels.add("Power Plant");
-				powerPlantMass = _theAircraft.getPowerPlant().getTotalMass().doubleValue(SI.KILOGRAM);
+				powerPlantMass = _theAircraft.getPowerPlant().getTheWeights().getTotalMassEstimated().doubleValue(SI.KILOGRAM);
 				values.add(powerPlantMass/maxTakeOffMass*100.0);
 			}
 		if(_theAircraft.getSystems() != null)
@@ -1697,7 +1709,7 @@ public class ACWeightsManager {
 			calculateStructuralMass(aircraft, operatingConditions, methodsMap);
 			// --- END OF STRUCTURE MASS-----------------------------------
 			
-			aircraft.getPowerPlant().calculateMass(aircraft);
+			aircraft.getPowerPlant().getTheWeights().calculateTotalMass(aircraft, methodsMap);
 			// --- END OF POWER PLANT MASS-----------------------------------
 			
 			calculateManufacturerEmptyMass(aircraft);
@@ -1804,7 +1816,7 @@ public class ACWeightsManager {
 			aircraft.getSystems().getTheWeightManager().calculateMass(aircraft, MethodEnum.TORENBEEK_1982);
 		
 		_manufacturerEmptyMass = 
-				aircraft.getPowerPlant().getTotalMass().to(SI.KILOGRAM)
+				aircraft.getPowerPlant().getTheWeights().getTotalMassEstimated().to(SI.KILOGRAM)
 				.plus(_structuralMass.to(SI.KILOGRAM))
 				.plus(aircraft.getSystems().getTheWeightManager().getMassEstimated());
 	}
@@ -2139,7 +2151,7 @@ public class ACWeightsManager {
 		if(aircraft.getPowerPlant() != null)
 			if(this._engineReferenceMass == null) {
 				this._engineReferenceMass = _maximumZeroFuelMass.times(.05);
-				aircraft.getPowerPlant().setDryMassPublicDomainTotal(_engineReferenceMass);
+				aircraft.getPowerPlant().getTheWeights().estimateReferenceMasses(_theAircraft);
 			}
 		if(aircraft.getNacelles() != null)
 			if(this._nacelleReferenceMass == null) {
