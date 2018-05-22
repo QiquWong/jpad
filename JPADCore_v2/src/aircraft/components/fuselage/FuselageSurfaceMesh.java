@@ -1,10 +1,5 @@
 package aircraft.components.fuselage;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import processing.core.PVector;
-
 // Only half body is meshed. The rest is to be taken by symmetry w.r.t. XZ plane
 // Mesh index 'i' runs from nose to tail
 // Mesh index 'j' runs azimutally along the generic YZ section (X = const.)
@@ -12,9 +7,9 @@ import processing.core.PVector;
 
 public class FuselageSurfaceMesh {
 
-	private Fuselage _theFuselage;
+//	private Fuselage _theFuselage;
 	
-	private List<List<PVector>> _surfaceMesh = new ArrayList<List<PVector>>();
+//	private List<List<PVector>> _surfaceMesh = new ArrayList<List<PVector>>();
 
 	// 'ni' stands for number of intervals
 	private int _ni_N = 10, _ni_C = 4, _ni_T = 10, _ni_Sec = 10;
@@ -22,15 +17,15 @@ public class FuselageSurfaceMesh {
 	
 	public FuselageSurfaceMesh(Fuselage fuselage) {
 
-		_theFuselage = fuselage;
+//		_theFuselage = fuselage;
 		
 		// EXPERIMENTAL
-		LineMeshYZ lineMesh = new LineMeshYZ(
-				_theFuselage,                          // the fuselage object 
-				_theFuselage.getSectionsYZ().get(3),  // the section XY
-				_theFuselage.getNoseLength(),              // the X-coordinate
-				20                                     // number of mesh intervals
-				);
+//		LineMeshYZ lineMesh = new LineMeshYZ(
+//				_theFuselage,                          // the fuselage object 
+//				_theFuselage.getSectionsYZ().get(3),  // the section XY
+//				_theFuselage.getNoseLength(),              // the X-coordinate
+//				20                                     // number of mesh intervals
+//				);
 
 	}
 

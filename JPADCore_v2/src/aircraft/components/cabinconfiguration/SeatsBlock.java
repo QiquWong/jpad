@@ -1,15 +1,12 @@
 package aircraft.components.cabinconfiguration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.measure.quantity.Length;
-import javax.measure.quantity.Mass;
 import javax.measure.unit.SI;
 
-import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.ClassTypeEnum;
@@ -70,24 +67,10 @@ public class SeatsBlock {
 	private List<ClassTypeEnum> _classList;
 
 	private Amount<Length> _lenghtOverall;
-	private int _aisleNumber, _breaksNumber, _seatsNumber, _totalSeats = 0;
+	private int _seatsNumber = 0;
 	private List<Integer> _breakPosition;
 
-	private Map<Integer, Amount<Length>> _breaksMap = new HashMap<Integer, Amount<Length>>();
-	private Map<Integer, Integer> _currentSeat = new HashMap<Integer, Integer>();
-	private Map<Double, Double> _currentCoG = new HashMap<Double, Double>();
-	private Map<Double, Double> _blockMap = new HashMap<Double, Double>();
-	private List<Double> _blockXcoordinates = new ArrayList<Double>();
-	private List<Double> _blockYcoordinates = new ArrayList<Double>();
-	//	private Triplet _seatsMap;
 	private Amount<Length> _breaksLength = Amount.valueOf(0., SI.METER), _xCGblock;
-	private List<Amount<Mass>> _currentMass = new ArrayList<Amount<Mass>>(); 
-	private Amount<Mass> _totalMass;
-	private double _xCoG = 0., _yCoG = 0.;
-	private double[][] _blockMatrix;
-	private RealMatrix _seatsMatrix;
-	
-	private double _minY, _maxY;
 
 	//-----------------------------------------------------------------------
 	// BUILDER
@@ -104,10 +87,10 @@ public class SeatsBlock {
 
 		// Number of seats
 		if (_theSeatBlockInterface.getMissingSeatRow()[0] == -1) {
-			_seatsNumber = theSeatBlockInterface.getRowsNumber() * theSeatBlockInterface.getColumnsNumber();
+			setSeatsNumber(theSeatBlockInterface.getRowsNumber() * theSeatBlockInterface.getColumnsNumber());
 		} else {
-			_seatsNumber = theSeatBlockInterface.getRowsNumber() * theSeatBlockInterface.getColumnsNumber() 
-					- _theSeatBlockInterface.getMissingSeatRow().length;
+			setSeatsNumber(theSeatBlockInterface.getRowsNumber() * theSeatBlockInterface.getColumnsNumber() 
+					- _theSeatBlockInterface.getMissingSeatRow().length);
 		}
 
 		// Overall breaks length
@@ -415,5 +398,29 @@ public class SeatsBlock {
 	public void setLenghtOverall(Amount<Length> _lenghtOverall) {
 		this._lenghtOverall = _lenghtOverall;
 	}
-	
+
+	public int getSeatsNumber() {
+		return _seatsNumber;
+	}
+
+	public void setSeatsNumber(int _seatsNumber) {
+		this._seatsNumber = _seatsNumber;
+	}
+
+	public List<Integer> getBreakPosition() {
+		return _breakPosition;
+	}
+
+	public void setBreakPosition(List<Integer> _breakPosition) {
+		this._breakPosition = _breakPosition;
+	}
+
+	public Amount<Length> getXCGblock() {
+		return _xCGblock;
+	}
+
+	public void setXCGblock(Amount<Length> _xCGblock) {
+		this._xCGblock = _xCGblock;
+	}
+
 }

@@ -7,7 +7,6 @@ import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import org.apache.commons.math3.util.ArithmeticUtils;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.jscience.physics.amount.Amount;
 
@@ -117,7 +116,7 @@ public class FuselageCurvesSideView {
 		_l_C = l_C;
 		_l_T = _l_F - _l_N - _l_C;
 		_half_d_C = half_d_C;
-		_d_C = 2.0*_half_d_C;
+		setDC(2.0*_half_d_C);
 		_h_N = h_N;
 		_h_T = h_T;
 		//_a   =   a;
@@ -462,6 +461,14 @@ public class FuselageCurvesSideView {
 			_pTailLowerPoints.clear();
 			bezier();
 		}
+	}
+
+	public double getDC() {
+		return _d_C;
+	}
+
+	public void setDC(double _d_C) {
+		this._d_C = _d_C;
 	}
 	
 } // end-of-class MyFuselageCurvesSideView
