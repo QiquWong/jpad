@@ -12,6 +12,7 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.jfree.chart.util.ParamChecks;
 import org.jscience.physics.amount.Amount;
 
 import calculators.geometry.FusNacGeometryCalc;
@@ -187,6 +188,32 @@ public class MomentCalc {
 						);
 		
 	}
+
+	/**
+	 *
+	 * @author agodemar, cavas
+	 * @param dihedralW
+	 * @param sweepC2W
+	 * @param aspectRatioW
+	 * @param taperRatioW
+	 * ... 
+	 * @return
+	 */
+	public static double calcCRollbetaWingBody(
+			double dihedralW, double sweepC2W, double aspectRatioW, double taperRatioW, double spanW,
+			double twistTipW, double xcTipW,
+			double cLW, double mach, 
+			double crossSectionF, double zW 
+			) {
+
+		double  clbeta = 0.0;
+		
+		// TODO: implement formulas (Napolitano, p.155, 4.3.2) 
+
+		return clbeta;
+	}
+	
+	
 	/**
 	 * 
 	 * @param cL_alpha_v

@@ -1,6 +1,5 @@
 package sandbox2.cavas;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -9,6 +8,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
 import aircraft.Aircraft;
+import analyses.ACAnalysisManager;
 import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
@@ -17,9 +17,13 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
-import writers.JPADStaticWriteUtils;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 
 public final class AircraftUtils {
+	
+	public static String pathToXML;
+	public static String pathToOperatingConditionsXML;
+	public static String pathToAnalysesXML;
 
 	public static Aircraft importAircraft(String[] args) {
 		
@@ -39,15 +43,12 @@ public final class AircraftUtils {
 		try {
 			CmdLineUtils.theCmdLineParser.parseArgument(args);
 			
-			String pathToXML = CmdLineUtils.va.getInputFile().getAbsolutePath();
+			pathToXML = CmdLineUtils.va.getInputFile().getAbsolutePath();
 			System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
 
-//			String pathToAnalysesXML = CmdLineUtils.va.getInputFileAnalyses().getAbsolutePath();
-//			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
-//			
-//			String pathToOperatingConditionsXML = CmdLineUtils.va.getOperatingConditionsInputFile().getAbsolutePath();
-//			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
-			
+			pathToAnalysesXML = CmdLineUtils.va.getInputFileAnalyses().getAbsolutePath();
+			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
+
 			String dirAirfoil = CmdLineUtils.va.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
 
@@ -197,5 +198,35 @@ public final class AircraftUtils {
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return null;
 		}			
+	}
+	
+	public static void performAnalyses(Aircraft theAircraft, OperatingConditions theOperatingConditions, String pathToAnalysesXML, String subfolderPath) {
+		
+		// redirect console output
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+
+		try {
+			// Analyzing the aircraft
+			System.setOut(originalOut);
+			System.out.println("\n\n\tRunning requested analyses ... \n\n");
+			System.setOut(filterStream);
+			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
+			System.setOut(originalOut);
+			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
+			System.setOut(originalOut);
+			System.out.println("\n\n\tDone!! \n\n");
+			System.setOut(filterStream);
+		} catch (IOException | HDF5LibraryException e) {
+			System.err.println("Error: " + e.getMessage());
+			System.err.println();
+			System.err.println("  Check analysis files and directives.");
+			return;
+		}	
+
 	}
 }

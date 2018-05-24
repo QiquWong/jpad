@@ -214,6 +214,13 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<MethodEnum, Map<Amount<Angle>, List<Tuple2<Double, List<Double>>>>> _cNDueToDeltaRudder = new HashMap<>();
 	private Map<MethodEnum, Map<Double, List<Tuple2<Amount<Angle>, Amount<Angle>>>>> _betaOfEquilibrium = new HashMap<>();
 	private List<Amount<Angle>> deltaRudderForEquilibrium = new ArrayList<>();
+
+	// Lateral Static Stability stuff
+	private Map<MethodEnum, Double> _cRollBetaWingBody = new HashMap<>();
+	private Map<MethodEnum, Double> _cRollBetaHorizontal = new HashMap<>();
+	private Map<MethodEnum, Double> _cRollBetaVertical = new HashMap<>();
+	private Map<MethodEnum, Double> _cRollBetaTotal = new HashMap<>();
+	
 	
 	//Longitudinal Static Stability Output
 
@@ -27307,7 +27314,40 @@ public class ACAerodynamicAndStabilityManager {
 	// END Longitudinal Stability INNER CLASS
 	//............................................................................
 
+	//............................................................................
+	// Lateral Stability INNER CLASS
+	//............................................................................
 
+	public class CalcLateralStability {
+		
+		public void datcomWingBody() {
+			_cRollBetaWingBody.put(
+					MethodEnum.NAPOLITANO_DATCOM,
+					0.0 // TODO pick all parameters from the aircraft object
+//					MomentCalc.calcCRollbetaWingBody(
+//							dihedralW, 
+//							sweepC2W, 
+//							aspectRatioW, 
+//							taperRatioW, 
+//							spanW, 
+//							twistTipW, 
+//							xcTipW, 
+//							cLW, 
+//							mach, 
+//							crossSectionF, 
+//							zW)
+					);
+		}
+		
+		// TODO implement datcomWingHTail, datcomVTail
+		
+	}
+
+	//............................................................................
+	// END Lateral Stability INNER CLASS
+	//............................................................................
+	
+	
 	//............................................................................
 	// Directional Stability INNER CLASS
 	//............................................................................

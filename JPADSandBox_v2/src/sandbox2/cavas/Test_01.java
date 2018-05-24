@@ -4,7 +4,6 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
-import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
 import javax.measure.quantity.VolumetricDensity;
 import javax.measure.unit.NonSI;
@@ -13,12 +12,12 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
+import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
-import database.databasefunctions.DatabaseReader;
+import calculators.aerodynamics.LiftCalc;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import igeo.IVec2R.Len;
-import standaloneutils.database.hdf.MyHDFReader;
+import standaloneutils.atmosphere.AtmosphereCalc;
 
 public class Test_01 {
 
@@ -29,7 +28,12 @@ public class Test_01 {
 		
 		// Import the aircraft
 		Aircraft aircraft = AircraftUtils.importAircraft(args);
+		
+		// Import operating conditions
 		OperatingConditions operatingConditions = AircraftUtils.importOperatingCondition(args);
+		
+		// Perform analyses
+		// AircraftUtils.performAnalyses(aircraft, operatingConditions, AircraftUtils.pathToAnalysesXML, "IRON_CANARD_cavas");
 		
 		System.out.println("-------------------");
 		System.out.println("Aircraft read");
@@ -37,6 +41,8 @@ public class Test_01 {
 		
 		// Calculation of Cl_beta_WB		
 		LiftingSurface wing = aircraft.getWing();
+		Fuselage fuselage = aircraft.getFuselage();
+		LiftingSurface hTail = aircraft.getHTail();
 		
 		System.out.println(wing);
 		
@@ -70,10 +76,13 @@ public class Test_01 {
 		
 		// K_f
 		Amount<Length> spanWing = wing.getSpan();
-		Amount<Length> a = Amount.valueOf(20.0, SI.METER); //TODO take A from aircraft
-		double aOverSpanWing = a.doubleValue(SI.METER)/spanWing.doubleValue(SI.METER);
+		int idxBreakPointTipWing = wing.getXLEBreakPoints().size()-1;
+		Amount<Length> xLETipBFRWing = wing.getXApexConstructionAxes().to(SI.METER)
+				.plus(wing.getXLEBreakPoints().get(idxBreakPointTipWing).to(SI.METER));
 		
-		System.out.println(">> A: " + a);
+		double aOverSpanWing = xLETipBFRWing.doubleValue(SI.METER)/spanWing.doubleValue(SI.METER);
+		
+		System.out.println(">> A: " + xLETipBFRWing);
 		System.out.println(">> b: " + spanWing);
 		System.out.println(">> A/b: " + aOverSpanWing);
 		
@@ -89,7 +98,7 @@ public class Test_01 {
 		double cRollKappaMachGammaW = databaseReader.getClbetaWBKMGammaVsMachTimesCosLc2AROverCosLc2(aspectRatioOverCosSweepAngleC2, machTimesCosSweepAngleC2); // var0, var1
 		
 		// DeltaCl_beta/Gamma_W
-		Amount<Area> SfAVG = Amount.valueOf(10.0, SI.SQUARE_METRE); //TODO take SfAVG from aircraft
+		Amount<Area> SfAVG = aircraft.getFuselage().getCylinderSectionArea();
 		Amount<Length> dB = Amount.valueOf(Math.sqrt(4*SfAVG.doubleValue(SI.SQUARE_METRE)/Math.PI), SI.METER);
 		double dBOverSpanWing = dB.doubleValue(SI.METER)/spanWing.doubleValue(SI.METER);
 		
@@ -98,9 +107,9 @@ public class Test_01 {
 		Amount<?> cRollDeltaClBetaOverGammaW = Amount.valueOf(-0.0005*aspectRatioWing*Math.pow(dBOverSpanWing, 2.0), NonSI.DEGREE_ANGLE.pow(2).inverse());
 		
 		// DCl_beta_z_W
-		Amount<Length> zW = Amount.valueOf(1.0, SI.METER);
-		// TODO take z_W from aircraft
-		
+		Amount<Length> zW = // Amount.valueOf(1.0, SI.METER);
+				wing.getZApexConstructionAxes().to(SI.METER).opposite();
+				
 		System.out.println(">> z_W: " + zW);
 		
 		Amount<?> cRollDeltaClBetaZW = Amount.valueOf((1.2*Math.sqrt(aspectRatioWing)/57.3)*(zW.doubleValue(SI.METER)/spanWing.doubleValue(SI.METER))*(2*dB.doubleValue(SI.METER)/spanWing.doubleValue(SI.METER)), NonSI.DEGREE_ANGLE.inverse());
@@ -111,10 +120,20 @@ public class Test_01 {
 		// Cl_beta_WB
 		Amount<VolumetricDensity> density = operatingConditions.getDensityCruise();
 		Amount<Velocity> velocityTAS = operatingConditions.getTASCruise();
-		Amount<Force> weight = Amount.valueOf(1000000, SI.NEWTON);
-		// TODO take the weight from aircraft. Amount<Force> weight = aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight();
+		Amount<Force> weight = Amount.valueOf(
+				54500.0 // IRON MTOW
+				*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+			SI.NEWTON);
 		Amount<Area> surfaceWing = wing.getSurfacePlanform();
-		double cL1 = 2*weight.doubleValue(SI.NEWTON)/(density.doubleValue(VolumetricDensity.UNIT)*surfaceWing.doubleValue(SI.SQUARE_METRE)*Math.pow(velocityTAS.doubleValue(SI.METERS_PER_SECOND), 2));
+		
+		double cL1 = LiftCalc.calculateLiftCoeff(
+				weight.doubleValue(SI.NEWTON),
+				velocityTAS.doubleValue(SI.METERS_PER_SECOND),
+				surfaceWing.doubleValue(SI.SQUARE_METRE),
+				operatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+				);
+		
+		
 		Amount<Angle> dihedralWing = wing.getDihedralMean();
 		Amount<Angle> aerodynamicTwistWing = wing.getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip();
 		Amount<Angle> sweepAngleC4Wing = wing.getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
@@ -144,9 +163,8 @@ public class Test_01 {
 		System.out.println(">>>>>> Cl_beta_WB: " + cRollBetaWB);
 		
 		// Calculation of Cl_beta_H
-		LiftingSurface hTail = aircraft.getHTail();
 		
-		System.out.println(hTail);
+		//System.out.println(hTail);
 		
 		System.out.println("-------------------");
 		System.out.println("Horizontal tail read");
@@ -161,52 +179,39 @@ public class Test_01 {
 		System.out.println(">> aspect ratio: " + aspectRatioHTail);
 		System.out.println(">> sweep angle @ c/2 (deg): " + sweepAngleC2HTail.doubleValue(NonSI.DEGREE_ANGLE));
 
-		Amount<?> cRollBetaOverCL1HTailLc2 = Amount.valueOf(databaseReader.getClbetaWBClbetaOverCLift1Lc2VsLc2ARlambda(taperRatioHTail, aspectRatioHTail, sweepAngleC2HTail), NonSI.DEGREE_ANGLE.inverse()); // var0, var1, var2 
-
-		// K_M_Lambda
 		double aspectRatioOverCosSweepAngleC2HTail = aspectRatioHTail/Math.cos(sweepAngleC2HTail.doubleValue(SI.RADIAN));
 		double machTimesCosSweepAngleC2HTail = mach * Math.cos(sweepAngleC2HTail.doubleValue(SI.RADIAN));
+		Amount<Length> spanHTail = hTail.getSpan();
 		
 		System.out.println(">> Mach: " + mach);
 		System.out.println(">> AR/cos(Lambda_c/2): " + aspectRatioOverCosSweepAngleC2HTail);
 		System.out.println(">> Mach cos(Lambda_c/2): " + machTimesCosSweepAngleC2HTail);
-		
-		double cRollKappaMachLambdaHTail = databaseReader.getClbetaWBKMLVsMachTimesCosLc2AROverCosLc2(aspectRatioOverCosSweepAngleC2HTail, machTimesCosSweepAngleC2HTail); // var0, var1
-		
-		// K_f
-		Amount<Length> spanHTail = hTail.getSpan();
-		Amount<Length> aHTail = Amount.valueOf(20.0, SI.METER); //TODO take AHTail from aircraft
-		double aOverSpanHTail = a.doubleValue(SI.METER)/spanHTail.doubleValue(SI.METER);
-		
-		System.out.println(">> A: " + aHTail);
 		System.out.println(">> b_H: " + spanHTail);
-		System.out.println(">> A/b_H: " + aOverSpanHTail);
 		
-		double cRollKappafHTail = databaseReader.getClbetaWBKfVsAOverBAROverCosLc2(aspectRatioOverCosSweepAngleC2HTail, aOverSpanHTail); // var0, var1
-		
-		// Cl_beta/CL1_AR
-		Amount<?> cRollBetaOverCL1HTailAR = Amount.valueOf(databaseReader.getClbetaWBClbetaOverCLift1ARVsARlambda(taperRatioHTail, aspectRatioHTail), NonSI.DEGREE_ANGLE.inverse()); // var0, var1
+		// NEGLECT effect of fuselage and sweep on clbeta_H
 		
 		// Cl_beta/Gamma_H
-		Amount<?> cRollBetaOverGammaH = Amount.valueOf(databaseReader.getClbetaWBClbetaOverGammaWVsARLc2lambda(taperRatioHTail, sweepAngleC2HTail, aspectRatioHTail), NonSI.DEGREE_ANGLE.pow(2).inverse()); // var0, var1, var2
+		Amount<?> cRollBetaOverGammaH = Amount.valueOf(
+				databaseReader.getClbetaWBClbetaOverGammaWVsARLc2lambda(taperRatioHTail, sweepAngleC2HTail, aspectRatioHTail), // var0, var1, var2
+				NonSI.DEGREE_ANGLE.pow(2).inverse());
 		
 		// K_M_Gamma_H
 		double cRollKappaMachGammaH = databaseReader.getClbetaWBKMGammaVsMachTimesCosLc2AROverCosLc2(aspectRatioOverCosSweepAngleC2HTail, machTimesCosSweepAngleC2HTail); // var0, var1
 		
 		// DeltaCl_beta/Gamma_H
-		double dBOverSpanHTail = dB.doubleValue(SI.METER)/spanHTail.doubleValue(SI.METER);
+		int idxBreakPointTipHTail = hTail.getXLEBreakPoints().size()-1;
+		Amount<Length> xLETipBFRHTail = hTail.getXApexConstructionAxes().to(SI.METER)
+				.plus(hTail.getXLEBreakPoints().get(idxBreakPointTipHTail).to(SI.METER));
+
+		Amount<Length> dBH = Amount.valueOf( 
+				fuselage.getEquivalentDiameterAtX(xLETipBFRHTail.doubleValue(SI.METER)),
+				SI.METER);
+				
+		double dBOverSpanHTail = dBH.doubleValue(SI.METER)/spanHTail.doubleValue(SI.METER);
 		
-		System.out.println(">> d_B: " + dB);
+		System.out.println(">> d_BH: " + dBH);
 		
 		Amount<?> cRollDeltaClBetaOverGammaH = Amount.valueOf(-0.0005*aspectRatioHTail*Math.pow(dBOverSpanHTail, 2.0), NonSI.DEGREE_ANGLE.pow(2).inverse());
-		
-		// DCl_beta_z_H
-		Amount<Length> zH = Amount.valueOf(1.0, SI.METER);
-		// TODO take z_H from aircraft
-		
-		System.out.println(">> z_H: " + zH);
-		
-		Amount<?> cRollDeltaClBetaZH = Amount.valueOf((1.2*Math.sqrt(aspectRatioHTail)/57.3)*(zH.doubleValue(SI.METER)/spanHTail.doubleValue(SI.METER))*(2*dB.doubleValue(SI.METER)/spanHTail.doubleValue(SI.METER)), NonSI.DEGREE_ANGLE.inverse());
 		
 		// DCl_beta/(eps_H*tan(Lambda_c/4))
 		Amount<?> cRollDeltaClBetaOverEpsHTanLc4 = Amount.valueOf(databaseReader.getClbetaWBDClbetaOverEpsWTimesTanLc4VsARlambda(taperRatioHTail, aspectRatioHTail), NonSI.DEGREE_ANGLE.pow(2).inverse()); // var0, var1
@@ -215,6 +220,7 @@ public class Test_01 {
 		Amount<Angle> dihedralHTail = hTail.getDihedralMean();
 		Amount<Angle> aerodynamicTwistHTail = hTail.getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip();
 		Amount<Angle> sweepAngleC4HTail = hTail.getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
+		
 		double etaH = 0.9;
 		// TODO take the degradation factor of dynamic pressure
 		Amount<Area> surfaceHTail = hTail.getSurfacePlanform();
@@ -230,26 +236,30 @@ public class Test_01 {
 		System.out.println(">> degradation factor of dynamic pressure: " + etaH);
 		System.out.println(">> surface horizontal tail: " + surfaceHTail);
 		
-		Amount<?> cRollBetaH = (((cRollBetaOverCL1HTailLc2.times(cRollKappaMachLambdaHTail*cRollKappafHTail).plus(cRollBetaOverCL1HTailAR)).times(57.3*cL1))
-				.plus((dihedralHTail.times(cRollBetaOverGammaH.times(cRollKappaMachGammaH).plus(cRollDeltaClBetaOverGammaH)).plus(cRollDeltaClBetaZH)
-				.plus(cRollDeltaClBetaOverEpsHTanLc4.times(aerodynamicTwistHTail.times(Math.tan(sweepAngleC4HTail.doubleValue(SI.RADIAN)))))).times(57.3)))
-				.times(surfaceHTail.divide(surfaceWing).times(spanHTail).divide(spanWing).times(etaH));
+		Amount<?> cRollBetaH = 
+				(
+						dihedralHTail.times(cRollBetaOverGammaH.times(cRollKappaMachGammaH).plus(cRollDeltaClBetaOverGammaH))
+						.plus(
+								cRollDeltaClBetaOverEpsHTanLc4.times(
+										aerodynamicTwistHTail.times(
+												Math.tan(sweepAngleC4HTail.doubleValue(SI.RADIAN))
+										)
+								)
+						)
+				).times(57.3)
+						.times(surfaceHTail).divide(surfaceWing).times(spanHTail).divide(spanWing).times(etaH)
+				;
 				
-		System.out.println(">>>> Cl_beta/CL1_Lambda_c/2: " + cRollBetaOverCL1HTailLc2);
-		System.out.println(">>>> K_M_Lambda: " + cRollKappaMachLambdaHTail);
-		System.out.println(">>>> K_f: " + cRollKappafHTail);
-		System.out.println(">>>> Cl_beta/CL1_AR: " + cRollBetaOverCL1HTailAR);
 		System.out.println(">>>> Cl_beta/Gamma_H: " + cRollBetaOverGammaH);
 		System.out.println(">>>> K_M_Gamma_H: " + cRollKappaMachGammaH);
 		System.out.println(">>>> DCl_beta/Gamma_H: " + cRollDeltaClBetaOverGammaH);
-		System.out.println(">>>> DCl_beta_z_H: " + cRollDeltaClBetaZH);
 		System.out.println(">>>> DCl_beta/(eps_H tan(Lambda_c/4)): " + cRollDeltaClBetaOverEpsHTanLc4);
 		System.out.println(">>>>>> Cl_beta_H: " + cRollBetaH);
 		
 		// Calculation of Cl_beta_V
 		LiftingSurface vTail = aircraft.getVTail();
 		
-		System.out.println(vTail);
+		//System.out.println(vTail);
 		
 		System.out.println("-------------------");
 		System.out.println("Vertical tail read");
@@ -257,6 +267,7 @@ public class Test_01 {
 		
 		Amount<Angle> angleOfAttack = operatingConditions.getAlphaCurrentCruise();
 		Amount<?> cLAlphaV = Amount.valueOf(6.92, SI.RADIAN.inverse());
+		
 		double etaV = 0.9;
 		// TODO take the degradation factor of dynamic pressure (Napolitano Aircraft Dynamics pag. 143)
 		double dSigma_dBeta = 0.11;
