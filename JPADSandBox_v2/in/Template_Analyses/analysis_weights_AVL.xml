@@ -3,42 +3,50 @@
 	<!-- all SFC values must be assigned in lb/(lb*hr) for JET engines -->
 	<!-- all SFC values must be assigned in lb/(hp*hr) for PISTON engines -->
     <analysis>
-        <weights id="A320 - WEIGHTS">
+        <weights id="JPAD Test analysis - WEIGHTS">
 			<global_data>
-				<maximum_take_off_mass unit="kg">79000</maximum_take_off_mass>
+				<first_guess_maximum_take_off_mass unit="kg">79000</first_guess_maximum_take_off_mass>
+				<relative_maximum_landing_mass>0.9</relative_maximum_landing_mass> <!-- with respect to Max Take-Off mass. Default = 0.9 -->
 				<single_passenger_mass unit="kg">92</single_passenger_mass>
+			</global_data>
+			<mission_profile_data>
+				<reference_mission_range unit="nmi"></reference_mission_range>
 				<cruise_phase>
 					<range unit="nmi">3300</range> 
 					<sfc>0.61</sfc>
-					<efficiency>14.0</efficiency>
+					<efficiency>16</efficiency>
 				</cruise_phase>
 				<alternate_phase>
-					<range unit="nmi">200.0</range> 
+					<range unit="nmi">200</range> 
 					<altitude unit="ft">10000</altitude>
-					<mach>0.6</mach>
+					<mach>0.7</mach>
 					<sfc>0.61</sfc> 
-					<efficiency>14</efficiency> 
+					<efficiency>16</efficiency> 
 				</alternate_phase>
 				<holding_phase>
-					<duration unit="min">45.0</duration> 
+					<duration unit="min">30</duration> 
 					<altitude unit="ft">1500</altitude>
 					<mach>0.3</mach>
-					<sfc>0.5</sfc> 
-					<efficiency>15.0</efficiency> 
+					<sfc>0.6</sfc> 
+					<efficiency>16.5</efficiency> 
 				</holding_phase>
-			</global_data>
-			<component_data>
-			<!-- if these tags are empty, a reference value will be calculated using default percentages of the MZFM -->
-				<fuselage_reference_mass unit="kg"></fuselage_reference_mass>
-				<wing_reference_mass unit="kg"></wing_reference_mass>
-				<horizontal_tail_reference_mass unit="kg"></horizontal_tail_reference_mass>
-				<vertical_tail_reference_mass unit="kg"></vertical_tail_reference_mass>
-				<canard_reference_mass unit="kg"></canard_reference_mass>
-				<nacelles_reference_mass unit="kg"></nacelles_reference_mass> <!-- all nacelles -->
-				<fuel_tank_reference_mass unit="kg"></fuel_tank_reference_mass>
-				<landing_gears_reference_mass unit="kg"></landing_gears_reference_mass>
-				<systems_reference_mass unit="kg"></systems_reference_mass>
-			</component_data>			
+			</mission_profile_data>
+			<calibration> <!-- IF LEFT BLANK, ALL CALIBRATION FACTORS ARE EQUAL TO 1.0 -->
+				<fuselage_calibration_factor></fuselage_calibration_factor>
+				<wing_calibration_factor></wing_calibration_factor>
+				<horizontal_tail_calibration_factor></horizontal_tail_calibration_factor>
+				<vertical_tail_calibration_factor></vertical_tail_calibration_factor>
+				<canard_calibration_factor></canard_calibration_factor>
+				<nacelles_calibration_factor></nacelles_calibration_factor>
+				<power_plant_calibration_factor></power_plant_calibration_factor>
+				<landing_gears_calibration_factor></landing_gears_calibration_factor>
+				<APU_calibration_factor></APU_calibration_factor>
+				<air_conditioning_and_anti_icing_system_calibration_factor></air_conditioning_and_anti_icing_system_calibration_factor>
+				<instruments_and_navigation_system_calibration_factor></instruments_and_navigation_system_calibration_factor>
+				<electrical_systems_calibration_factor></electrical_systems_calibration_factor>
+				<control_surfaces_calibration_factor></control_surfaces_calibration_factor>
+				<furnishings_and_equipments_calibration_factor></furnishings_and_equipments_calibration_factor>
+			</calibration>		
         </weights>
     </analysis>
 </jpad_config>

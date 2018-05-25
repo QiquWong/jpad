@@ -69,7 +69,7 @@ public class NacelleWeightManager {
 	public void calculateTotalMass(Aircraft theAircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 
 		_totalMassEstimated = Amount.valueOf(0., SI.KILOGRAM);
-		_totalMassReference = theAircraft.getTheAnalysisManager().getTheWeights().getNacelleReferenceMass();
+		_totalMassReference = theAircraft.getTheAnalysisManager().getTheWeights().getNacellesReferenceMass();
 
 		theAircraft.getNacelles().getNacellesList().stream().forEach(nac -> {
 			calculateMass(theAircraft, theAircraft.getPowerPlant().getEngineType(), methodsMapWeights);

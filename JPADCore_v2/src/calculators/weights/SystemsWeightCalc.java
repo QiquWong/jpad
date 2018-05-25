@@ -46,7 +46,7 @@ public class SystemsWeightCalc {
 						aircraft.getTheAnalysisManager().getTheWeights().getManufacturerEmptyMass().doubleValue(SI.KILOGRAM), 
 						5/9
 						)*Math.pow(
-								aircraft.getTheAnalysisManager().getTheWeights().getRange().doubleValue(SI.KILOMETER), 
+								aircraft.getTheAnalysisManager().getTheWeights().getTheWeightsManagerInterface().getReferenceMissionRange().doubleValue(SI.KILOMETER), 
 								0.25
 								), 
 				SI.KILOGRAM);

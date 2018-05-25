@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Force;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -36,12 +37,18 @@ public class LiftingSurfaceWeightCalc {
 	 */
 	public static Amount<Mass> calculateWingMassRoskam (Aircraft aircraft) {
 		
+		Amount<Force> maxTakeOffWeight = Amount.valueOf(
+				aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
+				* AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+				SI.NEWTON
+				);
+		
 		return Amount.valueOf(
 				2 * ( 0.00428*
 						Math.pow(aircraft.getWing().getSurfacePlanform().doubleValue(MyUnits.FOOT2), 0.48)
 						* aircraft.getWing().getAspectRatio()
 						* Math.pow(aircraft.getTheAnalysisManager().getMachDive0(), 0.43)
-						* Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().doubleValue(NonSI.POUND_FORCE)
+						* Math.pow(maxTakeOffWeight.doubleValue(NonSI.POUND_FORCE)
 								* aircraft.getTheAnalysisManager().getNUltimate(), 0.84)
 						* Math.pow(aircraft.getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(), 0.14)
 						) 
@@ -274,8 +281,8 @@ public class LiftingSurfaceWeightCalc {
 		return Amount.valueOf( 
 				(0.0013 * aircraft.getTheAnalysisManager().getNUltimate()
 						* Math.pow(
-								aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().doubleValue(SI.NEWTON)
-								* aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelWeight().doubleValue(SI.NEWTON), 
+								aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(SI.KILOGRAM).times(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)).getEstimatedValue()
+								* aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().to(SI.KILOGRAM).times(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)).getEstimatedValue(), 
 								0.5)
 						* 0.36 * Math.pow( 1 + aircraft.getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(), 0.5)
 						* (aircraft.getWing().getSpan().doubleValue(SI.METER)/100)

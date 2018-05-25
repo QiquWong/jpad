@@ -537,9 +537,7 @@ public class CabinConfiguration {
 		_yLoading.concat(MyArrayUtils.convertListOfAmountToDoubleArray(_currentMassList));
 
 //		_seatsCG = SeatsBlock.calculateTotalCoG(_seatsBlocksList).plus(_xCoordinateFirstRow);
-//
-//		System.out.println("Total CoG: " + _seatsCG);
-
+		
 		System.out.println("----- CABIN LAYOUT CREATION FINISHED -----");
 
 	}

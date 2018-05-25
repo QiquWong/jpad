@@ -285,7 +285,7 @@ public class ACBalanceManager implements IACBalanceManager {
 
 					//---------------------------------------------------------------
 					// PASSENGERS SINGLE MASS (From ACWeightsManager)
-					passengersSingleMass = theAircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass();
+					passengersSingleMass = theAircraft.getTheAnalysisManager().getTheWeights().getTheWeightsManagerInterface().getSinglePassengerMass();
 
 					//---------------------------------------------------------------
 					// FUSELAGE MASS

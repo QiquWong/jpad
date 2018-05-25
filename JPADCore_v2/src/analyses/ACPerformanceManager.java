@@ -513,7 +513,7 @@ public class ACPerformanceManager {
 					
 					//...............................................................
 					// SINGLE PASSENGER MASS
-					singlePassengerMass = theAircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().to(SI.KILOGRAM);
+					singlePassengerMass = theAircraft.getTheAnalysisManager().getTheWeights().getTheWeightsManagerInterface().getSinglePassengerMass().to(SI.KILOGRAM);
 						
 				}
 				else {
