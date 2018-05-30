@@ -25,6 +25,7 @@ import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.CostsEnum;
+import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.PerformanceEnum;
@@ -455,17 +456,17 @@ public class ACAnalysisManager {
 								reader.getXmlDoc(), reader.getXpath(),
 								"//weights/@method_htail");
 				if(hTailWeightsMethod != null) {
-					if(hTailWeightsMethod.equalsIgnoreCase("KROO")) {
-						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.KROO);
+					if(hTailWeightsMethod.equalsIgnoreCase("HOWE")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.HOWE);
 					}
 					else if(hTailWeightsMethod.equalsIgnoreCase("JENKINSON")) {
 						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.JENKINSON);
 					}
-					else if(hTailWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_2013);
+					else if(hTailWeightsMethod.equalsIgnoreCase("NICOLAI_2013")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.NICOLAI_2013);
 					}
-					else if(hTailWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_1982);
+					else if(hTailWeightsMethod.equalsIgnoreCase("KROO")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.KROO);
 					}
 					else if(hTailWeightsMethod.equalsIgnoreCase("RAYMER")) {
 						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.RAYMER);
@@ -492,11 +493,8 @@ public class ACAnalysisManager {
 					else if(vTailWeightsMethod.equalsIgnoreCase("JENKINSON")) {
 						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.JENKINSON);
 					}
-					else if(vTailWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_2013);
-					}
-					else if(vTailWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_1982);
+					else if(vTailWeightsMethod.equalsIgnoreCase("HOWE")) {
+						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.HOWE);
 					}
 					else if(vTailWeightsMethod.equalsIgnoreCase("RAYMER")) {
 						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.RAYMER);
@@ -517,17 +515,17 @@ public class ACAnalysisManager {
 								reader.getXmlDoc(), reader.getXpath(),
 								"//weights/@method_canard");
 				if(canardWeightsMethod != null) {
-					if(canardWeightsMethod.equalsIgnoreCase("KROO")) {
-						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.KROO);
+					if(canardWeightsMethod.equalsIgnoreCase("HOWE")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.HOWE);
 					}
 					else if(canardWeightsMethod.equalsIgnoreCase("JENKINSON")) {
 						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.JENKINSON);
 					}
-					else if(canardWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_2013);
+					else if(canardWeightsMethod.equalsIgnoreCase("NICOLAI_2013")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.NICOLAI_2013);
 					}
-					else if(canardWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_1982);
+					else if(canardWeightsMethod.equalsIgnoreCase("KROO")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.KROO);
 					}
 					else if(canardWeightsMethod.equalsIgnoreCase("RAYMER")) {
 						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.RAYMER);
@@ -547,36 +545,106 @@ public class ACAnalysisManager {
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//weights/@method_nacelles");
-				if(nacellesWeightsMethod != null) {
-					if(nacellesWeightsMethod.equalsIgnoreCase("JENKINSON")) {
-						methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.JENKINSON);
+				if(theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOFAN) 
+						|| theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOJET)) {
+
+					if(nacellesWeightsMethod != null) {
+						if(nacellesWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+							methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.JENKINSON);
+						}
+						else if(nacellesWeightsMethod.equalsIgnoreCase("KUNDU")) {
+							methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.KUNDU);
+						}
+						else if(nacellesWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+							methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.ROSKAM);
+						}
+						else 
+							methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.AVERAGE);
 					}
-					else if(nacellesWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
-						methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1976);
+					
+				}
+				else if(theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+					
+					if(nacellesWeightsMethod != null) {
+						if(nacellesWeightsMethod.equalsIgnoreCase("KUNDU")) {
+							methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.KUNDU);
+						}
+						else if(nacellesWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+							methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1976);
+						}
+						else 
+							methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.AVERAGE);
 					}
-					else if(nacellesWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-						methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1982);
+					
+				}
+				else if(theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)) {
+					
+					if(nacellesWeightsMethod != null) {
+						if(nacellesWeightsMethod.equalsIgnoreCase("KUNDU")) {
+							methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.KUNDU);
+						}
+						else 
+							methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.AVERAGE);
 					}
-					else 
-						methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.AVERAGE);
+					
 				}
 
+				////////////////////////////////////////////////////////////////////////////////////
+				String powerPlantWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_power_plant");
+				if(theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOFAN) 
+						|| theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOJET)) {
+
+					if(powerPlantWeightsMethod != null) {
+						if(powerPlantWeightsMethod.equalsIgnoreCase("KUNDU")) {
+							methodsMapWeights.put(ComponentEnum.POWER_PLANT, MethodEnum.KUNDU);
+						}
+						else if(powerPlantWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+							methodsMapWeights.put(ComponentEnum.POWER_PLANT, MethodEnum.TORENBEEK_1976);
+						}
+						else if(powerPlantWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+							methodsMapWeights.put(ComponentEnum.POWER_PLANT, MethodEnum.TORENBEEK_2013);
+						}
+						else 
+							methodsMapWeights.put(ComponentEnum.POWER_PLANT, MethodEnum.AVERAGE);
+					}
+					
+				}
+				else if(theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+					
+					if(powerPlantWeightsMethod != null) {
+						if(nacellesWeightsMethod.equalsIgnoreCase("KUNDU")) {
+							methodsMapWeights.put(ComponentEnum.POWER_PLANT, MethodEnum.KUNDU);
+						}
+						else if(powerPlantWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+							methodsMapWeights.put(ComponentEnum.POWER_PLANT, MethodEnum.TORENBEEK_1976);
+						}
+						else 
+							methodsMapWeights.put(ComponentEnum.POWER_PLANT, MethodEnum.AVERAGE);
+					}
+					
+				}
+				else if(theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)) {
+					
+					if(powerPlantWeightsMethod != null) {
+						if(nacellesWeightsMethod.equalsIgnoreCase("KUNDU")) {
+							methodsMapWeights.put(ComponentEnum.POWER_PLANT, MethodEnum.KUNDU);
+						}
+						else 
+							methodsMapWeights.put(ComponentEnum.POWER_PLANT, MethodEnum.AVERAGE);
+					}
+					
+				}
+				
 				////////////////////////////////////////////////////////////////////////////////////
 				String landingGearsWeightsMethod = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//weights/@method_landing_gears");
 				if(landingGearsWeightsMethod != null) {
-					if(landingGearsWeightsMethod.equalsIgnoreCase("ROSKAM")) {
-						methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.ROSKAM);
-					}
-					else if(landingGearsWeightsMethod.equalsIgnoreCase("STANFORD")) {
-						methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.STANFORD);
-					}
-					else if(landingGearsWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-						methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.TORENBEEK_1982);
-					}
-					else if(landingGearsWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+					if(landingGearsWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
 						methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.TORENBEEK_2013);
 					}
 					else 
@@ -584,16 +652,100 @@ public class ACAnalysisManager {
 				}
 
 				////////////////////////////////////////////////////////////////////////////////////
-				String systemsWeightsMethod = MyXMLReaderUtils
+				String apuWeightsMethod = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
-								"//weights/@method_systems");
-				if(systemsWeightsMethod != null) {
-					if(systemsWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-						methodsMapWeights.put(ComponentEnum.SYSTEMS, MethodEnum.TORENBEEK_2013);
+								"//weights/@method_APU");
+				if(apuWeightsMethod != null) {
+					if(apuWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.APU, MethodEnum.TORENBEEK_1982);
 					}
 					else 
-						methodsMapWeights.put(ComponentEnum.SYSTEMS, MethodEnum.AVERAGE);
+						methodsMapWeights.put(ComponentEnum.APU, MethodEnum.AVERAGE);
+				}
+				
+				////////////////////////////////////////////////////////////////////////////////////
+				String airConditioningAndAntiIcingWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_air_conditioning_and_anti_icing");
+				if(airConditioningAndAntiIcingWeightsMethod != null) {
+					if(airConditioningAndAntiIcingWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, MethodEnum.TORENBEEK_1982);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, MethodEnum.AVERAGE);
+				}
+				
+				////////////////////////////////////////////////////////////////////////////////////
+				String instrumentsAndNavigationWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_instruments_and_navigation_system");
+				if(instrumentsAndNavigationWeightsMethod != null) {
+					if(instrumentsAndNavigationWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, MethodEnum.TORENBEEK_1982);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, MethodEnum.AVERAGE);
+				}
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String hydraulicAndPneumaticWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_hydraulic_and_pneumatic_systems");
+				if(hydraulicAndPneumaticWeightsMethod != null) {
+					if(hydraulicAndPneumaticWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, MethodEnum.TORENBEEK_1982);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, MethodEnum.AVERAGE);
+				}
+				
+				////////////////////////////////////////////////////////////////////////////////////
+				String electricalSystemsWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_electrical_systems");
+				if(electricalSystemsWeightsMethod != null) {
+					if(electricalSystemsWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.ELECTRICAL_SYSTEMS, MethodEnum.TORENBEEK_1982);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.ELECTRICAL_SYSTEMS, MethodEnum.AVERAGE);
+				}
+				
+				////////////////////////////////////////////////////////////////////////////////////
+				String furnishingsAnsEquipmentsWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_furnishings_and_equipments");
+				if(furnishingsAnsEquipmentsWeightsMethod != null) {
+					if(furnishingsAnsEquipmentsWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, MethodEnum.TORENBEEK_1982);
+					}
+					else if(furnishingsAnsEquipmentsWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+						methodsMapWeights.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, MethodEnum.TORENBEEK_2013);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, MethodEnum.AVERAGE);
+				}
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String controlSurfacesWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_control_surfaces");
+				if(controlSurfacesWeightsMethod != null) {
+					if(controlSurfacesWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+						methodsMapWeights.put(ComponentEnum.CONTROL_SURFACES, MethodEnum.JENKINSON);
+					}
+					else if(controlSurfacesWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.CONTROL_SURFACES, MethodEnum.TORENBEEK_1982);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.CONTROL_SURFACES, MethodEnum.AVERAGE);
 				}
 			}
 

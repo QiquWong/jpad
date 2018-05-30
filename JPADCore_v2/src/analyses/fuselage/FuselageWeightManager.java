@@ -94,7 +94,7 @@ public class FuselageWeightManager {
 	
 		case ROSKAM : { 
 			_methodsList.add(method);
-			FuselageWeightCalc.calculateFuselageMassRoskam(aircraft);
+			_mass = FuselageWeightCalc.calculateFuselageMassRoskam(aircraft);
 			_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), _mass.getUnit()));
 		} break;
 		

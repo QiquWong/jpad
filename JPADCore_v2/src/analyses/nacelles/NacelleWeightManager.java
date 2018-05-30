@@ -60,8 +60,9 @@ public class NacelleWeightManager {
 	
 	public void estimateReferenceMasses (Aircraft theAircraft) {
 		
-		_massRefereceList.add(
-				theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015)
+		for (int i=0; i<theAircraft.getNacelles().getNacellesNumber(); i++)
+			_massRefereceList.add(
+					theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015)
 					.divide(theAircraft.getNacelles().getNacellesNumber()));
 		
 	}
@@ -74,6 +75,13 @@ public class NacelleWeightManager {
 		theAircraft.getNacelles().getNacellesList().stream().forEach(nac -> {
 			calculateMass(theAircraft, theAircraft.getPowerPlant().getEngineType(), methodsMapWeights);
 		});
+		_totalMassMap.put(
+				methodsMapWeights.get(ComponentEnum.NACELLE), 
+				Amount.valueOf(
+						theAircraft.getNacelles().getTheWeights().getMassEstimatedList().stream().mapToDouble(m -> m.doubleValue(SI.KILOGRAM)).sum(),
+						SI.KILOGRAM
+						)
+				);
 		
 		if(!methodsMapWeights.get(ComponentEnum.NACELLE).equals(MethodEnum.AVERAGE)) {
 			_totalPercentDifference =  new double[_totalMassMap.size()];

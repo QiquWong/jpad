@@ -43,6 +43,7 @@
 				<APU_calibration_factor></APU_calibration_factor>
 				<air_conditioning_and_anti_icing_system_calibration_factor></air_conditioning_and_anti_icing_system_calibration_factor>
 				<instruments_and_navigation_system_calibration_factor></instruments_and_navigation_system_calibration_factor>
+				<hydraulic_and_pneumatic_systems_calibration_factor></hydraulic_and_pneumatic_systems_calibration_factor>
 				<electrical_systems_calibration_factor></electrical_systems_calibration_factor>
 				<control_surfaces_calibration_factor></control_surfaces_calibration_factor>
 				<furnishings_and_equipments_calibration_factor></furnishings_and_equipments_calibration_factor>

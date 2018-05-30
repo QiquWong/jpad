@@ -11,6 +11,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
 import analyses.OperatingConditions;
+import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.LandingGearsMountingPositionEnum;
 import configuration.enumerations.NacelleMountingPositionEnum;
 import standaloneutils.MyUnits;
@@ -19,7 +20,6 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 public class FuselageWeightCalc {
 
 	/* 
-	 * 80 percent difference from true mass for some aircraft 
 	 * page 150 Jenkinson - Civil Jet Aircraft Design
 	 */
 	public static Amount<Mass> calculateFuselageMassJenkinson (
@@ -42,10 +42,10 @@ public class FuselageWeightCalc {
 			k = k + 0.07;
 		}
 
-		return Amount.valueOf(0.039*
-				Math.pow(
-						(1 + k) * 
-						2*aircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)
+		return Amount.valueOf(0.039
+				* (1 + k) 
+				* Math.pow( 2
+						* aircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)
 						* aircraft.getFuselage().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)
 						* Math.pow(
 								aircraft.getTheAnalysisManager().getVDiveEAS().doubleValue(SI.METERS_PER_SECOND),
@@ -191,30 +191,39 @@ public class FuselageWeightCalc {
 	 */
 	public static Amount<Mass> calculateFuselageMassKroo (Aircraft aircraft, OperatingConditions operatingConditions) {
 		
-		double Ifuse;
-		double Ip = 1.5e-3 
+		double ifuse = 0.0;
+		double ip = 1.5e-3 
 				* operatingConditions.getMaxDeltaPressureCruise().doubleValue(MyUnits.LB_FT2)
 				* aircraft.getFuselage().getSectionCylinderWidth().doubleValue(NonSI.FOOT);
 
-		double Ib = 1.91e-4 
-				* aircraft.getTheAnalysisManager().getPositiveLimitLoadFactor() 
-				* (aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(NonSI.POUND)
-						- aircraft.getWing().getTheWeightManager().getMassEstimated().doubleValue(NonSI.POUND)
-						- aircraft.getNacelles().getTheWeights().getTotalMassEstimated().doubleValue(NonSI.POUND)
-						- aircraft.getPowerPlant().getTheWeights().getTotalMassEstimated().doubleValue(NonSI.POUND)
-						)
-				* aircraft.getFuselage().getFuselageLength().doubleValue(NonSI.FOOT) 
-				- (aircraft.getWing().getPanels().get(0).getChordRoot().doubleValue(NonSI.FOOT)/2)
-				/ pow(aircraft.getFuselage().getSectionCylinderHeight().doubleValue(NonSI.FOOT),2);
+		double ib = 0.0;
+		if(aircraft.getPowerPlant().getMountingPosition().equals(EngineMountingPositionEnum.WING))
+			ib = 1.91e-4 
+			* aircraft.getTheAnalysisManager().getPositiveLimitLoadFactor() 
+			* (aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(NonSI.POUND)
+					- aircraft.getTheAnalysisManager().getTheWeights().getWingMass().doubleValue(NonSI.POUND)
+					- aircraft.getTheAnalysisManager().getTheWeights().getNacellesMass().doubleValue(NonSI.POUND)
+					- aircraft.getTheAnalysisManager().getTheWeights().getPowerPlantMass().doubleValue(NonSI.POUND)
+					)
+			* aircraft.getFuselage().getFuselageLength().doubleValue(NonSI.FOOT) 
+			/ pow(aircraft.getFuselage().getSectionCylinderHeight().doubleValue(NonSI.FOOT), 2);
+		else
+			ib = 1.91e-4 
+			* aircraft.getTheAnalysisManager().getPositiveLimitLoadFactor() 
+			* (aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(NonSI.POUND)
+					- aircraft.getTheAnalysisManager().getTheWeights().getWingMass().doubleValue(NonSI.POUND)
+					)
+			* aircraft.getFuselage().getFuselageLength().doubleValue(NonSI.FOOT) 
+			/ pow(aircraft.getFuselage().getSectionCylinderHeight().doubleValue(NonSI.FOOT),2);
 
-		if (Ip > Ib) {
-			Ifuse = Ip;
+		if (ip > ib) {
+			ifuse = ip;
 		} else {
-			Ifuse = (Math.pow(Ip,2) + Math.pow(Ib,2))/(2*Ib); 
+			ifuse = (Math.pow(ip,2) + Math.pow(ib,2))/(2*ib); 
 		}
 
 		return Amount.valueOf(
-				(1.051 + 0.102*Ifuse)
+				(1.051 + 0.102*ifuse)
 				* aircraft.getFuselage().getSWetTotal().doubleValue(MyUnits.FOOT2),
 				NonSI.POUND)
 				.to(SI.KILOGRAM);

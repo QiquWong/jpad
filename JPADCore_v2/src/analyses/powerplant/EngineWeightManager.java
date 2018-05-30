@@ -60,8 +60,9 @@ public class EngineWeightManager {
 	
 	public void estimateReferenceMasses (Aircraft theAircraft) {
 		
-		_massRefereceList.add(
-				theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.05)
+		for (int i=0; i<theAircraft.getPowerPlant().getEngineNumber(); i++)
+			_massRefereceList.add(
+					theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.05)
 					.divide(theAircraft.getPowerPlant().getEngineNumber()));
 		
 	}
@@ -74,6 +75,13 @@ public class EngineWeightManager {
 		theAircraft.getPowerPlant().getEngineList().stream().forEach(eng -> {
 			calculateMass(theAircraft, theAircraft.getPowerPlant().getEngineType(), methodsMapWeights);
 		});
+		_totalMassMap.put(
+				methodsMapWeights.get(ComponentEnum.POWER_PLANT), 
+				Amount.valueOf(
+						theAircraft.getPowerPlant().getTheWeights().getMassEstimatedList().stream().mapToDouble(m -> m.doubleValue(SI.KILOGRAM)).sum(),
+						SI.KILOGRAM
+						)
+				);
 		
 		if(!methodsMapWeights.get(ComponentEnum.POWER_PLANT).equals(MethodEnum.AVERAGE)) {
 			_totalPercentDifference =  new double[_totalMassMap.size()];

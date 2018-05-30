@@ -12,29 +12,22 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 
 public class SystemsWeightCalc {
 
-	public static Amount<Mass> calculateControlSurfaceMassJenkinson (Aircraft aircraft) {
-		
-		return Amount.valueOf(
-				Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().times(0.04).getEstimatedValue(), 0.684),
-				SI.KILOGRAM);
-		
-	}
-	
 	public static Amount<Mass> calculateControlSurfaceMassTorenbeek1982 (Aircraft aircraft) {
 		
 		return Amount.valueOf(
-				0.4915*Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue(), 2/3), 
+				0.4915*Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(SI.KILOGRAM).getEstimatedValue(), 0.6667), 
 				SI.KILOGRAM);
 		
 	}
 	
 	public static Amount<Mass> calculateAPUMassTorenbeek1982 (Aircraft aircraft) {
 		
+		double wba = 0.5*aircraft.getCabinConfiguration().getActualPassengerNumber();
+		
 		return Amount.valueOf(
-				2.25*1.17*Math.pow(
-						aircraft.getCabinConfiguration().getActualPassengerNumber()*0.5, 
-						3/5
-						), 
+				2.25
+				* 11.7
+				* Math.pow(wba, 0.6), 
 				SI.KILOGRAM);
 		
 	}
@@ -44,7 +37,7 @@ public class SystemsWeightCalc {
 		return Amount.valueOf(
 				0.347*Math.pow(
 						aircraft.getTheAnalysisManager().getTheWeights().getManufacturerEmptyMass().doubleValue(SI.KILOGRAM), 
-						5/9
+						0.55556
 						)*Math.pow(
 								aircraft.getTheAnalysisManager().getTheWeights().getTheWeightsManagerInterface().getReferenceMissionRange().doubleValue(SI.KILOMETER), 
 								0.25
@@ -114,6 +107,14 @@ public class SystemsWeightCalc {
 								* aircraft.getFuselage().getEquivalentDiameterCylinderGM().getEstimatedValue() 
 								+ 0.5 * aircraft.getFuselage().getDeckNumber() + 1) + 3500) /
 				AtmosphereCalc.g0.getEstimatedValue(),
+				SI.KILOGRAM);
+		
+	}
+	
+	public static Amount<Mass> calculateHydraulicAndPneumaticMassTorenbeek1982 (Aircraft aircraft) {
+		
+		return Amount.valueOf(
+				0.015*aircraft.getTheAnalysisManager().getTheWeights().getManufacturerEmptyMass().doubleValue(SI.KILOGRAM), 
 				SI.KILOGRAM);
 		
 	}

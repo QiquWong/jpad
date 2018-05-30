@@ -439,7 +439,7 @@ public class Aircraft {
 				);
 	}
 
-	private void calculateVolumetricRatio(LiftingSurface theLiftingSurface) {
+	public void calculateVolumetricRatio(LiftingSurface theLiftingSurface) {
 		
 		if ((theLiftingSurface.getType() == ComponentEnum.HORIZONTAL_TAIL)
 				|| (theLiftingSurface.getType() == ComponentEnum.CANARD)) {

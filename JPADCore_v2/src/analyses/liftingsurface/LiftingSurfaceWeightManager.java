@@ -52,32 +52,39 @@ public class LiftingSurfaceWeightManager {
 	public void calculateMass(Aircraft aircraft, ComponentEnum liftingSurfaceType, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		
 		if (liftingSurfaceType.equals(ComponentEnum.WING)) {
-			calculateMass(aircraft, MethodEnum.ROSKAM);
-			calculateMass(aircraft, MethodEnum.KROO);
-			calculateMass(aircraft, MethodEnum.JENKINSON);
-			calculateMass(aircraft, MethodEnum.RAYMER);
-			calculateMass(aircraft, MethodEnum.SADRAEY);
-			calculateMass(aircraft, MethodEnum.TORENBEEK_1982);
-			calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.ROSKAM);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.KROO);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.JENKINSON);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.RAYMER);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.SADRAEY);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.TORENBEEK_1982);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.TORENBEEK_2013);
 		}
-		else if (liftingSurfaceType.equals(ComponentEnum.HORIZONTAL_TAIL) || liftingSurfaceType.equals(ComponentEnum.CANARD)) {
-			calculateMass(aircraft, MethodEnum.HOWE);
-			calculateMass(aircraft, MethodEnum.JENKINSON);
-			calculateMass(aircraft, MethodEnum.NICOLAI_2013);
-			calculateMass(aircraft, MethodEnum.RAYMER);
-			calculateMass(aircraft, MethodEnum.KROO);
-			calculateMass(aircraft, MethodEnum.SADRAEY);
-			calculateMass(aircraft, MethodEnum.ROSKAM);
+		else if (liftingSurfaceType.equals(ComponentEnum.HORIZONTAL_TAIL)) {
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.HOWE);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.JENKINSON);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.NICOLAI_2013);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.RAYMER);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.KROO);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.SADRAEY);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.ROSKAM);
 		}
 		else if (liftingSurfaceType.equals(ComponentEnum.VERTICAL_TAIL)) {
-			calculateMass(aircraft, MethodEnum.HOWE);
-			calculateMass(aircraft, MethodEnum.JENKINSON);
-			calculateMass(aircraft, MethodEnum.RAYMER);
-			calculateMass(aircraft, MethodEnum.ROSKAM);
-			calculateMass(aircraft, MethodEnum.KROO);
-			calculateMass(aircraft, MethodEnum.SADRAEY);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.HOWE);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.JENKINSON);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.RAYMER);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.ROSKAM);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.KROO);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.SADRAEY);
 		}
-		
+		else if (liftingSurfaceType.equals(ComponentEnum.CANARD)) {
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.HOWE);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.JENKINSON);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.NICOLAI_2013);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.RAYMER);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.KROO);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.ROSKAM);
+		}
 		
 		
 		if(!methodsMapWeights.get(liftingSurfaceType).equals(MethodEnum.AVERAGE)) {
@@ -104,9 +111,10 @@ public class LiftingSurfaceWeightManager {
 	 */
 	private void calculateMass(
 			Aircraft aircraft, 
+			ComponentEnum liftingSurfaceType,
 			MethodEnum method) {
 
-		switch(aircraft.getWing().getType()) {
+		switch(liftingSurfaceType) {
 		
 		//---------------------------------------------------------------------------------------------------
 		case WING : {
@@ -288,12 +296,6 @@ public class LiftingSurfaceWeightManager {
 				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 
-			case SADRAEY : { 
-				_methodsList.add(method);
-				_mass = LiftingSurfaceWeightCalc.calculateCanardMassSadraey(aircraft);
-				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-			} break;
-			
 			case ROSKAM : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calcuateCanardMassRoskam(aircraft);
@@ -316,7 +318,7 @@ public class LiftingSurfaceWeightManager {
 				_massReference, 
 				_massMap,
 				_percentDifference,
-				20.).getFilteredMean(), SI.KILOGRAM);
+				1000.).getFilteredMean(), SI.KILOGRAM);
 
 		_mass = _massEstimated.to(SI.KILOGRAM);
 

@@ -49,6 +49,7 @@ public interface IACWeightsManager {
 	double getAPUCalibrationFactor();
 	double getAirConditioningAndAntiIcingSystemCalibrationFactor();
 	double getInstrumentsAndNavigationSystemCalibrationFactor();
+	double getHydraulicAndPneumaticCalibrationFactor();
 	double getElectricalSystemsCalibrationFactor();
 	double getControlSurfaceCalibrationFactor();
 	double getFurnishingsAndEquipmentsCalibrationFactor();

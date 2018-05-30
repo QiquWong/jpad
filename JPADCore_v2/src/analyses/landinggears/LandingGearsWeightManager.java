@@ -78,14 +78,14 @@ public class LandingGearsWeightManager {
 
 		switch (method){
 		
-		case TORENBEEK_2013 : {
+		case TORENBEEK_1976 : {
 			_methodsList.add(method);
 			_mainGearMassEstimated = LandingGearsWeightCalc.calculateMainGearMassTorenbeek1976(aircraft);
 			_frontGearMassEstimated = LandingGearsWeightCalc.calculateFrontGearMassTorenbeek1976(aircraft);
 			_mass = _mainGearMassEstimated.to(SI.KILOGRAM).plus(_frontGearMassEstimated.to(SI.KILOGRAM));
-			_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-			_mainGearMassMap.put(method, Amount.valueOf(round(_mainGearMassEstimated.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
-			_frontGearMassMap.put(method, Amount.valueOf(round(_frontGearMassEstimated.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
+			_massMap.put(method, _mass.to(SI.KILOGRAM));
+			_mainGearMassMap.put(method, _mainGearMassEstimated.to(SI.KILOGRAM));
+			_frontGearMassMap.put(method, _frontGearMassEstimated.to(SI.KILOGRAM));
 		} break;
 
 		default : { } break;

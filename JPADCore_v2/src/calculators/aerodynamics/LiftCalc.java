@@ -1532,8 +1532,18 @@ public class LiftCalc {
 								flapTypeIndex.get(i)
 								)
 						);
-			else
-				k3.add(1.0);
+			else {
+				if (flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE) <= 10.0) 
+					k3.add(highLiftDatabaseReader
+							.getK3VsDfDfRef(
+									flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE),
+									deltaFlapRef.get(i),
+									flapTypeIndex.get(i)
+									)
+							);
+				else
+					k3.add(1.0);
+			}
 
 		List<Double> deltaClmaxFlapList = new ArrayList<>();
 		for(int i=0; i<flapTypeIndex.size(); i++) {

@@ -79,19 +79,19 @@ public class NacelleWeightCalc {
 		if(aircraft.getNacelles().getNacellesList().get(0).getMountingPosition().equals(NacelleMountingPositionEnum.WING)
 				|| aircraft.getNacelles().getNacellesList().get(0).getMountingPosition().equals(NacelleMountingPositionEnum.HTAIL)) {
 			mass = Amount.valueOf(
-					aircraft.getPowerPlant().getP0Total().to(NonSI.HORSEPOWER).times(6.5).getEstimatedValue(),
+					aircraft.getPowerPlant().getEngineList().get(0).getP0().to(NonSI.HORSEPOWER).times(0.065).getEstimatedValue(),
 					SI.KILOGRAM
 					);
 		} 
 		else if(aircraft.getNacelles().getNacellesList().get(0).getMountingPosition().equals(NacelleMountingPositionEnum.UNDERCARRIAGE_HOUSING)) {
 			mass = Amount.valueOf(
-					aircraft.getPowerPlant().getP0Total().to(NonSI.HORSEPOWER).times(8).getEstimatedValue(),
+					aircraft.getPowerPlant().getEngineList().get(0).getP0().to(NonSI.HORSEPOWER).times(0.08).getEstimatedValue(),
 					SI.KILOGRAM
 					);
 		} 
 		else if(aircraft.getNacelles().getNacellesList().get(0).getMountingPosition().equals(NacelleMountingPositionEnum.FUSELAGE)) {
 			mass = Amount.valueOf(
-					aircraft.getPowerPlant().getP0Total().to(NonSI.HORSEPOWER).times(28).getEstimatedValue(),
+					aircraft.getPowerPlant().getEngineList().get(0).getP0().to(NonSI.HORSEPOWER).times(0.28).getEstimatedValue(),
 					SI.KILOGRAM
 					);
 		}
@@ -107,8 +107,8 @@ public class NacelleWeightCalc {
 		
 		double jetThrustRatio = 0.10;
 		Amount<Power> engineESPH = Amount.valueOf(
-				aircraft.getPowerPlant().getP0Total().doubleValue(SI.WATT) 
-				+ ((jetThrustRatio*aircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON))/14.92),
+				aircraft.getPowerPlant().getEngineList().get(0).getP0().doubleValue(SI.WATT) 
+				+ ((jetThrustRatio*aircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON))/14.92),
 				SI.WATT
 				).to(NonSI.HORSEPOWER);
 		

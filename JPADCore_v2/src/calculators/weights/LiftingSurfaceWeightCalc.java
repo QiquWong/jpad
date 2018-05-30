@@ -28,7 +28,7 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 public class LiftingSurfaceWeightCalc {
 
 	/*
-	 *  Roskam page 85 (pdf) part V
+	 *  Roskam page 69 part V
 	 *  This equation is valid only for the following parameters range:
 	 *  
 	 *    - Mach dive0 = 0.4 - 0.8
@@ -37,18 +37,12 @@ public class LiftingSurfaceWeightCalc {
 	 */
 	public static Amount<Mass> calculateWingMassRoskam (Aircraft aircraft) {
 		
-		Amount<Force> maxTakeOffWeight = Amount.valueOf(
-				aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
-				* AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-				SI.NEWTON
-				);
-		
 		return Amount.valueOf(
-				2 * ( 0.00428*
+				( 0.00428*
 						Math.pow(aircraft.getWing().getSurfacePlanform().doubleValue(MyUnits.FOOT2), 0.48)
 						* aircraft.getWing().getAspectRatio()
 						* Math.pow(aircraft.getTheAnalysisManager().getMachDive0(), 0.43)
-						* Math.pow(maxTakeOffWeight.doubleValue(NonSI.POUND_FORCE)
+						* Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND)
 								* aircraft.getTheAnalysisManager().getNUltimate(), 0.84)
 						* Math.pow(aircraft.getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(), 0.14)
 						) 
@@ -84,8 +78,8 @@ public class LiftingSurfaceWeightCalc {
 			
 		
 		return Amount.valueOf(
-				(4.22 * aircraft.getWing().getSurfacePlanform().doubleValue(MyUnits.FOOT2) 
-						+ 1.642e-6
+				(4.22 * aircraft.getWing().getSurfacePlanform().doubleValue(MyUnits.FOOT2)) 
+						+ (1.642e-6
 						* (aircraft.getTheAnalysisManager().getNUltimate()
 								* Math.pow(aircraft.getWing().getSpan().doubleValue(NonSI.FOOT), 3)
 								* Math.sqrt(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND)
@@ -120,51 +114,73 @@ public class LiftingSurfaceWeightCalc {
 		double thicknessMean = meanAirfoil.getThicknessToChordRatio();
 		List<Amount<Mass>> wingMassList = new ArrayList<>();
 		wingMassList.add(wingMass);
+		wingMassList.add(aircraft.getWing().getTheWeightManager().getMassReference());
 		
 		int i=1;
 		int maxIteration = 30;
-		while ((Math.abs((wingMassList.get(i).minus(wingMassList.get(i-1)))
+		while (
+				(Math.abs((wingMassList.get(i).minus(wingMassList.get(i-1)))
 				.divide(wingMassList.get(i))
 				.getEstimatedValue())
+				* 100
 				>= 0.01)
-				|| (maxIteration >= i)
 				) {
 
 			try {
 				if(aircraft.getPowerPlant().getMountingPosition().equals(EngineMountingPositionEnum.WING)) 
 					R = wingMass.doubleValue(SI.KILOGRAM) 
 					+ aircraft.getTheAnalysisManager().getTheWeights().getFuelMass().doubleValue(SI.KILOGRAM) 
-					+ ((2*(aircraft.getNacelles().getTheWeights().getTotalMassEstimated().doubleValue(SI.KILOGRAM) 
-							+ aircraft.getPowerPlant().getTheWeights().getTotalMassEstimated().doubleValue(SI.KILOGRAM))
+					+ (	(2*
+							( (aircraft.getTheAnalysisManager().getTheWeights().getNacellesMass().doubleValue(SI.KILOGRAM)
+									/aircraft.getNacelles().getNacellesNumber())
+									+ (aircraft.getTheAnalysisManager().getTheWeights().getPowerPlantMass().doubleValue(SI.KILOGRAM)
+											/aircraft.getPowerPlant().getEngineNumber())
+									)
 							* aircraft.getNacelles().getDistanceBetweenInboardNacellesY().doubleValue(SI.METER)
 							)
 							/ (0.4*aircraft.getWing().getSpan().doubleValue(SI.METER))
 							)
-					+ ((2*(aircraft.getNacelles().getTheWeights().getTotalMassEstimated().doubleValue(SI.KILOGRAM) 
-							+ aircraft.getPowerPlant().getTheWeights().getTotalMassEstimated().doubleValue(SI.KILOGRAM))
+					+  ( (2*
+							( (aircraft.getTheAnalysisManager().getTheWeights().getNacellesMass().doubleValue(SI.KILOGRAM)
+									/aircraft.getNacelles().getNacellesNumber())
+									+ (aircraft.getTheAnalysisManager().getTheWeights().getPowerPlantMass().doubleValue(SI.KILOGRAM)
+											/aircraft.getPowerPlant().getEngineNumber())
+									)
 							* aircraft.getNacelles().getDistanceBetweenOutboardNacellesY().doubleValue(SI.METER)
 							)
 							/ (0.4*aircraft.getWing().getSpan().doubleValue(SI.METER))
 							);
+				else
+					R = wingMass.doubleValue(SI.KILOGRAM) + aircraft.getTheAnalysisManager().getTheWeights().getFuelMass().doubleValue(SI.KILOGRAM);
 			} 
 			catch(NullPointerException e) {
 				e.printStackTrace();
 			}
 
-			wingMass = Amount.valueOf(0.021265 *
-					( pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
-							* aircraft.getTheAnalysisManager().getNUltimate(), 0.4843
+			wingMass = Amount.valueOf(
+					0.021265 
+					* pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
+							*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)
+							* aircraft.getTheAnalysisManager().getNUltimate(), 
+							0.4843
 							)
-							* pow(aircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 0.7819)
-							* pow(aircraft.getWing().getAspectRatio(), 0.993)
-							* pow(1 + aircraft.getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(), 0.4)
-							* pow(1 - (R/aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)),0.4)
-							)
+					* pow(aircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 0.7819)
+					* pow(aircraft.getWing().getAspectRatio(), 0.993)
+					* pow(1 + aircraft.getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(), 0.4)
+					* pow(1 - (R/aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)),0.4)
 					/ (aircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(NonSI.DEGREE_ANGLE)
 							* pow(thicknessMean,0.4)
 							), 
 					SI.KILOGRAM);
 
+			wingMassList.add(wingMass.to(SI.KILOGRAM));
+			i++;
+			
+			if (i > maxIteration)  {
+				System.err.println("WARNING (WEIHGTS ANALYSIS- WING JENKINSON): MAXIMUM NUMBER OF ITERATION REACHED!! THE LAST CALCULATED VALUE WILL BE USED ...");
+				break;
+			}
+			
 		}
 
 		return wingMass;
@@ -175,9 +191,15 @@ public class LiftingSurfaceWeightCalc {
 	 */
 	public static Amount<Mass> calculateWingMassRaymer (Aircraft aircraft) {
 		
+		Amount<Force> maximumTakeOffWeight = Amount.valueOf( 
+				aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND)
+				* AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+				SI.NEWTON
+				);
+		
 		return  Amount.valueOf(
 				0.0051 
-				*pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND) 
+				*pow(maximumTakeOffWeight.doubleValue(NonSI.POUND_FORCE)
 						*aircraft.getTheAnalysisManager().getNUltimate(),
 						0.557
 						)
@@ -199,9 +221,9 @@ public class LiftingSurfaceWeightCalc {
 		
 		double _kRho = 1.0;
 		if(aircraft.getPowerPlant().getMountingPosition().equals(EngineMountingPositionEnum.WING))
-			_kRho = 0.0375;
+			_kRho = 0.00375;
 		else
-			_kRho = 0.0275;
+			_kRho = 0.00275;
 		
 		return Amount.valueOf(
 				aircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
@@ -441,6 +463,21 @@ public class LiftingSurfaceWeightCalc {
 					_kRhoArray, 
 					aircraft.getHTail().getPositionRelativeToAttachment()
 					);
+		else if(aircraft.getHTail().getPositionRelativeToAttachment() < 0.0)
+			_kRhoHTailPosition = MyMathUtils.getInterpolatedValue1DLinear(
+					_positionRelativeToAttachmentArray,
+					_kRhoArray, 
+					0.0
+					);
+		else if(aircraft.getHTail().getPositionRelativeToAttachment() > 1.0)
+			_kRhoHTailPosition = MyMathUtils.getInterpolatedValue1DLinear(
+					_positionRelativeToAttachmentArray,
+					_kRhoArray, 
+					1.0
+					);
+		
+		aircraft.calculateVolumetricRatio(aircraft.getHTail());
+		double hTailVolumetricRatio = aircraft.getHTail().getVolumetricRatio();
 		
 		return Amount.valueOf(
 				aircraft.getHTail().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
@@ -453,7 +490,7 @@ public class LiftingSurfaceWeightCalc {
 						0.6
 						)
 				* pow(aircraft.getHTail().getPanels().get(0).getTaperRatio(), 0.04)
-				* pow(aircraft.getHTail().getVolumetricRatio(), 0.3)
+				* pow(hTailVolumetricRatio, 0.3)
 				* pow(aircraft.getHTail().getSymmetricFlaps().get(0).getMeanChordRatio(), 0.4),
 				SI.KILOGRAM);
 		
@@ -620,6 +657,21 @@ public class LiftingSurfaceWeightCalc {
 					_kRhoArray, 
 					aircraft.getHTail().getPositionRelativeToAttachment()
 					);
+		else if(aircraft.getHTail().getPositionRelativeToAttachment() < 0.0)
+			_kRhoVTailPosition = MyMathUtils.getInterpolatedValue1DLinear(
+					_positionRelativeToAttachmentArray,
+					_kRhoArray, 
+					0.0
+					);
+		else if(aircraft.getHTail().getPositionRelativeToAttachment() > 1.0)
+			_kRhoVTailPosition = MyMathUtils.getInterpolatedValue1DLinear(
+					_positionRelativeToAttachmentArray,
+					_kRhoArray, 
+					1.0
+					);
+		
+		aircraft.calculateVolumetricRatio(aircraft.getVTail());
+		double vTailVolumetricRatio = aircraft.getVTail().getVolumetricRatio();
 		
 		return  Amount.valueOf(
 				aircraft.getVTail().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
@@ -630,7 +682,7 @@ public class LiftingSurfaceWeightCalc {
 				* pow(aircraft.getVTail().getAspectRatio()
 						/ cos(aircraft.getVTail().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)), 0.6)
 				* pow(aircraft.getVTail().getPanels().get(0).getTaperRatio(), 0.04)
-				* pow(aircraft.getVTail().getVolumetricRatio(), 0.2)
+				* pow(vTailVolumetricRatio, 0.2)
 				* pow(aircraft.getVTail().getSymmetricFlaps().get(0).getMeanChordRatio(), 0.4),
 				SI.KILOGRAM
 				);
@@ -760,27 +812,6 @@ public class LiftingSurfaceWeightCalc {
 				NonSI.POUND
 				).to(SI.KILOGRAM);
 
-	}
-
-	/*
-	 * Same as HTail without _kRhoArray and _positionRelativeToAttachmentArray
-	 */
-	public static Amount<Mass> calculateCanardMassSadraey (Aircraft aircraft) {
-		
-		return Amount.valueOf(
-				aircraft.getCanard().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
-				* aircraft.getCanard().getMeanAerodynamicChord().doubleValue(SI.METER)
-				* aircraft.getCanard().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio()
-				* aircraft.getTheAnalysisManager().getTheWeights().getMaterialDensity().getEstimatedValue()
-				* pow(aircraft.getCanard().getAspectRatio()
-						/ cos(aircraft.getCanard().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)), 
-						0.6
-						)
-				* pow(aircraft.getCanard().getPanels().get(0).getTaperRatio(), 0.04)
-				* pow(aircraft.getCanard().getVolumetricRatio(), 0.3)
-				* pow(aircraft.getCanard().getSymmetricFlaps().get(0).getMeanChordRatio(), 0.4),
-				SI.KILOGRAM);
-		
 	}
 
 	/*

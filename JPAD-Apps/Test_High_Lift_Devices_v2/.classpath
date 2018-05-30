@@ -13,8 +13,8 @@
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jcommon-1.0.23.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreechart-1.5.0.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreesvg-3.3.jar"/>
-	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/JPADConfigs_v_20022018.jar"/>
-	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/JPADCore_v2_20022018.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/JPADConfigs_v_29052018.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/JPADCore_v2_29052018.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jscience.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/slf4j-nop-1.7.5.jar"/>

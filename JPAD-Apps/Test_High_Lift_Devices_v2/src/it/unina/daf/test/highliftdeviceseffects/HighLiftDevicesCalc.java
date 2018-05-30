@@ -22,6 +22,8 @@ import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import aircraft.components.liftingSurface.creator.ISlatCreator;
+import aircraft.components.liftingSurface.creator.ISymmetricFlapCreator;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import calculators.aerodynamics.LiftCalc;
@@ -188,7 +190,7 @@ public class HighLiftDevicesCalc {
 		
 		String leadingEdgeRadiusDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/leading_edge_radius_distribution");
 		if(leadingEdgeRadiusDistributionProperty != null)
-			input.setLeadingEdgeRadiusAirfoilsDistribution(reader.readArrayofAmountFromXML("//wing/airfoils_data/leading_edge_radius_distribution"));
+			input.setLeadingEdgeRadiusAirfoilsDistribution(reader.readArrayDoubleFromXML("//wing/airfoils_data/leading_edge_radius_distribution"));
 		
 		String airfoilsChordDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/airfoil_chord_distribution");
 		if(airfoilsChordDistributionProperty != null)
@@ -400,17 +402,19 @@ public class HighLiftDevicesCalc {
 		List<SymmetricFlapCreator> flapList = new ArrayList<>();
 		for(int i=0; i<input.getFlapsNumber(); i++) {
 			
-			flapList.add(new SymmetricFlapCreator
-					.SymmetricFlapBuilder(
-							"Flap #" + i,
-							input.getFlapType().get(i),
-							input.getEtaInFlap().get(i),
-							input.getEtaOutFlap().get(i),
-							input.getCfc().get(i),
-							input.getCfc().get(i),
-							Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
-							Amount.valueOf(50.0, NonSI.DEGREE_ANGLE)
-							).build()
+			flapList.add(
+					new SymmetricFlapCreator(
+							new ISymmetricFlapCreator.Builder()
+									.setId("Flap #" + i)
+									.setType(input.getFlapType().get(i))
+									.setInnerStationSpanwisePosition(input.getEtaInFlap().get(i))
+									.setOuterStationSpanwisePosition(input.getEtaOutFlap().get(i))
+									.setInnerChordRatio(input.getCfc().get(i))
+									.setOuterChordRatio(input.getCfc().get(i))
+									.setMinimumDeflection(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+									.setMaximumDeflection(Amount.valueOf(50.0, NonSI.DEGREE_ANGLE))
+									.build()
+							)
 					);
 			
 		}
@@ -418,17 +422,19 @@ public class HighLiftDevicesCalc {
 		List<SlatCreator> slatList = new ArrayList<>();
 		for(int i=0; i<input.getSlatsNumber(); i++) {
 			
-			slatList.add(new SlatCreator
-					.SlatBuilder(
-							"Slat #" + i,
-							input.getEtaInSlat().get(i),
-							input.getEtaOutSlat().get(i),
-							input.getCsc().get(i),
-							input.getCsc().get(i),
-							input.getcExtCSlat().get(i),
-							Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
-							Amount.valueOf(35.0, NonSI.DEGREE_ANGLE)
-							).build()
+			slatList.add(
+					new SlatCreator (
+							new ISlatCreator.Builder()
+							.setId("Slat #" + i)
+							.setInnerStationSpanwisePosition(input.getEtaInSlat().get(i))
+							.setOuterStationSpanwisePosition(input.getEtaOutSlat().get(i))
+							.setInnerChordRatio(input.getCsc().get(i))
+							.setOuterChordRatio(input.getCsc().get(i))
+							.setExtensionRatio(input.getcExtCSlat().get(i))
+							.setMinimumDeflection(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+							.setMaximumDeflection(Amount.valueOf(35.0, NonSI.DEGREE_ANGLE))
+							.build()
+							)
 					);
 			
 		}
