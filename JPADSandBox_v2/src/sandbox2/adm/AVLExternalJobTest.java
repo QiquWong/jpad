@@ -257,18 +257,19 @@ public class AVLExternalJobTest extends Application {
 //					.build();
 
 			// reading aircraft from xml ... 
-//			theAircraft = Aircraft.importFromXML(
-//					pathToXML,
-//					dirLiftingSurfaces,
-//					dirFuselages,
-//					dirEngines,
-//					dirNacelles,
-//					dirLandingGears,
-//					dirSystems,
-//					dirCabinConfiguration,
-//					dirAirfoil,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader);
+			theAircraft = Aircraft.importFromXML(
+					pathToXML,
+					dirLiftingSurfaces,
+					dirFuselages,
+					dirEngines,
+					dirNacelles,
+					dirLandingGears,
+					dirCabinConfiguration,
+					dirAirfoil,
+					aeroDatabaseReader,
+					highLiftDatabaseReader,
+					fusDesDatabaseReader,
+					veDSCDatabaseReader);
 			
 			// activating system.out
 //			System.setOut(originalOut);			
