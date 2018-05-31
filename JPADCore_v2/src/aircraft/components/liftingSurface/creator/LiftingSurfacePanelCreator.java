@@ -64,7 +64,7 @@ public class LiftingSurfacePanelCreator {
 	@SuppressWarnings("unchecked")
 	public void calculateGeometry() {
 
-		_taperRatio = _theLiftingSurfacePanelInterface.getChordRoot().to(SI.METER)
+		_taperRatio = _theLiftingSurfacePanelInterface.getChordTip().to(SI.METER)
 				.divide(_theLiftingSurfacePanelInterface.getChordRoot().to(SI.METER))
 				.getEstimatedValue();
 		_surfacePlanform = (Amount<Area>) (_theLiftingSurfacePanelInterface.getChordRoot().to(SI.METER)

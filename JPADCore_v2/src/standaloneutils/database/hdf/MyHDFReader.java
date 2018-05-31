@@ -935,6 +935,103 @@ public class MyHDFReader {
 		}
 	}
 
+	public double[][][][] getDataset4DFloatByName(String datasetFullName) throws HDF5LibraryException, NullPointerException {
+
+		if (_fileH5 == null || _rootGroup == null)
+			return null;
+
+		if (datasetFullName == null || datasetFullName.length() == 0)
+			return null;
+
+		// recursively iterate
+
+		// some useful variables
+		//		HObject obj = null;
+		int o_id = -1;
+		int objType;
+		H5O_info_t info;
+
+		// check start from root
+		o_id = _rootGroup.open();
+		info = H5.H5Oget_info(o_id);
+		objType = info.type;
+
+		H5O_iterate_t iter_data = new H5O_MyIterData_FindDatasetByName();
+		H5O_iterate_cb iter_cb = new H5O_IterCallback_FindDatasetByName(datasetFullName);
+
+		// recursive visit
+		H5.H5Ovisit(
+				_fileH5.getFID(), 
+				HDF5Constants.H5_INDEX_NAME, 
+				HDF5Constants.H5_ITER_NATIVE, 
+				iter_cb, 
+				iter_data
+				);
+
+		float [] dset = ((H5O_IterCallback_FindDatasetByName)iter_cb).dataset;
+
+		//		System.out.println(
+		//				"getDataset2DFloatByName :: dataset size " + dset.length + "\n"
+		//				+ Arrays.toString(dset)
+		//				);		
+		//		System.out.println(
+		//				"getDataset2DFloatByName :: dataset size = "
+		//				+ ((H5O_IterCallback_FindDatasetByName)iter_cb).rank
+		//				);
+
+		if (((H5O_IterCallback_FindDatasetByName)iter_cb).rank == 4) {
+
+			int nRows  = (int) ((H5O_IterCallback_FindDatasetByName)iter_cb).dims_out[0];
+			int nCols  = (int) ((H5O_IterCallback_FindDatasetByName)iter_cb).dims_out[1];
+			int nPages = (int) ((H5O_IterCallback_FindDatasetByName)iter_cb).dims_out[2];
+			int nTables = (int) ((H5O_IterCallback_FindDatasetByName)iter_cb).dims_out[3];
+
+			//			System.out.println("3D dataset !!!");
+			//			System.out.println(
+			//					"Dimensions (rows x columns x pages): "
+			//					+ nRows
+			//					+ " x "
+			//					+ nCols
+			//					+ " x "
+			//					+ nPages
+			//			);
+
+			// From dset, a 1D array, to result, a 3D array
+			// http://stackoverflow.com/questions/1817631/iterating-one-dimension-array-as-two-dimension-array
+			// http://www.kosbie.net/cmu/fall-08/15-100/handouts/notes-two-dimensional-arrays.html
+
+			double[][][][] result = new double[nPages][nRows][nCols][nTables];
+
+			int index = -1;
+			for(int i = 0; i < nRows; i++) {
+				for(int j = 0; j < nCols; j++) {
+					for(int k = 0; k < nPages; k++) {
+						for(int l = 0; l < nTables; l++) {
+							index++;
+							result[k][i][j][l] = dset[index];
+							// System.out.println(i + "," + j + "," + k + ": " + dset[index]);
+						}
+					}
+				}
+			}
+			//			System.out.println("##################");
+			//			for(int k = 0; k < nPages; k++) {
+			//				for(int j = 0; j < nCols; j++) {
+			//					for(int i = 0; i < nRows; i++) {
+			//						System.out.println(i + "," + j + "," + k + ": " + result[i][j][k]);
+			//					}
+			//				}
+			//			}			
+
+			return result;
+
+		} else {
+			// return a null array float[][]
+			// return Collections.emptyList().toArray(new double[0][0]);
+			return null;
+		}
+	}
+	
 	/**
 	 * 
 	 * @param groupFullName
@@ -1312,6 +1409,44 @@ public class MyHDFReader {
 		return listArray;
 	}
 
+	public MyInterpolatingFunction interpolate4DFromDatasetFunction(String group4DFullName) {
+
+		String dataset4DFullName = group4DFullName + "/data";
+
+		double[][][][] dset4D = null;
+		try {
+			dset4D = getDataset4DFloatByName(dataset4DFullName);
+		} catch (HDF5LibraryException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+
+		if (dset4D == null) {
+			return null;
+
+		} else {
+			double[] var0 = null;
+			double[] var1 = null;
+			double[] var2 = null;
+			double[] var3 = null;
+
+			try {
+				var0 = getDataset1DFloatByName(group4DFullName + "/var_0");
+				var1 = getDataset1DFloatByName(group4DFullName + "/var_1");
+				var2 = getDataset1DFloatByName(group4DFullName + "/var_2");
+				var3 = getDataset1DFloatByName(group4DFullName + "/var_3");
+
+			} catch (HDF5LibraryException | NullPointerException e) {
+				e.printStackTrace();
+			}
+
+			MyInterpolatingFunction f = new MyInterpolatingFunction();
+			f.interpolateQuadrilinear(var0, var3, var2, var1, dset4D);
+			return f;
+		}
+	}	
+	
 	// G. Torre
 	/**
 	 * @param group4DFullName names that identify database used

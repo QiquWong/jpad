@@ -22,8 +22,9 @@ public class MyInterpolatingFunction {
 	private TricubicInterpolatingFunction ti;
 	private BilinearInterpolatingFunction bif;
 	private TrilinearInterpolatingFunction tif;
-	private double[] x, y, z;
-	private double xMin, xMax, yMin, yMax, zMin, zMax;
+	private QuadrilinearInterpolatingFunction qif;
+	private double[] x, y, z, k;
+	private double xMin, xMax, yMin, yMax, zMin, zMax, kMin, kMax;
 
 	public MyInterpolatingFunction() {
 
@@ -87,6 +88,26 @@ public class MyInterpolatingFunction {
 		
 	}
 	
+	public QuadrilinearInterpolatingFunction interpolateQuadrilinear(double[] x, double[] y, double[] z, double[] k, double[][][][] data) {
+		
+		this.x = x; 
+		this.y = y;
+		this.z = z;
+		this.k = k;
+		xMin = MyArrayUtils.getMin(this.x);
+		xMax = MyArrayUtils.getMax(this.x);
+		yMin = MyArrayUtils.getMin(this.y);
+		yMax = MyArrayUtils.getMax(this.y);
+		zMin = MyArrayUtils.getMin(this.z);
+		zMax = MyArrayUtils.getMax(this.z);
+		kMin = MyArrayUtils.getMin(this.k);
+		kMax = MyArrayUtils.getMax(this.k);
+		
+		qif = new QuadrilinearInterpolatingFunction(x, y, z, k, data);
+		return qif;
+		
+	}
+	
 	public TricubicInterpolatingFunction interpolate(double[] x, double[] y, double[] z, double[][][] data) {
 		this.x = x; 
 		this.y = y;
@@ -143,6 +164,18 @@ public class MyInterpolatingFunction {
 		return ti.value(x,y,z);
 	}
 
+	public double valueQuadrilinear(double x, double y, double z, double k) {
+		if (x < xMin) x = xMin;
+		if (x > xMax) x = xMax;
+		if (y < yMin) y = yMin;
+		if (y > yMax) y = yMax;
+		if (z < zMin) z = zMin;
+		if (z > zMax) z = zMax;
+		if (k < kMin) k = kMin;
+		if (k > kMax) k = kMax;
+		return qif.value(x,y,z,k);
+	}
+	
 	public double[] getX() {
 		return x;
 	}
@@ -290,7 +323,7 @@ public class MyInterpolatingFunction {
 			
 			// z = var_1 = number of columns
 			if (z.length != data[0][0].length) {
-				throw new DimensionMismatchException(y.length, data[0][0].length);
+				throw new DimensionMismatchException(z.length, data[0][0].length);
 			}
 			
 			if (x.length < 2) {
@@ -355,6 +388,132 @@ public class MyInterpolatingFunction {
 			List<Double> valuesAtVar0 = new ArrayList<>();
 			for(int i=0; i<interpolatedDataAlongYAndZ.size(); i++)
 				valuesAtVar0.add(interpolatedDataAlongYAndZ.get(i).value(y,z));
+			
+			return MyMathUtils.getInterpolatedValue1DLinear(
+					this.x,
+					MyArrayUtils.convertToDoublePrimitive(valuesAtVar0), 
+					x
+					);
+			
+		}
+		
+	}
+	
+	public static class QuadrilinearInterpolatingFunction {
+		
+		double[] x;
+		double xMin;
+		double xMax;
+		double[] y;
+		double yMin;
+		double yMax;
+		double[] z;
+		double zMin;
+		double zMax;
+		double[] k;
+		double kMin;
+		double kMax;
+		
+		List<TrilinearInterpolatingFunction> interpolatedDataAlongYAndZAndK;
+		
+		public QuadrilinearInterpolatingFunction (double[] x, double[] y, double[] z, double [] k ,double[][][][] data) {
+
+			// x = var_0 = number of pages
+			if (x.length != data.length) {
+				throw new DimensionMismatchException(x.length, data.length);
+			}
+			
+			// y = var_3 = number of rows
+			if (y.length != data[0].length) {
+				throw new DimensionMismatchException(y.length, data[0].length);
+			}
+			
+			// z = var_2 = number of columns
+			if (z.length != data[0][0].length) {
+				throw new DimensionMismatchException(z.length, data[0][0].length);
+			}
+			
+			// k = var_1 = number of tables
+			if (k.length != data[0][0][0].length) {
+				throw new DimensionMismatchException(k.length, data[0][0][0].length);
+			}
+		
+
+			if (x.length < 2) {
+				throw new NumberIsTooSmallException(LocalizedFormats.NUMBER_OF_POINTS,
+						x.length, 2, true);
+			}
+			
+			if (y.length < 2) {
+				throw new NumberIsTooSmallException(LocalizedFormats.NUMBER_OF_POINTS,
+						y.length, 2, true);
+			}
+			
+			if (z.length < 2) {
+				throw new NumberIsTooSmallException(LocalizedFormats.NUMBER_OF_POINTS,
+						z.length, 2, true);
+			}
+			
+			if (k.length < 2) {
+				throw new NumberIsTooSmallException(LocalizedFormats.NUMBER_OF_POINTS,
+						k.length, 2, true);
+			}
+			
+			this.x = x; 
+			this.y = y;
+			this.z = z;
+			this.k = k;
+			xMin = MyArrayUtils.getMin(this.x);
+			xMax = MyArrayUtils.getMax(this.x);
+			yMin = MyArrayUtils.getMin(this.y);
+			yMax = MyArrayUtils.getMax(this.y);
+			zMin = MyArrayUtils.getMin(this.z);
+			zMax = MyArrayUtils.getMax(this.z);
+			kMin = MyArrayUtils.getMin(this.k);
+			kMax = MyArrayUtils.getMax(this.k);
+			
+		    MathArrays.checkOrder(x);
+		    MathArrays.checkOrder(y);
+		    MathArrays.checkOrder(z);
+		    MathArrays.checkOrder(k);
+		    
+		    // getting bilinear interpolating functions for each page (along var_0 = z)
+		    interpolatedDataAlongYAndZAndK = new ArrayList<>();
+		    for(int i=0; i<x.length; i++)
+		    	interpolatedDataAlongYAndZAndK.add(
+		    			new TrilinearInterpolatingFunction(
+		    					y,
+		    					z,
+		    					k,
+		    					data[i]
+		    					)
+		    			);
+		    
+		}
+		
+		/**
+		 *@author Vittorio Trifari
+		 * 
+		 * @param x = var_0 = page value
+		 * @param y = var_2 = row value
+		 * @param z = var_1 = column value
+		 * @param k = var_3 = table value
+		 * @return
+		 */
+		public double value(double x, double y, double z, double k) {
+			
+			if (x < xMin) x = xMin;
+			if (x > xMax) x = xMax;
+			if (y < yMin) y = yMin;
+			if (y > yMax) y = yMax;
+			if (z < zMin) z = zMin;
+			if (z > zMax) z = zMax;
+			if (k < kMin) k = kMin;
+			if (k > kMax) k = kMax;
+			
+			List<Double> valuesAtVar0 = new ArrayList<>();
+			for(int i=0; i<interpolatedDataAlongYAndZAndK.size(); i++)
+				valuesAtVar0.add(interpolatedDataAlongYAndZAndK.get(i).value(y,z,k));
 			
 			return MyMathUtils.getInterpolatedValue1DLinear(
 					this.x,
