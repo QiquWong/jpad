@@ -43,7 +43,7 @@ public class Test_01 {
 		OperatingConditions operatingConditions = AircraftUtils.importOperatingCondition(args);
 		
 		// Perform analysis
-		// AircraftUtils.performAnalyses(aircraft, operatingConditions, AircraftUtils.pathToAnalysesXML, "IRON_CANARD_cavas");
+		AircraftUtils.performAnalyses(aircraft, operatingConditions, AircraftUtils.pathToAnalysesXML, "IRON_CANARD_cavas");
 		
 		LiftingSurface wing = aircraft.getWing();
 		Fuselage fuselage = aircraft.getFuselage();
