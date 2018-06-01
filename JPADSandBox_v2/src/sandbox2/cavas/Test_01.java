@@ -25,6 +25,7 @@ import calculators.aerodynamics.LiftCalc;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import igeo.IVec2R.Len;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
@@ -309,7 +310,7 @@ public class Test_01 {
 		Amount<Angle> dihedralHTail = hTail.getDihedralMean();
 		Amount<Angle> aerodynamicTwistHTail = hTail.getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip();
 		Amount<Angle> sweepAngleC4HTail = hTail.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(NonSI.DEGREE_ANGLE);
-		double etaH = 0.9; // TODO take the degradation factor of dynamic pressure
+		double etaH = 0.9; // TODO take the degradation factor of dynamic pressure horizontal tail
 		Amount<Area> surfaceHTail = hTail.getSurfacePlanform();
 		
 		System.out.println(">> dihedral angle horizontal tail: " + dihedralHTail);
@@ -446,7 +447,7 @@ public class Test_01 {
 		// tau_A
 		double cAileronOverCWing = wing.getAsymmetricFlaps().get(1).getMeanChordRatio();
 
-		System.out.println(">> mean chord aileron/mean chord wing (at aileron): " + cAileronOverCWing);
+		System.out.println(">> mean chord aileron/mean chord wing: " + cAileronOverCWing);
 		
 		double tauA = databaseReader.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(cAileronOverCWing);
 		
@@ -486,17 +487,63 @@ public class Test_01 {
 		double deltaRME = outerRME - innerRME;
 
 		// Cl_delta_A
-		Amount<?> cRolldeltaAFullChord = Amount.valueOf(
+		Amount<?> cRollDeltaAFullChord = Amount.valueOf(
 				deltaRME*kWing/betaFactor,
 				SI.RADIAN.inverse()
 				);
-		Amount<?> cRolldeltaA = cRolldeltaAFullChord.times(tauA);
+		Amount<?> cRollDeltaA = cRollDeltaAFullChord.times(tauA);
 		
 		System.out.println(">>>> tau_A: " + tauA);
 		System.out.println(">>>> RME_I: " + innerRME);
 		System.out.println(">>>> RME_O: " + outerRME);
 		System.out.println(">>>> Delta RME: " + deltaRME);
-		System.out.println(">>>>>> Cl_delta_A: " + cRolldeltaA);
+		System.out.println(">>>>>> Cl_delta_A: " + cRollDeltaA);
+		
+		// --------------------------------------------------
+		// Calculation of CY_delta_r
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CY_delta_r");
+		System.out.println("-------------------------");
+		
+		// tau_R
+		double cRudderOverCWing = vTail.getSymmetricFlaps().get(0).getMeanChordRatio();
+		
+		System.out.println(">> mean chord rudder/mean chord wing: " + cRudderOverCWing);
+		
+		double tauR = databaseReader.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(cRudderOverCWing);
+		
+		// Delta K_R
+		double etaInboardRudder = vTail.getSymmetricFlaps().get(0).getTheSymmetricFlapInterface().getInnerStationSpanwisePosition();
+		double etaOutboardRudder = vTail.getSymmetricFlaps().get(0).getTheSymmetricFlapInterface().getOuterStationSpanwisePosition();
+		double innerKR = 0.5; // TODO take K_R_inner
+		double outerKR = 0.8; // TODO take K_R_outer
+		double deltaKR = outerKR - innerKR;
+				
+		// CY_delta_r
+		double etaV = 0.9; // TODO take the degradation factor of dynamic pressure for the vertical tail
+		Amount <?> cYawDeltaR = cLAlphaV.abs().times(surfaceVTail).divide(surfaceWing).times(etaV*deltaKR*tauR);
+		
+		System.out.println(">> degradation factor of dynamic pressure vertical tail: " + etaV);
+		System.out.println(">>>> tau_R: " + tauR);
+		System.out.println(">>>>>> CY_delta_r: " + cYawDeltaR);
+		
+		// --------------------------------------------------
+		// Calculation of Cl_delta_r
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of Cl_delta_r");
+		System.out.println("-------------------------");
+		
+		// CY_delta_r
+		Amount<Length> xR = Amount.valueOf(
+				15,
+				SI.METER
+				);
+		
+		//Amount <?> cRollDeltaR = cYawDeltaR
+		
+		
 		
 		// --------------------------------------------------
 		// Calculation of Cl_p_WB
