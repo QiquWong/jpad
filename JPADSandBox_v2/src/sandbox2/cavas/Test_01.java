@@ -104,7 +104,7 @@ public class Test_01 {
 		System.out.println(">> sweep angle @ c/2 wing: " + sweepAngleC2Wing);
 
 		Amount<?> cRollBetaOverCL1WingBodyLc2 = Amount.valueOf(
-				databaseReader.getClbetaWBClbetaOverCLift1Lc2VsLc2ARlambda(taperRatioWing, aspectRatioWing, sweepAngleC2Wing), // var0, var1, var2
+				databaseReader.getClBetaWBClbetaOverCLift1Lc2VsLc2ARlambda(taperRatioWing, aspectRatioWing, sweepAngleC2Wing), // var0, var1, var2
 				NonSI.DEGREE_ANGLE.inverse()
 				);
 
@@ -117,7 +117,7 @@ public class Test_01 {
 		System.out.println(">> AR/cos(Lambda_c/2) wing: " + aspectRatioOverCosSweepAngleC2Wing);
 		System.out.println(">> Mach cos(Lambda_c/2) wing: " + machTimesCosSweepAngleC2Wing);
 		
-		double cRollKappaMachLambdaW = databaseReader.getClbetaWBKMLVsMachTimesCosLc2AROverCosLc2(
+		double cRollKappaMachLambdaW = databaseReader.getClBetaWBKMLVsMachTimesCosLc2AROverCosLc2(
 				aspectRatioOverCosSweepAngleC2Wing, // var0
 				machTimesCosSweepAngleC2Wing // var1
 				);
@@ -132,22 +132,22 @@ public class Test_01 {
 		System.out.println(">> span wing: " + spanWing);
 		System.out.println(">> A/b wing: " + aOverSpanWing);
 		
-		double cRollKappafW = databaseReader.getClbetaWBKfVsAOverBAROverCosLc2(aspectRatioOverCosSweepAngleC2Wing, aOverSpanWing); // var0, var1
+		double cRollKappafW = databaseReader.getClBetaWBKfVsAOverBAROverCosLc2(aspectRatioOverCosSweepAngleC2Wing, aOverSpanWing); // var0, var1
 		
 		// Cl_beta/CL1_AR_W
 		Amount<?> cRollBetaOverCL1WingBodyAR = Amount.valueOf(
-				databaseReader.getClbetaWBClbetaOverCLift1ARVsARlambda(taperRatioWing, aspectRatioWing), // var0, var1
+				databaseReader.getClBetaWBClbetaOverCLift1ARVsARlambda(taperRatioWing, aspectRatioWing), // var0, var1
 				NonSI.DEGREE_ANGLE.inverse()
 				);
 		
 		// Cl_beta/Gamma_W
 		Amount<?> cRollBetaOverGammaW = Amount.valueOf(
-				databaseReader.getClbetaWBClbetaOverGammaWVsARLc2lambda(taperRatioWing, sweepAngleC2Wing, aspectRatioWing), // var0, var1, var2
+				databaseReader.getClBetaWBClbetaOverGammaWVsARLc2lambda(taperRatioWing, sweepAngleC2Wing, aspectRatioWing), // var0, var1, var2
 				NonSI.DEGREE_ANGLE.pow(2).inverse()
 				);
 		
 		// K_M_Gamma_W
-		double cRollKappaMachGammaW = databaseReader.getClbetaWBKMGammaVsMachTimesCosLc2AROverCosLc2(
+		double cRollKappaMachGammaW = databaseReader.getClBetaWBKMGammaVsMachTimesCosLc2AROverCosLc2(
 				aspectRatioOverCosSweepAngleC2Wing, // var0
 				machTimesCosSweepAngleC2Wing // var1
 				);
@@ -186,7 +186,7 @@ public class Test_01 {
 		
 		// DCl_beta/(eps_W*tan(Lambda_c/4))
 		Amount<?> cRollDeltaClBetaOverEpsWTanLc4 = Amount.valueOf(
-				databaseReader.getClbetaWBDClbetaOverEpsWTimesTanLc4VsARlambda(taperRatioWing, aspectRatioWing), // var0, var1
+				databaseReader.getClBetaWBDClbetaOverEpsWTimesTanLc4VsARlambda(taperRatioWing, aspectRatioWing), // var0, var1
 				NonSI.DEGREE_ANGLE.pow(2).inverse()
 				);
 		
@@ -265,7 +265,7 @@ public class Test_01 {
 		System.out.println(">> sweep angle @ c/2 horizontal tail: " + sweepAngleC2HTail);
 
 		Amount<?> cRollBetaOverGammaH = Amount.valueOf(
-				databaseReader.getClbetaWBClbetaOverGammaWVsARLc2lambda(taperRatioHTail, sweepAngleC2HTail, aspectRatioHTail), // var0, var1, var2
+				databaseReader.getClBetaWBClbetaOverGammaWVsARLc2lambda(taperRatioHTail, sweepAngleC2HTail, aspectRatioHTail), // var0, var1, var2
 				NonSI.DEGREE_ANGLE.pow(2).inverse()
 				);
 
@@ -277,7 +277,7 @@ public class Test_01 {
 		System.out.println(">> AR/cos(Lambda_c/2) horizontal tail: " + aspectRatioOverCosSweepAngleC2HTail);
 		System.out.println(">> Mach cos(Lambda_c/2) horizontal tail: " + machTimesCosSweepAngleC2HTail);
 		
-		double cRollKappaMachGammaH = databaseReader.getClbetaWBKMGammaVsMachTimesCosLc2AROverCosLc2(
+		double cRollKappaMachGammaH = databaseReader.getClBetaWBKMGammaVsMachTimesCosLc2AROverCosLc2(
 				aspectRatioOverCosSweepAngleC2HTail, // var0
 				machTimesCosSweepAngleC2HTail // var1
 				);
@@ -302,7 +302,7 @@ public class Test_01 {
 		
 		// DCl_beta/(eps_H*tan(Lambda_c/4))
 		Amount<?> cRollDeltaClBetaOverEpsHTanLc4 = Amount.valueOf(
-				databaseReader.getClbetaWBDClbetaOverEpsWTimesTanLc4VsARlambda(taperRatioHTail, aspectRatioHTail), // var0, var1
+				databaseReader.getClBetaWBDClbetaOverEpsWTimesTanLc4VsARlambda(taperRatioHTail, aspectRatioHTail), // var0, var1
 				NonSI.DEGREE_ANGLE.pow(2).inverse()
 				);
 		
@@ -339,10 +339,10 @@ public class Test_01 {
 		System.out.println(">>>>>> Cl_beta_H: " + cRollBetaH);
 		
 		// --------------------------------------------------
-		// Calculation of Cl_beta_V
+		// Calculation of CY_beta_V
 		// --------------------------------------------------
 		System.out.println("-------------------------");
-		System.out.println("Calculation of Cl_beta_V");
+		System.out.println("Calculation of CY_beta_V");
 		System.out.println("-------------------------");
 		
 		// K_Y_V
@@ -361,17 +361,12 @@ public class Test_01 {
 		System.out.println(">> span vertical tail: " + spanVTail);
 		System.out.println(">> r_1: " + r1);
 
-		double cYawKappaYV = databaseReader.getCybetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
+		double cYawKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
 		
 		// CY_beta_V
 		double taperRatioVTail = vTail.getEquivalentWing().getPanels().get(0).getTaperRatio();
 		double aspectRatioVTail = vTail.getAspectRatio();
 		Amount<Angle> sweepAngleLEVTail = vTail.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE);
-
-		System.out.println(">> taper ratio vertical tail: " + taperRatioVTail);
-		System.out.println(">> aspect ratio vertical tail: " + aspectRatioVTail);
-		System.out.println(">> sweep angle @ LE vertical tail: " + sweepAngleLEVTail);
-
 		CalcCLAlpha calcCLAlphaVTail = vTailManager.new CalcCLAlpha();
 		calcCLAlphaVTail.helmboldDiederich(mach);
 		Amount<?> cLAlphaV = vTailManager.getCLAlpha().get(MethodEnum.HELMBOLD_DIEDERICH);
@@ -384,6 +379,9 @@ public class Test_01 {
 				+ 0.4*zWOverHeightFuselage
 				+ 0.009*aspectRatioWing;
 
+		System.out.println(">> taper ratio vertical tail: " + taperRatioVTail);
+		System.out.println(">> aspect ratio vertical tail: " + aspectRatioVTail);
+		System.out.println(">> sweep angle @ LE vertical tail: " + sweepAngleLEVTail);
 		System.out.println(">> CL_Alpha vertical tail: " + cLAlphaV);
 		System.out.println(">> surface vertical tail: " + surfaceVTail);
 		System.out.println(">> height fuselage: " + heightFuselage);
@@ -394,15 +392,28 @@ public class Test_01 {
 				.times(-cYawKappaYV*etaVTimes1MinusdSigmaOverdBeta)
 				.to(SI.RADIAN.inverse());
 		
+		System.out.println(">>>> K_Y_V: " + cYawKappaYV);
+		System.out.println(">>>>>> CY_beta_V: " + cYawBetaV);
+
+		// --------------------------------------------------
+		// Calculation of Cl_beta_V
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of Cl_beta_V");
+		System.out.println("-------------------------");
+		
 		// Cl_beta_V
 		Amount<Angle> angleOfAttack = operatingConditions.getAlphaCurrentCruise().to(NonSI.DEGREE_ANGLE);
+		Amount<Length> xCG = Amount.valueOf(15.0, SI.METER); // TODO take xCG
 		Amount<Length> xV = vTail.getXApexConstructionAxes()
 				.plus(vTail.getMeanAerodynamicChordLeadingEdgeX())
-				.plus(vTail.getMeanAerodynamicChord()).times(0.25);
+				.plus((vTail.getMeanAerodynamicChord()).times(0.25))
+				.minus(xCG);
 		Amount<Length> zV = vTail.getZApexConstructionAxes()
 				.plus(vTail.getMeanAerodynamicChordLeadingEdgeZ());
 		
 		System.out.println(">> alpha_1: " + angleOfAttack);
+		System.out.println(">> x_CG: " + xCG);
 		System.out.println(">> x_V: " + xV);
 		System.out.println(">> z_V: " + zV);
 
@@ -419,8 +430,6 @@ public class Test_01 {
 				).divide(spanWing)
 				.to(SI.RADIAN.inverse());
 		
-		System.out.println(">>>> K_Y_V: " + cYawKappaYV);
-		System.out.println(">>>>>> CY_beta_V: " + cYawBetaV);
 		System.out.println(">>>>>> Cl_beta_V: " + cRollBetaV);
 		
 		// --------------------------------------------------
@@ -472,13 +481,13 @@ public class Test_01 {
 		System.out.println(">> lambda_beta_W: " + lambdaBetaFactorWing.to(NonSI.DEGREE_ANGLE));
 		System.out.println(">> beta AR/k_W: " + betaFactorTimesAspectRatioWingOverKWing);
 		
-		double innerRME = databaseReader.getCldeltaARMEVsEtaLambdaBetaBetaTimesAROverKLambda(
+		double innerRME = databaseReader.getClDeltaARMEVsEtaLambdaBetaBetaTimesAROverKLambda(
 				taperRatioWing,
 				betaFactorTimesAspectRatioWingOverKWing,
 				lambdaBetaFactorWing,
 				etaInboardAileron
 				); 
-		double outerRME = databaseReader.getCldeltaARMEVsEtaLambdaBetaBetaTimesAROverKLambda(
+		double outerRME = databaseReader.getClDeltaARMEVsEtaLambdaBetaBetaTimesAROverKLambda(
 				taperRatioWing,
 				betaFactorTimesAspectRatioWingOverKWing,
 				lambdaBetaFactorWing,
@@ -488,7 +497,7 @@ public class Test_01 {
 
 		// Cl_delta_A
 		Amount<?> cRollDeltaAFullChord = Amount.valueOf(
-				deltaRME*kWing/betaFactor,
+				-deltaRME*kWing/betaFactor,
 				SI.RADIAN.inverse()
 				);
 		Amount<?> cRollDeltaA = cRollDeltaAFullChord.times(tauA);
@@ -516,16 +525,23 @@ public class Test_01 {
 		// Delta K_R
 		double etaInboardRudder = vTail.getSymmetricFlaps().get(0).getTheSymmetricFlapInterface().getInnerStationSpanwisePosition();
 		double etaOutboardRudder = vTail.getSymmetricFlaps().get(0).getTheSymmetricFlapInterface().getOuterStationSpanwisePosition();
-		double innerKR = 0.5; // TODO take K_R_inner
-		double outerKR = 0.8; // TODO take K_R_outer
+
+		System.out.println(">> eta_In_Rudder: " + etaInboardRudder);
+		System.out.println(">> eta_Out_Rudder: " + etaOutboardRudder);
+		
+		double innerKR = databaseReader.getCYDeltaRKRVsLambdaEta(taperRatioVTail, etaInboardRudder);
+		double outerKR = databaseReader.getCYDeltaRKRVsLambdaEta(taperRatioVTail, etaOutboardRudder);
 		double deltaKR = outerKR - innerKR;
-				
+		
 		// CY_delta_r
 		double etaV = 0.9; // TODO take the degradation factor of dynamic pressure for the vertical tail
 		Amount <?> cYawDeltaR = cLAlphaV.abs().times(surfaceVTail).divide(surfaceWing).times(etaV*deltaKR*tauR);
 		
 		System.out.println(">> degradation factor of dynamic pressure vertical tail: " + etaV);
 		System.out.println(">>>> tau_R: " + tauR);
+		System.out.println(">>>> K_R_I: " + innerKR);
+		System.out.println(">>>> K_R_O: " + outerKR);
+		System.out.println(">>>> Delta K_R: " + deltaKR);
 		System.out.println(">>>>>> CY_delta_r: " + cYawDeltaR);
 		
 		// --------------------------------------------------
@@ -536,14 +552,36 @@ public class Test_01 {
 		System.out.println("-------------------------");
 		
 		// CY_delta_r
-		Amount<Length> xR = Amount.valueOf(
-				15,
-				SI.METER
-				);
+		Amount<Length> zApplicationForceRudder = spanVTail.times((etaOutboardRudder-etaInboardRudder)/2);
+		Amount<Length> xR = vTail.getXApexConstructionAxes()
+				.plus(vTail.getXLEAtYActual(zApplicationForceRudder.doubleValue(SI.METER)))
+				.plus(
+						Amount.valueOf(
+								vTail.getChordAtYActual(zApplicationForceRudder.doubleValue(SI.METER))*
+								(1 - 0.75*vTail.getSymmetricFlaps().get(0).getMeanChordRatio()),
+								SI.METER
+						)
+				)
+				.minus(xCG);
+		Amount<Length> zR = vTail.getZApexConstructionAxes()
+				.plus(zApplicationForceRudder);
 		
-		//Amount <?> cRollDeltaR = cYawDeltaR
+		System.out.println(">> x_R: " + xR);
+		System.out.println(">> z_R: " + zR);
 		
+		Amount <?> cRollDeltaR = cYawDeltaR
+				.times(
+						zR.times(
+								Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
+						).minus(
+								xR.times(
+										Math.sin(angleOfAttack.doubleValue(SI.RADIAN))
+								)
+						)
+				).divide(spanWing)
+				.to(SI.RADIAN.inverse());
 		
+		System.out.println(">>>>>> Cl_delta_r: " + cRollDeltaR);
 		
 		// --------------------------------------------------
 		// Calculation of Cl_p_WB
@@ -554,7 +592,7 @@ public class Test_01 {
 
 		// RDP_W
 		Amount<?> rollingDampingParametersWing = Amount.valueOf(
-				databaseReader.getClpWRDPVsLambdaBetaBetaTimesAROverKLambda(
+				databaseReader.getClPWRDPVsLambdaBetaBetaTimesAROverKLambda(
 						taperRatioWing, // var0
 						betaFactorTimesAspectRatioWingOverKWing, // var1
 						lambdaBetaFactorWing // var2
@@ -591,7 +629,7 @@ public class Test_01 {
 		System.out.println(">> beta AR/k_H: " + betaFactorTimesAspectRatioHTailOverKHTail);
 		
 		Amount<?> rollingDampingParametersHTail = Amount.valueOf(
-				databaseReader.getClpWRDPVsLambdaBetaBetaTimesAROverKLambda(taperRatioHTail, betaFactorTimesAspectRatioHTailOverKHTail, lambdaBetaFactorHTail), // var0, var1, var2
+				databaseReader.getClPWRDPVsLambdaBetaBetaTimesAROverKLambda(taperRatioHTail, betaFactorTimesAspectRatioHTailOverKHTail, lambdaBetaFactorHTail), // var0, var1, var2
 				SI.RADIAN.inverse());
 				
 		// Cl_p_H
@@ -659,7 +697,7 @@ public class Test_01 {
 		System.out.println(">> D: " + dFactor);
 		
 		Amount<?> cRollrOverCL1AtMachZero = Amount.valueOf(
-				databaseReader.getClrWClrOverCLift1VsARLambdaLc4(taperRatioWing, aspectRatioWing, sweepAngleC2Wing),
+				databaseReader.getClRWClrOverCLift1VsARLambdaLc4(taperRatioWing, aspectRatioWing, sweepAngleC2Wing),
 				SI.RADIAN.inverse()
 				);
 		Amount<?> cRollrOverCL1 = cRollrOverCL1AtMachZero.times(dFactor);
@@ -674,7 +712,7 @@ public class Test_01 {
 		
 		// DCl_r/eps_W
 		Amount<?> cRollDeltaClrOverEpsW = Amount.valueOf(
-				databaseReader.getClrWDClrOverEpsWVsARLambda(taperRatioWing, aspectRatioWing), // var0, var1
+				databaseReader.getClRWDClrOverEpsWVsARLambda(taperRatioWing, aspectRatioWing), // var0, var1
 				SI.RADIAN.inverse().times(NonSI.DEGREE_ANGLE.inverse())
 				);
 		
