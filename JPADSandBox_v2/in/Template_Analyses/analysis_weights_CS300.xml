@@ -7,10 +7,10 @@
 			<global_data>
 				<first_guess_maximum_take_off_mass unit="kg">67585</first_guess_maximum_take_off_mass>
 				<relative_maximum_landing_mass>0.9</relative_maximum_landing_mass> <!-- with respect to Max Take-Off mass. Default = 0.9 -->
-				<single_passenger_mass unit="kg">105</single_passenger_mass>
+				<single_passenger_mass unit="kg">106</single_passenger_mass>
 			</global_data>
 			<mission_profile_data>
-				<reference_mission_range unit="nmi"></reference_mission_range>
+				<reference_mission_range unit="nmi">3300</reference_mission_range>
 				<cruise_phase>
 					<range unit="nmi">3300</range> 
 					<sfc>0.57</sfc>
@@ -18,7 +18,7 @@
 				</cruise_phase>
 				<alternate_phase>
 					<range unit="nmi">100</range> 
-					<altitude unit="ft">15000</altitude>
+					<altitude unit="ft">20000</altitude>
 					<mach>0.7</mach>
 					<sfc>0.57</sfc> 
 					<efficiency>17</efficiency> 

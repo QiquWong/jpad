@@ -60,9 +60,15 @@ public class NacelleWeightCalc {
 		Amount<Mass> mass = Amount.valueOf(0.0, SI.KILOGRAM);
 		
 		if(aircraft.getPowerPlant().getEngineList().get(0).getBPR() > 4.) {
-			mass = aircraft.getPowerPlant().getT0Total().to(NonSI.POUND_FORCE).times(0.065).to(SI.KILOGRAM);
+			mass = Amount.valueOf( 
+					aircraft.getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE)*0.065,
+					SI.KILOGRAM
+					);
 		} else {
-			mass = aircraft.getPowerPlant().getT0Total().to(NonSI.POUND_FORCE).times(0.055).to(SI.KILOGRAM);
+			mass = Amount.valueOf(
+					aircraft.getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE)*0.055,
+					SI.KILOGRAM
+					);
 		}
 		
 		return mass;

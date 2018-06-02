@@ -52,7 +52,7 @@ public class Nacelles {
 		
 		this._distanceBetweenInboardNacellesY = _nacellesList.get(0).getYApexConstructionAxes().times(2);
 		if (_nacellesNumber>2)
-			this._distanceBetweenOutboardNacellesY = _nacellesList.get(2).getYApexConstructionAxes().times(2);
+			this._distanceBetweenOutboardNacellesY = _nacellesList.get(_nacellesList.size()-1).getYApexConstructionAxes().times(2);
 		
 		populateEnginesMap();
 		calculateSurfaceWetted();

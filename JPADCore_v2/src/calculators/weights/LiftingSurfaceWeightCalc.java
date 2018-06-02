@@ -127,7 +127,8 @@ public class LiftingSurfaceWeightCalc {
 				) {
 
 			try {
-				if(aircraft.getPowerPlant().getMountingPosition().equals(EngineMountingPositionEnum.WING)) 
+				if(aircraft.getPowerPlant().getMountingPosition().equals(EngineMountingPositionEnum.WING)
+						&& aircraft.getNacelles().getNacellesNumber() > 2) 
 					R = wingMass.doubleValue(SI.KILOGRAM) 
 					+ aircraft.getTheAnalysisManager().getTheWeights().getFuelMass().doubleValue(SI.KILOGRAM) 
 					+ (	(2*
@@ -147,6 +148,20 @@ public class LiftingSurfaceWeightCalc {
 											/aircraft.getPowerPlant().getEngineNumber())
 									)
 							* aircraft.getNacelles().getDistanceBetweenOutboardNacellesY().doubleValue(SI.METER)
+							)
+							/ (0.4*aircraft.getWing().getSpan().doubleValue(SI.METER))
+							);
+				else if(aircraft.getPowerPlant().getMountingPosition().equals(EngineMountingPositionEnum.WING)
+						&& aircraft.getNacelles().getNacellesNumber() <= 2) 
+					R = wingMass.doubleValue(SI.KILOGRAM) 
+					+ aircraft.getTheAnalysisManager().getTheWeights().getFuelMass().doubleValue(SI.KILOGRAM) 
+					+ (	(2*
+							( (aircraft.getTheAnalysisManager().getTheWeights().getNacellesMass().doubleValue(SI.KILOGRAM)
+									/aircraft.getNacelles().getNacellesNumber())
+									+ (aircraft.getTheAnalysisManager().getTheWeights().getPowerPlantMass().doubleValue(SI.KILOGRAM)
+											/aircraft.getPowerPlant().getEngineNumber())
+									)
+							* aircraft.getNacelles().getDistanceBetweenInboardNacellesY().doubleValue(SI.METER)
 							)
 							/ (0.4*aircraft.getWing().getSpan().doubleValue(SI.METER))
 							);

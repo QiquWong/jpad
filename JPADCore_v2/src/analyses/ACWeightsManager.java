@@ -168,15 +168,24 @@ public class ACWeightsManager {
 
 	private void initializeComponentsWeightManagers () {
 		
-		_theWeightsManagerInterface.getTheAircraft().getFuselage().setTheWeight(new FuselageWeightManager());
-		_theWeightsManagerInterface.getTheAircraft().getWing().setTheWeightManager(new LiftingSurfaceWeightManager());
-		_theWeightsManagerInterface.getTheAircraft().getHTail().setTheWeightManager(new LiftingSurfaceWeightManager());
-		_theWeightsManagerInterface.getTheAircraft().getVTail().setTheWeightManager(new LiftingSurfaceWeightManager());
-		_theWeightsManagerInterface.getTheAircraft().getCanard().setTheWeightManager(new LiftingSurfaceWeightManager());
-		_theWeightsManagerInterface.getTheAircraft().getNacelles().setTheWeights(new NacelleWeightManager());
-		_theWeightsManagerInterface.getTheAircraft().getPowerPlant().setTheWeights(new EngineWeightManager());
-		_theWeightsManagerInterface.getTheAircraft().getLandingGears().setTheWeigths(new LandingGearsWeightManager());
-		_theWeightsManagerInterface.getTheAircraft().getSystems().setTheWeightManager(new SystemsWeightManager());
+		if(_theWeightsManagerInterface.getTheAircraft().getFuselage() != null)
+			_theWeightsManagerInterface.getTheAircraft().getFuselage().setTheWeight(new FuselageWeightManager());
+		if(_theWeightsManagerInterface.getTheAircraft().getWing() != null)
+			_theWeightsManagerInterface.getTheAircraft().getWing().setTheWeightManager(new LiftingSurfaceWeightManager());
+		if(_theWeightsManagerInterface.getTheAircraft().getHTail() != null)
+			_theWeightsManagerInterface.getTheAircraft().getHTail().setTheWeightManager(new LiftingSurfaceWeightManager());
+		if(_theWeightsManagerInterface.getTheAircraft().getVTail() != null)
+			_theWeightsManagerInterface.getTheAircraft().getVTail().setTheWeightManager(new LiftingSurfaceWeightManager());
+		if(_theWeightsManagerInterface.getTheAircraft().getCanard() != null)
+			_theWeightsManagerInterface.getTheAircraft().getCanard().setTheWeightManager(new LiftingSurfaceWeightManager());
+		if(_theWeightsManagerInterface.getTheAircraft().getNacelles() != null)
+			_theWeightsManagerInterface.getTheAircraft().getNacelles().setTheWeights(new NacelleWeightManager());
+		if(_theWeightsManagerInterface.getTheAircraft().getPowerPlant() != null)
+			_theWeightsManagerInterface.getTheAircraft().getPowerPlant().setTheWeights(new EngineWeightManager());
+		if(_theWeightsManagerInterface.getTheAircraft().getLandingGears() != null)
+			_theWeightsManagerInterface.getTheAircraft().getLandingGears().setTheWeigths(new LandingGearsWeightManager());
+		if(_theWeightsManagerInterface.getTheAircraft().getSystems() != null)
+			_theWeightsManagerInterface.getTheAircraft().getSystems().setTheWeightManager(new SystemsWeightManager());
 		
 	}
 	
@@ -585,40 +594,49 @@ public class ACWeightsManager {
 				.append("\tTrapped Fuel Oil Mass: " + _trappedFuelOilMass.to(SI.KILOGRAM) + "\n")
 				.append("\t-------------------------------------\n")
 				.append("\tCOMPONENTS:\n")
-				.append("\t-------------------------------------\n")
-				.append("\t\tFuselage Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getFuselage().getTheWeight().getMassEstimated().to(SI.KILOGRAM) + "\n")
+				.append("\t-------------------------------------\n");
+		if(_theWeightsManagerInterface.getTheAircraft().getFuselage() != null)
+				sb.append("\t\tFuselage Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getFuselage().getTheWeight().getMassEstimated().to(SI.KILOGRAM) + "\n")
 				.append("\t\tFuselage Calibration Factor: " + _theWeightsManagerInterface.getFuselageCalibrationFactor() + "\n")
 				.append("\t\tFuselage Estimated Mass (Calibrated): " + _fuselageMass.to(SI.KILOGRAM) + "\n")
-				.append("\t\t·····································\n")
-				.append("\t\tWing Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getWing().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM) + "\n")
+				.append("\t\t·····································\n");
+		if(_theWeightsManagerInterface.getTheAircraft().getWing() != null)
+				sb.append("\t\tWing Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getWing().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM) + "\n")
 				.append("\t\tWing Calibration Factor: " + _theWeightsManagerInterface.getWingCalibrationFactor() + "\n")
 				.append("\t\tWing Estimated Mass (Calibrated): " + _wingMass.to(SI.KILOGRAM) + "\n")
-				.append("\t\t·····································\n")
-				.append("\t\tHorizontal Tail Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getHTail().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM) + "\n")
+				.append("\t\t·····································\n");
+		if(_theWeightsManagerInterface.getTheAircraft().getHTail() != null)
+				sb.append("\t\tHorizontal Tail Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getHTail().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM) + "\n")
 				.append("\t\tHorizontal Tail Calibration Factor: " + _theWeightsManagerInterface.getHTailCalibrationFactor() + "\n")
 				.append("\t\tHorizontal Tail Estimated Mass (Calibrated): " + _hTailMass.to(SI.KILOGRAM) + "\n")
-				.append("\t\t·····································\n")
-				.append("\t\tVertical Tail Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getVTail().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM) + "\n")
+				.append("\t\t·····································\n");
+		if(_theWeightsManagerInterface.getTheAircraft().getVTail() != null)
+				sb.append("\t\tVertical Tail Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getVTail().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM) + "\n")
 				.append("\t\tVertical Tail Calibration Factor: " + _theWeightsManagerInterface.getVTailCalibrationFactor() + "\n")
 				.append("\t\tVertical Tail Estimated Mass (Calibrated): " + _vTailMass.to(SI.KILOGRAM) + "\n")
-				.append("\t\t·····································\n")
-				.append("\t\tCanard Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getCanard().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM) + "\n")
+				.append("\t\t·····································\n");
+		if(_theWeightsManagerInterface.getTheAircraft().getCanard() != null)
+				sb.append("\t\tCanard Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getCanard().getTheWeightManager().getMassEstimated().to(SI.KILOGRAM) + "\n")
 				.append("\t\tCanard Calibration Factor: " + _theWeightsManagerInterface.getCanardCalibrationFactor() + "\n")
 				.append("\t\tCanard Estimated Mass (Calibrated): " + _canardMass.to(SI.KILOGRAM) + "\n")
-				.append("\t\t·····································\n")
-				.append("\t\tNacelles Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getNacelles().getTheWeights().getTotalMassEstimated().to(SI.KILOGRAM) + "\n")
+				.append("\t\t·····································\n");
+		if(_theWeightsManagerInterface.getTheAircraft().getNacelles() != null)
+				sb.append("\t\tNacelles Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getNacelles().getTheWeights().getTotalMassEstimated().to(SI.KILOGRAM) + "\n")
 				.append("\t\tNacelles Calibration Factor: " + _theWeightsManagerInterface.getNacellesCalibrationFactor() + "\n")
 				.append("\t\tNacelles Estimated Mass (Calibrated): " + _nacellesMass.to(SI.KILOGRAM) + "\n")
-				.append("\t\t·····································\n")
-				.append("\t\tPower Plant Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getPowerPlant().getTheWeights().getTotalMassEstimated().to(SI.KILOGRAM) + "\n")
+				.append("\t\t·····································\n");
+		if(_theWeightsManagerInterface.getTheAircraft().getPowerPlant() != null)
+				sb.append("\t\tPower Plant Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getPowerPlant().getTheWeights().getTotalMassEstimated().to(SI.KILOGRAM) + "\n")
 				.append("\t\tPower Plant Calibration Factor: " + _theWeightsManagerInterface.getPowerPlantCalibrationFactor() + "\n")
 				.append("\t\tPower Plant Estimated Mass (Calibrated): " + _powerPlantMass.to(SI.KILOGRAM) + "\n")
-				.append("\t\t·····································\n")
-				.append("\t\tLanding Gears Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getLandingGears().getTheWeigths().getMassEstimated().to(SI.KILOGRAM) + "\n")
+				.append("\t\t·····································\n");
+		if(_theWeightsManagerInterface.getTheAircraft().getLandingGears() != null)
+				sb.append("\t\tLanding Gears Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getLandingGears().getTheWeigths().getMassEstimated().to(SI.KILOGRAM) + "\n")
 				.append("\t\tLanding Gears Calibration Factor: " + _theWeightsManagerInterface.getLandingGearsCalibrationFactor() + "\n")
 				.append("\t\tLanding Gears Estimated Mass (Calibrated): " + _landingGearsMass.to(SI.KILOGRAM) + "\n")
-				.append("\t\t-------------------------------------\n")
-				.append("\t\tSYSTEMS AND EQUIPMENTS:\n")
+				.append("\t\t-------------------------------------\n");
+		if(_theWeightsManagerInterface.getTheAircraft().getSystems() != null)
+				sb.append("\t\tSYSTEMS AND EQUIPMENTS:\n")
 				.append("\t\t-------------------------------------\n")
 				.append("\t\t\tAPU Estimated Mass: " + _theWeightsManagerInterface.getTheAircraft().getSystems().getTheWeightManager().getMassEstimatedAPU().to(SI.KILOGRAM) + "\n")
 				.append("\t\t\tAPU Calibration Factor: " + _theWeightsManagerInterface.getAPUCalibrationFactor() + "\n")
