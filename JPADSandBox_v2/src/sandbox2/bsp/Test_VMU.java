@@ -114,6 +114,7 @@ class MyArgumentsAnalysis {
 	public File getCabinConfigurationDirectory() {
 		return _cabinConfigurationsDirectory;
 	}
+
 }
 
 public class Test_VMU {
@@ -126,12 +127,10 @@ public class Test_VMU {
 	public static Aircraft theAircraft;
 
 	public static void main(String[] args) throws CmdLineException, IOException {
-		// TODO Auto-generated method stub
-
 		
 		System.out.println("-------------------");
 		System.out.println("TEST VMU");
-		System.out.println("-------------------");
+		System.out.println("-------------------"); 
 		
 		MyArgumentsAnalysis va = new MyArgumentsAnalysis();
 		Test_VMU.theCmdLineParser = new CmdLineParser(va);
