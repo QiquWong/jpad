@@ -6,8 +6,6 @@
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/MOEAFramework-2.12.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/guava-16.0.1.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/flanagan.jar"/>
-	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/JPADConfigs_v_16032018.jar"/>
-	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/JPADCore_v2_16032018.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/args4j-2.0.21.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/poi-ooxml-3.10.1-20140818.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/freebuilder-1.10.5.jar"/>
@@ -24,5 +22,9 @@
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreechart-1.5.0.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreesvg-3.3.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreechart-1.0.19.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/javaslang-2.0.4.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/commons-io-2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

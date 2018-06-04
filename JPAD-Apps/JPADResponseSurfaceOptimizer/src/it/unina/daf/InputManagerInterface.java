@@ -5,7 +5,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import org.inferred.freebuilder.FreeBuilder;
+
 import configuration.enumerations.ConstraintsViolationConditionEnum;
+import javaslang.Tuple2;
 
 @FreeBuilder
 public interface InputManagerInterface {
@@ -18,9 +20,7 @@ public interface InputManagerInterface {
 	double[] getVariablesUpperBounds();
 	
 	@Nullable
-	double[] getConstraintsValues();
-	@Nullable
-	List<ConstraintsViolationConditionEnum> getConstraintsViolationConditions();
+	List<Tuple2<ConstraintsViolationConditionEnum, List<Double>>> getConstraintsDictionary();
 	
 	String[] getAlgorithms();
 	int getMaximumNumberOfEvaluations();

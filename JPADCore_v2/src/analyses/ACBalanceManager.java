@@ -1388,6 +1388,9 @@ public class ACBalanceManager implements IACBalanceManager {
 			_theAircraft.getWing().getTheBalanceManager().calculateCG(_theAircraft, ComponentEnum.WING, _methodsMapBalance);
 		}
 		
+		if(_theAircraft.getFuelTank() != null)
+			_theAircraft.getFuelTank().calculateCG();
+		
 		if(_theAircraft.getHTail() != null) {
 			_theAircraft.getHTail().getTheWeightManager().setMassEstimated(_horizontalTailMass);
 			_theAircraft.getHTail().getTheBalanceManager().calculateCG(_theAircraft, ComponentEnum.HORIZONTAL_TAIL, _methodsMapBalance);
@@ -1412,16 +1415,7 @@ public class ACBalanceManager implements IACBalanceManager {
 					);
 			_theAircraft.getNacelles().getTheBalance().calculateTotalCG(_theAircraft, _methodsMapBalance);
 		}
-
-		if(_theAircraft.getFuelTank() != null)
-			_theAircraft.getFuelTank().calculateCG();
-
-		if(_theAircraft.getLandingGears() != null) {
-			_theAircraft.getLandingGears().getTheWeigths().setMassEstimated(_landingGearsMass);
-			_theAircraft.getLandingGears().getTheBalance().calculateCG(_theAircraft, _methodsMapBalance);
-		}
-
-		// --- END OF STRUCTURE MASS-----------------------------------
+		
 		if(_theAircraft.getPowerPlant() != null) {
 			Amount<Mass> powerPlantTotalMass = Amount.valueOf(0.0, SI.KILOGRAM);
 			for(int i=0; i<_theAircraft.getPowerPlant().getEngineNumber(); i++) {
@@ -1430,6 +1424,11 @@ public class ACBalanceManager implements IACBalanceManager {
 			}
 			_theAircraft.getPowerPlant().getTheWeights().setTotalMassEstimated(powerPlantTotalMass);
 			_theAircraft.getPowerPlant().getTheBalance().calculateTotalCG(_theAircraft, _methodsMapBalance);
+		}
+
+		if(_theAircraft.getLandingGears() != null) {
+			_theAircraft.getLandingGears().getTheWeigths().setMassEstimated(_landingGearsMass);
+			_theAircraft.getLandingGears().getTheBalance().calculateCG(_theAircraft, _methodsMapBalance);
 		}
 
 		calculateTotalCG();
@@ -1464,8 +1463,8 @@ public class ACBalanceManager implements IACBalanceManager {
 		System.out.println("Landing gear (X_BRF) --> " + _cgList.get(4).getXBRF());
 		System.out.println("Landing gear (Z_BRF) --> " + _cgList.get(4).getZBRF());
 		for(int i=0 ;  i<_theAircraft.getNacelles().getTheBalance().getCGList().size() ; i++){
-		System.out.println("Nacelle  "+  i + " (X_BRF) --> " + _cgList.get(i+5).getXBRF());
-		System.out.println("Nacelle  "+  i + " (Z_BRF) --> " + _cgList.get(i+5).getZBRF());
+			System.out.println("Nacelle  "+  i + " (X_BRF) --> " + _cgList.get(i+5).getXBRF());
+			System.out.println("Nacelle  "+  i + " (Z_BRF) --> " + _cgList.get(i+5).getZBRF());
 		}
 
 		List<Amount<Mass>> massStructureList = new ArrayList<Amount<Mass>>();

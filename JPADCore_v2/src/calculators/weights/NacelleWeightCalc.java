@@ -9,7 +9,6 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
 import configuration.enumerations.NacelleMountingPositionEnum;
-import standaloneutils.atmosphere.AtmosphereCalc;
 
 public class NacelleWeightCalc {
 
@@ -43,9 +42,19 @@ public class NacelleWeightCalc {
 		Amount<Mass> mass = Amount.valueOf(0.0, SI.KILOGRAM);
 		
 		if(aircraft.getPowerPlant().getEngineList().get(0).getBPR() > 4.) {
-			mass = aircraft.getPowerPlant().getT0Total().divide(AtmosphereCalc.g0.to(SI.METERS_PER_SQUARE_SECOND)).to(SI.KILOGRAM).times(6.7);
+			mass = Amount.valueOf(
+					aircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)
+					* 6.7
+					/1000,
+					SI.KILOGRAM
+					);
 		} else {
-			mass = aircraft.getPowerPlant().getT0Total().divide(AtmosphereCalc.g0.to(SI.METERS_PER_SQUARE_SECOND)).to(SI.KILOGRAM).times(6.2);
+			mass = Amount.valueOf(
+					aircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)
+					* 6.2
+					/1000,
+					SI.KILOGRAM
+					);
 		}
 		
 		return mass;
@@ -62,13 +71,13 @@ public class NacelleWeightCalc {
 		if(aircraft.getPowerPlant().getEngineList().get(0).getBPR() > 4.) {
 			mass = Amount.valueOf( 
 					aircraft.getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE)*0.065,
-					SI.KILOGRAM
-					);
+					NonSI.POUND
+					).to(SI.KILOGRAM);
 		} else {
 			mass = Amount.valueOf(
 					aircraft.getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE)*0.055,
-					SI.KILOGRAM
-					);
+					NonSI.POUND
+					).to(SI.KILOGRAM);
 		}
 		
 		return mass;

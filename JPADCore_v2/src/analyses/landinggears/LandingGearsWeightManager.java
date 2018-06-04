@@ -1,7 +1,5 @@
 package analyses.landinggears;
 
-import static java.lang.Math.round;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -6,5 +6,7 @@ public enum ConstraintsViolationConditionEnum {
 	LESS_EQUAL_THAN,
 	BIGGER_THAN,
 	BIGGER_EQUAL_THAN,
+	WITHIN_INTERVAL,
+	OUTSIDE_INTERVAL
 	
 }

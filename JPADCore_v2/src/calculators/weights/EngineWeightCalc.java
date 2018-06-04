@@ -60,7 +60,7 @@ public class EngineWeightCalc {
 			return mass;
 		}
 		
-		mass = aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().to(NonSI.POUND)
+		mass = aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().to(SI.KILOGRAM)
 				.times(1.5)
 				.to(SI.KILOGRAM);
 		

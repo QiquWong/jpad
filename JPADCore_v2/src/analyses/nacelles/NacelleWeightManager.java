@@ -62,7 +62,7 @@ public class NacelleWeightManager {
 		
 		for (int i=0; i<theAircraft.getNacelles().getNacellesNumber(); i++)
 			_massRefereceList.add(
-					theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015)
+					theAircraft.getTheAnalysisManager().getTheWeights().getNacellesReferenceMass()
 					.divide(theAircraft.getNacelles().getNacellesNumber()));
 		
 	}

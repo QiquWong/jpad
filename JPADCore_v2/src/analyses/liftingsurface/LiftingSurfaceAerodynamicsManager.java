@@ -239,11 +239,8 @@ public class LiftingSurfaceAerodynamicsManager {
 		this._numberOfAlphas = _alphaArray.size();
 		this._alphaArrayClean = new ArrayList<>();
 		this._numberOfAlphasPlot = _alphaArray.size();
-		this._vortexSemiSpanToSemiSpanRatio = 1.0/(2*_numberOfPointSemiSpanWise
-				);
+		this._vortexSemiSpanToSemiSpanRatio = 1.0/(2*_numberOfPointSemiSpanWise);
 		
-//		this._alphaArrayPlotHighLift = new Double[this._numberOfAlphasPlot];
-
 		//----------------------------------------------------------------------------------------------------------------------
 		// Initialize XAC
 		if(_xacLRF.get(MethodEnum.DEYOUNG_HARPER) == null) {
