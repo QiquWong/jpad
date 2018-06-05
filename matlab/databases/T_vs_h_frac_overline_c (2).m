@@ -6,12 +6,12 @@ clear all, close all, clc
 fileBaseNames = {'L_L0_minus_1_vs_h_cr_4_cr_0' , 'L_L0_minus_1_vs_h_cr_4_cr_5' , 'L_L0_minus_1_vs_h_cr_4_cr_10' , 'L_L0_minus_1_vs_h_cr_4_cr_15' , 'L_L0_minus_1_vs_h_cr_4_cr_18' , 'L_L0_minus_1_vs_h_cr_4_cr_20' , 'L_L0_minus_1_vs_h_cr_4_cr_22' , 'L_L0_minus_1_vs_h_cr_4_cr_24' , 'L_L0_minus_1_vs_h_cr_4_cr_36'};
 nPoints = 49;
 
-xx = linspace(0.0, 2.4, nPoints);
+xx = linspace(0.2, 2.4, nPoints);
 
 for kFile = 1:length(fileBaseNames)
     
-    fileName = sprintf('%s.mat',fileBaseNames{kFile});
-    s = load(fileName, '-mat');
+%     fileName = sprintf('%s.mat',fileBaseNames{kFile});
+    s = load(fileBaseNames{kFile}, '-mat');
 
     % Allocate imported array to column variable names
     
@@ -29,7 +29,7 @@ for kFile = 1:length(fileBaseNames)
 end
 xlabel('$\frac{h_{{c_r}/4}}{c_r}$','interpreter','latex'); 
 ylabel('$\frac{L}{L_0}-1$','interpreter','latex');
-set(get(gca,'ylabel'),'rotation',180)
+set(get(gca,'ylabel'),'rotation',0)
 
 title('Parameter accounting for ground effect on lift due to trailing vortices');
 axis([0 2.4 -0.5 .4]);
@@ -59,6 +59,6 @@ h5write(hdfFileName, '/(Delta_alpha_CL_Ground_Effect)_L_L0_minus1_vs_h_cr_4_cr/d
 h5create(hdfFileName, '/(Delta_alpha_CL_Ground_Effect)_L_L0_minus1_vs_h_cr_4_cr/var_0', size(CL_2_2pi_cos_2_Gamma_c4'));
 h5write(hdfFileName, '/(Delta_alpha_CL_Ground_Effect)_L_L0_minus1_vs_h_cr_4_cr/var_0', CL_2_2pi_cos_2_Gamma_c4');
 
-h5create(hdfFileName, '/(Delta_alpha_CL_Ground_Effect)_x_vs_2hfracb_Deltax/var_1', size(h_cr_4_cr'));
-h5write(hdfFileName, '/(Delta_alpha_CL_Ground_Effect)_x_vs_2hfracb_Deltax/var_1', h_cr_4_cr');
+h5create(hdfFileName, '/(Delta_alpha_CL_Ground_Effect)_L_L0_minus1_vs_h_cr_4_cr/var_1', size(h_cr_4_cr'));
+h5write(hdfFileName, '/(Delta_alpha_CL_Ground_Effect)_L_L0_minus1_vs_h_cr_4_cr/var_1', h_cr_4_cr');
 
