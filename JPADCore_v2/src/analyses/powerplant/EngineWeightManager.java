@@ -62,7 +62,7 @@ public class EngineWeightManager {
 		
 		for (int i=0; i<theAircraft.getPowerPlant().getEngineNumber(); i++)
 			_massRefereceList.add(
-					theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.05)
+					theAircraft.getTheAnalysisManager().getTheWeights().getPowerPlantReferenceMass()
 					.divide(theAircraft.getPowerPlant().getEngineNumber()));
 		
 	}

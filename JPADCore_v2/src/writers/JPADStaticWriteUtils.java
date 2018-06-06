@@ -292,7 +292,7 @@ public class JPADStaticWriteUtils {
 
 				PrintWriter writer = new PrintWriter(outputFile.getAbsolutePath(), "UTF-8");
 				for(int j=0; j<valueList.get(i).size(); j++) {
-					writer.print(labelsName.get(i).get(j) + ", ");
+					writer.print(labelsName.get(i).get(j) + "; ");
 				}
 				writer.println("");
 
@@ -314,7 +314,7 @@ public class JPADStaticWriteUtils {
 						writer.print(
 								String.format(
 										Locale.ROOT,
-										"%.12f,	",
+										"%.12f;	",
 										transposedValuesMatrix.getData()[j][k]
 										)
 								);

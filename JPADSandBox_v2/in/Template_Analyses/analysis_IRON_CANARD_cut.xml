@@ -11,6 +11,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
 	<analyses id="IRON analysis">
+	<!--
 		<weights 
             file="analysis_weights_IRON.xml" 
 			plot="TRUE"
@@ -31,8 +32,10 @@
 			method_furnishings_and_equipments=""
 			method_control_surfaces=""
             /> 
+			-->
 		<!-- method_XXX="AVERAGED" if empty string -->
-<!-- 	<balance 
+		<!--
+		<balance 
 			file="analysis_balance_IRON.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -41,7 +44,8 @@
             method_htail=""
             method_vtail=""
 			method_canard=""
-		/> -->
+		/>
+		-->
 	<!--
 	<aerodynamic_and_stability
 			plot="TRUE"
@@ -56,7 +60,6 @@
 			file_landing_condition="analysis_aerodynamics_Prototype_LOOP1_updated_landing.xml"
 	/>
 	-->
-	<!--
 	<performance
 			file="analysis_performance_IRON_CANARD_cut_engine_base.xml"
 			plot="FALSE"
@@ -70,7 +73,6 @@
 			V_n_diagram="FALSE"
 			mission_profile="TRUE"
 	/> 
-	-->
 	<!--
  	<costs 
 			file="analysis_costs_IRON_CANARD.xml"

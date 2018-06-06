@@ -5,19 +5,57 @@
             id="JPAD Test analysis - BALANCE" 
             weights_from_previous_analysis="true" 
             >
-            <maximum_take_off_mass unit="kg">30000</maximum_take_off_mass>
-			<maximum_zero_fuel_mass unit="kg">22000</maximum_zero_fuel_mass>
-			<operating_empty_mass unit="kg">15000</operating_empty_mass>
-			<passengers_total_mass unit="kg">5000</passengers_total_mass>
-			<passengers_single_mass unit='kg'>99</passengers_single_mass>
-			<fuselage_mass unit="kg">3000</fuselage_mass>
-			<wing_mass unit="kg">2000</wing_mass>
-			<horizontal_tail_mass unit="kg">600</horizontal_tail_mass>
-			<vertical_tail_mass unit="kg">400</vertical_tail_mass>
-			<canard_mass unit="kg"></canard_mass>
-			<nacelles_mass unit="kg">450;450</nacelles_mass>
-			<engines_mass unit="kg">300;300</engines_mass>
-			<landing_gears_mass unit="kg">500</landing_gears_mass>
+ 			<weights>
+				<operating_empty_mass unit="kg"></operating_empty_mass>
+				<fuel_mass unit="kg"></fuel_mass>
+				<passengers_single_mass unit='kg'></passengers_single_mass>
+				<fuselage_mass unit="kg"></fuselage_mass>
+				<wing_mass unit="kg"></wing_mass>
+				<horizontal_tail_mass unit="kg"></horizontal_tail_mass>
+				<vertical_tail_mass unit="kg"></vertical_tail_mass>
+				<canard_mass unit="kg"></canard_mass>
+				<nacelles_mass unit="kg"></nacelles_mass>
+				<engines_mass unit="kg"></engines_mass>
+				<front_landing_gears_mass unit="kg"></front_landing_gears_mass>
+				<main_landing_gears_mass unit="kg"></main_landing_gears_mass>
+				<APU_mass unit="kg"></APU_mass>
+				<air_conditioning_and_anti_icing_system_mass unit="kg"></air_conditioning_and_anti_icing_system_mass>
+				<instruments_and_navigation_system_mass unit="kg"></instruments_and_navigation_system_mass>
+				<hydraulic_and_pneumatic_systems_mass unit="kg"></hydraulic_and_pneumatic_systems_mass>
+				<electrical_systems_mass unit="kg"></electrical_systems_mass>
+				<control_surfaces_mass unit="kg"></control_surfaces_mass>
+				<furnishings_and_equipments_mass unit="kg"></furnishings_and_equipments_mass>
+			</weights>
+			<systems_positions use_standard_positions="TRUE">
+				<APU>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</APU>
+				<air_conditioning_and_anti_icing_system>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</air_conditioning_and_anti_icing_system>
+				<instruments_and_navigation_system>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</instruments_and_navigation_system>
+				<hydraulic_and_pneumatic_systems>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</hydraulic_and_pneumatic_systems>
+				<electrical_systems>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</electrical_systems>
+				<control_surfaces>
+					<x unit="m"></x>
+					<z unit="m"></z>					
+				</control_surfaces>
+				<furnishings_and_equipments>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</furnishings_and_equipments>
+			</systems_positions>
         </balance>
     </analysis>        
 </jpad_config>

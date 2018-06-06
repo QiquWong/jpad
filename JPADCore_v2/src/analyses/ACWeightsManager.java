@@ -1677,7 +1677,7 @@ public class ACWeightsManager {
 				) {
 			
 			/*
-			 * Initialization of all components weight managers
+			 * Initialization of all components weight managers and reference masses.
 			 */
 			initializeComponentsWeightManagers();
 			initializeReferenceMasses();

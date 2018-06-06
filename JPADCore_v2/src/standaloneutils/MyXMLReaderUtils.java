@@ -368,6 +368,69 @@ public class MyXMLReaderUtils {
 		}
 	}
 
+	public static List<Double> readArrayDoubleFromXML(Document doc, String inputStringInitial){
+
+		String inputString = getXMLPropertiesByPath(doc, inputStringInitial).get(0);
+
+		List<Double> outputStrings = new ArrayList<Double>();
+		String tempString = new String();
+		Double tempDouble;
+		int n, m;
+		inputString = inputString.trim();
+
+		int openParenthesisCheck = inputString.indexOf('[');
+
+		if ( openParenthesisCheck == -1){
+			inputString = "[" + inputString;
+		}
+
+		int closeParenthesisCheck = inputString.indexOf(']');
+
+		if ( closeParenthesisCheck == -1){
+			inputString = inputString + "]";
+		}
+
+		// First value
+		boolean checkOnlyOneElement = false;
+
+		n = inputString.indexOf(',');
+		if ( n == -1){
+			n = inputString.indexOf(';');
+			if ( n == -1 ) {
+				n = inputString.indexOf(']');
+				checkOnlyOneElement = true;
+			}
+		}
+
+		tempString = inputString.substring(1, n);
+		tempDouble = Double.valueOf(tempString.trim());
+
+		outputStrings.add(tempDouble);
+		// Following values
+
+		while ( (n!= -1) && (checkOnlyOneElement == false) ){
+
+			m = n;
+			tempString = new String();
+
+			n = inputString.indexOf(',', m+1);
+			if ( n == -1){
+				n = inputString.indexOf(';', m+1);
+			}
+			if( n != -1){
+				tempString = inputString.substring(m+1, n);}
+
+			else{
+				int k = inputString.indexOf(']');
+				tempString = inputString.substring(m+1, k)	;
+			}
+			tempDouble = Double.valueOf(tempString.trim());
+
+			outputStrings.add(tempDouble);
+		}
+		return outputStrings;
+	}
+	
 	public static String getXMLPropertyByPath(Document doc, XPath xpath, String expression) {
 
 		try {
@@ -1009,4 +1072,30 @@ public class MyXMLReaderUtils {
 		return _parsedDoc;
 	}
 
+	public static Double[] importFromValueNodeDoubleArray(Node node) {
+		
+		return MyArrayUtils.convertListOfDoubleToDoubleArray(importFromValueNodeListDouble(node));
+		
+	}
+	
+	public static List<Double> importFromValueNodeListDouble(Node node) {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(node, true);
+			doc.appendChild(importedNode);
+			return MyXMLReaderUtils.readArrayDoubleFromXML(
+					doc, 
+					node.getNodeName() + "/text()"
+					);
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
 }

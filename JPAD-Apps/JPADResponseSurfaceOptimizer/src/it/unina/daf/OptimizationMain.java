@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -63,6 +64,7 @@ public class OptimizationMain  {
 	 */
 	public static void main(String[] args) throws InvalidFormatException, ClassNotFoundException, IOException {
 
+		DecimalFormat numberFormat = new DecimalFormat("0.000");
 		long startTime = System.currentTimeMillis();        
 
 		System.out.println("\t-------------------");
@@ -77,6 +79,7 @@ public class OptimizationMain  {
 				MyConfiguration.outputDirectory
 				); 
 		String outputPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
+		FileUtils.cleanDirectory(new File(outputPath)); 
 		
 		try {
 			OptimizationMain.theCmdLineParser.parseArgument(args);
@@ -107,8 +110,7 @@ public class OptimizationMain  {
 			problem.importResponseSurface(responseSurfacePath);
 			problem.setVariablesLowerBounds(inputManager.getVariablesLowerBounds());
 			problem.setVariablesUpperBounds(inputManager.getVariablesUpperBounds());
-			problem.setConstraintsValues(inputManager.getConstraintsValues());
-			problem.setConstraintsViolationConditions(inputManager.getConstraintsViolationConditions());
+			problem.setConstraintsDictionary(inputManager.getConstraintsDictionary());
 			
 			//......................................................................
 			// Defining the optimization problem ...
@@ -116,6 +118,8 @@ public class OptimizationMain  {
 			for(int i=0; i<inputManager.getAlgorithms().length; i++) {
 				
 				System.out.println("\n\tRunning " + inputManager.getAlgorithms()[i] + " algorithm ...");
+				
+				long algorithmStartTime = System.currentTimeMillis();   
 				
 				resultList.add(new Executor()
 						.withAlgorithm(inputManager.getAlgorithms()[i])
@@ -125,7 +129,10 @@ public class OptimizationMain  {
 						.run()
 						);
 				
+				long algorithmEstimatedTime = System.currentTimeMillis() - algorithmStartTime;
+				
 				System.out.println("\tDone!!");
+				System.out.println("\tTIME ESTIMATED " + inputManager.getAlgorithms()[i] + " = " + numberFormat.format(algorithmEstimatedTime*0.001) + " seconds");
 			}
 
 			//......................................................................
@@ -212,41 +219,20 @@ public class OptimizationMain  {
 				}
 			}
 
-			System.out.println("\n\tSaving Optimum Variable values to file ...");
-			List<List<Double[]>> variableArraysList = new ArrayList<>();
-			List<List<String>> variableNameList = new ArrayList<>();
+			System.out.println("\n\tSaving Optimum Variable and Objective values to file ...");
+			List<List<Double[]>> variableAndObjectiveArraysList = new ArrayList<>();
+			List<List<String>> variableAndObjectiveNameList = new ArrayList<>();
 			for(int i=0; i<inputManager.getAlgorithms().length; i++) {
-				List<Double[]> currentVariableArraysList = new ArrayList<>();
-				for(int j=0; j<problem.getNumberOfVariables(); j++) {
-					currentVariableArraysList.add(
+				List<Double[]> currentVariableAndObjectiveArraysList = new ArrayList<>();
+				for(int j=0; j<problem.getNumberOfVariables(); j++) 
+					currentVariableAndObjectiveArraysList.add(
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
 									optimumVariableMapList.get(j).get(inputManager.getAlgorithms()[i])
 									)
 							);
-				}
-				variableArraysList.add(currentVariableArraysList);
-				variableNameList.add(Arrays.asList(problem.getVariablesLabelArray()));
-			}
-			
-			JPADStaticWriteUtils.exportToCSV(
-					variableArraysList,
-					Arrays.asList(inputManager.getAlgorithms()), 
-					variableNameList,
-					MyConfiguration.createNewFolder(
-							outputPath
-							+ File.separator 
-							+ "Optimum Variable Values" 
-							)
-					);
-			
-			System.out.println("\tSaving Optimum Objective values to file ...");
-			List<List<Double[]>> objectiveArraysList = new ArrayList<>();
-			List<List<String>> objectiveNameList = new ArrayList<>();
-			for(int i=0; i<inputManager.getAlgorithms().length; i++) {
-				List<Double[]> currentObjectiveArraysList = new ArrayList<>();
 				for(int j=0; j<problem.getNumberOfObjectives(); j++) {
 					if(problem.getMaximizationProblemConditionArray()[j] == true)
-						currentObjectiveArraysList.add(
+						currentVariableAndObjectiveArraysList.add(
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
 										optimumObjectiveMapList.get(j).get(inputManager.getAlgorithms()[i]).stream()
 										.map(d -> -d)
@@ -254,32 +240,35 @@ public class OptimizationMain  {
 										)
 								);
 					else
-						currentObjectiveArraysList.add(
+						currentVariableAndObjectiveArraysList.add(
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
 										optimumObjectiveMapList.get(j).get(inputManager.getAlgorithms()[i])
 										)
 								);
 				}
-				objectiveArraysList.add(currentObjectiveArraysList);
-				objectiveNameList.add(Arrays.asList(problem.getObjectivesLabelArray()));
+				variableAndObjectiveArraysList.add(currentVariableAndObjectiveArraysList);
+				
+				List<String> labelList = new ArrayList<>();
+				labelList.addAll(Arrays.asList(problem.getVariablesLabelArray()));
+				labelList.addAll(Arrays.asList(problem.getObjectivesLabelArray()));
+				variableAndObjectiveNameList.add(labelList);
 			}
-
+			
 			JPADStaticWriteUtils.exportToCSV(
-					objectiveArraysList,
+					variableAndObjectiveArraysList,
 					Arrays.asList(inputManager.getAlgorithms()), 
-					objectiveNameList,
+					variableAndObjectiveNameList,
 					MyConfiguration.createNewFolder(
 							outputPath
 							+ File.separator 
-							+ "Optimum Objective Values" 
+							+ "Optimum Variable and Objective Values" 
 							)
 					);
-
+			
 			System.out.println("\n\tDone!! \n");
 
-			DecimalFormat numberFormat = new DecimalFormat("0.000");
 			long estimatedTime = System.currentTimeMillis() - startTime;
-			System.out.println("\n\tTIME ESTIMATED = " + numberFormat.format(estimatedTime*0.001) + " seconds");
+			System.out.println("\n\tTOTAL TIME ESTIMATED = " + numberFormat.format(estimatedTime*0.001) + " seconds");
 
 		} catch (CmdLineException e) {
 			System.err.println("Error: " + e.getMessage());
