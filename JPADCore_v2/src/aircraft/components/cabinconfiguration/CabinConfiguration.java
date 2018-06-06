@@ -518,7 +518,7 @@ public class CabinConfiguration {
 
 		// CG variation during boarding procedure in aircraft reference frame
 		_currentMassList = new ArrayList<>();
-		_currentMassList.add(aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass());
+		_currentMassList.add(aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getOperatingEmptyMass());
 		
 		setSeatsCoGFrontToRear(new ArrayList<>());
 		getSeatsCoGFrontToRear().add(aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF());

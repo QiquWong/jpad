@@ -22,16 +22,16 @@ public class BoardingCenterOfGravityCalc {
 	public static void calculateCGBoarding(List<SeatsBlock> seatsBlocks, Aircraft aircraft) {
 
 		double sumFtoR = aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF().doubleValue(SI.METER)*
-				aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().doubleValue(SI.KILOGRAM),
+				aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getOperatingEmptyMass().doubleValue(SI.KILOGRAM),
 
 				sumRtoF = aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF().doubleValue(SI.METER)*
-				aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
+				aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
 
 		double currentMass, mult, emptyColumns = 0.;
 		boolean window = false, aisle = false, other = false;
 
 		SeatsBlock x = null;
-		currentMass = aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
+		currentMass = aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
 		window = false; aisle = false; other = false;
 
 		///////////////////
@@ -57,9 +57,9 @@ public class BoardingCenterOfGravityCalc {
 								+ x.getXStart().doubleValue(SI.METER) 
 								+ x.getPitch().doubleValue(SI.METER)/2
 								)*
-								2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+								2*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 
-						currentMass += 2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+						currentMass += 2*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 						aircraft.getCabinConfiguration().getCurrentMassList().add(
 								Amount.valueOf(
 										currentMass, 
@@ -95,9 +95,9 @@ public class BoardingCenterOfGravityCalc {
 					for (int i = 0; i < x.getRowsNumber()-1; i++) {
 
 						sumFtoR += (x.getXList().get(i) + x.getXStart().doubleValue(SI.METER) + x.getPitch().doubleValue(SI.METER)/2)*
-								mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+								mult*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 
-						currentMass += mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+						currentMass += mult*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 						
 						aircraft.getCabinConfiguration().getCurrentMassList().add(
 								Amount.valueOf(
@@ -139,9 +139,9 @@ public class BoardingCenterOfGravityCalc {
 				for (int i = 0; i < x.getRowsNumber()-1; i++) {
 
 					sumFtoR += (x.getXList().get(i) + x.getXStart().doubleValue(SI.METER) + x.getPitch().doubleValue(SI.METER)/2)*
-							emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+							emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 
-					currentMass += emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+					currentMass += emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 					
 					aircraft.getCabinConfiguration().getCurrentMassList().add(
 							Amount.valueOf(
@@ -160,7 +160,7 @@ public class BoardingCenterOfGravityCalc {
 			}
 		}
 
-		currentMass = aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
+		currentMass = aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
 		window = false; aisle = false; other = false;
 
 		///////////////////
@@ -181,9 +181,9 @@ public class BoardingCenterOfGravityCalc {
 					for (int i = x.getRowsNumber()-2; i >= 0; i--) {
 
 						sumRtoF += (x.getXList().get(i) + x.getXStart().doubleValue(SI.METER) + x.getPitch().doubleValue(SI.METER)/2)*
-								2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+								2*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 
-						currentMass += 2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+						currentMass += 2*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 
 						aircraft.getCabinConfiguration().getCurrentXCoGrearToFrontWindow().add(
 								Amount.valueOf(
@@ -214,9 +214,9 @@ public class BoardingCenterOfGravityCalc {
 					for (int i = x.getRowsNumber()-2; i >= 0; i--){
 
 						sumRtoF += ((x.getXList().get(i) + x.getXStart().doubleValue(SI.METER) + x.getPitch().doubleValue(SI.METER)/2)*
-								mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM));
+								mult*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM));
 
-						currentMass += mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+						currentMass += mult*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 
 						aircraft.getCabinConfiguration().getCurrentXCoGrearToFrontAisle().add(
 								Amount.valueOf(
@@ -251,9 +251,9 @@ public class BoardingCenterOfGravityCalc {
 				for (int i = x.getRowsNumber() - 2; i >= 0 ; i--) {
 
 					sumRtoF += (x.getXList().get(i) + x.getXStart().doubleValue(SI.METER) + x.getPitch().doubleValue(SI.METER)/2)*
-							emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+							emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 
-					currentMass += emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+					currentMass += emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 
 					aircraft.getCabinConfiguration().getCurrentXCoGrearToFrontOther().add(
 							Amount.valueOf(

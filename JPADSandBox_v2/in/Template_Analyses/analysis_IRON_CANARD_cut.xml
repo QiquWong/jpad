@@ -2,6 +2,7 @@
 	<!-- 
 	plot=TRUE -> enters the plot tag in the specified file.
 	plot=FALSE -> plots nothing.
+	method_XXX="AVERAGED" if empty string
 	-->
 <jpad_config>
     <!-- Input data, shared across analysis tasks -->
@@ -24,17 +25,8 @@
 			method_nacelles=""
 			method_power_plant=""
 			method_landing_gears=""
-			method_APU=""
-			method_air_conditioning_and_anti_icing=""
-			method_instruments_and_navigation_system=""
-			method_hydraulic_and_pneumatic_systems=""			
-			method_electrical_systems=""
-			method_furnishings_and_equipments=""
-			method_control_surfaces=""
             /> 
 			-->
-		<!-- method_XXX="AVERAGED" if empty string -->
-		<!--
 		<balance 
 			file="analysis_balance_IRON.xml"
 			plot="TRUE"
@@ -44,8 +36,17 @@
             method_htail=""
             method_vtail=""
 			method_canard=""
+			method_nacelles=""
+			method_power_plant=""
+			method_landing_gears=""
+			method_APU=""
+			method_air_conditioning_and_anti_icing=""
+			method_instruments_and_navigation_system=""
+			method_hydraulic_and_pneumatic_systems=""			
+			method_electrical_systems=""
+			method_furnishings_and_equipments=""
+			method_control_surfaces=""
 		/>
-		-->
 	<!--
 	<aerodynamic_and_stability
 			plot="TRUE"
@@ -60,6 +61,7 @@
 			file_landing_condition="analysis_aerodynamics_Prototype_LOOP1_updated_landing.xml"
 	/>
 	-->
+	<!--
 	<performance
 			file="analysis_performance_IRON_CANARD_cut_engine_base.xml"
 			plot="FALSE"
@@ -73,6 +75,7 @@
 			V_n_diagram="FALSE"
 			mission_profile="TRUE"
 	/> 
+	-->
 	<!--
  	<costs 
 			file="analysis_costs_IRON_CANARD.xml"

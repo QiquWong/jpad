@@ -852,6 +852,58 @@ public class ACAnalysisManager {
 					else 
 						methodsMapBalance.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.AVERAGE);
 				}
+				
+				////////////////////////////////////////////////////////////////////////////////////
+				String canardBalanceMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//balance/@method_canard");
+				if(canardBalanceMethod != null) {
+					if(canardBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapBalance.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_1982);
+					}
+					else 
+						methodsMapBalance.put(ComponentEnum.CANARD, MethodEnum.AVERAGE);
+				}
+				
+				////////////////////////////////////////////////////////////////////////////////////
+				String nacellesBalanceMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//balance/@method_nacelles");
+				if(nacellesBalanceMethod != null) {
+					if(nacellesBalanceMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+						methodsMapBalance.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1976);
+					}
+					else 
+						methodsMapBalance.put(ComponentEnum.NACELLE, MethodEnum.AVERAGE);
+				}
+				
+				////////////////////////////////////////////////////////////////////////////////////
+				String powerPlantBalanceMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//balance/@method_power_plant");
+				if(powerPlantBalanceMethod != null) {
+					if(powerPlantBalanceMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+						methodsMapBalance.put(ComponentEnum.POWER_PLANT, MethodEnum.TORENBEEK_1976);
+					}
+					else 
+						methodsMapBalance.put(ComponentEnum.POWER_PLANT, MethodEnum.AVERAGE);
+				}
+				
+				////////////////////////////////////////////////////////////////////////////////////
+				String landingGearsBalanceMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//balance/@method_landing_gears");
+				if(landingGearsBalanceMethod != null) {
+					if(landingGearsBalanceMethod.equalsIgnoreCase("SFORZA")) {
+						methodsMapBalance.put(ComponentEnum.LANDING_GEAR, MethodEnum.SFORZA);
+					}
+					else 
+						methodsMapBalance.put(ComponentEnum.LANDING_GEAR, MethodEnum.SFORZA);
+				}
 
 			}
 

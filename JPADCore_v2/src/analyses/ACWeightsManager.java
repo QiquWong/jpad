@@ -2269,7 +2269,7 @@ public class ACWeightsManager {
 		this._electricalSystemsMass = _electricalSystemsMass;
 	}
 
-	public Amount<Mass> getCcontrolSurfaceMass() {
+	public Amount<Mass> getControlSurfaceMass() {
 		return _controlSurfaceMass;
 	}
 
