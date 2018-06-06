@@ -32,7 +32,7 @@ ylabel('$\frac{L}{L_0}-1$','interpreter','latex');
 set(get(gca,'ylabel'),'rotation',0)
 
 title('Parameter accounting for ground effect on lift due to trailing vortices');
-axis([0 2.4 -0.5 .4]);
+axis([0 2.4 -0.5 .6]);
 legend('0','5','10', '15','20','22' ,'24', '36');
 
 
