@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -81,6 +82,7 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.HighLiftDeviceEffectEnum;
 import configuration.enumerations.MethodEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
@@ -90,6 +92,7 @@ import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
+import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
 /**
@@ -216,7 +219,7 @@ public class ACAerodynamicAndStabilityManager {
 	private List<Amount<Angle>> deltaRudderForEquilibrium = new ArrayList<>();
 
 	// Lateral Static Stability stuff
-	private Map<MethodEnum, Double> _cRollBetaWingBody = new HashMap<>();
+	private Map<MethodEnum, Amount<?>> _cRollBetaWingBody = new HashMap<>();
 	private Map<MethodEnum, Double> _cRollBetaHorizontal = new HashMap<>();
 	private Map<MethodEnum, Double> _cRollBetaVertical = new HashMap<>();
 	private Map<MethodEnum, Double> _cRollBetaTotal = new HashMap<>();
@@ -13624,6 +13627,19 @@ public class ACAerodynamicAndStabilityManager {
 			}
 		}
 		
+		//------------------------------------------------------------------------------------------------------------------------------------
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LATERAL_STABILITY)) {
+
+					CalcLateralStability calcLateralStability = new CalcLateralStability();
+					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.LATERAL_STABILITY)) {
+					case NAPOLITANO_DATCOM:
+						calcLateralStability.datcomWingBody();
+						break;
+					default:
+						break;
+					}
+				}
+		
 		//=================================================================================================
 		// PLOTS
 		//=================================================================================================
@@ -19234,8 +19250,32 @@ public class ACAerodynamicAndStabilityManager {
 			}
 		}
 		
+		
+		//---------------------------------------------------------------
+		// LATERAL STATIC STABILITY
+		String aircraftLateralStaticStabilityPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//aircraft_analyses/lateral_static_stability/@perform");
+		
+		if(aircraftLateralStaticStabilityPerformString.equalsIgnoreCase("TRUE")){
+			
+			String aircraftLateralStaticStabilityMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/lateral_static_stability/@method");
+			
+			if(aircraftLateralStaticStabilityMethodString != null) {
+				
+				if(aircraftLateralStaticStabilityMethodString.equalsIgnoreCase("NAPOLITANO_DATCOM")) 
+					aircraftLateralStaticStabilityMethod = MethodEnum.NAPOLITANO_DATCOM;
+				
+				aircraftTaskList.put(AerodynamicAndStabilityEnum.LATERAL_STABILITY, aircraftLateralStaticStabilityMethod);
+				
+			}
+		}
 		/*
-		 * TODO: COMPLETE WITH LATERAL STABILITY AND DYNAMIC STABILITY WHEN AVAILABLE!
+		 * TODO: COMPLETE WITH DYNAMIC STABILITY WHEN AVAILABLE!
 		 */
 		
 		//===============================================================
@@ -27319,24 +27359,42 @@ public class ACAerodynamicAndStabilityManager {
 	//............................................................................
 
 	public class CalcLateralStability {
-		
+
 		public void datcomWingBody() {
 			_cRollBetaWingBody.put(
 					MethodEnum.NAPOLITANO_DATCOM,
-					0.0 // TODO pick all parameters from the aircraft object
-//					MomentCalc.calcCRollbetaWingBody(
-//							dihedralW, 
-//							sweepC2W, 
-//							aspectRatioW, 
-//							taperRatioW, 
-//							spanW, 
-//							twistTipW, 
-//							xcTipW, 
-//							cLW, 
-//							mach, 
-//							crossSectionF, 
-//							zW)
-					);
+					MomentCalc.calcCRollbetaWingBody(
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralMean(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXLEAtYActual(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER)
+									).plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
+							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getChordsBreakPoints().get(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getChordsBreakPoints().size()-1
+									)),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip(), 
+							LiftCalc.calculateLiftCoeff(
+									_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
+									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+									getCurrentMachNumber()*AtmosphereCalc.getSpeedOfSound(getCurrentAltitude().doubleValue(SI.METER)),
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+									getCurrentAltitude().doubleValue(SI.METER)
+									),
+							getCurrentMachNumber(),
+							Amount.valueOf(
+									_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)
+											+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getPanels().get(0).getChordRoot().divide(2).doubleValue(SI.METER)),
+									SI.METER
+									),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().opposite(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader() 
+							));
+
 		}
 		
 		// TODO implement datcomWingHTail, datcomVTail

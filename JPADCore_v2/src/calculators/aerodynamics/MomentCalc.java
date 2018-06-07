@@ -188,31 +188,200 @@ public class MomentCalc {
 						);
 		
 	}
-
+	
+	//--------------------- CAVAS
+	
 	/**
 	 *
 	 * @author agodemar, cavas
+	 * 
 	 * @param dihedralW
 	 * @param sweepC2W
+	 * @param sweepC4W
 	 * @param aspectRatioW
 	 * @param taperRatioW
-	 * ... 
+	 * @param spanW
+	 * @param xLETipBFRWing
+	 * @param twistTipW
+	 * @param cL
+	 * @param mach
+	 * @param diameterCrossSectionF
+	 * @param zW
+	 * @param databaseReader
 	 * @return
 	 */
-	public static double calcCRollbetaWingBody(
-			double dihedralW, double sweepC2W, double aspectRatioW, double taperRatioW, double spanW,
-			double twistTipW, double xcTipW,
-			double cLW, double mach, 
-			double crossSectionF, double zW 
+	public static Amount<?> calcCRollbetaWingBody(
+			Amount<Angle> dihedralW, Amount<Angle> sweepC2W,
+			Amount<Angle> sweepC4W,
+			double aspectRatioW, double taperRatioW, Amount<Length> spanW, Amount<Length> xLETipBFRWing,
+			Amount<Angle> twistTipW,
+			double cL, double mach, 
+			Amount<Length> diameterCrossSectionF, Amount<Length> zW,
+			AerodynamicDatabaseReader databaseReader
 			) {
 
-		double  clbeta = 0.0;
-		
-		// TODO: implement formulas (Napolitano, p.155, 4.3.2) 
+		// Cl_beta/CL1_Lambda_c/2_W
+		Amount<?> cRollBetaOverCL1WingBodyLc2 = Amount.valueOf(
+				databaseReader.getClBetaWBClbetaOverCLift1Lc2VsLc2ARlambda(taperRatioW, aspectRatioW, sweepC2W), // var0, var1, var2
+				NonSI.DEGREE_ANGLE.inverse()
+				);
 
-		return clbeta;
+		// K_M_Lambda_W
+		double aspectRatioOverCosSweepAngleC2Wing = aspectRatioW/Math.cos(sweepC2W.doubleValue(SI.RADIAN));
+		double machTimesCosSweepAngleC2Wing = mach * Math.cos(sweepC2W.doubleValue(SI.RADIAN));
+		
+		double cRollKappaMachLambdaW = databaseReader.getClBetaWBKMLVsMachTimesCosLc2AROverCosLc2(
+				aspectRatioOverCosSweepAngleC2Wing, // var0
+				machTimesCosSweepAngleC2Wing // var1
+				);
+
+		// K_f_W
+		double aOverSpanWing = xLETipBFRWing.doubleValue(SI.METER)/spanW.doubleValue(SI.METER);
+
+		double cRollKappafW = databaseReader.getClBetaWBKfVsAOverBAROverCosLc2(aspectRatioOverCosSweepAngleC2Wing, aOverSpanWing); // var0, var1
+
+		// Cl_beta/CL1_AR_W
+		Amount<?> cRollBetaOverCL1WingBodyAR = Amount.valueOf(
+				databaseReader.getClBetaWBClbetaOverCLift1ARVsARlambda(taperRatioW, aspectRatioW), // var0, var1
+				NonSI.DEGREE_ANGLE.inverse()
+				);
+
+		// Cl_beta/Gamma_W
+		Amount<?> cRollBetaOverGammaW = Amount.valueOf(
+				databaseReader.getClBetaWBClbetaOverGammaWVsARLc2lambda(taperRatioW, sweepC2W, aspectRatioW), // var0, var1, var2
+				NonSI.DEGREE_ANGLE.pow(2).inverse()
+				);
+
+		// K_M_Gamma_W
+		double cRollKappaMachGammaW = databaseReader.getClBetaWBKMGammaVsMachTimesCosLc2AROverCosLc2(
+				aspectRatioOverCosSweepAngleC2Wing, // var0
+				machTimesCosSweepAngleC2Wing // var1
+				);
+
+		// DCl_beta/Gamma_W
+		double dBWOverSpanWing = diameterCrossSectionF.doubleValue(SI.METER)/spanW.doubleValue(SI.METER);		
+
+		Amount<?> cRollDeltaClBetaOverGammaW = Amount.valueOf(
+				-0.0005*aspectRatioW*Math.pow(dBWOverSpanWing, 2),
+				NonSI.DEGREE_ANGLE.pow(2).inverse()
+				);
+
+		// DCl_beta_z_W
+		double zWOverSpanWing = zW.doubleValue(SI.METER)/spanW.doubleValue(SI.METER);
+
+		Amount<?> cRollDeltaClBetaZW = Amount.valueOf(
+				1.2*Math.sqrt(aspectRatioW)/57.3*zWOverSpanWing*2*dBWOverSpanWing,
+				NonSI.DEGREE_ANGLE.inverse()
+				);
+
+		// DCl_beta/(eps_W*tan(Lambda_c/4))
+		Amount<?> cRollDeltaClBetaOverEpsWTanLc4 = Amount.valueOf(
+				databaseReader.getClBetaWBDClbetaOverEpsWTimesTanLc4VsARlambda(taperRatioW, aspectRatioW), // var0, var1
+				NonSI.DEGREE_ANGLE.pow(2).inverse()
+				);
+
+
+		Amount<?> cRollBetaWB =
+				(
+						cRollBetaOverCL1WingBodyLc2.times(cRollKappaMachLambdaW*cRollKappafW)
+						.plus(cRollBetaOverCL1WingBodyAR)
+						).times(cL)
+				.plus(
+						dihedralW.times(cRollBetaOverGammaW.times(cRollKappaMachGammaW).plus(cRollDeltaClBetaOverGammaW))
+						.plus(cRollDeltaClBetaZW)
+						.plus(
+								cRollDeltaClBetaOverEpsWTanLc4.times(
+										twistTipW.times(
+												Math.tan(sweepC4W.doubleValue(SI.RADIAN))
+												)
+										)
+								)
+						).to(SI.RADIAN.inverse());
+
+		return cRollBetaWB;
 	}
+
+   /**
+    *
+    * @author agodemar, cavas
+    * 
+    * @param dihedralH
+    * @param sweepC2H
+    * @param sweepC4H
+    * @param aspectRatioH
+    * @param taperRatioH
+    * @param spanH
+    * @param twistTipH
+    * @param mach
+    * @param crossSectionF
+    * @return
+    */
+   public static double calcCRollbetaHorizontalTail(
+                   double surfaceW, double spanW,
+                   double surfaceH, double dihedralH, double sweepC2H, double sweepC4H, double aspectRatioH, double taperRatioH, double spanH,
+                   double twistTipH,
+                   double mach, double etaH,
+                   double crossSectionF // also double diameterCrossSectionF
+                   ) {
+
+           double  clbeta = 0.0;
+           
+           // TODO: implement formulas (Napolitano, p.160, 4.3.2) 
+
+           return clbeta;
+   }
+   
+   /**
+    *
+    * @author agodemar, cavas
+    * 
+    * @param surfaceW
+    * @param spanW
+    * @param surfaceV
+    * @param spanV
+    * @param xV
+    * @param zV
+    * @param liftGradientV
+    * @param etaVSidewashGradient
+    * @param angleOfAttack
+    * @param mach
+    * @param r1
+    * @return
+    */
+   public static double calcCRollbetaVerticalTail(
+                   double surfaceW, double spanW,
+                   double surfaceV, double spanV,
+                   double xV, double zV, double liftGradientV, double etaVSidewashGradient,
+                   double angleOfAttack, double mach,
+                   double r1 // also double diameterCrossSectionF
+                   ) {
+
+           double  clbeta = 0.0;
+           
+           // TODO: implement formulas (Napolitano, p.160, 4.3.2) 
+
+           return clbeta;
+   }
+   
+   /**
+    *
+    * @author agodemar, cavas
+    * 
+    * @param calcCRollbetaWingBody
+    * @param calcCRollbetaHorizontalTail
+    * @param calcCRollbetaVerticalTail
+    * @return
+    */
+   public static double calcTotalCRollbeta(double calcCRollbetaWingBody, double calcCRollbetaHorizontalTail, double calcCRollbetaVerticalTail) {
+
+           double  clbeta = 0.0;
+           
+           // TODO: implement formulas (Napolitano, p.155, 4.3.2) 
+
+           return clbeta;
+   }
 	
+	//-----------------------------
 	
 	/**
 	 * 
