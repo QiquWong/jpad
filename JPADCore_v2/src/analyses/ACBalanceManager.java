@@ -46,8 +46,7 @@ import standaloneutils.customdata.CenterOfGravity;
 public class ACBalanceManager {
 
 	/*
-	 * TODO : FIX THE toXLS METHOD
-	 * 		  FIX THE CALCULATE TOTOAL CG METHOD
+	 * TODO : FIX THE CALCULATE TOTOAL CG METHOD
 	 */
 	
 	
@@ -990,26 +989,43 @@ public class ACBalanceManager {
 		dataListGlobal.add(new Object[] {"Description","Unit","Value"});
 		dataListGlobal.add(new Object[] {"Xcg structure MAC","%", _cgStructure.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg structure BRF","m", _cgStructure.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Ycg structure MAC","%", _cgStructure.getYMAC()*100});
+		dataListGlobal.add(new Object[] {"Ycg structure BRF","m", _cgStructure.getYBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg structure MAC","%", _cgStructure.getZMAC()*100});
 		dataListGlobal.add(new Object[] {"Zcg structure BRF","m", _cgStructure.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg structure and engines MAC","%", _cgStructureAndPower.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg structure and engines BRF","m", _cgStructureAndPower.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Ycg structure and engines MAC","%", _cgStructureAndPower.getYMAC()*100});
+		dataListGlobal.add(new Object[] {"Ycg structure and engines BRF","m", _cgStructureAndPower.getYBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg structure and engines MAC","%", _cgStructureAndPower.getZMAC()*100});
 		dataListGlobal.add(new Object[] {"Zcg structure and engines BRF","m", _cgStructureAndPower.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
+		dataListGlobal.add(new Object[] {"Xcg structure, engines and systems MAC","%", _cgStructureAndPower.getXMAC()*100});
+		dataListGlobal.add(new Object[] {"Xcg structure, engines and systems BRF","m", _cgStructureAndPower.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Ycg structure, engines and systems MAC","%", _cgStructureAndPower.getYMAC()*100});
+		dataListGlobal.add(new Object[] {"Ycg structure, engines and systems BRF","m", _cgStructureAndPower.getYBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Zcg structure, engines and systems MAC","%", _cgStructureAndPower.getZMAC()*100});
+		dataListGlobal.add(new Object[] {"Zcg structure, engines and sysmtes BRF","m", _cgStructureAndPower.getZBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg operating empty mass MAC","%", _cgOEM.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg operating empty mass BRF","m", _cgOEM.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Ycg operating empty mass MAC","%", _cgOEM.getYMAC()*100});
+		dataListGlobal.add(new Object[] {"Ycg operating empty mass BRF","m", _cgOEM.getYBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg operating empty mass MAC","%", _cgOEM.getZMAC()*100});
 		dataListGlobal.add(new Object[] {"Zcg operating empty mass BRF","m", _cgOEM.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg maximum zero fuel mass MAC","%",_cgMZFM.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg maximum zero fuel mass BRF","m",_cgMZFM.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Ycg maximum zero fuel mass MAC","%",_cgMZFM.getYMAC()*100});
+		dataListGlobal.add(new Object[] {"Ycg maximum zero fuel mass BRF","m",_cgMZFM.getYBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg maximum zero fuel mass MAC","%",_cgMZFM.getZMAC()*100});
 		dataListGlobal.add(new Object[] {"Zcg maximum zero fuel mass BRF","m", _cgMZFM.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg maximum take-off mass MAC","%",_cgMTOM.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg maximum take-off mass BRF","m",_cgMTOM.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Ycg maximum take-off mass MAC","%",_cgMTOM.getYMAC()*100});
+		dataListGlobal.add(new Object[] {"Ycg maximum take-off mass BRF","m",_cgMTOM.getYBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg maximum take-off mass MAC","%",_cgMTOM.getZMAC()*100});
 		dataListGlobal.add(new Object[] {"Zcg maximum take-off mass BRF","m", _cgMTOM.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
@@ -1067,26 +1083,26 @@ public class ACBalanceManager {
 		//--------------------------------------------------------------------------------
 		// FUSELAGE BALANCE ANALYSIS RESULTS:
 		//--------------------------------------------------------------------------------
-		if(getTheBalanceManagerInterface().getTheAircraft().getFuselage() != null) {
+		if(_theBalanceManagerInterface.getTheAircraft().getFuselage() != null) {
 			Sheet sheetFuselage = wb.createSheet("FUSELAGE");
 			List<Object[]> dataListFuselage = new ArrayList<>();
 			dataListFuselage.add(new Object[] {"Description","Unit","Value"});
-			dataListFuselage.add(new Object[] {"Xcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuselage().getTheBalance().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Ycg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuselage().getTheBalance().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Zcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuselage().getTheBalance().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Ycg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZLRF().doubleValue(SI.METER)});
 			dataListFuselage.add(new Object[] {" "});
-			dataListFuselage.add(new Object[] {"Xcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuselage().getTheBalance().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Ycg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuselage().getTheBalance().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Zcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuselage().getTheBalance().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Ycg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListFuselage.add(new Object[] {" "});
 			dataListFuselage.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
-			for(MethodEnum methods : getTheBalanceManagerInterface().getTheAircraft().getFuselage().getTheBalance().getXCGMap().keySet()) {
-				if(getTheBalanceManagerInterface().getTheAircraft().getFuselage().getTheBalance().getXCGMap().get(methods) != null) 
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getXCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getXCGMap().get(methods) != null) 
 					dataListFuselage.add(
 							new Object[] {
 									methods.toString(),
 									"m",
-									getTheBalanceManagerInterface().getTheAircraft().getFuselage().getTheBalance().getXCGMap().get(methods).doubleValue(SI.METER),
+									_theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getXCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -1133,38 +1149,38 @@ public class ACBalanceManager {
 		//--------------------------------------------------------------------------------
 		// WING BALANCE ANALYSIS RESULTS:
 		//--------------------------------------------------------------------------------
-		if(getTheBalanceManagerInterface().getTheAircraft().getWing() != null) {
+		if(_theBalanceManagerInterface.getTheAircraft().getWing() != null) {
 			Sheet sheetWing = wb.createSheet("WING");
 			List<Object[]> dataListWing = new ArrayList<>();
 			dataListWing.add(new Object[] {"Description","Unit","Value"});
-			dataListWing.add(new Object[] {"Xcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListWing.add(new Object[] {"Ycg LRF (semi-wing)","m", getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListWing.add(new Object[] {"Zcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Ycg LRF (semi-wing)","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
 			dataListWing.add(new Object[] {" "});
-			dataListWing.add(new Object[] {"Xcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListWing.add(new Object[] {"Ycg BRF (semi-wing)","m", getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListWing.add(new Object[] {"Zcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Ycg BRF (semi-wing)","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListWing.add(new Object[] {" "});
 			dataListWing.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
-			for(MethodEnum methods : getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getXCGMap().keySet()) {
-				if(getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getXCGMap().get(methods) != null) 
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getXCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getXCGMap().get(methods) != null) 
 					dataListWing.add(
 							new Object[] {
 									methods.toString(),
 									"m",
-									getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getXCGMap().get(methods).doubleValue(SI.METER),
+									_theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getXCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
 			dataListWing.add(new Object[] {" "});
 			dataListWing.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
-			for(MethodEnum methods : getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getYCGMap().keySet()) {
-				if(getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getYCGMap().get(methods) != null) 
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getYCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getYCGMap().get(methods) != null) 
 					dataListWing.add(
 							new Object[] {
 									methods.toString(),
 									"m",
-									getTheBalanceManagerInterface().getTheAircraft().getWing().getTheBalanceManager().getYCGMap().get(methods).doubleValue(SI.METER),
+									_theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getYCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -1211,17 +1227,17 @@ public class ACBalanceManager {
 		//--------------------------------------------------------------------------------
 		// FUEL TANK BALANCE ANALYSIS RESULTS:
 		//--------------------------------------------------------------------------------
-		if(getTheBalanceManagerInterface().getTheAircraft().getFuelTank() != null) {
+		if(_theBalanceManagerInterface.getTheAircraft().getFuelTank() != null) {
 			Sheet sheetFuelTank = wb.createSheet("FUEL TANK");
 			List<Object[]> dataListFuelTank = new ArrayList<>();
 			dataListFuelTank.add(new Object[] {"Description","Unit","Value"});
-			dataListFuelTank.add(new Object[] {"Xcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuelTank().getXCGLRF().doubleValue(SI.METER)});
-			dataListFuelTank.add(new Object[] {"Ycg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuelTank().getYCGLRF().doubleValue(SI.METER)});
-			dataListFuelTank.add(new Object[] {"Zcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuelTank().getZCGLRF().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getXCGLRF().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Ycg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getYCGLRF().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getZCGLRF().doubleValue(SI.METER)});
 			dataListFuelTank.add(new Object[] {" "});
-			dataListFuelTank.add(new Object[] {"Xcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuelTank().getXCG().doubleValue(SI.METER)});
-			dataListFuelTank.add(new Object[] {"Ycg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuelTank().getYCG().doubleValue(SI.METER)});
-			dataListFuelTank.add(new Object[] {"Zcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getFuelTank().getZCG().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getXCG().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Ycg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getYCG().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getZCG().doubleValue(SI.METER)});
 			dataListFuelTank.add(new Object[] {" "});
 			
 			Row rowFuelTank = sheetFuelTank.createRow(0);
@@ -1267,38 +1283,38 @@ public class ACBalanceManager {
 		//--------------------------------------------------------------------------------
 		// HORIZONTAL TAIL BALANCE ANALYSIS RESULTS:
 		//--------------------------------------------------------------------------------
-		if(getTheBalanceManagerInterface().getTheAircraft().getHTail() != null) {
+		if(_theBalanceManagerInterface.getTheAircraft().getHTail() != null) {
 			Sheet sheetHTail = wb.createSheet("HORIZONTAL TAIL");
 			List<Object[]> dataListHTail = new ArrayList<>();
 			dataListHTail.add(new Object[] {"Description","Unit","Value"});
-			dataListHTail.add(new Object[] {"Xcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListHTail.add(new Object[] {"Ycg LRF (semi-tail)","m", getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListHTail.add(new Object[] {"Zcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Ycg LRF (semi-tail)","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
 			dataListHTail.add(new Object[] {" "});
-			dataListHTail.add(new Object[] {"Xcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListHTail.add(new Object[] {"Ycg BRF (semi-tail)","m", getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListHTail.add(new Object[] {"Zcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Ycg BRF (semi-tail)","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListHTail.add(new Object[] {" "});
 			dataListHTail.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
-			for(MethodEnum methods : getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getXCGMap().keySet()) {
-				if(getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getXCGMap().get(methods) != null) 
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getXCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getXCGMap().get(methods) != null) 
 					dataListHTail.add(
 							new Object[] {
 									methods.toString(),
 									"m",
-									getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getXCGMap().get(methods).doubleValue(SI.METER),
+									_theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getXCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
 			dataListHTail.add(new Object[] {" "});
 			dataListHTail.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
-			for(MethodEnum methods : getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getYCGMap().keySet()) {
-				if(getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getYCGMap().get(methods) != null) 
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getYCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getYCGMap().get(methods) != null) 
 					dataListHTail.add(
 							new Object[] {
 									methods.toString(),
 									"m",
-									getTheBalanceManagerInterface().getTheAircraft().getHTail().getTheBalanceManager().getYCGMap().get(methods).doubleValue(SI.METER),
+									_theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getYCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -1346,38 +1362,38 @@ public class ACBalanceManager {
 		//--------------------------------------------------------------------------------
 		// VERTICAL TAIL BALANCE ANALYSIS RESULTS:
 		//--------------------------------------------------------------------------------
-		if(getTheBalanceManagerInterface().getTheAircraft().getVTail() != null) {
+		if(_theBalanceManagerInterface.getTheAircraft().getVTail() != null) {
 			Sheet sheetVTail = wb.createSheet("VERTICAL TAIL");
 			List<Object[]> dataListVTail = new ArrayList<>();
 			dataListVTail.add(new Object[] {"Description","Unit","Value"});
-			dataListVTail.add(new Object[] {"Xcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListVTail.add(new Object[] {"Ycg LRF (semi-tail)","m", getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListVTail.add(new Object[] {"Zcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Ycg LRF (semi-tail)","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
 			dataListVTail.add(new Object[] {" "});
-			dataListVTail.add(new Object[] {"Xcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListVTail.add(new Object[] {"Ycg BRF (semi-tail)","m", getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListVTail.add(new Object[] {"Zcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Ycg BRF (semi-tail)","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListVTail.add(new Object[] {" "});
 			dataListVTail.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
-			for(MethodEnum methods : getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getXCGMap().keySet()) {
-				if(getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getXCGMap().get(methods) != null) 
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getXCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getXCGMap().get(methods) != null) 
 					dataListVTail.add(
 							new Object[] {
 									methods.toString(),
 									"m",
-									getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getXCGMap().get(methods).doubleValue(SI.METER),
+									_theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getXCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
 			dataListVTail.add(new Object[] {" "});
 			dataListVTail.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
-			for(MethodEnum methods : getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getYCGMap().keySet()) {
-				if(getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getYCGMap().get(methods) != null) 
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getYCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getYCGMap().get(methods) != null) 
 					dataListVTail.add(
 							new Object[] {
 									methods.toString(),
 									"m",
-									getTheBalanceManagerInterface().getTheAircraft().getVTail().getTheBalanceManager().getYCGMap().get(methods).doubleValue(SI.METER),
+									_theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getYCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -1425,38 +1441,38 @@ public class ACBalanceManager {
 		//--------------------------------------------------------------------------------
 		// CANARD BALANCE ANALYSIS RESULTS:
 		//--------------------------------------------------------------------------------
-		if(getTheBalanceManagerInterface().getTheAircraft().getCanard() != null) {
+		if(_theBalanceManagerInterface.getTheAircraft().getCanard() != null) {
 			Sheet sheetCanard = wb.createSheet("CANARD");
 			List<Object[]> dataListCanard = new ArrayList<>();
 			dataListCanard.add(new Object[] {"Description","Unit","Value"});
-			dataListCanard.add(new Object[] {"Xcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListCanard.add(new Object[] {"Ycg LRF (semi-canard)","m", getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListCanard.add(new Object[] {"Zcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Ycg LRF (semi-canard)","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
 			dataListCanard.add(new Object[] {" "});
-			dataListCanard.add(new Object[] {"Xcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListCanard.add(new Object[] {"Ycg BRF (semi-canard)","m", getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListCanard.add(new Object[] {"Zcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Ycg BRF (semi-canard)","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListCanard.add(new Object[] {" "});
 			dataListCanard.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
-			for(MethodEnum methods : getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getXCGMap().keySet()) {
-				if(getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getXCGMap().get(methods) != null) 
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getXCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getXCGMap().get(methods) != null) 
 					dataListCanard.add(
 							new Object[] {
 									methods.toString(),
 									"m",
-									getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getXCGMap().get(methods).doubleValue(SI.METER),
+									_theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getXCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
 			dataListCanard.add(new Object[] {" "});
 			dataListCanard.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
-			for(MethodEnum methods : getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getYCGMap().keySet()) {
-				if(getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getYCGMap().get(methods) != null) 
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getYCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getYCGMap().get(methods) != null) 
 					dataListCanard.add(
 							new Object[] {
 									methods.toString(),
 									"m",
-									getTheBalanceManagerInterface().getTheAircraft().getCanard().getTheBalanceManager().getYCGMap().get(methods).doubleValue(SI.METER),
+									_theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getYCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -1504,24 +1520,28 @@ public class ACBalanceManager {
 		//--------------------------------------------------------------------------------
 		// NACELLES BALANCE ANALYSIS RESULTS:
 		//--------------------------------------------------------------------------------
-		if(getTheBalanceManagerInterface().getTheAircraft().getNacelles() != null) {
+		if(_theBalanceManagerInterface.getTheAircraft().getNacelles() != null) {
 			Sheet sheetNacelles = wb.createSheet("NACELLES");
 			List<Object[]> dataListNacelles = new ArrayList<>();
 			dataListNacelles.add(new Object[] {"Description","Unit","Value"});
-			dataListNacelles.add(new Object[] {"BALANCE ESTIMATION FOR EACH NACELLE"});
+			dataListNacelles.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXLRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {"Ycg LRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getYLRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZLRF().doubleValue(SI.METER)});
 			dataListNacelles.add(new Object[] {" "});
-			for(int iNacelle = 0; iNacelle < getTheBalanceManagerInterface().getTheAircraft().getNacelles().getNacellesNumber(); iNacelle++) {
-				dataListNacelles.add(new Object[] {"NACELLE " + (iNacelle+1)});
-				dataListNacelles.add(new Object[] {"Xcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getNacelles().getTheBalance().getCGList().get(iNacelle).getXLRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {"Ycg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getNacelles().getTheBalance().getCGList().get(iNacelle).getYLRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {"Zcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getNacelles().getTheBalance().getCGList().get(iNacelle).getZLRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {" "});
-				dataListNacelles.add(new Object[] {"Xcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getNacelles().getTheBalance().getCGList().get(iNacelle).getXBRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {"Ycg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getNacelles().getTheBalance().getCGList().get(iNacelle).getYBRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {"Zcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getNacelles().getTheBalance().getCGList().get(iNacelle).getZBRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {" "});
-				dataListNacelles.add(new Object[] {" "});
-				dataListNacelles.add(new Object[] {" "});
+			dataListNacelles.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXBRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {"Ycg BRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getYBRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZBRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {" "});
+			dataListNacelles.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getXCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getXCGMap().get(methods) != null) 
+					dataListNacelles.add(
+							new Object[] {
+									methods.toString(),
+									"m",
+									_theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getXCGMap().get(methods).doubleValue(SI.METER),
+							}
+							);
 			}
 			
 			Row rowNacelles = sheetNacelles.createRow(0);
@@ -1567,24 +1587,28 @@ public class ACBalanceManager {
 		//--------------------------------------------------------------------------------
 		// POWER PLANT BALANCE ANALYSIS RESULTS:
 		//--------------------------------------------------------------------------------
-		if(getTheBalanceManagerInterface().getTheAircraft().getPowerPlant() != null) {
+		if(_theBalanceManagerInterface.getTheAircraft().getPowerPlant() != null) {
 			Sheet sheetPowerPlant = wb.createSheet("POWER PLANT");
 			List<Object[]> dataListPowerPlant = new ArrayList<>();
 			dataListPowerPlant.add(new Object[] {"Description","Unit","Value"});
-			dataListPowerPlant.add(new Object[] {"BALANCE ESTIMATION FOR EACH ENGINE"});
+			dataListPowerPlant.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXLRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {"Ycg LRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getYLRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZLRF().doubleValue(SI.METER)});
 			dataListPowerPlant.add(new Object[] {" "});
-			for(int iEngines = 0; iEngines < getTheBalanceManagerInterface().getTheAircraft().getPowerPlant().getEngineNumber(); iEngines++) {
-				dataListPowerPlant.add(new Object[] {"ENGINE " + (iEngines+1)});
-				dataListPowerPlant.add(new Object[] {"Xcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getPowerPlant().getTheBalance().getCGList().get(iEngines).getXLRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {"Ycg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getPowerPlant().getTheBalance().getCGList().get(iEngines).getYLRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {"Zcg LRF","m", getTheBalanceManagerInterface().getTheAircraft().getPowerPlant().getTheBalance().getCGList().get(iEngines).getZLRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {" "});
-				dataListPowerPlant.add(new Object[] {"Xcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getPowerPlant().getTheBalance().getCGList().get(iEngines).getXBRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {"Ycg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getPowerPlant().getTheBalance().getCGList().get(iEngines).getYBRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {"Zcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getPowerPlant().getTheBalance().getCGList().get(iEngines).getZBRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {" "});	
-				dataListPowerPlant.add(new Object[] {" "});	
-				dataListPowerPlant.add(new Object[] {" "});	
+			dataListPowerPlant.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXBRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {"Ycg BRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getYBRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZBRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {" "});
+			dataListPowerPlant.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getXCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getXCGMap().get(methods) != null) 
+					dataListPowerPlant.add(
+							new Object[] {
+									methods.toString(),
+									"m",
+									_theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getXCGMap().get(methods).doubleValue(SI.METER),
+							}
+							);
 			}
 			
 			Row rowEngines = sheetPowerPlant.createRow(0);
@@ -1630,14 +1654,41 @@ public class ACBalanceManager {
 		//--------------------------------------------------------------------------------
 		// LANDING GEARS BALANCE ANALYSIS RESULTS:
 		//--------------------------------------------------------------------------------
-		if(getTheBalanceManagerInterface().getTheAircraft().getLandingGears() != null) {
+		if(_theBalanceManagerInterface.getTheAircraft().getLandingGears() != null) {
 			Sheet sheetLandingGears = wb.createSheet("LANDING GEARS");
 			List<Object[]> dataListLandingGears = new ArrayList<>();
 			dataListLandingGears.add(new Object[] {"Description","Unit","Value"});
-			dataListLandingGears.add(new Object[] {"Xcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getLandingGears().getTheBalance().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListLandingGears.add(new Object[] {"Ycg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getLandingGears().getTheBalance().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListLandingGears.add(new Object[] {"Zcg BRF","m", getTheBalanceManagerInterface().getTheAircraft().getLandingGears().getTheBalance().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Ycg LRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZLRF().doubleValue(SI.METER)});
 			dataListLandingGears.add(new Object[] {" "});
+			dataListLandingGears.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Ycg BRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {" "});
+			dataListLandingGears.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getXCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getXCGMap().get(methods) != null) 
+					dataListLandingGears.add(
+							new Object[] {
+									methods.toString(),
+									"m",
+									_theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getXCGMap().get(methods).doubleValue(SI.METER),
+							}
+							);
+			}
+			dataListLandingGears.add(new Object[] {" "});
+			dataListLandingGears.add(new Object[] {"Zcg ESTIMATION METHOD COMPARISON"});
+			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getZCGMap().keySet()) {
+				if(_theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getZCGMap().get(methods) != null) 
+					dataListLandingGears.add(
+							new Object[] {
+									methods.toString(),
+									"m",
+									_theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getZCGMap().get(methods).doubleValue(SI.METER),
+							}
+							);
+			}
 
 			Row rowLandingGears = sheetLandingGears.createRow(0);
 			Object[] objArrLandingGears = dataListLandingGears.get(0);
@@ -1666,6 +1717,89 @@ public class ACBalanceManager {
 				cellnumLandingGears = 0;
 				for (Object obj : objArrLandingGears) {
 					Cell cell = rowLandingGears.createCell(cellnumLandingGears++);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+			}
+		}
+		
+		//--------------------------------------------------------------------------------
+		// SYSTEMS BALANCE ANALYSIS RESULTS:
+		//--------------------------------------------------------------------------------
+		if(_theBalanceManagerInterface.getTheAircraft().getSystems() != null) {
+			Sheet sheetSystems = wb.createSheet("SYSTEMS");
+			List<Object[]> dataListSystems = new ArrayList<>();
+			dataListSystems.add(new Object[] {"Description","Unit","Value"});
+			dataListSystems.add(new Object[] {"APU"});
+			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getAPUPositionX().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getAPUPositionZ().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {" "});
+			dataListSystems.add(new Object[] {"AIR CONDITIONING AND ANTI-ICING SYSTEM"});
+			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {" "});
+			dataListSystems.add(new Object[] {"INSTRUMENTS AND NAVIGATION SYSTEM"});
+			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionX().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionZ().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {" "});
+			dataListSystems.add(new Object[] {"HYDRAULIC AND PNEUMATIC SYSTEMS"});
+			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionX().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {" "});
+			dataListSystems.add(new Object[] {"ELECTRICAL SYSTEMS"});
+			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getElectricalSystemsPositionX().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getElectricalSystemsPositionZ().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {" "});
+			dataListSystems.add(new Object[] {"CONTROL SURFACES"});
+			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getControlSurfacesPositionX().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getControlSurfacesPositionZ().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {" "});
+			dataListSystems.add(new Object[] {"FURNISHINGS AND EQUIPMENTS"});
+			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionX().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().doubleValue(SI.METER)});
+			dataListSystems.add(new Object[] {" "});
+
+			Row rowSystems = sheetSystems.createRow(0);
+			Object[] objArrSystems = dataListSystems.get(0);
+			int cellnumSystems = 0;
+			for (Object obj : objArrSystems) {
+				Cell cell = rowSystems.createCell(cellnumSystems++);
+				cell.setCellStyle(styleHead);
+				if (obj instanceof Date) {
+					cell.setCellValue((Date) obj);
+				} else if (obj instanceof Boolean) {
+					cell.setCellValue((Boolean) obj);
+				} else if (obj instanceof String) {
+					cell.setCellValue((String) obj);
+				} else if (obj instanceof Double) {
+					cell.setCellValue((Double) obj);
+				}
+				sheetSystems.setDefaultColumnWidth(35);
+				sheetSystems.setColumnWidth(1, 2048);
+				sheetSystems.setColumnWidth(2, 3840);
+			}
+
+			int rownumSystems = 1;
+			for (int j = 1; j < dataListSystems.size(); j++) {
+				objArrSystems = dataListSystems.get(j);
+				rowSystems = sheetSystems.createRow(rownumSystems++);
+				cellnumSystems = 0;
+				for (Object obj : objArrSystems) {
+					Cell cell = rowSystems.createCell(cellnumSystems++);
 					if (obj instanceof Date) {
 						cell.setCellValue((Date) obj);
 					} else if (obj instanceof Boolean) {

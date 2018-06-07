@@ -34,7 +34,7 @@ public class CenterOfGravity {
 
 	// BRF coordinates
 	private Amount<Length> _xBRF, _yBRF, _zBRF; 
-	private Double _xMAC, _zMAC;
+	private Double _xMAC, _yMAC, _zMAC;
 
 	// BRF position of the origin of component's LRF
 	private Amount<Length> _x0, _y0, _z0;
@@ -155,6 +155,7 @@ public class CenterOfGravity {
 			Amount<Length> len) {
 
 		_xMAC = (_xBRF.minus(xB)).divide(len).getEstimatedValue();
+		_yMAC = _yBRF.divide(len).getEstimatedValue();
 		_zMAC = _zBRF.divide(len).getEstimatedValue();
 	}
 
@@ -283,6 +284,14 @@ public class CenterOfGravity {
 		return _xMAC;
 	}
 
+	public Double getYMAC() {
+		return _yMAC;
+	}
+	
+	public void setYMAC(Double _yMAC) {
+		this._yMAC = _yMAC;
+	}
+	
 	public Double getZMAC() {
 		return _zMAC;
 	}
