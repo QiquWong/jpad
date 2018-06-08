@@ -9,9 +9,6 @@
          <classes_type>ECONOMY</classes_type>
          <aisles_number>1</aisles_number>
          <x_coordinates_first_row unit="m">6.1600</x_coordinates_first_row>
-         <missing_seat_row>
-            <value>[0,0]</value>
-         </missing_seat_row>
       </global_data>
       <detailed_data>
          <number_of_breaks_economy_class>-1</number_of_breaks_economy_class>

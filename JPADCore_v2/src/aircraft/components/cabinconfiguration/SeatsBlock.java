@@ -1,12 +1,15 @@
 package aircraft.components.cabinconfiguration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.ClassTypeEnum;
@@ -67,10 +70,13 @@ public class SeatsBlock {
 	private List<ClassTypeEnum> _classList;
 
 	private Amount<Length> _lenghtOverall;
-	private int _seatsNumber = 0;
+	private int _seatsNumber;
+	private List<Double> _blockXcoordinates, _blockYcoordinates;
 	private List<Integer> _breakPosition;
-
+	private Map<Integer, Amount<Length>> _breaksMap;
 	private Amount<Length> _breaksLength = Amount.valueOf(0., SI.METER), _xCGblock;
+	private RealMatrix _seatsMatrix;
+	private int _totalSeats;
 
 	//-----------------------------------------------------------------------
 	// BUILDER
@@ -83,15 +89,12 @@ public class SeatsBlock {
 		this._xList = new ArrayList<Double>();
 		this._yList = new ArrayList<Double>();
 		this._classList = new ArrayList<ClassTypeEnum>();
-
+		this._breaksMap = new HashMap<Integer, Amount<Length>>();
+		this.setBlockXcoordinates(new ArrayList<>());
+		this.setBlockYcoordinates(new ArrayList<>());
 
 		// Number of seats
-		if (_theSeatBlockInterface.getMissingSeatRow()[0] == -1) {
-			setSeatsNumber(theSeatBlockInterface.getRowsNumber() * theSeatBlockInterface.getColumnsNumber());
-		} else {
-			setSeatsNumber(theSeatBlockInterface.getRowsNumber() * theSeatBlockInterface.getColumnsNumber() 
-					- _theSeatBlockInterface.getMissingSeatRow().length);
-		}
+		setSeatsNumber(theSeatBlockInterface.getRowsNumber() * theSeatBlockInterface.getColumnsNumber());
 
 		// Overall breaks length
 		for (Amount<Length> x : _theSeatBlockInterface.getBreaksMap().values()) {
@@ -103,6 +106,8 @@ public class SeatsBlock {
 				.times(_theSeatBlockInterface.getRowsNumber()))
 				.plus(_breaksLength));
 
+		buildBlockMap();
+		
 	}
 	
 	//-----------------------------------------------------------------------
@@ -121,145 +126,79 @@ public class SeatsBlock {
 		_classList.add(type);
 	}
 
-//	/**
-//	 * The method creates an ordered map (_blockMap) based on the data given to the builder.
-//	 * This map hold the (x,y) coordinates of each seat. The x coordinate is 0 based, 
-//	 * which means that the first seat has x = 0. The method also counts the total
-//	 * number of seats in the block.
-//	 * 
-//	 * @author Lorenzo Attanasio
-//	 * 
-//	 */
-//	public void buildBlockMap() {
-//
-//		double currentXcoord, currentYcoord;
-//		int actualRowNumber;
-//
-//		// Utility matrix: 0 or 1 is associated to each [row, column] coordinate
-//		// if the seat is missing or not
-//		if(_theSeatBlockInterface.getRowsNumber() != 0) {
-//			_seatsMatrix = MatrixUtils.createRealMatrix(
-//					_theSeatBlockInterface.getRowsNumber(),
-//					_theSeatBlockInterface.getColumnsNumber()
-//					);
-//		}
-//
-//		// Iterate over columns
-//		for (int j = 0; j < _theSeatBlockInterface.getColumnsNumber(); j++) {
-//
-//			currentXcoord = 0.;
-//			currentYcoord = 0.;
-//			actualRowNumber = _theSeatBlockInterface.getRowsNumber();
-//			
-//			// Iterate over rows
-//			for (int i = 1; i < actualRowNumber; i++) {
-//
-//				_totalSeats++;
-//				_seatsMatrix.setEntry(i, j, 1);
-//
-//				// If there is a break the next seat coordinate is currentXcoord
-//				// + breakLength.
-//				if (_breaksMap != null && _breaksMap.containsKey(i)) {
-//					currentXcoord = currentXcoord + _breaksMap.get(i).doubleValue(SI.METER);
-//				}
-//
-//				// Check if seat is missing.
-//				if (Arrays.asList(_theSeatBlockInterface.getMissingSeatRow()).contains(i)) {
-//					currentXcoord = currentXcoord + _theSeatBlockInterface.getPitch().doubleValue(SI.METER);
-//					_seatsMatrix.setEntry(i, j, 0);
-//					_totalSeats--;
-//					actualRowNumber--;
-//				}
-//
-//				if (_theSeatBlockInterface.getPosition() == RelativePositionEnum.LEFT) {
-//					currentYcoord = -j * _theSeatBlockInterface.getWidth().doubleValue(SI.METER);
-//				} else if (_theSeatBlockInterface.getPosition() == RelativePositionEnum.RIGHT) {
-//					currentYcoord = j * _theSeatBlockInterface.getWidth().doubleValue(SI.METER);
-//				} else {
-//					currentYcoord = (j - _theSeatBlockInterface.getColumnsNumber() / 2) 
-//							* _theSeatBlockInterface.getWidth().doubleValue(SI.METER);
-//				}
-//
-//				_minY = 0.0;
-//				_maxY = 0.0;
-//				
-//				// Find the minimum y-coordinate
-//				if (currentYcoord < _minY) {
-//					_minY = currentYcoord;
-//				}
-//
-//				// Find the maximum y-coordinate
-//				if (currentYcoord > _maxY) {
-//					_maxY = currentYcoord;
-//				}
-//
-//				_blockXcoordinates.add(currentXcoord);
-//				_blockYcoordinates.add(currentYcoord);
-//				
-//				add(i, j, currentXcoord, currentYcoord, _theSeatBlockInterface.getType());
-//
-//				currentXcoord = currentXcoord + _theSeatBlockInterface.getPitch().doubleValue(SI.METER);
-//			}
-//
-//			_columnList.add(j);
-//
-//		}
-//	}
-//
-//	/**
-//	 * Calculate the center of gravity of the block given the _blockMap
-//	 * 
-//	 * @author Lorenzo Attanasio
-//	 */
-//	public void calculateCG(Aircraft aircraft) {
-//
-//		buildBlockMap();
-//
-//		double sum = 0.;
-//
-//		for (Double x : _blockXcoordinates) {
-//			sum = sum + x;
-//		}
-//
-//		_xCGblock = Amount.valueOf(
-//				(sum/_totalSeats) +
-//				_theSeatBlockInterface.getPitch().doubleValue(SI.METER)/2, 
-//				SI.METER);
-//
-//		calculateTotalMass(aircraft);
-//	}
-//
-//
-//	public void calculateTotalMass(Aircraft aircraft) {
-//		_totalMass = Amount.valueOf(
-//				_totalSeats *
-//				aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue(), 
-//				SI.KILOGRAM);
-//	}
-//
-//	/** 
-//	 * Evaluate center of gravity of all blocks
-//	 * 
-//	 * @param seatsBlocks
-//	 * @return
-//	 * 
-//	 */
-//	public static Amount<Length> calculateTotalCoG(List<SeatsBlock> seatsBlocks) {
-//
-//		double sumNum = 0., sumDenom = 0.;
-//
-//		for (SeatsBlock x : seatsBlocks) {
-//
-//			sumNum = sumNum + 
-//					x.get_xCoGblock().getEstimatedValue()*x.get_totalMass().getEstimatedValue();
-//
-//			sumDenom = sumDenom + 
-//					x.get_totalMass().getEstimatedValue();
-//		}
-//
-//		return Amount.valueOf(sumNum/sumDenom, SI.METER);
-//
-//	}
+	/**
+	 * The method creates an ordered map (_blockMap) based on the data given to the builder.
+	 * This map hold the (x,y) coordinates of each seat. The x coordinate is 0 based, 
+	 * which means that the first seat has x = 0. The method also counts the total
+	 * number of seats in the block.
+	 * 
+	 * @author Lorenzo Attanasio
+	 * 
+	 */
+	public void buildBlockMap() {
+
+		double currentXcoord, currentYcoord;
+		int actualRowNumber;
+
+		// Utility matrix: 0 or 1 is associated to each [row, column] coordinate
+		// if the seat is missing or not
+		if(_theSeatBlockInterface.getRowsNumber() != 0) {
+			setSeatsMatrix(MatrixUtils.createRealMatrix(
+					_theSeatBlockInterface.getRowsNumber(),
+					_theSeatBlockInterface.getColumnsNumber()
+					));
+		}
+
+		// Iterate over columns
+		for (int j = 0; j < _theSeatBlockInterface.getColumnsNumber(); j++) {
+
+			currentXcoord = 0.;
+			currentYcoord = 0.;
+			actualRowNumber = _theSeatBlockInterface.getRowsNumber();
+			
+			// Iterate over rows
+			for (int i = 0; i < actualRowNumber; i++) {
+
+				setTotalSeats(getTotalSeats() + 1);
+				getSeatsMatrix().setEntry(i, j, 1);
+
+				// If there is a break the next seat coordinate is currentXcoord
+				// + breakLength.
+				if (_breaksMap != null && _breaksMap.containsKey(i)) {
+					currentXcoord = currentXcoord + _breaksMap.get(i).doubleValue(SI.METER);
+				}
+
+				if (_theSeatBlockInterface.getPosition() == RelativePositionEnum.LEFT) {
+					currentYcoord = -j * _theSeatBlockInterface.getWidth().doubleValue(SI.METER);
+				} else if (_theSeatBlockInterface.getPosition() == RelativePositionEnum.RIGHT) {
+					currentYcoord = j * _theSeatBlockInterface.getWidth().doubleValue(SI.METER);
+				} else {
+					currentYcoord = (j - _theSeatBlockInterface.getColumnsNumber() / 2) 
+							* _theSeatBlockInterface.getWidth().doubleValue(SI.METER);
+				}
+
+				double _minY = 0.0;
+				double _maxY = 0.0;
+				
+				// Find the minimum y-coordinate
+				if (currentYcoord < _minY) {
+					_minY = currentYcoord;
+				}
+
+				// Find the maximum y-coordinate
+				if (currentYcoord > _maxY) {
+					_maxY = currentYcoord;
+				}
+
+				getBlockXcoordinates().add(currentXcoord);
+				getBlockYcoordinates().add(currentYcoord);
+				
+				add(i, j, currentXcoord, currentYcoord, _theSeatBlockInterface.getType());
+
+				currentXcoord = currentXcoord + _theSeatBlockInterface.getPitch().doubleValue(SI.METER);
+			}
+		}
+	}
 	
 	//-----------------------------------------------------------------------
 	// GETTERS AND SETTERS
@@ -333,14 +272,6 @@ public class SeatsBlock {
 	
 	public void setColumnNumber (int columnNumber) {
 		setTheSeatBlockInterface(ISeatBlock.Builder.from(_theSeatBlockInterface).setColumnsNumber(columnNumber).build());
-	}
-	
-	public Integer[] getMissingSeatRow() {
-		return _theSeatBlockInterface.getMissingSeatRow();
-	}
-	
-	public void setMissingSeatRow (Integer[] missingSeatRow) {
-		setTheSeatBlockInterface(ISeatBlock.Builder.from(_theSeatBlockInterface).setMissingSeatRow(missingSeatRow).build());
 	}
 	
 	public ClassTypeEnum getType() {
@@ -421,6 +352,38 @@ public class SeatsBlock {
 
 	public void setXCGblock(Amount<Length> _xCGblock) {
 		this._xCGblock = _xCGblock;
+	}
+
+	public List<Double> getBlockYcoordinates() {
+		return _blockYcoordinates;
+	}
+
+	public void setBlockYcoordinates(List<Double> _blockYcoordinates) {
+		this._blockYcoordinates = _blockYcoordinates;
+	}
+
+	public List<Double> getBlockXcoordinates() {
+		return _blockXcoordinates;
+	}
+
+	public void setBlockXcoordinates(List<Double> _blockXcoordinates) {
+		this._blockXcoordinates = _blockXcoordinates;
+	}
+
+	public int getTotalSeats() {
+		return _totalSeats;
+	}
+
+	public void setTotalSeats(int _totalSeats) {
+		this._totalSeats = _totalSeats;
+	}
+
+	public RealMatrix getSeatsMatrix() {
+		return _seatsMatrix;
+	}
+
+	public void setSeatsMatrix(RealMatrix _seatsMatrix) {
+		this._seatsMatrix = _seatsMatrix;
 	}
 
 }

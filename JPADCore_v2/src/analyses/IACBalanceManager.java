@@ -34,9 +34,7 @@ public interface IACBalanceManager {
 	@Nullable
 	Amount<Mass> getPowerPlantMass();
 	@Nullable
-	Amount<Mass> getFrontLandingGearMass();
-	@Nullable
-	Amount<Mass> getMainLandingGearMass();
+	Amount<Mass> getLandingGearMass();
 	@Nullable
 	Amount<Mass> getAPUMass();
 	@Nullable

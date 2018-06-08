@@ -909,16 +909,16 @@ public class Aircraft {
 			xApexNoseLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/nose_gear/x");
 			yApexNoseLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/nose_gear/y");
 			zApexNoseLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/nose_gear/z");
-			theLandingGears.setXApexConstructionAxesMainGear(xApexMainLandingGears);
-			theLandingGears.setYApexConstructionAxesMainGear(yApexMainLandingGears);
-			theLandingGears.setZApexConstructionAxesMainGear(zApexMainLandingGears);
+			theLandingGears.setXApexConstructionAxesNoseGear(xApexNoseLandingGears);
+			theLandingGears.setYApexConstructionAxesNoseGear(yApexNoseLandingGears);
+			theLandingGears.setZApexConstructionAxesNoseGear(zApexNoseLandingGears);
 			
 			xApexMainLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/main_gear/x");
 			yApexMainLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/main_gear/y");
 			zApexMainLandingGears = reader.getXMLAmountLengthByPath("//landing_gears/position/main_gear/z");
-			theLandingGears.setXApexConstructionAxesNoseGear(xApexNoseLandingGears);
-			theLandingGears.setYApexConstructionAxesNoseGear(yApexNoseLandingGears);
-			theLandingGears.setZApexConstructionAxesNoseGear(zApexNoseLandingGears);
+			theLandingGears.setXApexConstructionAxesMainGear(xApexMainLandingGears);
+			theLandingGears.setYApexConstructionAxesMainGear(yApexMainLandingGears);
+			theLandingGears.setZApexConstructionAxesMainGear(zApexMainLandingGears);
 			
 			String mountingPositionProperty = reader.getXMLPropertyByPath("//landing_gears/mounting_point");
 			if(mountingPositionProperty.equalsIgnoreCase("FUSELAGE"))

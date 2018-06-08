@@ -5277,8 +5277,8 @@ public class InputManagerControllerMainActionUtilities {
 					.putAllBreaksMap(breaksMapList.get(i))
 					.setRowsNumber(Main.getTheAircraft().getCabinConfiguration().getNumberOfRowsList().get(classNumber-i))
 					.setColumnsNumber(Main.getTheAircraft().getCabinConfiguration().getNumberOfColumnsList().get(classNumber-i)[0])
-					.setMissingSeatRow(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRowList().get(classNumber-i))
-					.setType(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(classNumber-i))					
+//					.setMissingSeatRow(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRowList().get(classNumber-i))
+					.setType(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(classNumber-i))					
 					.build()
 					);
 
@@ -5633,61 +5633,61 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getTextFieldFlightCrewNumber().setText("0");
 			//---------------------------------------------------------------------------------
 			// CLASSES TYPE:
-			if(Main.getTheAircraft().getCabinConfiguration().getTypeList() != null) {
+			if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType() != null) {
 				
-				for(int i=0; i<Main.getTheAircraft().getCabinConfiguration().getTypeList().size(); i++) {
+				for(int i=0; i<Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().size(); i++) {
 					
 					// CLASS 1
-					if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(0).equals(ClassTypeEnum.ECONOMY))
+					if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(0).equals(ClassTypeEnum.ECONOMY))
 						theController.getCabinConfigurationClassesTypeChoiceBox1().getSelectionModel().select(0);
-					if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(0).equals(ClassTypeEnum.BUSINESS))
+					if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(0).equals(ClassTypeEnum.BUSINESS))
 						theController.getCabinConfigurationClassesTypeChoiceBox1().getSelectionModel().select(1);
-					if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(0).equals(ClassTypeEnum.FIRST))
+					if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(0).equals(ClassTypeEnum.FIRST))
 						theController.getCabinConfigurationClassesTypeChoiceBox1().getSelectionModel().select(2);
 					
 					if (i==1) {
 					
 						// CLASS 1
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(0).equals(ClassTypeEnum.ECONOMY))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(0).equals(ClassTypeEnum.ECONOMY))
 							theController.getCabinConfigurationClassesTypeChoiceBox1().getSelectionModel().select(0);
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(0).equals(ClassTypeEnum.BUSINESS))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(0).equals(ClassTypeEnum.BUSINESS))
 							theController.getCabinConfigurationClassesTypeChoiceBox1().getSelectionModel().select(1);
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(0).equals(ClassTypeEnum.FIRST))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(0).equals(ClassTypeEnum.FIRST))
 							theController.getCabinConfigurationClassesTypeChoiceBox1().getSelectionModel().select(2);
 
 						// CLASS 2
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(1).equals(ClassTypeEnum.ECONOMY))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(1).equals(ClassTypeEnum.ECONOMY))
 							theController.getCabinConfigurationClassesTypeChoiceBox2().getSelectionModel().select(0);
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(1).equals(ClassTypeEnum.BUSINESS))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(1).equals(ClassTypeEnum.BUSINESS))
 							theController.getCabinConfigurationClassesTypeChoiceBox2().getSelectionModel().select(1);
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(1).equals(ClassTypeEnum.FIRST))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(1).equals(ClassTypeEnum.FIRST))
 							theController.getCabinConfigurationClassesTypeChoiceBox2().getSelectionModel().select(2);
 						
 					}
 					if (i==2) {
 						
 						// CLASS 1
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(0).equals(ClassTypeEnum.ECONOMY))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(0).equals(ClassTypeEnum.ECONOMY))
 							theController.getCabinConfigurationClassesTypeChoiceBox1().getSelectionModel().select(0);
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(0).equals(ClassTypeEnum.BUSINESS))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(0).equals(ClassTypeEnum.BUSINESS))
 							theController.getCabinConfigurationClassesTypeChoiceBox1().getSelectionModel().select(1);
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(0).equals(ClassTypeEnum.FIRST))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(0).equals(ClassTypeEnum.FIRST))
 							theController.getCabinConfigurationClassesTypeChoiceBox1().getSelectionModel().select(2);
 
 						// CLASS 2
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(1).equals(ClassTypeEnum.ECONOMY))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(1).equals(ClassTypeEnum.ECONOMY))
 							theController.getCabinConfigurationClassesTypeChoiceBox2().getSelectionModel().select(0);
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(1).equals(ClassTypeEnum.BUSINESS))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(1).equals(ClassTypeEnum.BUSINESS))
 							theController.getCabinConfigurationClassesTypeChoiceBox2().getSelectionModel().select(1);
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(1).equals(ClassTypeEnum.FIRST))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(1).equals(ClassTypeEnum.FIRST))
 							theController.getCabinConfigurationClassesTypeChoiceBox2().getSelectionModel().select(2);
 						
 						// CLASS 3
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(2).equals(ClassTypeEnum.ECONOMY))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(2).equals(ClassTypeEnum.ECONOMY))
 							theController.getCabinConfigurationClassesTypeChoiceBox3().getSelectionModel().select(0);
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(2).equals(ClassTypeEnum.BUSINESS))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(2).equals(ClassTypeEnum.BUSINESS))
 							theController.getCabinConfigurationClassesTypeChoiceBox3().getSelectionModel().select(1);
-						if(Main.getTheAircraft().getCabinConfiguration().getTypeList().get(2).equals(ClassTypeEnum.FIRST))
+						if(Main.getTheAircraft().getCabinConfiguration().getTheCabinConfigurationBuilder().getClassesType().get(2).equals(ClassTypeEnum.FIRST))
 							theController.getCabinConfigurationClassesTypeChoiceBox3().getSelectionModel().select(2);
 						
 					}
@@ -5734,109 +5734,109 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getCabinConfigurationXCoordinateFirstRowUnitChoiceBox().getSelectionModel().select(0);
 			}
 			
-			//---------------------------------------------------------------------------------
-			// MISSING SEATS ROW:
-			if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow() != null) {
-				
-				for(int i=0; i<Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().size(); i++) {
-					
-					// CLASS 1
-					if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(0) != null)
-						theController.getTextFieldMissingSeatRow1().setText(
-							String.valueOf(
-									Arrays.toString(
-											Main.getTheAircraft()
-											.getCabinConfiguration()
-											.getMissingSeatsRow()
-											.get(0)
-											)
-									)
-							);
-					else
-						theController.getTextFieldMissingSeatRow1().setText("0");
-					
-					if (i==1) {
-					
-						// CLASS 1
-						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(0) != null)
-							theController.getTextFieldMissingSeatRow1().setText(
-								String.valueOf(
-										Arrays.toString(
-												Main.getTheAircraft()
-												.getCabinConfiguration()
-												.getMissingSeatsRow()
-												.get(0)
-												)
-										)
-								);
-						else
-							theController.getTextFieldMissingSeatRow1().setText("0");
-
-						// CLASS 2
-						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(1) != null)
-							theController.getTextFieldMissingSeatRow2().setText(
-								String.valueOf(
-										Arrays.toString(
-												Main.getTheAircraft()
-												.getCabinConfiguration()
-												.getMissingSeatsRow()
-												.get(1)
-												)
-										)
-								);
-						else
-							theController.getTextFieldMissingSeatRow2().setText("0");
-						
-					}
-					if (i==2) {
-						
-						// CLASS 1
-						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(0) != null)
-							theController.getTextFieldMissingSeatRow1().setText(
-								String.valueOf(
-										Arrays.toString(
-												Main.getTheAircraft()
-												.getCabinConfiguration()
-												.getMissingSeatsRow()
-												.get(0)
-												)
-										)
-								);
-						else
-							theController.getTextFieldMissingSeatRow1().setText("0");
-
-						// CLASS 2
-						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(1) != null)
-							theController.getTextFieldMissingSeatRow2().setText(
-								String.valueOf(
-										Arrays.toString(
-												Main.getTheAircraft()
-												.getCabinConfiguration()
-												.getMissingSeatsRow()
-												.get(1)
-												)
-										)
-								);
-						else
-							theController.getTextFieldMissingSeatRow2().setText("0");
-						
-						// CLASS 3
-						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(2) != null)
-							theController.getTextFieldMissingSeatRow3().setText(
-								String.valueOf(
-										Arrays.toString(
-												Main.getTheAircraft()
-												.getCabinConfiguration()
-												.getMissingSeatsRow()
-												.get(2)
-												)
-										)
-								);
-						else
-							theController.getTextFieldMissingSeatRow3().setText("0");
-					}
-				}
-			}
+//			//---------------------------------------------------------------------------------
+//			// MISSING SEATS ROW:
+//			if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow() != null) {
+//				
+//				for(int i=0; i<Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().size(); i++) {
+//					
+//					// CLASS 1
+//					if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(0) != null)
+//						theController.getTextFieldMissingSeatRow1().setText(
+//							String.valueOf(
+//									Arrays.toString(
+//											Main.getTheAircraft()
+//											.getCabinConfiguration()
+//											.getMissingSeatsRow()
+//											.get(0)
+//											)
+//									)
+//							);
+//					else
+//						theController.getTextFieldMissingSeatRow1().setText("0");
+//					
+//					if (i==1) {
+//					
+//						// CLASS 1
+//						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(0) != null)
+//							theController.getTextFieldMissingSeatRow1().setText(
+//								String.valueOf(
+//										Arrays.toString(
+//												Main.getTheAircraft()
+//												.getCabinConfiguration()
+//												.getMissingSeatsRow()
+//												.get(0)
+//												)
+//										)
+//								);
+//						else
+//							theController.getTextFieldMissingSeatRow1().setText("0");
+//
+//						// CLASS 2
+//						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(1) != null)
+//							theController.getTextFieldMissingSeatRow2().setText(
+//								String.valueOf(
+//										Arrays.toString(
+//												Main.getTheAircraft()
+//												.getCabinConfiguration()
+//												.getMissingSeatsRow()
+//												.get(1)
+//												)
+//										)
+//								);
+//						else
+//							theController.getTextFieldMissingSeatRow2().setText("0");
+//						
+//					}
+//					if (i==2) {
+//						
+//						// CLASS 1
+//						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(0) != null)
+//							theController.getTextFieldMissingSeatRow1().setText(
+//								String.valueOf(
+//										Arrays.toString(
+//												Main.getTheAircraft()
+//												.getCabinConfiguration()
+//												.getMissingSeatsRow()
+//												.get(0)
+//												)
+//										)
+//								);
+//						else
+//							theController.getTextFieldMissingSeatRow1().setText("0");
+//
+//						// CLASS 2
+//						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(1) != null)
+//							theController.getTextFieldMissingSeatRow2().setText(
+//								String.valueOf(
+//										Arrays.toString(
+//												Main.getTheAircraft()
+//												.getCabinConfiguration()
+//												.getMissingSeatsRow()
+//												.get(1)
+//												)
+//										)
+//								);
+//						else
+//							theController.getTextFieldMissingSeatRow2().setText("0");
+//						
+//						// CLASS 3
+//						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(2) != null)
+//							theController.getTextFieldMissingSeatRow3().setText(
+//								String.valueOf(
+//										Arrays.toString(
+//												Main.getTheAircraft()
+//												.getCabinConfiguration()
+//												.getMissingSeatsRow()
+//												.get(2)
+//												)
+//										)
+//								);
+//						else
+//							theController.getTextFieldMissingSeatRow3().setText("0");
+//					}
+//				}
+//			}
 
 			//---------------------------------------------------------------------------------
 			// NUMBER OF BRAKES ECONOMY:

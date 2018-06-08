@@ -43,6 +43,7 @@ public class LandingGearsBalanceManager {
 	private void initializeData() {
 		
 		this._xCGMap = new HashMap<>();
+		this._zCGMap = new HashMap<>();
 		this._methodsList = new ArrayList<>();
 		
 	}

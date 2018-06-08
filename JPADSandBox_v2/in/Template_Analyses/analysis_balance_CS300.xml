@@ -2,10 +2,10 @@
 <jpad_config>
     <analysis>
         <balance 
-            id="JPAD Test analysis - BALANCE" 
+            id="CS300 - BALANCE" 
             weights_from_previous_analysis="true" 
             >
- 			<weights>
+			<weights>
 				<operating_empty_mass unit="kg"></operating_empty_mass>
 				<fuel_mass unit="kg"></fuel_mass>
 				<passengers_single_mass unit='kg'></passengers_single_mass>
@@ -16,7 +16,7 @@
 				<canard_mass unit="kg"></canard_mass>
 				<nacelles_mass unit="kg"></nacelles_mass>
 				<power_plant_mass unit="kg"></power_plant_mass>
-				<landing_gears_mass unit="kg"></front_landing_gears_mass>
+				<landing_gears_mass unit="kg"></landing_gears_mass>
 				<APU_mass unit="kg"></APU_mass>
 				<air_conditioning_and_anti_icing_system_mass unit="kg"></air_conditioning_and_anti_icing_system_mass>
 				<instruments_and_navigation_system_mass unit="kg"></instruments_and_navigation_system_mass>

@@ -18,9 +18,11 @@ import aircraft.components.liftingSurface.airfoils.Airfoil;
 import calculators.aerodynamics.AirfoilCalc;
 import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
+import configuration.enumerations.ComponentEnum;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import standaloneutils.customdata.CenterOfGravity;
 
 /** 
  * The fuel tank is supposed to be make up of a series of prismoids from the root station to the 85% of the
@@ -71,6 +73,8 @@ public class FuelTank {
 	private Amount<Length> _xCGLRF;
 	private Amount<Length> _yCGLRF;
 	private Amount<Length> _zCGLRF;
+	
+	private CenterOfGravity _cG;
 	
 	// Jet A1 fuel density : the user can set this parameter when necessary
 	private Amount<VolumetricDensity> _fuelDensity = Amount.valueOf(804.0, MyUnits.KILOGRAM_PER_CUBIC_METER);
@@ -478,6 +482,16 @@ public class FuelTank {
 		_zCGLRF = _theWing.getTheBalanceManager().getCG().getZLRF();
 		_zCG = _theWing.getTheBalanceManager().getCG().getZBRF();
 		
+		_cG = new CenterOfGravity();
+		_cG.setX0(_xApexConstructionAxes.to(SI.METER));
+		_cG.setY0(_yApexConstructionAxes.to(SI.METER));
+		_cG.setZ0(_zApexConstructionAxes.to(SI.METER));
+		_cG.setXLRFref(_xCGLRF.to(SI.METER));
+		_cG.setYLRFref(_yCGLRF.to(SI.METER));
+		_cG.setZLRFref(_zCGLRF.to(SI.METER));
+		
+		_cG.calculateCGinBRF(ComponentEnum.FUEL_TANK);
+		
 	}
 
 	@Override
@@ -670,5 +684,13 @@ public class FuelTank {
 
 	public void setZCGLRF(Amount<Length> _zCGLRF) {
 		this._zCGLRF = _zCGLRF;
+	}
+
+	public CenterOfGravity getCG() {
+		return _cG;
+	}
+
+	public void setCG(CenterOfGravity _cG) {
+		this._cG = _cG;
 	}
 }

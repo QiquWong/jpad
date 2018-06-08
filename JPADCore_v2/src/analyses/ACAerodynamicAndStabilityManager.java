@@ -13771,14 +13771,14 @@ public class ACAerodynamicAndStabilityManager {
 					//---------------------------------------------------------------
 					// XCG POSITIONS
 					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxForwardCG());
-					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXMAC());
+					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getXMAC());
 					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxAftCG());
 
 					//---------------------------------------------------------------
 					// ZCG POSITIONS
-					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getZMAC());
-					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getZMAC());
-					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getZMAC());
+					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getZMAC());
+					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getZMAC());
+					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getZMAC());
 
 					//---------------------------------------------------------------
 					// XCG AND ZCG POSITIONS FUSELAGE

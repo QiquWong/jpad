@@ -1770,11 +1770,11 @@ public class ACAnalysisManager {
 		// Evaluate arms again with the new CG estimate
 		aircraft.calculateArms(
 				aircraft.getHTail(),
-				_theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXBRF()
+				_theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getXBRF()
 				);
 		aircraft.calculateArms(
 				aircraft.getVTail(),
-				_theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXBRF()
+				_theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getXBRF()
 				);
 
 	}

@@ -15,7 +15,7 @@ public class LiftingSurfaceBalanceCalc {
 	 */
 	public static Amount<Length> calculateWingXCGSforza (Aircraft aircraft) {
 		
-		Amount<Length> yCG = calculateWingYCGSforza(aircraft);
+		Amount<Length> yCG = calculateWingYCGSforza(aircraft).times(2);
 		
 		return Amount.valueOf(
 				(aircraft.getWing().getChordEquivalentAtY(yCG.doubleValue(SI.METER))/2)
@@ -30,10 +30,15 @@ public class LiftingSurfaceBalanceCalc {
 	public static Amount<Length> calculateWingYCGSforza (Aircraft aircraft) {
 		
 		return Amount.valueOf(
-				(aircraft.getWing().getSpan().doubleValue(SI.METER)/6) * 
-				((1+2*aircraft.getWing().getEquivalentWing().getPanels().get(0).getTaperRatio())
-						/(1-aircraft.getWing().getEquivalentWing().getPanels().get(0).getTaperRatio())),
-				SI.METER); 
+				(aircraft.getWing().getSpan().doubleValue(SI.METER)/6)
+				* ( (aircraft.getWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+						+ aircraft.getWing().getPanels().get(aircraft.getWing().getPanels().size()-1).getChordTip().times(2).doubleValue(SI.METER))
+						/(aircraft.getWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+								- aircraft.getWing().getPanels().get(aircraft.getWing().getPanels().size()-1).getChordTip().doubleValue(SI.METER))
+						)
+				/2,
+				SI.METER
+				); 
 		
 	}
 	

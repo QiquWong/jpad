@@ -12,7 +12,6 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
 	<analyses id="IRON analysis">
-	<!--
 		<weights 
             file="analysis_weights_IRON.xml" 
 			plot="TRUE"
@@ -25,8 +24,14 @@
 			method_nacelles=""
 			method_power_plant=""
 			method_landing_gears=""
+			method_APU=""
+			method_air_conditioning_and_anti_icing=""
+			method_instruments_and_navigation_system=""
+			method_hydraulic_and_pneumatic_systems=""			
+			method_electrical_systems=""
+			method_furnishings_and_equipments=""
+			method_control_surfaces=""
             /> 
-			-->
 		<balance 
 			file="analysis_balance_IRON.xml"
 			plot="TRUE"
