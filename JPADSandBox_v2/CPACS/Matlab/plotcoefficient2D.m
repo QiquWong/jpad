@@ -157,7 +157,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{a} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_D');
             hold on
         end
@@ -182,7 +182,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{a} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_Y');
             hold on
         end
@@ -207,7 +207,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{a} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_Y');
             hold on
         end
@@ -232,7 +232,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{a} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_{Roll}');
             hold on
         end
@@ -257,7 +257,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{a} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_M');
             hold on
         end
@@ -282,7 +282,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{a} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_N');
             hold on
         end
@@ -309,7 +309,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{r} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_D');
             hold on
         end
@@ -334,7 +334,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{r} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_Y');
             hold on
         end
@@ -359,7 +359,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{r} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_Y');
             hold on
         end
@@ -384,7 +384,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{r} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_{Roll}');
             hold on
         end
@@ -409,7 +409,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{r} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_M');
             hold on
         end
@@ -434,7 +434,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{r} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_N');
             hold on
         end
@@ -461,7 +461,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{e} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_D');
             hold on
         end
@@ -486,7 +486,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{e} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_Y');
             hold on
         end
@@ -511,7 +511,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{e} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_Y');
             hold on
         end
@@ -536,7 +536,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{e} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_{Roll}');
             hold on
         end
@@ -561,7 +561,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{e} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_M');
             hold on
         end
@@ -586,7 +586,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{e} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_N');
             hold on
         end
@@ -615,7 +615,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_D');
             hold on
         end
@@ -640,7 +640,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_Y');
             hold on
         end
@@ -665,7 +665,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_Y');
             hold on
         end
@@ -690,7 +690,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_{Roll}');
             hold on
         end
@@ -715,7 +715,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_M');
             hold on
         end
@@ -740,7 +740,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_N');
             hold on
         end
@@ -768,7 +768,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_D');
             hold on
         end
@@ -793,7 +793,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_Y');
             hold on
         end
@@ -818,7 +818,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_Y');
             hold on
         end
@@ -843,7 +843,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_{Roll}');
             hold on
         end
@@ -868,7 +868,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_M');
             hold on
         end
@@ -893,7 +893,7 @@ for k = 1 : machLength
         for j = 1 : deflectionLength
             title(['M = ',num2str(machVector(k)),...
                 ' \beta = ',num2str(betaVector(i)),' °'])
-            plot(alphaVector,matrix(:,j),'DisplayName', ['\beta ' num2str(betaVector(j)) '°']);
+            plot(alphaVector,matrix(:,j),'DisplayName', ['\delta_{f} ' num2str(betaVector(j)) '°']);
             xlabel('\alpha (deg)'); ylabel('\Delta C_N');
             hold on
         end

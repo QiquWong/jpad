@@ -41956,9 +41956,9 @@ Use this model for development purposes ONLY!!!
 Script: "D150_JSBSimCambioMomenti"
   begins at 0.0000 seconds and runs to 100.0083 seconds with dt = 0.010000 (100.000000 Hz)
 
-Local property: notify-time-trigger1 = 0.000000
 Local property: run_id = 1.000000
 Local property: notify-time-trigger = 0.000000
+Local property: notify-time-trigger1 = 0.000000
 Event 0 (Set engines running):
   When first triggered, executes once  if all of the following are true: {
     sim-time-sec le 0.010000
@@ -42122,7 +42122,7 @@ Repeating Notify (Event 3) executed at time: 0.010000
     aero/Re = 26440337.731418
     velocities/mach = 0.481593
 
-Start: Friday February 16 2018 12:11:37 (HH:MM:SS)
+Start: Tuesday May 22 2018 12:41:38 (HH:MM:SS)
   Longitudinal Trim
 
   Trim successful
@@ -45130,4 +45130,4 @@ Repeating Notify (Event 3) executed at time: 100.000000
     aero/Re = 26424955.831580
     velocities/mach = 0.481376
 
-End: Friday February 16 2018 12:11:38 (HH:MM:SS)
+End: Tuesday May 22 2018 12:41:39 (HH:MM:SS)
