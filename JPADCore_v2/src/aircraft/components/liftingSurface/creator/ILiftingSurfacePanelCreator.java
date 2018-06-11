@@ -1,12 +1,11 @@
 package aircraft.components.liftingSurface.creator;
 
+import javax.annotation.Nullable;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
-
-import com.sun.istack.internal.Nullable;
 
 import aircraft.components.liftingSurface.airfoils.Airfoil;
 

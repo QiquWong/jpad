@@ -43,11 +43,6 @@ import standaloneutils.customdata.CenterOfGravity;
  */
 public class ACBalanceManager {
 
-	/*
-	 * TODO : FIX THE CALCULATE TOTOAL CG METHOD
-	 */
-	
-	
 	//------------------------------------------------------------------------------
 	// VARIABLES DECLARATION:
 	//------------------------------------------------------------------------------
