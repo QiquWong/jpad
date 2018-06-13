@@ -7,35 +7,35 @@
 			<global_data>
 				<first_guess_maximum_take_off_mass unit="kg">23170</first_guess_maximum_take_off_mass>
 				<relative_maximum_landing_mass>0.9</relative_maximum_landing_mass> <!-- with respect to Max Take-Off mass. Default = 0.9 -->
-				<single_passenger_mass unit="kg">95</single_passenger_mass>
+				<single_passenger_mass unit="kg">102</single_passenger_mass>
 			</global_data>
 			<mission_profile_data>
-				<reference_mission_range unit="nmi"></reference_mission_range>
+				<reference_mission_range unit="nmi">1200</reference_mission_range>
 				<cruise_phase>
-					<range unit="nmi">500</range> 
-					<sfc>0.61</sfc>
-					<efficiency>12.51</efficiency>
+					<range unit="nmi">1200</range> 
+					<sfc>0.46</sfc>
+					<efficiency>16</efficiency>
 				</cruise_phase>
 				<alternate_phase>
-					<range unit="nmi">0.0</range> 
+					<range unit="nmi">87.0</range> 
 					<altitude unit="ft">10000</altitude>
 					<mach>0.4</mach>
-					<sfc>0.61</sfc> 
-					<efficiency>12.5</efficiency> 
+					<sfc>0.46</sfc> 
+					<efficiency>16</efficiency> 
 				</alternate_phase>
 				<holding_phase>
-					<duration unit="min">0.0</duration> 
+					<duration unit="min">45.0</duration> 
 					<altitude unit="ft">1500</altitude>
 					<mach>0.3</mach>
-					<sfc>0.7</sfc> 
-					<efficiency>16</efficiency> 
+					<sfc>0.46</sfc> 
+					<efficiency>14</efficiency> 
 				</holding_phase>
 			</mission_profile_data>
 			<calibration> <!-- IF LEFT BLANK, ALL CALIBRATION FACTORS ARE EQUAL TO 1.0 -->
 				<fuselage_calibration_factor></fuselage_calibration_factor>
 				<wing_calibration_factor></wing_calibration_factor>
-				<horizontal_tail_calibration_factor></horizontal_tail_calibration_factor>
-				<vertical_tail_calibration_factor></vertical_tail_calibration_factor>
+				<horizontal_tail_calibration_factor>1.15</horizontal_tail_calibration_factor>
+				<vertical_tail_calibration_factor>1.15</vertical_tail_calibration_factor>
 				<canard_calibration_factor></canard_calibration_factor>
 				<nacelles_calibration_factor></nacelles_calibration_factor>
 				<power_plant_calibration_factor></power_plant_calibration_factor>

@@ -8,7 +8,7 @@
          <classes_number>1</classes_number>
          <classes_type>ECONOMY</classes_type>
          <aisles_number>1</aisles_number>
-         <x_coordinates_first_row unit="m">6.1600</x_coordinates_first_row>
+         <x_coordinates_first_row unit="m">5.1600</x_coordinates_first_row>
       </global_data>
       <detailed_data>
          <number_of_breaks_economy_class>-1</number_of_breaks_economy_class>
@@ -20,10 +20,10 @@
          <number_of_columns_economy_class>[2, 2]</number_of_columns_economy_class>
          <number_of_columns_business_class>[0, 0]</number_of_columns_business_class>
          <number_of_columns_first_class>[0, 0]</number_of_columns_first_class>
-         <pitch_economy_class unit="m">0.7900</pitch_economy_class>
+         <pitch_economy_class unit="m">0.800</pitch_economy_class>
          <pitch_business_class unit="m">0.0000</pitch_business_class>
          <pitch_first_class unit="m">0.0000</pitch_first_class>
-         <width_economy_class unit="m">0.5000</width_economy_class>
+         <width_economy_class unit="m">0.4700</width_economy_class>
          <width_business_class unit="m">0.0000</width_business_class>
          <width_first_class unit="m">0.0000</width_first_class>
          <distance_from_wall_economy_class unit="m">0.0845</distance_from_wall_economy_class>

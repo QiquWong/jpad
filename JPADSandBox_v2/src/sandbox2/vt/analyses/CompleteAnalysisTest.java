@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -251,27 +252,6 @@ public class CompleteAnalysisTest extends Application {
 			// deactivating system.out
 			System.setOut(filterStream);
 			
-//			AircraftSaveDirectives asd = new AircraftSaveDirectives
-//					.Builder("_ATR72")
-//					.addAllWingAirfoilFileNames(
-//							theAircraft.getWing().getAirfoilList().stream()
-//									.map(a -> a.getAirfoilCreator().getName() + ".xml")
-//									.collect(Collectors.toList())
-//						)
-//					.addAllHTailAirfoilFileNames(
-//							theAircraft.getHTail().getAirfoilList().stream()
-//									.map(a -> a.getAirfoilCreator().getName() + ".xml")
-//									.collect(Collectors.toList())
-//						)
-//					.addAllVTailAirfoilFileNames(
-//							theAircraft.getVTail().getAirfoilList().stream()
-//									.map(a -> a.getAirfoilCreator().getName() + ".xml")
-//									.collect(Collectors.toList())
-//						)
-//					.build();
-//			
-//			JPADStaticWriteUtils.saveAircraftToXML(theAircraft, MyConfiguration.getDir(FoldersEnum.INPUT_DIR), "aircraft_ATR72", asd);
-			
 			// reading aircraft from xml ... 
 			theAircraft = Aircraft.importFromXML(
 					pathToXML,
@@ -297,6 +277,7 @@ public class CompleteAnalysisTest extends Application {
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
 			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + File.separator);
 			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
+			FileUtils.cleanDirectory(new File(subfolderPath)); 
 
 			////////////////////////////////////////////////////////////////////////
 			// Defining the operating conditions ...

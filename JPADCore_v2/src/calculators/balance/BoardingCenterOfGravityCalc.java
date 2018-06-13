@@ -173,8 +173,5 @@ public class BoardingCenterOfGravityCalc {
 						);
 			}
 		}
-		
-		System.err.println();
-		
 	}
 }

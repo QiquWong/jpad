@@ -223,10 +223,10 @@ public class ACCostsManager {
 						// BLOCK FUEL
 						// Block Fuel from the Performance is Map. Here a mean value is assumed (or else the first value of the collection)
 						blockFuel = Amount.valueOf( 
-								theAircraft.getTheAnalysisManager().getThePerformance().getTotalFuelUsedMap()
+								theAircraft.getTheAnalysisManager().getThePerformance().getBlockFuelMap()
 								.values().stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM))
 								.average().orElse(
-										theAircraft.getTheAnalysisManager().getThePerformance().getTotalFuelUsedMap()
+										theAircraft.getTheAnalysisManager().getThePerformance().getBlockFuelMap()
 										.values().stream().findFirst().get().doubleValue(SI.KILOGRAM)
 										),
 								SI.KILOGRAM
@@ -236,10 +236,10 @@ public class ACCostsManager {
 						// FLIGHT TIME
 						// Flight Time from the Performance is Map. Here a mean value is assumed (or else the first value of the collection)
 						flightTime = Amount.valueOf( 
-								theAircraft.getTheAnalysisManager().getThePerformance().getTotalMissionTimeMap()
+								theAircraft.getTheAnalysisManager().getThePerformance().getBlockTimeMap()
 								.values().stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE))
 								.average().orElse(
-										theAircraft.getTheAnalysisManager().getThePerformance().getTotalMissionTimeMap()
+										theAircraft.getTheAnalysisManager().getThePerformance().getBlockTimeMap()
 										.values().stream().findFirst().get().doubleValue(NonSI.MINUTE)
 										),
 								NonSI.MINUTE
