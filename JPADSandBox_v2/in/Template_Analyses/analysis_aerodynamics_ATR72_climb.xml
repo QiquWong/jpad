@@ -18,14 +18,14 @@
 			Otherwise the all the CG positions in every condition will be read from the Balance output file.
 			-->
 				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
-				<adimensional_center_of_gravity_x_position_list>0.1;0.4</adimensional_center_of_gravity_x_position_list>
-				<adimensional_center_of_gravity_z_position_list>-0.03;-0.03</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
-				<fuselage_dimensional_center_of_gravity_x_position unit="m">18.639</fuselage_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<adimensional_center_of_gravity_x_position_list>0.35</adimensional_center_of_gravity_x_position_list>
+				<adimensional_center_of_gravity_z_position_list>0.0</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
+				<fuselage_dimensional_center_of_gravity_x_position unit="m">11.04</fuselage_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
 				<fuselage_dimensional_center_of_gravity_z_position unit="m">0.0</fuselage_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
-				<rear_landing_gear_dimensional_center_of_gravity_x_position unit="m">22.26</rear_landing_gear_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
-				<rear_landing_gear_dimensional_center_of_gravity_z_position unit="m">-3.067</rear_landing_gear_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
-				<nacelle_dimensional_center_of_gravity_x_position unit="m">32.08</nacelle_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
-				<nacelle_dimensional_center_of_gravity_z_position unit="m">0.272</nacelle_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+				<rear_landing_gear_dimensional_center_of_gravity_x_position unit="m">12.5</rear_landing_gear_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<rear_landing_gear_dimensional_center_of_gravity_z_position unit="m">-3.07</rear_landing_gear_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+				<nacelle_dimensional_center_of_gravity_x_position unit="m">10.57</nacelle_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<nacelle_dimensional_center_of_gravity_z_position unit="m">1.029</nacelle_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
 			</balance>
 			<global_data dynamic_pressure_ratio_from_file="TRUE" tau_elevator_from_file="FALSE" tau_rudder_from_file="TRUE" tau_canard_control_surface_from_file="FALSE">
 				<alpha_body_initial unit="deg">-4</alpha_body_initial>

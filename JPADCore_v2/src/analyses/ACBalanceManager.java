@@ -315,6 +315,7 @@ public class ACBalanceManager {
 		}
 
 		boolean standardSystemsPositionFlag = true;
+		boolean includeSystemsPositionFlag = true;
 		Amount<Length> apuPositionX = null;
 		Amount<Length> apuPositionZ = null;
 		Amount<Length> airConditioningAndAntiIcingSystemPositionX = null;
@@ -331,385 +332,400 @@ public class ACBalanceManager {
 		Amount<Length> furnishingsAndEquipmentsPositionZ = null;
 		
 		//---------------------------------------------------------------
-		// STANDARD SYSTEMS POSITION FLAG
-		String standardSystemsPositionFlagString = MyXMLReaderUtils
+		// INCLUDE SYSTEMS POSITION FLAG
+		String includeSystemsPositionFlagString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//@use_standard_positions");
-		if(standardSystemsPositionFlagString.equalsIgnoreCase("true"))
-			standardSystemsPositionFlag = Boolean.TRUE;
+						"//@include_systems");
+		if(includeSystemsPositionFlagString.equalsIgnoreCase("true"))
+			includeSystemsPositionFlag = Boolean.TRUE;
 		else
-			standardSystemsPositionFlag = Boolean.FALSE;
+			includeSystemsPositionFlag = Boolean.FALSE;
 
-		/*
-		 * If the "standardSystemsPositionFlag" is true, standard systems positions will be assigned 
-		 * according to Sforza-Aircraft Design suggestions (pag.343, Fig. 8.38 and 8.39) 
-		 */
-		if(standardSystemsPositionFlag == true) {
-
-			if(theAircraft.getFuselage() != null) {
-				apuPositionX = theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
-					.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER))
-					.plus(theAircraft.getFuselage().getCylinderLength().to(SI.METER))
-					.plus(theAircraft.getFuselage().getTailLength().to(SI.METER).times(0.25)
-					);
-				apuPositionZ = theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER);
-			}
-
-			if(theAircraft.getWing() != null) {
-				airConditioningAndAntiIcingSystemPositionX = theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-						.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.25));
-				airConditioningAndAntiIcingSystemPositionZ = theAircraft.getWing().getZApexConstructionAxes().to(SI.METER); 
-			}
-			
-			if(theAircraft.getFuselage() != null) {
-				instrumentsAndNavigationSystemPositionX = theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
-						.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER).times(0.5));
-				instrumentsAndNavigationSystemPositionZ = theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER);
-			}
-
-			if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() != null && theAircraft.getCanard() != null) {
-				hydraulicAndPneumaticSystemsPositionX = (
-						( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
-								).times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( ( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getHTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
-								).times(horizontalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						.plus( ( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getVTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
-								).times(verticalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						.plus( ( (theAircraft.getCanard().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getCanard().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
-								).times(canardMass.doubleValue(SI.KILOGRAM))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								+ verticalTailMass.doubleValue(SI.KILOGRAM)
-								+ canardMass.doubleValue(SI.KILOGRAM)
-								);
-				hydraulicAndPneumaticSystemsPositionZ = (
-						( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
-								.times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
-								.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						.plus( ( (theAircraft.getVTail().getZApexConstructionAxes().to(SI.METER) )
-								.times(verticalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						.plus( ( (theAircraft.getCanard().getZApexConstructionAxes().to(SI.METER) )
-								.times(canardMass.doubleValue(SI.KILOGRAM))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								+ verticalTailMass.doubleValue(SI.KILOGRAM)
-								+ canardMass.doubleValue(SI.KILOGRAM)
-								);
-			}
-			else if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() != null && theAircraft.getCanard() == null) {
-				hydraulicAndPneumaticSystemsPositionX = (
-						( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
-								).times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( ( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getHTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
-								).times(horizontalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						.plus( ( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getVTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
-								).times(verticalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								+ verticalTailMass.doubleValue(SI.KILOGRAM)
-								);
-				hydraulicAndPneumaticSystemsPositionZ = (
-						( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
-								.times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
-								.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						.plus( ( (theAircraft.getVTail().getZApexConstructionAxes().to(SI.METER) )
-								.times(verticalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								+ verticalTailMass.doubleValue(SI.KILOGRAM)
-								);
-			}
-			else if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() == null && theAircraft.getCanard() == null) {
-				hydraulicAndPneumaticSystemsPositionX = (
-						( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
-								).times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( ( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getHTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
-								).times(horizontalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								);
-				hydraulicAndPneumaticSystemsPositionZ = (
-						( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
-								.times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
-								.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								);
-			}
-			else if(theAircraft.getWing() != null && theAircraft.getHTail() == null && theAircraft.getVTail() == null && theAircraft.getCanard() == null) {
-				hydraulicAndPneumaticSystemsPositionX = theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5));
-				hydraulicAndPneumaticSystemsPositionZ = theAircraft.getWing().getZApexConstructionAxes().to(SI.METER);
-			}
-			else if (theAircraft.getFuselage() != null) {
-				hydraulicAndPneumaticSystemsPositionX = theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
-						.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER))
-						.plus(theAircraft.getFuselage().getCylinderLength().to(SI.METER).times(0.5));
-				hydraulicAndPneumaticSystemsPositionZ = theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER); 
-			}
-			
-			if(theAircraft.getFuselage() != null && theAircraft.getWing() != null) {
-				electricalSystemsPositionX = (
-						(theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER))
-								)
-						.plus(theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.25))
-								)
-						).divide(2);
-				electricalSystemsPositionZ = ( 
-						(theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER)
-								.minus(theAircraft.getFuselage().getSectionCylinderHeight().to(SI.METER).times(0.25))
-								)
-						.plus(theAircraft.getWing().getZApexConstructionAxes().to(SI.METER))
-						).divide(2); 
-			}
-			else if(theAircraft.getFuselage() != null && theAircraft.getWing() == null) {
-				electricalSystemsPositionX = 
-						theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER));
-				electricalSystemsPositionZ = 
-						theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER)
-								.minus(theAircraft.getFuselage().getSectionCylinderHeight().to(SI.METER).times(0.25));
-			}
-			else if(theAircraft.getFuselage() == null && theAircraft.getWing() != null) {
-				electricalSystemsPositionX = 
-						theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.25));
-				electricalSystemsPositionZ = theAircraft.getWing().getZApexConstructionAxes().to(SI.METER);
-			} 
-			
-			if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() != null && theAircraft.getCanard() != null) {
-				controlSurfacesPositionX = (
-						( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
-								.plus(theAircraft.getWing().getMeanAerodynamicChord().to(SI.METER).times(0.7))
-								).times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getHTail().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
-								.plus(theAircraft.getHTail().getMeanAerodynamicChord().to(SI.METER).times(0.7))
-								) )
-						.plus( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getVTail().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
-								.plus(theAircraft.getVTail().getMeanAerodynamicChord().to(SI.METER).times(0.7))
-								) )
-						.plus( (theAircraft.getCanard().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getCanard().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
-								.plus(theAircraft.getCanard().getMeanAerodynamicChord().to(SI.METER).times(0.7))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								+ verticalTailMass.doubleValue(SI.KILOGRAM)
-								+ canardMass.doubleValue(SI.KILOGRAM)
-								);
-				controlSurfacesPositionZ = (
-						( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
-								.times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
-								.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						.plus( ( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER) )
-								.times(verticalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						.plus( ( (theAircraft.getCanard().getXApexConstructionAxes().to(SI.METER) )
-								.times(canardMass.doubleValue(SI.KILOGRAM))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								+ verticalTailMass.doubleValue(SI.KILOGRAM)
-								+ canardMass.doubleValue(SI.KILOGRAM)
-								);
-			}
-			else if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() != null && theAircraft.getCanard() == null) {
-				controlSurfacesPositionX = (
-						( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
-								.plus(theAircraft.getWing().getMeanAerodynamicChord().to(SI.METER).times(0.7))
-								).times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getHTail().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
-								.plus(theAircraft.getHTail().getMeanAerodynamicChord().to(SI.METER).times(0.7))
-								) )
-						.plus( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getVTail().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
-								.plus(theAircraft.getVTail().getMeanAerodynamicChord().to(SI.METER).times(0.7))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								+ verticalTailMass.doubleValue(SI.KILOGRAM)
-								);
-				controlSurfacesPositionZ = (
-						( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
-								.times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
-								.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						.plus( ( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER) )
-								.times(verticalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								+ verticalTailMass.doubleValue(SI.KILOGRAM)
-								);
-			}
-			else if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() == null && theAircraft.getCanard() == null) {
-				controlSurfacesPositionX = (
-						( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
-								.plus(theAircraft.getWing().getMeanAerodynamicChord().to(SI.METER).times(0.7))
-								).times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getHTail().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
-								.plus(theAircraft.getHTail().getMeanAerodynamicChord().to(SI.METER).times(0.7))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								);
-				controlSurfacesPositionZ = (
-						( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
-								.times(wingMass.doubleValue(SI.KILOGRAM))
-								)
-						.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
-								.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
-								) )
-						).divide(
-								wingMass.doubleValue(SI.KILOGRAM)
-								+ horizontalTailMass.doubleValue(SI.KILOGRAM)
-								);
-			}
-			else if(theAircraft.getWing() != null && theAircraft.getHTail() == null && theAircraft.getVTail() == null && theAircraft.getCanard() == null) {
-				controlSurfacesPositionX = theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
-								.plus(theAircraft.getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
-								.plus(theAircraft.getWing().getMeanAerodynamicChord().to(SI.METER).times(0.7));
-				controlSurfacesPositionZ = theAircraft.getWing().getZApexConstructionAxes().to(SI.METER);
-			}
-			else if (theAircraft.getFuselage() != null) {
-				controlSurfacesPositionX = theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
-						.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER))
-						.plus(theAircraft.getFuselage().getCylinderLength().to(SI.METER).times(0.5));
-				controlSurfacesPositionZ = theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER); 
-			}
-			
-			if (theAircraft.getFuselage() != null) {
-				furnishingsAndEquipmentsPositionX = theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
-						.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER))
-						.plus(theAircraft.getFuselage().getCylinderLength().to(SI.METER).times(0.5));
-				furnishingsAndEquipmentsPositionZ = theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER)
-						.plus(theAircraft.getFuselage().getSectionCylinderHeight().to(SI.METER).times(0.25));
-			}
-
-		}
-		else {
+		if(includeSystemsPositionFlag == true) {
 
 			//---------------------------------------------------------------
-			// APU POSITIONS
-			String apuPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/APU/x");
-			String apuPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/APU/z");
-			if(apuPositionXProperty != null)
-				apuPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/APU/x");
-			if(apuPositionZProperty != null)
-				apuPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/APU/z");
+			// STANDARD SYSTEMS POSITION FLAG
+			String standardSystemsPositionFlagString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//@use_standard_positions");
+			if(standardSystemsPositionFlagString.equalsIgnoreCase("true"))
+				standardSystemsPositionFlag = Boolean.TRUE;
+			else
+				standardSystemsPositionFlag = Boolean.FALSE;
 
-			//---------------------------------------------------------------
-			// AIR CONDITIONING AND ANTI-ICING SYSTEM POSITIONS
-			String airConditioningAndAntiIcingSystemPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/air_conditioning_and_anti_icing_system/x");
-			String airConditioningAndAntiIcingSystemPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/air_conditioning_and_anti_icing_system/z");
-			if(airConditioningAndAntiIcingSystemPositionXProperty != null)
-				airConditioningAndAntiIcingSystemPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/air_conditioning_and_anti_icing_system/x");
-			if(airConditioningAndAntiIcingSystemPositionZProperty != null)
-				airConditioningAndAntiIcingSystemPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/air_conditioning_and_anti_icing_system/z");
+			/*
+			 * If the "standardSystemsPositionFlag" is true, standard systems positions will be assigned 
+			 * according to Sforza-Aircraft Design suggestions (pag.343, Fig. 8.38 and 8.39) 
+			 */
+			if(standardSystemsPositionFlag == true) {
 
-			//---------------------------------------------------------------
-			// INSTRUMENTS AND NAVIGATION SYSTEMS POSITIONS
-			String instrumentsAndNavigationSystemPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/instruments_and_navigation_system/x");
-			String instrumentsAndNavigationSystemPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/instruments_and_navigation_system/z");
-			if(instrumentsAndNavigationSystemPositionXProperty != null)
-				instrumentsAndNavigationSystemPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/instruments_and_navigation_system/x");
-			if(instrumentsAndNavigationSystemPositionZProperty != null)
-				instrumentsAndNavigationSystemPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/instruments_and_navigation_system/z");
+				if(theAircraft.getFuselage() != null) {
+					apuPositionX = theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
+							.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER))
+							.plus(theAircraft.getFuselage().getCylinderLength().to(SI.METER))
+							.plus(theAircraft.getFuselage().getTailLength().to(SI.METER).times(0.25)
+									);
+					apuPositionZ = theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER);
+				}
 
-			//---------------------------------------------------------------
-			// HYDRAULIC AND PNEUMATIC SYSTEMS POSITIONS
-			String hydraulicAndPneumaticSystemsPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/hydraulic_and_pneumatic_systems/x");
-			String hydraulicAndPneumaticSystemsPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/hydraulic_and_pneumatic_systems/z");
-			if(hydraulicAndPneumaticSystemsPositionXProperty != null)
-				hydraulicAndPneumaticSystemsPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/hydraulic_and_pneumatic_systems/x");
-			if(hydraulicAndPneumaticSystemsPositionZProperty != null)
-				hydraulicAndPneumaticSystemsPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/hydraulic_and_pneumatic_systems/z");
+				if(theAircraft.getWing() != null) {
+					airConditioningAndAntiIcingSystemPositionX = theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
+							.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.25));
+					airConditioningAndAntiIcingSystemPositionZ = theAircraft.getWing().getZApexConstructionAxes().to(SI.METER); 
+				}
 
-			//---------------------------------------------------------------
-			// ELECTRICAL SYSTEMS POSITIONS
-			String electricalSystemsPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/electrical_systems/x");
-			String electricalSystemsPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/electrical_systems/z");
-			if(electricalSystemsPositionXProperty != null)
-				electricalSystemsPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/electrical_systems/x");
-			if(electricalSystemsPositionZProperty != null)
-				electricalSystemsPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/electrical_systems/z");
+				if(theAircraft.getFuselage() != null) {
+					instrumentsAndNavigationSystemPositionX = theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
+							.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER).times(0.5));
+					instrumentsAndNavigationSystemPositionZ = theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER);
+				}
 
-			//---------------------------------------------------------------
-			// CONTROL SURFACES POSITIONS
-			String controlSurfacesPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/control_surfaces/x");
-			String controlSurfacesPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/control_surfaces/z");
-			if(controlSurfacesPositionXProperty != null)
-				controlSurfacesPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/control_surfaces/x");
-			if(controlSurfacesPositionZProperty != null)
-				controlSurfacesPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/control_surfaces/z");
+				if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() != null && theAircraft.getCanard() != null) {
+					hydraulicAndPneumaticSystemsPositionX = (
+							( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
+									).times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( ( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getHTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
+									).times(horizontalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							.plus( ( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getVTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
+									).times(verticalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							.plus( ( (theAircraft.getCanard().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getCanard().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
+									).times(canardMass.doubleValue(SI.KILOGRAM))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									+ verticalTailMass.doubleValue(SI.KILOGRAM)
+									+ canardMass.doubleValue(SI.KILOGRAM)
+									);
+					hydraulicAndPneumaticSystemsPositionZ = (
+							( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
+									.times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
+									.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							.plus( ( (theAircraft.getVTail().getZApexConstructionAxes().to(SI.METER) )
+									.times(verticalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							.plus( ( (theAircraft.getCanard().getZApexConstructionAxes().to(SI.METER) )
+									.times(canardMass.doubleValue(SI.KILOGRAM))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									+ verticalTailMass.doubleValue(SI.KILOGRAM)
+									+ canardMass.doubleValue(SI.KILOGRAM)
+									);
+				}
+				else if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() != null && theAircraft.getCanard() == null) {
+					hydraulicAndPneumaticSystemsPositionX = (
+							( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
+									).times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( ( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getHTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
+									).times(horizontalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							.plus( ( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getVTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
+									).times(verticalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									+ verticalTailMass.doubleValue(SI.KILOGRAM)
+									);
+					hydraulicAndPneumaticSystemsPositionZ = (
+							( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
+									.times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
+									.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							.plus( ( (theAircraft.getVTail().getZApexConstructionAxes().to(SI.METER) )
+									.times(verticalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									+ verticalTailMass.doubleValue(SI.KILOGRAM)
+									);
+				}
+				else if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() == null && theAircraft.getCanard() == null) {
+					hydraulicAndPneumaticSystemsPositionX = (
+							( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
+									).times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( ( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getHTail().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5))
+									).times(horizontalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									);
+					hydraulicAndPneumaticSystemsPositionZ = (
+							( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
+									.times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
+									.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									);
+				}
+				else if(theAircraft.getWing() != null && theAircraft.getHTail() == null && theAircraft.getVTail() == null && theAircraft.getCanard() == null) {
+					hydraulicAndPneumaticSystemsPositionX = theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
+							.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.5));
+					hydraulicAndPneumaticSystemsPositionZ = theAircraft.getWing().getZApexConstructionAxes().to(SI.METER);
+				}
+				else if (theAircraft.getFuselage() != null) {
+					hydraulicAndPneumaticSystemsPositionX = theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
+							.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER))
+							.plus(theAircraft.getFuselage().getCylinderLength().to(SI.METER).times(0.5));
+					hydraulicAndPneumaticSystemsPositionZ = theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER); 
+				}
 
-			//---------------------------------------------------------------
-			// FURNISHINGS AND EQUIPMENTS POSITIONS
-			String furnishingsAndEquipmentsPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/furnishings_and_equipments/x");
-			String furnishingsAndEquipmentsPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/furnishings_and_equipments/z");
-			if(furnishingsAndEquipmentsPositionXProperty != null)
-				furnishingsAndEquipmentsPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/furnishings_and_equipments/x");
-			if(furnishingsAndEquipmentsPositionZProperty != null)
-				furnishingsAndEquipmentsPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/furnishings_and_equipments/z");
+				if(theAircraft.getFuselage() != null && theAircraft.getWing() != null) {
+					electricalSystemsPositionX = (
+							(theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER))
+									)
+							.plus(theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.25))
+									)
+							).divide(2);
+					electricalSystemsPositionZ = ( 
+							(theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER)
+									.minus(theAircraft.getFuselage().getSectionCylinderHeight().to(SI.METER).times(0.25))
+									)
+							.plus(theAircraft.getWing().getZApexConstructionAxes().to(SI.METER))
+							).divide(2); 
+				}
+				else if(theAircraft.getFuselage() != null && theAircraft.getWing() == null) {
+					electricalSystemsPositionX = 
+							theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
+							.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER));
+					electricalSystemsPositionZ = 
+							theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER)
+							.minus(theAircraft.getFuselage().getSectionCylinderHeight().to(SI.METER).times(0.25));
+				}
+				else if(theAircraft.getFuselage() == null && theAircraft.getWing() != null) {
+					electricalSystemsPositionX = 
+							theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
+							.plus(theAircraft.getWing().getPanels().get(0).getChordRoot().to(SI.METER).times(0.25));
+					electricalSystemsPositionZ = theAircraft.getWing().getZApexConstructionAxes().to(SI.METER);
+				} 
+
+				if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() != null && theAircraft.getCanard() != null) {
+					controlSurfacesPositionX = (
+							( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+									.plus(theAircraft.getWing().getMeanAerodynamicChord().to(SI.METER).times(0.7))
+									).times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getHTail().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+									.plus(theAircraft.getHTail().getMeanAerodynamicChord().to(SI.METER).times(0.7))
+									) )
+							.plus( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getVTail().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+									.plus(theAircraft.getVTail().getMeanAerodynamicChord().to(SI.METER).times(0.7))
+									) )
+							.plus( (theAircraft.getCanard().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getCanard().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+									.plus(theAircraft.getCanard().getMeanAerodynamicChord().to(SI.METER).times(0.7))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									+ verticalTailMass.doubleValue(SI.KILOGRAM)
+									+ canardMass.doubleValue(SI.KILOGRAM)
+									);
+					controlSurfacesPositionZ = (
+							( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
+									.times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
+									.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							.plus( ( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER) )
+									.times(verticalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							.plus( ( (theAircraft.getCanard().getXApexConstructionAxes().to(SI.METER) )
+									.times(canardMass.doubleValue(SI.KILOGRAM))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									+ verticalTailMass.doubleValue(SI.KILOGRAM)
+									+ canardMass.doubleValue(SI.KILOGRAM)
+									);
+				}
+				else if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() != null && theAircraft.getCanard() == null) {
+					controlSurfacesPositionX = (
+							( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+									.plus(theAircraft.getWing().getMeanAerodynamicChord().to(SI.METER).times(0.7))
+									).times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getHTail().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+									.plus(theAircraft.getHTail().getMeanAerodynamicChord().to(SI.METER).times(0.7))
+									) )
+							.plus( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getVTail().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+									.plus(theAircraft.getVTail().getMeanAerodynamicChord().to(SI.METER).times(0.7))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									+ verticalTailMass.doubleValue(SI.KILOGRAM)
+									);
+					controlSurfacesPositionZ = (
+							( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
+									.times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
+									.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							.plus( ( (theAircraft.getVTail().getXApexConstructionAxes().to(SI.METER) )
+									.times(verticalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									+ verticalTailMass.doubleValue(SI.KILOGRAM)
+									);
+				}
+				else if(theAircraft.getWing() != null && theAircraft.getHTail() != null && theAircraft.getVTail() == null && theAircraft.getCanard() == null) {
+					controlSurfacesPositionX = (
+							( (theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+									.plus(theAircraft.getWing().getMeanAerodynamicChord().to(SI.METER).times(0.7))
+									).times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( (theAircraft.getHTail().getXApexConstructionAxes().to(SI.METER)
+									.plus(theAircraft.getHTail().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+									.plus(theAircraft.getHTail().getMeanAerodynamicChord().to(SI.METER).times(0.7))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									);
+					controlSurfacesPositionZ = (
+							( (theAircraft.getWing().getZApexConstructionAxes().to(SI.METER) )
+									.times(wingMass.doubleValue(SI.KILOGRAM))
+									)
+							.plus( ( (theAircraft.getHTail().getZApexConstructionAxes().to(SI.METER) )
+									.times(horizontalTailMass.doubleValue(SI.KILOGRAM))
+									) )
+							).divide(
+									wingMass.doubleValue(SI.KILOGRAM)
+									+ horizontalTailMass.doubleValue(SI.KILOGRAM)
+									);
+				}
+				else if(theAircraft.getWing() != null && theAircraft.getHTail() == null && theAircraft.getVTail() == null && theAircraft.getCanard() == null) {
+					controlSurfacesPositionX = theAircraft.getWing().getXApexConstructionAxes().to(SI.METER)
+							.plus(theAircraft.getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+							.plus(theAircraft.getWing().getMeanAerodynamicChord().to(SI.METER).times(0.7));
+					controlSurfacesPositionZ = theAircraft.getWing().getZApexConstructionAxes().to(SI.METER);
+				}
+				else if (theAircraft.getFuselage() != null) {
+					controlSurfacesPositionX = theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
+							.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER))
+							.plus(theAircraft.getFuselage().getCylinderLength().to(SI.METER).times(0.5));
+					controlSurfacesPositionZ = theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER); 
+				}
+
+				if (theAircraft.getFuselage() != null) {
+					furnishingsAndEquipmentsPositionX = theAircraft.getFuselage().getXApexConstructionAxes().to(SI.METER)
+							.plus(theAircraft.getFuselage().getNoseLength().to(SI.METER))
+							.plus(theAircraft.getFuselage().getCylinderLength().to(SI.METER).times(0.5));
+					furnishingsAndEquipmentsPositionZ = theAircraft.getFuselage().getZApexConstructionAxes().to(SI.METER)
+							.plus(theAircraft.getFuselage().getSectionCylinderHeight().to(SI.METER).times(0.25));
+				}
+
+			}
+			else {
+
+				//---------------------------------------------------------------
+				// APU POSITIONS
+				String apuPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/APU/x");
+				String apuPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/APU/z");
+				if(apuPositionXProperty != null)
+					apuPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/APU/x");
+				if(apuPositionZProperty != null)
+					apuPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/APU/z");
+
+				//---------------------------------------------------------------
+				// AIR CONDITIONING AND ANTI-ICING SYSTEM POSITIONS
+				String airConditioningAndAntiIcingSystemPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/air_conditioning_and_anti_icing_system/x");
+				String airConditioningAndAntiIcingSystemPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/air_conditioning_and_anti_icing_system/z");
+				if(airConditioningAndAntiIcingSystemPositionXProperty != null)
+					airConditioningAndAntiIcingSystemPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/air_conditioning_and_anti_icing_system/x");
+				if(airConditioningAndAntiIcingSystemPositionZProperty != null)
+					airConditioningAndAntiIcingSystemPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/air_conditioning_and_anti_icing_system/z");
+
+				//---------------------------------------------------------------
+				// INSTRUMENTS AND NAVIGATION SYSTEMS POSITIONS
+				String instrumentsAndNavigationSystemPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/instruments_and_navigation_system/x");
+				String instrumentsAndNavigationSystemPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/instruments_and_navigation_system/z");
+				if(instrumentsAndNavigationSystemPositionXProperty != null)
+					instrumentsAndNavigationSystemPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/instruments_and_navigation_system/x");
+				if(instrumentsAndNavigationSystemPositionZProperty != null)
+					instrumentsAndNavigationSystemPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/instruments_and_navigation_system/z");
+
+				//---------------------------------------------------------------
+				// HYDRAULIC AND PNEUMATIC SYSTEMS POSITIONS
+				String hydraulicAndPneumaticSystemsPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/hydraulic_and_pneumatic_systems/x");
+				String hydraulicAndPneumaticSystemsPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/hydraulic_and_pneumatic_systems/z");
+				if(hydraulicAndPneumaticSystemsPositionXProperty != null)
+					hydraulicAndPneumaticSystemsPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/hydraulic_and_pneumatic_systems/x");
+				if(hydraulicAndPneumaticSystemsPositionZProperty != null)
+					hydraulicAndPneumaticSystemsPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/hydraulic_and_pneumatic_systems/z");
+
+				//---------------------------------------------------------------
+				// ELECTRICAL SYSTEMS POSITIONS
+				String electricalSystemsPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/electrical_systems/x");
+				String electricalSystemsPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/electrical_systems/z");
+				if(electricalSystemsPositionXProperty != null)
+					electricalSystemsPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/electrical_systems/x");
+				if(electricalSystemsPositionZProperty != null)
+					electricalSystemsPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/electrical_systems/z");
+
+				//---------------------------------------------------------------
+				// CONTROL SURFACES POSITIONS
+				String controlSurfacesPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/control_surfaces/x");
+				String controlSurfacesPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/control_surfaces/z");
+				if(controlSurfacesPositionXProperty != null)
+					controlSurfacesPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/control_surfaces/x");
+				if(controlSurfacesPositionZProperty != null)
+					controlSurfacesPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/control_surfaces/z");
+
+				//---------------------------------------------------------------
+				// FURNISHINGS AND EQUIPMENTS POSITIONS
+				String furnishingsAndEquipmentsPositionXProperty = reader.getXMLPropertyByPath("//systems_positions/furnishings_and_equipments/x");
+				String furnishingsAndEquipmentsPositionZProperty = reader.getXMLPropertyByPath("//systems_positions/furnishings_and_equipments/z");
+				if(furnishingsAndEquipmentsPositionXProperty != null)
+					furnishingsAndEquipmentsPositionX = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/furnishings_and_equipments/x");
+				if(furnishingsAndEquipmentsPositionZProperty != null)
+					furnishingsAndEquipmentsPositionZ = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//systems_positions/furnishings_and_equipments/z");
+
+			}
 
 		}
 		
@@ -739,6 +755,7 @@ public class ACBalanceManager {
 				.setControlSurfacesMass(controlSurfacesMass)
 				.setFurnishingsAndEquipmentsMass(furnishingsAndEquipmentsMass)
 				.setStandardSystemsPositionFlag(standardSystemsPositionFlag)
+				.setIncludeSystemsPosition(includeSystemsPositionFlag)
 				.setAPUPositionX(apuPositionX)
 				.setAPUPositionZ(apuPositionZ)
 				.setAirConditioningAndAntiIcingSystemPositionX(airConditioningAndAntiIcingSystemPositionX)
@@ -873,81 +890,83 @@ public class ACBalanceManager {
 			.append("\t\tZcg Total Landing Gear BRF: " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZBRF().to(SI.METER) + "\n")
 			.append("\t\t·····································\n");
 		}
-		if(_theBalanceManagerInterface.getTheAircraft().getSystems() != null) {
-			sb.append("\t\tSYSTEMS AND EQUIPMENTS:\n")
-			.append("\t\t·····································\n")
-			.append("\t\t\tXcg APU BRF: " + _theBalanceManagerInterface.getAPUPositionX().to(SI.METER) + "\n")
-			.append("\t\t\tXcg APU MAC: " + _theBalanceManagerInterface.getAPUPositionX().to(SI.METER)
-					.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
-							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\tZcg APU BRF: " + _theBalanceManagerInterface.getAPUPositionZ().to(SI.METER) + "\n")
-			.append("\t\t\tZcg APU MAC: " + _theBalanceManagerInterface.getAPUPositionZ().to(SI.METER)
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\t·····································\n")
-			.append("\t\t\tXcg Air Conditioning And Anti-Icing System BRF: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER) + "\n")
-			.append("\t\t\tXcg Air Conditioning And Anti-Icing System MAC: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER)
-					.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
-							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\tZcg APU BRF: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER) + "\n")
-			.append("\t\t\tZcg APU MAC: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER)
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\t·····································\n")
-			.append("\t\t\tXcg Air Conditioning And Anti-Icing System BRF: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER) + "\n")
-			.append("\t\t\tXcg Air Conditioning And Anti-Icing System MAC: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER)
-					.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
-							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\tZcg Air Conditioning And Anti-Icing System BRF: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER) + "\n")
-			.append("\t\t\tZcg Air Conditioning And Anti-Icing System MAC: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER)
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\t·····································\n")
-			.append("\t\t\tXcg Instruments And Navigation System BRF: " + _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionX().to(SI.METER) + "\n")
-			.append("\t\t\tXcg Instruments And Navigation System MAC: " + _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionX().to(SI.METER)
-					.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
-							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\tZcg Instruments And Navigation System BRF: " + _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionZ().to(SI.METER) + "\n")
-			.append("\t\t\tZcg Instruments And Navigation System MAC: " + _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionZ().to(SI.METER)
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\t·····································\n")
-			.append("\t\t\tXcg Hydraulic And Pneumatic Systems BRF: " + _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionX().to(SI.METER) + "\n")
-			.append("\t\t\tXcg Hydraulic And Pneumatic Systems MAC: " + _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().to(SI.METER)
-					.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
-							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\tZcg Hydraulic And Pneumatic Systems BRF: " + _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().to(SI.METER) + "\n")
-			.append("\t\t\tZcg Hydraulic And Pneumatic Systems MAC: " + _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().to(SI.METER)
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\t·····································\n")
-			.append("\t\t\tXcg Electrical Systems BRF: " + _theBalanceManagerInterface.getElectricalSystemsPositionX().to(SI.METER) + "\n")
-			.append("\t\t\tXcg Electrical Systems MAC: " + _theBalanceManagerInterface.getElectricalSystemsPositionX().to(SI.METER)
-					.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
-							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\tZcg Electrical Systems BRF: " + _theBalanceManagerInterface.getElectricalSystemsPositionZ().to(SI.METER) + "\n")
-			.append("\t\t\tZcg Electrical Systems MAC: " + _theBalanceManagerInterface.getElectricalSystemsPositionZ().to(SI.METER)
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\t·····································\n")
-			.append("\t\t\tXcg Control Surfaces BRF: " + _theBalanceManagerInterface.getControlSurfacesPositionX().to(SI.METER) + "\n")
-			.append("\t\t\tXcg Control Surfaces MAC: " + _theBalanceManagerInterface.getControlSurfacesPositionX().to(SI.METER)
-					.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
-							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\tZcg Control Surfaces BRF: " + _theBalanceManagerInterface.getControlSurfacesPositionZ().to(SI.METER) + "\n")
-			.append("\t\t\tZcg Control Surfaces MAC: " + _theBalanceManagerInterface.getControlSurfacesPositionZ().to(SI.METER)
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\t·····································\n")
-			.append("\t\t\tXcg Furnishings And Equipments BRF: " + _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionX().to(SI.METER) + "\n")
-			.append("\t\t\tXcg Furnishings And Equipments MAC: " + _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionX().to(SI.METER)
-					.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
-							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\tZcg Furnishings And Equipments BRF: " + _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().to(SI.METER) + "\n")
-			.append("\t\t\tZcg Furnishings And Equipments MAC: " + _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().to(SI.METER)
-					.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
-			.append("\t\t\t·····································\n");
+		if(_theBalanceManagerInterface.getIncludeSystemsPosition() == true) {
+			if(_theBalanceManagerInterface.getTheAircraft().getSystems() != null) {
+				sb.append("\t\tSYSTEMS AND EQUIPMENTS:\n")
+				.append("\t\t·····································\n")
+				.append("\t\t\tXcg APU BRF: " + _theBalanceManagerInterface.getAPUPositionX().to(SI.METER) + "\n")
+				.append("\t\t\tXcg APU MAC: " + _theBalanceManagerInterface.getAPUPositionX().to(SI.METER)
+						.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\tZcg APU BRF: " + _theBalanceManagerInterface.getAPUPositionZ().to(SI.METER) + "\n")
+				.append("\t\t\tZcg APU MAC: " + _theBalanceManagerInterface.getAPUPositionZ().to(SI.METER)
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\t·····································\n")
+				.append("\t\t\tXcg Air Conditioning And Anti-Icing System BRF: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER) + "\n")
+				.append("\t\t\tXcg Air Conditioning And Anti-Icing System MAC: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER)
+						.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\tZcg APU BRF: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER) + "\n")
+				.append("\t\t\tZcg APU MAC: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER)
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\t·····································\n")
+				.append("\t\t\tXcg Air Conditioning And Anti-Icing System BRF: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER) + "\n")
+				.append("\t\t\tXcg Air Conditioning And Anti-Icing System MAC: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER)
+						.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\tZcg Air Conditioning And Anti-Icing System BRF: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER) + "\n")
+				.append("\t\t\tZcg Air Conditioning And Anti-Icing System MAC: " + _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER)
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\t·····································\n")
+				.append("\t\t\tXcg Instruments And Navigation System BRF: " + _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionX().to(SI.METER) + "\n")
+				.append("\t\t\tXcg Instruments And Navigation System MAC: " + _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionX().to(SI.METER)
+						.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\tZcg Instruments And Navigation System BRF: " + _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionZ().to(SI.METER) + "\n")
+				.append("\t\t\tZcg Instruments And Navigation System MAC: " + _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionZ().to(SI.METER)
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\t·····································\n")
+				.append("\t\t\tXcg Hydraulic And Pneumatic Systems BRF: " + _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionX().to(SI.METER) + "\n")
+				.append("\t\t\tXcg Hydraulic And Pneumatic Systems MAC: " + _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().to(SI.METER)
+						.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\tZcg Hydraulic And Pneumatic Systems BRF: " + _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().to(SI.METER) + "\n")
+				.append("\t\t\tZcg Hydraulic And Pneumatic Systems MAC: " + _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().to(SI.METER)
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\t·····································\n")
+				.append("\t\t\tXcg Electrical Systems BRF: " + _theBalanceManagerInterface.getElectricalSystemsPositionX().to(SI.METER) + "\n")
+				.append("\t\t\tXcg Electrical Systems MAC: " + _theBalanceManagerInterface.getElectricalSystemsPositionX().to(SI.METER)
+						.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\tZcg Electrical Systems BRF: " + _theBalanceManagerInterface.getElectricalSystemsPositionZ().to(SI.METER) + "\n")
+				.append("\t\t\tZcg Electrical Systems MAC: " + _theBalanceManagerInterface.getElectricalSystemsPositionZ().to(SI.METER)
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\t·····································\n")
+				.append("\t\t\tXcg Control Surfaces BRF: " + _theBalanceManagerInterface.getControlSurfacesPositionX().to(SI.METER) + "\n")
+				.append("\t\t\tXcg Control Surfaces MAC: " + _theBalanceManagerInterface.getControlSurfacesPositionX().to(SI.METER)
+						.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\tZcg Control Surfaces BRF: " + _theBalanceManagerInterface.getControlSurfacesPositionZ().to(SI.METER) + "\n")
+				.append("\t\t\tZcg Control Surfaces MAC: " + _theBalanceManagerInterface.getControlSurfacesPositionZ().to(SI.METER)
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\t·····································\n")
+				.append("\t\t\tXcg Furnishings And Equipments BRF: " + _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionX().to(SI.METER) + "\n")
+				.append("\t\t\tXcg Furnishings And Equipments MAC: " + _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionX().to(SI.METER)
+						.minus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)))
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\tZcg Furnishings And Equipments BRF: " + _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().to(SI.METER) + "\n")
+				.append("\t\t\tZcg Furnishings And Equipments MAC: " + _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().to(SI.METER)
+						.divide(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)) + "\n")
+				.append("\t\t\t·····································\n");
+			}
 		}
 						
 		return sb.toString();
@@ -1739,77 +1758,57 @@ public class ACBalanceManager {
 				}
 			}
 		}
-		
+
 		//--------------------------------------------------------------------------------
 		// SYSTEMS BALANCE ANALYSIS RESULTS:
 		//--------------------------------------------------------------------------------
-		if(_theBalanceManagerInterface.getTheAircraft().getSystems() != null) {
-			Sheet sheetSystems = wb.createSheet("SYSTEMS");
-			List<Object[]> dataListSystems = new ArrayList<>();
-			dataListSystems.add(new Object[] {"Description","Unit","Value"});
-			dataListSystems.add(new Object[] {"APU"});
-			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getAPUPositionX().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
-			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getAPUPositionZ().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {" "});
-			dataListSystems.add(new Object[] {"AIR CONDITIONING AND ANTI-ICING SYSTEM"});
-			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
-			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {" "});
-			dataListSystems.add(new Object[] {"INSTRUMENTS AND NAVIGATION SYSTEM"});
-			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionX().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
-			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionZ().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {" "});
-			dataListSystems.add(new Object[] {"HYDRAULIC AND PNEUMATIC SYSTEMS"});
-			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionX().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
-			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {" "});
-			dataListSystems.add(new Object[] {"ELECTRICAL SYSTEMS"});
-			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getElectricalSystemsPositionX().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
-			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getElectricalSystemsPositionZ().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {" "});
-			dataListSystems.add(new Object[] {"CONTROL SURFACES"});
-			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getControlSurfacesPositionX().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
-			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getControlSurfacesPositionZ().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {" "});
-			dataListSystems.add(new Object[] {"FURNISHINGS AND EQUIPMENTS"});
-			dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionX().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
-			dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().doubleValue(SI.METER)});
-			dataListSystems.add(new Object[] {" "});
+		if(_theBalanceManagerInterface.getIncludeSystemsPosition() == true) {
+			if(_theBalanceManagerInterface.getTheAircraft().getSystems() != null) {
+				Sheet sheetSystems = wb.createSheet("SYSTEMS");
+				List<Object[]> dataListSystems = new ArrayList<>();
+				dataListSystems.add(new Object[] {"Description","Unit","Value"});
+				dataListSystems.add(new Object[] {"APU"});
+				dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getAPUPositionX().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+				dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getAPUPositionZ().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {" "});
+				dataListSystems.add(new Object[] {"AIR CONDITIONING AND ANTI-ICING SYSTEM"});
+				dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+				dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {" "});
+				dataListSystems.add(new Object[] {"INSTRUMENTS AND NAVIGATION SYSTEM"});
+				dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionX().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+				dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionZ().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {" "});
+				dataListSystems.add(new Object[] {"HYDRAULIC AND PNEUMATIC SYSTEMS"});
+				dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionX().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+				dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {" "});
+				dataListSystems.add(new Object[] {"ELECTRICAL SYSTEMS"});
+				dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getElectricalSystemsPositionX().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+				dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getElectricalSystemsPositionZ().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {" "});
+				dataListSystems.add(new Object[] {"CONTROL SURFACES"});
+				dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getControlSurfacesPositionX().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+				dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getControlSurfacesPositionZ().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {" "});
+				dataListSystems.add(new Object[] {"FURNISHINGS AND EQUIPMENTS"});
+				dataListSystems.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionX().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {"Ycg BRF","m", 0.0});
+				dataListSystems.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().doubleValue(SI.METER)});
+				dataListSystems.add(new Object[] {" "});
 
-			Row rowSystems = sheetSystems.createRow(0);
-			Object[] objArrSystems = dataListSystems.get(0);
-			int cellnumSystems = 0;
-			for (Object obj : objArrSystems) {
-				Cell cell = rowSystems.createCell(cellnumSystems++);
-				cell.setCellStyle(styleHead);
-				if (obj instanceof Date) {
-					cell.setCellValue((Date) obj);
-				} else if (obj instanceof Boolean) {
-					cell.setCellValue((Boolean) obj);
-				} else if (obj instanceof String) {
-					cell.setCellValue((String) obj);
-				} else if (obj instanceof Double) {
-					cell.setCellValue((Double) obj);
-				}
-				sheetSystems.setDefaultColumnWidth(35);
-				sheetSystems.setColumnWidth(1, 2048);
-				sheetSystems.setColumnWidth(2, 3840);
-			}
-
-			int rownumSystems = 1;
-			for (int j = 1; j < dataListSystems.size(); j++) {
-				objArrSystems = dataListSystems.get(j);
-				rowSystems = sheetSystems.createRow(rownumSystems++);
-				cellnumSystems = 0;
+				Row rowSystems = sheetSystems.createRow(0);
+				Object[] objArrSystems = dataListSystems.get(0);
+				int cellnumSystems = 0;
 				for (Object obj : objArrSystems) {
 					Cell cell = rowSystems.createCell(cellnumSystems++);
+					cell.setCellStyle(styleHead);
 					if (obj instanceof Date) {
 						cell.setCellValue((Date) obj);
 					} else if (obj instanceof Boolean) {
@@ -1818,6 +1817,28 @@ public class ACBalanceManager {
 						cell.setCellValue((String) obj);
 					} else if (obj instanceof Double) {
 						cell.setCellValue((Double) obj);
+					}
+					sheetSystems.setDefaultColumnWidth(35);
+					sheetSystems.setColumnWidth(1, 2048);
+					sheetSystems.setColumnWidth(2, 3840);
+				}
+
+				int rownumSystems = 1;
+				for (int j = 1; j < dataListSystems.size(); j++) {
+					objArrSystems = dataListSystems.get(j);
+					rowSystems = sheetSystems.createRow(rownumSystems++);
+					cellnumSystems = 0;
+					for (Object obj : objArrSystems) {
+						Cell cell = rowSystems.createCell(cellnumSystems++);
+						if (obj instanceof Date) {
+							cell.setCellValue((Date) obj);
+						} else if (obj instanceof Boolean) {
+							cell.setCellValue((Boolean) obj);
+						} else if (obj instanceof String) {
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Double) {
+							cell.setCellValue((Double) obj);
+						}
 					}
 				}
 			}
@@ -2103,39 +2124,41 @@ public class ACBalanceManager {
 			_zCGMap.put(ComponentEnum.LANDING_GEAR, _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZBRF().to(SI.METER));
 			_massMap.put(ComponentEnum.LANDING_GEAR, _theBalanceManagerInterface.getLandingGearMass().to(SI.KILOGRAM));
 		}
-		
-		if(_theBalanceManagerInterface.getTheAircraft().getSystems() != null) {
-			
-			_xCGMap.put(ComponentEnum.APU, _theBalanceManagerInterface.getAPUPositionX().to(SI.METER));
-			_zCGMap.put(ComponentEnum.APU, _theBalanceManagerInterface.getAPUPositionZ().to(SI.METER));
-			_massMap.put(ComponentEnum.APU, _theBalanceManagerInterface.getAPUMass().to(SI.KILOGRAM));
-			
-			_xCGMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER));
-			_zCGMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER));
-			_massMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, _theBalanceManagerInterface.getAirConditioningAndAntiIcingMass().to(SI.KILOGRAM));
-			
-			_xCGMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionX().to(SI.METER));
-			_zCGMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionZ().to(SI.METER));
-			_massMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, _theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass().to(SI.KILOGRAM));
-			
-			_xCGMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionX().to(SI.METER));
-			_zCGMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().to(SI.METER));
-			_massMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass().to(SI.KILOGRAM));
-			
-			_xCGMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, _theBalanceManagerInterface.getElectricalSystemsPositionX().to(SI.METER));
-			_zCGMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, _theBalanceManagerInterface.getElectricalSystemsPositionZ().to(SI.METER));
-			_massMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, _theBalanceManagerInterface.getElectricalSystemsMass().to(SI.KILOGRAM));
-			
-			_xCGMap.put(ComponentEnum.CONTROL_SURFACES, _theBalanceManagerInterface.getControlSurfacesPositionZ().to(SI.METER));
-			_zCGMap.put(ComponentEnum.CONTROL_SURFACES, _theBalanceManagerInterface.getControlSurfacesPositionZ().to(SI.METER));
-			_massMap.put(ComponentEnum.CONTROL_SURFACES, _theBalanceManagerInterface.getControlSurfacesMass().to(SI.KILOGRAM));
-			
-			_xCGMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionX().to(SI.METER));
-			_zCGMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().to(SI.METER));
-			_massMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, _theBalanceManagerInterface.getFurnishingsAndEquipmentsMass().to(SI.KILOGRAM));
-			
+
+		if(_theBalanceManagerInterface.getIncludeSystemsPosition() == true) {
+			if(_theBalanceManagerInterface.getTheAircraft().getSystems() != null) {
+
+				_xCGMap.put(ComponentEnum.APU, _theBalanceManagerInterface.getAPUPositionX().to(SI.METER));
+				_zCGMap.put(ComponentEnum.APU, _theBalanceManagerInterface.getAPUPositionZ().to(SI.METER));
+				_massMap.put(ComponentEnum.APU, _theBalanceManagerInterface.getAPUMass().to(SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER));
+				_zCGMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER));
+				_massMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, _theBalanceManagerInterface.getAirConditioningAndAntiIcingMass().to(SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionX().to(SI.METER));
+				_zCGMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionZ().to(SI.METER));
+				_massMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, _theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass().to(SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionX().to(SI.METER));
+				_zCGMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().to(SI.METER));
+				_massMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass().to(SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, _theBalanceManagerInterface.getElectricalSystemsPositionX().to(SI.METER));
+				_zCGMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, _theBalanceManagerInterface.getElectricalSystemsPositionZ().to(SI.METER));
+				_massMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, _theBalanceManagerInterface.getElectricalSystemsMass().to(SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.CONTROL_SURFACES, _theBalanceManagerInterface.getControlSurfacesPositionZ().to(SI.METER));
+				_zCGMap.put(ComponentEnum.CONTROL_SURFACES, _theBalanceManagerInterface.getControlSurfacesPositionZ().to(SI.METER));
+				_massMap.put(ComponentEnum.CONTROL_SURFACES, _theBalanceManagerInterface.getControlSurfacesMass().to(SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionX().to(SI.METER));
+				_zCGMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().to(SI.METER));
+				_massMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, _theBalanceManagerInterface.getFurnishingsAndEquipmentsMass().to(SI.KILOGRAM));
+
+			}
 		}
-		
+
 		//.............................................................................................................................
 		// Structural CG
 		_cgStructure = new CenterOfGravity();
@@ -2231,51 +2254,61 @@ public class ACBalanceManager {
 		// Manufacturer Empty Mass CG location
 		_cgManufacturerEmptuMass = new CenterOfGravity();
 		
-		_cgManufacturerEmptuMass.setXBRF(
-				Amount.valueOf(
-						( (_xCGMap.get(ComponentEnum.APU).doubleValue(SI.METER)*_massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM))
-								+ (_xCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.METER)*_massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM))
-								+ (_xCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.METER)*_massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM))
-								+ (_xCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM))
-								+ (_xCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM))
-								+ (_xCGMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.METER)*_massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM))
-								+ (_xCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM))
-								+ (_cgStructureAndPower.getXBRF().doubleValue(SI.METER)*(_massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM) + sum))
-								)
-						/(sum + _massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM)
-								),
-						SI.METER)
-				);
+		if(_theBalanceManagerInterface.getIncludeSystemsPosition() == true) {
+			
+			_cgManufacturerEmptuMass.setXBRF(
+					Amount.valueOf(
+							( (_xCGMap.get(ComponentEnum.APU).doubleValue(SI.METER)*_massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM))
+									+ (_xCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.METER)*_massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM))
+									+ (_xCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.METER)*_massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM))
+									+ (_xCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM))
+									+ (_xCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM))
+									+ (_xCGMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.METER)*_massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM))
+									+ (_xCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM))
+									+ (_cgStructureAndPower.getXBRF().doubleValue(SI.METER)*(_massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM) + sum))
+									)
+							/(sum + _massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM)
+									),
+							SI.METER)
+					);
 
-		_cgManufacturerEmptuMass.setZBRF(
-				Amount.valueOf(
-						( (_zCGMap.get(ComponentEnum.APU).doubleValue(SI.METER)*_massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM))
-								+ (_zCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.METER)*_massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM))
-								+ (_zCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.METER)*_massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM))
-								+ (_zCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM))
-								+ (_zCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM))
-								+ (_zCGMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.METER)*_massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM))
-								+ (_zCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM))
-								+ (_cgStructureAndPower.getZBRF().doubleValue(SI.METER)*(_massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM) + sum))
-								)
-						/(sum + _massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM)
-								+ _massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM)
-								),
-						SI.METER)
-				);
+			_cgManufacturerEmptuMass.setZBRF(
+					Amount.valueOf(
+							( (_zCGMap.get(ComponentEnum.APU).doubleValue(SI.METER)*_massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM))
+									+ (_zCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.METER)*_massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM))
+									+ (_zCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.METER)*_massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM))
+									+ (_zCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM))
+									+ (_zCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM))
+									+ (_zCGMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.METER)*_massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM))
+									+ (_zCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM))
+									+ (_cgStructureAndPower.getZBRF().doubleValue(SI.METER)*(_massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM) + sum))
+									)
+							/(sum + _massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM)
+									+ _massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM)
+									),
+							SI.METER)
+					);
+
+		}
+		else {
+			
+			_cgManufacturerEmptuMass.setXBRF(_cgStructureAndPower.getXBRF().to(SI.METER));
+			_cgManufacturerEmptuMass.setZBRF(_cgStructureAndPower.getZBRF().to(SI.METER));
+
+		}
 
 		_cgManufacturerEmptuMass.calculateCGinMAC(
 				(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)

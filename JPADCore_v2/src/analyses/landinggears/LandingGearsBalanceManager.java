@@ -80,7 +80,7 @@ public class LandingGearsBalanceManager {
 		_cg.setLRForigin(
 				aircraft.getFuselage().getXApexConstructionAxes(), 
 				aircraft.getFuselage().getYApexConstructionAxes(), 
-				aircraft.getFuselage().getZApexConstructionAxes()
+				aircraft.getLandingGears().getZApexConstructionAxesMainGear()
 				);
 		_cg.setXLRFref(LandingGearsBalanceCalc.calculateXCGLandingGears(aircraft));
 		_cg.setYLRFref(Amount.valueOf(0., SI.METER));

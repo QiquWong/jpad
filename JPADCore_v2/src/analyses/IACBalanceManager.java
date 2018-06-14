@@ -52,6 +52,7 @@ public interface IACBalanceManager {
 	
 	// SYSTEMS POSITION DATA
 	boolean getStandardSystemsPositionFlag();
+	boolean getIncludeSystemsPosition();
 	@Nullable
 	Amount<Length> getAPUPositionX();
 	@Nullable
