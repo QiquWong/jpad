@@ -32,7 +32,6 @@
 			method_furnishings_and_equipments=""
 			method_control_surfaces=""
             />
-	<!--
 		<balance 
 			file="analysis_balance_ATR72.xml"
 			plot="FALSE"
@@ -58,12 +57,11 @@
 			landing_condition="TRUE"
 			file_landing_condition="analysis_aerodynamics_ATR72_landing.xml"
 		/>
-	-->
 		<performance 
 			file="analysis_performance_ATR72.xml"
 			plot="FALSE"
 			create_CSV="FALSE"
-			take_off="TRUE"
+			take_off="FALSE"
 			climb="FALSE"
 			cruise="FALSE"
 			descent="FALSE"
