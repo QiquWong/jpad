@@ -37,7 +37,8 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		C_l_r_w_C_l_r_over_C_Lift1_vs_AR_lambda_L_c4_data0,
 		C_l_r_w_C_l_r_over_C_Lift1_vs_AR_lambda_L_c4_data1,
 		C_l_r_w_dC_l_r_over_eps_w_vs_AR_lambda,
-	    Delta_alpha_CL_Ground_Effect_x_vs_2hfracb_Deltax;
+	    Delta_alpha_CL_Ground_Effect_x_vs_2hfracb_Deltax,
+		Delta_alpha_CL_Ground_Effect_L_L0_minus1_vs_h_cr_4_cr;
 	    
 	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE, deltaYvsThickness, clmaxCLmaxVsLambdaLE;
  
@@ -140,6 +141,9 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		
 		Delta_alpha_CL_Ground_Effect_x_vs_2hfracb_Deltax
 						= database.interpolate2DFromDatasetFunction("(Delta_alpha_CL_Ground_Effect)_x_vs_2hfracb_Deltax");
+		
+		Delta_alpha_CL_Ground_Effect_L_L0_minus1_vs_h_cr_4_cr
+						= database.interpolate2DFromDatasetFunction("Delta_alpha_CL_Ground_Effect_L_L0_minus1_vs_h_cr_4_cr");
 	}
 	
 	public MyHDFReader getHDFReader() {
@@ -411,6 +415,15 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 				heightOverSemiWingSpan, // var1
 				deltaXOverSemiWingSpan  // var0
 				);
+		
+	}
+	
+	public double getDeltaAlphaCLGroundEffectLL0minus1vshcr4cr(double cLParameter, double hFracC) { // var0, var1
+		return Delta_alpha_CL_Ground_Effect_L_L0_minus1_vs_h_cr_4_cr.valueBilinear(
+				hFracC, // var1
+				cLParameter  // var0
+				);
+		
 	}
 	
 }
