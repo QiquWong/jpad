@@ -67,7 +67,7 @@
 				</tau_canard_control_surface_function>
 				<!---->
 			</global_data>
-			<wing_analyses>
+			<wing_analyses perform="TRUE">
 				<critical_mach perform="TRUE" method="KROO"></critical_mach>
 				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
@@ -156,7 +156,7 @@
 					<moment_distributions perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
 				</pitching_moment>
 			</wing_analyses>
-			<horizontal_tail_analyses>
+			<horizontal_tail_analyses perform="TRUE">
 				<critical_mach perform="TRUE" method="KROO"></critical_mach>
 				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
@@ -220,7 +220,7 @@
 					<moment_distributions perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
 				</pitching_moment>
 			</horizontal_tail_analyses>
-			<vertical_tail_analyses>
+			<vertical_tail_analyses perform="TRUE">
 				<critical_mach perform="TRUE" method="KROO"></critical_mach>
 				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
@@ -284,7 +284,7 @@
 					<moment_distributions perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
 				</pitching_moment>
 			</vertical_tail_analyses>
-			<canard_analyses>
+			<canard_analyses perform="TRUE">
 				<critical_mach perform="TRUE" method="KROO"></critical_mach>
 				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
@@ -348,7 +348,7 @@
 					<moment_distributions perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
 				</pitching_moment>
 			</canard_analyses>
-			<fuselage_analyses>
+			<fuselage_analyses perform="TRUE">
 				<drag>
 					<cD0_parasite perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD0_base perform="TRUE" method="SEMIEMPIRICAL"/>
@@ -382,7 +382,7 @@
 					<cM_at_alpha_current perform="TRUE" method="FUSDES"/> <!-- MULTHOPP method gives poor results for the CM0 -->
 				</pitching_moment>
 			</fuselage_analyses>
-			<nacelle_analyses>
+			<nacelle_analyses perform="TRUE">
 				<drag>
 					<cD0_parasite perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD0_base perform="TRUE" method="SEMIEMPIRICAL"/>

@@ -52,20 +52,20 @@
 			method_furnishings_and_equipments=""
 			method_control_surfaces=""
 		/>	
-	<!--
+	
 	<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="TRUE"
-			take_off_condition="TRUE"
-			file_take_off_condition="analysis_aerodynamics_Prototype.xml"
-			climb_condition="TRUE"
-			file_climb_condition="analysis_aerodynamics_Prototype.xml"
+			take_off_condition="FALSE"
+			file_take_off_condition="analysis_aerodynamics_Prototype_LOOP1_updated_cruise_cavas.xml"
+			climb_condition="FALSE"
+			file_climb_condition="analysis_aerodynamics_Prototype_LOOP1_updated_cruise_cavas.xml"
 			cruise_condition="TRUE"
-			file_cruise_condition="analysis_aerodynamics_Prototype.xml"
-			landing_condition="TRUE"
-			file_landing_condition="analysis_aerodynamics_Prototype.xml"
+			file_cruise_condition="analysis_aerodynamics_Prototype_LOOP1_updated_cruise_cavas.xml"
+			landing_condition="FALSE"
+			file_landing_condition="analysis_aerodynamics_Prototype_LOOP1_updated_cruise_cavas.xml"
 	/>
-	-->
+	
 	<!--
 	<performance 
 			file="analysis_performance_CS300.xml"
