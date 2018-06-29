@@ -16,6 +16,8 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import igeo.IDoubleR.Rad;
 
 public class Calculator {
+	
+	
 	/**
 	 * @see USAF Stability and Control DATCOM (Design Reference) - Finck 1978_page1444.
 	 * 		
@@ -57,17 +59,11 @@ public class Calculator {
 		
 		List<Double> liftCoefficientCurveWithGroundEffect = new ArrayList();
 		
-		
-		
-		
-		
-		
-		
-		
-		
 		return liftCoefficientCurveWithGroundEffect;
 		
 	}
+	
+	//---------------------------------------------------------------------------	
 	
 	/**
 	 * @see USAF Stability and Control DATCOM (Design Reference) - Finck 1978_page1444.
@@ -106,21 +102,26 @@ public class Calculator {
 			Amount<Length> heightOfRootChord,
 			Amount<Angle> sweepAngleQuarterChord,
 			Amount<Angle> deltaFlap,
-			double flappedLiftCoefficient
+			Amount<Length> heightOfThreeQuarterSemiSpanChord,
+			double flappedLiftCoefficient,
+			double liftCoefficient
 			) {
 		
 		Amount<Angle> deltaAlphaGroundEffect = null;
 		
+		double cLParameter = 57.3*liftCoefficient/(2*Math.PI*Math.pow(Math.cos(sweepAngleQuarterChord.doubleValue(SI.RADIAN)), 2));
+		double hCr4Cr = heightOfThreeQuarterSemiSpanChord.doubleValue(SI.METER)/4*rootChord.doubleValue(SI.METER);
+		double hFracb = (heightOfRootChord.doubleValue(SI.METER)
+				+heightOfThreeQuarterSemiSpanChord.doubleValue(SI.METER))/wingSpan.doubleValue(SI.METER);
+				
 		double xValue = aeroDatabaseReader.getDeltaAlphaCLGroundEffectXVs2hfracbDeltax(
 				deltaX.doubleValue(SI.METER)/(wingSpan.doubleValue(SI.METER)/2),
-				height.doubleValue(SI.METER)/(wingSpan.doubleValue(SI.METER)/2)
-				);
-		
-		double imageBoundVortexParameter = 0;
-		double rValue = 0;
-		double deltaDeltaLiftCoefficientWithFlap = 0;
-		
-		
+				height.doubleValue(SI.METER)/(wingSpan.doubleValue(SI.METER)/2));
+		double imageBoundVortexParameter = aeroDatabaseReader.getDeltaAlphaCLGroundEffectLL0minus1vshcr4cr(
+				cLParameter, 
+				heightOfRootChord.doubleValue(SI.METER)/(4*rootChord.doubleValue(SI.METER)));
+		double rValue = Math.sqrt(1+Math.pow(hFracb, 2))-hFracb;
+		double deltaDeltaLiftCoefficientWithFlap = aeroDatabaseReader.getDeltaAlphaCLGroundEffectDeltaDeltaCLflapVshCr4Cr(hCr4Cr);
 		
 		deltaAlphaGroundEffect=Amount.valueOf(
 				(-(9.12/aspectRatio+7.16*(
@@ -136,22 +137,16 @@ public class Calculator {
 						deltaDeltaLiftCoefficientWithFlap),
 				NonSI.DEGREE_ANGLE);
 						  
-						
-				
-		
 		return deltaAlphaGroundEffect;
 		
 	}	
 	
 	
 	
-	
-	
-	
-	
+	//------------------------------------------------------------------------------------------
 	
 	/**
-	 * @see USAF Stability and Control DATCOM (Design Reference) - Finck 1978_page1444.
+	 * @see USAF Stability and Control DATCOM (Design Reference) - Finck 1978_page1445.
 	 * 		
 	 * @author Bruno Spoti
 	 * 
@@ -183,16 +178,15 @@ public static Amount<Angle> calculateDeltaEpsilonGroundEffect(
 	
 	Amount<Angle> deltaEpsilonGroundEffect = null;
 	
-	Amount<Length> effectiveWingSpan=null;
-	//double xValue = aeroDatabaseReader.getDeltaAlphaCLGroundEffectXVs2hfracbDeltax(
-	//		deltaX.doubleValue(SI.METER)/(wingSpan.doubleValue(SI.METER)/2),
-	//		height.doubleValue(SI.METER)/(wingSpan.doubleValue(SI.METER)/2)
-	//		);
-	//
-	//double imageBoundVortexParameter = 0;
-	//double rValue = 0;
-	//double deltaDeltaLiftCoefficientWithFlap = 0;
+	double bApexfFracbApexw = aeroDatabaseReader.getDeltaEpsilonGbApexfFracbApexwVsbfFracb(
+			flapSpan.doubleValue(SI.METER)/wingSpan.doubleValue(SI.METER));
+	double bApexFracb = aeroDatabaseReader.getDeltaEpsilonGbApexFracbVsFracLambda(1/taperRatio);
+	double bApexW = bApexFracb*wingSpan.doubleValue(SI.METER);
+	double bApexf = bApexFracb*bApexFracb*wingSpan.doubleValue(SI.METER);
 	
+	Amount<Length> effectiveWingSpan = Amount.valueOf((wingBodyLiftCoefficient + deltaFlapLiftCoefficient)/
+			((wingBodyLiftCoefficient/bApexW)+(deltaFlapLiftCoefficient/bApexf)), SI.METER);
+			
 	
 	
 	deltaEpsilonGroundEffect = Amount.valueOf(
@@ -201,33 +195,89 @@ public static Amount<Angle> calculateDeltaEpsilonGroundEffect(
 			Math.pow(effectiveWingSpan.doubleValue(SI.METER),2)
 			+4*(horizontalTailquarterChordHeight.doubleValue(SI.METER)+quarterChordHeight.doubleValue(SI.METER))),NonSI.DEGREE_ANGLE);
 			
-			
-//			Amount.valueOf(
-//			(-(9.12/aspectRatio+7.16*(
-//			rootChord.doubleValue(SI.METER)/(
-//					wingSpan.doubleValue(SI.METER))))
-//			*flappedLiftCoefficient*xValue-
-//			((aspectRatio/(2*liftCurveSlope.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()))*
-//			(rootChord.doubleValue(SI.METER)/(
-//					wingSpan.doubleValue(SI.METER)))*
-//			imageBoundVortexParameter*flappedLiftCoefficient*rValue)-
-//			((Math.pow(deltaFlap.doubleValue(NonSI.DEGREE_ANGLE)/50, 2))/
-//					liftCurveSlope.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())*
-//					deltaDeltaLiftCoefficientWithFlap),
-//			NonSI.DEGREE_ANGLE);
-					  
-					
-			
 	
 	return deltaEpsilonGroundEffect;
 	
 }	
 
+//---------------------------------------------------------------------------------
 
+	/**
+	 * @see USAF Stability and Control DATCOM (Design Reference) - Finck 1978_page1446.
+	 * 		
+	 * @author Bruno Spoti
+	 * 
+	 * @param alphaZeroLift
+	 * @param alphaStar
+	 * @param endOfLinearityLiftCoefficient
+	 * @param alphaStall
+	 * @param maximumLiftCoefficient
+	 * @param aspectRatio
+	 * @param rootChord
+	 * @param wingSpan
+	 * @param deltaX
+	 * @param height 
+	 * @param liftCurveSlope
+	 * @param heightOfRootChord
+	 * @param sweepAngleQuarterChord
+	 * @param deltaFlap
+	 * @return deltaAlphaGroundEffect
+	 */
 
-
-
-
+	public static Amount<Angle> calculateDeltaAlphaGroundEffectSecondMethodDatcom(
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			Amount<Angle> alphaZeroLift,
+			Amount<Angle> alphaStar,
+			double endOfLinearityLiftCoefficient,
+			Amount<Angle> alphaStall,
+			double maximumLiftCoefficient,
+			double aspectRatio,   
+			Amount<Length> rootChord, 
+			Amount<Length> wingSpan,  
+			Amount<Length> deltaX,   
+			Amount<Length> height,   
+			Amount<?> liftCurveSlope,    
+			Amount<Length> heightOfRootChord,   
+			Amount<Angle> sweepAngleQuarterChord,  
+			Amount<Angle> deltaFlap,    
+			Amount<Length> heightOfThreeQuarterSemiSpanChord,
+			double flappedLiftCoefficient,  
+			double liftCoefficient  
+			) {
+		
+		Amount<Angle> deltaAlphaGroundEffect = null;
+		
+		double cLParameter = 57.3*liftCoefficient/(2*Math.PI*Math.pow(Math.cos(sweepAngleQuarterChord.doubleValue(SI.RADIAN)), 2));
+		double hCr4Cr = heightOfThreeQuarterSemiSpanChord.doubleValue(SI.METER)/4*rootChord.doubleValue(SI.METER);
+		double hFracb = (heightOfRootChord.doubleValue(SI.METER)
+				+heightOfThreeQuarterSemiSpanChord.doubleValue(SI.METER))/wingSpan.doubleValue(SI.METER);
+				
+		double xValue = aeroDatabaseReader.getDeltaAlphaCLGroundEffectXVs2hfracbDeltax(
+				deltaX.doubleValue(SI.METER)/(wingSpan.doubleValue(SI.METER)/2),
+				height.doubleValue(SI.METER)/(wingSpan.doubleValue(SI.METER)/2));
+		double imageBoundVortexParameter = aeroDatabaseReader.getDeltaAlphaCLGroundEffectLL0minus1vshcr4cr(
+				cLParameter, 
+				heightOfRootChord.doubleValue(SI.METER)/(4*rootChord.doubleValue(SI.METER)));
+		double rValue = Math.sqrt(1+Math.pow(hFracb, 2))-hFracb;
+		double deltaDeltaLiftCoefficientWithFlap = aeroDatabaseReader.getDeltaAlphaCLGroundEffectDeltaDeltaCLflapVshCr4Cr(hCr4Cr);
+		
+		deltaAlphaGroundEffect=Amount.valueOf(
+				(-(9.12/aspectRatio+7.16*(
+				rootChord.doubleValue(SI.METER)/(
+						wingSpan.doubleValue(SI.METER))))
+				*flappedLiftCoefficient*xValue-
+				((aspectRatio/(2*liftCurveSlope.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()))*
+				(rootChord.doubleValue(SI.METER)/(
+						wingSpan.doubleValue(SI.METER)))*
+				imageBoundVortexParameter*flappedLiftCoefficient*rValue)-
+				((Math.pow(deltaFlap.doubleValue(NonSI.DEGREE_ANGLE)/50, 2))/
+						liftCurveSlope.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())*
+						deltaDeltaLiftCoefficientWithFlap),
+				NonSI.DEGREE_ANGLE);
+						  
+		return deltaAlphaGroundEffect;
+		
+	}	
 
 
 }
