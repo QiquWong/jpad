@@ -34,8 +34,8 @@
 			<calibration> <!-- IF LEFT BLANK, ALL CALIBRATION FACTORS ARE EQUAL TO 1.0 -->
 				<fuselage_calibration_factor></fuselage_calibration_factor>
 				<wing_calibration_factor></wing_calibration_factor>
-				<horizontal_tail_calibration_factor>1.15</horizontal_tail_calibration_factor>
-				<vertical_tail_calibration_factor>1.15</vertical_tail_calibration_factor>
+				<horizontal_tail_calibration_factor></horizontal_tail_calibration_factor>
+				<vertical_tail_calibration_factor></vertical_tail_calibration_factor>
 				<canard_calibration_factor></canard_calibration_factor>
 				<nacelles_calibration_factor></nacelles_calibration_factor>
 				<power_plant_calibration_factor></power_plant_calibration_factor>

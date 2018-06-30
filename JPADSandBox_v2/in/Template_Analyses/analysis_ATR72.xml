@@ -14,8 +14,8 @@
     <analyses id="ATR-72 analysis">
 		<weights 
             file="analysis_weights_ATR72.xml" 
-			plot="FALSE"
-			create_CSV="FALSE"
+			plot="TRUE"
+			create_CSV="TRUE"
             method_fuselage=""
             method_wing=""
             method_htail=""
@@ -34,8 +34,8 @@
             />
 		<balance 
 			file="analysis_balance_ATR72.xml"
-			plot="FALSE"
-			create_CSV="FALSE"
+			plot="TRUE"
+			create_CSV="TRUE"
             method_fuselage=""
             method_wing=""
             method_htail=""
@@ -45,6 +45,7 @@
 			method_power_plant=""
 			method_landing_gears=""
 		/>
+		<!--
 		<aerodynamic_and_stability
 			plot="FALSE"
 			create_CSV="FALSE"
@@ -70,7 +71,6 @@
 			V_n_diagram="FALSE"
 			mission_profile="TRUE"
 		/>
-		<!--
 		<costs 
 			file="analysis_costs_ATR72.xml"
 			plot="FALSE"

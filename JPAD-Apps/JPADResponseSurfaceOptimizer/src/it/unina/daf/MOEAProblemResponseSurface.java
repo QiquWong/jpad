@@ -1256,7 +1256,7 @@ public class MOEAProblemResponseSurface extends AbstractProblem {
 					else if(violatingCondition.equals(ConstraintsViolationConditionEnum.WITHIN_INTERVAL)) {
 						double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
 						if(interpolatedConstraint <= constraintValues.get(0)
-								|| interpolatedConstraint <= constraintValues.get(1))
+								|| interpolatedConstraint >= constraintValues.get(1))
 							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
 						else {
 							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
@@ -1266,7 +1266,7 @@ public class MOEAProblemResponseSurface extends AbstractProblem {
 					else if(violatingCondition.equals(ConstraintsViolationConditionEnum.OUTSIDE_INTERVAL)) {
 						double interpolatedConstraint = getInterpolatedConstraintsValue(i, xArray);
 						if(interpolatedConstraint >= constraintValues.get(0)
-								&& interpolatedConstraint >= constraintValues.get(1))
+								&& interpolatedConstraint <= constraintValues.get(1))
 							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray));
 						else {
 							solution.setObjective(obj, getInterpolatedResponseSurfaceValue(obj, xArray) + Double.MAX_VALUE);
