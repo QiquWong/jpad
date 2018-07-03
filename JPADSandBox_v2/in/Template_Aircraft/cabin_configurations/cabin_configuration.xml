@@ -9,19 +9,6 @@
 			<classes_type>ECONOMY;BUSINESS;FIRST</classes_type>
 			<aisles_number>1</aisles_number>
 			<x_coordinates_first_row unit="m">5.5</x_coordinates_first_row>
-			<missing_seat_row>
-				<!--
-				The size of missing seat list has to be equal to the class size.
-				If missing seat is empty, the seats number for that class is 
-				given by rows*columns; otherwise it's given by 
-				(rows*columns)-missing_seats_row.
-				If the user wants to add other arrays it has to add another value tag.
-				Each value tag contains an array of Integer values and must be assigned using [ , , ].
-				-->
-				<value>[1,1,1,1,1,1,1,1,1,1]</value>
-				<value>[1,2,2]</value>
-				<value>[1,2]</value>
-			</missing_seat_row> 
 		</global_data>
 		<detailed_data>
 			<number_of_breaks_economy_class>0</number_of_breaks_economy_class>

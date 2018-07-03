@@ -2,17 +2,13 @@ package sandbox2.gt;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -26,54 +22,23 @@ import standaloneutils.cpacs.CPACSReader;
 import standaloneutils.jsbsim.JSBSimModel;
 import writers.JPADStaticWriteUtils;
 
-class ArgumentsCPACSReaderTest2 {
-	@Option(name = "-i", aliases = { "--input" }, required = true,
-			usage = "Cpacs file")
-	private File _inputFile;
-	
-	@Option(name = "-o", aliases = { "--output" }, required = false,
-			usage = "Jsbsim file")
-	private File _outputFile;
-
-	@Option(name = "-ns", aliases = { "--no-sim" }, required = false,
-			usage = "Jsbsim file")
-	private boolean _noSim = false;
-	
-	// receives other command line parameters than options
-	@Argument
-	public List<String> arguments = new ArrayList<String>();
-
-	public File getInputFile() {
-		return _inputFile;
-	}
-	public File getOutputFile() {
-		return _outputFile;
-	}
-	public boolean isNoSim() {
-		return _noSim;
-	}
-
-}
-
 
 public class CPACSReaderTest2 {
+
 	String dirPath = null;
 
-	// declaration necessary for Concrete Object usage
-	public static CmdLineParser theCmdLineParser;
-	
 	public static void main(String[] args) throws TiglException, IOException, ParserConfigurationException, InterruptedException {
+
+		CmdLineUtils.va = new ArgumentsCPACSReaderSandbox();
+		CmdLineUtils.theCmdLineParser = new CmdLineParser(CmdLineUtils.va);
 		
 		System.out.println("CPACSReader test");
 		System.out.println("--------------------------------");
 
-		ArgumentsCPACSReaderTest2 va = new ArgumentsCPACSReaderTest2();
-		CPACSReaderTest1.theCmdLineParser = new CmdLineParser(va);
-
 		try {
-			CPACSReaderTest1.theCmdLineParser.parseArgument(args);
-			String cpacsFilePath = va.getInputFile().getAbsolutePath();
-			String dirPath = va.getInputFile().getParent();
+			CmdLineUtils.theCmdLineParser.parseArgument(args);
+			String cpacsFilePath = CmdLineUtils.va.getInputFile().getAbsolutePath();
+			String dirPath = CmdLineUtils.va.getInputFile().getParent();
 			System.out.println("TiGL Version: " + Tigl.getVersion());
 			System.out.println("--------------------------------");
 			
@@ -266,8 +231,8 @@ public class CPACSReaderTest2 {
 				JPADStaticWriteUtils.writeDocumentToXml(docScript, scriptPath);
 				try {
 					// export to JSBSim format
-					String outputFile = va.getOutputFile().getAbsolutePath();
-					String outputDirPath = va.getOutputFile().getParent();
+					String outputFile = CmdLineUtils.va.getOutputFile().getAbsolutePath();
+					String outputDirPath = CmdLineUtils.va.getOutputFile().getParent();
 
 					jsbsimModel.exportToXML(outputFile,dirPath);
 					//Initial condition are given as double value
@@ -286,7 +251,7 @@ public class CPACSReaderTest2 {
 					String icFilePath = outputDirPath + "/" + icFileNameBase + ".xml";
 					jsbsimModel.writeInitialConditionsFile(icFilePath, vt,
 							longitude, latitude, phi, theta, psi, altitude, elevation, hwind);
-					if (!va.isNoSim())
+					if (!CmdLineUtils.va.isNoSim())
 						jsbsimModel.startJSBSimSimulation(dirPath, scriptName);
 				}
 				catch (NullPointerException e) {

@@ -31,7 +31,6 @@ public class EngineBalanceManager {
 	private double[] _percentDifference;
 	private CenterOfGravity _totalCG;
 	private Amount<Length> _totalXCGEstimated;
-	private Map <MethodEnum, Amount<Length>> _totalXCGMap;
 	private double[] _totalPercentDifference;
 	
 	//------------------------------------------------------------------------------
@@ -52,7 +51,6 @@ public class EngineBalanceManager {
 		_xCGEstimatedList = new ArrayList<>();
 		_xCGMap = new HashMap<>();
 		_methodsList = new ArrayList<>();
-		
 	}
 	
 	public void calculateTotalCG(Aircraft theAircraft, Map<ComponentEnum, MethodEnum> methodsMapBalance) {
@@ -74,16 +72,16 @@ public class EngineBalanceManager {
 		});
 		
 		if(!methodsMapBalance.get(ComponentEnum.POWER_PLANT).equals(MethodEnum.AVERAGE)) {
-			_totalPercentDifference =  new double[_totalXCGMap.size()];
-			_totalXCGEstimated = _totalXCGMap.get(methodsMapBalance.get(ComponentEnum.POWER_PLANT)).to(SI.METER);
+			_totalPercentDifference =  new double[_xCGMap.size()];
+			_totalXCGEstimated = _xCGMap.get(methodsMapBalance.get(ComponentEnum.POWER_PLANT)).to(SI.METER);
 		}
 		else {
-			_totalPercentDifference =  new double[_totalXCGMap.size()];
+			_totalPercentDifference =  new double[_xCGMap.size()];
 			_totalXCGEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 					_totalCG.getXLRF(),
-					_totalXCGMap,
+					_xCGMap,
 					_totalPercentDifference,
-					100.).getMean(), SI.METER);
+					1000.).getMean(), SI.METER);
 		}
 		
 		_totalCG.setXLRF(_totalXCGEstimated);
@@ -92,7 +90,7 @@ public class EngineBalanceManager {
 	
 	private void calculateCG (Aircraft theAircraft, Map<ComponentEnum, MethodEnum> methodsMapBalance) {
 		
-		calculateCG(theAircraft, MethodEnum.TORENBEEK_1976);
+		calculateCG(theAircraft, MethodEnum.SFORZA);
 		
 		if(!methodsMapBalance.get(ComponentEnum.POWER_PLANT).equals(MethodEnum.AVERAGE)) {
 			_percentDifference = new double[_xCGMap.size()];
@@ -196,14 +194,6 @@ public class EngineBalanceManager {
 
 	public void setTotalXCGEstimated(Amount<Length> _totalXCGEstimated) {
 		this._totalXCGEstimated = _totalXCGEstimated;
-	}
-
-	public Map<MethodEnum, Amount<Length>> getTotalXCGMap() {
-		return _totalXCGMap;
-	}
-
-	public void setTotalXCGMap(Map<MethodEnum, Amount<Length>> _totalXCGMap) {
-		this._totalXCGMap = _totalXCGMap;
 	}
 
 	public double[] getTotalPercentDifference() {

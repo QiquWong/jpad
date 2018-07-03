@@ -39,8 +39,8 @@ public interface ISeatBlock {
 	// looking the aircraft rear to front.
 	int getColumnsNumber();
 	
-	// Missing seat coordinate : [row number , column number]
-	Integer[] getMissingSeatRow();
+//	// Missing seat coordinate : [row number , column number]
+//	Integer[] getMissingSeatRow();
 	
 	// The class of which the seat block is part
 	ClassTypeEnum getType();

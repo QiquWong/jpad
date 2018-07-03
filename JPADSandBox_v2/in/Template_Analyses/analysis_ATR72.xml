@@ -2,6 +2,7 @@
 	<!-- 
 	plot=TRUE -> enters the plot tag in the specified file.
 	plot=FALSE -> plots nothing.
+	method_XXX="AVERAGED" if empty string
 	-->
 <jpad_config>
     <!-- Input data, shared across analysis tasks -->
@@ -11,7 +12,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
     <analyses id="ATR-72 analysis">
-   <!--      <weights 
+		<weights 
             file="analysis_weights_ATR72.xml" 
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -19,12 +20,19 @@
             method_wing=""
             method_htail=""
             method_vtail=""
+			method_canard=""
 			method_nacelles=""
+			method_power_plant=""
 			method_landing_gears=""
-			method_systems=""
-            /> -->
-		<!-- method_XXX="AVERAGED" if empty string -->
-	<!-- <balance 
+			method_APU=""
+			method_air_conditioning_and_anti_icing=""
+			method_instruments_and_navigation_system=""
+			method_hydraulic_and_pneumatic_systems=""			
+			method_electrical_systems=""
+			method_furnishings_and_equipments=""
+			method_control_surfaces=""
+            />
+		<balance 
 			file="analysis_balance_ATR72.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -33,38 +41,40 @@
             method_htail=""
             method_vtail=""
 			method_canard=""
-		/>  -->
-	
-	<aerodynamic_and_stability
-			plot="TRUE"
-			create_CSV="TRUE"
+			method_nacelles=""
+			method_power_plant=""
+			method_landing_gears=""
+		/>
+		<!--
+		<aerodynamic_and_stability
+			plot="FALSE"
+			create_CSV="FALSE"
 			take_off_condition="TRUE"
-			file_take_off_condition="analysis_aerodynamics_Prototype.xml"
+			file_take_off_condition="analysis_aerodynamics_ATR72_takeoff.xml"
 			climb_condition="TRUE"
-			file_climb_condition="analysis_aerodynamics_Prototype.xml"
+			file_climb_condition="analysis_aerodynamics_ATR72_climb.xml"
 			cruise_condition="TRUE"
-			file_cruise_condition="analysis_aerodynamics_Prototype.xml"
+			file_cruise_condition="analysis_aerodynamics_ATR72_cruise.xml"
 			landing_condition="TRUE"
-			file_landing_condition="analysis_aerodynamics_Prototype.xml"
-	/>
-	
-	<!-- performance 
+			file_landing_condition="analysis_aerodynamics_ATR72_landing.xml"
+		/>
+		<performance 
 			file="analysis_performance_ATR72.xml"
-			plot="TRUE"
-			create_CSV="TRUE"
-			take_off="TRUE"
-			climb="TRUE"
-			cruise="TRUE"
-			descent="TRUE"
-			landing="TRUE"
-			payload_range="TRUE"
-			V_n_diagram="TRUE"
+			plot="FALSE"
+			create_CSV="FALSE"
+			take_off="FALSE"
+			climb="FALSE"
+			cruise="FALSE"
+			descent="FALSE"
+			landing="FALSE"
+			payload_range="FALSE"
+			V_n_diagram="FALSE"
 			mission_profile="TRUE"
-	/>
-	<costs 
+		/>
+		<costs 
 			file="analysis_costs_ATR72.xml"
-			plot="TRUE"
-			create_CSV="TRUE"
+			plot="FALSE"
+			create_CSV="FALSE"
 			doc_capital="TRUE"
 			doc_capital_method="AEA"
 			doc_crew="TRUE"
@@ -75,6 +85,7 @@
 			doc_charges_method="ILR_AACHEN"
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
-	/> -->
+		/> 
+		-->
     </analyses>
 </jpad_config>

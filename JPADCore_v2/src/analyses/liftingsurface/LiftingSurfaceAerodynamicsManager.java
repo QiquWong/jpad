@@ -45,7 +45,7 @@ public class LiftingSurfaceAerodynamicsManager {
 	 */
 	
 	//------------------------------------------------------------------------------
-	// VARIABLES DECLARATION:
+	// VARIABLES DECLARATION:l
 	//------------------------------------------------------------------------------
 	// INPUT DATA (IMPORTED AND CALCULATED)
 	private LiftingSurface _theLiftingSurface;
@@ -1457,7 +1457,7 @@ public class LiftingSurfaceAerodynamicsManager {
 			double diffCLapp = 0;
 			double diffCLappOld = 0;
 			double diffCL = 0;
-			double accuracy =0.0001;
+			double accuracy =1e-2;
 			double deltaAlpha = 0.0;
 			Amount<Angle> alphaNew = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 

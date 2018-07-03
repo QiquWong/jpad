@@ -218,9 +218,9 @@ public class AVLExternalJob implements IAVLExternalJob {
 				/*
 				 *   CG
 				 */
-				.setXref(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXBRF().doubleValue(SI.METER))
-				.setYref(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getYBRF().doubleValue(SI.METER))
-				.setZref(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getZBRF().doubleValue(SI.METER))
+				.setXref(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getXBRF().doubleValue(SI.METER))
+				.setYref(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getYBRF().doubleValue(SI.METER))
+				.setZref(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getZBRF().doubleValue(SI.METER))
 				/*
 				 *   Build object, finally 
 				 *   Validate for all fields to be set, Optional fields are empty	

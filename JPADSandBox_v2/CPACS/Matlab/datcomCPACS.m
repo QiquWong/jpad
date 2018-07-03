@@ -1,4 +1,6 @@
 clc; clear all; close all;
+x = [0.172770;0.102270;0.039667;-0.034926;-0.121130;-0.218620;-0.327180;-0.446680;-0.577180;-0.793200]
+y = [-5;-2; 0; 2; 4; 6; 8;10;12;15];
 alphaDatcom = 57.3*[-.8727E-01
 -.3491E-01
   .000    
@@ -31,10 +33,10 @@ j = 1;
 figure()
 cmDatcom = -0.6;%Rad
 matrixCM = importMatrix(filename,counter,alphaLength,betaLength);
-plot(alphaVector,matrixCM(:,j),'b', alphaVector, cmDatcom*alphaVector, 'k');
+plot(alphaVector,matrixCM(:,j),'b', alphaVector, cmDatcom*alphaVector, 'k',y/57.3,x,'g');
 xlabel('\alpha (rad)'); ylabel('C_M');
 legend('CPACS','Datcom')
-
+disp((x(5,1)/(cmDatcom*alphaVector(5))));
 disp((matrixCM(5,1)/(cmDatcom*alphaVector(5))));
 
 

@@ -43,7 +43,7 @@ public class Test_01 {
 		OperatingConditions operatingConditions = AircraftUtils.importOperatingCondition(args);
 		
 		// Perform analysis
-		AircraftUtils.performAnalyses(aircraft, operatingConditions, AircraftUtils.pathToAnalysesXML, "IRON_CANARD_cavas");
+		// AircraftUtils.performAnalyses(aircraft, operatingConditions, AircraftUtils.pathToAnalysesXML, "IRON_CANARD_cavas");
 		
 		LiftingSurface wing = aircraft.getWing();
 		Fuselage fuselage = aircraft.getFuselage();
@@ -124,14 +124,16 @@ public class Test_01 {
 		
 		// K_f_W
 		Amount<Length> spanWing = wing.getSpan();
-		int idxBreakPointTipWing = wing.getXLEBreakPoints().size()-1;
-		Amount<Length> xLETipBFRWing = wing.getXApexConstructionAxes().plus(wing.getXLEBreakPoints().get(idxBreakPointTipWing));				
-		double aOverSpanWing = xLETipBFRWing.doubleValue(SI.METER)/spanWing.doubleValue(SI.METER);
+		Amount<Length> xC2TipBFRWing = wing.getXApexConstructionAxes()
+				.plus(wing.getXLEBreakPoints().get(
+						wing.getXLEBreakPoints().size()-1))
+				.plus(wing.getEquivalentWing().getPanels().get(0).getChordTip().divide(2));
+		double aOverSpanWing = xC2TipBFRWing.doubleValue(SI.METER)/spanWing.doubleValue(SI.METER);
 		
-		System.out.println(">> A wing: " + xLETipBFRWing);
+		System.out.println(">> A wing: " + xC2TipBFRWing);
 		System.out.println(">> span wing: " + spanWing);
 		System.out.println(">> A/b wing: " + aOverSpanWing);
-		
+
 		double cRollKappafW = databaseReader.getClBetaWBKfVsAOverBAROverCosLc2(aspectRatioOverCosSweepAngleC2Wing, aOverSpanWing); // var0, var1
 		
 		// Cl_beta/CL1_AR_W
@@ -356,7 +358,7 @@ public class Test_01 {
 						.plus(vTail.getPanels().get(0).getChordRoot().divide(4)).doubleValue(SI.METER)),
 				SI.METER
 				);
-		double bVOver2TimesR1 = spanVTail.doubleValue(SI.METER)/r1.doubleValue(SI.METER);
+		double bVOver2TimesR1 = spanVTail.doubleValue(SI.METER)/(2*r1.doubleValue(SI.METER));
 		
 		System.out.println(">> span vertical tail: " + spanVTail);
 		System.out.println(">> r_1: " + r1);
@@ -364,9 +366,6 @@ public class Test_01 {
 		double cYawKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
 		
 		// CY_beta_V
-		double taperRatioVTail = vTail.getEquivalentWing().getPanels().get(0).getTaperRatio();
-		double aspectRatioVTail = vTail.getAspectRatio();
-		Amount<Angle> sweepAngleLEVTail = vTail.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE);
 		CalcCLAlpha calcCLAlphaVTail = vTailManager.new CalcCLAlpha();
 		calcCLAlphaVTail.helmboldDiederich(mach);
 		Amount<?> cLAlphaV = vTailManager.getCLAlpha().get(MethodEnum.HELMBOLD_DIEDERICH);
@@ -379,9 +378,6 @@ public class Test_01 {
 				+ 0.4*zWOverHeightFuselage
 				+ 0.009*aspectRatioWing;
 
-		System.out.println(">> taper ratio vertical tail: " + taperRatioVTail);
-		System.out.println(">> aspect ratio vertical tail: " + aspectRatioVTail);
-		System.out.println(">> sweep angle @ LE vertical tail: " + sweepAngleLEVTail);
 		System.out.println(">> CL_Alpha vertical tail: " + cLAlphaV);
 		System.out.println(">> surface vertical tail: " + surfaceVTail);
 		System.out.println(">> height fuselage: " + heightFuselage);
@@ -523,9 +519,11 @@ public class Test_01 {
 		double tauR = databaseReader.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(cRudderOverCWing);
 		
 		// Delta K_R
+		double taperRatioVTail = vTail.getEquivalentWing().getPanels().get(0).getTaperRatio();
 		double etaInboardRudder = vTail.getSymmetricFlaps().get(0).getTheSymmetricFlapInterface().getInnerStationSpanwisePosition();
 		double etaOutboardRudder = vTail.getSymmetricFlaps().get(0).getTheSymmetricFlapInterface().getOuterStationSpanwisePosition();
 
+		System.out.println(">> taper ratio vertical tail: " + taperRatioVTail);
 		System.out.println(">> eta_In_Rudder: " + etaInboardRudder);
 		System.out.println(">> eta_Out_Rudder: " + etaOutboardRudder);
 		
@@ -551,7 +549,7 @@ public class Test_01 {
 		System.out.println("Calculation of Cl_delta_r");
 		System.out.println("-------------------------");
 		
-		// CY_delta_r
+		// Cl_delta_r
 		Amount<Length> zApplicationForceRudder = spanVTail.times((etaOutboardRudder-etaInboardRudder)/2);
 		Amount<Length> xR = vTail.getXApexConstructionAxes()
 				.plus(vTail.getXLEAtYActual(zApplicationForceRudder.doubleValue(SI.METER)))

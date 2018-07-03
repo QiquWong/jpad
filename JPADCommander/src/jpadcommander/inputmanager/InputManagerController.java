@@ -8344,7 +8344,7 @@ public class InputManagerController {
 								Unit.valueOf(xCoordinateFirstRowUnit)
 								)
 						)
-				.addAllMissingSeatsRow(missingSeatsRowsFinal)
+//				.addAllMissingSeatsRow(missingSeatsRowsFinal)
 				.setNumberOfBreaksEconomyClass(Integer.valueOf(numberOfBrakesEconomyClass))
 				.setNumberOfBreaksBusinessClass(Integer.valueOf(numberOfBrakesBusinessClass))
 				.setNumberOfBreaksFirstClass(Integer.valueOf(numberOfBrakesFirstClass))

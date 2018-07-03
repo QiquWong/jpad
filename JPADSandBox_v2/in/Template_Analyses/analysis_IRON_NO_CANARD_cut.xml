@@ -43,6 +43,9 @@
             method_htail=""
             method_vtail=""
 			method_canard=""
+			method_nacelles=""
+			method_power_plant=""
+			method_landing_gears=""
 		/> -->
 	<!--
 	<aerodynamic_and_stability

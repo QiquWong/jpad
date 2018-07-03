@@ -1,80 +1,90 @@
 package analyses;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
+import javax.annotation.Nullable;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
-import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.MethodEnum;
-import standaloneutils.customdata.CenterOfGravity;
+import aircraft.Aircraft;
 
+@FreeBuilder
 public interface IACBalanceManager {
 
-	public void toXLSFile(String filenameWithPathAndExt) throws InvalidFormatException, IOException;
-	public void createCharts(String balanceOutputFolderPath);
-	public void calculate(Map<ComponentEnum, MethodEnum> methodsMapBalance);
-	public void calculateTotalCG();
+	String getId();
+	Aircraft getTheAircraft();
 	
-	public List<CenterOfGravity> getCGList();
-	public void setCGList(List<CenterOfGravity> _cgList);
-
-	public CenterOfGravity getCGStructure();
-	public void setCGStructure(CenterOfGravity _cgStructure);
-
-	public CenterOfGravity getCGStructureAndPower();
-	public void setCGStructureAndPower(CenterOfGravity _cgStructureAndPower);
-
-	public CenterOfGravity getCGMZFM();
-	public void setCGMZFM(CenterOfGravity _cgMZFM);
-
-	public CenterOfGravity getCGMTOM();
-	public void setCGMTOM(CenterOfGravity _cgMTOM);
-
-	public String getId();
-	public void setId(String id);
-
-	public Amount<Mass> getMaximumTakeOffMass();
-	public void setMaximumTakeOffMass(Amount<Mass> _maximumTakeOffMass);
-
-	public Amount<Mass> getMaximumZeroFuelMass();
-	public void setMaximumZeroFuelMass(Amount<Mass> _maximumZeroFuelMass);
-
-	public Amount<Mass> getOperatingEmptyMass();
-	public void setOperatingEmptyMass(Amount<Mass> _operatingEmptyMass);
-
-	public Amount<Mass> getPassengersTotalMass();
-	public void setPassengersTotalMass(Amount<Mass> _passengerTotalMass);
+	// WEIGHTS DATA
+	Amount<Mass> getOperatingEmptyMass();
+	Amount<Mass> getDesignFuelMass();
+	Amount<Mass> getSinglePassengerMass();
+	@Nullable
+	Amount<Mass> getFuselageMass();
+	@Nullable
+	Amount<Mass> getWingMass();
+	@Nullable
+	Amount<Mass> getHTailMass();
+	@Nullable
+	Amount<Mass> getVTailMass();
+	@Nullable
+	Amount<Mass> getCanardMass(); 
+	@Nullable
+	Amount<Mass> getNacellesMass();
+	@Nullable
+	Amount<Mass> getPowerPlantMass();
+	@Nullable
+	Amount<Mass> getLandingGearMass();
+	@Nullable
+	Amount<Mass> getAPUMass();
+	@Nullable
+	Amount<Mass> getAirConditioningAndAntiIcingMass();
+	@Nullable
+	Amount<Mass> getInstrumentsAndNavigationSystemMass();
+	@Nullable
+	Amount<Mass> getHydraulicAndPneumaticSystemsMass();
+	@Nullable
+	Amount<Mass> getElectricalSystemsMass();
+	@Nullable
+	Amount<Mass> getControlSurfacesMass();
+	@Nullable
+	Amount<Mass> getFurnishingsAndEquipmentsMass();
 	
-	public Amount<Mass> getFuelMass();
-	public void setFuelMass(Amount<Mass> _fuelMass);
-
-	public Amount<Mass> getFuselageMass();
-	public void setFuselageMass(Amount<Mass> _fuselageMass);
-
-	public Amount<Mass> getWingMass();
-	public void setWingMass(Amount<Mass> _wingMass);
-
-	public Amount<Mass> getHorizontalTailMass();
-	public void setHorizontalTailMass(Amount<Mass> _horizontalTailMass);
-
-	public Amount<Mass> getVerticalTailMass();
-	public void setVerticalTailMass(Amount<Mass> _verticalTailMass);
-
-	public Amount<Mass> getCanardMass();
-	public void setCanardMass(Amount<Mass> _canardMass);
-
-	public List<Amount<Mass>> getNacellesMassList();
-	public void setNacellesMassList(List<Amount<Mass>> _nacellesMassList);
-
-	public List<Amount<Mass>> getEnginesMassList();
-	public void setEnginesMassList(List<Amount<Mass>> _enginesMassList);
-
-	public Amount<Mass> getLandingGearsMass();
-	public void setLandingGearsMass(Amount<Mass> _landingGearsMass);
+	// SYSTEMS POSITION DATA
+	boolean getStandardSystemsPositionFlag();
+	boolean getIncludeSystemsPosition();
+	@Nullable
+	Amount<Length> getAPUPositionX();
+	@Nullable
+	Amount<Length> getAPUPositionZ();
+	@Nullable
+	Amount<Length> getAirConditioningAndAntiIcingSystemPositionX();
+	@Nullable
+	Amount<Length> getAirConditioningAndAntiIcingSystemPositionZ();
+	@Nullable
+	Amount<Length> getInstrumentsAndNavigationSystemPositionX();
+	@Nullable
+	Amount<Length> getInstrumentsAndNavigationSystemPositionZ();
+	@Nullable
+	Amount<Length> getHydraulicAndPneumaticSystemsPositionX();
+	@Nullable
+	Amount<Length> getHydraulicAndPneumaticSystemsPositionZ();
+	@Nullable
+	Amount<Length> getElectricalSystemsPositionX();
+	@Nullable
+	Amount<Length> getElectricalSystemsPositionZ();
+	@Nullable
+	Amount<Length> getControlSurfacesPositionX();
+	@Nullable
+	Amount<Length> getControlSurfacesPositionZ();
+	@Nullable
+	Amount<Length> getFurnishingsAndEquipmentsPositionX();
+	@Nullable
+	Amount<Length> getFurnishingsAndEquipmentsPositionZ();
 	
+	class Builder extends IACBalanceManager_Builder {
+		public Builder() {
+			
+		}
+	}
 }

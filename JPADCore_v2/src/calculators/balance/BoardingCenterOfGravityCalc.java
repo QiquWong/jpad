@@ -1,5 +1,6 @@
 package calculators.balance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.unit.SI;
@@ -19,253 +20,158 @@ public class BoardingCenterOfGravityCalc {
 	 * @return
 	 * 
 	 */
-	public static void calculateCGBoarding(List<SeatsBlock> seatsBlocks, Aircraft aircraft) {
-
-		double sumFtoR = aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF().doubleValue(SI.METER)*
-				aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().doubleValue(SI.KILOGRAM),
-
-				sumRtoF = aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF().doubleValue(SI.METER)*
-				aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
-
-		double currentMass, mult, emptyColumns = 0.;
-		boolean window = false, aisle = false, other = false;
-
-		SeatsBlock x = null;
-		currentMass = aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
-		window = false; aisle = false; other = false;
-
-		///////////////////
-		// Front to rear
-		///////////////////
-		for (int k = 0; k < seatsBlocks.size(); k++) {
-
-			x = seatsBlocks.get(k);
-			emptyColumns = 0.;
-
-			for (int j=0; j < x.getColumnsNumber(); j++) {
-
+	public static void calculateCGBoarding (List<SeatsBlock> seatsBlockList, Aircraft aircraft) {
+		
+		int numberOfWindowColumns = 0;
+		int numberOfAisleColumns = 0;
+		int numberOfOtherColumns = 0;
+		boolean isWindow = false;
+		
+		SeatsBlock seatBlock;
+		
+		for (int i=0; i<seatsBlockList.size(); i++) {
+			
+			seatBlock = seatsBlockList.get(i);
+			isWindow = false;
+			
+			for (int j=0; j<seatBlock.getColumnsNumber(); j++) {
+				
 				// Check if the seat is near the window
-				if ((window == false && aisle == false && other == false) 
-						&& ((x.getPosition().equals(RelativePositionEnum.RIGHT) 
-								&& x.getColumnList().get(j).equals(x.getColumnsNumber()-1)) |
-								(x.getPosition().equals(RelativePositionEnum.LEFT) 
-										&& x.getColumnList().get(j).equals(0)))) {
-
-					for (int i = 0; i < x.getRowsNumber()-1; i++) {
-
-						sumFtoR += (x.getXList().get(i) 
-								+ x.getXStart().doubleValue(SI.METER) 
-								+ x.getPitch().doubleValue(SI.METER)/2
-								)*
-								2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
-
-						currentMass += 2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
-						aircraft.getCabinConfiguration().getCurrentMassList().add(
-								Amount.valueOf(
-										currentMass, 
-										SI.KILOGRAM
-										)
-								);
-						aircraft.getCabinConfiguration().getCurrentXCoGfrontToRearWindow().add(
-								Amount.valueOf(
-										(sumFtoR/currentMass),
-										SI.METER
-										)
-								);
-					}
-					window = true;
-					break;
-				}
-
-				// Check if the seat is near the aisle
-				if ((window == true && other == false) 
-						&& ((x.getPosition() == RelativePositionEnum.RIGHT && x.getColumnList().get(j).equals(0)) 
-								||	(x.getPosition() == RelativePositionEnum.LEFT && x.getColumnList().get(j).equals(x.getColumnsNumber()-1)) 
-								||  (x.getPosition() == RelativePositionEnum.CENTER && x.getColumnList().get(j).equals(0)) 
-								||	(x.getPosition() == RelativePositionEnum.CENTER && x.getColumnList().get(j).equals(x.getColumnsNumber()-1)))) {
-
-					// If there are two aisles the loop has to fill 4 columns,
-					// otherwise it has to fill 2 columns
-					if (aircraft.getCabinConfiguration().getAislesNumber() > 1) {
-						mult = 4.;
-					} else {
-						mult = 2.;
-					}
-
-					for (int i = 0; i < x.getRowsNumber()-1; i++) {
-
-						sumFtoR += (x.getXList().get(i) + x.getXStart().doubleValue(SI.METER) + x.getPitch().doubleValue(SI.METER)/2)*
-								mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
-
-						currentMass += mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
-						
-						aircraft.getCabinConfiguration().getCurrentMassList().add(
-								Amount.valueOf(
-										currentMass,
-										SI.KILOGRAM
-										)
-								);
-						aircraft.getCabinConfiguration().getCurrentXCoGfrontToRearAisle().add(
-								Amount.valueOf(
-										(sumFtoR/currentMass),
-										SI.METER
-										)
-								);
-					}
-					aisle = true;
-					break;
-				}
-			}
-		}
-
-
-		for(int k = 0; k < seatsBlocks.size(); k++) {
-
-			x = seatsBlocks.get(k);
-			emptyColumns = 0.;
-
-			if (x.getColumnsNumber() > 2) {
-
-				/*
-				 * Total number of columns still empty for a single block. 
-				 * There are two possible cases:
-				 * 1) the block is on the side, so two columns have been
-				 * taken (window and aisle);
-				 * 2) the block is a central one. Still two columns have
-				 * been taken which are the ones near the aisle
-				 */
-				emptyColumns = emptyColumns + x.getColumnsNumber() - 2;
-
-				for (int i = 0; i < x.getRowsNumber()-1; i++) {
-
-					sumFtoR += (x.getXList().get(i) + x.getXStart().doubleValue(SI.METER) + x.getPitch().doubleValue(SI.METER)/2)*
-							emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
-
-					currentMass += emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
+				if ( (isWindow == false) && 
+						( (seatBlock.getPosition().equals(RelativePositionEnum.RIGHT) 
+								&& seatBlock.getColumnList().get(j*seatBlock.getRowsNumber()).equals(seatBlock.getColumnsNumber()-1)) ||
+								(seatBlock.getPosition().equals(RelativePositionEnum.LEFT) 
+										&& seatBlock.getColumnList().get(j*seatBlock.getRowsNumber()).equals(0)))) {
 					
-					aircraft.getCabinConfiguration().getCurrentMassList().add(
-							Amount.valueOf(
-									currentMass,
-									SI.KILOGRAM
-									)
-							);
-					aircraft.getCabinConfiguration().getCurrentXCoGfrontToRearOther().add(
-							Amount.valueOf(
-									(sumFtoR/currentMass),
-									SI.METER
-									)
-							);
+					numberOfWindowColumns += 1;
+					isWindow = true;
 				}
-				break;
-			}
-		}
-
-		currentMass = aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
-		window = false; aisle = false; other = false;
-
-		///////////////////
-		// Rear to front
-		///////////////////
-		for (int k = seatsBlocks.size()-1; k >= 0; k--) {
-
-			x = seatsBlocks.get(k);
-			emptyColumns = 0.;
-
-			for (int j=0; j < x.getColumnsNumber(); j++) {
-
-				// Check if the seat is near the window
-				if ((window == false && aisle == false && other == false) 
-						&& ((x.getPosition().equals(RelativePositionEnum.RIGHT) && x.getColumnList().get(j).equals(x.getColumnsNumber()-1)) 
-								|| (x.getPosition().equals(RelativePositionEnum.LEFT) && x.getColumnList().get(j).equals(0)))) {
-
-					for (int i = x.getRowsNumber()-2; i >= 0; i--) {
-
-						sumRtoF += (x.getXList().get(i) + x.getXStart().doubleValue(SI.METER) + x.getPitch().doubleValue(SI.METER)/2)*
-								2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
-
-						currentMass += 2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
-
-						aircraft.getCabinConfiguration().getCurrentXCoGrearToFrontWindow().add(
-								Amount.valueOf(
-										(sumRtoF/currentMass),
-										SI.METER
-										)
-								);
-					}
-					window = true;
-					break;
-				}
-
+				
 				// Check if the seat is near the aisle
-				if ((window == true && other == false) 
-						&& ((x.getPosition() == RelativePositionEnum.RIGHT && x.getColumnList().get(j).equals(0)) 
-								|| (x.getPosition() == RelativePositionEnum.LEFT && x.getColumnList().get(j).equals(x.getColumnsNumber()-1)) 
-								|| (x.getPosition() == RelativePositionEnum.CENTER && x.getColumnList().get(j).equals(0))
-								|| (x.getPosition() == RelativePositionEnum.CENTER && x.getColumnList().get(j).equals(x.getColumnsNumber()-1)))) {
-
-					// If there are the aisles the loop has to fill 4 columns,
-					// otherwise it has to fill 2 columns
-					if (aircraft.getCabinConfiguration().getAislesNumber() > 1) {
-						mult = 4.;
-					} else {
-						mult = 2.;
-					}
-
-					for (int i = x.getRowsNumber()-2; i >= 0; i--){
-
-						sumRtoF += ((x.getXList().get(i) + x.getXStart().doubleValue(SI.METER) + x.getPitch().doubleValue(SI.METER)/2)*
-								mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM));
-
-						currentMass += mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
-
-						aircraft.getCabinConfiguration().getCurrentXCoGrearToFrontAisle().add(
-								Amount.valueOf(
-										(sumRtoF/currentMass),
-										SI.METER
-										)
-								);
-					}
-					aisle = true;
-					break;
+				else if ( (seatBlock.getPosition().equals(RelativePositionEnum.RIGHT) && seatBlock.getColumnList().get(j*seatBlock.getRowsNumber()).equals(0)) 
+								||	(seatBlock.getPosition().equals(RelativePositionEnum.LEFT) && seatBlock.getColumnList().get(j*seatBlock.getRowsNumber()).equals(seatBlock.getColumnsNumber()-1)) 
+								||  (seatBlock.getPosition().equals(RelativePositionEnum.CENTER) && seatBlock.getColumnList().get(j*seatBlock.getRowsNumber()).equals(0)) 
+								||	(seatBlock.getPosition().equals(RelativePositionEnum.CENTER) && seatBlock.getColumnList().get(j*seatBlock.getRowsNumber()).equals(seatBlock.getColumnsNumber()-1))
+								) {
+			
+					numberOfAisleColumns += 1;
 				}
+				
+				else {
+					
+					numberOfOtherColumns += 1;
+					
+				}
+				
+			}
+			
+		}
+		
+		////////////////////
+		//  Front to rear //
+		////////////////////
+
+		/*
+		 * Starting point -> OEW Conditions
+		 */
+		double sumFrontToRear = aircraft.getTheAnalysisManager().getTheBalance().getCGOperatingEmptyMass().getXBRF().doubleValue(SI.METER)*
+				aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
+		double currentMass = aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
+		
+		/*
+		 *  In the three case of window, aisle of other, a loop over the number of rows has to be carried out
+		 *  to calculate the cg excursion in both front-to-rear and rear-to-front cases.
+		 */
+		int mult = 0;
+		List<Double> massList = new ArrayList<>();
+		List<Double> xCGListFrontToRear = new ArrayList<>();
+		for (int i=0; i<3; i++) { // i=0 -> window, i=1 -> aisle, i=2 -> other
+			
+			if (i==0) 
+				mult = numberOfWindowColumns;
+			else if (i==1) 
+				mult = numberOfAisleColumns;
+			else 
+				mult = numberOfOtherColumns;
+			
+			for (int j=0; j<seatsBlockList.get(0).getRowsNumber(); j++) {
+
+				sumFrontToRear += (
+						seatsBlockList.get(0).getXList().get(j) 
+						+ seatsBlockList.get(0).getXStart().doubleValue(SI.METER) 
+						+ (seatsBlockList.get(0).getPitch().doubleValue(SI.METER)/2)
+						)
+						*mult
+						*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
+
+				currentMass += mult*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
+
+				xCGListFrontToRear.add(sumFrontToRear/currentMass);
+				massList.add(currentMass);
+				
+				aircraft.getCabinConfiguration().getCurrentMassList().add(
+						Amount.valueOf(
+								currentMass, 
+								SI.KILOGRAM
+								)
+						);
+
+				aircraft.getCabinConfiguration().getSeatsCoGFrontToRear().add(
+						Amount.valueOf(
+								(sumFrontToRear/currentMass),
+								SI.METER
+								)
+						);
 			}
 		}
+		
+		////////////////////
+		//  Rear to rear //
+		////////////////////
 
-		for (int k = seatsBlocks.size()-1; k >= 0; k--) {
+		/*
+		 * Starting point -> OEW Conditions
+		 */
+		double sumRearToFront = aircraft.getTheAnalysisManager().getTheBalance().getCGOperatingEmptyMass().getXBRF().doubleValue(SI.METER)*
+				aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
+		currentMass = aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getOperatingEmptyMass().doubleValue(SI.KILOGRAM);
+		
+		/*
+		 *  In the three case of window, aisle of other, a loop over the number of rows has to be carried out
+		 *  to calculate the cg excursion in both front-to-rear and rear-to-front cases.
+		 */
+		mult = 0;
+		List<Double> xCGListRearToFront = new ArrayList<>();
+		for (int i=0; i<3; i++) { // i=0 -> window, i=1 -> aisle, i=2 -> other
+			
+			if (i==0) 
+				mult = numberOfWindowColumns;
+			else if (i==1) 
+				mult = numberOfAisleColumns;
+			else 
+				mult = numberOfOtherColumns;
+			
+			for (int j=seatsBlockList.get(0).getRowsNumber()-1; j>=0; j--) {
 
-			x = seatsBlocks.get(k);
-			emptyColumns = 0.;
+				sumRearToFront += (
+						seatsBlockList.get(0).getXList().get(j) 
+						+ seatsBlockList.get(0).getXStart().doubleValue(SI.METER) 
+						+ (seatsBlockList.get(0).getPitch().doubleValue(SI.METER)/2)
+						)
+						*mult
+						*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 
-			if (x.getColumnsNumber() > 2) {
+				currentMass += mult*aircraft.getTheAnalysisManager().getTheBalance().getTheBalanceManagerInterface().getSinglePassengerMass().doubleValue(SI.KILOGRAM);
 
-				/*
-				 * Total number of columns still empty for a single block. 
-				 * There are two possible cases:
-				 * 1) the block is on the side, so two columns have been
-				 * taken (window and aisle);
-				 * 2) the block is a central one. Still two columns have
-				 * been taken which are the ones near the aisle
-				 */
-				emptyColumns = x.getColumnsNumber() - 2;
-
-				for (int i = x.getRowsNumber() - 2; i >= 0 ; i--) {
-
-					sumRtoF += (x.getXList().get(i) + x.getXStart().doubleValue(SI.METER) + x.getPitch().doubleValue(SI.METER)/2)*
-							emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
-
-					currentMass += emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().doubleValue(SI.KILOGRAM);
-
-					aircraft.getCabinConfiguration().getCurrentXCoGrearToFrontOther().add(
-							Amount.valueOf(
-									(sumRtoF/currentMass),
-									SI.METER
-									)
-							);
-				}
-				break;
+				xCGListRearToFront.add(sumRearToFront/currentMass);
+				
+				aircraft.getCabinConfiguration().getSeatsCoGRearToFront().add(
+						Amount.valueOf(
+								(sumRearToFront/currentMass),
+								SI.METER
+								)
+						);
 			}
 		}
-
 	}
-	
 }

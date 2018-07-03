@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<JPAD_Optimizer>
+	<number_of_variables>4</number_of_variables> 
+	<number_of_objectives>7</number_of_objectives>
+	<number_of_constraints>3</number_of_constraints>
+	<max_number_of_evaluations></max_number_of_evaluations> <!-- default value: 10000. May be left blank if the user wants to use the default value -->
+	<population_size></population_size> <!-- default value: 50. May be left blank if the user wants to use the default value -->
+	<!--maximization_conditions: an array of booleans (TRUE=maximize, FALSE=minimize). The dimension must be equal to the number of objectives -->
+	<maximization_conditions>FALSE;FALSE;FALSE;FALSE;FALSE;FALSE;FALSE</maximization_conditions> 
+	<!--variable_lower_bounds: an array of double to define the lower bounds of each variable. The dimension must be equal to the number of variables -->
+	<variable_lower_bounds>15.0;9.5;10.2;25.0</variable_lower_bounds>
+	<!--variable_upper_bounds: an array of double to define the upper bounds of each variable. The dimension must be equal to the number of variables -->
+	<variable_upper_bounds>21.0;15.0;10.8;33.5</variable_upper_bounds>
+	<!--constraints: a set of constraints defined with multiple values. Each value must be decorated with a violating_condition chosen between the following:
+		LESS_THAN, LESS_EQUAL_THAN, BIGGER_THAN, BIGGER_EQUAL_THAN, WITHIN_INTERVAL, OUTSIDE_INTERVAL
+		The number of value tags must be equal to the number of constraints (if = 0, leave it blank)
+		The code assigns a penalty to all solutions which satisfy the "violating_condition" attribute -->
+	<constraints>
+		<value violating_condition="OUTSIDE_INTERVAL">4.0;6.0</value>
+		<value violating_condition="BIGGER_THAN">1169</value>
+		<value violating_condition="BIGGER_THAN">1315</value>
+	</constraints>
+	<!--algorithms: an array of strings to assign all the wanted algorithms to be used. These will be used in sequence and compared -->
+	<!-- possible values: see the MOEAFramework_Manual in the doc folder -->
+	<algorithms>eNSGAII;OMOPSO</algorithms>
+</JPAD_Optimizer>

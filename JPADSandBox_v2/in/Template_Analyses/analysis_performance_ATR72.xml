@@ -4,31 +4,31 @@
         <performance
 			id="ATR-72 - PERFORMANCE"
 			weights_from_previous_file="true" 
-			aerodynamics_from_previous_file="TRUE" 
+			aerodynamics_from_previous_file="false" 
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg">22500.0</maximum_take_off_mass>
-				<operating_empty_mass unit="kg">12950.0</operating_empty_mass>
-				<maximum_fuel_mass unit="kg">5000.0</maximum_fuel_mass>
-				<single_passenger_mass unit="kg">102.0</single_passenger_mass>
+				<maximum_take_off_mass unit="kg"></maximum_take_off_mass>
+				<operating_empty_mass unit="kg"></operating_empty_mass>
+				<maximum_fuel_mass unit="kg"></maximum_fuel_mass>
+				<single_passenger_mass unit="kg"></single_passenger_mass>
 			</weights>
 			<aerodynamics> 
-				<xcg value="0.25" parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
+				<xcg value="0.35" parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
 					<cLmax_clean_configuration>1.5</cLmax_clean_configuration>
 					<cL_alpha_clean_configuration unit="1/deg">0.09</cL_alpha_clean_configuration>
 					<cLmax_take_off_configuration>2.05</cLmax_take_off_configuration>
 					<cL_alpha_take_off unit="1/deg">0.0905</cL_alpha_take_off>
 					<cL0_take_off_configuration>0.801</cL0_take_off_configuration>
-					<cLmax_landing_configuration>2.63</cLmax_landing_configuration>
+					<cLmax_landing_configuration>2.68</cLmax_landing_configuration>
 					<cL_alpha_landing unit="1/deg">0.0925</cL_alpha_landing>
 					<cL0_landing_configuration>1.2577</cL0_landing_configuration>
 					<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
-					<cD0>0.0306</cD0>
+					<cD0>0.0280</cD0>
 					<oswald_cruise>0.83</oswald_cruise> 
 					<oswald_climb>0.83</oswald_climb>
 					<oswald_take_off>0.80</oswald_take_off>
 					<oswald_landing>0.80</oswald_landing>
-					<delta_CD0_flap_take_off>0.0167</delta_CD0_flap_take_off>
+					<delta_CD0_flap_take_off>0.0100</delta_CD0_flap_take_off>
 					<delta_CD0_flap_landing>0.0673</delta_CD0_flap_landing>
 					<delta_CD0_landing_gears>0.014</delta_CD0_landing_gears>
 					<delta_CD0_spoilers>0.011</delta_CD0_spoilers>
@@ -75,9 +75,9 @@
 				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
 				<alpha_ground unit="deg"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
-				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
+				<k_rotation>1.08</k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
 				<alpha_dot_rotation></alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
-				<k_cLmax>0.85</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
+				<k_cLmax>0.95</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
 				<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
 				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
 				<!-- landing data -->

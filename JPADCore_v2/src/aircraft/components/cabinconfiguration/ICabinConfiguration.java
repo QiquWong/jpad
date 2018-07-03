@@ -21,7 +21,7 @@ public interface ICabinConfiguration {
 	List<ClassTypeEnum> getClassesType();
 	int getAislesNumber();
 	Amount<Length> getXCoordinatesFirstRow();
-	List<Integer[]> getMissingSeatsRow();
+//	List<Integer[]> getMissingSeatsRow();
 	int getNumberOfBreaksEconomyClass();
 	int getNumberOfBreaksBusinessClass();
 	int getNumberOfBreaksFirstClass();

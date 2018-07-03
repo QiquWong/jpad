@@ -23,7 +23,7 @@
             </horizontal_tail>
             <vertical_tail file="vtail_IRON.xml">
                 <position>
-                    <x unit="m">33.00</x>
+                    <x unit="m">32.00</x>
                     <y unit="m">0.0</y>
                     <z unit="m">1.52</z>
                 </position>

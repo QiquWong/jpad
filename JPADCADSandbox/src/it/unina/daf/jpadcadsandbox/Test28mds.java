@@ -52,7 +52,7 @@ public class Test28mds {
 		
 		Fuselage fuselage = aircraft.getFuselage();
 		LiftingSurface wing = aircraft.getWing();
-		LiftingSurface canard = aircraft.getCanard();
+//		LiftingSurface canard = aircraft.getCanard();
 		LiftingSurface horTail = aircraft.getHTail();
 		LiftingSurface verTail = aircraft.getVTail();
 		
@@ -63,17 +63,17 @@ public class Test28mds {
 				wing.getZApexConstructionAxes().doubleValue(SI.METER)
 		};
 		
-		double[] canardApex = new double[] {
-				canard.getXApexConstructionAxes().doubleValue(SI.METER),
-				canard.getYApexConstructionAxes().doubleValue(SI.METER),
-				canard.getZApexConstructionAxes().doubleValue(SI.METER)
-		};
+//		double[] canardApex = new double[] {
+//				canard.getXApexConstructionAxes().doubleValue(SI.METER),
+//				canard.getYApexConstructionAxes().doubleValue(SI.METER),
+//				canard.getZApexConstructionAxes().doubleValue(SI.METER)
+//		};
 		
 		Airfoil wingBaseAirfoil = wing.getAirfoilList().get(0);
-		Airfoil canardBaseAirfoil = canard.getAirfoilList().get(0);
+//		Airfoil canardBaseAirfoil = canard.getAirfoilList().get(0);
 		
 		double fuselageWidthAtWing = fuselage.getWidthAtX(wingApex[0])*0.5;
-		double fuselageWidthAtCanard = fuselage.getWidthAtX(canardApex[0])*0.5;
+//		double fuselageWidthAtCanard = fuselage.getWidthAtX(canardApex[0])*0.5;
 		
 		List<double[]> wingRootAirfoilPnts = AircraftUtils.populateCoordinateList(
 				wingApex[1], 
@@ -85,25 +85,25 @@ public class Test28mds {
 				wingBaseAirfoil, 
 				wing
 				);
-		List<double[]> canardRootAirfoilPnts = AircraftUtils.populateCoordinateList(
-				canardApex[1], 
-				canardBaseAirfoil, 
-				canard
-				);
-		List<double[]> canardSideAirfoilPnts = AircraftUtils.populateCoordinateList(
-				fuselageWidthAtCanard, 
-				canardBaseAirfoil, 
-				canard
-				);
+//		List<double[]> canardRootAirfoilPnts = AircraftUtils.populateCoordinateList(
+//				canardApex[1], 
+//				canardBaseAirfoil, 
+//				canard
+//				);
+//		List<double[]> canardSideAirfoilPnts = AircraftUtils.populateCoordinateList(
+//				fuselageWidthAtCanard, 
+//				canardBaseAirfoil, 
+//				canard
+//				);
 		
 		AttachmentType wingAttType = AttachmentType.getAttachmentType(
 				wingRootAirfoilPnts, wingSideAirfoilPnts, fuselage);
-		AttachmentType canardAttType = AttachmentType.getAttachmentType(
-				canardRootAirfoilPnts, canardSideAirfoilPnts, fuselage);
+//		AttachmentType canardAttType = AttachmentType.getAttachmentType(
+//				canardRootAirfoilPnts, canardSideAirfoilPnts, fuselage);
 		
 		System.out.println("---------------------------------------------------------------------------------------");
 		System.out.println("Wing attachment type: " + wingAttType.name());
-		System.out.println("Canard attachment type: " + canardAttType.name());
+//		System.out.println("Canard attachment type: " + canardAttType.name());
 		System.out.println("---------------------------------------------------------------------------------------");
 		
 		// Generate fairing
@@ -113,32 +113,33 @@ public class Test28mds {
 				wing
 				);
 		
-		List<OCCShape> canardFairing = generateFairing(
-				canardAttType, 
-				fuselage, 
-				canard
-				);
+//		List<OCCShape> canardFairing = generateFairing(
+//				canardAttType, 
+//				fuselage, 
+//				canard
+//				);
 		
 		// Export shapes to CAD file
 		List<OCCShape> exportShapes = new ArrayList<>();
 		
 		exportShapes.addAll(wingFairing);
-		exportShapes.addAll(canardFairing);
+//		exportShapes.addAll(canardFairing);
 		
 		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, 7, 7, true, true, false);
 		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, false, true, false);
-		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.CANARD, 1e-3, false, true, false);
+//		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.CANARD, 1e-3, false, true, false);
 		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, false, true, false);
 		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, false, true, false);
 		
 		exportShapes.addAll(fuselageShapes);
 		exportShapes.addAll(wingShapes);
-		exportShapes.addAll(canardShapes);
+//		exportShapes.addAll(canardShapes);
 		exportShapes.addAll(horTailShapes);
 		exportShapes.addAll(verTailShapes);
 		
-		String fileName = "Test28mds.brep";
-
+//		String fileName = "Test28mds.brep";
+		String fileName = "ATR72.stp";
+		
 		if (OCCUtils.write(fileName, exportShapes))
 			System.out.println("========== [main] Output written on file: " + fileName);
 	}

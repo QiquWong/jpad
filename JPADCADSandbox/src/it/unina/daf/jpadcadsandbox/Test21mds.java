@@ -42,9 +42,9 @@ public class Test21mds {
 //			System.out.println("========== [main] Output written on file: " + fileName);
 		
 		List<OCCShape> allShapes = AircraftUtils.getAircraftShapes(theAircraft, 
-//				ComponentEnum.FUSELAGE,
-//				ComponentEnum.WING,
-//				ComponentEnum.HORIZONTAL_TAIL,
+				ComponentEnum.FUSELAGE,
+				ComponentEnum.WING,
+				ComponentEnum.HORIZONTAL_TAIL,
 				ComponentEnum.VERTICAL_TAIL
 //				ComponentEnum.CANARD
 				);
@@ -55,8 +55,8 @@ public class Test21mds {
 //		allShapes.addAll(verTailShapes);
 //		allShapes.addAll(canardShapes);
 		
-		AircraftUtils.getAircraftSolidFile(allShapes, "VERTICAL", FileExtension.STEP);
-//		AircraftUtils.getAircraftSolidFile(allShapes, "ATR72", FileExtension.IGES);
+//		AircraftUtils.getAircraftSolidFile(allShapes, "VERTICAL", FileExtension.STEP);
+		AircraftUtils.getAircraftSolidFile(allShapes, "ATR72", FileExtension.STEP);
 	}
 
 }

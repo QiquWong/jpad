@@ -356,6 +356,9 @@ public final class CPACSUtils {
 		
 		return doubleArray;
 	}
+	
+	
+	
 	/**
 	 * 
 	 * @param listData
@@ -370,30 +373,7 @@ public final class CPACSUtils {
 		
 		return doubleArray;
 	}
-	
-	
-	
-	public static double [] getDoubleArrayFromStringListDeflection(List<String> listData, int flag, int numberAddition) {
-		String[] arrayData = listData.get(0).split(";");
-		double[] doubleArray = new double [arrayData.length + numberAddition];
-		int counter = 0;
-		for (int i=0; i<arrayData.length;i++) {
-			if(i%2 == 0) {
-			doubleArray[counter] = Double.parseDouble(arrayData[i]);
-			counter++;
-			doubleArray[counter] = 0.0;
-			counter++;
-			}
-			if(i%2 != 0) {
-			doubleArray[counter] = Double.parseDouble(arrayData[i]);
-			counter++;
-			}
-		}
-		
-		return doubleArray;
-	}
-	
-	
+
 	
 	
 	

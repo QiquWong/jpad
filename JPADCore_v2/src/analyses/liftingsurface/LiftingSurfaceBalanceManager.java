@@ -59,15 +59,12 @@ public class LiftingSurfaceBalanceManager {
 			calculateCG(aircraft, MethodEnum.TORENBEEK_1982, liftingSurfaceType);
 		break;
 		case HORIZONTAL_TAIL:
-			calculateCG(aircraft, MethodEnum.SFORZA, liftingSurfaceType);
 			calculateCG(aircraft, MethodEnum.TORENBEEK_1982, liftingSurfaceType);
 		break;
 		case VERTICAL_TAIL:
-			calculateCG(aircraft, MethodEnum.SFORZA, liftingSurfaceType);
 			calculateCG(aircraft, MethodEnum.TORENBEEK_1982, liftingSurfaceType);
 		break;
 		case CANARD:
-			calculateCG(aircraft, MethodEnum.SFORZA, liftingSurfaceType);
 			calculateCG(aircraft, MethodEnum.TORENBEEK_1982, liftingSurfaceType);
 		break;
 		default:

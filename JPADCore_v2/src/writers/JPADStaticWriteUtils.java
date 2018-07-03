@@ -2664,20 +2664,6 @@ public class JPADStaticWriteUtils {
 				aircraft.getCabinConfiguration().getXCoordinatesFirstRow(),
 				globalDataElement, doc);
 		
-		// global_data - missing_seat_row
-		org.w3c.dom.Element missingSeatRowElement = doc.createElement("missing_seat_row");
-		globalDataElement.appendChild(missingSeatRowElement);
-		aircraft.getCabinConfiguration().getMissingSeatsRow().stream()
-			.forEach( t -> 
-			JPADStaticWriteUtils.writeSingleNode("value", 
-					Arrays.asList(
-							aircraft.getCabinConfiguration().getMissingSeatsRow().get(
-									aircraft.getCabinConfiguration().getMissingSeatsRow().indexOf(t)
-									)
-							),
-					missingSeatRowElement, doc)
-					);
-		
 		// detailed_data
 		org.w3c.dom.Element detailedDataElement = doc.createElement("detailed_data");
 		cabinConfigurationElement.appendChild(detailedDataElement);

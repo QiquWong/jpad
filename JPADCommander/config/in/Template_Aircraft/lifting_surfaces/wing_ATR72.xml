@@ -9,26 +9,26 @@
       </global_data>
       <panels>
          <panel id="ATR72 wing, inner panel">
-            <span unit="m">4.7000</span>
+            <span unit="m">4.0805</span>
             <dihedral unit="deg">0.0000</dihedral>
             <sweep_leading_edge unit="deg">0.0000</sweep_leading_edge>
             <inner_section>
-               <chord unit="m">2.5759</chord>
+               <chord unit="m">2.75</chord>
                <airfoil file="naca23018.xml"/>
                <geometric_twist>0.000000</geometric_twist>
             </inner_section>
             <outer_section>
-               <chord unit="m">2.5759</chord>
+               <chord unit="m">2.75</chord>
                <airfoil file="naca23018.xml"/>
                <geometric_twist unit="deg">0.0000</geometric_twist>
             </outer_section>
          </panel>
          <panel id="ATR72 wing, outer panel" linked_to="ATR72 wing, inner panel">
-            <span unit="m">8.8300</span>
+            <span unit="m">8.6394</span>
             <dihedral unit="deg">0.0000</dihedral>
             <sweep_leading_edge unit="deg">4.3000</sweep_leading_edge>
             <outer_section>
-               <chord unit="m">1.5906</chord>
+               <chord unit="m">1.591</chord>
                <airfoil file="naca23015.xml"/>
                <geometric_twist unit="deg">-2.0000</geometric_twist>
             </outer_section>

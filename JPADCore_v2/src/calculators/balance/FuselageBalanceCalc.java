@@ -15,12 +15,13 @@ public class FuselageBalanceCalc {
 	 * page 359 Sforza (2014) - Aircraft Design
 	 */
 	public static Amount<Length> calculateFuselageXCGSforza (Aircraft aircraft) {
+
 		return Amount.valueOf(
 				aircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)
-				/ aircraft.getFuselage().getFuselageFinenessRatio()
-				* aircraft.getFuselage().getNoseFinenessRatio()
-				+ (aircraft.getFuselage().getFuselageFinenessRatio() - 5.)
-				/ 1.8, 
+				* (
+						(aircraft.getFuselage().getNoseFinenessRatio()/aircraft.getFuselage().getFuselageFinenessRatio())
+						+ ( (aircraft.getFuselage().getFuselageFinenessRatio() - 5) / (1.8*aircraft.getFuselage().getFuselageFinenessRatio()))
+						), 
 				SI.METER
 				);
 	}
@@ -45,7 +46,8 @@ public class FuselageBalanceCalc {
 			}
 		}
 
-		if (aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.REAR_FUSELAGE) {
+		if (aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.REAR_FUSELAGE
+				|| aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.HTAIL) {
 			_xCG = aircraft.getFuselage().getFuselageLength().to(SI.METER).times(0.47);
 		}
 
