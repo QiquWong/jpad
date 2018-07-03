@@ -20733,18 +20733,25 @@ public class ACAerodynamicAndStabilityManager {
 			_cRollBetaWingBody.put(
 					MethodEnum.NAPOLITANO_DATCOM,
 					MomentCalc.calcCRollbetaWingBody(
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralMean(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord(), 
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(), 
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralMean(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip(), 
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes()
 							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXLEBreakPoints().get(
 									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXLEBreakPoints().size()-1
 									))
 							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getChordTip().divide(2)),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip(), 
+							Amount.valueOf(
+									_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)
+											+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getPanels().get(0).getChordRoot().divide(2).doubleValue(SI.METER)),
+									SI.METER
+									),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().opposite(), 
 							LiftCalc.calculateLiftCoeff(
 									_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
 									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
@@ -20753,13 +20760,6 @@ public class ACAerodynamicAndStabilityManager {
 									getCurrentAltitude().doubleValue(SI.METER)
 									),
 							getCurrentMachNumber(),
-							Amount.valueOf(
-									_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
-											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)
-											+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getPanels().get(0).getChordRoot().divide(2).doubleValue(SI.METER)),
-									SI.METER
-									),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().opposite(), 
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader() 
 							));
 
@@ -20769,14 +20769,13 @@ public class ACAerodynamicAndStabilityManager {
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurfacePlanform(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getDihedralMean(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getEquivalentWing().getPanels().get(0).getSweepHalfChord(), 
-							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSpan(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getAspectRatio(), 
 							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getEquivalentWing().getPanels().get(0).getTaperRatio(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSpan(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getEquivalentWing().getPanels().get(0).getSweepHalfChord(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getDihedralMean(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip(), 
-							getCurrentMachNumber(),
 							0.9, // TODO take the degradation factor of dynamic pressure horizontal tail: AerodynamicCalc.calculateDynamicPressureRatio(positionRelativeToAttachment)
 							Amount.valueOf(
 									_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
@@ -20784,6 +20783,7 @@ public class ACAerodynamicAndStabilityManager {
 											+ _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getPanels().get(0).getChordRoot().divide(2).doubleValue(SI.METER)),
 									SI.METER
 									),
+							getCurrentMachNumber(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
 							));
 
@@ -20794,8 +20794,8 @@ public class ACAerodynamicAndStabilityManager {
 					MomentCalc.calcCRollbetaVerticalTail(
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSurfacePlanform(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSpan(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
@@ -20805,7 +20805,6 @@ public class ACAerodynamicAndStabilityManager {
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
 							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeZ()),
 							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLAlpha().get(MethodEnum.HELMBOLD_DIEDERICH), 
-							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight(),
 							Amount.valueOf(
 									_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getZOutlineXZUpperAtX(
@@ -20817,6 +20816,7 @@ public class ACAerodynamicAndStabilityManager {
 									SI.METER
 									),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().opposite(),
+							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
 							));
 
@@ -20836,8 +20836,8 @@ public class ACAerodynamicAndStabilityManager {
 					MomentCalc.calcCRollDeltaA(
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAsymmetricFlaps().get(1).getTheAsymmetricFlapInterface().getInnerStationSpanwisePosition(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAsymmetricFlaps().get(1).getTheAsymmetricFlapInterface().getOuterStationSpanwisePosition(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAsymmetricFlaps().get(1).getMeanChordRatio(),
@@ -20856,6 +20856,8 @@ public class ACAerodynamicAndStabilityManager {
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSurfacePlanform(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getEquivalentWing().getPanels().get(0).getTaperRatio(),
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLAlpha().get(MethodEnum.HELMBOLD_DIEDERICH),
+							0.9, // TODO take the degradation factor of dynamic pressure vertical tail: AerodynamicCalc.calculateDynamicPressureRatio(positionRelativeToAttachment)
 							etaInR,
 							etaOutR,
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getMeanChordRatio(),
@@ -20869,11 +20871,8 @@ public class ACAerodynamicAndStabilityManager {
 											)
 									)
 							.minus(xCG),
-							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
-							.plus(zApplicationForceRudder),
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLAlpha().get(MethodEnum.HELMBOLD_DIEDERICH),
+							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes().plus(zApplicationForceRudder),
 							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise(),
-							0.9, // TODO take the degradation factor of dynamic pressure vertical tail: AerodynamicCalc.calculateDynamicPressureRatio(positionRelativeToAttachment)
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
 							));
 
@@ -20883,10 +20882,10 @@ public class ACAerodynamicAndStabilityManager {
 			_cRollpWingBody.put(
 					MethodEnum.NAPOLITANO_DATCOM,
 					MomentCalc.calcCRollpWingBody(
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
 							getCurrentMachNumber(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
 							));
@@ -20911,8 +20910,8 @@ public class ACAerodynamicAndStabilityManager {
 					MomentCalc.calcCRollpVerticalTail(
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSurfacePlanform(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSpan(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
@@ -20943,13 +20942,12 @@ public class ACAerodynamicAndStabilityManager {
 			_cRollrWing.put(
 					MethodEnum.NAPOLITANO_DATCOM,
 					MomentCalc.calcCRollrWing(
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralMean(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralMean(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip(), 
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
 							LiftCalc.calculateLiftCoeff(
 									_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
 									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
@@ -20966,8 +20964,8 @@ public class ACAerodynamicAndStabilityManager {
 					MomentCalc.calcCRollrVerticalTail(
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSurfacePlanform(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSpan(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()

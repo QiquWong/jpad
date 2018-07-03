@@ -363,7 +363,7 @@ public class Test_01 {
 		System.out.println(">> span vertical tail: " + spanVTail);
 		System.out.println(">> r_1: " + r1);
 
-		double cYawKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
+		double cYKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
 		
 		// CY_beta_V
 		CalcCLAlpha calcCLAlphaVTail = vTailManager.new CalcCLAlpha();
@@ -383,13 +383,13 @@ public class Test_01 {
 		System.out.println(">> height fuselage: " + heightFuselage);
 		System.out.println(">> degradation factor of dynamic pressure * (1 - gradient of the sidewash angle): " + etaVTimes1MinusdSigmaOverdBeta);
 
-		Amount<?> cYawBetaV =
+		Amount<?> cYBetaV =
 				cLAlphaV.abs().times(surfaceVTail).divide(surfaceWing)
-				.times(-cYawKappaYV*etaVTimes1MinusdSigmaOverdBeta)
+				.times(-cYKappaYV*etaVTimes1MinusdSigmaOverdBeta)
 				.to(SI.RADIAN.inverse());
 		
-		System.out.println(">>>> K_Y_V: " + cYawKappaYV);
-		System.out.println(">>>>>> CY_beta_V: " + cYawBetaV);
+		System.out.println(">>>> K_Y_V: " + cYKappaYV);
+		System.out.println(">>>>>> CY_beta_V: " + cYBetaV);
 
 		// --------------------------------------------------
 		// Calculation of Cl_beta_V
@@ -414,7 +414,7 @@ public class Test_01 {
 		System.out.println(">> z_V: " + zV);
 
 		Amount<?> cRollBetaV =
-				cYawBetaV
+				cYBetaV
 				.times(
 						zV.times(
 								Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
@@ -533,14 +533,14 @@ public class Test_01 {
 		
 		// CY_delta_r
 		double etaV = 0.9; // TODO take the degradation factor of dynamic pressure for the vertical tail
-		Amount <?> cYawDeltaR = cLAlphaV.abs().times(surfaceVTail).divide(surfaceWing).times(etaV*deltaKR*tauR);
+		Amount <?> cYDeltaR = cLAlphaV.abs().times(surfaceVTail).divide(surfaceWing).times(etaV*deltaKR*tauR);
 		
 		System.out.println(">> degradation factor of dynamic pressure vertical tail: " + etaV);
 		System.out.println(">>>> tau_R: " + tauR);
 		System.out.println(">>>> K_R_I: " + innerKR);
 		System.out.println(">>>> K_R_O: " + outerKR);
 		System.out.println(">>>> Delta K_R: " + deltaKR);
-		System.out.println(">>>>>> CY_delta_r: " + cYawDeltaR);
+		System.out.println(">>>>>> CY_delta_r: " + cYDeltaR);
 		
 		// --------------------------------------------------
 		// Calculation of Cl_delta_r
@@ -567,7 +567,7 @@ public class Test_01 {
 		System.out.println(">> x_R: " + xR);
 		System.out.println(">> z_R: " + zR);
 		
-		Amount <?> cRollDeltaR = cYawDeltaR
+		Amount <?> cRollDeltaR = cYDeltaR
 				.times(
 						zR.times(
 								Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
@@ -644,7 +644,7 @@ public class Test_01 {
 		System.out.println("-------------------------");
 
 		// Cl_p_V
-		Amount<?> cRollpV = cYawBetaV.times((zV.divide(spanWing)).pow(2)).times(2);
+		Amount<?> cRollpV = cYBetaV.times((zV.divide(spanWing)).pow(2)).times(2);
 		
 		System.out.println(">>>>>> Cl_p_V: " + cRollpV);
 
@@ -695,7 +695,7 @@ public class Test_01 {
 		System.out.println(">> D: " + dFactor);
 		
 		Amount<?> cRollrOverCL1AtMachZero = Amount.valueOf(
-				databaseReader.getClRWClrOverCLift1VsARLambdaLc4(taperRatioWing, aspectRatioWing, sweepAngleC2Wing),
+				databaseReader.getClRWClrOverCLift1VsARLambdaLc4(taperRatioWing, aspectRatioWing, sweepAngleC4Wing),
 				SI.RADIAN.inverse()
 				);
 		Amount<?> cRollrOverCL1 = cRollrOverCL1AtMachZero.times(dFactor);
@@ -732,7 +732,7 @@ public class Test_01 {
 		
 		// Cl_r_V
 		Amount<?> cRollrV =
-				cYawBetaV
+				cYBetaV
 				.times(
 						zV.times(
 								Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
