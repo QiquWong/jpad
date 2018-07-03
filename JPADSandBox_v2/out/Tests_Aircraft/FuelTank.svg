@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     id="svg"
+     class="svg"
+     width="700"
+     height="600">
+   <g id="page" width="700" height="600">
+      <g id="graph" transform="translate(60,40)">
+         <rect width="620" height="510" fill="blue" opacity="0.1"/>
+         <rect width="620"
+               height="510"
+               fill="none"
+               opacity="1.0"
+               style="stroke: darkblue; stroke-width: 2px;"/>
+         <g id="xAxis" class="axis" transform="translate(0,510)">
+            <g class="tick"
+               transform="translate(28.18181818181818,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">0</text>
+            </g>
+            <g class="tick"
+               transform="translate(111.49835382651348,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">2</text>
+            </g>
+            <g class="tick"
+               transform="translate(194.81488947120877,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">4</text>
+            </g>
+            <g class="tick"
+               transform="translate(278.13142511590405,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">6</text>
+            </g>
+            <g class="tick"
+               transform="translate(361.44796076059936,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">8</text>
+            </g>
+            <g class="tick"
+               transform="translate(444.7644964052947,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">10</text>
+            </g>
+            <g class="tick"
+               transform="translate(528.08103204999,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">12</text>
+            </g>
+            <g class="tick"
+               transform="translate(611.3975676946853,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">14</text>
+            </g>
+            <path class="domain"
+                  d="M0,-510V0H620V-510"
+                  style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+         </g>
+         <g id="yAxis" class="axis">
+            <g class="tick"
+               transform="translate(0,50.68947312849748)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-4</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,122.48759370710587)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-2</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,194.28571428571428)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">0</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,266.0838348643227)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">2</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,337.8819554429311)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">4</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,409.6800760215395)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">6</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,481.4781966001479)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">8</text>
+            </g>
+            <path class="domain"
+                  d="M620,0H0V510H620"
+                  style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+         </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M28.18181818181818,194.28571428571428L47.61755485893416,194.28571428571428L67.05329153605014,194.28571428571428L86.48902821316614,194.28571428571428L105.92476489028212,194.28571428571428L125.36050156739809,194.28571428571428L144.7962382445141,194.28571428571428L164.2319749216301,194.28571428571428L183.66771159874608,194.28571428571428L203.10344827586206,194.28571428571428L222.53918495297805,194.28571428571428L241.974921630094,195.45198244760402L261.41065830721004,196.71132867508754L280.846394984326,197.97067490257092L300.282131661442,199.23002113005444L319.717868338558,200.48936735753796L339.1536050156739,201.7487135850214L358.5893416927899,203.00805981250485L378.0250783699059,204.26740603998834L397.46081504702175,205.5267522674718L416.89655172413785,206.78609849495527L436.3322884012538,208.04544472243876L455.7680250783697,209.30479094992222L475.20376175548574,210.56413717740566L494.63949843260167,211.82348340488917L514.0752351097176,213.08282963237264L533.5109717868337,214.34217585985613L552.9467084639496,215.6015220873396L572.3824451410654,216.86086831482305L591.8181818181816,218.12021454230654L591.8181818181816,275.2212598384738L572.3824451410654,275.83083338181194L552.9467084639496,276.44040692515006L533.5109717868337,277.0499804684882L514.0752351097176,277.6595540118263L494.63949843260167,278.2691275551644L475.20376175548574,278.8787010985026L455.7680250783697,279.48827464184063L436.3322884012538,280.0978481851788L416.89655172413785,280.70742172851686L397.46081504702175,281.316995271855L378.0250783699059,281.9265688151931L358.5893416927899,282.5361423585312L339.1536050156739,283.1457159018694L319.717868338558,283.75528944520755L300.282131661442,284.36486298854555L280.846394984326,284.9744365318837L261.41065830721004,285.58401007522184L241.974921630094,286.19358361855996L222.53918495297805,286.75810368493296L203.10344827586206,286.75810368493296L183.66771159874608,286.75810368493296L164.2319749216301,286.75810368493296L144.7962382445141,286.75810368493296L125.36050156739809,286.75810368493296L105.92476489028212,286.75810368493296L86.48902821316614,286.75810368493296L67.05329153605014,286.75810368493296L47.61755485893416,286.75810368493296L28.18181818181818,286.75810368493296"
+                  class="line"
+                  style="fill:none; stroke:black; stroke-width:2"/>
+            <path id="area"
+                  d="M28.18181818181818,194.28571428571428L47.61755485893416,194.28571428571428L67.05329153605014,194.28571428571428L86.48902821316614,194.28571428571428L105.92476489028212,194.28571428571428L125.36050156739809,194.28571428571428L144.7962382445141,194.28571428571428L164.2319749216301,194.28571428571428L183.66771159874608,194.28571428571428L203.10344827586206,194.28571428571428L222.53918495297805,194.28571428571428L241.974921630094,195.45198244760402L261.41065830721004,196.71132867508754L280.846394984326,197.97067490257092L300.282131661442,199.23002113005444L319.717868338558,200.48936735753796L339.1536050156739,201.7487135850214L358.5893416927899,203.00805981250485L378.0250783699059,204.26740603998834L397.46081504702175,205.5267522674718L416.89655172413785,206.78609849495527L436.3322884012538,208.04544472243876L455.7680250783697,209.30479094992222L475.20376175548574,210.56413717740566L494.63949843260167,211.82348340488917L514.0752351097176,213.08282963237264L533.5109717868337,214.34217585985613L552.9467084639496,215.6015220873396L572.3824451410654,216.86086831482305L591.8181818181816,218.12021454230654L591.8181818181816,275.2212598384738L572.3824451410654,275.83083338181194L552.9467084639496,276.44040692515006L533.5109717868337,277.0499804684882L514.0752351097176,277.6595540118263L494.63949843260167,278.2691275551644L475.20376175548574,278.8787010985026L455.7680250783697,279.48827464184063L436.3322884012538,280.0978481851788L416.89655172413785,280.70742172851686L397.46081504702175,281.316995271855L378.0250783699059,281.9265688151931L358.5893416927899,282.5361423585312L339.1536050156739,283.1457159018694L319.717868338558,283.75528944520755L300.282131661442,284.36486298854555L280.846394984326,284.9744365318837L261.41065830721004,285.58401007522184L241.974921630094,286.19358361855996L222.53918495297805,286.75810368493296L203.10344827586206,286.75810368493296L183.66771159874608,286.75810368493296L164.2319749216301,286.75810368493296L144.7962382445141,286.75810368493296L125.36050156739809,286.75810368493296L105.92476489028212,286.75810368493296L86.48902821316614,286.75810368493296L67.05329153605014,286.75810368493296L47.61755485893416,286.75810368493296L28.18181818181818,286.75810368493296L28.18181818181818,194.28571428571428L47.61755485893416,194.28571428571428L67.05329153605014,194.28571428571428L86.48902821316614,194.28571428571428L105.92476489028212,194.28571428571428L125.36050156739809,194.28571428571428L144.7962382445141,194.28571428571428L164.2319749216301,194.28571428571428L183.66771159874608,194.28571428571428L203.10344827586206,194.28571428571428L222.53918495297805,194.28571428571428L241.974921630094,194.28571428571428L261.41065830721004,194.28571428571428L280.846394984326,194.28571428571428L300.282131661442,194.28571428571428L319.717868338558,194.28571428571428L339.1536050156739,194.28571428571428L358.5893416927899,194.28571428571428L378.0250783699059,194.28571428571428L397.46081504702175,194.28571428571428L416.89655172413785,194.28571428571428L436.3322884012538,194.28571428571428L455.7680250783697,194.28571428571428L475.20376175548574,194.28571428571428L494.63949843260167,194.28571428571428L514.0752351097176,194.28571428571428L533.5109717868337,194.28571428571428L552.9467084639496,194.28571428571428L572.3824451410654,194.28571428571428L591.8181818181816,194.28571428571428L591.8181818181816,194.28571428571428L572.3824451410654,194.28571428571428L552.9467084639496,194.28571428571428L533.5109717868337,194.28571428571428L514.0752351097176,194.28571428571428L494.63949843260167,194.28571428571428L475.20376175548574,194.28571428571428L455.7680250783697,194.28571428571428L436.3322884012538,194.28571428571428L416.89655172413785,194.28571428571428L397.46081504702175,194.28571428571428L378.0250783699059,194.28571428571428L358.5893416927899,194.28571428571428L339.1536050156739,194.28571428571428L319.717868338558,194.28571428571428L300.282131661442,194.28571428571428L280.846394984326,194.28571428571428L261.41065830721004,194.28571428571428L241.974921630094,194.28571428571428L222.53918495297805,194.28571428571428L203.10344827586206,194.28571428571428L183.66771159874608,194.28571428571428L164.2319749216301,194.28571428571428L144.7962382445141,194.28571428571428L125.36050156739809,194.28571428571428L105.92476489028212,194.28571428571428L86.48902821316614,194.28571428571428L67.05329153605014,194.28571428571428L47.61755485893416,194.28571428571428L28.18181818181818,194.28571428571428Z"
+                  class="area"
+                  style="fill:orange;"
+                  opacity="0.7"/>
+         </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M28.18181818181818,217.40381163551896L223.9756769468521,217.40381163551896L507.27272727272714,228.94977002756372L507.27272727272714,248.51902391733606L223.9756769468521,245.1455284552846L28.18181818181818,245.1455284552846"
+                  class="line"
+                  style="fill:none; stroke:blue; stroke-width:2"/>
+            <path id="area"
+                  d="M28.18181818181818,217.40381163551896L223.9756769468521,217.40381163551896L507.27272727272714,228.94977002756372L507.27272727272714,248.51902391733606L223.9756769468521,245.1455284552846L28.18181818181818,245.1455284552846L28.18181818181818,194.28571428571428L223.9756769468521,194.28571428571428L507.27272727272714,194.28571428571428L507.27272727272714,194.28571428571428L223.9756769468521,194.28571428571428L28.18181818181818,194.28571428571428Z"
+                  class="area"
+                  style="fill:yellow;"
+                  opacity="1"/>
+         </g>
+      </g>
+   </g>
+   <text class="x label" text-anchor="middle" x="370" y="595">y (m)</text>
+   <text class="y label"
+         text-anchor="middle"
+         x="-295"
+         y="5"
+         dy=".75em"
+         transform="rotate(-90)">x (m)</text>
+   <text class="title" text-anchor="middle" x="370" y="20">Fuel tank representation</text>
+</svg>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jpad_config>
+   <wing equivalent="true" id="MyWing" mirrored="true">
+      <global_data>
+         <main_spar_non_dimensional_position ref_to="LOCAL_CHORD" type="PERCENT_CHORD">0.2500</main_spar_non_dimensional_position>
+         <secondary_spar_non_dimensional_position ref_to="LOCAL_CHORD" type="PERCENT_CHORD">0.5500</secondary_spar_non_dimensional_position>
+         <composite_correction_factor>0.8500</composite_correction_factor>
+         <roughness unit="m">0.00000405</roughness>
+         <winglet_height unit="m">0.0000</winglet_height>
+      </global_data>
+      <equivalent_wing>
+         <surface unit="m²">105.0000</surface>
+         <span unit="m">34.8668</span>
+         <taper_ratio>0.3850</taper_ratio>
+         <sweep_leading_edge unit="deg">10.0000</sweep_leading_edge>
+         <twist_at_tip unit="deg">-2.0000</twist_at_tip>
+         <dihedral unit="deg">5.0000</dihedral>
+         <non_dimensional_span_station_kink>0.3000</non_dimensional_span_station_kink>
+         <taper_ratio_real_wing>0.3680</taper_ratio_real_wing>
+         <twist_at_kink_real_wing unit="deg">0.0000</twist_at_kink_real_wing>
+         <sweep_leading_edge_inner_panel unit="deg">10.0000</sweep_leading_edge_inner_panel>
+         <sweep_leading_edge_outer_panel unit="deg">10.0000</sweep_leading_edge_outer_panel>
+         <airfoils>
+            <airfoil_root file="NACA63_209.xml"/>
+            <airfoil_kink file="NACA63_209.xml"/>
+            <airfoil_tip file="NACA63_209.xml"/>
+         </airfoils>
+      </equivalent_wing>
+   </wing>
+</jpad_config>

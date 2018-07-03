@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     id="svg"
+     class="svg"
+     width="700"
+     height="600">
+   <g id="page" width="700" height="600">
+      <g id="graph" transform="translate(60,40)">
+         <rect width="620" height="510" fill="blue" opacity="0.05"/>
+         <rect width="620"
+               height="510"
+               fill="none"
+               opacity="1.0"
+               style="stroke: darkblue; stroke-width: 2px;"/>
+         <g id="xAxis" class="axis" transform="translate(0,510)">
+            <g class="tick"
+               transform="translate(9.437657552840697,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-4</text>
+            </g>
+            <g class="tick"
+               transform="translate(84.57824316463052,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-3</text>
+            </g>
+            <g class="tick"
+               transform="translate(159.71882877642034,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-2</text>
+            </g>
+            <g class="tick"
+               transform="translate(234.85941438821018,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-1</text>
+            </g>
+            <g class="tick" transform="translate(310,0)" style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">0</text>
+            </g>
+            <g class="tick"
+               transform="translate(385.1405856117898,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">1</text>
+            </g>
+            <g class="tick"
+               transform="translate(460.28117122357963,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">2</text>
+            </g>
+            <g class="tick"
+               transform="translate(535.4217568353695,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">3</text>
+            </g>
+            <g class="tick"
+               transform="translate(610.5623424471593,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">4</text>
+            </g>
+            <path class="domain"
+                  d="M0,-510V0H620V-510"
+                  style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+         </g>
+         <g id="yAxis" class="axis">
+            <g class="tick"
+               transform="translate(0,502.236765561373)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-4</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,440.42757417102973)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-3</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,378.6183827806865)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-2</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,316.8091913903433)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-1</text>
+            </g>
+            <g class="tick" transform="translate(0,255)" style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">0</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,193.19080860965678)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">1</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,131.3816172193135)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">2</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,69.5724258289703)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">3</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,7.763234438627016)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">4</text>
+            </g>
+            <path class="domain"
+                  d="M620,0H0V510H620"
+                  style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+         </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M202.36111075281283,271.38561677905L202.40949892919144,266.34428776987005L202.7337946599598,259.80050072095605L203.56981192722503,252.17611902398278L205.10989417996495,243.853163289046L207.50265456780872,235.17383068626603L210.8532088348887,226.440481590871L215.2229961707237,217.91565155657037L220.62985982732158,209.8220342765234L227.04799337444408,202.34249263568418L234.408048189077,195.62007344726075L242.59703044468793,189.7579577171643L251.45833694104977,184.819534326307L260.7917551042406,180.82831898007436L270.3534629866437,177.76803525885288L279.8560382244035,175.58255198807683L288.9684356437858,174.17589797468776L297.3160006973617,173.41229884828363L304.4804739427354,173.11612548351005L309.99998460212186,173.07191610474996L310,173.07191610474996L315.51950702267095,173.1161181152803L322.68398026804465,173.41229884828363L331.0315442019385,174.17590534291756L340.1439416213209,175.5825593563066L349.6465235771725,177.76803525885288L359.2082448957594,180.8283116118446L368.5416675376781,184.8195269580772L377.4029695553121,189.7579724536239L385.5919607683788,195.62007344726075L392.9520155830117,202.34250000391398L399.3701491301343,209.8220379606383L404.7769948718204,217.91565155657037L409.14677325019966,226.4404779067561L412.49733647473545,235.17382147597877L414.8901237349467,243.85314947361513L416.4301791153191,252.1760992218652L417.26621429749605,259.80048276089593L417.5904921133527,266.34426934929553L417.63888924718714,271.3856038846479"
+                  class="line"
+                  style="fill:none; stroke:darkblue; stroke-width:2"/>
+            <g id="symbols" class="symbols">
+               <path transform="translate(202.36111075281283,271.38561677905)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(202.40949892919144,266.34428776987005)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(202.7337946599598,259.80050072095605)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(203.56981192722503,252.17611902398278)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(205.10989417996495,243.853163289046)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(207.50265456780872,235.17383068626603)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(210.8532088348887,226.440481590871)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(215.2229961707237,217.91565155657037)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(220.62985982732158,209.8220342765234)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(227.04799337444408,202.34249263568418)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(234.408048189077,195.62007344726075)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(242.59703044468793,189.7579577171643)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(251.45833694104977,184.819534326307)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(260.7917551042406,180.82831898007436)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(270.3534629866437,177.76803525885288)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(279.8560382244035,175.58255198807683)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(288.9684356437858,174.17589797468776)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(297.3160006973617,173.41229884828363)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(304.4804739427354,173.11612548351005)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(309.99998460212186,173.07191610474996)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(310.0,173.07191610474996)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(315.51950702267095,173.1161181152803)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(322.68398026804465,173.41229884828363)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(331.0315442019385,174.17590534291756)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(340.1439416213209,175.5825593563066)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(349.6465235771725,177.76803525885288)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(359.2082448957594,180.8283116118446)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(368.5416675376781,184.8195269580772)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(377.4029695553121,189.7579724536239)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(385.5919607683788,195.62007344726075)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(392.9520155830117,202.34250000391398)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(399.3701491301343,209.8220379606383)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(404.7769948718204,217.91565155657037)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(409.14677325019966,226.4404779067561)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(412.49733647473545,235.17382147597877)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(414.8901237349467,243.85314947361513)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(416.4301791153191,252.1760992218652)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(417.26621429749605,259.80048276089593)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(417.5904921133527,266.34426934929553)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+               <path transform="translate(417.63888924718714,271.3856038846479)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:blue; stroke:red; stroke-width:1"/>
+            </g>
+         </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M417.63888924718714,271.38561677905L417.5964488214778,275.91974171703123L417.3111359384695,281.0857457794583L416.57291617392576,286.6639544053297L415.20727141596495,292.4564072068449L413.07550441855864,298.28689481055346L410.0744969502239,304.00089806945886L406.13684415586107,309.465641482685L401.2308455992975,314.5700858272461L395.3604873483764,319.22491710570193L388.5653792727657,323.3625318096987L380.9208625334281,326.9370590246577L372.5379468804301,329.9243677980058L363.5633240891261,332.32204135037085L354.17935900270237,334.1493918120411L344.60410296836056,335.44745285473573L335.09128487986237,336.27900179629415L325.9303246137128,336.7285227595269L317.44631119536206,336.90223614513496L310.00002309680866,336.92808389525004L310,336.92808389525004L302.55371231795954,336.90223614513496L294.06969777992674,336.7285153912971L284.9087375137772,336.2789944280643L275.395919425279,335.4474381182761L265.8206499547535,334.14938444381124L256.4366759108739,332.3220487186006L247.4620531195699,329.9243677980058L239.07913746657192,326.93705165642785L231.43461176977843,323.3625244414689L224.63951265162356,319.22491710570193L218.76914544324666,314.5700858272461L213.86315584413896,309.465641482685L209.92552096468773,304.00089438534394L206.92449558144136,298.2868984946683L204.7927106691234,292.4564256274194L203.4270927835301,286.66396914178927L202.68884614661886,281.08576235797534L202.403560135978,275.91975645349083L202.36111075281283,271.3856315155096"
+                  class="line"
+                  style="fill:none; stroke:black; stroke-width:2"/>
+            <g id="symbols" class="symbols">
+               <path transform="translate(417.63888924718714,271.38561677905)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(417.5964488214778,275.91974171703123)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(417.3111359384695,281.0857457794583)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(416.57291617392576,286.6639544053297)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(415.20727141596495,292.4564072068449)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(413.07550441855864,298.28689481055346)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(410.0744969502239,304.00089806945886)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(406.13684415586107,309.465641482685)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(401.2308455992975,314.5700858272461)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(395.3604873483764,319.22491710570193)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(388.5653792727657,323.3625318096987)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(380.9208625334281,326.9370590246577)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(372.5379468804301,329.9243677980058)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(363.5633240891261,332.32204135037085)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(354.17935900270237,334.1493918120411)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(344.60410296836056,335.44745285473573)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(335.09128487986237,336.27900179629415)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(325.9303246137128,336.7285227595269)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(317.44631119536206,336.90223614513496)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(310.00002309680866,336.92808389525004)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(310.0,336.92808389525004)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(302.55371231795954,336.90223614513496)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(294.06969777992674,336.7285153912971)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(284.9087375137772,336.2789944280643)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(275.395919425279,335.4474381182761)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(265.8206499547535,334.14938444381124)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(256.4366759108739,332.3220487186006)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(247.4620531195699,329.9243677980058)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(239.07913746657192,326.93705165642785)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(231.43461176977843,323.3625244414689)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(224.63951265162356,319.22491710570193)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(218.76914544324666,314.5700858272461)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(213.86315584413896,309.465641482685)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(209.92552096468773,304.00089438534394)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(206.92449558144136,298.2868984946683)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(204.7927106691234,292.4564256274194)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(203.4270927835301,286.66396914178927)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(202.68884614661886,281.08576235797534)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(202.403560135978,275.91975645349083)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+               <path transform="translate(202.36111075281283,271.3856315155096)"
+                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
+                     style="fill:cyan; stroke:green; stroke-width:1"/>
+            </g>
+         </g>
+      </g>
+   </g>
+   <text class="x label" text-anchor="middle" x="370" y="595">x (m)</text>
+   <text class="y label"
+         text-anchor="middle"
+         x="-295"
+         y="5"
+         dy=".75em"
+         transform="rotate(-90)">z (m)</text>
+   <text class="title" text-anchor="middle" x="370" y="20">Fuselage representation</text>
+   <g class="legend" transform="translate(558.0,51.0)">
+      <rect y="0" width="10" height="10" style="fill: rgb(255, 0, 0);"/>
+      <rect y="22" width="10" height="10" style="fill: rgb(0, 0, 255);"/>
+      <text text-anchor="start" x="18" y="10">data set 0</text>
+      <text text-anchor="start" x="18" y="32">data set 1</text>
+   </g>
+</svg>
