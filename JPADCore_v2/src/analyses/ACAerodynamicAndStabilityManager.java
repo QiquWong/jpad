@@ -343,17 +343,17 @@ public class ACAerodynamicAndStabilityManager {
 		 * using a defaul method. 
 		 */
 		if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
-			
+
 			CalcAlpha0L calcAlpha0L = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcAlpha0L();
 			calcAlpha0L.integralMeanWithTwist();
-			
+
 			_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(
 					AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT, 
-					MethodEnum.INTEGRAL_MEAN_TWIST
+					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
 					);
-			
 		}
 		
+
 		//...................................................................................
 		// DISTANCE BETWEEN WING VORTEX PLANE AND THE AERODYNAMIC CENTER OF THE HTAIL
 		//...................................................................................
@@ -1708,7 +1708,6 @@ public class ACAerodynamicAndStabilityManager {
 		//========================================================================================================================
 		// WING
 		if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null) {
-			if(_performWingAnalyses == Boolean.TRUE) {
 
 //			if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard()!= null) {
 
@@ -1846,6 +1845,7 @@ public class ACAerodynamicAndStabilityManager {
 							)
 					);
 
+			if(_performWingAnalyses == Boolean.TRUE) {
 			//.........................................................................................................................
 			//	CRITICAL_MACH
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {

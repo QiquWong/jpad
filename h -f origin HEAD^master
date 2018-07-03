@@ -1,0 +1,1787 @@
+[33m91175f889[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m New plots have been added in aerodynamic database
+[33m51fed3cba[m More work on ACWeightsManager and JPADResponseSurfaceOptimizer.
+[33me88d2a213[m Bruno Spoti work on Aerodynamic database.
+[33mb76d74496[m More work on ACWeightsManager.
+[33mb9994f8d6[m [Roll derivatives] More work in sandbox2.cavas.Test_01
+[33m49daf0fbc[m [Roll derivatives] new analysis files marked *cavas*
+[33m52d215eab[m [Roll derivatives] new dataset in Aerodynamic Database HDF5
+[33m5cd2019c1[m [Roll derivatives] Minor changes in sandbox2.cavas.Test_01
+[33me43f87475[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m3401e463e[m Minor tests on AVL stuff
+[33me3de8c0c9[m [Roll derivatives] More work in cavas test
+[33m9aeb08201[m More work on ACWeightsManager
+[33ma6d2678b2[m [Roll derivatives] More tests in sandbox2.cavas
+[33m32467e996[m Minor changes
+[33m9a487b28d[m More work on ACWeightsManager.
+[33m3e19ee850[m [Roll derivatives - cavas] More work on Test_01
+[33m93aff8835[m [Roll derivatives] More tests in sandbox2.cavas
+[33ma1f85a31a[m More work on cabin configuration and seat block
+[33mae7584459[m [Roll derivatives] New tests in sandbox2.cavas
+[33meb617d19b[m More work on landing gears weight and balance managers.
+[33m9781cad2c[m More work on power plant weight and balance managers.
+[33m831568cf4[m More work on nacelle weight and balance managers.
+[33m18cd09d4a[m [Roll derivatives] Bug corrected in Aerodynamic database .h5 - new tests in sandbox2.cavas
+[33m8fed78547[m [JPADCore_v2] More work on weight and balance analyses.
+[33m1c3a20bd5[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m75ed9a797[m [JPADSandbox_v2] New package cavas in sandbox2, new working test on C_roll_beta calculation
+[33m0e4b0df3c[m Bruno Spoti sandbox has been added.
+[33m027418b97[m More work on lifting surface weight and balance managers.
+[33m20c37eb8d[m [JPADCAD+Sandbox] More work on fairing.
+[33me24f84e00[m Work in progress on canard.
+[33mda6746a7e[m [JPADCAD+Sandbox] More tests on fairing.
+[33m67e0d9ed3[m More work on Lifting Surface Weights Manager
+[33m8a6b13030[m More tests on IRON and CS300
+[33m302896400[m More work on ACPerformanceManager: mission profile analysis.
+[33ma89429b4e[m More work on ACPerformanceManager: mission profile analysis.
+[33mb26fd0b02[m More work on ACPerformanceManager: Mission profile
+[33m891be6202[m Work in progress on canard. Jpad set up guide has been added in doc for thesis work.
+[33mf3555f357[m Merging conficts with master: JPADCADSandBox
+[33ma21289f1d[m More work on LiftingSurfce and LiftingSurfaceWeightManager.
+[33md1f71457c[m [JPADCAD+Sandbox] More tests on fairing.
+[33m18f983474[m Minor changes.ù
+[33m7d2d12a62[m More tests on IRON
+[33m2a208f17b[m [JPADCAD+Sandbox] New tests on wing-fuselage fairing and lifting surface modifications.
+[33m716ec692f[m Added Sutherland Law for dynamic viscosity in AtmosphereCalc
+[33m9182c45d8[m More work on noise trajectories. More tests on IRON.
+[33m757d13629[m Minor changes.
+[33mfef891759[m More work on ACPerformanceManager. More tests on IRON.
+[33m1c44382fd[m More tests on IRON CANARD CAD.
+[33mde17f3b82[m Merging with master.
+[33mc240c9d27[m Merging with master.
+[33mc0e63b22f[m More tests on IRON and CS300
+[33mf8afbd6ea[m Some bugs have been fixed
+[33m8cfbe7933[m More tests on IRON
+[33m3d4f9268d[m More tests on IRON and CS300
+[33m62cb334ea[m More tests on CS300
+[33m9aa205855[m Minor changes
+[33mf043cb73e[m Minor changes
+[33m061c3d52d[m More work on ACPerformanceManager and more tests on IRON.
+[33m742d8d2af[m More tests on IRON.
+[33m839de1669[m More work on ACAerodynamicAndStabilityManager. More tests on IRON.W
+[33m18b34e593[m Analyses on IRON LOOP1 updated
+[33m3b8435d2b[m Analyses on IRON LOOP1 updated
+[33m197947323[m Minor changes.
+[33m488d294b5[m Analyses on IRON LOOP1 updated
+[33mb24072806[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33meb66da62f[m IRON analyses AIAA 2018
+[33m211d2c50b[m [Jupyter] New Test_3 for JPAD in a BeakerX notebook with a Groovy kernel. SVGs created and displayed on the fly via Groovy's interface functions (Typos)
+[33m8add8bd9f[m [Jupyter] New Test_3 for JPAD in a BeakerX notebook with a Groovy kernel. SVGs created and displayed on the fly via Groovy's interface functions
+[33m05fd1add2[m Analyses on IRON LOOP1 updated
+[33me8db7739b[m Function refactoring in standaloneutils.aircraft.WriteUtils - TODO: refactor in JPADCommander. Jupyter Test 2 updated.
+[33m264990bbb[m New function in standaloneutils.aircraft.WriteUtils to save aircraft side view in SVG. Jupyter Test 2 updated.
+[33mf8c289e79[m New function in standaloneutils.aircraft.WriteUtils to save aircraft top view in SVG. Jupyter Test 2 updated.
+[33m0bcd9ddf8[m New utility functions in standaloneutils.aircraft.WriteUtils - updated Jupyter Test 2
+[33med88d5cee[m BeakerX test 2, updated JPADCore jar with writeSVG function
+[33m8f6ce5e30[m BeakerX test 2
+[33m6f4399431[m [Jupyter] First successful Jupyter/BeakerX test with JPAD
+[33me1f35dd27[m Canard in progress
+[33m1d80ae1b5[m Canard in progress
+[33m33e4e796c[m More tests on IRON canard and CS300.
+[33m54463878a[m More BeakerX tests
+[33m27a1907e5[m Dependency removed: jahuwaldt - Incorporated into jpadcore -> standaloneutils.mathtools and .aerotools
+[33m058263b83[m More work on ACAerodynamicAndStabilityManager
+[33ma4f06860f[m Canard in progress
+[33m3f3a2ce46[m Refactoring of JPAD: More work on Systems weight manager.
+[33mb6084abfa[m Refactoring of JPAD: FuselageCreator has been deleted. More work on Fuselage weight and balance managers.
+[33me31ea6c08[m [JPADCAD+Sandbox] More work on AircraftUtils.
+[33ma0e33903b[m More work on ACWeightsManager: new manager for fuselage weight and balance estimation.
+[33m747219d1a[m New test for MOEAFramework optimization
+[33m4cfaf23d8[m Refactoring of JPAD: some useless classes have been removed.
+[33mcf4050558[m [JPADCAD+Sandbox] JavaFX screenshots added in JPADCADSandbox.
+[33m707e268ad[m Refactoring of JPAD: aircraft and its components have been completed.
+[33m1211a8ac7[m Minor changes in JPADCommander
+[33m4399b95a1[m Minor mods
+[33mbbbf724d5[m Minor changes: merging
+[33mddb9a66ef[m Refactoring of JPAD: Airfoils
+[33mdc6d11141[m [JPADCAD+Sandbox] Aircraft model imported in JAVAFX, more work on AircraftUtils.
+[33mb475c633d[m new Executable JPADResponseSurfaceOptimizer
+[33m5b8c3b0d4[m Canard in progress
+[33m222b1aad8[m More work on JPADResponseSurfaceOptimizer
+[33m4e84fd97f[m New project in JPADAPPS: Optimizer (work in progress)
+[33mb0450d9dc[m [JPADCAD+Sandbox] Importing OCC generated shapes in JavaFX, minor mods to ATR72 lifting surfaces xml files.
+[33mfe4a14bae[m More work on optimizations tests
+[33m51c56a491[m More work on optimizations tests
+[33m71b717216[m More work on optimizations
+[33m4f4ec544c[m More work on MOEAFramework optimization.
+[33m16c06d303[m More work on MOEAFramework optimization.
+[33m9aba98d7f[m bug fixed in wing analysis complete
+[33m36083a799[m More work on MOEA Framework optimization tests
+[33md242027ca[m More work on MOEA Framework optimization tests
+[33m5b1a3163e[m New test for OMOPSO using MOEAFramework.
+[33m82a6a06ce[m More tests: IRON Noise Trajectories.
+[33mb96d068ce[m Refactoring of JPAD and some tests on IRON
+[33mf3bda09ff[m Refactoring of JPAD: cabin configuration and seat block completed
+[33ma8f594de1[m Refactoring of JPAD: more work on CabinConfiguration and SeatBlock - to be completed...
+[33m9a1983331[m Canard in progress
+[33mf9d96d23d[m Refactoring of JPAD: liftingSurface and control surfaces
+[33mb39267af5[m Canard in progress
+[33m1393c1822[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m572219654[m Debug JPAD post-refactoring
+[33m9298985fe[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m932518292[m [JPADCADFX] New version of OCCFXMeshExtractor
+[33mbd36f7910[m Fixed some errors in core
+[33m8f530c634[m Refactoring of JPAD: lifting surface
+[33mc0afd7815[m Refactoring of JPAD
+[33m086b40548[m More work on JPADCore_v2, JPADSandBox_v2 and JPADCommander: fuselage refactoring
+[33me876c3b92[m new version opf aircraft class
+[33mab42984da[m [JPADCAD+Sandbox] More work on AircraftUtils, IRON.brep and IRON.step files generated through Test21mds.
+[33m9123844f6[m More work on JPADCommander
+[33md5e8f5574[m [JPADCAD+Sandbox] More on IRON vertical
+[33mb57dea143[m New test Test01vt in JPADCADSandBox. New airfoil naca0014 in JPADSandBox_v2.
+[33m688fedbdb[m Compare CPACS and JSBSim b737 example
+[33m076a9df7d[m Compare CPACS and JSBSim b737 example
+[33m34f45d6a0[m New folder screenshots added in JPADCommander.
+[33mf458109aa[m More work on JPADCommander concerning InputManager.
+[33m59a451af7[m More work on JPADCore_v2 and new versions of JPADCore_v2 and JPADConfig .jar
+[33mc217849a4[m New version of HiLDE Calculator in JPADApps. New version of JPADCore_v2.jar and JPADConfigs.jar
+[33m579b4ae73[m Some basic tests on JavaFX
+[33mc400ba770[m More work on JPADCommander
+[33mdcb427e2c[m Minor mods to jsbsim/cpacs files
+[33m5cab865d1[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m35b6fd620[m work on JSBSim file
+[33m7dbf96015[m More work on JPADCommander.
+[33m21bb97fee[m More work on JPADCommander.
+[33m14c49300a[m More work on JPADCommander.
+[33mb46414a64[m More work on JPADCommander.
+[33mce5ce4422[m More work on JPADCommander.
+[33m67759949e[m More work on JPADCommander.
+[33m9f0cb276e[m More work on JPADCommander: Adjust wing geometry.
+[33md928e6651[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mad48c3b53[m In CPACSReader class, added a simplify version of aeroperformanceMAP, added matlab function to check AeroPerformanceMap data
+[33md1a8122ec[m Wing CAD infographic added in DOCS
+[33m287d5fba4[m Minor changes to ACPerformanceManager. More tests on the IRON aircraft.
+[33m59b9f8206[m Generated Test20mds_solids.step
+[33m6b3c7e469[m More test on IRON performance
+[33m9bb1e7cf5[m [JPADCAD+Sandbox] More work on AircraftUtils
+[33mf2efa79a6[m Minor changes in JPADCommander.
+[33mb545badbc[m Minor changes to ACPerformanceManager.
+[33mba6cd5efa[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m7614eb158[m [Jupyter] New test in Jupyter/BeakerX/Java: did read and explore a HDF5 file successfully. See Test_Java_3.ipynb
+[33m2c6dfaf37[m Add new feature in executable
+[33m012fe1348[m [JPADCAD+Sandbox] Minor changes to AircraftUtils and Test20mds
+[33ma71a094bf[m New Jupiter notebook Test_Java_2.ipynb - Found a bug in TiGL Java bindings, func. getProfileSplines in CpacsConfiguration.java 2
+[33m402f5e423[m New Jupiter notebook Test_Java_2.ipynb - Found a bug in TiGL Java bindings, func. getProfileSplines in CpacsConfiguration.java
+[33m416f435af[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mb3eb7537e[m [JPADCAD+Sandbox] Testing stl writing in Test20mds
+[33m0aa2acbe7[m Added a some wingtip screenshots in JPADCADSandbox
+[33mc28202c08[m [JPADCAD+Sandbox] More work on AircraftUtils
+[33m9241580df[m Added a Jupyter notebook Test_Java.ipynb that uses TiGL jar and the related native libs.
+[33mf7a16cc00[m Update README.md
+[33ma2b91fea8[m Update README.md
+[33m44f0cc2d0[m Minor updates
+[33m005f7f01f[m Update README.md
+[33mbfd835a72[m Update README.md
+[33m4f602a8e0[m Update README.md
+[33mf3231d1c0[m Update README.md
+[33m3ef0f84b1[m Update README.md
+[33md04b7116a[m [JPADCAD+Sandbox] More work on AircraftUtils
+[33m73ba95d44[m More work on JPADCommander input manager.
+[33m4181582b7[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33md2e380714[m Minor changes in CPACSReader class
+[33m095e6fa21[m New image in dir /DOCS/manual
+[33m3f85365d5[m [JPADCAD+Sandbox] Minor mods to AircraftUtils and Test19mds, step file for Test19mds created
+[33m360eb8e32[m More tests on IRON performance.
+[33m7fc76df26[m Minor modifications
+[33m2dfe5744c[m Added latest version of F(X)yz3D library from github.com/FXyz/FXyz
+[33mab6b0cb4d[m [CPACSWriter] Screenshost added in JPADSandbox_v2/out/CPACS 2
+[33md96cb53ea[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m33d882ab5[m [CPACSWriter] Fixed fuselage tip section arrangement in CPACS. TiGL Viewer visualizes nose tip correctly. TODO: check fuselage tail tip representation in TiGL Viewer. Add wings.
+[33m15d2ef824[m [CPACSWriter] Fixed bug on fuselage output. Now TiGL Viewer reads correctly the CPACS v3 compliant output. TODO: refactor and treat correctli the fuselage nose and tip points (collaps)
+[33m43c0d30e3[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m22109741a[m [CPACSWriter] More work on CPACS v3 output. 3
+[33m8e0595e87[m [JPADCAD+Sandbox] More work on AircraftUtils
+[33m32c52bbec[m [CPACSWriter] More work on CPACS v3 output. 2
+[33m543bb3687[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m9834657cd[m [CPACSWriter] More work on CPACS v3 output.
+[33m23a8612b4[m More tests on IRON performance and more work on ACPerformanceManager concerning TakeOff
+[33mde6fee379[m [CPACSWriter] Now a JPAD fuselage is witten in a CPACS v3 compliant file. TiGL3 now reads with no errors. TODO: get rid of warning on null list of points that prevents building a correct profile spline.
+[33mb38a7747b[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m2d95c31e2[m [JPADCAD+Sandbox] More work on AircraftUtils
+[33m83d395caa[m [CPACSWriter] more work on fuselage export function. Fixed bug in FuselageCreator. Now TiGL3 reads the fuselage, need to correct some minor errors
+[33m96807a396[m [CPACSWriter] more work on fuselage export function. Checking CPACS v3 compliance. TODO: still TiGL Viewer 3 chashes when reading the single fuselage
+[33m63a3c9c80[m More tests on IRON performance.
+[33mf4e9411d2[m [JPADCPACSWriter] added notes to <sandbox2>/out/CPACS
+[33m483721556[m [JPADCPACSWriter] Validating JPAD fuselage written as CPACS v3. TODO: populate positionings and segments in fuselage node.
+[33mf31dcf47f[m [JPADCPACSWriter] new function to get a list of fuselage sections. Preparing to format a fuselage as CPACS v3. TODO: get a cpacs file ready for TiglViewer.
+[33m7d9050c97[m More tests on IRON performance
+[33m56ac4acae[m More on CPACSWriter. More functions.
+[33madb051717[m [JPADCore_v2] new feature CPACSWriter started. Some additional static functions in write-utils. New sandbox2.adm.cpacs.writer.Test01
+[33m78afc4a71[m [JPADCAD+Sandbox] More work on AircraftUtils
+[33m5e9687843[m [JPADCAD+Sandbox] More work on AircraftUtils, new Test19mds
+[33mb3f5d4b62[m Minor changes to JPADCommander aircraft input files.
+[33maba0d548b[m More work on JPADCore_v2 concerning Take-Off: a check on the comparison between V_Rot and VMC has been implemented.
+[33m29320f456[m More tests on IRON performance.
+[33me7bef89b7[m More test on IRON - Performance
+[33mecb1cc290[m Update README.md
+[33m313dbdcc6[m [JPADCAD+Sandbox] Test18 code review. Wing+Fuselage solid output in STEP format. Imported in StarCCM+
+[33m156991079[m [JPADCADSandbox] More work on AircraftUtils
+[33m54b005bbd[m More work on JPADCommander
+[33m5483320d7[m [JPADCAD+Sandbox] More work on AircraftUtils
+[33m7b848b80e[m More work on JPADCommander concerning the InputManager.
+[33ma9d5f06ab[m More test on IRON - Performance
+[33md1ba23910[m More test on IRON - Performance
+[33m7ec94f255[m [JPADCAD+Sandbox] More work on AircraftUtils, new method projectPointOnCurve in OCCUtils
+[33m96a0bc279[m More work on JPADCommander
+[33ma5860a9ae[m [JPADCAD+Sandbox] More work on AircraftUtils
+[33m8b59d0731[m More work on JPADCommander
+[33m1ab84092e[m new file in DOCS - Pianificazione JPAD
+[33ma84fc3229[m [JPADCAD+Sandbox] More work on AircraftUtils
+[33mf961f636f[m More work on JPADCommander concerning the InputManager.
+[33mec89bbb0b[m [JPADCAD+Sandbox] More work on AircraftUtils, small mods to OCCUtils.splitEdge
+[33mc6b6c8e19[m More work on JPADCommander concerning the InputManager.
+[33m20ee17f2f[m More work on JPADCommander concerning the InputManager.
+[33m7eb4aa141[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33maa5622150[m More work on JPADCommander concerning the InputManager.
+[33md25fbc0d0[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m19fda3b66[m More work on JPADCommander concerning the aircraft data update.
+[33m1f4d82909[m minor changes in JSBSimModel class
+[33m9e62487dd[m minor changes in JSBSimModel class
+[33m1cb8f895a[m [JSBSim] more checks on FDM and thrust
+[33m4dba301ce[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m7fef8d4d6[m [JPADCAD+Sandbox] Test19a, added new features to CADGeomCurve3D, more work on wing tip reconstruction.
+[33mbf0fb161f[m Works on CPACSReader and JSBSimUtils class
+[33me9b706523[m Works on CPACSReader and JSBSimUtils class
+[33m00cb7a560[m [JPADCAD+Sandbox] More work on AircraftUtils
+[33me5fa560e7[m [JPADCAD+Sandbox] Test19a, wing tip reconstruction example, filler loft surface based on splitted edges.
+[33mc1582fe87[m More work on JPADCommander: aircraft save action completed.
+[33m491bab46a[m [JPADCAD+Sandbox] Test19a, refinements. New function OCCUtils.splitEdge
+[33mfc0b8759b[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m5e524836b[m [JPADCAD+Sandbox] Test19a, splitted a CADCurve3D successfully with BOPAlgo_PaveFiller. TODO: make smaller lofts with subedges of guide curves.
+[33m2e5578210[m More work on JPADCommander: InputManager almost complete.
+[33mb6522b173[m [JPADCAD+Sandbox] Test19a, splitting edges and creating fillers. TODO: check BOPAlgo_PaveFiller
+[33m4a3af93ac[m [JPADCAD+Sandbox] Test19, OK. Making a filler surface between two guide curves and a terminal section. Constraining the surface to additional points.
+[33m1593dfc19[m [JPADCAD+Sandbox] Test19, refinements and well established filler surface
+[33mf49faa00f[m [JPADCAD+Sandbox] More work on AircraftUtils
+[33m3ddf7164e[m [JPADCAD+Sandbox] Test19, loft through sections and then constrained. TODO: fix the constraining step
+[33md43b13c04[m [JPADCAD+Sandbox] More work and testing on AircraftUtils
+[33m591c47b4d[m [JPADCAD+Sandbox] Test19, loft through sections and then constrained by a curve. TODO: fix the curve constraining step
+[33mac57a1c64[m [JPADCAD+Sandbox] Test19, strt working on lofts through sections with guide curve constraints
+[33m05603f680[m [JPADCAD+Sandbox] Some work on AircraftUtils + new Test18mds
+[33m9b5575e66[m More work on JPADCommander.
+[33mcf9ecb340[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mf32ac9ce8[m more work on analysis manager controller
+[33m95740efcb[m More work on JPADCommander
+[33m79c047df3[m More work on JPADCommander.
+[33m52ae538f6[m Fixed some errors in Aeordynamic and Stability
+[33m0b17a8a7c[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33mc1acc94b2[m [JPADCAD+Sandbox] Test18, initial work on wing loft + solid.
+[33m597885970[m More work on JPADCommander.
+[33mcad40b619[m [JPADCAD+Sandbox] Habemus fuselage solid! See Test16 and test16_solids.brep
+[33mb00eda08d[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m2dd2ffbf5[m [JPADCAD+Sandbox] More on making solids in Test17. A simple tetrahedron is now created as a solid (CADSolid from CADShell).
+[33m80f2aa88f[m Fixed some errors in Aeordynamic and Stability
+[33m36f05fbf5[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m66cd7d4ae[m working on analysis manager controller
+[33m131657a61[m [JPADCAD+Sandbox] new Test17 on a simple solid.
+[33m20b9486e3[m [JPADCAD+Sandbox] Minor mods to Test16
+[33m5c0fc6320[m More work on JPADCommander.
+[33m809fbce7f[m More work on JPADCommander.
+[33m65b0b741f[m [JPADCAD] Fixes to CADShapeFactory and to AircraftUtils.getFuselageCAD
+[33m8695ab2f7[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m3fb9d2014[m Debugging Aerodynamic and Stability
+[33m987385805[m More work on JPADCommander.
+[33m61c1a0950[m More work on ACPerformanceManager and more tests on CS300.
+[33m36678014e[m Fixed some errors in Aeordynamic and Stability
+[33mc70d6d18b[m Fixed some errors in Aeordynamic and Stability
+[33m7b33e1b4d[m Minor changes in ACPerformanceManager
+[33m50bf68b79[m [CPACS/JSBSim] More work on JSBSimModel, writeScriptFile function. Added cyclic notify function in default scripts.
+[33me5d7abb8e[m minor correction in CPACSReader
+[33mf47152965[m minor correction in CPACSReader
+[33m868cd1608[m More test on IRON and CS300
+[33ma93593a8b[m [CPACS] More on testing CPACSReader, in sandboxv2.adm.cpacs
+[33meffc33b57[m More tests on IRON
+[33mad0902ce8[m More work on JPADCommander.
+[33m06c10d7e4[m Minor modifications
+[33mb245b45a7[m More work on JPADCommander.
+[33md0ab9d248[m More work on JPADCommander.
+[33m78d5f6c36[m [JPADCAD+Sandbox] RHS of fuselage obtained as unique loft as a result of multiple patch sewing. LHS loft obtained by mirroring. Exporting as two lofts. TODO: sewing RHS+LHS, see if a solid comes out with OCCT low-level functions.
+[33md8abba746[m [JPADCAD+Sandbox] Experimenting with faces exploration algorhythms in OCCT. TODO: still need a solid export.
+[33m5bc049ade[m More work on JPADCommander
+[33m71eae49e5[m More work on JPADCommander.
+[33m124e022e6[m [JPADCAD+Sandbox] More work on discretized curves from edges. Need to get a discretized version of the supporting curves and surfaces to get working a solid.
+[33m20d54d22d[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m727c65332[m Minor changes
+[33mef14ccc60[m [JPADCAD+Sandbox] More work on fuselage surface cad and export. TODO: need to figure out the way a solid can be created.
+[33m8f70f7f6d[m Debugging Aerodynamic and Stability
+[33m21f55a6b9[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33meaab30132[m [JPADCAD+Sandbox] Working at the solid export feature. TODO: need to check the consistency or consecutive edge orientations when filling a closed set of curves.
+[33m7b6b6b57e[m More work on JPADCommander.
+[33m903fc6b83[m More work on aerodynamic debug
+[33m3b8ddc2cd[m [JPADCAD+Sandbox] More work on Test16. TODO: solid export
+[33mffae52795[m New reference to database in JPADCADSandBox. More work on JPADCommander.
+[33m761bc3fa0[m [JPADCAD+Sandbox] Now all the tests reside in JPADCADSandbox projects, which depends on JPADCAD and JPADCore_v2. JPADCAD doesn't depend anymore on PDADCore_v2.
+[33md9bffd067[m JPADCADSandobox project created. Test16.
+[33m081d87304[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m9d6df6494[m More work on JSBSim model of D150_AGILE
+[33m51283fbc2[m More work on JPADCommander.
+[33m83803b314[m More work on aerodynamic debug
+[33m7638aa957[m Some correction in JSBSimUtils class
+[33m906d69c06[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mb5a4227aa[m More work in sandboxv2.mds, Test4+Test5. New version of apache.commons.lang
+[33m9212c44f4[m Some changes in CPACSReader
+[33m4c074ff07[m Some changes in CPACSReader
+[33mc5d19570b[m Some changes in CPACSReader
+[33m462ae5a30[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m3603f4bec[m [JPADCAD] Now the external fuselage surface (loft) can be exported as a unique sewed shell. TODO: 1) define a flag that user can set if he wants a sewed surface; 2) make a shell out of the fuselage outline in XZ plane (as plating surf.) and make a solid TopoDS_Shape.
+[33mcae535f43[m Debugging Aerodynamic and Stability
+[33md0689d330[m More work on JPADCommander.
+[33m32b435f71[m Minor changes
+[33m840612541[m Minor changes
+[33m76781f51c[m [JPADCAD] Forza Napoli!
+[33mf1dc4e645[m [JPADCAD] Refinements to solid output.
+[33m9a72c8579[m Minor changes to .gitignore
+[33mff1a45ae6[m More work on JPADCommander and some changes in .gitignore
+[33mbdb7875cc[m [JPADCAD] Started implementation of OCCSolid. Refactoring of JPADCore_v2 cad package: unused code removed.
+[33m42382adc7[m Minor twaeks to gitignore 2
+[33m155b99003[m Minor twaeks to gitignore
+[33mc648507ce[m Fix merge issues.
+[33m0f016f669[m [JPADCAD] Test14 complete: fuselage loft (multiple surfaces with coincident edges) is now entirely created and exported in BREP format; user can choose to export the loft surface or/and the CAD supporting curves (sections actually used to create the loft, right-side outline, and upper/lower sideview outlines). TODO: 1) add sewing of multiple lofts, 2) create a solid, 3) export in STEP format.
+[33mc76794ce1[m More work on JPADCommander
+[33m705a326eb[m [JPADCAD] More on fuselage loft: Test14 now creates the tail cone. TODO: 1) add tail cap and sew; 2) make a solid.
+[33mc8038fb15[m Debugging Aerodynamic and Stability
+[33ma6ea593ac[m [JSBSim-CPACS] Code review. 2
+[33ma666dad70[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m2ec794fed[m [JSBSim-CPACS] Code review.
+[33me9ea122c0[m Minor Changes
+[33m7bc25345d[m Minor Changes
+[33m61c56b9bb[m Minor change in CPACSReader class
+[33m1891c874b[m added script, initialize and run, minor changes in CPACS reader and JSBSim
+[33m8a8ac7e9c[m added script, initialize and run, minor changes in CPACS reader and JSBSim
+[33m2a74e0795[m Minor changes to ACPerformanceManager.
+[33mb95e6a409[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m5768d9766[m [JPADCAD] More refinements in fuselage cad reconstruction, Test14. Now nose+cylinder trunks are made with optional extra curves. TODO: implement OCCSolid class and enable loft output as solid.
+[33m03c06bd57[m Minor changes in ACPerformanceManager.
+[33m4bbeb0357[m [JPADCAD] Minor modifications to Test14. More examples in sandbox2.mds
+[33mce3f1210f[m [JPADCAD] Minor modifications to Test14
+[33m66aba484c[m Conflict on Test12.brep merged
+[33mdfd6d3475[m JPADVector - to be deleted
+[33m366b536c6[m JPADCAD: refactoring fuselage nose patch generation, Test14, surface generated with a nice nose cap and all support curves. TODO: apply sewing function to nose patches. Implement cylindrical patch generation.
+[33m1864aca4b[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m5124237c5[m JPADCAD: more work on fuselage nose patch, Test13, surface generated with a nice nose cap. TODO: make the nose patch in two separate steps, cap first (with nose tip vertex), then the rest; finally, apply sewing function.
+[33m37c066303[m IRON analyses have been done.
+[33m4b08d9771[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m1acf9a879[m Minor Changes
+[33m60c5b7b59[m JPADCAD: fuselage nose patch, Test13, surface generated. TODO: make the nose patch in two separate steps, cap first (with nose tip vertex), then the rest; finally, apply sewing function.
+[33m6ce04bb4d[m JPADCAD - refinements to the fuselage nose reconstruction example (Test12).
+[33m388e418fa[m JPADCAD: Test12, fuselage nose cap modelling
+[33m8015465b0[m Fixes (home laptop): path processing lib v3.3.6, GetXMLAmountByPath: more reliable code for degree symbol, removed experimental JPADPVector and keep on using processing PVector
+[33m218ed67be[m Fix: Added processing lib v3.3.6
+[33mcf7b71f26[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m8f3429aeb[m JPADCAD Test12 - making a fuselage nose patch as a loft passing through multiple sections. Minor refactoring and some libs upgraded.
+[33m92113a816[m More work on JPADCommander concerning Wing, HTail, VTail and Canard.
+[33m6004ca305[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33maee0d8080[m JPADCAD Test12 - reading a complete aircraft and picking the fuselage. Refactorizations in jpadcad.utils
+[33m6ccc648d4[m Executable for AGILE framework is finished
+[33mf52f7bdb1[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m3151d141b[m Refinements in JPADCAD and OCCUtils
+[33m13ec9b7d8[m More work on JPADCommander concerning Wing, HTail, VTail and Canard.
+[33m511d43be7[m Refinements in JPADCAD - new library: lombok
+[33ma738e5cb1[m More classes and examples in JPADCAD
+[33mf01f99efb[m Minor changes
+[33m741ab07a3[m New tests and more work in JPADCAD, 2
+[33m718627b3d[m New tests and more work in JPADCAD
+[33mc09f43ed6[m More work on JSBSimModel + 4-dimensional tables in JSBSim
+[33mf878fe003[m Minor merge errors fixed
+[33m333d82712[m Minor change
+[33m998777d82[m more change
+[33m7a90c11e2[m Revamped tests on cad utils. JPADCAD project. TODO: need to port old cad examples from sandbox v1 to v2
+[33m8635d5156[m Removed .apt_generated/* from repository
+[33m0357a7d67[m Some changes in CPACS reader, added a new class JSBSim utils
+[33mbe2462a94[m Some changes in CPACS reader, added a new class JSBSim utils
+[33m3938ecc49[m More work on JPADCommander concerning CabinConfiguration.
+[33m809340d36[m Di Stasio first commit. Minor changes
+[33m74cc43e8a[m More work on JPADCommander concerning CabinConfiguration.
+[33me7196d619[m More work on JPADCommander concerning CabinConfiguration.
+[33mb276e76d9[m Executable for AGILE framework in development
+[33mc020d2f1b[m More work on JPADCommander: d3plotter deleted, now JFreeChartFx is used. Minor changes in JPADStaticWriteUtils.
+[33m173f22755[m New feature: SVG Charts for all analyses. More work on JPADCommander.
+[33mbbd23a913[m Executable for AGILE framework in development
+[33md7172497f[m Executable for AGILE framework in development
+[33m8409ba04a[m new SmoothCharts test.
+[33mdb83ca3da[m Minor changes
+[33m34ec72305[m More work on JPADCommander.
+[33mce042b9ad[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m54a020c07[m :More debug on CPACSReader
+[33mfc10024a3[m Write aircraft to file: Completed. More work on JPADCommander.
+[33mcc801e767[m Debug on JSBSimModel and CPACS reader , need to check tank position
+[33m8940fcbcf[m Debug on JSBSimModel and CPACS reader , need to check tank position
+[33m982a781f8[m Minor changes
+[33m73723e8db[m Minor changes
+[33mab06b2cc3[m More work on JPADStaticWriteUtils.
+[33m310c1be23[m Executable for AGILE framework in development
+[33mf7d86fa6e[m Minor changes
+[33m083169040[m Complete Analisys Test ATR72 runs as expected in non-debug mode
+[33m921ebb074[m ACPerformanceManager: Completed. More work on ACAnalysisManager and ACBalanceManager.
+[33m49053d47c[m Minor changes
+[33m2ec63f9eb[m More work on ACPerformanceManager.
+[33mfced739a6[m More work on ACPerformanceManager
+[33md4f27e423[m More work on ACPerformanceManager
+[33m3b772f854[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33md8aff6454[m New utility functions in MyJPADXmlReaderUtils. More debug of CPACSReader / JSBSimModel classes
+[33mdcc11bc71[m More work on ACPerformanceManager
+[33mcc4f009f5[m minor modifications
+[33m6e16c572b[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m3a2d3a864[m Minor changes
+[33mb92904414[m minor mods
+[33mf088eee51[m More work on ACPerformanceManager: the link with ACAerodynamicAndStabilityManager is completed. Some errors still have to be fixed.
+[33m9c758fb42[m More work on ACPerformanceManager: reading aerodynamic and stability data from the ACAerodynamicAndStabilityManager.
+[33m6e5db2306[m More work on ACPerformanceManager: FreeBuilder. All the performance input files have been modified to take into account for different center of gravity position.
+[33m652ece573[m Reading from previous analysis has been updated: now it does not rely on the previous output files but upon the specific analysis manager. Balance, Aerodynamics and Costs are completed. More work has to be done for the Performance.
+[33m4da322536[m More work on CPACSReader and JSBSimModel
+[33me11b21802[m Add function to CPACSReader and JSBSimModel
+[33m64c8b0c3f[m Work on sandbox_v2.gt - CPACSReader class in JPADCore_v2
+[33med52f9ac8[m Minor Modification
+[33mb0387a9ab[m Work on sandbox_v2.gt - low level calls to MyXMLReader functions within CPACSReader
+[33me50a9d5ea[m Giuseppe works on Sanbox CPACS interface
+[33macdb2189d[m Work session on PDFu tests. New utility function in JPADXmlReader to read attributes.
+[33m55acf81b5[m Minor changes.
+[33mb8a81820f[m Minor changes
+[33m6ad47cb13[m More tests.
+[33m963c15833[m Revamp AVLExternalJob test. Bugs corrected in analysis file reading functions. TODO: check statements with if(varName.function() || varName == null) - swap the order of tests to avoid NullPointerException
+[33m2bf4247f3[m Minor changes.
+[33m9cbf1b9e2[m More tests on the new aircraft models.
+[33maf49a6aba[m More tests A320, CS300, AGILE_NTP, DASH8
+[33mecb52445c[m More tests on ATR-72 and A320. New feature: possibility to toogle the creation of CSV files for each plot.
+[33ma1c7703c7[m A320 analyses have been performed
+[33m1f738a266[m More tests on the new aircraft models.
+[33m0e7c1614d[m More tests on the new aircraft models.
+[33m18b1ba65c[m Minor changes.
+[33m85cbfdad8[m New test in Sandbox2.adm.cpacs for Tigl v2.2.1 - TODO: Torre, tests 01 and 02
+[33made15230b[m More work on downwash calculation
+[33mc44344ce7[m Work in downwash calculation
+[33mebc72a8c6[m Minor changes.
+[33mb8a17d2be[m Minor changes.
+[33ma9f063076[m Minor changes
+[33mb9f567a74[m More work on databae serializaition.
+[33mc51e46c90[m More work on database serialization.
+[33m64ecc7342[m More work on JPAD-Apps/JPAD_Executable/Test_01.ipynb
+[33mb8b1439b7[m AGILE Turboprop added to JPADCommander input folder.
+[33m94972f21a[m A320 added to JPADCommander input folder (still incomplete).
+[33m3f472e512[m New input files has been added
+[33mf60d22087[m CS-300 added to JPADCommander input folder.
+[33m3cc395d1f[m DASH-8 Q400 added to JPADCommander input folder.
+[33m42e71767f[m new aircraft in JPADCommander config
+[33mcb58b5b40[m More work on ACAerodynamicAndStabilityManage.
+[33m08ac904f6[m Some tests in JPAD-Apps/JPAD_Executable
+[33m5cab2c301[m JPAD executable created in JPAD-APPS
+[33m52c046e77[m New files in sandbox2/pdfu
+[33mf9153aadc[m Minor changes in JPADCommander.
+[33m00614bdfb[m More work on wingAnalysis
+[33m26651e747[m More work on ACAerodynamicAndStabilityManage.
+[33m2c0ec77e9[m More work on ACAerodynamicAndStabilityManager.
+[33m7af0eb731[m More work on ACAerodynamicAndStabilityManager.
+[33m171845e1c[m More work on ACAerodynamicAndStabilityManager.
+[33m5e924d89b[m More work on ACAerodynamicAndStabilityManager.
+[33m8c0992295[m More work on ACAerodynamicAndStabilityManager.
+[33m25596c537[m More work on ACAerodynamicAndStabilityManager.
+[33m265d8dd8e[m More work on ACAerodynamicAndStabilityManager.
+[33mb70c5d632[m More work on ACAerodynamicAndStabilityManager.
+[33m344b396b7[m Minor changes.
+[33m9e4760345[m More work on ACAerodynamicAndStabilityManager.
+[33mdd50f10cb[m More work on ACAerodynamicAndStabilityManager.
+[33m899254bf3[m More work on ACAerodynamicAndStabilityManager.
+[33md42ced1d3[m More work on ACAerodynamicAndStabilityManager.
+[33ma72578dde[m More work on ACAerodynamicAndStabilityManager, plot
+[33mf1b4eac4b[m More work on ACAerodynamicAndStabilityManager, plot
+[33mc4cf41abf[m More work on ACAerodynamicAndStabilityManager, plot
+[33me9b6d809c[m More work on ACAerodynamicAndStabilityManager, plot
+[33m17db17d74[m More work on ACAerodynamicAndStabilityManager, plot
+[33md49fa97cf[m More work on ACAerodynamicAndStabilityManager.
+[33md9a1fc50c[m More work on ACAerodynamicAndStabilityManager.
+[33m526c3bf84[m More work on ACAerodynamicManager.
+[33m4735751e0[m More work on ACAerodynamicAndStabilityManager, plot
+[33m1f14a9551[m More work on ACAerodynamicManager.
+[33ma80adb345[m More work on ACAerodynamicAndStabilityManager, plot
+[33mf99dd6f84[m More work on ACAerodynamicManager.
+[33mef1d4dc42[m More work on ACAerodynamicAndStabilityManager.
+[33m4108501a4[m minor changes
+[33m6050167ed[m More work on ACAerodynamicAndStabilityManager.
+[33m7184cce9e[m More work on ACAerodynamicAndStabilityManager, plot
+[33m22d2e147a[m More work on ACAerodynamicAndStabilityManager.
+[33mc68f89880[m More work on ACAerodynamicAndStabilityManager, plot
+[33m0a4be347f[m Minor changes.
+[33m990465153[m More work on ACAerodynamicAndStabilityManager.
+[33m6f979430c[m More work and tests on ACAerodynamicAndStabilityManager.
+[33m3c5fba436[m More work on ACAerodynamicAndStabilityManager, plot
+[33m391cd11d3[m More work on ACAerodynamicAndStabilityManager, plot
+[33m70cd27225[m More work and tests on ACAerodynamicAndStabilityManager.
+[33m2dbc7532b[m More work on ACAerodynamicAndStabilityManager, plot
+[33m8345925d4[m Minor changes.
+[33mbd0936c7c[m More work on ACAerodynamicAndStabilityManager, plot
+[33m7aa1dda33[m Minor changes.
+[33m883c2dd5f[m More work on FusAerodynamicManager and NacelleAerodynamicManager.
+[33m5c48638bf[m More work on ACAerodynamicAndStabilityManager, plot
+[33m319d57f0f[m More work and tests on ACAerodynamicAndStabilityManager.
+[33m697afc0ee[m More work on ACAerodynamicAndStabilityManager, plot
+[33m76e2dc586[m More work and tests on ACAerodynamicAndStabilityManager.
+[33m937ac525b[m merge
+[33mc4e736231[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m14f1b0c18[m Work on ACAerodynamicAndStability
+[33m8918b92b9[m Minor changes.
+[33m2d9dd9d82[m More work in MomentCalc concerning the calculation of the fuselage CMalpha with the Multhopp method.
+[33m5297cddf6[m Minor changes.
+[33m5564ec62e[m More work on ACAerodynamicAndStabilityManager.
+[33m53bd18f17[m Minor changes
+[33m4a8a8a327[m More work and debug on the ACAerodynamicAndStabilityManager.
+[33m4f60847fd[m More work on ACAerodynamicAndStabilityManager. Some changes in the toXLSMethods. Tests on ACAerodynamicAndStabilityManager.
+[33mfb04e1f4f[m More tests on importing STL files in various ways: interactivemesh, toxiclibs, STLLoader by mihosoft
+[33m36c606186[m ACAerodynamicCalculator has been refactored to ACAerodynamicAndStabilityManager. The old ACAerodynamicManager has been removed (the back-up is in JPADCore). More work on ACAerodynamicAndStabilityManager.
+[33m5d0af89ea[m More on tests of JavaFX, toxiclibs, Fxyz
+[33m3ba7c7d03[m New Test03 of toxiclibs features. JavaFX app visualizing a wing imported from .stl
+[33maeee2b4bc[m More work on ACAerodynamicCalculator concerning the toXLS method.
+[33m8a7be90e0[m More work on ACAerodynamicCalculator. The debug phase has started.
+[33m764b4dedd[m More work on ACAerodynamicCalculator.
+[33m1e0dc91f0[m More work on ACAerodynamicCalculator.
+[33mfa90b0abe[m More work on the importFromXML method in ACAerodynamicCalculator
+[33m443ac77b3[m More work on the importFromXML method in ACAerodynamicCalculator
+[33m9d4a796ce[m More work on ACAerodynamicCalculator concerning the importFromXML method.
+[33mb01d1b658[m Work on high lift modified stall path in executable. Problems with installing jdk 144. sorry!
+[33m30a9cc64c[m New test of toxiclibs, bezier patch and mesh/triangulation
+[33m775afd983[m Testing toxiclibs - STL file I/O and mesh manipulation
+[33me3c4f48b0[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m45421872e[m Work on high lift modifed stall path in executable.
+[33m5152913e7[m Update to Java jdk1.8.0_144.
+[33m4047fde53[m Minor changes
+[33mb93790b21[m More work on aircraft analysis template 2
+[33mcfdbc8962[m More work on aircraft analysis template
+[33m6b52ba4d4[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m6cd30258c[m Updated charts fx lib by HanSolo
+[33mc5c834ad8[m More test on ATR-72
+[33mb3b377d9a[m Review of weights, balance and performance modules: tests on ATR-72 model.
+[33mca1f46d3d[m Work on high lift modifed stall path in executable.
+[33mb5dbfb376[m Some more on charts fx by HanSolo
+[33me5bafbf14[m More work on ACAerodynamicCalculator.
+[33m7a6be4099[m Work on high lift modifed stall path in executable.
+[33m7c9ba650b[m More work on ACAnalysisManager.
+[33m1d3ce40d9[m More work on ACAerodynamicCalculator.
+[33mea84e9ec3[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mb807c30a6[m More work on the weights estimation and engines.
+[33ma32093c93[m Work on high lift modifed stall path in executable.
+[33m357cf107e[m Work on high lift modifed stall path in executable.
+[33me1be8f1eb[m More work on the weights analysis: new class ACWeightsManager2 to test new features.
+[33mbbc639c26[m More work on ACWeightsManager and on ACCostsManager.
+[33m899b80f3d[m Work on high lift modifed stall path in executable.
+[33m1d0012a75[m Work on high lift modifed stall path in executable. Now it is possible to obtain an .xls as output file.
+[33m123a8bf68[m Work on high lift modifed stall path in executable.
+[33m099047eb1[m More work on ACCostsManager
+[33mff632a2ab[m Work on high lift modifed stall path in executable.
+[33m0cc8ecb99[m Work on high lift modifed stall path in executable.
+[33m1327b427d[m More work on JPADCommander
+[33mc81649bde[m Work on high lift modifed stall path in executable. Now it is possible to manage high lift devices
+[33m43abc0351[m Minor modifications on my office PC.
+[33m9a9f5d226[m More work concerning high lift devices effects calculation.
+[33m2c9ce55b1[m More tests on the weights estimation.
+[33m5ea0a1a5a[m More work on the costs class.
+[33maaa91ae83[m More work on wing optimization
+[33m525ac3dde[m More work on wing optimization test
+[33m4ef4e81f4[m Work on high lift modifed stall path in executable
+[33mcdfa3a0f6[m More work on costs
+[33m3195b2aa8[m Minor work after briefing
+[33m3d4f9fa5a[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m17ff3f00b[m Minor mods
+[33m17e4bad89[m More work on the costs class.
+[33m4cdede80f[m Minor changes
+[33meecf1363b[m More work on JPADCommander.
+[33mc2c000526[m Work on high lift modifed stall path in executable
+[33m9157e18c3[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m4a94e56fe[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mbc1a744ed[m More work on costs classes. importFromXML is now complete
+[33m7a9191462[m Work on high lift modifed stall path in executable
+[33m676968645[m More work on wing optimization test.
+[33m7a8e960e1[m Minor changes
+[33mf4352386c[m Minor changes
+[33mbccae84a9[m Minor changes.
+[33mc7f1977dc[m More work on ACAerodynamicCalculator and ACCostsManager.
+[33m92a3e8b7e[m More work on OperatingConditions and ACAerodynamicsCalculator.
+[33m2429af10f[m Minor changes
+[33m057b81b71[m Minor changes
+[33mc6f623d2c[m More work on ACCostsManager.
+[33mc33ea9a7f[m Stability methods are now completed
+[33mb359330dc[m More work on Costs classes - Working on importFromXML
+[33m96500f7b5[m More work on JPADCommander.
+[33m16a49f069[m More work in JPADApps concerning classpath variables.
+[33md516041c4[m Minor changes
+[33m9fa557244[m Minor changes
+[33m6b2fc0782[m Added icu4j v 0.59_1 in LIBRARY_FOLDER and updated .classpath
+[33mcaf926fc6[m More work on stability classes
+[33m64eac1205[m More work on JPADCommander and the wing optimization test.
+[33mc865284cd[m More work on wing optimization.
+[33m643e759fe[m More work on ACAerodynamicsCalculator.
+[33m6e1c8ed06[m More work on JPADCommander
+[33me39940bb9[m More work on ACAerodynamicCalculator and JPADCommander.
+[33m19ce4f032[m More work on stability classes
+[33mfdb28c504[m More work on stability classes
+[33mfafa42339[m Minor changes to ACAerodynamicCalculator and more work on JPADCommander.
+[33mced9b81ea[m More work on FuselageCreator: now it's possible to adjust all fuselage parameters, new test added in sandbox.vt
+[33m169a201ae[m More work on stability classes
+[33m4b00e5b88[m More work on ACAerodynamicCalculator: calculation of currentLiftCurve3D completed. More work on LiftingSurfaceCreator to update wing geometry : task completed. New test in sandbox.vt to update wing geometry.
+[33m3175c8f06[m More work on LiftingSurfaceCreator concerning equivalent wing creation.
+[33mafa8427d4[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33me8d9704a8[m More work on costs classes - Maintenance DOC
+[33m25eadfbc0[m More work on stability classes
+[33me16e0fff2[m Minor mods
+[33m58184b8e2[m More work on the PSO class.
+[33mc9baf107b[m Merge
+[33m179a0a917[m More work on stability classes
+[33md868a8b6b[m More work on the PSO class.
+[33m710b066f8[m Merge
+[33m85c7fab6d[m Merge
+[33m66afb0173[m Commit for merge problem - again - Cost changes
+[33m49bae1611[m Commit for merge problem - Cost changes
+[33m42656e670[m Merge
+[33mf1eee39d0[m More work on stability classes
+[33m690fba91e[m more work on costs classes - DOC maintenance
+[33mf20c2cbfb[m More work on the Particle Swarm Optimization test.
+[33m19046ed77[m New test in sandbox.vt for particle swarm optimization :: work in progress ...
+[33mb8026de84[m More work on ACAerodynamicCalculator.
+[33me86c15454[m More work on stability classes
+[33m3de42c86c[m More work on Costs classes - first part of emissions charge
+[33m7b1f8c710[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m6047a0741[m More work on Costs classes - up to landing DOC charges
+[33m5077e7cf2[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m028e1d5a4[m More work on ACAerodynamicCalculator and the related Enumerations.
+[33m4d2e0bfaf[m Logo_DAF added
+[33mf39d8a08d[m More work on ACAerodynamicCalculator and the related Enumerations.
+[33m8a22a7d58[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33ma908843d2[m More work on Costs classes
+[33maa860a171[m More work on task manager construction for aerodynamic analyses
+[33m76150d58c[m More work on fuselage and nacelle aerodynamics managers.
+[33maa80b1add[m More work on stability class in corev2
+[33m64e432738[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m3261ab8ee[m More work on fuselage and nacelle aerodynamic managers.
+[33mcd87081f4[m More work on stability class in corev2
+[33m7f3ed605a[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m534fee585[m Checkout on Agostino's pc
+[33mfb19549c9[m More work on stability class in corev2, long named file has been deleted
+[33mefdf8b6b8[m Working on Costs classes
+[33mdfcc54252[m More work on aircraftWriterTest: task completed
+[33mf0acb5aec[m More work on stability class in corev2
+[33m616f359c8[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m9b39b2ef7[m Minor changes
+[33m50ceed65f[m More work on saveAircraftToXML. More tests on ACPerformanceManager.
+[33mf66c18b26[m More tests on ACPerformanceManager.
+[33m5a331daa2[m Minor changes
+[33m12ca256d5[m Minor changes
+[33m4c1ee67ce[m Minor changes
+[33mee49fa984[m More work on the landing noise trajectory simulator.
+[33m45919cd1f[m More work on the landing noise trajectory simulator.
+[33m7788beb61[m More work on the take-off noise trajectory simulator: output management.
+[33md9b364bb5[m More work on the take-off noise trajectory simulator: completed
+[33m44575c789[m Tests on the noise trajectory simulator. New calculator class for the AircraftPointMassPropagator.
+[33m43194378e[m More work on the noise trajectory simulator.
+[33m6a3c6bad8[m More work on the noise trajectory simulator.
+[33mcb9e8be00[m More work on the noise trajectory simulator.
+[33m3afe72b71[m More work on the noise trajectory simulator.
+[33mbcca804a8[m More work on the noise trajectory simulator.
+[33ma2f67a4d6[m Merge
+[33m51c69fbf7[m Minor changes.
+[33m779a398fc[m Merge
+[33m45d8219ad[m Merge
+[33m4d58521d3[m Minor changes
+[33m03ca3c04e[m New calculator for noise trajectory: work in progress.
+[33mdc1be1ba5[m Merge
+[33m7e8ce190b[m New features have been added to read an external curve
+[33m79a126968[m Png output have been addes
+[33m6c192191a[m Some tests on LSAerodynamicManager.
+[33m644af26de[m Test of Wing_Analysis ets GUI on agodemar pc 3
+[33md34afcfba[m Test of Wing_Analysis GUI on agodemar pc 2
+[33mea932b4b6[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m83c11162c[m Run configuration has been added
+[33m0b2eb5ead[m Test of Wing_Analysis GUI on agodemar pc
+[33ma9b70a7c9[m new features have been added in gui executable. Libraries have been replaced with variables
+[33m1877699aa[m More work on the Fuselage Aerodynamics Manager.
+[33mac85dc59a[m More work on Nacelle and Fuselage Aerodynamics Managers.
+[33ma0361b2c6[m new features have been added in gui executable
+[33mc740d969a[m new features have been added in gui executable
+[33m80d3eed9f[m new features have been added in gui executable
+[33ma583db62f[m new features have been added in gui executable
+[33m04a30cb5b[m Added an AIAA paper Jan-2017 by DLR on Weight estimation with aeroelastic effects
+[33m7077b7235[m More work on Costs Manager and calculator classes
+[33m0507ee6de[m new features have been added in gui executable
+[33m8c530dab4[m new features have been added in gui executable
+[33m74d086b8b[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mf28d65d95[m More work on AircraftWriter utility
+[33m9790405f2[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mc0850f06c[m working on costs input xml file and on costs classes
+[33mc5383ad17[m Directional stability module has been completed.
+[33m86d9f2814[m Aerodynamic database updated with a new curve (clmax/cLmax). More work on directional stability.
+[33m6b774578c[m More work on directional stability in ACAerodynamicCalculator.
+[33m0721c3d7a[m Minor changes.
+[33m7c03a3fa2[m Error fix in JPADCore_v2, JPADSandBox_v2, JPADCommander.
+[33mff84f455d[m A lot of work on directional stability managers and calculators
+[33m62662e947[m Wing Analysis GUI has been added
+[33m2f89e5920[m new methods added in LiftCalc concerning the buffet barrier limitations.
+[33mfbaff2d8b[m Fixed some errors concerning wing geometry calculation. New way to assign the equivalent wing and to calculate the real wing. LSAerodynamicCalculator completed. LSAerodynamicManager replaced with LSAerodynamicCalculator.
+[33m1219240d5[m More work in LiftingSurface, MomentCalc and LSAerodynamicCalculator
+[33m65e2fa6dd[m More work in JPADStaticWriteUtils
+[33m19dd06051[m More work in cabin configuration write util
+[33m57a247ab9[m More work on LSAerodynamicCalculator, NacelleAerodynamicManager and on JPADCommander.
+[33m82cd18801[m More work on aircraft write utils 2
+[33me2db0e096[m More work on aircraft write utils
+[33mfc6e65245[m methods to evaluate the drag distributions have been added in DragCalc class
+[33m9cd451ffc[m More work on LSAerodynamicCalculator.
+[33m112d225a9[m First working version of the JPADPostProcessorExcel.
+[33ma7f669a6a[m  some charts have been deleted
+[33m027a2848e[m  Minor changes
+[33m91e38cbf5[m More work on the JPADPostProcessorExcel.
+[33mea3eabd1a[m More work on AircraftWrite util
+[33mb561ad19e[m More work on the JPADPostProcessorExcel.
+[33md7a0b1d22[m Started working on Aircraft wrtite class 2
+[33m7d5f3f4af[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m3fac8c672[m Started working on Aircraft wrtite class
+[33m43427924f[m  added JPAD map in DOCS
+[33m1f055279e[m  added JPAD map in DOCS
+[33m5af06b73d[m More work on the JPADPostProcessorExcel.
+[33m2587addc0[m Test Jupyter/Matlab with Matlab 2017a - ok
+[33ma0df47916[m Test Jupyter/Matlab with Matlab 2017a
+[33m156a39a92[m New tests in jpad/Jupyter/Sandbox - testing units of measure in Python with package Pint
+[33m359a6de14[m More work on the excel post processor.
+[33m72c3386eb[m More work on the excel post processor.
+[33m377538223[m New plot feature: Chart to .csv. Minor changes to ACAnalysisManager.
+[33m061a0c2cd[m  added JPAD map in DOCS
+[33mb8d815bbd[m New stuff concerning the creation of .csv output files.
+[33m7b7c8ccb1[m New class Excel post processor. Work in progress.
+[33mc39d2dfc0[m A breif JPADCommander presentation added in DOCS.
+[33m7977bc76f[m New stuff in DOCS: tesi Torre and tesi Scarlatella
+[33m7320e7682[m More work on ACBalanceManager: Now is possible to calculate the Zcg as a percentage of the mean aerodynamic chord.
+[33mb3504f4a6[m More work on ACPerformanceManager concerning the descent phase. Now the fuel flow during descent is interpolated between cruise and flight idle setting.
+[33m4423f564b[m More work on IACAerodynamicManager and the aerodynamic xml input file.
+[33mbc1f73356[m  In order to evaluate the CD0 from airfoil, a new class has been added in LSAerodynamicManager
+[33m059b83c97[m More work on ACAerodynamicManager.
+[33m58fb8b0fb[m A new method to calcuate the downwash angle has been added
+[33m862104a7e[m Minor changes
+[33m254f46722[m A new method to calculate the variable downwash gradient has been added.
+[33m869744fad[m More work on the new HighLift executable. More work on ACAerodynamicManager.
+[33m651afd669[m The xml tags have been changed.
+[33m87c403214[m More work on the new high lift executable. More work on LSAerodynamicCalculator and LiftCalc.
+[33m88699be2a[m More work on ACAerodynamicCalculator, LiftCalc and AerodynamicCalc. Some utilities have been added in standaloneUtils.
+[33m50386c9d2[m More work on stability executable.
+[33mbaa3ee2fb[m test2Read in English
+[33m1c3dfcf69[m More work on the new version of the High Lift executable.
+[33m2d1d4b8bf[m Test Read file XML
+[33m373d35054[m More work on stability executable.
+[33me01bcde8f[m More work on the new version of the High Lift executable.
+[33m4073c934b[m More work on stability executable.
+[33m17633ab33[m Updated to java 8_121 on my laptop
+[33m5853de817[m More work on the new high lift executable.
+[33m75dd852ef[m New Test in SandBoxv2.bs
+[33m34e7668b1[m Minor change
+[33m1e6d6309b[m minor changes
+[33m47b84911f[m Test1 in sandbox2.bs ok. Loading an fxml file, using an fx:id in the main controller class.
+[33mfa284ee33[m Test on sandbox2.bs 2
+[33m71cd70699[m More work on the new version of the high lift calculator.
+[33m8c7bd6bb9[m Test on sandbox2.bs
+[33me30a2c491[m The new version of the Take-Off executable is now complete. Work on the new High Lift Calculator executablehave started. Some errors fixed in JPADCommander.
+[33m61e4e742b[m Some changes in JPADCore_v2 and JPADSandBox_v2 concerning compile errors.
+[33m025692f19[m More work on stability executable
+[33md4f66ae04[m More work on stability executable
+[33med2edd093[m More work on the new take-off executable.
+[33m747711938[m More work on the take-off executable (v2). More work on the ACAerodynamicCalculator and ACAnalysisManager.
+[33m63e36262b[m More work on the take-off executable (v2). More work on the ACAerodynamicCalculator.
+[33m9450807e4[m More work on the new version of the take-off executable.
+[33maf237d6a0[m The method writeToXML has been modifyed in order to write arrays of amount in excel as unit and values.
+[33m5d0540e25[m More work on the new version of the take-off executable.
+[33m3fd1264c4[m New test in sandbox_v2 in order to build the new take-off executable.
+[33m0f20be69c[m More work on airfoils and ACAerodynamicCalculator.
+[33m99f747f88[m Minor changes
+[33m38352c87a[m Fixed some errors in JPADCore_v2. More work on airfoils: Now the airfoil class is completed.
+[33mbe86eedc0[m Fixed some errors in JPADCore_v2 and JPADSandBox_v2. More work on airfoils.
+[33m089ddbccb[m Some methods in AirfoilCalc have been added
+[33me8024f4e4[m More work on AirfoilCreator and the airfoil input files.
+[33m543556ce7[m  Minor changes in AirfoilCalc
+[33m10d9dcc06[m  Minor changes in AirfoilCalc
+[33mab8e60028[m  More work on the AirfoilCalc class
+[33maa1bf63b3[m  More work on the AirfoilCalc class and on LiftCalc class in order to use a fourth order polynomial equation for the non linear trait of lift curve
+[33m38ddb5a88[m  More work on the AirfoilCalc class.
+[33mf4990527d[m Minor changes on DirectionalStability jar file
+[33m51abfbd0b[m More work on AircraftPointMassPropagator
+[33mfbc67f6b2[m New class added in calculators to manage the airfoils data. More work on the Airfoil class and the AirfoilCreator class.
+[33m302e3ca47[m More work on ACPerformanceManager and some of the performance calculators in JPADCore_v2.
+[33m433074889[m Refactoring class AircraftPointMassPropagator. More work on post-processing. New function to get wind speed between events.
+[33m4dfb37eed[m More work on post-processing logic in class AircraftPointMassPropagator. TODO: complete the list of charts with the new logic.
+[33m5d6b94716[m More utility plot functions. More work on post-processing logic in AircraftPointMassPropagator
+[33mc3207f3c1[m More work on AircraftPointMassPropagator. New post-processing logic. TODO: use streams to feed multiple columns to plotting function.
+[33md8516bd2d[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m8ce142bf8[m More work with AircraftPointMassPropagator, ContinuousOutputModel for more convenient post-processing.
+[33mf92ba455a[m More work on ACPerformanceManager and the performance calculators.
+[33m4d731e4db[m In AircraftPointMassPropagation new test with a ContinuousOutputModel for more convenient post-processing.
+[33mf4c6e5fc7[m New manager/calculator class for the aerodynamic and stability analyses have been created: Work in progress. More work on ACPerformanceManager.
+[33mbb8cb98a3[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mf7428ba4f[m More refinements to Aircraft mission simulation class. Added engine settings at t0 and at events. Tmax calculation refined. TODO: check limiters to Tc and CL.
+[33m5255fd1a1[m  More analyses with stability executable have been performed.
+[33m1722f43a1[m More refinements to Aircraft mission simulation class. TODO: add limiters to Tc and CL; consider mission segments defined as parts of the mission surrounded by two consecutive events.
+[33m1b3a6bfa1[m AircraftPointMassPropagator now reads constants from mission-file. TODO: more cosmetics and class factorizations. Read more constants. Consider a separate set of constants per segment between two events.
+[33ma9b6ced8f[m AircraftPointMassPropagator now works as expected. Three tests added: straight/level flight, climb/no-turn, climb+turn. TODO: more cosmetics and class factorizations.ù
+[33m13e7d4368[m More work on ACPerformanceManager.
+[33ma673f068d[m AircraftPointMassPropagator: added some refs in DOCS/Mission_Simulation
+[33m17845e51f[m AircraftPointMassPropagator: Reading more multiple events and IC testing. TODO: add max-lift limiter
+[33m1c3a8e8d1[m More refinements to AircraftPointMassPropagator. Reading multiple events and IC from file. TODO: check initial conditions
+[33medc411eaa[m More refinements to AircraftPointMassPropagator. TODO: check initial conditions
+[33m1d4d20ed3[m More tests on ACPerformanceManger.
+[33mc48423450[m More refinements to AircraftPointMassPropagator. Now mass is variable. TODO: check signs in equations.
+[33mf7c657c1a[m Minor changes
+[33m456abd9a2[m AircraftPointMassPropagator, still testing event handlers. TODO: check RESET_STATE and RESET_DERIVATIVES behavior
+[33m8eef1b4c6[m More tests on ACPerformanceManger.
+[33maa42497ce[m More work in AircraftPointMassPropagator: added Drag calculation and plot. TODO: still need to check the outputs and equations
+[33m593468326[m AircraftPointMassPropagator refinements. TODO: check the equations and play around with more event handlers.
+[33m555d81032[m More tests on ACPerformanceManger.
+[33m1d658ec1c[m Propagate method in AircraftPointMassPropagator now functional. Charts of state variables and some derivatives are produced.
+[33m849060a4e[m More work on AircraftPointMassPropagator: preparing data for charts
+[33mdb343f053[m More work on the take-off, mission profile and payload-range calculators. More tests on ACPerformanceManger.
+[33m7445be09c[m More tests on ACPerformanceManager using CompleteAnalysisTest.
+[33m1b73ab308[m More refinements to class AircraftPointMassPropagator. Todo: manage output with event handlers and plots
+[33m3eb768a5d[m More tests on ACPerformanceManager.
+[33m1e701a1a5[m More work on AircraftPointMassPropagator class. Propagation running from t0 to tFinal
+[33m13238c441[m More work on AircraftPointMassPropagator class. Now events are read from file. Propagation function still under construction
+[33m641a12051[m More work on AircraftPointMassPropagator and test class in JPADSandBox_v2
+[33m88e999450[m More tests on ACPerformanceManager.
+[33m04c62568a[m More tests on ACPerformanceManager.
+[33m7c6d0faa8[m More work on ACPerformanceManager and some of the performance calculators.
+[33m05a6065f4[m New class for aircraft-as-point-mass propagation. Theory taken from Schmidt D.K., Modern Flight Dynamics, McGrawHill.
+[33m3b626721f[m More work on ACPerformanceManager and some of the performance calculators.
+[33m84c49db3f[m More work on ACPerformanceManager and some of the performance calculators.
+[33m946bc98c9[m More work on ACPerformanceManager and some of the performance calculators.
+[33me58778513[m  More analyses with stability executable have been performed.
+[33m95c32e877[m Minor changes
+[33m10f34d77f[m More work on ACPerformanceManager and some of the performance calculators.
+[33m660fef823[m More work on ACPerformanceManager and some of the performance calculators.
+[33m47f4eaf98[m  Analyses with stability executable.
+[33m8822e97cb[m More work on ACPerformanceManager and OperatingConditions
+[33m4de12b2e1[m Minor change to DirStabCalc
+[33mb51db45a7[m New directional stability jar into the old core
+[33ma94f0b86a[m Error fixed in calculateCLaplphaHelmboldDiederich (useful for directional stability jar)
+[33maac90ec50[m new Bilinear and Trilinear interpolator inner classes added to MyInterpolatingFunction. All database reading process have been updated with these interpolating functions.
+[33me612c8146[m More work on the payload-range calculator. More tests on ACPerformanceManager
+[33mb56f1c49a[m New methods have been added in Stability Executable.
+[33m0e1336e84[m New methods have been added in Stability Executable.
+[33m164f3bc7e[m More work on the payload-range calculator
+[33mbaa51c213[m New calculator class for the Payload-Range. More tests on ACPerformanceManager.
+[33m2aa5e0e2e[m More tests on ACPerformanceManager
+[33md238822f9[m More tests on ACPerformanceManager
+[33m0c5f325cb[m Minor changes to .gitignore
+[33m14653c99f[m Tests on the take-off analysis of the new turboprop
+[33mf8bddc104[m More work on JPADCore_v2 concerning ACPerformanceManager and ACAnalysisManager.
+[33m0ddc740db[m More work on JPADCore_v2 concerning ACPerformanceManager and the mission profile analysis.
+[33m49a0a05c4[m More work on JPADCore_v2 concerning the mission profile evaluation.
+[33m515ed0bce[m More work on JPADCore_v2 concerning ACPerformanceManager.
+[33m21e948eeb[m More work on JPADCore_v2 concerning the performance analyses.
+[33m2d1533b9c[m Minor changes
+[33m8a3daa85b[m Minor changes
+[33md1bc7343f[m Minor changes in Stability Executable.
+[33mb55578e34[m Minor changes in Stability Executable.
+[33m8cc5144cf[m Minor changes in Stability Executable.
+[33mfbaf74636[m Minor changes in Stability Executable.
+[33m20a8c41a9[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m8b6013217[m Some tests with AVL and Boeing 737 full model, including nacelles
+[33m16a413fa6[m Minor changes in Stability Executable.
+[33mcf3530945[m Minor changes in Stability Executable.
+[33m0ef6bb2e2[m Error fixed in JPADCore_v2 inside ACPerformanceManger.
+[33mb6f307774[m More work on JPADCore_v2 concerning the Aircraft class. More tests on JAXB
+[33m6cfa28d4f[m More work on JAXB marshalling tests
+[33m94e8da0f6[m Mach problem in VEDSC method has been solved
+[33mf63470eb9[m More analyses with the Stability Executable.
+[33m41e8612b1[m Test of JPADCommander on my VAIO laptop, OK
+[33m01052c84a[m New test on JAXB marshalling
+[33m5ea269e6c[m More work JPADCore_v2 concerning the VMC calculation.
+[33m43c0f9e26[m More analyses with the Stability Executable.
+[33m1defe49b5[m More work on JPADCore_v2 concerning the VMC calculation.
+[33m66b386a37[m More work on JPADCommander concerning fuselage input data. More work on the PW2750 database in DOCS.
+[33md296148f4[m More analyses with the Stability Executable.
+[33m4f6bb3d27[m More work on JPADCore_v2. Now it's possible to assign the wanted engine database to the power plant.
+[33mf222558b0[m More work on JPADCore_v2 concerning the performance analysis.
+[33m03b0d2aee[m More analyses with the Stability Executable.
+[33mf22fd9eb9[m Some errors have been fixed in the weights and balance analyses.
+[33m81249a4a8[m More analyses with the Stability Executable.
+[33m8a112807d[m More work on Stability Executable.
+[33m7d973b27e[m More work on the turboprop database model.
+[33mdc4f08522[m More work on JPADCore_v2 concerning the balance analysis. Max aft and fwd center of gravity calculation have been added. More work on the turboprop engine database MATLAB script.
+[33m6ed057564[m More work on JPADCore_v2 concerning the balance analysis.
+[33mba9f9c4ff[m More work on Stability Executable.
+[33m2ca5e537c[m New Matlab script added in DOCS in order to build a .h5 database of a given engine deck.
+[33m5926a2155[m More work on Stability Executable.
+[33m6acacdc34[m More work on Stability Executable.
+[33mbcfc05751[m More work on Stability Executable.
+[33mb46b6f1c2[m More work on Stability Executable.
+[33m9a568bc0f[m AVL class and tools now almost complete. TODO: need to fine-tune the AVL execution macro
+[33m7ec2ee342[m More work on JPADCore_v2 concerning ACPerformanceCalculator.
+[33ma235d0838[m More work on Stability Executable.
+[33mfb022bd5e[m More work on Stability Executable.
+[33m68445362e[m More work on Stability Executable.
+[33m4a9a3dd9a[m More work on JPADCore_v2 concerning the mission profile analysis.
+[33m7e062ff8b[m More work on JPADCore_v2 concerning the mission profile and the descent analyses
+[33me0c55b1f4[m More work on Stability Executable.
+[33m32f54a667[m More work on JPADCore_v2 concerning the mission profile analysis
+[33mf43bb0bab[m More work on Stability Executable.
+[33maf212a7a3[m More work on passing an Aircraft object to the AVL job executor.
+[33m0292679d2[m More work on JPADCore_v2 concerning cruise performance
+[33maca7eac28[m More work on Stability Executable.
+[33mf8f88b402[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m0a929dedf[m More work on AVL job: an Aircraft object is passed to the job executor. TODO: still under test
+[33m1834f8865[m More work on JPADCore_v2 concerning cruise performance
+[33mc391c7a8b[m New test on AVL job: an Aircraft object is passed to the job executor. TODO: still under test
+[33m526c78d62[m More work on JPADCore_v2 concerning cruise performance
+[33m4d7bdaff7[m More work on Stability Executable.
+[33m31a013883[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mf0f6c7909[m More work on Stability Executable.
+[33m6e6e476c0[m More work on Stability Executable.
+[33m2de5a685e[m More work on AVLExternalJob. Now testing with a full-blown JPADAircraft taken from IRON project. TODO: need to build AVL data in terms of JPADOperatingConditions, JPADAircraft, masses, etc
+[33m44c5b1816[m More work on JPADCore_v2 concerning cruise performance
+[33m4deed7162[m More work on Stability Executable.
+[33mb26347e1e[m More work on JPADCore_v2 concerning cruise performance.
+[33m8acfc1ace[m More work on Stability Executable.
+[33md63ca6cc6[m More work on JPADCore_v2 concerning the performance analysis. Assigned polar curve can now be used for analyses.
+[33m858ed1169[m More work on JPADCore_v2 concerning climb performance and operating conditions.
+[33ma4bc9d0ba[m More work on Stability Executable. IRON value has been added in inout file
+[33m3061e16ed[m More work on JPADCore_v2 concerning the climb performance. New methods for converting from double[] to Double[] and from Double[] to List<Double[]> added in MyArrayUtils.
+[33m50923b4a2[m More work on Stability Executable
+[33m8fea6e3b1[m Parsing AVL output file of stability derivatives (.st) almost complete.
+[33m1960033a7[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33mcec3b9a2c[m Test commit
+[33me344bd4e0[m New class to handle and parse AVL stability derivatives output
+[33m1c2b61980[m Merge
+[33mb83f241d1[m Minor tweaks to AVL-related classes
+[33mbbe095aa4[m More work on Stability Executable
+[33ma4daf258c[m Minor refactoring of AVL-related classes. New AVLMacro class to handle programmatically the creation of .run files. TODO: a parser of stability-derivatives files.
+[33ma19c97248[m More work on Stability Executable
+[33m2ab4c594a[m More work on JPADCore_v2 concerning the climb performance.
+[33me385d1672[m More work on Stability Executable
+[33meb1837588[m More work on Stability Executable
+[33m3f6ed7c50[m More work on JPADCore_v2 concerning the Payload-Range analysis.
+[33m343fb35ca[m More work on Stability Executable
+[33mca094e43d[m New AVLMassInputData class that handles masses and inertias. A file .mass is generated containing properly formatted mass data. The same file is loaded by the .run file. TODO: develop with a similar approach a class AVLRunData and create a formatter function that generates on the fly a .run file.
+[33m6fcba3fe9[m More work on Stability Executable
+[33mf046db13e[m More work on Stability Executable
+[33mf4ff64673[m More work on Stability Executable
+[33mf278a5844[m More work on JPADCore_v2 concerning the payload-range analysis.
+[33m6a637aaaf[m New version of OperatingConditions. It's possible now to assign consitions for cruise, take-off and landing. More work on ACAnalysisManager and ACPerformance manager in order to add the V-n diagram evaluation.
+[33mc6c04bb8b[m More work on Stability Executable
+[33m883c4c7b1[m More work on Stability Executable
+[33m5bda30d59[m Now it is possible to print list of amount in a new format. The Roskam method for downwash has been implemented in the new core. More work on Stability Executable
+[33mafdc18ae5[m More work on JPADCore_v2 concerning ACAnalysisManager in oreder to perform each analysis in a standalone mode. More work on JPADCore_v2 concerning take-off and landing analyses.
+[33mb9448c7de[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m490f4e928[m Testing AVLExternalJob class. Now an input file is correctly produced and AVL runs OK with a template .run file. TODO: 1) produce auxiliary files on the fly (.dat for airfoil sections and fuselages). 2) produce a .run flie on the fly according to the main input + auxiliary files. 3) manage results and store them in a separate directory.
+[33ma9ebf5dd3[m More work on Stability Executable
+[33md68a6f50f[m More work on Stability Executable
+[33me1a60012c[m Testing AVLExternalJob class
+[33mb734ab312[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m94f85917c[m More work on ACPerformanceCalculator concerning the take-off analysis.
+[33m38d4bc22a[m AVLInputGenerator + main complete. AVL run still under test, but almost there...
+[33m32a9fa4f0[m More work on list reader. More work on stability executable
+[33m86695247c[m A new method in JPADXMLReader has been created in order to read arrays using String.split
+[33ma13493034[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m997dd523e[m More on AVL classes.
+[33md50545fb8[m Now it is possible to read list of double from xml.
+[33me678fb944[m Now it is possible to read list of amounts from xml. These amounts must have the same units
+[33m372674048[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m183386f3f[m More work on formatting functions in AVLInputDataTest 3
+[33m89eb717da[m More Work on Longitudinal Static Stability executable
+[33m97af04910[m More work on formatting functions in AVLInputDataTest 2
+[33m12efbb0b5[m More work on formatting functions in AVLInputDataTest
+[33mee207fc1f[m More Work on Longitudinal Static Stability executable
+[33m02b5a2f9f[m More work on AVL classes. Testing builder pattern for Aircraft/Wing/Section/Body etc
+[33m45f14533d[m More work on prototyping classes for AVL runs
+[33m363cc6a74[m More Work on Longitudinal Static Stability executable
+[33m6f9e7ed2d[m More Work on Longitudinal Static Stability executable
+[33md9f393109[m More work on JPADCore_v2 concerning ACAnalysisManager and ACPerformanceManager.
+[33m63cbe18f2[m [AVL] more work on AVL classes
+[33md3c48b8a9[m Work on Stability executable
+[33m805594628[m [AVL] files of previous analyses deleted via stream operations and specific exception catches
+[33m100e81cf8[m More work on various pieces
+[33mfcaceb27c[m More work on AVL
+[33mc513bf7f4[m More work on JPADCore_v2 concerning ACPerformanceCalculator.
+[33ma8c3c872c[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mb591450d9[m Test in Datcom stuff
+[33m59c1da74f[m More tests on HighLift for IRON. New Performance Calculator in JPADCore_v2 in oreder to fix the performance analysis.
+[33m2ba5d4e4d[m Fix the loading cycle diagram in the ACBalanceManager of JPADCore_v2.
+[33mc8e9c11ea[m Minor changes
+[33mb95803214[m Minor changes
+[33m5ecb01d4b[m Update the jre to the version 1.8.0_111. Minor fix in MyChartToFileUtils.
+[33m0c50dd804[m Minor changes
+[33m989af967d[m More work on JPADCore_v2 concerning the balance analysis and the LSAerodynamicsCalculator.
+[33m680bcf77d[m More work on JPADCore_v2 concerning the balance analysis.
+[33md3ae374e2[m AVLExternalJob::main now works. A sample run case is executed as a batch run (newData1.run -> allegro.avl), with graphics disabled and multiple output files (.st, .sb, .eig). More work due to the .run/.avl file generation and on the output parsers.
+[33m208381321[m Including /src/standaloneutils/launchers/apps/ in repository
+[33mfdacdc2f3[m Started a new class AVLExternalJob
+[33mecc054a83[m Merge
+[33mb4e361f00[m More work and some fix in weight and balance analysis.
+[33m7db15a68d[m Added Win32 avl.exe 2
+[33mba7ea49ff[m Added Win32 avl.exe
+[33m0b7dd698f[m Merge
+[33m9711ebea8[m More work on JPADCore_v2 concerning ACWeightsManager.
+[33mb13943ab9[m Datcom input now accepts only one Mach number and one Altitude (LOOP=2). Multiple mach number runs will be in charge of the external launcher app.
+[33mfff3eecc4[m More work on JPADCore_v2 concerning LSAerodynamicsCalculator.
+[33m774365618[m More work on JPADCore_v2 concerning LSAerodynamicsCalculator.
+[33mb621f206d[m More work on new NB executable
+[33md5af7c452[m More work on JPADCore_v2 concerning LSAerodynamicsCalculator.
+[33m7726ba5de[m Minor Tweaks to DummyExternalJob
+[33m98a48cded[m Added AVL v3.35 files
+[33m86c825632[m Refactoring code of DummyExternalJob, formCommand member function has now a more general signature.
+[33mc63d8da59[m src/standaloneutiles/launchers/DummyExternalJob now complete: 1) a Datcom data structure is created (with builder pattern). 2) An input file for Datcom+ is written. 3) Datcom+ is launched as external process on the input file. 4) The Datcom+ output file (X-airplane-2.out) is parsed and a map of variables is read in memory for future use.
+[33m5e8e4bb3b[m DatcomInputData now works with @FreeBuilder annotation
+[33mdde7af291[m More work on JPADCore_v2 concerning the high lift devices effects
+[33md8d24f8db[m More work on DatcomInputData class, experimenting with FreeBuilder 2
+[33m2721af0fd[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m0db50a976[m More work on DatcomInputData class, experimenting with FreeBuilder
+[33m1a91abe6a[m More work on JPADCore_v2 concerning Operating Conditions and LSAerodynamicsCalculator.
+[33m2e8f58c87[m More work on DatcomInputData class
+[33m71f0e8103[m More work on DatcomInputData class and interface. To be completed.
+[33mc8d7b3ec2[m New class DatcomInputData (builder pattern). This handles the input data to pass to the DatcomPlusInputGenerator obj.
+[33m8816a99b7[m DatcomPlusInputGenerator new static function for propeller effects
+[33m78b9af0c1[m Full Datcom+ job now works as expected (more testing needed yet). 1) Write a template file (X-airplane.dcm similar to B-737.dcm). 2) Execute Datcom+ on that input file. 3) Parse the output file and get the results in a dictionary.
+[33m789f954c2[m More work on DatcomPlusInputGenerator, Generic Planform block output
+[33mabd3af3eb[m More work on DatcomPlusInputGenerator, VTPLNF block output
+[33m814cc3273[m More work on DatcomPlusInputGenerator, WGPLNF block output
+[33m321fe79ee[m More work on DatcomPlusInputGenerator class and static functions.
+[33mdb4601eee[m More work on JPADCommander concerning the input manager of the fuselage.
+[33me3e6e93be[m More work on new NB executable
+[33m3b97970ac[m More work on JPADCore_v2 concerning LSAerodynamicsCalculator. More work on JPADCommander concerning the input manager.
+[33m86b4a63d9[m More work on new NB executable
+[33m58d76484b[m More work on class DatcomPlusInputGenerator
+[33mc3a58634b[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m85af2d756[m New class DatcomPlusInputGenerator
+[33m9de8bbc0c[m More work on LSAerodynamicsCalculator in JPADCore_v2
+[33ma77e7651c[m More work on JPADCore_v2 concerning the flight maneuvering envelope. Fixed minor problems in JPADCore_v2.
+[33m1f07b4076[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33maf0c86896[m More work on new NB executable
+[33md127859a1[m DatcomOutputFileReader class finished (need revision and possibly extensions). DummyExternalJob now uses the reader accordingly.
+[33m342521b9f[m More work on scanning Datcom output: now a map of variables is stored. Not complete yet.
+[33m24cfd8203[m More work on the flight maneuvering envelope class in JPADCore_v2. More work on LSAerodynamicsCalculator in JPADCore_v2.
+[33m822e5215f[m More work on DatcomOutputFileParser 3
+[33m02cd4aa7f[m Added Jupyter folder
+[33m10e1040a5[m More work on DatcomOutputFileParser 2
+[33m8320de33a[m More work on DatcomOutputFileParser
+[33m3131d7bf1[m More work on new NB executable
+[33mccf967f7b[m More work on JPADCore_v2 concerning the flight maneuvering envelope calculation.
+[33m9b3629eaf[m New DatcomOutputFileReader class
+[33mbeb5279cb[m More work on launchers
+[33mc4ef51b98[m More work on JPADCommander concerning the input manager. More work on JPADCore_v2 concerning the LSAerodynamicsCalculator (NasaBlackwell).
+[33m3be795561[m More wrork on JPADCore_v2 concerning the aerodynamic analysis. New component of the aerodynamic database has been added in order to calculate the cLmax with phillips and alley method.
+[33ma5028265c[m More work on JPADCommander concerning the input manager.
+[33m1c75e8452[m More work on DummyExternalJob + Datcom dir - 2
+[33ma50acdd34[m More work on new NB executable
+[33mc614e0e96[m More work on DummyExternalJob + Datcom dir
+[33m8595a6b78[m More work on JPADCommander concerning the creation of the .svg file of the aircraft 3-view.
+[33m5845824a5[m More work on JPADCommander in order to create the .svg file of the aircraft top view. More work on JPADCore_v2 concerning the LSAerodynamicsCalculator.
+[33m93cbe447d[m Merge
+[33m611dd65c1[m More work on the AbstractExternalJob and interface. DummyExternalJob main now works as a suìimple example of use
+[33md2bd11e68[m Some fix in the balance analysis of JPADCore_v2.
+[33mc0bcc501e[m More work on SystemCommandExecutor and related classes 2
+[33m5cbd0cf8b[m More work on SystemCommandExecutor and related classes
+[33m359cde7b7[m More work on new NB executable
+[33mccfaf868d[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m193487c4b[m More work on JPADCore_v2 and JPADCore in order to run a complete aircraft analysis.
+[33ma5a5c4956[m Merge
+[33m0a0a1e330[m More work on NB executable
+[33m68c30e458[m More work on the IRON aircraft model in JPADCore, JPADCore_v2 and their related sandbox.
+[33m0e073e139[m More work in JPADCore on the Aircraft class in order to implement thr IRON model. More work in JPADCore_v2 in order to implement the IRON model.
+[33m40d752345[m More work on new NB executable
+[33me364a3f69[m Merge
+[33m1ae8270a2[m More work on JPADCore v1 in order to implement IRON aircraft
+[33m02286d1e6[m More work on JPADCore in order to implement the IRON model inside the createDefaultAircraft method.
+[33m707454915[m Added IRON as a new member of AircraftEnum
+[33mcd67dab26[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33mce4048c56[m Minor changes
+[33m20745fe2a[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33mdd34966c9[m new class LSAerodynamicsCalculator created to manage Aerodynamics analyses in JPADCore_v2. Some changes in OperatingConditions class. New test in JPADSandBox_v2 in  order to test the new HighLiftDevicesEffects static method created in LiftCalc.
+[33m556718c61[m A new version of stall path has been initialized
+[33m83172de14[m Started package launchers in JPADCore_v2. ProcessBuilderExample demo creates a command line which executes in a different process. Stdin and stderr are captured.
+[33m5e081ff4f[m More work on JPADCommander concerning aircraft tab
+[33m63fa54ae4[m More work on JPADCommander concerning the aircraft tab
+[33m3bccf24af[m JPADCAD - new Test9 - a loft is deformed by applying constraints: passing through 3 vertices
+[33m95dd10156[m More work on JPADCommander concerning the input manager
+[33m8dfb38152[m Java SDK 1.8.0_101 on Agodemar office PC
+[33m6b4fb5edf[m More work on JPADCommander concerning aircraft input from file
+[33mb34df3d61[m More work on JPADCommander concerning the status bar
+[33mad73d1076[m Minor changes to JPADCore_v2 classpath
+[33m552d9740e[m Minor change to TOP Calculator in JPADApps. More work on JPADCommander.
+[33mabaf2b687[m More work on JPADCommander
+[33m3e1a1017f[m Small tweaks to JPADCAD Test8
+[33m82713bc33[m JPADCAD, new Test8, Now a loft surface can be built with a list of curves, forming a CADShell
+[33m37e6c1397[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m9fe98a4e1[m Minor changes
+[33m0e0b168ab[m More work on JPADCommander concerning aircraft input view
+[33me98f71831[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33me701d3cc7[m Small tweaks to JPADCAD, Test7
+[33mb82b1bc44[m A new version of Will Executable has been implemented in order to ignore the dihedral effect
+[33ma67fbcea8[m More work on JPADCAD Test7, CADSurface, etc
+[33m8203306ed[m JPADCAD, Test7, creating a loft surface ok, need more work on CADSurface/OCCSurface
+[33m97ebc87c7[m JPADCAD, Test6, more work on CADGeometry3D
+[33m873bd0755[m JPADCAD, Test6, bugfixes to CADGeomCurve3D class
+[33m870009edd[m JPADCAD new Test6, creating edges and 3d curves from high-level data structures
+[33m06840539f[m Sync office pc and vaio laptop
+[33m726d892a8[m JPADCAD, libraries/occjava updated on office pc at unina
+[33m1e5ff7e4e[m More work on JPADCore_v2 concerning ACAnalysisManager. New test in JPADSandBox_v2 in order to test a complete aircraft analysis (only weights and balance at the moment). Classpaths updated to the latest version of the Java jdk and jre (1.8.0_101).
+[33m74899f90e[m More work on JPADCore_v2 concerning weights analysis.
+[33m66b5404e1[m More work on JPADCore_v2 concerning OperatingConditions. New test for the OperatingConditions class.
+[33m9d617a147[m Refactoring in JPADCore_v2 and JPADSandBox_v2. Tests upon weight and balance analysis of the ATR-72.
+[33mff5ca72fa[m More work on ACAnalysisManager in JPADCore_v2. Still some errors due to a required refactoring.
+[33m34ffe405a[m Latest versions of HiLDE, TOP and MAGA calculators added inside JPADApps
+[33mbe522bc3e[m More work on JPADCore_v2 concerning the balance analysis. Test on ATR-72 is now working
+[33m6e7ef2e71[m More work on JPADCore_v2 concerning the balance analysis
+[33m2b2d28b38[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m9595d3368[m More work on Test Costs
+[33md9a56ca01[m More work on JPADCore_v2 concerning the balance analysis
+[33mff4cfbdbc[m New options in analysis
+[33mfaa6f0c61[m More work on JPADCore_v2 concerning balance analysis
+[33m3142f24f7[m New stuff in JPADCommander
+[33m7d3dfa9eb[m More work on JPADCore_v2 concerning weights analysis
+[33m3039c4333[m More work on JPADCore_v2 concerning weights analysis
+[33m26b314cd7[m More work on Costs class
+[33m1df760080[m JPADCommander can now see JPADCore_v2 and ControlFX libraries.
+[33m40145be61[m More work on JPADCommander GUI
+[33m7605b059b[m More work on JPADCommander
+[33m7f977d74f[m Minor changes
+[33mcc3d71080[m Working on test costs
+[33mb30b45c30[m More work on JPADCore_v2 concerning weights analysis
+[33mdab2915ec[m More work on JPADCommander concerning initial folders configuration
+[33m3d134ba37[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33ma30b6e32a[m Added config folder in JPADCommander
+[33m91a5f51d5[m New stuff in JPADCommander 2
+[33m3f751d2b0[m New stuff in JPADCommander
+[33mc4d5c9443[m More work on JPADCommander
+[33md2f7d5955[m More work on JPADCore_v2 concerning LSAerodynamicsManager, LiftingSurface and AirfoilCreator.
+[33m0f6b91054[m Minor changes in JPADCore_v2
+[33m0c27f577c[m JPADCommander, new GUI started
+[33m8ddd36d2f[m More work on JPADCore_v2 : minor changes
+[33mb9718a804[m New classes analyses.*
+[33m5be437c1d[m More work on JPADCore_v2
+[33m113e5bca4[m More work on JPADCore_v2
+[33m4a4f37926[m More work on JPADCore_v2 concerning NacelleCreator
+[33mfec187823[m More work on JPADCore_v2 concerning NacelleCreator
+[33md9f689ea1[m More work on JPADCore_v2 concerning Nacelles
+[33ma984ad48d[m Tweaks on my office pc
+[33me6920fdd9[m More test on Aircraft in JPADSandBox_v2
+[33m9197220ba[m More work on JPADCore_v2 concerning Aircraft. More work on JPADSandBox_v2 concerning Aircraft tests
+[33mfaabd0223[m More work on JPADCore_v2 concerning PowerPlant
+[33m5d7752401[m minor mods
+[33mb04ba12cc[m merged wing test VT
+[33m2df99e41a[m Minor changes
+[33m5fbcb5e5a[m jnlwing.core
+[33mf47e2788d[m More work on JPADCore_v2 concerning power plant
+[33m32961f063[m Fixed some bugs in HiLDE Calculator. More work on JPADCore_v2 concerning power plant and lifting surface
+[33m21b2c6ecc[m New logic in run configurations
+[33mab588f264[m Minor additions to eclipse/plugins
+[33m03fe9de04[m More work on JPADCore_v2 concerning lifting surfaces
+[33mf8091be6a[m More work on JPADCore_v2 concerning Engine and PowerPlant classes. A new test in JPADSandBox_v2 concerning the Engine class.
+[33m4f137a25a[m More work on executable
+[33m08e6babea[m More work on JPADCore_v2 concerning Powerplant, Engine and Nacelles.
+[33m7258fe57b[m Minor changes in costs and Aircraft classes
+[33m96b58d9f6[m New tests of Costs class. Minor changes into Aircraft top,side, front view tests (vt sandbox)
+[33m03582dbab[m More work in Costs class. A new class with builder pattern has been created
+[33m359f1550a[m More work on JPADCore_v2
+[33m96c036e5d[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33md127497e7[m More work in Costs class
+[33m43d8f32e6[m Added my run configurations in JPADSandBox and JPADSandBox_v2
+[33mb6a8522aa[m Upgrade to Eclipse Neon. New folder in both the JPADSandBox in order to store run configurations. Minor changes in Eclipse setup for ADOpT project.docx
+[33mc6f692b3e[m More work on JPADCore_v2 concerning fuel tank
+[33mb4eba3b19[m More work in costs class
+[33mf603bb236[m More work on JPADCore_v2 and its sandbox concerning fuel tank, lifting surface and aircraft classes
+[33mb93d399dd[m New dlls in cgal 3
+[33mfe98ac4bc[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m9580c2f62[m New dlls in cgal 2
+[33m1e371e662[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m1425d2a80[m Changes in costs.xml
+[33mf2d16797c[m New dlls in cgal
+[33m225f1b506[m Fixed some errors in JPADSandBox_v2. Minor changes in JPADCore_v2
+[33m287588dc9[m Minor corrections in JPADCore_v2.
+[33m5d1ac5867[m More work on JPADCore_v2 concerning LSAerodynamicsManager and FuelTank.
+[33mc38d6a819[m More work on JPADCore_v2 and its test concerning exposed wing and aircraft representation
+[33mce08913e8[m More work on JPADCore_v2
+[33m5e8c7cd76[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mbfbabcf86[m Minor changes in costs
+[33mb4a1d4ce9[m More work on JPADCore_v2 concerning Exposed Wing
+[33m46701ecb8[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m95d7fd9cf[m Minor changes in Costs xml file
+[33m29692d219[m More work on JPADCore_v2 concerning Exposed Wing
+[33mc8b517a87[m Minor changes
+[33m4e9ba3aed[m More work on JPADCore_v2
+[33madcda5ae0[m More work on fuselage class in JPADCore_v2
+[33m128803f28[m More work on JPADCore_v2 and JPADSandBox_v2 concerning aircraft and its related tests
+[33m05e02bbe4[m More work on fuselage classes
+[33m26be7affb[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m19cbe7354[m Minor changes in FuselageCreator class
+[33m873a1a15d[m More work on JPADCore_v2 concerning Aircraft class
+[33m300e2ee84[m More work on Nasa Blackwell method
+[33mace2ba0b0[m Minor changes
+[33m0a59c947a[m More work on JPADCore_v2 concerning Aircraft
+[33mbf09264a1[m More work on JPADCore_v2
+[33m450113a5a[m more work on CGAL library integration 2
+[33mbb24a2924[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m9fa91b158[m more work on CGAL library integration
+[33m52b66ddc0[m More work on JPADCore_v2
+[33mc2279820d[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m2219259ae[m Finished modifications to Fuselage, IFuselage, FuselageCreator and IFuselageCreator classes
+[33me1026a7cd[m More tests on CGAL bindings
+[33mb4290145b[m More work on JPADCore_v2 concerning Systems and LandingGears.
+[33m500f62423[m More work on Fuselage, IFuselage, FuselageCreator and IFuselageCreator classes
+[33m2578ae8ab[m New CGAL test: DT3
+[33ma798100fb[m Clean up of libraries/cgal
+[33m4b197101a[m More work on CGAL test surface mesher
+[33mc45f8d644[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m9d5ce97f0[m Minor changes to CGAL tests
+[33m7d5e4f261[m More work on JPADCore_v2 concerning Configuration.
+[33m9cadbbb7b[m New CGAL test, Surface_Mesher - still work todo on native DLLs to copy in libraries/cgal
+[33m003c605e1[m More work on JPADCore_v2
+[33m45cd53187[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m7bf7c08f1[m More work on Fuselage class into JPADCore_v2
+[33m79f1a65f0[m More work on JPADCore_v2 concerning lifting surfaces
+[33m02233cc7f[m More work on Fuselage class into JPADCore_v2
+[33mad29850fc[m More work on Fuselage class into JPADCore_v2
+[33mabc6c4bbb[m More work on JPADCore_v2 concerning lifting surfaces. New JPADSandBox_v2 created in order to test the new features.
+[33m079469fa1[m More work on stall path executable. Comparison data have been added
+[33m4e9e28501[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m43e44c751[m New feature: CGAL bindings and tests under jpad/CGAL
+[33m99227b682[m More work on JPADCore_v2. Airfoil package has been fixed-up. Now it's possible to assign an equivalent wing and to generate a 2 panels wing from it.
+[33m93bf97e8d[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33md23bde7d8[m More work on Fuselage class into JPADCore_v2 in order to link the old fuselage with that created with build pattern
+[33m50f8d9d6d[m Fixed tikz generator error in JpadCORE
+[33m2ce75ca15[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m2b15a6b57[m Minor changes
+[33m8801ab699[m Refactor in auxiliary package in JPADCore. More work in JPADCore_v2
+[33me4cd85364[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m42f148ac4[m More work on stall path executable
+[33mba8d7fa4e[m New JPADcore has been created
+[33m8f389570e[m More tests on wing using builder pattern
+[33m264ce9169[m Spoilers have been added to the fuselage. Builder pattern philosophy implemented for Fuselage and LiftingSurface2Panels classes.
+[33m396b84f5e[m More work on the lifting surface creator in order to read the deflection range of each aerodynamic surface. Spoilers are now correctly read by the LiftingSurfaceCreator. Implementation of spoilers inside the fuselage has started.
+[33mbe3eac853[m More work on LiftingSurfaceCreator in order to add equivalent wing data to the wing report.
+[33mb9aa502c0[m Bug fixed in HiLDE Calculator. More work on LiftingSurfaceCreator in order to calculate the equivalent wing.
+[33mc6c405f4e[m More work on stall path executable
+[33mcc2d50077[m Fixed a bug in HiLDE Calculator. Add new wing.xml file in input folder of JPADSandBox. More work on lifting surface : now it's possible to read symmetric flaps, slats and asymmetric slats data from xml or to set them as defalut values realted to a specific aircaft (ATR72).
+[33m8280387e2[m More work on stall path executable
+[33m396a1276c[m Fuselage windshield problem has been solved. Stay thoughtless
+[33m62cdb31b9[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m1def57071[m Started symmetrical flap creation using builder pattern.
+[33m0b5e0cf3a[m More work on stall path executable
+[33meab3bc81f[m Minor changes
+[33m6debb351f[m Updated the TOP Calculator documentation. Mean airfoil calculator (MAGA) executable added inside the deploy folder.
+[33m060ce9e53[m More work on stall path executable
+[33mf5ce0c981[m New executable concerning MeanAirfoil calculation is now available.
+[33mea7e74682[m New version of my thesis added inside DOCS/Theses/Trifari. More work on Mean Airfoil executable in sandbox.mr
+[33m092a9ff16[m More work on stall path executable
+[33m7cda12565[m Minor changes to HiLDE Calculator documentation in Deploy folder.
+[33m5ce4e0b4b[m More work on HiLDE Calculator and TOP Calculator. Fixed a problem in HighLiftCalc inside LSAerodynamicManager. More tests on take-off and landing with repect to ATR-72 and B747-100B.
+[33mb340413e4[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m50f3083b7[m New svg in Manual/Fuselage
+[33m39285e803[m A new test package has been created in order to implement the executable to calculate the stall path with high lift devices. The classes are still in development
+[33me76ab729e[m New D3 Test_10, fuselage creator represented as SVG. TODO: adjust Wind Shield calculation
+[33m68adfeee8[m Now it's possible to write array in CPACS format
+[33m628e4f71e[m Refactoring in JPADCore. New LiftingSurface class.
+[33m34e1e539b[m New builder in LiftingSurfaceCreator and new stuff in D3 Wing test 08 / 2
+[33m9da6c0df7[m New builder in LiftingSurfaceCreator and new stuff in D3 Wing test 08
+[33m3aebd1812[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mdf5483ad8[m Minor changes in Top Calculator documentation
+[33me822d06c6[m Refinements to D3Test 08
+[33mabe1c9c19[m Cleanup of various projects/classpath-s
+[33md98184f33[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m619abeede[m Added MAC plot to D3Test 08 as auxiliary dataset
+[33meaca195de[m More test on the executable concerning High Lift
+[33mc2afd5a6c[m Wing creator test
+[33m9a7499cab[m Updated lib dependencies (PC-DeMarco, Mars 2)
+[33m0b3a2f248[m Documentation added to HiLDE Calculator and TOP Calculator
+[33mecb2e6094[m Fixed some problems in HiLDE Calculator and TOP Calculator. Files in Deplay folders have been updated.
+[33mc4cb75ead[m Test_Template refined: added example of how to run external program and capture stdout in Java console.
+[33mf281c6e89[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33ma3cc435f0[m Test_Template refined, reading data. TODO: add pathtype attribute to files in config.xml / 2
+[33m3fd7287df[m More work on executable High Lift
+[33ma262e7375[m Test_Template refined, reading data. TODO: add pathtype attribute to files in config.xml
+[33m9d1a8840d[m Test_Template refined.
+[33me998ffb2d[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m8bbee703b[m Test_Template refined. Now accepts config/config.xml AND cmd line options (overriding configs)
+[33m5aa741034[m A new package for the mean airfoil executable has been initialized. The classes are still in development.
+[33m2537bf4fa[m New dir config strategy in AppIO, taken from JPADConfigs.MyConfiguration
+[33mbfb652262[m Mars 2 on my laptop - New Eclipse variable JPADAPPS_LIBRARY_FOLDER_TEST_TEMPLATE
+[33m18dbae04b[m Added project Test_Template. TODO: solve differences btw MyConfigurations and AppIO file settings
+[33mc04bfdd3b[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33md34549178[m Working on wing/panel discretization. The ys (discretized y) takes into account also the break points of internal panels. Now the x,y,z MAC coordinates are corrected calculated.
+[33m31186a2ad[m added WiL executable in deploy
+[33mb1493b8dc[m New folder in JPADApps in order to collect all executable .zip files
+[33m22ec061bb[m Work on HighLift and TakeOff executables have been completed
+[33ma70692e02[m The wing lift executable has been done
+[33mac2d4a1b6[m Working on new Fuselage class. The problem about upsweep angle has been solved into vt_sandbox. Now everything works.
+[33m79077edac[m More work on the executable concerning the take-off performance
+[33m57ba35c1d[m More work on the executable concerning the take-off.
+[33m0fcdb92bd[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33ma39fc9acb[m Working on new Fuselage class. The class seems complete but the fuselage test in vt_sandbox gives still an error because of the windshild method
+[33m9adf0cee9[m the wing executable has been done
+[33m1e3a858ea[m error fixed
+[33m915a767c8[m more work on executable
+[33m1fc88f6cb[m New package in sandbox.vt in order to create a new executable jar concerning the take-off calculation.
+[33mdc942b12b[m Working on new Fuselage class
+[33m5e0e1d6ce[m error fixed
+[33m1468f74ce[m  More work on executable test
+[33m3f8eb0a24[m Serialization of Aerodynamic_Database_Ultimate.h5 and HighLiftDatabase.h5 have been implemented. Fixed some problems in ExecutableHighLiftDevices and Test_High_Lift_Devices.
+[33m66ae17b8f[m New app developed concerning high lift devices
+[33m1786d416b[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m970ed095e[m More work on class vt.Fuselage and FuselageBuilder; added geometric computation functions
+[33m426e4b428[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m4db62500d[m  More work on executable test
+[33m39b9e2d9e[m New class for creating a new fuselage using the builder pattern.
+[33m10c7d0294[m  More work on executable test
+[33m00324b03f[m More work on ExecutableHighLiftDevices inside sandbox.vt
+[33m6c839370e[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mf4ebfe980[m Work on Test_AGILE_DC1_01 into vc_sandbox. Minor changes in LSAerodynamicManager.
+[33mb66b98f94[m More work on ExecutableHighLiftDevices inside sandbox.vt
+[33mce878ef9b[m New Fusdes database
+[33mfa2027e6a[m More work on ExecutableHighLiftDevices inside sandbox.vt
+[33md6c2c0a4d[m  More work on executable test. Now it is possible to read an array from xml.
+[33mbdbc57040[m More work on ExecutableHighLift in sandbox.vt. Some test on AGILE_DC1 and B747 concerning high lift devices effects.
+[33mbd5480d3a[m  a new package has been created in order to develope the casses that manage the executable for wing aerodynamic calculations.
+[33m64775e03c[m More work on ExecutableHighLiftDevices in sandbox.vt
+[33m9b875e6a9[m More work on ExecutableHighLiftDevices in sandbox.vt
+[33mc5258c238[m  a new test class has been implemented in order to execute some analysis.
+[33md4c721d11[m More work on ExecutableHighLiftDevices in sandbox.vt in order to read data from an input file in XML format.
+[33m4471bfcfa[m  a new test class has been implemented in order to execute some analysis.
+[33m4b6ce367e[m New test in HighLiftExecutable in order to test new reading functions. Minor changes to HighLiftExecutableEnum. Some tests in sandbox.vt
+[33m7fc9fd494[m Switch to Java v1.8.0_92 - Please adjust
+[33m90e5fe658[m Minor changes to my thesis in DOCS/Theses/Trifari
+[33m4891a6e01[m Work on DatabaseIOManager and InputFileReader in order to read String, List<String>, List<Double> and List<Double[]>. Still in progress.
+[33m355c77cc5[m More work on symmetric flap class
+[33m72e503f9f[m Upgraded JDK to v1.8.0_92 (JPADCore)
+[33m7fc21a650[m Minor changes
+[33m9babe05d7[m Some test on PayloadRange. Fixed a problem in AerodynamicDatabase at DeltaYvsThickness
+[33mbe826d7c0[m Few things more on my lifting surface class
+[33m413807072[m Updated the AerodynamicDatabaseReader class in order to read the value of deltaYvsThicknessRatio
+[33ma2a5fc42b[m DeltaYvsThicknessRatio.h5 added to the Aerodynamic database
+[33m83759ae1c[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33maa27272c2[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33mb23c59590[m Changes in IOManager, a new class for apps in my sandbox has been created
+[33m04ca58413[m Minor changes. Work on the HighLiftExecutable have been started
+[33m14e705410[m Refined groovy test 2
+[33mb56b112b9[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mda5ddea0b[m Tweaks to groovy test2
+[33m94241e992[m Some changes in sandbox.mr
+[33mefe08d929[m PayloadRangeCalc, SpecificRangeCalc, TakeOffCalc and LandingCalc have been moved to JPADCore inside calculators.performance
+[33mafcb36700[m Solved some conflicts in sandbox.vt. Minor changes in CalcTakeOff.
+[33m8d38f228c[m Added tests of groovy scripts inspired by Dex code (template engine)
+[33mf7815fbac[m Added support for Groovy 2.4
+[33m9326e8d42[m New curves for Kb and K1 in HighLiftDatabase. Some changes in LSAerodynamicManager.
+[33m68986ad50[m Minor changes to my thesis. Work on CalcHighLiftDevices in LSAerodynamicManager.
+[33m83584a89b[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m2560453d3[m Merge
+[33m02e9918b4[m New test in my sandbox.
+[33m563e4ffe8[m Minor changes in my thesis in DOCS/Theses/Trifari. Refactoring of some variables in sandbox.vc
+[33m532ff7c75[m New method in DatabaseIOManager in order to read strings
+[33m1dddd7514[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m43b037875[m Some changes in my sandbox.
+[33mdea116866[m Final version of my thesis has been uploaded in DOCS/Theses/Trifari
+[33me261ce010[m Minor changes
+[33m45341f7bf[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m8f6549465[m New tests on AGILE-DC1 take off and landing. The balanced field length has been updated
+[33m9f091e220[m Last changes.
+[33m067330c44[m Last changes.
+[33m097c2addf[m Last changes.
+[33m5c3ad634b[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m10a30e62f[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mc6ac3139f[m Minor changes to Take-Off_Performance output
+[33m8bc786440[m Work on AGILe-DC1. High lift tests into VT_sandbox
+[33mc60d4cdd7[m More tests on high lift devices effects for the AGILE DC1
+[33m65ef22eb3[m More work on AGILe-DC1. High lift tests
+[33m6beaff97a[m More tests on AGILE DC1 High lift devices effects
+[33m3ff95158b[m More work on slides in DOCS/Theses/Trifari/slides
+[33m7e471a215[m More formulas
+[33m1c795cca7[m More work on my thesis.
+[33m81290f292[m More work on my thesis. Test on Agile
+[33m6f8fc06f3[m Merge
+[33m2c2dba6bd[m More work on my thesis.
+[33mcb25ec423[m More work on thesis in DOCS/Theses/Trifari. More tests on AGILE_DC1.
+[33mc60be5a66[m Complete Wing imported and represented with D3 plot
+[33m229f0624d[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mdde1b517c[m Wing imported and represented with D3 plot
+[33mf338e5067[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m744a24ff4[m More work on my thesis
+[33m42a52f77b[m Expermenting with JavaFX application/main and preloading
+[33m5a02c1cfb[m Added new comparison for CD. More work on my thesis. Added Slides.
+[33m5dd71a498[m More work on thesis in DOCS/Theses/Trifari. More tests on Take-off and Landing.
+[33m8db2fa3be[m Improved D3Plotter class 2
+[33m5c18ea5dc[m Improved D3Plotter class
+[33maa39b46a2[m Fixed some errors
+[33m69fbad996[m More work on thesis in DOCS/Theses/Trifari. More tests on Take-off and Landing.
+[33m7edd06916[m More work on thesis in DOCS/Theses/Trifari. More tests on Take-off and Landing.
+[33md3f023a7a[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33mc827c1478[m Now it's possible to evaluate the AC for a swept wing.
+[33mcfa0df4e4[m More work on thesis in DOCS/Theses/Trifari. More test on AGILE_Test_HighLift.
+[33mee115fa83[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m6809112e0[m More test. More work on my thesis.
+[33m505a6ef06[m More work on thesis in DOCS/Theses/Trifari. New test AGILE_Test_HighLift for take-off and landing.
+[33m2c045ca30[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m8d2b64a64[m More work on my thesis
+[33m033d7e60d[m More work on thesis in DOCS/Theses/Trifari.
+[33md8df94df9[m More work on AGILE_Test_HighLift in sandbox.vt. Minor changes to Test_MR_Wing_06bis and LSAerodynamicManager.
+[33mbdd879e84[m Minor changes
+[33m95712d1c2[m Merge
+[33m3dea4500f[m More work on my thesis. Added Boeing airfoil data.
+[33m5833c09fe[m Minor changes in LiftingSurface and LSAerodynamicManager. Fixed some problems in AGILE_Test_HighLift.
+[33m18d073a86[m New test for HighLiftDevices in sandbox.vt. Minor changes to LiftingSurface. More test on TakeOff and Landing.
+[33mffca3c61a[m More work on thesis in DOCS/Theses/Trifari. More tests on TakeOff and Landing
+[33mcaae24940[m Merge
+[33mfa526f91e[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m8bda95008[m A new Test class in order to test the lift calculation has been created. More work on my thesis.
+[33m19db6120a[m More tests on TakeOff, Landing and HighLiftDevices
+[33m219f488dc[m Updated Javaslang lib to final 2.0 version
+[33me93a131bb[m More tests on TakeOff and Landing
+[33m060ce0638[m A new class in  my sandbox has been done in order to compare different methods to evaluate the lift curve of a wing.
+[33mf1b25e951[m More work
+[33m405fde4f0[m Now it's possible to include the delta cd contribute due to flap and elevator.
+[33m5481ce565[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33me71811e49[m More work
+[33m0cdc9b133[m More test on TakeOff, Landing and HighLiftDevices.
+[33m5ec43dded[m Added the evaluation of CD.
+[33md02122f64[m Fixed some problems in CalcHighLiftDevice. Some test on TakeOff and Landing for the ART-72 and B747-100B
+[33m8d912746a[m Minor changes
+[33mf7188eedc[m More work
+[33mb9838bfd8[m Merge
+[33m3de5528c3[m More work in ACStabilityManager class. More Test on Turbofan aircraft
+[33m2a1a307e0[m Fixed some errors in high lift devices input for the B747-100B. Some tests on take-off and landing calculation for the B747-100B
+[33m3b428163b[m Minor changes
+[33m461d11eba[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33me01fdee8f[m Logs added to DOCS dir
+[33m8001a061e[m Downwash comparison has been done. Added this section in my thesis. Added downwash analysis on Boeing.
+[33m08bc22867[m Minor changes
+[33m3c52d6fbc[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33mde4948da7[m Some changes in DownwashCalculator class. Now it works good. Giorddano's method has been implemented in excel in order to compare downwash methods..
+[33m69d17e003[m TakeOff and Landing sensibility analysis with respect to W/S and T/W added for the B747-100B
+[33m7a6c8309a[m More work on MAC x.y.z le 2
+[33m7db7b18b8[m More work on MAC x.y.z le
+[33m062e873cd[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m2380c6d81[m Some changes in DownwashCalculator class. The result need to be fixed.
+[33md24a5159f[m Some tests on Take-Off and Landing. Some tests on CalcHighLiftDevice. Fixed some error in thesis. More work on slides in DOCS/Theses/Trifari/slides
+[33m5c494b6ae[m More work on Stability Manager.
+[33m3438b00bc[m More work on Stability Manager.
+[33mc8d9a47cc[m Some more work on D3Plotter
+[33mc785c85a1[m Wing MAC calculated with integral formula over discretized wing done. Need to calculate MAC_x-y-le
+[33m658185f9f[m Discretized wing done. Need to calculate MAC and MAC_x-z-le
+[33m71fa58909[m More work on slides in DOCS/Theses/Trifari/slides
+[33macf3f07fa[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m8d5ff9d2c[m More work on Stability Manager. A new method in order to evaluate the CL vs alpha for a wing has been evaluated.
+[33m0d90d5ba7[m Implemented Wing geometry calculations via Tuples and lists + Reporting function
+[33m823d5a065[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m37a33ce61[m Implementing Wing geometry calculations via Tuples and lists 2
+[33m7890c78e3[m More work on my thesis
+[33ma0b6dc111[m More work on my thesis
+[33m818767295[m More work in ACStabilityManager
+[33m2c7bf3a1b[m More work on slides in DOCS/Theses/Trifari/slides
+[33me8c4f3595[m Implementing Wing geometry calculations via Tuples and lists
+[33m90e85f242[m tweak
+[33m15b556704[m Added Javaslang library, experimenting with Tuples in wing I/O
+[33mdb4e4bd65[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m2907cf6bc[m More work on slides in DOCS/Theses/Trifari/slides
+[33m1ca2ff7ab[m More work in ACStabilityManager
+[33m28e38e92d[m Minor changes
+[33m986b951d0[m Reorganization of Stability Classes. Now there is a Stability manager that recognize the conditions ( TO, LANDING or CRUISE). The class is still  in development.
+[33m846e42897[m More work on thesis in DOCS/Theses/Trifari
+[33mb5ad6b600[m Fixed error in balance methods. Need to implement the method in order to evaluate the cg of landing gear
+[33m59e4ba9a0[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m382fa7d6a[m More work on balance and Nacelles manager class. The error into balance module (nacelles, engine and landing gear) is still present
+[33md54be01ec[m More work on thesis in DOCS/Theses/Trifari.
+[33m02d8a457c[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m1cb85d5da[m More work
+[33mce22e8fb5[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m63bb5d60e[m Working on balance manager, Nacelles and Engine classes.
+[33m4b9264774[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mb88944b7a[m More work on Wing input and discretization
+[33mff9fa74ea[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m041e0b879[m Added a comparison file in theses\Ruocco.
+[33me5f7e01ac[m Test upon CalcLanding in order to analyze reverse thrust effects. More work on thesis in DOCS/Theses/Trifari.
+[33m205482916[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33md4c68612d[m Minor changes into JPADChartWriter
+[33mbb382fc86[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33md2fdb275b[m More work on wing/panels/Ys 2
+[33m1be970e73[m Minor changes to CalcTakeOff and CalcLanding. More work on thesis in DOCS/Theses/Trifari. Minor changes in JPAD_INPUT.xls
+[33m8bb1c3313[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m93bb49d5a[m More work on Stability Calculator class.
+[33me68ded4f3[m More work on wing/panels/Ys
+[33m5253fad0d[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m3dc023e48[m The pitching moment coefficient respect to the CG for the complete aircraft has been calculated.
+[33mbb1987dc3[m More work on wing input/processing
+[33m2ccd460f8[m Added kCorrection factors to thrust and SFC; these are defined as 1.0 but can be set by the user. Some modifications in CalcLanding in order to plot trajectory and speed during all the landing phase.
+[33me3223d587[m Minor corrections
+[33m5290fa8e3[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33mb05fc80b7[m More work on my thesis
+[33mcf18916f2[m More work on toString functions, customizing the Amount formatting functions and avoiding the use of getEstimatedValue()+unit_label. More derived data in LiftingSurface object. New bare bone classes for Flaps, Slats, etc
+[33mbb8e9ead0[m The methods for the calculation of moment has been modified in order to consider 3d effects. The method for the calculation of cl vs alpha of h tail has been modified. minor other changes.
+[33m1d8da4a7e[m Changes of nacelles wet surface estimation. The formula for the nacelle base drag calculation has been corrected. Minor changes into Take-off Test_AGILE_DC1.
+[33ma241067ea[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m6950f00f2[m New example, reading a wing. Panels now read successfully. Need to read flaps, slats, ailerons, spoilers
+[33m631a76d58[m More work on Take-off Test_AGILE_DC1. Effect of TO distance on Agile-DC1 sizing requirements
+[33m4d2f605e7[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33ma6bb069a9[m The method for the calculation of pitching moment has been modified.
+[33mec496fbee[m The folder tree structure image in thesis has been updated. Minor changes in CalcLanding and its tests
+[33mdf5c4c9e1[m New stuff in Wing class
+[33m7dbe7a1ad[m Minor modifications to WingPanel test
+[33m314d37faf[m Zoom behaviour in D3Plotter / Test7
+[33m3c3ab8756[m Added JPAD input map in DOCS/InputFile
+[33m1d82b2746[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33me01d9aabb[m Fixed some errors in the evaluation of CM. added non linearity in cl-alpha h tail. maybe it need to fidex
+[33m405d1d288[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m6105441c2[m More work on Test_AGILE_DC1 and on Nacelle aerodynamics manager class
+[33m823856151[m Minor changes
+[33mb68ffc51c[m More work on CalcLanding and its tests. The calculation of the landing distance is now complete.
+[33m667cb0729[m More work on Test_AGILE_DC1 and on Nacelle weights manager classes. The nacelles weight is now estimated
+[33mefa071a7d[m Working on Test_AGILE_DC1 and on Nacelle weights manager classes
+[33me0045d59d[m Working on Test_AGILE_DC1 and on Nacelle weights manager classes
+[33m7297fa85a[m Refactor in CalcTakeOff and its tests. Add a test class for the Landing calculation.
+[33md0e3a08f6[m Slide folder added in DOCS/Theses/Trifari. Added new class to calculate the landing distance which is still in development.
+[33m6cced8c0f[m Added power effects for turboprop in longitudinal static stablity
+[33mb1f56e614[m D3Plotter now works with a D2PlotterOptionsBuilder
+[33m0dfca3ce0[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mb7dcb2b61[m New functions in D3Plotter 3
+[33m6de602b85[m minor changes
+[33m85cd6c9d7[m More work on Test_AGILE_DC1
+[33mfc3fd3e66[m Minor changes
+[33mac48d4917[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mcfdcf0abf[m New functions in D3Plotter
+[33mda85ab772[m Test on turbofan database in order to fix the BPR=8 issue
+[33m0d7013e7f[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m8834c8c03[m Changes in downwash calculator method. More work on my thesis
+[33medf9addf8[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m9c01307bb[m New functions in D3Plotter
+[33mea9caf9c7[m Some changes in CalcTakeOff_Landing and its test in order to run both ATR-72 and B747 tests, both the AGILE DC-1 test.
+[33mf6fd3751c[m More work on thesis in DOCS/Theses/Trifari.
+[33m970f6cfd3[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m654bd0729[m Minor changes
+[33m3b6e8902d[m More work on my thesis
+[33m750fc047f[m More work on my thesis
+[33mdb7de199f[m More work on thesis in DOCS/Theses/Trifari
+[33m002d8092c[m More work on thesis in DOCS/Theses/Trifari
+[33mb93a4b3a5[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m7407f1dfb[m New test about TO distance for AGILE_DC1 has been created into vt_sandbox
+[33md012d3356[m More work on my thesis
+[33m836a69582[m Added an image for Folder_Tree input file structure
+[33mc4967a58a[m More work on my thesis
+[33m95c06f730[m minor changes
+[33m0f469d0a5[m More work on thesis in DOCS/Theses/Trifari
+[33mf3644aef1[m More work on my thesis
+[33m7df1e665a[m Push trifari thesis
+[33m9f5c25576[m More work on Test_AGILE_DC1_01 into VC sandbox. Minor change into MR sandbox
+[33mf8f500800[m More work on Test_AGILE_DC1_01 into VC sandbox. Minor change into MR sandbox
+[33m3641ad19a[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33md5193632a[m More work on my thesis
+[33m2cc320441[m More work on my thesis.
+[33m52a503fee[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m101294de1[m More work on Test_AGILE_DC1_01 into VC_sandbox
+[33m23a9fadf1[m Added a presentation in DOCS/Theses
+[33me296a833d[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mc04b69c43[m D3Plotter, now a legend is displayed somewhere in the canvas
+[33m614e9a26b[m More work on thesis in DOCS/Theses/Trifari
+[33m99b998619[m More work on my thesis.
+[33mbbebfb3be[m More work on D3 plotter 2
+[33m24d0c3805[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m56bbfe7e7[m More work on D3 plotter
+[33m975bc56e0[m Further development on thesis in DOCS/Theses/Trifari
+[33m4f2c62344[m Added the fuselage contibute to the longitudinal stability. More work on my thesis.
+[33m80b3e25c2[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m8d6b05a3d[m D3Plotter class now with x- and y-labels
+[33mbd70a10b2[m Error fixed
+[33m719271bda[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m761f84850[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m23fc90b52[m Merge some .java file
+[33mb85228663[m Minor changes
+[33m0c0501aed[m More work on Test_AGILE_DC1 into VC_Sandbox
+[33m9e1f36048[m Continuation of the development of thesis in DOCS/Theses/Trifari. Modified the call for the default aircraft in every test in sandbox.vt. Add a method in ThrustCalc to calculate the T0 from the P0 for a propeller driver aircraft.
+[33md71084943[m More work on Test_AGILE_DC1 into VC_Sandbox
+[33me3fdbe5ec[m Fixed conflict
+[33m2bfb5fb05[m New test on new class D3Plotter
+[33m6bcd9dfe7[m Error fixed
+[33md3b5961c9[m More work on my thesis.
+[33mff9ea0677[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mf9688c85b[m New class D3Plotter in sandbox.adm
+[33m9a235b125[m New default aircraft (AGILE_DC1) has been created.
+[33m49538e54c[m New default aircraft (AGILE_DC1) has been created.
+[33m48b895725[m Fix the Kcorrection in ThrustCalc.
+[33mb20d20934[m Changed Kcorrection in ThrustCalc at thrustDatabase. See Trello Card. Fixed the static thrust value for the B747-100B.
+[33md9019eeb0[m New default aircraft (AGILE_DC1) has been created.
+[33m039552c0e[m Minor changes in CalcTakeOff_Landing and in TakeOffResultMap. Continuation of the development of the thesis in DOCS/Theses/Trifari
+[33m5ac89f07c[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33me19c49822[m More work on my thesis.
+[33mb41271c35[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m86efef2d5[m New test in JavaFX/D3 - MathJax rendering
+[33m5e5f2b4ce[m Minor changes on thesis in DOCS/Theses/Trifari. Fixed some problems in CalcTakeOff_Landing; now the balanced field length method works.
+[33m0fba2d73f[m More work in my thesis.
+[33m97a40e498[m Now it's possible evaluate the AC of a lifting surface starting from it's CM vs alpha curve respect the point at quarter of MAC. More work in my sandbox.
+[33m0f55c7460[m New test in JavaFX/D3
+[33m7bb0dd16a[m Major changes in CalcTakeOff_Landing, and its tests, have been make
+[33m8f0abf6fd[m Added more papers on takeoff
+[33me0fcd031f[m Added Tesi Gambardella
+[33m7a6acce9e[m More work on Long stability
+[33mfc8aaef03[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mb0897d0cd[m New drawing sources wing_topview_*
+[33mc68fa40b4[m More works in StabilityCalculator Class, in order to calculate the moment coefficient of Wing.
+[33md0cc5e4c8[m More works on CalcTakeOff_Landing and its tests. Now ODE integration works.
+[33mee80969fc[m A new class has been implemented in my sandbox in order to calculate the pitching moment coefficient using an integral. it need to be fixed.
+[33mee7a0fec2[m More work on JavaFX/D3 test - SVG style node now injected in output file, need to strip escape chars from xml
+[33m50d4fcbcf[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m97b91f7bc[m More works on my thesis.
+[33m2b3b7ab1a[m Minor changes in thesis in DOCS/Theses/Trifari. Some modifications in PayloadRangeCalc, SpecificRangeCalc  and their tests in order to make them work again. More works on CalcTakeOff_Landing and its tests.
+[33md0276a236[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m1a27667e6[m More work on Test 5 - JavaFX/D3 - svg output
+[33m619fa03e4[m More works on my thesis.
+[33m02ad7c491[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mab5e7f5b4[m Switched to newer library treez/JavaFxD3
+[33m4288e71e7[m More works on my thesis.
+[33m696460374[m More works on thesis in DOCS/Theses/Trifari
+[33m802e94eaf[m Minor changes. Now in my Test_07 it's possible to plot the stall path.
+[33m5611670e5[m Some modifications in LSAerodynamicManager and in sandbox.vt
+[33m3e23bbcd7[m JavaFx/D3 - Test 4 - now plotted a curve in regular coordinates
+[33mbb4d2d087[m  Minor changes in my sandbox.
+[33mf20132be2[m Fixed some problems in LSAerodynamicManager
+[33m86dd2e720[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mf3f99b0da[m Test D3/JavaFX. Now a plot in regular coordinates is done
+[33mfdafd0ef1[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33md740e3f79[m More works on my thesis.
+[33m91528c47f[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m2b9d05d3c[m Test D3/JavaFX. Now SVG file is written
+[33mb0188241b[m More works on thesis in DOCS/Theses/Trifari
+[33mdeb57ce6b[m More work on Test_AC_AGILE_01 class and on Directional Stability classes into VC sandbox.
+[33med7a32c42[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mcb49f80a3[m More work on Test_AC_AGILE class into VC_sandbox. Directional stability analysis of AGILE TLA D1 aircraft with DirectionalStability jar
+[33m277432d18[m More works on thesis in DOCS/Theses/Trifari
+[33m062848825[m More works on my thesis.
+[33m75a69237e[m More tests on D3 in JavaFX
+[33mb74afc60e[m More works on thesis in DOCS/Theses/Trifari. Fix some problem in CalcHighLift with conseguent modifications in LSAerodynamicManager, sandbox/vt and airfoils.
+[33mebd6407ad[m Added library javafx-d3 and tests in JPADSandBox.adm 2
+[33mf0bb782f9[m Added library javafx-d3 and tests in JPADSandBox.adm
+[33me45a0806a[m More works on my thesis. Drag correction for elevator deflection in my Test class.
+[33m33426f208[m Refactoring in CalcHighLift, its tests and HighLiftDatabaseReader. More works on CalcHighLift. More works on thesis in DOCS/Theses/Trifari.
+[33mb8d85b186[m More works in my thesis.
+[33m66ebe45b4[m More works on thesis in DOCS/Theses/Trifari.
+[33m8a618a539[m More work on the costs classes into JPAD-APPS and VC Sandbox
+[33mf045f79ec[m Now in stability test class is possible to evaluate the CD of wing and horizontal tail. More works on my thesis.
+[33mf04943a40[m More works on my thesis.
+[33mc05f03d2c[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m1060c0866[m More work on Test_Directional_Stability class into JPAD-APPS. The dependency from jars (only the useful one) has been parameterized. Minor changes to Payload-Range class into VC sandbox. New test Costs project has been created into JPAD-APPS
+[33m7fcfc0842[m more works in my thesis.
+[33mf27afda1e[m More works on CalcTakeOff_Landing and its tests. More works on thesis in DOCS/Theses/Trifari.
+[33m54af58570[m Now it's possible to evaluate the lift coefficient of the aircraft. More work on my thesis
+[33m126e61957[m More on drawings
+[33mf46ee9eba[m More work on Test_Directional_Stability project
+[33m233ea0d4a[m more works in my thesis.
+[33mfaf64c20e[m Now it's possible to evaluate and plot the CL at alpha for an horizontal tail considering an angle of deflection of elevator.
+[33mc31733a5e[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mf800af295[m More on LiftingSurface2 ... LiftingSurfacePanel / Airfoil + tests
+[33m56ac2db5c[m More works on thesis in DOCS/Theses/Trifari. A problem in HighLiftDatabase has been fixed. More test on CalcTakeOff_Landing
+[33m21f938ee0[m Added new data at AerodynamicDatabase. A new class in my sandbox has been created. Now it's possible to evaluate the tau factor for an h tail.
+[33md8f509830[m More works on CalcTakeOff_Landing and its test
+[33m2a597de4a[m Minor changes
+[33m0c75a0fe0[m Minor changes
+[33m744bbdbaf[m More work in my sandbox, now it's possible to use an airfoil (NACA 0012) for the horizontal tail. The Test_07 plots the CL vs Alpha curve of the horizontal tail and calculates the CL at alpha body.
+[33m90c485e26[m More works on CalcTakeOff_Landing and its test.
+[33m1ad20df0b[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m89f74e50c[m Minor changes in Test_VC_complete_AC
+[33md99b55eda[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m7a85ada6c[m Airfoil testing. Parsing the enumerated type with Stream/Java 8
+[33m14b95122e[m Now DownwashCalculator class works correctly. This class calculates the downwash gradient and the downwash angle considering the gradient non constant. More work on my thesis.
+[33m035a5c4b0[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mfe0a4206e[m Testing the new airfoil (construction with Builder pattern, importing from file)
+[33m43e93fc50[m More works on thesis in DOCS/Theses/Trifari
+[33m3bc988bcc[m Started a new hierarchy for airfoil/wing/lifting surface
+[33m4e12e9270[m Added one picture
+[33m145dbf07a[m More work on take-off latex file 2
+[33mad3c65d78[m More work on take-off latex file
+[33mc6e5fd5ec[m More works on thesis in DOCS/Theses/Trifari
+[33m653e1b1a3[m More work on Template_Aircraft 2
+[33m83cdba39f[m More work on Template_Aircraft
+[33m73a3f9371[m Started work on Template_Aircraft
+[33mfe2d3600b[m Template aircraft in Sandbox/in dir
+[33mb494f2cf2[m More works on CalcTakeOff_Landng and its tests.
+[33ma7311f576[m New stuff in Take-off document
+[33mf0865dde8[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m9f856d08c[m More work on JPAD-APPS. The jar file of directional stability test now works
+[33me8bb8ee2c[m More work on my thesis. Add a new folder Temp_Downwash with temporary draft relative to downwash and a TODO list.
+[33m7305c05cd[m More works on thesis in DOCS/Theses/Trifari
+[33mf5862653f[m Some work in JPAD-Apps
+[33m4d761c98e[m More works on thesis in DOCS/Theses/Trifari
+[33m14cf3a1c9[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m48e496567[m Work on the Directional stability class and jar file into JPAD-APPS. Changes of directional stability class into VC_sandbox
+[33medee1ccdd[m More on drawings, long stability def
+[33m7148434f3[m Some work on documents/drawings
+[33m4f7c4b088[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33ma9128e203[m Minor changes to downwash calculator
+[33m641511ab6[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m6735fe870[m Minor changes to Test_Complete_A/C into sandbox_VC
+[33m70781a8ce[m Refacoting Docs, added useful docs on take-off and landing
+[33m4ac14f200[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m4a526379e[m ODE integration started in TakeOff_Landing class
+[33m457516550[m Now thw class DownwashCalculator in my sandbox works. Need to check the results.
+[33mb22768dba[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m07a6d9a2c[m More works on CalcTakeOff_Landing and its tests.
+[33m04086e3e8[m New ChartTest_01 in sandbox.adm 2
+[33m6673d046f[m New ChartTest_01 in sandbox.adm
+[33med0c9124d[m More works on CalcTakeOff_Landing and its tests.
+[33mb3ca89243[m A new class in my sandbox has been implemented: DownwashCalculator_07. The purpose of this class is to evaluate the downwash gradiend with the influence of the absolute angle of attack. Minor changes in ACAerodynamicManagr
+[33m389ac463a[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33mf2e44481e[m New Delta CD ground graph. See excel file into DOCS folder. More work on Test_Complete_A/C into sandbox_VC
+[33mfe4189a57[m Wing stall drawings updated
+[33m13d40d2ce[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m145b9bfdc[m Tesi Ruocco, font settings
+[33m304998374[m More work on Test_complete_A/C class into VC_sandbox
+[33mb3d93d4ab[m More work on Test_complete_A/C class into VC_sandbox
+[33m714deed07[m More works on CalcTakeOff_Landing and its tests. A method for evaluating balanced field length has been implemented but need more tests.
+[33mf9182b762[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33mecd89709d[m Added more thesis works
+[33mc11865527[m More works on CalcTakeOff_Landing and its tests. Now the total take-off length AOE is calculated. Balanced field lenght calculation started.
+[33m18be2b429[m Some more work on stall path drawings 4
+[33m797d2bd81[m Some more work on stall path drawings 3
+[33m73df2787b[m Some more work on stall path drawings 2
+[33ma11b828e2[m Some more work on stall path drawings
+[33mf480c6dff[m Preliminary reorganization of  airfoil-related classes.
+[33m7634cbb9f[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m200888967[m New folder DOCS/Manual with drawings
+[33m354e4fb15[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m59ecdbaf0[m Minor changes into VC_Sandbox (Test_complete_A/C)
+[33m2e5b8504c[m Minor changes
+[33m17828f998[m Minor changes
+[33ma75a2a1c0[m Minor changes
+[33m25c4b62ae[m Minor changes
+[33m31bb197ab[m Minor changes
+[33m2e493b732[m Minor changes
+[33m3be180a95[m Minor changes to CalcTakeOff_Landing
+[33m2fe3381c6[m Minor changes into VC_Sandbox
+[33mbf17aab1f[m Minor changes into VC_Sandbox
+[33mc7e4d153e[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m37dcbfc63[m Now LS aerodynamic analysis works correctly.
+[33m840d9de5c[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m5743add8e[m Library fxgraphics2d upgraded to v1.3. New tests in JPADSandbox.adm
+[33m3c5c023a7[m Minor changes
+[33m24e17d846[m Fixed some bugs
+[33m849634fe6[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m9bdb5a0fe[m Now it is possible to evaluate alpha0L of an exposed Wind.
+[33mb67722710[m Minor changes in TakeOffResultsMap. More works on CalcTakeOff_Landing and its tests; works upon a method for calculating the airborn has started. A method for plotting all Take-off performance has been added.
+[33m9b784ff12[m More works on CalcTakeOff_Landing and its tests.
+[33m73abc6676[m Minor changes
+[33md487e523b[m New custom map TakeOffResultsMap created in order to store all take-off main data. More works on CalcTakeOff_Landing and its tests : the rotation phase calculation has been implemented.
+[33meba3d6032[m Minor changes into VC_Sandbox
+[33m946bb7ee0[m Minor changes into VC_Sandbox. Test_VC_complete_AC class has been created.
+[33m2a1e51dd5[m Minor changes into VC_Sandbox. Test_VC_complete_AC class has been created.
+[33mf6d38d583[m Now a new LS object is created with an aircraft: Exposed Wing
+[33mba40baa5b[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33mbbc75959e[m Now it is possible to evaluate CL at alpha body for an isolated wing and also for wing-body. Moreover it is possible to plot CL vs Alpha curve both for wing and for wing body.
+[33m582c8e7a3[m Minor modifications (Eclipse MARS.1 on Office PC)
+[33m9cbb9ea44[m Minor changes in CalcTakeOff_Landing
+[33m10267c0a6[m  Minor changes in my SandBox. A new method in ACAerodynamicManager has been implementated. Now it is possible to evaluate the cl vs alpha curve for wing body.
+[33m52c59b770[m Minor changes
+[33m69a3ba13d[m HighLiftDatabase has been updated with new curves in order to implement the correct DeltaCD calculation. Some modifications in LSAerodynamicManager at CalcHighLiftDevice.
+[33m2ab7296a0[m  Minor changes in mi SandBox.
+[33m3734bd38e[m  Minor changes in mi SandBox
+[33ma95475f73[m Minor changes in sandbox.vt. High Lift input data updated.
+[33m379a6a4fe[m Minor changes to HighLift_Test in sandbox.vt and to MyAirfoil class. Implemented a new class for evaluating take-off and landing performance. A method for calculating ground roll distance has been added. Two tests for Tutboprop and Turbofan have been created for testing the new feature.
+[33m7de257e64[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m5fa84cccf[m Imported the new repo in my VAIO laptop
+[33m951fb96e8[m Added new class in sandbox.vt for TakeOff-Landing. Minor changes in LSAerodynamicManager at CalcHighLiftDevices. Minor changes in LandingGear in order to add the DeltaCD0_LandingGear. Minor changes to ThrustCalc.
+[33m5d032b382[m Merge branch 'master' of github.com:Aircraft-Design-UniNa/jpad
+[33m2ed95d54c[m More works on SpecificRangeCalc and its tests. Minor modifications to PerformanceCalcUtils.
+[33m599e76c77[m  Minor changes in mi SandBox. Now it is possible to evaluate CL of a wing having alpha body as input
+[33mb8efe8a11[m More works on Specific Range. Minor modification to PlotJFreeChart and to methods that call it.
+[33mde8e914e3[m Merge branch 'master' of https://github.com/Aircraft-Design-UniNa/jpad
+[33m1e8a581c6[m Now calculateCLAlphaHighLift works correctly
+[33md69abafe4[m Initial structure of JPAD-Apps
+[33m7447e9242[m New functions in LSAerodynamicManager
+[33m9eea63c2f[m Minor modifications
+[33m3e9a9c423[m Minor changes on SpecificRange
+[33m00c038c4f[m Now it is possible to evaluate the CL at alpha for a flapped wing and it is possible to plot the CL vs alpha curve with high lift devices
+[33mf15d4dd75[m Modification in DOCS/Theses/Trifari
+[33m07e752f2c[m Changes into VC sandbox
+[33ma34b1f382[m Added all modificatons
+[33m4db75d796[m added .gitignore
+[33md4408d931[m Aerodynamic database added using git lfs
+[33m914b979d5[m initial commit
