@@ -767,6 +767,69 @@ public class Test_01 {
 		
 		System.out.println(">>>>>>>> Cl_r: " + cRollr);
 		
+		// --------------------------------------------------
+		// Calculation of CN_delta_A
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CN_delta_A");
+		System.out.println("-------------------------");
+		
+		// Delta_K_N_A
+		double innerKNA = databaseReader.getCNDeltaAKNAVsEtaARLambda(taperRatioWing, aspectRatioWing, etaInboardAileron);
+		double outerKNA = databaseReader.getCNDeltaAKNAVsEtaARLambda(taperRatioWing, aspectRatioWing, etaOutboardAileron);
+		double deltaKNA = outerKNA - innerKNA;
+		
+		// CN_delta_A
+		Amount<?> cNDeltaA = cRollDeltaA.times(deltaKNA*cL1);
+		
+		System.out.println(">>>> KNA_I: " + innerKNA);
+		System.out.println(">>>> KNA_O: " + outerKNA);
+		System.out.println(">>>> Delta KNA: " + deltaKNA);
+		System.out.println(">>>>>> CN_delta_A: " + cNDeltaA);
+		
+		// --------------------------------------------------
+		// Calculation of CN_p_W
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CN_p_W");
+		System.out.println("-------------------------");
+		
+		// CN_p/CL1
+		double cFactor = 
+				(
+						(
+								aspectRatioWing + 4*Math.cos(
+										sweepAngleC4Wing.doubleValue(SI.RADIAN)
+										)
+								)/(
+										aspectRatioWing*bFactor + 4*Math.cos(
+												sweepAngleC4Wing.doubleValue(SI.RADIAN)
+												)
+										)
+						)*(
+								aspectRatioWing*bFactor + 0.5*(aspectRatioWing*bFactor + 4*Math.cos(
+										sweepAngleC4Wing.doubleValue(SI.RADIAN)
+										))*Math.pow(
+												Math.tan(sweepAngleC4Wing.doubleValue(SI.RADIAN)),
+												2
+												)
+								)/(
+										aspectRatioWing + 0.5*(aspectRatioWing + 4*Math.cos(
+												sweepAngleC4Wing.doubleValue(SI.RADIAN)
+												))*Math.pow(
+														Math.tan(sweepAngleC4Wing.doubleValue(SI.RADIAN)),
+														2
+														)
+										);
+//		Amount<?> CNpOverCL1AtMachZero = Amount.valueOf(
+//				
+//				)
+				
+				
+				
+				
+		
+		// CN_p_W
 	}
 
 }
