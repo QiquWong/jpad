@@ -105,6 +105,8 @@ import writers.JPADStaticWriteUtils;
  * in order to obtain quantities relative to the whole aircraft.
  */ 
 
+// TODO make aircraft weight a parameter of the class?
+
 public class ACAerodynamicAndStabilityManager {
 
 	/*
@@ -13807,7 +13809,7 @@ public class ACAerodynamicAndStabilityManager {
 				.setVTailMomentumPole(vTailMomentumPole)
 				.setCanardMomentumPole(canardMomentumPole)
 				.setAdimensionalFuselageMomentumPole(adimensionalFuselageMomentumPole)
-				.setDynamicPressureRatio(horizontalTailDynamicPressureRatio)
+				.setHTailDynamicPressureRatio(horizontalTailDynamicPressureRatio)
 				.setTauElevatorFunction(tauElevator)
 				.setTauRudderFunction(tauRudder)
 				.putComponentTaskList(ComponentEnum.WING, wingTaskList)
@@ -19890,7 +19892,7 @@ public class ACAerodynamicAndStabilityManager {
 							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurfacePlanform(),  
 							_current3DWingLiftCurve,
 							_current3DHorizontalTailLiftCurve.get(de),
-							_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+							_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio(), 
 							_alphaBodyList)
 
 					)
@@ -20024,7 +20026,7 @@ public class ACAerodynamicAndStabilityManager {
 											.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
 							_landingGearUsedDrag,
 							_theAerodynamicBuilderInterface.getDeltaCD0Miscellaneous(),
-							_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+							_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio(), 
 							_alphaBodyList)
 					)
 					);
@@ -20205,7 +20207,7 @@ public class ACAerodynamicAndStabilityManager {
 								.getMoment3DCurve()
 								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 										.get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE))),
-								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+								_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio(), 
 								_alphaHTailList,
 								_theAerodynamicBuilderInterface.getWingPendularStability()
 								)
@@ -20373,7 +20375,7 @@ public class ACAerodynamicAndStabilityManager {
 							    _current3DHorizontalTailPolarCurve.get(de),
 								_current3DHorizontalTailMomentCurve.get(de),
 								_landingGearUsedDrag,
-								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+								_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio(), 
 								_alphaBodyList, 
 								_theAerodynamicBuilderInterface.getWingPendularStability())						
 						)
@@ -20467,7 +20469,7 @@ public class ACAerodynamicAndStabilityManager {
 												.get(ComponentEnum.NACELLE)
 												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
 								_landingGearUsedDrag,
-								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+								_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio(),
 								_alphaBodyList,
 								_alphaWingList,
 								_alphaNacelleList,
@@ -20489,7 +20491,7 @@ public class ACAerodynamicAndStabilityManager {
 							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurfacePlanform(),  
 							_current3DWingLiftCurve,
 							_horizontalTailEquilibriumLiftCoefficient.get(xcg),
-							_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+							_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio(), 
 							_alphaBodyList));		
 
 			});
@@ -20643,7 +20645,7 @@ public class ACAerodynamicAndStabilityManager {
 												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
 								_landingGearUsedDrag,
 								_theAerodynamicBuilderInterface.getDeltaCD0Miscellaneous(),  // FIX THIS
-								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+								_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio(), 
 								_alphaBodyList));
 			});
 
@@ -20752,7 +20754,7 @@ public class ACAerodynamicAndStabilityManager {
 									SI.METER
 									),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().opposite(), 
-							LiftCalc.calculateLiftCoeff(
+							LiftCalc.calculateLiftCoeff( // TODO make aircraft weight a parameter of the class?
 									_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
 									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 									getCurrentMachNumber()*AtmosphereCalc.getSpeedOfSound(getCurrentAltitude().doubleValue(SI.METER)),
@@ -20776,7 +20778,7 @@ public class ACAerodynamicAndStabilityManager {
 							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getEquivalentWing().getPanels().get(0).getSweepHalfChord(), 
 							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getDihedralMean(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip(), 
-							0.9, // TODO take the degradation factor of dynamic pressure horizontal tail: AerodynamicCalc.calculateDynamicPressureRatio(positionRelativeToAttachment)
+							_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio(),
 							Amount.valueOf(
 									_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
 											_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().doubleValue(SI.METER)
@@ -20788,7 +20790,7 @@ public class ACAerodynamicAndStabilityManager {
 							));
 
 			Amount<Length> xCG = Amount.valueOf(15.0, SI.METER); // TODO take xCG
-
+			
 			_cRollBetaVertical.put(
 					MethodEnum.NAPOLITANO_DATCOM,
 					MomentCalc.calcCRollbetaVerticalTail(
@@ -20948,7 +20950,7 @@ public class ACAerodynamicAndStabilityManager {
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralMean(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip(), 
 							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
-							LiftCalc.calculateLiftCoeff(
+							LiftCalc.calculateLiftCoeff( // TODO make aircraft weight a parameter of the class?
 									_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
 									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 									getCurrentMachNumber()*AtmosphereCalc.getSpeedOfSound(getCurrentAltitude().doubleValue(SI.METER)),
@@ -21025,7 +21027,8 @@ public class ACAerodynamicAndStabilityManager {
 			//=======================================================================================
 			_cNbFuselage.put(
 					MethodEnum.VEDSC_SIMPLIFIED_WING,
-					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+						.map(
 							x -> Tuple.of(
 									x,
 									MomentCalc.calcCNBetaFuselage(
@@ -21060,7 +21063,7 @@ public class ACAerodynamicAndStabilityManager {
 											)
 									)
 							)
-					.collect(Collectors.toList())
+						.collect(Collectors.toList())
 					);
 
 

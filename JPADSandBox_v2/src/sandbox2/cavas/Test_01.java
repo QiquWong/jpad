@@ -821,10 +821,37 @@ public class Test_01 {
 														2
 														)
 										);
-//		Amount<?> CNpOverCL1AtMachZero = Amount.valueOf(
-//				
-//				)
-				
+		double xCGOverMAC = xCG.doubleValue(SI.METER)/wing.getMeanAerodynamicChord().doubleValue(SI.METER);
+		double xACOverMAC = 4.0; 
+		Amount<?> CNpOverCL1AtMachZero = Amount.valueOf(
+				-(
+						aspectRatioWing + 6*(
+								aspectRatioWing + Math.cos(
+										sweepAngleC4Wing.doubleValue(SI.RADIAN)
+										)
+								)*(
+										(
+												xCGOverMAC - xACOverMAC
+												)*Math.tan(
+														sweepAngleC4Wing.doubleValue(SI.RADIAN)
+														)/aspectRatioWing
+										- Math.pow(
+												Math.tan(sweepAngleC4Wing.doubleValue(SI.RADIAN)),
+												2
+												)/12
+										)
+						)/(
+								12*(
+										aspectRatioWing + Math.cos(sweepAngleC4Wing.doubleValue(SI.RADIAN))
+										)
+								),
+				SI.RADIAN.inverse()
+				);
+		Amount<?> CNpOverCL1 = CNpOverCL1AtMachZero.times(cFactor);
+		
+		// DCN_p/eps_W
+		
+		
 				
 				
 				
