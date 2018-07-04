@@ -823,7 +823,7 @@ public class Test_01 {
 										);
 		double xCGOverMAC = xCG.doubleValue(SI.METER)/wing.getMeanAerodynamicChord().doubleValue(SI.METER);
 		double xACOverMAC = 4.0; 
-		Amount<?> CNpOverCL1AtMachZero = Amount.valueOf(
+		Amount<?> cNpOverCL1AtMachZero = Amount.valueOf(
 				-(
 						aspectRatioWing + 6*(
 								aspectRatioWing + Math.cos(
@@ -847,16 +847,249 @@ public class Test_01 {
 								),
 				SI.RADIAN.inverse()
 				);
-		Amount<?> CNpOverCL1 = CNpOverCL1AtMachZero.times(cFactor);
+		Amount<?> cNpOverCL1 = cNpOverCL1AtMachZero.times(cFactor);
 		
 		// DCN_p/eps_W
+		Amount<?> cNDeltaCNpOverEpsW = Amount.valueOf(
+				databaseReader.getCNPWDCNPOverEpsWVsARLambda(taperRatioWing, aspectRatioWing),
+				SI.RADIAN.inverse().times(NonSI.DEGREE_ANGLE.inverse())
+				);
 		
-		
-				
-				
-				
+		System.out.println(">>>> DCN_p/eps_W: " + cNDeltaCNpOverEpsW);
 		
 		// CN_p_W
+		Amount<?> cNpW = cRollpWB.times(-Math.tan(angleOfAttack.doubleValue(SI.RADIAN)))
+				.plus(cRollp.times(Math.tan(angleOfAttack.doubleValue(SI.RADIAN))))
+				.plus(cNpOverCL1.times(cL1))
+				.plus(cNDeltaCNpOverEpsW).times(aerodynamicTwistWing);
+		
+		System.out.println(">>>>>> CN_p_W: " + cNpW);
+		
+		// --------------------------------------------------
+		// Calculation of CN_p_V
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CN_p_V");
+		System.out.println("-------------------------");
+		
+		// CN_p_V
+		Amount<?> cNpV =
+				cYBetaV
+				.times(
+						zV.times(
+								Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
+						).minus(
+								xV.times(
+										Math.sin(angleOfAttack.doubleValue(SI.RADIAN))
+								)
+						).minus(zV)
+				).divide(spanWing)
+				.times(
+						zV.times(
+								Math.sin(angleOfAttack.doubleValue(SI.RADIAN))
+						).plus(
+								xV.times(
+										Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
+								)
+						)
+				).divide(spanWing).times(-2)
+				.to(SI.RADIAN.inverse());
+		
+		System.out.println(">>>>>> CN_p_V: " + cNpV);
+		
+		// --------------------------------------------------
+		// Calculation of CN_p
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CN_p");
+		System.out.println("-------------------------");
+		
+		// CN_p
+		Amount<?> cNp = cNpW.plus(cNpV);
+		
+		System.out.println(">>>>>>>> CN_p: " + cNp);
+		
+//		// --------------------------------------------------
+//		// Calculation of CN_r_W
+//		// --------------------------------------------------
+//		System.out.println("-------------------------");
+//		System.out.println("Calculation of CN_r_W");
+//		System.out.println("-------------------------");
+//
+//		// CN_r/CL1^2
+//		double staticMargin = 0.2;
+//		Amount<?> cNrOverSquaredCL1 = Amount.valueOf(
+//				databaseReader.getCNRWCNROverSquaredCLift1VsARLambdaLC4XBarACMinusXBarCG(staticMargin, sweepAngleC2Wing, aspectRatioWing, taperRatioWing),
+//				SI.RADIAN.inverse()
+//				);
+//
+//		System.out.println(">> MS: " + staticMargin);
+//		System.out.println(">>>> CN_r/CL1^2: " + cNrOverSquaredCL1);
+//
+//		// CN_r/CD0
+//		Amount<?> cNrOverCD0 = Amount.valueOf(
+//				databaseReader.getCNRWCNROverCD0BarVsARLC4XBarACMinusXBarCG(staticMargin, sweepAngleC4Wing, aspectRatioWing),
+//				SI.RADIAN.inverse()
+//				);
+//
+//		System.out.println(">>>> CN_r/CD0: " + cNrOverCD0);
+//
+//		// CN_r_W
+//		double cD0 = 10;
+//		Amount<?> cNrW = cNrOverSquaredCL1.times(cL1).pow(2)
+//				.plus(cNrOverCD0).times(cD0);
+//
+//		System.out.println(">>>>>> CN_r_W: " + cNrW);
+//
+//		// --------------------------------------------------
+//		// Calculation of CN_r_V
+//		// --------------------------------------------------
+//		System.out.println("-------------------------");
+//		System.out.println("Calculation of CN_r_V");
+//		System.out.println("-------------------------");
+//
+//		// CN_r_V
+//		Amount<?> cNrV =
+//				cYBetaV
+//				.times(
+//						(
+//								zV.times(
+//										Math.sin(angleOfAttack.doubleValue(SI.RADIAN))
+//										).plus(
+//												xV.times(
+//														Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
+//														)
+//												)
+//								).divide(spanWing)
+//						).pow(2).times(2)
+//				.to(SI.RADIAN.inverse());
+//
+//		System.out.println(">>>>>> CN_r_V: " + cNrV);
+//
+//		// --------------------------------------------------
+//		// Calculation of CN_r
+//		// --------------------------------------------------
+//		System.out.println("-------------------------");
+//		System.out.println("Calculation of CN_r");
+//		System.out.println("-------------------------");
+//
+//		// CN_p
+//		Amount<?> cNr = cNrW.plus(cNrV);
+//
+//		System.out.println(">>>>>>>> CN_r: " + cNr);
+		
+		// --------------------------------------------------
+		// Calculation of CY_beta_W
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CY_beta_W");
+		System.out.println("-------------------------");
+		
+		// CY_beta_W
+		Amount<?> cYBetaW = dihedralWing.abs().times(
+				Amount.valueOf(
+						-0.0001,
+						NonSI.DEGREE_ANGLE.pow(2).inverse()
+						)
+				).to(SI.RADIAN.inverse());
+		
+		System.out.println(">>>>>> CY_beta_W: " + cYBetaW);
+		
+		// --------------------------------------------------
+		// Calculation of CY_beta_B
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CY_beta_B");
+		System.out.println("-------------------------");
+		
+		// CY_beta_W
+		Amount<?> cYBetaB = Amount.valueOf(1, SI.RADIAN.inverse()); // TODO insert this aerodynamic derivative
+		
+		System.out.println(">>>>>> CY_beta_B: " + cYBetaB);
+		
+		// --------------------------------------------------
+		// Calculation of CY_beta_H
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CY_beta_B");
+		System.out.println("-------------------------");
+		
+		// CY_beta_H
+		double etaHTimes1MinusdSigmaOverdBeta =
+				0.724
+				+ 3.06*(surfaceHTail.doubleValue(SI.SQUARE_METRE)/surfaceWing.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepAngleC4Wing.doubleValue(SI.RADIAN)))
+				+ 0.4*zWOverHeightFuselage
+				+ 0.009*aspectRatioWing;
+		
+		Amount<?> cYBetaH = dihedralWing.abs().times(surfaceHTail).divide(surfaceWing)
+				.times(
+				Amount.valueOf(
+						-0.0001*etaHTimes1MinusdSigmaOverdBeta,
+						NonSI.DEGREE_ANGLE.pow(2).inverse()
+						)
+				).to(SI.RADIAN.inverse());
+		
+		System.out.println(">>>>>> CY_beta_H: " + cYBetaH);
+		
+		// --------------------------------------------------
+		// Calculation of CY_beta
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CY_beta");
+		System.out.println("-------------------------");
+		
+		// CY_beta
+		Amount<?> cYBeta = cYBetaW.plus(cYBetaB).plus(cYBetaH).plus(cYBetaV);
+		
+		System.out.println(">>>>>> CY_beta: " + cYBeta);
+		
+		// --------------------------------------------------
+		// Calculation of CY_p
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CY_p");
+		System.out.println("-------------------------");
+		
+		// CY_p
+		Amount<?> cYp =
+				cYBetaV
+				.times(
+						zV.times(
+								Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
+						).minus(
+								xV.times(
+										Math.sin(angleOfAttack.doubleValue(SI.RADIAN))
+								)
+						)
+				).divide(spanWing)
+				.times(2)
+				.to(SI.RADIAN.inverse());
+		
+		System.out.println(">>>>>> CY_p: " + cYp);
+		
+		// --------------------------------------------------
+		// Calculation of CY_r
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CY_r");
+		System.out.println("-------------------------");
+		
+		// CY_r
+		Amount<?> cYr =
+				cYBetaV
+				.times(
+						zV.times(
+								Math.sin(angleOfAttack.doubleValue(SI.RADIAN))
+						).plus(
+								xV.times(
+										Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
+								)
+						)
+				).divide(spanWing).times(-2)
+				.to(SI.RADIAN.inverse());
+		
+		System.out.println(">>>>>> CY_r: " + cYr);
+		
 	}
 
 }

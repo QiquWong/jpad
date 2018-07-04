@@ -39,5 +39,8 @@ import standaloneutils.customdata.MyArray;
  *
  */
 public class SideForceCalc {
+	
+	private SideForceCalc() {}
+	
 
 }

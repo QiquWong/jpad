@@ -234,6 +234,7 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<MethodEnum, Amount<?>> _cRollBetaWingBody = new HashMap<>();
 	private Map<MethodEnum, Amount<?>> _cRollBetaHorizontal = new HashMap<>();
 	private Map<MethodEnum, Amount<?>> _cRollBetaVertical = new HashMap<>();
+	// private Map<MethodEnum, List<Tuple2<Double, Double>>> _cRollBetaVertical = new HashMap<>();
 	private Map<MethodEnum, Amount<?>> _cRollBetaTotal = new HashMap<>();
 	private Map<MethodEnum, Amount<?>> _cRollDeltaA = new HashMap<>();
 	private Map<MethodEnum, Amount<?>> _cRollDeltaR = new HashMap<>();
@@ -20821,6 +20822,49 @@ public class ACAerodynamicAndStabilityManager {
 							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
 							));
+			
+//			_cRollBetaVertical.put(
+//					MethodEnum.NAPOLITANO_DATCOM,
+//					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+//					.map(
+//							x -> Tuple.of(
+//									x,
+//									MomentCalc.calcCRollbetaVerticalTail(
+//											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
+//											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
+//											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
+//											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+//											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSurfacePlanform(),
+//											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSpan(),
+//											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
+//											.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeX())
+//											.plus((_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChord()).times(0.25))
+//											.minus(
+//													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(x)
+//													.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
+//													.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
+//													),
+//											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
+//											.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeZ()),
+//											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLAlpha().get(MethodEnum.HELMBOLD_DIEDERICH), 
+//											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight(),
+//											Amount.valueOf(
+//													_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getZOutlineXZUpperAtX(
+//															_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
+//															.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getPanels().get(0).getChordRoot().divide(4)).doubleValue(SI.METER))
+//													- _theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getZOutlineXZLowerAtX(
+//															_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
+//															.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getPanels().get(0).getChordRoot().divide(4)).doubleValue(SI.METER)),
+//													SI.METER
+//													),
+//											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().opposite(),
+//											_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise(),
+//											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
+//											)
+//									)
+//							)
+//					.collect(Collectors.toList())
+//					);
 
 			_cRollBetaTotal.put(
 					MethodEnum.NAPOLITANO_DATCOM,
@@ -20856,10 +20900,11 @@ public class ACAerodynamicAndStabilityManager {
 					MomentCalc.calcCRollDeltaR(
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSurfacePlanform(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getEquivalentWing().getPanels().get(0).getTaperRatio(),
 							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLAlpha().get(MethodEnum.HELMBOLD_DIEDERICH),
-							0.9, // TODO take the degradation factor of dynamic pressure vertical tail: AerodynamicCalc.calculateDynamicPressureRatio(positionRelativeToAttachment)
 							etaInR,
 							etaOutR,
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getMeanChordRatio(),
@@ -20874,6 +20919,8 @@ public class ACAerodynamicAndStabilityManager {
 									)
 							.minus(xCG),
 							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes().plus(zApplicationForceRudder),
+							_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().opposite(),
 							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
 							));
@@ -22084,13 +22131,13 @@ public class ACAerodynamicAndStabilityManager {
 		this._cRollBetaHorizontal = _cRollBetaHorizontal;
 	}
 
-	public Map<MethodEnum, Amount<?>> getCRollBetaVertical() {
-		return _cRollBetaVertical;
-	}
-	
-	public void setCRollBetaVertical(Map<MethodEnum, Amount<?>> _cRollBetaVertical) {
-		this._cRollBetaVertical = _cRollBetaVertical;
-	}
+//	public Map<MethodEnum, Amount<?>> getCRollBetaVertical() {
+//		return _cRollBetaVertical;
+//	}
+//	
+//	public void setCRollBetaVertical(Map<MethodEnum, Amount<?>> _cRollBetaVertical) {
+//		this._cRollBetaVertical = _cRollBetaVertical;
+//	}
 
 	public Map<MethodEnum, Amount<?>> getCRollBetaTotal() {
 		return _cRollBetaTotal;

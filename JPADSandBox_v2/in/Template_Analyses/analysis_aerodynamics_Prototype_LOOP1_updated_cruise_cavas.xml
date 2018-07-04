@@ -67,7 +67,7 @@
 				</tau_canard_control_surface_function>
 				<!---->
 			</global_data>
-			<wing_analyses perform="FALSE">
+			<wing_analyses perform="TRUE">
 				<critical_mach perform="TRUE" method="KROO"></critical_mach>
 				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
 				<lift>

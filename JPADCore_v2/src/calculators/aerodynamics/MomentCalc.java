@@ -467,20 +467,20 @@ public class MomentCalc {
 	 * @param cLAlphaW
 	 * @param etaInA
 	 * @param etaOutA
-	 * @param cAileronOverCWing
+	 * @param aileronChordRatio
 	 * @param mach
 	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCRollDeltaA(
 			double aspectRatioW, double taperRatioW, Amount<Angle> sweepC4W, Amount<?> cLAlphaW,
-			double etaInA, double etaOutA, double cAileronOverCWing,
+			double etaInA, double etaOutA, double aileronChordRatio,
 			double mach,
 			AerodynamicDatabaseReader databaseReader
 			) {
 		
 		// tau_A
-		double tauA = databaseReader.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(cAileronOverCWing);
+		double tauA = databaseReader.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(aileronChordRatio);
 		
 		// Delta RME
 		double betaFactor = Math.sqrt(1 - Math.pow(mach, 2));
@@ -523,29 +523,33 @@ public class MomentCalc {
 	 * 
 	 * @param surfaceW
 	 * @param spanW
+	 * @param aspectRatioW
+	 * @param sweepC4W
 	 * @param surfaceV
 	 * @param taperRatioV
 	 * @param cLAlphaV
-	 * @param etaV
 	 * @param etaInR
 	 * @param etaOutR
-	 * @param cRudderOverCVTail
+	 * @param rudderChordRatio
 	 * @param xR
 	 * @param zR
+	 * @param heightFuselage
+	 * @param zW 
 	 * @param angleOfAttack
 	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCRollDeltaR(
-			Amount<Area> surfaceW, Amount<Length> spanW,
-			Amount<Area> surfaceV, double taperRatioV, Amount<?> cLAlphaV, double etaV,
-			double etaInR, double etaOutR, double cRudderOverCVTail, Amount<Length> xR, Amount<Length> zR,
+			Amount<Area> surfaceW, Amount<Length> spanW, double aspectRatioW, Amount<Angle> sweepC4W,
+			Amount<Area> surfaceV, double taperRatioV, Amount<?> cLAlphaV,
+			double etaInR, double etaOutR, double rudderChordRatio, Amount<Length> xR, Amount<Length> zR,
+			Amount <Length> heightFuselage, Amount<Length> zW,
 			Amount<Angle> angleOfAttack,
 			AerodynamicDatabaseReader databaseReader
 			) {
 		
 		// tau_R
-		double tauR = databaseReader.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(cRudderOverCVTail);
+		double tauR = databaseReader.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(rudderChordRatio);
 		
 		// Delta K_R
 		double innerKR = databaseReader.getCYDeltaRKRVsLambdaEta(taperRatioV, etaInR);
@@ -553,6 +557,13 @@ public class MomentCalc {
 		double deltaKR = outerKR - innerKR;
 		
 		// CY_delta_r
+		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
+		double etaV =
+				0.724
+				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
+				+ 0.4*zWOverHeightFuselage
+				+ 0.009*aspectRatioW;
+		
 		Amount <?> cYDeltaR = cLAlphaV.abs().times(surfaceV).divide(surfaceW).times(etaV*deltaKR*tauR);
 		
 		// Cl_delta_r
