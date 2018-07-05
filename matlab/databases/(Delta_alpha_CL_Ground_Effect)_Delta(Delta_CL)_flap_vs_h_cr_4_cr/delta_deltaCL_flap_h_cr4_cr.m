@@ -6,7 +6,7 @@ clear all, close all, clc
 fileBaseNames = {'Delta_Delta_CL_flap_vs_h_cr_4_cr'};
 nPoints = 21;
 
-xx = linspace(0.0, 1.0, nPoints);
+xx = linspace(0.0, 1, nPoints);
     
     fileName = sprintf('%s.mat',fileBaseNames{1});
     s = load(fileName, '-mat');
@@ -15,7 +15,7 @@ xx = linspace(0.0, 1.0, nPoints);
     
     x = s.(fileBaseNames{1})(:, 1);
     x = flipud(x);
-    x(end) = 1.0;
+    x(end) = 1;
     
     y = s.(fileBaseNames{1})(:, 2);
     y = flipud(y);
@@ -29,11 +29,11 @@ xx = linspace(0.0, 1.0, nPoints);
     plot (xx', data(:,1), '-*');
    
 xlabel('$\frac{h_{{c_r}/4}}{c_r}$','interpreter','latex'); 
-ylabel('$\Delta(\Delta C_L)_{flap}$', 'interpreter','latex');
+ylabel('$\Delta(\Delta C_L))$','interpreter','latex');
 set(get(gca,'ylabel'),'rotation',0)
 
-title('Effect of flap deflection on the ground influence on lift');
-axis([0 1 -0.12 0.16]);
+title('Effect of ground deflection on ground influence on lift');
+axis([0 1 -0.12 .16]);
 
 
 %% preparing output to HDF
@@ -44,7 +44,7 @@ h_cr_4_cr = xx';
  
 %columns --> curves
  
-hdfFileName = 'Delta_alpha_CL_Ground_Effect_DeltaDelta_CL_flap_vs_h_cr_4_cr.h5';
+hdfFileName = 'Delta_alpha_G_sigma_vs_2hfracb.h5';
 
 if ( exist(hdfFileName, 'file') )
     fprintf('file %s exists, deleting and creating a new one\n', hdfFileName);

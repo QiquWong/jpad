@@ -11,7 +11,6 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
 	<analyses id="IRON analysis">
-	<!--
 		<weights 
             file="analysis_weights_IRON.xml" 
 			plot="TRUE"
@@ -32,9 +31,8 @@
 			method_furnishings_and_equipments=""
 			method_control_surfaces=""
             /> 
-	-->
 		<!-- method_XXX="AVERAGED" if empty string -->
-<!-- 	<balance 
+ 	<balance 
 			file="analysis_balance_IRON.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -46,7 +44,7 @@
 			method_nacelles=""
 			method_power_plant=""
 			method_landing_gears=""
-		/> -->
+		/>
 	<!--
 	<aerodynamic_and_stability
 			plot="TRUE"
@@ -76,6 +74,7 @@
 			mission_profile="TRUE"
 	/> 
 	-->
+	<!--
  	<costs 
 			file="analysis_costs_IRON_NO_CANARD_cut.xml"
 			plot="TRUE"
@@ -91,6 +90,7 @@
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
 	/>
+	-->
 	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>

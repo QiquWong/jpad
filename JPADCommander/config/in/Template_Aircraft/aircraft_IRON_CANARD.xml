@@ -33,7 +33,7 @@
                 <position>
                     <x unit="m">6.0</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">1.75</z>
+                    <z unit="m">1.8</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </canard>

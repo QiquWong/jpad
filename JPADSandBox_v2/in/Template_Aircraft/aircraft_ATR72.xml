@@ -7,7 +7,7 @@
       <lifting_surfaces>
          <wing file="wing_ATR72.xml">
             <position>
-               <x unit="m">11.0</x>
+               <x unit="m">10.8</x>
                <y unit="m">0.0000</y>
                <z unit="m">1.6</z>
             </position>
@@ -42,18 +42,18 @@
       <power_plant>
          <engine file="engine_ATR72.xml">
             <position>
-               <x unit="m">8.5690</x>
-               <y unit="m">4.5738</y>
-               <z unit="m">1.0290</z>
+               <x unit="m">9.155</x>
+               <y unit="m">3.809</y>
+               <z unit="m">0.9422</z>
             </position>
             <tilting_angle unit="deg">0.0000</tilting_angle>
             <mounting_point>WING</mounting_point>
          </engine>
          <engine file="engine_ATR72.xml">
             <position>
-               <x unit="m">8.5690</x>
-               <y unit="m">-4.5738</y>
-               <z unit="m">1.0290</z>
+               <x unit="m">9.155</x>
+               <y unit="m">-3.809</y>
+               <z unit="m">0.9422</z>
             </position>
             <tilting_angle unit="deg">0.0000</tilting_angle>
             <mounting_point>WING</mounting_point>
@@ -62,17 +62,17 @@
       <nacelles>
          <nacelle file="nacelle_ATR72.xml">
             <position>
-               <x unit="m">8.5690</x>
-               <y unit="m">4.5738</y>
-               <z unit="m">1.0290</z>
+               <x unit="m">9.155</x>
+               <y unit="m">3.809</y>
+               <z unit="m">0.9422</z>
             </position>
             <mounting_point>WING</mounting_point>
          </nacelle>
          <nacelle file="nacelle_ATR72.xml">
             <position>
-               <x unit="m">8.5690</x>
-               <y unit="m">-4.5738</y>
-               <z unit="m">1.0290</z>
+               <x unit="m">9.155</x>
+               <y unit="m">-3.809</y>
+               <z unit="m">0.9422</z>
             </position>
             <mounting_point>WING</mounting_point>
          </nacelle>
@@ -80,14 +80,14 @@
       <landing_gears file="landing_gear_ATR72.xml">
 			<position>
 				<nose_gear>
-					<x unit="m">5.0</x>
+					<x unit="m">1.683</x>
 					<y unit="m">0.0</y>
-					<z unit="m">-1.2</z>
+					<z unit="m">-1.798</z>
 				</nose_gear>
 				<main_gear>
-					<x unit="m">12.5</x>
+					<x unit="m">12.45</x>
 					<y unit="m">0.0</y>
-					<z unit="m">-1.2</z>
+					<z unit="m">-1.778</z>
 				</main_gear>
             </position>
          <mounting_point>FUSELAGE</mounting_point>

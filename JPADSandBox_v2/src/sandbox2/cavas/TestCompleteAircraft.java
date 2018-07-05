@@ -124,7 +124,7 @@ public class TestCompleteAircraft {
 	public static void main(String[] args) throws CmdLineException, IOException, HDF5LibraryException {
 		
 		System.out.println("-------------------");
-		System.out.println("TEST VMU");
+		System.out.println("CAVAS TEST");
 		System.out.println("-------------------"); 
 		
 		MyArgumentsAnalysis va = new MyArgumentsAnalysis();

@@ -805,7 +805,7 @@ public class StabilityExecutableManager {
 		this._wingVortexSemiSpanToSemiSpanRatio = 1./(2*this._wingNumberOfPointSemiSpanWise);
 		this._hTailVortexSemiSpanToSemiSpanRatio = 1./(2*this._hTailNumberOfPointSemiSpanWise);
 
-		this._dynamicPressureRatio = AerodynamicCalc.calculateDynamicPressureRatio(
+		this._dynamicPressureRatio = AerodynamicCalc.calculateHTailDynamicPressureRatio(
 				_zApexHTail.doubleValue(SI.METER)/_verticalTailSpan.doubleValue(SI.METER)
 				);
 		

@@ -64,7 +64,9 @@ public interface IACAerodynamicAndStabilityManager {
 	@Nullable
 	Boolean getDownwashConstant(); // if TRUE--> constant, if FALSE--> variable
 	@Nullable
-	Double getDynamicPressureRatio();
+	Double getHTailDynamicPressureRatio();
+//	@Nullable
+//	Double getVTailDynamicPressureRatio(); // TODO ??
 	@Nullable
 	MyInterpolatingFunction getTauElevatorFunction();
 	@Nullable
