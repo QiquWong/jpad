@@ -909,74 +909,86 @@ public class Test_01 {
 		
 		System.out.println(">>>>>>>> CN_p: " + cNp);
 		
-//		// --------------------------------------------------
-//		// Calculation of CN_r_W
-//		// --------------------------------------------------
-//		System.out.println("-------------------------");
-//		System.out.println("Calculation of CN_r_W");
-//		System.out.println("-------------------------");
-//
-//		// CN_r/CL1^2
-//		double staticMargin = 0.2;
+		// --------------------------------------------------
+		// Calculation of CN_r_W
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CN_r_W");
+		System.out.println("-------------------------");
+
+		// CN_r/CL1^2
+		double staticMargin = 0.2;
 //		Amount<?> cNrOverSquaredCL1 = Amount.valueOf(
-//				databaseReader.getCNRWCNROverSquaredCLift1VsARLambdaLC4XBarACMinusXBarCG(staticMargin, sweepAngleC2Wing, aspectRatioWing, taperRatioWing),
+//				databaseReader.getCNRWCNROverSquaredCLift1VsARLambdaLC4XBarACMinusXBarCG(staticMargin, sweepAngleC4Wing, aspectRatioWing, taperRatioWing),
 //				SI.RADIAN.inverse()
 //				);
-//
-//		System.out.println(">> MS: " + staticMargin);
-//		System.out.println(">>>> CN_r/CL1^2: " + cNrOverSquaredCL1);
-//
-//		// CN_r/CD0
-//		Amount<?> cNrOverCD0 = Amount.valueOf(
-//				databaseReader.getCNRWCNROverCD0BarVsARLC4XBarACMinusXBarCG(staticMargin, sweepAngleC4Wing, aspectRatioWing),
-//				SI.RADIAN.inverse()
-//				);
-//
-//		System.out.println(">>>> CN_r/CD0: " + cNrOverCD0);
-//
-//		// CN_r_W
-//		double cD0 = 10;
-//		Amount<?> cNrW = cNrOverSquaredCL1.times(cL1).pow(2)
-//				.plus(cNrOverCD0).times(cD0);
-//
-//		System.out.println(">>>>>> CN_r_W: " + cNrW);
-//
-//		// --------------------------------------------------
-//		// Calculation of CN_r_V
-//		// --------------------------------------------------
-//		System.out.println("-------------------------");
-//		System.out.println("Calculation of CN_r_V");
-//		System.out.println("-------------------------");
-//
-//		// CN_r_V
-//		Amount<?> cNrV =
-//				cYBetaV
-//				.times(
-//						(
-//								zV.times(
-//										Math.sin(angleOfAttack.doubleValue(SI.RADIAN))
-//										).plus(
-//												xV.times(
-//														Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
-//														)
-//												)
-//								).divide(spanWing)
-//						).pow(2).times(2)
-//				.to(SI.RADIAN.inverse());
-//
-//		System.out.println(">>>>>> CN_r_V: " + cNrV);
-//
-//		// --------------------------------------------------
-//		// Calculation of CN_r
-//		// --------------------------------------------------
-//		System.out.println("-------------------------");
-//		System.out.println("Calculation of CN_r");
-//		System.out.println("-------------------------");
-//
-//		// CN_p
-//		Amount<?> cNr = cNrW.plus(cNrV);
-//
-//		System.out.println(">>>>>>>> CN_r: " + cNr);
+		
+		Amount<?> cNrOverSquaredCL1 = Amount.valueOf(
+				10,
+				SI.RADIAN.inverse()
+				);
+		
+		Amount<?> ciao = Amount.valueOf(
+				databaseReader.get_Cnr_over_Cl_Square_vs_lambda_cl0_vs_AR_TaperRatio_LambdaQuarter(aspectRatioWing, taperRatioWing, sweepAngleC4Wing, staticMargin),
+				SI.RADIAN.inverse()
+				);
+		
+		System.out.println(ciao);
+
+		System.out.println(">> MS: " + staticMargin);
+		System.out.println(">>>> CN_r/CL1^2: " + cNrOverSquaredCL1);
+
+		// CN_r/CD0
+		Amount<?> cNrOverCD0 = Amount.valueOf(
+				databaseReader.getCNRWCNROverCD0BarVsARLC4XBarACMinusXBarCG(staticMargin, sweepAngleC4Wing, aspectRatioWing),
+				SI.RADIAN.inverse()
+				);
+
+		System.out.println(">>>> CN_r/CD0: " + cNrOverCD0);
+
+		// CN_r_W
+		double cD0 = 10;
+		Amount<?> cNrW = cNrOverSquaredCL1.times(cL1).pow(2)
+				.plus(cNrOverCD0).times(cD0);
+
+		System.out.println(">>>>>> CN_r_W: " + cNrW);
+
+		// --------------------------------------------------
+		// Calculation of CN_r_V
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CN_r_V");
+		System.out.println("-------------------------");
+
+		// CN_r_V
+		Amount<?> cNrV =
+				cYBetaV
+				.times(
+						(
+								zV.times(
+										Math.sin(angleOfAttack.doubleValue(SI.RADIAN))
+										).plus(
+												xV.times(
+														Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
+														)
+												)
+								).divide(spanWing)
+						).pow(2).times(2)
+				.to(SI.RADIAN.inverse());
+
+		System.out.println(">>>>>> CN_r_V: " + cNrV);
+
+		// --------------------------------------------------
+		// Calculation of CN_r
+		// --------------------------------------------------
+		System.out.println("-------------------------");
+		System.out.println("Calculation of CN_r");
+		System.out.println("-------------------------");
+
+		// CN_p
+		Amount<?> cNr = cNrW.plus(cNrV);
+
+		System.out.println(">>>>>>>> CN_r: " + cNr);
 		
 		// --------------------------------------------------
 		// Calculation of CY_beta_W

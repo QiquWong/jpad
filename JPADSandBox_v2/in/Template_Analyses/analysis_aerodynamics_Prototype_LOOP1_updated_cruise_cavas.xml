@@ -27,7 +27,7 @@
 				<nacelle_dimensional_center_of_gravity_x_position unit="m">32.08</nacelle_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
 				<nacelle_dimensional_center_of_gravity_z_position unit="m">0.272</nacelle_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
 			</balance>
-			<global_data dynamic_pressure_ratio_from_file="TRUE" tau_elevator_from_file="FALSE" tau_rudder_from_file="TRUE" tau_canard_control_surface_from_file="TRUE">
+			<global_data hTail_dynamic_pressure_ratio_from_file="TRUE" vTail_dynamic_pressure_ratio_from_file="TRUE" tau_elevator_from_file="FALSE" tau_rudder_from_file="TRUE" tau_canard_control_surface_from_file="TRUE">
 				<alpha_body_initial unit="deg">-4</alpha_body_initial>
 				<alpha_body_final unit="deg">10</alpha_body_final>
 				<number_of_alpha_body>30</number_of_alpha_body>
@@ -53,6 +53,7 @@
 				<adimensional_fuselage_momentum_pole>0.5</adimensional_fuselage_momentum_pole> <!-- adimensional: referred to fuselage length -->
 				<!-- optional values which are read only if the related attribute in "global_data" is "FALSE" --> 
 				<horizontal_tail_dynamic_pressure_ratio>0.8</horizontal_tail_dynamic_pressure_ratio>
+				<vertical_tail_dynamic_pressure_ratio>0.9</vertical_tail_dynamic_pressure_ratio>
 				<tau_elevator_function>
 					<tau>0.4221</tau>
 					<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->

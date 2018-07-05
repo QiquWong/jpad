@@ -1135,7 +1135,7 @@ public class AerodynamicCalc {
 		return cpDistribution;
 	}
 
-	public static Double calculateDynamicPressureRatio(Double positionRelativeToAttachment){
+	public static Double calculateHTailDynamicPressureRatio(Double positionRelativeToAttachment){
 		Double dynamicPressureRatio = null;
 		double [] dynamicPressureRatioValues = {0.85, 0.95, 1};
 		double [] PositionValues = {0.0, 0.5, 1};
@@ -1148,6 +1148,13 @@ public class AerodynamicCalc {
 		return dynamicPressureRatio;
 	}
 
+	public static Double calculateVTailDynamicPressureRatio(Double positionRelativeToAttachment){
+		Double dynamicPressureRatio = 1.0;
+//TODO: implement this method
+		return dynamicPressureRatio;
+	}
+
+	
 	public static List<Amount<Angle>> calculateDeltaEEquilibrium (
 			Map<Amount<Angle>, List<Double>> liftCoefficientHorizontalTailWithRespectToDeltaE,
 			List<Amount<Angle>> deltaEForEquilibrium,
