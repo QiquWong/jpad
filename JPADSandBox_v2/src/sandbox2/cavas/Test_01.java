@@ -104,7 +104,7 @@ public class Test_01 {
 		System.out.println(">> sweep angle @ c/2 wing: " + sweepAngleC2Wing);
 
 		Amount<?> cRollBetaOverCL1WingBodyLc2 = Amount.valueOf(
-				databaseReader.getClBetaWBClbetaOverCLift1Lc2VsLc2ARlambda(taperRatioWing, aspectRatioWing, sweepAngleC2Wing), // var0, var1, var2
+				databaseReader.getClBetaWBClBetaOverCLift1Lc2VsLc2ARLambda(taperRatioWing, aspectRatioWing, sweepAngleC2Wing), // var0, var1, var2
 				NonSI.DEGREE_ANGLE.inverse()
 				);
 
@@ -138,13 +138,13 @@ public class Test_01 {
 		
 		// Cl_beta/CL1_AR_W
 		Amount<?> cRollBetaOverCL1WingBodyAR = Amount.valueOf(
-				databaseReader.getClBetaWBClbetaOverCLift1ARVsARlambda(taperRatioWing, aspectRatioWing), // var0, var1
+				databaseReader.getClBetaWBClBetaOverCLift1ARVsARLambda(taperRatioWing, aspectRatioWing), // var0, var1
 				NonSI.DEGREE_ANGLE.inverse()
 				);
 		
 		// Cl_beta/Gamma_W
 		Amount<?> cRollBetaOverGammaW = Amount.valueOf(
-				databaseReader.getClBetaWBClbetaOverGammaWVsARLc2lambda(taperRatioWing, sweepAngleC2Wing, aspectRatioWing), // var0, var1, var2
+				databaseReader.getClBetaWBClBetaOverGammaWVsARLc2Lambda(taperRatioWing, sweepAngleC2Wing, aspectRatioWing), // var0, var1, var2
 				NonSI.DEGREE_ANGLE.pow(2).inverse()
 				);
 		
@@ -188,7 +188,7 @@ public class Test_01 {
 		
 		// DCl_beta/(eps_W*tan(Lambda_c/4))
 		Amount<?> cRollDeltaClBetaOverEpsWTanLc4 = Amount.valueOf(
-				databaseReader.getClBetaWBDClbetaOverEpsWTimesTanLc4VsARlambda(taperRatioWing, aspectRatioWing), // var0, var1
+				databaseReader.getClBetaWBDClBetaOverEpsWTimesTanLc4VsARLambda(taperRatioWing, aspectRatioWing), // var0, var1
 				NonSI.DEGREE_ANGLE.pow(2).inverse()
 				);
 		
@@ -267,7 +267,7 @@ public class Test_01 {
 		System.out.println(">> sweep angle @ c/2 horizontal tail: " + sweepAngleC2HTail);
 
 		Amount<?> cRollBetaOverGammaH = Amount.valueOf(
-				databaseReader.getClBetaWBClbetaOverGammaWVsARLc2lambda(taperRatioHTail, sweepAngleC2HTail, aspectRatioHTail), // var0, var1, var2
+				databaseReader.getClBetaWBClBetaOverGammaWVsARLc2Lambda(taperRatioHTail, sweepAngleC2HTail, aspectRatioHTail), // var0, var1, var2
 				NonSI.DEGREE_ANGLE.pow(2).inverse()
 				);
 
@@ -304,7 +304,7 @@ public class Test_01 {
 		
 		// DCl_beta/(eps_H*tan(Lambda_c/4))
 		Amount<?> cRollDeltaClBetaOverEpsHTanLc4 = Amount.valueOf(
-				databaseReader.getClBetaWBDClbetaOverEpsWTimesTanLc4VsARlambda(taperRatioHTail, aspectRatioHTail), // var0, var1
+				databaseReader.getClBetaWBDClBetaOverEpsWTimesTanLc4VsARLambda(taperRatioHTail, aspectRatioHTail), // var0, var1
 				NonSI.DEGREE_ANGLE.pow(2).inverse()
 				);
 		
@@ -835,13 +835,13 @@ public class Test_01 {
 												)*Math.tan(
 														sweepAngleC4Wing.doubleValue(SI.RADIAN)
 														)/aspectRatioWing
-										- Math.pow(
+										+ Math.pow(
 												Math.tan(sweepAngleC4Wing.doubleValue(SI.RADIAN)),
 												2
 												)/12
 										)
 						)/(
-								12*(
+								6*(
 										aspectRatioWing + Math.cos(sweepAngleC4Wing.doubleValue(SI.RADIAN))
 										)
 								),
@@ -917,11 +917,9 @@ public class Test_01 {
 		System.out.println("-------------------------");
 
 		// CN_r/CL1^2
-		double staticMargin = 0;
+		double staticMargin = 0.2;
 		Amount<?> cNrOverSquaredCL1 = Amount.valueOf(
-				databaseReader.getCNRWCNROverSquaredCLift1VsARLambdaLC4XBarACMinusXBarCG(staticMargin, 
-						Amount.valueOf(50, NonSI.DEGREE_ANGLE)
-						, 4, taperRatioWing),
+				databaseReader.getCNRWCNROverSquaredCLift1VsARLambdaLC4XBarACMinusXBarCG(staticMargin, sweepAngleC4Wing, aspectRatioWing, taperRatioWing),
 				SI.RADIAN.inverse()
 				);
 
@@ -938,8 +936,8 @@ public class Test_01 {
 
 		// CN_r_W
 		double cD0 = 10;
-		Amount<?> cNrW = cNrOverSquaredCL1.times(cL1).pow(2)
-				.plus(cNrOverCD0).times(cD0);
+		Amount<?> cNrW = cNrOverSquaredCL1.times(Math.pow(cL1, 2))
+				.plus(cNrOverCD0.times(cD0));
 
 		System.out.println(">>>>>> CN_r_W: " + cNrW);
 
@@ -975,7 +973,7 @@ public class Test_01 {
 		System.out.println("Calculation of CN_r");
 		System.out.println("-------------------------");
 
-		// CN_p
+		// CN_r
 		Amount<?> cNr = cNrW.plus(cNrV);
 
 		System.out.println(">>>>>>>> CN_r: " + cNr);
@@ -988,13 +986,11 @@ public class Test_01 {
 		System.out.println("-------------------------");
 		
 		// CY_beta_W
-		Amount<?> cYBetaW = dihedralWing.abs().times(
-				Amount.valueOf(
-						-0.0001,
-						NonSI.DEGREE_ANGLE.pow(2).inverse()
-						)
+		Amount<?> cYBetaW = Amount.valueOf(
+				-0.0001*dihedralWing.abs().doubleValue(NonSI.DEGREE_ANGLE),
+				NonSI.DEGREE_ANGLE.inverse()
 				).to(SI.RADIAN.inverse());
-		
+				
 		System.out.println(">>>>>> CY_beta_W: " + cYBetaW);
 		
 		// --------------------------------------------------
@@ -1004,16 +1000,46 @@ public class Test_01 {
 		System.out.println("Calculation of CY_beta_B");
 		System.out.println("-------------------------");
 		
-		// CY_beta_W
-		Amount<?> cYBetaB = Amount.valueOf(1, SI.RADIAN.inverse()); // TODO insert this aerodynamic derivative
+		// K_int
+		double cYKappaInt = 0.0;
+		double zWOverSemiHeightFuselage = 2*zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
 		
+		if(zWOverSemiHeightFuselage > 0)
+			cYKappaInt = 1.50*zWOverSemiHeightFuselage;
+		else
+			cYKappaInt = -1.88*zWOverSemiHeightFuselage;
+		
+		// S_P->V
+		// Assuming that x1 is the coordinate corresponding to the middle of the tail trunk fuselage
+		Amount<Length> x1 = fuselage.getNoseLength().plus(fuselage.getCylinderLength()).plus(fuselage.getFuselageLength()).divide(2);
+		Amount<Length> x0 = fuselage.getFuselageLength().times(0.378).plus(x1.times(0.527));
+		
+		Amount<Area> surfacePArrowV = Amount.valueOf(
+				Math.pow(
+						fuselage.getEquivalentDiameterAtX(x0.doubleValue(SI.METER)),
+						2
+						)*Math.PI/4,
+				SI.SQUARE_METRE
+				);
+		
+		System.out.println(">> X_1: " + x1);
+		System.out.println(">> X_0: " + x0);
+		
+		// CY_beta_B
+		Amount<?> cYBetaB = Amount.valueOf(
+				-2*cYKappaInt*surfacePArrowV.doubleValue(SI.SQUARE_METRE)/surfaceWing.doubleValue(SI.SQUARE_METRE),
+				SI.RADIAN.inverse()
+				);
+		
+		System.out.println(">>>> K_int: " + cYKappaInt);
+		System.out.println(">>>> S_P->V: " + surfacePArrowV);
 		System.out.println(">>>>>> CY_beta_B: " + cYBetaB);
 		
 		// --------------------------------------------------
 		// Calculation of CY_beta_H
 		// --------------------------------------------------
 		System.out.println("-------------------------");
-		System.out.println("Calculation of CY_beta_B");
+		System.out.println("Calculation of CY_beta_H");
 		System.out.println("-------------------------");
 		
 		// CY_beta_H
@@ -1023,12 +1049,9 @@ public class Test_01 {
 				+ 0.4*zWOverHeightFuselage
 				+ 0.009*aspectRatioWing;
 		
-		Amount<?> cYBetaH = dihedralWing.abs().times(surfaceHTail).divide(surfaceWing)
-				.times(
-				Amount.valueOf(
-						-0.0001*etaHTimes1MinusdSigmaOverdBeta,
-						NonSI.DEGREE_ANGLE.pow(2).inverse()
-						)
+		Amount<?> cYBetaH = Amount.valueOf(
+				-0.0001*dihedralWing.abs().doubleValue(NonSI.DEGREE_ANGLE)*etaHTimes1MinusdSigmaOverdBeta*surfaceHTail.doubleValue(SI.SQUARE_METRE)/surfaceWing.doubleValue(SI.SQUARE_METRE),
+				NonSI.DEGREE_ANGLE.inverse()
 				).to(SI.RADIAN.inverse());
 		
 		System.out.println(">>>>>> CY_beta_H: " + cYBetaH);
@@ -1063,9 +1086,7 @@ public class Test_01 {
 										Math.sin(angleOfAttack.doubleValue(SI.RADIAN))
 								)
 						)
-				).divide(spanWing)
-				.times(2)
-				.to(SI.RADIAN.inverse());
+				).divide(spanWing).times(2);
 		
 		System.out.println(">>>>>> CY_p: " + cYp);
 		
@@ -1087,8 +1108,7 @@ public class Test_01 {
 										Math.cos(angleOfAttack.doubleValue(SI.RADIAN))
 								)
 						)
-				).divide(spanWing).times(-2)
-				.to(SI.RADIAN.inverse());
+				).divide(spanWing).times(-2);
 		
 		System.out.println(">>>>>> CY_r: " + cYr);
 		
