@@ -168,14 +168,14 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 								"var_0_2"
 								);
 		
-//		C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data1
-//						= database.interpolate3DFromDatasetFunction(
-//								"(C_n_r_w)_C_n_r_over_squared_(C_Lift1)_vs_AR_(lambda)_(L_c4)_(x_bar_ac_minus_x_bar_cg)",
-//								"data_1",
-//								"var_0_0",
-//								"var_1_0",
-//								"var_1_1"
-//								);
+		C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data1
+						= database.interpolate3DFromDatasetFunction(
+								"(C_n_r_w)_C_n_r_over_squared_(C_Lift1)_vs_AR_(lambda)_(L_c4)_(x_bar_ac_minus_x_bar_cg)",
+								"data_1",
+								"var_0_0",
+								"var_1_0",
+								"var_1_1"
+								);
 		
 		C_n_r_w_C_n_r_over_C_D0_bar_vs_AR_L_c4_x_bar_ac_minus_x_bar_cg
 						= database.interpolate3DFromDatasetFunction("(C_n_r_w)_C_n_r_over_C_D0_bar_vs_AR_(L_c4)_(x_bar_ac_minus_x_bar_cg)");
@@ -482,37 +482,37 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	}
 	
 	
-//	public double getCNRWCNROverSquaredCLift1VsARLambdaLC4XBarACMinusXBarCG(double staticMargin, Amount<Angle> sweepAngleC4, double aspectRatio, double taperRatio) {
-//		System.out.println("first value " + C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data0.valueTrilinear(
-//						staticMargin,
-//						aspectRatio,
-//						sweepAngleC4.doubleValue(NonSI.DEGREE_ANGLE)
-//						));
-//		
-//		return C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data1.valueTrilinear(
-//				staticMargin,
-//				C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data0.valueTrilinear(
-//						staticMargin,
-//						aspectRatio,
-//						sweepAngleC4.doubleValue(NonSI.DEGREE_ANGLE)
-//						),
-//				taperRatio);
-//	}
-	
-	public double get_Cnr_over_Cl_Square_vs_lambda_cl0_vs_AR_TaperRatio_LambdaQuarter(double ar, double taperRatio, Amount<Angle> sweepAngleC4, double x) {
-		System.out.println("x = "+x);
-		double var1_1 = C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data0.valueTrilinear(
-				x,
-				ar,
-				sweepAngleC4.doubleValue(NonSI.DEGREE_ANGLE)
-				);
-		System.out.println("\n Lambdaquarter get_Cnr_over_Cl_Square_vs_lambda_cl0_vs_AR_TaperRatio_LambdaQuarter = "+sweepAngleC4.doubleValue(NonSI.DEGREE_ANGLE)+
-				"\n 1st passage = "+ var1_1+"\n ar = "+ar+"\n taperratio = "+taperRatio);
-		double dsaa = database.interpolate2DFrom3DDatasetFunction("(C_n_r_w)_C_n_r_over_squared_(C_Lift1)_vs_AR_(lambda)_(L_c4)_(x_bar_ac_minus_x_bar_cg)",
-				"data_0", "data_1", "var_0_0", "var_0_1", "var_0_2", "var_1_0",
-				"var_1_1", x, sweepAngleC4.doubleValue(NonSI.DEGREE_ANGLE), ar, taperRatio);		 				
-		return dsaa;
+	public double getCNRWCNROverSquaredCLift1VsARLambdaLC4XBarACMinusXBarCG(double staticMargin, Amount<Angle> sweepAngleC4, double aspectRatio, double taperRatio) {
+		System.out.println("first value " + C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data0.valueTrilinear(
+						staticMargin,
+						aspectRatio,
+						sweepAngleC4.doubleValue(NonSI.DEGREE_ANGLE)
+						));
+		
+		return C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data1.valueTrilinear(
+				staticMargin,
+				C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data0.valueTrilinear(
+						staticMargin,
+						aspectRatio,
+						sweepAngleC4.doubleValue(NonSI.DEGREE_ANGLE)
+						),
+				taperRatio);
 	}
+	
+//	public double get_Cnr_over_Cl_Square_vs_lambda_cl0_vs_AR_TaperRatio_LambdaQuarter(double ar, double taperRatio, Amount<Angle> sweepAngleC4, double x) {
+//		System.out.println("x = "+x);
+//		double var1_1 = C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data0.valueTrilinear(
+//				x,
+//				ar,
+//				sweepAngleC4.doubleValue(NonSI.DEGREE_ANGLE)
+//				);
+//		System.out.println("\n Lambdaquarter get_Cnr_over_Cl_Square_vs_lambda_cl0_vs_AR_TaperRatio_LambdaQuarter = "+sweepAngleC4.doubleValue(NonSI.DEGREE_ANGLE)+
+//				"\n 1st passage = "+ var1_1+"\n ar = "+ar+"\n taperratio = "+taperRatio);
+//		double dsaa = database.interpolate2DFrom3DDatasetFunction("(C_n_r_w)_C_n_r_over_squared_(C_Lift1)_vs_AR_(lambda)_(L_c4)_(x_bar_ac_minus_x_bar_cg)",
+//				"data_0", "data_1", "var_0_0", "var_0_1", "var_0_2", "var_1_0",
+//				"var_1_1", x, sweepAngleC4.doubleValue(NonSI.DEGREE_ANGLE), ar, taperRatio);		 				
+//		return dsaa;
+//	}
 	
 	public double getCNRWCNROverCD0BarVsARLC4XBarACMinusXBarCG(double staticMargin, Amount<Angle> sweepAngleC4, double aspectRatio) { // var0, var1, var2
 		return C_n_r_w_C_n_r_over_C_D0_bar_vs_AR_L_c4_x_bar_ac_minus_x_bar_cg.valueTrilinear(

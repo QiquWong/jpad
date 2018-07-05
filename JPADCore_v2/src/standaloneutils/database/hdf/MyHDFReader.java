@@ -1568,21 +1568,7 @@ public class MyHDFReader {
 		var_1_1_2DList = standaloneutils.MyMathUtils.extractAll2DArraysFrom3DArray(var1_1_3D);
 		int n = dataset_0_2DList.size();
 		double[] dset1D = new double[n];
-//		double[] var_1_1_2D = new double[var1_1_3D[0].length];
 		
-		// ------------------------------
-//		for(int k=0; k<var1_1_3D.length; k++) {
-//			var_1_1_2D = new double[var1_1_3D[0].length];
-//			for(int kk=0; kk<var1_1_3D[k].length; kk++) {
-//			var_1_1_2D = var1_1_3D[k][kk];
-//			}
-//			MyInterpolatingFunction f = new MyInterpolatingFunction();
-//			f.interpolateBilinear(var_1_1_2D, var1_0_3D, dataset_1_2DList.get(k));
-//		}
-//		
-		
-		
-		//----------------------------------
 		
 		
 		
@@ -1601,16 +1587,16 @@ public class MyHDFReader {
 				var1_1_1D[s] = var_1_1_2D [s][0]; 
 			}
 			MyInterpolatingFunction f = new MyInterpolatingFunction();
-			f.interpolateBilinear(var0_2_3D, var0_1_3D, dataset_0_2D);					
+			f.interpolate(var0_2_3D, var0_1_3D, dataset_0_2D);					
 			MyInterpolatingFunction f1 = new MyInterpolatingFunction();
-			f1.interpolateTrilinear(var_0_0_3D,var0_2_3D, var0_1_3D, data0set3D);
+			f1.interpolate(var0_2_3D, var0_1_3D,var_0_0_3D, data0set3D);
 			double var_1_1  = f.value(var0_2, var0_1);
 			//			        System.out.println("---------------------------------------------------\n");
 			//					System.out.println("Var1_1 = "+var_1_1);	
 			//					System.out.println("---------------------------------------------------------");
 			if (var_0_0_3D != null || var1_0_3D != null) {
 				MyInterpolatingFunction re = new MyInterpolatingFunction();		
-				re.interpolateBilinear(var1_1_1D, var1_0_3D, dataset_1_2D);
+				re.interpolate(var1_1_1D, var1_0_3D, dataset_1_2D);
 				double value2 = re.value(var_1_1,var1_0);
 				dset1D[i] = value2;//value that we added in the 1D Dataset
 				//					System.out.println("\n dset = "+value2);

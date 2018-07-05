@@ -21070,6 +21070,56 @@ public class ACAerodynamicAndStabilityManager {
 							_cRollrVertical.get(MethodEnum.NAPOLITANO_DATCOM)
 							));
 			
+			CalcCD0Total calcCD0TotalFuselage = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Total();
+			calcCD0TotalFuselage.semiempirical();
+			
+			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Total calcCD0TotalNacelle =
+					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Total();
+			calcCD0TotalNacelle.semiempirical();
+			
+			CalcCD0 calcCD0TotalWing = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCD0();
+			calcCD0TotalWing.semiempirical(_currentMachNumber, _currentAltitude);
+
+			Double cD0ParasiteWing = DragCalc.calculateCD0ParasiteLiftingSurface(
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing(),
+					_theAerodynamicBuilderInterface.getTheOperatingConditions().getMachTransonicThreshold(),
+					_currentMachNumber,
+					_currentAltitude
+					);
+			
+			CalcCD0 calcCD0TotalHTail = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCD0();
+			calcCD0TotalHTail.semiempirical(_currentMachNumber, _currentAltitude);
+
+			Double cD0ParasiteHTail = DragCalc.calculateCD0ParasiteLiftingSurface(
+					_theAerodynamicBuilderInterface.getTheAircraft().getHTail(),
+					_theAerodynamicBuilderInterface.getTheOperatingConditions().getMachTransonicThreshold(),
+					_currentMachNumber,
+					_currentAltitude
+					);
+			
+			CalcCD0 calcCD0TotalVTail = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcCD0();
+			calcCD0TotalVTail.semiempirical(_currentMachNumber, _currentAltitude);
+
+			Double cD0ParasiteVTail = DragCalc.calculateCD0ParasiteLiftingSurface(
+					_theAerodynamicBuilderInterface.getTheAircraft().getVTail(),
+					_theAerodynamicBuilderInterface.getTheOperatingConditions().getMachTransonicThreshold(),
+					_currentMachNumber,
+					_currentAltitude
+					);
+			
+			Double cD0TotalAircraft = DragCalc.calculateCD0Total(
+					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL), 
+					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Parasite().get(MethodEnum.SEMIEMPIRICAL), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
+					cD0ParasiteWing,
+					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL), 
+					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Parasite().get(MethodEnum.SEMIEMPIRICAL),
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
+					cD0ParasiteHTail, 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
+					cD0ParasiteVTail
+					);
+			
 		}
 		
 	}

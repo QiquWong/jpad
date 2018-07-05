@@ -917,23 +917,13 @@ public class Test_01 {
 		System.out.println("-------------------------");
 
 		// CN_r/CL1^2
-		double staticMargin = 0.2;
-//		Amount<?> cNrOverSquaredCL1 = Amount.valueOf(
-//				databaseReader.getCNRWCNROverSquaredCLift1VsARLambdaLC4XBarACMinusXBarCG(staticMargin, sweepAngleC4Wing, aspectRatioWing, taperRatioWing),
-//				SI.RADIAN.inverse()
-//				);
-		
+		double staticMargin = 0;
 		Amount<?> cNrOverSquaredCL1 = Amount.valueOf(
-				10,
+				databaseReader.getCNRWCNROverSquaredCLift1VsARLambdaLC4XBarACMinusXBarCG(staticMargin, 
+						Amount.valueOf(50, NonSI.DEGREE_ANGLE)
+						, 4, taperRatioWing),
 				SI.RADIAN.inverse()
 				);
-		
-		Amount<?> ciao = Amount.valueOf(
-				databaseReader.get_Cnr_over_Cl_Square_vs_lambda_cl0_vs_AR_TaperRatio_LambdaQuarter(aspectRatioWing, taperRatioWing, sweepAngleC4Wing, staticMargin),
-				SI.RADIAN.inverse()
-				);
-		
-		System.out.println(ciao);
 
 		System.out.println(">> MS: " + staticMargin);
 		System.out.println(">>>> CN_r/CL1^2: " + cNrOverSquaredCL1);
