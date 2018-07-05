@@ -10,7 +10,7 @@
 			<k_inlet>0.857</k_inlet>
 			<k_outlet>0.143</k_outlet>
 			<k_length>0.44</k_length>
-			<k_diameter_outlet>1.28</k_diameter_outlet>
+			<k_diameter_outlet>0.0</k_diameter_outlet>
 		</geometry>
 	</nacelle>
 </jpad_config>
