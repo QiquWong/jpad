@@ -835,7 +835,6 @@ public class MissionProfileCalc {
 			_totalRange = Amount.valueOf(0.0, SI.METER);
 
 			for (int iCruise=0; iCruise < 5; iCruise++) {
-//			do {
 				double[] cruiseSteps = MyArrayUtils.linspace(
 						0.0,
 						rangeCruise.doubleValue(SI.METER),
@@ -1359,7 +1358,11 @@ public class MissionProfileCalc {
 						_dragDueToEnigneFailure 
 						);
 
-				aircraftMassAtSecondClimbStart = _initialMissionMass.minus(fuelTakeOff.to(SI.KILOGRAM));
+				aircraftMassAtSecondClimbStart = _initialMissionMass
+						.minus(fuelTakeOff.to(SI.KILOGRAM))
+						.minus(fuelClimb.to(SI.KILOGRAM))
+						.minus(fuelCruise.to(SI.KILOGRAM))
+						.minus(fuelFirstDescent.to(SI.KILOGRAM));
 
 				theSecondClimbCalculator.calculateClimbPerformance(
 						aircraftMassAtSecondClimbStart,
@@ -1474,8 +1477,6 @@ public class MissionProfileCalc {
 				rangeAlternateCruise = _alternateCruiseLength;
 
 				for (int iAlternate=0; iAlternate < 5; iAlternate++) {
-//				do {
-
 					double[] speedArrayAlternate = MyArrayUtils.linspace(
 							SpeedCalc.calculateSpeedStall(
 									_alternateCruiseAltitude.doubleValue(SI.METER),
@@ -2813,25 +2814,6 @@ public class MissionProfileCalc {
 						return;
 					}
 				}
-//				while (
-//						Math.abs(
-//								(rangeAlternateCruise.to(NonSI.NAUTICAL_MILE)
-//										.plus(rangeSecondClimb.to(NonSI.NAUTICAL_MILE))
-//										.plus(rangeSecondDescent.to(NonSI.NAUTICAL_MILE))
-//										.plus(rangeHolding.to(NonSI.NAUTICAL_MILE))
-//										.plus(rangeThirdDescent.to(NonSI.NAUTICAL_MILE))
-//										.minus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE)))
-//								.divide(rangeAlternateCruise.to(NonSI.NAUTICAL_MILE)
-//										.plus(rangeSecondClimb.to(NonSI.NAUTICAL_MILE))
-//										.plus(rangeSecondDescent.to(NonSI.NAUTICAL_MILE))
-//										.plus(rangeHolding.to(NonSI.NAUTICAL_MILE))
-//										.plus(rangeThirdDescent.to(NonSI.NAUTICAL_MILE))
-//										)
-//								.getEstimatedValue()
-//								*100
-//								) 
-//						>= 0.0001
-//						);
 				
 				//.....................................................................
 				// NEW ITERATION CRUISE LENGTH
@@ -2949,25 +2931,6 @@ public class MissionProfileCalc {
 				_endMissionMass = _massList.get(_massList.size()-1);
 				
 			} 
-//			while (
-//					Math.abs(
-//							(rangeCruise.to(NonSI.NAUTICAL_MILE)
-//									.plus(rangeTakeOff.to(NonSI.NAUTICAL_MILE))
-//									.plus(rangeClimb.to(NonSI.NAUTICAL_MILE))
-//									.plus(rangeFirstDescent.to(NonSI.NAUTICAL_MILE))
-//									.plus(rangeLanding.to(NonSI.NAUTICAL_MILE))
-//									.minus(_missionRange.to(NonSI.NAUTICAL_MILE)))
-//							.divide(rangeCruise.to(NonSI.NAUTICAL_MILE)
-//									.plus(rangeTakeOff.to(NonSI.NAUTICAL_MILE))
-//									.plus(rangeClimb.to(NonSI.NAUTICAL_MILE))
-//									.plus(rangeFirstDescent.to(NonSI.NAUTICAL_MILE))
-//									.plus(rangeLanding.to(NonSI.NAUTICAL_MILE))
-//									)
-//							.getEstimatedValue()
-//							*100
-//							)
-//					>= 0.0001
-//					);
 			
 			//.....................................................................
 			// NEW INITIAL MISSION MASS

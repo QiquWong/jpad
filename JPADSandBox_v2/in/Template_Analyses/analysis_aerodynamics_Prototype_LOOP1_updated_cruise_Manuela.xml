@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<!-- 
+		plot=FALSE -> enters the plot tag.
+		plot=FALSE -> plot nothing.
+		
+		- All the variables which have "METHOD" as attirubte, can be calculated with the deifned method 
+		- IF THE MOMENTIUM POLE IS NOT ASSIGNED (wing/HTail/VTail), IT WILL BE ASSUMED AS THE Xac CALCUALTED USING THE METHOD "DEYOUNG_HARPER"
+	-->
+    <analysis>
+        <aerodynamics_and_stability 
+			id="IRON - AERODYNAMICS CRUISE"
+			balance_from_previous_analysis="false"
+			>
+			<balance>
+			<!-- 
+			These values will be read only if the "balance_from_xls_file" is FALSE. 
+			Otherwise the all the CG positions in every condition will be read from the Balance output file.
+			-->
+				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
+				<adimensional_center_of_gravity_x_position_list>0.1;0.4</adimensional_center_of_gravity_x_position_list>
+				<adimensional_center_of_gravity_z_position_list>-0.03;-0.03</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
+				<fuselage_dimensional_center_of_gravity_x_position unit="m">18.639</fuselage_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<fuselage_dimensional_center_of_gravity_z_position unit="m">0.0</fuselage_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+				<rear_landing_gear_dimensional_center_of_gravity_x_position unit="m">22.26</rear_landing_gear_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<rear_landing_gear_dimensional_center_of_gravity_z_position unit="m">-3.067</rear_landing_gear_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+				<nacelle_dimensional_center_of_gravity_x_position unit="m">32.08</nacelle_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<nacelle_dimensional_center_of_gravity_z_position unit="m">0.272</nacelle_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+			</balance>
+			<global_data hTail_dynamic_pressure_ratio_from_file="TRUE" vTail_dynamic_pressure_ratio_from_file="TRUE" tau_elevator_from_file="FALSE" tau_rudder_from_file="TRUE" tau_canard_control_surface_from_file="TRUE">
+				<alpha_body_initial unit="deg">-4</alpha_body_initial>
+				<alpha_body_final unit="deg">10</alpha_body_final>
+				<number_of_alpha_body>30</number_of_alpha_body>
+				<beta_initial unit="deg">0</beta_initial>
+				<beta_final unit="deg">30</beta_final>
+				<number_of_beta>20</number_of_beta>
+				<alpha_wing_array_for_distributions unit="deg">0.0;2.0;10.0</alpha_wing_array_for_distributions> <!-- these distributions are only in CLEAN configuration -->
+				<alpha_horizontal_tail_array_for_distributions unit="deg">0.0;2.0;10.0</alpha_horizontal_tail_array_for_distributions>
+				<beta_vertical_tail_array_for_distributions unit="deg">0.0;2.0;10.0</beta_vertical_tail_array_for_distributions>
+				<alpha_canard_array_for_distributions unit="deg">0.0;2.0;10.0</alpha_canard_array_for_distributions>
+				<number_of_points_semispawise_wing>50</number_of_points_semispawise_wing>
+				<number_of_points_semispawise_horizontal_tail>50</number_of_points_semispawise_horizontal_tail>
+				<number_of_points_semispawise_vertical_tail>50</number_of_points_semispawise_vertical_tail>
+				<number_of_points_semispawise_canard>50</number_of_points_semispawise_canard>
+				<maximum_elevator_deflection unit="deg">-25.0</maximum_elevator_deflection>
+				<delta_elevator_array unit="deg">5.0;0.0;-5.0;-10.0;-15.0;-20.0;-25.0;-30.0</delta_elevator_array>
+				<delta_rudder_array unit="deg">5.0;10.0;15.0;20.0;25.0</delta_rudder_array>
+				<delta_canard_control_surface_array unit="deg">5.0;0.0;-5.0;-10.0;-15.0;-20.0;-25.0</delta_canard_control_surface_array>
+				<adimensional_wing_momentum_pole>0.25</adimensional_wing_momentum_pole> 
+				<adimensional_horizontal_tail_momentum_pole>0.25</adimensional_horizontal_tail_momentum_pole> 
+				<adimensional_vertical_tail_momentum_pole>0.25</adimensional_vertical_tail_momentum_pole> 
+				<adimensional_canard_momentum_pole>0.25</adimensional_canard_momentum_pole> 
+				<adimensional_fuselage_momentum_pole>0.5</adimensional_fuselage_momentum_pole> <!-- adimensional: referred to fuselage length -->
+				<!-- optional values which are read only if the related attribute in "global_data" is "FALSE" --> 
+				<horizontal_tail_dynamic_pressure_ratio>0.8</horizontal_tail_dynamic_pressure_ratio>
+				<vertical_tail_dynamic_pressure_ratio>0.9</vertical_tail_dynamic_pressure_ratio>
+				<tau_elevator_function>
+					<tau>0.4221</tau>
+					<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
+				</tau_elevator_function>
+				<tau_rudder_function>
+					<tau>0.0000;0.5359;0.5648;0.5502;0.5261</tau>
+					<delta_rudder unit="deg">0.0;10.0;20.0;25.0;30.0</delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
+				</tau_rudder_function>	
+				<tau_canard_control_surface_function>
+					<tau>0.4</tau>
+					<delta_canard_control_surface unit="deg"></delta_canard_control_surface> <!-- if the tau array contains only 1 value this tag can be left empty -->
+				</tau_canard_control_surface_function>
+				<!---->
+			</global_data>
+			<wing_analyses perform="FALSE">
+				<critical_mach perform="TRUE" method="KROO"></critical_mach>
+				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
+				<lift>
+					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_zero perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_star perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_max perform="TRUE" method="NASA_BLACKWELL"/>
+					<alpha_zero_lift perform="TRUE" method="INTEGRAL_MEAN_NO_TWIST"/>
+					<alpha_star perform="TRUE" method="MEAN_AIRFOIL_INFLUENCE_AREAS"/>
+					<alpha_stall perform="TRUE" method="NASA_BLACKWELL"/>
+                    <cL_vs_alpha perform="TRUE" user_defined="FALSE" method="NASA_BLACKWELL">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cL>0.0;0.1;0.5;0.7;0.75;0.7;0.65;0.5</cL>
+                    </cL_vs_alpha>
+					<lift_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
+				</lift>
+				<high_lift_devices>
+					<high_lift_devices_effects perform="TRUE" method="SEMIEMPIRICAL"/>
+                    <cL_vs_alpha perform="TRUE" user_defined="FALSE" method="SEMIEMPIRICAL">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cL>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
+                    </cL_vs_alpha>
+					<cD_vs_cL perform="TRUE" user_defined="FALSE" method="SEMIEMPIRICAL">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <cL>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
+						<cD>-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</cD>
+                    </cD_vs_cL>
+					<cM_vs_alpha perform="TRUE" user_defined="FALSE" method="SEMIEMPIRICAL">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cM>
+                    </cM_vs_alpha>
+					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cM_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+				</high_lift_devices>
+				<drag>
+					<cD_Zero perform="TRUE" method="SEMIEMPIRICAL"/>
+					<oswald_factor perform="TRUE" method="RAYMER"/>
+					<cD_induced perform="TRUE" method="RAYMER"/>
+					<cD_wave perform="TRUE" method="LOCK_KORN_WITH_KROO"/>
+                    <cD_vs_cL perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <cL>0.2;0.3;0.7;0.9;0.95;0.09;0.085;0.07</cL>
+                        <cD>0.02;0.03;0.07;0.09;0.095;0.09;0.085;0.07</cD>
+                    </cD_vs_cL>
+					<drag_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+				</drag>
+				<pitching_moment>
+					<cM_ac perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<cM_alpha perform="TRUE" method="POLHAMUS"/>
+                    <cM_vs_alpha perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cM>
+                    </cM_vs_alpha>
+					<cM_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<moment_distributions perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+				</pitching_moment>
+			</wing_analyses>
+			<horizontal_tail_analyses perform="TRUE">
+				<critical_mach perform="TRUE" method="KROO"></critical_mach>
+				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
+				<lift>
+					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_zero perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_star perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_max perform="TRUE" method="NASA_BLACKWELL"/>
+					<alpha_zero_lift perform="TRUE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_star perform="TRUE" method="MEAN_AIRFOIL_INFLUENCE_AREAS"/>
+					<alpha_stall perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_vs_alpha perform="TRUE" user_defined="FALSE" method="NASA_BLACKWELL">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cL>0.0;0.1;0.5;0.7;0.75;0.7;0.65;0.5</cL>
+                    </cL_vs_alpha>
+					<lift_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
+				</lift>
+				<elevator deflection_angle_degree="5.0">
+					<cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD_vs_cL perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cM_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cM_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+				</elevator>
+				<drag>
+					<cD_Zero perform="TRUE" method="SEMIEMPIRICAL"/>
+					<oswald_factor perform="TRUE" method="RAYMER"/>
+					<cD_induced perform="TRUE" method="RAYMER"/>
+					<cD_wave perform="TRUE" method="LOCK_KORN_WITH_KROO"/>
+                    <cD_vs_cL perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <cL>0.2;0.3;0.7;0.9;0.95;0.09;0.085;0.07</cL>
+                        <cD>0.02;0.03;0.07;0.09;0.095;0.09;0.085;0.07</cD>
+                    </cD_vs_cL>
+					<drag_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+				</drag>
+				<pitching_moment>
+					<cM_ac perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<cM_alpha perform="TRUE" method="POLHAMUS"/>
+                    <cM_vs_alpha perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cM>
+                    </cM_vs_alpha>
+					<cM_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<moment_distributions perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+				</pitching_moment>
+			</horizontal_tail_analyses>
+			<vertical_tail_analyses perform="TRUE">
+				<critical_mach perform="TRUE" method="KROO"></critical_mach>
+				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
+				<lift>
+					<cL_alpha perform="TRUE" method="HELMBOLD_DIEDERICH"/>
+					<cL_zero perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_star perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_max perform="TRUE" method="NASA_BLACKWELL"/>
+					<alpha_zero_lift perform="TRUE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_star perform="TRUE" method="MEAN_AIRFOIL_INFLUENCE_AREAS"/>
+					<alpha_stall perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_vs_alpha perform="TRUE" user_defined="FALSE" method="NASA_BLACKWELL">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cL>0.0;0.1;0.5;0.7;0.75;0.7;0.65;0.5</cL>
+                    </cL_vs_alpha>
+					<lift_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
+				</lift>
+				<rudder deflection_angle_degree="5.0">
+					<cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD_vs_cL perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cM_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cM_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+				</rudder>
+				<drag>
+					<cD_Zero perform="TRUE" method="SEMIEMPIRICAL"/>
+					<oswald_factor perform="TRUE" method="RAYMER"/>
+					<cD_induced perform="TRUE" method="RAYMER"/>
+					<cD_wave perform="TRUE" method="LOCK_KORN_WITH_KROO"/>
+                    <cD_vs_cL perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <cL>0.2;0.3;0.7;0.9;0.95;0.09;0.085;0.07</cL>
+                        <cD>0.02;0.03;0.07;0.09;0.095;0.09;0.085;0.07</cD>
+                    </cD_vs_cL>
+					<drag_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+				</drag>
+				<pitching_moment>
+					<cM_ac perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<cM_alpha perform="TRUE" method="POLHAMUS"/>
+                    <cM_vs_alpha perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cM>
+                    </cM_vs_alpha>
+					<cM_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<moment_distributions perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+				</pitching_moment>
+			</vertical_tail_analyses>
+			<canard_analyses perform="TRUE">
+				<critical_mach perform="TRUE" method="KROO"></critical_mach>
+				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
+				<lift>
+					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_zero perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_star perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_max perform="TRUE" method="NASA_BLACKWELL"/>
+					<alpha_zero_lift perform="TRUE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_star perform="TRUE" method="MEAN_AIRFOIL_INFLUENCE_AREAS"/>
+					<alpha_stall perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_vs_alpha perform="TRUE" user_defined="FALSE" method="NASA_BLACKWELL">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cL>0.0;0.1;0.5;0.7;0.75;0.7;0.65;0.5</cL>
+                    </cL_vs_alpha>
+					<lift_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
+				</lift>
+				<elevator deflection_angle_degree="5.0">
+					<cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD_vs_cL perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cM_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cM_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+				</elevator>
+				<drag>
+					<cD_Zero perform="TRUE" method="SEMIEMPIRICAL"/>
+					<oswald_factor perform="TRUE" method="RAYMER"/>
+					<cD_induced perform="TRUE" method="RAYMER"/>
+					<cD_wave perform="TRUE" method="LOCK_KORN_WITH_KROO"/>
+                    <cD_vs_cL perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <cL>0.2;0.3;0.7;0.9;0.95;0.09;0.085;0.07</cL>
+                        <cD>0.02;0.03;0.07;0.09;0.095;0.09;0.085;0.07</cD>
+                    </cD_vs_cL>
+					<drag_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+				</drag>
+				<pitching_moment>
+					<cM_ac perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<cM_alpha perform="TRUE" method="POLHAMUS"/>
+                    <cM_vs_alpha perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cM>
+                    </cM_vs_alpha>
+					<cM_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<moment_distributions perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+				</pitching_moment>
+			</canard_analyses>
+			<fuselage_analyses perform="TRUE">
+				<drag>
+					<cD0_parasite perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD0_base perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD0_upsweep perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD0_windshield perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD0_total perform="TRUE" method="FUSDES"/>
+					<cD_induced perform="TRUE" method="SEMIEMPIRICAL"/>
+                    <cD_vs_alpha perform="TRUE" user_defined="FALSE" method="FUSDES">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cD>0.02;0.03;0.07;0.09;0.095;0.09;0.085;0.07</cD>
+                    </cD_vs_alpha>
+					<cD_at_alpha_current perform="TRUE" method="FUSDES"/>
+				</drag>
+				<pitching_moment>
+					<cM0 perform="TRUE" method="FUSDES"/> <!-- MULTHOPP method gives poor results for the CM0 -->
+					<cM_alpha perform="TRUE" method="FUSDES"/> <!-- MULTHOPP method gives poor results for the CM0 -->
+                    <cM_vs_alpha perform="TRUE" user_defined="FALSE" method="FUSDES"> <!-- MULTHOPP method gives poor results for the CM0 -->
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cM>
+                    </cM_vs_alpha>
+					<cM_at_alpha_current perform="TRUE" method="FUSDES"/> <!-- MULTHOPP method gives poor results for the CM0 -->
+				</pitching_moment>
+			</fuselage_analyses>
+			<nacelle_analyses perform="TRUE">
+				<drag>
+					<cD0_parasite perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD0_base perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD0_total perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD_induced perform="TRUE" method="SEMIEMPIRICAL"/>
+                    <cD_vs_alpha perform="TRUE" user_defined="FALSE" method="SEMIEMPIRICAL">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cD>0.02;0.03;0.07;0.09;0.095;0.09;0.085;0.07</cD>
+                    </cD_vs_alpha>
+					<cD_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+				</drag>
+				<pitching_moment>
+					<cM0 perform="TRUE" method="MULTHOPP"/> <!-- MULTHOPP method gives poor results for the CM0 -->
+					<cM_alpha perform="TRUE" method="MULTHOPP"/>
+                    <cM_vs_alpha perform="TRUE" user_defined="FALSE" method="MULTHOPP">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cM>
+                    </cM_vs_alpha>
+					<cM_at_alpha_current perform="TRUE" method="MULTHOPP"/>
+				</pitching_moment>
+			</nacelle_analyses>
+			<aircraft_analyses>
+			    <canard_downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="FALSE" >
+				<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is FALSE, "user_defined" allows to choose between the calculation with the specified method and type of gradient (FALSE)
+					or the assignment of the gradient by the user (FALSE)
+				-->
+                    <downwash_gradient_vs_alpha>
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <downwash_gradient>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</downwash_gradient>
+                    </downwash_gradient_vs_alpha>
+                </canard_downwash>
+                <wing_downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="FALSE" method="SLINGERLAND"> <!-- ROSKAM NON LINEAR GIVES PROBLEM: DISABLED TEMPORARY --> 
+				<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is FALSE, "user_defined" allows to choose between the calculation with the specified method and type of gradient (FALSE)
+					or the assignment of the gradient by the user (FALSE)
+				-->
+                    <downwash_gradient_vs_alpha>
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <downwash_gradient>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</downwash_gradient>
+                    </downwash_gradient_vs_alpha>
+                </wing_downwash>
+				<buffet_barrier perform="FALSE" method="KROO"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
+				<lift_curve perform="TRUE" fuselage_effects="TRUE" method="FROM_BALANCE_EQUATION"/>
+				<drag_polar perform="TRUE" calculate_delta_CD0_miscellaneous="TRUE" delta_CD0_miscellaneous="0.00358" calculate_delta_CD0_landing_gears="FALSE" delta_CD0_landing_gears="0.0" method="FROM_BALANCE_EQUATION"/>
+				<moment_curve perform="TRUE" method="FROM_BALANCE_EQUATION"/>
+				<longitudinal_static_stability perform="TRUE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/>
+				<lateral_static_stability perform="TRUE" method="NAPOLITANO_DATCOM"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
+				<directional_static_stability perform="TRUE" method="VEDSC_USAFDATCOM_WING"/>
+				<dynamic_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
+			</aircraft_analyses>
+        </aerodynamics_and_stability>
+    </analysis>
+	<!-- choose which plot has to be done --> 
+	<plot>
+		<wing>
+			<lift>
+				<cL_vs_alpha perform="TRUE"/>
+				<stall_path perform="TRUE"/> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
+				<cl_distribution perform="TRUE"/>
+				<cl_additional_distribution perform="TRUE"/>
+				<cl_basic_distribution perform="TRUE"/>
+				<ccl_distribution perform="TRUE"/>
+				<ccl_additional_distribution perform="TRUE"/>
+				<ccl_basic_distribution perform="TRUE"/>
+				<gamma_distribution perform="TRUE"/>
+				<gamma_additional_distribution perform="TRUE"/>
+				<gamma_basic_distribution perform="TRUE"/>
+				<total_load_distribution perform="TRUE"/>
+				<additional_load_distribution perform="TRUE"/>
+				<basic_load_distribution perform="TRUE"/>
+			</lift>
+			<high_lift>
+				<cL_vs_alpha_high_lift perform="TRUE"/>
+				<cD_vs_cL_high_lift perform="TRUE"/>
+				<cM_vs_alpha_high_lift perform="TRUE"/>
+			</high_lift>
+			<drag>
+				<cD_vs_cL_breakdown perform="TRUE"/>
+				<cD_distributions perform="TRUE"/>
+				<drag_distributions perform="TRUE"/>
+			</drag>
+			<pitching_moment>
+				<cM_vs_alpha perform="TRUE"/>
+				<cM_distributions perform="TRUE"/>
+				<moment_distributions perform="TRUE"/>
+			</pitching_moment>
+		</wing>
+		<horizontal_tail>
+			<lift>
+				<cL_vs_alpha perform="TRUE"/>
+				<stall_path perform="TRUE"/> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
+				<cl_distribution perform="TRUE"/>
+				<ccl_distribution perform="TRUE"/>
+				<gamma_distribution perform="TRUE"/>
+				<total_load_distribution perform="TRUE"/>
+			</lift>
+			<elevator>
+				<cL_vs_alpha_elevator perform="TRUE"/>
+				<cD_vs_cL_elevator perform="TRUE"/>
+				<cM_vs_alpha_elevator perform="TRUE"/>
+			</elevator>
+			<drag>
+				<cD_vs_cL_breakdown perform="TRUE"/>
+				<cD_distributions perform="TRUE"/>
+				<drag_distributions perform="TRUE"/>
+			</drag>
+			<pitching_moment>
+				<cM_vs_alpha perform="TRUE"/>
+				<cM_distributions perform="TRUE"/>
+				<moment_distributions perform="TRUE"/>
+			</pitching_moment>
+		</horizontal_tail>
+		<vertical_tail>
+			<lift>
+				<cL_vs_alpha perform="TRUE"/>
+				<cl_distribution perform="TRUE"/>
+				<ccl_distribution perform="TRUE"/>
+				<gamma_distribution perform="TRUE"/>
+				<total_load_distribution perform="TRUE"/>
+			</lift>
+			<rudder>
+				<cL_vs_alpha_rudder perform="TRUE"/>
+				<cD_vs_cL_rudder perform="TRUE"/>
+				<cM_vs_alpha_rudder perform="TRUE"/>
+			</rudder>
+			<drag>
+				<cD_vs_cL_breakdown perform="TRUE"/>
+				<cD_distributions perform="TRUE"/>
+				<drag_distributions perform="TRUE"/>
+			</drag>
+			<pitching_moment>
+				<cM_vs_alpha perform="TRUE"/>
+				<cM_distributions perform="TRUE"/>
+				<moment_distributions perform="TRUE"/>
+			</pitching_moment>
+		</vertical_tail>
+		<fuselage>
+			<drag>
+				<cD_vs_cL perform="TRUE"/>
+			</drag>
+			<pitching_moment>
+				<cM_vs_alpha perform="TRUE"/>
+			</pitching_moment>
+		</fuselage>
+		<nacelles>
+			<drag>
+				<cD_vs_cL perform="TRUE"/>
+			</drag>
+			<pitching_moment>
+				<cM_vs_alpha perform="TRUE"/>
+			</pitching_moment>
+		</nacelles>
+		<aircraft>
+			<downwash_gradient perform="TRUE"/>
+			<downwash_angle perform="TRUE"/>
+			<cL_total_vs_alpha perform="TRUE"/>
+			<cD_total_vs_cL_total perform="TRUE"/>
+			<cM_total_vs_alpha perform="TRUE"/>
+			<cM_total_vs_cL_total perform="TRUE"/>
+			<cL_total_equilibrium_vs_alpha perform="TRUE"/>
+			<cL_horizontal_tail_equilibrium_vs_alpha perform="TRUE"/>
+			<cD_total_equilibrium_vs_cL_total_equilibrium perform="TRUE"/>
+			<cD_horizontal_tail_equilibrium_vs_cL_horizontal_tail_equilibrium perform="TRUE"/>
+			<delta_elevator_equilibrium_vs_alpha perform="TRUE"/>
+			<cM_vs_alpha_breakdown perform="TRUE"/>
+			<cN_vs_beta_breakdown perform="TRUE"/>
+			<cN_vs_beta_delta_rudder perform="TRUE"/>
+			<delta_rudder_equilibrium_vs_beta perform="TRUE"/>
+			<total_equilibrium_efficiency_vs_alpha perform="TRUE"/>
+			<total_equilibrium_efficiency_vs_cL_total_equilibrium perform="TRUE"/>
+			<neutral_point_vs_alpha perform="TRUE"/>
+			<neutral_point_vs_cL_total_equilibrium perform="TRUE"/>
+			<static_stability_margin_vs_alpha perform="TRUE"/>
+			<static_stability_margin_vs_cL_total_equilibrium perform="TRUE"/>
+		</aircraft>
+	</plot>
+</jpad_config>
