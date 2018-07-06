@@ -473,6 +473,7 @@ public class ACAerodynamicAndStabilityManager {
 				< _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes().doubleValue(SI.METER)
 				){
 
+			
 			_verticalDistanceZeroLiftDirectionWingHTailCOMPLETE = 
 					Amount.valueOf(
 							_verticalDistanceZeroLiftDirectionWingHTailPARTIAL.doubleValue(SI.METER) + (
@@ -480,9 +481,7 @@ public class ACAerodynamicAndStabilityManager {
 											Math.tan(- _theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().doubleValue(SI.RADIAN) +
 													_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
 													.getAlphaZeroLift().get(
-															_theAerodynamicBuilderInterface.getComponentTaskList()
-															.get(ComponentEnum.WING)
-															.get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
+															MethodEnum.INTEGRAL_MEAN_TWIST
 															)
 													.doubleValue(SI.RADIAN)
 													)
@@ -502,9 +501,7 @@ public class ACAerodynamicAndStabilityManager {
 									Math.tan(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().doubleValue(SI.RADIAN) -
 											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
 											.getAlphaZeroLift().get(
-													_theAerodynamicBuilderInterface.getComponentTaskList()
-													.get(ComponentEnum.WING)
-													.get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
+													MethodEnum.INTEGRAL_MEAN_TWIST
 													)
 											.doubleValue(SI.RADIAN)
 											)
@@ -519,9 +516,7 @@ public class ACAerodynamicAndStabilityManager {
 				Math.cos(- _theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().doubleValue(SI.RADIAN) +
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
 						.getAlphaZeroLift().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList()
-								.get(ComponentEnum.WING)
-								.get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
+								MethodEnum.INTEGRAL_MEAN_TWIST
 								)
 						.doubleValue(SI.RADIAN)
 						),
@@ -575,11 +570,12 @@ public class ACAerodynamicAndStabilityManager {
 			alphaZeroLiftWingCurrent = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST);
 			
 		}
-		else
+		else {
 			alphaZeroLiftWingCurrent = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift().get(
 					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
 					);
-		
+			alphaZeroLiftWingCurrent = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST);
+		}
 		/*
 		 * Check on CL0 in the LSAerodynamicsManager of the wing. If this is not present in the task list, it will be calculated
 		 * using a defaul method. 
@@ -1734,7 +1730,7 @@ public class ACAerodynamicAndStabilityManager {
 			/////////////////////////////////////////////////////////////////////////////////////
 			// ALPHA WING ARRAY 
 			
-			initializeDataForDownwashCanard();
+        	initializeDataForDownwashCanard();
 			calculateDownwashDueToCanard();
 			
 			_alphaWingList = new ArrayList<>();
@@ -12654,6 +12650,7 @@ public class ACAerodynamicAndStabilityManager {
 		//...............................................................
 		// WING:
 		if(theAircraft.getWing() != null) {
+			if(_performWingAnalyses == Boolean.TRUE) {
 
 			//...............................................................
 			// LIFT CURVE
@@ -12927,13 +12924,15 @@ public class ACAerodynamicAndStabilityManager {
 				if(wingCMDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
 					plotList.add(AerodynamicAndStabilityPlotEnum.WING_CM_DISTRIBUTION);
 			}	
-
+			}
 			plotMap.put(ComponentEnum.WING, plotList);
 
+		
 		}
 		//...............................................................
 		// HTAIL:
 		if(theAircraft.getHTail() != null) {
+			if(_performHTailAnalyses == Boolean.TRUE) {
 
 			//...............................................................
 			plotList = new ArrayList<>();
@@ -13118,10 +13117,12 @@ public class ACAerodynamicAndStabilityManager {
 			plotMap.put(ComponentEnum.HORIZONTAL_TAIL, plotList);
 
 		}
+		}
 
 		//...............................................................
 		// CANARD:
 		if(theAircraft.getCanard() != null) {
+			if(_performWingAnalyses == Boolean.TRUE) {
 
 			//...............................................................
 			plotList = new ArrayList<>();
@@ -13306,9 +13307,11 @@ public class ACAerodynamicAndStabilityManager {
 			plotMap.put(ComponentEnum.CANARD, plotList);
 
 		}
+		}
 		//...............................................................
 		// VTAIL:
 		if(theAircraft.getVTail() != null) {
+			if(_performVTailAnalyses == Boolean.TRUE) {
 
 			//...............................................................
 			plotList = new ArrayList<>();
@@ -13482,10 +13485,12 @@ public class ACAerodynamicAndStabilityManager {
 			plotMap.put(ComponentEnum.VERTICAL_TAIL, plotList);
 
 		}
+		}
 
 		//...............................................................
 		// FUSELAGE:
 		if(theAircraft.getFuselage() != null) {
+			if(_performFuselageAnalyses == Boolean.TRUE) {
 
 			//...............................................................
 
@@ -13547,6 +13552,7 @@ public class ACAerodynamicAndStabilityManager {
 
 			plotMap.put(ComponentEnum.NACELLE, plotList);
 
+		}
 		}
 		
 		//...............................................................

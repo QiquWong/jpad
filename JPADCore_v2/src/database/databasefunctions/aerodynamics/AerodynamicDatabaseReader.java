@@ -50,7 +50,9 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		Delta_alpha_CL_Ground_Effect_L_L0_minus1_vs_h_cr_4_cr,
 		Delta_epsilon_G_b_apex_f_frac_b_apex_w_vs_b_f_frac_b,
 		Delta_epsilon_G_b_apex_frac_b_vs_frac_lambda,
-		Delta_alpha_CL_Ground_Effect_DeltaDelta_CL_flap_vs_h_cr_4_cr;
+		Delta_alpha_CL_Ground_Effect_DeltaDelta_CL_flap_vs_h_cr_4_cr,
+		Delta_alpha_G_sigma_vs_2hfracb,
+		Delta_alpha_G_B_vs_h_frac_overline_c_C_L_WB;
 	    
 	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE, deltaYvsThickness, clmaxCLmaxVsLambdaLE;
  
@@ -227,7 +229,11 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		
 		Delta_alpha_CL_Ground_Effect_DeltaDelta_CL_flap_vs_h_cr_4_cr
 						= database.interpolate1DFromDatasetFunction("Delta_alpha_CL_Ground_Effect_DeltaDelta_CL_flap_vs_h_cr_4_cr");
-		
+		Delta_alpha_G_sigma_vs_2hfracb
+						= database.interpolate1DFromDatasetFunction("Delta_alpha_G_sigma_vs_2hfracb");
+		Delta_alpha_G_B_vs_h_frac_overline_c_C_L_WB
+						= database.interpolate2DFromDatasetFunction("Delta_alpha_G_B_vs_h_frac_overline_c_C_L_WB");
+
 	}
 	
 	public MyHDFReader getHDFReader() {
@@ -579,12 +585,25 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 				fracLambda  // var0
 				);
 	
-}
+	}
 	public double getDeltaAlphaCLGroundEffectDeltaDeltaCLflapVshCr4Cr(double hCr4Cr) { // var0
 		return Delta_alpha_CL_Ground_Effect_DeltaDelta_CL_flap_vs_h_cr_4_cr.value(
 				hCr4Cr  // var0
 				);
 		
-}
+	}
+	public double getDeltaAlphaGSigmaVshfracb(double hfracb) { // var0
+		return Delta_alpha_G_sigma_vs_2hfracb.value(
+				hfracb  // var0
+				);
+	
+	}
+	public double getDeltaAlphaGBVshFracOverlinecCLWB(double hFracOverlinec, double cLWingBody) { // var0, var1
+		return Delta_alpha_G_B_vs_h_frac_overline_c_C_L_WB.valueBilinear(
+				hFracOverlinec, // var1
+				cLWingBody  // var0
+				);
+	
+	}
 	
 }

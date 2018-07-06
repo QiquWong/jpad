@@ -1636,7 +1636,6 @@ public class MomentCalc {
 	 * Ciliberti, Cusati, Attanasio, 33rd AIAA Applied Aerodynamics 
 	 * Conference, Aviation Forum 2015, Dallas (Texas, USA)).
 	 */
-
 	public static double calcCNBetaFuselage(
 			FusDesDatabaseReader fusDesDatabaseReader,
 			VeDSCDatabaseReader veDSCDatabaseReader,
@@ -1661,7 +1660,7 @@ public class MomentCalc {
 				tailFinenessRatio,
 				xPositionPole
 				);
-		
+
 		double kVf = veDSCDatabaseReader.get_KVf_vs_zw_over_dfv(
 				verticalTailSpan.doubleValue(SI.METER), 
 				fuselageDiameterAtVerticalMAC.doubleValue(SI.METER), 
