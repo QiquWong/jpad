@@ -168,6 +168,8 @@ public class SideForceCalc {
 		return cYBeta;
 	}
 	
+	// Assuming that CY_delta_A = 0
+	
 	/**
 	 *
 	 * @author cavas
@@ -190,7 +192,7 @@ public class SideForceCalc {
 			Amount<Area> surfaceW, double aspectRatioW, Amount<Angle> sweepC4W,
 			Amount<Area> surfaceV, double taperRatioV, Amount<?> cLAlphaV,
 			double etaInR, double etaOutR, double rudderChordRatio,
-			Amount <Length> heightFuselage, Amount<Length> zW,
+			Amount<Length> heightFuselage, Amount<Length> zW,
 			AerodynamicDatabaseReader databaseReader
 			) {
 		
@@ -198,8 +200,8 @@ public class SideForceCalc {
 		double tauR = databaseReader.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(rudderChordRatio);
 		
 		// Delta K_R
-		double innerKR = databaseReader.getCYDeltaRKRVsLambdaEta(taperRatioV, etaInR);
-		double outerKR = databaseReader.getCYDeltaRKRVsLambdaEta(taperRatioV, etaOutR);
+		double innerKR = databaseReader.getCYDeltaRKRVsEtaLambdaV(taperRatioV, etaInR);
+		double outerKR = databaseReader.getCYDeltaRKRVsEtaLambdaV(taperRatioV, etaOutR);
 		double deltaKR = outerKR - innerKR;
 		
 		// CY_delta_r
