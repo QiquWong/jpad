@@ -476,9 +476,9 @@
         <ncsa.hdf.object.h5.H5Group>
           <filename>C:\Users\Carmine\Documents\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
-          <name>(C_n_beta_b)_K_N_times_1e-3_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)</name>
+          <name>(C_n_beta_b)_K_N_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)</name>
           <path>/</path>
-          <fullName>/(C_n_beta_b)_K_N_times_1e-3_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)</fullName>
+          <fullName>/(C_n_beta_b)_K_N_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)</fullName>
           <oid>
             <long>104789284</long>
           </oid>
@@ -721,6 +721,30 @@
           <fullName>/(Delta_alpha_CL_Ground_Effect)_x_vs_2hfracb_Deltax</fullName>
           <oid>
             <long>267522671</long>
+          </oid>
+          <parent class="ncsa.hdf.object.h5.H5Group" reference="../../.."/>
+          <nMembersInFile>-1</nMembersInFile>
+          <nAttributes>-1</nAttributes>
+          <obj__info>
+            <fileno>-1</fileno>
+            <addr>-1</addr>
+            <type>0</type>
+            <rc>0</rc>
+            <atime>0</atime>
+            <mtime>0</mtime>
+            <ctime>0</ctime>
+            <btime>0</btime>
+            <num__attrs>-1</num__attrs>
+          </obj__info>
+        </ncsa.hdf.object.h5.H5Group>
+        <ncsa.hdf.object.h5.H5Group>
+          <filename>C:\Users\Carmine\Documents\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
+          <name>(Delta_alpha_G)_B_vs_h_frac_overline_c_C_L_WB</name>
+          <path>/</path>
+          <fullName>/(Delta_alpha_G)_B_vs_h_frac_overline_c_C_L_WB</fullName>
+          <oid>
+            <long>275432038</long>
           </oid>
           <parent class="ncsa.hdf.object.h5.H5Group" reference="../../.."/>
           <nMembersInFile>-1</nMembersInFile>
@@ -1242,7 +1266,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
       </memberList>
-      <nMembersInFile>50</nMembersInFile>
+      <nMembersInFile>51</nMembersInFile>
       <nAttributes>-1</nAttributes>
       <obj__info>
         <fileno>-1</fileno>
@@ -56716,7 +56740,7 @@
     <kMin>0.0</kMin>
     <kMax>0.0</kMax>
   </C__l__r__w__dC__l__r__over__eps__w__vs__AR__lambda>
-  <C__n__beta__b__K__N__times__1eMinus3__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data0>
+  <C__n__beta__b__K__N__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data0>
     <bif>
       <x>
         <double>0.10000000149011612</double>
@@ -57037,8 +57061,8 @@
     <zMax>0.0</zMax>
     <kMin>0.0</kMin>
     <kMax>0.0</kMax>
-  </C__n__beta__b__K__N__times__1eMinus3__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data0>
-  <C__n__beta__b__K__N__times__1eMinus3__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data1>
+  </C__n__beta__b__K__N__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data0>
+  <C__n__beta__b__K__N__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data1>
     <bif>
       <x>
         <double>0.0</double>
@@ -57805,8 +57829,8 @@
     <zMax>0.0</zMax>
     <kMin>0.0</kMin>
     <kMax>0.0</kMax>
-  </C__n__beta__b__K__N__times__1eMinus3__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data1>
-  <C__n__beta__b__K__N__times__1eMinus3__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data2>
+  </C__n__beta__b__K__N__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data1>
+  <C__n__beta__b__K__N__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data2>
     <bif>
       <x>
         <double>0.0</double>
@@ -58574,7 +58598,7 @@
     <zMax>0.0</zMax>
     <kMin>0.0</kMin>
     <kMax>0.0</kMax>
-  </C__n__beta__b__K__N__times__1eMinus3__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data2>
+  </C__n__beta__b__K__N__vs__x__cg__over__l__b__squared__l__b__over__S__b__s__square__root__h1__over__h2__h__b__over__w__b__data2>
   <C__n__beta__b__K__Re__b__vs__Re__l__b__times__1eMinus6>
     <psf>
       <knots>

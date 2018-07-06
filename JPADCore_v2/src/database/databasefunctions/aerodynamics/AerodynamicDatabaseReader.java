@@ -161,7 +161,7 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		
 		C_n_beta_b_K_N_vs_x_cg_over_l_b_squared_l_b_over_S_b_s_square_root_h1_over_h2_h_b_over_w_b_data0
 						= database.interpolate2DFromDatasetFunction(
-								"(C_n_beta_b)_K_N_times_1e-3_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)",
+								"(C_n_beta_b)_K_N_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)",
 								"data_0",
 								"var_0_0",
 								"var_0_1"
@@ -169,7 +169,7 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		
 		C_n_beta_b_K_N_vs_x_cg_over_l_b_squared_l_b_over_S_b_s_square_root_h1_over_h2_h_b_over_w_b_data1
 						= database.interpolate2DFromDatasetFunction(
-								"(C_n_beta_b)_K_N_times_1e-3_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)",
+								"(C_n_beta_b)_K_N_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)",
 								"data_1",
 								"var_1_0",
 								"var_1_1"
@@ -177,7 +177,7 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		
 		C_n_beta_b_K_N_vs_x_cg_over_l_b_squared_l_b_over_S_b_s_square_root_h1_over_h2_h_b_over_w_b_data2
 						= database.interpolate2DFromDatasetFunction(
-								"(C_n_beta_b)_K_N_times_1e-3_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)",
+								"(C_n_beta_b)_K_N_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)",
 								"data_2",
 								"var_2_0",
 								"var_2_1"
