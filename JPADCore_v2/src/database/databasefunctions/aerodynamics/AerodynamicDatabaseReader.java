@@ -580,9 +580,10 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		
 	}
 	
-	public double getDeltaEpsilonGbApexFracbVsFracLambda(double fracLambda) { // var0
-		return Delta_epsilon_G_b_apex_frac_b_vs_frac_lambda.value(
-				fracLambda  // var0
+	public double getDeltaEpsilonGbApexFracbVsFracLambda(double fracLambda, double aspectRatio) { // var0 // var1
+		return Delta_epsilon_G_b_apex_frac_b_vs_frac_lambda.valueBilinear(
+				fracLambda,  // var0
+				aspectRatio // var1
 				);
 	
 	}

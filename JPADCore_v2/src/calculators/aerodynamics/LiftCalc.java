@@ -29,6 +29,7 @@ import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.HighLiftDeviceEffectEnum;
+import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.MyArrayUtils;
@@ -2394,4 +2395,299 @@ public class LiftCalc {
 
 		return horizontalTailEquilibriumLiftCoefficient;
 	}
+	/**
+	 * @see USAF Stability and Control DATCOM (Design Reference) - Finck 1978_page1444.
+	 * 		
+	 * @author Bruno Spoti
+	 * 
+	 * @param alphaZeroLift
+	 * @param alphaStar
+	 * @param endOfLinearityLiftCoefficient
+	 * @param alphaStall
+	 * @param maximumLiftCoefficient
+	 * @param aspectRatio
+	 * @param rootChord
+	 * @param wingSpan
+	 * @param deltaX
+	 * @param height 
+	 * @param liftCurveSlope
+	 * @param heightOfRootChord
+	 * @param sweepAngleQuarterChord
+	 * @param deltaFlap
+	 * @param method
+	 * @return liftCoefficientCurveWithGroundEffect
+	 */
+	public static List<Double> calculateWingLiftCurveWithGroundEffect(
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			Amount<Angle> alphaZeroLift,
+			Amount<Angle> alphaStar,
+			double endOfLinearityLiftCoefficient,
+			Amount<Angle> alphaStall,
+			double maximumLiftCoefficient,
+			double aspectRatio,
+			Amount<Length> rootChord,
+			Amount<Length> wingSpan,
+			Amount<Length> deltaX,
+			Amount<?> liftCurveSlope,
+			Amount<Length> heightOfRootChord,
+			Amount<Angle> sweepAngleQuarterChord,
+			Amount<Angle> deltaFlap,
+			Amount<Length> heightOfThreeQuarterSemiSpanChord,
+			List<Amount<Angle>> alphaArray,
+			double maximumThickness,
+			Amount<Length> meanAerodynamicChord,
+			MethodEnum method
+			) {
+
+		List<Double> liftCoefficientCurveWithGroundEffect = new ArrayList();
+
+		switch (method) {
+		case DATCOM_VMU_FIRST_METHOD:
+			
+			Amount<Angle> alphaZeroLiftWithGroundEffectFirstMethodDatcom = 
+			alphaZeroLift.minus(calculateDeltaAlphaGroundEffectFirstMethodDatcom(
+					aeroDatabaseReader, 
+					aspectRatio, 
+					rootChord, 
+					wingSpan, 
+					deltaX, 
+					heightOfRootChord, 
+					liftCurveSlope, 
+					heightOfRootChord, 
+					sweepAngleQuarterChord, 
+					deltaFlap, 
+					heightOfThreeQuarterSemiSpanChord, 
+					0));
+
+			Amount<Angle> alphaStarWithGroundEffectFirstMethodDatcom = alphaStar.minus(
+					calculateDeltaAlphaGroundEffectFirstMethodDatcom(
+							aeroDatabaseReader, 
+							aspectRatio, 
+							rootChord, 
+							wingSpan, 
+							deltaX, 
+							heightOfRootChord, 
+							liftCurveSlope, 
+							heightOfRootChord, 
+							sweepAngleQuarterChord, 
+							deltaFlap, 
+							heightOfThreeQuarterSemiSpanChord, 
+							endOfLinearityLiftCoefficient));
+
+			Amount<Angle> alphaStallWithGroundEffectFirstMethodDatcom = alphaStall.minus(
+					calculateDeltaAlphaGroundEffectFirstMethodDatcom(
+							aeroDatabaseReader, 
+							aspectRatio, 
+							rootChord, 
+							wingSpan, 
+							deltaX, 
+							heightOfRootChord, 
+							liftCurveSlope, 
+							heightOfRootChord, 
+							sweepAngleQuarterChord, 
+							deltaFlap, 
+							heightOfThreeQuarterSemiSpanChord, 
+							endOfLinearityLiftCoefficient));
+
+			double clAlphaWithGroundEffectFirstMethodDatcom = endOfLinearityLiftCoefficient/
+					(alphaStarWithGroundEffectFirstMethodDatcom.doubleValue(NonSI.DEGREE_ANGLE)-
+							alphaZeroLiftWithGroundEffectFirstMethodDatcom.doubleValue(NonSI.DEGREE_ANGLE));
+
+			liftCoefficientCurveWithGroundEffect =
+					calculators.aerodynamics.AirfoilCalc.calculateClCurve(
+							alphaArray, 
+							-clAlphaWithGroundEffectFirstMethodDatcom*
+							alphaZeroLiftWithGroundEffectFirstMethodDatcom.doubleValue(NonSI.DEGREE_ANGLE), 
+							maximumLiftCoefficient, 
+							alphaStarWithGroundEffectFirstMethodDatcom, 
+							alphaStallWithGroundEffectFirstMethodDatcom, 
+							Amount.valueOf(clAlphaWithGroundEffectFirstMethodDatcom, NonSI.DEGREE_ANGLE.inverse())
+							);
+			break;
+
+		case DATCOM_VMU_SECOND_METHOD:
+			
+			Amount<Length>  height = Amount.valueOf(0.5*(heightOfRootChord.doubleValue(SI.METER)+heightOfThreeQuarterSemiSpanChord.doubleValue(SI.METER)),
+					SI.METER);
+			
+			Amount<Angle> alphaZeroLiftWithGroundEffectSecondMethodDatcom = 
+			alphaZeroLift.minus(calculateDeltaAlphaGroundEffectSecondMethodDatcom(
+					aeroDatabaseReader, 
+					aspectRatio, 
+					maximumThickness, 
+					rootChord, 
+					meanAerodynamicChord, 
+					wingSpan, 
+					height, 
+					liftCurveSlope, 
+					heightOfRootChord, 
+					heightOfThreeQuarterSemiSpanChord, 
+					0));
+
+			Amount<Angle> alphaStarWithGroundEffectSecondMethodDatcom = alphaStar.minus(
+					calculateDeltaAlphaGroundEffectSecondMethodDatcom(
+							aeroDatabaseReader, 
+							aspectRatio, 
+							maximumThickness, 
+							rootChord, 
+							meanAerodynamicChord, 
+							wingSpan, 
+							height, 
+							liftCurveSlope, 
+							heightOfRootChord, 
+							heightOfThreeQuarterSemiSpanChord, 
+							endOfLinearityLiftCoefficient));
+
+			Amount<Angle> alphaStallWithGroundEffectSecondMethodDatcom = alphaStall.minus(
+					calculateDeltaAlphaGroundEffectSecondMethodDatcom(
+							aeroDatabaseReader, 
+							aspectRatio, 
+							maximumThickness, 
+							rootChord, 
+							meanAerodynamicChord, 
+							wingSpan, 
+							height, 
+							liftCurveSlope, 
+							heightOfRootChord, 
+							heightOfThreeQuarterSemiSpanChord, 
+							endOfLinearityLiftCoefficient));
+
+			double clAlphaWithGroundEffectSecondMethodDatcom = endOfLinearityLiftCoefficient/
+					(alphaStarWithGroundEffectSecondMethodDatcom.doubleValue(NonSI.DEGREE_ANGLE)-
+							alphaZeroLiftWithGroundEffectSecondMethodDatcom.doubleValue(NonSI.DEGREE_ANGLE));
+
+			liftCoefficientCurveWithGroundEffect =
+					calculators.aerodynamics.AirfoilCalc.calculateClCurve(
+							alphaArray, 
+							-clAlphaWithGroundEffectSecondMethodDatcom*
+							alphaZeroLiftWithGroundEffectSecondMethodDatcom.doubleValue(NonSI.DEGREE_ANGLE), 
+							maximumLiftCoefficient, 
+							alphaStarWithGroundEffectSecondMethodDatcom, 
+							alphaStallWithGroundEffectSecondMethodDatcom, 
+							Amount.valueOf(clAlphaWithGroundEffectSecondMethodDatcom, NonSI.DEGREE_ANGLE.inverse())
+							);
+
+			break;
+		}
+
+
+
+		return liftCoefficientCurveWithGroundEffect;
+
+	}
+	
+	/**
+	 * @see USAF Stability and Control DATCOM (Design Reference) - Finck 1978_page1444.
+	 * 		
+	 * @author Bruno Spoti
+	 * 
+	 * @param alphaZeroLift
+	 * @param alphaStar
+	 * @param endOfLinearityLiftCoefficient
+	 * @param alphaStall
+	 * @param maximumLiftCoefficient
+	 * @param aspectRatio
+	 * @param rootChord
+	 * @param wingSpan
+	 * @param deltaX
+	 * @param height 
+	 * @param liftCurveSlope
+	 * @param heightOfRootChord
+	 * @param sweepAngleQuarterChord
+	 * @param deltaFlap
+	 * @return deltaAlphaGroundEffect
+	 */
+	public static Amount<Angle> calculateDeltaAlphaGroundEffectFirstMethodDatcom(
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			double aspectRatio,
+			Amount<Length> rootChord,	
+			Amount<Length> wingSpan,
+			Amount<Length> deltaX,
+			Amount<Length> height,
+			Amount<?> liftCurveSlope,
+			Amount<Length> heightOfRootChord,
+			Amount<Angle> sweepAngleQuarterChord,
+			Amount<Angle> deltaFlap,
+			Amount<Length> heightOfThreeQuarterSemiSpanChord,
+			double liftCoefficient
+			) {
+
+		Amount<Angle> deltaAlphaGroundEffect = null;
+
+		double cLParameter = 57.3*liftCoefficient/(2*Math.PI*Math.pow(Math.cos(sweepAngleQuarterChord.doubleValue(SI.RADIAN)), 2));
+		double hCr4Cr = heightOfThreeQuarterSemiSpanChord.doubleValue(SI.METER)/4*rootChord.doubleValue(SI.METER);
+		double hFracb = (heightOfRootChord.doubleValue(SI.METER)
+				+heightOfThreeQuarterSemiSpanChord.doubleValue(SI.METER))/wingSpan.doubleValue(SI.METER);
+
+		double xValue = aeroDatabaseReader.getDeltaAlphaCLGroundEffectXVs2hfracbDeltax(
+				deltaX.doubleValue(SI.METER)/(wingSpan.doubleValue(SI.METER)/2),
+				height.doubleValue(SI.METER)/(wingSpan.doubleValue(SI.METER)/2));
+		double imageBoundVortexParameter = aeroDatabaseReader.getDeltaAlphaCLGroundEffectLL0minus1vshcr4cr(
+				cLParameter, 
+				heightOfRootChord.doubleValue(SI.METER)/(4*rootChord.doubleValue(SI.METER)));
+		double rValue = Math.sqrt(1+Math.pow(hFracb, 2))-hFracb;
+		double deltaDeltaLiftCoefficientWithFlap = aeroDatabaseReader.getDeltaAlphaCLGroundEffectDeltaDeltaCLflapVshCr4Cr(hCr4Cr);
+
+		deltaAlphaGroundEffect=Amount.valueOf(
+				(-(9.12/aspectRatio+7.16*(
+						rootChord.doubleValue(SI.METER)/(
+								wingSpan.doubleValue(SI.METER))))
+						*liftCoefficient*xValue-
+						((aspectRatio/(2*liftCurveSlope.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()))*
+								(rootChord.doubleValue(SI.METER)/(
+										wingSpan.doubleValue(SI.METER)))*
+								imageBoundVortexParameter*liftCoefficient*rValue)-
+						((Math.pow(deltaFlap.doubleValue(NonSI.DEGREE_ANGLE)/50, 2))/
+								liftCurveSlope.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())*
+						deltaDeltaLiftCoefficientWithFlap),
+				NonSI.DEGREE_ANGLE);
+
+		return deltaAlphaGroundEffect;
+
+	}	
+	
+	public static Amount<Angle> calculateDeltaAlphaGroundEffectSecondMethodDatcom(
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			double aspectRatio,  
+			double maximumThickness,     
+			Amount<Length> rootChord,
+			Amount<Length> meanAerodynamicChord,
+			Amount<Length> wingSpan,    
+			Amount<Length> height,     
+			Amount<?> liftCurveSlope,    
+			Amount<Length> heightOfRootChord,     
+			Amount<Length> heightOfThreeQuarterSemiSpanChord,  
+			double liftCoefficient  
+			) {
+
+		Amount<Angle> calculateDeltaAlphaGroundEffectSecondMethod = null;
+
+		double hFracb = (heightOfRootChord.doubleValue(SI.METER)
+				+heightOfThreeQuarterSemiSpanChord.doubleValue(SI.METER))/wingSpan.doubleValue(SI.METER);
+
+		double sigmaParameter = aeroDatabaseReader.getDeltaAlphaGSigmaVshfracb(2*height.doubleValue(SI.METER)/wingSpan.doubleValue(SI.METER));
+		double tParameter = (57.3/(8*Math.PI))*((height.doubleValue(SI.METER)/meanAerodynamicChord.doubleValue(SI.METER))/
+				Math.pow((height.doubleValue(SI.METER)/meanAerodynamicChord.doubleValue(SI.METER)), 2)+(1/64));
+		double bParameter = aeroDatabaseReader.getDeltaAlphaGBVshFracOverlinecCLWB(
+				height.doubleValue(SI.METER)/meanAerodynamicChord.doubleValue(SI.METER), 
+				liftCoefficient);
+		double kParameter = 57.3*0.00300*(height.doubleValue(SI.METER)/meanAerodynamicChord.doubleValue(SI.METER))*
+				((Math.pow(Math.pow((height.doubleValue(SI.METER)/meanAerodynamicChord.doubleValue(SI.METER)), 2)+(1/64), -2))+
+						((Math.pow(Math.pow((height.doubleValue(SI.METER)/meanAerodynamicChord.doubleValue(SI.METER)), 2)+(9/64), -2))));
+		double rValue = Math.sqrt(1+Math.pow(hFracb, 2))-hFracb;  //-	
+
+		calculateDeltaAlphaGroundEffectSecondMethod = Amount.valueOf(
+				(-18.24*liftCoefficient*sigmaParameter/aspectRatio)+
+				(rValue*tParameter*Math.pow(liftCoefficient, 2)/
+						(57.3*liftCurveSlope.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()))-
+				rValue*bParameter+
+				kParameter*maximumThickness, 
+				NonSI.DEGREE_ANGLE);
+
+
+
+		return calculateDeltaAlphaGroundEffectSecondMethod;
+
+	}	
+
 }

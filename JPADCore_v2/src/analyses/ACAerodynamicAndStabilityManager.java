@@ -30,6 +30,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.sun.swing.internal.plaf.metal.resources.metal;
 
 import aircraft.Aircraft;
@@ -182,6 +183,8 @@ public class ACAerodynamicAndStabilityManager {
 	private List<Amount<Angle>> _alphaCanardList;
 	private List<Amount<Angle>> _alphaNacelleList;
 	private List<Amount<Angle>> _betaList;
+	private List<Amount<Angle>> _alphaHTailListWithGroundEffect;
+
 
 	//..............................................................................
 	// INNER CALCULATORS
@@ -205,6 +208,7 @@ public class ACAerodynamicAndStabilityManager {
 	private List<Double> _current3DWingLiftCurve;
 	private List<Double> _current3DWingPolarCurve;
 	private List<Double> _current3DWingMomentCurve;
+	private List<Double> _current3DWingLiftCurveWithGroundEffect;
 	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailLiftCurve;
 	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailPolarCurve;
 	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailMomentCurve;
@@ -21926,6 +21930,154 @@ public class ACAerodynamicAndStabilityManager {
 	// END Directional Stability INNER CLASS
 	//............................................................................
 
+		
+	
+	//............................................................................
+	// Minimum Unstisck Speed INNER CLASS
+	//............................................................................
+	public class CalcMinimumUnstisckSpeed {
+
+		List<Amount<Length>> effectiveSpan = new ArrayList<>();
+
+		Amount<Length> deltaX = Amount.valueOf(
+				_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getPanels().get(0).getChordRoot().doubleValue(SI.METER)*0.75-
+				_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getChordEquivalentAtY(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSpan().doubleValue(SI.METER)*3/8), 
+				SI.METER);
+		
+		Amount<Length> heightOfRootChord = Amount.valueOf(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getZApexConstructionAxes().doubleValue(SI.METER)+
+				_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getTheFuselage().getEquivalentDiameterCylinderAM().doubleValue(SI.METER)*0.5+
+				_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)+
+				_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER), 
+				SI.METER);
+		
+		Amount<Length> heightOfThreeQuarterSemiSpanChord = Amount.valueOf((
+				heightOfRootChord.doubleValue(SI.METER)+
+				Math.tan(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getDihedral().doubleValue(SI.RADIAN))*
+				_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSpan().doubleValue(SI.METER)*3/8),
+				SI.METER);
+		
+
+		
+		public void fromDatcomFirstMethod() {
+			
+			double flapSpan = 0.0;
+			
+			for(int i =0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSymmetricFlaps().size(); i++) {
+			
+			flapSpan =+ (_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSymmetricFlaps().get(i).getOuterStationSpanwisePosition()-
+					 _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSymmetricFlaps().get(i).getInnerStationSpanwisePosition())
+					*_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSpan().doubleValue(SI.METER)*0.5;
+					
+			}
+			
+			double flapSpanFracb  = flapSpan*2/_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSpan().doubleValue(SI.METER);
+			
+			
+			
+			Amount<Length> bApexw = Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader().getDeltaEpsilonGbApexFracbVsFracLambda(
+					1/_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getAspectRatio())*
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSpan().doubleValue(SI.METER), SI.METER);
+					
+			Amount<Length> bApexf = Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader().getDeltaEpsilonGbApexfFracbApexwVsbfFracb(flapSpanFracb)*
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader().getDeltaEpsilonGbApexFracbVsFracLambda(
+							1/_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getAspectRatio())*
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSpan().doubleValue(SI.METER), SI.METER);
+			for(int i =0; i<_alphaBodyList.size(); i++) {
+				
+				
+				
+				effectiveSpan.set(i, Amount.valueOf((_current3DWingLiftCurve.get(i) +
+						_current3DWingLiftCurve.get(i) -
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.WING)
+								.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D))[i])/
+						(_current3DWingLiftCurve.get(i)/bApexw.doubleValue(SI.METER) +
+								_current3DWingLiftCurve.get(i) -
+								(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.WING)
+										.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D))[i])/bApexf.doubleValue(SI.METER)),
+						SI.METER)
+						);
+			}
+			
+			
+			// Calculating wing lift curve with ground effect with first method
+			_current3DWingLiftCurveWithGroundEffect = LiftCalc.calculateWingLiftCurveWithGroundEffect(
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader(), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift().get(MethodEnum.SEMIEMPIRICAL), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStarHighLift().get(MethodEnum.SEMIEMPIRICAL),
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStarHighLift().get(MethodEnum.SEMIEMPIRICAL), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStallHighLift().get(MethodEnum.SEMIEMPIRICAL),
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMaxHighLift().get(MethodEnum.SEMIEMPIRICAL), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getAspectRatio(), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getPanels().get(0).getChordRoot(), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSpan(), 
+					deltaX,
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().get(MethodEnum.SEMIEMPIRICAL),
+					heightOfRootChord,
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(), 
+					_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff().get(0),  // All value have been assumed equal
+					heightOfThreeQuarterSemiSpanChord, 
+					_alphaWingList, 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio(),
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getMeanAerodynamicChord(), 
+					MethodEnum.DATCOM_VMU_FIRST_METHOD);
+			
+//			_alphaHTailListWithGroundEffect = AerodynamicCalc.calculateDeltaEpsilonGroundEffect(
+//					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader(),
+//					downwashAngle, 
+//					effectiveSpan, 
+//					wingBodyLiftCoefficient, 
+//					deltaFlapLiftCoefficient, 
+//					taperRatio, 
+//					aspectRatio, 
+//					flapSpan, 
+//					wingSpan, 
+//					quarterChordHeight, 
+//					horizontalTailquarterChordHeight)
+					
+		}
+		
+		
+		public void fromDatcomSecondMethod() {
+			
+			// Calculating wing lift curve with ground effect with first method
+			_current3DWingLiftCurveWithGroundEffect = LiftCalc.calculateWingLiftCurveWithGroundEffect(
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader(), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift().get(MethodEnum.SEMIEMPIRICAL), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStarHighLift().get(MethodEnum.SEMIEMPIRICAL),
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStarHighLift().get(MethodEnum.SEMIEMPIRICAL), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStallHighLift().get(MethodEnum.SEMIEMPIRICAL),
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMaxHighLift().get(MethodEnum.SEMIEMPIRICAL), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getAspectRatio(), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getPanels().get(0).getChordRoot(), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSpan(), 
+					deltaX,
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().get(MethodEnum.SEMIEMPIRICAL),
+					heightOfRootChord,
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(), 
+					_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff().get(0),  // All value have been assumed equal
+					heightOfThreeQuarterSemiSpanChord, 
+					_alphaWingList, 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio(),
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getMeanAerodynamicChord(), 
+					MethodEnum.DATCOM_VMU_SECOND_METHOD);
+			
+		}
+		
+		
+	}
+	//............................................................................
+	// END Minimum Unstisck Speed INNER CLASS
+	//............................................................................
+
+	
+	
 	//............................................................................
 	// GETTERS & SETTERS:
 	//............................................................................

@@ -24,6 +24,7 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.AirfoilTypeEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.aerotools.aero.StdAtmos1976;
@@ -1215,6 +1216,62 @@ public class AerodynamicCalc {
 				.collect(Collectors.toList());
 		
 	}
+	
+	/**
+	 * @see USAF Stability and Control DATCOM (Design Reference) - Finck 1978_page1445.
+	 * 		
+	 * @author Bruno Spoti
+	 * 
+	 * @param downwashAngle
+	 * @param effectiveSpan
+	 * @param wingBodyLiftCoefficient
+	 * @param deltaFlapLiftCoefficient
+	 * @param taperRatio
+	 * @param aspectRatio
+	 * @param flapSpan
+	 * @param wingSpan
+	 * @param quarterChordHeight
+	 * @param horizontalTailquarterChordHeight
+	 */
+
+	public static Amount<Angle> calculateDeltaEpsilonGroundEffect(
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			Amount<Angle> downwashAngle,
+			Amount<Length> effectiveSpan,
+			double wingBodyLiftCoefficient,
+			double deltaFlapLiftCoefficient,
+			double taperRatio,
+			double aspectRatio,
+			Amount<Length> flapSpan,
+			Amount<Length> wingSpan,
+			Amount<Length> quarterChordHeight,
+			Amount<Length> horizontalTailquarterChordHeight
+			) {
+
+		Amount<Angle> deltaEpsilonGroundEffect = null;
+
+		double bApexfFracbApexw = aeroDatabaseReader.getDeltaEpsilonGbApexfFracbApexwVsbfFracb(
+				flapSpan.doubleValue(SI.METER)/wingSpan.doubleValue(SI.METER));
+		double bApexFracb = aeroDatabaseReader.getDeltaEpsilonGbApexFracbVsFracLambda(1/taperRatio,aspectRatio);
+		double bApexW = bApexFracb*wingSpan.doubleValue(SI.METER);
+		double bApexf = bApexfFracbApexw*bApexFracb*wingSpan.doubleValue(SI.METER);
+
+		Amount<Length> effectiveWingSpan = Amount.valueOf((wingBodyLiftCoefficient + deltaFlapLiftCoefficient)/
+				((wingBodyLiftCoefficient/bApexW)+(deltaFlapLiftCoefficient/bApexf)), SI.METER);
+
+
+
+		deltaEpsilonGroundEffect = Amount.valueOf(
+				downwashAngle.doubleValue(NonSI.DEGREE_ANGLE)*((Math.pow(effectiveWingSpan.doubleValue(SI.METER),2))
+						+4*(Math.pow((horizontalTailquarterChordHeight.doubleValue(SI.METER)-quarterChordHeight.doubleValue(SI.METER)),2)))/(
+								Math.pow(effectiveWingSpan.doubleValue(SI.METER),2)
+								+4*(horizontalTailquarterChordHeight.doubleValue(SI.METER)+quarterChordHeight.doubleValue(SI.METER))),NonSI.DEGREE_ANGLE);
+
+
+		return deltaEpsilonGroundEffect;
+
+	}	
+
 	
 }
 
