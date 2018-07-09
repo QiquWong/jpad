@@ -54,9 +54,9 @@ public class LiftingSurfaceWeightManager {
 		if (liftingSurfaceType.equals(ComponentEnum.WING)) {
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.ROSKAM);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.KROO);
-			calculateMass(aircraft, liftingSurfaceType, MethodEnum.JENKINSON);
+//			calculateMass(aircraft, liftingSurfaceType, MethodEnum.JENKINSON); /* FIXME: bad results */
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.RAYMER);
-			calculateMass(aircraft, liftingSurfaceType, MethodEnum.SADRAEY);
+//			calculateMass(aircraft, liftingSurfaceType, MethodEnum.SADRAEY); /* FIXME: bad results */
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.TORENBEEK_1982);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.TORENBEEK_2013);
 		}

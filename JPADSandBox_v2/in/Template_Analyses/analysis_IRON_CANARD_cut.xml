@@ -66,6 +66,7 @@
 			file_landing_condition="analysis_aerodynamics_Prototype_LOOP1_updated_landing.xml"
 	/>
 	-->
+	<!--
 	<performance
 			file="analysis_performance_IRON_CANARD_cut_engine_base.xml"
 			plot="TRUE"
@@ -79,6 +80,7 @@
 			V_n_diagram="FALSE"
 			mission_profile="TRUE"
 	/> 
+	-->
 	<!--
  	<costs 
 			file="analysis_costs_IRON_CANARD.xml"

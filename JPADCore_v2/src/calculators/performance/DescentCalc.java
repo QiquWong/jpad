@@ -45,7 +45,7 @@ public class DescentCalc {
 	private Double[] _polarCDClean;
 	private MyInterpolatingFunction _sfcFunctionDescent;
 
-	private final int maxIterationNumber = 100;
+	private final int maxIterationNumber = 50;
 	
 	//............................................................................................
 	// Output:
@@ -67,6 +67,10 @@ public class DescentCalc {
 	private Amount<Length> _totalDescentLength;
 	private Amount<Duration> _totalDescentTime;
 	private Amount<Mass> _totalDescentFuelUsed;
+
+	//............................................................................................
+	// ERROR FLAGS:
+	private boolean _descentMaxIterationErrorFlag;
 	
 	//--------------------------------------------------------------------------------------------
 	// BUILDER:
@@ -106,6 +110,8 @@ public class DescentCalc {
 		this._fuelUsedPerStep = new ArrayList<>();
 		this._rateOfDescentList = new ArrayList<>();
 		this._interpolatedFuelFlowList = new ArrayList<>();
+		
+		this.setDescentMaxIterationErrorFlag(false);
 	}
 	
 	//--------------------------------------------------------------------------------------------
@@ -289,10 +295,10 @@ public class DescentCalc {
 				) {
 			
 			if(iter > maxIterationNumber) {
-				System.err.println("WARNING: (ITERATIVE LOOP CRUISE/IDLE - DESCENT) THE ITERATIVE LOOP ON THE RATE OF DESCENT HAS BEEN STOPPED. (" +
-						iter + " > " + maxIterationNumber 
-						+ "). THE LAST CALCULATED WEIGHTS FOR CRUISE AND IDLE WILL BE CONSIDERED ... ");
+				if (getDescentMaxIterationErrorFlag() == false ) {
+				setDescentMaxIterationErrorFlag(true);
 				break;
+				}
 			}
 			
 			double rateOfDescentRatio = Math.abs(
@@ -309,12 +315,12 @@ public class DescentCalc {
 				weightFlightIdle.add(1-weightCruise.get(0));
 			}
 			else {
-				double weightCruiseTemp = weightCruise.get(0);
-				weightCruise.remove(0);
-				weightCruise.add(weightCruiseTemp*(1/rateOfDescentRatio));
-
+				double weightFlightIdleTemp = weightFlightIdle.get(0);
 				weightFlightIdle.remove(0);
-				weightFlightIdle.add(1-weightCruise.get(0));
+				weightFlightIdle.add(weightFlightIdleTemp*(1/rateOfDescentRatio));
+
+				weightCruise.remove(0);
+				weightCruise.add(1-weightFlightIdle.get(0));
 			}
 			
 			interpolatedThrustList.remove(0);
@@ -570,9 +576,9 @@ public class DescentCalc {
 					) {
 				
 				if(iter > maxIterationNumber) {
-					System.err.println("WARNING: (ITERATIVE LOOP CRUISE/IDLE - DESCENT) THE ITERATIVE LOOP ON THE RATE OF DESCENT HAS BEEN STOPPED. (" +
-							iter + " > " + maxIterationNumber 
-							+ "). THE LAST CALCULATED WEIGHTS FOR CRUISE AND IDLE WILL BE CONSIDERED ... ");
+					if (getDescentMaxIterationErrorFlag() == false) {
+					setDescentMaxIterationErrorFlag(true);
+					}
 					break;
 				}
 
@@ -590,12 +596,12 @@ public class DescentCalc {
 					weightFlightIdle.add(i, 1-weightCruise.get(i));
 				}
 				else {
-					double weightCruiseTemp = weightCruise.get(i);
-					weightCruise.remove(i);
-					weightCruise.add(i, weightCruiseTemp*(1/rateOfDescentRatio));
-
+					double weightFlightIdleTemp = weightFlightIdle.get(i);
 					weightFlightIdle.remove(i);
-					weightFlightIdle.add(i, 1-weightCruise.get(i));
+					weightFlightIdle.add(weightFlightIdleTemp*(1/rateOfDescentRatio));
+
+					weightCruise.remove(i);
+					weightCruise.add(1-weightFlightIdle.get(i));
 				}
 
 				interpolatedThrustList.remove(i);
@@ -1053,5 +1059,13 @@ public class DescentCalc {
 
 	public void setRateOfDescentList(List<Amount<Velocity>> _rateOfDescentList) {
 		this._rateOfDescentList = _rateOfDescentList;
+	}
+
+	public boolean getDescentMaxIterationErrorFlag() {
+		return _descentMaxIterationErrorFlag;
+	}
+
+	public void setDescentMaxIterationErrorFlag(boolean _descentMaxIterationErrorFlag) {
+		this._descentMaxIterationErrorFlag = _descentMaxIterationErrorFlag;
 	}
 }
