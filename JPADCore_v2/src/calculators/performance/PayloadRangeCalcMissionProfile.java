@@ -251,6 +251,21 @@ public class PayloadRangeCalcMissionProfile{
 			) {	
 
 		//----------------------------------------------------------------------
+		// ERROR FLAGS
+		boolean cruiseMaxMachNumberErrorFlag = false;
+		boolean alternateCruiseBestMachNumberErrorFlag = false;
+		
+		//----------------------------------------------------------------------
+		// PHASE CALCULATORS
+		TakeOffCalc theTakeOffCalculator = null;
+		ClimbCalc theClimbCalculator = null;
+		ClimbCalc theSecondClimbCalculator = null;
+		DescentCalc theFirstDescentCalculator = null;
+		DescentCalc theSecondDescentCalculator = null;
+		DescentCalc theThirdDescentCalculator = null;
+		LandingCalc theLandingCalculator = null;
+		
+		//----------------------------------------------------------------------
 		// TAKE-OFF
 		Amount<Length> rangeTakeOff = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
 		Amount<Mass> fuelTakeOff = Amount.valueOf(0.0, SI.KILOGRAM);
@@ -347,7 +362,7 @@ public class PayloadRangeCalcMissionProfile{
 									)
 							);
 
-			TakeOffCalc theTakeOffCalculator = new TakeOffCalc(
+			theTakeOffCalculator = new TakeOffCalc(
 					_theAircraft.getWing().getAspectRatio(),
 					_theAircraft.getWing().getSurfacePlanform(),
 					_theAircraft.getPowerPlant(),
@@ -405,7 +420,7 @@ public class PayloadRangeCalcMissionProfile{
 
 			//--------------------------------------------------------------------
 			// CLIMB
-			ClimbCalc theClimbCalculator = new ClimbCalc(
+			theClimbCalculator = new ClimbCalc(
 					_theAircraft,
 					_theOperatingConditions,
 					_cLmaxClean, 
@@ -544,7 +559,10 @@ public class PayloadRangeCalcMissionProfile{
 									SI.METERS_PER_SECOND
 									).to(NonSI.KNOT)
 							);
-					System.err.println("WARNING: (CRUISE - PAYLOAD-RANGE) THE ASSIGNED CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. MAXIMUM MACH NUMBER WILL BE USED.");
+					if (cruiseMaxMachNumberErrorFlag == false) {
+						System.err.println("WARNING: (CRUISE - PAYLOAD-RANGE) THE ASSIGNED CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. MAXIMUM MACH NUMBER WILL BE USED.");
+						cruiseMaxMachNumberErrorFlag = true;
+					}
 				}
 
 				List<Amount<Mass>> aircraftMassPerStep = new ArrayList<>();
@@ -733,7 +751,10 @@ public class PayloadRangeCalcMissionProfile{
 										SI.METERS_PER_SECOND
 										).to(NonSI.KNOT)
 								);
-						System.err.println("WARNING: (CRUISE - PAYLOAD-RANGE) THE ASSIGNED CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. MAXIMUM MACH NUMBER WILL BE USED.");
+						if (cruiseMaxMachNumberErrorFlag == false ) {
+							System.err.println("WARNING: (CRUISE - PAYLOAD-RANGE) THE ASSIGNED CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. MAXIMUM MACH NUMBER WILL BE USED.");
+							cruiseMaxMachNumberErrorFlag = true;
+						}
 					}
 
 					cLSteps.add(
@@ -855,7 +876,7 @@ public class PayloadRangeCalcMissionProfile{
 						.minus(fuelClimb.to(SI.KILOGRAM))
 						.minus(fuelCruise.to(SI.KILOGRAM));
 
-				DescentCalc theFirstDescentCalculator = new DescentCalc(
+				theFirstDescentCalculator = new DescentCalc(
 						_theAircraft,
 						_speedDescentCAS,
 						_rateOfDescent,
@@ -873,7 +894,7 @@ public class PayloadRangeCalcMissionProfile{
 
 				//--------------------------------------------------------------------
 				// SECOND CLIMB (up to ALTERNATE altitude)
-				ClimbCalc theSecondClimbCalculator = new ClimbCalc(
+				theSecondClimbCalculator = new ClimbCalc(
 						_theAircraft,
 						_theOperatingConditions,
 						_cLmaxClean, 
@@ -1058,7 +1079,10 @@ public class PayloadRangeCalcMissionProfile{
 										SI.METERS_PER_SECOND
 										).to(NonSI.KNOT)
 								);
-						System.err.println("WARNING: (ALTERNATE CRUISE - PAYLOAD-RANGE) THE BEST ALTERNATE CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. MAXIMUM MACH NUMBER WILL BE USED.");
+						if(alternateCruiseBestMachNumberErrorFlag == false) {
+							System.err.println("WARNING: (ALTERNATE CRUISE - PAYLOAD-RANGE) THE BEST ALTERNATE CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. MAXIMUM MACH NUMBER WILL BE USED.");
+							alternateCruiseBestMachNumberErrorFlag = true;
+						}
 					}
 
 					double[] alternateCruiseSteps = MyArrayUtils.linspace(
@@ -1292,7 +1316,10 @@ public class PayloadRangeCalcMissionProfile{
 											SI.METERS_PER_SECOND
 											).to(NonSI.KNOT)
 									);
-							System.err.println("WARNING: (ALTERNATE CRUISE - PAYLOAD-RANGE) THE BEST ALTERNATE CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. MAXIMUM MACH NUMBER WILL BE USED.");
+							if(alternateCruiseBestMachNumberErrorFlag == false) {
+								System.err.println("WARNING: (ALTERNATE CRUISE - PAYLOAD-RANGE) THE BEST ALTERNATE CRUISE MACH NUMBER IS BIGGER THAN THE MAXIMUM MACH NUMBER. MAXIMUM MACH NUMBER WILL BE USED.");
+								alternateCruiseBestMachNumberErrorFlag = true;
+							}
 						}
 
 						cLStepsAlternateCruise.add(
@@ -1408,7 +1435,7 @@ public class PayloadRangeCalcMissionProfile{
 							.minus(fuelSecondClimb.to(SI.KILOGRAM))
 							.minus(fuelAlternateCruise.to(SI.KILOGRAM));
 
-					DescentCalc theSecondDescentCalculator = new DescentCalc(
+					theSecondDescentCalculator = new DescentCalc(
 							_theAircraft,
 							_speedDescentCAS,
 							_rateOfDescent,
@@ -1917,7 +1944,7 @@ public class PayloadRangeCalcMissionProfile{
 							.minus(fuelSecondDescent.to(SI.KILOGRAM))
 							.minus(fuelHolding.to(SI.KILOGRAM));
 
-					DescentCalc theThirdDescentCalculator = new DescentCalc(
+					theThirdDescentCalculator = new DescentCalc(
 							_theAircraft,
 							_speedDescentCAS,
 							_rateOfDescent,
@@ -1947,7 +1974,7 @@ public class PayloadRangeCalcMissionProfile{
 							.minus(fuelHolding.to(SI.KILOGRAM))
 							.minus(fuelThirdDescent.to(SI.KILOGRAM));
 
-					LandingCalc theLandingCalculator = new LandingCalc(
+					theLandingCalculator = new LandingCalc(
 							_theAircraft, 
 							_theOperatingConditions,
 							aircraftMassAtLandingStart,
@@ -2061,6 +2088,16 @@ public class PayloadRangeCalcMissionProfile{
 				);
 		
 		//----------------------------------------------------------------------
+		if(theFirstDescentCalculator.getDescentMaxIterationErrorFlag() == true) {
+			System.err.println("WARNING: (ITERATIVE LOOP CRUISE/IDLE - FIRST DESCENT) MAX NUMBER OF ITERATION REACHED. THE RATE OF DESCENT MAY DIFFER FROM THE SPECIFIED ONE...");					
+		}
+		if(theSecondDescentCalculator.getDescentMaxIterationErrorFlag() == true) {
+			System.err.println("WARNING: (ITERATIVE LOOP CRUISE/IDLE - SECOND DESCENT) MAX NUMBER OF ITERATION REACHED. THE RATE OF DESCENT MAY DIFFER FROM THE SPECIFIED ONE...");					
+		}
+		if(theThirdDescentCalculator.getDescentMaxIterationErrorFlag() == true) {
+			System.err.println("WARNING: (ITERATIVE LOOP CRUISE/IDLE - THIRD DESCENT) MAX NUMBER OF ITERATION REACHED. THE RATE OF DESCENT MAY DIFFER FROM THE SPECIFIED ONE...");					
+		}
+		
 		return totalMissionRange.to(NonSI.NAUTICAL_MILE).minus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE));
 	}
 	

@@ -52,7 +52,7 @@
 			method_furnishings_and_equipments=""
 			method_control_surfaces=""
 		/>	
-	
+	<!--
 	<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -65,22 +65,20 @@
 			landing_condition="FALSE"
 			file_landing_condition="analysis_aerodynamics_Prototype_LOOP1_updated_cruise_cavas.xml"
 	/>
-	
-	<!--
+	-->
 	<performance 
 			file="analysis_performance_CS300.xml"
-			plot="FALSE"
-			create_CSV="FALSE"
+			plot="TRUE"
+			create_CSV="TRUE"
 			take_off="FALSE"
 			climb="FALSE"
 			cruise="FALSE"
 			descent="FALSE"
 			landing="FALSE"
-			payload_range="FALSE"
+			payload_range="TRUE"
 			V_n_diagram="FALSE"
-			mission_profile="TRUE"
+			mission_profile="FALSE"
 	/>
-	-->
 	<!--
 	<costs 
 			file="analysis_costs_CS300.xml"

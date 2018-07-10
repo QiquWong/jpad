@@ -175,14 +175,15 @@ public class LiftingSurfaceWeightCalc {
 			wingMass = Amount.valueOf(
 					0.021265 
 					* pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
-							*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)
 							* aircraft.getTheAnalysisManager().getNUltimate(), 
 							0.4843
 							)
 					* pow(aircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 0.7819)
 					* pow(aircraft.getWing().getAspectRatio(), 0.993)
 					* pow(1 + aircraft.getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(), 0.4)
-					* pow(1 - (R/aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)),0.4)
+					* pow(1 - (R
+							/(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM))
+							),0.4)
 					/ (aircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(NonSI.DEGREE_ANGLE)
 							* pow(thicknessMean,0.4)
 							), 

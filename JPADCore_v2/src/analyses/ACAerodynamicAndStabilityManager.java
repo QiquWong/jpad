@@ -9,12 +9,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
-import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -30,9 +28,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import com.sun.swing.internal.plaf.metal.resources.metal;
-
+//<<<<<<< HEAD
+//import com.sun.org.apache.bcel.internal.generic.NEW;
+//import com.sun.swing.internal.plaf.metal.resources.metal;
+//
+//=======
+//>>>>>>> 0c1bdf6bcacc26f6094a6764cd008601853c2c50
 import aircraft.Aircraft;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Base;
@@ -86,13 +87,11 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.HighLiftDeviceEffectEnum;
 import configuration.enumerations.MethodEnum;
-import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
-import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
@@ -12931,7 +12930,7 @@ public class ACAerodynamicAndStabilityManager {
 			}
 			plotMap.put(ComponentEnum.WING, plotList);
 
-		
+
 		}
 		//...............................................................
 		// HTAIL:
