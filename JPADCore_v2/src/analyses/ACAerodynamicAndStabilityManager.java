@@ -28,12 +28,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
-//<<<<<<< HEAD
-//import com.sun.org.apache.bcel.internal.generic.NEW;
-//import com.sun.swing.internal.plaf.metal.resources.metal;
-//
-//=======
-//>>>>>>> 0c1bdf6bcacc26f6094a6764cd008601853c2c50
 import aircraft.Aircraft;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Base;
