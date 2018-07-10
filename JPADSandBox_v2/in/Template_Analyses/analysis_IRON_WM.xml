@@ -12,7 +12,7 @@
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
 	<analyses id="IRON analysis">
 		<weights 
-            file="analysis_weights_IRON.xml" 
+            file="analysis_weights_IRON_WM.xml" 
 			plot="TRUE"
 			create_CSV="TRUE"
 			method_fuselage=""
@@ -33,7 +33,7 @@
             /> 
 		<!-- method_XXX="AVERAGED" if empty string -->
  	<balance 
-			file="analysis_balance_IRON.xml"
+			file="analysis_balance_IRON_WM.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
             method_fuselage=""

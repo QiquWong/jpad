@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analysis>
+        <balance 
+            id="IRON - BALANCE" 
+            weights_from_previous_analysis="true" 
+            >
+			<weights>
+				<operating_empty_mass unit="kg"></operating_empty_mass>
+				<fuel_mass unit="kg"></fuel_mass>
+				<passengers_single_mass unit='kg'></passengers_single_mass>
+				<fuselage_mass unit="kg"></fuselage_mass>
+				<wing_mass unit="kg"></wing_mass>
+				<horizontal_tail_mass unit="kg"></horizontal_tail_mass>
+				<vertical_tail_mass unit="kg"></vertical_tail_mass>
+				<canard_mass unit="kg"></canard_mass>
+				<nacelles_mass unit="kg"></nacelles_mass>
+				<power_plant_mass unit="kg"></power_plant_mass>
+				<landing_gears_mass unit="kg"></landing_gears_mass>
+				<APU_mass unit="kg"></APU_mass>
+				<air_conditioning_and_anti_icing_system_mass unit="kg"></air_conditioning_and_anti_icing_system_mass>
+				<instruments_and_navigation_system_mass unit="kg"></instruments_and_navigation_system_mass>
+				<hydraulic_and_pneumatic_systems_mass unit="kg"></hydraulic_and_pneumatic_systems_mass>
+				<electrical_systems_mass unit="kg"></electrical_systems_mass>
+				<control_surfaces_mass unit="kg"></control_surfaces_mass>
+				<furnishings_and_equipments_mass unit="kg"></furnishings_and_equipments_mass>
+			</weights>
+			<systems_positions include_systems="TRUE" use_standard_positions="FALSE"> <!-- Sforza-Aircraft Design suggestions (pag.343, Fig. 8.38 and 8.39) -->
+				<APU>
+					<x unit="m">33.0</x>
+					<z unit="m">-0.30</z>
+				</APU>
+				<air_conditioning_and_anti_icing_system>
+					<x unit="m">20.0</x>
+					<z unit="m">0.0</z>
+				</air_conditioning_and_anti_icing_system>
+				<instruments_and_navigation_system>
+					<x unit="m">5.0</x>
+					<z unit="m">-0.80</z>
+				</instruments_and_navigation_system>
+				<hydraulic_and_pneumatic_systems>
+					<x unit="m">25.0</x>
+					<z unit="m">-0.5</z>
+				</hydraulic_and_pneumatic_systems>
+				<electrical_systems>
+					<x unit="m">20.0</x>
+					<z unit="m">-0.80</z>
+				</electrical_systems>
+				<control_surfaces>
+					<x unit="m">25.0</x>
+					<z unit="m">0.0</z>					
+				</control_surfaces>
+				<furnishings_and_equipments>
+					<x unit="m">20.0</x>
+					<z unit="m">0.0</z>
+				</furnishings_and_equipments>
+			</systems_positions>
+        </balance>
+    </analysis>        
+</jpad_config>

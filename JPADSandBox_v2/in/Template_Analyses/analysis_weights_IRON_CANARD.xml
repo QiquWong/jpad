@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<!-- all SFC values must be assigned in lb/(lb*hr) for JET engines -->
+	<!-- all SFC values must be assigned in lb/(hp*hr) for PROPELLER engines -->
+    <analysis>
+        <weights id="IRON - WEIGHTS">
+			<global_data>
+				<first_guess_maximum_take_off_mass unit="kg">55000</first_guess_maximum_take_off_mass>
+				<relative_maximum_landing_mass>0.9</relative_maximum_landing_mass> <!-- with respect to Max Take-Off mass. Default = 0.9 -->
+				<single_passenger_mass unit="kg">108</single_passenger_mass>
+			</global_data>
+			<mission_profile_data>
+				<reference_mission_range unit="nmi">1600</reference_mission_range>
+				<cruise_phase>
+					<range unit="nmi">1400</range> 
+					<sfc>0.396</sfc>
+					<efficiency>18.0</efficiency>
+				</cruise_phase>
+				<alternate_phase>
+					<range unit="nmi">36</range> 
+					<altitude unit="ft">15000</altitude>
+					<mach>0.36</mach>
+					<sfc>0.46</sfc> 
+					<efficiency>19.0</efficiency> 
+				</alternate_phase>
+				<holding_phase>
+					<duration unit="min">30</duration> 
+					<altitude unit="ft">1500</altitude>
+					<mach>0.28</mach>
+					<sfc>0.48</sfc> 
+					<efficiency>18.0</efficiency> 
+				</holding_phase>
+			</mission_profile_data>
+			<calibration> <!-- IF LEFT BLANK, ALL CALIBRATION FACTORS ARE EQUAL TO 1.0 -->
+				<fuselage_calibration_factor>1.2435</fuselage_calibration_factor>
+				<wing_calibration_factor>1.273</wing_calibration_factor>
+				<horizontal_tail_calibration_factor>1.58</horizontal_tail_calibration_factor>
+				<vertical_tail_calibration_factor>1.34</vertical_tail_calibration_factor>
+				<canard_calibration_factor>1.408</canard_calibration_factor>
+				<nacelles_calibration_factor>0.0</nacelles_calibration_factor>
+				<power_plant_calibration_factor>0.912</power_plant_calibration_factor>
+				<landing_gears_calibration_factor>1.573</landing_gears_calibration_factor>
+				<APU_calibration_factor></APU_calibration_factor>
+				<air_conditioning_and_anti_icing_system_calibration_factor></air_conditioning_and_anti_icing_system_calibration_factor>
+				<instruments_and_navigation_system_calibration_factor></instruments_and_navigation_system_calibration_factor>
+				<hydraulic_and_pneumatic_systems_calibration_factor></hydraulic_and_pneumatic_systems_calibration_factor>
+				<electrical_systems_calibration_factor></electrical_systems_calibration_factor>
+				<control_surfaces_calibration_factor></control_surfaces_calibration_factor>
+				<furnishings_and_equipments_calibration_factor>0.8</furnishings_and_equipments_calibration_factor>
+			</calibration>		
+        </weights>
+    </analysis>
+</jpad_config>

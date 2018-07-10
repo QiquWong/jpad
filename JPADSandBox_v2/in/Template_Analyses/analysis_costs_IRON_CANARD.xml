@@ -3,7 +3,7 @@
     <analysis>
         <costs id="IRON - COSTS"
 			weights_from_previous_analysis="false" 
-			performance_from_previous_analysis="false"
+			performance_from_previous_analysis="true"
 			>
 			<weights>
 				<maximum_take_off_mass unit="kg">54574</maximum_take_off_mass>

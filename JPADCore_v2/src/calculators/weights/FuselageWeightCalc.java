@@ -150,10 +150,10 @@ public class FuselageWeightCalc {
 	 */
 	public static Amount<Mass> calculateFuselageMassTorenbeek1976 (Aircraft aircraft) {
 		double k = 0.;
-		if (aircraft.getFuselage().getPressurized()) {k = k + 0.08;}
-		if (aircraft.getLandingGears().getMountingPosition().equals(LandingGearsMountingPositionEnum.FUSELAGE)) {
+		if (aircraft.getFuselage().getPressurized()) 
+			k = k + 0.08;
+		if (aircraft.getLandingGears().getMountingPosition().equals(LandingGearsMountingPositionEnum.FUSELAGE)) 
 			k = k + 0.07;
-		}
 
 		return Amount.valueOf((1 + k) * 0.23 * 
 				Math.sqrt(

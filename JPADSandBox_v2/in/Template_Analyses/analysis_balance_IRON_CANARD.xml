@@ -25,7 +25,7 @@
 				<control_surfaces_mass unit="kg"></control_surfaces_mass>
 				<furnishings_and_equipments_mass unit="kg"></furnishings_and_equipments_mass>
 			</weights>
-			<systems_positions include_systems="FALSE" use_standard_positions="TRUE"> <!-- Sforza-Aircraft Design suggestions (pag.343, Fig. 8.38 and 8.39) -->
+			<systems_positions include_systems="TRUE" use_standard_positions="FALSE"> <!-- Sforza-Aircraft Design suggestions (pag.343, Fig. 8.38 and 8.39) -->
 				<APU>
 					<x unit="m">33.0</x>
 					<z unit="m">-0.30</z>
@@ -35,7 +35,7 @@
 					<z unit="m">0.0</z>
 				</air_conditioning_and_anti_icing_system>
 				<instruments_and_navigation_system>
-					<x unit="m">3.0</x>
+					<x unit="m">5.0</x>
 					<z unit="m">-0.80</z>
 				</instruments_and_navigation_system>
 				<hydraulic_and_pneumatic_systems>
@@ -47,11 +47,11 @@
 					<z unit="m">-0.80</z>
 				</electrical_systems>
 				<control_surfaces>
-					<x unit="m">20.0</x>
+					<x unit="m">22.0</x>
 					<z unit="m">0.0</z>					
 				</control_surfaces>
 				<furnishings_and_equipments>
-					<x unit="m">19.0</x>
+					<x unit="m">20.0</x>
 					<z unit="m">0.0</z>
 				</furnishings_and_equipments>
 			</systems_positions>
