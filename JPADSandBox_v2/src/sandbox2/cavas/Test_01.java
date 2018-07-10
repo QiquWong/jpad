@@ -1159,7 +1159,7 @@ public class Test_01 {
 				+ 0.009*aspectRatioWing;
 		
 		Amount<?> cYBetaH = Amount.valueOf(
-				-0.0001*dihedralWing.abs().doubleValue(NonSI.DEGREE_ANGLE)*etaHTimes1MinusdSigmaOverdBeta*surfaceHTail.doubleValue(SI.SQUARE_METRE)/surfaceWing.doubleValue(SI.SQUARE_METRE),
+				-0.0001*dihedralHTail.abs().doubleValue(NonSI.DEGREE_ANGLE)*etaHTimes1MinusdSigmaOverdBeta*surfaceHTail.doubleValue(SI.SQUARE_METRE)/surfaceWing.doubleValue(SI.SQUARE_METRE),
 				NonSI.DEGREE_ANGLE.inverse()
 				).to(SI.RADIAN.inverse());
 		

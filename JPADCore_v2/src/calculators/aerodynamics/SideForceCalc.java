@@ -78,15 +78,15 @@ public class SideForceCalc {
 	 * @param surfaceW
 	 * @param aspectRatioW
 	 * @param sweepC4W
-	 * @param dihedralW
 	 * @param surfaceH
+	 * @param dihedralH
 	 * @param heightFuselage
 	 * @param zW
 	 * @return
 	 */
 	public static Amount<?> calcCYBetaHorizontalTail(
-			Amount<Area> surfaceW, double aspectRatioW, Amount<Angle> sweepC4W, Amount<Angle> dihedralW,
-			Amount<Area> surfaceH,
+			Amount<Area> surfaceW, double aspectRatioW, Amount<Angle> sweepC4W,
+			Amount<Area> surfaceH, Amount<Angle> dihedralH,
 			Amount<Length> heightFuselage, Amount<Length> zW
 			) {
 		
@@ -99,7 +99,7 @@ public class SideForceCalc {
 				+ 0.009*aspectRatioW;
 		
 		Amount<?> cYBetaH = Amount.valueOf(
-				-0.0001*dihedralW.abs().doubleValue(NonSI.DEGREE_ANGLE)*etaHTimes1MinusdSigmaOverdBeta*surfaceH.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE),
+				-0.0001*dihedralH.abs().doubleValue(NonSI.DEGREE_ANGLE)*etaHTimes1MinusdSigmaOverdBeta*surfaceH.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE),
 				NonSI.DEGREE_ANGLE.inverse()
 				).to(SI.RADIAN.inverse());
 		
@@ -175,24 +175,20 @@ public class SideForceCalc {
 	 * @author cavas
 	 * 
 	 * @param surfaceW
-	 * @param aspectRatioW
-	 * @param sweepC4W
 	 * @param surfaceV
 	 * @param taperRatioV
 	 * @param cLAlphaV
+	 * @param etaV
 	 * @param etaInR
 	 * @param etaOutR
 	 * @param rudderChordRatio
-	 * @param heightFuselage
-	 * @param zW
 	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCYDeltaR(
-			Amount<Area> surfaceW, double aspectRatioW, Amount<Angle> sweepC4W,
-			Amount<Area> surfaceV, double taperRatioV, Amount<?> cLAlphaV,
+			Amount<Area> surfaceW,
+			Amount<Area> surfaceV, double taperRatioV, Amount<?> cLAlphaV, double etaV,
 			double etaInR, double etaOutR, double rudderChordRatio,
-			Amount<Length> heightFuselage, Amount<Length> zW,
 			AerodynamicDatabaseReader databaseReader
 			) {
 		
@@ -205,13 +201,6 @@ public class SideForceCalc {
 		double deltaKR = outerKR - innerKR;
 		
 		// CY_delta_r
-		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
-		double etaV =
-				0.724
-				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
-				+ 0.4*zWOverHeightFuselage
-				+ 0.009*aspectRatioW;
-		
 		Amount <?> cYDeltaR = cLAlphaV.abs().times(surfaceV).divide(surfaceW).times(etaV*deltaKR*tauR);
 		
 		return cYDeltaR;
