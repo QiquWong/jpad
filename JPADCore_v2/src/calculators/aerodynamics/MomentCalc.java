@@ -382,47 +382,19 @@ public class MomentCalc {
 	 *
 	 * @author agodemar, cavas
 	 * 
-	 * @param surfaceW
+	 * @param cYBetaV
 	 * @param spanW
-	 * @param aspectRatioW
-	 * @param sweepC4W
-	 * @param surfaceV
-	 * @param spanV
 	 * @param xV
 	 * @param zV
-	 * @param cLAlphaV
-	 * @param heightFuselage
-	 * @param r1
-	 * @param zW
 	 * @param angleOfAttack
-	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCRollBetaVerticalTail(
-			Amount<Area> surfaceW, Amount<Length> spanW, double aspectRatioW, Amount<Angle> sweepC4W,
-			Amount<Area> surfaceV, Amount<Length> spanV, Amount<Length> xV, Amount<Length> zV, Amount<?> cLAlphaV,
-			Amount<Length> heightFuselage, Amount<Length> r1, Amount<Length> zW,
-			Amount<Angle> angleOfAttack,
-			AerodynamicDatabaseReader databaseReader
+			Amount<?> cYBetaV,
+			Amount<Length> spanW,
+			Amount<Length> xV, Amount<Length> zV,
+			Amount<Angle> angleOfAttack
 			) {
-
-		// K_Y_V
-		double bVOver2TimesR1 = spanV.doubleValue(SI.METER)/(2*r1.doubleValue(SI.METER));
-
-		double cYKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
-
-		// CY_beta_V
-		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
-		double etaVTimes1MinusdSigmaOverdBeta =
-				0.724
-				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
-				+ 0.4*zWOverHeightFuselage
-				+ 0.009*aspectRatioW;
-
-		Amount<?> cYBetaV =
-				cLAlphaV.abs().times(surfaceV).divide(surfaceW)
-				.times(-cYKappaYV*etaVTimes1MinusdSigmaOverdBeta)
-				.to(SI.RADIAN.inverse());
 
 		// Cl_beta_V
 		Amount<?> cRollBetaV =
@@ -521,39 +493,19 @@ public class MomentCalc {
 	 *
 	 * @author cavas
 	 * 
-	 * @param surfaceW
+	 * @param cYDeltaR
 	 * @param spanW
-	 * @param surfaceV
-	 * @param taperRatioV
-	 * @param cLAlphaV
-	 * @param etaV
-	 * @param etaInR
-	 * @param etaOutR
-	 * @param rudderChordRatio
 	 * @param xR
 	 * @param zR
 	 * @param angleOfAttack
-	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCRollDeltaR(
-			Amount<Area> surfaceW, Amount<Length> spanW,
-			Amount<Area> surfaceV, double taperRatioV, Amount<?> cLAlphaV, double etaV,
-			double etaInR, double etaOutR, double rudderChordRatio, Amount<Length> xR, Amount<Length> zR,
-			Amount<Angle> angleOfAttack,
-			AerodynamicDatabaseReader databaseReader
+			Amount<?> cYDeltaR,
+			Amount<Length> spanW,
+			Amount<Length> xR, Amount<Length> zR,
+			Amount<Angle> angleOfAttack
 			) {
-		
-		// tau_R
-		double tauR = databaseReader.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(rudderChordRatio);
-		
-		// Delta K_R
-		double innerKR = databaseReader.getCYDeltaRKRVsEtaLambdaV(taperRatioV, etaInR);
-		double outerKR = databaseReader.getCYDeltaRKRVsEtaLambdaV(taperRatioV, etaOutR);
-		double deltaKR = outerKR - innerKR;
-		
-		// CY_delta_r
-		Amount <?> cYDeltaR = cLAlphaV.abs().times(surfaceV).divide(surfaceW).times(etaV*deltaKR*tauR);
 		
 		// Cl_delta_r
 		Amount <?> cRollDeltaR = cYDeltaR
@@ -666,44 +618,16 @@ public class MomentCalc {
 	 *
 	 * @author cavas
 	 * 
-	 * @param surfaceW
+	 * @param cYBetaV
 	 * @param spanW
-	 * @param aspectRatioW
-	 * @param sweepC4W
-	 * @param surfaceV
-	 * @param spanV
 	 * @param zV
-	 * @param cLAlphaV
-	 * @param heightFuselage
-	 * @param r1
-	 * @param zW
-	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCRollpVerticalTail(
-			Amount<Area> surfaceW, Amount<Length> spanW, double aspectRatioW, Amount<Angle> sweepC4W,
-			Amount<Area> surfaceV, Amount<Length> spanV, Amount<Length> zV, Amount<?> cLAlphaV,
-			Amount<Length> heightFuselage, Amount<Length> r1, Amount<Length> zW,
-			AerodynamicDatabaseReader databaseReader
+			Amount<?> cYBetaV,
+			Amount<Length> spanW,
+			Amount<Length> zV
 			) {
-
-		// K_Y_V
-		double bVOver2TimesR1 = spanV.doubleValue(SI.METER)/(2*r1.doubleValue(SI.METER));
-
-		double cYKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
-
-		// CY_beta_V
-		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
-		double etaVTimes1MinusdSigmaOverdBeta =
-				0.724
-				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
-				+ 0.4*zWOverHeightFuselage
-				+ 0.009*aspectRatioW;
-
-		Amount<?> cYBetaV =
-				cLAlphaV.abs().times(surfaceV).divide(surfaceW)
-				.times(-cYKappaYV*etaVTimes1MinusdSigmaOverdBeta)
-				.to(SI.RADIAN.inverse());
 
 		// Cl_p_V
 		Amount<?> cRollpV = cYBetaV.times((zV.divide(spanW)).pow(2)).times(2);
@@ -803,47 +727,19 @@ public class MomentCalc {
 	 *
 	 * @author cavas
 	 * 
-	 * @param surfaceW
+	 * @param cYBetaV
 	 * @param spanW
-	 * @param aspectRatioW
-	 * @param sweepC4W
-	 * @param surfaceV
-	 * @param spanV
 	 * @param xV
 	 * @param zV
-	 * @param cLAlphaV
-	 * @param heightFuselage
-	 * @param r1
-	 * @param zW
 	 * @param angleOfAttack
-	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCRollrVerticalTail(
-			Amount<Area> surfaceW, Amount<Length> spanW, double aspectRatioW, Amount<Angle> sweepC4W,
-			Amount<Area> surfaceV, Amount<Length> spanV, Amount<Length> xV, Amount<Length> zV, Amount<?> cLAlphaV,
-			Amount<Length> heightFuselage, Amount<Length> r1, Amount<Length> zW,
-			Amount<Angle> angleOfAttack,
-			AerodynamicDatabaseReader databaseReader
+			Amount<?> cYBetaV,
+			Amount<Length> spanW,
+			Amount<Length> xV, Amount<Length> zV,
+			Amount<Angle> angleOfAttack
 			) {
-
-		// K_Y_V
-		double bVOver2TimesR1 = spanV.doubleValue(SI.METER)/(2*r1.doubleValue(SI.METER));
-
-		double cYKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
-
-		// CY_beta_V
-		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
-		double etaVTimes1MinusdSigmaOverdBeta =
-				0.724
-				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
-				+ 0.4*zWOverHeightFuselage
-				+ 0.009*aspectRatioW;
-
-		Amount<?> cYBetaV =
-				cLAlphaV.abs().times(surfaceV).divide(surfaceW)
-				.times(-cYKappaYV*etaVTimes1MinusdSigmaOverdBeta)
-				.to(SI.RADIAN.inverse());
 
 		// Cl_r_V
 		Amount<?> cRollrV =
@@ -941,48 +837,20 @@ public class MomentCalc {
 	 *
 	 * @author cavas
 	 * 
-	 * @param surfaceW
+	 * @param cYBetaV
 	 * @param spanW
-	 * @param aspectRatioW
-	 * @param sweepC4W
-	 * @param surfaceV
-	 * @param spanV
 	 * @param xV
 	 * @param zV
-	 * @param cLAlphaV
-	 * @param heightFuselage
-	 * @param r1
-	 * @param zW
 	 * @param angleOfAttack
-	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCNBetaVerticalTailNapolitanoDatcom(
-			Amount<Area> surfaceW, Amount<Length> spanW, double aspectRatioW, Amount<Angle> sweepC4W,
-			Amount<Area> surfaceV, Amount<Length> spanV, Amount<Length> xV, Amount<Length> zV, Amount<?> cLAlphaV,
-			Amount<Length> heightFuselage, Amount<Length> r1, Amount<Length> zW,
-			Amount<Angle> angleOfAttack,
-			AerodynamicDatabaseReader databaseReader
+			Amount<?> cYBetaV,
+			Amount<Length> spanW,
+			Amount<Length> xV, Amount<Length> zV,
+			Amount<Angle> angleOfAttack
 			) {
 
-		// K_Y_V
-		double bVOver2TimesR1 = spanV.doubleValue(SI.METER)/(2*r1.doubleValue(SI.METER));
-
-		double cYKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
-
-		// CY_beta_V
-		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
-		double etaVTimes1MinusdSigmaOverdBeta =
-				0.724
-				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
-				+ 0.4*zWOverHeightFuselage
-				+ 0.009*aspectRatioW;
-
-		Amount<?> cYBetaV =
-				cLAlphaV.abs().times(surfaceV).divide(surfaceW)
-				.times(-cYKappaYV*etaVTimes1MinusdSigmaOverdBeta)
-				.to(SI.RADIAN.inverse());
-		
 		// CN_beta_V
 		Amount<?> cNBetaV =
 				cYBetaV
@@ -1018,59 +886,22 @@ public class MomentCalc {
 	 *
 	 * @author cavas
 	 * 
+	 * @param cRollDeltaA
 	 * @param aspectRatioW
 	 * @param taperRatioW
-	 * @param sweepC4W
-	 * @param cLAlphaW
 	 * @param etaInA
 	 * @param etaOutA
-	 * @param aileronChordRatio
 	 * @param cL
-	 * @param mach
 	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCNDeltaANapolitanoDatcom(
-			double aspectRatioW, double taperRatioW, Amount<Angle> sweepC4W, Amount<?> cLAlphaW,
-			double etaInA, double etaOutA, double aileronChordRatio,
-			double cL, double mach,
+			Amount<?> cRollDeltaA,
+			double aspectRatioW, double taperRatioW,
+			double etaInA, double etaOutA,
+			double cL,
 			AerodynamicDatabaseReader databaseReader
 			) {
-		
-		// tau_A
-		double tauA = databaseReader.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(aileronChordRatio);
-		
-		// Delta RME
-		double betaFactor = Math.sqrt(1 - Math.pow(mach, 2));
-		Amount<Angle> lambdaBetaFactorWing = Amount.valueOf(
-				Math.atan(
-						Math.tan(sweepC4W.doubleValue(SI.RADIAN))/betaFactor
-				),
-				SI.RADIAN
-				);
-		double kWing = cLAlphaW.to(SI.RADIAN.inverse()).getEstimatedValue()*betaFactor/(2*Math.PI);
-		double betaFactorTimesAspectRatioWingOverKWing = betaFactor*aspectRatioW/kWing;
-
-		double innerRME = databaseReader.getClDeltaARMEVsEtaLambdaBetaBetaTimesAROverKLambda(
-				taperRatioW,
-				betaFactorTimesAspectRatioWingOverKWing,
-				lambdaBetaFactorWing,
-				etaInA
-				); 
-		double outerRME = databaseReader.getClDeltaARMEVsEtaLambdaBetaBetaTimesAROverKLambda(
-				taperRatioW,
-				betaFactorTimesAspectRatioWingOverKWing,
-				lambdaBetaFactorWing,
-				etaOutA
-				);
-		double deltaRME = outerRME - innerRME;
-
-		// Cl_delta_A
-		Amount<?> cRollDeltaAFullChord = Amount.valueOf(
-				-deltaRME*kWing/betaFactor,
-				SI.RADIAN.inverse()
-				);
-		Amount<?> cRollDeltaA = cRollDeltaAFullChord.times(tauA);
 		
 		// Delta_K_N_A
 		double innerKNA = databaseReader.getCNDeltaAKNAVsEtaARLambda(taperRatioW, aspectRatioW, etaInA);
@@ -1078,7 +909,7 @@ public class MomentCalc {
 		double deltaKNA = outerKNA - innerKNA;
 		
 		// CN_delta_A
-		Amount<?> cNDeltaA = cRollDeltaA.times(deltaKNA*cL);
+		Amount<?> cNDeltaA = cRollDeltaA.times(-deltaKNA*cL);
 		
 		return cNDeltaA;
 	}
@@ -1087,50 +918,19 @@ public class MomentCalc {
 	 *
 	 * @author cavas
 	 * 
-	 * @param surfaceW
+	 * @param cYDeltaR
 	 * @param spanW
-	 * @param aspectRatioW
-	 * @param sweepC4W
-	 * @param surfaceV
-	 * @param taperRatioV
-	 * @param cLAlphaV
-	 * @param etaInR
-	 * @param etaOutR
-	 * @param rudderChordRatio
 	 * @param xR
 	 * @param zR
-	 * @param heightFuselage
-	 * @param zW
 	 * @param angleOfAttack
-	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCNDeltaRNapolitanoDatcom(
-			Amount<Area> surfaceW, Amount<Length> spanW, double aspectRatioW, Amount<Angle> sweepC4W,
-			Amount<Area> surfaceV, double taperRatioV, Amount<?> cLAlphaV,
-			double etaInR, double etaOutR, double rudderChordRatio, Amount<Length> xR, Amount<Length> zR,
-			Amount<Length> heightFuselage, Amount<Length> zW,
-			Amount<Angle> angleOfAttack,
-			AerodynamicDatabaseReader databaseReader
+			Amount<?> cYDeltaR,
+			Amount<Length> spanW,
+			Amount<Length> xR, Amount<Length> zR,
+			Amount<Angle> angleOfAttack
 			) {
-		
-		// tau_R
-		double tauR = databaseReader.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(rudderChordRatio);
-		
-		// Delta K_R
-		double innerKR = databaseReader.getCYDeltaRKRVsEtaLambdaV(taperRatioV, etaInR);
-		double outerKR = databaseReader.getCYDeltaRKRVsEtaLambdaV(taperRatioV, etaOutR);
-		double deltaKR = outerKR - innerKR;
-		
-		// CY_delta_r
-		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
-		double etaV =
-				0.724
-				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
-				+ 0.4*zWOverHeightFuselage
-				+ 0.009*aspectRatioW;
-		
-		Amount <?> cYDeltaR = cLAlphaV.abs().times(surfaceV).divide(surfaceW).times(etaV*deltaKR*tauR);
 		
 		// CN_delta_R
 		Amount<?> cNDeltaR =
@@ -1152,104 +952,26 @@ public class MomentCalc {
 	 *
 	 * @author cavas
 	 * 
-	 * @param surfaceW
-	 * @param spanW
+	 * @param cRollpWB
+	 * @param cRollpTotal
 	 * @param aspectRatioW
 	 * @param taperRatioW
 	 * @param sweepC4W
 	 * @param twistTipW
-	 * @param cLAlphaW
-	 * @param surfaceH
-	 * @param spanH
-	 * @param aspectRatioH
-	 * @param taperRatioH
-	 * @param sweepC4H
-	 * @param cLAlphaH
-	 * @param surfaceV
-	 * @param spanV
-	 * @param zV
-	 * @param cLAlphaV
-	 * @param heightFuselage
-	 * @param r1
-	 * @param zW
 	 * @param angleOfAttack
 	 * @param cL
 	 * @param mach
+	 * @param staticMargin
 	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCNpWingNapolitanoDatcom(
-			Amount<Area> surfaceW, Amount<Length> spanW, double aspectRatioW, double taperRatioW, Amount<Angle> sweepC4W, Amount<Angle> twistTipW, Amount<?> cLAlphaW,
-			Amount<Area> surfaceH, Amount<Length> spanH, double aspectRatioH, double taperRatioH, Amount<Angle> sweepC4H, Amount<?> cLAlphaH,
-			Amount<Area> surfaceV, Amount<Length> spanV, Amount<Length> zV, Amount<?> cLAlphaV,
-			Amount<Length> heightFuselage, Amount<Length> r1, Amount<Length> zW,
+			Amount<?> cRollpWB, Amount<?> cRollpTotal,
+			double aspectRatioW, double taperRatioW, Amount<Angle> sweepC4W, Amount<Angle> twistTipW,
+			double staticMargin,
 			Amount<Angle> angleOfAttack, double cL, double mach,
 			AerodynamicDatabaseReader databaseReader
 			) {
-		
-		// RDP_W
-		double betaFactor = Math.sqrt(1 - Math.pow(mach, 2));
-		Amount<Angle> lambdaBetaFactorWing = Amount.valueOf(
-				Math.atan(
-						Math.tan(sweepC4W.doubleValue(SI.RADIAN))/betaFactor
-						),
-				SI.RADIAN
-				);
-		double kWing = cLAlphaW.to(SI.RADIAN.inverse()).getEstimatedValue()*betaFactor/(2*Math.PI);
-		double betaFactorTimesAspectRatioWingOverKWing = betaFactor*aspectRatioW/kWing;
-		
-		Amount<?> rollingDampingParametersWing = Amount.valueOf(
-				databaseReader.getClPWRDPVsLambdaBetaBetaTimesAROverKLambda(
-						taperRatioW, // var0
-						betaFactorTimesAspectRatioWingOverKWing, // var1
-						lambdaBetaFactorWing // var2
-						),
-				SI.RADIAN.inverse()
-				);
-
-		// Cl_p_WB
-		Amount<?> cRollpWB = rollingDampingParametersWing.times(kWing/betaFactor);
-		
-		// RDP_H
-		Amount<Angle> lambdaBetaFactorHTail = Amount.valueOf(
-				Math.atan(
-						Math.tan(sweepC4H.doubleValue(SI.RADIAN))/betaFactor
-						),
-				SI.RADIAN);
-		double kHTail = cLAlphaH.getEstimatedValue()*betaFactor/(2*Math.PI);
-		double betaFactorTimesAspectRatioHTailOverKHTail = betaFactor*aspectRatioH/kHTail;
-
-		Amount<?> rollingDampingParametersHTail = Amount.valueOf(
-				databaseReader.getClPWRDPVsLambdaBetaBetaTimesAROverKLambda(
-						taperRatioH, // var0
-						betaFactorTimesAspectRatioHTailOverKHTail, // var1
-						lambdaBetaFactorHTail // var2
-						),
-				SI.RADIAN.inverse());
-
-		// Cl_p_H
-		Amount<?> cRollpH = rollingDampingParametersHTail.times(surfaceH).divide(surfaceW).times((spanH.divide(spanW)).pow(2)).times(0.5*kHTail/betaFactor);
-		
-		// K_Y_V
-		double bVOver2TimesR1 = spanV.doubleValue(SI.METER)/(2*r1.doubleValue(SI.METER));
-
-		double cYKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
-
-		// CY_beta_V
-		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
-		double etaVTimes1MinusdSigmaOverdBeta =
-				0.724
-				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
-				+ 0.4*zWOverHeightFuselage
-				+ 0.009*aspectRatioW;
-
-		Amount<?> cYBetaV =
-				cLAlphaV.abs().times(surfaceV).divide(surfaceW)
-				.times(-cYKappaYV*etaVTimes1MinusdSigmaOverdBeta)
-				.to(SI.RADIAN.inverse());
-
-		// Cl_p_V
-		Amount<?> cRollpV = cYBetaV.times((zV.divide(spanW)).pow(2)).times(2);
 		
 		// CN_p/CL1
 		double bFactor = 
@@ -1282,7 +1004,6 @@ public class MomentCalc {
 														2
 														)
 										);
-		double staticMargin = -0.2;
 		Amount<?> cNpOverCL1AtMachZero = Amount.valueOf(
 				-(
 						aspectRatioW + 6*(
@@ -1315,7 +1036,7 @@ public class MomentCalc {
 		
 		// CN_p_W
 		Amount<?> cNpW = cRollpWB.times(-Math.tan(angleOfAttack.doubleValue(SI.RADIAN)))
-				.plus((cRollpWB.plus(cRollpH).plus(cRollpV)).times(Math.tan(angleOfAttack.doubleValue(SI.RADIAN))))
+				.plus((cRollpTotal).times(Math.tan(angleOfAttack.doubleValue(SI.RADIAN))))
 				.plus(cNpOverCL1.times(cL))
 				.plus(cNDeltaCNpOverEpsW).times(twistTipW);
 		
@@ -1326,48 +1047,20 @@ public class MomentCalc {
 	 *
 	 * @author cavas
 	 * 
-	 * @param surfaceW
+	 * @param cYBetaV
 	 * @param spanW
-	 * @param aspectRatioW
-	 * @param sweepC4W
-	 * @param surfaceV
-	 * @param spanV
 	 * @param xV
 	 * @param zV
-	 * @param cLAlphaV
-	 * @param heightFuselage
-	 * @param r1
-	 * @param zW
 	 * @param angleOfAttack
-	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCNpVerticalTailNapolitanoDatcom(
-			Amount<Area> surfaceW, Amount<Length> spanW, double aspectRatioW, Amount<Angle> sweepC4W,
-			Amount<Area> surfaceV, Amount<Length> spanV, Amount<Length> xV, Amount<Length> zV, Amount<?> cLAlphaV,
-			Amount<Length> heightFuselage, Amount<Length> r1, Amount<Length> zW,
-			Amount<Angle> angleOfAttack,
-			AerodynamicDatabaseReader databaseReader
+			Amount<?> cYBetaV,
+			Amount<Length> spanW,
+			Amount<Length> xV, Amount<Length> zV,
+			Amount<Angle> angleOfAttack
 			) {
 
-		// K_Y_V
-		double bVOver2TimesR1 = spanV.doubleValue(SI.METER)/(2*r1.doubleValue(SI.METER));
-
-		double cYKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
-
-		// CY_beta_V
-		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
-		double etaVTimes1MinusdSigmaOverdBeta =
-				0.724
-				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
-				+ 0.4*zWOverHeightFuselage
-				+ 0.009*aspectRatioW;
-
-		Amount<?> cYBetaV =
-				cLAlphaV.abs().times(surfaceV).divide(surfaceW)
-				.times(-cYKappaYV*etaVTimes1MinusdSigmaOverdBeta)
-				.to(SI.RADIAN.inverse());
-		
 		// CN_p_V
 		Amount<?> cNpV =
 				cYBetaV
@@ -1452,48 +1145,20 @@ public class MomentCalc {
 	 *
 	 * @author cavas
 	 * 
-	 * @param surfaceW
+	 * @param cYBetaV
 	 * @param spanW
-	 * @param aspectRatioW
-	 * @param sweepC4W
-	 * @param surfaceV
-	 * @param spanV
 	 * @param xV
 	 * @param zV
-	 * @param cLAlphaV
-	 * @param heightFuselage
-	 * @param r1
-	 * @param zW
 	 * @param angleOfAttack
-	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCNrVerticalTailNapolitanoDatcom(
-			Amount<Area> surfaceW, Amount<Length> spanW, double aspectRatioW, Amount<Angle> sweepC4W,
-			Amount<Area> surfaceV, Amount<Length> spanV, Amount<Length> xV, Amount<Length> zV, Amount<?> cLAlphaV,
-			Amount<Length> heightFuselage, Amount<Length> r1, Amount<Length> zW,
-			Amount<Angle> angleOfAttack,
-			AerodynamicDatabaseReader databaseReader
+			Amount<?> cYBetaV,
+			Amount<Length> spanW,
+			Amount<Length> xV, Amount<Length> zV,
+			Amount<Angle> angleOfAttack
 			) {
 
-		// K_Y_V
-		double bVOver2TimesR1 = spanV.doubleValue(SI.METER)/(2*r1.doubleValue(SI.METER));
-
-		double cYKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
-
-		// CY_beta_V
-		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
-		double etaVTimes1MinusdSigmaOverdBeta =
-				0.724
-				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
-				+ 0.4*zWOverHeightFuselage
-				+ 0.009*aspectRatioW;
-
-		Amount<?> cYBetaV =
-				cLAlphaV.abs().times(surfaceV).divide(surfaceW)
-				.times(-cYKappaYV*etaVTimes1MinusdSigmaOverdBeta)
-				.to(SI.RADIAN.inverse());
-		
 		// CN_r_V
 		Amount<?> cNrV =
 				cYBetaV

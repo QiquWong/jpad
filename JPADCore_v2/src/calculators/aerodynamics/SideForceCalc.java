@@ -48,7 +48,7 @@ public class SideForceCalc {
 	 * @param zW
 	 * @return
 	 */
-	public static Amount<?> calcCYBetaBody(
+	public static Amount<?> calcCYBetaFuselage(
 			Amount<Area> surfaceW,
 			Amount<Area> surfacePArrowV, Amount<Length> heightFuselage, Amount<Length> zW
 			) {
@@ -210,48 +210,20 @@ public class SideForceCalc {
 	 *
 	 * @author cavas
 	 * 
-	 * @param surfaceW
+	 * @param cYBetaV
 	 * @param spanW
-	 * @param aspectRatioW
-	 * @param sweepC4W
-	 * @param surfaceV
-	 * @param spanV
 	 * @param xV
 	 * @param zV
-	 * @param cLAlphaV
-	 * @param heightFuselage
-	 * @param r1
-	 * @param zW
 	 * @param angleOfAttack
-	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCYp(
-			Amount<Area> surfaceW, Amount<Length> spanW, double aspectRatioW, Amount<Angle> sweepC4W,
-			Amount<Area> surfaceV, Amount<Length> spanV, Amount<Length> xV, Amount<Length> zV, Amount<?> cLAlphaV,
-			Amount<Length> heightFuselage, Amount<Length> r1, Amount<Length> zW,
-			Amount<Angle> angleOfAttack,
-			AerodynamicDatabaseReader databaseReader
+			Amount<?> cYBetaV,
+			Amount<Length> spanW,
+			Amount<Length> xV, Amount<Length> zV,
+			Amount<Angle> angleOfAttack
 			) {
 
-		// K_Y_V
-		double bVOver2TimesR1 = spanV.doubleValue(SI.METER)/(2*r1.doubleValue(SI.METER));
-
-		double cYKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
-
-		// CY_beta_V
-		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
-		double etaVTimes1MinusdSigmaOverdBeta =
-				0.724
-				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
-				+ 0.4*zWOverHeightFuselage
-				+ 0.009*aspectRatioW;
-
-		Amount<?> cYBetaV =
-				cLAlphaV.abs().times(surfaceV).divide(surfaceW)
-				.times(-cYKappaYV*etaVTimes1MinusdSigmaOverdBeta)
-				.to(SI.RADIAN.inverse());
-		
 		// CY_p
 		Amount<?> cYp =
 				cYBetaV
@@ -272,48 +244,20 @@ public class SideForceCalc {
 	 *
 	 * @author cavas
 	 * 
-	 * @param surfaceW
+	 * @param cYBetaV
 	 * @param spanW
-	 * @param aspectRatioW
-	 * @param sweepC4W
-	 * @param surfaceV
-	 * @param spanV
 	 * @param xV
 	 * @param zV
-	 * @param cLAlphaV
-	 * @param heightFuselage
-	 * @param r1
-	 * @param zW
 	 * @param angleOfAttack
-	 * @param databaseReader
 	 * @return
 	 */
 	public static Amount<?> calcCYr(
-			Amount<Area> surfaceW, Amount<Length> spanW, double aspectRatioW, Amount<Angle> sweepC4W,
-			Amount<Area> surfaceV, Amount<Length> spanV, Amount<Length> xV, Amount<Length> zV, Amount<?> cLAlphaV,
-			Amount<Length> heightFuselage, Amount<Length> r1, Amount<Length> zW,
-			Amount<Angle> angleOfAttack,
-			AerodynamicDatabaseReader databaseReader
+			Amount<?> cYBetaV,
+			Amount<Length> spanW,
+			Amount<Length> xV, Amount<Length> zV,
+			Amount<Angle> angleOfAttack
 			) {
 
-		// K_Y_V
-		double bVOver2TimesR1 = spanV.doubleValue(SI.METER)/(2*r1.doubleValue(SI.METER));
-
-		double cYKappaYV = databaseReader.getCyBetaVKYVVsBVOver2TimesR1(bVOver2TimesR1);
-
-		// CY_beta_V
-		double zWOverHeightFuselage = zW.doubleValue(SI.METER)/heightFuselage.doubleValue(SI.METER);
-		double etaVTimes1MinusdSigmaOverdBeta =
-				0.724
-				+ 3.06*(surfaceV.doubleValue(SI.SQUARE_METRE)/surfaceW.doubleValue(SI.SQUARE_METRE))/(1 + Math.cos(sweepC4W.doubleValue(SI.RADIAN)))
-				+ 0.4*zWOverHeightFuselage
-				+ 0.009*aspectRatioW;
-
-		Amount<?> cYBetaV =
-				cLAlphaV.abs().times(surfaceV).divide(surfaceW)
-				.times(-cYKappaYV*etaVTimes1MinusdSigmaOverdBeta)
-				.to(SI.RADIAN.inverse());
-		
 		// CY_r
 		Amount<?> cYr =
 				cYBetaV

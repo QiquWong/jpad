@@ -2,7 +2,7 @@
 <jpad_config>
     <aircraft id="IRON_CANARD" type="TURBOPROP" regulations="FAR_25">
 		<global_data>
-			<cabin_configuration file="cabin_configuration_IRON.xml"></cabin_configuration>
+			<cabin_configuration file="cabin_configuration_IRON_CANARD.xml"></cabin_configuration>
 		</global_data>
         <lifting_surfaces>
             <wing file="wing_IRON_CANARD.xml">

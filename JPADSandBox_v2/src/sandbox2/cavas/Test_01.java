@@ -871,7 +871,7 @@ public class Test_01 {
 		double deltaKNA = outerKNA - innerKNA;
 		
 		// CN_delta_A
-		Amount<?> cNDeltaA = cRollDeltaA.times(deltaKNA*cL1);
+		Amount<?> cNDeltaA = cRollDeltaA.times(-deltaKNA*cL1);
 		
 		System.out.println(">>>> KNA_I: " + innerKNA);
 		System.out.println(">>>> KNA_O: " + outerKNA);

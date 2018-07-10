@@ -441,10 +441,11 @@
 				<buffet_barrier perform="FALSE" method="KROO"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 				<lift_curve perform="TRUE" fuselage_effects="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<drag_polar perform="TRUE" calculate_delta_CD0_miscellaneous="TRUE" delta_CD0_miscellaneous="0.00358" calculate_delta_CD0_landing_gears="FALSE" delta_CD0_landing_gears="0.0" method="FROM_BALANCE_EQUATION"/>
+				<side_force perform="TRUE" method="NAPOLITANO_DATCOM"/>
 				<moment_curve perform="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<longitudinal_static_stability perform="TRUE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/>
-				<lateral_static_stability perform="TRUE" method="NAPOLITANO_DATCOM"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
-				<directional_static_stability perform="TRUE" method="VEDSC_USAFDATCOM_WING"/>
+				<lateral_static_stability perform="TRUE" method="NAPOLITANO_DATCOM"/>
+				<directional_static_stability perform="TRUE" method="NAPOLITANO_DATCOM"/>
 				<dynamic_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 			</aircraft_analyses>
         </aerodynamics_and_stability>
