@@ -190,7 +190,7 @@ public class Test_01 {
 		
 		// Cl_beta_WB
 		Amount<Velocity> velocityTAS = operatingConditions.getTASCruise();
-		Amount<Mass> maxTakeOffWeight = Amount.valueOf(54500.0, SI.KILOGRAM);
+		Amount<Mass> maxTakeOffWeight = Amount.valueOf(51767.0, SI.KILOGRAM);
 		Amount<Force> weight = Amount.valueOf(
 				maxTakeOffWeight.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 				SI.NEWTON
@@ -308,7 +308,7 @@ public class Test_01 {
 		Amount<Angle> dihedralHTail = hTail.getDihedralMean();
 		Amount<Angle> aerodynamicTwistHTail = hTail.getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip();
 		Amount<Angle> sweepAngleC4HTail = hTail.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(NonSI.DEGREE_ANGLE);
-		double etaH = 0.9;
+		double etaH = 0.8;
 		Amount<Area> surfaceHTail = hTail.getSurfacePlanform();
 		
 		System.out.println(">> dihedral angle horizontal tail: " + dihedralHTail);
@@ -396,7 +396,9 @@ public class Test_01 {
 		
 		// Cl_beta_V
 		Amount<Angle> angleOfAttack = operatingConditions.getAlphaCurrentCruise().to(NonSI.DEGREE_ANGLE);
-		Amount<Length> xCG = Amount.valueOf(15.0, SI.METER);
+		Amount<Length> xCG = wing.getMeanAerodynamicChord().times(0.4)
+				.plus(wing.getMeanAerodynamicChordLeadingEdgeX())
+				.plus(wing.getXApexConstructionAxes());
 		Amount<Length> xV = vTail.getXApexConstructionAxes()
 				.plus(vTail.getMeanAerodynamicChordLeadingEdgeX())
 				.plus((vTail.getMeanAerodynamicChord()).times(0.25))
@@ -560,6 +562,7 @@ public class Test_01 {
 		Amount<Length> zR = vTail.getZApexConstructionAxes()
 				.plus(zApplicationForceRudder);
 		
+		System.out.println(zApplicationForceRudder);
 		System.out.println(">> x_R: " + xR);
 		System.out.println(">> z_R: " + zR);
 		
@@ -807,7 +810,7 @@ public class Test_01 {
 		System.out.println(">> w_Max: " + wMax);
 		
 		// K_Re_B
-		double reynoldsFuselage = 1e7;
+		double reynoldsFuselage = 2.35e8;
 		double reynoldsFuselageTimes1eMinus6 = reynoldsFuselage*1e-6;
 		
 		double cYKappaReB = databaseReader.getCNBetaBKReBVsReLBTimes1eMinus6(reynoldsFuselageTimes1eMinus6);
@@ -934,7 +937,7 @@ public class Test_01 {
 														2
 														)
 										);
-		double staticMargin = -0.2;
+		double staticMargin = -0.108;
 		Amount<?> cNpOverCL1AtMachZero = Amount.valueOf(
 				-(
 						aspectRatioWing + 6*(
@@ -1044,7 +1047,7 @@ public class Test_01 {
 		System.out.println(">>>> CN_r/CD0: " + cNrOverCD0);
 
 		// CN_r_W
-		double cD0 = 10;
+		double cD0 = 0.030348;
 		Amount<?> cNrW = cNrOverSquaredCL1.times(Math.pow(cL1, 2))
 				.plus(cNrOverCD0.times(cD0));
 
