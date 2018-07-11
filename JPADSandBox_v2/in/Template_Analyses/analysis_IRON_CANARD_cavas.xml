@@ -13,7 +13,7 @@
 	<analyses id="IRON analysis">
 	
 		<weights 
-            file="analysis_weights_IRON.xml" 
+            file="analysis_weights_IRON_CANARD.xml" 
 			plot="TRUE"
 			create_CSV="TRUE"
 			method_fuselage=""

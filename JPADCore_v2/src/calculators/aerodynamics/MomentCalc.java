@@ -1038,7 +1038,7 @@ public class MomentCalc {
 		Amount<?> cNpW = cRollpWB.times(-Math.tan(angleOfAttack.doubleValue(SI.RADIAN)))
 				.plus((cRollpTotal).times(Math.tan(angleOfAttack.doubleValue(SI.RADIAN))))
 				.plus(cNpOverCL1.times(cL))
-				.plus(cNDeltaCNpOverEpsW).times(twistTipW);
+				.plus(cNDeltaCNpOverEpsW.times(twistTipW));
 		
 		return cNpW;
 	}

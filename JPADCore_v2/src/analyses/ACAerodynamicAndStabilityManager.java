@@ -260,12 +260,12 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaTotal = new HashMap<>();
 	private Map<MethodEnum, Amount<?>> _cNDeltaA = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNDeltaR = new HashMap<>();
-	private Map<MethodEnum, Amount<?>> _cNpWing = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNpWing = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNpVertical = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNpTotal = new HashMap<>();
-	private Map<MethodEnum, Amount<?>> _cNrWing = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNpTotal = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNrWing = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNrVertical = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNrTotal = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNrTotal = new HashMap<>();
 	
 	//Longitudinal Static Stability Output
 
@@ -6898,6 +6898,19 @@ public class ACAerodynamicAndStabilityManager {
 		}
 		
 		//------------------------------------------------------------------------------------------------------------------------------------
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LATERAL_STABILITY)) {
+
+			CalcLateralStability calcLateralStability = new CalcLateralStability();
+			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.LATERAL_STABILITY)) {
+			case NAPOLITANO_DATCOM:
+				calcLateralStability.datcomNapolitano();
+				break;
+			default:
+				break;
+			}
+		}
+		
+		//------------------------------------------------------------------------------------------------------------------------------------
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
 
 			CalcDirectionalStability calcDirectionalStability = new CalcDirectionalStability();
@@ -6910,19 +6923,6 @@ public class ACAerodynamicAndStabilityManager {
 				break;
 			case VEDSC_USAFDATCOM_WING:
 				calcDirectionalStability.vedscUsafDatcomWing(_currentMachNumber); 
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//------------------------------------------------------------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LATERAL_STABILITY)) {
-
-			CalcLateralStability calcLateralStability = new CalcLateralStability();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.LATERAL_STABILITY)) {
-			case NAPOLITANO_DATCOM:
-				calcLateralStability.datcomNapolitano();
 				break;
 			default:
 				break;
@@ -21430,7 +21430,7 @@ public class ACAerodynamicAndStabilityManager {
 			_cNDeltaA.put(
 					MethodEnum.NAPOLITANO_DATCOM,
 					MomentCalc.calcCNDeltaANapolitanoDatcom(
-							_cRollDeltaA.get(MethodEnum.NAPOLITANO_DATCOM),
+							getCRollDeltaA().get(MethodEnum.NAPOLITANO_DATCOM),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAsymmetricFlaps().get(1).getTheAsymmetricFlapInterface().getInnerStationSpanwisePosition(),
@@ -21492,16 +21492,21 @@ public class ACAerodynamicAndStabilityManager {
 			//=======================================================================================
 			// Calculating dynamic derivatives ...
 			//=======================================================================================
-			_cNpWing.put(
-					MethodEnum.NAPOLITANO_DATCOM,
-					MomentCalc.calcCNpWingNapolitanoDatcom(
+			List<Tuple2<Double, List<Amount<?>>>> listOfCNpWing = new ArrayList();
+			List<Amount<?>> temporaryListOfCNpWing = new ArrayList<>();
+			
+			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
+
+				for (int j = 0; j < _alphaBodyList.size(); j++) {
+
+					Amount<?> temporaryCNpWing = MomentCalc.calcCNpWingNapolitanoDatcom(
 							_cRollpWingBody.get(MethodEnum.NAPOLITANO_DATCOM),
 							_cRollpTotal.get(MethodEnum.NAPOLITANO_DATCOM),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip(),
-							-0.2, // TODO take MS
+							getStaticStabilityMarginMap().get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j),
 							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise(),
 							LiftCalc.calculateLiftCoeff(
 									(
@@ -21514,7 +21519,23 @@ public class ACAerodynamicAndStabilityManager {
 									),
 							getCurrentMachNumber(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
-							));
+							);
+					temporaryListOfCNpWing.add(temporaryCNpWing);
+				}
+				
+				listOfCNpWing.add(
+						Tuple.of(
+								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
+								temporaryListOfCNpWing
+								)
+						);
+				
+			}
+			
+			_cNpWing.put(
+					MethodEnum.NAPOLITANO_DATCOM,
+					listOfCNpWing
+					);
 			
 			List<Tuple2<Double, Amount<?>>> listOfCNpVerticalTail = new ArrayList();
 			
@@ -21549,19 +21570,26 @@ public class ACAerodynamicAndStabilityManager {
 					listOfCNpVerticalTail
 					);
 			
-			List<Tuple2<Double, Amount<?>>> listOfCNpTotal = new ArrayList();
+			List<Tuple2<Double, List<Amount<?>>>> listOfCNpTotal = new ArrayList();
+			List<Amount<?>> temporaryListofCNpTotal = new ArrayList<>();
 			
 			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
-				Amount<?> temporaryCNpTotal = MomentCalc.calcCNpTotalNapolitanoDatcom(
-						_cNpWing.get(MethodEnum.NAPOLITANO_DATCOM),
-						_cNpVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2
-						);
+				for (int j = 0; j < _alphaBodyList.size(); j++) {
+
+					Amount<?> temporaryCNpTotal = MomentCalc.calcCNpTotalNapolitanoDatcom(
+							_cNpWing.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2.get(j),
+							_cNpVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2
+							);
+					
+					temporaryListofCNpTotal.add(temporaryCNpTotal);
+
+				}
 
 				listOfCNpTotal.add(
 						Tuple.of(
 								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNpTotal
+								temporaryListofCNpTotal
 								)
 						);
 			}
@@ -21621,13 +21649,18 @@ public class ACAerodynamicAndStabilityManager {
 					cD0ParasiteVTail
 					);
 			
-			_cNrWing.put(
-					MethodEnum.NAPOLITANO_DATCOM,
-					MomentCalc.calcCNrWingNapolitanoDatcom(
+			List<Tuple2<Double, List<Amount<?>>>> listOfCNrWing = new ArrayList();
+			List<Amount<?>> temporaryListOfCNrWing = new ArrayList<>();
+			
+			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
+
+				for (int j = 0; j < _alphaBodyList.size(); j++) {
+
+					Amount<?> temporaryCNrWing = MomentCalc.calcCNrWingNapolitanoDatcom(
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
-							-0.2, // TODO take MS
+							getStaticStabilityMarginMap().get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j),
 							cD0TotalAircraft,
 							LiftCalc.calculateLiftCoeff(
 									(
@@ -21639,7 +21672,23 @@ public class ACAerodynamicAndStabilityManager {
 									getCurrentAltitude().doubleValue(SI.METER)
 									),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
-							));
+							);
+					temporaryListOfCNrWing.add(temporaryCNrWing);
+				}
+				
+				listOfCNrWing.add(
+						Tuple.of(
+								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
+								temporaryListOfCNrWing
+								)
+						);
+				
+			}
+			
+			_cNrWing.put(
+					MethodEnum.NAPOLITANO_DATCOM,
+					listOfCNrWing
+					);
 			
 			List<Tuple2<Double, Amount<?>>> listOfCNrVerticalTail = new ArrayList();
 			
@@ -21674,19 +21723,26 @@ public class ACAerodynamicAndStabilityManager {
 					listOfCNrVerticalTail
 					);
 			
-			List<Tuple2<Double, Amount<?>>> listOfCNrTotal = new ArrayList();
+			List<Tuple2<Double, List<Amount<?>>>> listOfCNrTotal = new ArrayList();
+			List<Amount<?>> temporaryListofCNrTotal = new ArrayList<>();
 			
 			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
-				Amount<?> temporaryCNrTotal = MomentCalc.calcCNrTotalNapolitanoDatcom(
-						_cNrWing.get(MethodEnum.NAPOLITANO_DATCOM),
-						_cNrVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2
-						);
+				for (int j = 0; j < _alphaBodyList.size(); j++) {
+
+					Amount<?> temporaryCNrTotal = MomentCalc.calcCNrTotalNapolitanoDatcom(
+							_cNrWing.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2.get(j),
+							_cNrVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2
+							);
+					
+					temporaryListofCNrTotal.add(temporaryCNrTotal);
+
+				}
 
 				listOfCNrTotal.add(
 						Tuple.of(
 								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNrTotal
+								temporaryListofCNrTotal
 								)
 						);
 			}
@@ -23067,6 +23123,94 @@ public class ACAerodynamicAndStabilityManager {
 	
 	public void setCRollrTotal(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cRollrTotal) {
 		this._cRollrTotal = _cRollrTotal;
+	}
+	
+	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaFuselage() {
+		return _cNBetaFuselage;
+	}
+	
+	public void setCNBetaFuselage(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaFuselage) {
+		this._cNBetaFuselage = _cNBetaFuselage;
+	}
+	
+	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaVertical() {
+		return _cNBetaVertical;
+	}
+	
+	public void setCNBetaVertical(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaVertical) {
+		this._cNBetaVertical = _cNBetaVertical;
+	}
+	
+	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaTotal() {
+		return _cNBetaTotal;
+	}
+	
+	public void setCNBetaTotal(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaTotal) {
+		this._cNBetaTotal = _cNBetaTotal;
+	}
+	
+	public Map<MethodEnum, Amount<?>> getCNDeltaA() {
+		return _cNDeltaA;
+	}
+	
+	public void setCNDeltaA(Map<MethodEnum, Amount<?>> _cNDeltaA) {
+		this._cNDeltaA = _cNDeltaA;
+	}
+	
+	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNDeltaR() {
+		return _cNDeltaR;
+	}
+	
+	public void setCNDeltaR(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNDeltaR) {
+		this._cNDeltaR = _cNDeltaR;
+	}
+	
+	public Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> getCNpWing() {
+		return _cNpWing;
+	}
+	
+	public void setCNpWing(Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNpWing) {
+		this._cNpWing = _cNpWing;
+	}
+	
+	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNpVertical() {
+		return _cNpVertical;
+	}
+	
+	public void setCNpVertical(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNpVertical) {
+		this._cNpVertical = _cNpVertical;
+	}
+	
+	public Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> getCNpTotal() {
+		return _cNpTotal;
+	}
+	
+	public void setCNpTotal(Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNpTotal) {
+		this._cNpTotal = _cNpTotal;
+	}
+	
+	public Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> getCNrWing() {
+		return _cNrWing;
+	}
+	
+	public void setCNrWing(Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNrWing) {
+		this._cNrWing = _cNrWing;
+	}
+	
+	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNrVertical() {
+		return _cNrVertical;
+	}
+	
+	public void setCNrVertical(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNrVertical) {
+		this._cNrVertical = _cNrVertical;
+	}
+	
+	public Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> getCNrTotal() {
+		return _cNrTotal;
+	}
+	
+	public void setCNrTotal(Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNrTotal) {
+		this._cNrTotal = _cNrTotal;
 	}
 	
 	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNbFuselage() {

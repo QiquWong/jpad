@@ -1,5 +1,5 @@
 <database.databasefunctions.aerodynamics.AerodynamicDatabaseReader>
-  <databaseFolderPath>C:\Users\Carmine\Documents\jpad\JPADSandBox_v2\data</databaseFolderPath>
+  <databaseFolderPath>C:\Users\Carmine\Documents\jpad\JPADSandBox_v2\data\</databaseFolderPath>
   <databaseFileName>Aerodynamic_Database_Ultimate.h5</databaseFileName>
   <database>
     <__fileName>C:\Users\Carmine\Documents\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</__fileName>

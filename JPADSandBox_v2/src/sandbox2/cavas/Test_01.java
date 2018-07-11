@@ -971,7 +971,7 @@ public class Test_01 {
 		Amount<?> cNpW = cRollpWB.times(-Math.tan(angleOfAttack.doubleValue(SI.RADIAN)))
 				.plus(cRollp.times(Math.tan(angleOfAttack.doubleValue(SI.RADIAN))))
 				.plus(cNpOverCL1.times(cL1))
-				.plus(cNDeltaCNpOverEpsW).times(aerodynamicTwistWing);
+				.plus(cNDeltaCNpOverEpsW.times(aerodynamicTwistWing));
 		
 		System.out.println(">>>>>> CN_p_W: " + cNpW);
 		
