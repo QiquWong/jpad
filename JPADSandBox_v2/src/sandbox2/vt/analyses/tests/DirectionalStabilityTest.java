@@ -396,21 +396,21 @@ public class DirectionalStabilityTest extends Application {
 			System.out.println("\tStability Derivatives ... \n\n");
 			System.out.println("\t\tBeta  = " + theAerodynamicCalculator.getBetaList().stream().map(b -> b.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
 			);
-			System.out.println("\t\tCNb Fuselgae @Xcg/c " + theAerodynamicCalculator.getCNbFuselage().get(directionalStabilityMethod).get(0)._1() + " = " + 
-					theAerodynamicCalculator.getCNbFuselage().get(directionalStabilityMethod).get(0)._2()
+			System.out.println("\t\tCNb Fuselgae @Xcg/c " + theAerodynamicCalculator.getCNBetaFuselage().get(directionalStabilityMethod).get(0)._1() + " = " + 
+					theAerodynamicCalculator.getCNBetaFuselage().get(directionalStabilityMethod).get(0)._2()
 			);
-			System.out.println("\t\tCNb Wing @Xcg/c " + theAerodynamicCalculator.getCNbWing().get(directionalStabilityMethod).get(0)._1() + " = " + 
-					theAerodynamicCalculator.getCNbWing().get(directionalStabilityMethod).get(0)._2()
+			System.out.println("\t\tCNb Wing @Xcg/c " + theAerodynamicCalculator.getCNBetaWing().get(directionalStabilityMethod).get(0)._1() + " = " + 
+					theAerodynamicCalculator.getCNBetaWing().get(directionalStabilityMethod).get(0)._2()
 			);
-			System.out.println("\t\tCNb VTail @Xcg/c " + theAerodynamicCalculator.getCNbVertical().get(directionalStabilityMethod).get(0)._1() + " = " + 
-					theAerodynamicCalculator.getCNbVertical().get(directionalStabilityMethod).get(0)._2()
+			System.out.println("\t\tCNb VTail @Xcg/c " + theAerodynamicCalculator.getCNBetaVertical().get(directionalStabilityMethod).get(0)._1() + " = " + 
+					theAerodynamicCalculator.getCNBetaVertical().get(directionalStabilityMethod).get(0)._2()
 			);
-			System.out.println("\t\tCNb Total @Xcg/c " + theAerodynamicCalculator.getCNbTotal().get(directionalStabilityMethod).get(0)._1() + " = " + 
-					theAerodynamicCalculator.getCNbTotal().get(directionalStabilityMethod).get(0)._2()
+			System.out.println("\t\tCNb Total @Xcg/c " + theAerodynamicCalculator.getCNBetaTotal().get(directionalStabilityMethod).get(0)._1() + " = " + 
+					theAerodynamicCalculator.getCNBetaTotal().get(directionalStabilityMethod).get(0)._2()
 			);
 			System.out.println("\n\tControl Derivative ... \n\n");
 			System.out.println("\t\tCNdr @Xcg/c " 
-					+ theAerodynamicCalculator.getCNdr()
+					+ theAerodynamicCalculator.getCNDeltaR()
 						.get(directionalStabilityMethod)
 							.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList()
 								.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList().size()-1)
@@ -419,7 +419,7 @@ public class DirectionalStabilityTest extends Application {
 					+ theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList()
 						.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList().size()-1)
 					+ " = "
-					+ theAerodynamicCalculator.getCNdr()
+					+ theAerodynamicCalculator.getCNDeltaR()
 						.get(directionalStabilityMethod)
 							.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList()
 								.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList().size()-1)

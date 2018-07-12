@@ -4054,7 +4054,7 @@ public class ACPerformanceManager {
 				_thePerformanceInterface.getTheAircraft().calculateArms(_thePerformanceInterface.getTheAircraft().getVTail(), dimensionalXcg);
 			
 			// cNb vertical [1/deg]
-			double cNbVertical = MomentCalc.calcCNbetaVerticalTail(
+			double cNbVertical = MomentCalc.calcCNbetaVerticalTailVEDSC(
 					_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(), 
 					_thePerformanceInterface.getTheAircraft().getVTail().getAspectRatio(),
 					_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceArm().doubleValue(SI.METER),

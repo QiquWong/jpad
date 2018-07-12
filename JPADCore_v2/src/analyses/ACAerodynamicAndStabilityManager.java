@@ -217,11 +217,18 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Double>>>> _downwashGradientMap;
 	private Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Amount<Angle>>>>> _downwashAngleMap;
 	private List<Tuple3<MethodEnum, Double, Double>> _buffetBarrierCurve = new ArrayList<>();
-	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbFuselage = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbVertical = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbWing = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbTotal = new HashMap<>();
-	private Map<MethodEnum, Map<Amount<Angle>, List<Tuple2<Double, Double>>>> _cNdr = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaFuselage = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaVertical = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaWing = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaTotal = new HashMap<>();
+	private Map<MethodEnum, Double> _cNDeltaA = new HashMap<>();
+	private Map<MethodEnum, Map<Amount<Angle>, List<Tuple2<Double, Double>>>> _cNDeltaR = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpWing = new HashMap<>(); //
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpVertical = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpTotal = new HashMap<>(); //
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNrWing = new HashMap<>(); //
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNrVertical = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNrTotal = new HashMap<>(); //
 	private Map<MethodEnum, List<Tuple2<Double, List<Double>>>> _cNFuselage = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, List<Double>>>> _cNVertical = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, List<Double>>>> _cNWing = new HashMap<>();
@@ -254,19 +261,6 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<MethodEnum, Amount<?>> _cRollrWing = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cRollrVertical = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cRollrTotal = new HashMap<>();
-	
-	// Directional Static Stability stuff
-//	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaFuselage = new HashMap<>();
-//	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaVertical = new HashMap<>();
-//	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaTotal = new HashMap<>();
-	private Map<MethodEnum, Amount<?>> _cNDeltaA = new HashMap<>();
-//	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNDeltaR = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNpWing = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNpVertical = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNpTotal = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNrWing = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNrVertical = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNrTotal = new HashMap<>();
 	
 	//Longitudinal Static Stability Output
 
@@ -18160,7 +18154,7 @@ public class ACAerodynamicAndStabilityManager {
 				dataListDirectionalStabilityAndControl.add(new Object[] {
 						"CN_beta_vertical_tail",
 						"1/deg",
-						_cNbVertical.get(
+						_cNBetaVertical.get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.AIRCRAFT)
 								.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
@@ -18170,7 +18164,7 @@ public class ACAerodynamicAndStabilityManager {
 				dataListDirectionalStabilityAndControl.add(new Object[] {
 						"CN_beta_fuselage",
 						"1/deg",
-						_cNbFuselage.get(
+						_cNBetaFuselage.get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.AIRCRAFT)
 								.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
@@ -18180,7 +18174,7 @@ public class ACAerodynamicAndStabilityManager {
 				dataListDirectionalStabilityAndControl.add(new Object[] {
 						"CN_beta_wing",
 						"1/deg",
-						_cNbWing.get(
+						_cNBetaWing.get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.AIRCRAFT)
 								.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
@@ -18190,7 +18184,7 @@ public class ACAerodynamicAndStabilityManager {
 				dataListDirectionalStabilityAndControl.add(new Object[] {
 						"CN_beta_total",
 						"1/deg",
-						_cNbTotal.get(
+						_cNBetaTotal.get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.AIRCRAFT)
 								.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
@@ -18209,7 +18203,7 @@ public class ACAerodynamicAndStabilityManager {
 				dataListDirectionalStabilityAndControl.add(deltaRudderArray);
 				currentBoldIndex = currentBoldIndex+1;
 				
-				Object[] cNdrArray = new Object[_cNdr.get(
+				Object[] cNdrArray = new Object[_cNDeltaR.get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.AIRCRAFT)
 						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
@@ -18217,13 +18211,13 @@ public class ACAerodynamicAndStabilityManager {
 				cNdrArray[0] = "CN_delta_rudder";
 				cNdrArray[1] = "1/deg";
 				for(int j=0; 
-						j<_cNdr.get(
+						j<_cNDeltaR.get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.AIRCRAFT)
 								.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
 								).keySet().size();
 						j++) 
-					cNdrArray[j+2] = _cNdr.get(
+					cNdrArray[j+2] = _cNDeltaR.get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.AIRCRAFT)
 							.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
@@ -19855,25 +19849,25 @@ public class ACAerodynamicAndStabilityManager {
 				
 				sb.append("\n\tXcg/C = " + _theAerodynamicBuilderInterface.getXCGAircraft().get(i) + "\n");
 				
-				sb.append("\t\tCN_beta_vertical_tail = " + _cNbVertical.get(
+				sb.append("\t\tCN_beta_vertical_tail = " + _cNBetaVertical.get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.AIRCRAFT)
 						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
 						).get(i)._2() + "\n");
 				
-				sb.append("\t\tCN_beta_fuselage = " + _cNbFuselage.get(
+				sb.append("\t\tCN_beta_fuselage = " + _cNBetaFuselage.get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.AIRCRAFT)
 						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
 						).get(i)._2() + "\n");
 				
-				sb.append("\t\tCN_beta_wing = " + _cNbWing.get(
+				sb.append("\t\tCN_beta_wing = " + _cNBetaWing.get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.AIRCRAFT)
 						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
 						).get(i)._2() + "\n");
 				
-				sb.append("\t\tCN_beta_total = " + _cNbTotal.get(
+				sb.append("\t\tCN_beta_total = " + _cNBetaTotal.get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.AIRCRAFT)
 						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
@@ -19886,7 +19880,7 @@ public class ACAerodynamicAndStabilityManager {
 				
 				sb.append("\t\tCN_delta_rudder = "); 
 				for(int j=0; j<_theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++) 
-					sb.append("[" + _cNdr.get(
+					sb.append("[" + _cNDeltaR.get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.AIRCRAFT)
 							.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
@@ -21307,7 +21301,7 @@ public class ACAerodynamicAndStabilityManager {
 	public class CalcDirectionalStability {
 		
 		public void datcomNapolitano() {
-			
+
 			//=======================================================================================
 			// Calculating stability derivatives for each component ...
 			//=======================================================================================
@@ -21336,103 +21330,90 @@ public class ACAerodynamicAndStabilityManager {
 					_currentMachNumber,
 					lengthFuselage.doubleValue(SI.METER)
 					);
-			
-			List<Tuple2<Double, Double>> listOfCNBetaFuselage = new ArrayList();
-			
-			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
-				Amount<?> temporaryCNBetaFuselage = MomentCalc.calcCNBetaFuselageNapolitanoDatcom(
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
-						sideSurfaceFuselage,
-						reynoldsFuselage,
-						lengthFuselage,
-						wMax,
-						zMax,
-						z1,
-						z2,
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
-						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
-						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes()),
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
-						);
-
-				listOfCNBetaFuselage.add(
-						Tuple.of(
-								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNBetaFuselage.to(SI.RADIAN.inverse()).getEstimatedValue()
-
-								)
-						);
-			}
-			
-			_cNbFuselage.put(
+			_cNBetaFuselage.put(
 					MethodEnum.NAPOLITANO_DATCOM,
-					listOfCNBetaFuselage
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNBetaFuselageNapolitanoDatcom(
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
+											sideSurfaceFuselage,
+											reynoldsFuselage,
+											lengthFuselage,
+											wMax,
+											zMax,
+											z1,
+											z2,
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(x)
+											.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
+											.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes()),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
+											).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									)
+							)
+					.collect(Collectors.toList())
 					);
-			
-			List<Tuple2<Double, Double>> listOfCNBetaVerticalTail = new ArrayList();
-			
-			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
-				Amount<?> temporaryCNBetaVerticalTail = MomentCalc.calcCNBetaVerticalTailNapolitanoDatcom(
-						_cYBetaVertical.get(MethodEnum.NAPOLITANO_DATCOM),
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
-						_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
-						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeX())
-						.plus((_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChord()).times(0.25))
-						.minus(
-								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
-								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
-								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
-								),
-						_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
-						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeZ()),
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise()
-						);
-
-				listOfCNBetaVerticalTail.add(
-						Tuple.of(
-								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNBetaVerticalTail.to(SI.RADIAN.inverse()).getEstimatedValue()
-								)
-						);
-			}
-			
-			_cNbVertical.put(
+			_cNBetaWing.put(
 					MethodEnum.NAPOLITANO_DATCOM,
-					listOfCNBetaVerticalTail
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(x, 0.0)
+							)
+					.collect(Collectors.toList())
 					);
-			
-			List<Tuple2<Double, Double>> listOfCNBetaTotal = new ArrayList();
-			
-			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
-				Amount<?> temporaryCNBetaTotal = MomentCalc.calcCNBetaTotalNapolitanoDatcom(
-						Amount.valueOf(_cNbFuselage.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2, SI.RADIAN.inverse()),
-						Amount.valueOf(_cNbVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2, SI.RADIAN.inverse())
-						);
-
-				listOfCNBetaTotal.add(
-						Tuple.of(
-								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNBetaTotal.to(SI.RADIAN.inverse()).getEstimatedValue()
-								)
-						);
-			}
-			
-			_cNbTotal.put(
+			_cNBetaVertical.put(
 					MethodEnum.NAPOLITANO_DATCOM,
-					listOfCNBetaTotal
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNBetaVerticalTailNapolitanoDatcom(
+											_cYBetaVertical.get(MethodEnum.NAPOLITANO_DATCOM),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
+											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
+											.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeX())
+											.plus((_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChord()).times(0.25))
+											.minus(
+													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(x)
+													.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
+													.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
+													),
+											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
+											.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeZ()),
+											_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise()
+											).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									)
+							)
+					.collect(Collectors.toList())
 					);
-			
+
+			_cNBetaTotal.put(
+					MethodEnum.NAPOLITANO_DATCOM,
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNBetaTotalNapolitanoDatcom(
+											Amount.valueOf(_cNBetaFuselage.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE.inverse()),
+											Amount.valueOf(_cNBetaVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE.inverse())
+											).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									)
+							)
+					.collect(Collectors.toList())
+					);
+
 			//=======================================================================================
 			// Calculating control derivatives ...
 			//=======================================================================================
 			_cNDeltaA.put(
 					MethodEnum.NAPOLITANO_DATCOM,
 					MomentCalc.calcCNDeltaANapolitanoDatcom(
-							getCRollDeltaA().get(MethodEnum.NAPOLITANO_DATCOM),
+							_cRollDeltaA.get(MethodEnum.NAPOLITANO_DATCOM),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAsymmetricFlaps().get(1).getTheAsymmetricFlapInterface().getInnerStationSpanwisePosition(),
@@ -21447,172 +21428,140 @@ public class ACAerodynamicAndStabilityManager {
 									getCurrentAltitude().doubleValue(SI.METER)
 									),
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
-							));
+							).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+					);
 
 			double etaInR  = _theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getTheSymmetricFlapInterface().getInnerStationSpanwisePosition();
 			double etaOutR = _theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getTheSymmetricFlapInterface().getOuterStationSpanwisePosition();
 			Amount<Length> zApplicationForceRudder = _theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSpan().times((etaOutR - etaInR)/2);
-			
-			List<Tuple2<Double, Double>> listOfCNDeltaR = new ArrayList();
-			
-			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
-
-				Amount<?> temporaryCNDeltaR = MomentCalc.calcCRollDeltaR(
-						_cYDeltaR.get(MethodEnum.NAPOLITANO_DATCOM),
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
-						_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
-						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXLEAtYActual(zApplicationForceRudder.doubleValue(SI.METER)))
-						.plus(
-								Amount.valueOf(
-										_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getChordAtYActual(zApplicationForceRudder.doubleValue(SI.METER))*
-										(1 - 0.75*_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getMeanChordRatio()),
-										SI.METER
-										)
-								)
-						.minus(
-								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
-								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
-								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
-								),
-						_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes().plus(zApplicationForceRudder),
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise()
-						);
-
-				listOfCNDeltaR.add(
-						Tuple.of(
-								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNDeltaR.to(SI.RADIAN.inverse()).getEstimatedValue()
-								)
-						);
-			}
-			
 
 			Map<Amount<Angle>, List<Tuple2<Double, Double>>> cNdrMap = new HashMap<>();
 
-			_theAerodynamicBuilderInterface.getDeltaRudderList().stream()
-				.forEach(
-					dr -> cNdrMap.put(dr, listOfCNDeltaR)
-				);	
+			_theAerodynamicBuilderInterface.getDeltaRudderList().stream().forEach(
+					dr -> cNdrMap.put(
+							dr,
+							_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
+									x -> Tuple.of(
+											x,
+											MomentCalc.calcCNDeltaRNapolitanoDatcom(
+													_cYDeltaR.get(MethodEnum.NAPOLITANO_DATCOM),
+													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
+													_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
+													.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXLEAtYActual(zApplicationForceRudder.doubleValue(SI.METER)))
+													.plus(
+															Amount.valueOf(
+																	_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getChordAtYActual(zApplicationForceRudder.doubleValue(SI.METER))*
+																	(1 - 0.75*_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getMeanChordRatio()),
+																	SI.METER
+																	)
+															)
+													.minus(
+															_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(x)
+															.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
+															.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
+															),
+													_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes().plus(zApplicationForceRudder),
+													_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise()
+													).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+											)
+									)
+							.collect(Collectors.toList())
+							)
+					);	
 
-			_cNdr.put(MethodEnum.NAPOLITANO_DATCOM,	cNdrMap);
-			
+			_cNDeltaR.put(MethodEnum.NAPOLITANO_DATCOM, cNdrMap);
+
 			//=======================================================================================
 			// Calculating dynamic derivatives ...
 			//=======================================================================================
-			List<Tuple2<Double, List<Amount<?>>>> listOfCNpWing = new ArrayList();
-			List<Amount<?>> temporaryListOfCNpWing = new ArrayList<>();
-			
-			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
-
-				for (int j = 0; j < _alphaBodyList.size(); j++) {
-
-					Amount<?> temporaryCNpWing = MomentCalc.calcCNpWingNapolitanoDatcom(
-							_cRollpWingBody.get(MethodEnum.NAPOLITANO_DATCOM),
-							_cRollpTotal.get(MethodEnum.NAPOLITANO_DATCOM),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip(),
-							getStaticStabilityMarginMap().get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j),
-							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise(),
-							LiftCalc.calculateLiftCoeff(
-									(
-											_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
-											+ _theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(SI.KILOGRAM)
-											)/2*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-									getCurrentMachNumber()*AtmosphereCalc.getSpeedOfSound(getCurrentAltitude().doubleValue(SI.METER)),
-									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-									getCurrentAltitude().doubleValue(SI.METER)
+			int indexOfAlphaBody = 
+					MyArrayUtils.getIndexOfClosestValue(
+							MyArrayUtils.convertArrayDoublePrimitiveToList(
+									MyArrayUtils.convertListOfAmountTodoubleArray(_alphaBodyList)
 									),
-							getCurrentMachNumber(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
+							getAlphaBodyCurrent().getEstimatedValue()
 							);
-					temporaryListOfCNpWing.add(temporaryCNpWing);
-				}
-				
-				listOfCNpWing.add(
-						Tuple.of(
-								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryListOfCNpWing
-								)
-						);
-				
-			}
-			
+
 			_cNpWing.put(
 					MethodEnum.NAPOLITANO_DATCOM,
-					listOfCNpWing
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNpWingNapolitanoDatcom(
+											_cRollpWingBody.get(MethodEnum.NAPOLITANO_DATCOM),
+											_cRollpTotal.get(MethodEnum.NAPOLITANO_DATCOM),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip(),
+											getStaticStabilityMarginMap().get(x).get(indexOfAlphaBody),
+											_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise(),
+											LiftCalc.calculateLiftCoeff(
+													(
+															_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
+															+ _theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(SI.KILOGRAM)
+															)/2*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+													getCurrentMachNumber()*AtmosphereCalc.getSpeedOfSound(getCurrentAltitude().doubleValue(SI.METER)),
+													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+													getCurrentAltitude().doubleValue(SI.METER)
+													),
+											getCurrentMachNumber(),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
+											).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									)
+							)
+					.collect(Collectors.toList())
 					);
-			
-			List<Tuple2<Double, Amount<?>>> listOfCNpVerticalTail = new ArrayList();
-			
-			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
-				Amount<?> temporaryCNpVerticalTail = MomentCalc.calcCNpVerticalTailNapolitanoDatcom(
-						_cYBetaVertical.get(MethodEnum.NAPOLITANO_DATCOM),
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
-						_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
-						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeX())
-						.plus((_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChord()).times(0.25))
-						.minus(
-								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
-								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
-								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
-								),
-						_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
-						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeZ()),
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise()
-						);
-
-				listOfCNpVerticalTail.add(
-						Tuple.of(
-								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNpVerticalTail
-								)
-						);
-			}
-			
 			_cNpVertical.put(
 					MethodEnum.NAPOLITANO_DATCOM,
-					listOfCNpVerticalTail
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNpVerticalTailNapolitanoDatcom(
+											_cYBetaVertical.get(MethodEnum.NAPOLITANO_DATCOM),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
+											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
+											.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeX())
+											.plus((_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChord()).times(0.25))
+											.minus(
+													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(x)
+													.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
+													.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
+													),
+											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
+											.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeZ()),
+											_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise()
+											).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									)
+							)
+					.collect(Collectors.toList())
 					);
-			
-			List<Tuple2<Double, List<Amount<?>>>> listOfCNpTotal = new ArrayList();
-			List<Amount<?>> temporaryListofCNpTotal = new ArrayList<>();
-			
-			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
-				for (int j = 0; j < _alphaBodyList.size(); j++) {
-
-					Amount<?> temporaryCNpTotal = MomentCalc.calcCNpTotalNapolitanoDatcom(
-							_cNpWing.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2.get(j),
-							_cNpVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2
-							);
-					
-					temporaryListofCNpTotal.add(temporaryCNpTotal);
-
-				}
-
-				listOfCNpTotal.add(
-						Tuple.of(
-								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryListofCNpTotal
-								)
-						);
-			}
-			
 			_cNpTotal.put(
 					MethodEnum.NAPOLITANO_DATCOM,
-					listOfCNpTotal
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNpTotalNapolitanoDatcom(
+											Amount.valueOf(_cNpWing.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE),
+											Amount.valueOf(_cNpVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE)
+											).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									)
+							)
+					.collect(Collectors.toList())
 					);
-			
+
 			CalcCD0Total calcCD0TotalFuselage = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Total();
 			calcCD0TotalFuselage.semiempirical();
-			
+
 			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Total calcCD0TotalNacelle =
 					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Total();
 			calcCD0TotalNacelle.semiempirical();
-			
+
 			CalcCD0 calcCD0TotalWing = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCD0();
 			calcCD0TotalWing.semiempirical(_currentMachNumber, _currentAltitude);
 
@@ -21622,7 +21571,7 @@ public class ACAerodynamicAndStabilityManager {
 					_currentMachNumber,
 					_currentAltitude
 					);
-			
+
 			CalcCD0 calcCD0TotalHTail = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCD0();
 			calcCD0TotalHTail.semiempirical(_currentMachNumber, _currentAltitude);
 
@@ -21632,7 +21581,7 @@ public class ACAerodynamicAndStabilityManager {
 					_currentMachNumber,
 					_currentAltitude
 					);
-			
+
 			CalcCD0 calcCD0TotalVTail = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcCD0();
 			calcCD0TotalVTail.semiempirical(_currentMachNumber, _currentAltitude);
 
@@ -21642,7 +21591,7 @@ public class ACAerodynamicAndStabilityManager {
 					_currentMachNumber,
 					_currentAltitude
 					);
-			
+
 			Double cD0TotalAircraft = DragCalc.calculateCD0Total(
 					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL), 
 					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Parasite().get(MethodEnum.SEMIEMPIRICAL), 
@@ -21655,108 +21604,263 @@ public class ACAerodynamicAndStabilityManager {
 					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
 					cD0ParasiteVTail
 					);
-			
-			List<Tuple2<Double, List<Amount<?>>>> listOfCNrWing = new ArrayList();
-			List<Amount<?>> temporaryListOfCNrWing = new ArrayList<>();
-			
-			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
-				for (int j = 0; j < _alphaBodyList.size(); j++) {
-
-					Amount<?> temporaryCNrWing = MomentCalc.calcCNrWingNapolitanoDatcom(
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
-							getStaticStabilityMarginMap().get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j),
-							cD0TotalAircraft,
-							LiftCalc.calculateLiftCoeff(
-									(
-											_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
-											+ _theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(SI.KILOGRAM)
-											)/2*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-									getCurrentMachNumber()*AtmosphereCalc.getSpeedOfSound(getCurrentAltitude().doubleValue(SI.METER)),
-									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-									getCurrentAltitude().doubleValue(SI.METER)
-									),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
-							);
-					temporaryListOfCNrWing.add(temporaryCNrWing);
-				}
-				
-				listOfCNrWing.add(
-						Tuple.of(
-								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryListOfCNrWing
-								)
-						);
-				
-			}
-			
 			_cNrWing.put(
 					MethodEnum.NAPOLITANO_DATCOM,
-					listOfCNrWing
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNrWingNapolitanoDatcom(
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+											getStaticStabilityMarginMap().get(x).get(indexOfAlphaBody),
+											cD0TotalAircraft,
+											LiftCalc.calculateLiftCoeff(
+													(
+															_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
+															+ _theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(SI.KILOGRAM)
+															)/2*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+													getCurrentMachNumber()*AtmosphereCalc.getSpeedOfSound(getCurrentAltitude().doubleValue(SI.METER)),
+													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+													getCurrentAltitude().doubleValue(SI.METER)
+													),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
+											).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									)
+							)
+					.collect(Collectors.toList())
 					);
-			
-			List<Tuple2<Double, Amount<?>>> listOfCNrVerticalTail = new ArrayList();
-			
-			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
-				Amount<?> temporaryCNrVerticalTail = MomentCalc.calcCNrVerticalTailNapolitanoDatcom(
-						_cYBetaVertical.get(MethodEnum.NAPOLITANO_DATCOM),
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
-						_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
-						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeX())
-						.plus((_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChord()).times(0.25))
-						.minus(
-								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
-								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
-								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
-								),
-						_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
-						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeZ()),
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise()
-						);
-
-				listOfCNrVerticalTail.add(
-						Tuple.of(
-								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNrVerticalTail
-								)
-						);
-			}
-			
 			_cNrVertical.put(
 					MethodEnum.NAPOLITANO_DATCOM,
-					listOfCNrVerticalTail
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNrVerticalTailNapolitanoDatcom(
+											_cYBetaVertical.get(MethodEnum.NAPOLITANO_DATCOM),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
+											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
+											.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeX())
+											.plus((_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChord()).times(0.25))
+											.minus(
+													_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(x)
+													.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
+													.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
+													),
+											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
+											.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeZ()),
+											_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise()
+											).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									)
+							)
+					.collect(Collectors.toList())
 					);
-			
-			List<Tuple2<Double, List<Amount<?>>>> listOfCNrTotal = new ArrayList();
-			List<Amount<?>> temporaryListofCNrTotal = new ArrayList<>();
-			
-			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
-				for (int j = 0; j < _alphaBodyList.size(); j++) {
-
-					Amount<?> temporaryCNrTotal = MomentCalc.calcCNrTotalNapolitanoDatcom(
-							_cNrWing.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2.get(j),
-							_cNrVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2
-							);
-					
-					temporaryListofCNrTotal.add(temporaryCNrTotal);
-
-				}
-
-				listOfCNrTotal.add(
-						Tuple.of(
-								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryListofCNrTotal
-								)
-						);
-			}
-			
 			_cNrTotal.put(
 					MethodEnum.NAPOLITANO_DATCOM,
-					listOfCNrTotal
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNrTotalNapolitanoDatcom(
+											Amount.valueOf(_cNrWing.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE),
+											Amount.valueOf(_cNrVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE)
+											).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									)
+							)
+					.collect(Collectors.toList())
+					);
+
+			//=======================================================================================
+			// Calculating yawing coefficient breakdown ...
+			//=======================================================================================
+			_cNFuselage.put(
+					MethodEnum.NAPOLITANO_DATCOM,
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNFuselageNapolitanoDatcom(
+											_cNBetaFuselage.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2(),
+											_betaList
+											)
+									)
+							)
+					.collect(Collectors.toList())
+					);
+
+			_cNWing.put(
+					MethodEnum.NAPOLITANO_DATCOM,
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+					.map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNWing(
+											_cNBetaWing.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2(),
+											_betaList
+											)
+									)
+							)
+					.collect(Collectors.toList())
+					);
+
+			_cNVertical.put(
+					MethodEnum.NAPOLITANO_DATCOM,
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcCNVerticalNapolitanoDatcom(
+											_cNBetaVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2(),
+											_betaList
+											)
+									)
+							).collect(Collectors.toList())
+					);
+
+			_cNTotal.put(
+					MethodEnum.NAPOLITANO_DATCOM,
+					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
+							x -> Tuple.of(
+									x,
+									MomentCalc.calcTotalCN(
+											_cNFuselage.get(MethodEnum.NAPOLITANO_DATCOM)
+											.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
+											._2(),
+											_cNWing.get(MethodEnum.NAPOLITANO_DATCOM)
+											.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
+											._2(),
+											_cNVertical.get(MethodEnum.NAPOLITANO_DATCOM)
+											.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
+											._2()
+											)
+									)
+							).collect(Collectors.toList())
+					);
+			
+			Map<Amount<Angle>, List<Tuple2<Double, List<Double>>>> cNDueToDeltaRudderMap = new HashMap<>();
+
+			List<Double> tauRudderList = new ArrayList<>();
+			if(_theAerodynamicBuilderInterface.getTauRudderFunction() == null)
+				_theAerodynamicBuilderInterface.getDeltaRudderList().stream()
+				.forEach(dr -> tauRudderList.add(
+						_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getAeroDatabaseReader()
+						.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getMeanChordRatio()
+								)
+						));
+			else
+				_theAerodynamicBuilderInterface.getDeltaRudderList().stream()
+				.forEach(dr -> tauRudderList.add(
+						_theAerodynamicBuilderInterface.getTauRudderFunction().value(dr.doubleValue(NonSI.DEGREE_ANGLE))
+						));
+
+			_theAerodynamicBuilderInterface.getDeltaRudderList().stream().forEach(
+					dr -> cNDueToDeltaRudderMap.put(
+							dr,
+							_theAerodynamicBuilderInterface.getXCGAircraft().stream()
+							.map(
+									x -> Tuple.of(
+											x,
+											MomentCalc.calcCNDueToDeltaRudder(
+													_betaList,
+													_cNVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													_cNBetaVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													dr, 
+													tauRudderList.get(_theAerodynamicBuilderInterface.getDeltaRudderList().indexOf(dr))
+													)
+											)
+									)
+							.collect(Collectors.toList())
+							)
+					);	
+
+			_cNDueToDeltaRudder.put(MethodEnum.NAPOLITANO_DATCOM, cNDueToDeltaRudderMap);
+			
+			//=======================================================================================
+			// Calculating dr_equilibrium for each beta ...
+			//=======================================================================================
+			deltaRudderForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(
+					5,
+					25, 
+					5
+					)),
+					NonSI.DEGREE_ANGLE);
+			Map<Double, List<Tuple2<Amount<Angle>, Amount<Angle>>>> betaOfEquilibriumListAtCG = new HashMap<>();
+			
+			//Calculating new tau
+			List<Double> tauRudderListForEquilibrium = new ArrayList<>();
+			if(_theAerodynamicBuilderInterface.getTauRudderFunction() == null)
+				deltaRudderForEquilibrium.stream()
+				.forEach(dr -> tauRudderList.add(
+						_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getAeroDatabaseReader()
+						.getControlSurfaceTauEVsCControlSurfaceOverCHorizontalTail(
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getMeanChordRatio()
+								)
+						));
+			else
+				deltaRudderForEquilibrium.stream()
+				.forEach(dr -> tauRudderListForEquilibrium.add(
+						_theAerodynamicBuilderInterface.getTauRudderFunction().value(dr.doubleValue(NonSI.DEGREE_ANGLE))
+						));
+			//-----------------------------
+			
+			//Calcultaing new cn array
+			Map<Amount<Angle>, List<Tuple2<Double, List<Double>>>> cNDueToDeltaRudderMapForEquilibrium = new HashMap<>();
+
+			deltaRudderForEquilibrium.stream().forEach(
+					dr -> cNDueToDeltaRudderMapForEquilibrium.put(
+							dr,
+							_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
+									x -> Tuple.of(
+											x,
+											MomentCalc.calcCNDueToDeltaRudder(
+													_betaList,
+													_cNVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													_cNBetaVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													dr, 
+													tauRudderListForEquilibrium.get(deltaRudderForEquilibrium.indexOf(dr))
+													)
+											)
+									)
+							.collect(Collectors.toList())
+							)
+					);	
+			//------------------------
+			
+
+			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(
+					x -> betaOfEquilibriumListAtCG.put(
+							x, 
+							deltaRudderForEquilibrium.stream().map(
+									dr -> Tuple.of( 
+											Amount.valueOf(
+													MyMathUtils.getIntersectionXAndY(
+															MyArrayUtils.convertListOfAmountTodoubleArray(_betaList),
+															MyArrayUtils.convertToDoublePrimitive(
+																	cNDueToDeltaRudderMapForEquilibrium
+																	.get(dr)
+																	.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
+																	._2()
+																	),
+															MyArrayUtils.linspace(
+																	0.0,
+																	0.0,
+																	_betaList.size()
+																	)
+															).get(0)._1(),
+													NonSI.DEGREE_ANGLE),
+											dr)
+									)
+							.collect(Collectors.toList())
+							)
+					);
+
+			_betaOfEquilibrium.put(
+					MethodEnum.NAPOLITANO_DATCOM,
+					betaOfEquilibriumListAtCG
 					);
 			
 		}
@@ -21773,13 +21877,13 @@ public class ACAerodynamicAndStabilityManager {
 			//=======================================================================================
 			// Calculating stability derivatives for each component ...
 			//=======================================================================================
-			_cNbFuselage.put(
+			_cNBetaFuselage.put(
 					MethodEnum.VEDSC_SIMPLIFIED_WING,
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream()
 						.map(
 							x -> Tuple.of(
 									x,
-									MomentCalc.calcCNBetaFuselage(
+									MomentCalc.calcCNBetaFuselageVEDSC(
 											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFusDesDatabaseReader(), 
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getVeDSCDatabaseReader(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageFinenessRatio(), 
@@ -21816,12 +21920,12 @@ public class ACAerodynamicAndStabilityManager {
 
 
 
-			_cNbWing.put(
+			_cNBetaWing.put(
 					MethodEnum.VEDSC_SIMPLIFIED_WING,
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 							x -> Tuple.of(
 									x,
-									MomentCalc.calcCNBetaWing(_theAerodynamicBuilderInterface.getTheAircraft().getWing()
+									MomentCalc.calcCNBetaWingVEDSC(_theAerodynamicBuilderInterface.getTheAircraft().getWing()
 											.getEquivalentWing().getPanels().get(0).getSweepQuarterChord())
 									)
 							)
@@ -21829,12 +21933,12 @@ public class ACAerodynamicAndStabilityManager {
 					);
 
 
-			_cNbVertical.put(
+			_cNBetaVertical.put(
 					MethodEnum.VEDSC_SIMPLIFIED_WING,
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 							x -> Tuple.of(
 									x,
-									MomentCalc.calcCNbetaVerticalTail(
+									MomentCalc.calcCNbetaVerticalTailVEDSC(
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(), 
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getAspectRatio(), 
 											Math.abs(
@@ -21883,18 +21987,18 @@ public class ACAerodynamicAndStabilityManager {
 					);
 
 
-			_cNbTotal.put(
+			_cNBetaTotal.put(
 					MethodEnum.VEDSC_SIMPLIFIED_WING,
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 							x -> Tuple.of(
 									x,
-									_cNbVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
+									_cNBetaVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
 									.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 									._2()
-									+ _cNbWing.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
+									+ _cNBetaWing.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
 									.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 									._2()
-									+ _cNbFuselage.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
+									+ _cNBetaFuselage.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
 									.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 									._2()
 									)
@@ -21912,8 +22016,8 @@ public class ACAerodynamicAndStabilityManager {
 							_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 									x -> Tuple.of(
 											x,
-											MomentCalc.calcCNdr(
-													_cNbVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
+											MomentCalc.calcCNdrVEDSC(
+													_cNBetaVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
 													.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 													._2(),
 													dr, 
@@ -21928,7 +22032,7 @@ public class ACAerodynamicAndStabilityManager {
 							)
 					);	
 
-			_cNdr.put(MethodEnum.VEDSC_SIMPLIFIED_WING, cNdrMap);
+			_cNDeltaR.put(MethodEnum.VEDSC_SIMPLIFIED_WING, cNdrMap);
 
 			//=======================================================================================
 			// Calculating yawing coefficient breakdown ...
@@ -21938,8 +22042,8 @@ public class ACAerodynamicAndStabilityManager {
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 							x -> Tuple.of(
 									x,
-									MomentCalc.calcNonLinearCNFuselage(
-											_cNbFuselage.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
+									MomentCalc.calcNonLinearCNFuselageVEDSC(
+											_cNBetaFuselage.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
 											.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 											._2(),
 											_betaList
@@ -21954,7 +22058,7 @@ public class ACAerodynamicAndStabilityManager {
 							x -> Tuple.of(
 									x,
 									MomentCalc.calcCNWing(
-											_cNbWing.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
+											_cNBetaWing.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
 											.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 											._2(),
 											_betaList
@@ -21964,18 +22068,18 @@ public class ACAerodynamicAndStabilityManager {
 					);
 
 			_cNVertical.put(
-					MethodEnum.VEDSC_USAFDATCOM_WING,
+					MethodEnum.VEDSC_SIMPLIFIED_WING,
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 							x -> Tuple.of(
 									x,
-									MomentCalc.calcNonLinearCNVTail(
+									MomentCalc.calcNonLinearCNVTailVEDSC(
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getAeroDatabaseReader(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getPanels().get(0).getSweepLeadingEdge(),
 											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
 											.getMeanAirfoil().getThicknessToChordRatio(),
 											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
 											.getMeanAirfoil().getFamily(),
-											_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
+											_cNBetaVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
 											.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 											._2(),
 											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLMax().get(
@@ -22058,7 +22162,7 @@ public class ACAerodynamicAndStabilityManager {
 											MomentCalc.calcCNDueToDeltaRudder(
 													_betaList,
 													_cNVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
-													_cNbVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													_cNBetaVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
 													dr, 
 													tauRudderList.get(_theAerodynamicBuilderInterface.getDeltaRudderList().indexOf(dr))
 													)
@@ -22105,8 +22209,8 @@ public class ACAerodynamicAndStabilityManager {
 											x,
 											MomentCalc.calcCNDueToDeltaRudder(
 													_betaList,
-													_cNVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
-													_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													_cNVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													_cNBetaVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
 													dr, 
 													tauRudderListForEquilibrium.get(deltaRudderForEquilibrium.indexOf(dr))
 													)
@@ -22146,7 +22250,7 @@ public class ACAerodynamicAndStabilityManager {
 					);
 
 			_betaOfEquilibrium.put(
-					MethodEnum.VEDSC_USAFDATCOM_WING, 
+					MethodEnum.VEDSC_SIMPLIFIED_WING,
 					betaOfEquilibriumListAtCG
 					);
 		}
@@ -22164,12 +22268,12 @@ public class ACAerodynamicAndStabilityManager {
 			//=======================================================================================
 			// Calculating stability derivatives for each component ...
 			//=======================================================================================
-			_cNbFuselage.put(
+			_cNBetaFuselage.put(
 					MethodEnum.VEDSC_USAFDATCOM_WING,
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 							x -> Tuple.of(
 									x,
-									MomentCalc.calcCNBetaFuselage(
+									MomentCalc.calcCNBetaFuselageVEDSC(
 											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFusDesDatabaseReader(), 
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getVeDSCDatabaseReader(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageFinenessRatio(), 
@@ -22206,12 +22310,12 @@ public class ACAerodynamicAndStabilityManager {
 
 			CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlpha();
 
-			_cNbWing.put(
+			_cNBetaWing.put(
 					MethodEnum.VEDSC_USAFDATCOM_WING,
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 							x -> Tuple.of(
 									x,
-									MomentCalc.calcCNBetaWing(
+									MomentCalc.calcCNBetaWingVEDSC(
 											calcCLAtAlpha.nasaBlackwellCompleteCurve(_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE)),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
@@ -22230,12 +22334,12 @@ public class ACAerodynamicAndStabilityManager {
 					);
 
 
-			_cNbVertical.put(
+			_cNBetaVertical.put(
 					MethodEnum.VEDSC_USAFDATCOM_WING,
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 							x -> Tuple.of(
 									x,
-									MomentCalc.calcCNbetaVerticalTail(
+									MomentCalc.calcCNbetaVerticalTailVEDSC(
 											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(), 
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getAspectRatio(), 
 											Math.abs(
@@ -22284,18 +22388,18 @@ public class ACAerodynamicAndStabilityManager {
 					);
 
 
-			_cNbTotal.put(
+			_cNBetaTotal.put(
 					MethodEnum.VEDSC_USAFDATCOM_WING,
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 							x -> Tuple.of(
 									x,
-									_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
+									_cNBetaVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
 									.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 									._2()
-									+ _cNbWing.get(MethodEnum.VEDSC_USAFDATCOM_WING)
+									+ _cNBetaWing.get(MethodEnum.VEDSC_USAFDATCOM_WING)
 									.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 									._2()
-									+ _cNbFuselage.get(MethodEnum.VEDSC_USAFDATCOM_WING)
+									+ _cNBetaFuselage.get(MethodEnum.VEDSC_USAFDATCOM_WING)
 									.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 									._2()
 									)
@@ -22313,8 +22417,8 @@ public class ACAerodynamicAndStabilityManager {
 							_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 									x -> Tuple.of(
 											x,
-											MomentCalc.calcCNdr(
-													_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
+											MomentCalc.calcCNdrVEDSC(
+													_cNBetaVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
 													.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 													._2(),
 													dr, 
@@ -22329,7 +22433,7 @@ public class ACAerodynamicAndStabilityManager {
 							)
 					);	
 
-			_cNdr.put(MethodEnum.VEDSC_USAFDATCOM_WING, cNdrMap);		
+			_cNDeltaR.put(MethodEnum.VEDSC_USAFDATCOM_WING, cNdrMap);		
 
 			//=======================================================================================
 			// Calculating yawing coefficient breakdown ...
@@ -22339,8 +22443,8 @@ public class ACAerodynamicAndStabilityManager {
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 							x -> Tuple.of(
 									x,
-									MomentCalc.calcNonLinearCNFuselage(
-											_cNbFuselage.get(MethodEnum.VEDSC_USAFDATCOM_WING)
+									MomentCalc.calcNonLinearCNFuselageVEDSC(
+											_cNBetaFuselage.get(MethodEnum.VEDSC_USAFDATCOM_WING)
 											.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 											._2(),
 											_betaList
@@ -22355,7 +22459,7 @@ public class ACAerodynamicAndStabilityManager {
 							x -> Tuple.of(
 									x,
 									MomentCalc.calcCNWing(
-											_cNbWing.get(MethodEnum.VEDSC_USAFDATCOM_WING)
+											_cNBetaWing.get(MethodEnum.VEDSC_USAFDATCOM_WING)
 											.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 											._2(),
 											_betaList
@@ -22369,14 +22473,14 @@ public class ACAerodynamicAndStabilityManager {
 					_theAerodynamicBuilderInterface.getXCGAircraft().stream().map(
 							x -> Tuple.of(
 									x,
-									MomentCalc.calcNonLinearCNVTail(
+									MomentCalc.calcNonLinearCNVTailVEDSC(
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getAeroDatabaseReader(),
 											_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getPanels().get(0).getSweepLeadingEdge(),
 											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
 											.getMeanAirfoil().getThicknessToChordRatio(),
 											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
 											.getMeanAirfoil().getFamily(),
-											_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
+											_cNBetaVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
 											.get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))
 											._2(),
 											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLMax().get(
@@ -22459,7 +22563,7 @@ public class ACAerodynamicAndStabilityManager {
 											MomentCalc.calcCNDueToDeltaRudder(
 													_betaList,
 													_cNVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
-													_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													_cNBetaVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
 													dr, 
 													tauRudderList.get(_theAerodynamicBuilderInterface.getDeltaRudderList().indexOf(dr))
 													)
@@ -22508,7 +22612,7 @@ public class ACAerodynamicAndStabilityManager {
 											MomentCalc.calcCNDueToDeltaRudder(
 													_betaList,
 													_cNVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
-													_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
+													_cNBetaVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2,
 													dr, 
 													tauRudderListForEquilibrium.get(deltaRudderForEquilibrium.indexOf(dr))
 													)
@@ -23132,132 +23236,100 @@ public class ACAerodynamicAndStabilityManager {
 		this._cRollrTotal = _cRollrTotal;
 	}
 	
-//	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaFuselage() {
-//		return _cNBetaFuselage;
-//	}
+	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNBetaFuselage() {
+		return _cNBetaFuselage;
+	}
+
+	public void setCNBetaFuselage(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaFuselage) {
+		this._cNBetaFuselage = _cNBetaFuselage;
+	}
+
+	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNBetaVertical() {
+		return _cNBetaVertical;
+	}
+
+	public void setCNBetaVertical(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaVertical) {
+		this._cNBetaVertical = _cNBetaVertical;
+	}
+
+	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNBetaWing() {
+		return _cNBetaWing;
+	}
+
+	public void setCNBetaWing(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaWing) {
+		this._cNBetaWing = _cNBetaWing;
+	}
+
+	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNBetaTotal() {
+		return _cNBetaTotal;
+	}
+
+	public void setCNBetaTotal(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaTotal) {
+		this._cNBetaTotal = _cNBetaTotal;
+	}
 	
-//	public void setCNBetaFuselage(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaFuselage) {
-//		this._cNBetaFuselage = _cNBetaFuselage;
-//	}
-	
-//	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaVertical() {
-//		return _cNBetaVertical;
-//	}
-	
-//	public void setCNBetaVertical(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaVertical) {
-//		this._cNBetaVertical = _cNBetaVertical;
-//	}
-	
-//	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaTotal() {
-//		return _cNBetaTotal;
-//	}
-	
-//	public void setCNBetaTotal(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaTotal) {
-//		this._cNBetaTotal = _cNBetaTotal;
-//	}
-	
-	public Map<MethodEnum, Amount<?>> getCNDeltaA() {
+	public Map<MethodEnum, Double> getCNDeltaA() {
 		return _cNDeltaA;
 	}
 	
-	public void setCNDeltaA(Map<MethodEnum, Amount<?>> _cNDeltaA) {
+	public void setCNDeltaA(Map<MethodEnum, Double> _cNDeltaA) {
 		this._cNDeltaA = _cNDeltaA;
 	}
+
+	public Map<MethodEnum, Map<Amount<Angle>, List<Tuple2<Double, Double>>>> getCNDeltaR() {
+		return _cNDeltaR;
+	}
+
+	public void setCNDeltaR(Map<MethodEnum, Map<Amount<Angle>, List<Tuple2<Double, Double>>>> _cNDeltaR) {
+		this._cNDeltaR = _cNDeltaR;
+	}
 	
-//	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNDeltaR() {
-//		return _cNDeltaR;
-//	}
-	
-//	public void setCNDeltaR(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNDeltaR) {
-//		this._cNDeltaR = _cNDeltaR;
-//	}
-	
-	public Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> getCNpWing() {
+	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNpWing() {
 		return _cNpWing;
 	}
 	
-	public void setCNpWing(Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNpWing) {
+	public void setCNpWing(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpWing) {
 		this._cNpWing = _cNpWing;
 	}
 	
-	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNpVertical() {
+	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNpVertical() {
 		return _cNpVertical;
 	}
 	
-	public void setCNpVertical(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNpVertical) {
+	public void setCNpVertical(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpVertical) {
 		this._cNpVertical = _cNpVertical;
 	}
 	
-	public Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> getCNpTotal() {
+	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNpTotal() {
 		return _cNpTotal;
 	}
 	
-	public void setCNpTotal(Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNpTotal) {
+	public void setCNpTotal(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpTotal) {
 		this._cNpTotal = _cNpTotal;
 	}
 	
-	public Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> getCNrWing() {
+	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNrWing() {
 		return _cNrWing;
 	}
 	
-	public void setCNrWing(Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNrWing) {
+	public void setCNrWing(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNrWing) {
 		this._cNrWing = _cNrWing;
 	}
 	
-	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNrVertical() {
+	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNrVertical() {
 		return _cNrVertical;
 	}
 	
-	public void setCNrVertical(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNrVertical) {
+	public void setCNrVertical(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNrVertical) {
 		this._cNrVertical = _cNrVertical;
 	}
 	
-	public Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> getCNrTotal() {
+	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNrTotal() {
 		return _cNrTotal;
 	}
 	
-	public void setCNrTotal(Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNrTotal) {
+	public void setCNrTotal(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNrTotal) {
 		this._cNrTotal = _cNrTotal;
-	}
-	
-	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNbFuselage() {
-		return _cNbFuselage;
-	}
-
-	public void setCNbFuselage(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbFuselage) {
-		this._cNbFuselage = _cNbFuselage;
-	}
-
-	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNbVertical() {
-		return _cNbVertical;
-	}
-
-	public void setCNbVertical(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbVertical) {
-		this._cNbVertical = _cNbVertical;
-	}
-
-	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNbWing() {
-		return _cNbWing;
-	}
-
-	public void setCNbWing(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbWing) {
-		this._cNbWing = _cNbWing;
-	}
-
-	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNbTotal() {
-		return _cNbTotal;
-	}
-
-	public void setCNbTotal(Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbTotal) {
-		this._cNbTotal = _cNbTotal;
-	}
-
-	public Map<MethodEnum, Map<Amount<Angle>, List<Tuple2<Double, Double>>>> getCNdr() {
-		return _cNdr;
-	}
-
-	public void setCNdr(Map<MethodEnum, Map<Amount<Angle>, List<Tuple2<Double, Double>>>> _cNdr) {
-		this._cNdr = _cNdr;
 	}
 
 	public Map<MethodEnum, List<Tuple2<Double, List<Double>>>> getCNFuselage() {

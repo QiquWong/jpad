@@ -938,7 +938,7 @@ public class Test_01 {
 														2
 														)
 										);
-		double staticMargin = -0.108;
+		double staticMargin = -0.0799;
 		Amount<?> cNpOverCL1AtMachZero = Amount.valueOf(
 				-(
 						aspectRatioWing + 6*(
@@ -1226,18 +1226,6 @@ public class Test_01 {
 				).divide(spanWing).times(-2);
 		
 		System.out.println(">>>>>> CY_r: " + cYr);
-		
-		List<Double> a = new ArrayList<Double>();
-		a.add(-1.0);
-		a.add( 0.0);
-		a.add( 1.0);
-		a.add( 2.0);
-		a.add( 3.0);
-		
-		double x = 3.01; 
-		System.out.println("index of " + x + ": " + a.indexOf(x));
-		
-		
 		
 	}
 

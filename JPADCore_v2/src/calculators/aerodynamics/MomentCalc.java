@@ -958,10 +958,10 @@ public class MomentCalc {
 	 * @param taperRatioW
 	 * @param sweepC4W
 	 * @param twistTipW
+	 * @param staticMargin
 	 * @param angleOfAttack
 	 * @param cL
 	 * @param mach
-	 * @param staticMargin
 	 * @param databaseReader
 	 * @return
 	 */
@@ -1229,7 +1229,7 @@ public class MomentCalc {
 	 * @param kHv
 	 * @return
 	 */
-	public static double calcCNbetaVerticalTail(
+	public static double calcCNbetaVerticalTailVEDSC(
 			double wingAr, double verticalAr, 
 			double armVertical, double wingSpan,
 			double surfaceWing, double surfaceVertical, 
@@ -1301,7 +1301,7 @@ public class MomentCalc {
 	 * Ciliberti, Cusati, Attanasio, 33rd AIAA Applied Aerodynamics 
 	 * Conference, Aviation Forum 2015, Dallas (Texas, USA)).
 	 */
-	public static double calcCNBetaFuselage(
+	public static double calcCNBetaFuselageVEDSC(
 			FusDesDatabaseReader fusDesDatabaseReader,
 			VeDSCDatabaseReader veDSCDatabaseReader,
 			double finenessRatio,
@@ -1355,8 +1355,22 @@ public class MomentCalc {
 				*kWf;
 	}
 	
+	public static List<Double>	calcCNFuselageNapolitanoDatcom(double cNbetaFuselage, List<Amount<Angle>> betaList){
+		
+		return betaList.stream()
+				.map(b -> cNbetaFuselage*b.doubleValue(NonSI.DEGREE_ANGLE))
+				.collect(Collectors.toList());
+	}
 	
-	public static List<Double> calcNonLinearCNFuselage(double cNbetaFuselage, List<Amount<Angle>> betaList){
+	public static List<Double>	calcCNVerticalNapolitanoDatcom(double cNbetaVertical, List<Amount<Angle>> betaList){
+		
+		return betaList.stream()
+				.map(b -> cNbetaVertical*b.doubleValue(NonSI.DEGREE_ANGLE))
+				.collect(Collectors.toList());
+	}
+	
+	
+	public static List<Double> calcNonLinearCNFuselageVEDSC(double cNbetaFuselage, List<Amount<Angle>> betaList){
 		
 		return betaList.stream()
 				.map(b -> 0.2362 + 1.0178*b.doubleValue(NonSI.DEGREE_ANGLE) - 0.0135*Math.pow(b.doubleValue(NonSI.DEGREE_ANGLE),2))
@@ -1364,6 +1378,7 @@ public class MomentCalc {
 				.collect(Collectors.toList());
 	}
 	
+	// This function is the same for the methods NAPOLITANO_DATCOM, VEDSC_SIMPLIFIED_WING and VEDSC_USAFDATCOM_WING
 	public static List<Double>	calcCNWing(double cNbetaWing, List<Amount<Angle>> betaList){
 		
 		return betaList.stream()
@@ -1371,7 +1386,7 @@ public class MomentCalc {
 				.collect(Collectors.toList());
 	}
 	
-	public static List<Double>	calcNonLinearCNVTail(
+	public static List<Double>	calcNonLinearCNVTailVEDSC(
 			AerodynamicDatabaseReader aeroDatabaseReader,
 			Amount<Angle> sweepLEVTail,
 			double tcVTailMeanAirfoil,
@@ -1429,7 +1444,7 @@ public class MomentCalc {
 		return result;
 	}
 	
-	
+	// This function is the same for the methods NAPOLITANO_DATCOM, VEDSC_SIMPLIFIED_WING and VEDSC_USAFDATCOM_WING
 	public static List<Double>	calcTotalCN(List<Double> cNFuselageList, List<Double> cNWingList, List<Double> cNVerticalList){
 		
 		return cNVerticalList.stream()
@@ -1440,7 +1455,7 @@ public class MomentCalc {
 				.collect(Collectors.toList());
 	}
 	
-	public static double calcCNdr(
+	public static double calcCNdrVEDSC(
 			double cNbVTail,
 			Amount<Angle> dr, 
 			double rudderChordRatio,
@@ -1458,7 +1473,8 @@ public class MomentCalc {
 				);
 		
 	}
-
+	
+	// This function is the same for the methods NAPOLITANO_DATCOM, VEDSC_SIMPLIFIED_WING and VEDSC_USAFDATCOM_WING
 	public static List<Double> calcCNDueToDeltaRudder(
 			List<Amount<Angle>> betaList,
 			List<Double> cNVTail,
@@ -1487,7 +1503,7 @@ public class MomentCalc {
 	 * @return the yawing moment coefficient derivative (CN_beta) of the wing 
 	 */
 
-	public static double calcCNBetaWing(Amount<Angle> sweepQuarterChord){
+	public static double calcCNBetaWingVEDSC(Amount<Angle> sweepQuarterChord){
 
 		return 0.00006*Math.sqrt(sweepQuarterChord.doubleValue(NonSI.DEGREE_ANGLE));
 
@@ -1508,7 +1524,7 @@ public class MomentCalc {
 	 * @author Vincenzo Cusati
 	 */
 
-	public static double calcCNBetaWing(
+	public static double calcCNBetaWingVEDSC(
 			double liftCoeff, 
 			Amount<Angle> sweepQuarterChord, 
 			double aspectRatio,

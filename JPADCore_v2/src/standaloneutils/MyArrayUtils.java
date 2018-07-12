@@ -296,35 +296,32 @@ public final class MyArrayUtils {
 		return Arrays.asList(a).indexOf(target);
 	}	
 
-	// list of values MUST be sorted
-//	public static Tuple2<Integer, Integer> getBracketingIndicesOf(List<Double> a, Double target) {
-//		int i0, i1;
-//		i0 = -1;
-//		i1 = -1;
-//		
-//		i0 = a.indexOf(target);
-//		
-//		if (i0 == -1) {
-//			if (target < a.get(0))
-//				return Tuple.of(-1, 1);
-//			if (target > a.get(a.size()))
-//				return Tuple.of(a.size(), -1);
-//			if ( 
-//				(target > a.get(0))
-//				&& 
-//				(target < a.get(a.size()))
-//				) {
-//					// TODO: check!!!
-//					for (int i=0; i < a.size(); i++) {
-//						if (target > a.get(i)) {
-//							i0 = i;
-//							i1 = i0+1;
-//							return Tuple.of(i0, i1);
-//						}
-//					}			
-//				}
-//		}
-//	}	
+	// Function to find the index of the nearest value in a sorted List<Double>
+	public static int getIndexOfClosestValue(List<Double> a, Double target) {
+
+		int index = -1;
+
+		if(
+				(target < a.get(0))
+				||
+				(target > a.get(a.size() - 1))
+				)
+			return index;
+		else {
+			for (int i = 0; i < a.size(); i++) {
+				if (target <= a.get(i)) {
+					index = i;
+					break;
+				}
+			}
+			if (index == 0)
+				return index;
+			else if ((a.get(index) - target) <= (target - a.get(index - 1)))
+				return index; 
+			else
+				return index - 1;
+		}
+	}
 	
 	/*
 	 *  agodemar: adapted from https://www.geeksforgeeks.org/find-closest-number-array
