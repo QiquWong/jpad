@@ -326,7 +326,93 @@ public final class MyArrayUtils {
 //		}
 //	}	
 	
+	/*
+	 *  agodemar: adapted from https://www.geeksforgeeks.org/find-closest-number-array
+	 *  
+	 *  Given a list of sorted Double-s. We need to find the closest value to the given number, i.e. target. 
+	 *  List may contain duplicate values and negative numbers. 
+	 */
+	public static Tuple2<Integer, Double> findClosest(List<Double> a, Double target, Double tolerance) {
+		int n = a.size();
+
+		// Corner cases
+		if (target <= a.get(0))
+			return Tuple.of(0, a.get(0));
+		if (target >= a.get(n - 1))
+			return Tuple.of(n - 1, a.get(n - 1));
+
+		// Doing binary search 
+		int i = 0, j = n, mid = 0;
+
+		while (i < j) {
+			mid = (i + j) / 2;
+
+			if (Math.abs(a.get(mid) - target) <= tolerance) // <--- // if (arr[mid] == target)
+				return Tuple.of(mid, a.get(mid));
+
+			/* If target is less than array element,
+               then search in left */
+			if (tolerance < (a.get(mid) - target)) { // <--- if (target < arr[mid])
+
+				// If target is greater than previous to mid, return closest of two
+				if (mid > 0 && target > a.get(mid)) {
+					Tuple2<Integer, Double> tp = getClosestTuple(a.get(mid - 1), a.get(mid), target);
+					return Tuple.of(
+							mid - 1 + tp._1, // +0 or +1
+							tp._2 // val1 or val2
+							);
+				}
+
+				/* Repeat for left half */
+				j = mid;              
+			}
+			// If target is greater than mid
+			else {
+				if (mid < n-1 && target < a.get(mid + 1)) {
+					Tuple2<Integer, Double> tp = getClosestTuple(a.get(mid), a.get(mid + 1), target);
+					return Tuple.of(
+							mid + tp._1, // +0 or +1
+							tp._2 // val1 or val2
+							);
+
+				}
+
+				i = mid + 1; // update i
+			}
+		} 
+		// Only single element left after search
+		return Tuple.of(mid, a.get(mid));
+	}
 	
+	/*
+	 *  agodemar: adapted from https://www.geeksforgeeks.org/find-closest-number-array
+	 *  
+	 *  Method to compare which one is the more close. We find the closest by taking the difference
+	 *  between the target and both values. It assumes that val2 is greater than val1 and target lies
+	 *  between these two.
+	 *  
+	 */
+    public static double getClosestValue(double val1, double val2, double target) {
+        if (target - val1 >= val2 - target) 
+            return val2;        
+        else
+            return val1;        
+    }
+
+    public static Tuple2<Integer, Double> getClosestTuple(double val1, double val2, double target) {
+        if (target - val1 >= val2 - target) 
+            return Tuple.of(1, val2);
+        else
+            return Tuple.of(0, val1);
+    }
+    
+	public static List<Double> convertArrayDoublePrimitiveToList(double[] a) {
+		return Arrays.stream(a) 					// IntStream
+					.boxed()						// Stream<Double>
+					.collect(Collectors.toList());   // List<Double>
+	}	
+    
+    
 	// http://stackoverflow.com/questions/11447780/convert-two-dimensional-array-to-list-in-java
 	public static <T> List<List<T>> convert2DArrayToList(T[][] twoDArray) {
 	    List<List<T>> list = new ArrayList<>(twoDArray.length);
