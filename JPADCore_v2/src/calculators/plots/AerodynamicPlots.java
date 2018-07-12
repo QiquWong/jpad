@@ -6647,6 +6647,10 @@ public class AerodynamicPlots {
 		
 		//-----------------------------------------------------------------------------------------------------------------------
 		// CN BREAKDOWN
+		
+		// TODO: check the type of method used, e.g. VEDESC or NAPOLITANO_DATCOM
+		//       and use arrays accordingly
+
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TOTAL_CN_BREAKDOWN)) {
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
@@ -6859,6 +6863,7 @@ public class AerodynamicPlots {
 		}
 			else
 				System.err.println("WARNING!! THE EQUILIBRIUM DELTA RUDDER ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE EQUILIBRIUM DELTA RUDDER");	
+		
 	}
 
 }

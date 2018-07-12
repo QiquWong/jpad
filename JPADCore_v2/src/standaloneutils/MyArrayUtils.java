@@ -25,6 +25,9 @@ import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.util.MathArrays;
 import org.jscience.physics.amount.Amount;
 
+import javaslang.Tuple;
+import javaslang.Tuple2;
+
 public final class MyArrayUtils {
 
 	private MyArrayUtils() {}
@@ -273,7 +276,57 @@ public final class MyArrayUtils {
 		return sum/(double)data.length;
 	}
 
+	// Function to find the index of an element in a primitive array in Java
+	public static int getIndexOf(int[] a, int target) {
+		return Arrays.stream(a) 					// IntStream
+					.boxed()						// Stream<Integer>
+					.collect(Collectors.toList())   // List<Integer>
+					.indexOf(target);
+	}	
+	// Function to find the index of an element in a primitive array in Java
+	public static int getIndexOf(double[] a, double target) {
+		return Arrays.stream(a) 					// IntStream
+					.boxed()						// Stream<Integer>
+					.collect(Collectors.toList())   // List<Integer>
+					.indexOf(target);
+	}
+	
+	// Generic function to find the index of an element in an object array in Java
+	public static<T> int getIndexOf(T[] a, T target) {
+		return Arrays.asList(a).indexOf(target);
+	}	
 
+	// list of values MUST be sorted
+//	public static Tuple2<Integer, Integer> getBracketingIndicesOf(List<Double> a, Double target) {
+//		int i0, i1;
+//		i0 = -1;
+//		i1 = -1;
+//		
+//		i0 = a.indexOf(target);
+//		
+//		if (i0 == -1) {
+//			if (target < a.get(0))
+//				return Tuple.of(-1, 1);
+//			if (target > a.get(a.size()))
+//				return Tuple.of(a.size(), -1);
+//			if ( 
+//				(target > a.get(0))
+//				&& 
+//				(target < a.get(a.size()))
+//				) {
+//					// TODO: check!!!
+//					for (int i=0; i < a.size(); i++) {
+//						if (target > a.get(i)) {
+//							i0 = i;
+//							i1 = i0+1;
+//							return Tuple.of(i0, i1);
+//						}
+//					}			
+//				}
+//		}
+//	}	
+	
+	
 	// http://stackoverflow.com/questions/11447780/convert-two-dimensional-array-to-list-in-java
 	public static <T> List<List<T>> convert2DArrayToList(T[][] twoDArray) {
 	    List<List<T>> list = new ArrayList<>(twoDArray.length);

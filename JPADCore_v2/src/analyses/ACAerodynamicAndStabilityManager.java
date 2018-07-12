@@ -16,6 +16,7 @@ import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -255,11 +256,11 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cRollrTotal = new HashMap<>();
 	
 	// Directional Static Stability stuff
-	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaFuselage = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaVertical = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaTotal = new HashMap<>();
+//	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaFuselage = new HashMap<>();
+//	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaVertical = new HashMap<>();
+//	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaTotal = new HashMap<>();
 	private Map<MethodEnum, Amount<?>> _cNDeltaA = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNDeltaR = new HashMap<>();
+//	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNDeltaR = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNpWing = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNpVertical = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> _cNpTotal = new HashMap<>();
@@ -21336,7 +21337,7 @@ public class ACAerodynamicAndStabilityManager {
 					lengthFuselage.doubleValue(SI.METER)
 					);
 			
-			List<Tuple2<Double, Amount<?>>> listOfCNBetaFuselage = new ArrayList();
+			List<Tuple2<Double, Double>> listOfCNBetaFuselage = new ArrayList();
 			
 			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
@@ -21359,17 +21360,18 @@ public class ACAerodynamicAndStabilityManager {
 				listOfCNBetaFuselage.add(
 						Tuple.of(
 								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNBetaFuselage
+								temporaryCNBetaFuselage.to(SI.RADIAN.inverse()).getEstimatedValue()
+
 								)
 						);
 			}
 			
-			_cNBetaFuselage.put(
+			_cNbFuselage.put(
 					MethodEnum.NAPOLITANO_DATCOM,
 					listOfCNBetaFuselage
 					);
 			
-			List<Tuple2<Double, Amount<?>>> listOfCNBetaVerticalTail = new ArrayList();
+			List<Tuple2<Double, Double>> listOfCNBetaVerticalTail = new ArrayList();
 			
 			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
@@ -21392,34 +21394,34 @@ public class ACAerodynamicAndStabilityManager {
 				listOfCNBetaVerticalTail.add(
 						Tuple.of(
 								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNBetaVerticalTail
+								temporaryCNBetaVerticalTail.to(SI.RADIAN.inverse()).getEstimatedValue()
 								)
 						);
 			}
 			
-			_cNBetaVertical.put(
+			_cNbVertical.put(
 					MethodEnum.NAPOLITANO_DATCOM,
 					listOfCNBetaVerticalTail
 					);
 			
-			List<Tuple2<Double, Amount<?>>> listOfCNBetaTotal = new ArrayList();
+			List<Tuple2<Double, Double>> listOfCNBetaTotal = new ArrayList();
 			
 			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
 				Amount<?> temporaryCNBetaTotal = MomentCalc.calcCNBetaTotalNapolitanoDatcom(
-						_cNBetaFuselage.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2,
-						_cNBetaVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2
+						Amount.valueOf(_cNbFuselage.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2, SI.RADIAN.inverse()),
+						Amount.valueOf(_cNbVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(i)._2, SI.RADIAN.inverse())
 						);
 
 				listOfCNBetaTotal.add(
 						Tuple.of(
 								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNBetaTotal
+								temporaryCNBetaTotal.to(SI.RADIAN.inverse()).getEstimatedValue()
 								)
 						);
 			}
 			
-			_cNBetaTotal.put(
+			_cNbTotal.put(
 					MethodEnum.NAPOLITANO_DATCOM,
 					listOfCNBetaTotal
 					);
@@ -21451,7 +21453,7 @@ public class ACAerodynamicAndStabilityManager {
 			double etaOutR = _theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getTheSymmetricFlapInterface().getOuterStationSpanwisePosition();
 			Amount<Length> zApplicationForceRudder = _theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSpan().times((etaOutR - etaInR)/2);
 			
-			List<Tuple2<Double, Amount<?>>> listOfCNDeltaR = new ArrayList();
+			List<Tuple2<Double, Double>> listOfCNDeltaR = new ArrayList();
 			
 			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
@@ -21479,15 +21481,20 @@ public class ACAerodynamicAndStabilityManager {
 				listOfCNDeltaR.add(
 						Tuple.of(
 								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
-								temporaryCNDeltaR
+								temporaryCNDeltaR.to(SI.RADIAN.inverse()).getEstimatedValue()
 								)
 						);
 			}
 			
-			_cNDeltaR.put(
-					MethodEnum.NAPOLITANO_DATCOM,
-					listOfCNDeltaR
-					);
+
+			Map<Amount<Angle>, List<Tuple2<Double, Double>>> cNdrMap = new HashMap<>();
+
+			_theAerodynamicBuilderInterface.getDeltaRudderList().stream()
+				.forEach(
+					dr -> cNdrMap.put(dr, listOfCNDeltaR)
+				);	
+
+			_cNdr.put(MethodEnum.NAPOLITANO_DATCOM,	cNdrMap);
 			
 			//=======================================================================================
 			// Calculating dynamic derivatives ...
@@ -23125,29 +23132,29 @@ public class ACAerodynamicAndStabilityManager {
 		this._cRollrTotal = _cRollrTotal;
 	}
 	
-	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaFuselage() {
-		return _cNBetaFuselage;
-	}
+//	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaFuselage() {
+//		return _cNBetaFuselage;
+//	}
 	
-	public void setCNBetaFuselage(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaFuselage) {
-		this._cNBetaFuselage = _cNBetaFuselage;
-	}
+//	public void setCNBetaFuselage(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaFuselage) {
+//		this._cNBetaFuselage = _cNBetaFuselage;
+//	}
 	
-	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaVertical() {
-		return _cNBetaVertical;
-	}
+//	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaVertical() {
+//		return _cNBetaVertical;
+//	}
 	
-	public void setCNBetaVertical(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaVertical) {
-		this._cNBetaVertical = _cNBetaVertical;
-	}
+//	public void setCNBetaVertical(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaVertical) {
+//		this._cNBetaVertical = _cNBetaVertical;
+//	}
 	
-	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaTotal() {
-		return _cNBetaTotal;
-	}
+//	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNBetaTotal() {
+//		return _cNBetaTotal;
+//	}
 	
-	public void setCNBetaTotal(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaTotal) {
-		this._cNBetaTotal = _cNBetaTotal;
-	}
+//	public void setCNBetaTotal(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNBetaTotal) {
+//		this._cNBetaTotal = _cNBetaTotal;
+//	}
 	
 	public Map<MethodEnum, Amount<?>> getCNDeltaA() {
 		return _cNDeltaA;
@@ -23157,13 +23164,13 @@ public class ACAerodynamicAndStabilityManager {
 		this._cNDeltaA = _cNDeltaA;
 	}
 	
-	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNDeltaR() {
-		return _cNDeltaR;
-	}
+//	public Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> getCNDeltaR() {
+//		return _cNDeltaR;
+//	}
 	
-	public void setCNDeltaR(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNDeltaR) {
-		this._cNDeltaR = _cNDeltaR;
-	}
+//	public void setCNDeltaR(Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cNDeltaR) {
+//		this._cNDeltaR = _cNDeltaR;
+//	}
 	
 	public Map<MethodEnum, List<Tuple2<Double, List<Amount<?>>>>> getCNpWing() {
 		return _cNpWing;

@@ -1,5 +1,6 @@
 package sandbox2.cavas;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
@@ -1225,6 +1226,18 @@ public class Test_01 {
 				).divide(spanWing).times(-2);
 		
 		System.out.println(">>>>>> CY_r: " + cYr);
+		
+		List<Double> a = new ArrayList<Double>();
+		a.add(-1.0);
+		a.add( 0.0);
+		a.add( 1.0);
+		a.add( 2.0);
+		a.add( 3.0);
+		
+		double x = 3.01; 
+		System.out.println("index of " + x + ": " + a.indexOf(x));
+		
+		
 		
 	}
 
