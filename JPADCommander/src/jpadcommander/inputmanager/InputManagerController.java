@@ -119,11 +119,6 @@ public class InputManagerController {
 	//...........................................................................................
 	// LAYOUTS:
 	//...........................................................................................
-//	@FXML 
-//	private AnchorPane aircraftDataAnchorPane;
-//	
-//	// TODO: MAKE ALSO FOR OTHER COMPONENTS
-//	
 	@FXML 
 	private ToolBar actionButtonToolbar;
 	@FXML
@@ -386,7 +381,6 @@ public class InputManagerController {
 	private boolean updatePowerPlantDataFromFile;
 	private boolean updateNacellesDataFromFile;
 	private boolean updateLandingGearsDataFromFile;
-	private boolean updateSystemsDataFromFile;
 
 	private boolean noneAdjustCriterionFuselage = false;
 	private boolean noneAdjustCriterionWing = false;
@@ -455,21 +449,20 @@ public class InputManagerController {
 	private List<String> nacelleZPositionUnitList = new ArrayList<>();
 	private List<String> nacelleMountinPositionValueList = new ArrayList<>();
 
-	private String landingGearsXPositionValue = "";
-	private String landingGearsXPositionUnit = "";
-	private String landingGearsYPositionValue = "";
-	private String landingGearsYPositionUnit = "";
-	private String landingGearsZPositionValue = "";
-	private String landingGearsZPositionUnit = "";
+	private String noseLandingGearsXPositionValue = "";
+	private String noseLandingGearsXPositionUnit = "";
+	private String noseLandingGearsYPositionValue = "";
+	private String noseLandingGearsYPositionUnit = "";
+	private String noseLandingGearsZPositionValue = "";
+	private String noseLandingGearsZPositionUnit = "";
+	private String mainLandingGearsXPositionValue = "";
+	private String mainLandingGearsXPositionUnit = "";
+	private String mainLandingGearsYPositionValue = "";
+	private String mainLandingGearsYPositionUnit = "";
+	private String mainLandingGearsZPositionValue = "";
+	private String mainLandingGearsZPositionUnit = "";
 	private String landingGearsMountinPositionValue = "";
 
-	private String systemsXPositionValue = "";
-	private String systemsXPositionUnit = "";
-	private String systemsYPositionValue = "";
-	private String systemsYPositionUnit = "";
-	private String systemsZPositionValue = "";
-	private String systemsZPositionUnit = "";
-	
 	//...........................................................................................
 	// FILE CHOOSER:
 	//...........................................................................................
@@ -759,19 +752,17 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldAircraftLandingGearsFile;
 	@FXML
-	private TextField textFieldAircraftLandingGearsX;
+	private TextField textFieldAircraftNoseLandingGearsX;
 	@FXML
-	private TextField textFieldAircraftLandingGearsY;
+	private TextField textFieldAircraftNoseLandingGearsY;
 	@FXML
-	private TextField textFieldAircraftLandingGearsZ;
+	private TextField textFieldAircraftNoseLandingGearsZ;
 	@FXML
-	private TextField textFieldAircraftSystemsFile;
+	private TextField textFieldAircraftMainLandingGearsX;
 	@FXML
-	private TextField textFieldAircraftSystemsX;
+	private TextField textFieldAircraftMainLandingGearsY;
 	@FXML
-	private TextField textFieldAircraftSystemsY;
-	@FXML
-	private TextField textFieldAircraftSystemsZ;
+	private TextField textFieldAircraftMainLandingGearsZ;
 	
 	//...........................................................................................
 	// AIRCRAFT TAB (UNITS):
@@ -1729,7 +1720,6 @@ public class InputManagerController {
 	//-------------------------------------------------------------------------------------------
 	// METHODS
 	//-------------------------------------------------------------------------------------------
-//	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@FXML
 	private void initialize() {
 		
@@ -1742,20 +1732,6 @@ public class InputManagerController {
 		
 		chooseAircraftFileButton.setStyle(buttonSuggestedActionStyle);
 		
-//		aircraftDataAnchorPane.getChildren().stream()
-//		.filter(node -> node instanceof TextField)
-//		.map(node -> (TextField) node)
-//		.forEach(tf -> tf.textProperty().addListener(
-//				new ChangeListener() {
-//					@Override
-//					public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-//
-//						System.err.println("AIRCRAFT DATA MODIFIED ! ");
-//						
-//					}
-//				 })
-//				);
-		
 		updateCabinConfigurationDataFromFile = false;
 		updateFuselageDataFromFile = false;
 		updateWingDataFromFile = false;
@@ -1765,7 +1741,6 @@ public class InputManagerController {
 		updatePowerPlantDataFromFile = false;
 		updateNacellesDataFromFile = false;
 		updateLandingGearsDataFromFile = false;
-		updateSystemsDataFromFile = false;
 		
 		noneAdjustCriterionFuselage = false;
 		noneAdjustCriterionWing = false;
@@ -1795,9 +1770,6 @@ public class InputManagerController {
 		    		updateNacellesDataFromFile = true;
 		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Landing Gears"))
 		    		updateLandingGearsDataFromFile = true;
-		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Systems"))
-		    		updateSystemsDataFromFile = true;
-		    		
 		     }
 		 });
 		actionButtonToolbar.getItems().add(updateAircraftDataFromFileComboBox);
@@ -12117,14 +12089,6 @@ public class InputManagerController {
 		this.updateLandingGearsDataFromFile = updateLandingGearsDataFromFile;
 	}
 
-	public boolean isUpdateSystemsDataFromFile() {
-		return updateSystemsDataFromFile;
-	}
-
-	public void setUpdateSystemsDataFromFile(boolean updateSystemsDataFromFile) {
-		this.updateSystemsDataFromFile = updateSystemsDataFromFile;
-	}
-
 	public String getFuselageXPositionValue() {
 		return fuselageXPositionValue;
 	}
@@ -12557,52 +12521,52 @@ public class InputManagerController {
 		this.nacelleMountinPositionValueList = nacelleMountinPositionValueList;
 	}
 
-	public String getLandingGearsXPositionValue() {
-		return landingGearsXPositionValue;
+	public String getNoseLandingGearsXPositionValue() {
+		return noseLandingGearsXPositionValue;
 	}
 
-	public void setLandingGearsXPositionValue(String landingGearsXPositionValue) {
-		this.landingGearsXPositionValue = landingGearsXPositionValue;
+	public void setNoseLandingGearsXPositionValue(String noseLandingGearsXPositionValue) {
+		this.noseLandingGearsXPositionValue = noseLandingGearsXPositionValue;
 	}
 
-	public String getLandingGearsXPositionUnit() {
-		return landingGearsXPositionUnit;
+	public String getNoseLandingGearsXPositionUnit() {
+		return noseLandingGearsXPositionUnit;
 	}
 
-	public void setLandingGearsXPositionUnit(String landingGearsXPositionUnit) {
-		this.landingGearsXPositionUnit = landingGearsXPositionUnit;
+	public void setNoseLandingGearsXPositionUnit(String noseLandingGearsXPositionUnit) {
+		this.noseLandingGearsXPositionUnit = noseLandingGearsXPositionUnit;
 	}
 
-	public String getLandingGearsYPositionValue() {
-		return landingGearsYPositionValue;
+	public String getNoseLandingGearsYPositionValue() {
+		return noseLandingGearsYPositionValue;
 	}
 
-	public void setLandingGearsYPositionValue(String landingGearsYPositionValue) {
-		this.landingGearsYPositionValue = landingGearsYPositionValue;
+	public void setNoseLandingGearsYPositionValue(String noseLandingGearsYPositionValue) {
+		this.noseLandingGearsYPositionValue = noseLandingGearsYPositionValue;
 	}
 
-	public String getLandingGearsYPositionUnit() {
-		return landingGearsYPositionUnit;
+	public String getNoseLandingGearsYPositionUnit() {
+		return noseLandingGearsYPositionUnit;
 	}
 
-	public void setLandingGearsYPositionUnit(String landingGearsYPositionUnit) {
-		this.landingGearsYPositionUnit = landingGearsYPositionUnit;
+	public void setNoseLandingGearsYPositionUnit(String noseLandingGearsYPositionUnit) {
+		this.noseLandingGearsYPositionUnit = noseLandingGearsYPositionUnit;
 	}
 
-	public String getLandingGearsZPositionValue() {
-		return landingGearsZPositionValue;
+	public String getNoseLandingGearsZPositionValue() {
+		return noseLandingGearsZPositionValue;
 	}
 
-	public void setLandingGearsZPositionValue(String landingGearsZPositionValue) {
-		this.landingGearsZPositionValue = landingGearsZPositionValue;
+	public void setNoseLandingGearsZPositionValue(String noseLandingGearsZPositionValue) {
+		this.noseLandingGearsZPositionValue = noseLandingGearsZPositionValue;
 	}
 
-	public String getLandingGearsZPositionUnit() {
-		return landingGearsZPositionUnit;
+	public String getNoseLandingGearsZPositionUnit() {
+		return noseLandingGearsZPositionUnit;
 	}
 
-	public void setLandingGearsZPositionUnit(String landingGearsZPositionUnit) {
-		this.landingGearsZPositionUnit = landingGearsZPositionUnit;
+	public void setNoseLandingGearsZPositionUnit(String noseLandingGearsZPositionUnit) {
+		this.noseLandingGearsZPositionUnit = noseLandingGearsZPositionUnit;
 	}
 
 	public String getLandingGearsMountinPositionValue() {
@@ -12613,54 +12577,54 @@ public class InputManagerController {
 		this.landingGearsMountinPositionValue = landingGearsMountinPositionValue;
 	}
 
-	public String getSystemsXPositionValue() {
-		return systemsXPositionValue;
+	public String getMainLandingGearsXPositionValue() {
+		return mainLandingGearsXPositionValue;
 	}
 
-	public void setSystemsXPositionValue(String systemsXPositionValue) {
-		this.systemsXPositionValue = systemsXPositionValue;
+	public void setMainLandingGearsXPositionValue(String mainLandingGearsXPositionValue) {
+		this.mainLandingGearsXPositionValue = mainLandingGearsXPositionValue;
 	}
 
-	public String getSystemsXPositionUnit() {
-		return systemsXPositionUnit;
+	public String getMainLandingGearsXPositionUnit() {
+		return mainLandingGearsXPositionUnit;
 	}
 
-	public void setSystemsXPositionUnit(String systemsXPositionUnit) {
-		this.systemsXPositionUnit = systemsXPositionUnit;
+	public void setMainLandingGearsXPositionUnit(String mainLandingGearsXPositionUnit) {
+		this.mainLandingGearsXPositionUnit = mainLandingGearsXPositionUnit;
 	}
 
-	public String getSystemsYPositionValue() {
-		return systemsYPositionValue;
+	public String getMainLandingGearsYPositionValue() {
+		return mainLandingGearsYPositionValue;
 	}
 
-	public void setSystemsYPositionValue(String systemsYPositionValue) {
-		this.systemsYPositionValue = systemsYPositionValue;
+	public void setMainLandingGearsYPositionValue(String mainLandingGearsYPositionValue) {
+		this.mainLandingGearsYPositionValue = mainLandingGearsYPositionValue;
 	}
 
-	public String getSystemsYPositionUnit() {
-		return systemsYPositionUnit;
+	public String getMainLandingGearsYPositionUnit() {
+		return mainLandingGearsYPositionUnit;
 	}
 
-	public void setSystemsYPositionUnit(String systemsYPositionUnit) {
-		this.systemsYPositionUnit = systemsYPositionUnit;
+	public void setMainLandingGearsYPositionUnit(String mainLandingGearsYPositionUnit) {
+		this.mainLandingGearsYPositionUnit = mainLandingGearsYPositionUnit;
 	}
 
-	public String getSystemsZPositionValue() {
-		return systemsZPositionValue;
+	public String getMainLandingGearsZPositionValue() {
+		return mainLandingGearsZPositionValue;
 	}
 
-	public void setSystemsZPositionValue(String systemsZPositionValue) {
-		this.systemsZPositionValue = systemsZPositionValue;
+	public void setMainLandingGearsZPositionValue(String mainLandingGearsZPositionValue) {
+		this.mainLandingGearsZPositionValue = mainLandingGearsZPositionValue;
 	}
 
-	public String getSystemsZPositionUnit() {
-		return systemsZPositionUnit;
+	public String getMainLandingGearsZPositionUnit() {
+		return mainLandingGearsZPositionUnit;
 	}
 
-	public void setSystemsZPositionUnit(String systemsZPositionUnit) {
-		this.systemsZPositionUnit = systemsZPositionUnit;
+	public void setMainLandingGearsZPositionUnit(String mainLandingGearsZPositionUnit) {
+		this.mainLandingGearsZPositionUnit = mainLandingGearsZPositionUnit;
 	}
-
+	
 	public FileChooser getAirfoilFileChooser() {
 		return airfoilFileChooser;
 	}
@@ -13477,62 +13441,54 @@ public class InputManagerController {
 		this.textFieldAircraftLandingGearsFile = textFieldAircraftLandingGearsFile;
 	}
 
-	public TextField getTextFieldAircraftLandingGearsX() {
-		return textFieldAircraftLandingGearsX;
+	public TextField getTextFieldAircraftNoseLandingGearsX() {
+		return textFieldAircraftNoseLandingGearsX;
 	}
 
-	public void setTextFieldAircraftLandingGearsX(TextField textFieldAircraftLandingGearsX) {
-		this.textFieldAircraftLandingGearsX = textFieldAircraftLandingGearsX;
+	public void setTextFieldAircraftNoseLandingGearsX(TextField textFieldAircraftNoseLandingGearsX) {
+		this.textFieldAircraftNoseLandingGearsX = textFieldAircraftNoseLandingGearsX;
 	}
 
-	public TextField getTextFieldAircraftLandingGearsY() {
-		return textFieldAircraftLandingGearsY;
+	public TextField getTextFieldAircraftNoseLandingGearsY() {
+		return textFieldAircraftNoseLandingGearsY;
 	}
 
-	public void setTextFieldAircraftLandingGearsY(TextField textFieldAircraftLandingGearsY) {
-		this.textFieldAircraftLandingGearsY = textFieldAircraftLandingGearsY;
+	public void setTextFieldAircraftNoseLandingGearsY(TextField textFieldAircraftNoseLandingGearsY) {
+		this.textFieldAircraftNoseLandingGearsY = textFieldAircraftNoseLandingGearsY;
 	}
 
-	public TextField getTextFieldAircraftLandingGearsZ() {
-		return textFieldAircraftLandingGearsZ;
+	public TextField getTextFieldAircraftNoseLandingGearsZ() {
+		return textFieldAircraftNoseLandingGearsZ;
 	}
 
-	public void setTextFieldAircraftLandingGearsZ(TextField textFieldAircraftLandingGearsZ) {
-		this.textFieldAircraftLandingGearsZ = textFieldAircraftLandingGearsZ;
+	public void setTextFieldAircraftNoseLandingGearsZ(TextField textFieldAircraftNoseLandingGearsZ) {
+		this.textFieldAircraftNoseLandingGearsZ = textFieldAircraftNoseLandingGearsZ;
 	}
 
-	public TextField getTextFieldAircraftSystemsFile() {
-		return textFieldAircraftSystemsFile;
+	public TextField getTextFieldAircraftMainLandingGearsX() {
+		return textFieldAircraftMainLandingGearsX;
 	}
 
-	public void setTextFieldAircraftSystemsFile(TextField textFieldAircraftSystemsFile) {
-		this.textFieldAircraftSystemsFile = textFieldAircraftSystemsFile;
+	public void setTextFieldAircraftMainLandingGearsX(TextField textFieldAircraftMainLandingGearsX) {
+		this.textFieldAircraftMainLandingGearsX = textFieldAircraftMainLandingGearsX;
 	}
 
-	public TextField getTextFieldAircraftSystemsX() {
-		return textFieldAircraftSystemsX;
+	public TextField getTextFieldAircraftMainLandingGearsY() {
+		return textFieldAircraftMainLandingGearsY;
 	}
 
-	public void setTextFieldAircraftSystemsX(TextField textFieldAircraftSystemsX) {
-		this.textFieldAircraftSystemsX = textFieldAircraftSystemsX;
+	public void setTextFieldAircraftMainLandingGearsY(TextField textFieldAircraftMainLandingGearsY) {
+		this.textFieldAircraftMainLandingGearsY = textFieldAircraftMainLandingGearsY;
 	}
 
-	public TextField getTextFieldAircraftSystemsY() {
-		return textFieldAircraftSystemsY;
+	public TextField getTextFieldAircraftMainLandingGearsZ() {
+		return textFieldAircraftMainLandingGearsZ;
 	}
 
-	public void setTextFieldAircraftSystemsY(TextField textFieldAircraftSystemsY) {
-		this.textFieldAircraftSystemsY = textFieldAircraftSystemsY;
+	public void setTextFieldAircraftMainLandingGearsZ(TextField textFieldAircraftMainLandingGearsZ) {
+		this.textFieldAircraftMainLandingGearsZ = textFieldAircraftMainLandingGearsZ;
 	}
-
-	public TextField getTextFieldAircraftSystemsZ() {
-		return textFieldAircraftSystemsZ;
-	}
-
-	public void setTextFieldAircraftSystemsZ(TextField textFieldAircraftSystemsZ) {
-		this.textFieldAircraftSystemsZ = textFieldAircraftSystemsZ;
-	}
-
+	
 	public ChoiceBox<String> getFuselageXUnitChoiceBox() {
 		return fuselageXUnitChoiceBox;
 	}

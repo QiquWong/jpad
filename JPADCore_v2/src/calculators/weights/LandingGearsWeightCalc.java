@@ -51,9 +51,9 @@ public class LandingGearsWeightCalc {
 		
 		return Amount.valueOf(
 				kuc*(a 
-						+ (b * Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND), (3/4)))
+						+ (b * Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND), 0.75))
 						+ (c * aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND))
-						+ (d * Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND), (3/2))) 
+						+ (d * Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(NonSI.POUND), 1.5)) 
 						),
 				NonSI.POUND
 				).to(SI.KILOGRAM);

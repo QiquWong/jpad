@@ -32,21 +32,21 @@
 				</holding_phase>
 			</mission_profile_data>
 			<calibration> <!-- IF LEFT BLANK, ALL CALIBRATION FACTORS ARE EQUAL TO 1.0 -->
-				<fuselage_calibration_factor>1.24</fuselage_calibration_factor>
-				<wing_calibration_factor>1.2</wing_calibration_factor>
-				<horizontal_tail_calibration_factor>1.25</horizontal_tail_calibration_factor>
-				<vertical_tail_calibration_factor>1.444</vertical_tail_calibration_factor>
+				<fuselage_calibration_factor>0.8</fuselage_calibration_factor>
+				<wing_calibration_factor></wing_calibration_factor>
+				<horizontal_tail_calibration_factor></horizontal_tail_calibration_factor>
+				<vertical_tail_calibration_factor></vertical_tail_calibration_factor>
 				<canard_calibration_factor></canard_calibration_factor>
 				<nacelles_calibration_factor>0.0</nacelles_calibration_factor>
-				<power_plant_calibration_factor>0.916</power_plant_calibration_factor>
-				<landing_gears_calibration_factor>1.5</landing_gears_calibration_factor>
+				<power_plant_calibration_factor>0.82</power_plant_calibration_factor>
+				<landing_gears_calibration_factor></landing_gears_calibration_factor>
 				<APU_calibration_factor></APU_calibration_factor>
 				<air_conditioning_and_anti_icing_system_calibration_factor></air_conditioning_and_anti_icing_system_calibration_factor>
 				<instruments_and_navigation_system_calibration_factor></instruments_and_navigation_system_calibration_factor>
 				<hydraulic_and_pneumatic_systems_calibration_factor></hydraulic_and_pneumatic_systems_calibration_factor>
 				<electrical_systems_calibration_factor></electrical_systems_calibration_factor>
 				<control_surfaces_calibration_factor></control_surfaces_calibration_factor>
-				<furnishings_and_equipments_calibration_factor>0.8</furnishings_and_equipments_calibration_factor>
+				<furnishings_and_equipments_calibration_factor></furnishings_and_equipments_calibration_factor>
 			</calibration>			
         </weights>
     </analysis>

@@ -477,6 +477,9 @@ public class ACAnalysisManager {
 					else if(hTailWeightsMethod.equalsIgnoreCase("ROSKAM")) {
 						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.ROSKAM);
 					}
+					else if(hTailWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_1976);
+					}
 					else 
 						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.AVERAGE);
 				}
@@ -504,6 +507,9 @@ public class ACAnalysisManager {
 					}
 					else if(vTailWeightsMethod.equalsIgnoreCase("ROSKAM")) {
 						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.ROSKAM);
+					}
+					else if(vTailWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_1976);
 					}
 					else 
 						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.AVERAGE);
@@ -535,6 +541,9 @@ public class ACAnalysisManager {
 					}
 					else if(canardWeightsMethod.equalsIgnoreCase("ROSKAM")) {
 						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.ROSKAM);
+					}
+					else if(canardWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_1976);
 					}
 					else 
 						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.AVERAGE);
@@ -1546,7 +1555,7 @@ public class ACAnalysisManager {
 				OperatingConditions.getAtmosphere(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)).getSpeedOfSound(), 
 				SI.METERS_PER_SECOND);
 		_vMaxCruiseEAS = _vMaxCruise.
-				times(Math.sqrt(
+				divide(Math.sqrt(
 						OperatingConditions.getAtmosphere(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)).getDensityRatio()));
 
 		_vOptimumCruise = Amount.valueOf(_theOperatingConditions.getMachCruise()

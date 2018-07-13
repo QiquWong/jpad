@@ -2,6 +2,7 @@
 	<!-- 
 	plot=TRUE -> enters the plot tag in the specified file.
 	plot=FALSE -> plots nothing.
+	method_XXX="AVERAGED" if empty string
 	-->
 <jpad_config>
     <!-- Input data, shared across analysis tasks -->
@@ -12,31 +13,28 @@
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
 	<analyses id="IRON analysis">
 	<!--
-		<weights 
-            file="analysis_weights_IRON_WM.xml" 
+	<weights 
+            file="analysis_weights_IRON_CANARD.xml" 
 			plot="TRUE"
 			create_CSV="TRUE"
-			method_fuselage="TORENBEEK_1976"
-            method_wing="TORENBEEK_1982"
-            method_htail="TORENBEEK_1976"
-            method_vtail="TORENBEEK_1976"
-			method_canard="TORENBEEK_1976"
-			method_nacelles="TORENBEEK_1976"
-			method_power_plant="TORENBEEK_1976"
-			method_landing_gears="TORENBEEK_1976"
-			method_APU="TORENBEEK_1982"
-			method_air_conditioning_and_anti_icing="TORENBEEK_1982"
-			method_instruments_and_navigation_system="TORENBEEK_1982"
-			method_hydraulic_and_pneumatic_systems="TORENBEEK_1982"			
-			method_electrical_systems="TORENBEEK_1982"
-			method_furnishings_and_equipments="TORENBEEK_2013"
-			method_control_surfaces="TORENBEEK_1982"
+			method_fuselage=""
+            method_wing=""
+            method_htail=""
+            method_vtail=""
+			method_canard=""
+			method_nacelles=""
+			method_power_plant=""
+			method_landing_gears=""
+			method_APU=""
+			method_air_conditioning_and_anti_icing=""
+			method_instruments_and_navigation_system=""
+			method_hydraulic_and_pneumatic_systems=""			
+			method_electrical_systems=""
+			method_furnishings_and_equipments=""
+			method_control_surfaces=""
             /> 
-	-->
-		<!-- method_XXX="AVERAGED" if empty string -->
-	<!--
-	<balance 
-			file="analysis_balance_IRON_WM.xml"
+		<balance 
+			file="analysis_balance_IRON_CANARD.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
             method_fuselage=""
@@ -47,6 +45,13 @@
 			method_nacelles=""
 			method_power_plant=""
 			method_landing_gears=""
+			method_APU=""
+			method_air_conditioning_and_anti_icing=""
+			method_instruments_and_navigation_system=""
+			method_hydraulic_and_pneumatic_systems=""			
+			method_electrical_systems=""
+			method_furnishings_and_equipments=""
+			method_control_surfaces=""
 		/>
 	-->
 	<!--
@@ -64,21 +69,20 @@
 	/>
 	-->
 	<performance
-			file="analysis_performance_IRON_WM.xml"
+			file="analysis_performance_IRON_CANARD_SCITECH.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
-			take_off="TRUE"
-			climb="TRUE"
-			cruise="TRUE"
+			take_off="FALSE"
+			climb="FALSE"
+			cruise="FALSE"
 			descent="FALSE"
-			landing="TRUE"
+			landing="FALSE"
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
-			mission_profile="FALSE"
+			mission_profile="TRUE"
 	/> 
-	<!--
  	<costs 
-			file="analysis_costs_IRON_WM.xml"
+			file="analysis_costs_IRON_CANARD_SCITECH.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
 			doc_capital="TRUE"
@@ -92,7 +96,6 @@
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
 	/>
-	-->
 	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>

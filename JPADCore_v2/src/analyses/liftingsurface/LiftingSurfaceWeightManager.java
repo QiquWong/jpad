@@ -62,6 +62,7 @@ public class LiftingSurfaceWeightManager {
 		}
 		else if (liftingSurfaceType.equals(ComponentEnum.HORIZONTAL_TAIL)) {
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.HOWE);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.TORENBEEK_1976);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.JENKINSON);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.NICOLAI_2013);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.RAYMER);
@@ -72,6 +73,7 @@ public class LiftingSurfaceWeightManager {
 		else if (liftingSurfaceType.equals(ComponentEnum.VERTICAL_TAIL)) {
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.HOWE);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.JENKINSON);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.TORENBEEK_1976);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.RAYMER);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.ROSKAM);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.KROO);
@@ -80,6 +82,7 @@ public class LiftingSurfaceWeightManager {
 		else if (liftingSurfaceType.equals(ComponentEnum.CANARD)) {
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.HOWE);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.JENKINSON);
+			calculateMass(aircraft, liftingSurfaceType, MethodEnum.TORENBEEK_1976);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.NICOLAI_2013);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.RAYMER);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.KROO);
@@ -213,6 +216,12 @@ public class LiftingSurfaceWeightManager {
 				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 			
+			case TORENBEEK_1976 : {
+				_methodsList.add(method);
+				_mass = LiftingSurfaceWeightCalc.calcuateHTailMassTorenbeek1976(aircraft);
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
+			} break;
+			
 			default : { } break;
 			}
 		} break;
@@ -258,6 +267,12 @@ public class LiftingSurfaceWeightManager {
 				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			}break;
 
+			case TORENBEEK_1976 : {
+				_methodsList.add(method);
+				_mass = LiftingSurfaceWeightCalc.calcuateVTailMassTorenbeek1976(aircraft);
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
+			} break;
+			
 			default : { } break;
 			}
 		} break;
@@ -299,6 +314,12 @@ public class LiftingSurfaceWeightManager {
 			case ROSKAM : { 
 				_methodsList.add(method);
 				_mass = LiftingSurfaceWeightCalc.calcuateCanardMassRoskam(aircraft);
+				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
+			} break;
+			
+			case TORENBEEK_1976 : {
+				_methodsList.add(method);
+				_mass = LiftingSurfaceWeightCalc.calcuateCanardMassTorenbeek1976(aircraft);
 				_massMap.put(method, Amount.valueOf(round(_mass.doubleValue(SI.KILOGRAM)), SI.KILOGRAM));
 			} break;
 			

@@ -8,30 +8,26 @@
 			>
 			<weights>
 				<!-- MTOM -->
-				<maximum_take_off_mass unit="kg">50477</maximum_take_off_mass>
-				<!-- TOM (400 nmi xcg/c = 10%) -->
-				<!--
-				<maximum_take_off_mass unit="kg">50364</maximum_take_off_mass>
-				-->
-				<operating_empty_mass unit="kg">29497</operating_empty_mass> 
-				<maximum_fuel_mass unit="kg">8074.27</maximum_fuel_mass> 
+				<maximum_take_off_mass unit="kg">51847</maximum_take_off_mass>
+				<operating_empty_mass unit="kg">30607</operating_empty_mass> 
+				<maximum_fuel_mass unit="kg">7252</maximum_fuel_mass> 
 				<single_passenger_mass unit="kg">108</single_passenger_mass> 
 			</weights>
 			<aerodynamics> 
-				<xcg value="0.32" parabolicDragPolar="FALSE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
+				<xcg value="-0.03" parabolicDragPolar="FALSE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
 					<!-- SECOND SEGMENT CLIMB -->
 					<!--
-					<cLmax_clean_configuration>2.63</cLmax_clean_configuration>
+					<cLmax_clean_configuration>2.8</cLmax_clean_configuration>
 					-->
-					<cLmax_clean_configuration>1.73</cLmax_clean_configuration>
-					<cL_alpha_clean_configuration unit="1/deg">0.0993</cL_alpha_clean_configuration>
-					<cLmax_take_off_configuration>2.7</cLmax_take_off_configuration>
-					<cL_alpha_take_off unit="1/deg">0.0988</cL_alpha_take_off> 
-					<cL0_take_off_configuration>1.3019</cL0_take_off_configuration>
+					<cLmax_clean_configuration>1.92</cLmax_clean_configuration>
+					<cL_alpha_clean_configuration unit="1/deg">0.1120</cL_alpha_clean_configuration>
+					<cLmax_take_off_configuration>2.85</cLmax_take_off_configuration>
+					<cL_alpha_take_off unit="1/deg">0.1118</cL_alpha_take_off> 
+					<cL0_take_off_configuration>1.5014</cL0_take_off_configuration>
 					<!---->
-					<cLmax_landing_configuration>3.06</cLmax_landing_configuration>
-					<cL_alpha_landing unit="1/deg">0.0988</cL_alpha_landing>
-					<cL0_landing_configuration>1.6775</cL0_landing_configuration>
+					<cLmax_landing_configuration>3.42</cLmax_landing_configuration>
+					<cL_alpha_landing unit="1/deg">0.1118</cL_alpha_landing>
+					<cL0_landing_configuration>2.0623</cL0_landing_configuration>
 					<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
 					<cD0></cD0>
 					<oswald_cruise></oswald_cruise> 
@@ -45,20 +41,20 @@
 					<!---->
 					<polar_curves>
 						<cruise>
-							<polar_curve_CL>-0.038102761;0.030571888;0.099177708;0.167714534;0.23618221;0.304580587;0.37290952;0.441168875;0.509358522;0.577478338;0.645528209;0.713508027;0.78141769;0.849257103;0.91702618;0.98472484;1.052353011;1.119910625;1.187397624;1.254813955;1.293452257</polar_curve_CL>
-							<polar_curve_CD>0.022019301;0.022014004;0.022290553;0.022848185;0.023686151;0.024803717;0.026200165;0.027874792;0.029826907;0.03205584;0.034560932;0.037341544;0.040397049;0.04372684;0.047330324;0.051206928;0.055356092;0.059777275;0.064469954;0.069433622;0.072363948</polar_curve_CD>
+							<polar_curve_CL>-0.067043782;0.017417652;0.101953401;0.186563707;0.271248804;0.35600892;0.440844273;0.525755076;0.610741531;0.695803833;0.780942168;0.866156716;0.951447645;1.036815115;1.122259277;1.207780275;1.29337824;1.37525291;1.448624559;1.499472282;1.527754305</polar_curve_CL>
+							<polar_curve_CD>0.025056227;0.024491679;0.024396569;0.024771526;0.025617194;0.026934228;0.028723291;0.030985063;0.033720231;0.036929496;0.040613569;0.044773174;0.049409044;0.054521925;0.060112574;0.066181758;0.072730256;0.079407497;0.085687919;0.09004821;0.092309112</polar_curve_CD>
 						</cruise>
 						<climb>
-							<polar_curve_CL>-0.032291316;0.059451775;0.150892823;0.24203119;0.332866314;0.423397715;0.513624992;0.603547821;0.693165961;0.782479251;0.871487606;0.960195668;1.048594229;1.13668345;1.224472849;1.311958106;1.399139619;1.486017867;1.57259341;1.685922152;1.720855194</polar_curve_CL>
-							<polar_curve_CD>0.022414831;0.022342364;0.022830109;0.023873092;0.02546665;0.027606435;0.030288422;0.033508908;0.037264515;0.041552197;0.046369234;0.051713271;0.057582206;0.063974293;0.07088823;0.07832293;0.086277672;0.09475207;0.103746067;0.116351041;0.120447377</polar_curve_CD>									
+							<polar_curve_CL>-0.029943375;0.071454735;0.172741693;0.27391794;0.374983934;0.475940157;0.576787108;0.677525304;0.77815528;0.878677586;0.97909279;1.079268354;1.179471106;1.279701652;1.379694379;1.47958303;1.579368246;1.679050674;1.769514394;1.856345765</polar_curve_CL>
+							<polar_curve_CD>0.023856234;0.023976816;0.024716981;0.026075349;0.028050565;0.030641301;0.033846256;0.037664152;0.042093743;0.047133803;0.052783138;0.05903809;0.065902016;0.073375223;0.08145022;0.090128905;0.099410237;0.109293203;0.118723013;0.128269088</polar_curve_CD>									
 						</climb>
 						<take_off>
-							<polar_curve_CL>0.924292701;1.016035791;1.10747684;1.198615207;1.289450331;1.379981732;1.470209008;1.560131838;1.649749978;1.739063267;1.828071623;1.916779684;2.005178246;2.093267466;2.181056866;2.268542123;2.355723635;2.442601883;2.529177427;2.642506169;2.677439211</polar_curve_CL>
-							<polar_curve_CD>0.098353645;0.09802648;0.098275153;0.099094722;0.100480553;0.102428324;0.104934029;0.107993983;0.111604821;0.115763503;0.120467317;0.125713664;0.13150092;0.137827332;0.144691105;0.152091373;0.160027398;0.168498767;0.177505394;0.190147351;0.194269054</polar_curve_CD>
+							<polar_curve_CL>1.04288966;1.144301919;1.24560749;1.346806746;1.447900075;1.548887876;1.649770563;1.750548559;1.851222299;1.951792228;2.052258798;2.152489354;2.252750595;2.353042997;2.453100806;2.553057621;2.652913931;2.752670225;2.843029662;2.929672686</polar_curve_CL>
+							<polar_curve_CD>0.105033798;0.105848609;0.107282851;0.109335196;0.112004342;0.115289008;0.119187939;0.123699903;0.12882369;0.134558115;0.140902018;0.147851497;0.155410485;0.163579325;0.172349988;0.18172467;0.191702347;0.202282019;0.211963407;0.221587165</polar_curve_CD>
 						</take_off>
 						<landing>
-							<polar_curve_CL>1.29987121;1.391614301;1.483055349;1.574193716;1.66502884;1.755560241;1.845787518;1.935710347;2.025328487;2.114641777;2.203650132;2.292358194;2.380756755;2.468845976;2.556635376;2.644120632;2.731302145;2.818180393;2.904755936;3.018084678;3.053017721</polar_curve_CL>
-							<polar_curve_CD>0.161311502;0.16084107;0.160955265;0.161649163;0.162918148;0.164757911;0.167164458;0.170134113;0.173663518;0.177749638;0.182389763;0.18758116;0.193322472;0.199611942;0.206447496;0.213828397;0.221753893;0.230223558;0.23923729;0.251900051;0.256036022</polar_curve_CD>
+							<polar_curve_CL>1.603792549;1.705204808;1.806510379;1.907709635;2.008802964;2.109790765;2.210673452;2.311451448;2.412125189;2.512695117;2.613161687;2.713392243;2.813653485;2.913945887;3.014003696;3.113960511;3.21381682;3.313573114;3.403932552;3.490575575</polar_curve_CL>
+							<polar_curve_CD>0.185193221;0.185844253;0.187116868;0.189009731;0.191521531;0.19465098;0.198396813;0.20275779;0.207732694;0.21332033;0.219519527;0.226329061;0.233747484;0.241775132;0.250409334;0.259649592;0.269494871;0.279944163;0.289597323;0.299233826</polar_curve_CD>
 						</landing>
 					</polar_curves>
 					<tau_rudder_function calculate="FALSE">
@@ -87,7 +83,7 @@
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
 				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
 				<alpha_dot_rotation></alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
-				<k_cLmax>0.8</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
+				<k_cLmax>0.85</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
 				<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
 				<k_alpha_dot>0.06</k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
 				<!-- landing data -->

@@ -532,6 +532,26 @@ public class LiftingSurfaceWeightCalc {
 	}
 	
 	/*
+	 * Torenbeek: SYNTHESIS OF SUBSONIC AIRPLANE DESIGN pag.281-282
+	 */
+	public static Amount<Mass> calcuateHTailMassTorenbeek1976 (Aircraft aircraft) {
+
+		double chartAbscissa = 
+				(aircraft.getTheAnalysisManager().getVDiveEAS().doubleValue(NonSI.KNOT)
+				* pow(aircraft.getHTail().getSurfacePlanform().doubleValue(MyUnits.FOOT2), 0.2)
+				) 
+				/ (1000*sqrt(cos(aircraft.getHTail().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN))));
+		
+		double weightRatio = -1.2733*Math.pow(chartAbscissa, 3) + 3.5088*Math.pow(chartAbscissa, 2) + 0.9386*chartAbscissa + 0.3069;
+		
+		return Amount.valueOf(
+				1.1*weightRatio*aircraft.getHTail().getSurfacePlanform().doubleValue(MyUnits.FOOT2),
+				NonSI.POUND)
+				.to(SI.KILOGRAM);
+		
+	}
+	
+	/*
 	 * page 381 Howe Aircraft Conceptual Design Synthesis
 	 */
 	public static Amount<Mass> calculateVTailMassHowe (Aircraft aircraft) {
@@ -706,6 +726,34 @@ public class LiftingSurfaceWeightCalc {
 	}
 	
 	/*
+	 * Torenbeek: SYNTHESIS OF SUBSONIC AIRPLANE DESIGN pag.281-282
+	 */
+	public static Amount<Mass> calcuateVTailMassTorenbeek1976 (Aircraft aircraft) {
+
+		double kv = 1.0;
+		if(aircraft.getHTail().getPositionRelativeToAttachment() > 0.0)
+			kv = 1.0 + (0.15*aircraft.getHTail().getPositionRelativeToAttachment()
+					*(aircraft.getHTail().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+							/ aircraft.getVTail().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+							)
+					);
+		
+		double chartAbscissa = 
+				(aircraft.getTheAnalysisManager().getVDiveEAS().doubleValue(NonSI.KNOT)
+				* pow(aircraft.getVTail().getSurfacePlanform().doubleValue(MyUnits.FOOT2), 0.2)
+				) 
+				/ (1000*sqrt(cos(aircraft.getVTail().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN))));
+		
+		double weightRatio = -1.2733*Math.pow(chartAbscissa, 3) + 3.5088*Math.pow(chartAbscissa, 2) + 0.9386*chartAbscissa + 0.3069;
+		
+		return Amount.valueOf(
+				kv*weightRatio*aircraft.getVTail().getSurfacePlanform().doubleValue(MyUnits.FOOT2),
+				NonSI.POUND)
+				.to(SI.KILOGRAM);
+		
+	}
+	
+	/*
 	 * Same as HTail
 	 */
 	public static Amount<Mass> calculateCanardMassHowe (Aircraft aircraft) {
@@ -846,6 +894,26 @@ public class LiftingSurfaceWeightCalc {
 						- 0.287
 						),
 				NonSI.POUND).to(SI.KILOGRAM);
+		
+	}
+	
+	/*
+	 * Torenbeek: SYNTHESIS OF SUBSONIC AIRPLANE DESIGN pag.281-282
+	 */
+	public static Amount<Mass> calcuateCanardMassTorenbeek1976 (Aircraft aircraft) {
+
+		double chartAbscissa = 
+				(aircraft.getTheAnalysisManager().getVDiveEAS().doubleValue(NonSI.KNOT)
+				* pow(aircraft.getCanard().getSurfacePlanform().doubleValue(MyUnits.FOOT2), 0.2)
+				) 
+				/ (1000*sqrt(cos(aircraft.getCanard().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN))));
+		
+		double weightRatio = -1.2733*Math.pow(chartAbscissa, 3) + 3.5088*Math.pow(chartAbscissa, 2) + 0.9386*chartAbscissa + 0.3069;
+		
+		return Amount.valueOf(
+				weightRatio*aircraft.getCanard().getSurfacePlanform().doubleValue(MyUnits.FOOT2),
+				NonSI.POUND)
+				.to(SI.KILOGRAM);
 		
 	}
 	

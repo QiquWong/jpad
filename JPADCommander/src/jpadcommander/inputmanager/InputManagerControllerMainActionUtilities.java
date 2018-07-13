@@ -299,15 +299,6 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getLandingGearsZUnitChoiceBox().getSelectionModel().clearSelection();
 		theController.getLandingGearsMountingPositionTypeChoiceBox().getSelectionModel().clearSelection();
 		
-		// Systems
-		theController.getTextFieldAircraftSystemsFile().clear();
-		theController.getTextFieldAircraftSystemsX().clear();
-		theController.getSystemsXUnitChoiceBox().getSelectionModel().clearSelection();
-		theController.getTextFieldAircraftSystemsY().clear();
-		theController.getSystemsYUnitChoiceBox().getSelectionModel().clearSelection();
-		theController.getTextFieldAircraftSystemsZ().clear();
-		theController.getSystemsZUnitChoiceBox().getSelectionModel().clearSelection();
-		
 		// 3 View and TextArea
 		theController.getTextAreaAircraftConsoleOutput().clear();
 		theController.getAircraftTopViewPane().getChildren().clear();
