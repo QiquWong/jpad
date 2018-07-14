@@ -249,8 +249,8 @@
                                                             </Label>
                                                             <GridPane layoutX="7.0" layoutY="2000.0" prefHeight="313.0" prefWidth="383.0">
                                                                <columnConstraints>
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="78.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="262.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="117.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="221.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="46.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
@@ -268,25 +268,25 @@
                                                                   <Label text="Y Front Gear:" GridPane.rowIndex="2" />
                                                                   <Label text="Z Front Gear:" GridPane.rowIndex="3" />
                                                                   <Label text="File:" />
-                                                                  <TextField id="textFieldAircraftLandingGearsFile" fx:id="textFieldAircraftLandingGearsFile" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" />
-                                                                  <TextField id="textFieldAircraftLandingGearsX" fx:id="textFieldAircraftLandingGearsX" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftLandingGearsZ" fx:id="textFieldAircraftLandingGearsZ" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftLandingGearsY" fx:id="textFieldAircraftLandingGearsY" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftLandingGearsFile" fx:id="textFieldAircraftLandingGearsFile" prefHeight="31.0" prefWidth="260.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftLandingGearsX" fx:id="textFieldAircraftNoseLandingGearsX" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftLandingGearsZ" fx:id="textFieldAircraftNoseLandingGearsZ" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftLandingGearsY" fx:id="textFieldAircraftNoseLandingGearsY" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Position:" GridPane.rowIndex="7" />
-                                                                  <ChoiceBox id="landingGearsXUnitChoiceBox" fx:id="landingGearsXUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="landingGearsYUnitChoiceBox" fx:id="landingGearsYUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" fx:id="landingGearsZUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="landingGearsXUnitChoiceBox" fx:id="noseLandingGearsXUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="landingGearsYUnitChoiceBox" fx:id="noseLandingGearsYUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" fx:id="noseLandingGearsZUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                   <ChoiceBox id="choiceBoxAircraftLandingGearsPosition" fx:id="landingGearsMountingPositionTypeChoiceBox" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                                                   <Button fx:id="aircraftChooseLandingGearsFileButton" mnemonicParsing="false" onAction="#chooseAircraftLandingGearsFile" prefHeight="31.0" prefWidth="44.0" text="..." GridPane.columnIndex="2" />
                                                                   <Label text="X Main Gear:" GridPane.rowIndex="4" />
                                                                   <Label text="Y Main Gear:" GridPane.rowIndex="5" />
                                                                   <Label text="Z Main Gear:" GridPane.rowIndex="6" />
-                                                                  <TextField id="textFieldAircraftLandingGearsZ" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftLandingGearsZ" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftLandingGearsZ" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                                                  <TextField id="textFieldAircraftLandingGearsZ" fx:id="textFieldAircraftMainLandingGearsX" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftLandingGearsZ" fx:id="textFieldAircraftMainLandingGearsY" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftLandingGearsZ" fx:id="textFieldAircraftMainLandingGearsZ" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" fx:id="mainLandingGearsXUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" fx:id="mainLandingGearsYUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" fx:id="mainLandingGearsZUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-46.0" layoutY="2323.0" prefHeight="0.0" prefWidth="1604.0" />
@@ -412,7 +412,7 @@
                                                             <Button fx:id="aircraftAddEngineButton" layoutX="108.0" layoutY="1220.0" mnemonicParsing="false" onAction="#addAircraftEngine" text="Add Engine" />
                                                             <Button fx:id="aircraftChooseCabinConfigurationFileButton" layoutX="345.0" layoutY="153.0" mnemonicParsing="false" onAction="#chooseAircraftCabinConfigurationFile" prefHeight="31.0" prefWidth="44.0" text="..." />
                                                             <Label layoutX="9.0" layoutY="2361.0" text="Primary Electrical Systems Type:" />
-                                                            <ChoiceBox layoutX="186.0" layoutY="2354.0" prefHeight="31.0" prefWidth="204.0" />
+                                                            <ChoiceBox fx:id="systemsPrimaryElectricalTypeChoiceBox" layoutX="186.0" layoutY="2354.0" prefHeight="31.0" prefWidth="204.0" />
                                                          </children>
                                                       </AnchorPane>
                                                    </content>
@@ -1995,13 +1995,13 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="104.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldHTailgMainSparAdimensionalPosition" layoutX="6.0" layoutY="104.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="6.0" layoutY="135.0" prefHeight="21.0" prefWidth="263.0" text="Secondary spar location (% M.A.C.):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="156.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldHTailSecondarySparAdimensionalPosition" layoutX="6.0" layoutY="156.0" prefHeight="31.0" prefWidth="340.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -2284,13 +2284,13 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="104.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailMainSparAdimensionalPosition" layoutX="6.0" layoutY="104.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="6.0" layoutY="135.0" prefHeight="21.0" prefWidth="257.0" text="Secondary spar location (% M.A.C.):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="156.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailSecondarySparAdimensionalPosition" layoutX="6.0" layoutY="156.0" prefHeight="31.0" prefWidth="340.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -2573,13 +2573,13 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="101.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardMainSparAdimensionalPosition" layoutX="6.0" layoutY="101.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="6.0" layoutY="132.0" prefHeight="21.0" prefWidth="269.0" text="Secondary spar location (% M.A.C.):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="153.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardSecondarySparAdimensionalPosition" layoutX="6.0" layoutY="153.0" prefHeight="31.0" prefWidth="340.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>

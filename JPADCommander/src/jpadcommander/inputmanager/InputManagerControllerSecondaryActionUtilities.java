@@ -967,15 +967,6 @@ public class InputManagerControllerSecondaryActionUtilities {
 		theController.getCabinConfigurationClassesTypeChoiceBox3().disableProperty().bind(
 				cabinConfigurationClassesTypeChoiceBox3Binding
 				);
-		theController.getTextFieldMissingSeatRow1().disableProperty().bind(
-				cabinConfigurationClassesTypeChoiceBox1Binding
-				);
-		theController.getTextFieldMissingSeatRow2().disableProperty().bind(
-				cabinConfigurationClassesTypeChoiceBox2Binding
-				);
-		theController.getTextFieldMissingSeatRow3().disableProperty().bind(
-				cabinConfigurationClassesTypeChoiceBox3Binding
-				);
 		
 	}
 	

@@ -291,13 +291,22 @@ public class InputManagerControllerMainActionUtilities {
 		
 		// Landing Gears
 		theController.getTextFieldAircraftLandingGearsFile().clear();
-		theController.getTextFieldAircraftLandingGearsX().clear();
-		theController.getLandingGearsXUnitChoiceBox().getSelectionModel().clearSelection();
-		theController.getTextFieldAircraftLandingGearsY().clear();
-		theController.getLandingGearsYUnitChoiceBox().getSelectionModel().clearSelection();
-		theController.getTextFieldAircraftLandingGearsZ().clear();
-		theController.getLandingGearsZUnitChoiceBox().getSelectionModel().clearSelection();
+		theController.getTextFieldAircraftNoseLandingGearsX().clear();
+		theController.getNoseLandingGearsXUnitChoiceBox().getSelectionModel().clearSelection();
+		theController.getTextFieldAircraftNoseLandingGearsY().clear();
+		theController.getNoseLandingGearsYUnitChoiceBox().getSelectionModel().clearSelection();
+		theController.getTextFieldAircraftNoseLandingGearsZ().clear();
+		theController.getNoseLandingGearsZUnitChoiceBox().getSelectionModel().clearSelection();
+		theController.getTextFieldAircraftMainLandingGearsX().clear();
+		theController.getMainLandingGearsXUnitChoiceBox().getSelectionModel().clearSelection();
+		theController.getTextFieldAircraftMainLandingGearsY().clear();
+		theController.getMainLandingGearsYUnitChoiceBox().getSelectionModel().clearSelection();
+		theController.getTextFieldAircraftMainLandingGearsZ().clear();
+		theController.getMainLandingGearsZUnitChoiceBox().getSelectionModel().clearSelection();
 		theController.getLandingGearsMountingPositionTypeChoiceBox().getSelectionModel().clearSelection();
+		
+		// Systems
+		theController.getSystemsPrimaryElectricalTypeChoiceBox().getSelectionModel().clearSelection();
 		
 		// 3 View and TextArea
 		theController.getTextAreaAircraftConsoleOutput().clear();
@@ -389,9 +398,6 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getCabinConfigurationClassesTypeChoiceBox3().getSelectionModel().clearSelection();
 		theController.getTextFieldAislesNumber().clear();
 		theController.getTextFieldXCoordinateFirstRow().clear();
-		theController.getTextFieldMissingSeatRow1().clear();
-		theController.getTextFieldMissingSeatRow2().clear();
-		theController.getTextFieldMissingSeatRow3().clear();
 		theController.getTextFieldNumberOfBrakesEconomy().clear();
 		theController.getTextFieldNumberOfBrakesBusiness().clear();
 		theController.getTextFieldNumberOfBrakesFirst().clear();
@@ -410,7 +416,6 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getTextFieldDistanceFromWallEconomy().clear();
 		theController.getTextFieldDistanceFromWallBusiness().clear();
 		theController.getTextFieldDistanceFromWallFirst().clear();
-		theController.getTextFieldMassFurnishingsAndEquipment().clear();
 		theController.getCabinConfigurationXCoordinateFirstRowUnitChoiceBox().getSelectionModel().clearSelection();
 		theController.getCabinConfigurationSeatsPitchEconomyUnitChoiceBox().getSelectionModel().clearSelection();
 		theController.getCabinConfigurationSeatsPitchBusinessUnitChoiceBox().getSelectionModel().clearSelection();
@@ -421,7 +426,6 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getCabinConfigurationDistanceFromWallEconomyUnitChoiceBox().getSelectionModel().clearSelection();
 		theController.getCabinConfigurationDistanceFromWallBusinessUnitChoiceBox().getSelectionModel().clearSelection();
 		theController.getCabinConfigurationDistanceFromWallFirstUnitChoiceBox().getSelectionModel().clearSelection();
-		theController.getCabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox().getSelectionModel().clearSelection();
 		
 		// 3 View and TextArea
 		theController.getTextAreaCabinConfigurationConsoleOutput().clear();
@@ -435,7 +439,6 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getEquivalentWingCheckBox().setSelected(false);
 		theController.getTextFieldWingMainSparAdimensionalPosition().clear();
 		theController.getTextFieldWingSecondarySparAdimensionalPosition().clear();
-		theController.getTextFieldWingCompositeMassCorrectionFactor().clear();
 		theController.getTextFieldWingRoughness().clear();
 		theController.getTextFieldWingWingletHeight().clear();
 		theController.getTextFieldEquivalentWingArea().clear();
@@ -630,7 +633,8 @@ public class InputManagerControllerMainActionUtilities {
 	private void cleanHTailData() {
 		
 		theController.gethTailAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
-		theController.getTextFieldHTailCompositeMassCorrectionFactor().clear();
+		theController.getTextFieldHTailMainSparAdimensionalPosition().clear();
+		theController.getTextFieldHTailSecondarySparAdimensionalPosition().clear();
 		theController.getTextFieldHTailRoughness().clear();
 		theController.gethTailRoughnessUnitChoiceBox().getSelectionModel().clearSelection();
 		
@@ -730,7 +734,8 @@ public class InputManagerControllerMainActionUtilities {
 	private void cleanVTailData() {
 		
 		theController.getvTailAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
-		theController.getTextFieldVTailCompositeMassCorrectionFactor().clear();
+		theController.getTextFieldVTailMainSparAdimensionalPosition().clear();
+		theController.getTextFieldVTailSecondarySparAdimensionalPosition().clear();
 		theController.getTextFieldVTailRoughness().clear();
 		theController.getvTailRoughnessUnitChoiceBox().getSelectionModel().clearSelection();
 		
@@ -830,7 +835,8 @@ public class InputManagerControllerMainActionUtilities {
 	private void cleanCanardData() {
 		
 		theController.getCanardAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
-		theController.getTextFieldCanardCompositeMassCorrectionFactor().clear();
+		theController.getTextFieldCanardMainSparAdimensionalPosition().clear();
+		theController.getTextFieldCanardSecondarySparAdimensionalPosition().clear();
 		theController.getTextFieldCanardRoughness().clear();
 		theController.getCanardRoughnessUnitChoiceBox().getSelectionModel().clearSelection();
 		
@@ -3994,7 +4000,15 @@ public class InputManagerControllerMainActionUtilities {
 		//.................................................................................
 		if(Main.getTheAircraft().getLandingGears() != null) {
 
-			theController.getTextFieldAircraftLandingGearsX().setText(
+			theController.getTextFieldAircraftNoseLandingGearsX().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getXApexConstructionAxesNoseGear()
+							.getEstimatedValue()
+							)
+					);
+			theController.getTextFieldAircraftMainLandingGearsX().setText(
 					String.valueOf(
 							Main.getTheAircraft()
 							.getLandingGears()
@@ -4005,22 +4019,41 @@ public class InputManagerControllerMainActionUtilities {
 
 			if(Main.getTheAircraft()
 					.getLandingGears()
+					.getXApexConstructionAxesNoseGear().getUnit().toString().equalsIgnoreCase("m"))
+				theController.getNoseLandingGearsXUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getLandingGears()
+					.getXApexConstructionAxesNoseGear().getUnit().toString().equalsIgnoreCase("ft"))
+				theController.getNoseLandingGearsXUnitChoiceBox().getSelectionModel().select(1);
+			
+			if(Main.getTheAircraft()
+					.getLandingGears()
 					.getXApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("m"))
-				theController.getLandingGearsXUnitChoiceBox().getSelectionModel().select(0);
+				theController.getMainLandingGearsXUnitChoiceBox().getSelectionModel().select(0);
 			else if(Main.getTheAircraft()
 					.getLandingGears()
 					.getXApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("ft"))
-				theController.getLandingGearsXUnitChoiceBox().getSelectionModel().select(1);
+				theController.getMainLandingGearsXUnitChoiceBox().getSelectionModel().select(1);
 
 		}
 		else {
-			theController.getTextFieldAircraftLandingGearsX().setText("0.0");
-			theController.getLandingGearsXUnitChoiceBox().getSelectionModel().select(0);
+			theController.getTextFieldAircraftNoseLandingGearsX().setText("0.0");
+			theController.getNoseLandingGearsXUnitChoiceBox().getSelectionModel().select(0);
+			theController.getTextFieldAircraftMainLandingGearsX().setText("0.0");
+			theController.getMainLandingGearsXUnitChoiceBox().getSelectionModel().select(0);
 		}
 		//.................................................................................
 		if(Main.getTheAircraft().getLandingGears() != null) {
 
-			theController.getTextFieldAircraftLandingGearsY().setText(
+			theController.getTextFieldAircraftNoseLandingGearsY().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getYApexConstructionAxesNoseGear()
+							.getEstimatedValue()
+							)
+					);
+			theController.getTextFieldAircraftMainLandingGearsY().setText(
 					String.valueOf(
 							Main.getTheAircraft()
 							.getLandingGears()
@@ -4031,22 +4064,41 @@ public class InputManagerControllerMainActionUtilities {
 
 			if(Main.getTheAircraft()
 					.getLandingGears()
+					.getYApexConstructionAxesNoseGear().getUnit().toString().equalsIgnoreCase("m"))
+				theController.getMainLandingGearsYUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getLandingGears()
+					.getYApexConstructionAxesNoseGear().getUnit().toString().equalsIgnoreCase("ft"))
+				theController.getNoseLandingGearsYUnitChoiceBox().getSelectionModel().select(1);
+			
+			if(Main.getTheAircraft()
+					.getLandingGears()
 					.getYApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("m"))
-				theController.getLandingGearsYUnitChoiceBox().getSelectionModel().select(0);
+				theController.getMainLandingGearsYUnitChoiceBox().getSelectionModel().select(0);
 			else if(Main.getTheAircraft()
 					.getLandingGears()
 					.getYApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("ft"))
-				theController.getLandingGearsYUnitChoiceBox().getSelectionModel().select(1);
+				theController.getMainLandingGearsYUnitChoiceBox().getSelectionModel().select(1);
 
 		}
 		else {
-			theController.getTextFieldAircraftLandingGearsY().setText("0.0");
-			theController.getLandingGearsYUnitChoiceBox().getSelectionModel().select(0);
+			theController.getTextFieldAircraftNoseLandingGearsY().setText("0.0");
+			theController.getNoseLandingGearsYUnitChoiceBox().getSelectionModel().select(0);
+			theController.getTextFieldAircraftMainLandingGearsY().setText("0.0");
+			theController.getMainLandingGearsYUnitChoiceBox().getSelectionModel().select(0);
 		}
 		//.................................................................................
 		if(Main.getTheAircraft().getLandingGears() != null) {
 
-			theController.getTextFieldAircraftLandingGearsZ().setText(
+			theController.getTextFieldAircraftNoseLandingGearsZ().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getZApexConstructionAxesNoseGear()
+							.getEstimatedValue()
+							)
+					);
+			theController.getTextFieldAircraftMainLandingGearsZ().setText(
 					String.valueOf(
 							Main.getTheAircraft()
 							.getLandingGears()
@@ -4057,17 +4109,28 @@ public class InputManagerControllerMainActionUtilities {
 
 			if(Main.getTheAircraft()
 					.getLandingGears()
+					.getZApexConstructionAxesNoseGear().getUnit().toString().equalsIgnoreCase("m"))
+				theController.getNoseLandingGearsZUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getLandingGears()
+					.getZApexConstructionAxesNoseGear().getUnit().toString().equalsIgnoreCase("ft"))
+				theController.getNoseLandingGearsZUnitChoiceBox().getSelectionModel().select(1);
+			
+			if(Main.getTheAircraft()
+					.getLandingGears()
 					.getZApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("m"))
-				theController.getLandingGearsZUnitChoiceBox().getSelectionModel().select(0);
+				theController.getMainLandingGearsZUnitChoiceBox().getSelectionModel().select(0);
 			else if(Main.getTheAircraft()
 					.getLandingGears()
 					.getZApexConstructionAxesMainGear().getUnit().toString().equalsIgnoreCase("ft"))
-				theController.getLandingGearsZUnitChoiceBox().getSelectionModel().select(1);
+				theController.getMainLandingGearsZUnitChoiceBox().getSelectionModel().select(1);
 
 		}
 		else {
-			theController.getTextFieldAircraftLandingGearsZ().setText("0.0");
-			theController.getLandingGearsZUnitChoiceBox().getSelectionModel().select(0);
+			theController.getTextFieldAircraftNoseLandingGearsZ().setText("0.0");
+			theController.getNoseLandingGearsZUnitChoiceBox().getSelectionModel().select(0);
+			theController.getTextFieldAircraftMainLandingGearsZ().setText("0.0");
+			theController.getMainLandingGearsZUnitChoiceBox().getSelectionModel().select(0);
 		}
 		//.................................................................................
 		if(Main.getTheAircraft().getLandingGears() != null)
@@ -4090,99 +4153,24 @@ public class InputManagerControllerMainActionUtilities {
 
 		//---------------------------------------------------------------------------------
 		// SYSTEMS:
-//		String systemsFileName =
-//				MyXMLReaderUtils
-//				.getXMLPropertyByPath(
-//						reader.getXmlDoc(), reader.getXpath(),
-//						"//systems/@file");
-//		if(systemsFileName != null) 
-//			theController.getTextFieldAircraftSystemsFile().setText(
-//					dirSystems 
-//					+ File.separator
-//					+ systemsFileName
-//					);
-//		else
-//			theController.getTextFieldAircraftSystemsFile().setText(
-//					"NOT INITIALIZED"
-//					);
-//		//.................................................................................
-//		if(Main.getTheAircraft().getSystems() != null) {
-//
-//			theController.getTextFieldAircraftSystemsX().setText(
-//					String.valueOf(
-//							Main.getTheAircraft()
-//							.getSystems()
-//							.getXApexConstructionAxes()
-//							.getEstimatedValue()
-//							)
-//					);
-//
-//			if(Main.getTheAircraft()
-//					.getSystems()
-//					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-//				theController.getSystemsXUnitChoiceBox().getSelectionModel().select(0);
-//			else if(Main.getTheAircraft()
-//					.getSystems()
-//					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-//				theController.getSystemsXUnitChoiceBox().getSelectionModel().select(1);
-//
-//		}
-//		else {
-//			theController.getTextFieldAircraftSystemsX().setText("0.0");
-//			theController.getSystemsXUnitChoiceBox().getSelectionModel().select(0);
-//		}
-//		//.................................................................................
-//		if(Main.getTheAircraft().getSystems() != null) {
-//
-//			theController.getTextFieldAircraftSystemsY().setText(
-//					String.valueOf(
-//							Main.getTheAircraft()
-//							.getSystems()
-//							.getYApexConstructionAxes()
-//							.getEstimatedValue()
-//							)
-//					);
-//
-//			if(Main.getTheAircraft()
-//					.getSystems()
-//					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-//				theController.getSystemsYUnitChoiceBox().getSelectionModel().select(0);
-//			else if(Main.getTheAircraft()
-//					.getSystems()
-//					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-//				theController.getSystemsYUnitChoiceBox().getSelectionModel().select(1);
-//
-//		}
-//		else {
-//			theController.getTextFieldAircraftSystemsY().setText("0.0");
-//			theController.getSystemsYUnitChoiceBox().getSelectionModel().select(0);
-//		}
-//		//.................................................................................
-//		if(Main.getTheAircraft().getSystems() != null) {
-//
-//			theController.getTextFieldAircraftSystemsZ().setText(
-//					String.valueOf(
-//							Main.getTheAircraft()
-//							.getSystems()
-//							.getZApexConstructionAxes()
-//							.getEstimatedValue()
-//							)
-//					);
-//
-//			if(Main.getTheAircraft()
-//					.getSystems()
-//					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-//				theController.getSystemsZUnitChoiceBox().getSelectionModel().select(0);
-//			else if(Main.getTheAircraft()
-//					.getSystems()
-//					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-//				theController.getSystemsZUnitChoiceBox().getSelectionModel().select(1);
-//
-//		}
-//		else {
-//			theController.getTextFieldAircraftSystemsZ().setText("0.0");
-//			theController.getSystemsZUnitChoiceBox().getSelectionModel().select(0);
-//		}
+		if(Main.getTheAircraft().getSystems() != null) {
+		
+			if(Main.getTheAircraft().getSystems()
+					.getTheSystemsInterface()
+					.getPrimaryElectricSystemsType()
+					.toString()
+					.equalsIgnoreCase("AC")
+					)
+				theController.getSystemsPrimaryElectricalTypeChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getSystems()
+					.getTheSystemsInterface()
+					.getPrimaryElectricSystemsType()
+					.toString()
+					.equalsIgnoreCase("DC")
+					)
+				theController.getSystemsPrimaryElectricalTypeChoiceBox().getSelectionModel().select(1);
+			
+		}
 	}
 	
 	public void createFuselageTopView() {
@@ -5725,110 +5713,6 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getCabinConfigurationXCoordinateFirstRowUnitChoiceBox().getSelectionModel().select(0);
 			}
 			
-//			//---------------------------------------------------------------------------------
-//			// MISSING SEATS ROW:
-//			if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow() != null) {
-//				
-//				for(int i=0; i<Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().size(); i++) {
-//					
-//					// CLASS 1
-//					if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(0) != null)
-//						theController.getTextFieldMissingSeatRow1().setText(
-//							String.valueOf(
-//									Arrays.toString(
-//											Main.getTheAircraft()
-//											.getCabinConfiguration()
-//											.getMissingSeatsRow()
-//											.get(0)
-//											)
-//									)
-//							);
-//					else
-//						theController.getTextFieldMissingSeatRow1().setText("0");
-//					
-//					if (i==1) {
-//					
-//						// CLASS 1
-//						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(0) != null)
-//							theController.getTextFieldMissingSeatRow1().setText(
-//								String.valueOf(
-//										Arrays.toString(
-//												Main.getTheAircraft()
-//												.getCabinConfiguration()
-//												.getMissingSeatsRow()
-//												.get(0)
-//												)
-//										)
-//								);
-//						else
-//							theController.getTextFieldMissingSeatRow1().setText("0");
-//
-//						// CLASS 2
-//						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(1) != null)
-//							theController.getTextFieldMissingSeatRow2().setText(
-//								String.valueOf(
-//										Arrays.toString(
-//												Main.getTheAircraft()
-//												.getCabinConfiguration()
-//												.getMissingSeatsRow()
-//												.get(1)
-//												)
-//										)
-//								);
-//						else
-//							theController.getTextFieldMissingSeatRow2().setText("0");
-//						
-//					}
-//					if (i==2) {
-//						
-//						// CLASS 1
-//						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(0) != null)
-//							theController.getTextFieldMissingSeatRow1().setText(
-//								String.valueOf(
-//										Arrays.toString(
-//												Main.getTheAircraft()
-//												.getCabinConfiguration()
-//												.getMissingSeatsRow()
-//												.get(0)
-//												)
-//										)
-//								);
-//						else
-//							theController.getTextFieldMissingSeatRow1().setText("0");
-//
-//						// CLASS 2
-//						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(1) != null)
-//							theController.getTextFieldMissingSeatRow2().setText(
-//								String.valueOf(
-//										Arrays.toString(
-//												Main.getTheAircraft()
-//												.getCabinConfiguration()
-//												.getMissingSeatsRow()
-//												.get(1)
-//												)
-//										)
-//								);
-//						else
-//							theController.getTextFieldMissingSeatRow2().setText("0");
-//						
-//						// CLASS 3
-//						if(Main.getTheAircraft().getCabinConfiguration().getMissingSeatsRow().get(2) != null)
-//							theController.getTextFieldMissingSeatRow3().setText(
-//								String.valueOf(
-//										Arrays.toString(
-//												Main.getTheAircraft()
-//												.getCabinConfiguration()
-//												.getMissingSeatsRow()
-//												.get(2)
-//												)
-//										)
-//								);
-//						else
-//							theController.getTextFieldMissingSeatRow3().setText("0");
-//					}
-//				}
-//			}
-
 			//---------------------------------------------------------------------------------
 			// NUMBER OF BRAKES ECONOMY:
 			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaksEconomyClass()) != null)
@@ -8218,6 +8102,36 @@ public class InputManagerControllerMainActionUtilities {
 				theController.gethTailAdjustCriterionChoiceBox().setDisable(false);
 			
 			//---------------------------------------------------------------------------------
+			// MAIN SPAR LOCATION:
+			if(Double.valueOf(Main.getTheAircraft().getHTail().getMainSparDimensionlessPosition()) != null) 
+				theController.getTextFieldHTailMainSparAdimensionalPosition().setText(
+						Double.toString(
+								Main.getTheAircraft()
+								.getHTail()
+								.getMainSparDimensionlessPosition()
+								)
+						);
+			else
+				theController.getTextFieldHTailMainSparAdimensionalPosition().setText(
+						"NOT INITIALIZED"
+						);
+
+			//---------------------------------------------------------------------------------
+			// SECONDARY SPAR LOCATION:
+			if(Double.valueOf(Main.getTheAircraft().getHTail().getSecondarySparDimensionlessPosition()) != null) 
+				theController.getTextFieldHTailSecondarySparAdimensionalPosition().setText(
+						Double.toString(
+								Main.getTheAircraft()
+								.getHTail()
+								.getSecondarySparDimensionlessPosition()
+								)
+						);
+			else
+				theController.getTextFieldHTailSecondarySparAdimensionalPosition().setText(
+						"NOT INITIALIZED"
+						);
+			
+			//---------------------------------------------------------------------------------
 			// ROUGHNESS:
 			if(Main.getTheAircraft().getHTail().getRoughness() != null) {
 				
@@ -8803,6 +8717,36 @@ public class InputManagerControllerMainActionUtilities {
 				theController.getvTailAdjustCriterionChoiceBox().setDisable(false);
 			
 			//---------------------------------------------------------------------------------
+			// MAIN SPAR LOCATION:
+			if(Double.valueOf(Main.getTheAircraft().getVTail().getMainSparDimensionlessPosition()) != null) 
+				theController.getTextFieldVTailMainSparAdimensionalPosition().setText(
+						Double.toString(
+								Main.getTheAircraft()
+								.getVTail()
+								.getMainSparDimensionlessPosition()
+								)
+						);
+			else
+				theController.getTextFieldVTailMainSparAdimensionalPosition().setText(
+						"NOT INITIALIZED"
+						);
+
+			//---------------------------------------------------------------------------------
+			// SECONDARY SPAR LOCATION:
+			if(Double.valueOf(Main.getTheAircraft().getVTail().getSecondarySparDimensionlessPosition()) != null) 
+				theController.getTextFieldVTailSecondarySparAdimensionalPosition().setText(
+						Double.toString(
+								Main.getTheAircraft()
+								.getVTail()
+								.getSecondarySparDimensionlessPosition()
+								)
+						);
+			else
+				theController.getTextFieldVTailSecondarySparAdimensionalPosition().setText(
+						"NOT INITIALIZED"
+						);
+			
+			//---------------------------------------------------------------------------------
 			// ROUGHNESS:
 			if(Main.getTheAircraft().getVTail().getRoughness() != null) {
 				
@@ -9386,6 +9330,36 @@ public class InputManagerControllerMainActionUtilities {
 			// ADJUST CRITERION CHOICE BOX:
 			if(Main.getTheAircraft() != null)
 				theController.getCanardAdjustCriterionChoiceBox().setDisable(false);
+			
+			//---------------------------------------------------------------------------------
+			// MAIN SPAR LOCATION:
+			if(Double.valueOf(Main.getTheAircraft().getCanard().getMainSparDimensionlessPosition()) != null) 
+				theController.getTextFieldCanardMainSparAdimensionalPosition().setText(
+						Double.toString(
+								Main.getTheAircraft()
+								.getCanard()
+								.getMainSparDimensionlessPosition()
+								)
+						);
+			else
+				theController.getTextFieldCanardMainSparAdimensionalPosition().setText(
+						"NOT INITIALIZED"
+						);
+
+			//---------------------------------------------------------------------------------
+			// SECONDARY SPAR LOCATION:
+			if(Double.valueOf(Main.getTheAircraft().getCanard().getSecondarySparDimensionlessPosition()) != null) 
+				theController.getTextFieldCanardSecondarySparAdimensionalPosition().setText(
+						Double.toString(
+								Main.getTheAircraft()
+								.getCanard()
+								.getSecondarySparDimensionlessPosition()
+								)
+						);
+			else
+				theController.getTextFieldCanardSecondarySparAdimensionalPosition().setText(
+						"NOT INITIALIZED"
+						);
 			
 			//---------------------------------------------------------------------------------
 			// ROUGHNESS:

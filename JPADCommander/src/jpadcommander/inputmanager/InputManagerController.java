@@ -26,6 +26,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.Aircraft;
 import aircraft.components.FuelTank;
 import aircraft.components.ILandingGear;
+import aircraft.components.ISystems;
 import aircraft.components.LandingGears;
 import aircraft.components.cabinconfiguration.CabinConfiguration;
 import aircraft.components.cabinconfiguration.ICabinConfiguration;
@@ -48,6 +49,7 @@ import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.LandingGearsMountingPositionEnum;
 import configuration.enumerations.NacelleMountingPositionEnum;
+import configuration.enumerations.PrimaryElectricSystemsEnum;
 import configuration.enumerations.RegulationsEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -98,7 +100,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import jpadcommander.Main;
-import standaloneutils.MyArrayUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
 /*
@@ -265,17 +266,11 @@ public class InputManagerController {
 	@FXML
 	private Button aircraftChooseLandingGearsFileButton;
 	@FXML
-	private Button aircraftChooseSystemsFileButton;
-	@FXML
 	private Button aircraftAddEngineButton;
 	@FXML
 	private Button aircraftAddNacelleButton;
 	@FXML
 	private Button fuselageAddSpoilerButton;
-	@FXML
-	private Button missingSeatRowCabinConfigurationInfoButton;
-	@FXML
-	private Button referenceMassCabinConfigurationInfoButton;
 	@FXML
 	private Button equivalentWingInfoButton;
 	@FXML
@@ -462,6 +457,8 @@ public class InputManagerController {
 	private String mainLandingGearsZPositionValue = "";
 	private String mainLandingGearsZPositionUnit = "";
 	private String landingGearsMountinPositionValue = "";
+	
+	private String systemsPrimaryElectricalTypeValue = "";
 
 	//...........................................................................................
 	// FILE CHOOSER:
@@ -479,7 +476,6 @@ public class InputManagerController {
 	private FileChooser engineFileChooser;
 	private FileChooser nacelleFileChooser;
 	private FileChooser landingGearsFileChooser;
-	private FileChooser systemsFileChooser;
 	
 	//...........................................................................................
 	// VALIDATIONS (ControlsFX):
@@ -507,6 +503,10 @@ public class InputManagerController {
 	ObservableList<String> regulationsTypeList = FXCollections.observableArrayList(
 			"FAR-23",
 			"FAR-25"
+			);
+	ObservableList<String> primaryElectricalSystemsTypeList = FXCollections.observableArrayList(
+			"AC",
+			"DC"
 			);
 	ObservableList<String> windshieldTypeList = FXCollections.observableArrayList(
 			"DOUBLE",
@@ -653,6 +653,8 @@ public class InputManagerController {
 	private ChoiceBox<String> nacelleMountingPositionTypeChoiceBox1;
 	@FXML
 	private ChoiceBox<String> landingGearsMountingPositionTypeChoiceBox;
+	@FXML
+	private ChoiceBox<String> systemsPrimaryElectricalTypeChoiceBox;
 	
 	private List<TextField> textFieldsAircraftEngineFileList;
 	private List<TextField> textFieldAircraftEngineXList;
@@ -820,17 +822,17 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> nacelleZ1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> landingGearsXUnitChoiceBox;
+	private ChoiceBox<String> noseLandingGearsXUnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> landingGearsYUnitChoiceBox;
+	private ChoiceBox<String> noseLandingGearsYUnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> landingGearsZUnitChoiceBox;
+	private ChoiceBox<String> noseLandingGearsZUnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> systemsXUnitChoiceBox;
+	private ChoiceBox<String> mainLandingGearsXUnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> systemsYUnitChoiceBox;
+	private ChoiceBox<String> mainLandingGearsYUnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> systemsZUnitChoiceBox;
+	private ChoiceBox<String> mainLandingGearsZUnitChoiceBox;
 	
 	//...........................................................................................
 	// FUSELAGE TAB (DATA):
@@ -958,12 +960,6 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldXCoordinateFirstRow;
 	@FXML
-	private TextField textFieldMissingSeatRow1;
-	@FXML
-	private TextField textFieldMissingSeatRow2;
-	@FXML
-	private TextField textFieldMissingSeatRow3;
-	@FXML
 	private TextField textFieldNumberOfBrakesEconomy;
 	@FXML
 	private TextField textFieldNumberOfBrakesBusiness;
@@ -999,8 +995,6 @@ public class InputManagerController {
 	private TextField textFieldDistanceFromWallBusiness;
 	@FXML
 	private TextField textFieldDistanceFromWallFirst;
-	@FXML
-	private TextField textFieldMassFurnishingsAndEquipment;
 	
 	//...........................................................................................
 	// CABIN CONFIGURATION TAB (UNITS):
@@ -1025,8 +1019,6 @@ public class InputManagerController {
 	private ChoiceBox<String> cabinConfigurationDistanceFromWallBusinessUnitChoiceBox;
 	@FXML
 	private ChoiceBox<String> cabinConfigurationDistanceFromWallFirstUnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox;
 	
 	//...........................................................................................
 	// WING TAB (DATA):
@@ -1039,8 +1031,6 @@ public class InputManagerController {
 	private TextField textFieldWingMainSparAdimensionalPosition;
 	@FXML
 	private TextField textFieldWingSecondarySparAdimensionalPosition;
-	@FXML
-	private TextField textFieldWingCompositeMassCorrectionFactor;
 	@FXML
 	private TextField textFieldWingRoughness;
 	@FXML
@@ -1268,7 +1258,9 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> hTailAdjustCriterionChoiceBox;
 	@FXML
-	private TextField textFieldHTailCompositeMassCorrectionFactor;
+	private TextField textFieldHTailMainSparAdimensionalPosition;
+	@FXML
+	private TextField textFieldHTailSecondarySparAdimensionalPosition;
 	@FXML
 	private TextField textFieldHTailRoughness;
 	@FXML
@@ -1369,7 +1361,9 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> vTailAdjustCriterionChoiceBox;
 	@FXML
-	private TextField textFieldVTailCompositeMassCorrectionFactor;
+	private TextField textFieldVTailMainSparAdimensionalPosition;
+	@FXML
+	private TextField textFieldVTailSecondarySparAdimensionalPosition;
 	@FXML
 	private TextField textFieldVTailRoughness;
 	@FXML
@@ -1470,7 +1464,9 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> canardAdjustCriterionChoiceBox;
 	@FXML
-	private TextField textFieldCanardCompositeMassCorrectionFactor;
+	private TextField textFieldCanardMainSparAdimensionalPosition;
+	@FXML
+	private TextField textFieldCanardSecondarySparAdimensionalPosition;
 	@FXML
 	private TextField textFieldCanardRoughness;
 	@FXML
@@ -1879,6 +1875,8 @@ public class InputManagerController {
 		// CHOICE BOX INITIALIZATION
 		aircraftTypeChoiceBox.setItems(aircraftTypeList);
 		regulationsTypeChoiceBox.setItems(regulationsTypeList);
+		getSystemsPrimaryElectricalTypeChoiceBox().setItems(primaryElectricalSystemsTypeList);
+		
 		windshieldTypeChoiceBox.setItems(windshieldTypeList);
 		engineMountingPositionTypeChoiceBox1.setItems(powerPlantMountingPositionTypeList);
 		nacelleMountingPositionTypeChoiceBox1.setItems(nacelleMountingPositionTypeList);
@@ -1925,12 +1923,12 @@ public class InputManagerController {
 		nacelleX1UnitChoiceBox.setItems(lengthUnitsList);
 		nacelleY1UnitChoiceBox.setItems(lengthUnitsList);
 		nacelleZ1UnitChoiceBox.setItems(lengthUnitsList);
-		landingGearsXUnitChoiceBox.setItems(lengthUnitsList);
-		landingGearsYUnitChoiceBox.setItems(lengthUnitsList);
-		landingGearsZUnitChoiceBox.setItems(lengthUnitsList);
-		systemsXUnitChoiceBox.setItems(lengthUnitsList);
-		systemsYUnitChoiceBox.setItems(lengthUnitsList);
-		systemsZUnitChoiceBox.setItems(lengthUnitsList);
+		noseLandingGearsXUnitChoiceBox.setItems(lengthUnitsList);
+		noseLandingGearsYUnitChoiceBox.setItems(lengthUnitsList);
+		noseLandingGearsZUnitChoiceBox.setItems(lengthUnitsList);
+		mainLandingGearsXUnitChoiceBox.setItems(lengthUnitsList);
+		mainLandingGearsYUnitChoiceBox.setItems(lengthUnitsList);
+		mainLandingGearsZUnitChoiceBox.setItems(lengthUnitsList);
 		fuselageLengthUnitChoiceBox.setItems(lengthUnitsList);
 		fuselageRoughnessUnitChoiceBox.setItems(lengthUnitsList);
 		fuselageNoseTipOffsetZUnitChoiceBox.setItems(lengthUnitsList);
@@ -1952,7 +1950,6 @@ public class InputManagerController {
 		cabinConfigurationDistanceFromWallEconomyUnitChoiceBox.setItems(lengthUnitsList);
 		cabinConfigurationDistanceFromWallBusinessUnitChoiceBox.setItems(lengthUnitsList);
 		cabinConfigurationDistanceFromWallFirstUnitChoiceBox.setItems(lengthUnitsList);
-		cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox.setItems(massUnitsList);
 		wingRoughnessUnitChoiceBox.setItems(lengthUnitsList);
 		wingWingletHeightUnitChoiceBox.setItems(lengthUnitsList);
 		equivalentWingAreaUnitChoiceBox.setItems(areaUnitsList);
@@ -6653,7 +6650,8 @@ public class InputManagerController {
 						int numberOfOperations = 37;
 						int progressIncrement = 100/numberOfOperations;
 						
-						// DATA UPDATE /* TODO: MODIFY PRE-EXISTING AIRCRAFT COMPONENTS OBJECT INSTEAD OF BUILDING NEW ONE AND THEN SET */  
+						// DATA UPDATE 
+						/* TODO: MODIFY PRE-EXISTING AIRCRAFT COMPONENTS OBJECT INSTEAD OF BUILDING NEW ONE AND THEN SET */  
 						updateProgress(0, numberOfOperations);
 						updateMessage("Start Updating Aircraft Data ...");
 						updateTitle(String.valueOf(0) + "%");
@@ -7219,7 +7217,7 @@ public class InputManagerController {
 		mainLandingGearsZPositionUnit = "";
 		landingGearsMountinPositionValue = "";
 		//.................................................................................................
-		// TODO: ADD SYSTEMS CHECK BOX ...  
+		systemsPrimaryElectricalTypeValue = "";  
 		
 		//.................................................................................................
 		// FETCHING DATA FROM GUI FIELDS ...
@@ -7426,7 +7424,8 @@ public class InputManagerController {
 		if(!landingGearsMountingPositionTypeChoiceBox.getSelectionModel().isEmpty())
 			landingGearsMountinPositionValue = landingGearsMountingPositionTypeChoiceBox.getSelectionModel().getSelectedItem().toString();
 		//.................................................................................................
-		// TODO: ADD SYSTEMS CHECK BOX
+		if(!getSystemsPrimaryElectricalTypeChoiceBox().getSelectionModel().isEmpty())
+			systemsPrimaryElectricalTypeValue = getSystemsPrimaryElectricalTypeChoiceBox().getSelectionModel().getSelectedItem().toString();
 		
 		//.................................................................................................
 		// FILTERING FILLED NACELLE AND ENGINES TABS ...
@@ -7722,25 +7721,33 @@ public class InputManagerController {
 		//.................................................................................................
 		if(Main.getTheAircraft().getLandingGears() != null) {
 			Main.getTheAircraft().setLandingGearsFilePath(landingGearsFilePath);
+			Main.getTheAircraft().getLandingGears().setXApexConstructionAxesNoseGear(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(noseLandingGearsXPositionValue), Unit.valueOf(noseLandingGearsXPositionUnit))
+					);
+			Main.getTheAircraft().getLandingGears().setYApexConstructionAxesNoseGear(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(noseLandingGearsYPositionValue), Unit.valueOf(noseLandingGearsYPositionUnit))
+					);
+			Main.getTheAircraft().getLandingGears().setZApexConstructionAxesNoseGear(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(noseLandingGearsZPositionValue), Unit.valueOf(noseLandingGearsZPositionUnit))
+					);
 			Main.getTheAircraft().getLandingGears().setXApexConstructionAxesMainGear(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsXPositionValue), Unit.valueOf(landingGearsXPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(mainLandingGearsXPositionValue), Unit.valueOf(mainLandingGearsXPositionUnit))
 					);
 			Main.getTheAircraft().getLandingGears().setYApexConstructionAxesMainGear(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsYPositionValue), Unit.valueOf(landingGearsYPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(mainLandingGearsYPositionValue), Unit.valueOf(mainLandingGearsYPositionUnit))
 					);
 			Main.getTheAircraft().getLandingGears().setZApexConstructionAxesMainGear(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsZPositionValue), Unit.valueOf(landingGearsZPositionUnit))
-					);
-			Main.getTheAircraft().getLandingGears().setXApexConstructionAxesMainGear(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsXPositionValue), Unit.valueOf(landingGearsXPositionUnit))
-					);
-			Main.getTheAircraft().getLandingGears().setYApexConstructionAxesMainGear(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsYPositionValue), Unit.valueOf(landingGearsYPositionUnit))
-					);
-			Main.getTheAircraft().getLandingGears().setZApexConstructionAxesMainGear(
-					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsZPositionValue), Unit.valueOf(landingGearsZPositionUnit))
+					(Amount<Length>) Amount.valueOf(Double.valueOf(mainLandingGearsZPositionValue), Unit.valueOf(mainLandingGearsZPositionUnit))
 					);
 			Main.getTheAircraft().getLandingGears().setMountingPosition(LandingGearsMountingPositionEnum.valueOf(landingGearsMountinPositionValue));
+		}
+		//.................................................................................................
+		if(Main.getTheAircraft().getSystems() != null) {
+			Main.getTheAircraft().getSystems().setTheSystemsInterface(
+					ISystems.Builder.from(Main.getTheAircraft().getSystems().getTheSystemsInterface())
+					.setPrimaryElectricSystemsType(PrimaryElectricSystemsEnum.valueOf(systemsPrimaryElectricalTypeValue))
+					.build()
+					);
 		}
 	}
 	
@@ -8089,7 +8096,7 @@ public class InputManagerController {
 		.addAllSpoilers(spoilersList)
 		.build();
 		
-		
+		Main.getTheAircraft().getFuselage().setFusDesDatabaseReader(fusDesDatabaseReader);
 		Main.getTheAircraft().getFuselage().calculateGeometry();
 	}
 	
@@ -8107,7 +8114,6 @@ public class InputManagerController {
 		String aislesNumber = "";
 		String xCoordinateFirstRow = "";
 		String xCoordinateFirstRowUnit = "";
-		List<String> missingSeaRows = new ArrayList<>();
 		//.................................................................................................
 		String numberOfBrakesEconomyClass = "";
 		String numberOfBrakesBusinessClass = "";
@@ -8136,9 +8142,6 @@ public class InputManagerController {
 		String distanceFromWallEconomyClassUnit = "";
 		String distanceFromWallBusinessClassUnit = "";
 		String distanceFromWallFirstClassUnit = "";
-		//.................................................................................................
-		String referenceMassFurnishingsAndEquipments = "";
-		String referenceMassFurnishingsAndEquipmentsUnit = "";
 		
 		//.................................................................................................
 		// FETCHING DATA FROM GUI FIELDS ...
@@ -8163,12 +8166,6 @@ public class InputManagerController {
 			xCoordinateFirstRow = textFieldXCoordinateFirstRow.getText();
 		if(!cabinConfigurationXCoordinateFirstRowUnitChoiceBox.getSelectionModel().isEmpty())
 			xCoordinateFirstRowUnit = cabinConfigurationXCoordinateFirstRowUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-		if(textFieldMissingSeatRow1.getText() != null)
-			missingSeaRows.add(textFieldMissingSeatRow1.getText());
-		if(textFieldMissingSeatRow2.getText() != null)
-			missingSeaRows.add(textFieldMissingSeatRow2.getText());
-		if(textFieldMissingSeatRow3.getText() != null)
-			missingSeaRows.add(textFieldMissingSeatRow3.getText());
 		//.................................................................................................
 		if(textFieldNumberOfBrakesEconomy.getText() != null)
 			numberOfBrakesEconomyClass = textFieldNumberOfBrakesEconomy.getText();
@@ -8224,34 +8221,10 @@ public class InputManagerController {
 			distanceFromWallBusinessClassUnit = cabinConfigurationDistanceFromWallBusinessUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(!cabinConfigurationDistanceFromWallFirstUnitChoiceBox.getSelectionModel().isEmpty())
 			distanceFromWallFirstClassUnit = cabinConfigurationDistanceFromWallFirstUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-		//.................................................................................................
-		if(textFieldMassFurnishingsAndEquipment.getText() != null)
-			referenceMassFurnishingsAndEquipments = textFieldMassFurnishingsAndEquipment.getText();
-		if(!cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox.getSelectionModel().isEmpty())
-			referenceMassFurnishingsAndEquipmentsUnit = cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 
 		//.................................................................................................
 		// SETTING ALL DATA INSIDE THE AIRCRAFT OBJECT ...
 		//.................................................................................................
-		List<List<String>> missingSeatsRowSplitList = new ArrayList<>(); 
-		missingSeaRows.stream()
-		.filter(str -> !str.isEmpty())
-		.forEach(str -> {
-			String currentString = str.trim();
-			currentString = currentString.replace("[", "");
-			currentString = currentString.replace("]", "");
-			currentString = currentString.replace(",", ";");
-			missingSeatsRowSplitList.add(Arrays.asList(currentString.split(";")));
-		});
-		List<Integer[]> missingSeatsRowsFinal = new ArrayList<>();
-		missingSeatsRowSplitList.stream().forEach(list -> {
-			
-			List<Integer> integerList = new ArrayList<>();
-			list.stream().forEach(element -> integerList.add(Integer.valueOf(element.trim())));
-			missingSeatsRowsFinal.add(MyArrayUtils.convertListOfIntegerToIntegerArray(integerList));
-			
-		});
-		
 		List<String> numberOfColumnsEconomyClassSplitList = new ArrayList<>(); 
 		String numberOfColumnsEconomyClassString = numberOfColumnsEconomyClass.trim();
 		numberOfColumnsEconomyClassString = numberOfColumnsEconomyClassString.replace("[", "");
@@ -8300,7 +8273,6 @@ public class InputManagerController {
 								Unit.valueOf(xCoordinateFirstRowUnit)
 								)
 						)
-//				.addAllMissingSeatsRow(missingSeatsRowsFinal)
 				.setNumberOfBreaksEconomyClass(Integer.valueOf(numberOfBrakesEconomyClass))
 				.setNumberOfBreaksBusinessClass(Integer.valueOf(numberOfBrakesBusinessClass))
 				.setNumberOfBreaksFirstClass(Integer.valueOf(numberOfBrakesFirstClass))
@@ -8371,7 +8343,6 @@ public class InputManagerController {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updateWingTabData() {
 		
 //		//.................................................................................................
@@ -8380,7 +8351,6 @@ public class InputManagerController {
 //		boolean wingEquivalentFlag = false;
 //		String wingMainSparLoacation = "";
 //		String wingSecondarySparLocation = "";
-//		String wingCompositeCorrectionFactor = "";
 //		String wingRoughness = "";
 //		String wingRoughnessUnit = "";
 //		String wingWingletHeigth = "";
@@ -8478,8 +8448,6 @@ public class InputManagerController {
 //			wingMainSparLoacation = textFieldWingMainSparAdimensionalPosition.getText();
 //		if(textFieldWingSecondarySparAdimensionalPosition.getText() != null)
 //			wingSecondarySparLocation = textFieldWingSecondarySparAdimensionalPosition.getText();
-//		if(textFieldWingCompositeMassCorrectionFactor.getText() != null)
-//			wingCompositeCorrectionFactor = textFieldWingCompositeMassCorrectionFactor.getText();
 //		if(textFieldWingRoughness.getText() != null)
 //			wingRoughness = textFieldWingRoughness.getText();
 //		if(!wingRoughnessUnitChoiceBox.getSelectionModel().isEmpty())
@@ -9090,7 +9058,6 @@ public class InputManagerController {
 //		Main.getTheAircraft().getWing().setEquivalentWingFlag(wingEquivalentFlag);
 //		Main.getTheAircraft().getWing().setMainSparNonDimensionalPosition(Double.valueOf(wingMainSparLoacation));
 //		Main.getTheAircraft().getWing().setSecondarySparNonDimensionalPosition(Double.valueOf(wingSecondarySparLocation));
-//		Main.getTheAircraft().getWing().setCompositeCorrectioFactor(Double.valueOf(wingCompositeCorrectionFactor));
 //		Main.getTheAircraft().getWing().setRoughness(
 //				(Amount<Length>) Amount.valueOf(
 //						Double.valueOf(wingRoughness),
@@ -9337,7 +9304,7 @@ public class InputManagerController {
 //				Main.getTheAircraft().getWing().getAerodynamicDatabaseReader(), 
 //				Main.getTheAircraft().getWing().getEquivalentWing().getEquivalentWingFlag()
 //				);
-		
+//		
 	}
 	
 	private void updateHTailTabData() {
@@ -10302,7 +10269,6 @@ public class InputManagerController {
 		List<File> powerPlantFilePathList = new ArrayList<>();
 		List<File> nacellesFilePathList = new ArrayList<>();
 		File landingGearsFilePath = null;
-		File systemsFilePath = null;
 		
 		FusDesDatabaseReader fusDesDatabaseReader = Main.getTheAircraft().getFuselage().getFusDesDatabaseReader();
 		AerodynamicDatabaseReader aerodynamicDatabaseReader = Main.getTheAircraft().getWing().getAeroDatabaseReader();
@@ -10332,8 +10298,6 @@ public class InputManagerController {
 		
 		if(!textFieldAircraftLandingGearsFile.getText().isEmpty()) 
 			landingGearsFilePath = new File(textFieldAircraftLandingGearsFile.getText());
-		if(!textFieldAircraftSystemsFile.getText().isEmpty()) 
-			systemsFilePath = new File(textFieldAircraftSystemsFile.getText());
 		
 		//....................................................................................
 		// CREATING AIRCRAFT COMPONENTS FROM FILE ...
@@ -10365,6 +10329,7 @@ public class InputManagerController {
 				Main.getTheAircraft().setFuselage(Fuselage.importFromXML(fuselageFilePath.getAbsolutePath())
 								);
 				Main.getTheAircraft().getFuselage().calculateGeometry();
+				Main.getTheAircraft().getFuselage().setFusDesDatabaseReader(fusDesDatabaseReader);
 				Main.getTheAircraft().getFuselage().setXApexConstructionAxes(fuselageXApex);
 				Main.getTheAircraft().getFuselage().setYApexConstructionAxes(fuselageYApex);
 				Main.getTheAircraft().getFuselage().setZApexConstructionAxes(fuselageZApex);
@@ -10704,17 +10669,29 @@ public class InputManagerController {
 		if (updateLandingGearsDataFromFile == true) {
 			if (landingGearsFilePath.exists()) {
 
-				Amount<Length> landingGearsXApex = (Amount<Length>) Amount.valueOf(
-						Double.valueOf(landingGearsXPositionValue),
-						Unit.valueOf(landingGearsXPositionUnit)
+				Amount<Length> noseLandingGearsXApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(noseLandingGearsXPositionValue),
+						Unit.valueOf(noseLandingGearsXPositionUnit)
 						);
-				Amount<Length> landingGearsYApex = (Amount<Length>) Amount.valueOf(
-						Double.valueOf(landingGearsYPositionValue),
-						Unit.valueOf(landingGearsYPositionUnit)
+				Amount<Length> noseLandingGearsYApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(noseLandingGearsYPositionValue),
+						Unit.valueOf(noseLandingGearsYPositionUnit)
 						);
-				Amount<Length> landingGearsZApex = (Amount<Length>) Amount.valueOf(
-						Double.valueOf(landingGearsZPositionValue),
-						Unit.valueOf(landingGearsZPositionUnit)
+				Amount<Length> noseLandingGearsZApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(noseLandingGearsZPositionValue),
+						Unit.valueOf(noseLandingGearsZPositionUnit)
+						);
+				Amount<Length> mainLandingGearsXApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(mainLandingGearsXPositionValue),
+						Unit.valueOf(mainLandingGearsXPositionUnit)
+						);
+				Amount<Length> mainLandingGearsYApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(mainLandingGearsYPositionValue),
+						Unit.valueOf(mainLandingGearsYPositionUnit)
+						);
+				Amount<Length> mainLandingGearsZApex = (Amount<Length>) Amount.valueOf(
+						Double.valueOf(mainLandingGearsZPositionValue),
+						Unit.valueOf(mainLandingGearsZPositionUnit)
 						);
 				LandingGearsMountingPositionEnum landingGearsMountingPosition =
 						LandingGearsMountingPositionEnum.valueOf(landingGearsMountinPositionValue);
@@ -10722,39 +10699,16 @@ public class InputManagerController {
 				Main.getTheAircraft().setLandingGears(
 						LandingGears.importFromXML(landingGearsFilePath.getAbsolutePath())
 						);
-				Main.getTheAircraft().getLandingGears().setXApexConstructionAxesMainGear(landingGearsXApex);
-				Main.getTheAircraft().getLandingGears().setYApexConstructionAxesMainGear(landingGearsYApex);
-				Main.getTheAircraft().getLandingGears().setZApexConstructionAxesMainGear(landingGearsZApex);
+				Main.getTheAircraft().getLandingGears().setXApexConstructionAxesNoseGear(noseLandingGearsXApex);
+				Main.getTheAircraft().getLandingGears().setYApexConstructionAxesNoseGear(noseLandingGearsYApex);
+				Main.getTheAircraft().getLandingGears().setZApexConstructionAxesNoseGear(noseLandingGearsZApex);
+				Main.getTheAircraft().getLandingGears().setXApexConstructionAxesMainGear(mainLandingGearsXApex);
+				Main.getTheAircraft().getLandingGears().setYApexConstructionAxesMainGear(mainLandingGearsYApex);
+				Main.getTheAircraft().getLandingGears().setZApexConstructionAxesMainGear(mainLandingGearsZApex);
 				Main.getTheAircraft().getLandingGears().setMountingPosition(landingGearsMountingPosition);
 			}
 		}
-		//....................................................................................
-		// SYSTEMS
-//		if (updateSystemsDataFromFile == true) {
-//			if (systemsFilePath.exists()) {
-//
-//				Amount<Length> systemsXApex = (Amount<Length>) Amount.valueOf(
-//						Double.valueOf(systemsXPositionValue), 
-//						Unit.valueOf(systemsXPositionUnit)
-//						);
-//				Amount<Length> systemsYApex = (Amount<Length>) Amount.valueOf(
-//						Double.valueOf(systemsYPositionValue), 
-//						Unit.valueOf(systemsYPositionUnit)
-//						);
-//				Amount<Length> systemsZApex = (Amount<Length>) Amount.valueOf(
-//						Double.valueOf(systemsZPositionValue), 
-//						Unit.valueOf(systemsZPositionUnit)
-//						);
-//
-//				Main.getTheAircraft().setSystems(
-//						Systems.importFromXML(systemsFilePath.getAbsolutePath())
-//						);
-//				Main.getTheAircraft().getSystems().setXApexConstructionAxes(systemsXApex);
-//				Main.getTheAircraft().getSystems().setYApexConstructionAxes(systemsYApex);
-//				Main.getTheAircraft().getSystems().setZApexConstructionAxes(systemsZApex);
-//
-//			}
-//		}
+		
 		//....................................................................................
 		// LOGGING AIRCRAFT COMPONENTS DATA TO GUI ...
 		//....................................................................................
@@ -10858,20 +10812,6 @@ public class InputManagerController {
 	//...........................................................................................
 	// INFO ACTIONS:
 	//...........................................................................................
-	
-	@FXML
-	private void showMissingSeatRowInfo() {
-		
-		// TODO
-		
-	};
-	
-	@FXML
-	private void showCabinConfigurationReferenceMassInfo() {
-		
-		// TODO
-		
-	};
 	
 	@FXML
 	private void showEquivalentWingInfo() {
@@ -11585,14 +11525,6 @@ public class InputManagerController {
 		this.aircraftChooseLandingGearsFileButton = aircraftChooseLandingGearsFileButton;
 	}
 
-	public Button getAircraftChooseSystemsFileButton() {
-		return aircraftChooseSystemsFileButton;
-	}
-
-	public void setAircraftChooseSystemsFileButton(Button aircraftChooseSystemsFileButton) {
-		this.aircraftChooseSystemsFileButton = aircraftChooseSystemsFileButton;
-	}
-
 	public Button getAircraftAddEngineButton() {
 		return aircraftAddEngineButton;
 	}
@@ -11615,22 +11547,6 @@ public class InputManagerController {
 
 	public void setFuselageAddSpoilerButton(Button fuselageAddSpoilerButton) {
 		this.fuselageAddSpoilerButton = fuselageAddSpoilerButton;
-	}
-
-	public Button getMissingSeatRowCabinConfigurationInfoButton() {
-		return missingSeatRowCabinConfigurationInfoButton;
-	}
-
-	public void setMissingSeatRowCabinConfigurationInfoButton(Button missingSeatRowCabinConfigurationInfoButton) {
-		this.missingSeatRowCabinConfigurationInfoButton = missingSeatRowCabinConfigurationInfoButton;
-	}
-
-	public Button getReferenceMassCabinConfigurationInfoButton() {
-		return referenceMassCabinConfigurationInfoButton;
-	}
-
-	public void setReferenceMassCabinConfigurationInfoButton(Button referenceMassCabinConfigurationInfoButton) {
-		this.referenceMassCabinConfigurationInfoButton = referenceMassCabinConfigurationInfoButton;
 	}
 
 	public Button getEquivalentWingInfoButton() {
@@ -12713,14 +12629,6 @@ public class InputManagerController {
 		this.landingGearsFileChooser = landingGearsFileChooser;
 	}
 
-	public FileChooser getSystemsFileChooser() {
-		return systemsFileChooser;
-	}
-
-	public void setSystemsFileChooser(FileChooser systemsFileChooser) {
-		this.systemsFileChooser = systemsFileChooser;
-	}
-
 	public ValidationSupport getValidation() {
 		return validation;
 	}
@@ -13681,52 +13589,52 @@ public class InputManagerController {
 		this.nacelleZ1UnitChoiceBox = nacelleZ1UnitChoiceBox;
 	}
 
-	public ChoiceBox<String> getLandingGearsXUnitChoiceBox() {
-		return landingGearsXUnitChoiceBox;
+	public ChoiceBox<String> getNoseLandingGearsXUnitChoiceBox() {
+		return noseLandingGearsXUnitChoiceBox;
 	}
 
-	public void setLandingGearsXUnitChoiceBox(ChoiceBox<String> landingGearsXUnitChoiceBox) {
-		this.landingGearsXUnitChoiceBox = landingGearsXUnitChoiceBox;
+	public void setNoseLandingGearsXUnitChoiceBox(ChoiceBox<String> noseLandingGearsXUnitChoiceBox) {
+		this.noseLandingGearsXUnitChoiceBox = noseLandingGearsXUnitChoiceBox;
 	}
 
-	public ChoiceBox<String> getLandingGearsYUnitChoiceBox() {
-		return landingGearsYUnitChoiceBox;
+	public ChoiceBox<String> getNoseLandingGearsYUnitChoiceBox() {
+		return noseLandingGearsYUnitChoiceBox;
 	}
 
-	public void setLandingGearsYUnitChoiceBox(ChoiceBox<String> landingGearsYUnitChoiceBox) {
-		this.landingGearsYUnitChoiceBox = landingGearsYUnitChoiceBox;
+	public void setNoseLandingGearsYUnitChoiceBox(ChoiceBox<String> noseLandingGearsYUnitChoiceBox) {
+		this.noseLandingGearsYUnitChoiceBox = noseLandingGearsYUnitChoiceBox;
 	}
 
-	public ChoiceBox<String> getLandingGearsZUnitChoiceBox() {
-		return landingGearsZUnitChoiceBox;
+	public ChoiceBox<String> getNoseLandingGearsZUnitChoiceBox() {
+		return noseLandingGearsZUnitChoiceBox;
 	}
 
-	public void setLandingGearsZUnitChoiceBox(ChoiceBox<String> landingGearsZUnitChoiceBox) {
-		this.landingGearsZUnitChoiceBox = landingGearsZUnitChoiceBox;
+	public void setNoseLandingGearsZUnitChoiceBox(ChoiceBox<String> noseLandingGearsZUnitChoiceBox) {
+		this.noseLandingGearsZUnitChoiceBox = noseLandingGearsZUnitChoiceBox;
+	}
+	
+	public ChoiceBox<String> getMainLandingGearsXUnitChoiceBox() {
+		return mainLandingGearsXUnitChoiceBox;
 	}
 
-	public ChoiceBox<String> getSystemsXUnitChoiceBox() {
-		return systemsXUnitChoiceBox;
+	public void setMainLandingGearsXUnitChoiceBox(ChoiceBox<String> mainLandingGearsXUnitChoiceBox) {
+		this.mainLandingGearsXUnitChoiceBox = mainLandingGearsXUnitChoiceBox;
 	}
 
-	public void setSystemsXUnitChoiceBox(ChoiceBox<String> systemsXUnitChoiceBox) {
-		this.systemsXUnitChoiceBox = systemsXUnitChoiceBox;
+	public ChoiceBox<String> getMainLandingGearsYUnitChoiceBox() {
+		return mainLandingGearsYUnitChoiceBox;
 	}
 
-	public ChoiceBox<String> getSystemsYUnitChoiceBox() {
-		return systemsYUnitChoiceBox;
+	public void setMainLandingGearsYUnitChoiceBox(ChoiceBox<String> mainLandingGearsYUnitChoiceBox) {
+		this.mainLandingGearsYUnitChoiceBox = mainLandingGearsYUnitChoiceBox;
 	}
 
-	public void setSystemsYUnitChoiceBox(ChoiceBox<String> systemsYUnitChoiceBox) {
-		this.systemsYUnitChoiceBox = systemsYUnitChoiceBox;
+	public ChoiceBox<String> getMainLandingGearsZUnitChoiceBox() {
+		return mainLandingGearsZUnitChoiceBox;
 	}
 
-	public ChoiceBox<String> getSystemsZUnitChoiceBox() {
-		return systemsZUnitChoiceBox;
-	}
-
-	public void setSystemsZUnitChoiceBox(ChoiceBox<String> systemsZUnitChoiceBox) {
-		this.systemsZUnitChoiceBox = systemsZUnitChoiceBox;
+	public void setMainLandingGearsZUnitChoiceBox(ChoiceBox<String> mainLandingGearsZUnitChoiceBox) {
+		this.mainLandingGearsZUnitChoiceBox = mainLandingGearsZUnitChoiceBox;
 	}
 
 	public ChoiceBox<String> getWindshieldTypeChoiceBox() {
@@ -14218,30 +14126,6 @@ public class InputManagerController {
 		this.textFieldXCoordinateFirstRow = textFieldXCoordinateFirstRow;
 	}
 
-	public TextField getTextFieldMissingSeatRow1() {
-		return textFieldMissingSeatRow1;
-	}
-
-	public void setTextFieldMissingSeatRow1(TextField textFieldMissingSeatRow1) {
-		this.textFieldMissingSeatRow1 = textFieldMissingSeatRow1;
-	}
-
-	public TextField getTextFieldMissingSeatRow2() {
-		return textFieldMissingSeatRow2;
-	}
-
-	public void setTextFieldMissingSeatRow2(TextField textFieldMissingSeatRow2) {
-		this.textFieldMissingSeatRow2 = textFieldMissingSeatRow2;
-	}
-
-	public TextField getTextFieldMissingSeatRow3() {
-		return textFieldMissingSeatRow3;
-	}
-
-	public void setTextFieldMissingSeatRow3(TextField textFieldMissingSeatRow3) {
-		this.textFieldMissingSeatRow3 = textFieldMissingSeatRow3;
-	}
-
 	public TextField getTextFieldNumberOfBrakesEconomy() {
 		return textFieldNumberOfBrakesEconomy;
 	}
@@ -14386,14 +14270,6 @@ public class InputManagerController {
 		this.textFieldDistanceFromWallFirst = textFieldDistanceFromWallFirst;
 	}
 
-	public TextField getTextFieldMassFurnishingsAndEquipment() {
-		return textFieldMassFurnishingsAndEquipment;
-	}
-
-	public void setTextFieldMassFurnishingsAndEquipment(TextField textFieldMassFurnishingsAndEquipment) {
-		this.textFieldMassFurnishingsAndEquipment = textFieldMassFurnishingsAndEquipment;
-	}
-
 	public ChoiceBox<String> getCabinConfigurationXCoordinateFirstRowUnitChoiceBox() {
 		return cabinConfigurationXCoordinateFirstRowUnitChoiceBox;
 	}
@@ -14484,15 +14360,6 @@ public class InputManagerController {
 		this.cabinConfigurationDistanceFromWallFirstUnitChoiceBox = cabinConfigurationDistanceFromWallFirstUnitChoiceBox;
 	}
 
-	public ChoiceBox<String> getCabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox() {
-		return cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox;
-	}
-
-	public void setCabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox(
-			ChoiceBox<String> cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox) {
-		this.cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox = cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox;
-	}
-
 	public ChoiceBox<String> getWingAdjustCriterionChoiceBox() {
 		return wingAdjustCriterionChoiceBox;
 	}
@@ -14524,14 +14391,6 @@ public class InputManagerController {
 	public void setTextFieldWingSecondarySparAdimensionalPosition(
 			TextField textFieldWingSecondarySparAdimensionalPosition) {
 		this.textFieldWingSecondarySparAdimensionalPosition = textFieldWingSecondarySparAdimensionalPosition;
-	}
-
-	public TextField getTextFieldWingCompositeMassCorrectionFactor() {
-		return textFieldWingCompositeMassCorrectionFactor;
-	}
-
-	public void setTextFieldWingCompositeMassCorrectionFactor(TextField textFieldWingCompositeMassCorrectionFactor) {
-		this.textFieldWingCompositeMassCorrectionFactor = textFieldWingCompositeMassCorrectionFactor;
 	}
 
 	public TextField getTextFieldWingRoughness() {
@@ -15590,14 +15449,6 @@ public class InputManagerController {
 		this.hTailAdjustCriterionChoiceBox = hTailAdjustCriterionChoiceBox;
 	}
 
-	public TextField getTextFieldHTailCompositeMassCorrectionFactor() {
-		return textFieldHTailCompositeMassCorrectionFactor;
-	}
-
-	public void setTextFieldHTailCompositeMassCorrectionFactor(TextField textFieldHTailCompositeMassCorrectionFactor) {
-		this.textFieldHTailCompositeMassCorrectionFactor = textFieldHTailCompositeMassCorrectionFactor;
-	}
-
 	public TextField getTextFieldHTailRoughness() {
 		return textFieldHTailRoughness;
 	}
@@ -16070,14 +15921,6 @@ public class InputManagerController {
 		this.vTailAdjustCriterionChoiceBox = vTailAdjustCriterionChoiceBox;
 	}
 
-	public TextField getTextFieldVTailCompositeMassCorrectionFactor() {
-		return textFieldVTailCompositeMassCorrectionFactor;
-	}
-
-	public void setTextFieldVTailCompositeMassCorrectionFactor(TextField textFieldVTailCompositeMassCorrectionFactor) {
-		this.textFieldVTailCompositeMassCorrectionFactor = textFieldVTailCompositeMassCorrectionFactor;
-	}
-
 	public TextField getTextFieldVTailRoughness() {
 		return textFieldVTailRoughness;
 	}
@@ -16548,14 +16391,6 @@ public class InputManagerController {
 
 	public void setCanardAdjustCriterionChoiceBox(ChoiceBox<String> canardAdjustCriterionChoiceBox) {
 		this.canardAdjustCriterionChoiceBox = canardAdjustCriterionChoiceBox;
-	}
-
-	public TextField getTextFieldCanardCompositeMassCorrectionFactor() {
-		return textFieldCanardCompositeMassCorrectionFactor;
-	}
-
-	public void setTextFieldCanardCompositeMassCorrectionFactor(TextField textFieldCanardCompositeMassCorrectionFactor) {
-		this.textFieldCanardCompositeMassCorrectionFactor = textFieldCanardCompositeMassCorrectionFactor;
 	}
 
 	public TextField getTextFieldCanardRoughness() {
@@ -17868,6 +17703,65 @@ public class InputManagerController {
 	public void setInputManagerControllerSecondaryActionUtilities(
 			InputManagerControllerSecondaryActionUtilities inputManagerControllerSecondaryActionUtilities) {
 		this.inputManagerControllerSecondaryActionUtilities = inputManagerControllerSecondaryActionUtilities;
+	}
+
+	public ChoiceBox<String> getSystemsPrimaryElectricalTypeChoiceBox() {
+		return systemsPrimaryElectricalTypeChoiceBox;
+	}
+
+	public void setSystemsPrimaryElectricalTypeChoiceBox(ChoiceBox<String> systemsPrimaryElectricalTypeChoiceBox) {
+		this.systemsPrimaryElectricalTypeChoiceBox = systemsPrimaryElectricalTypeChoiceBox;
+	}
+
+	public TextField getTextFieldHTailMainSparAdimensionalPosition() {
+		return textFieldHTailMainSparAdimensionalPosition;
+	}
+
+	public void setTextFieldHTailMainSparAdimensionalPosition(TextField textFieldHTailMainSparAdimensionalPosition) {
+		this.textFieldHTailMainSparAdimensionalPosition = textFieldHTailMainSparAdimensionalPosition;
+	}
+
+	public TextField getTextFieldHTailSecondarySparAdimensionalPosition() {
+		return textFieldHTailSecondarySparAdimensionalPosition;
+	}
+
+	public void setTextFieldHTailSecondarySparAdimensionalPosition(
+			TextField textFieldHTailSecondarySparAdimensionalPosition) {
+		this.textFieldHTailSecondarySparAdimensionalPosition = textFieldHTailSecondarySparAdimensionalPosition;
+	}
+
+	public TextField getTextFieldVTailMainSparAdimensionalPosition() {
+		return textFieldVTailMainSparAdimensionalPosition;
+	}
+
+	public void setTextFieldVTailMainSparAdimensionalPosition(TextField textFieldVTailMainSparAdimensionalPosition) {
+		this.textFieldVTailMainSparAdimensionalPosition = textFieldVTailMainSparAdimensionalPosition;
+	}
+
+	public TextField getTextFieldVTailSecondarySparAdimensionalPosition() {
+		return textFieldVTailSecondarySparAdimensionalPosition;
+	}
+
+	public void setTextFieldVTailSecondarySparAdimensionalPosition(
+			TextField textFieldVTailSecondarySparAdimensionalPosition) {
+		this.textFieldVTailSecondarySparAdimensionalPosition = textFieldVTailSecondarySparAdimensionalPosition;
+	}
+
+	public TextField getTextFieldCanardMainSparAdimensionalPosition() {
+		return textFieldCanardMainSparAdimensionalPosition;
+	}
+
+	public void setTextFieldCanardMainSparAdimensionalPosition(TextField textFieldCanardMainSparAdimensionalPosition) {
+		this.textFieldCanardMainSparAdimensionalPosition = textFieldCanardMainSparAdimensionalPosition;
+	}
+
+	public TextField getTextFieldCanardSecondarySparAdimensionalPosition() {
+		return textFieldCanardSecondarySparAdimensionalPosition;
+	}
+
+	public void setTextFieldCanardSecondarySparAdimensionalPosition(
+			TextField textFieldCanardSecondarySparAdimensionalPosition) {
+		this.textFieldCanardSecondarySparAdimensionalPosition = textFieldCanardSecondarySparAdimensionalPosition;
 	};
 	
 }
