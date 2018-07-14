@@ -1995,7 +1995,7 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldHTailgMainSparAdimensionalPosition" layoutX="6.0" layoutY="104.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldHTailMainSparAdimensionalPosition" layoutX="6.0" layoutY="104.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="6.0" layoutY="135.0" prefHeight="21.0" prefWidth="263.0" text="Secondary spar location (% M.A.C.):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
