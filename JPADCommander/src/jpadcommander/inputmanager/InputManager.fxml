@@ -40,7 +40,7 @@
                                              <children>
                                                 <ScrollPane prefHeight="4609.0" prefWidth="403.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
                                                    <content>
-                                                      <AnchorPane fx:id="aircraftDataAnchorPane" minHeight="0.0" minWidth="0.0">
+                                                      <AnchorPane fx:id="aircraftDataAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="2464.0" prefWidth="1558.0">
                                                          <children>
                                                             <Label layoutX="5.0" layoutY="132.0" text="Cabin configuration file:">
                                                                <font>
@@ -247,7 +247,7 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <GridPane layoutX="7.0" layoutY="2000.0" prefHeight="174.0" prefWidth="383.0">
+                                                            <GridPane layoutX="7.0" layoutY="2000.0" prefHeight="313.0" prefWidth="383.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="78.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="262.0" />
@@ -259,57 +259,42 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label text="X:" GridPane.rowIndex="1" />
-                                                                  <Label text="Y:" GridPane.rowIndex="2" />
-                                                                  <Label text="Z:" GridPane.rowIndex="3" />
+                                                                  <Label text="X Front Gear:" GridPane.rowIndex="1" />
+                                                                  <Label text="Y Front Gear:" GridPane.rowIndex="2" />
+                                                                  <Label text="Z Front Gear:" GridPane.rowIndex="3" />
                                                                   <Label text="File:" />
-                                                                  <TextField id="textFieldAircraftLandingGearsFile" fx:id="textFieldAircraftLandingGearsFile" GridPane.columnIndex="1" />
-                                                                  <TextField id="textFieldAircraftLandingGearsX" fx:id="textFieldAircraftLandingGearsX" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftLandingGearsZ" fx:id="textFieldAircraftLandingGearsZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftLandingGearsY" fx:id="textFieldAircraftLandingGearsY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <Label text="Position:" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="landingGearsXUnitChoiceBox" fx:id="landingGearsXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="landingGearsYUnitChoiceBox" fx:id="landingGearsYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" fx:id="landingGearsZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox id="choiceBoxAircraftLandingGearsPosition" fx:id="landingGearsMountingPositionTypeChoiceBox" prefHeight="25.0" prefWidth="261.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftLandingGearsFile" fx:id="textFieldAircraftLandingGearsFile" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftLandingGearsX" fx:id="textFieldAircraftLandingGearsX" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftLandingGearsZ" fx:id="textFieldAircraftLandingGearsZ" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftLandingGearsY" fx:id="textFieldAircraftLandingGearsY" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <Label text="Position:" GridPane.rowIndex="7" />
+                                                                  <ChoiceBox id="landingGearsXUnitChoiceBox" fx:id="landingGearsXUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="landingGearsYUnitChoiceBox" fx:id="landingGearsYUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" fx:id="landingGearsZUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="choiceBoxAircraftLandingGearsPosition" fx:id="landingGearsMountingPositionTypeChoiceBox" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                                                   <Button fx:id="aircraftChooseLandingGearsFileButton" mnemonicParsing="false" onAction="#chooseAircraftLandingGearsFile" prefHeight="31.0" prefWidth="44.0" text="..." GridPane.columnIndex="2" />
+                                                                  <Label text="X Main Gear:" GridPane.rowIndex="4" />
+                                                                  <Label text="Y Main Gear:" GridPane.rowIndex="5" />
+                                                                  <Label text="Z Main Gear:" GridPane.rowIndex="6" />
+                                                                  <TextField id="textFieldAircraftLandingGearsZ" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftLandingGearsZ" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftLandingGearsZ" prefHeight="31.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" prefHeight="31.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                                                                </children>
                                                             </GridPane>
-                                                            <Separator layoutX="-46.0" layoutY="2186.0" prefHeight="0.0" prefWidth="1604.0" />
-                                                            <Label layoutX="9.0" layoutY="2195.0" text="Systems:">
+                                                            <Separator layoutX="-46.0" layoutY="2323.0" prefHeight="0.0" prefWidth="1604.0" />
+                                                            <Label layoutX="9.0" layoutY="2332.0" text="Systems:">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <GridPane layoutX="6.0" layoutY="2220.0" prefHeight="148.0" prefWidth="383.0">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="293.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="71.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Label text="X:" GridPane.rowIndex="1" />
-                                                                  <Label text="Y:" GridPane.rowIndex="2" />
-                                                                  <Label text="Z:" GridPane.rowIndex="3" />
-                                                                  <Label text="File:" />
-                                                                  <TextField id="textFieldAircraftSystemsFile" fx:id="textFieldAircraftSystemsFile" GridPane.columnIndex="1" />
-                                                                  <TextField id="textFieldAircraftSystemsX" fx:id="textFieldAircraftSystemsX" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftSystemsZ" fx:id="textFieldAircraftSystemsZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftSystemsY" fx:id="textFieldAircraftSystemsY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="systemsXUnitChoiceBox" fx:id="systemsXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="systemsYUnitChoiceBox" fx:id="systemsYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="systemsZUnitChoiceBox" fx:id="systemsZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <Button fx:id="aircraftChooseSystemsFileButton" mnemonicParsing="false" onAction="#chooseAircraftSystemsFile" prefHeight="31.0" prefWidth="44.0" text="..." GridPane.columnIndex="2" />
-                                                               </children>
-                                                            </GridPane>
                                                             <Label layoutX="5.0" layoutY="4.0" text="Aircraft type:">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
@@ -426,6 +411,8 @@
                                                             <Button fx:id="aircraftAddNacelleButton" layoutX="79.0" layoutY="1616.0" mnemonicParsing="false" onAction="#addAircraftNacelle" text="Add Nacelle" />
                                                             <Button fx:id="aircraftAddEngineButton" layoutX="108.0" layoutY="1220.0" mnemonicParsing="false" onAction="#addAircraftEngine" text="Add Engine" />
                                                             <Button fx:id="aircraftChooseCabinConfigurationFileButton" layoutX="345.0" layoutY="153.0" mnemonicParsing="false" onAction="#chooseAircraftCabinConfigurationFile" prefHeight="31.0" prefWidth="44.0" text="..." />
+                                                            <Label layoutX="9.0" layoutY="2361.0" text="Primary Electrical Systems Type:" />
+                                                            <ChoiceBox layoutX="186.0" layoutY="2354.0" prefHeight="31.0" prefWidth="204.0" />
                                                          </children>
                                                       </AnchorPane>
                                                    </content>
@@ -914,31 +901,31 @@
                                                          </font>
                                                       </Label>
                                                       <TextField id="textFieldFuselageNoseWindshieldHeight" fx:id="textFieldXCoordinateFirstRow" layoutX="6.0" layoutY="390.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Separator layoutX="-10.0" layoutY="485.0" prefHeight="0.0" prefWidth="1312.0" />
-                                                      <Label layoutX="6.0" layoutY="495.0" prefHeight="21.0" prefWidth="241.0" text="DETAILED DATA" textFill="#0400ff">
+                                                      <Separator layoutX="-10.0" layoutY="430.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="6.0" layoutY="440.0" prefHeight="21.0" prefWidth="241.0" text="DETAILED DATA" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Separator layoutX="-10.0" layoutY="526.0" prefHeight="3.0" prefWidth="1345.0" />
-                                                      <Label layoutX="6.0" layoutY="527.0" prefHeight="21.0" prefWidth="268.0" text="Number of brakes (Economy Class):">
+                                                      <Separator layoutX="-10.0" layoutY="471.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <Label layoutX="6.0" layoutY="472.0" prefHeight="21.0" prefWidth="268.0" text="Number of brakes (Economy Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderLengthRatio" fx:id="textFieldNumberOfBrakesEconomy" layoutX="6.0" layoutY="550.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="581.0" prefHeight="21.0" prefWidth="264.0" text="Number of brakes (Business Class):">
+                                                      <TextField id="textFieldFuselageCylinderLengthRatio" fx:id="textFieldNumberOfBrakesEconomy" layoutX="6.0" layoutY="495.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="526.0" prefHeight="21.0" prefWidth="264.0" text="Number of brakes (Business Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionWidth" fx:id="textFieldNumberOfBrakesBusiness" layoutX="6.0" layoutY="601.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="636.0" prefHeight="21.0" prefWidth="389.0" text="Number of brakes (First Class):">
+                                                      <TextField id="textFieldFuselageCylinderSectionWidth" fx:id="textFieldNumberOfBrakesBusiness" layoutX="6.0" layoutY="546.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="581.0" prefHeight="21.0" prefWidth="389.0" text="Number of brakes (First Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionHeight" fx:id="textFieldNumberOfBrakesFirst" layoutX="6.0" layoutY="657.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <TextField id="textFieldFuselageCylinderSectionHeight" fx:id="textFieldNumberOfBrakesFirst" layoutX="6.0" layoutY="602.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <GridPane layoutX="6.0" layoutY="246.0" prefHeight="57.0" prefWidth="459.0">
                                                         <columnConstraints>
                                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -970,145 +957,107 @@
                                                             </Label>
                                                          </children>
                                                       </GridPane>
-                                                      <GridPane layoutX="6.0" layoutY="444.0" prefHeight="44.0" prefWidth="459.0">
-                                                         <columnConstraints>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                         </columnConstraints>
-                                                         <rowConstraints>
-                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                         </rowConstraints>
-                                                         <children>
-                                                            <TextField fx:id="textFieldMissingSeatRow1" disable="true" layoutX="6.0" />
-                                                            <TextField fx:id="textFieldMissingSeatRow2" disable="true" layoutX="6.0" GridPane.columnIndex="1" />
-                                                            <TextField fx:id="textFieldMissingSeatRow3" disable="true" layoutX="6.0" GridPane.columnIndex="2" />
-                                                         </children>
-                                                      </GridPane>
-                                                      <Label layoutX="6.0" layoutY="427.0" prefHeight="21.0" prefWidth="222.0" text="Missing Seats Row:">
+                                                      <Label layoutX="6.0" layoutY="639.0" prefHeight="21.0" prefWidth="268.0" text="Number of rows (Economy Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="694.0" prefHeight="21.0" prefWidth="268.0" text="Number of rows (Economy Class):">
+                                                      <TextField id="textFieldFuselageCylinderLengthRatio" fx:id="textFieldNumberOfRowsEconomy" layoutX="6.0" layoutY="662.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="693.0" prefHeight="21.0" prefWidth="264.0" text="Number of rows (Business Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderLengthRatio" fx:id="textFieldNumberOfRowsEconomy" layoutX="6.0" layoutY="717.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="748.0" prefHeight="21.0" prefWidth="264.0" text="Number of rows (Business Class):">
+                                                      <TextField id="textFieldFuselageCylinderSectionWidth" fx:id="textFieldNumberOfRowsBusiness" layoutX="6.0" layoutY="713.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="748.0" prefHeight="21.0" prefWidth="389.0" text="Number of rows (First Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionWidth" fx:id="textFieldNumberOfRowsBusiness" layoutX="6.0" layoutY="768.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="803.0" prefHeight="21.0" prefWidth="389.0" text="Number of rows (First Class):">
+                                                      <TextField id="textFieldFuselageCylinderSectionHeight" fx:id="textFieldNumberOfRowsFirst" layoutX="6.0" layoutY="769.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="800.0" prefHeight="21.0" prefWidth="286.0" text="Number of columns (Economy Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionHeight" fx:id="textFieldNumberOfRowsFirst" layoutX="6.0" layoutY="824.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Button fx:id="missingSeatRowCabinConfigurationInfoButton" layoutX="145.0" layoutY="425.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="20.0" text="?">
-                                                         <font>
-                                                            <Font size="11.0" />
-                                                         </font></Button>
-                                                      <Label layoutX="6.0" layoutY="855.0" prefHeight="21.0" prefWidth="286.0" text="Number of columns (Economy Class):">
+                                                      <TextField fx:id="textFieldNumberOfColumnsEconomy" layoutX="6.0" layoutY="821.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="852.0" text="Number of columns (Business Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="textFieldNumberOfColumnsEconomy" layoutX="6.0" layoutY="876.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="907.0" text="Number of columns (Business Class):">
+                                                      <Label layoutX="6.0" layoutY="904.0" text="Number of columns (First Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="959.0" text="Number of columns (First Class):">
+                                                      <Label layoutX="6.0" layoutY="956.0" text="Seats pitch (Economy Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="1011.0" text="Seats pitch (Economy Class):">
+                                                      <Label layoutX="6.0" layoutY="1012.0" text="Seats pitch (Business Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="1067.0" text="Seats pitch (Business Class):">
+                                                      <Label layoutX="6.0" layoutY="1064.0" text="Seats pitch (First Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="1119.0" text="Seats pitch (First Class):">
+                                                      <Label layoutX="6.0" layoutY="1116.0" text="Seats width (Economy Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="1171.0" text="Seats width (Economy Class):">
+                                                      <Label layoutX="6.0" layoutY="1168.0" text="Seats width (Business Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="1223.0" text="Seats width (Business Class):">
+                                                      <Label layoutX="6.0" layoutY="1220.0" text="Seats width (First Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="1275.0" text="Seats width (First Class):">
+                                                      <Label layoutX="6.0" layoutY="1272.0" text="Distance from wall (Economy Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="1327.0" text="Distance from wall (Economy Class):">
+                                                      <Label layoutX="6.0" layoutY="1325.0" text="Distance from wall (Business Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="1379.0" text="Distance from wall (Business Class):">
+                                                      <Label layoutX="6.0" layoutY="1378.0" text="Distance from wall (First Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="1431.0" text="Distance from wall (First Class):">
-                                                         <font>
-                                                            <Font name="System Bold" size="15.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <TextField fx:id="textFieldNumberOfColumnsBusiness" layoutX="6.0" layoutY="928.0" prefHeight="31.0" prefWidth="341.0" />
-                                                      <TextField fx:id="textFieldNumberOfColumnsFirst" layoutX="6.0" layoutY="980.0" prefHeight="31.0" prefWidth="341.0" />
-                                                      <TextField fx:id="textFieldSeatsPitchEconomy" layoutX="6.0" layoutY="1029.0" prefHeight="31.0" prefWidth="341.0" />
-                                                      <TextField fx:id="textFieldSeatsPitchBusiness" layoutX="6.0" layoutY="1088.0" prefHeight="31.0" prefWidth="341.0" />
-                                                      <TextField fx:id="textFieldSeatsPitchFirst" layoutX="6.0" layoutY="1140.0" prefHeight="31.0" prefWidth="341.0" />
-                                                      <TextField fx:id="textFieldSeatsWidthEconomy" layoutX="6.0" layoutY="1192.0" prefHeight="31.0" prefWidth="341.0" />
-                                                      <TextField fx:id="textFieldSeatsWidthBusiness" layoutX="6.0" layoutY="1244.0" prefHeight="31.0" prefWidth="341.0" />
-                                                      <TextField fx:id="textFieldSeatsWidthFirst" layoutX="6.0" layoutY="1296.0" prefHeight="31.0" prefWidth="341.0" />
-                                                      <TextField fx:id="textFieldDistanceFromWallEconomy" layoutX="6.0" layoutY="1348.0" prefHeight="31.0" prefWidth="341.0" />
-                                                      <TextField fx:id="textFieldDistanceFromWallBusiness" layoutX="6.0" layoutY="1400.0" prefHeight="31.0" prefWidth="341.0" />
-                                                      <TextField fx:id="textFieldDistanceFromWallFirst" layoutX="6.0" layoutY="1452.0" prefHeight="31.0" prefWidth="341.0" />
-                                                      <Separator layoutX="-12.0" layoutY="1492.0" prefHeight="0.0" prefWidth="1137.0" />
-                                                      <Separator layoutX="-21.0" layoutY="1533.0" prefHeight="0.0" prefWidth="1223.0" />
-                                                      <Label layoutX="6.0" layoutY="1505.0" text="REFERENCE MASS" textFill="#0400ff">
-                                                         <font>
-                                                            <Font name="System Bold" size="15.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <Button fx:id="referenceMassCabinConfigurationInfoButton" layoutX="141.0" layoutY="1498.0" mnemonicParsing="false" text="?" />
-                                                      <Label layoutX="5.0" layoutY="1542.0" text="Mass furnishings and equipment:">
-                                                         <font>
-                                                            <Font name="System Bold" size="15.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <TextField fx:id="textFieldMassFurnishingsAndEquipment" layoutX="6.0" layoutY="1563.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <TextField fx:id="textFieldNumberOfColumnsBusiness" layoutX="6.0" layoutY="873.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <TextField fx:id="textFieldNumberOfColumnsFirst" layoutX="6.0" layoutY="925.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <TextField fx:id="textFieldSeatsPitchEconomy" layoutX="6.0" layoutY="974.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <TextField fx:id="textFieldSeatsPitchBusiness" layoutX="6.0" layoutY="1033.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <TextField fx:id="textFieldSeatsPitchFirst" layoutX="6.0" layoutY="1085.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <TextField fx:id="textFieldSeatsWidthEconomy" layoutX="6.0" layoutY="1137.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <TextField fx:id="textFieldSeatsWidthBusiness" layoutX="6.0" layoutY="1189.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <TextField fx:id="textFieldSeatsWidthFirst" layoutX="6.0" layoutY="1241.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <TextField fx:id="textFieldDistanceFromWallEconomy" layoutX="6.0" layoutY="1293.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <TextField fx:id="textFieldDistanceFromWallBusiness" layoutX="6.0" layoutY="1345.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <TextField fx:id="textFieldDistanceFromWallFirst" layoutX="6.0" layoutY="1397.0" prefHeight="31.0" prefWidth="341.0" />
+                                                      <Separator layoutX="-12.0" layoutY="1437.0" prefHeight="0.0" prefWidth="1137.0" />
                                                       <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationXCoordinateFirstRowUnitChoiceBox" layoutX="347.0" layoutY="390.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsPitchEconomyUnitChoiceBox" layoutX="350.0" layoutY="1030.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsPitchBusinessUnitChoiceBox" layoutX="350.0" layoutY="1089.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsPitchFirstUnitChoiceBox" layoutX="350.0" layoutY="1141.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsWidthEconomyUnitChoiceBox" layoutX="350.0" layoutY="1193.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsWidthFirstUnitChoiceBox" layoutX="350.0" layoutY="1297.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsWidthBusinessUnitChoiceBox" layoutX="350.0" layoutY="1245.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationDistanceFromWallEconomyUnitChoiceBox" layoutX="350.0" layoutY="1349.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox" layoutX="350.0" layoutY="1564.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationDistanceFromWallFirstUnitChoiceBox" layoutX="350.0" layoutY="1453.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationDistanceFromWallBusinessUnitChoiceBox" layoutX="350.0" layoutY="1401.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsPitchEconomyUnitChoiceBox" layoutX="350.0" layoutY="975.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsPitchBusinessUnitChoiceBox" layoutX="350.0" layoutY="1034.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsPitchFirstUnitChoiceBox" layoutX="350.0" layoutY="1086.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsWidthEconomyUnitChoiceBox" layoutX="350.0" layoutY="1138.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsWidthFirstUnitChoiceBox" layoutX="350.0" layoutY="1242.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationSeatsWidthBusinessUnitChoiceBox" layoutX="350.0" layoutY="1190.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationDistanceFromWallEconomyUnitChoiceBox" layoutX="350.0" layoutY="1294.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationDistanceFromWallFirstUnitChoiceBox" layoutX="350.0" layoutY="1398.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="cabinConfigurationDistanceFromWallBusinessUnitChoiceBox" layoutX="350.0" layoutY="1346.0" prefHeight="30.0" prefWidth="47.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -1207,7 +1156,7 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Separator layoutX="-2.0" layoutY="378.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Separator layoutX="-2.0" layoutY="328.0" prefHeight="0.0" prefWidth="1312.0" />
                                                       <Separator layoutX="-20.0" layoutY="75.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Separator layoutX="-20.0" layoutY="105.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Label layoutX="5.0" layoutY="80.0" text="GLOBAL DATA" textFill="#0400ff">
@@ -1216,18 +1165,12 @@
                                                          </font>
                                                       </Label>
                                                       <TextField id="textFieldFuselageLength" fx:id="textFieldWingSecondarySparAdimensionalPosition" layoutX="6.0" layoutY="182.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="215.0" prefHeight="21.0" prefWidth="283.0" text="Composite mass correction factor:">
+                                                      <Label layoutX="6.0" layoutY="336.0" prefHeight="21.0" prefWidth="156.0" text="EQUIVALENT WING" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingCompositeMassCorrectionFactor" layoutX="6.0" layoutY="236.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="386.0" prefHeight="21.0" prefWidth="156.0" text="EQUIVALENT WING" textFill="#0400ff">
-                                                         <font>
-                                                            <Font name="System Bold" size="15.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <Separator layoutX="-2.0" layoutY="414.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <Separator layoutX="-2.0" layoutY="364.0" prefHeight="3.0" prefWidth="1345.0" />
                                                       <Separator layoutX="-10.0" layoutY="43.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Label layoutX="5.0" layoutY="14.0" text="Adjust Criterion:">
                                                          <font>
@@ -1241,130 +1184,130 @@
                                                          </font>
                                                       </Label>
                                                       <CheckBox id="fuselagePressurizedCheckBox" fx:id="equivalentWingCheckBox" layoutX="128.0" layoutY="49.0" mnemonicParsing="false" />
-                                                      <Label layoutX="6.0" layoutY="267.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
+                                                      <Label layoutX="6.0" layoutY="217.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingRoughness" layoutX="6.0" layoutY="288.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="319.0" prefHeight="21.0" prefWidth="128.0" text="Winglet height:">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingRoughness" layoutX="6.0" layoutY="238.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="269.0" prefHeight="21.0" prefWidth="128.0" text="Winglet height:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingWingletHeight" layoutX="6.0" layoutY="340.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingRoughnessUnitChoiceBox" layoutX="347.0" layoutY="288.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingWingletHeightUnitChoiceBox" layoutX="347.0" layoutY="341.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <Label layoutX="6.0" layoutY="417.0" prefHeight="21.0" prefWidth="128.0" text="Area:">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingWingletHeight" layoutX="6.0" layoutY="290.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingRoughnessUnitChoiceBox" layoutX="347.0" layoutY="238.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingWingletHeightUnitChoiceBox" layoutX="347.0" layoutY="291.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Label layoutX="6.0" layoutY="367.0" prefHeight="21.0" prefWidth="128.0" text="Area:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingArea" layoutX="6.0" layoutY="438.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="469.0" prefHeight="21.0" prefWidth="128.0" text="Aspect Ratio:">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingArea" layoutX="6.0" layoutY="388.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="419.0" prefHeight="21.0" prefWidth="128.0" text="Aspect Ratio:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingAspectRatio" layoutX="6.0" layoutY="490.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="equivalentWingAreaUnitChoiceBox" layoutX="347.0" layoutY="438.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <Label layoutX="6.0" layoutY="521.0" prefHeight="21.0" prefWidth="261.0" text="Kink station position (% semispan)">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingAspectRatio" layoutX="6.0" layoutY="440.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="equivalentWingAreaUnitChoiceBox" layoutX="347.0" layoutY="388.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Label layoutX="6.0" layoutY="471.0" prefHeight="21.0" prefWidth="261.0" text="Kink station position (% semispan)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingKinkPosition" layoutX="6.0" layoutY="542.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="573.0" prefHeight="21.0" prefWidth="128.0" text="Sweep L.E.:">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingKinkPosition" layoutX="6.0" layoutY="492.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="523.0" prefHeight="21.0" prefWidth="128.0" text="Sweep L.E.:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingSweepLeadingEdge" layoutX="6.0" layoutY="594.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="equivalentWingSweepLEUnitChoiceBox" layoutX="347.0" layoutY="595.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <Label layoutX="6.0" layoutY="625.0" prefHeight="21.0" prefWidth="196.0" text="Twist angle at wing tip:">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingSweepLeadingEdge" layoutX="6.0" layoutY="544.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="equivalentWingSweepLEUnitChoiceBox" layoutX="347.0" layoutY="545.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Label layoutX="6.0" layoutY="575.0" prefHeight="21.0" prefWidth="196.0" text="Twist angle at wing tip:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingTwistAtTip" layoutX="6.0" layoutY="646.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="677.0" prefHeight="21.0" prefWidth="128.0" text="Dihedral angle:">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingTwistAtTip" layoutX="6.0" layoutY="596.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="627.0" prefHeight="21.0" prefWidth="128.0" text="Dihedral angle:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingDihedral" layoutX="6.0" layoutY="698.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="equivalentWingTwistAtTipUnitChoiceBox" layoutX="347.0" layoutY="646.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="equivalentWingDihedralUnitChoiceBox" layoutX="347.0" layoutY="699.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <Label layoutX="6.0" layoutY="729.0" prefHeight="21.0" prefWidth="128.0" text="Taper ratio:">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingDihedral" layoutX="6.0" layoutY="648.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="equivalentWingTwistAtTipUnitChoiceBox" layoutX="347.0" layoutY="596.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="equivalentWingDihedralUnitChoiceBox" layoutX="347.0" layoutY="649.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Label layoutX="6.0" layoutY="679.0" prefHeight="21.0" prefWidth="128.0" text="Taper ratio:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingTaperRatio" layoutX="6.0" layoutY="750.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="781.0" prefHeight="21.0" prefWidth="322.0" text="X offset root chord from L.E. (% Root Chord)">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingTaperRatio" layoutX="6.0" layoutY="700.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="731.0" prefHeight="21.0" prefWidth="322.0" text="X offset root chord from L.E. (% Root Chord)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingRootXOffsetLE" layoutX="6.0" layoutY="802.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="833.0" prefHeight="21.0" prefWidth="322.0" text="X offset root chord from T.E. (%Root Chord)">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingRootXOffsetLE" layoutX="6.0" layoutY="752.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="783.0" prefHeight="21.0" prefWidth="322.0" text="X offset root chord from T.E. (%Root Chord)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingRootXOffsetTE" layoutX="6.0" layoutY="854.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="885.0" prefHeight="21.0" prefWidth="128.0" text="Airfoil root:">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingRootXOffsetTE" layoutX="6.0" layoutY="804.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="835.0" prefHeight="21.0" prefWidth="128.0" text="Airfoil root:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingAirfoilRootPath" layoutX="6.0" layoutY="906.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="937.0" prefHeight="21.0" prefWidth="128.0" text="Airfoil kink:">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingAirfoilRootPath" layoutX="6.0" layoutY="856.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="887.0" prefHeight="21.0" prefWidth="128.0" text="Airfoil kink:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingAirfoilKinkPath" layoutX="6.0" layoutY="958.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="989.0" prefHeight="21.0" prefWidth="128.0" text="Airfoil tip:">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingAirfoilKinkPath" layoutX="6.0" layoutY="908.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="939.0" prefHeight="21.0" prefWidth="128.0" text="Airfoil tip:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingAirfoilTipPath" layoutX="6.0" layoutY="1010.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Button fx:id="equivalentWingRootXOffsetLEInfoButton" layoutX="330.0" layoutY="783.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingAirfoilTipPath" layoutX="6.0" layoutY="960.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Button fx:id="equivalentWingRootXOffsetLEInfoButton" layoutX="330.0" layoutY="733.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
                                                          <font>
                                                             <Font name="System Bold" size="8.0" />
                                                          </font>
                                                       </Button>
-                                                      <Button fx:id="equivalentWingRootXOffseTLEInfoButton" layoutX="330.0" layoutY="835.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                      <Button fx:id="equivalentWingRootXOffseTLEInfoButton" layoutX="330.0" layoutY="785.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
                                                          <font>
                                                             <Font name="System Bold" size="8.0" />
                                                          </font>
                                                       </Button>
-                                                      <Button fx:id="equivalentWingAirfoilRootDetailButton" layoutX="380.0" layoutY="906.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                      <Button fx:id="equivalentWingAirfoilRootDetailButton" layoutX="380.0" layoutY="856.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                          <font>
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>
                                                       </Button>
-                                                      <Button fx:id="equivalentWingAirfoilKinkDetailButton" layoutX="380.0" layoutY="958.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                      <Button fx:id="equivalentWingAirfoilKinkDetailButton" layoutX="380.0" layoutY="908.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                          <font>
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>
                                                       </Button>
-                                                      <Button fx:id="equivalentWingAirfoilTipDetailButton" layoutX="380.0" layoutY="1010.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                      <Button fx:id="equivalentWingAirfoilTipDetailButton" layoutX="380.0" layoutY="960.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                          <font>
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>
                                                       </Button>
-                                                      <Button fx:id="equivalentWingInfoButton" layoutX="151.0" layoutY="384.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="20.0" text="?" />
-                                                      <Separator layoutX="-2.0" layoutY="1049.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                      <Button fx:id="equivalentWingInfoButton" layoutX="151.0" layoutY="334.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="20.0" text="?" />
+                                                      <Separator layoutX="-2.0" layoutY="1004.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Separator layoutX="-2.0" layoutY="1079.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                      <Label layoutX="6.0" layoutY="1054.0" text="PANELS" textFill="#0400ff">
+                                                      <Label layoutX="6.0" layoutY="1014.0" text="PANELS" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TabPane fx:id="tabPaneWingPanels" layoutY="1079.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <TabPane fx:id="tabPaneWingPanels" layoutY="1039.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                         <tabs>
                                                           <Tab text="Panel 1 ">
                                                             <content>
@@ -1463,15 +1406,15 @@
                                                           </Tab>
                                                         </tabs>
                                                       </TabPane>
-                                                      <Separator layoutX="-2.0" layoutY="1715.0" prefHeight="0.0" prefWidth="1312.0" />
-                                                      <Label layoutX="6.0" layoutY="1723.0" prefHeight="21.0" prefWidth="179.0" text="FLAPS:" textFill="#0400ff">
+                                                      <Separator layoutX="-2.0" layoutY="1678.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="6.0" layoutY="1686.0" prefHeight="21.0" prefWidth="179.0" text="FLAPS:" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
                                                       <Separator layoutX="-2.0" layoutY="1751.0" prefHeight="3.0" prefWidth="1345.0" />
-                                                      <Button fx:id="wingAddPanelButton" layoutX="79.0" layoutY="1050.0" mnemonicParsing="false" onAction="#addWingPanel" text="Add panel" />
-                                                      <TabPane fx:id="tabPaneWingFlaps" layoutY="1750.0" prefHeight="402.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <Button fx:id="wingAddPanelButton" layoutX="79.0" layoutY="1010.0" mnemonicParsing="false" onAction="#addWingPanel" text="Add panel" />
+                                                      <TabPane fx:id="tabPaneWingFlaps" layoutY="1713.0" prefHeight="402.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Flap 1">
                                                                <content>
@@ -1527,15 +1470,15 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Button fx:id="wingAddFlapButton" layoutX="59.0" layoutY="1717.0" mnemonicParsing="false" onAction="#addFlap" text="Add flap" />
-                                                      <Separator layoutX="-3.0" layoutY="2153.0" prefHeight="0.0" prefWidth="1312.0" />
-                                                      <Label layoutX="6.0" layoutY="2161.0" prefHeight="21.0" prefWidth="179.0" text="SLATS:" textFill="#0400ff">
+                                                      <Button fx:id="wingAddFlapButton" layoutX="59.0" layoutY="1680.0" mnemonicParsing="false" onAction="#addFlap" text="Add flap" />
+                                                      <Separator layoutX="-3.0" layoutY="2125.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="6.0" layoutY="2133.0" prefHeight="21.0" prefWidth="179.0" text="SLATS:" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Button fx:id="wingAddSlatButton" layoutX="58.0" layoutY="2156.0" mnemonicParsing="false" onAction="#addSlat" text="Add slat" />
-                                                      <TabPane fx:id="tabPaneWingSlats" layoutY="2190.0" prefHeight="420.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <Button fx:id="wingAddSlatButton" layoutX="58.0" layoutY="2128.0" mnemonicParsing="false" onAction="#addSlat" text="Add slat" />
+                                                      <TabPane fx:id="tabPaneWingSlats" layoutY="2162.0" prefHeight="420.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Slat 1">
                                                                <content>
@@ -1591,13 +1534,13 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Separator layoutX="-2.0" layoutY="2613.0" prefHeight="0.0" prefWidth="1312.0" />
-                                                      <Label layoutX="6.0" layoutY="2621.0" prefHeight="21.0" prefWidth="179.0" text="AILERONS:" textFill="#0400ff">
+                                                      <Separator layoutX="-2.0" layoutY="2586.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="6.0" layoutY="2594.0" prefHeight="21.0" prefWidth="179.0" text="AILERONS:" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TabPane layoutY="2648.0" prefHeight="414.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <TabPane layoutY="2621.0" prefHeight="414.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Left aileron ">
                                                                <content>
@@ -1705,13 +1648,13 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Separator layoutX="-2.0" layoutY="3063.0" prefHeight="0.0" prefWidth="1312.0" />
-                                                      <Label layoutX="6.0" layoutY="3071.0" prefHeight="21.0" prefWidth="179.0" text="SPOILERS:" textFill="#0400ff">
+                                                      <Separator layoutX="-2.0" layoutY="3040.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="6.0" layoutY="3048.0" prefHeight="21.0" prefWidth="179.0" text="SPOILERS:" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TabPane fx:id="tabPaneWingSpoilers" layoutY="3100.0" prefHeight="353.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <TabPane fx:id="tabPaneWingSpoilers" layoutY="3077.0" prefHeight="353.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Spoiler 1 ">
                                                                <content>
@@ -1761,10 +1704,10 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Button fx:id="wingAddSpoilerButton" layoutX="85.0" layoutY="3066.0" mnemonicParsing="false" onAction="#addSpoiler" text="Add spolier" />
-                                                      <Button fx:id="equivalentWingChooseAirfoilKinkButton" layoutX="350.0" layoutY="958.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
-                                                      <Button fx:id="equivalentWingChooseAirfoilTipButton" layoutX="350.0" layoutY="1010.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
-                                                      <Button fx:id="equivalentWingChooseAirfoilRootButton" layoutX="350.0" layoutY="906.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
+                                                      <Button fx:id="wingAddSpoilerButton" layoutX="85.0" layoutY="3043.0" mnemonicParsing="false" onAction="#addSpoiler" text="Add spolier" />
+                                                      <Button fx:id="equivalentWingChooseAirfoilKinkButton" layoutX="350.0" layoutY="908.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
+                                                      <Button fx:id="equivalentWingChooseAirfoilTipButton" layoutX="350.0" layoutY="960.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
+                                                      <Button fx:id="equivalentWingChooseAirfoilRootButton" layoutX="350.0" layoutY="856.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -1863,12 +1806,6 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="82.0" prefHeight="21.0" prefWidth="283.0" text="Composite mass correction factor:">
-                                                         <font>
-                                                            <Font name="System Bold" size="15.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldHTailCompositeMassCorrectionFactor" layoutX="6.0" layoutY="103.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Separator layoutX="-10.0" layoutY="43.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Label layoutX="5.0" layoutY="14.0" text="Adjust Criterion:">
                                                          <font>
@@ -1876,21 +1813,21 @@
                                                          </font>
                                                       </Label>
                                                       <ChoiceBox id="fuselageAdjustCriterionChoiceBox" fx:id="hTailAdjustCriterionChoiceBox" disable="true" layoutX="123.0" layoutY="8.0" prefHeight="25.0" prefWidth="270.0" />
-                                                      <Label layoutX="6.0" layoutY="134.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
+                                                      <Label layoutX="6.0" layoutY="188.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldHTailRoughness" layoutX="6.0" layoutY="155.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="hTailRoughnessUnitChoiceBox" layoutX="347.0" layoutY="155.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <Separator layoutX="-2.0" layoutY="193.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldHTailRoughness" layoutX="6.0" layoutY="209.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="hTailRoughnessUnitChoiceBox" layoutX="347.0" layoutY="209.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Separator layoutX="-2.0" layoutY="247.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Separator layoutX="-2.0" layoutY="1079.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                      <Label layoutX="6.0" layoutY="198.0" text="PANELS" textFill="#0400ff">
+                                                      <Label layoutX="6.0" layoutY="252.0" text="PANELS" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TabPane fx:id="tabPaneHTailPanels" layoutY="223.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <TabPane fx:id="tabPaneHTailPanels" layoutY="277.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Panel 1 ">
                                                                <content>
@@ -1989,14 +1926,14 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Separator layoutX="-2.0" layoutY="859.0" prefHeight="0.0" prefWidth="1312.0" />
-                                                      <Label layoutX="6.0" layoutY="867.0" prefHeight="21.0" prefWidth="179.0" text="ELEVATORS" textFill="#0400ff">
+                                                      <Separator layoutX="-2.0" layoutY="913.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="6.0" layoutY="921.0" prefHeight="21.0" prefWidth="179.0" text="ELEVATORS" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Button fx:id="hTailAddPanelButton" layoutX="79.0" layoutY="194.0" mnemonicParsing="false" onAction="#addHTailPanel" text="Add panel" />
-                                                      <TabPane fx:id="tabPaneHTailElevators" layoutY="894.0" prefHeight="402.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <Button fx:id="hTailAddPanelButton" layoutX="79.0" layoutY="248.0" mnemonicParsing="false" onAction="#addHTailPanel" text="Add panel" />
+                                                      <TabPane fx:id="tabPaneHTailElevators" layoutY="948.0" prefHeight="402.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Elevator 1">
                                                                <content>
@@ -2052,7 +1989,19 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Button fx:id="hTailAddElevatorButton" layoutX="92.0" layoutY="862.0" mnemonicParsing="false" onAction="#addElevator" text="Add elevator" />
+                                                      <Button fx:id="hTailAddElevatorButton" layoutX="92.0" layoutY="916.0" mnemonicParsing="false" onAction="#addElevator" text="Add elevator" />
+                                                      <Label layoutX="6.0" layoutY="83.0" prefHeight="21.0" prefWidth="236.0" text="Main spar location (% M.A.C.):">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="104.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="135.0" prefHeight="21.0" prefWidth="263.0" text="Secondary spar location (% M.A.C.):">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="156.0" prefHeight="31.0" prefWidth="340.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -2146,12 +2095,6 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="82.0" prefHeight="21.0" prefWidth="283.0" text="Composite mass correction factor:">
-                                                         <font>
-                                                            <Font name="System Bold" size="15.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailCompositeMassCorrectionFactor" layoutX="6.0" layoutY="103.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Separator layoutX="-10.0" layoutY="43.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Label layoutX="5.0" layoutY="14.0" text="Adjust Criterion:">
                                                          <font>
@@ -2159,21 +2102,21 @@
                                                          </font>
                                                       </Label>
                                                       <ChoiceBox id="fuselageAdjustCriterionChoiceBox" fx:id="vTailAdjustCriterionChoiceBox" disable="true" layoutX="123.0" layoutY="8.0" prefHeight="25.0" prefWidth="270.0" />
-                                                      <Label layoutX="6.0" layoutY="134.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
+                                                      <Label layoutX="6.0" layoutY="190.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailRoughness" layoutX="6.0" layoutY="155.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailRoughnessUnitChoiceBox" layoutX="347.0" layoutY="155.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <Separator layoutX="-2.0" layoutY="193.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldVTailRoughness" layoutX="6.0" layoutY="211.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="vTailRoughnessUnitChoiceBox" layoutX="347.0" layoutY="211.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Separator layoutX="-2.0" layoutY="249.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Separator layoutX="-2.0" layoutY="1079.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                      <Label layoutX="6.0" layoutY="198.0" text="PANELS" textFill="#0400ff">
+                                                      <Label layoutX="6.0" layoutY="254.0" text="PANELS" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TabPane fx:id="tabPaneVTailPanels" layoutY="223.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <TabPane fx:id="tabPaneVTailPanels" layoutY="279.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Panel 1 ">
                                                                <content>
@@ -2272,14 +2215,14 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Separator layoutX="-2.0" layoutY="859.0" prefHeight="0.0" prefWidth="1312.0" />
-                                                      <Label layoutX="6.0" layoutY="867.0" prefHeight="21.0" prefWidth="179.0" text="RUDDERS" textFill="#0400ff">
+                                                      <Separator layoutX="-2.0" layoutY="915.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="6.0" layoutY="923.0" prefHeight="21.0" prefWidth="179.0" text="RUDDERS" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Button fx:id="vTailAddPanelButton" layoutX="79.0" layoutY="194.0" mnemonicParsing="false" onAction="#addVTailPanel" text="Add panel" />
-                                                      <TabPane fx:id="tabPaneVTailRudders" layoutY="894.0" prefHeight="410.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <Button fx:id="vTailAddPanelButton" layoutX="79.0" layoutY="250.0" mnemonicParsing="false" onAction="#addVTailPanel" text="Add panel" />
+                                                      <TabPane fx:id="tabPaneVTailRudders" layoutY="950.0" prefHeight="410.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Rudder 1">
                                                                <content>
@@ -2335,7 +2278,19 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Button fx:id="vTailAddRudderButton" layoutX="82.0" layoutY="862.0" mnemonicParsing="false" onAction="#addRudder" text="Add rudder" />
+                                                      <Button fx:id="vTailAddRudderButton" layoutX="82.0" layoutY="918.0" mnemonicParsing="false" onAction="#addRudder" text="Add rudder" />
+                                                      <Label layoutX="6.0" layoutY="83.0" prefHeight="21.0" prefWidth="235.0" text="Main spar location (% M.A.C.):">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="104.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="135.0" prefHeight="21.0" prefWidth="257.0" text="Secondary spar location (% M.A.C.):">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="156.0" prefHeight="31.0" prefWidth="340.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -2429,12 +2384,6 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="6.0" layoutY="82.0" prefHeight="21.0" prefWidth="283.0" text="Composite mass correction factor:">
-                                                         <font>
-                                                            <Font name="System Bold" size="15.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardCompositeMassCorrectionFactor" layoutX="6.0" layoutY="103.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Separator layoutX="-10.0" layoutY="43.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Label layoutX="5.0" layoutY="14.0" text="Adjust Criterion:">
                                                          <font>
@@ -2442,21 +2391,21 @@
                                                          </font>
                                                       </Label>
                                                       <ChoiceBox id="fuselageAdjustCriterionChoiceBox" fx:id="canardAdjustCriterionChoiceBox" disable="true" layoutX="123.0" layoutY="8.0" prefHeight="25.0" prefWidth="270.0" />
-                                                      <Label layoutX="6.0" layoutY="134.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
+                                                      <Label layoutX="6.0" layoutY="187.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardRoughness" layoutX="6.0" layoutY="155.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardRoughnessUnitChoiceBox" layoutX="347.0" layoutY="155.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <Separator layoutX="-2.0" layoutY="193.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" fx:id="textFieldCanardRoughness" layoutX="6.0" layoutY="208.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="canardRoughnessUnitChoiceBox" layoutX="347.0" layoutY="208.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Separator layoutX="-2.0" layoutY="246.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Separator layoutX="-2.0" layoutY="1079.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                      <Label layoutX="6.0" layoutY="198.0" text="PANELS" textFill="#0400ff">
+                                                      <Label layoutX="6.0" layoutY="251.0" text="PANELS" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TabPane fx:id="tabPaneCanardPanels" layoutY="223.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <TabPane fx:id="tabPaneCanardPanels" layoutY="276.0" prefHeight="632.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Panel 1 ">
                                                                <content>
@@ -2555,14 +2504,14 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Separator layoutX="-2.0" layoutY="859.0" prefHeight="0.0" prefWidth="1312.0" />
-                                                      <Label layoutX="6.0" layoutY="867.0" prefHeight="21.0" prefWidth="179.0" text="CONTROL SURFACES" textFill="#0400ff">
+                                                      <Separator layoutX="-2.0" layoutY="912.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="6.0" layoutY="920.0" prefHeight="21.0" prefWidth="179.0" text="CONTROL SURFACES" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Button fx:id="canardAddPanelButton" layoutX="79.0" layoutY="194.0" mnemonicParsing="false" onAction="#addCanardPanel" text="Add panel" />
-                                                      <TabPane fx:id="tabPaneCanardControlSurfaces" layoutY="894.0" prefHeight="409.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <Button fx:id="canardAddPanelButton" layoutX="79.0" layoutY="247.0" mnemonicParsing="false" onAction="#addCanardPanel" text="Add panel" />
+                                                      <TabPane fx:id="tabPaneCanardControlSurfaces" layoutY="947.0" prefHeight="409.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Control Surface 1">
                                                                <content>
@@ -2618,7 +2567,19 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Button fx:id="canardAddControlSurfaceButton" layoutX="160.0" layoutY="862.0" mnemonicParsing="false" onAction="#addControlSurface" text="Add control surface" />
+                                                      <Button fx:id="canardAddControlSurfaceButton" layoutX="160.0" layoutY="915.0" mnemonicParsing="false" onAction="#addControlSurface" text="Add control surface" />
+                                                      <Label layoutX="6.0" layoutY="80.0" prefHeight="21.0" prefWidth="248.0" text="Main spar location (% M.A.C.):">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="101.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="132.0" prefHeight="21.0" prefWidth="269.0" text="Secondary spar location (% M.A.C.):">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="153.0" prefHeight="31.0" prefWidth="340.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -3179,11 +3140,6 @@
                         </BorderPane>
                      </children>
                   </AnchorPane>
-               </content>
-            </Tab>
-            <Tab disable="true" text="Systems">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                </content>
             </Tab>
             <Tab disable="true" text="3D View">

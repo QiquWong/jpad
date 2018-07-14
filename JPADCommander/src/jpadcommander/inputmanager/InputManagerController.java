@@ -5864,30 +5864,6 @@ public class InputManagerController {
 			textFieldAircraftLandingGearsFile.setText(file.getAbsolutePath());
 		}
 		
-		
-		
-	}
-	
-	@FXML
-	private void chooseAircraftSystemsFile() throws IOException {
-
-		systemsFileChooser = new FileChooser();
-		systemsFileChooser.setTitle("Open File");
-		systemsFileChooser.setInitialDirectory(
-				new File(
-						Main.getInputDirectoryPath() 
-						+ File.separator 
-						+ "Template_Aircraft" 
-						+ File.separator 
-						+ "systems"
-						)
-				);
-		File file = systemsFileChooser.showOpenDialog(null);
-		if (file != null) {
-			// get full path and populate the text box
-			textFieldAircraftSystemsFile.setText(file.getAbsolutePath());
-		}
-		
 	}
 	
 	@FXML
@@ -7229,21 +7205,21 @@ public class InputManagerController {
 		nacelleMountinPositionValueList = new ArrayList<>();
 		//.................................................................................................
 		String landingGearsFilePath = "";
-		landingGearsXPositionValue = "";
-		landingGearsXPositionUnit = "";
-		landingGearsYPositionValue = "";
-		landingGearsYPositionUnit = "";
-		landingGearsZPositionValue = "";
-		landingGearsZPositionUnit = "";
+		noseLandingGearsXPositionUnit = "";
+		noseLandingGearsXPositionUnit = "";
+		noseLandingGearsYPositionValue = "";
+		noseLandingGearsYPositionUnit = "";
+		noseLandingGearsZPositionValue = "";
+		noseLandingGearsZPositionUnit = "";
+		mainLandingGearsXPositionUnit = "";
+		mainLandingGearsXPositionUnit = "";
+		mainLandingGearsYPositionValue = "";
+		mainLandingGearsYPositionUnit = "";
+		mainLandingGearsZPositionValue = "";
+		mainLandingGearsZPositionUnit = "";
 		landingGearsMountinPositionValue = "";
 		//.................................................................................................
-		String systemsFilePath = "";
-		systemsXPositionValue = "";
-		systemsXPositionUnit = "";
-		systemsYPositionValue = "";
-		systemsYPositionUnit = "";
-		systemsZPositionValue = "";
-		systemsZPositionUnit = "";
+		// TODO: ADD SYSTEMS CHECK BOX ...  
 		
 		//.................................................................................................
 		// FETCHING DATA FROM GUI FIELDS ...
@@ -7423,35 +7399,34 @@ public class InputManagerController {
 		//.................................................................................................
 		if(textFieldAircraftLandingGearsFile.getText() != null)
 			landingGearsFilePath = textFieldAircraftLandingGearsFile.getText();
-		if(textFieldAircraftLandingGearsX.getText() != null)
-			landingGearsXPositionValue = textFieldAircraftLandingGearsX.getText();
-		if(!landingGearsXUnitChoiceBox.getSelectionModel().isEmpty())
-			landingGearsXPositionUnit = landingGearsXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-		if(textFieldAircraftLandingGearsY.getText() != null)
-			landingGearsYPositionValue = textFieldAircraftLandingGearsY.getText();
-		if(!landingGearsYUnitChoiceBox.getSelectionModel().isEmpty())
-			landingGearsYPositionUnit = landingGearsYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-		if(textFieldAircraftLandingGearsZ.getText() != null)
-			landingGearsZPositionValue = textFieldAircraftLandingGearsZ.getText();
-		if(!landingGearsZUnitChoiceBox.getSelectionModel().isEmpty())
-			landingGearsZPositionUnit = landingGearsZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftNoseLandingGearsX.getText() != null)
+			noseLandingGearsXPositionValue = textFieldAircraftNoseLandingGearsX.getText();
+		if(!noseLandingGearsXUnitChoiceBox.getSelectionModel().isEmpty())
+			noseLandingGearsXPositionUnit = noseLandingGearsXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftNoseLandingGearsY.getText() != null)
+			noseLandingGearsYPositionValue = textFieldAircraftNoseLandingGearsY.getText();
+		if(!noseLandingGearsYUnitChoiceBox.getSelectionModel().isEmpty())
+			noseLandingGearsYPositionUnit = noseLandingGearsYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftNoseLandingGearsZ.getText() != null)
+			noseLandingGearsZPositionValue = textFieldAircraftNoseLandingGearsZ.getText();
+		if(!noseLandingGearsZUnitChoiceBox.getSelectionModel().isEmpty())
+			noseLandingGearsZPositionUnit = noseLandingGearsZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftMainLandingGearsX.getText() != null)
+			mainLandingGearsXPositionValue = textFieldAircraftMainLandingGearsX.getText();
+		if(!mainLandingGearsXUnitChoiceBox.getSelectionModel().isEmpty())
+			mainLandingGearsXPositionUnit = mainLandingGearsXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftMainLandingGearsY.getText() != null)
+			mainLandingGearsYPositionValue = textFieldAircraftMainLandingGearsY.getText();
+		if(!mainLandingGearsYUnitChoiceBox.getSelectionModel().isEmpty())
+			mainLandingGearsYPositionUnit = mainLandingGearsYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		if(textFieldAircraftMainLandingGearsZ.getText() != null)
+			mainLandingGearsZPositionValue = textFieldAircraftMainLandingGearsZ.getText();
+		if(!mainLandingGearsZUnitChoiceBox.getSelectionModel().isEmpty())
+			mainLandingGearsZPositionUnit = mainLandingGearsZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
 		if(!landingGearsMountingPositionTypeChoiceBox.getSelectionModel().isEmpty())
 			landingGearsMountinPositionValue = landingGearsMountingPositionTypeChoiceBox.getSelectionModel().getSelectedItem().toString();
 		//.................................................................................................
-		if(textFieldAircraftSystemsFile.getText() != null)
-			systemsFilePath = textFieldAircraftSystemsFile.getText();
-		if(textFieldAircraftSystemsX.getText() != null)
-			systemsXPositionValue = textFieldAircraftSystemsX.getText();
-		if(!systemsXUnitChoiceBox.getSelectionModel().isEmpty())
-			systemsXPositionUnit = systemsXUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-		if(textFieldAircraftSystemsY.getText() != null)
-			systemsYPositionValue = textFieldAircraftSystemsY.getText();
-		if(!systemsYUnitChoiceBox.getSelectionModel().isEmpty())
-			systemsYPositionUnit = systemsYUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-		if(textFieldAircraftSystemsZ.getText() != null)
-			systemsZPositionValue = textFieldAircraftSystemsZ.getText();
-		if(!systemsZUnitChoiceBox.getSelectionModel().isEmpty())
-			systemsZPositionUnit = systemsZUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
+		// TODO: ADD SYSTEMS CHECK BOX
 		
 		//.................................................................................................
 		// FILTERING FILLED NACELLE AND ENGINES TABS ...
@@ -7747,6 +7722,15 @@ public class InputManagerController {
 		//.................................................................................................
 		if(Main.getTheAircraft().getLandingGears() != null) {
 			Main.getTheAircraft().setLandingGearsFilePath(landingGearsFilePath);
+			Main.getTheAircraft().getLandingGears().setXApexConstructionAxesMainGear(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsXPositionValue), Unit.valueOf(landingGearsXPositionUnit))
+					);
+			Main.getTheAircraft().getLandingGears().setYApexConstructionAxesMainGear(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsYPositionValue), Unit.valueOf(landingGearsYPositionUnit))
+					);
+			Main.getTheAircraft().getLandingGears().setZApexConstructionAxesMainGear(
+					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsZPositionValue), Unit.valueOf(landingGearsZPositionUnit))
+					);
 			Main.getTheAircraft().getLandingGears().setXApexConstructionAxesMainGear(
 					(Amount<Length>) Amount.valueOf(Double.valueOf(landingGearsXPositionValue), Unit.valueOf(landingGearsXPositionUnit))
 					);
