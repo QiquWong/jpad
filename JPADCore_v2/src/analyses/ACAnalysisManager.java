@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.measure.quantity.Mass;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.SI;
@@ -45,7 +46,10 @@ import writers.JPADStaticWriteUtils;
  */
 public class ACAnalysisManager {
 
-	private String _id;
+	//------------------------------------------------------------------------------
+	// VARIABLES DECLARATION:
+	//------------------------------------------------------------------------------
+	private IACAnalysisManager _theAnalysisManagerInterface;
 	private Aircraft _theAircraft;
 	private OperatingConditions _theOperatingConditions;
 
@@ -54,10 +58,6 @@ public class ACAnalysisManager {
 	private Map<ConditionEnum, ACAerodynamicAndStabilityManager> _theAerodynamicAndStability;
 	private ACPerformanceManager _thePerformance;
 	private ACCostsManager _theCosts;
-	
-	// INPUT DATA: 
-	private Double _positiveLimitLoadFactor;
-	private Double _negativeLimitLoadFactor;
 	
 	// DEPENDENT VARIABLES: 
 	private Double _nUltimate;
@@ -69,23 +69,7 @@ public class ACAnalysisManager {
 	private Amount<Velocity> _vOptimumCruise;
 	private Amount<Pressure> _maxDynamicPressure;
 	
-	private Map <ComponentEnum, MethodEnum> _methodsMapWeights;
-	private Map <ComponentEnum, MethodEnum> _methodsMapBalance;
-	private List<PerformanceEnum> _taskListPerformance;
-	private List<ConditionEnum> _taskListAerodynamicAndStability;
-	private Map<CostsEnum, MethodEnum> _taskListCosts;
 	private Map <AnalysisTypeEnum, Boolean> _executedAnalysesMap;
-	private List<AnalysisTypeEnum> _analysisList;
-	private Boolean _plotWeights;
-	private Boolean _plotBalance;
-	private Boolean _plotAerodynamicAndStability;
-	private Boolean _plotPerformance;
-	private Boolean _plotCosts;
-	private Boolean _createCSVWeights;
-	private Boolean _createCSVBalance;
-	private Boolean _createCSVAerodynamicAndStability;
-	private Boolean _createCSVPerformance;
-	private Boolean _createCSVCosts;
 	
 	private static File _weightsFileComplete;
 	private static File _balanceFileComplete;
@@ -96,229 +80,9 @@ public class ACAnalysisManager {
 	private static File _performanceFileComplete;
 	private static File _costsFileComplete;
 
-	//============================================================================================
-	// Builder pattern 
-	//============================================================================================
-	public static class ACAnalysisManagerBuilder {
-
-		// required parameters
-		private String __id;
-		private Aircraft __theAircraft;
-		private OperatingConditions __theOperatingConditions;
-
-		// optional parameters ... defaults
-		// ...
-		private Double __positiveLimitLoadFactor;
-		private Double __negativeLimitLoadFactor;
-		
-		private Map <ComponentEnum, MethodEnum> __methodsMapWeights = new HashMap<ComponentEnum, MethodEnum>();
-		private Map <ComponentEnum, MethodEnum> __methodsMapBalance = new HashMap<ComponentEnum, MethodEnum>();
-		private List<PerformanceEnum> __taskListPerfromance = new ArrayList<PerformanceEnum>();
-		private List<ConditionEnum> __taskListAerodynamicAndStability = new ArrayList<ConditionEnum>();
-		private Map <CostsEnum, MethodEnum> __taskListCosts = new HashMap<>();
-		private Map <AnalysisTypeEnum, Boolean> __executedAnalysesMap = new HashMap<AnalysisTypeEnum, Boolean>();
-		private List<AnalysisTypeEnum> __analysisList = new ArrayList<AnalysisTypeEnum>();
-		
-		private Boolean __plotWeights = Boolean.FALSE;
-		private Boolean __plotBalance = Boolean.FALSE;
-		private Boolean __plotAerodynamicAndStability = Boolean.FALSE;
-		private Boolean __plotPerformance = Boolean.FALSE;
-		private Boolean __plotCosts = Boolean.FALSE;
-		
-		private Boolean __createCSVWeights = Boolean.TRUE;
-		private Boolean __createCSVBalance = Boolean.TRUE;
-		private Boolean __createCSVAerodynamicAndStability = Boolean.TRUE;
-		private Boolean __createCSVPerformance = Boolean.TRUE;
-		private Boolean __createCSVCosts = Boolean.TRUE;
-		
-		public ACAnalysisManagerBuilder id (String id) {
-			this.__id = id;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder aircraft (Aircraft theAircraft) {
-			this.__theAircraft = theAircraft;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder operatingConditions (OperatingConditions operatingConditions) {
-			this.__theOperatingConditions = operatingConditions;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder analysisList (List<AnalysisTypeEnum> analysisList) {
-			this.__analysisList = analysisList;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder plotWeights (Boolean plotWeights){
-			this.__plotWeights = plotWeights;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder plotBalance (Boolean plotBalance){
-			this.__plotBalance = plotBalance;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder plotAerodynamicAndStability (Boolean plotAerodynamicAndStability){
-			this.__plotAerodynamicAndStability = plotAerodynamicAndStability;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder plotPerformance (Boolean plotPerformance){
-			this.__plotPerformance = plotPerformance;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder plotCosts (Boolean plotCosts){
-			this.__plotCosts = plotCosts;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder createCSVWeights (Boolean createCSVWeights){
-			this.__createCSVWeights = createCSVWeights;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder createCSVBalance (Boolean createCSVBalance){
-			this.__createCSVBalance = createCSVBalance;
-			return this;
-		}
-
-		public ACAnalysisManagerBuilder createCSVAerodynamicAndStability (Boolean createCSVAerodynamicAndStability){
-			this.__createCSVAerodynamicAndStability = createCSVAerodynamicAndStability;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder createCSVPerformance (Boolean createCSVPerformance){
-			this.__createCSVPerformance = createCSVPerformance;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder createCSVCosts (Boolean createCSVCosts){
-			this.__createCSVCosts = createCSVCosts;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder positiveLimitLoadFactor (Double nLimit) {
-			this.__positiveLimitLoadFactor = nLimit;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder negativeLimitLoadFactor (Double nLimitNeg) {
-			this.__negativeLimitLoadFactor = nLimitNeg;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder methodsMapWeights (Map<ComponentEnum, MethodEnum> methodsMapWeights) {
-			this.__methodsMapWeights = methodsMapWeights;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder methodsMapBalance (Map<ComponentEnum, MethodEnum> methodsMapBalance) {
-			this.__methodsMapBalance = methodsMapBalance;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder taskListPerfromance (List<PerformanceEnum> taskListPerfromance) {
-			this.__taskListPerfromance = taskListPerfromance;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder taskListAerodynamicAndStability (List<ConditionEnum> taskListAerodynamicAndStability) {
-			this.__taskListAerodynamicAndStability = taskListAerodynamicAndStability;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder taskListCosts (Map<CostsEnum, MethodEnum> taskListCosts) {
-			this.__taskListCosts = taskListCosts;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder(String id, Aircraft theAircraft, OperatingConditions operatingConditions) {
-			this.__id = id;
-			this.__theAircraft = theAircraft;
-			this.__theOperatingConditions = operatingConditions;
-			initializeDefaultData(AircraftEnum.ATR72);
-		}
-		
-		public ACAnalysisManagerBuilder(String id, Aircraft theAircraft, OperatingConditions operatingConditions, AircraftEnum aircraftName) {
-			this.__id = id;
-			this.__theAircraft = theAircraft;
-			this.__theOperatingConditions = operatingConditions;
-			initializeDefaultData(aircraftName);
-		}
-
-		@SuppressWarnings("incomplete-switch")
-		private void initializeDefaultData(AircraftEnum aircraftName) {
-			
-			switch(aircraftName) {
-			case ATR72:
-				__positiveLimitLoadFactor = 2.5;
-				__negativeLimitLoadFactor = -1.0;
-				break;
-				
-			case B747_100B:
-				__positiveLimitLoadFactor = 2.5;
-				__negativeLimitLoadFactor = -1.0;
-				break;
-				
-			case AGILE_DC1:
-				__positiveLimitLoadFactor = 2.5;
-				__negativeLimitLoadFactor = -1.0;
-				break;
-			}
-		}
-		
-		public ACAnalysisManager build() {
-			return new ACAnalysisManager(this); 
-		}
-	}
-
-	private ACAnalysisManager(ACAnalysisManagerBuilder builder) {
-		
-		this._id = builder.__id;
-		this._theAircraft = builder.__theAircraft;
-		this._theOperatingConditions = builder.__theOperatingConditions;
-		this._positiveLimitLoadFactor = builder.__positiveLimitLoadFactor;
-		this._negativeLimitLoadFactor = builder.__negativeLimitLoadFactor;
-		
-		this._methodsMapWeights = builder.__methodsMapWeights;
-		this._methodsMapBalance = builder.__methodsMapBalance;
-		this._taskListPerformance = builder.__taskListPerfromance;
-		this._taskListAerodynamicAndStability = builder.__taskListAerodynamicAndStability;
-		this._taskListCosts = builder.__taskListCosts;
-		this._executedAnalysesMap = builder.__executedAnalysesMap;
-		this._analysisList = builder.__analysisList;
-
-		this._plotWeights = builder.__plotWeights;
-		this._plotBalance = builder.__plotBalance;
-		this._plotAerodynamicAndStability = builder.__plotAerodynamicAndStability;
-		this._plotPerformance = builder.__plotPerformance;
-		this._plotCosts = builder.__plotCosts;
-		
-		this._createCSVWeights = builder.__createCSVWeights;
-		this._createCSVBalance = builder.__createCSVBalance;
-		this._createCSVAerodynamicAndStability = builder.__createCSVAerodynamicAndStability;
-		this._createCSVPerformance = builder.__createCSVPerformance;
-		this._createCSVCosts = builder.__createCSVCosts;
-		
-		calculateDependentVariables();
-		
-		//-------------------------------------------------
-		// EXECUTED ANALYSIS MAP INITIALIZATION
-		this._executedAnalysesMap.put(AnalysisTypeEnum.WEIGHTS, false);
-		this._executedAnalysesMap.put(AnalysisTypeEnum.BALANCE, false);
-		this._executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY, false);
-		this._executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCE, false);
-		this._executedAnalysesMap.put(AnalysisTypeEnum.COSTS, false);
-	}
-
-	//============================================================================================
-	// End of the builder pattern 
-	//============================================================================================
-		
+	//------------------------------------------------------------------------------
+	// METHODS:
+	//------------------------------------------------------------------------------
 	public static ACAnalysisManager importFromXML (String pathToXML, Aircraft theAircraft, OperatingConditions operatingConditions) throws IOException {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -331,6 +95,11 @@ public class ACAnalysisManager {
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
+		
+		String iterativeLoop = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@iterative_loop");
 		
 		Double positiveLimitLoadFactor = null;
 		Double negativeLimitLoadFactor = null;
@@ -1466,31 +1235,34 @@ public class ACAnalysisManager {
 		}
 
 		//-------------------------------------------------------------------------------------------
-		ACAnalysisManager theAnalysisManager = new ACAnalysisManager.ACAnalysisManagerBuilder(
-				id,
-				theAircraft, 
-				operatingConditions
-				)
-				.analysisList(analysisList)
-				.positiveLimitLoadFactor(positiveLimitLoadFactor)
-				.negativeLimitLoadFactor(negativeLimitLoadFactor)
-				.methodsMapWeights(methodsMapWeights)
-				.methodsMapBalance(methodsMapBalance)
-				.taskListPerfromance(taskListPerformance)
-				.taskListAerodynamicAndStability(taskListAerodynamicAndStability)
-				.taskListCosts(taskListCosts)
-				.plotWeights(plotWeights)
-				.plotBalance(plotBalance)
-				.plotAerodynamicAndStability(plotAerodynamicAndStability)
-				.plotPerformance(plotPerformance)
-				.plotCosts(plotCosts)
-				.createCSVWeights(createCSVWeights)
-				.createCSVBalance(createCSVBalance)
-				.createCSVAerodynamicAndStability(createCSVAerodynamicAndStability)
-				.createCSVPerformance(createCSVPerformance)
-				.createCSVCosts(createCSVCosts)
+		IACAnalysisManager theAnalysisManagerInterface = new IACAnalysisManager.Builder()
+				.setId(id)
+				.setIterativeLoop(Boolean.valueOf(iterativeLoop))
+				.setTheAircraft(theAircraft)
+				.setTheOperatingConditions(operatingConditions)
+				.addAllAnalysisList(analysisList)
+				.setPositiveLimitLoadFactor(positiveLimitLoadFactor)
+				.setNegativeLimitLoadFactor(negativeLimitLoadFactor)
+				.putAllMethodsMapWeights(methodsMapWeights)
+				.putAllMethodsMapBalance(methodsMapBalance)
+				.addAllTaskListPerfromance(taskListPerformance)
+				.addAllTaskListAerodynamicAndStability(taskListAerodynamicAndStability)
+				.putAllTaskListCosts(taskListCosts)
+				.setPlotWeights(plotWeights)
+				.setPlotBalance(plotBalance)
+				.setPlotAerodynamicAndStability(plotAerodynamicAndStability)
+				.setPlotPerformance(plotPerformance)
+				.setPlotCosts(plotCosts)
+				.setCreateCSVWeights(createCSVWeights)
+				.setCreateCSVBalance(createCSVBalance)
+				.setCreateCSVAerodynamicAndStability(createCSVAerodynamicAndStability)
+				.setCreateCSVPerformance(createCSVPerformance)
+				.setCreateCSVCosts(createCSVCosts)
 				.build();
 	
+		ACAnalysisManager theAnalysisManager = new ACAnalysisManager();
+		theAnalysisManager.setTheAnalysisManagerInterface(theAnalysisManagerInterface);
+		
 		return theAnalysisManager;
 		
 	}
@@ -1506,8 +1278,8 @@ public class ACAnalysisManager {
 				.append("\t-------------------------------------\n")
 				.append("\tAircraft in exam: " + _theAircraft.getId() + "\n")
 				.append("\t·····································\n")
-				.append("\tPositive limit load factor: " + _positiveLimitLoadFactor + "\n")
-				.append("\tNegative limit load factor: " + _negativeLimitLoadFactor + "\n")
+				.append("\tPositive limit load factor: " + _theAnalysisManagerInterface.getPositiveLimitLoadFactor() + "\n")
+				.append("\tNegative limit load factor: " + _theAnalysisManagerInterface.getNegativeLimitLoadFactor() + "\n")
 				.append("\t·····································\n")
 				.append("\tn Ultimate " + _nUltimate + "\n")
 				.append("\tV dive (TAS): " + _vDive + "\n")
@@ -1525,13 +1297,13 @@ public class ACAnalysisManager {
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.BALANCE) == true)
 			sb.append(_theAircraft.getTheAnalysisManager().getTheBalance().toString());
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY) == true) {
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF))
+			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.TAKE_OFF))
 				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).toString());
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB))
+			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.CLIMB))
 				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB).toString());
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE))
+			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.CRUISE))
 				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).toString());
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING))
+			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.LANDING))
 				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).toString());
 		}
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.PERFORMANCE) == true)
@@ -1547,7 +1319,7 @@ public class ACAnalysisManager {
 	 */
 	public void calculateDependentVariables() {
 
-		_nUltimate = 1.5 * _positiveLimitLoadFactor;
+		_nUltimate = 1.5 * _theAnalysisManagerInterface.getPositiveLimitLoadFactor();
 		
 		// Maximum cruise TAS
 		_vMaxCruise = Amount.valueOf(
@@ -1586,7 +1358,12 @@ public class ACAnalysisManager {
 		
 		if (aircraft == null) return;
 		////////////////////////////////////////////////////////////////
-		if (this._analysisList.contains(AnalysisTypeEnum.WEIGHTS)) {
+		// ITERATIVE LOOP 
+		if(_theAnalysisManagerInterface.isIterativeLoop() == true)
+			executeAnalysisIterativeLoop(aircraft, theOperatingConditions);
+		
+		////////////////////////////////////////////////////////////////
+		if (this._theAnalysisManagerInterface.getAnalysisList().contains(AnalysisTypeEnum.WEIGHTS)) {
 			System.setOut(originalOut);
 			System.out.println("\t\tWeights Analysis :: START");
 			System.setOut(filterStream);
@@ -1602,7 +1379,7 @@ public class ACAnalysisManager {
 			System.setOut(filterStream);
 		}
 		////////////////////////////////////////////////////////////////
-		if (this._analysisList.contains(AnalysisTypeEnum.BALANCE)) {
+		if (this._theAnalysisManagerInterface.getAnalysisList().contains(AnalysisTypeEnum.BALANCE)) {
 			System.setOut(originalOut);
 			System.out.println("\t\tBalance Analysis :: START");
 			System.setOut(filterStream);
@@ -1617,7 +1394,7 @@ public class ACAnalysisManager {
 			System.setOut(filterStream);
 		}
 		////////////////////////////////////////////////////////////////
-		if (this._analysisList.contains(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY)) {
+		if (this._theAnalysisManagerInterface.getAnalysisList().contains(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY)) {
 			
 			_theAerodynamicAndStability = new HashMap<>();
 			
@@ -1626,7 +1403,7 @@ public class ACAnalysisManager {
 			_theAerodynamicAndStability.put(ConditionEnum.CRUISE, new ACAerodynamicAndStabilityManager());
 			_theAerodynamicAndStability.put(ConditionEnum.LANDING, new ACAerodynamicAndStabilityManager());
 			
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) {
+			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.TAKE_OFF)) {
 				System.setOut(originalOut);
 				System.out.println("\t\tAerodynamic and Stability Analysis (TAKE-OFF) :: START");
 				System.setOut(filterStream);
@@ -1641,7 +1418,7 @@ public class ACAnalysisManager {
 								)
 						);
 			}
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB)) {
+			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.CLIMB)) {
 				System.setOut(originalOut);
 				System.out.println("\t\tAerodynamic and Stability Analysis (CLIMB) :: START");
 				System.setOut(filterStream);
@@ -1656,7 +1433,7 @@ public class ACAnalysisManager {
 								)
 						);
 			}
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE)) {
+			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.CRUISE)) {
 				System.setOut(originalOut);
 				System.out.println("\t\tAerodynamic and Stability Analysis (CRUISE) :: START");
 				System.setOut(filterStream);
@@ -1671,7 +1448,7 @@ public class ACAnalysisManager {
 								)
 						);
 			}
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING)) {
+			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.LANDING)) {
 				System.setOut(originalOut);
 				System.out.println("\t\tAerodynamic and Stability Analysis (LANDING) :: START");
 				System.setOut(filterStream);
@@ -1694,7 +1471,7 @@ public class ACAnalysisManager {
 			System.setOut(filterStream);
 		}
 		////////////////////////////////////////////////////////////////
-		if (this._analysisList.contains(AnalysisTypeEnum.PERFORMANCE)) {
+		if (this._theAnalysisManagerInterface.getAnalysisList().contains(AnalysisTypeEnum.PERFORMANCE)) {
 			System.setOut(originalOut);
 			System.out.println("\t\tPerformance Analysis :: START");
 			System.setOut(filterStream);
@@ -1710,7 +1487,7 @@ public class ACAnalysisManager {
 			System.setOut(filterStream);
 		}
 		////////////////////////////////////////////////////////////////
-		if (this._analysisList.contains(AnalysisTypeEnum.COSTS)) {
+		if (this._theAnalysisManagerInterface.getAnalysisList().contains(AnalysisTypeEnum.COSTS)) {
 			System.setOut(originalOut);
 			System.out.println("\t\tCosts Analysis :: START");
 			System.setOut(filterStream);
@@ -1718,7 +1495,7 @@ public class ACAnalysisManager {
 					_costsFileComplete.getAbsolutePath(), 
 					aircraft, 
 					theOperatingConditions, 
-					_taskListCosts
+					_theAnalysisManagerInterface.getTaskListCosts()
 					);
 			calculateCosts(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.COSTS, true);
@@ -1729,10 +1506,32 @@ public class ACAnalysisManager {
 				
 	} // end of constructor
 
+	/*
+	 * This method execute a preliminary iterative loop until the calculated mission fuel mass is equal
+	 * to the initial fuel mass from the weights analysis.
+	 */
+	private Amount<Mass> executeAnalysisIterativeLoop(Aircraft aircraft, OperatingConditions operatingConditions) throws HDF5LibraryException, IOException {
+		
+		/*
+		 * 1) ASSIGN DEFAULT TASK_LISTS AND METHODS MAP FOR EACH ANALYSIS AND BUILD TEMPORARY MANAGERS
+		 * 2) PERFORM ALL REQUIRED ANALYSES
+		 * 3) RETURN THE FINAL FUEL WEIGHTS
+		 * 
+		 * N.B.: MODIFY THE WEIGHTS IMPORT FROM XML ALLOWING USERS TO ASSIGN THE WANTED FUEL WEIGHT. 
+		 *       THIS WILL BE UPDATED FOR THE CALCULATION AFTER THE ITERATIVE LOOP.
+		 */
+		Amount<Mass> finalFuelMass = Amount.valueOf(0.0, SI.KILOGRAM);		
+		
+		// TODO: COMPLETE ME!
+		
+		return finalFuelMass;
+		
+	}
+	
 	public void calculateWeights(Aircraft aircraft, OperatingConditions operatingConditions, String resultsFolderPath) {
 
 		// Evaluate aircraft masses
-		aircraft.getTheAnalysisManager().getTheWeights().calculateAllMasses(aircraft, operatingConditions, _methodsMapWeights);
+		aircraft.getTheAnalysisManager().getTheWeights().calculateAllMasses(aircraft, operatingConditions, _theAnalysisManagerInterface.getMethodsMapWeights());
 
 		// Plot and print
 		try {
@@ -1740,11 +1539,11 @@ public class ACAnalysisManager {
 					resultsFolderPath 
 					+ "WEIGHTS"
 					+ File.separator);
-			
-			aircraft.getTheAnalysisManager().getTheWeights().plotWeightBreakdown(weightsFolderPath);
 			aircraft.getTheAnalysisManager().getTheWeights().toXLSFile(
 					weightsFolderPath
 					+ "Weights");
+			if(_theAnalysisManagerInterface.isPlotWeights() == true)
+				aircraft.getTheAnalysisManager().getTheWeights().plotWeightBreakdown(weightsFolderPath);
 			
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
@@ -1757,7 +1556,7 @@ public class ACAnalysisManager {
 	public void calculateBalance(Aircraft aircraft, String resultsFolderPath) {
 
 		// Estimate center of gravity location
-		aircraft.getTheAnalysisManager().getTheBalance().calculate(_methodsMapBalance);
+		aircraft.getTheAnalysisManager().getTheBalance().calculate(_theAnalysisManagerInterface.getMethodsMapBalance());
 		
 		// Plot
 		try {
@@ -1768,7 +1567,7 @@ public class ACAnalysisManager {
 			aircraft.getTheAnalysisManager().getTheBalance().toXLSFile(
 					balanceFolderPath
 					+ "Balance");
-			if(_plotBalance == Boolean.TRUE)
+			if(_theAnalysisManagerInterface.isPlotBalance() == Boolean.TRUE)
 				aircraft.getTheAnalysisManager().getTheBalance().createCharts(balanceFolderPath);
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
@@ -1790,13 +1589,13 @@ public class ACAnalysisManager {
 	
 	public void calculateAerodynamicAndStability(Aircraft aircraft, String resultsFolderPath) {
 
-		if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) 
+		if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.TAKE_OFF)) 
 			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculate(resultsFolderPath);
-		if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB)) 
+		if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.CLIMB)) 
 			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB).calculate(resultsFolderPath);
-		if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE)) 
+		if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.CRUISE)) 
 			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).calculate(resultsFolderPath);
-		if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING)) 
+		if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.LANDING)) 
 			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).calculate(resultsFolderPath);
 
 	}
@@ -1810,19 +1609,28 @@ public class ACAnalysisManager {
 	
 	public void calculateCosts(Aircraft aircraft, String resultsFolderPath) {
 		
+		// Execute analysis
 		aircraft.getTheAnalysisManager().getTheCosts().calculate(resultsFolderPath);
 		
 	}
 
-	//////////////////////////////////////////////////////////////////////////
+	//............................................................................
 	// GETTERS & SETTERS:
+	//............................................................................
+	public IACAnalysisManager getTheAnalysisManagerInterface() {
+		return _theAnalysisManagerInterface;
+	}
+	
+	public void setTheAnalysisManagerInterface (IACAnalysisManager theAnalysisManagerInterface) {
+		this._theAnalysisManagerInterface = theAnalysisManagerInterface;
+	}
 	
 	public String getId() {
-		return _id;
+		return _theAnalysisManagerInterface.getId();
 	}
 
 	public void setId(String _id) {
-		this._id = _id;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setId(_id).build());
 	}
 
 	public Aircraft getTheAircraft() {
@@ -1834,19 +1642,19 @@ public class ACAnalysisManager {
 	}
 
 	public Double getPositiveLimitLoadFactor() {
-		return _positiveLimitLoadFactor;
+		return _theAnalysisManagerInterface.getPositiveLimitLoadFactor();
 	}
 
 	public void setPositiveLimitLoadFactor(Double _positiveLimitLoadFactor) {
-		this._positiveLimitLoadFactor = _positiveLimitLoadFactor;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setPositiveLimitLoadFactor(_positiveLimitLoadFactor).build());
 	}
 
 	public Double getNegativeLimitLoadFactor() {
-		return _negativeLimitLoadFactor;
+		return _theAnalysisManagerInterface.getNegativeLimitLoadFactor();
 	}
 	
 	public void setNegativeLimitLoadFactor(Double _negativeLimitLoadFactor) {
-		this._negativeLimitLoadFactor = _negativeLimitLoadFactor;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setNegativeLimitLoadFactor(_negativeLimitLoadFactor).build());
 	}
 
 	public Double getNUltimate() {
@@ -1914,19 +1722,19 @@ public class ACAnalysisManager {
 	}
 
 	public Map<ComponentEnum, MethodEnum> getMethodsMapWeights() {
-		return _methodsMapWeights;
+		return _theAnalysisManagerInterface.getMethodsMapWeights();
 	}
 
 	public void setMethodsMapWeights(Map<ComponentEnum, MethodEnum> _methodsMap) {
-		this._methodsMapWeights = _methodsMap;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).putAllMethodsMapWeights(_methodsMap).build());
 	}
 
 	public Map<ComponentEnum, MethodEnum> getMethodsMapBalance() {
-		return _methodsMapBalance;
+		return _theAnalysisManagerInterface.getMethodsMapBalance();
 	}
 
 	public void setMethodsMapBalance(Map<ComponentEnum, MethodEnum> _methodsMapBalance) {
-		this._methodsMapBalance = _methodsMapBalance;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).putAllMethodsMapBalance(_methodsMapBalance).build());
 	}
 
 	public Map<AnalysisTypeEnum, Boolean> getExecutedAnalysesMap() {
@@ -1978,11 +1786,11 @@ public class ACAnalysisManager {
 	}
 
 	public List<AnalysisTypeEnum> getAnalysisList() {
-		return _analysisList;
+		return _theAnalysisManagerInterface.getAnalysisList();
 	}
 
 	public void setAnalysisList(List<AnalysisTypeEnum> _analysisList) {
-		this._analysisList = _analysisList;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).addAllAnalysisList(_analysisList).build());
 	}
 
 	public File getWeightsFileComplete() {
@@ -2050,67 +1858,67 @@ public class ACAnalysisManager {
 	}
 
 	public Boolean getPlotBalance() {
-		return _plotBalance;
+		return _theAnalysisManagerInterface.isPlotBalance();
 	}
 
 	public void setPlotBalance(Boolean _plotBalance) {
-		this._plotBalance = _plotBalance;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setPlotBalance(_plotBalance).build());
 	}
 
 	public Boolean getPlotAerodynamicAndStability() {
-		return _plotAerodynamicAndStability;
+		return _theAnalysisManagerInterface.isPlotAerodynamicAndStability();
 	}
 
 	public void setPlotAerodynamicAndStability(Boolean _plotAerodynamicAndStability) {
-		this._plotAerodynamicAndStability = _plotAerodynamicAndStability;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setPlotAerodynamicAndStability(_plotAerodynamicAndStability).build());
 	}
 
 	public Boolean getPlotPerformance() {
-		return _plotPerformance;
+		return _theAnalysisManagerInterface.isPlotPerformance();
 	}
 
 	public void setPlotPerformance(Boolean _plotPerformance) {
-		this._plotPerformance = _plotPerformance;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setPlotPerformance(_plotPerformance).build());
 	}
 
 	public Boolean getPlotCosts() {
-		return _plotCosts;
+		return _theAnalysisManagerInterface.isPlotCosts();
 	}
 
 	public void setPlotCosts(Boolean _plotCosts) {
-		this._plotCosts = _plotCosts;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setPlotCosts(_plotCosts).build());
 	}
 
 	public List<PerformanceEnum> getTaskListPerformance() {
-		return _taskListPerformance;
+		return _theAnalysisManagerInterface.getTaskListPerfromance();
 	}
 
 	public void setTaskListPerformance(List<PerformanceEnum> _taskListPerformance) {
-		this._taskListPerformance = _taskListPerformance;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).addAllTaskListPerfromance(_taskListPerformance).build());
 	}
 
 	public List<ConditionEnum> getTaskListAerodynamicAndStability() {
-		return _taskListAerodynamicAndStability;
+		return _theAnalysisManagerInterface.getTaskListAerodynamicAndStability();
 	}
 
 	public void setTaskListAerodynamicAndStability(List<ConditionEnum> _taskListAerodynamicAndStability) {
-		this._taskListAerodynamicAndStability = _taskListAerodynamicAndStability;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).addAllTaskListAerodynamicAndStability(_taskListAerodynamicAndStability).build());
 	}
 
 	public Map<CostsEnum, MethodEnum> getTaskListCosts() {
-		return _taskListCosts;
+		return _theAnalysisManagerInterface.getTaskListCosts();
 	}
 
 	public void setTaskListCosts(Map<CostsEnum, MethodEnum> _taskListCosts) {
-		this._taskListCosts = _taskListCosts;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).putAllTaskListCosts(_taskListCosts).build());
 	}
 
 	public Boolean getPlotWeights() {
-		return _plotWeights;
+		return _theAnalysisManagerInterface.isPlotWeights();
 	}
 
 	public void setPlotWeights(Boolean _plotWeights) {
-		this._plotWeights = _plotWeights;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setPlotWeights(_plotWeights).build());
 	}
 
 	public OperatingConditions getTheOperatingConditions() {
@@ -2122,43 +1930,43 @@ public class ACAnalysisManager {
 	}
 
 	public Boolean getCreateCSVWeights() {
-		return _createCSVWeights;
+		return _theAnalysisManagerInterface.isCreateCSVWeights();
 	}
 
 	public void setCreateCSVWeights(Boolean _createCSVWeights) {
-		this._createCSVWeights = _createCSVWeights;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setCreateCSVWeights(_createCSVWeights).build());
 	}
 
 	public Boolean getCreateCSVBalance() {
-		return _createCSVBalance;
+		return _theAnalysisManagerInterface.isCreateCSVBalance();
 	}
 
 	public void setCreateCSVBalance(Boolean _createCSVBalance) {
-		this._createCSVBalance = _createCSVBalance;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setCreateCSVBalance(_createCSVBalance).build());
 	}
 
 	public Boolean getCreateCSVAerodynamicAndStability() {
-		return _createCSVAerodynamicAndStability;
+		return _theAnalysisManagerInterface.isCreateCSVAerodynamicAndStability();
 	}
 
 	public void setCreateCSVAerodynamicAndStability(Boolean _createCSVAerodynamicAndStability) {
-		this._createCSVAerodynamicAndStability = _createCSVAerodynamicAndStability;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setCreateCSVAerodynamicAndStability(_createCSVAerodynamicAndStability).build());
 	}
 
 	public Boolean getCreateCSVPerformance() {
-		return _createCSVPerformance;
+		return _theAnalysisManagerInterface.isCreateCSVPerformance();
 	}
 
 	public void setCreateCSVPerformance(Boolean _createCSVPerformance) {
-		this._createCSVPerformance = _createCSVPerformance;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setCreateCSVPerformance(_createCSVPerformance).build());
 	}
 
 	public Boolean getCreateCSVCosts() {
-		return _createCSVCosts;
+		return _theAnalysisManagerInterface.isCreateCSVCosts();
 	}
 
 	public void setCreateCSVCosts(Boolean _createCSVCosts) {
-		this._createCSVCosts = _createCSVCosts;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setCreateCSVCosts(_createCSVCosts).build());
 	}
 
 }

@@ -10,19 +10,27 @@
 		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
-    <analyses id="A-320 analysis">
+    <analyses id="A-320 analysis" iterative_loop="FALSE">
 	<!--
         <weights 
             file="analysis_weights_A320.xml" 
 			plot="TRUE"
 			create_CSV="TRUE"
-            method_fuselage="TORENBEEK_2013"
+            method_fuselage=""
             method_wing=""
-            method_htail="JENKINSON"
-            method_vtail="JENKINSON"
-			method_nacelles="TORENBEEK_1982"
+            method_htail=""
+            method_vtail=""
+			method_canard=""
+			method_nacelles=""
+			method_power_plant=""
 			method_landing_gears=""
-			method_systems=""
+			method_APU=""
+			method_air_conditioning_and_anti_icing=""
+			method_instruments_and_navigation_system=""
+			method_hydraulic_and_pneumatic_systems=""			
+			method_electrical_systems=""
+			method_furnishings_and_equipments=""
+			method_control_surfaces=""
             />
 	-->
 	<!-- method_XXX="AVERAGED" if empty string -->

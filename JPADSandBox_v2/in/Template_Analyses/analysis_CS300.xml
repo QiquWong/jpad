@@ -11,7 +11,7 @@
 		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
-	<analyses id="CS300 analysis">
+	<analyses id="CS300 analysis" iterative_loop="TRUE">
         <weights 
             file="analysis_weights_CS300.xml" 
 			plot="TRUE"
@@ -44,13 +44,6 @@
 			method_nacelles=""
 			method_power_plant=""
 			method_landing_gears=""
-			method_APU=""
-			method_air_conditioning_and_anti_icing=""
-			method_instruments_and_navigation_system=""
-			method_hydraulic_and_pneumatic_systems=""			
-			method_electrical_systems=""
-			method_furnishings_and_equipments=""
-			method_control_surfaces=""
 		/>	
 	<!--
 	<aerodynamic_and_stability

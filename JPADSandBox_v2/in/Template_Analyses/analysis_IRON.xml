@@ -10,7 +10,7 @@
 		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
-	<analyses id="IRON analysis">
+	<analyses id="IRON analysis" iterative_loop="FALSE">
 	<!--
 		<weights 
             file="analysis_weights_IRON.xml" 
