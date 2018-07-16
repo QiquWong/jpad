@@ -1,5 +1,6 @@
 package aircraft.components.liftingSurface.creator;
 
+import javax.annotation.Nullable;
 import javax.measure.quantity.Angle;
 
 import org.inferred.freebuilder.FreeBuilder;
@@ -10,6 +11,7 @@ import configuration.enumerations.FlapTypeEnum;
 @FreeBuilder
 public interface ISymmetricFlapCreator {
 
+	@Nullable
 	String getId();
 	FlapTypeEnum getType();
 	Double getInnerStationSpanwisePosition();

@@ -1,5 +1,6 @@
 package aircraft.components.liftingSurface.creator;
 
+import javax.annotation.Nullable;
 import javax.measure.quantity.Angle;
 
 import org.inferred.freebuilder.FreeBuilder;
@@ -8,6 +9,7 @@ import org.jscience.physics.amount.Amount;
 @FreeBuilder
 public interface ISlatCreator {
 
+	@Nullable
 	String getId();
 	double getInnerStationSpanwisePosition();
 	double getOuterStationSpanwisePosition();

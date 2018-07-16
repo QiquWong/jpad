@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jpad_config>
+   <wing equivalent="false" id="Wing" mirrored="true">
+      <global_data>
+         <main_spar_non_dimensional_position ref_to="LOCAL_CHORD" type="PERCENT_CHORD">0.2500</main_spar_non_dimensional_position>
+         <secondary_spar_non_dimensional_position ref_to="LOCAL_CHORD" type="PERCENT_CHORD">0.5500</secondary_spar_non_dimensional_position>
+         <roughness unit="m">0.00000405</roughness>
+		 <winglet_height unit="m">0.0</winglet_height>
+      </global_data>
+      <panels>
+         <panel id="ATR72 wing, inner panel">
+            <span unit="m">4.7</span>
+            <dihedral unit="deg">0.0000</dihedral>
+            <sweep_leading_edge unit="deg">0.0000</sweep_leading_edge>
+            <inner_section>
+               <chord unit="m">2.5759</chord>
+               <airfoil file="naca23018.xml"/>
+               <geometric_twist>0.000000</geometric_twist>
+            </inner_section>
+            <outer_section>
+               <chord unit="m">2.5759</chord>
+               <airfoil file="naca23018.xml"/>
+               <geometric_twist unit="deg">0.0000</geometric_twist>
+            </outer_section>
+         </panel>
+         <panel id="ATR72 wing, outer panel" linked_to="ATR72 wing, inner panel">
+            <span unit="m">8.83</span>
+            <dihedral unit="deg">0.0000</dihedral>
+            <sweep_leading_edge unit="deg">4.3000</sweep_leading_edge>
+            <outer_section>
+               <chord unit="m">1.5906</chord>
+               <airfoil file="naca23015.xml"/>
+               <geometric_twist unit="deg">-2.0000</geometric_twist>
+            </outer_section>
+         </panel>
+      </panels>
+      <symmetric_flaps>
+         <symmetric_flap id="Inner flap" type="SINGLE_SLOTTED">
+            <inner_station_spanwise_position>0.0800</inner_station_spanwise_position>
+            <outer_station_spanwise_position>0.3500</outer_station_spanwise_position>
+            <inner_chord_ratio>0.3500</inner_chord_ratio>
+            <outer_chord_ratio>0.3200</outer_chord_ratio>
+            <min_deflection unit="deg">0.0000</min_deflection>
+            <max_deflection unit="deg">40.0000</max_deflection>
+         </symmetric_flap>
+         <symmetric_flap id="Outer flap" type="SINGLE_SLOTTED">
+            <inner_station_spanwise_position>0.3500</inner_station_spanwise_position>
+            <outer_station_spanwise_position>0.8000</outer_station_spanwise_position>
+            <inner_chord_ratio>0.3500</inner_chord_ratio>
+            <outer_chord_ratio>0.3200</outer_chord_ratio>
+            <min_deflection unit="deg">0.0000</min_deflection>
+            <max_deflection unit="deg">40.0000</max_deflection>
+         </symmetric_flap>
+      </symmetric_flaps>
+      <asymmetric_flaps>
+         <asymmetric_flap id="Left aileron" type="PLAIN">
+            <inner_chord_ratio>0.3300</inner_chord_ratio>
+            <outer_chord_ratio>0.3300</outer_chord_ratio>
+            <inner_station_spanwise_position>0.8000</inner_station_spanwise_position>
+            <outer_station_spanwise_position>0.9800</outer_station_spanwise_position>
+            <min_deflection unit="deg">-25.0000</min_deflection>
+            <max_deflection unit="deg">25.0000</max_deflection>
+         </asymmetric_flap>
+         <asymmetric_flap id="Right aileron" type="PLAIN">
+            <inner_chord_ratio>0.3300</inner_chord_ratio>
+            <outer_chord_ratio>0.3300</outer_chord_ratio>
+            <inner_station_spanwise_position>0.8000</inner_station_spanwise_position>
+            <outer_station_spanwise_position>0.9800</outer_station_spanwise_position>
+            <min_deflection unit="deg">-25.0000</min_deflection>
+            <max_deflection unit="deg">25.0000</max_deflection>
+         </asymmetric_flap>
+      </asymmetric_flaps>
+   </wing>
+</jpad_config>

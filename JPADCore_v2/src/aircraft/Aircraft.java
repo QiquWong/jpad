@@ -66,7 +66,6 @@ public class Aircraft {
 	
 	//-----------------------------------------------------------------------------------
 	// DERIVED DATA
-	private List<Object> _componentsList;
 	private Amount<Area> _sWetTotal = Amount.valueOf(0.0, SI.SQUARE_METRE);
 	private Double _kExcr = 0.0;
 	private Amount<Length> _wingACToCGDistance = Amount.valueOf(0.0, SI.METER);
@@ -1035,6 +1034,7 @@ public class Aircraft {
 				.setZApexMainGear(zApexMainLandingGears)
 				.setLandingGearsMountingPositionEnum(mountingPosition)
 				.setSystems(theSystems)
+				.addAllComponentList(componentList)
 				.build()
 				);
 		
@@ -1144,7 +1144,7 @@ public class Aircraft {
 	}
 
 	public List<Object> getComponentsList() {
-		return _componentsList;
+		return _theAircraftInterface.getComponentList();
 	}
 	
 	public ACAnalysisManager getTheAnalysisManager() {

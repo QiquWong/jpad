@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jpad_config>
+    <fuselage id="IRON Fuselage" pressurized="true">
+        <global_data>
+            <deck_number>1</deck_number>
+            <length unit="m">38.0400</length>
+            <roughness unit="m">0.0000</roughness>
+        </global_data>
+        <nose_trunk>
+            <length_ratio>0.1109</length_ratio>
+            <tip_height_offset unit="m">-0.8410</tip_height_offset>
+            <dx_cap_percent>0.0750</dx_cap_percent>
+            <windshield_type>FLAT_FLUSH</windshield_type>
+            <windshield_width unit="m">3.2000</windshield_width>
+            <windshield_height unit="m">0.6830</windshield_height>
+            <mid_section_lower_to_total_height_ratio>0.5000</mid_section_lower_to_total_height_ratio>
+            <mid_section_rho_upper>0.1000</mid_section_rho_upper>
+            <mid_section_rho_lower>0.1000</mid_section_rho_lower>
+        </nose_trunk>
+        <cylindrical_trunk>
+            <length_ratio>0.5890</length_ratio>
+            <section_width unit="m">3.5100</section_width>
+            <section_height unit="m">3.5640</section_height>
+            <height_from_ground unit="m">1.5500</height_from_ground>
+            <section_lower_to_total_height_ratio>0.5000</section_lower_to_total_height_ratio>
+            <section_rho_upper>0.1000</section_rho_upper>
+            <section_rho_lower>0.1000</section_rho_lower>
+        </cylindrical_trunk>
+        <tail_trunk>
+            <tip_height_offset unit="m">0.9200</tip_height_offset>
+            <dx_cap_percent>0.0200</dx_cap_percent>
+            <mid_section_lower_to_total_height_ratio>0.5000</mid_section_lower_to_total_height_ratio>
+            <mid_section_rho_upper>0.1000</mid_section_rho_upper>
+            <mid_section_rho_lower>0.1000</mid_section_rho_lower>
+        </tail_trunk>
+    </fuselage>
+</jpad_config>

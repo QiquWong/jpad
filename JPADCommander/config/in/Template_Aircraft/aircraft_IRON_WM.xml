@@ -2,12 +2,12 @@
 <jpad_config>
     <aircraft id="IRON_WM" type="TURBOPROP" regulations="FAR_25">
 		<global_data>
-			<cabin_configuration file="cabin_configuration_IRON.xml"></cabin_configuration>
+			<cabin_configuration file="cabin_configuration_IRON_WM.xml"></cabin_configuration>
 		</global_data>
         <lifting_surfaces>
             <wing file="wing_IRON_WM.xml">
                 <position>
-                    <x unit="m">19.0</x>
+                    <x unit="m">16.5</x>
                     <y unit="m">0.0</y>
                     <z unit="m">1.783</z>
                 </position>
@@ -15,15 +15,15 @@
             </wing>
             <horizontal_tail file="htail_IRON_WM.xml">
                 <position>
-                    <x unit="m">37</x>
+                    <x unit="m">38.0</x>
                     <y unit="m">0.0</y>
                     <z unit="m">7.0</z>
                 </position>
                 <rigging_angle unit="deg">-2.0</rigging_angle>
             </horizontal_tail>
-            <vertical_tail file="vtail_IRON.xml">
+            <vertical_tail file="vtail_IRON_WM.xml">
                 <position>
-                    <x unit="m">31.089</x>
+                    <x unit="m">32.0</x>
                     <y unit="m">0.0</y>
                     <z unit="m">1.52</z>
                 </position>
@@ -42,8 +42,8 @@
 		<power_plant>
             <engine file="engine_IRON_LOOP1_updated.xml">
                 <position>
-                    <x unit="m">17.2</x>
-                    <y unit="m">4.53</y>
+                    <x unit="m">14.00</x>
+                    <y unit="m">5.325</y>
                     <z unit="m">1.6</z>
                 </position>
                 <tilting_angle unit="deg">0.0</tilting_angle>
@@ -51,8 +51,8 @@
             </engine>
             <engine file="engine_IRON_LOOP1_updated.xml">
                 <position>
-                    <x unit="m">17.2</x>
-                    <y unit="m">-4.53</y>
+                    <x unit="m">14.00</x>
+                    <y unit="m">-5.325</y>
                     <z unit="m">1.6</z>
                 </position>
                 <tilting_angle unit="deg">0.0</tilting_angle>
@@ -62,30 +62,30 @@
 		<nacelles>
             <nacelle file="nacelle_IRON_LOOP1_updated.xml">
                 <position>
-                    <x unit="m">17.2</x>
-                    <y unit="m">4.53</y>
+                    <x unit="m">14.00</x>
+                    <y unit="m">5.325</y>
                     <z unit="m">1.6</z>
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
             <nacelle file="nacelle_IRON_LOOP1_updated.xml">
                 <position>
-                    <x unit="m">17.2</x>
-                    <y unit="m">-4.53</y>
+                    <x unit="m">14.00</x>
+                    <y unit="m">-5.325</y>
                     <z unit="m">1.6</z>
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
 		</nacelles> 
-		<landing_gears file="landing_gear_IRON.xml">
+		<landing_gears file="landing_gear_IRON_WM.xml">
 			<position>
 				<nose_gear>
-					<x unit="m">6.0</x>
+					<x unit="m">3.804</x>
 					<y unit="m">0.0</y>
 					<z unit="m">-0.5</z>
 				</nose_gear>
 				<main_gear>
-					<x unit="m">20.0</x>
+					<x unit="m">19.0</x>
 					<y unit="m">0.0</y>
 					<z unit="m">-0.5</z>
 				</main_gear>

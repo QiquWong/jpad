@@ -12,7 +12,7 @@
 			<wheel_width unit="m">0.35</wheel_width>
 		</frontal_wheels_data>
 		<rear_wheels_data>
-			<wheel_height unit="m">0.65</wheel_height>
+			<wheel_height unit="m">1.06</wheel_height>
 			<wheel_width unit="m">0.35</wheel_width>
 		</rear_wheels_data>
 	</landing_gears>

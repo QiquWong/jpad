@@ -1598,7 +1598,6 @@ public class JPADStaticWriteUtils {
 		try {
 			docBuilder = docFactory.newDocumentBuilder();
 
-
 			listDocNameType.add(
 					Tuple.of(
 							docBuilder.newDocument(),
@@ -1622,7 +1621,7 @@ public class JPADStaticWriteUtils {
 							Tuple.of(
 									docBuilder.newDocument(),
 									aircraftDirPath + File.separator + "lifting_surfaces" + File.separator + "airfoils" + File.separator,
-									aircraftSaveDirectives.getWingAirfoilFileNames().get(i) + ".xml", 
+									aircraftSaveDirectives.getWingAirfoilFileNames().get(i), 
 									ComponentEnum.WING_AIRFOIL
 									)
 							);
@@ -1642,7 +1641,7 @@ public class JPADStaticWriteUtils {
 							Tuple.of(
 									docBuilder.newDocument(),
 									aircraftDirPath + File.separator + "lifting_surfaces" + File.separator + "airfoils" + File.separator,
-									aircraftSaveDirectives.getHTailAirfoilFileNames().get(i) + ".xml", 
+									aircraftSaveDirectives.getHTailAirfoilFileNames().get(i), 
 									ComponentEnum.HORIZONTAL_TAIL_AIRFOIL
 									)
 							);
@@ -1661,7 +1660,7 @@ public class JPADStaticWriteUtils {
 							Tuple.of(
 									docBuilder.newDocument(),
 									aircraftDirPath + File.separator + "lifting_surfaces" + File.separator + "airfoils" + File.separator,
-									aircraftSaveDirectives.getVTailAirfoilFileNames().get(i) + ".xml", 
+									aircraftSaveDirectives.getVTailAirfoilFileNames().get(i), 
 									ComponentEnum.VERTICAL_TAIL_AIRFOIL
 									)
 							);
@@ -1680,7 +1679,7 @@ public class JPADStaticWriteUtils {
 							Tuple.of(
 									docBuilder.newDocument(),
 									aircraftDirPath + File.separator + "lifting_surfaces" + File.separator + "airfoils" + File.separator,
-									aircraftSaveDirectives.getCanardAirfoilFileNames().get(i) + ".xml", 
+									aircraftSaveDirectives.getCanardAirfoilFileNames().get(i), 
 									ComponentEnum.CANARD_AIRFOIL
 									)
 							);
@@ -1752,7 +1751,7 @@ public class JPADStaticWriteUtils {
 		}
 		
 		// write the aircraft according to the above directives
-		writeToXML(theAircraft, listDocNameType, aircraftSaveDirectives);
+		writeToXML(theAircraft, listDocNameType, aircraftSaveDirectives, aircraftDirName);
 		
 		
 	}
@@ -1767,11 +1766,14 @@ public class JPADStaticWriteUtils {
 	 * @param output object of the OutputTree class which holds all output data
 	 */
 	public static void writeToXML(
-			Aircraft aircraft, List<Tuple4<Document, String, String, ComponentEnum>> listDocNameType, AircraftSaveDirectives aircraftSaveDirectives ) {
+			Aircraft aircraft, 
+			List<Tuple4<Document, String, String, ComponentEnum>> listDocNameType, 
+			AircraftSaveDirectives aircraftSaveDirectives,
+			String aircraftName) {
 		
 		// populate all the docs
 		listDocNameType.stream()
-			.forEach(tpl -> makeXmlTree(aircraft, tpl, aircraftSaveDirectives)
+			.forEach(tpl -> makeXmlTree(aircraft, tpl, aircraftSaveDirectives, aircraftName)
 				);
 		
 		// write all the docs
@@ -1791,7 +1793,12 @@ public class JPADStaticWriteUtils {
 	 * @author Vittorio Trifari
 	 * @param aircraftSaveDirectives 
 	 */
-	private static void makeXmlTree(Aircraft aircraft, Tuple4<Document, String, String, ComponentEnum> docNameType, AircraftSaveDirectives aircraftSaveDirectives) {
+	private static void makeXmlTree(
+			Aircraft aircraft,
+			Tuple4<Document, String, String, ComponentEnum> docNameType,
+			AircraftSaveDirectives aircraftSaveDirectives,
+			String aircraftName
+			) {
 		switch (docNameType._4()) {
 		case AIRCRAFT:
 			makeXmlTreeAircraft(aircraft, docNameType._1(), aircraftSaveDirectives);
@@ -1802,12 +1809,13 @@ public class JPADStaticWriteUtils {
 			break;
 		case WING:
 			if (aircraft.getWing() != null)
-				makeXmlTreeLiftingSurface(aircraft, docNameType._1(), aircraftSaveDirectives, docNameType._4());
+				makeXmlTreeLiftingSurface(aircraft, docNameType._1(), aircraftSaveDirectives, docNameType._4(), aircraftName);
 			break;
 		case WING_AIRFOIL:
 			if (aircraft.getWing() != null) {
-				aircraft.getWing().getAirfoilList().stream().filter(
-						airfoil -> airfoil.getName().equalsIgnoreCase(
+				aircraft.getWing().getAirfoilList().stream()
+				.filter(
+						airfoil -> (airfoil.getName() + "_" + aircraftName).equalsIgnoreCase(
 								docNameType._3().substring(0, docNameType._3().length()-4)
 								)
 						).findFirst().ifPresent(
@@ -1821,12 +1829,12 @@ public class JPADStaticWriteUtils {
 			break;
 		case HORIZONTAL_TAIL:
 			if (aircraft.getHTail() != null)
-				makeXmlTreeLiftingSurface(aircraft, docNameType._1(), aircraftSaveDirectives, docNameType._4());
+				makeXmlTreeLiftingSurface(aircraft, docNameType._1(), aircraftSaveDirectives, docNameType._4(), aircraftName);
 			break;
 		case HORIZONTAL_TAIL_AIRFOIL:
 			if (aircraft.getHTail() != null) {
 				aircraft.getHTail().getAirfoilList().stream().filter(
-						airfoil -> airfoil.getName().equalsIgnoreCase(
+						airfoil -> (airfoil.getName() + "_" + aircraftName).equalsIgnoreCase(
 								docNameType._3().substring(0, docNameType._3().length()-4)
 								)
 						).findFirst().ifPresent(
@@ -1840,12 +1848,12 @@ public class JPADStaticWriteUtils {
 			break;
 		case VERTICAL_TAIL:
 			if (aircraft.getVTail() != null)
-				makeXmlTreeLiftingSurface(aircraft, docNameType._1(), aircraftSaveDirectives, docNameType._4());
+				makeXmlTreeLiftingSurface(aircraft, docNameType._1(), aircraftSaveDirectives, docNameType._4(), aircraftName);
 			break;
 		case VERTICAL_TAIL_AIRFOIL:
 			if (aircraft.getVTail() != null) {
 				aircraft.getVTail().getAirfoilList().stream().filter(
-						airfoil -> airfoil.getName().equalsIgnoreCase(
+						airfoil -> (airfoil.getName() + "_" + aircraftName).equalsIgnoreCase(
 								docNameType._3().substring(0, docNameType._3().length()-4)
 								)
 						).findFirst().ifPresent(
@@ -1859,12 +1867,12 @@ public class JPADStaticWriteUtils {
 			break;
 		case CANARD:
 			if (aircraft.getCanard() != null)
-				makeXmlTreeLiftingSurface(aircraft, docNameType._1(), aircraftSaveDirectives, docNameType._4());
+				makeXmlTreeLiftingSurface(aircraft, docNameType._1(), aircraftSaveDirectives, docNameType._4(), aircraftName);
 			break;
 		case CANARD_AIRFOIL:
 			if (aircraft.getCanard() != null) {
 				aircraft.getCanard().getAirfoilList().stream().filter(
-						airfoil -> airfoil.getName().equalsIgnoreCase(
+						airfoil -> (airfoil.getName() + "_" + aircraftName).equalsIgnoreCase(
 								docNameType._3().substring(0, docNameType._3().length()-4)
 								)
 						).findFirst().ifPresent(
@@ -1918,7 +1926,10 @@ public class JPADStaticWriteUtils {
 	}
 
 	private static void makeXmlTreeLiftingSurface(
-			Aircraft aircraft, Document doc, AircraftSaveDirectives aircraftSaveDirectives, ComponentEnum type) {
+			Aircraft aircraft, Document doc, AircraftSaveDirectives aircraftSaveDirectives, 
+			ComponentEnum type,
+			String aircraftName
+			) {
 
 		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
 		doc.appendChild(rootElement);
@@ -1993,9 +2004,9 @@ public class JPADStaticWriteUtils {
 							aircraft.getWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE),
 							aircraft.getWing().getPanels().get(1).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE),
 							Arrays.asList(new String[]{
-									aircraft.getWing().getAirfoilList().get(0).getName()+".xml",
-									aircraft.getWing().getAirfoilList().get(1).getName()+".xml",
-									aircraft.getWing().getAirfoilList().get(2).getName()+".xml"
+									aircraft.getWing().getAirfoilList().get(0).getName() +"_" + aircraftName + ".xml",
+									aircraft.getWing().getAirfoilList().get(1).getName() +"_" + aircraftName + ".xml",
+									aircraft.getWing().getAirfoilList().get(2).getName() +"_" + aircraftName + ".xml"
 									})
 							)
 						);
@@ -2018,6 +2029,7 @@ public class JPADStaticWriteUtils {
 							createLiftingSurfacePanelElement(
 									doc,
 									aircraft.getWing().getPanels().get(i),
+									aircraftName,
 									isLinked,
 									linkedPanelName
 									)
@@ -2095,6 +2107,24 @@ public class JPADStaticWriteUtils {
 			// make horizontal_tail/global_data
 			globalDataElement = doc.createElement("global_data");
 			liftingSurfaceElement.appendChild(globalDataElement);
+			// global_data - main_spar_non_dimensional_position
+			globalDataElement.appendChild(
+					createXMLElementWithValueAndAttributes(doc, "main_spar_non_dimensional_position",
+							aircraft.getHTail().getMainSparDimensionlessPosition(), 
+							4, 6, // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
+							Tuple.of("type", "PERCENT_CHORD"),
+							Tuple.of("ref_to", "LOCAL_CHORD")
+							)
+					);
+			// global_data - secondary_spar_non_dimensional_position
+			globalDataElement.appendChild(
+					createXMLElementWithValueAndAttributes(doc, "secondary_spar_non_dimensional_position",
+							aircraft.getHTail().getSecondarySparDimensionlessPosition(),
+							4, 6, // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
+							Tuple.of("type", "PERCENT_CHORD"),
+							Tuple.of("ref_to", "LOCAL_CHORD")
+							)
+					);
 			// global_data - roughness
 			globalDataElement.appendChild(
 				createXMLElementWithValueAndAttributes(doc, "roughness",
@@ -2119,6 +2149,7 @@ public class JPADStaticWriteUtils {
 						createLiftingSurfacePanelElement(
 								doc,
 								aircraft.getHTail().getPanels().get(i),
+								aircraftName,
 								isLinked,
 								linkedPanelName
 								)
@@ -2151,6 +2182,24 @@ public class JPADStaticWriteUtils {
 			// make vertical_tail/global_data
 			globalDataElement = doc.createElement("global_data");
 			liftingSurfaceElement.appendChild(globalDataElement);
+			// global_data - main_spar_non_dimensional_position
+			globalDataElement.appendChild(
+					createXMLElementWithValueAndAttributes(doc, "main_spar_non_dimensional_position",
+							aircraft.getVTail().getMainSparDimensionlessPosition(), 
+							4, 6, // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
+							Tuple.of("type", "PERCENT_CHORD"),
+							Tuple.of("ref_to", "LOCAL_CHORD")
+							)
+					);
+			// global_data - secondary_spar_non_dimensional_position
+			globalDataElement.appendChild(
+					createXMLElementWithValueAndAttributes(doc, "secondary_spar_non_dimensional_position",
+							aircraft.getVTail().getSecondarySparDimensionlessPosition(),
+							4, 6, // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
+							Tuple.of("type", "PERCENT_CHORD"),
+							Tuple.of("ref_to", "LOCAL_CHORD")
+							)
+					);
 			// global_data - roughness
 			globalDataElement.appendChild(
 				createXMLElementWithValueAndAttributes(doc, "roughness",
@@ -2175,6 +2224,7 @@ public class JPADStaticWriteUtils {
 						createLiftingSurfacePanelElement(
 								doc,
 								aircraft.getVTail().getPanels().get(i),
+								aircraftName,
 								isLinked,
 								linkedPanelName
 								)
@@ -2208,6 +2258,24 @@ public class JPADStaticWriteUtils {
 			// make vertical_tail/global_data
 			globalDataElement = doc.createElement("global_data");
 			liftingSurfaceElement.appendChild(globalDataElement);
+			// global_data - main_spar_non_dimensional_position
+			globalDataElement.appendChild(
+					createXMLElementWithValueAndAttributes(doc, "main_spar_non_dimensional_position",
+							aircraft.getCanard().getMainSparDimensionlessPosition(), 
+							4, 6, // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
+							Tuple.of("type", "PERCENT_CHORD"),
+							Tuple.of("ref_to", "LOCAL_CHORD")
+							)
+					);
+			// global_data - secondary_spar_non_dimensional_position
+			globalDataElement.appendChild(
+					createXMLElementWithValueAndAttributes(doc, "secondary_spar_non_dimensional_position",
+							aircraft.getCanard().getSecondarySparDimensionlessPosition(),
+							4, 6, // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
+							Tuple.of("type", "PERCENT_CHORD"),
+							Tuple.of("ref_to", "LOCAL_CHORD")
+							)
+					);
 			// global_data - roughness
 			globalDataElement.appendChild(
 				createXMLElementWithValueAndAttributes(doc, "roughness",
@@ -2232,6 +2300,7 @@ public class JPADStaticWriteUtils {
 						createLiftingSurfacePanelElement(
 								doc,
 								aircraft.getCanard().getPanels().get(i),
+								aircraftName,
 								isLinked,
 								linkedPanelName
 								)
@@ -2290,12 +2359,12 @@ public class JPADStaticWriteUtils {
 		
 		// geometry - x_coordinates
 		JPADStaticWriteUtils.writeSingleNode("x_coordinates", 
-				airfoil.getXCoords(), 
+				Arrays.toString(airfoil.getXCoords()), 
 				geometryElement, doc);
 		
 		// geometry - z_coordinates
 		JPADStaticWriteUtils.writeSingleNode("z_coordinates", 
-				airfoil.getZCoords(),
+				Arrays.toString(airfoil.getZCoords()),
 				geometryElement, doc);
 		
 		// aerodynamics
@@ -2406,9 +2475,14 @@ public class JPADStaticWriteUtils {
 					airfoilCurvesElement, doc);
 
 			// aerodynamics - airfoil_curves - alpha_for_Cl_curve 
-			JPADStaticWriteUtils.writeSingleNode("alpha_for_Cl_curve", 
-					airfoil.getAlphaForClCurve(), 
-					airfoilCurvesElement, doc);
+			airfoilCurvesElement.appendChild(
+					JPADStaticWriteUtils.createXMLElementWithContentAndAttributes(
+							doc,
+							"alpha_for_Cl_curve",
+							Arrays.toString(MyArrayUtils.convertListOfAmountToDoubleArray(airfoil.getAlphaForClCurve())), 
+							Tuple.of("unit", airfoil.getAlphaForClCurve().get(0).getUnit().toString())
+							)
+					);
 		}
 		
 		// aerodynamics - airfoil_curves - Cd_curve
@@ -2593,6 +2667,9 @@ public class JPADStaticWriteUtils {
 				aircraftElement.appendChild(
 						createLandingGearElement(doc, 
 								aircraftSaveDirectives.getLandingGearFileName() + ".xml", 
+								lg.getXApexConstructionAxesNoseGear(),
+								lg.getYApexConstructionAxesNoseGear(),
+								lg.getZApexConstructionAxesNoseGear(),
 								lg.getXApexConstructionAxesMainGear(),
 								lg.getYApexConstructionAxesMainGear(),
 								lg.getZApexConstructionAxesMainGear(),
@@ -2608,9 +2685,12 @@ public class JPADStaticWriteUtils {
 				.forEach(sys ->
 				aircraftElement.appendChild(
 						createXMLElementWithAttributes(doc, "systems", 
-								Tuple.of("primary_electrical_systems_type", aircraft.getTheAircraftInterface().getPrimaryElectricSystemsType().toString())
+								Tuple.of(
+										"primary_electrical_systems_type",
+										sys.getTheSystemsInterface().getPrimaryElectricSystemsType().toString()
+										)
+								)
 						)
-					)
 				);
 		
 	}
@@ -2773,10 +2853,6 @@ public class JPADStaticWriteUtils {
 				aircraft.getCabinConfiguration().getDistanceFromWallFirstClass(), 
 				detailedDataElement, doc);
 		
-		// reference_masses
-		org.w3c.dom.Element referenceMassElement = doc.createElement("reference_masses");
-		cabinConfigurationElement.appendChild(referenceMassElement);
-		
 	} 
 	
 	private static void makeXmlTreeFuselage(Aircraft aircraft, Document doc) {
@@ -2816,11 +2892,6 @@ public class JPADStaticWriteUtils {
 		// nose_trunk - length_ratio
 		JPADStaticWriteUtils.writeSingleNode("length_ratio", 
 				aircraft.getFuselage().getNoseLengthRatio(), 
-				noseTrunkElement, doc);
-		
-		// nose_trunk - fineness_ratio
-		JPADStaticWriteUtils.writeSingleNode("fineness_ratio", 
-				aircraft.getFuselage().getNoseFinenessRatio(), 
 				noseTrunkElement, doc);
 		
 		// nose_trunk - tip_height_offset
@@ -3422,7 +3493,8 @@ public class JPADStaticWriteUtils {
 	
 	public static org.w3c.dom.Element createLandingGearElement(Document doc, 
 			String fileName, 
-			Amount<Length> x, Amount<Length> y, Amount<Length> z,
+			Amount<Length> xNose, Amount<Length> yNose, Amount<Length> zNose,
+			Amount<Length> xMain, Amount<Length> yMain, Amount<Length> zMain,
 			LandingGearsMountingPositionEnum mountingPosition) {
 		
 		org.w3c.dom.Element element = createXMLElementWithAttributes(
@@ -3432,33 +3504,22 @@ public class JPADStaticWriteUtils {
 				);
 		org.w3c.dom.Element pos = doc.createElement("position");
 		element.appendChild(pos);
-		JPADStaticWriteUtils.writeSingleNode("x", x, pos, doc);
-		JPADStaticWriteUtils.writeSingleNode("y", y, pos, doc);
-		JPADStaticWriteUtils.writeSingleNode("z", z, pos, doc);
+		org.w3c.dom.Element nose = doc.createElement("nose_gear");
+		pos.appendChild(nose);
+		JPADStaticWriteUtils.writeSingleNode("x", xNose, nose, doc);
+		JPADStaticWriteUtils.writeSingleNode("y", yNose, nose, doc);
+		JPADStaticWriteUtils.writeSingleNode("z", zNose, nose, doc);
+		org.w3c.dom.Element main = doc.createElement("main_gear");
+		pos.appendChild(main);
+		JPADStaticWriteUtils.writeSingleNode("x", xMain, main, doc);
+		JPADStaticWriteUtils.writeSingleNode("y", yMain, main, doc);
+		JPADStaticWriteUtils.writeSingleNode("z", zMain, main, doc);
 
 		JPADStaticWriteUtils.writeSingleNode("mounting_point", mountingPosition, element, doc);
 		
 		return element;
 	}
 	
-	public static org.w3c.dom.Element createSystemElement(Document doc, 
-			String fileName, 
-			Amount<Length> x, Amount<Length> y, Amount<Length> z) {
-		
-		org.w3c.dom.Element element = createXMLElementWithAttributes(
-				doc,
-				"systems",
-				Tuple.of("file", fileName)	
-				);
-		org.w3c.dom.Element pos = doc.createElement("position");
-		element.appendChild(pos);
-		JPADStaticWriteUtils.writeSingleNode("x", x, pos, doc);
-		JPADStaticWriteUtils.writeSingleNode("y", y, pos, doc);
-		JPADStaticWriteUtils.writeSingleNode("z", z, pos, doc);
-
-		return element;
-	}
-
 	public static org.w3c.dom.Element createEquivalentWingElement(Document doc, 
 			Amount<Area> surface, 
 			Amount<Length> span, 
@@ -3519,6 +3580,7 @@ public class JPADStaticWriteUtils {
 	public static org.w3c.dom.Element createLiftingSurfacePanelElement(
 			Document doc, 
 			LiftingSurfacePanelCreator panel,
+			String aircraftName,
 			Boolean isLinked,
 			String linkedPanelName
 			) {
@@ -3551,7 +3613,7 @@ public class JPADStaticWriteUtils {
 			element.appendChild(innerSectionElement);
 			JPADStaticWriteUtils.writeSingleNode("chord", panel.getChordRoot(), innerSectionElement, doc);
 			innerSectionElement.appendChild(
-					JPADStaticWriteUtils.createXMLElementWithAttributes(doc, "airfoil", Tuple.of("file", panel.getAirfoilRoot().getName() + ".xml"))
+					JPADStaticWriteUtils.createXMLElementWithAttributes(doc, "airfoil", Tuple.of("file", panel.getAirfoilRoot().getName() + "_" + aircraftName  + ".xml"))
 					); 
 			JPADStaticWriteUtils.writeSingleNode("geometric_twist", 0.0, innerSectionElement, doc);
 		}
@@ -3563,7 +3625,7 @@ public class JPADStaticWriteUtils {
 		element.appendChild(outerSectionElement);
 		JPADStaticWriteUtils.writeSingleNode("chord", panel.getChordTip(), outerSectionElement, doc);
 		outerSectionElement.appendChild(
-				JPADStaticWriteUtils.createXMLElementWithAttributes(doc, "airfoil", Tuple.of("file", panel.getAirfoilTip().getName() + ".xml"))
+				JPADStaticWriteUtils.createXMLElementWithAttributes(doc, "airfoil", Tuple.of("file", panel.getAirfoilTip().getName() + "_" + aircraftName  + ".xml"))
 				);  
 		JPADStaticWriteUtils.writeSingleNode("geometric_twist", panel.getTwistGeometricAtTip(), outerSectionElement, doc);
 
@@ -3578,6 +3640,7 @@ public class JPADStaticWriteUtils {
 		org.w3c.dom.Element element = createXMLElementWithAttributes(
 					doc,
 					"symmetric_flap",
+					Tuple.of("id", flap.getId()),
 					Tuple.of("type", flap.getType().toString())	
 					);
 		JPADStaticWriteUtils.writeSingleNode("inner_station_spanwise_position", flap.getInnerStationSpanwisePosition(), element, doc);
@@ -3618,6 +3681,7 @@ public class JPADStaticWriteUtils {
 		org.w3c.dom.Element element = createXMLElementWithAttributes(
 					doc,
 					"asymmetric_flap",
+					Tuple.of("id", aileron.getId()),
 					Tuple.of("type", aileron.getType().toString())	
 					);
 		JPADStaticWriteUtils.writeSingleNode("inner_chord_ratio", aileron.getInnerChordRatio(), element, doc);
@@ -3637,7 +3701,8 @@ public class JPADStaticWriteUtils {
 				
 		org.w3c.dom.Element element = createXMLElementWithAttributes(
 					doc,
-					"spoiler"
+					"spoiler",
+					Tuple.of("id", spoiler.getId())
 					);
 		JPADStaticWriteUtils.writeSingleNode("inner_station_spanwise_position", spoiler.getInnerStationSpanwisePosition(), element, doc);
 		JPADStaticWriteUtils.writeSingleNode("outer_station_spanwise_position", spoiler.getOuterStationSpanwisePosition(), element, doc);

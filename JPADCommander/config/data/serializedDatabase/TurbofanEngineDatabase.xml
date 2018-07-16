@@ -12,7 +12,7 @@
       </file>
       <ncsa.hdf.object.FileFormat>
         <default>
-          <fid>16777221</fid>
+          <fid>16777225</fid>
           <isReadOnly>true</isReadOnly>
           <max__members>1000000</max__members>
           <start__members>0</start__members>
@@ -7115,6 +7115,8 @@
     <yMax>0.6000000238418579</yMax>
     <zMin>0.0</zMin>
     <zMax>20000.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </takeOffThrustFunction>
   <climbThrustFunction>
     <tif>
@@ -20934,6 +20936,8 @@
     <yMax>1.0</yMax>
     <zMin>0.0</zMin>
     <zMax>45000.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </climbThrustFunction>
   <cruiseThrustFunction>
     <tif>
@@ -34753,6 +34757,8 @@
     <yMax>1.0</yMax>
     <zMin>0.0</zMin>
     <zMax>45000.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </cruiseThrustFunction>
   <descentThrustFunction>
     <tif>
@@ -48504,6 +48510,8 @@
     <yMax>1.0</yMax>
     <zMin>0.0</zMin>
     <zMax>45000.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </descentThrustFunction>
   <sfcFunction>
     <tif>
@@ -58961,6 +58969,8 @@
     <yMax>1.2000000476837158</yMax>
     <zMin>0.0</zMin>
     <zMax>0.949999988079071</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </sfcFunction>
   <descentFuelFlowFunction>
     <tif>
@@ -72780,6 +72790,8 @@
     <yMax>1.0</yMax>
     <zMin>0.0</zMin>
     <zMax>45000.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </descentFuelFlowFunction>
   <t__T0Ratio>0.0</t__T0Ratio>
   <bPR>0.0</bPR>

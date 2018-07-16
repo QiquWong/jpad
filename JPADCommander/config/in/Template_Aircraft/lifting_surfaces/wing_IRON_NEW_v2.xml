@@ -11,7 +11,7 @@
 			<surface unit="m²"></surface>
 			<aspect_ratio></aspect_ratio>
 			<non_dimensional_span_station_kink></non_dimensional_span_station_kink>
-			<sweep_quarter_chord unit="deg"></sweep_quarter_chord>
+			<sweep_leading_edge unit="deg"></sweep_leading_edge>
 			<twist_at_tip unit="deg"></twist_at_tip>
 			<dihedral unit="deg"></dihedral>
 			<taper_ratio></taper_ratio>

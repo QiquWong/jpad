@@ -542,19 +542,19 @@ public class LiftingSurfacePanelCreator {
 	}
 
 	public String getAirfoilRootPath() {
-		return _airfoilRootPath;
+		return _theLiftingSurfacePanelInterface.getAirfoilRootFilePath();
 	}
 
 	public void setAirfoilRootPath(String _airfoilRootPath) {
-		this._airfoilRootPath = _airfoilRootPath;
+		setTheLiftingSurfacePanelInterface(ILiftingSurfacePanelCreator.Builder.from(_theLiftingSurfacePanelInterface).setAirfoilRootFilePath(_airfoilRootPath).build());
 	}
 
 	public String getAirfoilTipPath() {
-		return _airfoilTipPath;
+		return _theLiftingSurfacePanelInterface.getAirfoilTipFilePath();
 	}
 
 	public void setAirfoilTipPath(String _airfoilTipPath) {
-		this._airfoilTipPath = _airfoilTipPath;
+		setTheLiftingSurfacePanelInterface(ILiftingSurfacePanelCreator.Builder.from(_theLiftingSurfacePanelInterface).setAirfoilTipFilePath(_airfoilTipPath).build());
 	}
 
 }

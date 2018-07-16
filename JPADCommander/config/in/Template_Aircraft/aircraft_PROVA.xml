@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jpad_config>
+    <aircraft id="IRON_CANARD_SCITECH" regulations="FAR_25" type="TURBOPROP">
+        <global_data>
+            <cabin_configuration file="cabin_configuration_PROVA.xml"/>
+        </global_data>
+        <lifting_surfaces>
+            <wing file="wing_PROVA.xml">
+                <position>
+                    <x unit="m">19.2500</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">-1.3300</z>
+                </position>
+                <rigging_angle unit="deg">0.0000</rigging_angle>
+            </wing>
+            <horizontal_tail file="htail_PROVA.xml">
+                <position>
+                    <x unit="m">31.5400</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">1.0200</z>
+                </position>
+                <rigging_angle unit="deg">-2.0000</rigging_angle>
+            </horizontal_tail>
+            <vertical_tail file="vtail_PROVA.xml">
+                <position>
+                    <x unit="m">31.3700</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">1.5600</z>
+                </position>
+                <rigging_angle unit="deg">0.0000</rigging_angle>
+            </vertical_tail>
+            <canard file="canard_PROVA.xml">
+                <position>
+                    <x unit="m">6.0000</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">1.8000</z>
+                </position>
+                <rigging_angle unit="deg">0.0000</rigging_angle>
+            </canard>
+        </lifting_surfaces>
+        <fuselages>
+            <fuselage file="fuselage_PROVA.xml">
+                <position>
+                    <x unit="m">0.0000</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">0.0000</z>
+                </position>
+            </fuselage>
+        </fuselages>
+        <power_plant>
+            <engine file="engine_PROVA_0.xml">
+                <position>
+                    <x unit="m">29.4400</x>
+                    <y unit="m">4.5300</y>
+                    <z unit="m">0.2720</z>
+                </position>
+                <tilting_angle unit="deg">0.0000</tilting_angle>
+                <mounting_point>HTAIL</mounting_point>
+            </engine>
+            <engine file="engine_PROVA_1.xml">
+                <position>
+                    <x unit="m">29.4400</x>
+                    <y unit="m">-4.5300</y>
+                    <z unit="m">0.2720</z>
+                </position>
+                <tilting_angle unit="deg">0.0000</tilting_angle>
+                <mounting_point>HTAIL</mounting_point>
+            </engine>
+        </power_plant>
+        <nacelles>
+            <nacelle file="nacelle_PROVA_0.xml">
+                <position>
+                    <x unit="m">29.4400</x>
+                    <y unit="m">4.5300</y>
+                    <z unit="m">0.2720</z>
+                </position>
+                <mounting_point>HTAIL</mounting_point>
+            </nacelle>
+            <nacelle file="nacelle_PROVA_1.xml">
+                <position>
+                    <x unit="m">29.4400</x>
+                    <y unit="m">-4.5300</y>
+                    <z unit="m">0.2720</z>
+                </position>
+                <mounting_point>HTAIL</mounting_point>
+            </nacelle>
+        </nacelles>
+        <landing_gears file="landing_gear_PROVA.xml">
+            <position>
+                <nose_gear>
+                    <x unit="m">3.8000</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">-1.7820</z>
+                </nose_gear>
+                <main_gear>
+                    <x unit="m">22.3500</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">-1.7820</z>
+                </main_gear>
+            </position>
+            <mounting_point>FUSELAGE</mounting_point>
+        </landing_gears>
+        <systems primary_electrical_systems_type="AC"/>
+    </aircraft>
+</jpad_config>

@@ -12,7 +12,7 @@
       </file>
       <ncsa.hdf.object.FileFormat>
         <default>
-          <fid>16777221</fid>
+          <fid>16777226</fid>
           <isReadOnly>true</isReadOnly>
           <max__members>1000000</max__members>
           <start__members>0</start__members>
@@ -1765,6 +1765,8 @@
     <yMax>30000.0</yMax>
     <zMin>0.0</zMin>
     <zMax>0.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </takeOffThrustFunction>
   <continuousThrustFunction>
     <bif>
@@ -3324,6 +3326,8 @@
     <yMax>30000.0</yMax>
     <zMin>0.0</zMin>
     <zMax>0.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </continuousThrustFunction>
   <climbThrustFunction>
     <bif>
@@ -4853,6 +4857,8 @@
     <yMax>30000.0</yMax>
     <zMin>0.0</zMin>
     <zMax>0.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </climbThrustFunction>
   <cruiseThrustFunction>
     <bif>
@@ -6412,6 +6418,8 @@
     <yMax>30000.0</yMax>
     <zMin>0.0</zMin>
     <zMax>0.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </cruiseThrustFunction>
   <descentThrustFunction>
     <bif>
@@ -7971,6 +7979,8 @@
     <yMax>30000.0</yMax>
     <zMin>0.0</zMin>
     <zMax>0.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </descentThrustFunction>
   <takeOffSFCFunction>
     <bif>
@@ -9440,6 +9450,8 @@
     <yMax>30000.0</yMax>
     <zMin>0.0</zMin>
     <zMax>0.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </takeOffSFCFunction>
   <continuousSFCFunction>
     <bif>
@@ -10999,6 +11011,8 @@
     <yMax>30000.0</yMax>
     <zMin>0.0</zMin>
     <zMax>0.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </continuousSFCFunction>
   <climbSFCFunction>
     <bif>
@@ -12528,6 +12542,8 @@
     <yMax>30000.0</yMax>
     <zMin>0.0</zMin>
     <zMax>0.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </climbSFCFunction>
   <cruiseSFCFunction>
     <bif>
@@ -14087,6 +14103,8 @@
     <yMax>30000.0</yMax>
     <zMin>0.0</zMin>
     <zMax>0.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </cruiseSFCFunction>
   <descentSFCFunction>
     <bif>
@@ -15646,5 +15664,7 @@
     <yMax>30000.0</yMax>
     <zMin>0.0</zMin>
     <zMax>0.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
   </descentSFCFunction>
 </database.databasefunctions.engine.TurbopropEngineDatabaseReader>

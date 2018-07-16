@@ -1079,7 +1079,7 @@ public class InputManagerControllerMainActionUtilities {
 				// write nothing
 			}
 		});
-//		System.setOut(filterStream);
+		System.setOut(filterStream);
 		
 		if(Main.getTheAircraft() != null) {
 			
@@ -1676,8 +1676,8 @@ public class InputManagerControllerMainActionUtilities {
 			.forEach(i -> {
 				seriesVTailRootAirfoilTopView.add(
 						(vTailRootXCoordinates[i]*Main.getTheAircraft().getVTail().getPanels()
-								.get(Main.getTheAircraft().getVTail().getPanels().size()-1).getChordTip().getEstimatedValue())
-						+ Main.getTheAircraft().getVTail().getXApexConstructionAxes().getEstimatedValue(),
+								.get(Main.getTheAircraft().getVTail().getPanels().size()-1).getChordRoot().doubleValue(SI.METER))
+						+ Main.getTheAircraft().getVTail().getXApexConstructionAxes().doubleValue(SI.METER),
 						(vTailRootYCoordinates[i]*Main.getTheAircraft().getVTail().getPanels().get(0).getChordRoot().getEstimatedValue())
 						);
 			});
@@ -2219,23 +2219,35 @@ public class InputManagerControllerMainActionUtilities {
 		//--------------------------------------------------
 		// get data vectors from landing gears 
 		//--------------------------------------------------
-		XYSeries seriesLandingGearSideView = new XYSeries("Landing Gears - Side View", false);
+		XYSeries seriesMainLandingGearSideView = new XYSeries("Main Landing Gears - Side View", false);
+		XYSeries seriesNoseLandingGearSideView = new XYSeries("Front Landing Gears - Side View", false);
 		
 		if (Main.getTheAircraft().getLandingGears() != null) {
-			Amount<Length> radius = Main.getTheAircraft().getLandingGears().getRearWheelsHeight().divide(2);
-			Double[] wheelCenterPosition = new Double[] {
+			Amount<Length> radiusNose = Main.getTheAircraft().getLandingGears().getFrontalWheelsHeight().divide(2);
+			Amount<Length> radiusMain = Main.getTheAircraft().getLandingGears().getRearWheelsHeight().divide(2);
+			Double[] frontWheelCenterPosition = new Double[] {
+					Main.getTheAircraft().getLandingGears().getXApexConstructionAxesNoseGear().doubleValue(SI.METER),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxesNoseGear().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					- radiusNose.doubleValue(SI.METER)
+			};
+			Double[] mainWheelCenterPosition = new Double[] {
 					Main.getTheAircraft().getLandingGears().getXApexConstructionAxesMainGear().doubleValue(SI.METER),
 					Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
-					- radius.doubleValue(SI.METER)
+					- radiusMain.doubleValue(SI.METER)
 			};
 			Double[] thetaArray = MyArrayUtils.linspaceDouble(0, 2*Math.PI, 360);
 
 			IntStream.range(0, thetaArray.length)
 			.forEach(i -> {
-				seriesLandingGearSideView.add(
-						radius.doubleValue(SI.METER)*Math.cos(thetaArray[i]) + wheelCenterPosition[0],
-						radius.doubleValue(SI.METER)*Math.sin(thetaArray[i]) + wheelCenterPosition[1]
+				seriesNoseLandingGearSideView.add(
+						radiusNose.doubleValue(SI.METER)*Math.cos(thetaArray[i]) + frontWheelCenterPosition[0],
+						radiusNose.doubleValue(SI.METER)*Math.sin(thetaArray[i]) + frontWheelCenterPosition[1]
+						);
+				seriesMainLandingGearSideView.add(
+						radiusMain.doubleValue(SI.METER)*Math.cos(thetaArray[i]) + mainWheelCenterPosition[0],
+						radiusMain.doubleValue(SI.METER)*Math.sin(thetaArray[i]) + mainWheelCenterPosition[1]
 						);
 			});
 		}
@@ -2271,8 +2283,10 @@ public class InputManagerControllerMainActionUtilities {
 			seriesAndColorList.add(Tuple.of(seriesCanardRootAirfoil, Color.decode("#228B22")));
 			seriesAndColorList.add(Tuple.of(seriesCanardTipAirfoil, Color.decode("#228B22")));
 		}
-		if (Main.getTheAircraft().getLandingGears() != null) 
-			seriesAndColorList.add(Tuple.of(seriesLandingGearSideView, Color.decode("#404040")));
+		if (Main.getTheAircraft().getLandingGears() != null) {
+			seriesAndColorList.add(Tuple.of(seriesNoseLandingGearSideView, Color.decode("#404040")));
+			seriesAndColorList.add(Tuple.of(seriesMainLandingGearSideView, Color.decode("#404040")));
+		}
 		if (Main.getTheAircraft().getFuselage() != null)
 			seriesAndColorList.add(Tuple.of(seriesFuselageCurve, Color.WHITE));
 		if (Main.getTheAircraft().getVTail() != null)
@@ -2769,20 +2783,21 @@ public class InputManagerControllerMainActionUtilities {
 		//--------------------------------------------------
 		// get data vectors from landing gears
 		//--------------------------------------------------
-		List<XYSeries> serieLandingGearsCruvesFrontViewList = new ArrayList<>();
+		List<XYSeries> serieNoseLandingGearsCruvesFrontViewList = new ArrayList<>();
+		List<XYSeries> serieMainLandingGearsCruvesFrontViewList = new ArrayList<>();
 
 		if (Main.getTheAircraft().getLandingGears() != null) {
 			for(int i=0; i<Main.getTheAircraft().getLandingGears().getNumberOfRearWheels()/2; i++) {
 
-				XYSeries seriesLeftLandingGearCruvesFrontView = new XYSeries("Left Landing Gear " + i + " - Front View", false);
-				seriesLeftLandingGearCruvesFrontView.add(
+				XYSeries seriesLeftMainLandingGearCruvesFrontView = new XYSeries("Left Main Landing Gear " + i + " - Front View", false);
+				seriesLeftMainLandingGearCruvesFrontView.add(
 						Main.getTheAircraft().getLandingGears()
 						.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 						+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
 						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
-				seriesLeftLandingGearCruvesFrontView.add(
+				seriesLeftMainLandingGearCruvesFrontView.add(
 						Main.getTheAircraft().getLandingGears()
 						.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 						+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
@@ -2790,7 +2805,7 @@ public class InputManagerControllerMainActionUtilities {
 						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
-				seriesLeftLandingGearCruvesFrontView.add(
+				seriesLeftMainLandingGearCruvesFrontView.add(
 						Main.getTheAircraft().getLandingGears()
 						.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 						+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
@@ -2799,7 +2814,7 @@ public class InputManagerControllerMainActionUtilities {
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
 						);
-				seriesLeftLandingGearCruvesFrontView.add(
+				seriesLeftMainLandingGearCruvesFrontView.add(
 						Main.getTheAircraft().getLandingGears()
 						.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 						+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
@@ -2807,7 +2822,7 @@ public class InputManagerControllerMainActionUtilities {
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
 						);
-				seriesLeftLandingGearCruvesFrontView.add(
+				seriesLeftMainLandingGearCruvesFrontView.add(
 						Main.getTheAircraft().getLandingGears()
 						.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 						+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
@@ -2815,15 +2830,15 @@ public class InputManagerControllerMainActionUtilities {
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
 
-				XYSeries seriesRightLandingGearCruvesFrontView = new XYSeries("Right Landing Gear " + i + " - Front View", false);
-				seriesRightLandingGearCruvesFrontView.add(
+				XYSeries seriesRightMainLandingGearCruvesFrontView = new XYSeries("Right Main Landing Gear " + i + " - Front View", false);
+				seriesRightMainLandingGearCruvesFrontView.add(
 						- (Main.getTheAircraft().getLandingGears()
 								.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 								+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
 						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
-				seriesRightLandingGearCruvesFrontView.add(
+				seriesRightMainLandingGearCruvesFrontView.add(
 						- (Main.getTheAircraft().getLandingGears()
 								.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 								+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
@@ -2831,7 +2846,7 @@ public class InputManagerControllerMainActionUtilities {
 						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
-				seriesRightLandingGearCruvesFrontView.add(
+				seriesRightMainLandingGearCruvesFrontView.add(
 						- (Main.getTheAircraft().getLandingGears()
 								.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 								+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
@@ -2840,7 +2855,7 @@ public class InputManagerControllerMainActionUtilities {
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
 						);
-				seriesRightLandingGearCruvesFrontView.add(
+				seriesRightMainLandingGearCruvesFrontView.add(
 						- (Main.getTheAircraft().getLandingGears()
 								.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 								+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
@@ -2848,7 +2863,7 @@ public class InputManagerControllerMainActionUtilities {
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
 						);
-				seriesRightLandingGearCruvesFrontView.add(
+				seriesRightMainLandingGearCruvesFrontView.add(
 						- (Main.getTheAircraft().getLandingGears()
 								.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 								+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
@@ -2856,8 +2871,84 @@ public class InputManagerControllerMainActionUtilities {
 						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
 						);
 
-				serieLandingGearsCruvesFrontViewList.add(seriesLeftLandingGearCruvesFrontView);
-				serieLandingGearsCruvesFrontViewList.add(seriesRightLandingGearCruvesFrontView);
+				serieMainLandingGearsCruvesFrontViewList.add(seriesLeftMainLandingGearCruvesFrontView);
+				serieMainLandingGearsCruvesFrontViewList.add(seriesRightMainLandingGearCruvesFrontView);
+			}
+			
+			for(int i=0; i<Main.getTheAircraft().getLandingGears().getNumberOfFrontalWheels(); i++) {
+
+				XYSeries seriesLeftNoseLandingGearCruvesFrontView = new XYSeries("Left Nose Landing Gear " + i + " - Front View", false);
+				seriesLeftNoseLandingGearCruvesFrontView.add(
+						-Main.getTheAircraft().getLandingGears()
+						.getFrontalWheelsWidth().doubleValue(SI.METER)
+						+ (i*1.1*Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)),
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+						);
+				seriesLeftNoseLandingGearCruvesFrontView.add(
+						-Main.getTheAircraft().getLandingGears()
+						.getFrontalWheelsWidth().doubleValue(SI.METER)
+						+ Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)
+						+ (i*1.1*Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)),
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+						);
+				seriesLeftNoseLandingGearCruvesFrontView.add(
+						-Main.getTheAircraft().getLandingGears()
+						.getFrontalWheelsWidth().doubleValue(SI.METER)
+						+ Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)
+						+ (i*1.1*Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)),
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getFrontalWheelsHeight().doubleValue(SI.METER)
+						);
+				seriesLeftNoseLandingGearCruvesFrontView.add(
+						-Main.getTheAircraft().getLandingGears()
+						.getFrontalWheelsWidth().doubleValue(SI.METER)
+						+ (i*1.1*Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)),
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getFrontalWheelsHeight().doubleValue(SI.METER)
+						);
+				seriesLeftNoseLandingGearCruvesFrontView.add(
+						-Main.getTheAircraft().getLandingGears()
+						.getFrontalWheelsWidth().doubleValue(SI.METER)
+						+ (i*1.1*Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)),
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+						);
+
+				XYSeries seriesRightNoseLandingGearCruvesFrontView = new XYSeries("Right Nose Landing Gear " + i + " - Front View", false);
+				seriesRightNoseLandingGearCruvesFrontView.add(
+						- (i*1.1*Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)),
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+						);
+				seriesRightNoseLandingGearCruvesFrontView.add(
+						- (i*1.1*Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)),
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+						);
+				seriesRightNoseLandingGearCruvesFrontView.add(
+						- (i*1.1*Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)),
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getFrontalWheelsHeight().doubleValue(SI.METER)
+						);
+				seriesRightNoseLandingGearCruvesFrontView.add(
+						- (i*1.1*Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)),
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getFrontalWheelsHeight().doubleValue(SI.METER)
+						);
+				seriesRightNoseLandingGearCruvesFrontView.add(
+						- (i*1.1*Main.getTheAircraft().getLandingGears().getFrontalWheelsWidth().doubleValue(SI.METER)),
+						Main.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear().doubleValue(SI.METER)
+						- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+						);
+
+				serieNoseLandingGearsCruvesFrontViewList.add(seriesLeftNoseLandingGearCruvesFrontView);
+				serieNoseLandingGearsCruvesFrontViewList.add(seriesRightNoseLandingGearCruvesFrontView);
 			}
 		}
 		
@@ -2916,17 +3007,25 @@ public class InputManagerControllerMainActionUtilities {
 									).getXApexConstructionAxes().doubleValue(SI.METER)
 							+ 0.0015
 							+ seriesPropellerFrontViewList.indexOf(prop)*0.001, 
-							Tuple.of(prop, Color.BLACK)
+							Tuple.of(prop, new Color(0f, 0f, 0f, 0.25f))
 							)
 					);
-		if (Main.getTheAircraft().getLandingGears() != null) 
-			serieLandingGearsCruvesFrontViewList.stream().forEach(
+		if (Main.getTheAircraft().getLandingGears() != null) { 
+			serieMainLandingGearsCruvesFrontViewList.stream().forEach(
 					lg -> componentXList.put(
 							Main.getTheAircraft().getLandingGears().getXApexConstructionAxesMainGear().doubleValue(SI.METER)
-							+ serieLandingGearsCruvesFrontViewList.indexOf(lg)*0.001, 
+							+ serieMainLandingGearsCruvesFrontViewList.indexOf(lg)*0.001, 
 							Tuple.of(lg, Color.decode("#404040"))
 							)
 					);
+			serieNoseLandingGearsCruvesFrontViewList.stream().forEach(
+					lg -> componentXList.put(
+							Main.getTheAircraft().getLandingGears().getXApexConstructionAxesNoseGear().doubleValue(SI.METER)
+							+ serieNoseLandingGearsCruvesFrontViewList.indexOf(lg)*0.001, 
+							Tuple.of(lg, Color.decode("#404040"))
+							)
+					);
+		}
 		
 		Map<Double, Tuple2<XYSeries, Color>> componentXListSorted = 
 				componentXList.entrySet().stream()
@@ -7032,7 +7131,6 @@ public class InputManagerControllerMainActionUtilities {
 								+ File.separator
 								+ Main.getTheAircraft()
 								.getWing()
-								
 								.getEquivalentWing()
 								.getPanels().get(0)
 								.getAirfoilRoot()
@@ -7062,7 +7160,6 @@ public class InputManagerControllerMainActionUtilities {
 								+ File.separator
 								+ Main.getTheAircraft()
 								.getWing()
-								
 								.getEquivalentWing()
 								.getEquivalentWingAirfoilKink()
 								.getName()
@@ -7091,7 +7188,6 @@ public class InputManagerControllerMainActionUtilities {
 								+ File.separator
 								+ Main.getTheAircraft()
 								.getWing()
-								
 								.getEquivalentWing()
 								.getPanels().get(0)
 								.getAirfoilTip()
@@ -11114,25 +11210,25 @@ public class InputManagerControllerMainActionUtilities {
 							if(Main.getTheAircraft().getWing() != null) 
 								wingAirfoilsName.addAll(
 										Main.getTheAircraft().getWing().getAirfoilList().stream()
-										.map(a -> a.getName() + ".xml")
+										.map(a -> a.getName() + "_" + file.getName()  + ".xml")
 										.collect(Collectors.toList())
 										);
 							if(Main.getTheAircraft().getHTail() != null) 
 								hTailAirfoilsName.addAll(
 										Main.getTheAircraft().getHTail().getAirfoilList().stream()
-										.map(a -> a.getName() + ".xml")
+										.map(a -> a.getName() + "_" + file.getName() + ".xml")
 										.collect(Collectors.toList())
 										);
 							if(Main.getTheAircraft().getVTail() != null) 
 								vTailAirfoilsName.addAll(
 										Main.getTheAircraft().getVTail().getAirfoilList().stream()
-										.map(a -> a.getName() + ".xml")
+										.map(a -> a.getName() + "_" + file.getName()  + ".xml")
 										.collect(Collectors.toList())
 										);
 							if(Main.getTheAircraft().getCanard() != null) 
 								canardAirfoilsName.addAll(
 										Main.getTheAircraft().getCanard().getAirfoilList().stream()
-										.map(a -> a.getName() + ".xml")
+										.map(a -> a.getName() + "_" + file.getName()  + ".xml")
 										.collect(Collectors.toList())
 										);
 

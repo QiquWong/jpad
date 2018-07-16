@@ -2,7 +2,7 @@
 <jpad_config>
     <aircraft id="IRON_CANARD cut" type="TURBOPROP" regulations="FAR_25">
 		<global_data>
-			<cabin_configuration file="cabin_configuration_IRON.xml"></cabin_configuration>
+			<cabin_configuration file="cabin_configuration_IRON_CANARD.xml"></cabin_configuration>
 		</global_data>
         <lifting_surfaces>
             <wing file="wing_IRON_CANARD_cut.xml">
@@ -23,9 +23,9 @@
             </horizontal_tail>
             <vertical_tail file="vtail_IRON.xml">
                 <position>
-                    <x unit="m">32.00</x>
+                    <x unit="m">31.37</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">1.52</z>
+                    <z unit="m">1.56</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>

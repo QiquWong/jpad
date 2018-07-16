@@ -1,5 +1,7 @@
 package aircraft;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
@@ -81,6 +83,8 @@ public interface IAircraft {
 	
 	Systems getSystems();
 	CabinConfiguration getCabinConfiguration();
+	
+	List<Object> getComponentList();
 	
 	class Builder extends IAircraft_Builder  { 
 		 public Builder() {
