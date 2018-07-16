@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -2093,6 +2094,15 @@ public final class AircraftUtils {
 			Airfoil theCreator,
 			LiftingSurface theLiftingSurface
 			) {
+		return populateCoordinateList(yStation, theCreator, theLiftingSurface, 0);
+	}
+	
+	public static List<double[]> populateCoordinateList(
+			double yStation,
+			Airfoil theCreator,
+			LiftingSurface theLiftingSurface,
+			int airfoilSide // set 1 for the upper side, 2 for the lower side, 0 for the whole airfoil
+			) {
 		
 		List<double[]> actualAirfoilCoordinates = new ArrayList<>();
 		
@@ -2114,19 +2124,33 @@ public final class AircraftUtils {
 				iter.remove();
 		}
 		
-		noInternalDuplicatesCoords.forEach(
-				pnt -> {
-					xx.add((double) pnt.x); 
-					zz.add((double) pnt.y);
-					});
+		if(airfoilSide != 0) {
+			int minXIndex = IntStream.range(0, noInternalDuplicatesCoords.size())
+		            .reduce((i, j) -> noInternalDuplicatesCoords.get(i).x > noInternalDuplicatesCoords.get(j).x ? j : i)
+		            .getAsInt();
+			
+			List<PVector> upperList = noInternalDuplicatesCoords.subList(0, minXIndex + 1);
+			List<PVector> lowerList = noInternalDuplicatesCoords.subList(minXIndex, noInternalDuplicatesCoords.size());		
+			
+			if(airfoilSide == 1) 
+				upperList.forEach(pv -> {
+					xx.add((double) pv.x);
+					zz.add((double) pv.y);
+				});
+			else if(airfoilSide == 2) 
+				lowerList.forEach(pv -> {
+					xx.add((double) pv.x);
+					zz.add((double) pv.y);
+				});
+		} else 
+			noInternalDuplicatesCoords.forEach(pv -> {
+					xx.add((double) pv.x);
+					zz.add((double) pv.y);
+				});
 		
 		int nPoints = xx.size();
 		double[] xCoords = MyArrayUtils.convertToDoublePrimitive(xx);
 		double[] zCoords = MyArrayUtils.convertToDoublePrimitive(zz);
-		
-//		int nPoints = theCreator.getXCoords().length;
-//		double[] xCoords = MyArrayUtils.convertToDoublePrimitive(theCreator.getXCoords());
-//		double[] zCoords = MyArrayUtils.convertToDoublePrimitive(theCreator.getZCoords());
 		
 		double c = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getYBreakPoints()), 
@@ -2137,8 +2161,8 @@ public final class AircraftUtils {
 				MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getYBreakPoints()), 
 				MyArrayUtils.convertToDoublePrimitive(
 						theLiftingSurface.getTwistsBreakPoints().stream()
-																						   .map(t -> t.doubleValue(SI.RADIAN))
-																						   .collect(Collectors.toList())
+															    .map(t -> t.doubleValue(SI.RADIAN))
+																.collect(Collectors.toList())
 						),
 				yStation
 				);
@@ -2151,8 +2175,8 @@ public final class AircraftUtils {
 		
 		// checking the trailing edge
 		if(Math.abs(zCoords[0] - zCoords[nPoints - 1]) < 1e-5) {
-			zCoords[0] += 1*1e-3;
-			zCoords[nPoints - 1] -= 1*1e-3;
+			zCoords[0] += 1*1e-4;
+			zCoords[nPoints - 1] -= 1*1e-4;
 		}
 
 		for (int i = 0; i < nPoints; i++) {

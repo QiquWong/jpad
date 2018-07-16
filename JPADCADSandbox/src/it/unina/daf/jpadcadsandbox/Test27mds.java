@@ -19,6 +19,7 @@ import configuration.enumerations.ComponentEnum;
 import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADFace;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
+import it.unina.daf.jpadcad.occ.CADSolid;
 import it.unina.daf.jpadcad.occ.OCCEdge;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
@@ -27,14 +28,17 @@ import it.unina.daf.jpadcad.occ.OCCSolid;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadsandbox.Test28mds.AttachmentType;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
+import it.unina.daf.jpadcadsandbox.utils.AircraftUtils.FileExtension;
 import opencascade.BRepAlgoAPI_Section;
 import opencascade.BRepBuilderAPI_MakeSolid;
+import opencascade.BRepBuilderAPI_Sewing;
 import opencascade.BRepBuilderAPI_Transform;
 import opencascade.BRepFilletAPI_MakeFillet;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
 import opencascade.TopoDS;
 import opencascade.TopoDS_Edge;
+import opencascade.TopoDS_Shape;
 import opencascade.TopoDS_Shell;
 import opencascade.gp_Ax2;
 import opencascade.gp_Dir;
@@ -62,21 +66,21 @@ public class Test27mds {
 		
 		// Get fairing shapes
 		List<OCCShape> canardFairingShapes = getFairingShapes(fuselage, canard,
-				1.00, 1.50, 0.40, 0.20, 0.10, 1.00, 0.40);	
+				0.75, 0.75, 0.45, 0.10, 0.50, 0.90, 0.20);	
 		List<OCCShape> wingFairingShapes = getFairingShapes(fuselage, wing,
 				1.00, 1.00, 0.90, 0.10, 0.70, 0.10, 0.50);
 		
 		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, 7, 7, true, true, false);
 //		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, false, true, false);
-//		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.CANARD, 1e-3, false, true, false);
+		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.CANARD, 1e-3, false, true, false);
 //		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, false, true, false);
 //		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, false, true, false);
 		
-		BRepAlgoAPI_Section sectionMaker = new BRepAlgoAPI_Section();
-		sectionMaker.Init1(fuselageShapes.get(0).getShape());
-		sectionMaker.Init2(canardFairingShapes.get(0).getShape());
-		sectionMaker.Build();
-		OCCShape intersection = (OCCShape) OCCUtils.theFactory.newShape(sectionMaker.Shape());
+//		BRepAlgoAPI_Section sectionMaker = new BRepAlgoAPI_Section();
+//		sectionMaker.Init1(fuselageShapes.get(0).getShape());
+//		sectionMaker.Init2(canardFairingShapes.get(0).getShape());
+//		sectionMaker.Build();
+//		OCCShape intersection = (OCCShape) OCCUtils.theFactory.newShape(sectionMaker.Shape());
 		
 		// Generate CAD file
 		String fileName = "fairingTest.brep";
@@ -84,15 +88,19 @@ public class Test27mds {
 		List<OCCShape> exportShapes = new ArrayList<>();
 		exportShapes.addAll(fuselageShapes);
 //		exportShapes.addAll(wingShapes);
-//		exportShapes.addAll(canardShapes);
+		exportShapes.addAll(canardShapes);
 //		exportShapes.addAll(horTailShapes);
 //		exportShapes.addAll(verTailShapes);
 //		exportShapes.addAll(wingFairingShapes);
-//		exportShapes.addAll(canardFairingShapes);
-		exportShapes.add(intersection);
+		exportShapes.addAll(canardFairingShapes);
+//		exportShapes.add(intersection);
 
-		if(OCCUtils.write(fileName, exportShapes))
-			System.out.println("========== [main] Output written on file: " + fileName);
+//		if(OCCUtils.write(fileName, canardFairingShapes))
+//			System.out.println("========== [main] Output written on file: " + fileName);
+		
+		AircraftUtils.getAircraftSolidFile(fuselageShapes, "FUSELAGE_1", FileExtension.STEP);
+		AircraftUtils.getAircraftSolidFile(canardShapes, "CANARD", FileExtension.STEP);
+		AircraftUtils.getAircraftSolidFile(canardFairingShapes, "FUSELAGE_2", FileExtension.STEP);
 	}
 	
 	public static List<OCCShape> getFairingShapes(
@@ -178,23 +186,6 @@ public class Test27mds {
 		
 		fuselageSCMiddleLowerZCoords.add(fusCamberZAtMiddle);
 		fuselageSCMiddleLowerYCoords.add(fusWidthAtMiddle);
-		
-//		fuselageSCMiddleUpperZCoords.addAll(fuselageSideCurveMiddle.stream()
-//				.filter(pv -> pv.z > fusCamberZAtMiddle)
-//				.map(pv -> (double) pv.z)
-//				.collect(Collectors.toList()));
-//		fuselageSCMiddleUpperYCoords.addAll(fuselageSideCurveMiddle.stream()
-//				.filter(pv -> pv.z > fusCamberZAtMiddle)
-//				.map(pv -> (double) pv.y)
-//				.collect(Collectors.toList()));
-//		fuselageSCMiddleLowerZCoords.addAll(fuselageSideCurveMiddle.stream()
-//				.filter(pv -> pv.z < fusCamberZAtMiddle)
-//				.map(pv -> (double) pv.z)
-//				.collect(Collectors.toList()));
-//		fuselageSCMiddleLowerYCoords.addAll(fuselageSideCurveMiddle.stream()
-//				.filter(pv -> pv.z < fusCamberZAtMiddle)
-//				.map(pv -> (double) pv.y)
-//				.collect(Collectors.toList()));
 		
 		for(int i = 0; i < fuselageSideCurveMiddle.size()-1; i++) {
 			PVector pv = fuselageSideCurveMiddle.get(i);
@@ -396,7 +387,7 @@ public class Test27mds {
 		double[] pntD = new double[] {
 				rootTrailingEdge[0],
 				rootTrailingEdge[1],
-				fairingMaximumZ - (fairingMaximumZ - rootTrailingEdge[2])*0.75
+				fairingMaximumZ - (fairingMaximumZ - rootTrailingEdge[2])*0.50
 		};
 		
 		double[] pntE = new double[] {
@@ -721,7 +712,7 @@ public class Test27mds {
 		return rightPatches;
 	}
 	
-	public static OCCSolid generateFairingSolid(List<OCCShape> fairingRightPatches, double filletRadius) {
+	public static OCCShape generateFairingSolid(List<OCCShape> fairingRightPatches, double filletRadius) {
 		
 		// Create a shell from adjacent patches
 		OCCShell rightShell = (OCCShell) OCCUtils.theFactory.newShellFromAdjacentFaces(
@@ -760,14 +751,23 @@ public class Test27mds {
 		BRepBuilderAPI_Transform mirrorBuilder = new BRepBuilderAPI_Transform(mirrorTransform);
 		mirrorBuilder.Perform(rightShellFillet.getShape(), 1);
 		OCCShell leftShell = (OCCShell) OCCUtils.theFactory.newShape(mirrorBuilder.Shape());
+		
+		// Sewing the two halves
+		BRepBuilderAPI_Sewing sewMakerHalves = new BRepBuilderAPI_Sewing();
+		
+		sewMakerHalves.Init();		
+		sewMakerHalves.Add(rightShellFillet.getShape());
+		sewMakerHalves.Add(leftShell.getShape());	
+		sewMakerHalves.Perform();
 
 		BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
-		solidMaker.Add(TopoDS.ToShell(rightShellFillet.getShape()));
-		solidMaker.Add(TopoDS.ToShell(leftShell.getShape()));
+//		solidMaker.Add(TopoDS.ToShell(rightShellFillet.getShape()));
+//		solidMaker.Add(TopoDS.ToShell(leftShell.getShape()));
+		solidMaker.Add(TopoDS.ToShell(sewMakerHalves.SewedShape()));
 		solidMaker.Build();
-		OCCSolid solidFairing = (OCCSolid) OCCUtils.theFactory.newShape(solidMaker.Solid());
+		CADSolid solidFairing = (CADSolid) OCCUtils.theFactory.newShape(solidMaker.Solid());
 		
-		return solidFairing;
+		return (OCCShape) solidFairing;
 	}
 	
 	public static AttachmentType getAttachmentType(
