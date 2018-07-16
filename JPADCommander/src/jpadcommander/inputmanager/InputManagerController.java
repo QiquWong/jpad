@@ -7744,10 +7744,18 @@ public class InputManagerController {
 		//.................................................................................................
 		if(Main.getTheAircraft().getSystems() != null) {
 			Main.getTheAircraft().getSystems().setTheSystemsInterface(
-					ISystems.Builder.from(Main.getTheAircraft().getSystems().getTheSystemsInterface())
-					.setPrimaryElectricSystemsType(PrimaryElectricSystemsEnum.valueOf(systemsPrimaryElectricalTypeValue))
-					.build()
+					// this is the solution to the mergeFrom() issue within service ...
+					new ISystems.Builder().setPrimaryElectricSystemsType(
+							PrimaryElectricSystemsEnum.valueOf(systemsPrimaryElectricalTypeValue)
+							)
+					.buildPartial()
 					);
+			// FIXME: mergeFrom() of the FreeBuilder does not work inside a service
+//			Main.getTheAircraft().getSystems().setTheSystemsInterface(
+//					ISystems.Builder.from(Main.getTheAircraft().getSystems().getTheSystemsInterface())
+//					.setPrimaryElectricSystemsType(PrimaryElectricSystemsEnum.valueOf(systemsPrimaryElectricalTypeValue))
+//					.buildPartial()
+//					);
 		}
 	}
 	
