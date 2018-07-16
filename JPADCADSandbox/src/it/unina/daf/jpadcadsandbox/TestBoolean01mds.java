@@ -134,7 +134,7 @@ public class TestBoolean01mds {
 				);
 		TopoDS_Shape movedShape = new BRepBuilderAPI_Transform(revolvedShape, move2, 0).Shape();
 		
-		TopoDS_Shape finalShape = new BRepAlgoAPI_Cut(drilledShape, movedShape).Shape();
+		TopoDS_Shape finalShape = new BRepAlgoAPI_Cut(fusedShape, movedShape).Shape();
 		
 		// Export the final shape to CAD file
 		OCCUtils.initCADShapeFactory();	

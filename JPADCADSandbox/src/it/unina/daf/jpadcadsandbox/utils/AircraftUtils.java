@@ -2488,7 +2488,7 @@ public final class AircraftUtils {
 		return verSecCrvsList;
 	}
 	
-	private static Double[] getThicknessAtX(Airfoil airfoil, Double xChord) {
+	public static Double[] getThicknessAtX(Airfoil airfoil, Double xChord) {
 		Double[] thickness = new Double[2];
 		
 		double[] x = airfoil.getXCoords();
