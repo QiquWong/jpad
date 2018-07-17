@@ -87,8 +87,6 @@ public class ACAnalysisManager {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
-		System.out.println("Reading weights analysis data ...");
-		
 		List<AnalysisTypeEnum> analysisList = new ArrayList<>();
 		
 		String id = MyXMLReaderUtils
@@ -118,8 +116,8 @@ public class ACAnalysisManager {
 		//-------------------------------------------------------------------------------------------
 		// WEIGHTS ANALYSIS:
 		Map<ComponentEnum, MethodEnum> methodsMapWeights = new HashMap<>();
-		Boolean plotWeights = null;
-		Boolean createCSVWeights = null;
+		Boolean plotWeights = false;
+		Boolean createCSVWeights = false;
 		
 		NodeList weightsTag = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//weights");
@@ -538,8 +536,8 @@ public class ACAnalysisManager {
 		//-------------------------------------------------------------------------------------------
 		// BALANCE ANALYSIS:
 		Map<ComponentEnum, MethodEnum> methodsMapBalance = new HashMap<>();
-		Boolean plotBalance = null;
-		Boolean createCSVBalance = null;
+		Boolean plotBalance = false;
+		Boolean createCSVBalance = false;
 
 		NodeList balanceTag = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//balance");
