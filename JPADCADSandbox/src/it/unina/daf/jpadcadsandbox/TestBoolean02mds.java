@@ -15,6 +15,7 @@ import opencascade.BRepBuilderAPI_MakeFace;
 import opencascade.BRepBuilderAPI_MakeWire;
 import opencascade.BRepPrimAPI_MakePrism;
 import opencascade.TColgp_Array1OfPnt;
+import opencascade.TopTools_ListOfShape;
 import opencascade.TopoDS;
 import opencascade.TopoDS_Edge;
 import opencascade.TopoDS_Face;
@@ -63,7 +64,7 @@ public class TestBoolean02mds {
 		
 		TopoDS_Face airfoilFace = new BRepBuilderAPI_MakeFace(airfoilWire.Wire()).Face();
 		
-		double wingLength = 3.0;
+		double wingLength = 5.0;
 		gp_Vec wingAxis = new gp_Vec(0.0, wingLength, 0.0);
 		TopoDS_Shape wing = new BRepPrimAPI_MakePrism(airfoilFace, wingAxis, 1, 0).Shape();
 		
@@ -71,16 +72,16 @@ public class TestBoolean02mds {
 		Double[] airfoilCutZCoords = AircraftUtils.getThicknessAtX(airfoil, 0.75);
 		
 		TColgp_Array1OfPnt airfoilCutPoints = new TColgp_Array1OfPnt(1, 6);		
-		airfoilCutPoints.SetValue(1, new gp_Pnt(0.75, -1.0, airfoilCutZCoords[1]      ));
-		airfoilCutPoints.SetValue(2, new gp_Pnt(0.75, -1.0, airfoilCutZCoords[1] - 0.2));
-		airfoilCutPoints.SetValue(3, new gp_Pnt(1.25, -1.0, airfoilCutZCoords[1] - 0.2));
-		airfoilCutPoints.SetValue(4, new gp_Pnt(1.25, -1.0, airfoilCutZCoords[0] + 0.2));
-		airfoilCutPoints.SetValue(5, new gp_Pnt(0.75, -1.0, airfoilCutZCoords[0] + 0.2));
-		airfoilCutPoints.SetValue(6, new gp_Pnt(0.75, -1.0, airfoilCutZCoords[0]      ));
+		airfoilCutPoints.SetValue(1, new gp_Pnt(0.75, +1.0, airfoilCutZCoords[1]      ));
+		airfoilCutPoints.SetValue(2, new gp_Pnt(0.75, +1.0, airfoilCutZCoords[1] - 0.2));
+		airfoilCutPoints.SetValue(3, new gp_Pnt(1.25, +1.0, airfoilCutZCoords[1] - 0.2));
+		airfoilCutPoints.SetValue(4, new gp_Pnt(1.25, +1.0, airfoilCutZCoords[0] + 0.2));
+		airfoilCutPoints.SetValue(5, new gp_Pnt(0.75, +1.0, airfoilCutZCoords[0] + 0.2));
+		airfoilCutPoints.SetValue(6, new gp_Pnt(0.75, +1.0, airfoilCutZCoords[0]      ));
 		
 		List<gp_Pnt> cutEdgePoints = new ArrayList<>();
 		cutEdgePoints.add(airfoilCutPoints.Last());
-		cutEdgePoints.add(new gp_Pnt(0.73, -1.0, (airfoilCutZCoords[0] + airfoilCutZCoords[1])/2.0));
+		cutEdgePoints.add(new gp_Pnt(0.73, +1.0, (airfoilCutZCoords[0] + airfoilCutZCoords[1])/2.0));
 		cutEdgePoints.add(airfoilCutPoints.First());
 		TopoDS_Edge cutEdge = TopoDS.ToEdge(((OCCShape) OCCUtils.theFactory.newCurve3DGP(cutEdgePoints, false).edge()).getShape());
 		
@@ -96,18 +97,36 @@ public class TestBoolean02mds {
 		
 		TopoDS_Face airfoilCutFace = new BRepBuilderAPI_MakeFace(airfoilCutWire.Wire()).Face();
 		
-		double cutLength = 5.0;
+		double cutLength = 3.0;
 		gp_Vec cutAxis = new gp_Vec(0.0, cutLength, 0.0);
 		TopoDS_Shape cutSolid = new BRepPrimAPI_MakePrism(airfoilCutFace, cutAxis, 1, 0).Shape();
 		
 		// Subtract the second solid from the wing
-		TopoDS_Shape finalShape = new BRepAlgoAPI_Cut(wing, cutSolid).Shape();
+		//TopoDS_Shape finalShape = new BRepAlgoAPI_Cut(wing, cutSolid).Shape();
+		BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut();
+		TopTools_ListOfShape losArguments = new TopTools_ListOfShape();
+		losArguments.Append(wing);
+		TopTools_ListOfShape losTools = new TopTools_ListOfShape();
+		losTools.Append(cutSolid);
+		cutter.SetArguments(losArguments);
+		cutter.SetTools(losTools);
+		cutter.SetNonDestructive(1);
+		cutter.Build();
+		
+		System.out.println("Has deleted: " + cutter.HasDeleted());
+		
+		TopTools_ListOfShape losGenerated = cutter.Generated(cutSolid);
+		System.out.println("Generated shapes: " + losGenerated.Size());
+		
 		
 		// Export shapes to CAD file
 		List<OCCShape> exportShapes = new ArrayList<>();
 //		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(wing));
 //		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutSolid));
-		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(finalShape));
+		
+		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutter.Shape() ));
+		
+		
 
 		String fileName = "testBoolean02mds.brep";
 		if(OCCUtils.write(fileName, exportShapes))
