@@ -33,12 +33,12 @@ set(get(gca,'ylabel'),'rotation',0)
 
 title('Parameter accounting for ground effect on lift due to trailing vortices');
 axis([0 2.4 -0.5 .6]);
-legend('0','5','10', '15','20','22' ,'24', '36');
+legend('0','5','10', '15','18','20','22' ,'24', '36');
 
 
 %% preparing output to HDF
 
-CL_2_2pi_cos_2_Gamma_c4 = [0 5 10 15 20 22 24 36]';
+CL_2_2pi_cos_2_Gamma_c4 = [0 5 10 15 18 20 22 24 36]';
 h_cr_4_cr = xx';
 
  

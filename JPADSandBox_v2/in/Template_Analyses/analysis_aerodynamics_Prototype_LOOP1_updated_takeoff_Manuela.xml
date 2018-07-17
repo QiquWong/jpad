@@ -29,7 +29,7 @@
 			</balance>
 			<global_data hTail_dynamic_pressure_ratio_from_file="TRUE" vTail_dynamic_pressure_ratio_from_file="TRUE" tau_elevator_from_file="FALSE" tau_rudder_from_file="TRUE" tau_canard_control_surface_from_file="TRUE">
 				<alpha_body_initial unit="deg">-4</alpha_body_initial>
-				<alpha_body_final unit="deg">10</alpha_body_final>
+				<alpha_body_final unit="deg">18</alpha_body_final>
 				<number_of_alpha_body>30</number_of_alpha_body>
 				<beta_initial unit="deg">0</beta_initial>
 				<beta_final unit="deg">30</beta_final>
@@ -68,7 +68,7 @@
 				</tau_canard_control_surface_function>
 				<!---->
 			</global_data>
-			<wing_analyses perform="FALSE">
+			<wing_analyses perform="TRUE">
 				<critical_mach perform="TRUE" method="KROO"></critical_mach>
 				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
@@ -437,14 +437,16 @@
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
                         <downwash_gradient>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</downwash_gradient>
                     </downwash_gradient_vs_alpha>
-                </wing_downwash>
+            				<buffet_barrier perform="FALSE" method="KROO"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
+				</wing_downwash>			
 				<buffet_barrier perform="FALSE" method="KROO"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 				<lift_curve perform="TRUE" fuselage_effects="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<drag_polar perform="TRUE" calculate_delta_CD0_miscellaneous="TRUE" delta_CD0_miscellaneous="0.00358" calculate_delta_CD0_landing_gears="FALSE" delta_CD0_landing_gears="0.0" method="FROM_BALANCE_EQUATION"/>
+				<side_force perform="TRUE" method="NAPOLITANO_DATCOM"/>
 				<moment_curve perform="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<longitudinal_static_stability perform="TRUE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/>
-				<lateral_static_stability perform="TRUE" method="NAPOLITANO_DATCOM"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
-				<directional_static_stability perform="TRUE" method="VEDSC_USAFDATCOM_WING"/>
+				<lateral_static_stability perform="FALSE" method="NAPOLITANO_DATCOM"/>
+				<directional_static_stability perform="FALSE" method="NAPOLITANO_DATCOM"/>
 				<dynamic_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 				<VMU perform="TRUE" method="DATCOM_VMU_FIRST_METHOD"/> <!-- This analysis is performed only if it is takeoff phase -->
 			</aircraft_analyses>

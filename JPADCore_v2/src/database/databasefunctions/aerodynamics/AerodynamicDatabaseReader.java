@@ -219,20 +219,20 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 						= database.interpolate2DFromDatasetFunction("(Delta_alpha_CL_Ground_Effect)_x_vs_2hfracb_Deltax");
 		
 		Delta_alpha_CL_Ground_Effect_L_L0_minus1_vs_h_cr_4_cr
-						= database.interpolate2DFromDatasetFunction("Delta_alpha_CL_Ground_Effect_L_L0_minus1_vs_h_cr_4_cr");
+						= database.interpolate2DFromDatasetFunction("(Delta_alpha_CL_Ground_Effect)_L_L0_minus1_vs_h_cr_4_cr");
 		
 		Delta_epsilon_G_b_apex_f_frac_b_apex_w_vs_b_f_frac_b
-						= database.interpolate1DFromDatasetFunction("Delta_epsilon_G_b_apex_f_frac_b_apex_w_vs_b_f_frac_b");
+						= database.interpolate1DFromDatasetFunction("(Delta_epsilon_G)_b_apex_f_frac_b_apex_w_vs_b_f_frac_b");
 		
 		Delta_epsilon_G_b_apex_frac_b_vs_frac_lambda
-						= database.interpolate2DFromDatasetFunction("Delta_epsilon_G_b_apex_frac_b_vs_frac_lambda");
+						= database.interpolate2DFromDatasetFunction("(Delta_epsilon_G)_b_apex_frac_b_vs_frac_lambda");
 		
 		Delta_alpha_CL_Ground_Effect_DeltaDelta_CL_flap_vs_h_cr_4_cr
-						= database.interpolate1DFromDatasetFunction("Delta_alpha_CL_Ground_Effect_DeltaDelta_CL_flap_vs_h_cr_4_cr");
+						= database.interpolate1DFromDatasetFunction("(Delta_alpha_CL_Ground_Effect)_Delta(Delta_CL)_flap_vs_h_cr_4_cr");
 		Delta_alpha_G_sigma_vs_2hfracb
-						= database.interpolate1DFromDatasetFunction("Delta_alpha_G_sigma_vs_2hfracb");
+						= database.interpolate1DFromDatasetFunction("(Delta_alpha_G)_sigma_vs_2hfracb");
 		Delta_alpha_G_B_vs_h_frac_overline_c_C_L_WB
-						= database.interpolate2DFromDatasetFunction("Delta_alpha_G_B_vs_h_frac_overline_c_C_L_WB");
+						= database.interpolate2DFromDatasetFunction("(Delta_alpha_G)_B_vs_h_frac_overline_c_C_L_WB");
 
 	}
 	
