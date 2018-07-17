@@ -158,6 +158,7 @@ public class TestCompleteAircraft {
 		System.setOut(originalOut);
 		System.out.println("\n\n\tRunning requested analyses ... \n\n");
 		theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
+		theAircraft.getTheAnalysisManager().calculateDependentVariables();
 		System.setOut(originalOut);
 		theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
 		System.setOut(originalOut);

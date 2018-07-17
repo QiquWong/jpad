@@ -21,7 +21,6 @@ import org.w3c.dom.NodeList;
 
 import aircraft.Aircraft;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
@@ -50,8 +49,6 @@ public class ACAnalysisManager {
 	// VARIABLES DECLARATION:
 	//------------------------------------------------------------------------------
 	private IACAnalysisManager _theAnalysisManagerInterface;
-	private Aircraft _theAircraft;
-	private OperatingConditions _theOperatingConditions;
 
 	private ACWeightsManager _theWeights;
 	private ACBalanceManager _theBalance;
@@ -1276,7 +1273,7 @@ public class ACAnalysisManager {
 				.append("\t-------------------------------------\n")
 				.append("\tAircraft Analysis Manager\n")
 				.append("\t-------------------------------------\n")
-				.append("\tAircraft in exam: " + _theAircraft.getId() + "\n")
+				.append("\tAircraft in exam: " + _theAnalysisManagerInterface.getTheAircraft().getId() + "\n")
 				.append("\t·····································\n")
 				.append("\tPositive limit load factor: " + _theAnalysisManagerInterface.getPositiveLimitLoadFactor() + "\n")
 				.append("\tNegative limit load factor: " + _theAnalysisManagerInterface.getNegativeLimitLoadFactor() + "\n")
@@ -1293,23 +1290,23 @@ public class ACAnalysisManager {
 				.append("\t·····································\n")
 				;
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.WEIGHTS) == true)
-			sb.append(_theAircraft.getTheAnalysisManager().getTheWeights().toString());
+			sb.append(_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().toString());
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.BALANCE) == true)
-			sb.append(_theAircraft.getTheAnalysisManager().getTheBalance().toString());
+			sb.append(_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getTheBalance().toString());
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY) == true) {
 			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.TAKE_OFF))
-				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).toString());
+				sb.append(_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).toString());
 			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.CLIMB))
-				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB).toString());
+				sb.append(_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB).toString());
 			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.CRUISE))
-				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).toString());
+				sb.append(_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).toString());
 			if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.LANDING))
-				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).toString());
+				sb.append(_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).toString());
 		}
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.PERFORMANCE) == true)
-			sb.append(_theAircraft.getTheAnalysisManager().getThePerformance().toString());
+			sb.append(_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getThePerformance().toString());
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.COSTS) == true)
-			sb.append(_theAircraft.getTheAnalysisManager().getTheCosts().toString());
+			sb.append(_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getTheCosts().toString());
 		
 		return sb.toString();
 	}
@@ -1319,19 +1316,31 @@ public class ACAnalysisManager {
 	 */
 	public void calculateDependentVariables() {
 
+		//-------------------------------------------------------------------
+		_executedAnalysesMap = new HashMap<>();
+		_executedAnalysesMap.put(AnalysisTypeEnum.WEIGHTS, false);
+		_executedAnalysesMap.put(AnalysisTypeEnum.BALANCE, false);
+		_executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY, false);
+		_executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCE, false);
+		_executedAnalysesMap.put(AnalysisTypeEnum.COSTS, false);
+		//-------------------------------------------------------------------
+		
 		_nUltimate = 1.5 * _theAnalysisManagerInterface.getPositiveLimitLoadFactor();
 		
 		// Maximum cruise TAS
 		_vMaxCruise = Amount.valueOf(
-				_theOperatingConditions.getMachCruise() * 
-				OperatingConditions.getAtmosphere(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)).getSpeedOfSound(), 
+				_theAnalysisManagerInterface.getTheOperatingConditions().getMachCruise() * 
+				OperatingConditions.getAtmosphere(
+						_theAnalysisManagerInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)).getSpeedOfSound(), 
 				SI.METERS_PER_SECOND);
 		_vMaxCruiseEAS = _vMaxCruise.
 				divide(Math.sqrt(
-						OperatingConditions.getAtmosphere(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)).getDensityRatio()));
+						OperatingConditions.getAtmosphere(
+								_theAnalysisManagerInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)).getDensityRatio()));
 
-		_vOptimumCruise = Amount.valueOf(_theOperatingConditions.getMachCruise()
-				*AtmosphereCalc.getSpeedOfSound(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)), SI.METERS_PER_SECOND);
+		_vOptimumCruise = Amount.valueOf(_theAnalysisManagerInterface.getTheOperatingConditions().getMachCruise()
+				*AtmosphereCalc.getSpeedOfSound(
+						_theAnalysisManagerInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)), SI.METERS_PER_SECOND);
 		
 		// FAR Part 25 paragraph 25.335
 		_vDive = _vMaxCruise.times(1.25); 
@@ -1578,11 +1587,11 @@ public class ACAnalysisManager {
 		// Evaluate arms again with the new CG estimate
 		aircraft.calculateArms(
 				aircraft.getHTail(),
-				_theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getXBRF()
+				_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getXBRF()
 				);
 		aircraft.calculateArms(
 				aircraft.getVTail(),
-				_theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getXBRF()
+				_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getXBRF()
 				);
 
 	}
@@ -1634,11 +1643,11 @@ public class ACAnalysisManager {
 	}
 
 	public Aircraft getTheAircraft() {
-		return _theAircraft;
+		return _theAnalysisManagerInterface.getTheAircraft();
 	}
 
 	public void setTheAircraft(Aircraft _theAircraft) {
-		this._theAircraft = _theAircraft;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setTheAircraft(_theAircraft).build());
 	}
 
 	public Double getPositiveLimitLoadFactor() {
@@ -1922,11 +1931,11 @@ public class ACAnalysisManager {
 	}
 
 	public OperatingConditions getTheOperatingConditions() {
-		return _theOperatingConditions;
+		return _theAnalysisManagerInterface.getTheOperatingConditions();
 	}
 
 	public void setTheOperatingConditions(OperatingConditions _theOperatingConditions) {
-		this._theOperatingConditions = _theOperatingConditions;
+		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setTheOperatingConditions(_theOperatingConditions).build());
 	}
 
 	public Boolean getCreateCSVWeights() {

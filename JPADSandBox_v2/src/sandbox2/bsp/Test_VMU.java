@@ -245,6 +245,7 @@ public class Test_VMU {
 		////////////////////////////////////////////////////////////////////////
 		// Analyzing the aircraft
 		theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
+		theAircraft.getTheAnalysisManager().calculateDependentVariables();
 		theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
 
 

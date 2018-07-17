@@ -244,158 +244,197 @@ public class ACWeightsManager {
 			return null; 
 		}
 		
-		//---------------------------------------------------------------
-		// REFERENCE MISSION RANGE
-		Amount<Length> referenceMissionRange = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
-		String referenceMissionRangeProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/reference_mission_range");
-		if(referenceMissionRangeProperty != null)
-			referenceMissionRange = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/reference_mission_range");
-		else {
-			System.err.println("REFERENCE MISSION RANGE REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// CRUISE RANGE
-		Amount<Length> cruiseRange = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
-		String cruiseRangeProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/cruise_phase/range");
-		if(cruiseRangeProperty != null)
-			cruiseRange = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/cruise_phase/range");
-		else {
-			System.err.println("CRUISE RANGE REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// CRUISE SFC
-		Double cruiseSFC = 0.0;
-		String cruiseSFCProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/cruise_phase/sfc");
-		if(cruiseSFCProperty != null)
-			cruiseSFC = Double.valueOf(cruiseSFCProperty);
-		else {
-			System.err.println("CRUISE SFC REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// CRUISE EFFICIENCY
-		Double cruiseEfficiency = 0.0;
-		String cruiseEfficiencyProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/cruise_phase/efficiency");
-		if(cruiseEfficiencyProperty != null)
-			cruiseEfficiency = Double.valueOf(cruiseEfficiencyProperty);
-		else {
-			System.err.println("CRUISE EFFICIENCY REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// ALTERNATE RANGE
-		Amount<Length> alternateRange = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
-		String alternateRangeProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/alternate_phase/range");
-		if(alternateRangeProperty != null)
-			alternateRange = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/alternate_phase/range");
-		else {
-			System.err.println("ALTERNATE RANGE REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// ALTERNATE ALTITUDE
-		Amount<Length> alternateAltitude = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
-		String alternateAltitudeProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/alternate_phase/altitude");
-		if(alternateAltitudeProperty != null)
-			alternateAltitude = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/alternate_phase/altitude");
-		else {
-			System.err.println("ALTERNATE ALTITUDE REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// ALTERNATE MACH
-		Double alternateMach = 0.0;
-		String alternateMachProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/alternate_phase/mach");
-		if(alternateMachProperty != null)
-			alternateMach = Double.valueOf(alternateMachProperty);
-		else {
-			System.err.println("ALTERNATE MACH REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// ALTERNATE SFC
-		Double alternateSFC = 0.0;
-		String alternateSFCProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/alternate_phase/sfc");
-		if(alternateSFCProperty != null)
-			alternateSFC = Double.valueOf(alternateMachProperty);
-		else {
-			System.err.println("ALTERNATE SFC REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// ALTERNATE EFFICIENCY
-		Double alternateEfficiency = 0.0;
-		String alternateEfficiencyProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/alternate_phase/efficiency");
-		if(alternateEfficiencyProperty != null)
-			alternateEfficiency = Double.valueOf(alternateEfficiencyProperty);
-		else {
-			System.err.println("ALTERNATE EFFICIENCY REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// HOLDING DURATION
-		Amount<Duration> holdingDuration = Amount.valueOf(0.0, NonSI.MINUTE);
-		String holdingDurationProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/holding_phase/duration");
-		if(holdingDurationProperty != null)
-			holdingDuration = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/holding_phase/duration");
-		else {
-			System.err.println("HOLDING DURATION REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// HOLDING ALTITUDE
-		Amount<Length> holdingAltitude = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
-		String holdingAltitudeProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/holding_phase/altitude");
-		if(holdingAltitudeProperty != null)
-			holdingAltitude = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/holding_phase/altitude");
-		else {
-			System.err.println("HOLDING ALTITUDE REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// HOLDING MACH
-		Double holdingMach = 0.0;
-		String holdingMachProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/holding_phase/mach");
-		if(holdingMachProperty != null)
-			holdingMach = Double.valueOf(holdingMachProperty);
-		else {
-			System.err.println("HOLDING MACH REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// HOLDING SFC
-		Double holdingSFC = 0.0;
-		String holdingSFCProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/holding_phase/sfc");
-		if(holdingSFCProperty != null)
-			holdingSFC = Double.valueOf(holdingSFCProperty);
-		else {
-			System.err.println("HOLDING SFC REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// HOLDING EFFICIENCY
+		//--------------------------------------------------------------
+		// MISSION PROFILE DATA INITIALIZATION
+		Amount<Mass> missionFuelMass = null;
+		Amount<Length> referenceMissionRange = null;
+		Amount<Length> cruiseRange = null;
+		Double cruiseSFC = null;
+		Double cruiseEfficiency = null;
+		Amount<Length> alternateRange = null;
+		Amount<Length> alternateAltitude = null;
+		Double alternateMach = null;
+		Double alternateSFC = null;
+		Double alternateEfficiency = null;
+		Amount<Duration> holdingDuration = null;
+		Amount<Length> holdingAltitude = null;
+		Double holdingMach = null;
+		Double holdingSFC = null;
 		Double holdingEfficiency = 0.0;
-		String holdingEfficiencyProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/holding_phase/efficiency");
-		if(holdingEfficiencyProperty != null)
-			holdingEfficiency = Double.valueOf(holdingEfficiencyProperty);
+		
+		//---------------------------------------------------------------
+		// ESTIMATE MISSION FUEL FLAG
+		boolean estimateMissionFuel = false;
+		String estimateMissionFuelString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//mission_profile_data/@estimate_mission_fuel");
+		if(estimateMissionFuelString != null) {
+			if(estimateMissionFuelString.equalsIgnoreCase("FALSE"))
+				estimateMissionFuel = false;
+			else
+				estimateMissionFuel = true;
+		}
+
+		//---------------------------------------------------------------
+		if(estimateMissionFuel == false) {
+
+			//---------------------------------------------------------------
+			// MISSION FUEL
+			String missionFuelMassString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//mission_profile_data/@mission_fuel_mass");
+			if(missionFuelMassString != null) 
+				missionFuelMass = Amount.valueOf(Double.valueOf(missionFuelMassString), SI.KILOGRAM);
+			else {
+				System.err.println("WARINING (IMPORT WEIGHTS DATA) - ESTIMATE MISSION FUEL FLAG IS 'TRUE' BUT NO MISSION FUEL MASS HAS BEEN ASSIGNED ... RETURNING");
+				System.exit(1);
+			}
+			
+		}
+		//---------------------------------------------------------------
 		else {
-			System.err.println("HOLDING EFFICIENCY REQUIRED !! \n ... returning ");
-			return null; 
+			
+			//---------------------------------------------------------------
+			// REFERENCE MISSION RANGE
+			String referenceMissionRangeProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/reference_mission_range");
+			if(referenceMissionRangeProperty != null)
+				referenceMissionRange = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/reference_mission_range");
+			else {
+				System.err.println("REFERENCE MISSION RANGE REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// CRUISE RANGE
+			String cruiseRangeProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/cruise_phase/range");
+			if(cruiseRangeProperty != null)
+				cruiseRange = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/cruise_phase/range");
+			else {
+				System.err.println("CRUISE RANGE REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// CRUISE SFC
+			String cruiseSFCProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/cruise_phase/sfc");
+			if(cruiseSFCProperty != null)
+				cruiseSFC = Double.valueOf(cruiseSFCProperty);
+			else {
+				System.err.println("CRUISE SFC REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// CRUISE EFFICIENCY
+			String cruiseEfficiencyProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/cruise_phase/efficiency");
+			if(cruiseEfficiencyProperty != null)
+				cruiseEfficiency = Double.valueOf(cruiseEfficiencyProperty);
+			else {
+				System.err.println("CRUISE EFFICIENCY REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// ALTERNATE RANGE
+			String alternateRangeProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/alternate_phase/range");
+			if(alternateRangeProperty != null)
+				alternateRange = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/alternate_phase/range");
+			else {
+				System.err.println("ALTERNATE RANGE REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// ALTERNATE ALTITUDE
+			String alternateAltitudeProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/alternate_phase/altitude");
+			if(alternateAltitudeProperty != null)
+				alternateAltitude = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/alternate_phase/altitude");
+			else {
+				System.err.println("ALTERNATE ALTITUDE REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// ALTERNATE MACH
+			String alternateMachProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/alternate_phase/mach");
+			if(alternateMachProperty != null)
+				alternateMach = Double.valueOf(alternateMachProperty);
+			else {
+				System.err.println("ALTERNATE MACH REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// ALTERNATE SFC
+			String alternateSFCProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/alternate_phase/sfc");
+			if(alternateSFCProperty != null)
+				alternateSFC = Double.valueOf(alternateMachProperty);
+			else {
+				System.err.println("ALTERNATE SFC REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// ALTERNATE EFFICIENCY
+			String alternateEfficiencyProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/alternate_phase/efficiency");
+			if(alternateEfficiencyProperty != null)
+				alternateEfficiency = Double.valueOf(alternateEfficiencyProperty);
+			else {
+				System.err.println("ALTERNATE EFFICIENCY REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// HOLDING DURATION
+			String holdingDurationProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/holding_phase/duration");
+			if(holdingDurationProperty != null)
+				holdingDuration = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/holding_phase/duration");
+			else {
+				System.err.println("HOLDING DURATION REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// HOLDING ALTITUDE
+			String holdingAltitudeProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/holding_phase/altitude");
+			if(holdingAltitudeProperty != null)
+				holdingAltitude = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//weights/mission_profile_data/holding_phase/altitude");
+			else {
+				System.err.println("HOLDING ALTITUDE REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// HOLDING MACH
+			String holdingMachProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/holding_phase/mach");
+			if(holdingMachProperty != null)
+				holdingMach = Double.valueOf(holdingMachProperty);
+			else {
+				System.err.println("HOLDING MACH REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// HOLDING SFC
+			String holdingSFCProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/holding_phase/sfc");
+			if(holdingSFCProperty != null)
+				holdingSFC = Double.valueOf(holdingSFCProperty);
+			else {
+				System.err.println("HOLDING SFC REQUIRED !! \n ... returning ");
+				return null; 
+			}
+
+			//---------------------------------------------------------------
+			// HOLDING EFFICIENCY
+			String holdingEfficiencyProperty = reader.getXMLPropertyByPath("//weights/mission_profile_data/holding_phase/efficiency");
+			if(holdingEfficiencyProperty != null)
+				holdingEfficiency = Double.valueOf(holdingEfficiencyProperty);
+			else {
+				System.err.println("HOLDING EFFICIENCY REQUIRED !! \n ... returning ");
+				return null; 
+			}
 		}
 		
 		//---------------------------------------------------------------
@@ -510,6 +549,8 @@ public class ACWeightsManager {
 				.setFirstGuessMaxTakeOffMass(firstGuessMaximumTakeOffMass)
 				.setRelativeMaximumLandingMass(relativeMaximumLanidngMass)
 				.setSinglePassengerMass(singlePassengerMass)
+				.setEstimateMissionFuelFlag(estimateMissionFuel)
+				.setMissionFuel(missionFuelMass)
 				.setReferenceMissionRange(referenceMissionRange)
 				.setCruiseRange(cruiseRange)
 				.setCruiseSFC(cruiseSFC)

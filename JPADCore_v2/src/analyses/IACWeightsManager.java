@@ -1,5 +1,6 @@
 package analyses;
 
+import javax.annotation.Nullable;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -22,19 +23,36 @@ public interface IACWeightsManager {
 	Amount<Mass> getSinglePassengerMass();
 	
 	// MISSION DATA
+	boolean getEstimateMissionFuelFlag();
+	@Nullable
+	Amount<Mass> getMissionFuel();
+	@Nullable
 	Amount<Length> getReferenceMissionRange();
+	@Nullable
 	Amount<Length> getCruiseRange();
+	@Nullable
 	double getCruiseSFC();
+	@Nullable
 	double getCruiseEfficiency();
+	@Nullable
 	Amount<Length> getAlternateCruiseRange();
+	@Nullable
 	Amount<Length> getAlternateCruiseAltitide();
+	@Nullable
 	double getAlternateCruiseMachNumber();
+	@Nullable
 	double getAlternateCruiseSFC();
+	@Nullable
 	double getAlternateCruiseEfficiency();
+	@Nullable
 	Amount<Duration> getHoldingDuration();
+	@Nullable
 	Amount<Length> getHoldingAltitide();
+	@Nullable
 	double getHoldingMachNumber();
+	@Nullable
 	double getHoldingSFC();
+	@Nullable
 	double getHoldingEfficiency();
 	
 	// CALIBRATION
