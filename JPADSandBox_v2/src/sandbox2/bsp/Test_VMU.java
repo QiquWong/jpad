@@ -27,7 +27,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import sandbox2.bsp.MyArgumentsAnalysis;
-
+import sandbox2.vt.analyses.CompleteAnalysisTest;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentsAnalysis {
@@ -38,11 +38,11 @@ class MyArgumentsAnalysis {
 	@Option(name = "-ia", aliases = { "--input-analyses" }, required = true,
 			usage = "analyses input file")
 	private File _inputFileAnalyses;
-	
+
 	@Option(name = "-ioc", aliases = { "--input-operating-condition" }, required = true,
 			usage = "operating conditions input file")
 	private File _inputFileOperatingCondition;
-	
+
 	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
 			usage = "airfoil directory path")
 	private File _airfoilDirectory;
@@ -50,27 +50,27 @@ class MyArgumentsAnalysis {
 	@Option(name = "-df", aliases = { "--dir-fuselages" }, required = true,
 			usage = "fuselages directory path")
 	private File _fuselagesDirectory;
-	
+
 	@Option(name = "-dls", aliases = { "--dir-lifting-surfaces" }, required = true,
 			usage = "lifting surfaces directory path")
 	private File _liftingSurfacesDirectory;
-	
+
 	@Option(name = "-de", aliases = { "--dir-engines" }, required = true,
 			usage = "engines directory path")
 	private File _enginesDirectory;
-	
+
 	@Option(name = "-dn", aliases = { "--dir-nacelles" }, required = true,
 			usage = "nacelles directory path")
 	private File _nacellesDirectory;
-	
+
 	@Option(name = "-dlg", aliases = { "--dir-landing-gears" }, required = true,
 			usage = "landing gears directory path")
 	private File _landingGearsDirectory;
-	
+
 	@Option(name = "-dcc", aliases = { "--dir-cabin-configurations" }, required = true,
 			usage = "cabin configurations directory path")
 	private File _cabinConfigurationsDirectory;
-	
+
 	// receives other command line parameters than options
 	@Argument
 	public List<String> arguments = new ArrayList<String>();
@@ -82,11 +82,11 @@ class MyArgumentsAnalysis {
 	public File getInputFileAnalyses() {
 		return _inputFileAnalyses;
 	}
-	
+
 	public File getOperatingConditionsInputFile() {
 		return _inputFileOperatingCondition;
 	}
-	
+
 	public File getAirfoilDirectory() {
 		return _airfoilDirectory;
 	}
@@ -94,7 +94,7 @@ class MyArgumentsAnalysis {
 	public File getFuselagesDirectory() {
 		return _fuselagesDirectory;
 	}
-	
+
 	public File getLiftingSurfacesDirectory() {
 		return _liftingSurfacesDirectory;
 	}
@@ -102,11 +102,11 @@ class MyArgumentsAnalysis {
 	public File getEnginesDirectory() {
 		return _enginesDirectory;
 	}
-	
+
 	public File getNacellesDirectory() {
 		return _nacellesDirectory;
 	}
-	
+
 	public File getLandingGearsDirectory() {
 		return _landingGearsDirectory;
 	}
@@ -118,7 +118,7 @@ class MyArgumentsAnalysis {
 }
 
 public class Test_VMU {
-	
+
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
 
@@ -126,47 +126,47 @@ public class Test_VMU {
 
 	public static Aircraft theAircraft;
 
-	public static void main(String[] args) throws CmdLineException, IOException {
-		
+	public static void main(String[] args) throws CmdLineException, IOException, HDF5LibraryException {
+
 		System.out.println("-------------------");
 		System.out.println("TEST VMU");
 		System.out.println("-------------------"); 
-		
+
 		MyArgumentsAnalysis va = new MyArgumentsAnalysis();
 		Test_VMU.theCmdLineParser = new CmdLineParser(va);
-		
+
 		Test_VMU.theCmdLineParser.parseArgument(args);
-		
+
 		String pathToXML = va.getInputFile().getAbsolutePath();
 		System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
 
 		String pathToAnalysesXML = va.getInputFileAnalyses().getAbsolutePath();
 		System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
-		
+
 		String pathToOperatingConditionsXML = va.getOperatingConditionsInputFile().getAbsolutePath();
 		System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
-		
+
 		String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
 		System.out.println("AIRFOILS ===> " + dirAirfoil);
 
 		String dirFuselages = va.getFuselagesDirectory().getCanonicalPath();
 		System.out.println("FUSELAGES ===> " + dirFuselages);
-		
+
 		String dirLiftingSurfaces = va.getLiftingSurfacesDirectory().getCanonicalPath();
 		System.out.println("LIFTING SURFACES ===> " + dirLiftingSurfaces);
-		
+
 		String dirEngines = va.getEnginesDirectory().getCanonicalPath();
 		System.out.println("ENGINES ===> " + dirEngines);
-		
+
 		String dirNacelles = va.getNacellesDirectory().getCanonicalPath();
 		System.out.println("NACELLES ===> " + dirNacelles);
-		
+
 		String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 		System.out.println("LANDING GEARS ===> " + dirLandingGears);
-		
+
 		String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 		System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
-		
+
 		System.out.println("--------------");
 
 		//------------------------------------------------------------------------------------
@@ -176,13 +176,13 @@ public class Test_VMU {
 				MyConfiguration.inputDirectory,
 				MyConfiguration.outputDirectory
 				);
-		
+
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
 		String fusDesDatabaseFilename = "FusDes_database.h5";
 		String vedscDatabaseFilename = "VeDSC_database.h5";
-		
+
 		AerodynamicDatabaseReader aeroDatabaseReader = DatabaseManager.initializeAeroDatabase(
 				new AerodynamicDatabaseReader(
 						databaseFolderPath,	aerodynamicDatabaseFileName
@@ -211,7 +211,7 @@ public class Test_VMU {
 		////////////////////////////////////////////////////////////////////////
 		// Aircraft creation
 		System.out.println("\n\n\tCreating the Aircraft ... \n\n");
-		
+
 		// reading aircraft from xml ... 
 		theAircraft = Aircraft.importFromXML(
 				pathToXML,
@@ -226,11 +226,11 @@ public class Test_VMU {
 				highLiftDatabaseReader,
 				fusDesDatabaseReader,
 				veDSCDatabaseReader);
-		
+
 		// activating system.out		
 		System.out.println(theAircraft.toString());
 
-		
+
 		////////////////////////////////////////////////////////////////////////
 		// Set the folders tree
 		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
@@ -242,10 +242,18 @@ public class Test_VMU {
 		System.out.println("\n\n\tDefining the operating conditions ... \n\n");
 		OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
 		System.out.println(theOperatingConditions.toString());
-		
 		////////////////////////////////////////////////////////////////////////
-		System.out.println(" FINE TEST VMU ");
+		// Analyzing the aircraft
+		theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
+		theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
+
+
+		////////////////////////////////////////////////////////////////////////
+		// Printing results (activating system.out)
+		System.out.println("\n\n\tPrinting results ... \n\n");
+		System.out.println(theAircraft.getTheAnalysisManager().toString());
+		System.out.println("\n\n\tDone!! \n\n");
+
+
 	}
-
-
 }

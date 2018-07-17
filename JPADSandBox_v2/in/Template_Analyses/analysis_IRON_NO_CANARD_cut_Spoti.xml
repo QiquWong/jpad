@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!-- 
+	plot=TRUE -> enters the plot tag in the specified file.
+	plot=FALSE -> plots nothing.
+	-->
+<jpad_config>
+    <!-- Input data, shared across analysis tasks -->
+    <global_data>
+        <positive_limit_load_factor>2.5</positive_limit_load_factor>
+		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
+    </global_data>
+	<analyses id="IRON analysis" iterative_loop="FALSE">
+	<aerodynamic_and_stability
+			plot="FALSE"
+			create_CSV="FALSE"
+			take_off_condition="TRUE"
+			file_take_off_condition="analysis_aerodynamics_Prototype_LOOP1_updated_takeoff_Manuela.xml"
+			climb_condition="FALSE"
+			file_climb_condition="analysis_aerodynamics_Prototype_LOOP1_updated_climb.xml"
+			cruise_condition="FALSE"
+			file_cruise_condition="analysis_aerodynamics_Prototype_LOOP1_updated_cruise.xml"
+			landing_condition="FALSE"
+			file_landing_condition="analysis_aerodynamics_Prototype_LOOP1_updated_landing.xml"
+	/>		
+    </analyses>
+</jpad_config>

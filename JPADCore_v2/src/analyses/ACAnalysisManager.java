@@ -1259,6 +1259,8 @@ public class ACAnalysisManager {
 				.setCreateCSVPerformance(createCSVPerformance)
 				.setCreateCSVCosts(createCSVCosts)
 				.build();
+		
+		
 	
 		ACAnalysisManager theAnalysisManager = new ACAnalysisManager();
 		theAnalysisManager.setTheAnalysisManagerInterface(theAnalysisManagerInterface);

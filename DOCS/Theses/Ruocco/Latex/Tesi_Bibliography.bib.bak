@@ -1,4 +1,5 @@
-% Encoding: UTF-8
+% This file was created with JabRef 2.10.
+% Encoding: UTF8
 
 
 @online{wiki:atr,
@@ -530,5 +531,3 @@ url = {http://www.cd-adapco.com/}
   ISBN                     = {0-201-76031-2},
   Url                      = {http://web.engr.oregonstate.edu/~budd/Books/oopintro3e/}
 }
-
-@Comment{jabref-meta: databaseType:biblatex;}

@@ -52,7 +52,7 @@ public class LiftingSurfaceWeightManager {
 	public void calculateMass(Aircraft aircraft, ComponentEnum liftingSurfaceType, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		
 		if (liftingSurfaceType.equals(ComponentEnum.WING)) {
-			calculateMass(aircraft, liftingSurfaceType, MethodEnum.ROSKAM);
+//			calculateMass(aircraft, liftingSurfaceType, MethodEnum.ROSKAM);
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.KROO);
 //			calculateMass(aircraft, liftingSurfaceType, MethodEnum.JENKINSON); /* FIXME: bad results */
 			calculateMass(aircraft, liftingSurfaceType, MethodEnum.RAYMER);

@@ -446,7 +446,7 @@
 				<lateral_static_stability perform="TRUE" method="NAPOLITANO_DATCOM"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 				<directional_static_stability perform="TRUE" method="VEDSC_USAFDATCOM_WING"/>
 				<dynamic_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
-				<VMU perform="TRUE" method="VEDSC_USAFDATCOM_WING"/> <!-- This analysis is performed only if it is takeoff phase -->
+				<VMU perform="TRUE" method="DATCOM_VMU_FIRST_METHOD"/> <!-- This analysis is performed only if it is takeoff phase -->
 			</aircraft_analyses>
         </aerodynamics_and_stability>
     </analysis>
