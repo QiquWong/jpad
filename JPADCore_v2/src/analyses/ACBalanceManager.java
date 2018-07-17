@@ -63,6 +63,7 @@ public class ACBalanceManager {
 	private Map<ComponentEnum, Amount<Length>> _xCGMap;
 	private Map<ComponentEnum, Amount<Length>> _zCGMap;
 	private Map<ComponentEnum, Amount<Mass>> _massMap;
+	private Double _maxForwardOperativeCG;
 	private Double _maxAftCG;
 	private Double _maxForwardCG;
 
@@ -94,8 +95,13 @@ public class ACBalanceManager {
 						"//@weights_from_previous_analysis");
 		if(weightsFromPreviousAnalysisString.equalsIgnoreCase("true"))
 			weightsFromPreviousAnalysisFlag = Boolean.TRUE;
-		else
+		else {
 			weightsFromPreviousAnalysisFlag = Boolean.FALSE;
+			if(theAircraft.getTheAnalysisManager().getTheAnalysisManagerInterface().isIterativeLoop() == true) {
+				System.err.println("WARNING (IMPORT BALANCE DATA): IF THE ITERATIVE LOOP FLAG IS 'TRUE', THE 'weights_from_previous_analysis' FLAG MUST BE TRUE. TERMINATING ...");
+				System.exit(1);
+			}
+		}
 
 		Amount<Mass> operatingEmptyMass = null;
 		Amount<Mass> fuelMass = null;
@@ -829,8 +835,9 @@ public class ACBalanceManager {
 				.append("\tZcg Maximum take-off mass MAC: " + _cgMaximumTakeOffMass.getZMAC()*100 + "\n")
 				.append("\tZcg Maximum take-off mass BRF: " + _cgMaximumTakeOffMass.getZBRF().to(SI.METER) + "\n")
 				.append("\t·····································\n")
-				.append("\tMax aft Xcg MAC: " + _maxAftCG + "\n")
-				.append("\tMax forward Xcg MAC: " + _maxForwardCG + "\n")
+				.append("\tMax aft Xcg MAC: " + (_maxAftCG*100) + " %\n")
+				.append("\tMax forward Xcg MAC: " + (_maxForwardCG*100) + " %\n")
+				.append("\tOperative max forward Xcg MAC: " + (_maxForwardOperativeCG*100) + " %\n")
 				.append("\t-------------------------------------\n")
 				.append("\tCOMPONENTS:\n")
 				.append("\t-------------------------------------\n");
@@ -1059,6 +1066,7 @@ public class ACBalanceManager {
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Max forward Xcg MAC","%",_maxForwardCG*100});
+		dataListGlobal.add(new Object[] {"Operative max forward Xcg MAC","%",_maxForwardOperativeCG*100});
 		dataListGlobal.add(new Object[] {"Max aft Xcg MAC","%",_maxAftCG*100});
 		
 		CellStyle styleHead = wb.createCellStyle();
@@ -2434,8 +2442,26 @@ public class ACBalanceManager {
 				);
 		cgExcursionRefToMAC.add((_cgMaximumTakeOffMass.getXMAC()*100));
 		
+		/*
+		 * These are the real boundaries of the boarding diagram
+		 */
 		_maxForwardCG = (MyArrayUtils.getMin(cgExcursionRefToMAC)/100);
 		_maxAftCG = (MyArrayUtils.getMax(cgExcursionRefToMAC)/100);
+		
+		/*
+		 * This is the opereative max forward CG position (CG at max payload)
+		 * This will be used to compute all the max forward CG polar curves.
+		 */
+		_maxForwardOperativeCG = _theBalanceManagerInterface.getTheAircraft()
+				.getCabinConfiguration()
+				.getSeatsCoGRearToFront()
+				.get(_theBalanceManagerInterface.getTheAircraft()
+						.getCabinConfiguration()
+						.getSeatsCoGRearToFront().size()-1
+						)
+				.minus(meanAerodynamicChordXle)
+				.divide(meanAerodynamicChord)
+				.getEstimatedValue();
 	}
 
 	//............................................................................
@@ -2465,20 +2491,12 @@ public class ACBalanceManager {
 		this._cgStructureAndPower = _cgStructureAndPower;
 	}
 
-	public Double getMaxAftCG() {
-		return _maxAftCG;
+	public Double getMaxForwardOperativeCG() {
+		return _maxForwardOperativeCG;
 	}
 
-	public void setMaxAftCG(Double _maxAftCG) {
-		this._maxAftCG = _maxAftCG;
-	}
-
-	public Double getMaxForwardCG() {
-		return _maxForwardCG;
-	}
-
-	public void setMaxForwardCG(Double _maxForwardCG) {
-		this._maxForwardCG = _maxForwardCG;
+	public void setMaxForwardOperativeCG(Double _maxForwardCG) {
+		this._maxForwardOperativeCG = _maxForwardCG;
 	}
 
 	public Map<ComponentEnum, Amount<Length>> getXCGMap() {
@@ -2535,6 +2553,22 @@ public class ACBalanceManager {
 
 	public void setCGMaximumTakeOffMass(CenterOfGravity _cgMaximumTakeOffMass) {
 		this._cgMaximumTakeOffMass = _cgMaximumTakeOffMass;
+	}
+
+	public Double getMaxAftCG() {
+		return _maxAftCG;
+	}
+
+	public void setMaxAftCG(Double _maxAftCG) {
+		this._maxAftCG = _maxAftCG;
+	}
+
+	public Double getMaxForwardCG() {
+		return _maxForwardCG;
+	}
+
+	public void setMaxForwardCG(Double _maxForwardCG) {
+		this._maxForwardCG = _maxForwardCG;
 	}
 	
 }

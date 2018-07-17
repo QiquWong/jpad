@@ -21,6 +21,7 @@ import org.w3c.dom.NodeList;
 
 import aircraft.Aircraft;
 import configuration.MyConfiguration;
+import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
@@ -91,10 +92,16 @@ public class ACAnalysisManager {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
 		
-		String iterativeLoop = MyXMLReaderUtils
+		boolean iterativeLoop = false;
+		String iterativeLoopString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@iterative_loop");
+		if(iterativeLoopString != null)
+			if(iterativeLoopString.equalsIgnoreCase("FALSE"))
+				iterativeLoop = false;
+			else
+				iterativeLoop = true;
 		
 		Double positiveLimitLoadFactor = null;
 		Double negativeLimitLoadFactor = null;
@@ -530,6 +537,13 @@ public class ACAnalysisManager {
 					+ weightsFile
 					);
 		}
+		else {
+			if (iterativeLoop == true) {
+				System.err.println("WARNING (IMPORT ANALYSIS DATA - WEIGHTS): ITERATIVE LOOP CANNOT BE PERFORMED IF THE WEIGHTS ANALYSIS IS NOT DEFINED. TERMINATING ...");
+				System.exit(1);
+			}
+		}
+		
 		//-------------------------------------------------------------------------------------------
 		// BALANCE ANALYSIS:
 		Map<ComponentEnum, MethodEnum> methodsMapBalance = new HashMap<>();
@@ -689,6 +703,13 @@ public class ACAnalysisManager {
 					);
 
 		}
+		else {
+			if (iterativeLoop == true) {
+				System.err.println("WARNING (IMPORT ANALYSIS DATA - BALANCE): ITERATIVE LOOP CANNOT BE PERFORMED IF THE BALANCE ANALYSIS IS NOT DEFINED. TERMINATING ...");
+				System.exit(1);
+			}
+		}
+		
 		//-------------------------------------------------------------------------------------------
 		// AERODYNAMIC ANALYSIS:
 		List<ConditionEnum> taskListAerodynamicAndStability = new ArrayList<ConditionEnum>();
@@ -862,9 +883,14 @@ public class ACAnalysisManager {
 						+ aerodynamicAndStabilityLandingFile
 						);
 			}
-			
 		}
-
+		else {
+			if (iterativeLoop == true) {
+				System.err.println("WARNING (IMPORT ANALYSIS DATA - AERODYNAMIC AND STABILITY): ITERATIVE LOOP CANNOT BE PERFORMED IF AERODYNAMIC AND STABILITY ANALYSIS IS NOT DEFINED. TERMINATING ...");
+				System.exit(1);
+			}
+		}
+		
 		//-------------------------------------------------------------------------------------------
 		// PERFORMANCE ANALYSIS:
 
@@ -1052,6 +1078,12 @@ public class ACAnalysisManager {
 					+ performanceFile
 					);
 		}
+		else {
+			if (iterativeLoop == true) {
+				System.err.println("WARNING (IMPORT ANALYSIS DATA - PERFORMANCE): ITERATIVE LOOP CANNOT BE PERFORMED IF THE PERFORMANCE ANALYSIS IS NOT DEFINED. TERMINATING ...");
+				System.exit(1);
+			}
+		}
 		
 		//-------------------------------------------------------------------------------------------
 		// COSTS ANALYSIS:
@@ -1232,7 +1264,7 @@ public class ACAnalysisManager {
 		//-------------------------------------------------------------------------------------------
 		IACAnalysisManager theAnalysisManagerInterface = new IACAnalysisManager.Builder()
 				.setId(id)
-				.setIterativeLoop(Boolean.valueOf(iterativeLoop))
+				.setIterativeLoop(iterativeLoop)
 				.setTheAircraft(theAircraft)
 				.setTheOperatingConditions(operatingConditions)
 				.addAllAnalysisList(analysisList)
@@ -1365,11 +1397,17 @@ public class ACAnalysisManager {
 		    }
 		});
 		
-		if (aircraft == null) return;
+		if (aircraft == null) {
+			System.err.println("WARNING (DO ANALYSIS) - NO AIRCRAFT HAS BEEN DEFINED. TERMINATING ...");
+			System.exit(1);
+		}
+		
 		////////////////////////////////////////////////////////////////
 		// ITERATIVE LOOP 
 		if(_theAnalysisManagerInterface.isIterativeLoop() == true)
-			executeAnalysisIterativeLoop(aircraft, theOperatingConditions);
+			executeAnalysisIterativeLoop(aircraft, theOperatingConditions, resultsFolderPath);
+		////////////////////////////////////////////////////////////////
+		
 		
 		////////////////////////////////////////////////////////////////
 		if (this._theAnalysisManagerInterface.getAnalysisList().contains(AnalysisTypeEnum.WEIGHTS)) {
@@ -1517,21 +1555,194 @@ public class ACAnalysisManager {
 
 	/*
 	 * This method execute a preliminary iterative loop until the calculated mission fuel mass is equal
-	 * to the initial fuel mass from the weights analysis.
+	 * to the one given as input to the weights analysis.
 	 */
-	private Amount<Mass> executeAnalysisIterativeLoop(Aircraft aircraft, OperatingConditions operatingConditions) throws HDF5LibraryException, IOException {
+	private Amount<Mass> executeAnalysisIterativeLoop(
+			Aircraft aircraft,
+			OperatingConditions operatingConditions,
+			String resultsFolderPath
+			) throws HDF5LibraryException, IOException {
 		
-		/*
-		 * 1) ASSIGN DEFAULT TASK_LISTS AND METHODS MAP FOR EACH ANALYSIS AND BUILD TEMPORARY MANAGERS
-		 * 2) PERFORM ALL REQUIRED ANALYSES
-		 * 3) RETURN THE FINAL FUEL WEIGHTS
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+		
+		System.setOut(filterStream);
+		//------------------------------------------------------------------
+		// ANALYSIS ITERATIVE LOOP
+		/* 
+		 * 1) MISSION FUEL (READ OR CALCULATED)
+		 * 2) WEIGHTS 
+		 * 3) BALANCE
+		 * 4) AERODYNAMICS AND STABILITY EVERY CONDITION (ONLY TRIMMED POLARS AND LIFT CURVES AT OPERATIVE MAX FWD CG)
+		 * 5) PERFORMANCE (ONLY MISSION PROFILE) -> MISSION FUEL (FEEDBACK)
 		 * 
-		 * N.B.: MODIFY THE WEIGHTS IMPORT FROM XML ALLOWING USERS TO ASSIGN THE WANTED FUEL WEIGHT. 
-		 *       THIS WILL BE UPDATED FOR THE CALCULATION AFTER THE ITERATIVE LOOP.
 		 */
-		Amount<Mass> finalFuelMass = Amount.valueOf(0.0, SI.KILOGRAM);		
+
+		System.setOut(originalOut);
+		Amount<Mass> currentFuelMass = Amount.valueOf(Double.MIN_VALUE, SI.KILOGRAM);
+		Amount<Mass> finalFuelMass = Amount.valueOf(Double.MAX_VALUE, SI.KILOGRAM);
+		int i=1; 
 		
-		// TODO: COMPLETE ME!
+		while ( Math.abs(currentFuelMass.doubleValue(SI.KILOGRAM) - finalFuelMass.doubleValue(SI.KILOGRAM))
+				/ currentFuelMass.doubleValue(SI.KILOGRAM) >= 0.005) {
+			
+			System.out.println("\t\tIterative Loop :: Iteration " + i + " -> " 
+					+ "Fuel Mass Ratio = " 
+					+ Math.abs(currentFuelMass.doubleValue(SI.KILOGRAM) - finalFuelMass.doubleValue(SI.KILOGRAM))
+					/ currentFuelMass.doubleValue(SI.KILOGRAM)
+			);
+			
+			System.setOut(filterStream);
+			//..................................................................
+			_theWeights = ACWeightsManager.importFromXML(
+					_weightsFileComplete.getAbsolutePath(),
+					aircraft,
+					operatingConditions
+					);
+			setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setPlotWeights(false).build());
+			setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setCreateCSVWeights(false).build());
+			calculateWeights(aircraft, operatingConditions, resultsFolderPath);
+			currentFuelMass = _theWeights.getFuelMass().to(SI.KILOGRAM);
+			System.setOut(originalOut);
+			System.out.println("\t\t\tWeights Analysis :: DONE");
+			System.setOut(filterStream);
+			
+			//..................................................................
+			_theBalance = ACBalanceManager.importFromXML(
+					_balanceFileComplete.getAbsolutePath(),
+					aircraft
+					);
+			setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setPlotBalance(false).build());
+			setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setCreateCSVBalance(false).build());
+			calculateBalance(aircraft, resultsFolderPath);
+			System.setOut(originalOut);
+			System.out.println("\t\t\tBalance Analysis :: DONE");
+			System.setOut(filterStream);
+		
+			//..................................................................
+			_theAerodynamicAndStability = new HashMap<>();
+			
+			setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setPlotAerodynamicAndStability(false).build());
+			setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setCreateCSVAerodynamicAndStability(false).build());
+			
+			_theAerodynamicAndStability.put(
+					ConditionEnum.TAKE_OFF, 
+					ACAerodynamicAndStabilityManager.importFromXML(
+							_aerodynamicAndStabilityTakeOffFileComplete.getAbsolutePath(),
+							aircraft,
+							operatingConditions,
+							ConditionEnum.TAKE_OFF
+							));
+			_theAerodynamicAndStability.put(
+					ConditionEnum.CLIMB,
+					ACAerodynamicAndStabilityManager.importFromXML(
+							_aerodynamicAndStabilityClimbFileComplete.getAbsolutePath(),
+							aircraft,
+							operatingConditions,
+							ConditionEnum.CLIMB
+							)
+					);
+			_theAerodynamicAndStability.put(
+					ConditionEnum.CRUISE,
+					ACAerodynamicAndStabilityManager.importFromXML(
+							_aerodynamicAndStabilityCruiseFileComplete.getAbsolutePath(),
+							aircraft,
+							operatingConditions,
+							ConditionEnum.CRUISE
+							)
+					);
+			_theAerodynamicAndStability.put(
+					ConditionEnum.LANDING,
+					ACAerodynamicAndStabilityManager.importFromXML(
+							_aerodynamicAndStabilityLandingFileComplete.getAbsolutePath(),
+							aircraft,
+							operatingConditions,
+							ConditionEnum.LANDING
+							)
+					);
+			
+			Map<AerodynamicAndStabilityEnum, MethodEnum> aircraftTaskList = new HashMap<>();
+			aircraftTaskList.put(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY, MethodEnum.FROM_BALANCE_EQUATION);
+			Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> aerodynamicAndStabilityTaskList = new HashMap<>();
+			aerodynamicAndStabilityTaskList.put(ComponentEnum.AIRCRAFT, aircraftTaskList);
+			aerodynamicAndStabilityTaskList.put(ComponentEnum.WING, null);
+			aerodynamicAndStabilityTaskList.put(ComponentEnum.HORIZONTAL_TAIL, null);
+			aerodynamicAndStabilityTaskList.put(ComponentEnum.VERTICAL_TAIL, null);
+			aerodynamicAndStabilityTaskList.put(ComponentEnum.CANARD, null);
+			aerodynamicAndStabilityTaskList.put(ComponentEnum.FUSELAGE, null);
+			aerodynamicAndStabilityTaskList.put(ComponentEnum.NACELLE, null);
+			
+			_theAerodynamicAndStability.get(ConditionEnum.TAKE_OFF).setTheAerodynamicBuilderInterface(
+					IACAerodynamicAndStabilityManager.Builder.from(
+							_theAerodynamicAndStability.get(ConditionEnum.TAKE_OFF).getTheAerodynamicBuilderInterface()
+							)
+					.clearComponentTaskList()
+					.putAllComponentTaskList(aerodynamicAndStabilityTaskList)
+					.build()
+					);
+			_theAerodynamicAndStability.get(ConditionEnum.CLIMB).setTheAerodynamicBuilderInterface(
+					IACAerodynamicAndStabilityManager.Builder.from(
+							_theAerodynamicAndStability.get(ConditionEnum.CLIMB).getTheAerodynamicBuilderInterface()
+							)
+					.clearComponentTaskList()
+					.putAllComponentTaskList(aerodynamicAndStabilityTaskList)
+					.build()
+					);
+			_theAerodynamicAndStability.get(ConditionEnum.CRUISE).setTheAerodynamicBuilderInterface(
+					IACAerodynamicAndStabilityManager.Builder.from(
+							_theAerodynamicAndStability.get(ConditionEnum.CRUISE).getTheAerodynamicBuilderInterface()
+							)
+					.clearComponentTaskList()
+					.putAllComponentTaskList(aerodynamicAndStabilityTaskList)
+					.build()
+					);
+			_theAerodynamicAndStability.get(ConditionEnum.LANDING).setTheAerodynamicBuilderInterface(
+					IACAerodynamicAndStabilityManager.Builder.from(
+							_theAerodynamicAndStability.get(ConditionEnum.LANDING).getTheAerodynamicBuilderInterface()
+							)
+					.clearComponentTaskList()
+					.putAllComponentTaskList(aerodynamicAndStabilityTaskList)
+					.build()
+					);
+			calculateAerodynamicAndStability(aircraft, resultsFolderPath);
+			System.setOut(originalOut);
+			System.out.println("\t\t\tLongitudinal Stability And Equilibrium Analysis :: DONE");
+			System.setOut(filterStream);
+			
+			//..................................................................
+			_thePerformance = ACPerformanceManager.importFromXML(
+					_performanceFileComplete.getAbsolutePath(), 
+					aircraft,
+					operatingConditions
+					);
+			List<PerformanceEnum> performanceTaskList = new ArrayList<>();
+			performanceTaskList.add(PerformanceEnum.MISSION_PROFILE);
+			_thePerformance.setThePerformanceInterface(
+					IACPerformanceManager.Builder.from(
+							_thePerformance.getThePerformanceInterface()
+							)
+					.clearTaskList()
+					.addAllTaskList(performanceTaskList)
+					.build()
+					);
+			
+			setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setPlotPerformance(false).build());
+			setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).setCreateCSVPerformance(false).build());			
+			calculatePerformances(aircraft, resultsFolderPath);
+			System.setOut(originalOut);
+			System.out.println("\t\t\tMission Profile Simulation :: DONE\n\n");
+			System.setOut(filterStream);
+			finalFuelMass = _thePerformance.getInitialFuelMassMap().get(
+					_thePerformance.getThePerformanceInterface().getXcgPositionList().get(0)
+					).to(SI.KILOGRAM);
+
+		}
+		
+		//------------------------------------------------------------------
 		
 		return finalFuelMass;
 		

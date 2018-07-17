@@ -2,8 +2,8 @@
 <jpad_config>
     <analysis>
         <costs id="IRON - COSTS"
-			weights_from_previous_analysis="false" 
-			performance_from_previous_analysis="false"
+			weights_from_previous_analysis="true" 
+			performance_from_previous_analysis="true"
 			>
 			<weights>
 				<maximum_take_off_mass unit="kg">65183</maximum_take_off_mass>
