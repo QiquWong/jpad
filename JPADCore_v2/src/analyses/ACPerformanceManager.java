@@ -463,8 +463,13 @@ public class ACPerformanceManager {
 						"//@weights_from_previous_file");
 		if(readWeightsFromPreviousAnalysisString.equalsIgnoreCase("true"))
 			readWeightsFromPreviousAnalysisFlag = Boolean.TRUE;
-		else
+		else {
 			readWeightsFromPreviousAnalysisFlag = Boolean.FALSE;
+			if(theAircraft.getTheAnalysisManager().getTheAnalysisManagerInterface().isIterativeLoop() == true) {
+				System.err.println("WARNING (IMPORT PERFORMANCE DATA): IF THE ITERATIVE LOOP FLAG IS 'TRUE', THE 'weights_from_previous_file' FLAG MUST BE TRUE. TERMINATING ...");
+				System.exit(1);
+			}
+		}
 		
 		//---------------------------------------------------------------------------------------
 		// AERODYNAMICS FROM FILE INSTRUCTION
@@ -475,8 +480,13 @@ public class ACPerformanceManager {
 						"//@aerodynamics_from_previous_file");
 		if(readAerodynamicsFromPreviousAnalysisString.equalsIgnoreCase("true"))
 			readAerodynamicsFromPreviousAnalysisFlag = Boolean.TRUE;
-		else
+		else {
 			readAerodynamicsFromPreviousAnalysisFlag = Boolean.FALSE;
+			if(theAircraft.getTheAnalysisManager().getTheAnalysisManagerInterface().isIterativeLoop() == true) {
+				System.err.println("WARNING (IMPORT PERFORMANCE DATA): IF THE ITERATIVE LOOP FLAG IS 'TRUE', THE 'aerodynamics_from_previous_file' FLAG MUST BE TRUE. TERMINATING ...");
+				System.exit(1);
+			}
+		}
 
 		//===========================================================================================
 		// READING WEIGHTS DATA ...
@@ -666,9 +676,9 @@ public class ACPerformanceManager {
 						System.exit(1);
 					}
 
-					centerOfGravityList.addAll(
+					centerOfGravityList.add(
 							theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
-							.get(ConditionEnum.TAKE_OFF).getTheAerodynamicBuilderInterface().getXCGAircraft()
+							.get(ConditionEnum.TAKE_OFF).getTheAerodynamicBuilderInterface().getXCGAircraft().get(0)
 							);
 
 					centerOfGravityList.stream().forEach(xcg -> tauRudderMap.put(xcg, tauRudderFunctionList.get(centerOfGravityList.indexOf(xcg))));

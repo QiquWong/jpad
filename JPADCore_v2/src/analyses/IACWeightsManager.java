@@ -31,29 +31,29 @@ public interface IACWeightsManager {
 	@Nullable
 	Amount<Length> getCruiseRange();
 	@Nullable
-	double getCruiseSFC();
+	Double getCruiseSFC();
 	@Nullable
-	double getCruiseEfficiency();
+	Double getCruiseEfficiency();
 	@Nullable
 	Amount<Length> getAlternateCruiseRange();
 	@Nullable
 	Amount<Length> getAlternateCruiseAltitide();
 	@Nullable
-	double getAlternateCruiseMachNumber();
+	Double getAlternateCruiseMachNumber();
 	@Nullable
-	double getAlternateCruiseSFC();
+	Double getAlternateCruiseSFC();
 	@Nullable
-	double getAlternateCruiseEfficiency();
+	Double getAlternateCruiseEfficiency();
 	@Nullable
 	Amount<Duration> getHoldingDuration();
 	@Nullable
 	Amount<Length> getHoldingAltitide();
 	@Nullable
-	double getHoldingMachNumber();
+	Double getHoldingMachNumber();
 	@Nullable
-	double getHoldingSFC();
+	Double getHoldingSFC();
 	@Nullable
-	double getHoldingEfficiency();
+	Double getHoldingEfficiency();
 	
 	// CALIBRATION
 	double getFuselageCalibrationFactor();

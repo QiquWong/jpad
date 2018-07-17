@@ -8,10 +8,10 @@
 				<first_guess_maximum_take_off_mass unit="kg">79000</first_guess_maximum_take_off_mass>
 				<relative_maximum_landing_mass>0.9</relative_maximum_landing_mass> <!-- with respect to Max Take-Off mass. Default = 0.9 -->
 				<single_passenger_mass unit="kg">92</single_passenger_mass>
+				<reference_mission_range unit="nmi"></reference_mission_range>
 			</global_data>
 			<!-- the user can estimate the mission fuel or assign it. If the 'estimate_mission_fuel' tag is FALSE, the code reads the 'mission_fuel_mass' tag (Fuel Mass in kg) -->
 			<mission_profile_data estimate_mission_fuel="TRUE" mission_fuel_mass=""> 
-				<reference_mission_range unit="nmi"></reference_mission_range>
 				<cruise_phase>
 					<range unit="nmi">3300</range> 
 					<sfc>0.61</sfc>

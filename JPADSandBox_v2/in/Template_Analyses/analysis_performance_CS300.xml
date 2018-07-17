@@ -3,8 +3,8 @@
     <analysis>
         <performance
 			id="CS300 - PERFORMANCE"
-			weights_from_previous_file="false" 
-			aerodynamics_from_previous_file="false" 
+			weights_from_previous_file="true" 
+			aerodynamics_from_previous_file="true" 
 			>
 			<weights>
 				<maximum_take_off_mass unit="kg">65183</maximum_take_off_mass>

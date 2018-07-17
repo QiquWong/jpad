@@ -6933,7 +6933,7 @@ public class ACAerodynamicAndStabilityManager {
 		}
 		
 		//------------------------------------------------------------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.MINIMUM_UNSTICK_SPEED) || _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.TAKE_OFF) {
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.MINIMUM_UNSTICK_SPEED) && _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.TAKE_OFF) {
 
 			CalcMinimumUnstisckSpeed calcMinimumUnstikSpeed = new CalcMinimumUnstisckSpeed();
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.MINIMUM_UNSTICK_SPEED)) {
@@ -7026,7 +7026,6 @@ public class ACAerodynamicAndStabilityManager {
 	}
 	
 
-	@SuppressWarnings("resource")
 	public static ACAerodynamicAndStabilityManager importFromXML (
 			String pathToXML,
 			Aircraft theAircraft,
@@ -7036,7 +7035,7 @@ public class ACAerodynamicAndStabilityManager {
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
-		System.out.println("Reading aerodynamic ansd stability analysis data ...");
+		System.out.println("Reading aerodynamic and stability analysis data ...");
 
 		String id = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -7052,8 +7051,13 @@ public class ACAerodynamicAndStabilityManager {
 		
 		if(readBalanceFromPreviousAnalysisString.equalsIgnoreCase("true"))
 			readBalanceFromPreviousAnalysisFlag = Boolean.TRUE;
-		else
+		else {
 			readBalanceFromPreviousAnalysisFlag = Boolean.FALSE;
+			if(theAircraft.getTheAnalysisManager().getTheAnalysisManagerInterface().isIterativeLoop() == true) {
+				System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): IF THE ITERATIVE LOOP FLAG IS 'TRUE', THE 'balance_from_previous_analysis' FLAG MUST BE TRUE. TERMINATING ...");
+				System.exit(1);
+			}
+		}
 		
 		//===============================================================
 		// READING BALANCE DATA
@@ -7078,13 +7082,11 @@ public class ACAerodynamicAndStabilityManager {
 					
 					//---------------------------------------------------------------
 					// XCG POSITIONS
-					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxForwardCG());
-					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getXMAC());
+					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxForwardOperativeCG());
 					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxAftCG());
 
 					//---------------------------------------------------------------
 					// ZCG POSITIONS
-					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getZMAC());
 					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getZMAC());
 					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getZMAC());
 
@@ -12734,7 +12736,7 @@ public class ACAerodynamicAndStabilityManager {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//aircraft_analyses/VMU/@perform");
 		
-		if(minimumUnstickSpeedPerformString.equalsIgnoreCase("TRUE") || theCondition == ConditionEnum.TAKE_OFF){
+		if(minimumUnstickSpeedPerformString.equalsIgnoreCase("TRUE") && theCondition == ConditionEnum.TAKE_OFF){
 			
 			String minimumUnstickSpeedMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
