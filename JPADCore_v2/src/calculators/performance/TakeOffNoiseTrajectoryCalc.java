@@ -300,7 +300,7 @@ public class TakeOffNoiseTrajectoryCalc {
 	public void calculateNoiseTakeOffTrajectory(boolean cutback, Double phiCutback, boolean timeHistories) {
 
 		System.out.println("---------------------------------------------------");
-		System.out.println("NoiseTrajectoryCalc :: TAKE-OFF ODE integration\n\n");
+		System.out.println("NoiseTrajectoryCalc :: TAKE-OFF ODE integration :: cutback = " + cutback + ":: throttle cutback = " + phiCutback + "\n\n");
 		System.out.println("\tRUNNING SIMULATION ...\n\n");
 		/*
 		 * DISABLE PRINT OUT
@@ -327,6 +327,12 @@ public class TakeOffNoiseTrajectoryCalc {
 					alphaRed = newAlphaRed;
 				else
 					break;
+			}
+			
+			if(i > 100) {
+				System.err.println("WARNING: (SIMULATION - NOISE TRAJECTORY TAKE-OFF) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. "
+						+ "(V2 = " + v2.to(SI.METERS_PER_SECOND) + "; V2/VsTO = " + v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)));
+				break;
 			}
 			
 			initialize();
@@ -920,8 +926,10 @@ public class TakeOffNoiseTrajectoryCalc {
 
 		if (isTargetSpeedFlag() == false)
 			System.err.println("ERROR: THE FINAL CLIMB SPEED EXCEEDS THE MAXIMUM LIMITATION OF V2 + 20 knots --> " 
+					+ " v2 current = "
 					+ vClimb.to(NonSI.KNOT)
-					+ " > "
+					+ " != "
+					+ " v2 target = "
 					+ vSTakeOff.to(NonSI.KNOT).times(1.13).plus(Amount.valueOf(20, NonSI.KNOT))
 					);
 		else {

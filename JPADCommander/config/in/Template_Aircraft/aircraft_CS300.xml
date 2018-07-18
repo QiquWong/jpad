@@ -23,7 +23,7 @@
             </horizontal_tail>
             <vertical_tail file="vtail_CS300.xml">
                 <position>
-                    <x unit="m">33.0</x>
+                    <x unit="m">31.0</x>
                     <y unit="m">0.0</y>
                     <z unit="m">1.52</z>
                 </position>
@@ -44,7 +44,7 @@
                 <position>
                     <x unit="m">11.6</x>
                     <y unit="m">6</y>
-                    <z unit="m">-1.10</z>
+                    <z unit="m">-1.60</z>
                 </position>
                 <tilting_angle unit="deg">0.0</tilting_angle>
 				<mounting_point>WING</mounting_point>
@@ -53,7 +53,7 @@
                 <position>
                     <x unit="m">11.60</x>
                     <y unit="m">-6</y>
-                    <z unit="m">-1.10</z>
+                    <z unit="m">-1.60</z>
                 </position>
                 <tilting_angle unit="deg">0.0</tilting_angle>
                 <mounting_point>WING</mounting_point>
@@ -64,7 +64,7 @@
                 <position>
                     <x unit="m">11.6</x>
                     <y unit="m">6</y>
-                    <z unit="m">-1.10</z>
+                    <z unit="m">-1.60</z>
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
@@ -72,7 +72,7 @@
                 <position>
                     <x unit="m">11.6</x>
                     <y unit="m">-6</y>
-                    <z unit="m">-1.10</z>
+                    <z unit="m">-1.60</z>
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
@@ -80,14 +80,14 @@
 		<landing_gears file="landing_gear_CS300.xml">
 			<position>
 				<nose_gear>
-					<x unit="m">3.0</x>
+					<x unit="m">5.0</x>
 					<y unit="m">0.0</y>
-					<z unit="m">-1.85</z>
+					<z unit="m">-0.85</z>
 				</nose_gear>
 				<main_gear>
-					<x unit="m">17.8</x>
+					<x unit="m">18.5</x>
 					<y unit="m">0.0</y>
-					<z unit="m">-1.85</z>
+					<z unit="m">-0.85</z>
 				</main_gear>
             </position>
 			<mounting_point>WING</mounting_point>

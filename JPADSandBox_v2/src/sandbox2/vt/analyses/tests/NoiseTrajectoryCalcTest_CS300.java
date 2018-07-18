@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
@@ -15,12 +13,11 @@ import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.physics.amount.Amount;
-import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
 
 import aircraft.Aircraft;
 import analyses.OperatingConditions;
@@ -41,85 +38,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyInterpolatingFunction;
 import writers.JPADStaticWriteUtils;
 
-class MyArgumentsNoiseTrajectory {
-	@Option(name = "-i", aliases = { "--input" }, required = true,
-			usage = "my input file")
-	private File _inputFile;
-
-	@Option(name = "-ioc", aliases = { "--input-operating-condition" }, required = true,
-			usage = "operating conditions input file")
-	private File _inputFileOperatingCondition;
-
-	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
-			usage = "airfoil directory path")
-	private File _airfoilDirectory;
-
-	@Option(name = "-df", aliases = { "--dir-fuselages" }, required = true,
-			usage = "fuselages directory path")
-	private File _fuselagesDirectory;
-
-	@Option(name = "-dls", aliases = { "--dir-lifting-surfaces" }, required = true,
-			usage = "lifting surfaces directory path")
-	private File _liftingSurfacesDirectory;
-
-	@Option(name = "-de", aliases = { "--dir-engines" }, required = true,
-			usage = "engines directory path")
-	private File _enginesDirectory;
-
-	@Option(name = "-dn", aliases = { "--dir-nacelles" }, required = true,
-			usage = "nacelles directory path")
-	private File _nacellesDirectory;
-
-	@Option(name = "-dlg", aliases = { "--dir-landing-gears" }, required = true,
-			usage = "landing gears directory path")
-	private File _landingGearsDirectory;
-
-	@Option(name = "-dcc", aliases = { "--dir-cabin-configurations" }, required = true,
-			usage = "cabin configurations directory path")
-	private File _cabinConfigurationsDirectory;
-
-	// receives other command line parameters than options
-	@Argument
-	public List<String> arguments = new ArrayList<String>();
-
-	public File getInputFile() {
-		return _inputFile;
-	}
-
-	public File getOperatingConditionsInputFile() {
-		return _inputFileOperatingCondition;
-	}
-
-	public File getAirfoilDirectory() {
-		return _airfoilDirectory;
-	}
-
-	public File getFuselagesDirectory() {
-		return _fuselagesDirectory;
-	}
-
-	public File getLiftingSurfacesDirectory() {
-		return _liftingSurfacesDirectory;
-	}
-
-	public File getEnginesDirectory() {
-		return _enginesDirectory;
-	}
-
-	public File getNacellesDirectory() {
-		return _nacellesDirectory;
-	}
-
-	public File getLandingGearsDirectory() {
-		return _landingGearsDirectory;
-	}
-
-	public File getCabinConfigurationDirectory() {
-		return _cabinConfigurationsDirectory;
-	}
-}
-
-public class NoiseTrajectoryCalcTest extends Application {
+public class NoiseTrajectoryCalcTest_CS300 extends Application {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
@@ -254,7 +173,9 @@ public class NoiseTrajectoryCalcTest extends Application {
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
 			String outputFolderTakeOff = JPADStaticWriteUtils.createNewFolder(folderPath + "take_off_noise_trajectory" + File.separator);
 			String outputFolderLanding = JPADStaticWriteUtils.createNewFolder(folderPath + "landing_noise_trajectory" + File.separator);
-
+			FileUtils.cleanDirectory(new File(outputFolderTakeOff));
+			FileUtils.cleanDirectory(new File(outputFolderLanding));
+			
 			////////////////////////////////////////////////////////////////////////
 			// Defining the operating conditions ...
 			System.setOut(originalOut);
@@ -281,23 +202,23 @@ public class NoiseTrajectoryCalcTest extends Application {
 			Amount<Length> xEndSimulation = Amount.valueOf(8000, SI.METER);
 			Amount<Length> cutbackAltitude = Amount.valueOf(984, NonSI.FOOT); //  also to be done at 1000ft and 2000ft
 			int numberOfThrustSettingCutback = 3;
-			Amount<Mass> maxTakeOffMass = Amount.valueOf(55101, SI.KILOGRAM);
-			Double[] polarCLTakeOff = new Double[] {1.111078795,1.20956821,1.307935289,1.406182794,1.504313499,1.602330194,1.700235677,1.798032758,1.895724255,1.99331299,2.090801796,2.18805759,2.285355039,2.382696983,2.479814429,2.57684613,2.664879354,2.75072464,2.823268676,2.882596758};
-			Double[] polarCDTakeOff = new Double[] {0.106106078,0.107328577,0.109155472,0.111586064,0.114619698,0.118255766,0.1224937,0.127332973,0.132773098,0.138813625,0.145454138,0.152692105,0.160531302,0.168971945,0.178008908,0.187644259,0.196656677,0.205925139,0.213964534,0.220967174};
+			Amount<Mass> maxTakeOffMass = Amount.valueOf(65183, SI.KILOGRAM);
+			Double[] polarCLTakeOff = new Double[] {-0.053138218,0.014516736,0.082153097,0.149771045,0.217370763,0.284952436,0.352516252,0.420062402,0.48759108,0.555102482,0.622596806,0.690074253,0.757535029,0.824979338,0.89240739,0.959819396,1.027215572,1.094596132,1.161961296,1.229311287};
+			Double[] polarCDTakeOff = new Double[] {0.020646444,0.020729981,0.021112629,0.021794316,0.022774969,0.024054516,0.02563289,0.027510021,0.029685844,0.032160293,0.034933305,0.038004817,0.041374769,0.0450431,0.049009753,0.053274672,0.0578378,0.062699083,0.06785847,0.073315908};
 			Double deltaCD0LandingGear = 0.015;
 			Double deltaCD0OEI = 0.0050;
-			Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
+			Amount<Duration> dtRot = Amount.valueOf(2, SI.SECOND);
 			Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 			Amount<Duration> dtLandingGearRetraction = Amount.valueOf(12, SI.SECOND);
 			Amount<Duration> dtThrustCutback = Amount.valueOf(4, SI.SECOND);
 			Double phi = 1.0;
-			Double kcLMax = 0.8;
+			Double kcLMax = 0.85;
 			Double kRot = 1.05;
 			Double alphaDotInitial = 3.0; // (deg/s)
 			Double kAlphaDot = 0.06; // (1/deg)
-			Double cLmaxTO = 2.838;
-			Double cLZeroTO = 1.4485;
-			Amount<?> cLalphaFlap = Amount.valueOf(0.108, NonSI.DEGREE_ANGLE.inverse());
+			Double cLmaxTO = 2.36;
+			Double cLZeroTO = 1.2407;
+			Amount<?> cLalphaFlap = Amount.valueOf(0.0868, NonSI.DEGREE_ANGLE.inverse());
 			
 			MyInterpolatingFunction mu = new MyInterpolatingFunction();
 			mu.interpolateLinear(
@@ -387,14 +308,14 @@ public class NoiseTrajectoryCalcTest extends Application {
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			Amount<Length> initialAltitude = Amount.valueOf(4000, NonSI.FOOT);
 			Amount<Angle> gammaDescent = Amount.valueOf(-3, NonSI.DEGREE_ANGLE);
-			Amount<Mass> maxLandingMass = Amount.valueOf(49591, SI.KILOGRAM);
-			Double[] polarCLLanding = new Double[] {1.67115979,1.769649205,1.868016284,1.966263789,2.064394494,2.162411189,2.260316672,2.358113753,2.45580525,2.553393985,2.650882791,2.748138585,2.845436034,2.942777978,3.039895424,3.136927125,3.224960349,3.310805635,3.383349671,3.442677753};
-			Double[] polarCDLanding = new Double[] {0.18556236,0.186704949,0.188454767,0.190811053,0.193773086,0.197340195,0.201511745,0.206287147,0.211665847,0.217647328,0.224231112,0.231417747,0.239204647,0.247591962,0.256580799,0.266170009,0.27524996,0.28461428,0.29291684,0.300347977};
+			Amount<Mass> maxLandingMass = Amount.valueOf(58740, SI.KILOGRAM);
+			Double[] polarCLLanding = new Double[] {1.477793265,1.567919335,1.657905336,1.74775273,1.83746302,1.927037748,2.016478496,2.105786885,2.194964573,2.284013261,2.372934685,2.462027739,2.550700002,2.639146707,2.715395409,2.780296468,2.833875056,2.876157804,2.907172657,2.926948714,2.935516057};
+			Double[] polarCDLanding = new Double[] {0.098974994,0.098751866,0.099236527,0.10042851,0.10232738,0.104932744,0.10824424,0.112261543,0.116984358,0.122412424,0.12854551,0.135362785,0.142905345,0.151192962,0.158794304,0.165599319,0.171406943,0.176052624,0.179408394,0.18138296,0.181921793};
 			Amount<Duration> dtFlare = Amount.valueOf(3, SI.SECOND);
 			Amount<Duration> dtFreeRoll = Amount.valueOf(2, SI.SECOND);
-			double cLmaxLND = 3.4;
-			double cLZeroLND = 1.4485;
-			Amount<?> cLalphaLND = Amount.valueOf(0.108, NonSI.DEGREE_ANGLE.inverse());
+			double cLmaxLND = 2.94;
+			double cLZeroLND = 1.8291;
+			Amount<?> cLalphaLND = Amount.valueOf(0.0869, NonSI.DEGREE_ANGLE.inverse());
 			
 			MyInterpolatingFunction muBrake = new MyInterpolatingFunction();
 //			muBrake.interpolateLinear(

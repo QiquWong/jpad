@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jpad_config>
+    <aircraft id="CS300" regulations="FAR_25" type="JET">
+        <global_data>
+            <cabin_configuration file="cabin_configuration_NEW_AIRCRAFT.xml"/>
+        </global_data>
+        <lifting_surfaces>
+            <wing file="wing_NEW_AIRCRAFT.xml">
+                <position>
+                    <x unit="m">16.1700</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">-0.8000</z>
+                </position>
+                <rigging_angle unit="deg">2.0000</rigging_angle>
+            </wing>
+            <horizontal_tail file="htail_NEW_AIRCRAFT.xml">
+                <position>
+                    <x unit="m">31.6000</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">1.0000</z>
+                </position>
+                <rigging_angle unit="deg">0.0000</rigging_angle>
+            </horizontal_tail>
+            <vertical_tail file="vtail_NEW_AIRCRAFT.xml">
+                <position>
+                    <x unit="m">31.0000</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">1.5200</z>
+                </position>
+                <rigging_angle unit="deg">0.0000</rigging_angle>
+            </vertical_tail>
+        </lifting_surfaces>
+        <fuselages>
+            <fuselage file="fuselage_NEW_AIRCRAFT.xml">
+                <position>
+                    <x unit="m">0.0000</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">0.0000</z>
+                </position>
+            </fuselage>
+        </fuselages>
+        <power_plant>
+            <engine file="engine_NEW_AIRCRAFT_0.xml">
+                <position>
+                    <x unit="m">15.6000</x>
+                    <y unit="m">6.0000</y>
+                    <z unit="m">-1.6000</z>
+                </position>
+                <tilting_angle unit="deg">0.0000</tilting_angle>
+                <mounting_point>WING</mounting_point>
+            </engine>
+            <engine file="engine_NEW_AIRCRAFT_1.xml">
+                <position>
+                    <x unit="m">15.6000</x>
+                    <y unit="m">-6.0000</y>
+                    <z unit="m">-1.6000</z>
+                </position>
+                <tilting_angle unit="deg">0.0000</tilting_angle>
+                <mounting_point>WING</mounting_point>
+            </engine>
+        </power_plant>
+        <nacelles>
+            <nacelle file="nacelle_NEW_AIRCRAFT_0.xml">
+                <position>
+                    <x unit="m">15.6000</x>
+                    <y unit="m">6.0000</y>
+                    <z unit="m">-1.6000</z>
+                </position>
+                <mounting_point>WING</mounting_point>
+            </nacelle>
+            <nacelle file="nacelle_NEW_AIRCRAFT_1.xml">
+                <position>
+                    <x unit="m">15.6000</x>
+                    <y unit="m">-6.0000</y>
+                    <z unit="m">-1.6000</z>
+                </position>
+                <mounting_point>WING</mounting_point>
+            </nacelle>
+        </nacelles>
+        <landing_gears file="landing_gear_NEW_AIRCRAFT.xml">
+            <position>
+                <nose_gear>
+                    <x unit="m">5.0000</x>
+                    <y>0.0000</y>
+                    <z unit="m">-0.8500</z>
+                </nose_gear>
+                <main_gear>
+                    <x unit="m">18.5000</x>
+                    <y unit="m">0.0000</y>
+                    <z unit="m">-0.8500</z>
+                </main_gear>
+            </position>
+            <mounting_point>WING</mounting_point>
+        </landing_gears>
+        <systems primary_electrical_systems_type="AC"/>
+    </aircraft>
+</jpad_config>
