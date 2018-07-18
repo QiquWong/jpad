@@ -64,6 +64,8 @@ public interface IACAerodynamicAndStabilityManager {
 	@Nullable
 	Boolean getDownwashConstant(); // if TRUE--> constant, if FALSE--> variable
 	@Nullable
+	Double getFuselageSideSurfaceRatio();
+	@Nullable
 	Double getHTailDynamicPressureRatio();
 	@Nullable
 	Double getVTailDynamicPressureRatio();

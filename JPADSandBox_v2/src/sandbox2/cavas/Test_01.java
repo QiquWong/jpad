@@ -191,7 +191,7 @@ public class Test_01 {
 		
 		// Cl_beta_WB
 		Amount<Velocity> velocityTAS = operatingConditions.getTASCruise();
-		Amount<Mass> maxTakeOffWeight = Amount.valueOf(51767.0, SI.KILOGRAM);
+		Amount<Mass> maxTakeOffWeight = Amount.valueOf(56000.0, SI.KILOGRAM);
 		Amount<Force> weight = Amount.valueOf(
 				maxTakeOffWeight.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 				SI.NEWTON

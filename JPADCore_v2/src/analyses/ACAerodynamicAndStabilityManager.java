@@ -7198,6 +7198,7 @@ public class ACAerodynamicAndStabilityManager {
 		Double adimensionalVTailMomentumPole = null;
 		Double adimensionalCanardMomentumPole = null;
 		Double adimensionalFuselageMomentumPole = null;
+		Double fuselageSideSurfaceRatio = null;
 		Double horizontalTailDynamicPressureRatio = null;
 		Double verticalTailDynamicPressureRatio = null;
 		
@@ -7405,6 +7406,22 @@ public class ACAerodynamicAndStabilityManager {
 		String adimensionalFuselageMomentumPoleProperty = reader.getXMLPropertyByPath("//global_data/adimensional_fuselage_momentum_pole");
 		if(adimensionalFuselageMomentumPoleProperty != null)
 			adimensionalFuselageMomentumPole = Double.valueOf(adimensionalFuselageMomentumPoleProperty);
+		}
+		
+		//---------------------------------------------------------------
+		// SIDE SURFACE RATIO FUSELAGE
+		String sideSurfaceRatioFuselageFromFileString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//global_data/@fuselage_side_surface_ratio_from_file");
+		
+		if(sideSurfaceRatioFuselageFromFileString.equalsIgnoreCase("FALSE")){
+			// TODO Add a function that calculates the fuselage side surface ratio?
+		}
+		else {
+			String fuselageSideSurfaceRatioProperty = reader.getXMLPropertyByPath("//global_data/fuselage_side_surface_ratio");
+			if(fuselageSideSurfaceRatioProperty != null)
+				fuselageSideSurfaceRatio = Double.valueOf(fuselageSideSurfaceRatioProperty);
 		}
 		
 		//---------------------------------------------------------------
@@ -13948,6 +13965,7 @@ public class ACAerodynamicAndStabilityManager {
 				.addAllBetaVerticalTailForDistribution(betaVerticalTailArrayForDistributions)
 				.addAllAlphaCanardForDistribution(alphaCanardArrayForDistributions)
 				.setWingNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseWing)
+				.setFuselageSideSurfaceRatio(fuselageSideSurfaceRatio)
 				.setHTailNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseHTail)
 				.setVTailNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseVTail)
 				.setCanardNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseCanard)
@@ -21365,11 +21383,6 @@ public class ACAerodynamicAndStabilityManager {
 			// Calculating stability derivatives for each component ...
 			//=======================================================================================
 			Amount<Length> lengthFuselage = _theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageLength();
-			// TODO take side surface fuselage
-			Amount<Area> sideSurfaceFuselage = Amount.valueOf(
-					100,
-					SI.SQUARE_METRE
-					);
 			Amount<Length> z1 = Amount.valueOf(
 					_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getZOutlineXZUpperAtX(0.25*lengthFuselage.doubleValue(SI.METER))
 					- _theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getZOutlineXZLowerAtX(0.25*lengthFuselage.doubleValue(SI.METER)),
@@ -21381,9 +21394,12 @@ public class ACAerodynamicAndStabilityManager {
 					SI.METER
 					);
 			// Assuming that max height fuselage and max width fuselage are the height and the width of the cylinder trunk fuselage
-			// TODO take the real value of max height fuselage and max width fuselage
 			Amount<Length> zMax = _theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight();
 			Amount<Length> wMax = _theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderWidth();
+			Amount<Area> sideSurfaceFuselage = Amount.valueOf(
+					lengthFuselage.doubleValue(SI.METER)*zMax.doubleValue(SI.METER)*_theAerodynamicBuilderInterface.getFuselageSideSurfaceRatio(),
+					SI.SQUARE_METRE
+					);
 			double reynoldsFuselage = AerodynamicCalc.calculateReynolds(
 					_currentAltitude.doubleValue(SI.METER),
 					_currentMachNumber,
@@ -21606,8 +21622,8 @@ public class ACAerodynamicAndStabilityManager {
 							x -> Tuple.of(
 									x,
 									MomentCalc.calcCNpTotalNapolitanoDatcom(
-											Amount.valueOf(_cNpWing.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE),
-											Amount.valueOf(_cNpVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE)
+											Amount.valueOf(_cNpWing.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE.inverse()),
+											Amount.valueOf(_cNpVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE.inverse())
 											).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 									)
 							)
@@ -21725,8 +21741,8 @@ public class ACAerodynamicAndStabilityManager {
 							x -> Tuple.of(
 									x,
 									MomentCalc.calcCNrTotalNapolitanoDatcom(
-											Amount.valueOf(_cNrWing.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE),
-											Amount.valueOf(_cNrVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE)
+											Amount.valueOf(_cNrWing.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE.inverse()),
+											Amount.valueOf(_cNrVertical.get(MethodEnum.NAPOLITANO_DATCOM).get(_theAerodynamicBuilderInterface.getXCGAircraft().indexOf(x))._2, NonSI.DEGREE_ANGLE.inverse())
 											).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 									)
 							)
