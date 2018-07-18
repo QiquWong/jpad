@@ -126,8 +126,6 @@ public class TestBoolean02mds {
 		
 		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutter.Shape() ));
 		
-		
-
 		String fileName = "testBoolean02mds.brep";
 		if(OCCUtils.write(fileName, exportShapes))
 			System.out.println("========== [main] Output written on file: " + fileName);

@@ -2175,8 +2175,8 @@ public final class AircraftUtils {
 		
 		// checking the trailing edge
 		if(Math.abs(zCoords[0] - zCoords[nPoints - 1]) < 1e-5) {
-			zCoords[0] += 1*1e-4;
-			zCoords[nPoints - 1] -= 1*1e-4;
+			zCoords[0] += 5*1e-4;
+			zCoords[nPoints - 1] -= 5*1e-4;
 		}
 
 		for (int i = 0; i < nPoints; i++) {
@@ -2546,12 +2546,12 @@ public final class AircraftUtils {
 		return thickness;
 	}
 	
-	private static Amount<Angle> getDihedralAtYActual(LiftingSurface theLiftingSurface, Double yStation) {
+	public static Amount<Angle> getDihedralAtYActual(LiftingSurface theLiftingSurface, Double yStation) {
 		if (yStation >= 0) return getDihedralSemispanAtYActual(theLiftingSurface, yStation);
 		else return getDihedralSemispanAtYActual(theLiftingSurface, -yStation);
 	}
 	
-	private static Amount<Angle> getDihedralSemispanAtYActual(LiftingSurface theLiftingSurface, Double yStation) {
+	public static Amount<Angle> getDihedralSemispanAtYActual(LiftingSurface theLiftingSurface, Double yStation) {
 		Amount<Angle> dihedralAtY = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		if(yStation < theLiftingSurface.getYBreakPoints().get(0).getEstimatedValue()) {
 			System.err.println("INVALID Y STATION");
