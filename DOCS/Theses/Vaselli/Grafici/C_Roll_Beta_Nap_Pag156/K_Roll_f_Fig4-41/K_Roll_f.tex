@@ -1,0 +1,20 @@
+\input{../../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=0, xmax=1.6,
+ymin=0.5, ymax=1,
+xlabel=$A/b$,ylabel=$K_f$,
+grid
+]
+\addplot[black,patch type=cubic spline]plot file {prova1.dat} node[below, pos=0.92] {4};
+\addplot[black,patch type=cubic spline]plot file {prova2.dat} node[below, pos=0.89] {4.5};
+\addplot[black,patch type=cubic spline]plot file {prova3.dat} node[below, pos=0.82] {5};
+\addplot[black,patch type=cubic spline]plot file {prova4.dat} node[below, pos=0.75] {5.5};
+\addplot[black,patch type=cubic spline]plot file {prova5.dat} node[below, pos=0.7] {6};
+\addplot[black,patch type=cubic spline]plot file {prova6.dat} node[below, pos=0.66] {7};
+\addplot[black,patch type=cubic spline]plot file {prova7.dat} node[above, pos=0.5, yshift=-43pt] {$\dfrac{\AR}{\cos \Lambda_{c/2}}=8$};
+\end{axis}
+\end{tikzpicture}
+\end{document}

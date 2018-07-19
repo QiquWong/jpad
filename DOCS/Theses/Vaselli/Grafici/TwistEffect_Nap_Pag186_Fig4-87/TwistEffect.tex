@@ -1,0 +1,16 @@
+\input{../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=0, xmax=10,
+ymin=0, ymax=0.020,
+xlabel=$\AR$,ylabel=$ \dfrac{\text \textDelta C_{\mathcal L_\mathrm r}}{\varepsilon_\text W} \,\,\,(\si{rad} \cdot \si{deg})^{-1}$,
+grid
+]
+\addplot[black,patch type=cubic spline]plot file {prova1.dat} node[below, pos=0.55] {0};
+\addplot[black,patch type=cubic spline]plot file {prova2.dat} node[below, pos=0.55] {0.2};
+\addplot[black,patch type=cubic spline]plot file {prova3.dat} node[above, pos=0.55, yshift=4pt] {$\lambda_\text W = 0.4-1$};
+\end{axis}
+\end{tikzpicture}
+\end{document}

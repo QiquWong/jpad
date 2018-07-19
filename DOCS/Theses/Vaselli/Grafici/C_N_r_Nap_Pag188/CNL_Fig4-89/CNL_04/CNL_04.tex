@@ -1,0 +1,90 @@
+\input{../../../_graphspreamble}
+\usepgflibrary{decorations.pathmorphing}
+\usepgflibrary{shapes.geometric,shapes.misc}
+\usepackage{pgfplotstable}
+\usepgflibrary{arrows}
+\usetikzlibrary{patterns}
+\usetikzlibrary{intersections}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{decorations.markings}
+\begin{document}
+\begin{tikzpicture}
+\pgfplotsset{
+width=12cm, height=8cm,
+scale only axis,
+no markers, compat=1.5.1
+}
+\pgfplotsset{every axis/.append style=
+{font=\Large}}
+\begin{axis}[
+yticklabels=\empty,
+xmin=1, xmax=10,
+ymin=0, ymax=8.5,
+title={$\overline x_\mathrm {AC} - \overline x_\mathrm {CG} = 0.4$},
+xlabel=$\AR$,
+grid
+]
+\addplot[black,patch type=cubic spline]plot file {data0/prova1.dat} node[above, pos=0.22, yshift=28pt, xshift=12pt] {$\Lambda_{c/4}=\pm60\si{\degree}$};
+\addplot[black,patch type=cubic spline]plot file {data0/prova2.dat} node[above, pos=0.22, yshift=2pt, xshift=12pt] {$\pm50\si{\degree}$};
+\addplot[black,patch type=cubic spline]plot file {data0/prova3.dat} node[above, pos=0.152, yshift=-1pt, xshift=12pt] {$\pm40\si{\degree}$};
+\addplot[black,patch type=cubic spline]plot file {data0/prova4.dat} node[above, pos=0.152, xshift=12pt] {$0\si{\degree}$};
+\end{axis}
+\begin{axis}[
+yticklabels=\empty,
+xmin=-1, xmax=1,
+ymin=0, ymax=8.5,
+xlabel=$\dfrac{C_{\mathcal N_\mathrm r}}{C^2_L}\,\,\,\bigl (\si{rad}^{-1} \bigr)$,
+xshift=14cm,
+grid
+]
+\addplot[black,patch type=cubic spline]plot file {data1/prova1.dat} node[below, pos=0.695, yshift=-8pt] {$\lambda_{\mathrm W}=0$};
+\addplot[black,patch type=cubic spline]plot file {data1/prova2.dat} node[above, pos=0.75] {1};
+\end{axis}
+\begin{axis}[
+hide x axis,
+hide y axis,
+xmin=0, xmax=0.8,
+ymin=0, ymax=6
+]
+\addplot[black, line width=1pt]plot coordinates{
+(0.5, 1.98)
+(10, 1.98)
+};
+\end{axis}
+\begin{axis}[
+hide x axis,
+hide y axis,
+xmin=0, xmax=0.8,
+ymin=0, ymax=6
+]
+\addplot[black, line width=1pt, postaction={decorate, decoration={markings, mark=at position 0.25 with {\arrow[rotate=0]{stealth};}}}]plot coordinates{
+(0.5, 0)
+(0.5, 1.98)
+};
+\end{axis}
+\begin{axis}[
+hide x axis,
+hide y axis,
+xshift=12cm,
+xmin=0, xmax=0.8,
+ymin=0, ymax=6
+]
+\addplot[black, line width=1pt, postaction={decorate, decoration={markings, mark=at position 0.16 with {\arrow[rotate=0]{stealth};}}}]plot coordinates{
+(0, 1.98)
+(0.495, 1.98)
+};
+\end{axis}
+\begin{axis}[
+hide x axis,
+hide y axis,
+xshift=12cm,
+xmin=0, xmax=0.8,
+ymin=0, ymax=6
+]
+\addplot[black, line width=1pt, postaction={decorate, decoration={markings, mark=at position 0.8 with {\arrow[rotate=0]{stealth};}}}]plot coordinates{
+(0.495, 1.98)
+(0.495, 0)
+};
+\end{axis}
+\end{tikzpicture}
+\end{document}

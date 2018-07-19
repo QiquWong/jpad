@@ -1,0 +1,78 @@
+\documentclass{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[full]{textcomp}
+\usepackage[italian, english]{babel}
+\usepackage{newtxtext}
+\usepackage[complete, subscriptcorrection, slantedGreek, nofontinfo, mtpcal, mtpscr, mtphrd]{mtpro2}
+\usepackage{setspace}
+\def\mynormalstretch{1.1}
+\setstretch{\mynormalstretch}
+%-------------------------------------------------------------------------------------
+% Mathematics and related stuff
+
+\usepackage{pgfplots,mathtools}
+\usepackage [TM] {ar}
+\usepgfplotslibrary{patchplots}
+
+%-------------------------------------------------------------------------------------
+% Fonts and related stuff
+%\usepackage[final]{microtype}
+%\usepackage{relsize}
+%\usepackage{newtxmath}
+%-------------------------------------------------------------------------------------
+
+%Graphics
+\usepackage{graphicx}
+\usepackage{subfig}
+
+\usepackage{xcolor}
+
+\definecolor{mydarkgreen}{rgb}{0.03,0.47,0.03}
+\definecolor{mydarkblue}{rgb}{0.07,0.08,0.4}
+\definecolor{mylightblue}{rgb}{.8, .8, 1}
+\definecolor{mylightgray}{rgb}{0.95,0.95,0.95}
+\definecolor{mydarkgray}{rgb}{0.35,0.35,0.35}
+\definecolor{myblue}{rgb}{.4,.4,1}
+\definecolor{colKeys}{rgb}{0,0,1}
+\definecolor{colIdentifier}{rgb}{0,0,0}
+\definecolor{colComments}{rgb}{0,0.5,1}
+\definecolor{colString}{rgb}{0.6,0.1,0.1}
+
+\usepackage[english]{varioref}          % richiama le pagine dei riferimenti incrociati
+\usepackage{textgreek}
+    
+
+% Tikz Packages (Flow Chart Tools)
+\usepackage{tikz}
+\usetikzlibrary{shapes,shadows,arrows}
+
+%---------------------------------------------------------------------------------------
+% Units of measure
+%
+\usepackage{siunitx}
+\sisetup{
+  load=derived,
+  unitsep=thin,
+  valuesep=thin,
+  %decimalsymbol=comma,% uncomment for docs in European languages
+  expproduct=cdot,
+  % digitsep=thin,
+  group-separator={},% ver. 2
+  sepfour=false,
+  round-mode = places,
+  round-precision = 3
+}
+
+
+\usepackage[%
+            %dvipdfmx,%dvips,%
+            %pdfborder = 0 0 1,
+            baseurl= http://,
+            colorlinks=true,%
+            linkcolor=mydarkblue,% black
+            citecolor=mydarkblue% black
+            ]{hyperref}
+
+
+%---------------------------------------------------------------------------------------

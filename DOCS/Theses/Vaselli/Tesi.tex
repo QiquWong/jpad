@@ -1,0 +1,192 @@
+\documentclass[a4paper, 12pt, oneside]{book}
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% PACCHETTI
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% Impostazioni del documento
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[full]{textcomp}
+\usepackage[italian, english]{babel}
+\usepackage{newtxtext}
+\usepackage[complete, subscriptcorrection, slantedGreek, nofontinfo, mtpcal, mtpscr, mtphrd]{mtpro2}
+% Options for blackboard bold fonts:
+%   mtphrb - holey roman bold		mtpbb - blackboard bold
+%   mtphrd - holey roman bold dark	mtpbbd - blackboard bold dark
+%   mtphbi - holey bold italic		mtpbbi - blackboard bold italic
+
+% Options for alternate character sets:
+%   mtpcal - assigns Math Script to the math alphabets \mathcal and \mathbcal, overwriting the default math calligraphic typeface
+%   mtpccal - assigns Math Curly to the math alphabets \mathcal and \mathbcal, overwriting the default math calligraphic typeface
+%   mtpscr - assigns Math Script to the new math alphabets \mathscr and \mathbscr, leaving \mathcal unchanged
+%   mtpfrak - assigns Math Fraktur to a new math alphabet \mathfrak
+
+% Options for AMS symbols
+%   amssymbols - makes the mtpro2 AMS symbols available
+
+% Optionally load the following package to use heavy symbols in place of bold symbols
+%\usepackage{bm}
+
+% Impostazioni dei linguaggi
+\providecommand{\csletcs}[2]{\expandafter\let\csname#1\expandafter\endcsname\csname#2\endcsname}
+\newcommand{\equivUC}[3][\def]{\expandafter#1\csname#2\expandafter\endcsname\expandafter{\csname#3\endcsname}}
+\newcommand{\UPCASElang}[1]{\uppercase{\def\temp{#1}}
+\csletcs{l@\temp}{l@#1}
+\equivUC{date\temp}{date#1}
+\equivUC{captions\temp}{captions#1}
+\equivUC{extras\temp}{extras#1}
+\equivUC{noextras\temp}{noextras#1}
+\equivUC[\edef]{\temp hyphenmins}{#1hyphenmins}}
+\UPCASElang{english}
+\UPCASElang{italian}
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage[backend=biber]{biblatex}
+\addbibresource{Backmatter/Bibliografia.bib}
+\usepackage{indentfirst}
+\usepackage{geometry}
+\geometry{a4paper, top=20mm, bottom=20mm, left=35mm, right=20mm}
+\raggedbottom
+\linespread{1}
+
+% Altri pacchetti utili
+\usepackage[TM]{ar}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+\usepackage{caption}
+\captionsetup{labelsep=period, labelfont={bf}}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage[intlimits]{mathtools}
+\usepackage{siunitx}
+\sisetup{group-separator={}}
+\usepackage{subfig}
+\usepackage{rotating}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{floatflt}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{wrapfig}
+\usepackage{lipsum}
+\usepackage[nouppercase, swapnames]{frontespizio}
+\usepackage{adjustbox}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{lipsum}
+\usepackage{courier}
+\usepackage{xcolor}
+\usepackage{relsize}
+\usepackage{titlesec} 
+\usepackage{appendix}
+\usepackage{xspace}
+\usepackage{floatflt}
+\usepackage{textgreek}
+\usepackage{varioref}
+
+\input{Preambolo/Settings}
+\input{Preambolo/SettingsGlossary}
+
+% Nuovi comandi
+\newcommand\nbvspace[1][3]{\vspace*{\stretch{#1}}}
+\newcommand\nbstretchyspace{\spaceskip0.5em plus 0.25em minus 0.25em}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\theta}{\vartheta}
+\renewcommand{\phi}{\varphi}
+\input{Preambolo/AircraftStabilitySymbols}
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% INIZIO DEL DOCUMENTO
+% --------------------------------------------------------------------------------------------------------------------------------------------
+\begin{document}
+
+%--------------------------------------------------------------------------------------------------------------------------------------------
+% FRONTESPIZIO
+%--------------------------------------------------------------------------------------------------------------------------------------------
+\begin{frontespizio}
+\Universita{Napoli Federico II}
+\Divisione{Scuola Politecnica e delle Scienze di Base}
+\Corso[Laurea]{Ingegneria Aerospaziale}
+\Logo[3cm]{Immagini/Frontespizio/logounina}
+\Titoletto{Tesi di Laurea \\ in \\ Ingegneria Aerospaziale}
+\Titolo{Assessment of complete aircraft \\ lateral-directional stability and control characteristics \\ using JPAD (Java toolchain of Programs for Aircraft Design)}
+\Sottotitolo{\mbox {}\\[2cm]}
+\Candidato{\normalsize Carmine Vaselli \\ Matricola N35/1920}
+\Relatore{Prof. Ing. Agostino De Marco}
+\Correlatore{Ing. Manuela Ruocco}
+\Annoaccademico{2017/2018}
+\end{frontespizio}
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% DEDICA/FRASE
+% --------------------------------------------------------------------------------------------------------------------------------------------
+\newpage\null\thispagestyle{empty}
+\newpage\thispagestyle{empty}
+\null\vspace{\stretch{1}}
+\begin{flushright}
+\textit{Ever tried. Ever failed. No matter. \\ Try again. Fail again. Fail better.} \\
+-- Samuel Beckett
+\end{flushright}
+\vspace{\stretch{2}}\null
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% SOMMARIO
+% --------------------------------------------------------------------------------------------------------------------------------------------
+\newpage\null\thispagestyle{empty}
+\newpage\thispagestyle{empty}
+\frontmatter
+\input{Frontmatter/Sommario}
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% INDICE, ELENCO DELLE FIGURE E DELLE TABELLE
+% --------------------------------------------------------------------------------------------------------------------------------------------
+\tableofcontents
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% CAPITOLI
+% --------------------------------------------------------------------------------------------------------------------------------------------
+\mainmatter
+\input{Capitoli/Capitolo1}
+\input{Capitoli/Capitolo2}
+\input{Capitoli/Capitolo3}
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% APPENDICI
+% --------------------------------------------------------------------------------------------------------------------------------------------
+\newpage
+\appendix
+\pagestyle{appendici}
+\input{Appendici/Appendice1}
+\newpage
+\thispagestyle{empty}
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% LISTA DEI SIMBOLI E GLOSSARIO
+% --------------------------------------------------------------------------------------------------------------------------------------------
+\backmatter
+\pagestyle{backmatter}
+\glsaddall
+\glossarystyle{list}
+\markboth{}{}
+\cleardoublepage
+\printglossary[type=symbols]
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% BIBLIOGRAFIA
+% --------------------------------------------------------------------------------------------------------------------------------------------
+\printbibliography[heading=bibintoc]
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% FINE DEL DOCUMENTO
+% --------------------------------------------------------------------------------------------------------------------------------------------
+\newpage\null\thispagestyle{empty}
+\end{document}

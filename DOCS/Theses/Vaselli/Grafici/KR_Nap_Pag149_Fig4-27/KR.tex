@@ -1,0 +1,16 @@
+\input{../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=0, xmax=1,
+ymin=0, ymax=1,
+xlabel=$\eta$,ylabel=$K_\mathrm r$,
+grid
+]
+\addplot[black,patch type=cubic spline]plot file {prova1.dat} node[below, pos=0.5, yshift=27pt] {$\lambda_\text V = 0$};
+\addplot[black,patch type=cubic spline]plot file {prova2.dat} node[pos=0.45, yshift=-5.8pt, pin=145:{0.5}] {};
+\addplot[black,patch type=cubic spline]plot file {prova3.dat} node[below, pos=0.55] {1};
+\end{axis}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,32 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction to JPAD}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Software structure}{chapter.1}% 2
+\BOOKMARK [1][-]{section.1.2}{The Java Language}{chapter.1}% 3
+\BOOKMARK [1][-]{section.1.3}{Java choice}{chapter.1}% 4
+\BOOKMARK [0][-]{chapter.2}{Calculation formulas}{}% 5
+\BOOKMARK [1][-]{section.2.1}{Steady-state lateral force coefficient}{chapter.2}% 6
+\BOOKMARK [2][-]{subsection.2.1.1}{Sideslip angle effect}{section.2.1}% 7
+\BOOKMARK [2][-]{subsection.2.1.2}{Ailerons deflection effect}{section.2.1}% 8
+\BOOKMARK [2][-]{subsection.2.1.3}{Rudder deflection effect}{section.2.1}% 9
+\BOOKMARK [1][-]{section.2.2}{Steady-state rolling moment coefficient}{chapter.2}% 10
+\BOOKMARK [2][-]{subsection.2.2.1}{Dihedral effect}{section.2.2}% 11
+\BOOKMARK [2][-]{subsection.2.2.2}{Ailerons deflection effect}{section.2.2}% 12
+\BOOKMARK [2][-]{subsection.2.2.3}{Rudder deflection effect}{section.2.2}% 13
+\BOOKMARK [1][-]{section.2.3}{Steady-state yawing moment coefficient}{chapter.2}% 14
+\BOOKMARK [2][-]{subsection.2.3.1}{Weathercock effect}{section.2.3}% 15
+\BOOKMARK [2][-]{subsection.2.3.2}{Ailerons deflection effect}{section.2.3}% 16
+\BOOKMARK [2][-]{subsection.2.3.3}{Rudder deflection effect}{section.2.3}% 17
+\BOOKMARK [1][-]{section.2.4}{Unsteady-state lateral force coefficient}{chapter.2}% 18
+\BOOKMARK [2][-]{subsection.2.4.1}{Roll rate effect}{section.2.4}% 19
+\BOOKMARK [2][-]{subsection.2.4.2}{Yaw rate effect}{section.2.4}% 20
+\BOOKMARK [1][-]{section.2.5}{Unsteady-state rolling moment coefficient}{chapter.2}% 21
+\BOOKMARK [2][-]{subsection.2.5.1}{Roll rate effect}{section.2.5}% 22
+\BOOKMARK [2][-]{subsection.2.5.2}{Yaw rate effect}{section.2.5}% 23
+\BOOKMARK [1][-]{section.2.6}{Unsteady-state yawing moment coefficient}{chapter.2}% 24
+\BOOKMARK [2][-]{subsection.2.6.1}{Roll rate effect}{section.2.6}% 25
+\BOOKMARK [2][-]{subsection.2.6.2}{Yaw rate effect}{section.2.6}% 26
+\BOOKMARK [0][-]{chapter.3}{Example of application on a regional turboprop}{}% 27
+\BOOKMARK [0][-]{appendix.A}{HDF dataset and database reader creation}{}% 28
+\BOOKMARK [1][-]{section.A.1}{Chart digitization}{appendix.A}% 29
+\BOOKMARK [1][-]{section.A.2}{Creation of an HDF file with MATLAB}{appendix.A}% 30
+\BOOKMARK [0][-]{section*.43}{List of symbols}{}% 31
+\BOOKMARK [0][-]{appendix*.45}{Bibliography}{}% 32

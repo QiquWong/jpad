@@ -1,0 +1,98 @@
+%******************************************************************************************
+%
+% AUTHOR:           Agostino De Marco
+% DESCRIPTION:      This is "_glossaty.tex", an auxiliary LaTeX source file.
+%                   Here we collect all customizations related to package glossaries
+%                   (Glossaries, Nomenclature, Lists of Symbols and Acronyms).
+%
+% See: http://www.latex-community.org/index.php?option=com_content&view=article&id=263:glossaries-nomenclature-lists-of-symbols-and-acronyms&catid=55:latex-general&Itemid=114
+%
+%
+% FROM THE MANUAL: http://texdoc.net/texmf-dist/doc/latex/glossaries/glossariesbegin.pdf
+%
+% Note that the glossaries package must be loaded after the hyperref package
+% (contrary to the general advice that hyperref should be loaded last).
+% The glossaries package should also be loaded after html, inputenc, babel and ngerman.
+%******************************************************************************************
+
+%------------------------------------------------------------------------------------------
+% Meta-commands for the TeXworks editor
+%
+% !TeX root = ./Tesi.tex
+% !TEX encoding = UTF-8
+% !TEX program = pdflatex
+%------------------------------------------------------------------------------------------
+
+\usepackage[%
+            acronym,%        include a list of acronyms
+            %style=tree,%
+            translate=false,%
+            sort=standard,% def,% standard, use
+            nonumberlist,%  do not display page numbers in nomenclatures
+            toc% print glossaries/nomenclatures in the table of contents
+            ]{glossaries}
+
+%% http://en.wikibooks.org/wiki/LaTeX/Glossary
+\usepackage{xparse}
+\DeclareDocumentCommand{\newdualentry}{ O{} O{} m m m m } {
+  \newglossaryentry{gls-#3}{name={#5},text={#5\glsadd{#3}},
+    description={#6},#1
+  }
+  \newacronym[see={[Glossary:]{gls-#3}},#2]{#3}{#4}{#5\glsadd{gls-#3}}
+}
+%
+% Use as follows:
+%
+%\newdualentry{OWD} % label
+%  {OWD}            % abbreviation
+%  {One-Way Delay}  % long form
+%  {The time a packet uses through a network from one host to another} % description
+
+
+\newcommand{\myGlossaryItemColorMix}{%
+  red!30!black%
+}
+\newcommand{\myGlossaryItemColor}{\color{\myGlossaryItemColorMix}}
+
+\renewcommand*{\glstextformat}[1]{\textcolor{\myGlossaryItemColorMix}{#1}}
+
+%\usepackage{glossary-longragged}
+
+\addto\captionsitalian{%
+   \renewcommand*{\glossaryname}{Glossary}%
+   \renewcommand*{\acronymname}{Acronyms}%
+   \renewcommand*{\entryname}{Notation}%
+   \renewcommand*{\descriptionname}{Description}%
+   \renewcommand*{\symbolname}{Symbol}%
+   \renewcommand*{\pagelistname}{Page List}% Page List
+   \renewcommand*{\glssymbolsgroupname}{Symbols}%
+   \renewcommand*{\glsnumbersgroupname}{Numbers}%
+}
+
+\newglossary{symbols}{sym}{sbl}{List of symbols}
+
+\makeglossaries % This needs to come after any occurrence of \newglossary
+
+\loadglsentries{Backmatter/Glossario}
+
+%%% HOW TO update glossaries and nomenclature:
+%%%
+%%%   1.   define a new entry in file Tesi_Glossary.tex
+%%%         e.g. one labelled "x:Body"
+%%%
+%%%   2.   use the entry in the document, 
+%%%         e.g. "... here we have \gls{x:Body} pointing towards the front ..."
+%%%
+%%%         [this is not strictly necessary, as I've given the command \glsaddall
+%%%          that adds all the entries to the glossaries without referencing each 
+%%%          one explicitly]
+%%%
+%%%   3.   compile the document, via TeXworks or from command line: 
+%%%         > pdflatex Tesi
+%%%
+%%%   4.   create the necessary files using the perl script makeglossaries from command line (if you don’t have Perl installed use
+%%%          makeglossaries-lite instead):
+%%%         > makeglossaries Tesi (or > makeglossaries-lite Tesi)
+%%%
+%%%   5.   re-compile the document, via TeXworks or from command line: 
+%%%         > pdflatex Tesi

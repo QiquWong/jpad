@@ -1,0 +1,314 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.8 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \sortlist[entry]{nty/global/}
+    \entry{Grabit}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{%
+           family={Authors},
+           familyi={A\bibinitperiod},
+           given={Various},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authornamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorfullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{3248043b5fe8d0a34dab5ab6b8d4309b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Grabit description}
+      \verb{url}
+      \verb https://www.mathworks.com/matlabcentral/fileexchange/7173-grabit
+      \endverb
+    \endentry
+    \entry{wiki:java}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{%
+           family={Authors},
+           familyi={A\bibinitperiod},
+           given={Various},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authornamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorfullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{3248043b5fe8d0a34dab5ab6b8d4309b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Java (programming language)}
+      \field{year}{2016}
+      \field{dateera}{ce}
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Java_(programming_language)
+      \endverb
+    \endentry
+    \entry{AAA}{online}{}
+      \name{author}{1}{}{%
+        {{hash=797decb4fb8e3e97d6c626f9fd8ba474}{%
+           family={Corporation},
+           familyi={C\bibinitperiod},
+           given={DAR},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{797decb4fb8e3e97d6c626f9fd8ba474}
+      \strng{fullhash}{797decb4fb8e3e97d6c626f9fd8ba474}
+      \strng{authornamehash}{797decb4fb8e3e97d6c626f9fd8ba474}
+      \strng{authorfullhash}{797decb4fb8e3e97d6c626f9fd8ba474}
+      \field{sortinit}{C}
+      \field{sortinithash}{095692fd22cc3c74d7fe223d02314dbd}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Advanced Aircraft Analysis}
+      \field{year}{2017}
+      \field{dateera}{ce}
+      \verb{url}
+      \verb http://www.darcorp.com/Software/AAA
+      \endverb
+    \endentry
+    \entry{paper:JPAD}{book}{}
+      \name{author}{6}{}{%
+        {{hash=b1f766dfcb1122a0e47f0c7b9b6f01ca}{%
+           family={De\bibnamedelima Marco},
+           familyi={D\bibinitperiod\bibinitdelim M\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=b0f6f7ff3adc7d66eed65b62e9ec9989}{%
+           family={Cusati},
+           familyi={C\bibinitperiod},
+           given={V.},
+           giveni={V\bibinitperiod}}}%
+        {{hash=46850eac1912b850a51f410e52d13ecf}{%
+           family={Trifari},
+           familyi={T\bibinitperiod},
+           given={V.},
+           giveni={V\bibinitperiod}}}%
+        {{hash=3f79e5ac3da16c210b965084710ca470}{%
+           family={Ruocco},
+           familyi={R\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=17d7540fa988e76824185545af56573d}{%
+           family={Nicolosi},
+           familyi={N\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+        {{hash=ef7c8d3810c3df4a006fa96d0451f8e7}{%
+           family={Della\bibnamedelima Vecchia},
+           familyi={D\bibinitperiod\bibinitdelim V\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Bucarest, Romania}%
+      }
+      \list{publisher}{1}{%
+        {CEAS}%
+      }
+      \strng{namehash}{06228a82e03caa603ae207e5fdd82800}
+      \strng{fullhash}{c897862fac4209bc40bf50f1f99ea520}
+      \strng{authornamehash}{06228a82e03caa603ae207e5fdd82800}
+      \strng{authorfullhash}{c897862fac4209bc40bf50f1f99ea520}
+      \field{sortinit}{D}
+      \field{sortinithash}{d10b5413de1f3d197b20897dd0d565bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{A Java Toolchain of Programs for Aircraft Design}
+      \field{year}{2017}
+      \field{dateera}{ce}
+    \endentry
+    \entry{javaoracle}{other}{}
+      \name{author}{5}{}{%
+        {{hash=d4d4046e8aceee9866601ecfba296fd4}{%
+           family={Gosling},
+           familyi={G\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=ade2be228a119220a3b2fbaffb1afe32}{%
+           family={Joy},
+           familyi={J\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+        {{hash=c8b5438b55e0cbcfe5b262086379bc6f}{%
+           family={Steele},
+           familyi={S\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+        {{hash=241de479085077bef9c0365caf333219}{%
+           family={Bracha},
+           familyi={B\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+        {{hash=2d5cf194c399d976d6af9b9661a4bf13}{%
+           family={Buckley},
+           familyi={B\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{43f3942a6d2138dc412ff10415b3994b}
+      \strng{fullhash}{f4718b441c90752d8232c7f86a376234}
+      \strng{authornamehash}{43f3942a6d2138dc412ff10415b3994b}
+      \strng{authorfullhash}{f4718b441c90752d8232c7f86a376234}
+      \field{sortinit}{G}
+      \field{sortinithash}{618d986594b7198ba52cf8b00d348f3f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{The Java Language Specification}
+      \field{year}{2015}
+      \field{dateera}{ce}
+    \endentry
+    \entry{HDF}{online}{}
+      \name{author}{1}{}{%
+        {{hash=30143ad71cc9c896350269d7f84b99a7}{%
+           family={Groups},
+           familyi={G\bibinitperiod},
+           given={Hdf},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{30143ad71cc9c896350269d7f84b99a7}
+      \strng{fullhash}{30143ad71cc9c896350269d7f84b99a7}
+      \strng{authornamehash}{30143ad71cc9c896350269d7f84b99a7}
+      \strng{authorfullhash}{30143ad71cc9c896350269d7f84b99a7}
+      \field{sortinit}{G}
+      \field{sortinithash}{618d986594b7198ba52cf8b00d348f3f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{HDF View Description}
+      \verb{url}
+      \verb https://support.hdfgroup.org/products/java/hdfview/
+      \endverb
+    \endentry
+    \entry{book:USAF_DATCOM}{book}{}
+      \name{author}{1}{}{%
+        {{hash=921cd1a3441b5c38befc868516b6853d}{%
+           family={Hoak},
+           familyi={H\bibinitperiod},
+           given={D.\bibnamedelimi E.},
+           giveni={D\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Air Force Wright Aeronautical Laboratories}%
+      }
+      \strng{namehash}{921cd1a3441b5c38befc868516b6853d}
+      \strng{fullhash}{921cd1a3441b5c38befc868516b6853d}
+      \strng{authornamehash}{921cd1a3441b5c38befc868516b6853d}
+      \strng{authorfullhash}{921cd1a3441b5c38befc868516b6853d}
+      \field{sortinit}{H}
+      \field{sortinithash}{2f664b453ec75da1fe3804ca92633405}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{The USAF Stability and Control DATCOM}
+      \field{year}{1960}
+      \field{dateera}{ce}
+    \endentry
+    \entry{Piano5}{online}{}
+      \name{author}{1}{}{%
+        {{hash=8aef784a3ed5279a08460579c78c04ea}{%
+           family={Ltd.},
+           familyi={L\bibinitperiod},
+           given={Lissys},
+           giveni={L\bibinitperiod}}}%
+      }
+      \strng{namehash}{8aef784a3ed5279a08460579c78c04ea}
+      \strng{fullhash}{8aef784a3ed5279a08460579c78c04ea}
+      \strng{authornamehash}{8aef784a3ed5279a08460579c78c04ea}
+      \strng{authorfullhash}{8aef784a3ed5279a08460579c78c04ea}
+      \field{sortinit}{L}
+      \field{sortinithash}{7bba64db83423e3c29ad597f3b682cf3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Piano 5 for Windows}
+      \field{year}{2017}
+      \field{dateera}{ce}
+      \verb{url}
+      \verb http://www.piano.aero
+      \endverb
+    \endentry
+    \entry{book:Napolitano}{book}{}
+      \name{author}{1}{}{%
+        {{hash=169224cea4af060bf2df9a432ed125f2}{%
+           family={Napolitano},
+           familyi={N\bibinitperiod},
+           given={M.\bibnamedelimi R.},
+           giveni={M\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {John Wiley}%
+      }
+      \strng{namehash}{169224cea4af060bf2df9a432ed125f2}
+      \strng{fullhash}{169224cea4af060bf2df9a432ed125f2}
+      \strng{authornamehash}{169224cea4af060bf2df9a432ed125f2}
+      \strng{authorfullhash}{169224cea4af060bf2df9a432ed125f2}
+      \field{sortinit}{N}
+      \field{sortinithash}{1163c28585427c673ad5a010cbf82f52}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Aircraft Dynamics: From Modeling to Simulation}
+      \field{year}{2012}
+      \field{dateera}{ce}
+    \endentry
+    \entry{java}{other}{}
+      \name{author}{1}{}{%
+        {{hash=30162ed78b6c10f731411f2fc440c24f}{%
+           family={Oracle},
+           familyi={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{30162ed78b6c10f731411f2fc440c24f}
+      \strng{fullhash}{30162ed78b6c10f731411f2fc440c24f}
+      \strng{authornamehash}{30162ed78b6c10f731411f2fc440c24f}
+      \strng{authorfullhash}{30162ed78b6c10f731411f2fc440c24f}
+      \field{sortinit}{O}
+      \field{sortinithash}{f5d80ef71b5b58852663ecfd775b175a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{1.2 Design Goals of the Java Programming Language}
+      \field{year}{2013}
+      \field{dateera}{ce}
+    \endentry
+    \entry{RDS}{online}{}
+      \name{author}{1}{}{%
+        {{hash=1feca8ccb2a85717ba0a275bdc607717}{%
+           family={Raymer},
+           familyi={R\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{1feca8ccb2a85717ba0a275bdc607717}
+      \strng{fullhash}{1feca8ccb2a85717ba0a275bdc607717}
+      \strng{authornamehash}{1feca8ccb2a85717ba0a275bdc607717}
+      \strng{authorfullhash}{1feca8ccb2a85717ba0a275bdc607717}
+      \field{sortinit}{R}
+      \field{sortinithash}{c15bc8eb6936bc6b3c8baa9e8575af53}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{RDS}
+      \field{year}{2017}
+      \field{dateera}{ce}
+      \verb{url}
+      \verb http://www.aircraftdesign.com/rds.shtml
+      \endverb
+    \endentry
+  \endsortlist
+\endrefsection
+\endinput
+

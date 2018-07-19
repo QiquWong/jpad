@@ -1,0 +1,22 @@
+\input{../../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=0, xmax=10,
+ymin=0, ymax=10,
+xlabel=$\AR$,ylabel=$Y1$,
+grid,
+legend style={
+cells={anchor=east},
+legend pos=south east,
+}
+]
+\addplot[blue,patch type=cubic spline]plot file {prova1.dat};
+\addplot[red,patch type=cubic spline]plot file {prova2.dat};
+\addplot[green,patch type=cubic spline]plot file {prova3.dat};
+\addplot[yellow,patch type=cubic spline]plot file {prova4.dat};
+\legend{$\lambda=0$,$\lambda=0.25$,$\lambda=0.5$,$\lambda=1$}
+\end{axis}
+\end{tikzpicture}
+\end{document}

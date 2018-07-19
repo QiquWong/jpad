@@ -1,0 +1,19 @@
+\input{../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=-1, xmax=1,
+ymin=0, ymax=2,
+ytick={0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2},
+xlabel=$\dfrac{Z_\mathrm W}{d/2}$,ylabel=$K_\textrm{int}$,
+grid
+]
+\addplot[black]plot coordinates {
+(-1, 1.88)
+(0, 0)
+(1, 1.5)
+};
+\end{axis}
+\end{tikzpicture}
+\end{document}

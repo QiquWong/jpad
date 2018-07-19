@@ -1,0 +1,23 @@
+\input{../../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=0, xmax=6,
+ymin=-0.001, ymax=0.007,
+xlabel=$Y2$,ylabel=$K_\text N$,
+grid,
+legend style={
+cells={anchor=east},
+legend pos=outer north east,
+}
+]
+\addplot[blue,patch type=cubic spline]plot file {prova1.dat};
+\addplot[red,patch type=cubic spline]plot file {prova2.dat};
+\addplot[green,patch type=cubic spline]plot file {prova3.dat};
+\addplot[yellow,patch type=cubic spline]plot file {prova4.dat};
+\addplot[black,patch type=cubic spline]plot file {prova5.dat};
+\legend{$z_{\text {MAX}}/w_{\text {MAX}}=0.5$,$z_{\text {MAX}}/w_{\text {MAX}}=0.6$,$z_{\text {MAX}}/w_{\text {MAX}}=0.8$,$z_{\text {MAX}}/w_{\text {MAX}}=1.0$,$z_{\text {MAX}}/w_{\text {MAX}}=1.2$}
+\end{axis}
+\end{tikzpicture}
+\end{document}

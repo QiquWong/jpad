@@ -1,0 +1,28 @@
+\input{../../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=0.1, xmax=0.8,
+ymin=-1, ymax=6,
+xlabel=$l_\text {CG}/l_\text B$,ylabel=$Y1$,
+grid,
+legend style={
+cells={anchor=east},
+legend pos=outer north east,
+}
+]
+\addplot[blue,patch type=cubic spline]plot file {prova1.dat};
+\addplot[red,patch type=cubic spline]plot file {prova2.dat};
+\addplot[green,patch type=cubic spline]plot file {prova3.dat};
+\addplot[yellow,patch type=cubic spline]plot file {prova4.dat};
+\addplot[black,patch type=cubic spline]plot file {prova5.dat};
+\addplot[brown,patch type=cubic spline]plot file {prova6.dat};
+\addplot[pink,patch type=cubic spline]plot file {prova7.dat};
+\addplot[orange,patch type=cubic spline]plot file {prova8.dat};
+\addplot[purple,patch type=cubic spline]plot file {prova9.dat};
+\addplot[violet,patch type=cubic spline]plot file {prova10.dat};
+\legend{$l^2_\text B/S_{\text {B}_\text s}=2.5$,$l^2_\text B/S_{\text {B}_\text s}=3.0$,$l^2_\text B/S_{\text {B}_\text s}=4.0$,$l^2_\text B/S_{\text {B}_\text s}=5.0$,$l^2_\text B/S_{\text {B}_\text s}=6.0$,$l^2_\text B/S_{\text {B}_\text s}=7.0$,$l^2_\text B/S_{\text {B}_\text s}=8.0$,$l^2_\text B/S_{\text {B}_\text s}=10$,$l^2_\text B/S_{\text {B}_\text s}=14$,$l^2_\text B/S_{\text {B}_\text s}=20$}
+\end{axis}
+\end{tikzpicture}
+\end{document}

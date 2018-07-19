@@ -1,0 +1,17 @@
+\input{../../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=1, xmax=8,
+ymin=-0.012, ymax=0.001,
+xlabel=$\AR$,ylabel=$\left(\dfrac{C_{\mathcal L_{\beta}}}{C_L}
+ \right)_\mathrm{\mspace{-13mu}\AR} \,\,\,\bigl (\si{deg}^{-1}\bigr )$,
+grid
+]
+\addplot[black,patch type=cubic spline]plot file {prova1.dat} node[below, pos=0.2] {0};
+\addplot[black,patch type=cubic spline]plot file {prova2.dat} node[below, pos=0.2, yshift=-3pt] {0.5};
+\addplot[black,patch type=cubic spline]plot file {prova3.dat} node[below, pos=0.2, yshift=-25pt] {$\lambda_\text W = 1$};
+\end{axis}
+\end{tikzpicture}
+\end{document}

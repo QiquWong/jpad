@@ -1,0 +1,19 @@
+\input{../../../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=0, xmax=1,
+ymin=0, ymax=0.9,
+ytick={0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9},
+title={$\lambda_\text{W} = 1; \dfrac{2 \pi \AR}{C_{L_{\alpha,\text W}}} = 8$},
+xlabel={$\eta = \dfrac{y}{b/2} $},ylabel=$RME$,
+grid
+]
+\addplot[black,patch type=cubic spline]plot file {prova1.dat} node[below, pos=0.95, yshift=-5pt] {$-40\si{\degree}$};
+\addplot[black,patch type=cubic spline]plot file {prova2.dat} node[above, pos=0.85, yshift=11pt] {$\Lambda_\beta=0\si{\degree}$};
+\addplot[black,patch type=cubic spline]plot file {prova3.dat} node[below, pos=0.97, yshift=-1pt] {$40\si{\degree}$};
+\addplot[black,patch type=cubic spline]plot file {prova4.dat} node[below, pos=0.95, yshift=-2pt] {$60\si{\degree}$};
+\end{axis}
+\end{tikzpicture}
+\end{document}

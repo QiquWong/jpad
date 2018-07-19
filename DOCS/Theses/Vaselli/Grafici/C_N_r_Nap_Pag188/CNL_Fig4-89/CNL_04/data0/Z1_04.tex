@@ -1,0 +1,23 @@
+\input{../../../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=1, xmax=10,
+ymin=0, ymax=5.5,
+title=$\xi_{AC} - \xi_{CG} \, \text{=} \, 0.4$,
+xlabel=$\AR$,ylabel=$Y$,
+grid,
+legend style={
+cells={anchor=east},
+legend pos=outer north east,
+}
+]
+\addplot[blue,patch type=cubic spline]plot file {prova1.dat};
+\addplot[red,patch type=cubic spline]plot file {prova2.dat};
+\addplot[green,patch type=cubic spline]plot file {prova3.dat};
+\addplot[yellow,patch type=cubic spline]plot file {prova4.dat};
+%\legend{$\Lambda_{c/4}=\mp 60$,$\Lambda_{c/4}=\mp 50$,$\Lambda_{c/4}=\mp 40$,$\Lambda_{c/4}= 0$ }
+\end{axis}
+\end{tikzpicture}
+\end{document}

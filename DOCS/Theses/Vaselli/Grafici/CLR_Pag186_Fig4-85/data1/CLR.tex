@@ -1,0 +1,23 @@
+\input{../../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=0, xmax=10,
+ymin=0, ymax=0.7,
+xlabel=$Y1$,ylabel=$\left(\dfrac{C_{\mathcal L_\mathrm r}}{C_L}\right)_{M=0,C_L=0}$,
+grid,
+legend style={
+cells={anchor=east},
+legend pos=north west,
+}
+]
+\addplot[blue,patch type=cubic spline]plot file {prova1.dat};
+\addplot[red,patch type=cubic spline]plot file {prova2.dat};
+\addplot[green,patch type=cubic spline]plot file {prova3.dat};
+\addplot[yellow,patch type=cubic spline]plot file {prova4.dat};
+\addplot[black,patch type=cubic spline]plot file {prova5.dat};
+\legend{$\Lambda_{c/4}=0$,$\Lambda_{c/4}=15$,$\Lambda_{c/4}=30$,$\Lambda_{c/4}=45$,$\Lambda_{c/4}=60$}
+\end{axis}
+\end{tikzpicture}
+\end{document}

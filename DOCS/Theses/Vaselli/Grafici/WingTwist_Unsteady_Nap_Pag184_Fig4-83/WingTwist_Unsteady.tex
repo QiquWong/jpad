@@ -1,0 +1,20 @@
+\input{../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=2, xmax=12,
+ymin=-0.0010, ymax=0.0010,
+ytick={-0.001, -0.0008, -0.0006, -0.0004, -0.0002, 0, 0.0002, 0.0004, 0.0006, 0.0008, 0.001},
+xlabel=$\AR$,ylabel=$\dfrac{\text \textDelta C_{\mathcal N_p}}{\varepsilon_\mathrm W}\,\,\,( \si{rad} \cdot \si{deg} )^{-1} $,
+grid
+]
+\addplot[black,patch type=cubic spline]plot file {prova1.dat} node[above, pos=0.5, yshift=2pt] {$\lambda_\text W = 0$};
+\addplot[black,patch type=cubic spline]plot file {prova2.dat} node[above, pos=0.6] {0.2};
+\addplot[black,patch type=cubic spline]plot file {prova3.dat} node[above, pos=0.65] {0.4};
+\addplot[black,patch type=cubic spline]plot file {prova4.dat} node[above, pos=0.7, yshift=-1pt] {0.6};
+\addplot[black,patch type=cubic spline]plot file {prova5.dat} node[above, pos=0.77, yshift=-1pt] {0.8};
+\addplot[black,patch type=cubic spline]plot file {prova6.dat} node[above, pos=0.87, yshift=-2pt] {1};
+\end{axis}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,23 @@
+\input{../../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=0, xmax=6,
+ymin=0, ymax=7,
+xlabel=$Y1$,ylabel=$Y2$,
+grid,
+legend style={
+cells={anchor=east},
+legend pos=outer north east,
+}
+]
+\addplot[blue,patch type=cubic spline]plot file {prova1.dat};
+\addplot[red,patch type=cubic spline]plot file {prova2.dat};
+\addplot[green,patch type=cubic spline]plot file {prova3.dat};
+\addplot[yellow,patch type=cubic spline]plot file {prova4.dat};
+\addplot[black,patch type=cubic spline]plot file {prova5.dat};
+\legend{$\sqrt{Z_1/Z_2}=0.8$,$\sqrt{Z_1/Z_2}=1.0$,$\sqrt{Z_1/Z_2}=1.2$,$\sqrt{Z_1/Z_2}=1.4$,$\sqrt{Z_1/Z_2}=1.6$}
+\end{axis}
+\end{tikzpicture}
+\end{document}

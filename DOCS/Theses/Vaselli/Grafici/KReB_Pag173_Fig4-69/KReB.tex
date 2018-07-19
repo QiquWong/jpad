@@ -1,0 +1,22 @@
+\input{../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{semilogyaxis}[
+xmin=1, xmax=2.2,
+ymin=1*1000000, ymax=370.05*1000000,
+xlabel={$K_{{\mathrm {Re}}_\mathrm B}$},ylabel={$Re_{l_\mathrm B}$},
+grid
+]
+\addplot[black]plot coordinates {
+(1,1*1000000)
+(1.2,2.71*1000000)
+(1.4,7.43*1000000)
+(1.6,19.92*1000000)
+(1.8,53.51*1000000)
+(2,137.11*1000000)
+(2.2,370.05*1000000)
+};
+\end{semilogyaxis}
+\end{tikzpicture}
+\end{document}

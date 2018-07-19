@@ -1,0 +1,20 @@
+\input{../../../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=0, xmax=5.5,
+ymin=-1, ymax=1,
+xlabel=$Y$,ylabel=$C_{\mathcal N_\mathrm r}/C^2_L \,\,\,(\si{rad}^{-1})$,
+grid,
+legend style={
+cells={anchor=east},
+legend pos=north west,
+}
+]
+\addplot[blue,patch type=cubic spline]plot file {prova1.dat};
+\addplot[red,patch type=cubic spline]plot file {prova2.dat};
+\legend{$\lambda=0$,$\lambda=1$}
+\end{axis}
+\end{tikzpicture}
+\end{document}

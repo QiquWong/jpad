@@ -1,0 +1,31 @@
+\input{../../_graphspreamble}
+\begin{document}
+\pgfplotsset{width=10cm,compat=1.5.1}
+\begin{tikzpicture}
+\begin{axis}[
+xmin=-20, xmax=70,
+ymin=-0.4, ymax=-0.05,
+xtick = {-20, -10, 0, 10, 20, 30, 40, 50, 60, 70},
+ytick={-0.4, -0.35, -0.3, -0.25, -0.2, -0.15, -0.1, -0.05},
+yticklabel style={/pgf/number format/precision=4},
+title= {$\lambda_\textrm{W} = 0$},
+xlabel=$\tan^{-1} \left( \dfrac{\tan \Lambda_{c/4}}{\sqrt{1 - M^2}}  \right)\,\,\,(\si{deg})$,
+ylabel=$RDP\,\,\, \bigl (\si{rad}^{-1} \bigr )$,
+grid
+]
+\addplot[black,patch type=cubic spline]plot file {prova1.dat} node[above,pos=0.580] {$\dfrac{2 \pi \AR}{C_{L_{\alpha,\text W}}} = 1.5$};
+\addplot[black,patch type=cubic spline]plot file {prova2.dat} node[above,pos=0.550, yshift=-2] {2};
+\addplot[black,patch type=cubic spline]plot file {prova3.dat} node[above,pos=0.520, yshift=-2] {2.5};
+\addplot[black,patch type=cubic spline]plot file {prova4.dat} node[above,pos=0.500, yshift=-2] {3};
+\addplot[black,patch type=cubic spline]plot file {prova5.dat} node[above,pos=0.470, yshift=-2] {3.5};
+\addplot[black,patch type=cubic spline]plot file {prova6.dat} node[above,pos=0.440, yshift=-2] {4};
+\addplot[black,patch type=cubic spline]plot file {prova7.dat} node[above,pos=0.410, yshift=-2] {4.5};
+\addplot[black,patch type=cubic spline]plot file {prova8.dat} node[below,pos=0.380, yshift=1.5] {5};
+\addplot[black,patch type=cubic spline]plot file {prova9.dat} node[below,pos=0.350, yshift=1.5] {6};
+\addplot[black,patch type=cubic spline]plot file {prova10.dat} node[below,pos=0.315, yshift=1.5] {7};
+\addplot[black,patch type=cubic spline]plot file {prova11.dat} node[below,pos=0.280, yshift=2] {8};
+\addplot[black,patch type=cubic spline]plot file {prova12.dat} node[below,pos=0.230, yshift=2] {9};
+\addplot[black,patch type=cubic spline]plot file {prova13.dat} node[below,pos=0.17] {10};
+\end{axis}
+\end{tikzpicture}
+\end{document}
