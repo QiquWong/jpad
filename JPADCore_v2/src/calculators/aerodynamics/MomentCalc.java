@@ -1342,7 +1342,7 @@ public class MomentCalc {
 				Math.pow(wingSpan.doubleValue(SI.METER), 2)/wingSurface.doubleValue(SI.SQUARE_METRE),
 				tailconeShape
 				);
-		double surfaceRatio = FusNacGeometryCalc.calculateSfront(fusDiameter)/wingSurface.doubleValue(SI.SQUARE_METRE);
+		double surfaceRatio = FusNacGeometryCalc.calculateSfront(fusDiameter).doubleValue(SI.SQUARE_METRE)/wingSurface.doubleValue(SI.SQUARE_METRE);
 		
 		return (fusDesDatabaseReader.getCNbFR() +
 				fusDesDatabaseReader.getdCNbn() +

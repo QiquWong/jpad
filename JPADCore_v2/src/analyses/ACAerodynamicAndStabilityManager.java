@@ -76,6 +76,7 @@ import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
 import calculators.aerodynamics.SideForceCalc;
+import calculators.geometry.FusNacGeometryCalc;
 import calculators.plots.AerodynamicPlots;
 import calculators.stability.StabilityCalculators;
 import configuration.MyConfiguration;
@@ -228,12 +229,12 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaTotal = new HashMap<>();
 	private Map<MethodEnum, Double> _cNDeltaA = new HashMap<>();
 	private Map<MethodEnum, Map<Amount<Angle>, List<Tuple2<Double, Double>>>> _cNDeltaR = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpWing = new HashMap<>(); //
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpWing = new HashMap<>(); 
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpVertical = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpTotal = new HashMap<>(); //
-	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNrWing = new HashMap<>(); //
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpTotal = new HashMap<>();
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNrWing = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNrVertical = new HashMap<>();
-	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNrTotal = new HashMap<>(); //
+	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNrTotal = new HashMap<>(); 
 	private Map<MethodEnum, List<Tuple2<Double, List<Double>>>> _cNFuselage = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, List<Double>>>> _cNVertical = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, List<Double>>>> _cNWing = new HashMap<>();
@@ -7198,7 +7199,6 @@ public class ACAerodynamicAndStabilityManager {
 		Double adimensionalVTailMomentumPole = null;
 		Double adimensionalCanardMomentumPole = null;
 		Double adimensionalFuselageMomentumPole = null;
-		Double fuselageSideSurfaceRatio = null;
 		Double horizontalTailDynamicPressureRatio = null;
 		Double verticalTailDynamicPressureRatio = null;
 		
@@ -7406,22 +7406,6 @@ public class ACAerodynamicAndStabilityManager {
 		String adimensionalFuselageMomentumPoleProperty = reader.getXMLPropertyByPath("//global_data/adimensional_fuselage_momentum_pole");
 		if(adimensionalFuselageMomentumPoleProperty != null)
 			adimensionalFuselageMomentumPole = Double.valueOf(adimensionalFuselageMomentumPoleProperty);
-		}
-		
-		//---------------------------------------------------------------
-		// SIDE SURFACE RATIO FUSELAGE
-		String sideSurfaceRatioFuselageFromFileString = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//global_data/@fuselage_side_surface_ratio_from_file");
-		
-		if(sideSurfaceRatioFuselageFromFileString.equalsIgnoreCase("FALSE")){
-			// TODO Add a function that calculates the fuselage side surface ratio?
-		}
-		else {
-			String fuselageSideSurfaceRatioProperty = reader.getXMLPropertyByPath("//global_data/fuselage_side_surface_ratio");
-			if(fuselageSideSurfaceRatioProperty != null)
-				fuselageSideSurfaceRatio = Double.valueOf(fuselageSideSurfaceRatioProperty);
 		}
 		
 		//---------------------------------------------------------------
@@ -13965,7 +13949,6 @@ public class ACAerodynamicAndStabilityManager {
 				.addAllBetaVerticalTailForDistribution(betaVerticalTailArrayForDistributions)
 				.addAllAlphaCanardForDistribution(alphaCanardArrayForDistributions)
 				.setWingNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseWing)
-				.setFuselageSideSurfaceRatio(fuselageSideSurfaceRatio)
 				.setHTailNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseHTail)
 				.setVTailNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseVTail)
 				.setCanardNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseCanard)
@@ -21396,9 +21379,16 @@ public class ACAerodynamicAndStabilityManager {
 			// Assuming that max height fuselage and max width fuselage are the height and the width of the cylinder trunk fuselage
 			Amount<Length> zMax = _theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight();
 			Amount<Length> wMax = _theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderWidth();
-			Amount<Area> sideSurfaceFuselage = Amount.valueOf(
-					lengthFuselage.doubleValue(SI.METER)*zMax.doubleValue(SI.METER)*_theAerodynamicBuilderInterface.getFuselageSideSurfaceRatio(),
-					SI.SQUARE_METRE
+//			Amount<Area> sideSurfaceFuselage = Amount.valueOf(
+//					lengthFuselage.doubleValue(SI.METER)*zMax.doubleValue(SI.METER)
+//					*_theAerodynamicBuilderInterface.getFuselageSideSurfaceRatio(),
+//					SI.SQUARE_METRE
+//					);
+			Amount<Area> sideSurfaceFuselage = FusNacGeometryCalc.calculateLateralSurface(
+					_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getOutlineXZUpperCurveX(), 
+					_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getOutlineXZUpperCurveZ(),
+					_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getOutlineXZLowerCurveX(), 
+					_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getOutlineXZLowerCurveZ()
 					);
 			double reynoldsFuselage = AerodynamicCalc.calculateReynolds(
 					_currentAltitude.doubleValue(SI.METER),

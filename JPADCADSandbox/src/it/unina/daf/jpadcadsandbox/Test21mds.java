@@ -45,8 +45,8 @@ public class Test21mds {
 				ComponentEnum.FUSELAGE,
 				ComponentEnum.WING,
 				ComponentEnum.HORIZONTAL_TAIL,
-				ComponentEnum.VERTICAL_TAIL,
-				ComponentEnum.CANARD
+				ComponentEnum.VERTICAL_TAIL
+//				ComponentEnum.CANARD
 				);
 		
 //		allShapes.addAll(fuselageShapes);
@@ -56,7 +56,8 @@ public class Test21mds {
 //		allShapes.addAll(canardShapes);
 		
 //		AircraftUtils.getAircraftSolidFile(allShapes, "VERTICAL", FileExtension.STEP);
-		AircraftUtils.getAircraftSolidFile(allShapes, "IRON_CANARD", FileExtension.STEP);
+//		AircraftUtils.getAircraftSolidFile(allShapes, "IRON_CANARD", FileExtension.STEP);
+		AircraftUtils.getAircraftSolidFile(allShapes, "CS300", FileExtension.STEP);
 	}
 
 }

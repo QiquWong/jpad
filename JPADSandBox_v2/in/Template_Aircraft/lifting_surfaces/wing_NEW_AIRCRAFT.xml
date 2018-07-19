@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jpad_config>
+    <wing equivalent="false" id="JPAD Test Wing DAF - 2016" mirrored="true">
+        <global_data>
+            <main_spar_non_dimensional_position ref_to="LOCAL_CHORD" type="PERCENT_CHORD">0.2500</main_spar_non_dimensional_position>
+            <secondary_spar_non_dimensional_position ref_to="LOCAL_CHORD" type="PERCENT_CHORD">0.5500</secondary_spar_non_dimensional_position>
+            <roughness unit="m">0.00000405</roughness>
+            <winglet_height unit="m">0.0000</winglet_height>
+        </global_data>
+        <panels>
+            <panel id="CS300 - Inner panel">
+                <span unit="m">6.0500</span>
+                <dihedral unit="deg">5.5000</dihedral>
+                <sweep_leading_edge unit="deg">30.0000</sweep_leading_edge>
+                <inner_section>
+                    <chord unit="m">6.7400</chord>
+                    <airfoil file="SC(2)-0714_NEW_AIRCRAFT.xml"/>
+                    <geometric_twist>0.000000</geometric_twist>
+                </inner_section>
+                <outer_section>
+                    <chord unit="m">3.2600</chord>
+                    <airfoil file="SC(2)-0714_NEW_AIRCRAFT.xml"/>
+                    <geometric_twist unit="deg">0.0000</geometric_twist>
+                </outer_section>
+            </panel>
+            <panel id="CS300 - Outer panel" linked_to="CS300 - Inner panel">
+                <span unit="m">11.5000</span>
+                <dihedral unit="deg">5.5000</dihedral>
+                <sweep_leading_edge unit="deg">30.0000</sweep_leading_edge>
+                <outer_section>
+                    <chord unit="m">1.3000</chord>
+                    <airfoil file="SC(2)-0710_NEW_AIRCRAFT.xml"/>
+                    <geometric_twist unit="deg">-5.0000</geometric_twist>
+                </outer_section>
+            </panel>
+        </panels>
+        <symmetric_flaps>
+            <symmetric_flap id="Inner flap" type="FOWLER">
+                <inner_station_spanwise_position>0.1000</inner_station_spanwise_position>
+                <outer_station_spanwise_position>0.3450</outer_station_spanwise_position>
+                <inner_chord_ratio>0.1800</inner_chord_ratio>
+                <outer_chord_ratio>0.3200</outer_chord_ratio>
+                <min_deflection unit="deg">0.0000</min_deflection>
+                <max_deflection unit="deg">40.0000</max_deflection>
+            </symmetric_flap>
+            <symmetric_flap id="Outer flap" type="FOWLER">
+                <inner_station_spanwise_position>0.3460</inner_station_spanwise_position>
+                <outer_station_spanwise_position>0.7000</outer_station_spanwise_position>
+                <inner_chord_ratio>0.3200</inner_chord_ratio>
+                <outer_chord_ratio>0.3200</outer_chord_ratio>
+                <min_deflection unit="deg">0.0000</min_deflection>
+                <max_deflection unit="deg">40.0000</max_deflection>
+            </symmetric_flap>
+        </symmetric_flaps>
+        <slats>
+            <slat>
+                <min_deflection unit="deg">0.0000</min_deflection>
+                <max_deflection unit="deg">25.0000</max_deflection>
+                <inner_chord_ratio>0.1500</inner_chord_ratio>
+                <outer_chord_ratio>0.1800</outer_chord_ratio>
+                <extension_ratio>1.0000</extension_ratio>
+                <inner_station_spanwise_position>0.1100</inner_station_spanwise_position>
+                <outer_station_spanwise_position>0.3100</outer_station_spanwise_position>
+            </slat>
+            <slat>
+                <min_deflection unit="deg">0.0000</min_deflection>
+                <max_deflection unit="deg">25.0000</max_deflection>
+                <inner_chord_ratio>0.1800</inner_chord_ratio>
+                <outer_chord_ratio>0.1800</outer_chord_ratio>
+                <extension_ratio>1.0000</extension_ratio>
+                <inner_station_spanwise_position>0.3600</inner_station_spanwise_position>
+                <outer_station_spanwise_position>0.5200</outer_station_spanwise_position>
+            </slat>
+            <slat>
+                <min_deflection unit="deg">0.0000</min_deflection>
+                <max_deflection unit="deg">25.0000</max_deflection>
+                <inner_chord_ratio>0.1800</inner_chord_ratio>
+                <outer_chord_ratio>0.1800</outer_chord_ratio>
+                <extension_ratio>1.0000</extension_ratio>
+                <inner_station_spanwise_position>0.5200</inner_station_spanwise_position>
+                <outer_station_spanwise_position>0.6800</outer_station_spanwise_position>
+            </slat>
+            <slat>
+                <min_deflection unit="deg">0.0000</min_deflection>
+                <max_deflection unit="deg">25.0000</max_deflection>
+                <inner_chord_ratio>0.1800</inner_chord_ratio>
+                <outer_chord_ratio>0.1800</outer_chord_ratio>
+                <extension_ratio>1.0000</extension_ratio>
+                <inner_station_spanwise_position>0.6800</inner_station_spanwise_position>
+                <outer_station_spanwise_position>0.8400</outer_station_spanwise_position>
+            </slat>
+        </slats>
+        <asymmetric_flaps>
+            <asymmetric_flap id="Left aileron" type="PLAIN">
+                <inner_chord_ratio>0.3200</inner_chord_ratio>
+                <outer_chord_ratio>0.3200</outer_chord_ratio>
+                <inner_station_spanwise_position>0.7000</inner_station_spanwise_position>
+                <outer_station_spanwise_position>0.7000</outer_station_spanwise_position>
+                <min_deflection unit="deg">-25.0000</min_deflection>
+                <max_deflection unit="deg">25.0000</max_deflection>
+            </asymmetric_flap>
+            <asymmetric_flap id="Right aileron" type="PLAIN">
+                <inner_chord_ratio>0.3200</inner_chord_ratio>
+                <outer_chord_ratio>0.3200</outer_chord_ratio>
+                <inner_station_spanwise_position>0.7800</inner_station_spanwise_position>
+                <outer_station_spanwise_position>0.7800</outer_station_spanwise_position>
+                <min_deflection unit="deg">-25.0000</min_deflection>
+                <max_deflection unit="deg">25.0000</max_deflection>
+            </asymmetric_flap>
+        </asymmetric_flaps>
+    </wing>
+</jpad_config>

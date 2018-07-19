@@ -24,6 +24,7 @@ import it.unina.daf.jpadcad.occ.OCCShell;
 import it.unina.daf.jpadcad.occ.OCCSolid;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
+import it.unina.daf.jpadcadsandbox.utils.AircraftUtils.FileExtension;
 import opencascade.BRepBuilderAPI_MakeSolid;
 import opencascade.BRepBuilderAPI_Transform;
 import opencascade.BRepFilletAPI_MakeFillet;
@@ -125,7 +126,7 @@ public class Test28mds {
 		exportShapes.addAll(wingFairing);
 //		exportShapes.addAll(canardFairing);
 		
-		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, 7, 7, true, true, false);
+		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, 10, 7, true, true, false);
 		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, false, true, false);
 //		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.CANARD, 1e-3, false, true, false);
 		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, false, true, false);
@@ -138,10 +139,13 @@ public class Test28mds {
 		exportShapes.addAll(verTailShapes);
 		
 //		String fileName = "Test28mds.brep";
-		String fileName = "ATR72.stp";
+//		String fileName = "CS300.brep";
+//		String fileName = "CS300.step";
 		
-		if (OCCUtils.write(fileName, exportShapes))
-			System.out.println("========== [main] Output written on file: " + fileName);
+		AircraftUtils.getAircraftSolidFile(exportShapes, "CS300", FileExtension.STEP);
+		
+//		if (OCCUtils.write(fileName, exportShapes))
+//			System.out.println("========== [main] Output written on file: " + fileName);
 	}
 	
 	public static List<OCCShape> generateFairing(
@@ -531,8 +535,8 @@ public class Test28mds {
 		List<OCCShape> shapes = new ArrayList<>();
 		
 		// Fairing parameters definition
-		double frontLengthFactor = 1.00;
-		double backLengthFactor = 1.00;
+		double frontLengthFactor = 0.60;
+		double backLengthFactor = 0.70;
 		double sideSizeFactor = 0.95;              // This needs to be less than one, otherwise fairing will exceed fuselage diameter		
 		double heightBelowFuselageFactor = 0.25;
 		double heightBelowContactFactor = 0.95;    // Again, needs to be less than one, in order to not exceed fuselage limits
@@ -716,7 +720,7 @@ public class Test28mds {
 		
 		double[] pntI = new double[] {
 				rootLeadingEdge[0],
-				fuselageLowContactPnt[1] - (fuselageLowContactPnt[1] - rootLeadingEdge[1])*0.05,
+				fuselageLowContactPnt[1] - (fuselageLowContactPnt[1] - rootLeadingEdge[1])*0.10,
 				pntA[2]
 		};
 		
@@ -728,7 +732,7 @@ public class Test28mds {
 		
 		double[] pntM = new double[] {
 				rootTrailingEdge[0],
-				fuselageLowContactPnt[1] - (fuselageLowContactPnt[1] - rootTrailingEdge[1])*0.05,
+				fuselageLowContactPnt[1] - (fuselageLowContactPnt[1] - rootTrailingEdge[1])*0.1,
 				pntA[2]
 		};
 		

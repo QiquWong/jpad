@@ -342,13 +342,9 @@ public class FuselageAerodynamicsManager {
 		
 		public void fusDes() {
 			
-			Amount<Area> frontSurface = 
-					Amount.valueOf(
-							FusNacGeometryCalc.calculateSfront(
-									_theFuselage.getEquivalentDiameterCylinderGM()
-									),
-							SI.SQUARE_METRE
-							);
+			Amount<Area> frontSurface = FusNacGeometryCalc.calculateSfront(
+					_theFuselage.getEquivalentDiameterCylinderGM()
+					).to(SI.SQUARE_METRE); 
 			
 			double surfaceRatio = 
 					frontSurface.doubleValue(SI.SQUARE_METRE)

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jpad_config>
+    <horizontal_tail id="CS300 Horizontal Tail" mirrored="true">
+        <global_data>
+            <main_spar_non_dimensional_position ref_to="LOCAL_CHORD" type="PERCENT_CHORD">0.2500</main_spar_non_dimensional_position>
+            <secondary_spar_non_dimensional_position ref_to="LOCAL_CHORD" type="PERCENT_CHORD">0.5500</secondary_spar_non_dimensional_position>
+            <roughness unit="m">0.00000405</roughness>
+        </global_data>
+        <panels>
+            <panel id="Horizontal tail panel">
+                <span unit="m">6.0000</span>
+                <dihedral unit="deg">5.5000</dihedral>
+                <sweep_leading_edge unit="deg">32.0000</sweep_leading_edge>
+                <inner_section>
+                    <chord unit="m">3.3600</chord>
+                    <airfoil file="NACA0012_NEW_AIRCRAFT.xml"/>
+                    <geometric_twist>0.000000</geometric_twist>
+                </inner_section>
+                <outer_section>
+                    <chord unit="m">1.3100</chord>
+                    <airfoil file="NACA0012_NEW_AIRCRAFT.xml"/>
+                    <geometric_twist unit="deg">0.0000</geometric_twist>
+                </outer_section>
+            </panel>
+        </panels>
+        <symmetric_flaps>
+            <symmetric_flap id="Elevator" type="PLAIN">
+                <inner_station_spanwise_position>0.1600</inner_station_spanwise_position>
+                <outer_station_spanwise_position>1.0000</outer_station_spanwise_position>
+                <inner_chord_ratio>0.3600</inner_chord_ratio>
+                <outer_chord_ratio>0.3600</outer_chord_ratio>
+                <min_deflection unit="deg">-25.0000</min_deflection>
+                <max_deflection unit="deg">5.0000</max_deflection>
+            </symmetric_flap>
+        </symmetric_flaps>
+    </horizontal_tail>
+</jpad_config>

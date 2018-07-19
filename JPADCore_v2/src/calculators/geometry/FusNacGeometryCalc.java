@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Volume;
 import javax.measure.unit.SI;
@@ -78,9 +79,8 @@ public class FusNacGeometryCalc {
 	 * University, January 2001.
 	 * URL http://adg.stanford.edu/aa241/AircraftDesign.html)
 	 */
-	public static double calcFuselageNoseWetSurface(double fuselageDiameter, double fuselageNoseLength){
-		double sWetNose = 0.75*Math.PI*fuselageDiameter*fuselageNoseLength;
-		return sWetNose;
+	public static Amount<Area> calcFuselageNoseWetSurface(Amount<Length> fuselageDiameter, Amount<Length> fuselageNoseLength){
+		return  Amount.valueOf(0.75*Math.PI*fuselageDiameter.doubleValue(SI.METER)*fuselageNoseLength.doubleValue(SI.METER), SI.SQUARE_METRE);
 	}
 
 	/**
@@ -89,11 +89,9 @@ public class FusNacGeometryCalc {
 	 * @param fuselageNoseLength
 	 * @return the estimation of the cabin wet surface of the fuselage
 	 */
-	public static double calcFuselageCabinWetSurface(
-			double fuselageDiameter, double fuselageCabinLength){
-		double sWetCabin = Math.PI*fuselageDiameter*fuselageCabinLength;
-
-		return sWetCabin;
+	public static Amount<Area> calcFuselageCabinWetSurface(
+			Amount<Length> fuselageDiameter, Amount<Length> fuselageCabinLength){
+		return Amount.valueOf(Math.PI*fuselageDiameter.doubleValue(SI.METER)*fuselageCabinLength.doubleValue(SI.METER), SI.SQUARE_METRE);
 	}
 
 	/**
@@ -107,10 +105,8 @@ public class FusNacGeometryCalc {
 	 * University, January 2001.
 	 * URL http://adg.stanford.edu/aa241/AircraftDesign.html)
 	 */
-	public static double calcFuselageTailWetSurface(double fuselageDiameter, double fuselageTailLength){
-		double sWetTail = 0.72*Math.PI*fuselageDiameter*fuselageTailLength;
-
-		return sWetTail;
+	public static Amount<Area> calcFuselageTailWetSurface(Amount<Length> fuselageDiameter, Amount<Length> fuselageTailLength){
+		return Amount.valueOf(0.72*Math.PI*fuselageDiameter.doubleValue(SI.METER)*fuselageTailLength.doubleValue(SI.METER), SI.SQUARE_METRE);
 	}
 
 //	public static double calcFuselageFrontalSurface(double fuselageDiameter){
@@ -127,21 +123,62 @@ public class FusNacGeometryCalc {
 	 * @param fuselageTailLength
 	 * @return the estimation of the fuselage wet surface
 	 */
-	public static double calcFuselageWetSurface(double fuselageDiameter, double fuselageLength,
-			double fuselageNoseLength, double fuselageCabinLength, double fuselageTailLength){
+	public static Amount<Area> calcFuselageWetSurface(Amount<Length> fuselageDiameter, Amount<Length> fuselageLength,
+			Amount<Length> fuselageNoseLength, Amount<Length> fuselageCabinLength, Amount<Length> fuselageTailLength){
 
-		double sWetNose = calcFuselageNoseWetSurface(fuselageDiameter,fuselageNoseLength);
-		double sWetTail = calcFuselageTailWetSurface(fuselageDiameter,fuselageTailLength);
-		double sWetCabin= calcFuselageCabinWetSurface(fuselageDiameter, fuselageCabinLength);
+		Amount<Area> sWetNose = calcFuselageNoseWetSurface(fuselageDiameter,fuselageNoseLength);
+		Amount<Area> sWetTail = calcFuselageTailWetSurface(fuselageDiameter,fuselageTailLength);
+		Amount<Area> sWetCabin= calcFuselageCabinWetSurface(fuselageDiameter, fuselageCabinLength);
 
-		double fuselageWetSurface = sWetNose + sWetCabin + sWetTail;
+		Amount<Area> fuselageWetSurface = sWetNose.to(SI.SQUARE_METRE).plus(sWetCabin.to(SI.SQUARE_METRE)).plus(sWetTail.to(SI.SQUARE_METRE));
 
 		return fuselageWetSurface;
 
 	}
 	
-	public static double calculateSfront(Amount<Length> fuselageDiameter){
-		return Math.PI*Math.pow(fuselageDiameter.doubleValue(SI.METER), 2)/4;
+	public static Amount<Area> calculateSfront(Amount<Length> fuselageDiameter){
+		return Amount.valueOf(
+				Math.PI*Math.pow(fuselageDiameter.doubleValue(SI.METER), 2)/4,
+				SI.SQUARE_METRE
+				);
+	}
+	
+	public static Amount<Area> calculateLateralSurface(
+			List<Double> outlineXZUpperCurveX,
+			List<Double> outlineXZUpperCurveZ,
+			List<Double> outlineXZLowerCurveX,
+			List<Double> outlineXZLowerCurveZ
+			){
+
+		Amount<Area> upperLateralSurface = Amount.valueOf(
+				MyMathUtils.integrate1DSimpsonSpline(
+						MyArrayUtils.convertToDoublePrimitive(
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										outlineXZUpperCurveX)
+								),
+						MyArrayUtils.convertToDoublePrimitive(
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										outlineXZUpperCurveZ)
+								)
+						),
+				SI.SQUARE_METRE
+				);
+		
+		Amount<Area> lowerLateralSurface = Amount.valueOf(
+				MyMathUtils.integrate1DSimpsonSpline(
+						MyArrayUtils.convertToDoublePrimitive(
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										outlineXZLowerCurveX)
+								),
+						MyArrayUtils.convertToDoublePrimitive(
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										outlineXZLowerCurveZ)
+								)
+						),
+				SI.SQUARE_METRE
+				);
+		
+		return upperLateralSurface.to(SI.SQUARE_METRE).plus(lowerLateralSurface.to(SI.SQUARE_METRE));
 	}
 	
 	public static List<PVector> getUniqueValuesXZUpperCurve(

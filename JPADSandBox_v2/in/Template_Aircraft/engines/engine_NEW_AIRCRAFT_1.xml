@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jpad_config>
+    <engine database="TurbofanEngineDatabase.h5" id="Engine 1 - CS300" type="TURBOFAN">
+        <dimensions>
+            <length unit="m">3.1840</length>
+        </dimensions>
+        <specifications>
+            <dry_mass calculate="FALSE" unit="kg">2177.000</dry_mass>
+            <static_thrust unit="N">103643.5600</static_thrust>
+            <by_pass_ratio>12.0000</by_pass_ratio>
+            <number_of_compressor_stages>11</number_of_compressor_stages>
+            <number_of_shafts>2</number_of_shafts>
+            <overall_pressure_ratio>36.0000</overall_pressure_ratio>
+        </specifications>
+    </engine>
+</jpad_config>
