@@ -46,18 +46,18 @@
 			method_landing_gears=""
 		/>	
 	<aerodynamic_and_stability
-			plot="FALSE"
+			plot="TRUE"
 			create_CSV="FALSE"
-			take_off_condition="TRUE"
+			take_off_condition="FALSE"
 			file_take_off_condition="analysis_aerodynamics_CS300_takeoff.xml"
-			climb_condition="TRUE"
+			climb_condition="FALSE"
 			file_climb_condition="analysis_aerodynamics_CS300_climb.xml"
 			cruise_condition="TRUE"
 			file_cruise_condition="analysis_aerodynamics_CS300_cruise.xml"
-			landing_condition="TRUE"
+			landing_condition="FALSE"
 			file_landing_condition="analysis_aerodynamics_CS300_landing.xml"
 	/>
-	<performance 
+<!-- 	<performance 
 			file="analysis_performance_CS300.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -84,7 +84,7 @@
 			doc_charges_method="AEA"
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
-	/>
+	/> -->
 	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>
