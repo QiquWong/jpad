@@ -102,29 +102,29 @@ public class TestBoolean02mds {
 		TopoDS_Shape cutSolid = new BRepPrimAPI_MakePrism(airfoilCutFace, cutAxis, 1, 0).Shape();
 		
 		// Subtract the second solid from the wing
-		//TopoDS_Shape finalShape = new BRepAlgoAPI_Cut(wing, cutSolid).Shape();
-		BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut();
-		TopTools_ListOfShape losArguments = new TopTools_ListOfShape();
-		losArguments.Append(wing);
-		TopTools_ListOfShape losTools = new TopTools_ListOfShape();
-		losTools.Append(cutSolid);
-		cutter.SetArguments(losArguments);
-		cutter.SetTools(losTools);
-		cutter.SetNonDestructive(1);
-		cutter.Build();
+		TopoDS_Shape finalShape = new BRepAlgoAPI_Cut(wing, cutSolid).Shape();
+//		BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut();
+//		TopTools_ListOfShape losArguments = new TopTools_ListOfShape();
+//		losArguments.Append(wing);
+//		TopTools_ListOfShape losTools = new TopTools_ListOfShape();
+//		losTools.Append(cutSolid);
+//		cutter.SetArguments(losArguments);
+//		cutter.SetTools(losTools);
+//		cutter.SetNonDestructive(1);
+//		cutter.Build();
 		
-		System.out.println("Has deleted: " + cutter.HasDeleted());
-		
-		TopTools_ListOfShape losGenerated = cutter.Generated(cutSolid);
-		System.out.println("Generated shapes: " + losGenerated.Size());
-		
-		
+//		System.out.println("Has deleted: " + cutter.HasDeleted());
+//		
+//		TopTools_ListOfShape losGenerated = cutter.Generated(cutSolid);
+//		System.out.println("Generated shapes: " + losGenerated.Size());
+	
 		// Export shapes to CAD file
 		List<OCCShape> exportShapes = new ArrayList<>();
 //		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(wing));
 //		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutSolid));
+		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(finalShape));
 		
-		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutter.Shape() ));
+//		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutter.Shape() ));
 		
 		String fileName = "testBoolean02mds.brep";
 		if(OCCUtils.write(fileName, exportShapes))

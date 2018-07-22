@@ -3,8 +3,15 @@ package it.unina.daf.jpadcadsandbox;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.measure.unit.SI;
 
@@ -20,17 +27,35 @@ import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
+import opencascade.BOPAlgo_Operation;
+import opencascade.BRepAlgoAPI_Cut;
 import opencascade.BRepAlgoAPI_Section;
 import opencascade.BRepBuilderAPI_MakeEdge;
+import opencascade.BRepBuilderAPI_MakeFace;
+import opencascade.BRepBuilderAPI_MakeSolid;
 import opencascade.BRepBuilderAPI_MakeWire;
+import opencascade.BRepBuilderAPI_Sewing;
+import opencascade.BRepGProp;
+import opencascade.BRepOffsetAPI_MakeEvolved;
+import opencascade.BRepOffsetAPI_MakePipe;
+import opencascade.BRepOffsetAPI_MakePipeShell;
+import opencascade.BRepOffsetAPI_ThruSections;
+import opencascade.BRepTools;
+import opencascade.BRep_Tool;
 import opencascade.GC_MakePlane;
+import opencascade.GProp_GProps;
 import opencascade.GeomAPI_ExtremaCurveCurve;
 import opencascade.Geom_Curve;
 import opencascade.Geom_Surface;
+import opencascade.TopAbs_Orientation;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
+import opencascade.TopTools_ListOfShape;
 import opencascade.TopoDS;
 import opencascade.TopoDS_Edge;
+import opencascade.TopoDS_Face;
+import opencascade.TopoDS_Shape;
+import opencascade.TopoDS_Shell;
 import opencascade.TopoDS_Solid;
 import opencascade.TopoDS_Wire;
 import opencascade.gp_Ax2;
@@ -78,7 +103,7 @@ public class TestBoolean03mds {
 		
 		TopoDS_Solid wingSolid = TopoDS.ToSolid(wingShapes.get(0).getShape());
 		
-		// Generate cutting solid
+		// Generate cutting solids
 		double wingSemiSpan = wing.getSemiSpan().doubleValue(SI.METER);
 		
 		List<double[]> symFlapExtrema = new ArrayList<>();
@@ -96,137 +121,400 @@ public class TestBoolean03mds {
 					flap.getOuterChordRatio()
 			});
 		}
-		
 		System.out.println("========== Symmetric flaps spanwise position:");
 		symFlapExtrema.forEach(d -> System.out.println("========== " + Arrays.toString(d)));
 		System.out.println("========== Symmetric flaps chords:");
 		symFlapChords.forEach(d -> System.out.println("========== " + Arrays.toString(d)));
 		
-		// get sections airfoils
-		List<OCCShape> secAirfoils = new ArrayList<>();
+		// get actual flap y stations according to wing paneling
+		List<double[]> symFlapActualExtrema = new ArrayList<>();
+		List<double[]> symFlapActualChords = new ArrayList<>();
+		List<Double> wingEtaBreakpoints = wing.getEtaBreakPoints();
+		
+		for(int i = 0; i < symFlapExtrema.size(); i++) {
+			double yInner = symFlapExtrema.get(i)[0];
+			double yOuter = symFlapExtrema.get(i)[1];
+			double innChord = symFlapChords.get(i)[0];
+			double outChord = symFlapChords.get(i)[1];
+			
+			for(int j = 0; j < wingEtaBreakpoints.size()-1; j++) {
+				if(yInner >= wingEtaBreakpoints.get(j) && yOuter <= wingEtaBreakpoints.get(j+1)) {
+					symFlapActualExtrema.add(new double[] {yInner, yOuter});
+					symFlapActualChords.add(new double[] {innChord, outChord});
+				} else if((yInner >= wingEtaBreakpoints.get(j) && yInner < wingEtaBreakpoints.get(j+1)) 
+						&& yOuter > wingEtaBreakpoints.get(j+1)) {
+					symFlapActualExtrema.add(new double[] {yInner, wingEtaBreakpoints.get(j+1)});
+					symFlapActualExtrema.add(new double[] {wingEtaBreakpoints.get(j+1), yOuter});
+					
+					double midChord = MyMathUtils.getInterpolatedValue1DLinear(
+							symFlapExtrema.get(i), 
+							symFlapChords.get(i), 
+							wingEtaBreakpoints.get(j+1)
+							);
+					
+					symFlapActualChords.add(new double[] {innChord, midChord});
+					symFlapActualChords.add(new double[] {midChord, outChord});
+				}
+			}
+		}		
+//		symFlapActualExtrema.set(0, new double[] {0.08, 0.3232448280952593});
+//		symFlapActualExtrema.set(1, new double[] {0.3232448280952593, 0.35});
+//		symFlapActualExtrema.set(2, new double[] {0.35, 1.00});
+		System.out.println("========== Actual symmetric flaps spanwise position:");
+		symFlapActualExtrema.forEach(d -> System.out.println("========== " + Arrays.toString(d)));
+		System.out.println("========== Actual symmetric flaps chords:");
+		symFlapActualChords.forEach(d -> System.out.println("========== " + Arrays.toString(d)));
+	
+		int numSymFlapActual = symFlapActualExtrema.size();
+		
+		// calculate list of chord lengths
+		List<double[]> chordLengths = new ArrayList<>();
+		for(int i = 0; i < numSymFlapActual; i++) {
+			double[] chordsAtY = new double[2];
+			for(int j = 0; j < 2; j++) 
+				chordsAtY[j] = wing.getChordAtYActual(symFlapActualExtrema.get(i)[j]*wingSemiSpan);
+			chordLengths.add(chordsAtY);
+		}
+		
+		// prepare sketching boolean maps
+		List<boolean[]> airfoilBool = new ArrayList<>();
+		List<boolean[]> cuttingBool = new ArrayList<>();
+		int index = 0;
+		while(index < numSymFlapActual) {
+			airfoilBool.add(new boolean[] {true, true});
+			cuttingBool.add(new boolean[] {true, true});
+			index++;
+		}
+		for(int i = 1; i < numSymFlapActual; i++) {
+			if(symFlapActualExtrema.get(i)[0] - symFlapActualExtrema.get(i-1)[1] < 1e-4) 
+				airfoilBool.set(i, new boolean[] {false, true});
+			if(symFlapActualChords.get(i)[0] - symFlapActualChords.get(i-1)[1] < 1e-4) 
+				cuttingBool.set(i, new boolean[] {false, true});		
+		}
+		airfoilBool.forEach(b -> System.out.println(Arrays.toString(b)));
+		cuttingBool.forEach(b -> System.out.println(Arrays.toString(b)));
+		
+		// get sections airfoils 
+		List<TopoDS_Shape> secAirfoils = new ArrayList<>();
+		List<TopoDS_Shape[]> wingSections = new ArrayList<>();
 		
 		gp_Dir sectionNormalAxis = new gp_Dir(0, 1, 0);
-		for(int i = 0; i < numSymFlap; i++) {
+//		for(int i = 0; i < numSymFlapActual; i++) {
+//			for(int j = 0; j < 2; j++) {
+//				BRepAlgoAPI_Section sectionMaker = new BRepAlgoAPI_Section();
+//				gp_Pnt sectionOrigin = new gp_Pnt(0, symFlapActualExtrema.get(i)[j]*wingSemiSpan, 0);
+//				sectionMaker.Init1(wingSolid);
+//				sectionMaker.Init2(makeIntersectionPlane(sectionOrigin, sectionNormalAxis));
+//				sectionMaker.Build();
+//				secAirfoils.add(sectionMaker.Shape());
+//			}		
+//		}
+		
+		for(int i = 0; i < numSymFlapActual; i++) {
+			TopoDS_Shape[] shapesArray = new TopoDS_Shape[2];
 			for(int j = 0; j < 2; j++) {
-				BRepAlgoAPI_Section sectionMaker = new BRepAlgoAPI_Section();
-				gp_Pnt sectionOrigin = new gp_Pnt(0, symFlapExtrema.get(i)[j]*wingSemiSpan, 0);
-				sectionMaker.Init1(wingSolid);
-				sectionMaker.Init2(makeIntersectionPlane(sectionOrigin, sectionNormalAxis));
-				sectionMaker.Build();
-				secAirfoils.add((OCCShape) OCCUtils.theFactory.newShape(sectionMaker.Shape()));
-			}		
+				if(j == 0 && !airfoilBool.get(i)[j])
+					shapesArray[0] = wingSections.get(i-1)[1];
+				else {
+					BRepAlgoAPI_Section sectionMaker = new BRepAlgoAPI_Section();
+					gp_Pnt sectionOrigin = new gp_Pnt(0, symFlapActualExtrema.get(i)[j]*wingSemiSpan, 0);
+					sectionMaker.Init1(wingSolid);
+					sectionMaker.Init2(makeIntersectionPlane(sectionOrigin, sectionNormalAxis));
+					sectionMaker.Build();
+					shapesArray[j] = sectionMaker.Shape();
+				}
+			}
+			wingSections.add(shapesArray);
 		}
 		
 		// manage sections in order to extract desired edges
-		List<TopoDS_Edge> sectionEdges = new ArrayList<>();
-		for(int i = 0; i < secAirfoils.size(); i++) {
-			TopExp_Explorer explorer = new TopExp_Explorer(secAirfoils.get(i).getShape(), TopAbs_ShapeEnum.TopAbs_EDGE);
-			while(explorer.More() > 0) {
-				sectionEdges.add(TopoDS.ToEdge(explorer.Current()));
-				explorer.Next();
-			}
-		}
-		System.out.println("========== Number of TopoDS_Edges found exploring sections compounds: " + sectionEdges.size());
+//		List<TopoDS_Edge> sectionEdges = new ArrayList<>();
+//		for(int i = 0; i < secAirfoils.size(); i++) {
+//			TopExp_Explorer explorer = new TopExp_Explorer(secAirfoils.get(i), TopAbs_ShapeEnum.TopAbs_EDGE);
+//			while(explorer.More() > 0) {
+//				sectionEdges.add(TopoDS.ToEdge(explorer.Current()));
+//				explorer.Next();
+//			}
+//		}
+//		System.out.println("========== Number of TopoDS_Edges found exploring sections compounds: " + sectionEdges.size());
+//		
+//		List<TopoDS_Edge> airfoilEdges = new ArrayList<>();
+//		List<TopoDS_Edge> teEdges = new ArrayList<>();
+//		double meanLength = sectionEdges.stream()
+//									    .mapToDouble(TestBoolean03mds::calculateEdgeLength)
+//				                        .sum()/(sectionEdges.size());
+//		for(int i = 0; i < sectionEdges.size(); i++) {
+//			TopoDS_Edge edge = sectionEdges.get(i);
+//			if(calculateEdgeLength(edge) < meanLength) 
+//				teEdges.add(edge);
+//			else
+//				airfoilEdges.add(edge);
+//		}
+//		System.out.println("========== Number of TopoDS_Edges in airfoilEdges list: " + airfoilEdges.size());
+//		System.out.println("========== Number of TopoDS_Edges in teEdges list: " + teEdges.size());
 		
-		List<TopoDS_Edge> airfoilEdges = new ArrayList<>();
-		List<TopoDS_Edge> teEdges = new ArrayList<>();
-		double meanRange = sectionEdges.stream()
-									   .mapToDouble(e -> 
-									   		((OCCEdge) OCCUtils.theFactory.newShape(e)).range()[1] - 
-									   		((OCCEdge) OCCUtils.theFactory.newShape(e)).range()[0]
-									   		)
-				                       .sum()/(sectionEdges.size());
-		for(int i = 0; i < sectionEdges.size(); i++) {
-			TopoDS_Edge edge = sectionEdges.get(i);
-			if(((OCCEdge) OCCUtils.theFactory.newShape(edge)).range()[1] < meanRange) 
-				teEdges.add(edge);
-			else
-				airfoilEdges.add(edge);
-		}
-		System.out.println("========== Number of TopoDS_Edges in airfoilEdges list: " + airfoilEdges.size());
-		System.out.println("========== Number of TopoDS_Edges in teEdges list: " + teEdges.size());
+		List<TopoDS_Edge[]> mainAirfoils = new ArrayList<>();
+		List<TopoDS_Edge[]> trailingEdges = new ArrayList<>();
+		for(int i = 0; i < numSymFlapActual; i++) {
+			TopoDS_Edge[] airfs = new TopoDS_Edge[2];
+			TopoDS_Edge[] tEdgs = new TopoDS_Edge[2];
+			for(int j = 0; j < 2; j++) {
+				if(j == 0 && !airfoilBool.get(i)[j]) {
+					airfs[0] = mainAirfoils.get(i-1)[1];
+					tEdgs[0] = trailingEdges.get(i-1)[1];
+				} else {
+					TopExp_Explorer explorer = new TopExp_Explorer(wingSections.get(i)[j], TopAbs_ShapeEnum.TopAbs_EDGE);
+					while(explorer.More() > 0) {
+						TopoDS_Edge edge = TopoDS.ToEdge(explorer.Current());
+						if(calculateEdgeLength(edge) > chordLengths.get(i)[0]) 
+							airfs[j] = edge.Orientation().equals(TopAbs_Orientation.TopAbs_REVERSED) ? // reversed respect section plane orientation (?)
+									getReversedEdge(edge) : edge;
+						else
+							tEdgs[j] = edge;
+						explorer.Next();
+					}
+				}			
+			}
+			mainAirfoils.add(airfs);
+			trailingEdges.add(tEdgs);
+		}	
 		
 		// generate airfoil chords		
-		List<OCCEdge> chords = new ArrayList<>();
-		symFlapExtrema.forEach(d -> {
-			chords.add((OCCEdge) getChordSegmentAtYActual(d[0]*wingSemiSpan, wing).edge());
-			chords.add((OCCEdge) getChordSegmentAtYActual(d[1]*wingSemiSpan, wing).edge());
-		});
+//		List<OCCEdge> chords = new ArrayList<>();
+//		symFlapActualExtrema.forEach(d -> {
+//			chords.add((OCCEdge) getChordSegmentAtYActual(d[0]*wingSemiSpan, wing).edge());
+//			chords.add((OCCEdge) getChordSegmentAtYActual(d[1]*wingSemiSpan, wing).edge());
+//		});
 		
-		// generate wires at each station
-		double leapFactor = 0.70;
-		List<TopoDS_Wire> cuttingWires = new ArrayList<>();
-		
-		for(int i = 1; i <= symFlapExtrema.size(); i++) {
-			for(int j = 1; j <= 2; j++) {
-				
-				double c = wing.getChordAtYActual(symFlapExtrema.get(i-1)[j-1]*wingSemiSpan);
-				double cf = symFlapChords.get(i-1)[j-1]*c;
-				double cl = cf*leapFactor;
-				double[] te = chords.get(i*j-1).vertices()[0].pnt();
-				
-				Geom_Curve airfoil = ((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
-						(CADEdge) OCCUtils.theFactory.newShape(airfoilEdges.get(i*j-1)))).getAdaptorCurve().Curve();
-				Geom_Curve chord = ((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
-						chords.get(i*j-1))).getAdaptorCurve().Curve();
-				
-				double[] cfPar = getIntersecPntsOnAirfoilParams(airfoil, chord, c, cf, te, wing.getType());
-				double[] clPar = getIntersecPntsOnAirfoilParams(airfoil, chord, c, cl, te, wing.getType());	
-				
-				gp_Vec cfTang = new gp_Vec();
-				gp_Vec clTang = new gp_Vec();
-				gp_Pnt cfPnt = new gp_Pnt();
-				gp_Pnt clPnt = new gp_Pnt();
-				airfoil.D1(Math.min(cfPar[0], cfPar[1]), cfPnt, cfTang); // because section curves present clockwise orientation due to 
-				airfoil.D1(Math.max(clPar[0], clPar[1]), clPnt, clTang); // cutting plane having its axis oriented in positive y direction
-				
-				// generate wire points
-				List<gp_Pnt> wirePoints = new ArrayList<>();
-				
-				gp_Vec lsAxis = wing.getType().equals(ComponentEnum.VERTICAL_TAIL) ? new gp_Vec(0, 0, 1) : new gp_Vec(0, 1, 0);
-				gp_Vec sAxis = wing.getType().equals(ComponentEnum.VERTICAL_TAIL) ? new gp_Vec(0, 1, 0) : new gp_Vec(0, 0, 1);
-				gp_Vec normUpp = clTang.Crossed(lsAxis).Normalized();
-				gp_Vec normLow = cfTang.Crossed(lsAxis).Normalized();
-				
-				gp_Pnt p1 = clPnt;	
-				gp_Pnt p6 = cfPnt;
-				gp_Pnt p2 = new gp_Pnt(normUpp.Multiplied(cf).Added(new gp_Vec(p1.Coord())).XYZ());				
-				gp_Pnt p3 = new gp_Pnt(new gp_Vec(1, 0, 0).Multiplied(2*cf).Added(new gp_Vec(p2.Coord())).XYZ());
-				gp_Pnt p4 = new gp_Pnt(sAxis.Multiplied(-2*cf).Added(new gp_Vec(p3.Coord())).XYZ());
-				gp_Pnt p5 = new gp_Pnt(normLow.Multiplied(cf).Added(new gp_Vec(p6.Coord())).XYZ()); 
-				p5.SetZ(p4.Z());
-				
-				wirePoints.add(p1);
-				wirePoints.add(p2);
-				wirePoints.add(p3);
-				wirePoints.add(p4);
-				wirePoints.add(p5);
-				wirePoints.add(p6);
-				
-				// generate wire edges
-				BRepBuilderAPI_MakeWire wire = new BRepBuilderAPI_MakeWire();
-				for(int k = 0; k < 5; k++) {
-					BRepBuilderAPI_MakeEdge wireEdge = new BRepBuilderAPI_MakeEdge(
-							wirePoints.get(k), 
-							wirePoints.get(k+1)
-							);
-					wire.Add(wireEdge.Edge());
+		List<OCCEdge[]> chordEdges = new ArrayList<>();
+		for(int i = 0; i < numSymFlapActual; i++) {
+			OCCEdge[] chordsArray = new OCCEdge[2];
+			for(int j = 0; j < 2; j++) {
+				if(j == 0 && !airfoilBool.get(i)[j])
+					chordsArray[0] = chordEdges.get(i-1)[1];
+				else {
+					chordsArray[j] = (OCCEdge) getChordSegmentAtYActual(
+							symFlapActualExtrema.get(i)[j]*wingSemiSpan, 
+							wing
+							).edge();
 				}
-				List<double[]> flapCurvePoints = new ArrayList<>();
-				flapCurvePoints.add(convertGpPntToDoubleArray(p6));
-				flapCurvePoints.add(convertGpPntToDoubleArray(p1));
-				wire.Add(new BRepBuilderAPI_MakeEdge(((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
-						flapCurvePoints, 
-						false, 
-						new double[] {sAxis.X(), sAxis.Y(), sAxis.Z()}, 
-						new double[] {1, 0, 0}, 
-						false
-						)).getAdaptorCurve().Curve()).Edge());
-				
-				cuttingWires.add(wire.Wire());
 			}
+			chordEdges.add(chordsArray);
 		}
 		
+		// generate wires at each station
+//		double leapFactor = 0.70;
+//		List<TopoDS_Wire> cuttingWires = new ArrayList<>();
+//		
+//		for(int i = 1; i <= numSymFlapActual; i++) {
+//			for(int j = 1; j <= 2; j++) {
+//				
+//				double c = wing.getChordAtYActual(symFlapActualExtrema.get(i-1)[j-1]*wingSemiSpan);
+//				double cf = symFlapActualChords.get(i-1)[j-1]*c;
+//				double cl = cf*leapFactor;
+//				double[] te = chords.get(i*j-1).vertices()[0].pnt();
+//				
+//				Geom_Curve airfoil = ((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
+//						(CADEdge) OCCUtils.theFactory.newShape(airfoilEdges.get(i*j-1)))).getAdaptorCurve().Curve();
+//				Geom_Curve chord = ((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
+//						chords.get(i*j-1))).getAdaptorCurve().Curve();
+//				
+//				double[] cfPar = getIntersecPntsOnAirfoilParam(airfoil, chord, c, cf, te, wing.getType(), SideSelector.LOWER_SIDE);
+//				double[] clPar = getIntersecPntsOnAirfoilParam(airfoil, chord, c, cl, te, wing.getType(), SideSelector.UPPER_SIDE);	
+//				
+//				System.out.println("========== cfPar: " + Arrays.toString(cfPar));
+//				System.out.println("========== clPar: " + Arrays.toString(clPar));
+//				
+//				gp_Vec cfTang = new gp_Vec();
+//				gp_Vec clTang = new gp_Vec();
+//				gp_Pnt cfPnt = new gp_Pnt();
+//				gp_Pnt clPnt = new gp_Pnt();
+//				airfoil.D1(cfPar[0], cfPnt, cfTang);
+//				airfoil.D1(clPar[0], clPnt, clTang);
+//				
+//				// generate wire points
+//				List<gp_Pnt> wirePoints = new ArrayList<>();
+//				
+//				gp_Vec zyAxis = wing.getType().equals(ComponentEnum.VERTICAL_TAIL) ? new gp_Vec(0, 0, 1) : new gp_Vec(0, 1, 0);
+//				gp_Vec yzAxis = wing.getType().equals(ComponentEnum.VERTICAL_TAIL) ? new gp_Vec(0, 1, 0) : new gp_Vec(0, 0, 1);
+//				gp_Vec normUpp = clTang.Crossed(zyAxis).Normalized();
+//				gp_Vec normLow = cfTang.Crossed(zyAxis).Normalized();
+//				
+//				gp_Pnt p1 = clPnt;	
+//				gp_Pnt p6 = cfPnt;
+//				gp_Pnt p2 = new gp_Pnt(normUpp.Multiplied(cf).Added(new gp_Vec(p1.Coord())).XYZ());				
+//				gp_Pnt p3 = new gp_Pnt(new gp_Vec(1, 0, 0).Multiplied(2*cf).Added(new gp_Vec(p2.Coord())).XYZ());
+//				gp_Pnt p4 = new gp_Pnt(yzAxis.Multiplied(-2*cf).Added(new gp_Vec(p3.Coord())).XYZ());
+//				gp_Pnt p5 = new gp_Pnt(normLow.Multiplied(cf).Added(new gp_Vec(p6.Coord())).XYZ()); 
+//				p5.SetZ(p4.Z());
+//				
+//				wirePoints.add(p1);
+//				wirePoints.add(p2);
+//				wirePoints.add(p3);
+//				wirePoints.add(p4);
+//				wirePoints.add(p5);
+//				wirePoints.add(p6);
+//				
+//				// generate wire edges
+//				BRepBuilderAPI_MakeWire wire = new BRepBuilderAPI_MakeWire();
+//				for(int k = 0; k < 5; k++) {
+//					BRepBuilderAPI_MakeEdge wireEdge = new BRepBuilderAPI_MakeEdge(
+//							wirePoints.get(k), 
+//							wirePoints.get(k+1)
+//							);
+//					wire.Add(wireEdge.Edge());
+//				}
+//				List<double[]> flapCurvePoints = new ArrayList<>();
+//				flapCurvePoints.add(convertGpPntToDoubleArray(p6));
+//				flapCurvePoints.add(convertGpPntToDoubleArray(p1));
+//				wire.Add(new BRepBuilderAPI_MakeEdge(((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
+//						flapCurvePoints, 
+//						false, 
+//						new double[] {yzAxis.X(), yzAxis.Y(), yzAxis.Z()}, 
+//						new double[] {1, 0, 0}, 
+//						false
+//						)).getAdaptorCurve().Curve()).Edge());
+//				
+//				cuttingWires.add(wire.Wire());
+//			}
+//		}
+		
+		double leapFactor = 0.70;
+		List<TopoDS_Wire[]> cuttingWires = new ArrayList<>();
+		
+		for(int i = 0; i < numSymFlapActual; i++) {
+			TopoDS_Wire[] wiresArray = new TopoDS_Wire[2];	
+			for(int j = 0; j < 2; j++) {
+				if(j == 0 && !airfoilBool.get(i)[j] && !cuttingBool.get(i)[j]) {
+					wiresArray[0] = cuttingWires.get(i-1)[1];
+				} else {
+					double c = chordLengths.get(i)[j];
+					double cf = symFlapActualChords.get(i)[j]*c;
+					double cl = cf*leapFactor;
+					double[] te = chordEdges.get(i)[j].vertices()[0].pnt();
+					
+					Geom_Curve airfoil = ((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
+							(CADEdge) OCCUtils.theFactory.newShape(mainAirfoils.get(i)[j]))).getAdaptorCurve().Curve();
+					Geom_Curve chord = ((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
+							chordEdges.get(i)[j])).getAdaptorCurve().Curve();
+
+					double[] cfPar = getIntersecPntsOnAirfoilParam(airfoil, chord, c, cf, te, wing.getType(), SideSelector.LOWER_SIDE);
+					double[] clPar = getIntersecPntsOnAirfoilParam(airfoil, chord, c, cl, te, wing.getType(), SideSelector.UPPER_SIDE);	
+
+					System.out.println("========== cfPar: " + Arrays.toString(cfPar));
+					System.out.println("========== clPar: " + Arrays.toString(clPar));
+					
+					gp_Vec cfTang = new gp_Vec();
+					gp_Vec clTang = new gp_Vec();
+					gp_Pnt cfPnt = new gp_Pnt();
+					gp_Pnt clPnt = new gp_Pnt();
+					airfoil.D1(cfPar[0], cfPnt, cfTang);
+					airfoil.D1(clPar[0], clPnt, clTang);
+					
+					// generate wire points
+					List<gp_Pnt> wirePoints = new ArrayList<>();
+					
+					gp_Vec zyAxis = wing.getType().equals(ComponentEnum.VERTICAL_TAIL) ? new gp_Vec(0, 0, 1) : new gp_Vec(0, 1, 0);
+					gp_Vec yzAxis = wing.getType().equals(ComponentEnum.VERTICAL_TAIL) ? new gp_Vec(0, 1, 0) : new gp_Vec(0, 0, 1);
+					gp_Vec normUpp = clTang.Crossed(zyAxis).Normalized();
+					gp_Vec normLow = cfTang.Crossed(zyAxis).Normalized();
+					
+					gp_Pnt p1 = clPnt;	
+					gp_Pnt p6 = cfPnt;
+					gp_Pnt p2 = new gp_Pnt(normUpp.Multiplied(cf).Added(new gp_Vec(p1.Coord())).XYZ());				
+					gp_Pnt p3 = new gp_Pnt(new gp_Vec(1, 0, 0).Multiplied(2*cf).Added(new gp_Vec(p2.Coord())).XYZ());
+					gp_Pnt p4 = new gp_Pnt(yzAxis.Multiplied(-2*cf).Added(new gp_Vec(p3.Coord())).XYZ());
+					gp_Pnt p5 = new gp_Pnt(normLow.Multiplied(cf).Added(new gp_Vec(p6.Coord())).XYZ()); 
+					p5.SetZ(p4.Z());
+					
+					wirePoints.add(p1);
+					wirePoints.add(p2);
+					wirePoints.add(p3);
+					wirePoints.add(p4);
+					wirePoints.add(p5);
+					wirePoints.add(p6);
+					
+					// generate wire edges
+					BRepBuilderAPI_MakeWire wire = new BRepBuilderAPI_MakeWire();
+					for(int k = 0; k < 5; k++) {
+						BRepBuilderAPI_MakeEdge wireEdge = new BRepBuilderAPI_MakeEdge(
+								wirePoints.get(k), 
+								wirePoints.get(k+1)
+								);
+						wire.Add(wireEdge.Edge());
+					}
+					List<double[]> flapCurvePoints = new ArrayList<>();
+					flapCurvePoints.add(convertGpPntToDoubleArray(p6));
+					flapCurvePoints.add(convertGpPntToDoubleArray(p1));
+					wire.Add(new BRepBuilderAPI_MakeEdge(((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
+							flapCurvePoints, 
+							false, 
+							new double[] {yzAxis.X(), yzAxis.Y(), yzAxis.Z()}, 
+							new double[] {1, 0, 0}, 
+							false
+							)).getAdaptorCurve().Curve()).Edge());
+					
+					wiresArray[j] = wire.Wire();
+				}
+			}
+			cuttingWires.add(wiresArray);
+		}
+		
+		// patching through wires
+		List<TopoDS_Shell> cuttingShells = new ArrayList<>();
+		List<TopoDS_Solid> cuttingSolids = new ArrayList<>();
+		for(int i = 0; i < cuttingWires.size(); i++) {
+			TopoDS_Wire wire1 = cuttingWires.get(i)[0];
+			TopoDS_Wire wire2 = cuttingWires.get(i)[1];
+			
+			BRepOffsetAPI_ThruSections shellMaker = new BRepOffsetAPI_ThruSections();
+			shellMaker.Init(0, 0);
+			shellMaker.AddWire(wire1);
+			shellMaker.AddWire(wire2);
+			TopoDS_Shell shell = TopoDS.ToShell(shellMaker.Shape());
+			
+			TopoDS_Face face1 = new BRepBuilderAPI_MakeFace(wire1).Face();
+			TopoDS_Face face2 = new BRepBuilderAPI_MakeFace(wire2).Face();
+			
+			BRepBuilderAPI_Sewing sewer = new BRepBuilderAPI_Sewing();
+			sewer.Add(face1);
+			sewer.Add(shell);
+			sewer.Add(face2);
+			sewer.Perform();
+			TopoDS_Shape sewedShape = sewer.SewedShape();
+			
+			TopExp_Explorer exp = new TopExp_Explorer(sewedShape, TopAbs_ShapeEnum.TopAbs_SHELL);
+			while(exp.More() > 0) {
+				TopoDS_Shell sewedShell = TopoDS.ToShell(exp.Current());
+				cuttingShells.add(sewedShell);
+				cuttingSolids.add(new BRepBuilderAPI_MakeSolid(sewedShell).Solid());
+				exp.Next();
+			}			
+		}	
+		
+		// cut the wing
+//		TopoDS_Solid cutWing = wingSolid;
+//		for(int i = 0; i < cuttingSolids.size(); i++) {
+//			TopoDS_Shape cutShape = new BRepAlgoAPI_Cut(cutWing, cuttingSolids.get(i)).Shape();
+//			TopExp_Explorer exp = new TopExp_Explorer(cutShape, TopAbs_ShapeEnum.TopAbs_SOLID);
+//			while(exp.More() > 0) {
+//				cutWing = TopoDS.ToSolid(exp.Current());
+//				exp.Next();
+//			}
+//		}
+		BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut();
+		TopTools_ListOfShape arguments = new TopTools_ListOfShape();
+		TopTools_ListOfShape tools = new TopTools_ListOfShape();
+		
+		arguments.Append(wingSolid);
+		tools.Append(cuttingSolids.get(0));
+		
+		cutter.SetOperation(BOPAlgo_Operation.BOPAlgo_CUT);
+		cutter.SetArguments(arguments);
+		cutter.SetTools(tools);
+		cutter.Build();
+		TopoDS_Shape resultShape = cutter.Shape();
+	
 //		// generate circles for curve cutting
 //		List<TopoDS_Edge> cfCircles = new ArrayList<>();
 //		List<TopoDS_Edge> clCircles = new ArrayList<>();
@@ -344,14 +632,44 @@ public class TestBoolean03mds {
 //		chords.forEach(c -> exportShapes.add((OCCShape) c));
 //		cfCircles.forEach(c -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(c)));
 //		clCircles.forEach(c -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(c)));
-		airfoilEdges.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));	
+//		airfoilEdges.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));	
+//		teEdges.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
 //		intersecSegments.forEach(s -> exportShapes.add((OCCShape) ((OCCEdge) s.edge())));
 //		testCADCurves.forEach(c -> exportShapes.add((OCCShape) ((OCCEdge) c.edge())));
-		cuttingWires.forEach(w -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(w)));
+//		cuttingWires.forEach(w -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(w)));
+//		wingShapes.forEach(s -> exportShapes.add(s));
+//		wingSections.forEach(sa -> {
+//			exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(sa[0]));
+//			exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(sa[1]));
+//			});
+//		mainAirfoils.forEach(sa -> {
+//			exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(sa[0]));
+//			exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(sa[1]));
+//			});
+//		trailingEdges.forEach(sa -> {
+//			exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(sa[0]));
+//			exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(sa[1]));
+//			});
+//		chordEdges.forEach(sa -> {
+//			exportShapes.add(sa[0]);
+//			exportShapes.add(sa[1]);
+//			});
+//		cuttingWires.forEach(sa -> {
+//			exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(sa[0]));
+//			exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(sa[1]));
+//			});
+		cuttingSolids.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
+//		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(resultShape));
 			
 		String fileName = "testBoolean03mds.brep";
 		if(OCCUtils.write(fileName, exportShapes))
 			System.out.println("========== [main] Output written on file: " + fileName);
+	}
+	
+	public static TopoDS_Edge getReversedEdge(TopoDS_Edge edge) {
+		Geom_Curve curve = BRep_Tool.Curve(edge, new double[1], new double[1]);	
+		curve.Reverse();
+		return new BRepBuilderAPI_MakeEdge(curve).Edge();
 	}
 
 	public static Geom_Surface makeIntersectionPlane(gp_Pnt planeOrigin, gp_Dir planeNormalAxis) {
@@ -361,6 +679,66 @@ public class TestBoolean03mds {
 	
 	public static double[] convertGpPntToDoubleArray(gp_Pnt gpPnt) {
 		return new double[] {gpPnt.X(), gpPnt.Y(), gpPnt.Z()};
+	}
+	
+	public static double[] getIntersecPntsOnAirfoilParam(
+			Geom_Curve airfoil, 
+			Geom_Curve chord,
+			double chordLength,
+			double flapChord, 		
+			double[] teCoords, 
+			ComponentEnum lsType,
+			SideSelector side
+			) {
+		
+		double[] params = new double[2];
+		
+		gp_Dir lsAxis = lsType.equals(ComponentEnum.VERTICAL_TAIL) ? new gp_Dir(0, 0, 1) : new gp_Dir(0, 1, 0);		
+		Geom_Curve circle = ((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
+				(CADEdge) OCCUtils.theFactory.newShape(
+						new BRepBuilderAPI_MakeEdge(
+								new gp_Circ(
+										new gp_Ax2(
+												new gp_Pnt(
+														teCoords[0],
+														teCoords[1],
+														teCoords[2]),
+												lsAxis),
+										flapChord)).Edge())
+				)).getAdaptorCurve().Curve();
+		
+		double[] chorPar = getIntersecPntsParam(chord, circle);
+		if(chorPar != null) {
+			gp_Vec chorDir = new gp_Vec();
+			chord.D1(chorPar[0], new gp_Pnt(), chorDir);
+			
+			List<gp_Vec> normals = new ArrayList<>();
+			switch(side) {			
+			case UPPER_SIDE:
+				normals.add(new gp_Vec(lsAxis).Crossed(chorDir).Multiplied(chordLength));
+				break;
+			case LOWER_SIDE:
+				normals.add(chorDir.Crossed(new gp_Vec(lsAxis)).Multiplied(chordLength));
+				break;
+			case BOTH_SIDES:
+				normals.add(new gp_Vec(lsAxis).Crossed(chorDir).Multiplied(chordLength)); // upper point first
+				normals.add(chorDir.Crossed(new gp_Vec(lsAxis)).Multiplied(chordLength)); // then the lower one
+				break;
+			}
+			
+			for(int i = 0; i < normals.size(); i++) {
+				Geom_Curve interceptor = ((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
+						convertGpPntToDoubleArray(chord.Value(chorPar[0])), 
+						convertGpPntToDoubleArray(new gp_Pnt(normals.get(i).Added(new gp_Vec(chord.Value(chorPar[0]).Coord())).XYZ()))
+						)).getAdaptorCurve().Curve();
+				
+				double[] airfPar = getIntersecPntsParam(airfoil, interceptor);
+				if(airfPar != null) {
+					params[i] = airfPar[0];
+				}
+			}
+		} 
+		return params;
 	}
 	
 	public static double[] getIntersecPntsOnAirfoilParams(
@@ -433,6 +811,13 @@ public class TestBoolean03mds {
 		}
 	}
 	
+	public static double calculateEdgeLength(TopoDS_Edge edge) {
+			
+		GProp_GProps props = new GProp_GProps();
+		BRepGProp.LinearProperties(edge, props);	
+		return props.Mass();
+	}
+	
 	public static CADGeomCurve3D getChordSegmentAtYActual(double yStation, LiftingSurface liftingSurface) {
 		
 		List<double[]> actualChordPoints = new ArrayList<>();
@@ -464,19 +849,19 @@ public class TestBoolean03mds {
 		
 		for(int i = 0; i < 2; i++) {
 			
-			// Scale to actual dimension
+			// scale to actual dimension
 			x = baseChordXCoords[i]*c;
 			y = 0.0;
 			z = baseChordZCoords[i]*c;
 			
-			// Rotation due to twist
+			// rotation due to twist
 			if(!liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 				double r = Math.sqrt(x*x + z*z);
 				x = x - r*(1-Math.cos(twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));
 				z = z - r*Math.sin(twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN));				
 			}
 			
-			// Actual location
+			// actual location
 			x = x + xLE + liftingSurface.getXApexConstructionAxes().doubleValue(SI.METER);
 			y = yStation;
 			z = z + liftingSurface.getZApexConstructionAxes().doubleValue(SI.METER)
@@ -503,5 +888,11 @@ public class TestBoolean03mds {
 				);
 		
 		return chordCurve;
+	}
+	
+	public enum SideSelector {
+		UPPER_SIDE,
+		LOWER_SIDE,
+		BOTH_SIDES
 	}
 }
