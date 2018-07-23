@@ -6065,7 +6065,11 @@ public class InputManagerController {
 			else 
 				updateAircraftDataImplementation();
 			
-			// TODO: SET TO NONE THE EACH ADJUST CRITERION AFTER UPDATING
+			fuselageAdjustCriterionChoiceBox.getSelectionModel().clearAndSelect(0);
+			wingAdjustCriterionChoiceBox.getSelectionModel().clearAndSelect(0);
+			hTailAdjustCriterionChoiceBox.getSelectionModel().clearAndSelect(0);
+			vTailAdjustCriterionChoiceBox.getSelectionModel().clearAndSelect(0);
+			canardAdjustCriterionChoiceBox.getSelectionModel().clearAndSelect(0);
 			
 		}
 	}

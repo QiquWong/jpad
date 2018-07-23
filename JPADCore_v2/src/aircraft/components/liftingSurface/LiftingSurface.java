@@ -2773,6 +2773,7 @@ public class LiftingSurface {
 		}
 		
 		calculateGeometry(_theLiftingSurfaceInterface.getType(), _theLiftingSurfaceInterface.isMirrored());
+		populateAirfoilList(false);
 		
 	}
 	
