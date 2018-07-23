@@ -1,5 +1,6 @@
 package it.unina.daf.jpadcadsandbox;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,19 +29,24 @@ import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
 import opencascade.BOPAlgo_Operation;
+import opencascade.BRepAlgoAPI_Common;
 import opencascade.BRepAlgoAPI_Cut;
+import opencascade.BRepAlgoAPI_Fuse;
 import opencascade.BRepAlgoAPI_Section;
+import opencascade.BRepBuilderAPI;
 import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepBuilderAPI_MakeFace;
 import opencascade.BRepBuilderAPI_MakeSolid;
 import opencascade.BRepBuilderAPI_MakeWire;
 import opencascade.BRepBuilderAPI_Sewing;
+import opencascade.BRepBuilderAPI_Transform;
 import opencascade.BRepGProp;
 import opencascade.BRepOffsetAPI_MakeEvolved;
 import opencascade.BRepOffsetAPI_MakePipe;
 import opencascade.BRepOffsetAPI_MakePipeShell;
 import opencascade.BRepOffsetAPI_ThruSections;
 import opencascade.BRepTools;
+import opencascade.BRep_Builder;
 import opencascade.BRep_Tool;
 import opencascade.GC_MakePlane;
 import opencascade.GProp_GProps;
@@ -52,6 +58,7 @@ import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
 import opencascade.TopTools_ListOfShape;
 import opencascade.TopoDS;
+import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
 import opencascade.TopoDS_Face;
 import opencascade.TopoDS_Shape;
@@ -62,6 +69,7 @@ import opencascade.gp_Ax2;
 import opencascade.gp_Circ;
 import opencascade.gp_Dir;
 import opencascade.gp_Pnt;
+import opencascade.gp_Trsf;
 import opencascade.gp_Vec;
 import opencascade.gp_XYZ;
 import standaloneutils.MyArrayUtils;
@@ -126,7 +134,7 @@ public class TestBoolean03mds {
 		System.out.println("========== Symmetric flaps chords:");
 		symFlapChords.forEach(d -> System.out.println("========== " + Arrays.toString(d)));
 		
-		// get actual flap y stations according to wing paneling
+		// adjust flap stations
 		List<double[]> symFlapActualExtrema = new ArrayList<>();
 		List<double[]> symFlapActualChords = new ArrayList<>();
 		List<Double> wingEtaBreakpoints = wing.getEtaBreakPoints();
@@ -143,28 +151,52 @@ public class TestBoolean03mds {
 					symFlapActualChords.add(new double[] {innChord, outChord});
 				} else if((yInner >= wingEtaBreakpoints.get(j) && yInner < wingEtaBreakpoints.get(j+1)) 
 						&& yOuter > wingEtaBreakpoints.get(j+1)) {
-					symFlapActualExtrema.add(new double[] {yInner, wingEtaBreakpoints.get(j+1)});
-					symFlapActualExtrema.add(new double[] {wingEtaBreakpoints.get(j+1), yOuter});
+					double etaBP = (double) Math.round(wingEtaBreakpoints.get(j+1)*100d)/100d;
+					
+					symFlapActualExtrema.add(new double[] {yInner, etaBP});
+					symFlapActualExtrema.add(new double[] {etaBP, yOuter});
 					
 					double midChord = MyMathUtils.getInterpolatedValue1DLinear(
 							symFlapExtrema.get(i), 
 							symFlapChords.get(i), 
-							wingEtaBreakpoints.get(j+1)
+							etaBP
 							);
 					
 					symFlapActualChords.add(new double[] {innChord, midChord});
 					symFlapActualChords.add(new double[] {midChord, outChord});
 				}
 			}
-		}		
-//		symFlapActualExtrema.set(0, new double[] {0.08, 0.3232448280952593});
-//		symFlapActualExtrema.set(1, new double[] {0.3232448280952593, 0.35});
-//		symFlapActualExtrema.set(2, new double[] {0.35, 1.00});
+		}	
+		
+		
+		
+		for(int i = 1; i < symFlapActualExtrema.size(); i++) {
+			if((symFlapActualExtrema.get(i)[0] - symFlapActualExtrema.get(i-1)[1]) < 1e-5) {
+				double[] temp = symFlapActualExtrema.get(i);
+				symFlapActualExtrema.set(i, new double[] {(double) Math.round((temp[0]-0.01)*100d)/100d, temp[1]});
+			}			
+		}
+		
+//		symFlapActualExtrema.set(0, new double[] {0.08, 0.32}); // TODO it's better, whenever two different flap stations coincide,
+//		symFlapActualExtrema.set(1, new double[] {0.32, 0.36}); //      to set the second one a little bit back. Besides, make sure
+//		symFlapActualExtrema.set(2, new double[] {0.36, 0.80}); //      stations do not precisely coincide with eta breakpoints
+		
+		symFlapActualExtrema.clear();
+		symFlapActualExtrema = symFlapExtrema;
+		symFlapActualChords.clear();
+		symFlapActualChords = symFlapChords;
+		
+//		symFlapActualExtrema.remove(0);
+//		symFlapActualExtrema.set(0, new double[] {0.08, 0.30});
+//		symFlapActualExtrema.set(1, new double[] {0.35, 0.80});
+//		symFlapActualChords.remove(0);
+//		symFlapActualChords.set(0, new double[] {0.35, 0.32});
+//		symFlapActualChords.set(1, new double[] {0.35, 0.32});
 		System.out.println("========== Actual symmetric flaps spanwise position:");
 		symFlapActualExtrema.forEach(d -> System.out.println("========== " + Arrays.toString(d)));
 		System.out.println("========== Actual symmetric flaps chords:");
 		symFlapActualChords.forEach(d -> System.out.println("========== " + Arrays.toString(d)));
-	
+		
 		int numSymFlapActual = symFlapActualExtrema.size();
 		
 		// calculate list of chord lengths
@@ -379,13 +411,13 @@ public class TestBoolean03mds {
 //			}
 //		}
 		
-		double leapFactor = 0.70;
+		double leapFactor = 0.75;
 		List<TopoDS_Wire[]> cuttingWires = new ArrayList<>();
 		
 		for(int i = 0; i < numSymFlapActual; i++) {
 			TopoDS_Wire[] wiresArray = new TopoDS_Wire[2];	
 			for(int j = 0; j < 2; j++) {
-				if(j == 0 && !airfoilBool.get(i)[j] && !cuttingBool.get(i)[j]) {
+				if(j == 0 && (!airfoilBool.get(i)[j] && !cuttingBool.get(i)[j])) {
 					wiresArray[0] = cuttingWires.get(i-1)[1];
 				} else {
 					double c = chordLengths.get(i)[j];
@@ -483,6 +515,7 @@ public class TestBoolean03mds {
 			sewer.Perform();
 			TopoDS_Shape sewedShape = sewer.SewedShape();
 			
+			System.out.println(OCCUtils.reportOnShape(sewedShape, "Shapes report on cutting shell sewed shape: "));
 			TopExp_Explorer exp = new TopExp_Explorer(sewedShape, TopAbs_ShapeEnum.TopAbs_SHELL);
 			while(exp.More() > 0) {
 				TopoDS_Shell sewedShell = TopoDS.ToShell(exp.Current());
@@ -491,6 +524,25 @@ public class TestBoolean03mds {
 				exp.Next();
 			}			
 		}	
+		
+		// mirroring cutting solids when necessary
+		if(!wing.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+			List<TopoDS_Solid> mirroredCS = new ArrayList<>();
+			gp_Trsf mirrorTransform = new gp_Trsf();
+			gp_Ax2 mirrorPointPlane = new gp_Ax2(
+					new gp_Pnt(0.0, 0.0, 0.0),
+					new gp_Dir(0.0, 1.0, 0.0), // Y direction normal to reflection plane XZ
+					new gp_Dir(1.0, 0.0, 0.0)
+					);
+			mirrorTransform.SetMirror(mirrorPointPlane);
+			BRepBuilderAPI_Transform mirrorBuilder = new BRepBuilderAPI_Transform(mirrorTransform);
+			for(int i = 0; i < cuttingSolids.size(); i++) {
+				TopoDS_Solid cs = cuttingSolids.get(i);
+				mirrorBuilder.Perform(cs, 1);
+				mirroredCS.add(TopoDS.ToSolid(mirrorBuilder.Shape()));
+			}
+			cuttingSolids.addAll(mirroredCS);
+		}
 		
 		// cut the wing
 //		TopoDS_Solid cutWing = wingSolid;
@@ -502,18 +554,51 @@ public class TestBoolean03mds {
 //				exp.Next();
 //			}
 //		}
-		BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut();
-		TopTools_ListOfShape arguments = new TopTools_ListOfShape();
-		TopTools_ListOfShape tools = new TopTools_ListOfShape();
 		
-		arguments.Append(wingSolid);
-		tools.Append(cuttingSolids.get(0));
+//		TopoDS_Compound cuttingSolidsCompound = new TopoDS_Compound();
+//		BRep_Builder builder = new BRep_Builder();
+//		builder.MakeCompound(cuttingSolidsCompound);
+//		cuttingSolids.forEach(cs -> builder.Add(cuttingSolidsCompound, cs));
 		
-		cutter.SetOperation(BOPAlgo_Operation.BOPAlgo_CUT);
-		cutter.SetArguments(arguments);
-		cutter.SetTools(tools);
-		cutter.Build();
-		TopoDS_Shape resultShape = cutter.Shape();
+//		BRepAlgoAPI_Common cutter = new BRepAlgoAPI_Common();
+//		TopTools_ListOfShape arguments = new TopTools_ListOfShape();
+//		TopTools_ListOfShape tools = new TopTools_ListOfShape();
+//		
+//		arguments.Append(wingSolid);
+//		cuttingSolids.forEach(tools::Append);
+//		
+//		cutter.SetOperation(BOPAlgo_Operation.BOPAlgo_CUT);
+//		cutter.SetArguments(arguments);
+//		cutter.SetTools(tools);
+//		cutter.Build();
+//		
+//		TopoDS_Shape resultShape = cutter.Shape();
+//		System.out.println(OCCUtils.reportOnShape(resultShape, "Shapes report on cut solid: "));
+//		TopExp_Explorer exp0 = new TopExp_Explorer(resultShape, TopAbs_ShapeEnum.TopAbs_COMPOUND);
+//		List<TopoDS_Solid> cutSolids = new ArrayList<>();
+//		while(exp0.More() > 0) {
+//			TopoDS_Compound comp = TopoDS.ToCompound(exp0.Current());
+//			System.out.println(OCCUtils.reportOnShape(comp, "Shapes report on compound found in cut shapes: "));
+//			TopExp_Explorer exp1 = new TopExp_Explorer(comp, TopAbs_ShapeEnum.TopAbs_SOLID);
+//			while(exp1.More() > 0) {
+//				cutSolids.add(TopoDS.ToSolid(exp1.Current()));
+//				exp1.Next();
+//			}
+//			exp0.Next();
+//		}
+//		System.out.println(cutSolids.size());
+		
+		TopoDS_Solid cutResult = TopoDS.ToSolid(wingSolid);
+		for(int i = 0; i < cuttingSolids.size(); i++) {
+			BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(cuttingSolids.get(i), cutResult); //TODO why? cut algorithm seems to work fine in this case 
+			TopoDS_Shape cut = cutter.Shape();                                             //     putting tools first and complementing cut result
+			TopExp_Explorer exp = new TopExp_Explorer(cut, TopAbs_ShapeEnum.TopAbs_SOLID);
+			while(exp.More() > 0) {
+				cutResult = TopoDS.ToSolid(exp.Current().Complemented());
+				System.out.println("Cut solid orientation: " + cutResult.Orientation().toString());
+				exp.Next();
+			}
+		}
 	
 //		// generate circles for curve cutting
 //		List<TopoDS_Edge> cfCircles = new ArrayList<>();
@@ -658,8 +743,9 @@ public class TestBoolean03mds {
 //			exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(sa[0]));
 //			exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(sa[1]));
 //			});
-		cuttingSolids.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
-//		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(resultShape));
+//		cuttingSolids.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
+		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutResult));
+//		cutSolids.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
 			
 		String fileName = "testBoolean03mds.brep";
 		if(OCCUtils.write(fileName, exportShapes))

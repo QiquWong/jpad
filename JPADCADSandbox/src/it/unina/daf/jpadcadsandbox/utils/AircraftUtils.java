@@ -2175,8 +2175,8 @@ public final class AircraftUtils {
 		
 		// checking the trailing edge
 		if(Math.abs(zCoords[0] - zCoords[nPoints - 1]) < 1e-5) {
-			zCoords[0] += 5*1e-4;
-			zCoords[nPoints - 1] -= 5*1e-4;
+			zCoords[0] += 1e-3;
+			zCoords[nPoints - 1] -= 1e-3;
 		}
 
 		for (int i = 0; i < nPoints; i++) {
