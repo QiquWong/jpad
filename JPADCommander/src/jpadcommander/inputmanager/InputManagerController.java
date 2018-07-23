@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -33,9 +34,14 @@ import aircraft.components.cabinconfiguration.ICabinConfiguration;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.IFuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
+import aircraft.components.liftingSurface.creator.ISlatCreator;
 import aircraft.components.liftingSurface.creator.ISpoilerCreator;
+import aircraft.components.liftingSurface.creator.ISymmetricFlapCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
+import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
+import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import aircraft.components.nacelles.INacelleCreator;
 import aircraft.components.nacelles.NacelleCreator;
 import aircraft.components.nacelles.Nacelles;
@@ -47,6 +53,7 @@ import configuration.enumerations.ClassTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.LandingGearsMountingPositionEnum;
 import configuration.enumerations.NacelleMountingPositionEnum;
 import configuration.enumerations.PrimaryElectricSystemsEnum;
@@ -8355,6 +8362,7 @@ public class InputManagerController {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void updateWingTabData() {
 		
 //		//.................................................................................................
@@ -8782,22 +8790,23 @@ public class InputManagerController {
 //		for (int i=0; i<numberOfFilledWingFlapsTabs; i++) {
 //		
 //			flapList.add(
-//					new SymmetricFlapCreator.SymmetricFlapBuilder(
-//							"Wing Flap " + (i+1) + " - " + Main.getTheAircraft().getId(),
-//							FlapTypeEnum.valueOf(wingFlapsTypeList.get(i)),
-//							Double.valueOf(wingFlapsInnerPositionList.get(i)), 
-//							Double.valueOf(wingFlapsOuterPositionList.get(i)), 
-//							Double.valueOf(wingFlapsInnerChordRatioList.get(i)), 
-//							Double.valueOf(wingFlapsOuterChordRatioList.get(i)),
-//							(Amount<Angle>) Amount.valueOf(
+//					new SymmetricFlapCreator(new ISymmetricFlapCreator.Builder()
+//							.setId("Wing Flap " + (i+1) + " - " + Main.getTheAircraft().getId())
+//							.setType(FlapTypeEnum.valueOf(wingFlapsTypeList.get(i)))
+//							.setInnerStationSpanwisePosition(Double.valueOf(wingFlapsInnerPositionList.get(i))) 
+//							.setOuterStationSpanwisePosition(Double.valueOf(wingFlapsOuterPositionList.get(i))) 
+//							.setInnerChordRatio(Double.valueOf(wingFlapsInnerChordRatioList.get(i))) 
+//							.setOuterChordRatio(Double.valueOf(wingFlapsOuterChordRatioList.get(i)))
+//							.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
 //									Double.valueOf(wingFlapsMinimumDeflectionList.get(i)),
 //									Unit.valueOf(wingFlapsMinimumDeflectionUnitList.get(i))
-//									),
-//							(Amount<Angle>) Amount.valueOf(
+//									))
+//							.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
 //									Double.valueOf(wingFlapsMaximumDeflectionList.get(i)),
 //									Unit.valueOf(wingFlapsMaximumDeflectionUnitList.get(i))
-//									)
-//							).build()
+//									))
+//							.build()
+//							)
 //					);
 //		}
 //		
@@ -8871,22 +8880,23 @@ public class InputManagerController {
 //		for (int i=0; i<numberOfFilledWingSlatsTabs; i++) {
 //		
 //			slatList.add(
-//					new SlatCreator.SlatBuilder(
-//							"Wing Slat " + (i+1) + " - " + Main.getTheAircraft().getId(), 
-//							Double.valueOf(wingSlatsInnerPositionList.get(i)), 
-//							Double.valueOf(wingSlatsOuterPositionList.get(i)), 
-//							Double.valueOf(wingSlatsInnerChordRatioList.get(i)), 
-//							Double.valueOf(wingSlatsOuterChordRatioList.get(i)),
-//							Double.valueOf(wingSlatsExtensionRatioList.get(i)),
-//							(Amount<Angle>) Amount.valueOf(
+//					new SlatCreator(new ISlatCreator.Builder()
+//							.setId("Wing Slat " + (i+1) + " - " + Main.getTheAircraft().getId()) 
+//							.setInnerStationSpanwisePosition(Double.valueOf(wingSlatsInnerPositionList.get(i))) 
+//							.setOuterStationSpanwisePosition(Double.valueOf(wingSlatsOuterPositionList.get(i))) 
+//							.setInnerChordRatio(Double.valueOf(wingSlatsInnerChordRatioList.get(i))) 
+//							.setOuterChordRatio(Double.valueOf(wingSlatsOuterChordRatioList.get(i)))
+//							.setExtensionRatio(Double.valueOf(wingSlatsExtensionRatioList.get(i)))
+//							.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
 //									Double.valueOf(wingSlatsMinimumDeflectionList.get(i)),
 //									Unit.valueOf(wingSlatsMinimumDeflectionUnitList.get(i))
-//									),
-//							(Amount<Angle>) Amount.valueOf(
+//									))
+//							.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
 //									Double.valueOf(wingSlatsMaximumDeflectionList.get(i)), 
 //									Unit.valueOf(wingSlatsMaximumDeflectionUnitList.get(i))
-//									)
-//							).build()
+//									))
+//							.build()
+//							)
 //					);
 //		}
 //		
@@ -9046,21 +9056,22 @@ public class InputManagerController {
 //		for (int i=0; i<numberOfFilledWingSpoilerTabs; i++) {
 //		
 //			spoilersList.add(
-//					new SpoilerCreator.SpoilerBuilder(
-//							"Wing Spoiler " + (i+1) + " - " + Main.getTheAircraft().getId(), 
-//							Double.valueOf(wingSpoilersInnerSpanwisePositionList.get(i)), 
-//							Double.valueOf(wingSpoilersOuterSpanwisePositionList.get(i)), 
-//							Double.valueOf(wingSpoilersInnerChordwisePositionList.get(i)), 
-//							Double.valueOf(wingSpoilersOuterChordwisePositionList.get(i)), 
-//							(Amount<Angle>) Amount.valueOf(
+//					new SpoilerCreator(new ISpoilerCreator.Builder()
+//							.setId("Wing Spoiler " + (i+1) + " - " + Main.getTheAircraft().getId()) 
+//							.setInnerStationSpanwisePosition(Double.valueOf(wingSpoilersInnerSpanwisePositionList.get(i))) 
+//							.setOuterStationSpanwisePosition(Double.valueOf(wingSpoilersOuterSpanwisePositionList.get(i))) 
+//							.setInnerStationChordwisePosition(Double.valueOf(wingSpoilersInnerChordwisePositionList.get(i))) 
+//							.setOuterStationChordwisePosition(Double.valueOf(wingSpoilersOuterChordwisePositionList.get(i))) 
+//							.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
 //									Double.valueOf(wingSpoilersMinimumDeflectionList.get(i)),
 //									Unit.valueOf(wingSpoilersMinimumDeflectionUnitList.get(i))
-//									),
-//							(Amount<Angle>) Amount.valueOf(
+//									))
+//							.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
 //									Double.valueOf(wingSpoilersMaximumDeflectionList.get(i)), 
 //									Unit.valueOf(wingSpoilersMaximumDeflectionUnitList.get(i))
-//									)
-//							).build()
+//									))
+//							.build()
+//							)
 //					);
 //		}
 //		
@@ -9115,19 +9126,19 @@ public class InputManagerController {
 //							SI.METER
 //							);
 //			
-//			AirfoilCreator airfoilRoot = null;
+//			Airfoil airfoilRoot = null;
 //			if(wingEquivalentAirfoilRootPath != null) {
-//				airfoilRoot = AirfoilCreator.importFromXML(wingEquivalentAirfoilRootPath);
+//				airfoilRoot = Airfoil.importFromXML(wingEquivalentAirfoilRootPath);
 //			}
 //
-//			AirfoilCreator airfoilKink = null;
+//			Airfoil airfoilKink = null;
 //			if(wingEquivalentAirfoilKinkPath != null) {
-//				airfoilKink = AirfoilCreator.importFromXML(wingEquivalentAirfoilKinkPath);
+//				airfoilKink = Airfoil.importFromXML(wingEquivalentAirfoilKinkPath);
 //			}
 //
-//			AirfoilCreator airfoilTip = null;
+//			Airfoil airfoilTip = null;
 //			if(wingEquivalentAirfoilTipPath != null) {
-//				airfoilTip = AirfoilCreator.importFromXML(wingEquivalentAirfoilTipPath);
+//				airfoilTip = Airfoil.importFromXML(wingEquivalentAirfoilTipPath);
 //			}
 //			
 //			LiftingSurfacePanelCreator equivalentWingPanel = new 
@@ -9261,8 +9272,8 @@ public class InputManagerController {
 //										Double.valueOf(wingPanelsOuterChordList.get(i)),
 //										Unit.valueOf(wingPanelsOuterChordUnitList.get(i))
 //										),
-//								AirfoilCreator.importFromXML(wingPanelsInnerAirfoilPathList.get(i)),
-//								AirfoilCreator.importFromXML(wingPanelsOuterAirfoilPathList.get(i)),
+//								Airfoil.importFromXML(wingPanelsInnerAirfoilPathList.get(i)),
+//								Airfoil.importFromXML(wingPanelsOuterAirfoilPathList.get(i)),
 //								(Amount<Angle>) Amount.valueOf(
 //										Double.valueOf(wingPanelsInnerTwistList.get(i)),
 //										Unit.valueOf(wingPanelsInnerTwistUnitList.get(i))
@@ -9316,7 +9327,7 @@ public class InputManagerController {
 //				Main.getTheAircraft().getWing().getAerodynamicDatabaseReader(), 
 //				Main.getTheAircraft().getWing().getEquivalentWing().getEquivalentWingFlag()
 //				);
-//		
+		
 	}
 	
 	private void updateHTailTabData() {
