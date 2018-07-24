@@ -413,9 +413,11 @@ public class TestBoolean03mds {
 		
 		double leapFactor = 0.75;
 		List<TopoDS_Wire[]> cuttingWires = new ArrayList<>();
+		List<TopoDS_Wire[]> cuttingWires2 = new ArrayList<>();
 		
 		for(int i = 0; i < numSymFlapActual; i++) {
 			TopoDS_Wire[] wiresArray = new TopoDS_Wire[2];	
+			TopoDS_Wire[] wiresArray2 = new TopoDS_Wire[2];	
 			for(int j = 0; j < 2; j++) {
 				if(j == 0 && (!airfoilBool.get(i)[j] && !cuttingBool.get(i)[j])) {
 					wiresArray[0] = cuttingWires.get(i-1)[1];
@@ -458,6 +460,10 @@ public class TestBoolean03mds {
 					gp_Pnt p4 = new gp_Pnt(yzAxis.Multiplied(-2*cf).Added(new gp_Vec(p3.Coord())).XYZ());
 					gp_Pnt p5 = new gp_Pnt(normLow.Multiplied(cf).Added(new gp_Vec(p6.Coord())).XYZ()); 
 					p5.SetZ(p4.Z());
+
+					gp_Pnt p7 = new gp_Pnt(new gp_Vec(1, 0, 0).Multiplied(-2*c).Added(new gp_Vec(p2.Coord())).XYZ());
+					gp_Pnt p8 = new gp_Pnt(new gp_Vec(1, 0, 0).Multiplied(-2*c).Added(new gp_Vec(p5.Coord())).XYZ());
+					p8.SetX(p7.X());
 					
 					wirePoints.add(p1);
 					wirePoints.add(p2);
@@ -466,14 +472,28 @@ public class TestBoolean03mds {
 					wirePoints.add(p5);
 					wirePoints.add(p6);
 					
+					List<gp_Pnt> wirePoints2 = new ArrayList<>();
+					wirePoints2.add(p1);
+					wirePoints2.add(p2);
+					wirePoints2.add(p7);
+					wirePoints2.add(p8);
+					wirePoints2.add(p5);
+					wirePoints2.add(p6);
+					
 					// generate wire edges
 					BRepBuilderAPI_MakeWire wire = new BRepBuilderAPI_MakeWire();
+					BRepBuilderAPI_MakeWire wire2 = new BRepBuilderAPI_MakeWire();
 					for(int k = 0; k < 5; k++) {
 						BRepBuilderAPI_MakeEdge wireEdge = new BRepBuilderAPI_MakeEdge(
 								wirePoints.get(k), 
 								wirePoints.get(k+1)
 								);
 						wire.Add(wireEdge.Edge());
+						BRepBuilderAPI_MakeEdge wireEdge2 = new BRepBuilderAPI_MakeEdge(
+								wirePoints2.get(k), 
+								wirePoints2.get(k+1)
+								);
+						wire2.Add(wireEdge2.Edge());
 					}
 					List<double[]> flapCurvePoints = new ArrayList<>();
 					flapCurvePoints.add(convertGpPntToDoubleArray(p6));
@@ -485,16 +505,30 @@ public class TestBoolean03mds {
 							new double[] {1, 0, 0}, 
 							false
 							)).getAdaptorCurve().Curve()).Edge());
+
+					wire2.Add(new BRepBuilderAPI_MakeEdge(((OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(
+							flapCurvePoints, 
+							false, 
+							new double[] {yzAxis.X(), yzAxis.Y(), yzAxis.Z()}, 
+							new double[] {1, 0, 0}, 
+							false
+							)).getAdaptorCurve().Curve()).Edge());
 					
 					wiresArray[j] = wire.Wire();
+					wiresArray2[j] = wire2.Wire();
 				}
 			}
 			cuttingWires.add(wiresArray);
+			cuttingWires2.add(wiresArray2);
 		}
 		
 		// patching through wires
 		List<TopoDS_Shell> cuttingShells = new ArrayList<>();
 		List<TopoDS_Solid> cuttingSolids = new ArrayList<>();
+		List<TopoDS_Shell> cuttingShells2 = new ArrayList<>();
+		List<TopoDS_Solid> cuttingSolids2 = new ArrayList<>();
+		
+		// Wing
 		for(int i = 0; i < cuttingWires.size(); i++) {
 			TopoDS_Wire wire1 = cuttingWires.get(i)[0];
 			TopoDS_Wire wire2 = cuttingWires.get(i)[1];
@@ -524,6 +558,37 @@ public class TestBoolean03mds {
 				exp.Next();
 			}			
 		}	
+
+		// Flap
+		for(int i = 0; i < cuttingWires2.size(); i++) {
+			TopoDS_Wire wire1 = cuttingWires2.get(i)[0];
+			TopoDS_Wire wire2 = cuttingWires2.get(i)[1];
+			
+			BRepOffsetAPI_ThruSections shellMaker = new BRepOffsetAPI_ThruSections();
+			shellMaker.Init(0, 0);
+			shellMaker.AddWire(wire1);
+			shellMaker.AddWire(wire2);
+			TopoDS_Shell shell = TopoDS.ToShell(shellMaker.Shape());
+			
+			TopoDS_Face face1 = new BRepBuilderAPI_MakeFace(wire1).Face();
+			TopoDS_Face face2 = new BRepBuilderAPI_MakeFace(wire2).Face();
+			
+			BRepBuilderAPI_Sewing sewer = new BRepBuilderAPI_Sewing();
+			sewer.Add(face1);
+			sewer.Add(shell);
+			sewer.Add(face2);
+			sewer.Perform();
+			TopoDS_Shape sewedShape = sewer.SewedShape();
+			
+			System.out.println(OCCUtils.reportOnShape(sewedShape, "Shapes report on cutting shell sewed shape: "));
+			TopExp_Explorer exp = new TopExp_Explorer(sewedShape, TopAbs_ShapeEnum.TopAbs_SHELL);
+			while(exp.More() > 0) {
+				TopoDS_Shell sewedShell = TopoDS.ToShell(exp.Current());
+				cuttingShells2.add(sewedShell);
+				cuttingSolids2.add(new BRepBuilderAPI_MakeSolid(sewedShell).Solid());
+				exp.Next();
+			}			
+		}	
 		
 		// mirroring cutting solids when necessary
 		if(!wing.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
@@ -542,6 +607,24 @@ public class TestBoolean03mds {
 				mirroredCS.add(TopoDS.ToSolid(mirrorBuilder.Shape()));
 			}
 			cuttingSolids.addAll(mirroredCS);
+		}
+
+		if(!wing.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+			List<TopoDS_Solid> mirroredCS = new ArrayList<>();
+			gp_Trsf mirrorTransform = new gp_Trsf();
+			gp_Ax2 mirrorPointPlane = new gp_Ax2(
+					new gp_Pnt(0.0, 0.0, 0.0),
+					new gp_Dir(0.0, 1.0, 0.0), // Y direction normal to reflection plane XZ
+					new gp_Dir(1.0, 0.0, 0.0)
+					);
+			mirrorTransform.SetMirror(mirrorPointPlane);
+			BRepBuilderAPI_Transform mirrorBuilder = new BRepBuilderAPI_Transform(mirrorTransform);
+			for(int i = 0; i < cuttingSolids2.size(); i++) {
+				TopoDS_Solid cs = cuttingSolids2.get(i);
+				mirrorBuilder.Perform(cs, 1);
+				mirroredCS.add(TopoDS.ToSolid(mirrorBuilder.Shape()));
+			}
+			cuttingSolids2.addAll(mirroredCS);
 		}
 		
 		// cut the wing
@@ -587,18 +670,72 @@ public class TestBoolean03mds {
 //			exp0.Next();
 //		}
 //		System.out.println(cutSolids.size());
-		
-		TopoDS_Solid cutResult = TopoDS.ToSolid(wingSolid);
+
+		//---------------------------------------------------------------------
+		// Wing cut
+		TopoDS_Solid cutResultW = TopoDS.ToSolid(wingSolid);
 		for(int i = 0; i < cuttingSolids.size(); i++) {
-			BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(cuttingSolids.get(i), cutResult); //TODO why? cut algorithm seems to work fine in this case 
+			
+//			BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(cutResultW, cuttingSolids.get(i)); 
+			BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(cuttingSolids.get(i), cutResultW); //TODO why? cut algorithm seems to work fine in this case
+			
 			TopoDS_Shape cut = cutter.Shape();                                             //     putting tools first and complementing cut result
 			TopExp_Explorer exp = new TopExp_Explorer(cut, TopAbs_ShapeEnum.TopAbs_SOLID);
+			System.out.println(OCCUtils.reportOnShape(cut, "Cut report: " + i));
+			System.out.println("Cutting solid orientation: " + cuttingSolids.get(i).Orientation().toString());
 			while(exp.More() > 0) {
-				cutResult = TopoDS.ToSolid(exp.Current().Complemented());
-				System.out.println("Cut solid orientation: " + cutResult.Orientation().toString());
+				cutResultW = TopoDS.ToSolid(exp.Current().Complemented());
+//				cutResultW = TopoDS.ToSolid(exp.Current());
+				System.out.println("Cut solid orientation: " + cutResultW.Orientation().toString());
 				exp.Next();
 			}
 		}
+		
+		//---------------------------------------------------------------------
+		// Flap cut
+		List<TopoDS_Solid> flaps_ = new ArrayList<>();
+		for(int i = 0; i < cuttingSolids.size(); i++) {
+			
+			BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(cuttingSolids.get(i), wingSolid); 
+			
+			TopoDS_Shape cut = cutter.Shape();                                             //     putting tools first and complementing cut result
+			TopExp_Explorer exp = new TopExp_Explorer(cut, TopAbs_ShapeEnum.TopAbs_SOLID);
+			System.out.println(OCCUtils.reportOnShape(cut, "Cut report: " + i));
+			System.out.println("Cutting solid orientation: " + cuttingSolids.get(i).Orientation().toString());
+			while(exp.More() > 0) {
+				TopoDS_Solid flap_ = TopoDS.ToSolid(exp.Current());
+				flaps_.add(flap_);
+				System.out.println("Cut solid orientation: " + flap_.Orientation().toString());
+				exp.Next();
+			}
+		}
+		List<TopoDS_Solid> flaps = new ArrayList<>();
+		for(int i = 0; i < flaps_.size(); i++) {
+			
+			BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(wingSolid.Complemented(), flaps_.get(i)); 
+			
+			TopoDS_Shape cut = cutter.Shape();                                             //     putting tools first and complementing cut result
+			TopExp_Explorer exp = new TopExp_Explorer(cut, TopAbs_ShapeEnum.TopAbs_SOLID);
+			System.out.println(OCCUtils.reportOnShape(cut, "Cut report: " + i));
+			System.out.println("Cutting solid orientation: " + flaps_.get(i).Orientation().toString());
+			while(exp.More() > 0) {
+				
+				TopoDS_Solid flap_ = TopoDS.ToSolid(exp.Current());
+				
+				gp_Trsf move = new gp_Trsf();
+				double c = chordLengths.get(0)[0];
+				move.SetTranslation(new gp_Vec(0.5*c,0.0,-0.01*c));
+				TopoDS_Shape movedFlap = new BRepBuilderAPI_Transform(flap_, move, 0).Shape();
+				
+				flaps.add(TopoDS.ToSolid(movedFlap));
+				System.out.println("Cut solid orientation: " + flap_.Orientation().toString());
+				
+				exp.Next();
+			}
+		}
+
+		
+		
 	
 //		// generate circles for curve cutting
 //		List<TopoDS_Edge> cfCircles = new ArrayList<>();
@@ -744,7 +881,10 @@ public class TestBoolean03mds {
 //			exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(sa[1]));
 //			});
 //		cuttingSolids.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
-		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutResult));
+		
+		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutResultW));
+		flaps.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
+		
 //		cutSolids.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
 			
 		String fileName = "testBoolean03mds.brep";
