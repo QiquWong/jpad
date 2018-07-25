@@ -11,14 +11,14 @@
 				<reference_mission_range unit="nmi">3300</reference_mission_range>
 			</global_data>
 			<!-- the user can estimate the mission fuel or assign it. If the 'estimate_mission_fuel' tag is FALSE, the code reads the 'mission_fuel_mass' tag (Fuel Mass in kg) -->
-			<mission_profile_data estimate_mission_fuel="TRUE" mission_fuel_mass=""> 				
+			<mission_profile_data estimate_mission_fuel="FALSE" mission_fuel_mass="16200"> 				
 				<cruise_phase>
-					<range unit="nmi">3300</range> 
+					<range unit="nmi">3100</range> 
 					<sfc>0.57</sfc>
 					<efficiency>18</efficiency>
 				</cruise_phase>
 				<alternate_phase>
-					<range unit="nmi">100</range> 
+					<range unit="nmi">35</range> 
 					<altitude unit="ft">20000</altitude>
 					<mach>0.7</mach>
 					<sfc>0.57</sfc> 

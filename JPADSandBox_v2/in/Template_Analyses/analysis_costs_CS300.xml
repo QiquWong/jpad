@@ -2,7 +2,7 @@
 <jpad_config>
     <analysis>
         <costs id="IRON - COSTS"
-			weights_from_previous_analysis="true" 
+			weights_from_previous_analysis="false" 
 			performance_from_previous_analysis="true"
 			>
 			<weights>

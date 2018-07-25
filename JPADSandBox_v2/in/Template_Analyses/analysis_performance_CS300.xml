@@ -3,8 +3,8 @@
     <analysis>
         <performance
 			id="CS300 - PERFORMANCE"
-			weights_from_previous_file="true" 
-			aerodynamics_from_previous_file="true" 
+			weights_from_previous_file="false" 
+			aerodynamics_from_previous_file="false" 
 			>
 			<weights>
 				<maximum_take_off_mass unit="kg">65183</maximum_take_off_mass>
@@ -130,7 +130,7 @@
 					<sfc>0.57</sfc>
 					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
 				</holding_sfc_function>
-				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
+				<take_off_mission_altitude unit="ft">0.0</take_off_mission_altitude>
 				<landing_ground_idle_fuel_flow unit="kg/min">0.0</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile_and_payload_range>
         </performance>

@@ -22,12 +22,12 @@ public class NacelleWeightCalc {
 		if (aircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON) < 600000.) {
 			mass = Amount.valueOf(
 					aircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)/1000.*6.8, 
-					SI.KILOGRAM);
+					SI.KILOGRAM).divide(2);
 		
 		} else {
 			mass = Amount.valueOf(
 					2760 + (2.2*aircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)), 
-					SI.KILOGRAM);
+					SI.KILOGRAM).divide(2);
 		}
 		
 		return mass;
@@ -47,14 +47,14 @@ public class NacelleWeightCalc {
 					* 6.7
 					/1000,
 					SI.KILOGRAM
-					);
+					).divide(2);
 		} else {
 			mass = Amount.valueOf(
 					aircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)
 					* 6.2
 					/1000,
 					SI.KILOGRAM
-					);
+					).divide(2);
 		}
 		
 		return mass;
@@ -72,12 +72,12 @@ public class NacelleWeightCalc {
 			mass = Amount.valueOf( 
 					aircraft.getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE)*0.065,
 					NonSI.POUND
-					).to(SI.KILOGRAM);
+					).to(SI.KILOGRAM).divide(2);
 		} else {
 			mass = Amount.valueOf(
 					aircraft.getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE)*0.055,
 					NonSI.POUND
-					).to(SI.KILOGRAM);
+					).to(SI.KILOGRAM).divide(2);
 		}
 		
 		return mass;
