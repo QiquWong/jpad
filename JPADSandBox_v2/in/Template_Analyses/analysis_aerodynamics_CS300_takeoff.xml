@@ -129,7 +129,7 @@
 					<oswald_factor perform="TRUE" method="RAYMER"/>
 					<cD_induced perform="TRUE" method="RAYMER"/>
 					<cD_wave perform="TRUE" method="LOCK_KORN_WITH_KROO"/>
-                    <cD_vs_cL perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+                    <cD_vs_cL perform="TRUE" user_defined="FALSE" method="SEMIEMPIRICAL">
 					<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
@@ -416,7 +416,7 @@
 				</pitching_moment>
 			</nacelle_analyses>
 			<aircraft_analyses>
-			    <canard_downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="FALSE" >
+			    <canard_downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="TRUE" >
 				<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is FALSE, "user_defined" allows to choose between the calculation with the specified method and type of gradient (FALSE)
@@ -445,7 +445,7 @@
 				<side_force perform="FALSE" method="NAPOLITANO_DATCOM"/>
 				<longitudinal_static_stability perform="TRUE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<lateral_static_stability perform="FALSE" method="NAPOLITANO_DATCOM"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
-				<directional_static_stability perform="TRUE" method="VEDSC_USAFDATCOM_WING"/>
+				<directional_static_stability perform="FALSE" method="NAPOLITANO_DATCOM"/>
 				<dynamic_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 				<VMU perform="FALSE" method="VEDSC_USAFDATCOM_WING"/> <!-- This analysis is performed only if it is takeoff phase -->
 			</aircraft_analyses>
@@ -564,8 +564,8 @@
 			<cD_horizontal_tail_equilibrium_vs_cL_horizontal_tail_equilibrium perform="TRUE"/>
 			<delta_elevator_equilibrium_vs_alpha perform="TRUE"/>
 			<cM_vs_alpha_breakdown perform="TRUE"/>
-			<cN_vs_beta_breakdown perform="TRUE"/>
-			<cN_vs_beta_delta_rudder perform="TRUE"/>
+			<cN_vs_beta_breakdown perform="FALSE"/>
+			<cN_vs_beta_delta_rudder perform="FALSE"/>
 			<delta_rudder_equilibrium_vs_beta perform="TRUE"/>
 			<total_equilibrium_efficiency_vs_alpha perform="TRUE"/>
 			<total_equilibrium_efficiency_vs_cL_total_equilibrium perform="TRUE"/>

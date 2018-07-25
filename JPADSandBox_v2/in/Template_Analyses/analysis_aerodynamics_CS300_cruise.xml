@@ -10,7 +10,7 @@
     <analysis>
         <aerodynamics_and_stability 
 			id="CS300 - AERODYNAMICS CRUISE"
-			balance_from_previous_analysis="true"
+			balance_from_previous_analysis="TRUE"
 			>
 			<balance>
 			<!-- 
@@ -18,7 +18,7 @@
 			Otherwise the all the CG positions in every condition will be read from the Balance output file.
 			-->
 				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
-				<adimensional_center_of_gravity_x_position_list></adimensional_center_of_gravity_x_position_list>
+				<adimensional_center_of_gravity_x_position_list>0.11,0.29</adimensional_center_of_gravity_x_position_list>
 				<adimensional_center_of_gravity_z_position_list></adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
 				<fuselage_dimensional_center_of_gravity_x_position unit="m"></fuselage_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
 				<fuselage_dimensional_center_of_gravity_z_position unit="m"></fuselage_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
@@ -29,7 +29,7 @@
 			</balance>
 			<global_data hTail_dynamic_pressure_ratio_from_file="TRUE" vTail_dynamic_pressure_ratio_from_file="TRUE" tau_elevator_from_file="FALSE" tau_rudder_from_file="TRUE" tau_canard_control_surface_from_file="TRUE">
 				<alpha_body_initial unit="deg">-4</alpha_body_initial>
-				<alpha_body_final unit="deg">8</alpha_body_final>
+				<alpha_body_final unit="deg">15</alpha_body_final>
 				<number_of_alpha_body>30</number_of_alpha_body>
 				<beta_initial unit="deg">0</beta_initial>
 				<beta_final unit="deg">30</beta_final>
@@ -129,14 +129,14 @@
 					<oswald_factor perform="TRUE" method="RAYMER"/>
 					<cD_induced perform="TRUE" method="RAYMER"/>
 					<cD_wave perform="TRUE" method="LOCK_KORN_WITH_KROO"/>
-                    <cD_vs_cL perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
+                    <cD_vs_cL perform="TRUE" user_defined="FALSE" method="SEMIEMPIRICAL">
 					<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
 					or the assignment of the curve by the user (TRUE)
 					-->
-                        <cL>0.2;0.3;0.7;0.9;0.95;0.09;0.085;0.07</cL>
-                        <cD>0.02;0.03;0.07;0.09;0.095;0.09;0.085;0.07</cD>
+                        <cL>0; 0.065649161;0.131298322;0.196947482;0.262596643;0.328245804;0.393894965;0.459544126;0.525193287;0.590842447;0.656491608;0.722140769;0.78778993;0.853439091;0.919088252;0.984737412;1.050386573;1.116035734;1.181684895;1.247334056</cL>
+                        <cD>0.005453439;0.005601472;0.006045573;0.00678574;0.007821974;0.009154274;0.010782642;0.012707076;0.014927577;0.017444145;0.02025678;0.023365482;0.02677025;0.030471085;0.034467987;0.038760956;0.043349992;0.048235094;0.053416264;0.0588935</cD>
                     </cD_vs_cL>
 					<drag_distributions perform="TRUE" method="NASA_BLACKWELL"/>
 					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
@@ -416,7 +416,7 @@
 				</pitching_moment>
 			</nacelle_analyses>
 			<aircraft_analyses>
-			    <canard_downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="FALSE" >
+			    <canard_downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="TRUE" >
 				<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is FALSE, "user_defined" allows to choose between the calculation with the specified method and type of gradient (FALSE)
@@ -445,7 +445,7 @@
 				<side_force perform="FALSE" method="NAPOLITANO_DATCOM"/>
 				<longitudinal_static_stability perform="TRUE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<lateral_static_stability perform="FALSE" method="NAPOLITANO_DATCOM"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
-				<directional_static_stability perform="TRUE" method="VEDSC_USAFDATCOM_WING"/>
+				<directional_static_stability perform="FALSE" method="NAPOLITANO_DATCOM"/>
 				<dynamic_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 				<VMU perform="FALSE" method="VEDSC_USAFDATCOM_WING"/> <!-- This analysis is performed only if it is takeoff phase -->
 			</aircraft_analyses>
@@ -564,8 +564,8 @@
 			<cD_horizontal_tail_equilibrium_vs_cL_horizontal_tail_equilibrium perform="TRUE"/>
 			<delta_elevator_equilibrium_vs_alpha perform="TRUE"/>
 			<cM_vs_alpha_breakdown perform="TRUE"/>
-			<cN_vs_beta_breakdown perform="TRUE"/>
-			<cN_vs_beta_delta_rudder perform="TRUE"/>
+			<cN_vs_beta_breakdown perform="FALSE"/>
+			<cN_vs_beta_delta_rudder perform="FALSE"/>
 			<delta_rudder_equilibrium_vs_beta perform="TRUE"/>
 			<total_equilibrium_efficiency_vs_alpha perform="TRUE"/>
 			<total_equilibrium_efficiency_vs_cL_total_equilibrium perform="TRUE"/>

@@ -1506,10 +1506,14 @@ public class LiftingSurfaceAerodynamicsManager {
 								theNasaBlackwellCalculator.getAlphaCurrent(),
 								NonSI.DEGREE_ANGLE)
 						); 
+				_liftCoefficientDistributionAtCLMax.put(
+						MethodEnum.NASA_BLACKWELL,
+						theNasaBlackwellCalculator.getClTotalDistribution().toArray()
+						);
 			}
 			else{
 				deltaAlpha = alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] 
-							- alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection-1];
+						- alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection-1];
 				alphaNew = Amount.valueOf(
 						(alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] - (deltaAlpha/2)),
 						NonSI.DEGREE_ANGLE
@@ -1521,7 +1525,7 @@ public class LiftingSurfaceAerodynamicsManager {
 					theNasaBlackwellCalculator.calculate(alphaNew);
 					clDistributionActualNasaBlackwell = theNasaBlackwellCalculator
 							.getClTotalDistribution()
-								.toArray();
+							.toArray();
 					for (int m =0; m< _numberOfPointSemiSpanWise; m++) {
 						diffCLapp = clDistributionActualNasaBlackwell[m] - _clMaxDistribution.get(m);
 
@@ -2689,6 +2693,7 @@ public class LiftingSurfaceAerodynamicsManager {
 					+ _cDInduced.get(MethodEnum.RAYMER)
 					+ _cDWave.get(MethodEnum.LOCK_KORN_WITH_KROO)
 					);
+			cDActual =_cDAtAlpha.get(MethodEnum.SEMIEMPIRICAL);
 			
 			return cDActual;
 		}

@@ -1,0 +1,172 @@
+% !TeX program = PdfLaTeX
+
+\documentclass[a4paper,12pt,oneside,openright]{book}
+
+
+%--------------------------------------------------------------------------------------------------------------------------------------------
+%PACKAGES
+%--------------------------------------------------------------------------------------------------------------------------------------------
+
+%Document settings
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[full]{textcomp}
+\usepackage[italian, english]{babel}
+%Questi comandi servono per settare i linguaggi
+\providecommand{\csletcs}[2]{%
+\expandafter\let\csname#1\expandafter\endcsname\csname#2\endcsname}
+\newcommand{\equivUC}[3][\def]{%
+\expandafter#1\csname#2\expandafter\endcsname\expandafter{%
+\csname#3\endcsname}}
+\newcommand{\UPCASElang}[1]{
+\uppercase{\def\temp{#1}}
+\csletcs{l@\temp}{l@#1}
+\equivUC{date\temp}{date#1}
+\equivUC{captions\temp}{captions#1}
+\equivUC{extras\temp}{extras#1}
+\equivUC{noextras\temp}{noextras#1}
+\equivUC[\edef]{\temp hyphenmins}{#1hyphenmins}
+}
+\UPCASElang{english}
+\UPCASElang{italian}
+\usepackage{csquotes}
+\usepackage{indentfirst}    
+\usepackage{geometry}
+\geometry{a4paper, top=20mm, bottom=20mm, left=35mm, right=20mm } %MARGINI 
+\raggedbottom  %Per non riempire tutta la pagina stirando il testo. puo lasciare spazi vuoti alla fine di una pagina
+\linespread{1} 
+
+%Other useful packages
+\usepackage[TM]{ar} %aspect ratio symbol. To use it --> \AR
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage[intlimits]{mathtools}
+\usepackage{siunitx}
+\usepackage{subfig}
+\usepackage{rotating}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{floatflt}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{wrapfig}
+\usepackage{lipsum}
+\usepackage[nouppercase, swapnames]{frontespizio}
+\usepackage{adjustbox}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{lipsum}
+\usepackage{courier}
+\usepackage{xcolor}
+\usepackage{relsize}
+\usepackage{titlesec} 
+\usepackage{appendix}
+\usepackage{xspace}
+\usepackage{floatflt}
+\usepackage{varioref}
+\usepackage{tabulary}
+\usepackage[backend=biber]{biblatex}
+\addbibresource{bibliography.bib}
+\definecolor{grigio_chiaro}{gray}{0.85}
+%\usepackage[autostyle,italian=guillemets]{csquotes}
+%\usepackage[backend=biber]{biblatex}
+
+\input{Settings} % queste sono alcune impostazioni gia settate
+
+% nuovi comandi
+\newcommand\nbvspace[1][3]{\vspace*{\stretch{#1}}}
+\newcommand\nbstretchyspace{\spaceskip0.5em plus 0.25em minus 0.25em}
+
+%--------------------------------------------------------------------------------------------------------------------------------------------
+%BEGIN DOCUMENT
+%--------------------------------------------------------------------------------------------------------------------------------------------
+\begin{document}
+
+%--------------------------------------------------------------------------------------------------------------------------------------------
+%COPERTINA/FRONTESPIZIO
+%--------------------------------------------------------------------------------------------------------------------------------------------
+
+%FRONTESPIZIO
+\begin{frontespizio}
+\Universita {Napoli Federico II}
+\Divisione {Scuola Politecnica e delle Scienze di Base}
+\Corso [Laurea Triennale]{Ingegneria Aerospaziale}
+\Logo [3cm]{immagini/Logo_UNINA.pdf}
+\Titoletto {Tesi di Laurea Triennale \\ in \\ Ingegneria Aerospaziale}
+\Titolo {Assessment of minimum unstick speed \\ of a complete Aircraft using JPAD \\ (Java toolchain Program  for Aircraft Design)}
+%\Sottotitolo {Wing Aerodynamic Analysis Module,\\ Aircraft Longitudinal Static Stability Module }
+\Candidato {Bruno Spoti \\ Matricola N35/2018}
+%\Relatore {Prof. Ing. Fabrizio Nicolosi }
+\Relatore {Prof. Ing. Agostino De Marco}
+\Correlatore{Ing. Manuela Ruocco}
+\Annoaccademico {2017/2018}
+\end{frontespizio}
+
+% -----------------------------------------------------------------------------------------
+%                                                                    INSERIRE PAGINA BIANCA
+% -----------------------------------------------------------------------------------------
+
+\newpage\null\thispagestyle{empty}\newpage\thispagestyle{empty}
+
+% -----------------------------------------------------------------------------------------
+%                                                                    D E D I C A  (non in indice)
+% -----------------------------------------------------------------------------------------
+
+\null\vspace{\stretch{1}}
+\begin{flushright}
+\textit{Sono sempre i sogni a dare forma al mondo,\\ sono sempre i sogni a fare la realtà.}
+\end{flushright}
+\vspace{\stretch{2}}\null
+\newpage\null\thispagestyle{empty}
+
+% -----------------------------------------------------------------------------------------
+%                                                                   PREFAZIONE
+% -----------------------------------------------------------------------------------------
+
+\input{Capitoli/Abstract/Abstract} 
+\newpage
+\input{Capitoli/Abstract/Sommario}
+
+% -----------------------------------------------------------------------------------------
+%                                                                   INDICE  (non in indice)
+% -----------------------------------------------------------------------------------------
+
+\tableofcontents 
+\listoffigures
+% -----------------------------------------------------------------------------------------
+%                                                                 C A P I T O L I
+% -----------------------------------------------------------------------------------------
+
+\input{Capitoli/Capitolo1}
+\input{Capitoli/Capitolo2}
+\input{Capitoli/Capitolo3} 
+
+% -----------------------------------------------------------------------------------------
+%                                                                 APPENDICI
+% -----------------------------------------------------------------------------------------
+
+\appendix
+\input{Capitoli/Appendici/HDF}
+
+%-------------------------------------------------------------------------------------------
+
+\thispagestyle{empty} % per non inserire una pagina nella numerazione
+
+% -----------------------------------------------------------------------------------------
+%                                                               B I B L I O G R A F I A
+% -----------------------------------------------------------------------------------------
+\thispagestyle{empty}
+\printbibliography[heading=bibintoc]
+
+\end{document}
