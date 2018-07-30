@@ -10,5 +10,7 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64/OCCJavaWrapper.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCADFX"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/javaslang/javaslang-2.0.4-javadoc.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/javaslang/javaslang-2.0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
