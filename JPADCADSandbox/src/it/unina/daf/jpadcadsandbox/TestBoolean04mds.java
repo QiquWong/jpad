@@ -26,6 +26,7 @@ import opencascade.BRepBuilderAPI_MakeSolid;
 import opencascade.BRepBuilderAPI_MakeWire;
 import opencascade.BRepBuilderAPI_Sewing;
 import opencascade.BRepBuilderAPI_Transform;
+import opencascade.BRepCheck_Analyzer;
 import opencascade.BRepGProp;
 import opencascade.BRepOffsetAPI_ThruSections;
 import opencascade.BRep_Tool;
@@ -34,6 +35,7 @@ import opencascade.GProp_GProps;
 import opencascade.GeomAPI_ExtremaCurveCurve;
 import opencascade.Geom_Curve;
 import opencascade.Geom_Surface;
+import opencascade.ShapeFix_Shape;
 import opencascade.TopAbs_Orientation;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
@@ -68,7 +70,7 @@ public class TestBoolean04mds {
 		LiftingSurface wing = AircraftUtils.importAircraft(args).getWing();
 		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(
 				wing, 
-				ComponentEnum.WING, 
+				wing.getType(), 
 				1e-3, 
 				false, 
 				true, 
@@ -89,6 +91,8 @@ public class TestBoolean04mds {
 		}		
 		
 		TopoDS_Solid wingSolid = TopoDS.ToSolid(wingShapes.get(0).getShape());
+		BRepCheck_Analyzer analyzer = new BRepCheck_Analyzer(wingSolid);
+		System.out.println("========== Is solid wing valid? " + (analyzer.IsValid() == 1));
 		
 		// Acquire control surfaces data
 		double wingSemiSpan = wing.getSemiSpan().doubleValue(SI.METER);
@@ -114,7 +118,7 @@ public class TestBoolean04mds {
 		symFlapChordRatios.forEach(d -> System.out.println(Arrays.toString(d)));
 		
 		// Adjust control surfaces positions (whether necessary)
-		double adjustmentPar = 0.005;
+		double adjustmentPar = 0.01;
 		List<Double> etaBreakPnts = wing.getEtaBreakPoints();
 		System.out.println("========== Lifting surface eta breakpoints: " + 
 							Arrays.toString(etaBreakPnts.toArray(new Double[etaBreakPnts.size()])));
@@ -241,7 +245,7 @@ public class TestBoolean04mds {
 			
 			double flapRelLength = stations[1] - stations[0];
 			
-			int numInterStations = (flapRelLength < 0.3) ? 3 : 4;
+			int numInterStations = (flapRelLength < 0.3) ? 4 : 7;
 			
 			double[] yStations = MyArrayUtils.linspace(
 					stations[0]*wingSemiSpan, 
@@ -273,19 +277,26 @@ public class TestBoolean04mds {
 		// Get airfoils at calculated y stations
 		List<TopoDS_Shape[]> wingSections = new ArrayList<>();
 
-		System.out.println("========== getSymmetricFlaps: lifting surface sections creation...");
-		gp_Dir sectionNormalAxis = new gp_Dir(0, 1, 0);
+		gp_Dir sectionNormalAxis = (wing.getType().equals(ComponentEnum.VERTICAL_TAIL)) ? 
+				new gp_Dir(0.0, 0.0, 1.0) : new gp_Dir(0.0, 1.0, 0.0);
+		System.out.println("========== getSymmetricFlaps: lifting surface sections creation...");		
 		for(int i = 0; i < numSymFlap; i++) {			
 			int numYs = symFlapYStations.get(i).length; 
 			
 			TopoDS_Shape[] shapesArray = new TopoDS_Shape[numYs];		
-			for(int j = 0; j < numYs; j++) {				
+			for(int j = 0; j < numYs; j++) {	
+				System.out.println("Flap #" + (i+1) + " section #" + (j+1) + " ...");
+				
 				BRepAlgoAPI_Section sectionMaker = new BRepAlgoAPI_Section();
-				gp_Pnt sectionOrigin = new gp_Pnt(0, symFlapYStations.get(i)[j], 0);
+				gp_Pnt sectionOrigin = (wing.getType().equals(ComponentEnum.VERTICAL_TAIL)) ?
+						new gp_Pnt(0.0, 0.0, symFlapYStations.get(i)[j] + wing.getZApexConstructionAxes().doubleValue(SI.METER)) : 
+						new gp_Pnt(0.0, symFlapYStations.get(i)[j] + wing.getYApexConstructionAxes().doubleValue(SI.METER), 0.0);
 				sectionMaker.Init1(wingSolid);
 				sectionMaker.Init2(makeIntersectionPlane(sectionOrigin, sectionNormalAxis));
 				sectionMaker.Build();
 				shapesArray[j] = sectionMaker.Shape();
+				
+				System.out.println("Section done!");
 			}			
 			wingSections.add(shapesArray);
 		}
@@ -331,7 +342,7 @@ public class TestBoolean04mds {
 		}
 		
 		// Generate wires at y station
-		double leapFactor = 0.50;
+		double leapFactor = 0.55;
 		
 		List<TopoDS_Wire[]> wingCutWires = new ArrayList<>();
 		List<TopoDS_Wire[]> flapCutWires = new ArrayList<>();
@@ -389,12 +400,15 @@ public class TestBoolean04mds {
 				cFlapTang.Normalize();
 				cLeapTang.Normalize();
 				
+				cLeapTang.Add(new gp_Vec(0.0, 0.0, Math.abs(cLeapTang.Z())*0.25));
+				cLeapTang.Normalize();
+				
 				rotPntsArray[j] = cFlapPnt;
 				
 				gp_Vec zyDir = wing.getType().equals(ComponentEnum.VERTICAL_TAIL) ? // auxiliary vectors, useful for wire construction
-						new gp_Vec(0, 0, 1) : new gp_Vec(0, 1, 0);
+						new gp_Vec(0.0, 0.0, 1.0) : new gp_Vec(0.0, 1.0, 0.0);
 				gp_Vec yzDir = wing.getType().equals(ComponentEnum.VERTICAL_TAIL) ? 
-						new gp_Vec(0, 1, 0) : new gp_Vec(0, 0, 1);
+						new gp_Vec(0.0, -1.0, 0.0) : new gp_Vec(0.0, 0.0, 1.0);
 						
 				// generate wires for wing cutting
 				List<gp_Pnt> wirePointsWing = new ArrayList<>();		
@@ -546,7 +560,7 @@ public class TestBoolean04mds {
 		List<TopoDS_Solid> flaps = new ArrayList<>();
 		
 		System.out.println("========== getSymmetricFlaps: flaps creation...");
-		for(int i = 0; i < wingCuttingSolids.size(); i++) {		
+		for(int i = 0; i < numSymFlap; i++) {		
 			System.out.println("- Flap #" + (i+1) + " cutting execution, please wait...");
 			
 			TopoDS_Solid auxCutWing = performBooleanCutOperation(
@@ -566,6 +580,11 @@ public class TestBoolean04mds {
 					new Tuple2<TopoDS_Solid, Boolean>(flapCuttingSolids.get(i), false)
 					).get(0));
 			System.out.println("Flap leading edge adjustment executed correctly.");
+		}
+		
+		if(!wing.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+			for(int i = 0; i < numSymFlap; i++) 
+				flaps.add(TopoDS.ToSolid(mirrorShapeRespectACSymPlane(flaps.get(i))));
 		}
 		
 		// Translate and rotate flaps
@@ -608,7 +627,7 @@ public class TestBoolean04mds {
 					symFlapChords.get(i)[symFlapChords.get(i).length-1]		
 					);
 
-			translation.SetTranslation(new gp_Vec(0.2*tx, 0.0, -0.01*tx));
+			translation.SetTranslation(new gp_Vec(0.3*tx, 0.0, 0.0*tx));
 			pitchRotation.SetRotation(
 					rotAxes.get(i),
 					Math.toRadians(pitchRotDeg)
@@ -627,6 +646,12 @@ public class TestBoolean04mds {
 		// Export shapes to CAD file
 		List<OCCShape> exportShapes = new ArrayList<>();
 		
+//		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(wingSolid));
+//		wingSections.forEach(sa -> Arrays.asList(sa).forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s))));
+//		wingCutWires.forEach(sa -> Arrays.asList(sa).forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s))));
+//		flapCutWires.forEach(sa -> Arrays.asList(sa).forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s))));
+//		wingCuttingSolids.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
+//		flapCuttingSolids.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
 		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutWing));
 		movedFlaps.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
 
@@ -698,6 +723,7 @@ public class TestBoolean04mds {
 				TopoDS.ToSolid(secondSolid._1().Complemented()) : secondSolid._1();
 
 		BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(solid1, solid2); 	
+//		cutter.SetFuzzyValue(1e-5);
 		TopoDS_Shape cutResult = cutter.Shape();                                            
 		TopExp_Explorer exp = new TopExp_Explorer(cutResult, TopAbs_ShapeEnum.TopAbs_SOLID);
 		while(exp.More() > 0) {
