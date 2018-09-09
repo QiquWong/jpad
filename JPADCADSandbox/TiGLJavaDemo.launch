@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<stringAttribute key="bad_container_name" value="\JPADCADSandb"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/TiGLJavaDemo/src/it/unina/daf/tigljavademo/JavaDemo01.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="false"/>
+<mapAttribute key="org.eclipse.debug.core.environmentVariables">
+<mapEntry key="Path" value="${TIGL_INSTALL_ROOT}\bin;${TIGL_INSTALL_ROOT}\lib;${TIGL_JAVADEMO_DIR}\lib"/>
+</mapAttribute>
+<stringAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING" value="UTF-8"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="it.unina.daf.tigljavademo.JavaDemo01"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="${TIGL_TESTDATA}/D150_v30.xml"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="TiGLJavaDemo"/>
+</launchConfiguration>

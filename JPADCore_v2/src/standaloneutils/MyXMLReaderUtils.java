@@ -643,7 +643,7 @@ public class MyXMLReaderUtils {
 				
 				if(unitStr.startsWith("1/", 0)) {
 					if(unitStr.equalsIgnoreCase("1/deg"))
-						unitStr = "1/°";
+						unitStr = "1/Â°";
 					Double value = Double.parseDouble(valueStr);
 					quantity = Amount.valueOf(value, Unit.valueOf(unitStr.substring(2)).inverse());
 				}

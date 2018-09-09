@@ -620,7 +620,7 @@ public class TestBoolean04mds {
 		List<TopoDS_Solid> movedFlaps = new ArrayList<>();
 		
 		System.out.println("========== getSymmetricFlaps: flaps rotation and translation execution...");
-		System.out.println("Rotation angle is set to " + pitchRotDeg + "°.");
+		System.out.println("Rotation angle is set to " + pitchRotDeg + "Â°.");
 		for(int i = 0; i < flaps.size(); i++) {
 			double tx = MyMathUtils.arithmeticMean(
 					symFlapChords.get(i)[0],
@@ -656,8 +656,10 @@ public class TestBoolean04mds {
 		movedFlaps.forEach(s -> exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(s)));
 
 		String fileName = "testBoolean04mds.brep";
-		if(OCCUtils.write(fileName, exportShapes))
+		if(OCCUtils.write(fileName, exportShapes)) {
+			System.out.println("========== [main] ... exporting ...");
 			System.out.println("========== [main] Output written on file: " + fileName);
+		}
 		
 	}
 
