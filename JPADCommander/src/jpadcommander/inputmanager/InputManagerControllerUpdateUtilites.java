@@ -1307,151 +1307,151 @@ public class InputManagerControllerUpdateUtilites {
 	@SuppressWarnings("unchecked")
 	public void updateWingTabData() {
 		
-//		//.................................................................................................
-//		// DATA INITIALIZATION
-//		//.................................................................................................
-//		boolean wingEquivalentFlag = false;
-//		String wingMainSparLoacation = "";
-//		String wingSecondarySparLocation = "";
-//		String wingRoughness = "";
-//		String wingRoughnessUnit = "";
-//		String wingWingletHeigth = "";
-//		String wingWingletHeightUnit = "";
-//		//.................................................................................................
-//		String wingEquivalentArea = "";
-//		String wingEquivalentAreaUnit = "";
-//		String wingEquivalentAspectRatio = "";
-//		String wingEquivalentKinkEtaStation = "";
-//		String wingEquivalentSweepLE = "";
-//		String wingEquivalentSweepLEUnit = "";
-//		String wingEquivalentTwistAtTip = "";
-//		String wingEquivalentTwistAtTipUnit = "";
-//		String wingEquivalentDihedralAngle = "";
-//		String wingEquivalentDihedralAngleUnit = "";
-//		String wingEquivalentTaperRatio = "";
-//		String wingEquivalentXOffsetRootLE = "";
-//		String wingEquivalentXOffsetRootTE = "";
-//		String wingEquivalentAirfoilRootPath = "";
-//		String wingEquivalentAirfoilKinkPath = "";
-//		String wingEquivalentAirfoilTipPath = "";
-//		//.................................................................................................
-//		List<String> wingPanelsSpanList = new ArrayList<>();
-//		List<String> wingPanelsSpanUnitList = new ArrayList<>();
-//		List<String> wingPanelsSweepLEList = new ArrayList<>();
-//		List<String> wingPanelsSweepLEUnitList = new ArrayList<>();
-//		List<String> wingPanelsDihedralList = new ArrayList<>();
-//		List<String> wingPanelsDihedralUnitList = new ArrayList<>();
-//		List<String> wingPanelsInnerChordList = new ArrayList<>();
-//		List<String> wingPanelsInnerChordUnitList = new ArrayList<>();
-//		List<String> wingPanelsInnerTwistList = new ArrayList<>();
-//		List<String> wingPanelsInnerTwistUnitList = new ArrayList<>();
-//		List<String> wingPanelsInnerAirfoilPathList = new ArrayList<>();
-//		List<String> wingPanelsOuterChordList = new ArrayList<>();
-//		List<String> wingPanelsOuterChordUnitList = new ArrayList<>();
-//		List<String> wingPanelsOuterTwistList = new ArrayList<>();
-//		List<String> wingPanelsOuterTwistUnitList = new ArrayList<>();
-//		List<String> wingPanelsOuterAirfoilPathList = new ArrayList<>();
-//		//.................................................................................................
-//		List<String> wingFlapsTypeList = new ArrayList<>();
-//		List<String> wingFlapsInnerPositionList = new ArrayList<>();
-//		List<String> wingFlapsOuterPositionList = new ArrayList<>();
-//		List<String> wingFlapsInnerChordRatioList = new ArrayList<>();
-//		List<String> wingFlapsOuterChordRatioList = new ArrayList<>();
-//		List<String> wingFlapsMinimumDeflectionList = new ArrayList<>();
-//		List<String> wingFlapsMinimumDeflectionUnitList = new ArrayList<>();
-//		List<String> wingFlapsMaximumDeflectionList = new ArrayList<>();
-//		List<String> wingFlapsMaximumDeflectionUnitList = new ArrayList<>();
-//		//.................................................................................................
-//		List<String> wingSlatsInnerPositionList = new ArrayList<>();
-//		List<String> wingSlatsOuterPositionList = new ArrayList<>();
-//		List<String> wingSlatsInnerChordRatioList = new ArrayList<>();
-//		List<String> wingSlatsOuterChordRatioList = new ArrayList<>();
-//		List<String> wingSlatsExtensionRatioList = new ArrayList<>();
-//		List<String> wingSlatsMinimumDeflectionList = new ArrayList<>();
-//		List<String> wingSlatsMinimumDeflectionUnitList = new ArrayList<>();
-//		List<String> wingSlatsMaximumDeflectionList = new ArrayList<>();
-//		List<String> wingSlatsMaximumDeflectionUnitList = new ArrayList<>();
-//		//.................................................................................................
-//		String wingLeftAileronType = "";
-//		String wingLeftAileronInnerPosition = "";
-//		String wingLeftAileronOuterPosition = "";
-//		String wingLeftAileronInnerChordRatio = "";
-//		String wingLeftAileronOuterChordRatio = "";
-//		String wingLeftAileronMinimumDeflection = "";
-//		String wingLeftAileronMinimumDeflectionUnit = "";
-//		String wingLeftAileronMaximumDeflection = "";
-//		String wingLeftAileronMaximumDeflectionUnit = "";
-//		//.................................................................................................
-//		String wingRightAileronType = "";
-//		String wingRightAileronInnerPosition = "";
-//		String wingRightAileronOuterPosition = "";
-//		String wingRightAileronInnerChordRatio = "";
-//		String wingRightAileronOuterChordRatio = "";
-//		String wingRightAileronMinimumDeflection = "";
-//		String wingRightAileronMinimumDeflectionUnit = "";
-//		String wingRightAileronMaximumDeflection = "";
-//		String wingRightAileronMaximumDeflectionUnit = "";
-//		//.................................................................................................
-//		List<String> wingSpoilersInnerSpanwisePositionList = new ArrayList<>();
-//		List<String> wingSpoilersOuterSpanwisePositionList = new ArrayList<>();
-//		List<String> wingSpoilersInnerChordwisePositionList = new ArrayList<>();
-//		List<String> wingSpoilersOuterChordwisePositionList = new ArrayList<>();
-//		List<String> wingSpoilersMinimumDeflectionList = new ArrayList<>();
-//		List<String> wingSpoilersMinimumDeflectionUnitList = new ArrayList<>();
-//		List<String> wingSpoilersMaximumDeflectionList = new ArrayList<>();
-//		List<String> wingSpoilersMaximumDeflectionUnitList = new ArrayList<>();
-//		
-//		//.................................................................................................
-//		// FETCHING DATA FROM GUI FIELDS ...
-//		//.................................................................................................
-//		if(equivalentWingCheckBox.isSelected())
-//			wingEquivalentFlag = true;
-//		if(textFieldWingMainSparAdimensionalPosition.getText() != null)
-//			wingMainSparLoacation = textFieldWingMainSparAdimensionalPosition.getText();
-//		if(textFieldWingSecondarySparAdimensionalPosition.getText() != null)
-//			wingSecondarySparLocation = textFieldWingSecondarySparAdimensionalPosition.getText();
-//		if(textFieldWingRoughness.getText() != null)
-//			wingRoughness = textFieldWingRoughness.getText();
-//		if(!wingRoughnessUnitChoiceBox.getSelectionModel().isEmpty())
-//			wingRoughnessUnit = wingRoughnessUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-//		if(textFieldWingWingletHeight.getText() != null)
-//			wingWingletHeigth = textFieldWingWingletHeight.getText();
-//		if(!wingWingletHeightUnitChoiceBox.getSelectionModel().isEmpty())
-//			wingWingletHeightUnit = wingWingletHeightUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-//		//.................................................................................................
-//		if(textFieldEquivalentWingArea.getText() != null)
-//			wingEquivalentArea = textFieldEquivalentWingArea.getText();
-//		if(!equivalentWingAreaUnitChoiceBox.getSelectionModel().isEmpty())
-//			wingEquivalentAreaUnit = equivalentWingAreaUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-//		if(textFieldEquivalentWingAspectRatio.getText() != null)
-//			wingEquivalentAspectRatio = textFieldEquivalentWingAspectRatio.getText();
-//		if(textFieldEquivalentWingKinkPosition.getText() != null)
-//			wingEquivalentKinkEtaStation = textFieldEquivalentWingKinkPosition.getText();
-//		if(textFieldEquivalentWingSweepLeadingEdge.getText() != null)
-//			wingEquivalentSweepLE = textFieldEquivalentWingSweepLeadingEdge.getText();
-//		if(!equivalentWingSweepLEUnitChoiceBox.getSelectionModel().isEmpty())
-//			wingEquivalentSweepLEUnit = equivalentWingSweepLEUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-//		if(textFieldEquivalentWingTwistAtTip.getText() != null)
-//			wingEquivalentTwistAtTip = textFieldEquivalentWingTwistAtTip.getText();
-//		if(!equivalentWingTwistAtTipUnitChoiceBox.getSelectionModel().isEmpty())
-//			wingEquivalentTwistAtTipUnit = equivalentWingTwistAtTipUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-//		if(textFieldEquivalentWingDihedral.getText() != null)
-//			wingEquivalentDihedralAngle = textFieldEquivalentWingDihedral.getText();
-//		if(!equivalentWingDihedralUnitChoiceBox.getSelectionModel().isEmpty())
-//			wingEquivalentDihedralAngleUnit = equivalentWingDihedralUnitChoiceBox.getSelectionModel().getSelectedItem().toString();
-//		if(textFieldEquivalentWingTaperRatio.getText() != null)
-//			wingEquivalentTaperRatio = textFieldEquivalentWingTaperRatio.getText();
-//		if(textFieldEquivalentWingRootXOffsetLE.getText() != null)
-//			wingEquivalentXOffsetRootLE = textFieldEquivalentWingRootXOffsetLE.getText();
-//		if(textFieldEquivalentWingRootXOffsetTE.getText() != null)
-//			wingEquivalentXOffsetRootTE = textFieldEquivalentWingRootXOffsetTE.getText();
-//		if(textFieldEquivalentWingAirfoilRootPath.getText() != null)
-//			wingEquivalentAirfoilRootPath = textFieldEquivalentWingAirfoilRootPath.getText();
-//		if(textFieldEquivalentWingAirfoilKinkPath.getText() != null)
-//			wingEquivalentAirfoilKinkPath = textFieldEquivalentWingAirfoilKinkPath.getText();
-//		if(textFieldEquivalentWingAirfoilTipPath.getText() != null)
-//			wingEquivalentAirfoilTipPath = textFieldEquivalentWingAirfoilTipPath.getText();
-//		//.................................................................................................
+		//.................................................................................................
+		// DATA INITIALIZATION
+		//.................................................................................................
+		boolean wingEquivalentFlag = false;
+		String wingMainSparLoacation = "";
+		String wingSecondarySparLocation = "";
+		String wingRoughness = "";
+		String wingRoughnessUnit = "";
+		String wingWingletHeigth = "";
+		String wingWingletHeightUnit = "";
+		//.................................................................................................
+		String wingEquivalentArea = "";
+		String wingEquivalentAreaUnit = "";
+		String wingEquivalentAspectRatio = "";
+		String wingEquivalentKinkEtaStation = "";
+		String wingEquivalentSweepLE = "";
+		String wingEquivalentSweepLEUnit = "";
+		String wingEquivalentTwistAtTip = "";
+		String wingEquivalentTwistAtTipUnit = "";
+		String wingEquivalentDihedralAngle = "";
+		String wingEquivalentDihedralAngleUnit = "";
+		String wingEquivalentTaperRatio = "";
+		String wingEquivalentXOffsetRootLE = "";
+		String wingEquivalentXOffsetRootTE = "";
+		String wingEquivalentAirfoilRootPath = "";
+		String wingEquivalentAirfoilKinkPath = "";
+		String wingEquivalentAirfoilTipPath = "";
+		//.................................................................................................
+		List<String> wingPanelsSpanList = new ArrayList<>();
+		List<String> wingPanelsSpanUnitList = new ArrayList<>();
+		List<String> wingPanelsSweepLEList = new ArrayList<>();
+		List<String> wingPanelsSweepLEUnitList = new ArrayList<>();
+		List<String> wingPanelsDihedralList = new ArrayList<>();
+		List<String> wingPanelsDihedralUnitList = new ArrayList<>();
+		List<String> wingPanelsInnerChordList = new ArrayList<>();
+		List<String> wingPanelsInnerChordUnitList = new ArrayList<>();
+		List<String> wingPanelsInnerTwistList = new ArrayList<>();
+		List<String> wingPanelsInnerTwistUnitList = new ArrayList<>();
+		List<String> wingPanelsInnerAirfoilPathList = new ArrayList<>();
+		List<String> wingPanelsOuterChordList = new ArrayList<>();
+		List<String> wingPanelsOuterChordUnitList = new ArrayList<>();
+		List<String> wingPanelsOuterTwistList = new ArrayList<>();
+		List<String> wingPanelsOuterTwistUnitList = new ArrayList<>();
+		List<String> wingPanelsOuterAirfoilPathList = new ArrayList<>();
+		//.................................................................................................
+		List<String> wingFlapsTypeList = new ArrayList<>();
+		List<String> wingFlapsInnerPositionList = new ArrayList<>();
+		List<String> wingFlapsOuterPositionList = new ArrayList<>();
+		List<String> wingFlapsInnerChordRatioList = new ArrayList<>();
+		List<String> wingFlapsOuterChordRatioList = new ArrayList<>();
+		List<String> wingFlapsMinimumDeflectionList = new ArrayList<>();
+		List<String> wingFlapsMinimumDeflectionUnitList = new ArrayList<>();
+		List<String> wingFlapsMaximumDeflectionList = new ArrayList<>();
+		List<String> wingFlapsMaximumDeflectionUnitList = new ArrayList<>();
+		//.................................................................................................
+		List<String> wingSlatsInnerPositionList = new ArrayList<>();
+		List<String> wingSlatsOuterPositionList = new ArrayList<>();
+		List<String> wingSlatsInnerChordRatioList = new ArrayList<>();
+		List<String> wingSlatsOuterChordRatioList = new ArrayList<>();
+		List<String> wingSlatsExtensionRatioList = new ArrayList<>();
+		List<String> wingSlatsMinimumDeflectionList = new ArrayList<>();
+		List<String> wingSlatsMinimumDeflectionUnitList = new ArrayList<>();
+		List<String> wingSlatsMaximumDeflectionList = new ArrayList<>();
+		List<String> wingSlatsMaximumDeflectionUnitList = new ArrayList<>();
+		//.................................................................................................
+		String wingLeftAileronType = "";
+		String wingLeftAileronInnerPosition = "";
+		String wingLeftAileronOuterPosition = "";
+		String wingLeftAileronInnerChordRatio = "";
+		String wingLeftAileronOuterChordRatio = "";
+		String wingLeftAileronMinimumDeflection = "";
+		String wingLeftAileronMinimumDeflectionUnit = "";
+		String wingLeftAileronMaximumDeflection = "";
+		String wingLeftAileronMaximumDeflectionUnit = "";
+		//.................................................................................................
+		String wingRightAileronType = "";
+		String wingRightAileronInnerPosition = "";
+		String wingRightAileronOuterPosition = "";
+		String wingRightAileronInnerChordRatio = "";
+		String wingRightAileronOuterChordRatio = "";
+		String wingRightAileronMinimumDeflection = "";
+		String wingRightAileronMinimumDeflectionUnit = "";
+		String wingRightAileronMaximumDeflection = "";
+		String wingRightAileronMaximumDeflectionUnit = "";
+		//.................................................................................................
+		List<String> wingSpoilersInnerSpanwisePositionList = new ArrayList<>();
+		List<String> wingSpoilersOuterSpanwisePositionList = new ArrayList<>();
+		List<String> wingSpoilersInnerChordwisePositionList = new ArrayList<>();
+		List<String> wingSpoilersOuterChordwisePositionList = new ArrayList<>();
+		List<String> wingSpoilersMinimumDeflectionList = new ArrayList<>();
+		List<String> wingSpoilersMinimumDeflectionUnitList = new ArrayList<>();
+		List<String> wingSpoilersMaximumDeflectionList = new ArrayList<>();
+		List<String> wingSpoilersMaximumDeflectionUnitList = new ArrayList<>();
+		
+		//.................................................................................................
+		// FETCHING DATA FROM GUI FIELDS ...
+		//.................................................................................................
+		if(theController.getEquivalentWingCheckBox().isSelected())
+			wingEquivalentFlag = true;
+		if(theController.getTextFieldWingMainSparAdimensionalPosition().getText() != null)
+			wingMainSparLoacation = theController.getTextFieldWingMainSparAdimensionalPosition().getText();
+		if(theController.getTextFieldWingSecondarySparAdimensionalPosition().getText() != null)
+			wingSecondarySparLocation = theController.getTextFieldWingSecondarySparAdimensionalPosition().getText();
+		if(theController.getTextFieldWingRoughness().getText() != null)
+			wingRoughness = theController.getTextFieldWingRoughness().getText();
+		if(!theController.getWingRoughnessUnitChoiceBox().getSelectionModel().isEmpty())
+			wingRoughnessUnit = theController.getWingRoughnessUnitChoiceBox().getSelectionModel().getSelectedItem().toString();
+		if(theController.getTextFieldWingWingletHeight().getText() != null)
+			wingWingletHeigth = theController.getTextFieldWingWingletHeight().getText();
+		if(!theController.getWingWingletHeightUnitChoiceBox().getSelectionModel().isEmpty())
+			wingWingletHeightUnit = theController.getWingWingletHeightUnitChoiceBox().getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(theController.getTextFieldEquivalentWingArea().getText() != null)
+			wingEquivalentArea = theController.getTextFieldEquivalentWingArea().getText();
+		if(!theController.getEquivalentWingAreaUnitChoiceBox().getSelectionModel().isEmpty())
+			wingEquivalentAreaUnit = theController.getEquivalentWingAreaUnitChoiceBox().getSelectionModel().getSelectedItem().toString();
+		if(theController.getTextFieldEquivalentWingAspectRatio().getText() != null)
+			wingEquivalentAspectRatio = theController.getTextFieldEquivalentWingAspectRatio().getText();
+		if(theController.getTextFieldEquivalentWingKinkPosition().getText() != null)
+			wingEquivalentKinkEtaStation = theController.getTextFieldEquivalentWingKinkPosition().getText();
+		if(theController.getTextFieldEquivalentWingSweepLeadingEdge().getText() != null)
+			wingEquivalentSweepLE = theController.getTextFieldEquivalentWingSweepLeadingEdge().getText();
+		if(!theController.getEquivalentWingSweepLEUnitChoiceBox().getSelectionModel().isEmpty())
+			wingEquivalentSweepLEUnit = theController.getEquivalentWingSweepLEUnitChoiceBox().getSelectionModel().getSelectedItem().toString();
+		if(theController.getTextFieldEquivalentWingTwistAtTip().getText() != null)
+			wingEquivalentTwistAtTip = theController.getTextFieldEquivalentWingTwistAtTip().getText();
+		if(!theController.getEquivalentWingTwistAtTipUnitChoiceBox().getSelectionModel().isEmpty())
+			wingEquivalentTwistAtTipUnit = theController.getEquivalentWingTwistAtTipUnitChoiceBox().getSelectionModel().getSelectedItem().toString();
+		if(theController.getTextFieldEquivalentWingDihedral().getText() != null)
+			wingEquivalentDihedralAngle = theController.getTextFieldEquivalentWingDihedral().getText();
+		if(!theController.getEquivalentWingDihedralUnitChoiceBox().getSelectionModel().isEmpty())
+			wingEquivalentDihedralAngleUnit = theController.getEquivalentWingDihedralUnitChoiceBox().getSelectionModel().getSelectedItem().toString();
+		if(theController.getTextFieldEquivalentWingTaperRatio().getText() != null)
+			wingEquivalentTaperRatio = theController.getTextFieldEquivalentWingTaperRatio().getText();
+		if(theController.getTextFieldEquivalentWingRootXOffsetLE().getText() != null)
+			wingEquivalentXOffsetRootLE = theController.getTextFieldEquivalentWingRootXOffsetLE().getText();
+		if(theController.getTextFieldEquivalentWingRootXOffsetTE().getText() != null)
+			wingEquivalentXOffsetRootTE = theController.getTextFieldEquivalentWingRootXOffsetTE().getText();
+		if(theController.getTextFieldEquivalentWingAirfoilRootPath().getText() != null)
+			wingEquivalentAirfoilRootPath = theController.getTextFieldEquivalentWingAirfoilRootPath().getText();
+		if(theController.getTextFieldEquivalentWingAirfoilKinkPath().getText() != null)
+			wingEquivalentAirfoilKinkPath = theController.getTextFieldEquivalentWingAirfoilKinkPath().getText();
+		if(theController.getTextFieldEquivalentWingAirfoilTipPath().getText() != null)
+			wingEquivalentAirfoilTipPath = theController.getTextFieldEquivalentWingAirfoilTipPath().getText();
+		//.................................................................................................
 //		if(!textFieldWingSpanPanelList.isEmpty())
 //			textFieldWingSpanPanelList.stream()
 //			.filter(tf -> !tf.getText().isEmpty())
