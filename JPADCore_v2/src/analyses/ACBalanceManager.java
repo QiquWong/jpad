@@ -35,6 +35,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyUnits;
 import standaloneutils.MyXMLReaderUtils;
+import standaloneutils.aircraft.AircraftAndComponentsViewPlotUtils;
 import standaloneutils.customdata.CenterOfGravity;
 
 /**
@@ -2029,6 +2030,15 @@ public class ACBalanceManager {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
+		
+		// CREATE SIDE VIEW CHART WITH CG POSITIONS
+		AircraftAndComponentsViewPlotUtils.createAircraftSideViewWithCGPositions(
+				_theBalanceManagerInterface.getTheAircraft(),
+				balanceOutputFolderPath,
+				_xCGMap, 
+				_zCGMap
+				);
+		
 	}
 	
 	/** 

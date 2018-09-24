@@ -28,6 +28,7 @@ import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
+import standaloneutils.aircraft.AircraftAndComponentsViewPlotUtils;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentsAnalysis {
@@ -273,6 +274,7 @@ public class CompleteAnalysisTest extends Application {
 			System.out.println(theAircraft.toString());
 			System.setOut(filterStream);
 			
+			
 			////////////////////////////////////////////////////////////////////////
 			// Set the folders tree
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
@@ -280,6 +282,34 @@ public class CompleteAnalysisTest extends Application {
 			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
 			FileUtils.cleanDirectory(new File(subfolderPath)); 
 
+			String subfolderViewPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder + "VIEWS" + File.separator);
+			String subfolderViewComponentsPath = JPADStaticWriteUtils.createNewFolder(subfolderViewPath + "COMPONENTS");
+			if(theAircraft != null) {
+				AircraftAndComponentsViewPlotUtils.createAircraftTopView(theAircraft, subfolderViewPath);
+				AircraftAndComponentsViewPlotUtils.createAircraftSideView(theAircraft, subfolderViewPath);
+				AircraftAndComponentsViewPlotUtils.createAircraftFrontView(theAircraft, subfolderViewPath);
+			}
+			if(theAircraft.getFuselage() != null) {
+				AircraftAndComponentsViewPlotUtils.createFuselageTopView(theAircraft, subfolderViewComponentsPath);
+				AircraftAndComponentsViewPlotUtils.createFuselageSideView(theAircraft, subfolderViewComponentsPath);
+				AircraftAndComponentsViewPlotUtils.createFuselageFrontView(theAircraft, subfolderViewComponentsPath);
+			}
+			if(theAircraft.getWing() != null) {
+				AircraftAndComponentsViewPlotUtils.createWingPlanformView(theAircraft, subfolderViewComponentsPath);
+				AircraftAndComponentsViewPlotUtils.createEquivalentWingView(theAircraft, subfolderViewComponentsPath);
+			}
+			if(theAircraft.getHTail() != null)
+				AircraftAndComponentsViewPlotUtils.createHTailPlanformView(theAircraft, subfolderViewComponentsPath);
+			if(theAircraft.getVTail() != null)
+				AircraftAndComponentsViewPlotUtils.createVTailPlanformView(theAircraft, subfolderViewComponentsPath);
+			if(theAircraft.getCanard() != null)
+				AircraftAndComponentsViewPlotUtils.createCanardPlanformView(theAircraft, subfolderViewComponentsPath);
+			if(theAircraft.getNacelles() != null) {
+				AircraftAndComponentsViewPlotUtils.createNacelleTopView(theAircraft, subfolderViewComponentsPath);
+				AircraftAndComponentsViewPlotUtils.createNacelleSideView(theAircraft, subfolderViewComponentsPath);
+				AircraftAndComponentsViewPlotUtils.createNacelleFrontView(theAircraft, subfolderViewComponentsPath);
+			}
+			
 			////////////////////////////////////////////////////////////////////////
 			// Defining the operating conditions ...
 			System.setOut(originalOut);
