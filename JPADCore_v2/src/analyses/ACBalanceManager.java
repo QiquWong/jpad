@@ -985,10 +985,24 @@ public class ACBalanceManager {
 				.append("\t\t\t·····································\n");
 			}
 		}
-						
+		
+		sb.append("\n\t-------------------------------------\n")
+		.append("\tInertia Analysis\n")
+		.append("\t-------------------------------------\n")
+		.append("\tAircraft Inertia Moment Ixx: " + _aircraftInertiaMomentIxx + "\n")
+		.append("\tAircraft Inertia Moment Iyy: " + _aircraftInertiaMomentIyy + "\n")
+		.append("\tAircraft Inertia Moment Izz: " + _aircraftInertiaMomentIzz + "\n")
+		.append("\t.....................................\n")
+		.append("\tAircraft Inertia Product Ixy: " + _aircraftInertiaProductIxy + "\n")
+		.append("\tAircraft Inertia Product Iyz: " + _aircraftInertiaProductIyz + "\n")
+		.append("\tAircraft Inertia Product Ixz: " + _aircraftInertiaProductIxz + "\n")
+		.append("\t-------------------------------------\n");
+		
+		
 		return sb.toString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void toXLSFile(String filenameWithPathAndExt) throws InvalidFormatException, IOException {
 		
 		Workbook wb;
@@ -1078,6 +1092,18 @@ public class ACBalanceManager {
 		dataListGlobal.add(new Object[] {"Max forward Xcg MAC","%",_maxForwardCG*100});
 		dataListGlobal.add(new Object[] {"Operative max forward Xcg MAC","%",_maxForwardOperativeCG*100});
 		dataListGlobal.add(new Object[] {"Max aft Xcg MAC","%",_maxAftCG*100});
+		dataListGlobal.add(new Object[] {" "});
+		dataListGlobal.add(new Object[] {" "});
+		dataListGlobal.add(new Object[] {" "});
+		dataListGlobal.add(new Object[] {"INERTIA MOMENTS"});
+		dataListGlobal.add(new Object[] {"Ixx", MyUnits.KILOGRAM_METER_SQUARED.toString(), _aircraftInertiaMomentIxx.doubleValue(MyUnits.KILOGRAM_METER_SQUARED)});
+		dataListGlobal.add(new Object[] {"Iyy", MyUnits.KILOGRAM_METER_SQUARED.toString(), _aircraftInertiaMomentIyy.doubleValue(MyUnits.KILOGRAM_METER_SQUARED)});
+		dataListGlobal.add(new Object[] {"Izz", MyUnits.KILOGRAM_METER_SQUARED.toString(), _aircraftInertiaMomentIzz.doubleValue(MyUnits.KILOGRAM_METER_SQUARED)});
+		dataListGlobal.add(new Object[] {" "});
+		dataListGlobal.add(new Object[] {"INERTIA PRODUCTS"});
+		dataListGlobal.add(new Object[] {"Ixy", MyUnits.KILOGRAM_METER_SQUARED.toString(), _aircraftInertiaProductIxy.doubleValue(MyUnits.KILOGRAM_METER_SQUARED)});
+		dataListGlobal.add(new Object[] {"Iyz", MyUnits.KILOGRAM_METER_SQUARED.toString(), _aircraftInertiaProductIyz.doubleValue(MyUnits.KILOGRAM_METER_SQUARED)});
+		dataListGlobal.add(new Object[] {"Ixz", MyUnits.KILOGRAM_METER_SQUARED.toString(), _aircraftInertiaProductIxz.doubleValue(MyUnits.KILOGRAM_METER_SQUARED)});
 		
 		CellStyle styleHead = wb.createCellStyle();
 		styleHead.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -2226,7 +2252,8 @@ public class ACBalanceManager {
 		}
 
 		_cgStructure.setXBRF(
-				Amount.valueOf(prodX/sum, SI.METER));
+				Amount.valueOf(prodX/sum, SI.METER)
+				);
 		
 		_cgStructure.setZBRF(
 				Amount.valueOf(prodZ/sum, SI.METER)
@@ -2237,7 +2264,8 @@ public class ACBalanceManager {
 						.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER))), 
 				_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
 				Amount.valueOf(0., SI.METER), 
-				_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER));
+				_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
+				);
 
 		//.............................................................................................................................
 		// Structure + engines CG
@@ -2934,6 +2962,7 @@ public class ACBalanceManager {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void calculateAircraftInertiaProducts() {
 		
 		//------------------------------------------------------------------------------------------------
@@ -3009,8 +3038,335 @@ public class ACBalanceManager {
 					_zCGMap.get(ComponentEnum.FUSELAGE), _cgMaximumTakeOffMass.getZBRF()
 					);
 		}
+		
+		//------------------------------------------------------------------------------------------------
+		// WING
+		if(_theBalanceManagerInterface.getTheAircraft().getWing() != null) {
+			wingInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getWingMass(),
+					_xCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			wingInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getWingMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getZBRF()
+					);
+			wingInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getWingMass(),
+					_xCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getZBRF()
+					);
+		}
+		
+		//------------------------------------------------------------------------------------------------
+		// HORIZONTAL TAIL
+		if(_theBalanceManagerInterface.getTheAircraft().getHTail() != null) {
+			hTailInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getHTailMass(),
+					_xCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			hTailInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getHTailMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getZBRF()
+					);
+			hTailInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getHTailMass(),
+					_xCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getZBRF()
+					);
+		}
+		
+		//------------------------------------------------------------------------------------------------
+		// VERTICAL TAIL
+		if(_theBalanceManagerInterface.getTheAircraft().getVTail() != null) {
+			vTailInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getVTailMass(),
+					_xCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			vTailInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getVTailMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getZBRF()
+					);
+			vTailInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getVTailMass(),
+					_xCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getZBRF()
+					);
+		}
+		
+		//------------------------------------------------------------------------------------------------
+		// CANARD
+		if(_theBalanceManagerInterface.getTheAircraft().getCanard() != null) {
+			canardInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getCanardMass(),
+					_xCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			canardInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getCanardMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getZBRF()
+					);
+			canardInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getCanardMass(),
+					_xCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getZBRF()
+					);
+		}
+		
+		//------------------------------------------------------------------------------------------------
+		// NACELLES
+		if(_theBalanceManagerInterface.getTheAircraft().getNacelles() != null) {
+			nacellesInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getNacellesMass(),
+					_xCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			nacellesInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getNacellesMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getZBRF()
+					);
+			nacellesInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getNacellesMass(),
+					_xCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getZBRF()
+					);
+		}
+		
+		//------------------------------------------------------------------------------------------------
+		// POWER PLANT
+		if(_theBalanceManagerInterface.getTheAircraft().getPowerPlant() != null) {
+			powerPlantInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getPowerPlantMass(),
+					_xCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			powerPlantInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getPowerPlantMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getZBRF()
+					);
+			powerPlantInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getPowerPlantMass(),
+					_xCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getZBRF()
+					);
+		}
+		
+		//------------------------------------------------------------------------------------------------
+		// LANDING GEARS
+		if(_theBalanceManagerInterface.getTheAircraft().getLandingGears() != null) {
+			landingGearsInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getLandingGearMass(),
+					_xCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			landingGearsInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getLandingGearMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getZBRF()
+					);
+			landingGearsInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getLandingGearMass(),
+					_xCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getZBRF()
+					);
+		}
+		
+		if(_theBalanceManagerInterface.getTheAircraft().getSystems() != null) {
+			
+			//------------------------------------------------------------------------------------------------
+			// APU
+			apuInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getAPUMass(),
+					_xCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			apuInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getAPUMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getZBRF()
+					);
+			apuInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getAPUMass(),
+					_xCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getZBRF()
+					);
+			
+			//------------------------------------------------------------------------------------------------
+			// AIR CONDITIONING AND ANTI-ICING SYSTEM
+			airConditioningAndAntiIcingSystemInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getAirConditioningAndAntiIcingMass(),
+					_xCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			airConditioningAndAntiIcingSystemInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getAirConditioningAndAntiIcingMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getZBRF()
+					);
+			airConditioningAndAntiIcingSystemInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getAirConditioningAndAntiIcingMass(),
+					_xCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getZBRF()
+					);
+			
+			//------------------------------------------------------------------------------------------------
+			// INSTRUMENTS AND NAVIGATION SYSTEM
+			instrumentsAndNavigationSystemInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass(),
+					_xCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			instrumentsAndNavigationSystemInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getZBRF()
+					);
+			instrumentsAndNavigationSystemInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass(),
+					_xCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getZBRF()
+					);
+			
+			//------------------------------------------------------------------------------------------------
+			// ELECTRICAL SYSTEMS
+			electricalSystemInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getElectricalSystemsMass(),
+					_xCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			electricalSystemInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getElectricalSystemsMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getZBRF()
+					);
+			electricalSystemInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getElectricalSystemsMass(),
+					_xCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getZBRF()
+					);
+			
+			//------------------------------------------------------------------------------------------------
+			// HYDRAULIC AND PNEUMATIC SYSTEMS
+			hydraulicAndPneumaticSystemsInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass(),
+					_xCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			hydraulicAndPneumaticSystemsInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getZBRF()
+					);
+			hydraulicAndPneumaticSystemsInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass(),
+					_xCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getZBRF()
+					);
+			
+			//------------------------------------------------------------------------------------------------
+			// CONTROL SURFACES
+			controlSurfacesInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getControlSurfacesMass(),
+					_xCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			controlSurfacesInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getControlSurfacesMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getZBRF()
+					);
+			controlSurfacesInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getControlSurfacesMass(),
+					_xCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getZBRF()
+					);
+			
+			//------------------------------------------------------------------------------------------------
+			// FURNISHINGS AND EQUIPMENTS
+			furnishingsAndEquipmentsInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+					_theBalanceManagerInterface.getFurnishingsAndEquipmentsMass(),
+					_xCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getXBRF(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+					);
+			furnishingsAndEquipmentsInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+					_theBalanceManagerInterface.getFurnishingsAndEquipmentsMass(),
+					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+					_zCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getZBRF()
+					);
+			furnishingsAndEquipmentsInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+					_theBalanceManagerInterface.getFurnishingsAndEquipmentsMass(),
+					_xCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getXBRF(),
+					_zCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getZBRF()
+					);
 
-		// TODO: CONTINUE
+		}
+
+		//------------------------------------------------------------------------------------------------
+		// PAYLOAD
+		if(_theBalanceManagerInterface.getTheAircraft().getFuselage() != null) {
+			if(_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration() != null) {
+				
+				payloadInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+						_theBalanceManagerInterface.getSinglePassengerMass().times(
+								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()
+								),
+						_theBalanceManagerInterface.getTheAircraft().getFuselage().getNoseLength().to(SI.METER)
+						.plus(_theBalanceManagerInterface.getTheAircraft().getFuselage().getCylinderLength().to(SI.METER).divide(2)),
+						_cgMaximumTakeOffMass.getXBRF(),
+						Amount.valueOf(0.0, SI.METER),
+						_cgMaximumTakeOffMass.getYBRF()
+						);
+				payloadInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+						_theBalanceManagerInterface.getSinglePassengerMass().times(
+								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()
+								),
+						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getZBRF()
+						);
+				payloadInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+						_theBalanceManagerInterface.getSinglePassengerMass().times(
+								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()
+								),
+						_theBalanceManagerInterface.getTheAircraft().getFuselage().getNoseLength().to(SI.METER)
+						.plus(_theBalanceManagerInterface.getTheAircraft().getFuselage().getCylinderLength().to(SI.METER).divide(2)),
+						_cgMaximumTakeOffMass.getXBRF(),
+						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getZBRF()
+						);
+
+			}
+		}
+
+		//------------------------------------------------------------------------------------------------
+		// PAYLOAD
+		if(_theBalanceManagerInterface.getTheAircraft().getWing() != null) {
+			if(_theBalanceManagerInterface.getTheAircraft().getFuelTank() != null) {
+				
+				fuelTankInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
+						_theBalanceManagerInterface.getDesignFuelMass(),
+						_xCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getXBRF(),
+						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
+						);
+				fuelTankInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
+						_theBalanceManagerInterface.getDesignFuelMass(),
+						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
+						_zCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getZBRF()
+						);
+				fuelTankInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
+						_theBalanceManagerInterface.getDesignFuelMass(),
+						_xCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getXBRF(),
+						_zCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getZBRF()
+						);
+				
+			}
+		}
 		
 		//------------------------------------------------------------------------------------------------
 		// GLOBAL INERTIA MOMENT CALCULATION
