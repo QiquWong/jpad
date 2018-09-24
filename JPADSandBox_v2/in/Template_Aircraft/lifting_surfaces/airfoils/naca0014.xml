@@ -11,7 +11,7 @@
             <alpha_zero_lift unit="deg">0.0000</alpha_zero_lift>
             <alpha_end_linear_trait unit="deg">10.0000</alpha_end_linear_trait>
             <alpha_stall unit="deg">19.000</alpha_stall>
-            <Cl_alpha_linear_trait unit="1/°">0.11</Cl_alpha_linear_trait>
+            <Cl_alpha_linear_trait unit="1/rad">6.303</Cl_alpha_linear_trait>
             <Cl_at_alpha_zero>0.000000</Cl_at_alpha_zero>
             <Cl_end_linear_trait>1.2</Cl_end_linear_trait>
             <Cl_max>2.00</Cl_max>
@@ -20,7 +20,7 @@
             <laminar_bucket_semi_extension>0.000000</laminar_bucket_semi_extension>
             <laminar_bucket_depth>0.000000</laminar_bucket_depth>
             <K_factor_drag_polar>0.001800</K_factor_drag_polar>
-            <Cm_alpha_quarter_chord unit="1/deg">0.0000</Cm_alpha_quarter_chord>
+            <Cm_alpha_quarter_chord unit="1/°">0.0000</Cm_alpha_quarter_chord>
             <Cm_ac>0.000000</Cm_ac>
             <Cm_ac_at_stall>-0.090000</Cm_ac_at_stall>
             <x_ac_normalized>0.2500</x_ac_normalized>

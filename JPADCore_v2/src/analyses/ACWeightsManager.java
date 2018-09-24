@@ -1921,7 +1921,7 @@ public class ACWeightsManager {
 	
 	private void calculateMaximumLandingMass() {
 		
-		_maximumLandingMass = _maximumTakeOffMass.times(0.97);
+		_maximumLandingMass = _maximumTakeOffMass.times(0.9);
 		
 	}
 	
