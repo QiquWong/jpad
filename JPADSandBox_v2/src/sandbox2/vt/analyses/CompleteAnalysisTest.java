@@ -350,7 +350,7 @@ public class CompleteAnalysisTest extends Application {
 			CompleteAnalysisTest.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
-			return;
+			System.exit(1);
 		}	
 		
 		System.exit(1);

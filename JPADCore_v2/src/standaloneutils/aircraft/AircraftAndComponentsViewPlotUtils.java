@@ -2,7 +2,13 @@ package standaloneutils.aircraft;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Paint;
+import java.awt.PaintContext;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.ColorModel;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,15 +26,20 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
+import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.LegendItemSource;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYAreaRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -4491,6 +4502,13 @@ public class AircraftAndComponentsViewPlotUtils {
 
 		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
 		chart.setAntiAlias(true);
+		chart.removeLegend();
+		
+		// TODO: ADD CUSTOMIZED LEGEND... 
+//		LegendTitle legend = new LegendTitle();
+//		legend.setPosition(RectangleEdge.BOTTOM);
+//		legend.setBackgroundPaint((Paint)ChartColor.WHITE);
+//		chart.addLegend(legend);
 		
 		XYPlot plot = (XYPlot) chart.getPlot();
 		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
@@ -4532,22 +4550,19 @@ public class AircraftAndComponentsViewPlotUtils {
 				if(dataset.getSeries().get(i).equals(seriesAndColorListCGPositions.get(j)._1()))
 					xyLineAndShapeRenderer.setSeriesVisible(i, false);
 			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
-			xyLineAndShapeRenderer.setSeriesStroke(
-					i, 
-					new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
-					false
-					);
 		}
 
 		XYLineAndShapeRenderer xyLineAndShapeRendererCGPositions = new XYLineAndShapeRenderer();
 		xyLineAndShapeRendererCGPositions.setDefaultShapesVisible(true);
 		xyLineAndShapeRendererCGPositions.setDefaultLinesVisible(false);
 		xyLineAndShapeRendererCGPositions.setUseOutlinePaint(true);
+		xyLineAndShapeRendererCGPositions.setDefaultOutlinePaint(Color.BLACK);
+		xyLineAndShapeRendererCGPositions.setDefaultOutlineStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 		xyLineAndShapeRendererCGPositions.setDefaultEntityRadius(25);
 		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyLineAndShapeRendererCGPositions.setSeriesShape(i, ShapeUtils.createDiamond(5.0f));
 			for(int j=0; j<seriesAndColorList.size(); j++)
 				if(dataset.getSeries().get(i).equals(seriesAndColorList.get(j)._1()))
-					// TODO: CHANGE SHAPE SIZE AND SHOW SHAPE LEGEND !!
 					xyLineAndShapeRendererCGPositions.setSeriesVisible(i, false);
 		}
 		
