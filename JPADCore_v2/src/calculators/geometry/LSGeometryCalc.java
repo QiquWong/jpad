@@ -213,14 +213,6 @@ public class LSGeometryCalc {
 		/(10*(1 + taperRatioEquivalent + pow(taperRatioEquivalent,2))));
 	}
 	
-	/*
-	 * TO DO: implement me
-	 * see Aerodynamic_Database_Ultimate.h5 
-	 *   --> (x_bar_ac_w)_k1_vs_lambda
-	 *   --> (x_bar_ac_w)_k2_vs_L_LE_(AR)_(lambda)
-	 *   -->(x_bar_ac_w)_x'_ac_over_root_chord_vs_tan_(L_LE)_over_beta_(AR_times_tan_(L_LE))_(lambda)
-	 *   see sandbox adm 
-	 */
 	public static double calcXacFromNapolitanoDatcom(double mac,
 			double taperRatio, double sweepAngleLE, double aspectRatio,  
 			double mach,AerodynamicDatabaseReader adbr) {

@@ -2086,9 +2086,7 @@ public class LiftingSurfaceAerodynamicsManager {
 			}
 			
 			// EVALUATION OF THE BASIC LOAD
-			
-			theNasaBlackwellCalculatorAlphaZeroLift.calculate(Amount.valueOf(-0.6139, NonSI.DEGREE_ANGLE));
-//	     	theNasaBlackwellCalculatorAlphaZeroLift.calculate(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST));
+	     	theNasaBlackwellCalculatorAlphaZeroLift.calculate(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST));
 			
 			for(int i=0; i<_alphaForDistribution.size(); i++) {
 			

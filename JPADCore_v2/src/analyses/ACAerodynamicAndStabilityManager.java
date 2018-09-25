@@ -138,11 +138,11 @@ public class ACAerodynamicAndStabilityManager {
 	private Double _currentMachNumber;
 	private Amount<Length> _currentAltitude;
 	private Amount<Angle> _alphaBodyCurrent;
+	private Amount<Angle> _alphaCanardCurrent;
 	private Amount<Angle> _alphaWingCurrent;
 	private Amount<Angle> _alphaHTailCurrent;
-	private Amount<Angle> _betaVTailCurrent;
-	private Amount<Angle> _alphaCanardCurrent;
 	private Amount<Angle> _alphaNacelleCurrent;
+	private Amount<Angle> _betaVTailCurrent;
 	Double _landingGearUsedDrag = null;
 	private List<Amount<Angle>> _deltaEForEquilibrium = new ArrayList<>();
 	private static Amount<Length> wingMomentumPole;
@@ -227,8 +227,8 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaVertical = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaWing = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNBetaTotal = new HashMap<>();
-	private Map<MethodEnum, Double> _cNDeltaA = new HashMap<>();
 	private Map<MethodEnum, Map<Amount<Angle>, List<Tuple2<Double, Double>>>> _cNDeltaR = new HashMap<>();
+	private Map<MethodEnum, Double> _cNDeltaA = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpWing = new HashMap<>(); 
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpVertical = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNpTotal = new HashMap<>();
@@ -269,7 +269,6 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<MethodEnum, List<Tuple2<Double, Amount<?>>>> _cRollrTotal = new HashMap<>();
 	
 	//Longitudinal Static Stability Output
-
 	private Map<Double, Map<Amount<Angle>, List<Double>>> _totalMomentCoefficient = new HashMap<>(); //xcg, delta e , CM
 	private Map<Amount<Angle>, List<Double>> _totalLiftCoefficient = new HashMap<>(); //delta e, CL
 	private Map<Amount<Angle>, List<Double>> _totalDragCoefficient = new HashMap<>(); //delta e, CD
