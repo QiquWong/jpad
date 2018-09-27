@@ -2934,6 +2934,47 @@ public class LiftingSurfaceAerodynamicsManager {
 
 		}
 
+		public void nasaBlackwell() {
+			
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.nasaBlackwell();
+				}
+			}
+			else
+				if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.helmboldDiederich(_currentMachNumber);
+				}
+			
+			Double cLAlpha = null;
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+				cLAlpha = _cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			else
+				cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			
+			if(_xacMRF.get(MethodEnum.NAPOLITANO_DATCOM) == null) {
+				CalcXAC calcXAC = new CalcXAC();
+				calcXAC.datcomNapolitano();
+			}
+			
+			_cMAlpha.put(
+					MethodEnum.NASA_BLACKWELL,
+					Amount.valueOf(
+							MomentCalc.calcCMalphaLS(
+									cLAlpha,
+									_momentumPole.doubleValue(SI.METER), 
+									_xacMRF.get(MethodEnum.DEYOUNG_HARPER), 
+									_theLiftingSurface.getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
+									_theLiftingSurface.getMeanAerodynamicChord().getEstimatedValue()
+									),
+							NonSI.DEGREE_ANGLE.inverse()
+							)
+					);
+
+		}
+		
 	}
 	//............................................................................
 	// END OF THE CALC CMAlpha INNER CLASS

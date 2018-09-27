@@ -70,16 +70,16 @@
 			</global_data>
 			<!-- POSSIBLE ANALYSIS TYPE = "SEMIEMPIRICAL", (in future "AVL", "KK32", ecc..) -->
 			<components>
-				<wing perform="FALSE" type="SEMIEMPIRICAL"/>
+				<wing perform="TRUE" type="SEMIEMPIRICAL"/>
 				<horizontal_tail perform="TRUE" type="SEMIEMPIRICAL"/>
-				<vertical_tail_analyses perform="TRUE" type="SEMIEMPIRICAL"/>
-				<canard_analyses perform="TRUE" type="SEMIEMPIRICAL"/>
-				<fuselage_analyses perform="TRUE" type="SEMIEMPIRICAL"/>
-				<nacelle_analyses perform="TRUE" type="SEMIEMPIRICAL"/>
+				<vertical_tail perform="TRUE" type="SEMIEMPIRICAL"/>
+				<canard perform="TRUE" type="SEMIEMPIRICAL"/>
+				<fuselage perform="TRUE" type="SEMIEMPIRICAL"/>
+				<nacelle perform="TRUE" type="SEMIEMPIRICAL"/>
 			</components>
 			<aircraft>
-				<canard_wing_downwash constant_downwash_gradient="FALSE" method=""/> <!-- constant_downwash_gradient: if not set, default value = TRUE -->
-				<wing_hTail_downwash constant_downwash_gradient="FALSE" method="SLINGERLAND"/> <!-- constant_downwash_gradient: if not set, default value = TRUE. 'ROSKAM NON LINEAR GIVES PROBLEM: DISABLED TEMPORARY' --> 
+				<canard_wing_downwash constant_gradient="TRUE" method=""/> <!-- constant_gradient: if not set, default value = TRUE -->
+				<wing_hTail_downwash constant_gradient="FALSE" method="SLINGERLAND"/> <!-- constant_gradient: if not set, default value = TRUE. 'ROSKAM NON LINEAR GIVES PROBLEM: DISABLED TEMPORARY' --> 
 				<total_lift_curve perform="TRUE" method="FROM_BALANCE_EQUATION">
 					<fuselage_effects include="TRUE"/> <!-- if not set, default value = TRUE -->
 					<calibration>
@@ -88,7 +88,7 @@
 					</calibration>
 				</total_lift_curve>
 				<total_drag_polar perform="TRUE" method="FROM_BALANCE_EQUATION">
-					<delta_CD0_miscellaneous calculate="TRUE" value="0.00358"/> <!-- calculate: if not set, default value = TRUE -->
+					<delta_CD0_miscellaneous calculate="TRUE" value=""/> <!-- calculate: if not set, default value = TRUE -->
 					<delta_CD0_landing_gears calculate="FALSE" value="0.0"/> <!-- calculate: if not set, default value = FALSE -->
 					<calibration>
 						<scale_factor_cL value="1.0"/> <!-- if not set, default value = 1.0-->
@@ -104,6 +104,7 @@
 				<longitudinal_static_stability perform="TRUE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/> <!-- wing_pendular_stability_effect: if not set, default value = TRUE -->
 				<lateral_static_stability perform="TRUE" method="NAPOLITANO_DATCOM"/> 
 				<directional_static_stability perform="TRUE" method="VEDSC_USAFDATCOM_WING"/>
+				<side_force perform="TRUE" method="NAPOLITANO_DATCOM"/> 
 				<VMU perform="TRUE" method="VEDSC_USAFDATCOM_WING"/> <!-- This analysis is performed only in TAKE-OFF conditions -->
 				<!---->
 				<dynamic_stability perform="FALSE" method=""/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
