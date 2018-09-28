@@ -1,13 +1,11 @@
 package analyses;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
-import javax.measure.unit.NonSI;
 
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
@@ -18,15 +16,14 @@ import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
-import standaloneutils.MyArrayUtils;
 import standaloneutils.MyInterpolatingFunction;
-import standaloneutils.customdata.MyArray;
 
 @FreeBuilder
 public interface IACAerodynamicAndStabilityManager_v2 {
 
 	//..............................................................................
 	// FROM INPUT (Passed from ACAnalysisManager)
+	String getId();
 	Aircraft getTheAircraft();
 	OperatingConditions getTheOperatingConditions();
 	ConditionEnum getCurrentCondition();
@@ -44,7 +41,6 @@ public interface IACAerodynamicAndStabilityManager_v2 {
 	// FROM INPUT (Passed from XML file)
 	Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> getComponentTaskList();
 	Map<ComponentEnum, List<AerodynamicAndStabilityPlotEnum>> getPlotList();
-	String getID();
 	
 	// balance
 	List<Double> getXCGAircraft(); //in MAC perc.
@@ -93,9 +89,9 @@ public interface IACAerodynamicAndStabilityManager_v2 {
 	double  getTotalLiftCalibrationAlphaScaleFactor();
 	double  getTotalLiftCalibrationCLScaleFactor();
 	boolean isCalculateMiscellaneousDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
-	double getLandingGearDeltaDragCoefficient();
-	boolean isCalculateLandingGearDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
 	double getMiscellaneousDeltaDragCoefficient();
+	boolean isCalculateLandingGearDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
+	double getLandingGearDeltaDragCoefficient();
 	double  getTotalDragCalibrationCLScaleFactor();
 	double  getTotalDragCalibrationCDScaleFactor();
 	double  getTotalMomentCalibrationAlphaScaleFactor();

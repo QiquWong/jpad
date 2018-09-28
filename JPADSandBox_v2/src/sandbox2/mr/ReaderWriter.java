@@ -782,14 +782,14 @@ public class ReaderWriter{
 			String downwashAngle = reader.getXMLPropertyByPath("//plot/stability/Downwash_angle");
 			if ( downwashAngle != null) {
 				if( downwashAngle.equalsIgnoreCase("TRUE")) 
-					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE);	
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_ANGLE);	
 			}
 
 			// Downwash gradient
 			String downwashGrdient = reader.getXMLPropertyByPath("//plot/stability/Downwash_gradient");
 			if ( downwashGrdient != null) {
 				if( downwashGrdient.equalsIgnoreCase("TRUE")) 
-					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT);	
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_GRADIENT);	
 			}
 
 			// delta e equilibrium

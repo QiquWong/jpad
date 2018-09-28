@@ -13327,7 +13327,7 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(canardLiftCurveWithElevatorPlotPerformString != null) {
 				if(canardLiftCurveWithElevatorPlotPerformString.equalsIgnoreCase("TRUE")) 
-					plotList.add(AerodynamicAndStabilityPlotEnum.CANARD_LIFT_CURVE_ELEVATOR);
+					plotList.add(AerodynamicAndStabilityPlotEnum.CANARD_LIFT_CURVE_CONTROL_SURFACE);
 			}
 
 			//----------------------------------------------------------------
@@ -13339,7 +13339,7 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(canardDragPolarCurveWithElevatorPlotPerformString != null) {
 				if(canardDragPolarCurveWithElevatorPlotPerformString.equalsIgnoreCase("TRUE")) 
-					plotList.add(AerodynamicAndStabilityPlotEnum.CANARD_POLAR_CURVE_ELEVATOR);
+					plotList.add(AerodynamicAndStabilityPlotEnum.CANARD_POLAR_CURVE_CONTROL_SURFACE);
 			}
 
 			//----------------------------------------------------------------
@@ -13351,7 +13351,7 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(canardPitchingMomentCurveWithElevatorPlotPerformString != null) {
 				if(canardPitchingMomentCurveWithElevatorPlotPerformString.equalsIgnoreCase("TRUE")) 
-					plotList.add(AerodynamicAndStabilityPlotEnum.CANARD_MOMENT_CURVE_ELEVATOR);
+					plotList.add(AerodynamicAndStabilityPlotEnum.CANARD_MOMENT_CURVE_CONTROL_SURFACE);
 			}
 
 			//----------------------------------------------------------------
@@ -13692,7 +13692,7 @@ public class ACAerodynamicAndStabilityManager {
 
 		if(downwashGradientPlotPerformString != null) 
 			if(downwashGradientPlotPerformString.equalsIgnoreCase("TRUE")) 
-				plotList.add(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT);
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_GRADIENT);
 		
 		//----------------------------------------------------------------
 		// DOWNWASH ANGLE
@@ -13703,7 +13703,7 @@ public class ACAerodynamicAndStabilityManager {
 
 		if(downwashAnglePlotPerformString != null) 
 			if(downwashAnglePlotPerformString.equalsIgnoreCase("TRUE")) 
-				plotList.add(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE);
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_ANGLE);
 		
 		//----------------------------------------------------------------
 		// TOTAL LIFT CURVE

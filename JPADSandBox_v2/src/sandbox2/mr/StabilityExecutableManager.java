@@ -2328,7 +2328,7 @@ public class StabilityExecutableManager {
 		// DOWNWASH e DOWNWASH GRADIENT	
 		//------------------------------------------------------------------------------------------------------------
 		if ( this._downwashConstant == Boolean.TRUE){
-			if(_plotList.contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE)) {
+			if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_ANGLE)) {
 
 				List<Double[]> xList = new ArrayList<>();
 				List<Double[]> yList = new ArrayList<>();
@@ -2355,7 +2355,7 @@ public class StabilityExecutableManager {
 			}
 
 
-			if(_plotList.contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT)) {
+			if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_GRADIENT)) {
 
 				List<Double[]> xList = new ArrayList<>();
 				List<Double[]> yList = new ArrayList<>();
@@ -2384,7 +2384,7 @@ public class StabilityExecutableManager {
 		}
 
 		if ( _downwashConstant == Boolean.FALSE){
-			if(_plotList.contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE)) {
+			if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_ANGLE)) {
 				List<Double[]> xList = new ArrayList<>();
 				List<Double[]> yList = new ArrayList<>();
 				List<String> legend = new ArrayList<>();
@@ -2413,7 +2413,7 @@ public class StabilityExecutableManager {
 			}
 
 
-			if(_plotList.contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT)) {
+			if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_GRADIENT)) {
 				List<Double[]> xList = new ArrayList<>();
 				List<Double[]> yList = new ArrayList<>();
 				List<String> legend = new ArrayList<>();
