@@ -200,15 +200,15 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 								"var_0_1",
 								"var_0_2"
 								);
-		
-		C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data1
-						= database.interpolate3DFromDatasetFunction(
-								"(C_n_r_w)_C_n_r_over_squared_(C_Lift1)_vs_AR_(lambda)_(L_c4)_(x_bar_ac_minus_x_bar_cg)",
-								"data_1",
-								"var_0_0",
-								"var_1_0",
-								"var_1_1"
-								);
+//		
+//		C_n_r_w_C_n_r_over_squared_C_Lift1_vs_AR_lambda_L_c4_x_bar_ac_minus_x_bar_cg_data1
+//						= database.interpolate3DFromDatasetFunction(
+//								"(C_n_r_w)_C_n_r_over_squared_(C_Lift1)_vs_AR_(lambda)_(L_c4)_(x_bar_ac_minus_x_bar_cg)",
+//								"data_1",
+//								"var_0_0",
+//								"var_1_0",
+//								"var_1_1"
+//								);
 		
 		C_n_r_w_C_n_r_over_C_D0_bar_vs_AR_L_c4_x_bar_ac_minus_x_bar_cg
 						= database.interpolate3DFromDatasetFunction("(C_n_r_w)_C_n_r_over_C_D0_bar_vs_AR_(L_c4)_(x_bar_ac_minus_x_bar_cg)");

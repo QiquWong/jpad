@@ -2965,7 +2965,7 @@ public class LiftingSurfaceAerodynamicsManager {
 							MomentCalc.calcCMalphaLS(
 									cLAlpha,
 									_momentumPole.doubleValue(SI.METER), 
-									_xacMRF.get(MethodEnum.DEYOUNG_HARPER), 
+									_xacMRF.get(MethodEnum.NAPOLITANO_DATCOM), 
 									_theLiftingSurface.getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
 									_theLiftingSurface.getMeanAerodynamicChord().getEstimatedValue()
 									),

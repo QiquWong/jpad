@@ -18,6 +18,37 @@ import org.jscience.physics.amount.Amount;
 import aircraft.Aircraft;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlpha0L;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlphaStall;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlphaStar;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCD0;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCDAtAlpha;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCDAtAlphaHighLift;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCDInduced;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCDWave;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCL0;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLAlpha;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLAtAlpha;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLAtAlphaHighLift;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLStar;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLmax;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCMAlpha;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCMAtAlpha;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCMAtAlphaHighLift;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCMac;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcDragDistributions;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcHighLiftCurve;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcHighLiftDevicesEffects;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcHighLiftMomentCurve;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcHighLiftPolarCurve;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcLiftCurve;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcLiftDistributions;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMachCr;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentCurve;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentDistribution;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcOswaldFactor;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcPolar;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcXAC;
 import analyses.nacelles.NacelleAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.LiftCalc;
@@ -63,7 +94,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private List<Amount<Angle>> _alphaBodyList;
 	private List<Amount<Angle>> _alphaWingList;
 	private List<Amount<Angle>> _alphaHTailList;
-	private List<Amount<Angle>> _alphaHTailListWithGroundEfffect;
 	private List<Amount<Angle>> _alphaCanardList;
 	private List<Amount<Angle>> _alphaNacelleList;
 	private List<Amount<Angle>> _betaList;
@@ -93,18 +123,15 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	
 	// total aircraft curves
 	private List<Double> _current3DWingLiftCurve;
-	private List<Double> _current3DWingPolarCurve;
 	private List<Double> _current3DWingMomentCurve;
-	private List<Double> _current3DCanardLiftCurve;
-	private List<Double> _current3DCanardPolarCurve;
-	private List<Double> _current3DCanardMomentCurve;
+	private Map<Amount<Angle>, List<Double>> _current3DCanardLiftCurve;
+	private Map<Amount<Angle>, List<Double>> _current3DCanardMomentCurve;
 	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailLiftCurve; //delta_e, CL
-	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailPolarCurve; //delta_e, CD
 	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailMomentCurve; //delta_e, CM
 	private Map<Amount<Angle>, List<Double>> _totalLiftCoefficient; //delta_e, CL
 	private Map<Amount<Angle>, List<Double>> _totalDragCoefficient; //delta_e, CD
 	private Map<Double, Map<Amount<Angle>, List<Double>>> _totalMomentCoefficient; //xcg, delta_e , CM
-	private Map<Double, Map<ComponentEnum, List<Double>>> _momentCoefficientBreakDown; //xcg, component, CM
+	private Map<Double, Map<ComponentEnum, List<Double>>> _totalMomentCoefficientBreakDown; //xcg, component, CM
 	
 	// side force
 	private Amount<?> _cYBetaWing;
@@ -755,6 +782,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		//...............................................................
 		Map<AerodynamicAndStabilityEnum, MethodEnum> wingTaskList = new HashMap<>();
 		boolean performWingAnalysis = false;
+		AerodynamicAnlaysisApproachEnum wingAnalysisType = null;
 		String wingAnalysisPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
@@ -772,12 +800,12 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				
 				if(wingAnalysisTypeString != null) {
 					
-					AerodynamicAnlaysisApproachEnum wingAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(wingAnalysisTypeString);
+					wingAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(wingAnalysisTypeString);
 					
 					switch (wingAnalysisType) {
 					case SEMIEMPIRICAL:
 						wingTaskList.put(AerodynamicAndStabilityEnum.CRITICAL_MACH, MethodEnum.KROO);
-						wingTaskList.put(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER, MethodEnum.NAPOLITANO_DATCOM); // FIXME DE-YOUNG HARPER??
+						wingTaskList.put(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER, MethodEnum.NAPOLITANO_DATCOM);
 						wingTaskList.put(AerodynamicAndStabilityEnum.CL_ALPHA, MethodEnum.NASA_BLACKWELL);
 						wingTaskList.put(AerodynamicAndStabilityEnum.CL_ZERO, MethodEnum.NASA_BLACKWELL);
 						wingTaskList.put(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT, MethodEnum.INTEGRAL_MEAN_TWIST);
@@ -819,6 +847,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		//...............................................................
 		Map<AerodynamicAndStabilityEnum, MethodEnum> hTailTaskList = new HashMap<>();
 		boolean performHTailAnalysis = false;
+		AerodynamicAnlaysisApproachEnum hTailAnalysisType = null;
 		String hTailAnalysisPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
@@ -836,7 +865,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				
 				if(hTailAnalysisTypeString != null) {
 					
-					AerodynamicAnlaysisApproachEnum hTailAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(hTailAnalysisTypeString);
+					hTailAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(hTailAnalysisTypeString);
 					
 					switch (hTailAnalysisType) {
 					case SEMIEMPIRICAL:
@@ -859,9 +888,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						hTailTaskList.put(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE, MethodEnum.NASA_BLACKWELL); // FIXME NEW METHOD ADDED...
 						hTailTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE, MethodEnum.AIRFOIL_DISTRIBUTION);
 						hTailTaskList.put(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE, MethodEnum.AIRFOIL_DISTRIBUTION);
-						hTailTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS, MethodEnum.SEMIEMPIRICAL);
 						hTailTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D, MethodEnum.SEMIEMPIRICAL);
-						hTailTaskList.put(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT, MethodEnum.SEMIEMPIRICAL);
 						break;
 					case AVL:
 						// TODO
@@ -883,6 +910,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		//...............................................................
 		Map<AerodynamicAndStabilityEnum, MethodEnum> vTailTaskList = new HashMap<>();
 		boolean performVTailAnalysis = false;
+		AerodynamicAnlaysisApproachEnum vTailAnalysisType = null;
 		String vTailAnalysisPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
@@ -900,13 +928,13 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				
 				if(vTailAnalysisTypeString != null) {
 					
-					AerodynamicAnlaysisApproachEnum vTailAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(vTailAnalysisTypeString);
+					vTailAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(vTailAnalysisTypeString);
 					
 					switch (vTailAnalysisType) {
 					case SEMIEMPIRICAL:
 						vTailTaskList.put(AerodynamicAndStabilityEnum.CRITICAL_MACH, MethodEnum.KROO);
 						vTailTaskList.put(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER, MethodEnum.NAPOLITANO_DATCOM); // FIXME DE-YOUNG HARPER??
-						vTailTaskList.put(AerodynamicAndStabilityEnum.CL_ALPHA, MethodEnum.NASA_BLACKWELL);
+						vTailTaskList.put(AerodynamicAndStabilityEnum.CL_ALPHA, MethodEnum.HELMBOLD_DIEDERICH);
 						vTailTaskList.put(AerodynamicAndStabilityEnum.CL_ZERO, MethodEnum.NASA_BLACKWELL);
 						vTailTaskList.put(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT, MethodEnum.INTEGRAL_MEAN_TWIST);
 						vTailTaskList.put(AerodynamicAndStabilityEnum.CL_STAR, MethodEnum.NASA_BLACKWELL);
@@ -923,9 +951,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						vTailTaskList.put(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE, MethodEnum.NASA_BLACKWELL); // FIXME NEW METHOD ADDED...
 						vTailTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE, MethodEnum.AIRFOIL_DISTRIBUTION);
 						vTailTaskList.put(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE, MethodEnum.AIRFOIL_DISTRIBUTION);
-						vTailTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS, MethodEnum.SEMIEMPIRICAL);
-						vTailTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D, MethodEnum.SEMIEMPIRICAL);
-						vTailTaskList.put(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT, MethodEnum.SEMIEMPIRICAL);
 						break;
 					case AVL:
 						// TODO
@@ -947,6 +972,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		//...............................................................
 		Map<AerodynamicAndStabilityEnum, MethodEnum> canardTaskList = new HashMap<>();
 		boolean performCanardAnalysis = false;
+		AerodynamicAnlaysisApproachEnum canardAnalysisType = null;
 		String canardAnalysisPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
@@ -964,7 +990,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				
 				if(canardAnalysisTypeString != null) {
 					
-					AerodynamicAnlaysisApproachEnum canardAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(canardAnalysisTypeString);
+					canardAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(canardAnalysisTypeString);
 					
 					switch (canardAnalysisType) {
 					case SEMIEMPIRICAL:
@@ -987,9 +1013,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						canardTaskList.put(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE, MethodEnum.NASA_BLACKWELL); // FIXME NEW METHOD ADDED...
 						canardTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE, MethodEnum.AIRFOIL_DISTRIBUTION);
 						canardTaskList.put(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE, MethodEnum.AIRFOIL_DISTRIBUTION);
-						canardTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS, MethodEnum.SEMIEMPIRICAL);
 						canardTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D, MethodEnum.SEMIEMPIRICAL);
-						canardTaskList.put(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT, MethodEnum.SEMIEMPIRICAL);
 						break;
 					case AVL:
 						// TODO
@@ -1011,6 +1035,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		//...............................................................
 		Map<AerodynamicAndStabilityEnum, MethodEnum> fuselageTaskList = new HashMap<>();
 		boolean performFuselageAnalysis = false;
+		AerodynamicAnlaysisApproachEnum fuselageAnalysisType = null;
 		String fuselageAnalysisPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
@@ -1028,7 +1053,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				
 				if(fuselageAnalysisTypeString != null) {
 					
-					AerodynamicAnlaysisApproachEnum fuselageAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(fuselageAnalysisTypeString);
+					fuselageAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(fuselageAnalysisTypeString);
 					
 					switch (fuselageAnalysisType) {
 					case SEMIEMPIRICAL:
@@ -1065,6 +1090,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		//...............................................................
 		Map<AerodynamicAndStabilityEnum, MethodEnum> nacellesTaskList = new HashMap<>();
 		boolean performNacellesAnalysis = false;
+		AerodynamicAnlaysisApproachEnum nacellesAnalysisType = null;
 		String nacellesAnalysisPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
@@ -1082,7 +1108,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				
 				if(nacellesAnalysisTypeString != null) {
 					
-					AerodynamicAnlaysisApproachEnum nacellesAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(nacellesAnalysisTypeString);
+					nacellesAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(nacellesAnalysisTypeString);
 					
 					switch (nacellesAnalysisType) {
 					case SEMIEMPIRICAL:
@@ -1825,11 +1851,17 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				.setTheOperatingConditions(theOperatingConditions)
 				.setCurrentCondition(theCondition)
 				.setPerformWingAnalyses(performWingAnalysis)
+				.setWingAnalysisType(wingAnalysisType)
 				.setPerformHTailAnalyses(performHTailAnalysis)
+				.setHTailAnalysisType(hTailAnalysisType)
 				.setPerformVTailAnalyses(performVTailAnalysis)
+				.setVTailAnalysisType(vTailAnalysisType)
 				.setPerformCanardAnalyses(performCanardAnalysis)
+				.setCanardAnalysisType(canardAnalysisType)
 				.setPerformFuselageAnalyses(performFuselageAnalysis)
+				.setFuselageAnalysisType(fuselageAnalysisType)
 				.setPerformNacelleAnalyses(performNacellesAnalysis)
+				.setNacellesAnalysisType(nacellesAnalysisType)
 				.putComponentTaskList(ComponentEnum.WING, wingTaskList)
 				.putComponentTaskList(ComponentEnum.HORIZONTAL_TAIL, hTailTaskList)
 				.putComponentTaskList(ComponentEnum.VERTICAL_TAIL, vTailTaskList)
@@ -2022,10 +2054,65 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	
 	private void calculateComponentsData() {
 		
-		// TODO
+		//------------------------------------------------------------------------------
+		// CANARD
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard() != null) {
+			if(_theAerodynamicBuilderInterface.isPerformCanardAnalyses() == true) {
+
+				_alphaCanardList = _alphaBodyList.stream()
+						.map(x -> x.to(NonSI.DEGREE_ANGLE).plus(
+								_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE))
+								)
+						.collect(Collectors.toList()); 
+
+				_alphaCanardCurrent = _alphaBodyCurrent.to(NonSI.DEGREE_ANGLE)
+						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
+
+				_liftingSurfaceAerodynamicManagers.put(
+						ComponentEnum.CANARD,
+						new LiftingSurfaceAerodynamicsManager(
+								_theAerodynamicBuilderInterface.getTheAircraft().getCanard(),
+								_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
+								_theAerodynamicBuilderInterface.getCurrentCondition(),
+								_theAerodynamicBuilderInterface.getCanardNumberOfPointSemiSpanWise(),
+								_alphaCanardList, 
+								_theAerodynamicBuilderInterface.getAlphaCanardForDistribution(),
+								_canardMomentumPole
+								)
+						);
+				
+				calculateCanardData();
+			}
+		}
+		
+		//------------------------------------------------------------------------------
+		// WING
+		
+		//TODO
 		
 	}
 	
+	private void calculateCanardData() {
+
+		switch (_theAerodynamicBuilderInterface.getCanardAnalysisType()) {
+		case SEMIEMPIRICAL:
+			ACAerodynamicAndStabilityManagerUtils.calculateLiftingSurfaceDataSemiempirical(
+					this,
+					ComponentEnum.CANARD
+					);
+			break;
+		case AVL:
+			// TODO
+			break;
+		case KK32:
+			// TODO
+			break;
+		default:
+			break;
+		}
+		
+	}
+
 	public void calculate(String resultsFolderPath) {
 		
 		// TODO
@@ -2061,7 +2148,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	
 	//==============================================================================================================
 	/*
-	 * TODO : ADD ALL INNER CLASSES. MAYBE CREATE A UTILITIES CLASS TO MANAGE AIRCRAFT DATA (SUGGESTION --> MANUELA)
+	 * TODO : ADD ALL INNER CLASSES. CREATE UTILITIES CLASS TO MANAGE AIRCRAFT DATA (??) (SUGGESTION --> MANUELA)
 	 */
 	//==============================================================================================================
 	
@@ -2151,12 +2238,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	}
 	public void setAlphaHTailList(List<Amount<Angle>> _alphaHTailList) {
 		this._alphaHTailList = _alphaHTailList;
-	}
-	public List<Amount<Angle>> getAlphaHTailListWithGroundEfffect() {
-		return _alphaHTailListWithGroundEfffect;
-	}
-	public void setAlphaHTailListWithGroundEfffect(List<Amount<Angle>> _alphaHTailListWithGroundEfffect) {
-		this._alphaHTailListWithGroundEfffect = _alphaHTailListWithGroundEfffect;
 	}
 	public List<Amount<Angle>> getAlphaCanardList() {
 		return _alphaCanardList;
@@ -2263,34 +2344,22 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	public void setCurrent3DWingLiftCurve(List<Double> _current3DWingLiftCurve) {
 		this._current3DWingLiftCurve = _current3DWingLiftCurve;
 	}
-	public List<Double> getCurrent3DWingPolarCurve() {
-		return _current3DWingPolarCurve;
-	}
-	public void setCurrent3DWingPolarCurve(List<Double> _current3DWingPolarCurve) {
-		this._current3DWingPolarCurve = _current3DWingPolarCurve;
-	}
 	public List<Double> getCurrent3DWingMomentCurve() {
 		return _current3DWingMomentCurve;
 	}
 	public void setCurrent3DWingMomentCurve(List<Double> _current3DWingMomentCurve) {
 		this._current3DWingMomentCurve = _current3DWingMomentCurve;
 	}
-	public List<Double> getCurrent3DCanardLiftCurve() {
+	public Map<Amount<Angle>, List<Double>> getCurrent3DCanardLiftCurve() {
 		return _current3DCanardLiftCurve;
 	}
-	public void setCurrent3DCanardLiftCurve(List<Double> _current3DCanardLiftCurve) {
+	public void setCurrent3DCanardLiftCurve(Map<Amount<Angle>, List<Double>> _current3DCanardLiftCurve) {
 		this._current3DCanardLiftCurve = _current3DCanardLiftCurve;
 	}
-	public List<Double> getCurrent3DCanardPolarCurve() {
-		return _current3DCanardPolarCurve;
-	}
-	public void setCurrent3DCanardPolarCurve(List<Double> _current3DCanardPolarCurve) {
-		this._current3DCanardPolarCurve = _current3DCanardPolarCurve;
-	}
-	public List<Double> getCurrent3DCanardMomentCurve() {
+	public Map<Amount<Angle>, List<Double>> getCurrent3DCanardMomentCurve() {
 		return _current3DCanardMomentCurve;
 	}
-	public void setCurrent3DCanardMomentCurve(List<Double> _current3DCanardMomentCurve) {
+	public void setCurrent3DCanardMomentCurve(Map<Amount<Angle>, List<Double>> _current3DCanardMomentCurve) {
 		this._current3DCanardMomentCurve = _current3DCanardMomentCurve;
 	}
 	public Map<Amount<Angle>, List<Double>> getCurrent3DHorizontalTailLiftCurve() {
@@ -2298,12 +2367,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	}
 	public void setCurrent3DHorizontalTailLiftCurve(Map<Amount<Angle>, List<Double>> _current3DHorizontalTailLiftCurve) {
 		this._current3DHorizontalTailLiftCurve = _current3DHorizontalTailLiftCurve;
-	}
-	public Map<Amount<Angle>, List<Double>> getCurrent3DHorizontalTailPolarCurve() {
-		return _current3DHorizontalTailPolarCurve;
-	}
-	public void setCurrent3DHorizontalTailPolarCurve(Map<Amount<Angle>, List<Double>> _current3DHorizontalTailPolarCurve) {
-		this._current3DHorizontalTailPolarCurve = _current3DHorizontalTailPolarCurve;
 	}
 	public Map<Amount<Angle>, List<Double>> getCurrent3DHorizontalTailMomentCurve() {
 		return _current3DHorizontalTailMomentCurve;
@@ -2330,11 +2393,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	public void setTotalMomentCoefficient(Map<Double, Map<Amount<Angle>, List<Double>>> _totalMomentCoefficient) {
 		this._totalMomentCoefficient = _totalMomentCoefficient;
 	}
-	public Map<Double, Map<ComponentEnum, List<Double>>> getMomentCoefficientBreakDown() {
-		return _momentCoefficientBreakDown;
+	public Map<Double, Map<ComponentEnum, List<Double>>> getTotalMomentCoefficientBreakDown() {
+		return _totalMomentCoefficientBreakDown;
 	}
-	public void setMomentCoefficientBreakDown(Map<Double, Map<ComponentEnum, List<Double>>> _momentCoefficientBreakDown) {
-		this._momentCoefficientBreakDown = _momentCoefficientBreakDown;
+	public void setTotalMomentCoefficientBreakDown(Map<Double, Map<ComponentEnum, List<Double>>> _totalMomentCoefficientBreakDown) {
+		this._totalMomentCoefficientBreakDown = _totalMomentCoefficientBreakDown;
 	}
 	public Amount<?> getCYBetaWing() {
 		return _cYBetaWing;

@@ -35,6 +35,8 @@ import com.ibm.icu.text.AlphabeticIndex;
 
 import GUI.Main;
 import GUI.Views.VaraiblesAnalyses;
+import aircraft.components.liftingSurface.creator.ISlatCreator;
+import aircraft.components.liftingSurface.creator.ISymmetricFlapCreator;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import calculators.aerodynamics.LiftCalc;
@@ -632,34 +634,37 @@ public class WingAnalysisCalculator {
 		List<SymmetricFlapCreator> theFlapList = new ArrayList<>();
 		List<SlatCreator> theSlatList = new ArrayList<>();
 
+
 		for(int i=0; i<theInputOutpuTree.getNumberOfFlaps(); i++) {
 			theFlapList.add(
-					new SymmetricFlapCreator.SymmetricFlapBuilder(
-							"flap", 
-							theInputOutpuTree.getFlapTypes().get(i),
-							theInputOutpuTree.getFlapInnerStation().get(i), 
-							theInputOutpuTree.getFlapOuterStation().get(i), 
-							theInputOutpuTree.getFlapChordRatio().get(i), 
-							theInputOutpuTree.getFlapChordRatio().get(i), 
-							Amount.valueOf(-5.0, NonSI.DEGREE_ANGLE),
-							Amount.valueOf(40.0, NonSI.DEGREE_ANGLE)
-							).build()
-					);
+					new SymmetricFlapCreator(
+					new ISymmetricFlapCreator.Builder()
+					.setId("flap")
+					.setType(theInputOutpuTree.getFlapTypes().get(i))
+					.setInnerStationSpanwisePosition(theInputOutpuTree.getFlapInnerStation().get(i))
+					.setOuterStationSpanwisePosition(theInputOutpuTree.getFlapOuterStation().get(i) )
+					.setInnerChordRatio(theInputOutpuTree.getFlapChordRatio().get(i))
+					.setOuterChordRatio(theInputOutpuTree.getFlapChordRatio().get(i)) 
+					.setMinimumDeflection(Amount.valueOf(-5.0, NonSI.DEGREE_ANGLE))
+					.setMaximumDeflection(Amount.valueOf(40.0, NonSI.DEGREE_ANGLE))
+				.build() ));
+					
 		}
-
+	
+		
 		for(int i=0; i<theInputOutpuTree.getNumberOfSlats(); i++) {
 			theSlatList.add(
-					new SlatCreator.SlatBuilder(
-							"flap",
-							theInputOutpuTree.getSlatInnerStation().get(i), 
-							theInputOutpuTree.getSlatOuterStation().get(i),
-							theInputOutpuTree.getSlatChordRatio().get(i), 
-							theInputOutpuTree.getSlatChordRatio().get(i), 
-							theInputOutpuTree.getSlatExtensionRatio().get(i), 
-							Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
-							Amount.valueOf(20.0, NonSI.DEGREE_ANGLE)
-							).build()
-					);
+			       new SlatCreator( 
+					new ISlatCreator.Builder()
+					.setId("flap")
+					.setInnerStationSpanwisePosition(theInputOutpuTree.getSlatInnerStation().get(i)) 
+					.setOuterStationSpanwisePosition(theInputOutpuTree.getSlatOuterStation().get(i))
+					.setInnerChordRatio(theInputOutpuTree.getSlatChordRatio().get(i)) 
+					.setOuterChordRatio(theInputOutpuTree.getSlatChordRatio().get(i)) 
+					.setExtensionRatio(theInputOutpuTree.getSlatExtensionRatio().get(i))
+					.setMinimumDeflection(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+					.setMaximumDeflection(Amount.valueOf(20.0, NonSI.DEGREE_ANGLE))
+					.build() ));
 		}
 
 		if(!theInputOutpuTree.performLiftAnalysis) {
@@ -689,7 +694,7 @@ public class WingAnalysisCalculator {
 						theInputOutpuTree.getClAlphaDistribution(),
 						theInputOutpuTree.getcLZeroDistribution(), 
 						theInputOutpuTree.getThicknessDistribution(),
-						theInputOutpuTree.getLeRadiusDistribution(), 
+						MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getLeRadiusDistribution())), 
 						theInputOutpuTree.getChordDistribution(), 
 						theInputOutpuTree.getFlapDeflection(), 
 						theInputOutpuTree.getSlatDeflection(), 

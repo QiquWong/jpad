@@ -13,6 +13,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.Aircraft;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
+import configuration.enumerations.AerodynamicAnlaysisApproachEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
@@ -41,6 +42,12 @@ public interface IACAerodynamicAndStabilityManager_v2 {
 	// FROM INPUT (Passed from XML file)
 	Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> getComponentTaskList();
 	Map<ComponentEnum, List<AerodynamicAndStabilityPlotEnum>> getPlotList();
+	AerodynamicAnlaysisApproachEnum getWingAnalysisType();
+	AerodynamicAnlaysisApproachEnum getHTailAnalysisType();
+	AerodynamicAnlaysisApproachEnum getVTailAnalysisType();
+	AerodynamicAnlaysisApproachEnum getCanardAnalysisType();
+	AerodynamicAnlaysisApproachEnum getFuselageAnalysisType();
+	AerodynamicAnlaysisApproachEnum getNacellesAnalysisType();
 	
 	// balance
 	List<Double> getXCGAircraft(); //in MAC perc.
