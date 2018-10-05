@@ -211,13 +211,13 @@ public final class AircraftUtils {
 		aircraft.getTheAnalysisManager().calculateDependentVariables();
 		aircraft.getTheAnalysisManager().doAnalysis(aircraft, operatingConditions, subfolderPath);
 		
-		ACAerodynamicAndStabilityManager aeroManager = ACAerodynamicAndStabilityManager.importFromXML(
-				pathToAnalysesXML,
-				aircraft, 
-				operatingConditions, 
-				ConditionEnum.CRUISE);
-		aeroManager.calculate(subfolderPath);
-		aeroManager.toString();
+//		ACAerodynamicAndStabilityManager aeroManager = ACAerodynamicAndStabilityManager.importFromXML(
+//				pathToAnalysesXML,
+//				aircraft, 
+//				operatingConditions, 
+//				ConditionEnum.CRUISE);
+//		aeroManager.calculate(subfolderPath);
+//		aeroManager.toString();
 		
 		System.setOut(originalOut);
 		System.out.println("\n\n\tDone!! \n\n");

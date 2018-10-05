@@ -1,0 +1,23 @@
+LOAD newData3.avl
+MASS newData3.mass
+MSET
+0
+PLOP
+g, F
+
+OPER
+c1
+v 236.51949797281918
+
+x
+st
+newData3.st
+sb
+newData3.sb
+
+MODE
+n
+w
+newData3.eig
+
+QUIT

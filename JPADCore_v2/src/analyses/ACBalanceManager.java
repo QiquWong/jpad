@@ -2179,8 +2179,8 @@ public class ACBalanceManager {
 			_massMap.put(ComponentEnum.LANDING_GEAR, _theBalanceManagerInterface.getLandingGearMass().to(SI.KILOGRAM));
 		}
 
-		if(_theBalanceManagerInterface.getIncludeSystemsPosition() == true) {
-			if(_theBalanceManagerInterface.getTheAircraft().getSystems() != null) {
+		if(_theBalanceManagerInterface.getTheAircraft().getSystems() != null) {
+			if(_theBalanceManagerInterface.getIncludeSystemsPosition() == true) {
 
 				_xCGMap.put(ComponentEnum.APU, _theBalanceManagerInterface.getAPUPositionX().to(SI.METER));
 				_zCGMap.put(ComponentEnum.APU, _theBalanceManagerInterface.getAPUPositionZ().to(SI.METER));
@@ -2210,6 +2210,34 @@ public class ACBalanceManager {
 				_zCGMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().to(SI.METER));
 				_massMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, _theBalanceManagerInterface.getFurnishingsAndEquipmentsMass().to(SI.KILOGRAM));
 
+			} else {
+				_xCGMap.put(ComponentEnum.APU, Amount.valueOf(0.0, SI.METER));
+				_zCGMap.put(ComponentEnum.APU, Amount.valueOf(0.0, SI.METER));
+				_massMap.put(ComponentEnum.APU, Amount.valueOf(0.0, SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, Amount.valueOf(0.0, SI.METER));
+				_zCGMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, Amount.valueOf(0.0, SI.METER));
+				_massMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, Amount.valueOf(0.0, SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, Amount.valueOf(0.0, SI.METER));
+				_zCGMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, Amount.valueOf(0.0, SI.METER));
+				_massMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, Amount.valueOf(0.0, SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, Amount.valueOf(0.0, SI.METER));
+				_zCGMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, Amount.valueOf(0.0, SI.METER));
+				_massMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, Amount.valueOf(0.0, SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, Amount.valueOf(0.0, SI.METER));
+				_zCGMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, Amount.valueOf(0.0, SI.METER));
+				_massMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, Amount.valueOf(0.0, SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.CONTROL_SURFACES, Amount.valueOf(0.0, SI.METER));
+				_zCGMap.put(ComponentEnum.CONTROL_SURFACES, Amount.valueOf(0.0, SI.METER));
+				_massMap.put(ComponentEnum.CONTROL_SURFACES, Amount.valueOf(0.0, SI.KILOGRAM));
+
+				_xCGMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, Amount.valueOf(0.0, SI.METER));
+				_zCGMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, Amount.valueOf(0.0, SI.METER));
+				_massMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, Amount.valueOf(0.0, SI.KILOGRAM));
 			}
 		}
 

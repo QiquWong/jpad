@@ -1,0 +1,112 @@
+CS300 (AVL_Test)
+#Mach
+0.78
+#IYsym      IZsym       ZSym       
+0           0           0.0000     
+#Sref       Cref        Bref        (meters)
+112.94      3.8983      34.938     
+#Xref       Yref        Zref        (meters)
+16.980      0.0000      -0.79285   
+#CD0ref
+0.02
+#
+#==============================================================
+#
+SURFACE
+JPAD Test Wing DAF - 2016
+#Nchord     Cspace      Nspan       Sspace     
+5           1.0000      10          1.0000     
+#
+# reflect image wing about y=0 plane
+YDUPLICATE
+0.0
+#
+# twist angle bias for whole surface
+ANGLE
+2.0
+#
+# x,y,z scale factors for whole surface
+SCALE
+1.0000      1.0000      1.0000     
+#
+# x,y,z bias for whole surface
+TRANSLATE
+12.170      0.0000      -1.2500    
+#--------------------------------------------------------------
+#    Xle         Yle         Zle         chord       angle   [Nspan  Sspace]
+#
+SECTION
+     0.0000      0.0000      0.0000      6.7400      5.5000     
+AFIL
+newData3_airfoil_wing_root.dat
+#-----------------------
+SECTION
+     3.4769      6.0221      0.57987     3.2600      5.5000     
+AFIL
+newData3_airfoil_wing_kink.dat
+#-----------------------
+SECTION
+     10.086      17.469      1.6821      1.3000      -1.0200    
+AFIL
+newData3_airfoil_wing_tip.dat
+#-----------------------
+#
+#==============================================================
+#
+SURFACE
+CS300 Horizontal Tail
+#Nchord     Cspace      Nspan       Sspace     
+5           1.0000      10          1.0000     
+#
+# reflect image wing about y=0 plane
+YDUPLICATE
+0.0
+#
+# twist angle bias for whole surface
+ANGLE
+0.0
+#
+# x,y,z scale factors for whole surface
+SCALE
+1.0000      1.0000      1.0000     
+#
+# x,y,z bias for whole surface
+TRANSLATE
+31.600      0.0000      1.0000     
+#--------------------------------------------------------------
+#    Xle         Yle         Zle         chord       angle   [Nspan  Sspace]
+#
+SECTION
+     0.0000      0.0000      0.0000      3.3600      -0.0000    
+AFIL
+newData3_airfoil_htail_root.dat
+CONTROL
+Elevator  1.000   0.6000  0.000   1.000   0.000   1.000   ! name, gain,  Xhinge,  (X,Y,Z)hvec,  SgnDup
+#-----------------------
+SECTION
+     3.7320      5.9724      0.57507     3.3600      0.0000     
+AFIL
+newData3_airfoil_htail_tip.dat
+CONTROL
+Elevator  1.000   0.6000  0.000   1.000   0.000   1.000   ! name, gain,  Xhinge,  (X,Y,Z)hvec,  SgnDup
+#-----------------------
+#
+#==============================================================
+#
+BODY
+theFuselage
+#Nbody      Bspace     
+15          1.0000     
+#
+# x,y,z scale factors for whole body
+SCALE
+1.0000      1.0000      1.0000     
+#
+# x,y,z bias for whole body
+TRANSLATE
+0.0000      0.0000      0.0000     
+BFIL
+newData3_body.dat
+#
+#==============================================================
+#
