@@ -2,6 +2,7 @@ package standaloneutils.aircraft;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Paint;
 import java.awt.PaintContext;
 import java.awt.Rectangle;
@@ -63,6 +64,12 @@ import standaloneutils.MyArrayUtils;
 
 public class AircraftAndComponentsViewPlotUtils {
 
+	public static final int LABEL_SIZE = 30;
+	public static final int TICK_LABEL_SIZE = 25;
+	public static final int LEGEND_FONT_SIZE = 20;
+	public static final int WIDTH = 1000;
+	public static final int HEIGHT = 1000;
+	
 	public static void createAircraftTopView(Aircraft aircraft, String outputDirectoryPath) {
 		
 		//--------------------------------------------------
@@ -290,9 +297,6 @@ public class AircraftAndComponentsViewPlotUtils {
 		double yMaxTopView = 1.20*aircraft.getFuselage().getFuselageLength().doubleValue(SI.METRE);
 		double yMinTopView = -0.20*aircraft.getFuselage().getFuselageLength().doubleValue(SI.METRE);
 			
-		int WIDTH = 650;
-		int HEIGHT = 650;
-		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		Map<Double, Tuple2<XYSeries, Color>> componentZList = new HashMap<>();
@@ -394,9 +398,13 @@ public class AircraftAndComponentsViewPlotUtils {
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(yMinTopView, yMaxTopView);
 		domain.setInverted(Boolean.TRUE);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(xMinTopView, xMaxTopView);
 		range.setInverted(Boolean.FALSE);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -742,9 +750,6 @@ public class AircraftAndComponentsViewPlotUtils {
 		double yMaxSideView = 1.40*aircraft.getFuselage().getFuselageLength().divide(2).doubleValue(SI.METRE);
 		double yMinSideView = -1.40*aircraft.getFuselage().getFuselageLength().divide(2).doubleValue(SI.METRE);
 		
-		int WIDTH = 650;
-		int HEIGHT = 650;
-		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -807,8 +812,12 @@ public class AircraftAndComponentsViewPlotUtils {
 
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(xMinSideView, xMaxSideView);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(yMinSideView, yMaxSideView);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -1439,9 +1448,6 @@ public class AircraftAndComponentsViewPlotUtils {
 		double zMaxFrontView = yMaxFrontView; 
 		double zMinFrontView = yMinFrontView;
 		
-		int WIDTH = 650;
-		int HEIGHT = 650;
-		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		Map<Double, Tuple2<XYSeries, Color>> componentXList = new HashMap<>();
@@ -1548,8 +1554,12 @@ public class AircraftAndComponentsViewPlotUtils {
 
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(yMinFrontView, yMaxFrontView);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(zMinFrontView, zMaxFrontView);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -1644,9 +1654,6 @@ public class AircraftAndComponentsViewPlotUtils {
 		double yMaxTopView = 1.20*aircraft.getFuselage().getFuselageLength().doubleValue(SI.METRE);
 		double yMinTopView = -0.20*aircraft.getFuselage().getFuselageLength().doubleValue(SI.METRE);
 
-		int WIDTH = 650;
-		int HEIGHT = 650;
-
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -1684,9 +1691,13 @@ public class AircraftAndComponentsViewPlotUtils {
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(yMinTopView, yMaxTopView);
 		domain.setInverted(Boolean.TRUE);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(xMinTopView, xMaxTopView);
 		range.setInverted(Boolean.FALSE);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -1780,9 +1791,6 @@ public class AircraftAndComponentsViewPlotUtils {
 		double yMaxSideView = 1.40*aircraft.getFuselage().getFuselageLength().divide(2).doubleValue(SI.METRE);
 		double yMinSideView = -1.40*aircraft.getFuselage().getFuselageLength().divide(2).doubleValue(SI.METRE);
 		
-		int WIDTH = 650;
-		int HEIGHT = 650;
-		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -1819,8 +1827,12 @@ public class AircraftAndComponentsViewPlotUtils {
 
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(xMinSideView, xMaxSideView);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(yMinSideView, yMaxSideView);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -1915,9 +1927,6 @@ public class AircraftAndComponentsViewPlotUtils {
 		double zMaxFrontView = yMaxFrontView; 
 		double zMinFrontView = yMinFrontView;
 		
-		int WIDTH = 650;
-		int HEIGHT = 650;
-		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -1954,8 +1963,12 @@ public class AircraftAndComponentsViewPlotUtils {
 
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(yMinFrontView, yMaxFrontView);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(zMinFrontView, zMaxFrontView);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -2253,9 +2266,6 @@ public class AircraftAndComponentsViewPlotUtils {
 		double yMaxTopView = aircraft.getFuselage().getFuselageLength().doubleValue(SI.METRE);
 		double yMinTopView = 0.0;
 
-		int WIDTH = 650;
-		int HEIGHT = 650;
-
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -2299,9 +2309,13 @@ public class AircraftAndComponentsViewPlotUtils {
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(yMinTopView, yMaxTopView);
 		domain.setInverted(Boolean.TRUE);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(xMinTopView, xMaxTopView);
 		range.setInverted(Boolean.FALSE);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -2654,9 +2668,6 @@ public class AircraftAndComponentsViewPlotUtils {
 			
 		}
 		
-		int WIDTH = 650;
-		int HEIGHT = 650;
-		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -2704,9 +2715,13 @@ public class AircraftAndComponentsViewPlotUtils {
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(yMinTopView, yMaxTopView);
 		domain.setInverted(Boolean.TRUE);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(xMinTopView, xMaxTopView);
 		range.setInverted(Boolean.FALSE);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -2854,9 +2869,6 @@ public class AircraftAndComponentsViewPlotUtils {
 			
 		}
 			
-		int WIDTH = 650;
-		int HEIGHT = 650;
-		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -2896,9 +2908,13 @@ public class AircraftAndComponentsViewPlotUtils {
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(yMinTopView, yMaxTopView);
 		domain.setInverted(Boolean.TRUE);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(xMinTopView, xMaxTopView);
 		range.setInverted(Boolean.FALSE);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -3089,9 +3105,6 @@ public class AircraftAndComponentsViewPlotUtils {
 			
 		}
 		
-		int WIDTH = 650;
-		int HEIGHT = 650;
-		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -3133,9 +3146,13 @@ public class AircraftAndComponentsViewPlotUtils {
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(yMinTopView, yMaxTopView);
 		domain.setInverted(Boolean.TRUE);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(xMinTopView, xMaxTopView);
 		range.setInverted(Boolean.FALSE);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -3325,9 +3342,6 @@ public class AircraftAndComponentsViewPlotUtils {
 			
 		}
 		
-		int WIDTH = 650;
-		int HEIGHT = 650;
-		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -3369,9 +3383,13 @@ public class AircraftAndComponentsViewPlotUtils {
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(xMinTopView, xMaxTopView);
 		domain.setInverted(Boolean.FALSE);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(yMinTopView, yMaxTopView);
 		range.setInverted(Boolean.FALSE);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -3561,9 +3579,6 @@ public class AircraftAndComponentsViewPlotUtils {
 			
 		}
 		
-		int WIDTH = 650;
-		int HEIGHT = 650;
-		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
 		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -3605,9 +3620,13 @@ public class AircraftAndComponentsViewPlotUtils {
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(yMinTopView, yMaxTopView);
 		domain.setInverted(Boolean.TRUE);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(xMinTopView, xMaxTopView);
 		range.setInverted(Boolean.FALSE);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -3730,9 +3749,6 @@ public class AircraftAndComponentsViewPlotUtils {
 			double yMaxTopView = 1.20*aircraft.getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 			double yMinTopView = -0.20*aircraft.getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 
-			int WIDTH = 650;
-			int HEIGHT = 650;
-
 			//-------------------------------------------------------------------------------------
 			// DATASET CRATION
 			List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -3770,9 +3786,13 @@ public class AircraftAndComponentsViewPlotUtils {
 			NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 			domain.setRange(yMinTopView, yMaxTopView);
 			domain.setInverted(Boolean.TRUE);
+			domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+			domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 			NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 			range.setRange(xMinTopView, xMaxTopView);
 			range.setInverted(Boolean.FALSE);
+			range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+			range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 			XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 			xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -3884,9 +3904,6 @@ public class AircraftAndComponentsViewPlotUtils {
 			double yMaxSideView = 1.20*aircraft.getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 			double yMinSideView = -0.20*aircraft.getNacelles().getNacellesList().get(i).getLength().doubleValue(SI.METRE);
 
-			int WIDTH = 650;
-			int HEIGHT = 650;
-
 			//-------------------------------------------------------------------------------------
 			// DATASET CRATION
 			List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -3924,9 +3941,13 @@ public class AircraftAndComponentsViewPlotUtils {
 			NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 			domain.setRange(xMinSideView, xMaxSideView);
 			domain.setInverted(Boolean.FALSE);
+			domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+			domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 			NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 			range.setRange(yMinSideView, yMaxSideView);
 			range.setInverted(Boolean.FALSE);
+			range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+			range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 			XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 			xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -4027,9 +4048,6 @@ public class AircraftAndComponentsViewPlotUtils {
 			double xMaxFrontView = yMaxFrontView;
 			double xMinFrontView = yMinFrontView;
 
-			int WIDTH = 650;
-			int HEIGHT = 650;
-
 			//-------------------------------------------------------------------------------------
 			// DATASET CRATION
 			List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
@@ -4067,9 +4085,13 @@ public class AircraftAndComponentsViewPlotUtils {
 			NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 			domain.setRange(xMinFrontView, xMaxFrontView);
 			domain.setInverted(Boolean.TRUE);
+			domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+			domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 			NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 			range.setRange(yMinFrontView, yMaxFrontView);
 			range.setInverted(Boolean.FALSE);
+			range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+			range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 			XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 			xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -4522,8 +4544,12 @@ public class AircraftAndComponentsViewPlotUtils {
 
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(xMinSideView, xMaxSideView);
+		domain.setLabelFont(new Font("Dialog", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(yMinSideView, yMaxSideView);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYLineAndShapeRenderer xyLineAndShapePropRenderer = new XYLineAndShapeRenderer();
 		xyLineAndShapePropRenderer.setDefaultShapesVisible(false);

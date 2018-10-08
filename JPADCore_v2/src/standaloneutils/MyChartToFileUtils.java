@@ -35,6 +35,7 @@ import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.annotations.XYDrawableAnnotation;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.LogAxis;
@@ -71,6 +72,10 @@ import writers.JPADStaticWriteUtils;
 
 public class MyChartToFileUtils {
 
+	public static final int LABEL_SIZE = 30;
+	public static final int TICK_LABEL_SIZE = 25;
+	public static final int LEGEND_FONT_SIZE = 20;
+	
 	private PrintWriter writer;
 	private XYSeriesCollection datasetLineChart = new XYSeriesCollection( );
 	private int styleIdx = 0;
@@ -1333,6 +1338,11 @@ public class MyChartToFileUtils {
 		chart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
 		chart.getXYPlot().getDomainAxis().setRange(xMin - Math.abs(0.1*xMin), xMax + Math.abs(0.1*xMax));
 		chart.getXYPlot().getRangeAxis().setRange(yMin - Math.abs(0.1*yMin), yMax + Math.abs(0.1*yMax));
+		chart.getXYPlot().getDomainAxis().setLabelFont(new Font("Dialog", Font.PLAIN, LABEL_SIZE));
+		chart.getXYPlot().getDomainAxis().setTickLabelFont(new Font("Dialog", Font.PLAIN, TICK_LABEL_SIZE));
+		chart.getXYPlot().getRangeAxis().setLabelFont(new Font("Dialog", Font.PLAIN, LABEL_SIZE));
+		chart.getXYPlot().getRangeAxis().setTickLabelFont(new Font("Dialog", Font.PLAIN, TICK_LABEL_SIZE));
+		chart.getLegend().setItemFont(new Font("Dialog", Font.PLAIN, LEGEND_FONT_SIZE));
 		
 		final Paint[] paintArray;
 		// create default colors but modify some colors that are hard to see
@@ -2619,6 +2629,7 @@ public class MyChartToFileUtils {
 		xylineChart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
 		xylineChart.getXYPlot().setRangeGridlinesVisible(true);
 		xylineChart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
+		xylineChart.getLegend().setItemFont(new Font("Dialog", Font.PLAIN, LEGEND_FONT_SIZE));
 		//xylineChart.removeLegend(); 
 
 		final Paint[] paintArray;
@@ -2646,10 +2657,14 @@ public class MyChartToFileUtils {
 		
 		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
 		domain.setRange(xMin, xMax);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		//        domain.setTickUnit(new NumberTickUnit(0.1));
 		//        domain.setVerticalTickLabels(true);
 		NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
 		range.setRange(yMin, yMax);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		//        range.setTickUnit(new NumberTickUnit(0.1));
 
 		File xyChart = new File(filenameWithPath + ".png"); 
@@ -2698,6 +2713,7 @@ public class MyChartToFileUtils {
 		xyScatterPlotChart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
 		xyScatterPlotChart.getXYPlot().setRangeGridlinesVisible(true);
 		xyScatterPlotChart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
+		xyScatterPlotChart.getLegend().setItemFont(new Font("Dialog", Font.PLAIN, LEGEND_FONT_SIZE));
 
 		final Paint[] paintArray;
 		// create default colors but modify some colors that are hard to see
@@ -2724,8 +2740,12 @@ public class MyChartToFileUtils {
 		
 		NumberAxis domain = (NumberAxis) xyScatterPlotChart.getXYPlot().getDomainAxis();
 		domain.setRange(xMin, xMax);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) xyScatterPlotChart.getXYPlot().getRangeAxis();
 		range.setRange(yMin, yMax);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 //		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 //		renderer.setDefaultShapesVisible(true);
@@ -3452,6 +3472,7 @@ public class MyChartToFileUtils {
 		xylineChart.setBackgroundPaint(Color.WHITE);
 		xylineChart.setBackgroundImageAlpha(0.0f);
 		xylineChart.setAntiAlias(true);
+		xylineChart.getLegend().setItemFont(new Font("Dialog", Font.PLAIN, LEGEND_FONT_SIZE));
 
 		XYPlot plot = (XYPlot) xylineChart.getPlot();
 		plot.setDrawingSupplier(new DefaultDrawingSupplier(
@@ -3469,12 +3490,17 @@ public class MyChartToFileUtils {
 		plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
 		plot.setDomainPannable(true);
 		plot.setRangePannable(true);
-
+		
 		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
 		domain.setRange(xMin, xMax);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
+		
 		NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
 		range.setRange(yMin, yMax);
-
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
+		
 		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 		renderer.setDefaultShapesVisible(false);
 		renderer.setDefaultLinesVisible(true);
@@ -3558,6 +3584,7 @@ public class MyChartToFileUtils {
 		xylineChart.setBackgroundPaint(Color.WHITE);
 		xylineChart.setBackgroundImageAlpha(0.0f);
 		xylineChart.setAntiAlias(true);
+		xylineChart.getLegend().setItemFont(new Font("Dialog", Font.PLAIN, LEGEND_FONT_SIZE));
 
 		XYPlot plot = (XYPlot) xylineChart.getPlot();
 		plot.setDrawingSupplier(new DefaultDrawingSupplier(
@@ -3578,8 +3605,12 @@ public class MyChartToFileUtils {
 
 		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
 		domain.setRange(xMin, xMax);
+		domain.setLabelFont(new Font("Dialog", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
 		range.setRange(yMin, yMax);
+		range.setLabelFont(new Font("Dialog", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
 		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 		renderer.setDefaultShapesVisible(true);

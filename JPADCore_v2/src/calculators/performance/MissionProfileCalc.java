@@ -975,6 +975,9 @@ public class MissionProfileCalc {
 								)
 						);
 
+				/*
+				 * FIXME: INTERPOLATING FUNCTION ASSEIGNED FOR IRON LOOP-2 ANALYSIS. REMEMBER TO DELETE IT -> (VITTORIO)
+				 */
 				List<Amount<Force>> dragPerStep = new ArrayList<>();
 				dragPerStep.add(
 						Amount.valueOf(
