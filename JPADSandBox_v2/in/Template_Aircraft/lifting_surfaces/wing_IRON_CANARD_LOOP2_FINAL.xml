@@ -36,7 +36,7 @@
                 <outer_section>
                     <chord unit="m">3.3312</chord>
                     <airfoil file="ROOT_IRON_NEW_updated_cruise.xml"/>
-                    <geometric_twist unit="deg">0.0</geometric_twist>
+                    <geometric_twist unit="deg">-2</geometric_twist>
                 </outer_section>
             </panel>
             <panel id="IRON - Outer panel" linked_to="IRON - Inner panel">
@@ -46,7 +46,7 @@
                 <outer_section>
                     <chord unit="m">1.584</chord>
                     <airfoil file="TIP_IRON_NEW_updated_cruise.xml"/>
-                    <geometric_twist unit="deg">-2</geometric_twist>
+                    <geometric_twist unit="deg">-6</geometric_twist>
                 </outer_section>
             </panel>
         </panels>

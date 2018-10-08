@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<engine id="IRON Engine" type="TURBOPROP" database="Normalized_Turboprop_100CRUISE_ISA10_v3.h5">
+	<engine id="IRON Engine" type="TURBOPROP" database="Normalized_Turboprop_100CRUISE_ISA0_v3.h5">
 		<dimensions>
-			<length unit="m">4.371</length>
+			<length unit="m">5.28</length>
 			<propeller_diameter unit="ft">14.00</propeller_diameter>
 		</dimensions>
 		<specifications>
 			<number_of_propeller_blades>12</number_of_propeller_blades>
 			<eta_propeller>1.0</eta_propeller>
-			<static_power unit="hp">8732</static_power>
-			<dry_mass calculate="FALSE" unit="kg">2281.75</dry_mass> <!-- need to be verified -->
+			<static_power unit="hp">7419</static_power>
+			<dry_mass calculate="FALSE" unit="kg">2809</dry_mass> <!-- need to be verified -->
 			<number_of_compressor_stages>5</number_of_compressor_stages>
 			<number_of_shafts>2</number_of_shafts>
 			<overall_pressure_ratio>15.0</overall_pressure_ratio>
