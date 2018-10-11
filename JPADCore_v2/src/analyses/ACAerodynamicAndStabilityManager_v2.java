@@ -62,6 +62,7 @@ import javaslang.Tuple2;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyInterpolatingFunction;
+import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
 
 public class ACAerodynamicAndStabilityManager_v2 {
@@ -74,7 +75,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	// VARIABLES DECLARATION:
 	//------------------------------------------------------------------------------
 	IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface;
-	
+
 	//..............................................................................
 	// DERIVED INPUT	
 	private double _currentMachNumber;
@@ -97,30 +98,28 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private List<Amount<Angle>> _alphaCanardList;
 	private List<Amount<Angle>> _alphaNacelleList;
 	private List<Amount<Angle>> _betaList;
-	
+
 	// for downwash estimation
-	// TODO: CANARD?
+	//	// TODO: CANARD?
 	private Amount<Length> _zACRootWing;
-	private Amount<Length> _horizontalDistanceQuarterChordWingHTail;
-	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailPARTIAL;
-	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE;
-	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE;
-	
+	private Amount<Length> _horizontalDistanceSlingerland;
+	private Amount<Length> _verticalDistanceSlingerland;
+
 	//..............................................................................
 	// INNER CALCULATORS
 	private Map<ComponentEnum, LiftingSurfaceAerodynamicsManager> _liftingSurfaceAerodynamicManagers;
 	private Map<ComponentEnum, FuselageAerodynamicsManager> _fuselageAerodynamicManagers;
 	private Map<ComponentEnum, NacelleAerodynamicsManager>_nacelleAerodynamicManagers;
-	
+
 	//..............................................................................
 	// OUTPUT
-	
+
 	// downwash
 	private Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Double>>>> _downwashGradientMap;
 	private Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Amount<Angle>>>>> _downwashAngleMap;
 	private Map<ComponentEnum, Map<MethodEnum, Map<Boolean, Double>>> _downwashGradientCurrent;
 	private Map<ComponentEnum, Map<MethodEnum, Map<Boolean, Amount<Angle>>>> _downwashAngleCurrent;
-	
+
 	// total aircraft curves
 	private List<Double> _current3DWingLiftCurve;
 	private List<Double> _current3DWingMomentCurve;
@@ -132,7 +131,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Map<Amount<Angle>, List<Double>> _totalDragCoefficient; //delta_e, CD
 	private Map<Double, Map<Amount<Angle>, List<Double>>> _totalMomentCoefficient; //xcg, delta_e , CM
 	private Map<Double, Map<ComponentEnum, List<Double>>> _totalMomentCoefficientBreakDown; //xcg, component, CM
-	
+
 	// side force
 	private Amount<?> _cYBetaWing;
 	private Amount<?> _cYBetaFuselage;
@@ -142,7 +141,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Amount<?> _cYDeltaR;
 	private Map<Double, Amount<?>> _cYp; // xcg, cYp
 	private Map<Double, Amount<?>> _cYr; // xcg, cYr
-	
+
 	// longitudinal static stability
 	private Map<Double, List<Double>> _canardEquilibriumLiftCoefficient; //xcg, CLc_e
 	private Map<Double, List<Double>> _canardEquilibriumDragCoefficient; // xcg, CDc_e
@@ -161,7 +160,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Map<Double, Double> _maximumTrimmedLiftingCoefficientMap; // xcg, CLmax_trim
 	private Map<Double, Amount<?>> _cLAlphaEquilibriumMap; // xcg, CL_alpha_e
 	private Map<Double, Amount<?>> _cMAlphaEquilibriumMap; // xcg, CM_alpha_e
-	
+
 	// lateral static stability
 	private Amount<?> _cRollBetaWingBody;
 	private Amount<?> _cRollBetaHorizontal;
@@ -176,7 +175,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Amount<?> _cRollrWing;
 	private Map<Double, Amount<?>> _cRollrVertical;
 	private Map<Double, Amount<?>> _cRollrTotal;
-	
+
 	// directional static stability
 	private List<Tuple2<Double, Double>> _cNBetaFuselage; // xcg, CNbf
 	private List<Tuple2<Double, Double>> _cNBetaNacelles; // xcg, CNbnac
@@ -201,7 +200,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Map<Amount<Angle>, List<Tuple2<Double, List<Double>>>> _cNDueToDeltaRudder; // dr, xcg, CN_total_vs_Beta
 	private Map<Double, List<Tuple2<Amount<Angle>, Amount<Angle>>>> _betaOfEquilibrium; // xcg, beta_eq, dr_eq
 	private Map<Double, Amount<Angle>> _betaMaxOfEquilibrium; // xcg, beta_max_eq
-	
+
 	//------------------------------------------------------------------------------
 	// METHODS:
 	//------------------------------------------------------------------------------
@@ -211,7 +210,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			OperatingConditions theOperatingConditions,
 			ConditionEnum theCondition
 			) throws IOException {
-		
+
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
 		System.out.println("Reading aerodynamic and stability analysis data ...");
@@ -222,12 +221,12 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						"//@id");
 
 		boolean readBalanceFromPreviousAnalysisFlag;
-		
+
 		String readBalanceFromPreviousAnalysisString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@balance_from_previous_analysis");
-		
+
 		if(readBalanceFromPreviousAnalysisString.equalsIgnoreCase("true"))
 			readBalanceFromPreviousAnalysisFlag = true;
 		else {
@@ -237,7 +236,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				System.exit(1);
 			}
 		}
-		
+
 		//===============================================================
 		// READING BALANCE DATA
 		//===============================================================
@@ -249,7 +248,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		Amount<Length> zCGLandingGears = null;
 		Amount<Length> xCGNacelles = null;
 		Amount<Length> zCGNacelles = null;
-		
+
 		/********************************************************************************************
 		 * If the boolean flag is true, the method reads from the ACBalanceManager and ignores the assigned
 		 * data inside the xlm file.
@@ -258,7 +257,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		if(readBalanceFromPreviousAnalysisFlag == Boolean.TRUE) {
 			if(theAircraft.getTheAnalysisManager() != null) {
 				if(theAircraft.getTheAnalysisManager().getTheBalance() != null) {
-					
+
 					//---------------------------------------------------------------
 					// XCG POSITIONS
 					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxForwardOperativeCG());
@@ -301,60 +300,60 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			}
 		}
 		else {
-		
+
 			//---------------------------------------------------------------
 			// XCG POSITIONS
 			String xCGAdimensionalPositionsProperty = reader.getXMLPropertyByPath("//balance/adimensional_center_of_gravity_x_position_list");
 			if(xCGAdimensionalPositionsProperty != null)
 				xCGAdimensionalPositions = reader.readArrayDoubleFromXML("//balance/adimensional_center_of_gravity_x_position_list");
-			
+
 			//---------------------------------------------------------------
 			// ZCG POSITIONS
 			String zCGAdimensionalPositionsProperty = reader.getXMLPropertyByPath("//balance/adimensional_center_of_gravity_z_position_list");
 			if(zCGAdimensionalPositionsProperty != null)
 				zCGAdimensionalPositions = reader.readArrayDoubleFromXML("//balance/adimensional_center_of_gravity_z_position_list");
-			
+
 			//---------------------------------------------------------------
 			// XCG POSITIONS FUSELAGE
 			String xCGFuselageProperty = reader.getXMLPropertyByPath("//balance/fuselage_dimensional_center_of_gravity_x_position");
 			if(xCGFuselageProperty != null)
 				xCGFuselage= reader.getXMLAmountLengthByPath("//balance/fuselage_dimensional_center_of_gravity_x_position");
-			
+
 			//---------------------------------------------------------------
 			// ZCG POSITIONS FUSELAGE
 			String zCGFuselageProperty = reader.getXMLPropertyByPath("//balance/fuselage_dimensional_center_of_gravity_z_position");
 			if(zCGFuselageProperty != null)
 				zCGFuselage= reader.getXMLAmountLengthByPath("//balance/fuselage_dimensional_center_of_gravity_z_position");
-			
+
 			//---------------------------------------------------------------
 			// XCG POSITIONS LANDING GEAR
 			String xCGLandingGearsProperty = reader.getXMLPropertyByPath("//balance/landing_gear_dimensional_center_of_gravity_x_position");
 			if(xCGLandingGearsProperty != null)
 				xCGLandingGears = reader.getXMLAmountLengthByPath("//balance/landing_gear_dimensional_center_of_gravity_x_position");
-			
+
 			//---------------------------------------------------------------
 			// ZCG POSITIONS LANDING GEAR
 			String zCGLandingGearsProperty = reader.getXMLPropertyByPath("//balance/landing_gear_dimensional_center_of_gravity_z_position");
 			if(zCGLandingGearsProperty != null)
 				zCGLandingGears = reader.getXMLAmountLengthByPath("//balance/landing_gear_dimensional_center_of_gravity_z_position");
-			
+
 			//---------------------------------------------------------------
 			// XCG POSITIONS NACELLES
 			String xCGNacellesProperty = reader.getXMLPropertyByPath("//balance/nacelle_dimensional_center_of_gravity_x_position");
 			if(xCGNacellesProperty != null)
 				xCGNacelles = reader.getXMLAmountLengthByPath("//balance/nacelle_dimensional_center_of_gravity_x_position");
-			
+
 			//---------------------------------------------------------------
 			// ZCG POSITIONS NACELLES
 			String zCGNacellesProperty = reader.getXMLPropertyByPath("//balance/nacelle_dimensional_center_of_gravity_z_position");
 			if(zCGNacellesProperty != null)
 				zCGNacelles = reader.getXMLAmountLengthByPath("//balance/nacelle_dimensional_center_of_gravity_z_position");
 		}
-		
+
 		//===============================================================
 		// READING GLOBAL DATA
 		//===============================================================
-		
+
 		// initialization and default values ...
 		Amount<Angle> alphaBodyInitial = null;
 		Amount<Angle> alphaBodyFinal = null;
@@ -581,7 +580,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			wingDynamicPressureRatio = Double.valueOf(wingDynamicPressureRatioProperty);
 		else
 			horizontalTailDynamicPressureRatio = 1.0; //FIXME: ADD THE METHOD WHEN AVAILABLE ...
-		
+
 		//---------------------------------------------------------------
 		// DYNAMIC PRESSURE RATIO HTAIL
 		String horizontalTailDynamicPressureRatioProperty = reader.getXMLPropertyByPath("//global_data/horizontal_tail_dynamic_pressure_ratio");
@@ -592,7 +591,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			AerodynamicCalc.calculateHTailDynamicPressureRatio(
 					theAircraft.getHTail().getPositionRelativeToAttachment()
 					);
-		
+
 		//---------------------------------------------------------------
 		// DYNAMIC PRESSURE RATIO VTAIL
 		String verticalTailDynamicPressureRatioProperty = reader.getXMLPropertyByPath("//global_data/horizontal_tail_dynamic_pressure_ratio");
@@ -600,10 +599,10 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			verticalTailDynamicPressureRatio = Double.valueOf(verticalTailDynamicPressureRatioProperty);
 		else
 			verticalTailDynamicPressureRatio = 
-					AerodynamicCalc.calculateVTailDynamicPressureRatio(
-							theAircraft.getVTail().getPositionRelativeToAttachment()
-							);
-		
+			AerodynamicCalc.calculateVTailDynamicPressureRatio(
+					theAircraft.getVTail().getPositionRelativeToAttachment()
+					);
+
 		//---------------------------------------------------------------
 		// TAU ELEVATOR
 		if(theAircraft.getHTail()!= null) {
@@ -774,7 +773,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						);
 			}
 		}
-		
+
 		//===============================================================
 		// READING COMPONENTS TASK LIST DATA
 		//===============================================================		
@@ -790,18 +789,18 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 		if(wingAnalysisPerformString != null) {
 			if(wingAnalysisPerformString.equalsIgnoreCase("TRUE")) {
-				
+
 				performWingAnalysis = true;
-				
+
 				String wingAnalysisTypeString = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//components/wing/@type");
-				
+
 				if(wingAnalysisTypeString != null) {
-					
+
 					wingAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(wingAnalysisTypeString);
-					
+
 					switch (wingAnalysisType) {
 					case SEMIEMPIRICAL:
 						wingTaskList.put(AerodynamicAndStabilityEnum.CRITICAL_MACH, MethodEnum.KROO);
@@ -837,11 +836,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): WING ANALYSIS TYPE NOT RECOGNIZED!");
 						break;
 					}
-					
+
 				}
 			}
 		}
-		
+
 		//...............................................................
 		// HORIZONTAL TAIL:
 		//...............................................................
@@ -855,18 +854,18 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 		if(hTailAnalysisPerformString != null) {
 			if(hTailAnalysisPerformString.equalsIgnoreCase("TRUE")) {
-				
+
 				performHTailAnalysis = true;
-				
+
 				String hTailAnalysisTypeString = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//components/horizontal_tail/@type");
-				
+
 				if(hTailAnalysisTypeString != null) {
-					
+
 					hTailAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(hTailAnalysisTypeString);
-					
+
 					switch (hTailAnalysisType) {
 					case SEMIEMPIRICAL:
 						hTailTaskList.put(AerodynamicAndStabilityEnum.CRITICAL_MACH, MethodEnum.KROO);
@@ -900,11 +899,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): HORIZONTAL TAIL ANALYSIS TYPE NOT RECOGNIZED!");
 						break;
 					}
-					
+
 				}
 			}
 		}
-		
+
 		//...............................................................
 		// VERTICAL TAIL:
 		//...............................................................
@@ -918,18 +917,18 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 		if(vTailAnalysisPerformString != null) {
 			if(vTailAnalysisPerformString.equalsIgnoreCase("TRUE")) {
-				
+
 				performVTailAnalysis = true;
-				
+
 				String vTailAnalysisTypeString = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//components/vertical_tail/@type");
-				
+
 				if(vTailAnalysisTypeString != null) {
-					
+
 					vTailAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(vTailAnalysisTypeString);
-					
+
 					switch (vTailAnalysisType) {
 					case SEMIEMPIRICAL:
 						vTailTaskList.put(AerodynamicAndStabilityEnum.CRITICAL_MACH, MethodEnum.KROO);
@@ -962,11 +961,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): VERTICAL TAIL ANALYSIS TYPE NOT RECOGNIZED!");
 						break;
 					}
-					
+
 				}
 			}
 		}
-				
+
 		//...............................................................
 		// CANARD:
 		//...............................................................
@@ -980,18 +979,18 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 		if(canardAnalysisPerformString != null) {
 			if(canardAnalysisPerformString.equalsIgnoreCase("TRUE")) {
-				
+
 				performCanardAnalysis = true;
-				
+
 				String canardAnalysisTypeString = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//components/canard/@type");
-				
+
 				if(canardAnalysisTypeString != null) {
-					
+
 					canardAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(canardAnalysisTypeString);
-					
+
 					switch (canardAnalysisType) {
 					case SEMIEMPIRICAL:
 						canardTaskList.put(AerodynamicAndStabilityEnum.CRITICAL_MACH, MethodEnum.KROO);
@@ -1025,11 +1024,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): CANARD ANALYSIS TYPE NOT RECOGNIZED!");
 						break;
 					}
-					
+
 				}
 			}
 		}
-		
+
 		//...............................................................
 		// FUSELAGE:
 		//...............................................................
@@ -1043,18 +1042,18 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 		if(fuselageAnalysisPerformString != null) {
 			if(fuselageAnalysisPerformString.equalsIgnoreCase("TRUE")) {
-				
+
 				performFuselageAnalysis = true;
-				
+
 				String fuselageAnalysisTypeString = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//components/fuselage/@type");
-				
+
 				if(fuselageAnalysisTypeString != null) {
-					
+
 					fuselageAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(fuselageAnalysisTypeString);
-					
+
 					switch (fuselageAnalysisType) {
 					case SEMIEMPIRICAL:
 						fuselageTaskList.put(AerodynamicAndStabilityEnum.CD0_PARASITE_FUSELAGE, MethodEnum.SEMIEMPIRICAL);
@@ -1080,7 +1079,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): CANARD ANALYSIS TYPE NOT RECOGNIZED!");
 						break;
 					}
-					
+
 				}
 			}
 		}
@@ -1098,18 +1097,18 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 		if(nacellesAnalysisPerformString != null) {
 			if(nacellesAnalysisPerformString.equalsIgnoreCase("TRUE")) {
-				
+
 				performNacellesAnalysis = true;
-				
+
 				String nacellesAnalysisTypeString = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//components/nacelles/@type");
-				
+
 				if(nacellesAnalysisTypeString != null) {
-					
+
 					nacellesAnalysisType = AerodynamicAnlaysisApproachEnum.valueOf(nacellesAnalysisTypeString);
-					
+
 					switch (nacellesAnalysisType) {
 					case SEMIEMPIRICAL:
 						nacellesTaskList.put(AerodynamicAndStabilityEnum.CD0_PARASITE_NACELLE, MethodEnum.SEMIEMPIRICAL);
@@ -1133,28 +1132,28 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): CANARD ANALYSIS TYPE NOT RECOGNIZED!");
 						break;
 					}
-					
+
 				}
 			}
 		}
-		
+
 		//...............................................................
 		// AIRCRAFT:
 		//...............................................................
 		Map<AerodynamicAndStabilityEnum, MethodEnum> aircraftTaskList = new HashMap<>();
-		
+
 		// downwash
 		boolean canardWingDownwashConstantGradient = false;
 		MethodEnum canardWingDownwashMethod = null;
 		boolean wingHTailDownwashConstantGradient = true;
 		MethodEnum wingHTailDownwashMethod = null;
-		
+
 		// total lift
 		MethodEnum totalLiftCurveMethod = null;
 		boolean fuselageEffectOnWingLiftCurve = true;
 		double totalLiftCalibrationAlphaScaleFactor = 1.0;
 		double totalLiftCalibrationCLScaleFactor = 1.0;
-		
+
 		// total drag
 		MethodEnum aircraftTotalPolarCurveMethod = null;
 		boolean calculateDeltaCD0Miscellaneous = true;
@@ -1163,28 +1162,28 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		double deltaCD0LandingGears = 0.0;
 		double totalDragCalibrationCLScaleFactor = 1.0;
 		double totalDragCalibrationCDScaleFactor = 1.0;
-		
+
 		// total pitching moment
 		MethodEnum aircraftTotalMomentCurveMethod = null;
 		double totalMomentCalibrationAlphaScaleFactor = 1.0;
 		double totalMomentCalibrationCMScaleFactor = 1.0;
-		
+
 		// longitudinal static stability
 		MethodEnum aircraftLongitudinalStaticStabilityMethod = null;
 		boolean aircraftWingPendularStability = true;
-		
+
 		// lateral static stability
 		MethodEnum aircraftLateralStaticStabilityMethod = null;
-		
+
 		// directional static stability
 		MethodEnum aircraftDirectionalStaticStabilityMethod = null;
-		
+
 		// directional static stability
 		MethodEnum aircraftSideForceMethod = null;
-		
+
 		// directional static stability
 		MethodEnum minimumUnstickSpeedMethod = null;
-		
+
 		//---------------------------------------------------------------
 		// CANARD DOWNWASH
 		boolean canardWingConstantGradientFlag = true;
@@ -1207,7 +1206,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			// FIXME : CANARD METHODS !!
 			if(canardWingDownwashMethodString.equalsIgnoreCase("ROSKAM")) 
 				canardWingDownwashMethod = MethodEnum.ROSKAM;
-			
+
 			// FIXME : CANARD METHODS !!
 			if(canardWingDownwashMethodString.equalsIgnoreCase("SLINGERLAND")) 
 				canardWingDownwashMethod = MethodEnum.SLINGERLAND;
@@ -1237,7 +1236,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 			if(wingHTailDownwashMethodString.equalsIgnoreCase("ROSKAM")) 
 				wingHTailDownwashMethod = MethodEnum.ROSKAM;
-			
+
 			if(wingHTailDownwashMethodString.equalsIgnoreCase("SLINGERLAND")) 
 				wingHTailDownwashMethod = MethodEnum.SLINGERLAND;
 
@@ -1260,52 +1259,52 @@ public class ACAerodynamicAndStabilityManager_v2 {
 							"//aircraft/total_lift_curve/fuselage_effects/@include");
 
 			if(aircraftFuselageEffectsOnWingLiftCurveString != null) {
-				
+
 				if(aircraftFuselageEffectsOnWingLiftCurveString.equalsIgnoreCase("FALSE"))
 					fuselageEffectOnWingLiftCurve = false;
-				
+
 			}
-			
+
 			String aircraftTotalLiftCurveMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aircraft/total_lift_curve/@method");
-			
+
 			if(aircraftTotalLiftCurveMethodString != null) {
-				
+
 				if(aircraftTotalLiftCurveMethodString.equalsIgnoreCase("FROM_BALANCE_EQUATION")) 
 					totalLiftCurveMethod = MethodEnum.FROM_BALANCE_EQUATION;
-				
+
 				aircraftTaskList.put(AerodynamicAndStabilityEnum.CL_TOTAL, totalLiftCurveMethod);
-				
+
 			}
-			
+
 			String aircraftTotalLiftCurveCalibrationAlphaScaleFactorProperty = reader.getXMLPropertyByPath("//aircraft/total_lift_curve/calibration/scale_factor_alpha");
 			if(aircraftTotalLiftCurveCalibrationAlphaScaleFactorProperty != null)
 				totalLiftCalibrationAlphaScaleFactor = Double.valueOf(aircraftTotalLiftCurveCalibrationAlphaScaleFactorProperty);
-			
+
 			String aircraftTotalLiftCurveCalibrationCLScaleFactorProperty = reader.getXMLPropertyByPath("//aircraft/total_lift_curve/calibration/scale_factor_CL");
 			if(aircraftTotalLiftCurveCalibrationCLScaleFactorProperty != null)
 				totalLiftCalibrationCLScaleFactor = Double.valueOf(aircraftTotalLiftCurveCalibrationCLScaleFactorProperty);
-			
+
 		}
-		
+
 		//---------------------------------------------------------------
 		// TOTAL POLAR CURVE
 		String aircraftTotalPolarCurvePerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//aircraft/total_drag_polar/@perform");
-		
+
 		if(aircraftTotalPolarCurvePerformString.equalsIgnoreCase("TRUE")){
-			
+
 			String aircraftCalculateDeltaCD0MiscellaneousString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aircraft/total_drag_polar/delta_CD0_miscellaneous/@calculate");
-			
+
 			if(aircraftCalculateDeltaCD0MiscellaneousString != null) {
-				
+
 				if(aircraftCalculateDeltaCD0MiscellaneousString.equalsIgnoreCase("TRUE")) { 
 					calculateDeltaCD0Miscellaneous = true;
 
@@ -1318,242 +1317,242 @@ public class ACAerodynamicAndStabilityManager_v2 {
 							.getXMLPropertyByPath(
 									reader.getXmlDoc(), reader.getXpath(),
 									"//aircraft/total_drag_polar/delta_CD0_miscellaneous/@value");
-					
+
 					if(aircraftDeltaCD0MiscellaneousString != null) 
 						deltaCD0Miscellaneous = Double.valueOf(aircraftDeltaCD0MiscellaneousString);
-					
+
 				}
-				
+
 			}
-			
+
 			String aircraftCalculateDeltaCD0LandingGearsString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aircraft/total_drag_polar/delta_CD0_landing_gears/@calculate");
-			
+
 			if(aircraftCalculateDeltaCD0LandingGearsString != null) {
-				
+
 				if(aircraftCalculateDeltaCD0LandingGearsString.equalsIgnoreCase("FALSE")) {
 					calculateDeltaCD0LandingGears = false;
 					String aircraftDeltaCD0LandingGearsString = MyXMLReaderUtils
 							.getXMLPropertyByPath(
 									reader.getXmlDoc(), reader.getXpath(),
 									"//aircraft/total_drag_polar/delta_CD0_landing_gears/@value");
-					
+
 					if(aircraftDeltaCD0LandingGearsString != null) 
 						deltaCD0LandingGears = Double.valueOf(aircraftDeltaCD0LandingGearsString);
 				}
 				else { 
 					calculateDeltaCD0LandingGears = true;
-					
+
 					// FIXME: NEED A METHOD TO ESTIMATE ... CHECK DRAG_CALC
 					deltaCD0LandingGears = 0.0;
 				}
-				
+
 			}
-			
+
 			String aircraftTotalPolarCurveMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aircraft/total_drag_polar/@method");
-			
+
 			if(aircraftTotalPolarCurveMethodString != null) {
-				
+
 				// TODO: CHECK METHODS. SEE METHOD FOR TOTAL DRAG POLAR (--> MANUELA)
 				if(aircraftTotalPolarCurveMethodString.equalsIgnoreCase("FROM_BALANCE_EQUATION")) 
 					aircraftTotalPolarCurveMethod = MethodEnum.FROM_BALANCE_EQUATION;
-				
+
 				// TODO: CHECK METHODS. SEE METHOD FOR TOTAL DRAG POLAR (--> MANUELA)
 				if(aircraftTotalPolarCurveMethodString.equalsIgnoreCase("ROSKAM")) 
 					aircraftTotalPolarCurveMethod = MethodEnum.ROSKAM;
-				
+
 				aircraftTaskList.put(AerodynamicAndStabilityEnum.CD_TOTAL, aircraftTotalPolarCurveMethod);
-				
+
 			}
-			
+
 			String aircraftTotalDragCurveCalibrationCLScaleFactorProperty = reader.getXMLPropertyByPath("//aircraft/total_drag_curve/calibration/scale_factor_CL");
 			if(aircraftTotalDragCurveCalibrationCLScaleFactorProperty != null)
 				totalDragCalibrationCLScaleFactor = Double.valueOf(aircraftTotalDragCurveCalibrationCLScaleFactorProperty);
-			
+
 			String aircraftTotalDragCurveCalibrationCDScaleFactorProperty = reader.getXMLPropertyByPath("//aircraft/total_drag_curve/calibration/scale_factor_CD");
 			if(aircraftTotalDragCurveCalibrationCDScaleFactorProperty != null)
 				totalDragCalibrationCDScaleFactor = Double.valueOf(aircraftTotalDragCurveCalibrationCDScaleFactorProperty);
-			
+
 		}
-		
+
 		//---------------------------------------------------------------
 		// SIDE FORCE
 		String aircraftSideForcePerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//aircraft/side_force/@perform");
-		
+
 		if(aircraftSideForcePerformString.equalsIgnoreCase("TRUE")){
-			
+
 			String aircraftSideForceMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aircraft_analyses/side_force/@method");
-			
+
 			if(aircraftSideForceMethodString != null) {
-				
+
 				if(aircraftSideForceMethodString.equalsIgnoreCase("NAPOLITANO_DATCOM")) 
 					aircraftSideForceMethod = MethodEnum.NAPOLITANO_DATCOM;
-				
+
 				aircraftTaskList.put(AerodynamicAndStabilityEnum.SIDE_FORCE, aircraftSideForceMethod);
-				
+
 			}
 		}
-		
+
 		//---------------------------------------------------------------
 		// TOTAL MOMENT CURVE
 		String aircraftTotalMomentCurvePerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//aircraft/total_moment_curve/@perform");
-		
+
 		if(aircraftTotalMomentCurvePerformString.equalsIgnoreCase("TRUE")){
-			
+
 			String aircraftTotalMomentCurveMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aircraft/total_moment_curve/@method");
-			
+
 			if(aircraftTotalMomentCurveMethodString != null) {
-				
+
 				if(aircraftTotalMomentCurveMethodString.equalsIgnoreCase("FROM_BALANCE_EQUATION")) 
 					aircraftTotalMomentCurveMethod = MethodEnum.FROM_BALANCE_EQUATION;
-				
+
 				aircraftTaskList.put(AerodynamicAndStabilityEnum.CM_TOTAL, aircraftTotalMomentCurveMethod);
-				
+
 			}
-			
+
 			String aircraftTotalMomentCurveCalibrationAlphaScaleFactorProperty = reader.getXMLPropertyByPath("//aircraft/total_moment_curve/calibration/scale_factor_Alpha");
 			if(aircraftTotalMomentCurveCalibrationAlphaScaleFactorProperty != null)
 				totalMomentCalibrationAlphaScaleFactor = Double.valueOf(aircraftTotalMomentCurveCalibrationAlphaScaleFactorProperty);
-			
+
 			String aircraftTotalMomentCurveCalibrationCMScaleFactorProperty = reader.getXMLPropertyByPath("//aircraft/total_moment_curve/calibration/scale_factor_CM");
 			if(aircraftTotalMomentCurveCalibrationCMScaleFactorProperty != null)
 				totalMomentCalibrationCMScaleFactor = Double.valueOf(aircraftTotalMomentCurveCalibrationCMScaleFactorProperty);
-			
+
 		}
-		
+
 		//---------------------------------------------------------------
 		// LONGITUDINAL STATIC STABILITY
 		String aircraftLongitudinalStaticStabilityPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//aircraft/longitudinal_static_stability/@perform");
-		
+
 		if(aircraftLongitudinalStaticStabilityPerformString.equalsIgnoreCase("TRUE")){
-			
+
 			String aircraftWingPendularStabilityString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aircraft/longitudinal_static_stability/@wing_pendular_stability_effect");
-			
+
 			if(aircraftWingPendularStabilityString != null) 
 				if(aircraftWingPendularStabilityString.equalsIgnoreCase("FALSE"))
 					aircraftWingPendularStability = false;
-			
+
 			String aircraftLongitudinalStaticStabilityMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aircraft/longitudinal_static_stability/@method");
-			
+
 			if(aircraftLongitudinalStaticStabilityMethodString != null) {
-				
+
 				if(aircraftLongitudinalStaticStabilityMethodString.equalsIgnoreCase("FROM_BALANCE_EQUATION")) 
 					aircraftLongitudinalStaticStabilityMethod = MethodEnum.FROM_BALANCE_EQUATION;
-				
+
 				aircraftTaskList.put(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY, aircraftLongitudinalStaticStabilityMethod);
-				
+
 			}
 		}
-		
+
 		//---------------------------------------------------------------
 		// DIRECTIONAL STATIC STABILITY
 		String aircraftDirectionalStaticStabilityPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//aircraft/directional_static_stability/@perform");
-		
+
 		if(aircraftDirectionalStaticStabilityPerformString.equalsIgnoreCase("TRUE")){
-			
+
 			String aircraftDirectionalStaticStabilityMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aircraft/directional_static_stability/@method");
-			
+
 			if(aircraftDirectionalStaticStabilityMethodString != null) {
-				
+
 				if(aircraftDirectionalStaticStabilityMethodString.equalsIgnoreCase("NAPOLITANO_DATCOM")) 
 					aircraftDirectionalStaticStabilityMethod = MethodEnum.NAPOLITANO_DATCOM;
-				
+
 				if(aircraftDirectionalStaticStabilityMethodString.equalsIgnoreCase("VEDSC_SIMPLIFIED_WING")) 
 					aircraftDirectionalStaticStabilityMethod = MethodEnum.VEDSC_SIMPLIFIED_WING;
-				
+
 				if(aircraftDirectionalStaticStabilityMethodString.equalsIgnoreCase("VEDSC_USAFDATCOM_WING")) 
 					aircraftDirectionalStaticStabilityMethod = MethodEnum.VEDSC_USAFDATCOM_WING;
-				
+
 				aircraftTaskList.put(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY, aircraftDirectionalStaticStabilityMethod);
-				
+
 			}
 		}
-		
+
 		//---------------------------------------------------------------
 		// LATERAL STATIC STABILITY
 		String aircraftLateralStaticStabilityPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//aircraft/lateral_static_stability/@perform");
-		
+
 		if(aircraftLateralStaticStabilityPerformString.equalsIgnoreCase("TRUE")){
-			
+
 			String aircraftLateralStaticStabilityMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aircraft/lateral_static_stability/@method");
-			
+
 			if(aircraftLateralStaticStabilityMethodString != null) {
-				
+
 				if(aircraftLateralStaticStabilityMethodString.equalsIgnoreCase("NAPOLITANO_DATCOM")) 
 					aircraftLateralStaticStabilityMethod = MethodEnum.NAPOLITANO_DATCOM;
-				
+
 				aircraftTaskList.put(AerodynamicAndStabilityEnum.LATERAL_STABILITY, aircraftLateralStaticStabilityMethod);
-				
+
 			}
 		}
-		
+
 		//----------------------------------------------------------------
 		// MINIMUM UNSTICK SPEED
 		String minimumUnstickSpeedPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//aircraft_analyses/VMU/@perform");
-		
+
 		if(minimumUnstickSpeedPerformString.equalsIgnoreCase("TRUE") && theCondition == ConditionEnum.TAKE_OFF){
-			
+
 			String minimumUnstickSpeedMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aircraft_analyses/VMU/@method");
-			
+
 			if(minimumUnstickSpeedMethodString != null) {
-				
+
 				if(minimumUnstickSpeedMethodString.equalsIgnoreCase("DATCOM_VMU_FIRST_METHOD")) 
 					minimumUnstickSpeedMethod = MethodEnum.DATCOM_VMU_FIRST_METHOD;
-				
+
 				if(minimumUnstickSpeedMethodString.equalsIgnoreCase("DATCOM_VMU_SECOND_METHOD")) 
 					minimumUnstickSpeedMethod = MethodEnum.DATCOM_VMU_SECOND_METHOD;
-				
+
 				aircraftTaskList.put(AerodynamicAndStabilityEnum.MINIMUM_UNSTICK_SPEED, minimumUnstickSpeedMethod);
-				
+
 				aircraftTaskList.put(AerodynamicAndStabilityEnum.MINIMUM_UNSTICK_SPEED, minimumUnstickSpeedMethod);
-				
+
 			}
 		}
-		
+
 		//===============================================================
 		// READING PLOT DATA
 		//===============================================================
@@ -1624,7 +1623,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						"//plot/horizontal_tail/@perform");
 		if(createHTailPlotProperty != null)
 			createHTailPlot = true;
-		
+
 		if(theAircraft.getHTail() != null) {
 			if(createHTailPlot == true) {
 				if(performHTailAnalysis == true) {
@@ -1687,7 +1686,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'CANARD' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
 			}
 		}
-		
+
 		//...............................................................
 		// VTAIL:
 		String createVTailPlotProperty = MyXMLReaderUtils
@@ -1746,7 +1745,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'FUSELAGE' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
 			}
 		}
-		
+
 		//...............................................................
 		// NACELLE:
 		String createNacellesPlotProperty = MyXMLReaderUtils
@@ -1783,21 +1782,21 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 		if(theAircraft != null) {
 			if(createAircraftPlot == true) {			
-				
+
 				//----------------------------------------------------------------
 				// CANARD-WING DOWNWASH  --> TODO: IMPLEMENT THE PLOT METHOD INSIDE plotAllChart(); (MANUELA) 
 				if(aircraftTaskList.containsKey(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)) {
 					aircraftPlotList.add(AerodynamicAndStabilityPlotEnum.CANARD_WING_DOWNWASH_GRADIENT);
 					aircraftPlotList.add(AerodynamicAndStabilityPlotEnum.CANARD_WING_DOWNWASH_ANGLE);
 				}
-				
+
 				//----------------------------------------------------------------
 				// WING-HTAIL DOWNWASH 
 				if(aircraftTaskList.containsKey(AerodynamicAndStabilityEnum.WING_DOWNWASH)) {
 					aircraftPlotList.add(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_GRADIENT);
 					aircraftPlotList.add(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_ANGLE);
 				}
-				
+
 				//----------------------------------------------------------------
 				// TOTAL LIFT CURVE
 				if(aircraftTaskList.containsKey(AerodynamicAndStabilityEnum.CL_TOTAL)) 
@@ -1807,14 +1806,14 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				// TOTAL POLAR CURVE
 				if(aircraftTaskList.containsKey(AerodynamicAndStabilityEnum.CD_TOTAL)) 
 					aircraftPlotList.add(AerodynamicAndStabilityPlotEnum.TOTAL_POLAR_CURVE);
-				
+
 				//----------------------------------------------------------------
 				// TOTAL MOMENT CURVE VS ALPHA
 				if(aircraftTaskList.containsKey(AerodynamicAndStabilityEnum.CM_TOTAL)) {
 					aircraftPlotList.add(AerodynamicAndStabilityPlotEnum.TOTAL_MOMENT_CURVE_VS_ALPHA);
 					aircraftPlotList.add(AerodynamicAndStabilityPlotEnum.TOTAL_MOMENT_CURVE_VS_CL);
 				}
-				
+
 				//----------------------------------------------------------------
 				// LONGITUDINAL STATIC STABILITY
 				if(aircraftTaskList.containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) { 
@@ -1835,12 +1834,12 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					aircraftPlotList.add(AerodynamicAndStabilityPlotEnum.TOTAL_CN_VS_BETA_VS_DELTA_RUDDER);
 					aircraftPlotList.add(AerodynamicAndStabilityPlotEnum.DELTA_RUDDER_EQUILIBRIUM);
 				}
-				
+
 				plotMap.put(ComponentEnum.AIRCRAFT, aircraftPlotList);
 
 			}
 		}
-		
+
 		/********************************************************************************************
 		 * Once the data are ready, it's possible to create the manager object. This can be created
 		 * using the builder pattern.
@@ -1926,9 +1925,9 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		theAerodynamicAndStabilityManager.setTheAerodynamicBuilderInterface(theAerodynamicAndStabilityBuilderInterface);
 
 		return theAerodynamicAndStabilityManager;
-		
+
 	}
-	
+
 	private void initializeAnalysis() {
 
 		_liftingSurfaceAerodynamicManagers = new HashMap<>();
@@ -1936,15 +1935,15 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		_nacelleAerodynamicManagers = new HashMap<>();
 		_downwashGradientMap = new HashMap<>();
 		_downwashAngleMap = new HashMap<>();
-		
+
 		// TODO: THESE HAVE TO BE DEFINED LOALLY WITHIN THE METHOD --> (MANUELA)
-//		_verticalDistanceZeroLiftDirectionWingHTailVariable = new HashMap<>();
-//		_discretizedWingAirfoilsCl = new ArrayList<List<Double>>();
-//		_discretizedWingAirfoilsCd = new ArrayList<List<Double>>();
-//		_discretizedWingAirfoilsCm = new ArrayList<List<Double>>();
-//		_discretizedHTailAirfoilsCl = new ArrayList<List<Double>>();
-//		_discretizedHTailAirfoilsCd = new ArrayList<List<Double>>();
-		
+		//		_verticalDistanceZeroLiftDirectionWingHTailVariable = new HashMap<>();
+		//		_discretizedWingAirfoilsCl = new ArrayList<List<Double>>();
+		//		_discretizedWingAirfoilsCd = new ArrayList<List<Double>>();
+		//		_discretizedWingAirfoilsCm = new ArrayList<List<Double>>();
+		//		_discretizedHTailAirfoilsCl = new ArrayList<List<Double>>();
+		//		_discretizedHTailAirfoilsCd = new ArrayList<List<Double>>();
+
 		switch (_theAerodynamicBuilderInterface.getCurrentCondition()) {
 		case TAKE_OFF:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachTakeOff();
@@ -1976,11 +1975,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 		calculateDependentData();
 		calculateComponentsData();
-		
+
 	}
-	
+
 	private void calculateDependentData() {
-		
+
 		_alphaBodyList = MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyArrayUtils.linspace(
 						_theAerodynamicBuilderInterface.getAlphaBodyInitial().doubleValue(NonSI.DEGREE_ANGLE),
@@ -1989,7 +1988,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						), 
 				NonSI.DEGREE_ANGLE
 				);
-		
+
 		_betaList = MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyArrayUtils.linspace(
 						_theAerodynamicBuilderInterface.getBetaInitial().doubleValue(NonSI.DEGREE_ANGLE),
@@ -1998,7 +1997,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						), 
 				NonSI.DEGREE_ANGLE
 				);
-		
+
 		_deltaEForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyArrayUtils.linspace(
 						_theAerodynamicBuilderInterface.getTheAircraft().getHTail()
@@ -2008,7 +2007,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						), 
 				NonSI.DEGREE_ANGLE
 				);
-		
+
 		_deltaRForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyArrayUtils.linspace(
 						5,
@@ -2018,42 +2017,42 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						),  
 				NonSI.DEGREE_ANGLE
 				);
-		
+
 		_wingMomentumPole = Amount.valueOf(
 				_theAerodynamicBuilderInterface.getAdimensionalWingMomentumPole()
 				* _theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)
 				+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
 				SI.METER
 				);
-		
+
 		_hTailMomentumPole = Amount.valueOf(
 				_theAerodynamicBuilderInterface.getAdimensionalHTailMomentumPole()
 				* _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getMeanAerodynamicChord().doubleValue(SI.METER)
 				+ _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
 				SI.METER
 				);
-		
+
 		_vTailMomentumPole = Amount.valueOf(
 				_theAerodynamicBuilderInterface.getAdimensionalVTailMomentumPole()
 				* _theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChord().doubleValue(SI.METER)
 				+ _theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
 				SI.METER
 				);
-		
+
 		_canardMomentumPole = Amount.valueOf(
 				_theAerodynamicBuilderInterface.getAdimensionalCanardMomentumPole()
 				* _theAerodynamicBuilderInterface.getTheAircraft().getCanard().getMeanAerodynamicChord().doubleValue(SI.METER)
 				+ _theAerodynamicBuilderInterface.getTheAircraft().getCanard().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
 				SI.METER
 				);
-		
+
 		// TODO: CONTINUE
-		
-		
+
+
 	}
-	
+
 	private void calculateComponentsData() {
-		
+
 		//------------------------------------------------------------------------------
 		// CANARD
 		if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard() != null) {
@@ -2080,18 +2079,77 @@ public class ACAerodynamicAndStabilityManager_v2 {
 								_canardMomentumPole
 								)
 						);
-				
+
 				calculateCanardData();
+				ACAerodynamicAndStabilityManagerUtils.initializeDataForDownwashCanard(this);
+				ACAerodynamicAndStabilityManagerUtils.calculateDownwashDueToCanard(this);
 			}
 		}
-		
+
 		//------------------------------------------------------------------------------
 		// WING
-		
+		//------------------------------------------------------------------------------
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null) {
+					if(_theAerodynamicBuilderInterface.isPerformWingAnalyses() == true) {
+
+
+						//------------
+						_alphaBodyList.stream()
+								.forEach(x -> {
+									
+									int i=_alphaBodyList.indexOf(x);
+									_alphaWingList.add(x.to(NonSI.DEGREE_ANGLE).minus(
+											_downwashAngleMap
+											.get(ComponentEnum.CANARD)
+											.get(
+													_theAerodynamicBuilderInterface.getComponentTaskList()
+													.get(ComponentEnum.AIRCRAFT)
+													.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)
+													)
+											.get(_theAerodynamicBuilderInterface.getDownwashConstant())
+											.get(i)
+											)
+											.plus(
+										_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE)));
+								}); 
+
+						_alphaBodyCurrent = _alphaBodyCurrent.minus(
+								Amount.valueOf(
+										MyMathUtils.getInterpolatedValue1DLinear(
+										MyArrayUtils.convertListOfAmountTodoubleArray(_alphaBodyList),
+										MyArrayUtils.convertListOfAmountTodoubleArray(_downwashAngleMap
+										.get(ComponentEnum.CANARD)
+										.get(_theAerodynamicBuilderInterface
+												.getComponentTaskList()
+												.get(ComponentEnum.AIRCRAFT)
+												.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)).get(_theAerodynamicBuilderInterface.getDownwashConstant())),
+										_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)),
+										NonSI.DEGREE_ANGLE)
+								).plus(
+										_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
+					
+						_liftingSurfaceAerodynamicManagers.put(
+								ComponentEnum.WING,
+								new LiftingSurfaceAerodynamicsManager(
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing(),
+										_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
+										_theAerodynamicBuilderInterface.getCurrentCondition(),
+										_theAerodynamicBuilderInterface.getWingNumberOfPointSemiSpanWise(),
+										_alphaWingList, 
+										_theAerodynamicBuilderInterface.getAlphaWingForDistribution(),
+										_wingMomentumPole
+										)
+								);
+//TODO continue here
+						calculateCanardData();
+						ACAerodynamicAndStabilityManagerUtils.initializeDataForDownwashCanard(this);
+						ACAerodynamicAndStabilityManagerUtils.calculateDownwashDueToCanard(this);
+					}
+				}
 		//TODO
-		
+
 	}
-	
+
 	private void calculateCanardData() {
 
 		switch (_theAerodynamicBuilderInterface.getCanardAnalysisType()) {
@@ -2110,11 +2168,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		default:
 			break;
 		}
-		
+
 	}
 
 	public void calculate(String resultsFolderPath) {
-		
+
 		// TODO
 		/*
 		 * CALLS FOR INITIALIZE ANALYSIS 
@@ -2122,36 +2180,36 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		 *  - 'CALCULATE DEPENDENT DATA'
 		 *  - 'CALCULATE COMPONENTS DATA'
 		 */
-		
+
 	}
-	
+
 	public void plotAllCharts() {
-		
+
 		// TODO --> TAKE FROM PREVIOUS MANAGER
-		
+
 	}
-	
+
 	@Override
 	public String toString() {
-		
+
 		StringBuilder sb = new StringBuilder();
 		// TODO --> TAKE FROM PREVIOUS MANAGER
-		
+
 		return sb.toString();
-		
+
 	}
-	
+
 	public void toXLS(String filenameWithPathAndExt) {
-		
+
 		// TODO -->  TAKE FROM PREVIOUS MANAGER
 	}
-	
+
 	//==============================================================================================================
 	/*
 	 * TODO : ADD ALL INNER CLASSES. CREATE UTILITIES CLASS TO MANAGE AIRCRAFT DATA (??) (SUGGESTION --> MANUELA)
 	 */
 	//==============================================================================================================
-	
+
 	//------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	//------------------------------------------------------------------------------
@@ -2262,33 +2320,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	}
 	public void setZACRootWing(Amount<Length> _zACRootWing) {
 		this._zACRootWing = _zACRootWing;
-	}
-	public Amount<Length> getHorizontalDistanceQuarterChordWingHTail() {
-		return _horizontalDistanceQuarterChordWingHTail;
-	}
-	public void setHorizontalDistanceQuarterChordWingHTail(Amount<Length> _horizontalDistanceQuarterChordWingHTail) {
-		this._horizontalDistanceQuarterChordWingHTail = _horizontalDistanceQuarterChordWingHTail;
-	}
-	public Amount<Length> getVerticalDistanceZeroLiftDirectionWingHTailPARTIAL() {
-		return _verticalDistanceZeroLiftDirectionWingHTailPARTIAL;
-	}
-	public void setVerticalDistanceZeroLiftDirectionWingHTailPARTIAL(
-			Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailPARTIAL) {
-		this._verticalDistanceZeroLiftDirectionWingHTailPARTIAL = _verticalDistanceZeroLiftDirectionWingHTailPARTIAL;
-	}
-	public Amount<Length> getVerticalDistanceZeroLiftDirectionWingHTailCOMPLETE() {
-		return _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE;
-	}
-	public void setVerticalDistanceZeroLiftDirectionWingHTailCOMPLETE(
-			Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE) {
-		this._verticalDistanceZeroLiftDirectionWingHTailCOMPLETE = _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE;
-	}
-	public Amount<Length> getVerticalDistanceZeroLiftDirectionWingHTailEFFECTIVE() {
-		return _verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE;
-	}
-	public void setVerticalDistanceZeroLiftDirectionWingHTailEFFECTIVE(
-			Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE) {
-		this._verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE = _verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE;
 	}
 	public Map<ComponentEnum, LiftingSurfaceAerodynamicsManager> getLiftingSurfaceAerodynamicManagers() {
 		return _liftingSurfaceAerodynamicManagers;
@@ -2801,5 +2832,21 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	public void setCanardMomentumPole(Amount<Length> _canardMomentumPole) {
 		this._canardMomentumPole = _canardMomentumPole;
 	}
-		
+
+	public Amount<Length> get_horizontalDistanceSlingerland() {
+		return _horizontalDistanceSlingerland;
+	}
+
+	public void set_horizontalDistanceSlingerland(Amount<Length> _horizontalDistanceSlingerland) {
+		this._horizontalDistanceSlingerland = _horizontalDistanceSlingerland;
+	}
+
+	public Amount<Length> get_verticalDistanceSlingerland() {
+		return _verticalDistanceSlingerland;
+	}
+
+	public void set_verticalDistanceSlingerland(Amount<Length> _verticalDistanceSlingerland) {
+		this._verticalDistanceSlingerland = _verticalDistanceSlingerland;
+	}
+
 }
