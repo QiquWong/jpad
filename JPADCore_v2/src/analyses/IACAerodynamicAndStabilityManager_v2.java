@@ -90,6 +90,8 @@ public interface IACAerodynamicAndStabilityManager_v2 {
 	MyInterpolatingFunction getTauCanardFunction();
 	@Nullable
 	Amount<Angle> getMaximumElevatorDeflection();
+	@Nullable
+	MyInterpolatingFunction getAircraftDownwashGradientFunction();
 	
 	// analysis options
 	boolean isCanardWingDownwashConstant(); // if TRUE--> constant, if FALSE--> variable

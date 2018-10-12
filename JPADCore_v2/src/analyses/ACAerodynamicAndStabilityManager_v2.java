@@ -101,9 +101,17 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 	// for downwash estimation
 	//	// TODO: CANARD?
-	private Amount<Length> _zACRootWing;
+
 	private Amount<Length> _horizontalDistanceSlingerland;
 	private Amount<Length> _verticalDistanceSlingerland;
+	
+	// for downwash estimation
+	private Amount<Length> _zACRootWing;
+	private Amount<Length> _horizontalDistanceQuarterChordWingHTail;
+	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailPARTIAL = null;
+	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE = null;
+	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE;
+	private Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable;
 
 	//..............................................................................
 	// INNER CALCULATORS
@@ -2140,13 +2148,13 @@ public class ACAerodynamicAndStabilityManager_v2 {
 										_wingMomentumPole
 										)
 								);
-//TODO continue here
-						calculateCanardData();
-						ACAerodynamicAndStabilityManagerUtils.initializeDataForDownwashCanard(this);
-						ACAerodynamicAndStabilityManagerUtils.calculateDownwashDueToCanard(this);
+						
+						calculateWingData();
+						ACAerodynamicAndStabilityManagerUtils.initializeDataForDownwash(this);
+						ACAerodynamicAndStabilityManagerUtils.calculateDownwashDueToWing(this);
 					}
 				}
-		//TODO
+		//TODO: Continue here with tail
 
 	}
 
@@ -2157,6 +2165,27 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			ACAerodynamicAndStabilityManagerUtils.calculateLiftingSurfaceDataSemiempirical(
 					this,
 					ComponentEnum.CANARD
+					);
+			break;
+		case AVL:
+			// TODO
+			break;
+		case KK32:
+			// TODO
+			break;
+		default:
+			break;
+		}
+
+	}
+	
+	private void calculateWingData() {
+
+		switch (_theAerodynamicBuilderInterface.getWingAnalysisType()) {
+		case SEMIEMPIRICAL:
+			ACAerodynamicAndStabilityManagerUtils.calculateLiftingSurfaceDataSemiempirical(
+					this,
+					ComponentEnum.WING
 					);
 			break;
 		case AVL:
@@ -2847,6 +2876,58 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 	public void set_verticalDistanceSlingerland(Amount<Length> _verticalDistanceSlingerland) {
 		this._verticalDistanceSlingerland = _verticalDistanceSlingerland;
+	}
+
+	public Amount<Length> get_zACRootWing() {
+		return _zACRootWing;
+	}
+
+	public void set_zACRootWing(Amount<Length> _zACRootWing) {
+		this._zACRootWing = _zACRootWing;
+	}
+
+	public Amount<Length> get_horizontalDistanceQuarterChordWingHTail() {
+		return _horizontalDistanceQuarterChordWingHTail;
+	}
+
+	public void set_horizontalDistanceQuarterChordWingHTail(Amount<Length> _horizontalDistanceQuarterChordWingHTail) {
+		this._horizontalDistanceQuarterChordWingHTail = _horizontalDistanceQuarterChordWingHTail;
+	}
+
+	public Amount<Length> get_verticalDistanceZeroLiftDirectionWingHTailPARTIAL() {
+		return _verticalDistanceZeroLiftDirectionWingHTailPARTIAL;
+	}
+
+	public void set_verticalDistanceZeroLiftDirectionWingHTailPARTIAL(
+			Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailPARTIAL) {
+		this._verticalDistanceZeroLiftDirectionWingHTailPARTIAL = _verticalDistanceZeroLiftDirectionWingHTailPARTIAL;
+	}
+
+	public Amount<Length> get_verticalDistanceZeroLiftDirectionWingHTailCOMPLETE() {
+		return _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE;
+	}
+
+	public void set_verticalDistanceZeroLiftDirectionWingHTailCOMPLETE(
+			Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE) {
+		this._verticalDistanceZeroLiftDirectionWingHTailCOMPLETE = _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE;
+	}
+
+	public Amount<Length> get_verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE() {
+		return _verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE;
+	}
+
+	public void set_verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE(
+			Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE) {
+		this._verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE = _verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE;
+	}
+
+	public Map<MethodEnum, List<Amount<Length>>> get_verticalDistanceZeroLiftDirectionWingHTailVariable() {
+		return _verticalDistanceZeroLiftDirectionWingHTailVariable;
+	}
+
+	public void set_verticalDistanceZeroLiftDirectionWingHTailVariable(
+			Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable) {
+		this._verticalDistanceZeroLiftDirectionWingHTailVariable = _verticalDistanceZeroLiftDirectionWingHTailVariable;
 	}
 
 }
