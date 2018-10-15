@@ -2251,10 +2251,28 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			}
 		}
 		
-		//TODO continue here --> fuselage
+		//------------------------------------------------------------------------------
+		// FUSELAGE
+		//------------------------------------------------------------------------------			
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage() != null) {
+			
+			_fuselageAerodynamicManagers.put(
+					ComponentEnum.FUSELAGE,
+					new FuselageAerodynamicsManager(
+							_theAerodynamicBuilderInterface.getTheAircraft().getFuselage(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing(), 
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING), 
+							_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
+							_alphaBodyList, 
+							_theAerodynamicBuilderInterface.getCurrentCondition(), 
+							_theAerodynamicBuilderInterface.getAdimensionalFuselageMomentumPole()
+							)
+					);
 
-		
+		}
 	}
+	
+	
 
 	private void calculateCanardData() {
 
@@ -2340,6 +2358,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 	}
 
+	//TODO continue here. aggiusta metodo fusoliera con semiempirico e metti quello di nacelle. poi metti qui il richiamo ai metodi.
 	public void calculate(String resultsFolderPath) {
 
 		// TODO

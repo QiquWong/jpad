@@ -15,6 +15,17 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import analyses.ACAerodynamicAndStabilityManager_v2;
+import analyses.fuselage.FuselageAerodynamicsManager;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Base;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Parasite;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Total;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Upsweep;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Windshield;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcCDAtAlpha;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcCDInduced;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcCM0;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcMomentCurve;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcPolar;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlpha0L;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlphaStall;
@@ -302,6 +313,100 @@ public class ACAerodynamicAndStabilityManagerUtils {
 							);
 			}
 		}
+	}
+	
+	
+	public static void calculateFuselageDataSemiempirical(
+			ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager,
+			ComponentEnum type
+			) {
+		
+		Amount<Angle> alphaComponentCurrent = null;
+		switch (type) {
+		case FUSELAGE:
+			alphaComponentCurrent = aerodynamicAndStabilityManager.getAlphaBodyCurrent();
+			break;
+		case NACELLE:
+			alphaComponentCurrent = aerodynamicAndStabilityManager.getAlphaNacelleCurrent();
+			break;
+		default:
+			break;
+		}
+		
+		
+		FuselageAerodynamicsManager fuselageAerodynamicManagers = aerodynamicAndStabilityManager.getFuselageAerodynamicManagers().get(type);
+		IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
+		//.........................................................................................................................
+		
+		//	CD0_PARASITE
+			CalcCD0Parasite calcCD0Parasite = fuselageAerodynamicManagers.new CalcCD0Parasite();
+				calcCD0Parasite.semiempirical();
+
+		//.........................................................................................................................
+		//	CD0_BASE
+			CalcCD0Base calcCD0Base = fuselageAerodynamicManagers.new CalcCD0Base();
+				calcCD0Base.semiempirical();
+		//.........................................................................................................................
+		//	CD0_UPSWEEP
+			CalcCD0Upsweep calcCD0Upsweep = fuselageAerodynamicManagers.new CalcCD0Upsweep();
+				calcCD0Upsweep.semiempirical();
+
+		//.........................................................................................................................
+		//	CD0_WINDSHIELD
+			CalcCD0Windshield calcCD0Windshield = fuselageAerodynamicManagers.new CalcCD0Windshield();
+				calcCD0Windshield.semiempirical();
+
+		//.........................................................................................................................
+		//	CD0_TOTAL
+			analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Total calcCD0Total = fuselageAerodynamicManagers.new CalcCD0Total();
+				calcCD0Total.semiempirical();
+
+		//.........................................................................................................................
+		//	CM0
+			analyses.fuselage.FuselageAerodynamicsManager.CalcCM0 calcCM0 = fuselageAerodynamicManagers.new CalcCM0();
+				calcCM0.multhopp();
+
+		//.........................................................................................................................
+		//	CM_ALPHA
+			analyses.fuselage.FuselageAerodynamicsManager.CalcCMAlpha calcCMAlpha = fuselageAerodynamicManagers.new CalcCMAlpha();
+				calcCMAlpha.multhopp(
+						_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
+						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getMeanAerodynamicChord().to(SI.METER).divide(4))
+						.minus(
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPanels().get(0).getChordRoot().to(SI.METER))
+								),
+						aerodynamicAndStabilityManager.getDownwashGradientMap().get(ComponentEnum.WING).get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+						);
+	
+		//.........................................................................................................................
+		//	MOMENT_CURVE_3D
+
+				analyses.fuselage.FuselageAerodynamicsManager.CalcMomentCurve calcMomentCurve = fuselageAerodynamicManagers.new CalcMomentCurve();
+					calcMomentCurve.multhopp(
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
+							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getMeanAerodynamicChord().to(SI.METER).divide(4))
+							.minus(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPanels().get(0).getChordRoot().to(SI.METER))
+									),
+							aerodynamicAndStabilityManager.getDownwashGradientMap().get(ComponentEnum.WING).get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+							);
+		
+		//.........................................................................................................................
+		//	CM_AT_ALPHA 
+
+			analyses.fuselage.FuselageAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = fuselageAerodynamicManagers.new CalcCMAtAlpha();
+				calcCMAtAlpha.multhopp(
+						alphaComponentCurrent.to(NonSI.DEGREE_ANGLE),
+						_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
+						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getMeanAerodynamicChord().to(SI.METER).divide(4))
+						.minus(
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPanels().get(0).getChordRoot().to(SI.METER))
+								),
+						aerodynamicAndStabilityManager.getDownwashGradientMap().get(ComponentEnum.WING).get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+						);
 	}
 	
 	public static void initializeDataForDownwashCanard(ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager) {
