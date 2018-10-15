@@ -2097,65 +2097,163 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		//------------------------------------------------------------------------------
 		// WING
 		//------------------------------------------------------------------------------
-				if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null) {
-					if(_theAerodynamicBuilderInterface.isPerformWingAnalyses() == true) {
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null) {
+			if(_theAerodynamicBuilderInterface.isPerformWingAnalyses() == true) {
 
 
-						//------------
-						_alphaBodyList.stream()
-								.forEach(x -> {
-									
-									int i=_alphaBodyList.indexOf(x);
-									_alphaWingList.add(x.to(NonSI.DEGREE_ANGLE).minus(
-											_downwashAngleMap
-											.get(ComponentEnum.CANARD)
-											.get(
-													_theAerodynamicBuilderInterface.getComponentTaskList()
-													.get(ComponentEnum.AIRCRAFT)
-													.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)
-													)
-											.get(_theAerodynamicBuilderInterface.getDownwashConstant())
-											.get(i)
-											)
-											.plus(
-										_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE)));
-								}); 
+				//------------
+				_alphaBodyList.stream()
+				.forEach(x -> {
 
-						_alphaBodyCurrent = _alphaBodyCurrent.minus(
-								Amount.valueOf(
-										MyMathUtils.getInterpolatedValue1DLinear(
+					int i=_alphaBodyList.indexOf(x);
+					_alphaWingList.add(x.to(NonSI.DEGREE_ANGLE).minus(
+							_downwashAngleMap
+							.get(ComponentEnum.CANARD)
+							.get(
+									_theAerodynamicBuilderInterface.getComponentTaskList()
+									.get(ComponentEnum.AIRCRAFT)
+									.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)
+									)
+							.get(_theAerodynamicBuilderInterface.getDownwashConstant())
+							.get(i)
+							)
+							.plus(
+									_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE)));
+				}); 
+
+				_alphaWingCurrent = _alphaBodyCurrent.minus(
+						Amount.valueOf(
+								MyMathUtils.getInterpolatedValue1DLinear(
 										MyArrayUtils.convertListOfAmountTodoubleArray(_alphaBodyList),
 										MyArrayUtils.convertListOfAmountTodoubleArray(_downwashAngleMap
-										.get(ComponentEnum.CANARD)
-										.get(_theAerodynamicBuilderInterface
-												.getComponentTaskList()
-												.get(ComponentEnum.AIRCRAFT)
-												.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)).get(_theAerodynamicBuilderInterface.getDownwashConstant())),
+												.get(ComponentEnum.CANARD)
+												.get(_theAerodynamicBuilderInterface
+														.getComponentTaskList()
+														.get(ComponentEnum.AIRCRAFT)
+														.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)).get(_theAerodynamicBuilderInterface.getDownwashConstant())),
 										_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)),
-										NonSI.DEGREE_ANGLE)
-								).plus(
-										_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
-					
-						_liftingSurfaceAerodynamicManagers.put(
-								ComponentEnum.WING,
-								new LiftingSurfaceAerodynamicsManager(
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing(),
-										_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
-										_theAerodynamicBuilderInterface.getCurrentCondition(),
-										_theAerodynamicBuilderInterface.getWingNumberOfPointSemiSpanWise(),
-										_alphaWingList, 
-										_theAerodynamicBuilderInterface.getAlphaWingForDistribution(),
-										_wingMomentumPole
-										)
-								);
-						
-						calculateWingData();
-						ACAerodynamicAndStabilityManagerUtils.initializeDataForDownwash(this);
-						ACAerodynamicAndStabilityManagerUtils.calculateDownwashDueToWing(this);
-					}
-				}
-		//TODO: Continue here with tail
+								NonSI.DEGREE_ANGLE)
+						).plus(
+								_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
 
+				_liftingSurfaceAerodynamicManagers.put(
+						ComponentEnum.WING,
+						new LiftingSurfaceAerodynamicsManager(
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing(),
+								_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
+								_theAerodynamicBuilderInterface.getCurrentCondition(),
+								_theAerodynamicBuilderInterface.getWingNumberOfPointSemiSpanWise(),
+								_alphaWingList, 
+								_theAerodynamicBuilderInterface.getAlphaWingForDistribution(),
+								_wingMomentumPole
+								)
+						);
+
+				calculateWingData();
+				ACAerodynamicAndStabilityManagerUtils.initializeDataForDownwash(this);
+				ACAerodynamicAndStabilityManagerUtils.calculateDownwashDueToWing(this);
+			}
+		}
+
+
+		//------------------------------------------------------------------------------
+		// HORIZONTAL TAIL 
+		//------------------------------------------------------------------------------			
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null) {
+			if(_theAerodynamicBuilderInterface.isPerformHTailAnalyses() == true) {
+
+				//------------
+				_alphaBodyList.stream()
+				.forEach(x -> {
+
+					int i=_alphaBodyList.indexOf(x);
+					_alphaHTailList.add(x.to(NonSI.DEGREE_ANGLE).minus(
+							_downwashAngleMap
+							.get(ComponentEnum.WING)
+							.get(
+									_theAerodynamicBuilderInterface.getComponentTaskList()
+									.get(ComponentEnum.AIRCRAFT)
+									.get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+									)
+							.get(_theAerodynamicBuilderInterface.getDownwashConstant())
+							.get(i)
+							)
+							.plus(
+									_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getRiggingAngle().to(NonSI.DEGREE_ANGLE)));
+				}); 
+				
+
+				_alphaHTailCurrent = _alphaBodyCurrent.minus(
+						Amount.valueOf(
+								MyMathUtils.getInterpolatedValue1DLinear(
+										MyArrayUtils.convertListOfAmountTodoubleArray(_alphaBodyList),
+										MyArrayUtils.convertListOfAmountTodoubleArray(_downwashAngleMap
+												.get(ComponentEnum.CANARD)
+												.get(_theAerodynamicBuilderInterface
+														.getComponentTaskList()
+														.get(ComponentEnum.AIRCRAFT)
+														.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)).get(_theAerodynamicBuilderInterface.getDownwashConstant())),
+										_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)),
+								NonSI.DEGREE_ANGLE)
+						).plus(
+								_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
+
+				_liftingSurfaceAerodynamicManagers.put(
+						ComponentEnum.HORIZONTAL_TAIL,
+						new LiftingSurfaceAerodynamicsManager(
+								_theAerodynamicBuilderInterface.getTheAircraft().getHTail(),
+								_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
+								_theAerodynamicBuilderInterface.getCurrentCondition(),
+								_theAerodynamicBuilderInterface.getHTailNumberOfPointSemiSpanWise(),
+								_alphaHTailList, 
+								_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution(),
+								_hTailMomentumPole
+								)
+						);
+
+				calculateHorizontalTailData();
+
+			}
+		}
+
+		//------------------------------------------------------------------------------
+		// VERTICAL TAIL 
+		//------------------------------------------------------------------------------			
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getVTail() != null) {
+			if(_theAerodynamicBuilderInterface.isPerformVTailAnalyses() == Boolean.TRUE) {
+			
+			/////////////////////////////////////////////////////////////////////////////////////
+			// BETA ARRAY
+			_betaList = MyArrayUtils.convertDoubleArrayToListOfAmount(
+					MyArrayUtils.linspace(
+							_theAerodynamicBuilderInterface.getBetaInitial().doubleValue(NonSI.DEGREE_ANGLE),
+							_theAerodynamicBuilderInterface.getBetaFinal().doubleValue(NonSI.DEGREE_ANGLE),
+							_theAerodynamicBuilderInterface.getNumberOfBeta()),
+					NonSI.DEGREE_ANGLE
+					);
+			
+			_liftingSurfaceAerodynamicManagers.put(
+					ComponentEnum.VERTICAL_TAIL,
+					new LiftingSurfaceAerodynamicsManager(
+							_theAerodynamicBuilderInterface.getTheAircraft().getVTail(),
+							_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
+							_theAerodynamicBuilderInterface.getCurrentCondition(),
+							_theAerodynamicBuilderInterface.getVTailNumberOfPointSemiSpanWise(), 
+							_betaList, // Alpha for VTail is Beta
+							_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution(),
+							_vTailMomentumPole
+							)
+					);
+
+
+				calculateVTailData();
+
+			}
+		}
+		
+		//TODO continue here --> fuselage
+
+		
 	}
 
 	private void calculateCanardData() {
@@ -2186,6 +2284,48 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			ACAerodynamicAndStabilityManagerUtils.calculateLiftingSurfaceDataSemiempirical(
 					this,
 					ComponentEnum.WING
+					);
+			break;
+		case AVL:
+			// TODO
+			break;
+		case KK32:
+			// TODO
+			break;
+		default:
+			break;
+		}
+
+	}
+	
+	private void calculateHorizontalTailData() {
+
+		switch (_theAerodynamicBuilderInterface.getWingAnalysisType()) {
+		case SEMIEMPIRICAL:
+			ACAerodynamicAndStabilityManagerUtils.calculateLiftingSurfaceDataSemiempirical(
+					this,
+					ComponentEnum.HORIZONTAL_TAIL
+					);
+			break;
+		case AVL:
+			// TODO
+			break;
+		case KK32:
+			// TODO
+			break;
+		default:
+			break;
+		}
+
+	}
+	
+	private void calculateVTailData() {
+
+		switch (_theAerodynamicBuilderInterface.getWingAnalysisType()) {
+		case SEMIEMPIRICAL:
+			ACAerodynamicAndStabilityManagerUtils.calculateLiftingSurfaceDataSemiempirical(
+					this,
+					ComponentEnum.VERTICAL_TAIL
 					);
 			break;
 		case AVL:
