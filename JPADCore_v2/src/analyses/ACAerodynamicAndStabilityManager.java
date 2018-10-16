@@ -23893,4 +23893,20 @@ public class ACAerodynamicAndStabilityManager {
 	public void setStaticStabilityMarginMap(Map<Double, List<Double>> _staticStabilityMarginMap) {
 		this._staticStabilityMarginMap = _staticStabilityMarginMap;
 	}
+
+	public Amount<Length> get_horizontalDistanceSlingerland() {
+		return _horizontalDistanceSlingerland;
+	}
+
+	public void set_horizontalDistanceSlingerland(Amount<Length> _horizontalDistanceSlingerland) {
+		this._horizontalDistanceSlingerland = _horizontalDistanceSlingerland;
+	}
+
+	public Amount<Length> get_verticalDistanceSlingerland() {
+		return _verticalDistanceSlingerland;
+	}
+
+	public void set_verticalDistanceSlingerland(Amount<Length> _verticalDistanceSlingerland) {
+		this._verticalDistanceSlingerland = _verticalDistanceSlingerland;
+	}
 }
