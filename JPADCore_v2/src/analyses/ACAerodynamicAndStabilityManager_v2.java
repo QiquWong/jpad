@@ -99,6 +99,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private List<Amount<Angle>> _alphaCanardList;
 	private List<Amount<Angle>> _alphaNacelleList;
 	private List<Amount<Angle>> _betaList;
+	private Amount<Angle> currentDownwashAngle;
 
 	// for downwash estimation
 	//	// TODO: CANARD?
@@ -2290,6 +2291,31 @@ public class ACAerodynamicAndStabilityManager_v2 {
 							)
 					);
 
+			switch (_theAerodynamicBuilderInterface.getTheAircraft().getNacelles().getNacellesList().get(0).getMountingPosition()) {
+			case WING:
+				_alphaNacelleCurrent = _alphaWingCurrent.to(NonSI.DEGREE_ANGLE); //TODO: calculate upwash nacelles
+				break;
+			case FUSELAGE:
+				_alphaNacelleCurrent = Amount.valueOf(
+						_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+						- _theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE)
+						- currentDownwashAngle.doubleValue(NonSI.DEGREE_ANGLE),
+						NonSI.DEGREE_ANGLE
+						);
+				break;
+			case HTAIL:
+				_alphaNacelleCurrent = Amount.valueOf(
+						_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+						- _theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE)
+						- currentDownwashAngle.doubleValue(NonSI.DEGREE_ANGLE)
+						+ _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
+						NonSI.DEGREE_ANGLE
+						);
+				break;
+			default:
+				break;
+			}
+			
 			calculateNacelleData();
 		}
 		
@@ -2326,6 +2352,8 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					);
 			
 		}
+		
+		// TODO continue here. WING CURVE. puoi metterla direttamente dopo wing, richiama un metodo che calcola la curva flappata e con body. il metodo lo puoi mettere in utils
 	}
 	
 	
@@ -3172,6 +3200,14 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	public void set_verticalDistanceZeroLiftDirectionWingHTailVariable(
 			Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable) {
 		this._verticalDistanceZeroLiftDirectionWingHTailVariable = _verticalDistanceZeroLiftDirectionWingHTailVariable;
+	}
+
+	public Amount<Angle> getCurrentDownwashAngle() {
+		return currentDownwashAngle;
+	}
+
+	public void setCurrentDownwashAngle(Amount<Angle> currentDownwashAngle) {
+		this.currentDownwashAngle = currentDownwashAngle;
 	}
 
 }

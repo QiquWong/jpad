@@ -89,6 +89,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
 		Amount<Length> currentAltitude = aerodynamicAndStabilityManager.getCurrentAltitude();
 		
+		
 		//.........................................................................................................................
 		//	CL_AT_ALPHA  
 		CalcCLAtAlpha calcCLAtAlpha = liftingSurfaceAerodynamicManager.new CalcCLAtAlpha();
@@ -103,6 +104,9 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		//	AERODYNAMIC_CENTER
 		CalcXAC calcXAC = liftingSurfaceAerodynamicManager.new CalcXAC();
 		calcXAC.datcomNapolitano();
+		liftingSurfaceAerodynamicManager.setMomentumPole(
+				liftingSurfaceAerodynamicManager.getXacLRF().get(MethodEnum.NASA_BLACKWELL )
+				);
 
 		//.........................................................................................................................
 		//	CL_ALPHA
@@ -380,6 +384,8 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
 		
 		List<Amount<Angle>> alphaNacelleList = new ArrayList<>();
+		// alpha nacelle current
+		
 		Amount<Angle> alphaComponentCurrent = aerodynamicAndStabilityManager.getAlphaNacelleCurrent();
 		
 	switch (_theAerodynamicBuilderInterface.getTheAircraft().getNacelles().getNacellesList().get(0).getMountingPosition()) {
@@ -1080,5 +1086,1025 @@ public class ACAerodynamicAndStabilityManagerUtils {
 //		
 	}
 	
+	public void calculateDownwashAngleCurrent(ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager) {
+		Amount<Angle> currentDownwashAngle = null;
+		IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
+		
+		
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.WING_DOWNWASH))
+		
+			currentDownwashAngle = Amount.valueOf(
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertListOfAmountTodoubleArray(
+									aerodynamicAndStabilityManager.getAlphaBodyList()),
+							MyArrayUtils.convertListOfAmountTodoubleArray(
+									aerodynamicAndStabilityManager.getDownwashAngleMap()
+									.get(ComponentEnum.WING)
+									.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+											.get(ComponentEnum.AIRCRAFT)
+											.get(AerodynamicAndStabilityEnum.WING_DOWNWASH))
+											.get(_theAerodynamicBuilderInterface.getDownwashConstant())
+											),
+							aerodynamicAndStabilityManager.getAlphaBodyCurrent().doubleValue(NonSI.DEGREE_ANGLE)
+							),
+					NonSI.DEGREE_ANGLE
+					);	
+		
+		else /* ...a default method will be used (SLINGERLAND NON LINEAR) */
+			
+			currentDownwashAngle = Amount.valueOf(
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertListOfAmountTodoubleArray(
+									aerodynamicAndStabilityManager.getAlphaBodyList()),
+							MyArrayUtils.convertListOfAmountTodoubleArray(
+									aerodynamicAndStabilityManager.getDownwashAngleMap()
+									.get(ComponentEnum.WING)
+									.get(MethodEnum.SLINGERLAND)
+									.get(Boolean.FALSE)
+									),
+							aerodynamicAndStabilityManager.getAlphaBodyCurrent().doubleValue(NonSI.DEGREE_ANGLE)
+							),
+					NonSI.DEGREE_ANGLE
+					);
+		
+		aerodynamicAndStabilityManager.setCurrentDownwashAngle(currentDownwashAngle);
+		
+	}
+	public void calculateCurrentWingLiftCurve() {
+//		//.........................................................................................................................
+//		//	WING LIFT_CURVE_3D (EVENTUALLY WITH HIGH LIFT DEVICES AND WITH FUSELAGE EFFECTS)
+//		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CL_TOTAL) ||
+//				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL) ||
+//				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)){
+//
+//			List<Double> temporaryLiftCurve = new ArrayList<>();
+//
+//			switch (_theAerodynamicBuilderInterface.getCurrentCondition()) {
+//			case TAKE_OFF:
+//				if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
+//
+//					CalcHighLiftCurve calcHighLiftCurveTakeOff = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftCurve();
+//					calcHighLiftCurveTakeOff.semiempirical(
+//							_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+//							_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+//							_currentMachNumber
+//							);
+//					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(
+//							AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D,
+//							MethodEnum.SEMIEMPIRICAL
+//							);
+//					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(
+//							AerodynamicAndStabilityEnum.LIFT_CURVE_3D,
+//							MethodEnum.NASA_BLACKWELL
+//							);
+//
+//					temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(
+//							_liftingSurfaceAerodynamicManagers
+//							.get(ComponentEnum.WING)
+//							.getLiftCoefficient3DCurveHighLift()
+//							.get(MethodEnum.SEMIEMPIRICAL));
+//				}
+//				else {
+//					temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(
+//							_liftingSurfaceAerodynamicManagers
+//							.get(ComponentEnum.WING)
+//							.getLiftCoefficient3DCurveHighLift()
+//							.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//									.get(ComponentEnum.WING)
+//									.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
+//									)
+//							);
+//				}
+//
+//				if(_theAerodynamicBuilderInterface.getFuselageEffectOnWingLiftCurve()){
+//
+//					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D).equals(MethodEnum.SEMIEMPIRICAL)){
+//
+//						//CL ALPHA
+//						_clAlphaWingFuselage =
+//								LiftCalc.calculateCLAlphaFuselage(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().get(
+//												MethodEnum.SEMIEMPIRICAL),
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+//										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+//												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+//												SI.METER)
+//										);
+//
+//						//CL ZERO
+//						_clZeroWingFuselage =
+//								-_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()*
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLiftHighLift()
+//								.get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						//CL MAX
+//						_clMaxWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLMaxHighLift().get(MethodEnum.SEMIEMPIRICAL);
+//
+//						//CL STAR
+//						_clStarWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLStarHighLift()
+//								.get(MethodEnum.SEMIEMPIRICAL);
+//
+//						//ALPHA STAR
+//						_alphaStarWingFuselage = Amount.valueOf(
+//								(_clStarWingFuselage - _clZeroWingFuselage)/
+//								_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(), 
+//								NonSI.DEGREE_ANGLE);
+//
+//						//ALPHA stall
+//						double deltaAlphaStarDeg = 	_alphaStarWingFuselage.doubleValue(NonSI.DEGREE_ANGLE) - 
+//								_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.WING).getAlphaStallHighLift()
+//								.get(MethodEnum.SEMIEMPIRICAL)
+//								.doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						_alphaStallWingFuselage = Amount.valueOf(
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getAlphaStallHighLift()
+//								.get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) - deltaAlphaStarDeg, 
+//								NonSI.DEGREE_ANGLE);
+//
+//
+//						//CURVE
+//						temporaryLiftCurve = new ArrayList<>();
+//						temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(LiftCalc.calculateCLvsAlphaArray(
+//								this._clZeroWingFuselage,
+//								this._clMaxWingFuselage,
+//								this._alphaStarWingFuselage,
+//								this._alphaStallWingFuselage,
+//								this._clAlphaWingFuselage,
+//								MyArrayUtils.convertListOfAmountToDoubleArray(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
+//										)
+//								));
+//					}
+//					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D).equals(MethodEnum.INPUT)){
+//
+//						//....................................................................................................
+//						// PRELIMINARY CHECKS (all the required parameters have to be retrieved from the assigned input curve)
+//						//....................................................................................................
+//
+//						// CLalpha HIGH LIFT
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().put(
+//								MethodEnum.INPUT,
+//								Amount.valueOf(
+//										_theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(1.0)
+//										- _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(0.0),
+//										NonSI.DEGREE_ANGLE.inverse()
+//										)
+//								);
+//
+//						// CL0 HIGH LIFT
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLZeroHighLift().put(
+//								MethodEnum.INPUT,
+//								_theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(0.0)
+//								);
+//
+//						// ALPHA ZERO LIFT (HIGH LIFT)
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLiftHighLift().put(
+//								MethodEnum.INPUT,
+//								Amount.valueOf(
+//										- (_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLZeroHighLift().get(MethodEnum.INPUT)
+//												/_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
+//												.getCLAlphaHighLift().get(MethodEnum.INPUT).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+//												),
+//										NonSI.DEGREE_ANGLE
+//										)
+//								);
+//						
+//						// CLstar HIGH LIFT /* TODO: CHECK THIS */
+//						List<Double> cLHighLiftList = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
+//								.map(aw -> _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
+//								.collect(Collectors.toList());
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStarHighLift().put(
+//								MethodEnum.INPUT,
+//								LiftCalc.calculateCLStarFromCurve(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray(), 
+//										cLHighLiftList
+//										)
+//								);
+//
+//						// CLmax HIGH LIFT
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMaxHighLift().put(
+//								MethodEnum.INPUT,
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
+//								.mapToDouble(aw -> _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
+//								.max()
+//								.getAsDouble()
+//								);
+//
+//						// ALPHA STALL HIGH LIFT
+//						int indexOfMaxCLHighLiftList = MyArrayUtils.getIndexOfMax(
+//								MyArrayUtils.convertToDoublePrimitive(cLHighLiftList)
+//								);
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStallHighLift().put(
+//								MethodEnum.INPUT,
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().get(indexOfMaxCLHighLiftList)
+//								);
+//
+//						//............................................................................................
+//
+//						//CL ALPHA
+//						_clAlphaWingFuselage =
+//								LiftCalc.calculateCLAlphaFuselage(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().get(
+//												MethodEnum.INPUT),
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+//										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+//												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+//												SI.METER)
+//										);
+//
+//						//CL ZERO
+//						_clZeroWingFuselage =
+//								-_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()*
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLiftHighLift()
+//								.get(MethodEnum.INPUT).doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						//CL MAX
+//						_clMaxWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLMaxHighLift().get(MethodEnum.INPUT);
+//
+//						//CL STAR
+//						_clStarWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLStarHighLift()
+//								.get(MethodEnum.INPUT);
+//
+//						//ALPHA STAR
+//						_alphaStarWingFuselage = Amount.valueOf(
+//								(_clStarWingFuselage - _clZeroWingFuselage)/
+//								_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(), 
+//								NonSI.DEGREE_ANGLE);
+//
+//						//ALPHA stall
+//						double deltaAlphaStarDeg = 	_alphaStarWingFuselage.doubleValue(NonSI.DEGREE_ANGLE) - 
+//								_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.WING).getAlphaStallHighLift()
+//								.get(MethodEnum.INPUT)
+//								.doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						_alphaStallWingFuselage = Amount.valueOf(
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getAlphaStallHighLift()
+//								.get(MethodEnum.INPUT).doubleValue(NonSI.DEGREE_ANGLE) - deltaAlphaStarDeg, 
+//								NonSI.DEGREE_ANGLE);
+//
+//
+//						//CURVE
+//						temporaryLiftCurve = new ArrayList<>();
+//						temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(LiftCalc.calculateCLvsAlphaArray(
+//								this._clZeroWingFuselage,
+//								this._clMaxWingFuselage,
+//								this._alphaStarWingFuselage,
+//								this._alphaStallWingFuselage,
+//								this._clAlphaWingFuselage,
+//								MyArrayUtils.convertListOfAmountToDoubleArray(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
+//										)
+//								));
+//					}
+//				}
+//				break;
+//			case CLIMB:
+//				if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
+//
+//					CalcLiftCurve calcLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcLiftCurve();
+//					calcLiftCurve.nasaBlackwell(_currentMachNumber);
+//					
+//					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(
+//							AerodynamicAndStabilityEnum.LIFT_CURVE_3D,
+//							MethodEnum.NASA_BLACKWELL
+//							);
+//
+//					temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(
+//							_liftingSurfaceAerodynamicManagers
+//							.get(ComponentEnum.WING)
+//							.getLiftCoefficient3DCurve()
+//							.get(MethodEnum.NASA_BLACKWELL));
+//				}
+//				else {
+//					temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(
+//							_liftingSurfaceAerodynamicManagers
+//							.get(ComponentEnum.WING)
+//							.getLiftCoefficient3DCurve()
+//							.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//									.get(ComponentEnum.WING)
+//									.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+//									)
+//							);
+//				}
+//				if(_theAerodynamicBuilderInterface.getFuselageEffectOnWingLiftCurve()){
+//
+//					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D).equals(MethodEnum.PHILLIPS_ALLEY)){
+//
+//						//.............................................................................
+//						//CL ALPHA
+//						_clAlphaWingFuselage =
+//								LiftCalc.calculateCLAlphaFuselage(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
+//												MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC),
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+//										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+//												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+//												SI.METER)
+//										);
+//
+//						//CL ZERO
+//						_clZeroWingFuselage =
+//								-_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()*
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift()
+//								.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						//CL MAX
+//						_clMaxWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLMax().get(MethodEnum.PHILLIPS_ALLEY);
+//
+//						//CL STAR
+//						_clStarWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLStar()
+//								.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);
+//
+//						//ALPHA STAR
+//						_alphaStarWingFuselage = Amount.valueOf(
+//								(_clStarWingFuselage - _clZeroWingFuselage)/
+//								_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(), 
+//								NonSI.DEGREE_ANGLE);
+//
+//						//ALPHA stall
+//						double deltaAlphaStarDeg = 	_alphaStarWingFuselage.doubleValue(NonSI.DEGREE_ANGLE) - 
+//								_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.WING).getAlphaStar()
+//								.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS)
+//								.doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						_alphaStallWingFuselage = Amount.valueOf(
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getAlphaStall()
+//								.get(MethodEnum.PHILLIPS_ALLEY).doubleValue(NonSI.DEGREE_ANGLE) - deltaAlphaStarDeg, 
+//								NonSI.DEGREE_ANGLE);
+//
+//					}
+//					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D).equals(MethodEnum.NASA_BLACKWELL)){
+//
+//						//.............................................................................
+//						//CL ALPHA
+//						_clAlphaWingFuselage =
+//								LiftCalc.calculateCLAlphaFuselage(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
+//												MethodEnum.NASA_BLACKWELL),
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+//										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+//												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+//												SI.METER)
+//										);
+//
+//						//CL ZERO
+//						_clZeroWingFuselage =
+//								-_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()*
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift()
+//								.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						//CL MAX
+//						_clMaxWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLMax().get(MethodEnum.NASA_BLACKWELL);
+//
+//						//CL STAR
+//						_clStarWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLStar()
+//								.get(MethodEnum.NASA_BLACKWELL);
+//
+//						//ALPHA STAR
+//						_alphaStarWingFuselage = Amount.valueOf(
+//								(_clStarWingFuselage - _clZeroWingFuselage)/
+//								_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(), 
+//								NonSI.DEGREE_ANGLE);
+//
+//						//ALPHA stall
+//						double deltaAlphaStarDeg = 	_alphaStarWingFuselage.doubleValue(NonSI.DEGREE_ANGLE) - 
+//								_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.WING).getAlphaStar()
+//								.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS)
+//								.doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						_alphaStallWingFuselage = Amount.valueOf(
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getAlphaStall()
+//								.get(MethodEnum.NASA_BLACKWELL).doubleValue(NonSI.DEGREE_ANGLE) - deltaAlphaStarDeg, 
+//								NonSI.DEGREE_ANGLE);
+//					}
+//
+//					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D).equals(MethodEnum.INPUT)){
+//
+//						//....................................................................................................
+//						// PRELIMINARY CHECKS (all the required parameters have to be retrieved from the assigned input curve)
+//						//....................................................................................................
+//
+//						// CLalpha 
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().put(
+//								MethodEnum.INPUT,
+//								Amount.valueOf(
+//										_theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(1.0)
+//										- _theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(0.0),
+//										NonSI.DEGREE_ANGLE.inverse()
+//										)
+//								);
+//
+//						// CL0 
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLZero().put(
+//								MethodEnum.INPUT,
+//								_theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(0.0)
+//								);
+//
+//						// ALPHA ZERO LIFT
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift().put(
+//								MethodEnum.INPUT,
+//								Amount.valueOf(
+//										- (_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLZero().get(MethodEnum.INPUT)
+//												/_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
+//												.getCLAlpha().get(MethodEnum.INPUT).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+//												),
+//										NonSI.DEGREE_ANGLE
+//										)
+//								);
+//						
+//						// CLstar /* TODO: CHECK THIS */
+//						List<Double> cLList = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
+//								.map(aw -> _theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
+//								.collect(Collectors.toList());
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStar().put(
+//								MethodEnum.INPUT,
+//								LiftCalc.calculateCLStarFromCurve(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean(), 
+//										cLList
+//										)
+//								);
+//
+//						// CLmax 
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMax().put(
+//								MethodEnum.INPUT,
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
+//								.mapToDouble(aw -> _theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
+//								.max()
+//								.getAsDouble()
+//								);
+//
+//						// ALPHA STALL 
+//						int indexOfMaxCLList = MyArrayUtils.getIndexOfMax(
+//								MyArrayUtils.convertToDoublePrimitive(cLList)
+//								);
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStall().put(
+//								MethodEnum.INPUT,
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().get(indexOfMaxCLList)
+//								);
+//
+//						//............................................................................................
+//
+//						//CL ALPHA
+//						_clAlphaWingFuselage =
+//								LiftCalc.calculateCLAlphaFuselage(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
+//												MethodEnum.INPUT),
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+//										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+//												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+//												SI.METER)
+//										);
+//
+//
+//						//CL ZERO
+//						_clZeroWingFuselage =
+//								-_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()*
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift()
+//								.get(MethodEnum.INPUT).doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						//CL MAX
+//						_clMaxWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLMax().get(MethodEnum.INPUT);
+//
+//						//CL STAR
+//						_clStarWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLStar()
+//								.get(MethodEnum.INPUT);
+//
+//						//ALPHA STAR
+//						_alphaStarWingFuselage = Amount.valueOf(
+//								(_clStarWingFuselage - _clZeroWingFuselage)/
+//								_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(), 
+//								NonSI.DEGREE_ANGLE);
+//
+//						//ALPHA stall
+//						double deltaAlphaStarDeg = 	_alphaStarWingFuselage.doubleValue(NonSI.DEGREE_ANGLE) - 
+//								_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.WING).getAlphaStar()
+//								.get(MethodEnum.INPUT)
+//								.doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						_alphaStallWingFuselage = Amount.valueOf(
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getAlphaStall()
+//								.get(MethodEnum.INPUT).doubleValue(NonSI.DEGREE_ANGLE) - deltaAlphaStarDeg, 
+//								NonSI.DEGREE_ANGLE);
+//					}
+//
+//					//CURVE
+//					temporaryLiftCurve = new ArrayList<>();
+//					temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(LiftCalc.calculateCLvsAlphaArray(
+//							this._clZeroWingFuselage,
+//							this._clMaxWingFuselage,
+//							this._alphaStarWingFuselage,
+//							this._alphaStallWingFuselage,
+//							this._clAlphaWingFuselage,
+//							MyArrayUtils.convertListOfAmountToDoubleArray(
+//									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean()
+//									)
+//							));
+//				}
+//				break;
+//			case CRUISE:
+//				if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
+//
+//					CalcLiftCurve calcLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcLiftCurve();
+//					calcLiftCurve.nasaBlackwell(_currentMachNumber);
+//					
+//					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(
+//							AerodynamicAndStabilityEnum.LIFT_CURVE_3D,
+//							MethodEnum.NASA_BLACKWELL
+//							);
+//
+//					temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(
+//							_liftingSurfaceAerodynamicManagers
+//							.get(ComponentEnum.WING)
+//							.getLiftCoefficient3DCurve()
+//							.get(MethodEnum.NASA_BLACKWELL));
+//				}
+//				else {
+//					temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(
+//							_liftingSurfaceAerodynamicManagers
+//							.get(ComponentEnum.WING)
+//							.getLiftCoefficient3DCurve()
+//							.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//									.get(ComponentEnum.WING)
+//									.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+//									)
+//							);
+//				}
+//				if(_theAerodynamicBuilderInterface.getFuselageEffectOnWingLiftCurve()){
+//
+//					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D).equals(MethodEnum.PHILLIPS_ALLEY)){
+//
+//						//.............................................................................
+//						//CL ALPHA
+//						_clAlphaWingFuselage =
+//								LiftCalc.calculateCLAlphaFuselage(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
+//												MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC),
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+//										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+//												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+//												SI.METER)
+//										);
+//
+//						//CL ZERO
+//						_clZeroWingFuselage =
+//								-_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()*
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift()
+//								.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						//CL MAX
+//						_clMaxWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLMax().get(MethodEnum.PHILLIPS_ALLEY);
+//
+//						//CL STAR
+//						_clStarWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLStar()
+//								.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);
+//
+//						//ALPHA STAR
+//						_alphaStarWingFuselage = Amount.valueOf(
+//								(_clStarWingFuselage - _clZeroWingFuselage)/
+//								_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(), 
+//								NonSI.DEGREE_ANGLE);
+//
+//						//ALPHA stall
+//						double deltaAlphaStarDeg = 	_alphaStarWingFuselage.doubleValue(NonSI.DEGREE_ANGLE) - 
+//								_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.WING).getAlphaStar()
+//								.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS)
+//								.doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						_alphaStallWingFuselage = Amount.valueOf(
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getAlphaStall()
+//								.get(MethodEnum.PHILLIPS_ALLEY).doubleValue(NonSI.DEGREE_ANGLE) - deltaAlphaStarDeg, 
+//								NonSI.DEGREE_ANGLE);
+//
+//					}
+//					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D).equals(MethodEnum.NASA_BLACKWELL)){
+//
+//						//.............................................................................
+//						//CL ALPHA
+//						_clAlphaWingFuselage =
+//								LiftCalc.calculateCLAlphaFuselage(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
+//												MethodEnum.NASA_BLACKWELL),
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+//										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+//												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+//												SI.METER)
+//										);
+//
+//
+//						//CL ZERO
+//						_clZeroWingFuselage =
+//								-_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()*
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift()
+//								.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						//CL MAX
+//						_clMaxWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLMax().get(MethodEnum.NASA_BLACKWELL);
+//
+//						//CL STAR
+//						_clStarWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLStar()
+//								.get(MethodEnum.NASA_BLACKWELL);
+//
+//						//ALPHA STAR
+//						_alphaStarWingFuselage = Amount.valueOf(
+//								(_clStarWingFuselage - _clZeroWingFuselage)/
+//								_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(), 
+//								NonSI.DEGREE_ANGLE);
+//
+//						//ALPHA stall
+//						double deltaAlphaStarDeg = 	_alphaStarWingFuselage.doubleValue(NonSI.DEGREE_ANGLE) - 
+//								_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.WING).getAlphaStar()
+//								.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS)
+//								.doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						_alphaStallWingFuselage = Amount.valueOf(
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getAlphaStall()
+//								.get(MethodEnum.NASA_BLACKWELL).doubleValue(NonSI.DEGREE_ANGLE) - deltaAlphaStarDeg, 
+//								NonSI.DEGREE_ANGLE);
+//					}
+//					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D).equals(MethodEnum.INPUT)){
+//
+//						//....................................................................................................
+//						// PRELIMINARY CHECKS (all the required parameters have to be retrieved from the assigned input curve)
+//						//....................................................................................................
+//
+//						// CLalpha 
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().put(
+//								MethodEnum.INPUT,
+//								Amount.valueOf(
+//										_theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(1.0)
+//										- _theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(0.0),
+//										NonSI.DEGREE_ANGLE.inverse()
+//										)
+//								);
+//
+//						// CL0 
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLZero().put(
+//								MethodEnum.INPUT,
+//								_theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(0.0)
+//								);
+//
+//						// ALPHA ZERO LIFT 
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift().put(
+//								MethodEnum.INPUT,
+//								Amount.valueOf(
+//										- (_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLZero().get(MethodEnum.INPUT)
+//												/_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
+//												.getCLAlpha().get(MethodEnum.INPUT).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+//												),
+//										NonSI.DEGREE_ANGLE
+//										)
+//								);
+//						
+//						// CLstar /* TODO: CHECK THIS */
+//						List<Double> cLList = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
+//								.map(aw -> _theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
+//								.collect(Collectors.toList());
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStar().put(
+//								MethodEnum.INPUT,
+//								LiftCalc.calculateCLStarFromCurve(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean(), 
+//										cLList
+//										)
+//								);
+//
+//						// CLmax 
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMax().put(
+//								MethodEnum.INPUT,
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
+//								.mapToDouble(aw -> _theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
+//								.max()
+//								.getAsDouble()
+//								);
+//
+//						// ALPHA STALL 
+//						int indexOfMaxCLList = MyArrayUtils.getIndexOfMax(
+//								MyArrayUtils.convertToDoublePrimitive(cLList)
+//								);
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStall().put(
+//								MethodEnum.INPUT,
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().get(indexOfMaxCLList)
+//								);
+//
+//						//............................................................................................
+//
+//						//CL ALPHA
+//						_clAlphaWingFuselage =
+//								LiftCalc.calculateCLAlphaFuselage(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
+//												MethodEnum.INPUT),
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+//										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+//												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+//												SI.METER)
+//										);
+//
+//
+//						//CL ZERO
+//						_clZeroWingFuselage =
+//								-_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()*
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift()
+//								.get(MethodEnum.INPUT).doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						//CL MAX
+//						_clMaxWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLMax().get(MethodEnum.INPUT);
+//
+//						//CL STAR
+//						_clStarWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLStar()
+//								.get(MethodEnum.INPUT);
+//
+//						//ALPHA STAR
+//						_alphaStarWingFuselage = Amount.valueOf(
+//								(_clStarWingFuselage - _clZeroWingFuselage)/
+//								_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(), 
+//								NonSI.DEGREE_ANGLE);
+//
+//						//ALPHA stall
+//						double deltaAlphaStarDeg = 	_alphaStarWingFuselage.doubleValue(NonSI.DEGREE_ANGLE) - 
+//								_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.WING).getAlphaStar()
+//								.get(MethodEnum.INPUT)
+//								.doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						_alphaStallWingFuselage = Amount.valueOf(
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getAlphaStall()
+//								.get(MethodEnum.INPUT).doubleValue(NonSI.DEGREE_ANGLE) - deltaAlphaStarDeg, 
+//								NonSI.DEGREE_ANGLE);
+//					}
+//
+//					//CURVE
+//					temporaryLiftCurve = new ArrayList<>();
+//					temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(LiftCalc.calculateCLvsAlphaArray(
+//							this._clZeroWingFuselage,
+//							this._clMaxWingFuselage,
+//							this._alphaStarWingFuselage,
+//							this._alphaStallWingFuselage,
+//							this._clAlphaWingFuselage,
+//							MyArrayUtils.convertListOfAmountToDoubleArray(
+//									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean()
+//									)
+//							));
+//				}
+//				break;
+//			case LANDING:
+//				if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
+//
+//					CalcHighLiftCurve calcHighLiftCurveTakeOff = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftCurve();
+//					calcHighLiftCurveTakeOff.semiempirical(
+//							_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
+//							_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
+//							_currentMachNumber 
+//							);
+//					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(
+//							AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D,
+//							MethodEnum.SEMIEMPIRICAL
+//							);
+//					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(
+//							AerodynamicAndStabilityEnum.LIFT_CURVE_3D,
+//							MethodEnum.NASA_BLACKWELL
+//							);
+//
+//					temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(
+//							_liftingSurfaceAerodynamicManagers
+//							.get(ComponentEnum.WING)
+//							.getLiftCoefficient3DCurveHighLift()
+//							.get(MethodEnum.SEMIEMPIRICAL));
+//				}
+//				else {
+//					temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(
+//							_liftingSurfaceAerodynamicManagers
+//							.get(ComponentEnum.WING)
+//							.getLiftCoefficient3DCurveHighLift()
+//							.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//									.get(ComponentEnum.WING)
+//									.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
+//									)
+//							);
+//				}
+//				if(_theAerodynamicBuilderInterface.getFuselageEffectOnWingLiftCurve()){
+//
+//					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D).equals(MethodEnum.SEMIEMPIRICAL)){
+//
+//						//CL ALPHA
+//						_clAlphaWingFuselage =
+//								LiftCalc.calculateCLAlphaFuselage(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().get(
+//												MethodEnum.SEMIEMPIRICAL),
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+//										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+//												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+//												SI.METER)
+//										);
+//
+//						//CL ZERO
+//						_clZeroWingFuselage =
+//								-_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()*
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLiftHighLift()
+//								.get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						//CL MAX
+//						_clMaxWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLMaxHighLift().get(MethodEnum.SEMIEMPIRICAL);
+//
+//						//CL STAR
+//						_clStarWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLStarHighLift()
+//								.get(MethodEnum.SEMIEMPIRICAL);
+//
+//						//ALPHA STAR
+//						_alphaStarWingFuselage = Amount.valueOf(
+//								(_clStarWingFuselage - _clZeroWingFuselage)/
+//								_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(), 
+//								NonSI.DEGREE_ANGLE);
+//
+//						//ALPHA stall
+//						double deltaAlphaStarDeg = 	_alphaStarWingFuselage.doubleValue(NonSI.DEGREE_ANGLE) - 
+//								_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.WING).getAlphaStallHighLift()
+//								.get(MethodEnum.SEMIEMPIRICAL)
+//								.doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						_alphaStallWingFuselage = Amount.valueOf(
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getAlphaStallHighLift()
+//								.get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) - deltaAlphaStarDeg, 
+//								NonSI.DEGREE_ANGLE);
+//
+//
+//						//CURVE
+//						temporaryLiftCurve = new ArrayList<>();
+//						temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(LiftCalc.calculateCLvsAlphaArray(
+//								this._clZeroWingFuselage,
+//								this._clMaxWingFuselage,
+//								this._alphaStarWingFuselage,
+//								this._alphaStallWingFuselage,
+//								this._clAlphaWingFuselage,
+//								MyArrayUtils.convertListOfAmountToDoubleArray(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
+//										)
+//								));
+//					}
+//					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D).equals(MethodEnum.INPUT)){
+//
+//						//....................................................................................................
+//						// PRELIMINARY CHECKS (all the required parameters have to be retrieved from the assigned input curve)
+//						//....................................................................................................
+//
+//						// CLalpha HIGH LIFT
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().put(
+//								MethodEnum.INPUT,
+//								Amount.valueOf(
+//										_theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(1.0)
+//										- _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(0.0),
+//										NonSI.DEGREE_ANGLE.inverse()
+//										)
+//								);
+//
+//						// CL0 HIGH LIFT
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLZeroHighLift().put(
+//								MethodEnum.INPUT,
+//								_theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(0.0)
+//								);
+//
+//						// ALPHA ZERO LIFT (HIGH LIFT)
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLiftHighLift().put(
+//								MethodEnum.INPUT,
+//								Amount.valueOf(
+//										- (_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLZeroHighLift().get(MethodEnum.INPUT)
+//												/_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
+//												.getCLAlphaHighLift().get(MethodEnum.INPUT).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+//												),
+//										NonSI.DEGREE_ANGLE
+//										)
+//								);
+//						
+//						// CLstar HIGH LIFT /* TODO: CHECK THIS */
+//						List<Double> cLHighLiftList = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
+//								.map(aw -> _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
+//								.collect(Collectors.toList());
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStarHighLift().put(
+//								MethodEnum.INPUT,
+//								LiftCalc.calculateCLStarFromCurve(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray(), 
+//										cLHighLiftList
+//										)
+//								);
+//
+//						// CLmax HIGH LIFT
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMaxHighLift().put(
+//								MethodEnum.INPUT,
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
+//								.mapToDouble(aw -> _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
+//								.max()
+//								.getAsDouble()
+//								);
+//
+//						// ALPHA STALL HIGH LIFT
+//						int indexOfMaxCLHighLiftList = MyArrayUtils.getIndexOfMax(
+//								MyArrayUtils.convertToDoublePrimitive(cLHighLiftList)
+//								);
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStallHighLift().put(
+//								MethodEnum.INPUT,
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().get(indexOfMaxCLHighLiftList)
+//								);
+//
+//						//............................................................................................
+//
+//						//CL ALPHA
+//						_clAlphaWingFuselage =
+//								LiftCalc.calculateCLAlphaFuselage(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().get(
+//												MethodEnum.INPUT),
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+//										Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(
+//												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+//												SI.METER)
+//										);
+//
+//						//CL ZERO
+//						_clZeroWingFuselage =
+//								-_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()*
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLiftHighLift()
+//								.get(MethodEnum.INPUT).doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						//CL MAX
+//						_clMaxWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLMaxHighLift().get(MethodEnum.INPUT);
+//
+//						//CL STAR
+//						_clStarWingFuselage = _liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getCLStarHighLift()
+//								.get(MethodEnum.INPUT);
+//
+//						//ALPHA STAR
+//						_alphaStarWingFuselage = Amount.valueOf(
+//								(_clStarWingFuselage - _clZeroWingFuselage)/
+//								_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(), 
+//								NonSI.DEGREE_ANGLE);
+//
+//						//ALPHA stall
+//						double deltaAlphaStarDeg = 	_alphaStarWingFuselage.doubleValue(NonSI.DEGREE_ANGLE) - 
+//								_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.WING).getAlphaStallHighLift()
+//								.get(MethodEnum.INPUT)
+//								.doubleValue(NonSI.DEGREE_ANGLE);
+//
+//						_alphaStallWingFuselage = Amount.valueOf(
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING).getAlphaStallHighLift()
+//								.get(MethodEnum.INPUT).doubleValue(NonSI.DEGREE_ANGLE) - deltaAlphaStarDeg, 
+//								NonSI.DEGREE_ANGLE);
+//
+//
+//						//CURVE
+//						temporaryLiftCurve = new ArrayList<>();
+//						temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(LiftCalc.calculateCLvsAlphaArray(
+//								this._clZeroWingFuselage,
+//								this._clMaxWingFuselage,
+//								this._alphaStarWingFuselage,
+//								this._alphaStallWingFuselage,
+//								this._clAlphaWingFuselage,
+//								MyArrayUtils.convertListOfAmountToDoubleArray(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
+//										)
+//								));
+//					}
+//				}
+//				break;
+//			}
+//			_current3DWingLiftCurve = temporaryLiftCurve;
+//
+//		}
+	}
 
 }
