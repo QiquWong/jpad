@@ -66,41 +66,43 @@ public class Test27mds {
 		
 		// Get fairing shapes
 		List<OCCShape> canardFairingShapes = getFairingShapes(fuselage, canard,
-				0.75, 0.75, 0.45, 0.10, 0.50, 0.90, 0.20);	
+				1.0, 1.0, 0.45, 0.18, 0.50, 0.90, 0.20);	
 		List<OCCShape> wingFairingShapes = getFairingShapes(fuselage, wing,
 				1.00, 1.00, 0.90, 0.10, 0.70, 0.10, 0.50);
 		
 		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, 7, 7, true, true, false);
-//		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, false, true, false);
+		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, false, true, false);
 		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.CANARD, 1e-3, false, true, false);
-//		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, false, true, false);
-//		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, false, true, false);
+		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, false, true, false);
+		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, false, true, false);
 		
-//		BRepAlgoAPI_Section sectionMaker = new BRepAlgoAPI_Section();
-//		sectionMaker.Init1(fuselageShapes.get(0).getShape());
-//		sectionMaker.Init2(canardFairingShapes.get(0).getShape());
-//		sectionMaker.Build();
-//		OCCShape intersection = (OCCShape) OCCUtils.theFactory.newShape(sectionMaker.Shape());
+		BRepAlgoAPI_Section sectionMaker = new BRepAlgoAPI_Section();
+		sectionMaker.Init1(fuselageShapes.get(0).getShape());
+		sectionMaker.Init2(canardFairingShapes.get(0).getShape());
+		sectionMaker.Build();
+		OCCShape intersection = (OCCShape) OCCUtils.theFactory.newShape(sectionMaker.Shape());
 		
 		// Generate CAD file
-		String fileName = "fairingTest.brep";
+		String fileName = aircraft.getId();
 		
 		List<OCCShape> exportShapes = new ArrayList<>();
 		exportShapes.addAll(fuselageShapes);
-//		exportShapes.addAll(wingShapes);
+		exportShapes.addAll(wingShapes);
 		exportShapes.addAll(canardShapes);
-//		exportShapes.addAll(horTailShapes);
-//		exportShapes.addAll(verTailShapes);
-//		exportShapes.addAll(wingFairingShapes);
+		exportShapes.addAll(horTailShapes);
+		exportShapes.addAll(verTailShapes);
+		exportShapes.addAll(wingFairingShapes);
 		exportShapes.addAll(canardFairingShapes);
-//		exportShapes.add(intersection);
+		exportShapes.add(intersection);
 
-//		if(OCCUtils.write(fileName, canardFairingShapes))
-//			System.out.println("========== [main] Output written on file: " + fileName);
+		if(OCCUtils.write(fileName, canardFairingShapes))
+			System.out.println("========== [main] Output written on file: " + fileName);
 		
-		AircraftUtils.getAircraftSolidFile(fuselageShapes, "FUSELAGE_1", FileExtension.STEP);
-		AircraftUtils.getAircraftSolidFile(canardShapes, "CANARD", FileExtension.STEP);
-		AircraftUtils.getAircraftSolidFile(canardFairingShapes, "FUSELAGE_2", FileExtension.STEP);
+//		AircraftUtils.getAircraftSolidFile(fuselageShapes, "FUSELAGE_1", FileExtension.STEP);
+//		AircraftUtils.getAircraftSolidFile(canardShapes, "CANARD", FileExtension.STEP);
+//		AircraftUtils.getAircraftSolidFile(canardFairingShapes, "FUSELAGE_2", FileExtension.STEP);
+		
+		AircraftUtils.getAircraftSolidFile(exportShapes, fileName, FileExtension.STEP);
 	}
 	
 	public static List<OCCShape> getFairingShapes(

@@ -20907,6 +20907,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				int i = _deltaEForEquilibrium.indexOf(de);
 
+				// FIXME: IN WHICH REFERNCE?? MAYBE THIS SHOULD BE SCALED BY SH/SW*ETA_H
 				_deltaCDElevatorList.add(0.0000156*
 						Math.pow(de.doubleValue(NonSI.DEGREE_ANGLE),2) + 
 						0.000002 * de.doubleValue(NonSI.DEGREE_ANGLE));

@@ -31,7 +31,7 @@
             </vertical_tail>
 			<canard file="canard_IRON_CANARD_LOOP2_FINAL.xml">
                 <position>
-                    <x unit="m">6.0</x>
+                    <x unit="m">5.70</x>
                     <y unit="m">0.0</y>
                     <z unit="m">1.75</z>
                 </position>

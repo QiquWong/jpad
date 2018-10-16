@@ -59,7 +59,6 @@
 			file_landing_condition=""
 	/>
 	-->
-	<!--
 	<performance
 			file="analysis_performance_IRON_CANARD_LOOP2_FINAL.xml"
 			plot="TRUE"
@@ -73,7 +72,6 @@
 			V_n_diagram="FALSE"
 			mission_profile="FALSE"
 	/> 
-	-->
 	<!--
  	<costs 
 			file="analysis_costs_IRON_CANARD_LOOP2_FINAL.xml"

@@ -158,7 +158,8 @@ public class Test30mds {
 		exportShapes.add((OCCShape) ((OCCEdge) rootAirfoilCurve.edge()));
 		exportShapes.add((OCCShape) ((OCCEdge) fairingRootSketchingCurve.edge()));
 
-		String fileName = "test30mds.brep";
+//		String fileName = "test30mds.brep";
+		String fileName = aircraft.getId() + ".step";
 		if(OCCUtils.write(fileName, exportShapes))
 			System.out.println("========== [main] Output written on file: " + fileName);	
 	}
