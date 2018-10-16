@@ -51,6 +51,7 @@ import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcPolar;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcXAC;
 import analyses.nacelles.NacelleAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
+import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
@@ -2269,6 +2270,61 @@ public class ACAerodynamicAndStabilityManager_v2 {
 							)
 					);
 
+			calculateFuselageData();
+		}
+		
+		//------------------------------------------------------------------------------
+		// NACELLE
+		//------------------------------------------------------------------------------			
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getNacelles() != null) {
+			
+			_nacelleAerodynamicManagers.put(
+					ComponentEnum.NACELLE,
+					new NacelleAerodynamicsManager(
+							_theAerodynamicBuilderInterface.getTheAircraft().getNacelles(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing(),
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING),
+							_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
+							_theAerodynamicBuilderInterface.getCurrentCondition(), 
+							_alphaBodyList
+							)
+					);
+
+			calculateNacelleData();
+		}
+		
+		//------------------------------------------------------------------------------
+		//LANDING GEARS 
+		//------------------------------------------------------------------------------
+		
+		if(_theAerodynamicBuilderInterface.getLandingGearDragCoefficient() == null) {
+			
+			if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlpha();
+				calcCLAtAlpha.nasaBlackwellCompleteCurve(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCurrentAlpha());
+			}
+			
+			if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL) == null) {
+				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
+				calcHighLiftDevicesEffects.semiempirical(
+						_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+						_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+						_currentMachNumber
+						);
+
+			}
+			
+			setTheAerodynamicBuilderInterface(
+					IACAerodynamicAndStabilityManager_v2.Builder.from(_theAerodynamicBuilderInterface).setLandingGearDragCoefficient(
+							DragCalc.calculateDeltaCD0LandingGears(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing(), 
+									_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears(), 
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL), 
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL)
+									)
+							).build()
+					);
+			
 		}
 	}
 	
@@ -2351,6 +2407,35 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			break;
 		case KK32:
 			// TODO
+			break;
+		default:
+			break;
+		}
+
+	}
+
+	private void calculateFuselageData() {
+
+		switch (_theAerodynamicBuilderInterface.getFuselageAnalysisType()) {
+		case SEMIEMPIRICAL:
+			ACAerodynamicAndStabilityManagerUtils.calculateFuselageDataSemiempirical(
+					this
+					);
+			break;
+		default:
+			break;
+		}
+
+	}
+	
+
+	private void calculateNacelleData() {
+
+		switch (_theAerodynamicBuilderInterface.getNacellesAnalysisType()) {
+		case SEMIEMPIRICAL:
+			ACAerodynamicAndStabilityManagerUtils.calculateNacellesDataSemiempirical(
+					this
+					);
 			break;
 		default:
 			break;

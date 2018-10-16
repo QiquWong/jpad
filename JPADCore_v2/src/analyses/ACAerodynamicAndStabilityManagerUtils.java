@@ -49,6 +49,7 @@ import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcLiftDistrib
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMachCr;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentDistribution;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcXAC;
+import analyses.nacelles.NacelleAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.LiftCalc;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
@@ -317,25 +318,12 @@ public class ACAerodynamicAndStabilityManagerUtils {
 	
 	
 	public static void calculateFuselageDataSemiempirical(
-			ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager,
-			ComponentEnum type
+			ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager
 			) {
 		
-		Amount<Angle> alphaComponentCurrent = null;
-		switch (type) {
-		case FUSELAGE:
-			alphaComponentCurrent = aerodynamicAndStabilityManager.getAlphaBodyCurrent();
-			break;
-		case NACELLE:
-			alphaComponentCurrent = aerodynamicAndStabilityManager.getAlphaNacelleCurrent();
-			break;
-		default:
-			break;
-		}
-		
-		
-		FuselageAerodynamicsManager fuselageAerodynamicManagers = aerodynamicAndStabilityManager.getFuselageAerodynamicManagers().get(type);
-		IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
+		Amount<Angle> alphaComponentCurrent =  aerodynamicAndStabilityManager.getAlphaBodyCurrent();
+
+		FuselageAerodynamicsManager fuselageAerodynamicManagers = aerodynamicAndStabilityManager.getFuselageAerodynamicManagers().get(ComponentEnum.FUSELAGE);
 		//.........................................................................................................................
 		
 		//	CD0_PARASITE
@@ -364,11 +352,91 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		//.........................................................................................................................
 		//	CM0
 			analyses.fuselage.FuselageAerodynamicsManager.CalcCM0 calcCM0 = fuselageAerodynamicManagers.new CalcCM0();
-				calcCM0.multhopp();
+				calcCM0.fusDes();
 
 		//.........................................................................................................................
 		//	CM_ALPHA
 			analyses.fuselage.FuselageAerodynamicsManager.CalcCMAlpha calcCMAlpha = fuselageAerodynamicManagers.new CalcCMAlpha();
+				calcCMAlpha.fusDes();
+	
+		//.........................................................................................................................
+		//	MOMENT_CURVE_3D
+
+				analyses.fuselage.FuselageAerodynamicsManager.CalcMomentCurve calcMomentCurve = fuselageAerodynamicManagers.new CalcMomentCurve();
+					calcMomentCurve.fusDes();
+		//.........................................................................................................................
+		//	CM_AT_ALPHA 
+
+			analyses.fuselage.FuselageAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = fuselageAerodynamicManagers.new CalcCMAtAlpha();
+				calcCMAtAlpha.fusDes(alphaComponentCurrent);
+	}
+	
+	public static void calculateNacellesDataSemiempirical(
+			ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager
+			) {
+	
+		IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
+		NacelleAerodynamicsManager nacelleAerodynamicManagers = aerodynamicAndStabilityManager.getNacelleAerodynamicManagers().get(ComponentEnum.NACELLE);
+		double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
+		
+		List<Amount<Angle>> alphaNacelleList = new ArrayList<>();
+		Amount<Angle> alphaComponentCurrent = aerodynamicAndStabilityManager.getAlphaNacelleCurrent();
+		
+	switch (_theAerodynamicBuilderInterface.getTheAircraft().getNacelles().getNacellesList().get(0).getMountingPosition()) {
+	case WING:
+		alphaNacelleList = (aerodynamicAndStabilityManager.getAlphaWingList());
+		break;
+	case FUSELAGE:
+		alphaNacelleList = (aerodynamicAndStabilityManager.getAlphaBodyList());
+		break;
+	case HTAIL:
+		alphaNacelleList = (aerodynamicAndStabilityManager.getAlphaHTailList());
+		break;
+	default:
+		break;
+	}
+
+		//.........................................................................................................................
+		//	CD0_PARASITE
+			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Parasite calcCD0Parasite = nacelleAerodynamicManagers.new CalcCD0Parasite();
+				calcCD0Parasite.semiempirical();
+
+		//.........................................................................................................................
+		//	CD0_BASE
+			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Base calcCD0Base = nacelleAerodynamicManagers.new CalcCD0Base();
+				calcCD0Base.semiempirical();
+
+		//.........................................................................................................................
+		//	CD0_TOTAL
+			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Total calcCD0Total = nacelleAerodynamicManagers.new CalcCD0Total();
+				calcCD0Total.semiempirical();
+
+		//.........................................................................................................................
+		//	CD_INDUCED
+
+			analyses.nacelles.NacelleAerodynamicsManager.CalcCDInduced calcCDInduced = nacelleAerodynamicManagers.new CalcCDInduced();
+				calcCDInduced.semiempirical(alphaComponentCurrent, currentMachNumber);
+
+		//.........................................................................................................................
+		//	POLAR_CURVE_3D
+				analyses.nacelles.NacelleAerodynamicsManager.CalcPolar calcPolar = nacelleAerodynamicManagers.new CalcPolar();
+					calcPolar.semiempirical(currentMachNumber);
+
+		//.........................................................................................................................
+		//	CD_AT_ALPHA 
+			analyses.nacelles.NacelleAerodynamicsManager.CalcCDAtAlpha calcCDAtAlpha = nacelleAerodynamicManagers.new CalcCDAtAlpha();
+				calcCDAtAlpha.semiempirical(alphaComponentCurrent, currentMachNumber);
+
+		//.........................................................................................................................
+		//	CM0
+
+			analyses.nacelles.NacelleAerodynamicsManager.CalcCM0 calcCM0 = nacelleAerodynamicManagers.new CalcCM0();
+				calcCM0.multhopp();
+
+		//.........................................................................................................................
+		//	CM_ALPHA
+
+			analyses.nacelles.NacelleAerodynamicsManager.CalcCMAlpha calcCMAlpha = nacelleAerodynamicManagers.new CalcCMAlpha();
 				calcCMAlpha.multhopp(
 						_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
 						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getMeanAerodynamicChord().to(SI.METER).divide(4))
@@ -376,13 +444,16 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
 								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPanels().get(0).getChordRoot().to(SI.METER))
 								),
-						aerodynamicAndStabilityManager.getDownwashGradientMap().get(ComponentEnum.WING).get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+						aerodynamicAndStabilityManager.getDownwashGradientMap().get(ComponentEnum.WING)
+						.get(MethodEnum.ROSKAM)
+						.get(Boolean.TRUE)
+						.get(0)
 						);
-	
+		
 		//.........................................................................................................................
 		//	MOMENT_CURVE_3D
-
-				analyses.fuselage.FuselageAerodynamicsManager.CalcMomentCurve calcMomentCurve = fuselageAerodynamicManagers.new CalcMomentCurve();
+				
+				analyses.nacelles.NacelleAerodynamicsManager.CalcMomentCurve calcMomentCurve = nacelleAerodynamicManagers.new CalcMomentCurve();
 					calcMomentCurve.multhopp(
 							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
 							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getMeanAerodynamicChord().to(SI.METER).divide(4))
@@ -390,22 +461,21 @@ public class ACAerodynamicAndStabilityManagerUtils {
 									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
 									.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPanels().get(0).getChordRoot().to(SI.METER))
 									),
-							aerodynamicAndStabilityManager.getDownwashGradientMap().get(ComponentEnum.WING).get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+							aerodynamicAndStabilityManager.getDownwashGradientMap().get(ComponentEnum.WING).get(MethodEnum.ROSKAM).get(Boolean.TRUE).get(0)
 							);
 		
 		//.........................................................................................................................
 		//	CM_AT_ALPHA 
-
-			analyses.fuselage.FuselageAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = fuselageAerodynamicManagers.new CalcCMAtAlpha();
+			analyses.nacelles.NacelleAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = nacelleAerodynamicManagers.new CalcCMAtAlpha();
 				calcCMAtAlpha.multhopp(
-						alphaComponentCurrent.to(NonSI.DEGREE_ANGLE),
+						alphaComponentCurrent.to(NonSI.DEGREE_ANGLE), 
 						_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
 						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getMeanAerodynamicChord().to(SI.METER).divide(4))
 						.minus(
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
 								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getPanels().get(0).getChordRoot().to(SI.METER))
 								),
-						aerodynamicAndStabilityManager.getDownwashGradientMap().get(ComponentEnum.WING).get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+						aerodynamicAndStabilityManager.getDownwashGradientMap().get(ComponentEnum.WING).get(MethodEnum.ROSKAM).get(Boolean.TRUE).get(0)
 						);
 	}
 	
