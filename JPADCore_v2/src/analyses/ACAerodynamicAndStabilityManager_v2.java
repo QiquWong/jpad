@@ -123,7 +123,16 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 	//..............................................................................
 	// OUTPUT
-
+	
+	// fuselage effects on wing lift
+	private Amount<?> _clAlphaWingFuselage;
+	private Double _clZeroWingFuselage;
+	private Double _clMaxWingFuselage;
+	private Double _clStarWingFuselage;
+	private Amount<Angle> _alphaStarWingFuselage;
+	private Amount<Angle> _alphaStallWingFuselage;
+	private Amount<Angle> _alphaZeroLiftWingFuselage;
+	
 	// downwash
 	private Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Double>>>> _downwashGradientMap;
 	private Map<ComponentEnum, Map<MethodEnum, Map<Boolean, List<Amount<Angle>>>>> _downwashAngleMap;
@@ -137,6 +146,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Map<Amount<Angle>, List<Double>> _current3DCanardMomentCurve;
 	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailLiftCurve; //delta_e, CL
 	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailMomentCurve; //delta_e, CM
+	private Map<Amount<Angle>, List<Double>> _current3DVerticalTailLiftCurve; //delta_r CL
 	private Map<Amount<Angle>, List<Double>> _totalLiftCoefficient; //delta_e, CL
 	private Map<Amount<Angle>, List<Double>> _totalDragCoefficient; //delta_e, CD
 	private Map<Double, Map<Amount<Angle>, List<Double>>> _totalMomentCoefficient; //xcg, delta_e , CM
@@ -2154,6 +2164,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				calculateWingData();
 				ACAerodynamicAndStabilityManagerUtils.initializeDataForDownwash(this);
 				ACAerodynamicAndStabilityManagerUtils.calculateDownwashDueToWing(this);
+			
+				ACAerodynamicAndStabilityManagerUtils.calculateCurrentWingLiftCurve(this);
+				
+			
+			
 			}
 		}
 
@@ -2214,6 +2229,8 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						);
 
 				calculateHorizontalTailData();
+				
+				ACAerodynamicAndStabilityManagerUtils.calculateHorizontalTailLiftCurveWithElevatorDeflection(this);
 
 			}
 		}
@@ -2249,6 +2266,8 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 
 				calculateVTailData();
+				
+				ACAerodynamicAndStabilityManagerUtils.calculateVerticalTailLiftCurveWithRudderDeflection(this);
 
 			}
 		}
@@ -2353,7 +2372,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			
 		}
 		
-		// TODO continue here. WING CURVE. puoi metterla direttamente dopo wing, richiama un metodo che calcola la curva flappata e con body. il metodo lo puoi mettere in utils
 	}
 	
 	
@@ -3208,6 +3226,70 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 	public void setCurrentDownwashAngle(Amount<Angle> currentDownwashAngle) {
 		this.currentDownwashAngle = currentDownwashAngle;
+	}
+
+	public Amount<?> get_clAlphaWingFuselage() {
+		return _clAlphaWingFuselage;
+	}
+
+	public void set_clAlphaWingFuselage(Amount<?> _clAlphaWingFuselage) {
+		this._clAlphaWingFuselage = _clAlphaWingFuselage;
+	}
+
+	public Double get_clZeroWingFuselage() {
+		return _clZeroWingFuselage;
+	}
+
+	public void set_clZeroWingFuselage(Double _clZeroWingFuselage) {
+		this._clZeroWingFuselage = _clZeroWingFuselage;
+	}
+
+	public Double get_clMaxWingFuselage() {
+		return _clMaxWingFuselage;
+	}
+
+	public void set_clMaxWingFuselage(Double _clMaxWingFuselage) {
+		this._clMaxWingFuselage = _clMaxWingFuselage;
+	}
+
+	public Double get_clStarWingFuselage() {
+		return _clStarWingFuselage;
+	}
+
+	public void set_clStarWingFuselage(Double _clStarWingFuselage) {
+		this._clStarWingFuselage = _clStarWingFuselage;
+	}
+
+	public Amount<Angle> get_alphaStarWingFuselage() {
+		return _alphaStarWingFuselage;
+	}
+
+	public void set_alphaStarWingFuselage(Amount<Angle> _alphaStarWingFuselage) {
+		this._alphaStarWingFuselage = _alphaStarWingFuselage;
+	}
+
+	public Amount<Angle> get_alphaStallWingFuselage() {
+		return _alphaStallWingFuselage;
+	}
+
+	public void set_alphaStallWingFuselage(Amount<Angle> _alphaStallWingFuselage) {
+		this._alphaStallWingFuselage = _alphaStallWingFuselage;
+	}
+
+	public Amount<Angle> get_alphaZeroLiftWingFuselage() {
+		return _alphaZeroLiftWingFuselage;
+	}
+
+	public void set_alphaZeroLiftWingFuselage(Amount<Angle> _alphaZeroLiftWingFuselage) {
+		this._alphaZeroLiftWingFuselage = _alphaZeroLiftWingFuselage;
+	}
+
+	public Map<Amount<Angle>, List<Double>> get_current3DVerticalTailLiftCurve() {
+		return _current3DVerticalTailLiftCurve;
+	}
+
+	public void set_current3DVerticalTailLiftCurve(Map<Amount<Angle>, List<Double>> _current3DVerticalTailLiftCurve) {
+		this._current3DVerticalTailLiftCurve = _current3DVerticalTailLiftCurve;
 	}
 
 }
