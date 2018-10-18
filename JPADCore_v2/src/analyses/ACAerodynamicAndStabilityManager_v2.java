@@ -16,6 +16,7 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
+import analyses.ACAerodynamicAndStabilityManager.CalcTotalLiftCoefficient;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlpha0L;
@@ -2276,27 +2277,30 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		// FUSELAGE
 		//------------------------------------------------------------------------------			
 		if(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage() != null) {
-			
-			_fuselageAerodynamicManagers.put(
-					ComponentEnum.FUSELAGE,
-					new FuselageAerodynamicsManager(
-							_theAerodynamicBuilderInterface.getTheAircraft().getFuselage(), 
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing(), 
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING), 
-							_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
-							_alphaBodyList, 
-							_theAerodynamicBuilderInterface.getCurrentCondition(), 
-							_theAerodynamicBuilderInterface.getAdimensionalFuselageMomentumPole()
-							)
-					);
+			if(_theAerodynamicBuilderInterface.isPerformFuselageAnalyses() == true) {
 
-			calculateFuselageData();
+				_fuselageAerodynamicManagers.put(
+						ComponentEnum.FUSELAGE,
+						new FuselageAerodynamicsManager(
+								_theAerodynamicBuilderInterface.getTheAircraft().getFuselage(), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing(), 
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING), 
+								_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
+								_alphaBodyList, 
+								_theAerodynamicBuilderInterface.getCurrentCondition(), 
+								_theAerodynamicBuilderInterface.getAdimensionalFuselageMomentumPole()
+								)
+						);
+
+				calculateFuselageData();
+			}
 		}
 		
 		//------------------------------------------------------------------------------
 		// NACELLE
 		//------------------------------------------------------------------------------			
 		if(_theAerodynamicBuilderInterface.getTheAircraft().getNacelles() != null) {
+			if(_theAerodynamicBuilderInterface.isPerformNacelleAnalyses() == true) {
 			
 			_nacelleAerodynamicManagers.put(
 					ComponentEnum.NACELLE,
@@ -2337,6 +2341,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			
 			calculateNacelleData();
 		}
+		}
 		
 		//------------------------------------------------------------------------------
 		//LANDING GEARS 
@@ -2372,6 +2377,27 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			
 		}
 		
+		
+		//------------------------------------------------------------------------------
+		// AIRCRAFT 
+		//------------------------------------------------------------------------------
+		
+		
+		//TOTAL LIFT
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CL_TOTAL)) {
+
+			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.CL_TOTAL)) {
+			case FROM_BALANCE_EQUATION:
+				ACAerodynamicAndStabilityManagerUtils.calculateTotalLiftCoefficientFromAircraftComponents(this);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		
+		
+
 	}
 	
 	
