@@ -14,18 +14,18 @@
 			<beta_current unit="deg">0.0</beta_current>
 			<mach>0.64</mach>	
 			<altitude unit="ft">30000</altitude>
-			<throttle>1.0</throttle> <!-- M=0.64 (400 nm = 0.83) (1600 nm = 0.87) -->
+			<throttle>1.0</throttle>
 		</cruise>
 		<take_off>
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
 			<alpha_current unit="deg">6</alpha_current>
 			<beta_current unit="deg">0.0</beta_current>
 			<mach>0.18</mach> <!-- default = 0.2 -->
-			<altitude unit="ft">0.0</altitude> <!-- default = 0.0 -->
+			<altitude unit="ft"></altitude> <!-- default = 0.0 -->
 			<throttle></throttle> <!-- default = 1.0 -->
 			<throttle_ground_idle>
-				<throttle>0.016840541;-0.064715794;-0.224508473;-0.409610079</throttle>
-				<speed unit="kn">0;50;100;150</speed>
+				<throttle>0.0052727;-0.017203;-0.028041;-0.03884;-0.048835</throttle>
+				<speed unit="kn">0;66.29;99.43;132.57;165.71</speed>
 			</throttle_ground_idle> <!-- if the throttle array contains only 1 value this tag can be left empty -->
 			<delta_flap unit="deg">20;20</delta_flap>
 			<delta_slat unit="deg">0.0</delta_slat>
@@ -37,8 +37,8 @@
 			<mach>0.18</mach> <!-- default = 0.2 -->
 			<altitude unit="m"></altitude> <!-- default = 0.0 -->
 			<throttle_ground_idle>
-				<throttle>0.016840541;-0.064715794;-0.224508473;-0.409610079</throttle>
-				<speed unit="kn">0;50;100;150</speed>
+				<throttle>0.0052727;-0.017203;-0.028041;-0.03884;-0.048835</throttle>
+				<speed unit="kn">0;66.29;99.43;132.57;165.71</speed>
 			</throttle_ground_idle> <!-- if the throttle array contains only 1 value this tag can be left empty -->
 			<delta_flap unit="deg">35;35</delta_flap>
 			<delta_slat unit="deg">25</delta_slat>

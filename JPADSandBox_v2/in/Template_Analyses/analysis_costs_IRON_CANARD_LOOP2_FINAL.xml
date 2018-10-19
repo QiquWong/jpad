@@ -6,14 +6,14 @@
 			performance_from_previous_analysis="true"
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg">54574</maximum_take_off_mass>
-				<operating_empty_mass unit="kg">33567</operating_empty_mass>
+				<maximum_take_off_mass unit="kg">55174</maximum_take_off_mass>
+				<operating_empty_mass unit="kg">34167</operating_empty_mass>
 				<payload unit="kg">14040</payload>
 			</weights>
 			<performance>
-				<range unit="nmi">400</range>				
-				<block_fuel unit="kg">1600</block_fuel>
-				<flight_time unit="min">74</flight_time>
+				<range unit="nmi"></range>				
+				<block_fuel unit="kg"></block_fuel>
+				<flight_time unit="min"></flight_time>
 			</performance>
 			<global_data>
 				<utilization calculate="TRUE" method="AEA" unit="h/year"></utilization> <!-- Methods: AEA or SFORZA  -->
