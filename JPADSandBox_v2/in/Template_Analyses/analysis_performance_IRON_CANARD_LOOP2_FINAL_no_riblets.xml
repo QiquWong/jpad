@@ -14,18 +14,18 @@
 				<single_passenger_mass unit="kg">108</single_passenger_mass> 
 			</weights>
 			<aerodynamics> 
-				<xcg value="0.0" parabolicDragPolar="FALSE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
+				<xcg value="-0.22" parabolicDragPolar="FALSE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
 					<!-- SECOND SEGMENT CLIMB -->
 					<!--
 					<cLmax_clean_configuration> INSERIRE QELLO DI TAKE-OFF </cLmax_clean_configuration>
 					-->
 					<cLmax_clean_configuration>1.85</cLmax_clean_configuration>
 					<cL_alpha_clean_configuration unit="1/°">0.116</cL_alpha_clean_configuration>
-					<cLmax_take_off_configuration>2.85</cLmax_take_off_configuration> <!-- to be updated -->
-					<cL_alpha_take_off unit="1/°">0.1118</cL_alpha_take_off> <!-- to be updated --> 
-					<cL0_take_off_configuration>1.5014</cL0_take_off_configuration> <!-- to be updated -->
+					<cLmax_take_off_configuration>2.71</cLmax_take_off_configuration> 
+					<cL_alpha_take_off unit="1/°">0.0913</cL_alpha_take_off>  
+					<cL0_take_off_configuration>1.6425</cL0_take_off_configuration> 
 					<!---->
-					<cLmax_landing_configuration>3.13</cLmax_landing_configuration>
+					<cLmax_landing_configuration>3.1</cLmax_landing_configuration>
 					<cL_alpha_landing unit="1/°">0.0888</cL_alpha_landing>
 					<cL0_landing_configuration>1.866</cL0_landing_configuration>
 					<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
@@ -48,15 +48,15 @@
 							<polar_curve_CL>0.426967852;0.48495239;0.542936928;0.600921467;0.658906005;0.716890544;0.774875082;0.832859621;0.890844159;0.948828697;1.006813236;1.064797774;1.122782313;1.180766851;1.23875139;1.296735928;1.354720466;1.412705005;1.470689543;1.528674082;1.58665862</polar_curve_CL>
 							<polar_curve_CD>0.033341261;0.034752388;0.036348094;0.038128378;0.040093241;0.042242682;0.044576702;0.0470953;0.049798476;0.052686232;0.055758565;0.059015477;0.062456968;0.066083037;0.069893685;0.073888911;0.078068715;0.082433098;0.08698206;0.0917156;0.096633718</polar_curve_CD>									
 						</climb>
-						<take_off> <!-- xc/c -0.22 --> <!-- to be updated --> 
-							<polar_curve_CL></polar_curve_CL>
-							<polar_curve_CD></polar_curve_CD>
+						<take_off> <!-- xc/c -0.22 -->
+							<polar_curve_CL>1.671096691;1.709307043;1.749802824;1.792321215;1.836599401;1.882374564;1.929383889;1.977364558;2.026053754;2.075188662;2.124506465;2.173744345;2.222639486;2.270929072;2.318350285;2.36464031;2.40953633;2.452775527;2.494095086;2.533232189;2.56992402;2.603907762;2.6349206;2.662699715;2.686982291;2.707505512;2.724006561;2.736222622;2.743890877;2.74674851</polar_curve_CL>
+							<polar_curve_CD>0.117446115;0.118291148;0.1192849;0.120428366;0.121722773;0.123169608;0.124770646;0.126527971;0.128443992;0.13052146;0.132763477;0.135173503;0.137755353;0.140513202;0.143451576;0.146575341;0.149889691;0.153400128;0.157112445;0.161032692;0.165167155;0.169522318;0.174104823;0.178921434;0.183978986;0.18928434;0.194844325;0.200665683;0.206755008;0.213118678</polar_curve_CD>
 						</take_off>
 						<!-- SECOND SEGMENT CLIMB (H&H) prendere polare TO al peso di missione corta senza carrelli -->
-						<!-- 
+						<!-- xc/c -0.22 
 						<climb> 
-							<polar_curve_CL></polar_curve_CL>
-							<polar_curve_CD></polar_curve_CD>									
+							<polar_curve_CL>1.671096691;1.709307043;1.749802824;1.792321215;1.836599401;1.882374564;1.929383889;1.977364558;2.026053754;2.075188662;2.124506465;2.173744345;2.222639486;2.270929072;2.318350285;2.36464031;2.40953633;2.452775527;2.494095086;2.533232189;2.56992402;2.603907762;2.6349206;2.662699715;2.686982291;2.707505512;2.724006561;2.736222622;2.743890877;2.74674851</polar_curve_CL>
+							<polar_curve_CD>0.102446115;0.103291148;0.1042849;0.105428366;0.106722773;0.108169608;0.109770646;0.111527971;0.113443992;0.11552146;0.117763477;0.120173503;0.122755353;0.125513202;0.128451576;0.131575341;0.134889691;0.138400128;0.142112445;0.146032692;0.150167155;0.154522318;0.159104823;0.163921434;0.168978986;0.17428434;0.179844325;0.185665683;0.191755008;0.198118678;0.204762788</polar_curve_CD>									
 						</climb>
 						-->
 						<!---->
@@ -91,9 +91,9 @@
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
 				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
 				<alpha_dot_rotation></alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
-				<k_cLmax>0.85</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
+				<k_cLmax></k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
 				<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
-				<k_alpha_dot>0.06</k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
+				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
 				<!-- landing data -->
 				<k_landing_weight>0.9</k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->
 				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->
@@ -133,17 +133,17 @@
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
 				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
-				<cruise_sfc_function calculate="TRUE">
-					<sfc></sfc> 
-					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
+				<cruise_sfc_function calculate="FALSE">
+					<sfc>0.476;0.442;0.436</sfc> <!-- (M=0.64 = 0.476;0.442;0.436) (M=0.62 = 0.460;0.428;0.423)  (M=0.6 = 0.445;0.415;0.409) -->
+					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</cruise_sfc_function>
-				<alternate_cruise_sfc_function calculate="TRUE">
-					<sfc></sfc> 
-					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
+				<alternate_cruise_sfc_function calculate="FALSE">
+					<sfc>0.417433;0.319134;0.300615;0.2976575</sfc> 
+					<throttle>0.4;0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</alternate_cruise_sfc_function>
-				<holding_sfc_function calculate="TRUE">
-					<sfc></sfc> 
-					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
+				<holding_sfc_function calculate="FALSE">
+					<sfc>0.35850127;0.27411351;0.2585334;0.25607607</sfc> 
+					<throttle>0.4;0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
 				</holding_sfc_function>
 				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
 				<landing_ground_idle_fuel_flow unit="kg/min"></landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->

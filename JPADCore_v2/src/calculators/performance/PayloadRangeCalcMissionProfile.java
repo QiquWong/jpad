@@ -631,7 +631,7 @@ public class PayloadRangeCalcMissionProfile{
 					fuelFlows.add(
 							dragPerStep.get(0).doubleValue(SI.NEWTON)
 							*(0.224809)*(0.454/60)
-							*phi.get(0)
+							*(2-phi.get(0))
 							*EngineDatabaseManager.getSFC(
 									cruiseMissionMachNumber.get(0),
 									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
@@ -822,7 +822,7 @@ public class PayloadRangeCalcMissionProfile{
 						fuelFlows.add(
 								dragPerStep.get(j).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
-								*phi.get(j)
+								*(2-phi.get(j))
 								*EngineDatabaseManager.getSFC(
 										cruiseMissionMachNumber.get(j),
 										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
@@ -1168,7 +1168,7 @@ public class PayloadRangeCalcMissionProfile{
 						fuelFlowsAlternateCruise.add(
 								dragPerStepAlternateCruise.get(0).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
-								*phiAlternateCruise.get(0)
+								*(2-phiAlternateCruise.get(0))
 								*EngineDatabaseManager.getSFC(
 										alternateCruiseMachNumberList.get(0),
 										_alternateCruiseAltitude.doubleValue(SI.METER), 
@@ -1403,7 +1403,7 @@ public class PayloadRangeCalcMissionProfile{
 							fuelFlowsAlternateCruise.add(
 									dragPerStepAlternateCruise.get(j).doubleValue(SI.NEWTON)
 									*(0.224809)*(0.454/60)
-									*phiAlternateCruise.get(j)
+									*(2-phiAlternateCruise.get(j))
 									*EngineDatabaseManager.getSFC(
 											alternateCruiseMachNumberList.get(j),
 											_alternateCruiseAltitude.doubleValue(SI.METER), 
@@ -1702,7 +1702,7 @@ public class PayloadRangeCalcMissionProfile{
 						fuelFlowsHolding.add(
 								dragPerStepHolding.get(0).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
-								*phiHolding.get(0)
+								*(2-phiHolding.get(0))
 								*EngineDatabaseManager.getSFC(
 										holdingMachNumberList.get(0),
 										_holdingAltitude.doubleValue(SI.METER), 
@@ -1917,7 +1917,7 @@ public class PayloadRangeCalcMissionProfile{
 							fuelFlowsHolding.add(
 									dragPerStepHolding.get(j).doubleValue(SI.NEWTON)
 									*(0.224809)*(0.454/60)
-									*phiHolding.get(j)
+									*(2-phiHolding.get(j))
 									*EngineDatabaseManager.getSFC(
 											holdingMachNumberList.get(j),
 											_holdingAltitude.doubleValue(SI.METER), 

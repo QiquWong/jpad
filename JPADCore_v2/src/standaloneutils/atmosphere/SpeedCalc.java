@@ -2,6 +2,11 @@ package standaloneutils.atmosphere;
 
 import static java.lang.Math.sqrt;
 
+import javax.measure.quantity.Velocity;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
+
 import standaloneutils.MyArrayUtils;
 
 public class SpeedCalc {
@@ -49,6 +54,10 @@ public class SpeedCalc {
 		return mach*AtmosphereCalc.getSpeedOfSound(altitude);
 	}
 
+	public static Amount<Velocity> calculateTAS(Amount<Velocity> VTAS, double altitude) {
+		return VTAS.to(SI.METERS_PER_SECOND).divide(Math.sqrt(AtmosphereCalc.getAtmosphere(altitude).getDensityRatio()));
+	}
+	
 	/**
 	 * @see Sforza 2014, page 447 (473 pdf)
 	 * @author Lorenzo Attanasio

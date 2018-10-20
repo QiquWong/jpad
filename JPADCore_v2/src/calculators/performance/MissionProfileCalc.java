@@ -836,8 +836,8 @@ public class MissionProfileCalc {
 					SI.RADIAN).to(NonSI.DEGREE_ANGLE);
 			fuelFlowAtClimbStart = theClimbCalculator.getFuelFlowList().get(0)*2.20462/0.016667;
 			fuelFlowAtClimbEnding = theClimbCalculator.getFuelFlowList().get(theClimbCalculator.getFuelFlowList().size()-1)*2.20462/0.016667;
-			sfcAtClimbStart = fuelFlowAtClimbStart/thrustAtClimbStart.doubleValue(NonSI.POUND_FORCE);
-			sfcAtClimbEnding = fuelFlowAtClimbEnding/thrustAtClimbEnding.doubleValue(NonSI.POUND_FORCE);
+			sfcAtClimbStart = theClimbCalculator.getSFCList().get(0);
+			sfcAtClimbEnding = theClimbCalculator.getSFCList().get(theClimbCalculator.getSFCList().size()-1);
 
 			//--------------------------------------------------------------------
 			// CRUISE (CONSTANT MACH AND ALTITUDE)
@@ -1027,7 +1027,7 @@ public class MissionProfileCalc {
 					fuelFlows.add(
 							dragPerStep.get(0).doubleValue(SI.NEWTON)
 							*(0.224809)*(0.454/60)
-							*phi.get(0)
+							*(2-phi.get(0))
 							*EngineDatabaseManager.getSFC(
 									cruiseMissionMachNumber.get(0),
 									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
@@ -1220,7 +1220,7 @@ public class MissionProfileCalc {
 						fuelFlows.add(
 								dragPerStep.get(j).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
-								*phi.get(j)
+								*(2-phi.get(j))
 								*EngineDatabaseManager.getSFC(
 										cruiseMissionMachNumber.get(j),
 										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
@@ -1280,14 +1280,14 @@ public class MissionProfileCalc {
 				speedTASAtCruiseStart = cruiseSpeedList.get(0).to(NonSI.KNOT);
 				speedCASAtCruiseStart = cruiseSpeedList.get(0).times(
 						Math.sqrt(
-								AtmosphereCalc.getDensity(_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER))
+								AtmosphereCalc.getDensity(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER))
 								/_theOperatingConditions.getDensityTakeOff().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
 								)
 						).to(NonSI.KNOT);
 				speedTASAtCruiseEnding = cruiseSpeedList.get(cruiseSpeedList.size()-1).to(NonSI.KNOT);
 				speedCASAtCruiseEnding = cruiseSpeedList.get(cruiseSpeedList.size()-1).times(
 						Math.sqrt(
-								AtmosphereCalc.getDensity(_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER))
+								AtmosphereCalc.getDensity(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER))
 								/_theOperatingConditions.getDensityTakeOff().doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER)
 								)
 						).to(NonSI.KNOT);
@@ -1497,8 +1497,8 @@ public class MissionProfileCalc {
 							SI.RADIAN).to(NonSI.DEGREE_ANGLE);
 					fuelFlowAtSecondClimbStart = theSecondClimbCalculator.getFuelFlowList().get(0)*2.20462/0.016667;
 					fuelFlowAtSecondClimbEnding = theSecondClimbCalculator.getFuelFlowList().get(theSecondClimbCalculator.getFuelFlowList().size()-1)*2.20462/0.016667;
-					sfcAtSecondClimbStart = fuelFlowAtSecondClimbStart/thrustAtSecondClimbStart.doubleValue(NonSI.POUND_FORCE);
-					sfcAtSecondClimbEnding = fuelFlowAtSecondClimbEnding/thrustAtSecondClimbEnding.doubleValue(NonSI.POUND_FORCE);
+					sfcAtSecondClimbStart = theSecondClimbCalculator.getSFCList().get(0);
+					sfcAtSecondClimbEnding = theSecondClimbCalculator.getSFCList().get(theSecondClimbCalculator.getSFCList().size()-1);
 				}
 
 				//--------------------------------------------------------------------
@@ -1734,7 +1734,7 @@ public class MissionProfileCalc {
 						fuelFlowsAlternateCruise.add(
 								dragPerStepAlternateCruise.get(0).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
-								*phiAlternateCruise.get(0)
+								*(2-phiAlternateCruise.get(0))
 								*EngineDatabaseManager.getSFC(
 										alternateCruiseMachNumberList.get(0),
 										_alternateCruiseAltitude.doubleValue(SI.METER), 
@@ -1968,7 +1968,7 @@ public class MissionProfileCalc {
 							fuelFlowsAlternateCruise.add(
 									dragPerStepAlternateCruise.get(j).doubleValue(SI.NEWTON)
 									*(0.224809)*(0.454/60)
-									*phiAlternateCruise.get(j)
+									*(2-phiAlternateCruise.get(j))
 									*EngineDatabaseManager.getSFC(
 											alternateCruiseMachNumberList.get(j),
 											_alternateCruiseAltitude.doubleValue(SI.METER), 
@@ -2359,7 +2359,7 @@ public class MissionProfileCalc {
 						fuelFlowsHolding.add(
 								dragPerStepHolding.get(0).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
-								*phiHolding.get(0)
+								*(2-phiHolding.get(0))
 								*EngineDatabaseManager.getSFC(
 										holdingMachNumberList.get(0),
 										_holdingAltitude.doubleValue(SI.METER), 
@@ -2574,7 +2574,7 @@ public class MissionProfileCalc {
 							fuelFlowsHolding.add(
 									dragPerStepHolding.get(j).doubleValue(SI.NEWTON)
 									*(0.224809)*(0.454/60)
-									*phiHolding.get(j)
+									*(2-phiHolding.get(j))
 									*EngineDatabaseManager.getSFC(
 											holdingMachNumberList.get(j),
 											_holdingAltitude.doubleValue(SI.METER), 

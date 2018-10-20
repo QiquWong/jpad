@@ -66,6 +66,7 @@ public class ClimbCalc {
 	private List<Amount<Duration>> _climbTimeListRCmax;
 	private List<Amount<Mass>> _fuelUsedList;
 	private List<Double> _fuelFlowList;
+	private List<Double> _sfcList;
 	private Amount<Length> _absoluteCeilingAEO;
 	private Amount<Length> _serviceCeilingAEO;
 	private Amount<Duration> _minimumClimbTimeAEO;
@@ -222,7 +223,10 @@ public class ClimbCalc {
 						MyMathUtils.getInterpolatedValue1DLinear(
 								_thrustListAEO.get(0).getSpeed(),
 								_thrustListAEO.get(0).getThrust(),
-								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
+								SpeedCalc.calculateTAS(
+										_climbSpeed.to(SI.METERS_PER_SECOND),
+										altitudeArray[0]
+										).doubleValue(SI.METERS_PER_SECOND)
 								),
 						SI.NEWTON
 						).to(NonSI.POUND_FORCE);
@@ -231,7 +235,10 @@ public class ClimbCalc {
 						MyMathUtils.getInterpolatedValue1DLinear(
 								_thrustListAEO.get(_thrustListAEO.size()-1).getSpeed(),
 								_thrustListAEO.get(_thrustListAEO.size()-1).getThrust(),
-								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
+								SpeedCalc.calculateTAS(
+										_climbSpeed.to(SI.METERS_PER_SECOND),
+										altitudeArray[altitudeArray.length-1]
+										).doubleValue(SI.METERS_PER_SECOND)
 								),
 						SI.NEWTON
 						).to(NonSI.POUND_FORCE);
@@ -240,7 +247,10 @@ public class ClimbCalc {
 						MyMathUtils.getInterpolatedValue1DLinear(
 								_dragListAEO.get(0).getSpeed(),
 								_dragListAEO.get(0).getDrag(),
-								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
+								SpeedCalc.calculateTAS(
+										_climbSpeed.to(SI.METERS_PER_SECOND),
+										altitudeArray[0]
+										).doubleValue(SI.METERS_PER_SECOND)
 								),
 						SI.NEWTON
 						).to(NonSI.POUND_FORCE);
@@ -249,7 +259,10 @@ public class ClimbCalc {
 						MyMathUtils.getInterpolatedValue1DLinear(
 								_dragListAEO.get(_dragListAEO.size()-1).getSpeed(),
 								_dragListAEO.get(_dragListAEO.size()-1).getDrag(),
-								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
+								SpeedCalc.calculateTAS(
+										_climbSpeed.to(SI.METERS_PER_SECOND),
+										altitudeArray[altitudeArray.length-1]
+										).doubleValue(SI.METERS_PER_SECOND)
 								),
 						SI.NEWTON
 						).to(NonSI.POUND_FORCE);
@@ -435,7 +448,7 @@ public class ClimbCalc {
 				
 				double sigma = OperatingConditions.getAtmosphere(
 						_rcMapAEO.get(i).getAltitude()
-						).getDensity()*1000/1.225;
+						).getDensityRatio();
 				
 				rcAtClimbSpeed.add(
 						MyMathUtils.getInterpolatedValue1DLinear(
@@ -477,6 +490,7 @@ public class ClimbCalc {
 		//----------------------------------------------------------------------------------
 		// SFC, TIME AND RANGE IN AEO CONDITION (for the mission profile)
 		_fuelFlowList = new ArrayList<>();
+		_sfcList = new ArrayList<>();
 		List<Amount<Duration>> climbTimeListAEO = new ArrayList<>();
 		List<Amount<Length>> rangeArrayClimb = new ArrayList<>();
 		
@@ -557,14 +571,8 @@ public class ClimbCalc {
 		for(int i=0; i<_rcMapAEO.size(); i++) {
 
 			if(_climbSpeed == null) {
-				_fuelFlowList.add(
-						MyMathUtils.getInterpolatedValue1DLinear(
-								_thrustListAEO.get(i).getSpeed(),
-								_thrustListAEO.get(i).getThrust(),
-								_rcMapAEO.get(i).getRCMaxSpeed()
-								)
-						*(0.224809)*(0.454/60)
-						*EngineDatabaseManager.getSFC(
+				_sfcList.add(
+						EngineDatabaseManager.getSFC(
 								SpeedCalc.calculateMach(
 										_rcMapAEO.get(i).getAltitude(),
 										_rcMapAEO.get(i).getRCMaxSpeed()
@@ -580,6 +588,15 @@ public class ClimbCalc {
 								EngineOperatingConditionEnum.CLIMB,
 								_theAircraft.getPowerPlant()
 								)
+						);
+				_fuelFlowList.add(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								_thrustListAEO.get(i).getSpeed(),
+								_thrustListAEO.get(i).getThrust(),
+								_rcMapAEO.get(i).getRCMaxSpeed()
+								)
+						*(0.224809)*(0.454/60)
+						*_sfcList.get(i)
 						);
 				_fuelUsedList.add(
 						Amount.valueOf(
@@ -589,14 +606,8 @@ public class ClimbCalc {
 						);
 			}
 			else {
-				_fuelFlowList.add(
-						MyMathUtils.getInterpolatedValue1DLinear(
-								_thrustListAEO.get(i).getSpeed(),
-								_thrustListAEO.get(i).getThrust(),
-								climbSpeedTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
-								)
-						*(0.224809)*(0.454/60)
-						*EngineDatabaseManager.getSFC(
+				_sfcList.add(
+						EngineDatabaseManager.getSFC(
 								SpeedCalc.calculateMach(
 										_rcMapAEO.get(i).getAltitude(),
 										climbSpeedTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
@@ -612,6 +623,15 @@ public class ClimbCalc {
 								EngineOperatingConditionEnum.CLIMB,
 								_theAircraft.getPowerPlant()
 								)
+						);
+				_fuelFlowList.add(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								_thrustListAEO.get(i).getSpeed(),
+								_thrustListAEO.get(i).getThrust(),
+								climbSpeedTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
+								)
+						*(0.224809)*(0.454/60)
+						*_sfcList.get(i)
 						);
 				_fuelUsedList.add(
 						Amount.valueOf(
@@ -2251,6 +2271,14 @@ public class ClimbCalc {
 
 	public void setFuelFlowList(List<Double> _fuelFlowList) {
 		this._fuelFlowList = _fuelFlowList;
+	}
+
+	public List<Double> getSFCList() {
+		return _sfcList;
+	}
+
+	public void setSFCList(List<Double> _sfcList) {
+		this._sfcList = _sfcList;
 	}
 	
 }
