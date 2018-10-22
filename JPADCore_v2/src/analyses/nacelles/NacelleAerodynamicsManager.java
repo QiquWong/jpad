@@ -193,6 +193,11 @@ public class NacelleAerodynamicsManager {
 				calcCD0Base.semiempirical();
 			}
 			
+			if(_cD0Parasite.get(MethodEnum.SEMIEMPIRICAL) == null) {
+				CalcCD0Parasite calcCD0Parasite = new CalcCD0Parasite();
+				calcCD0Parasite.semiempirical();
+			}
+			
 			_cD0Total.put(
 					MethodEnum.SEMIEMPIRICAL,
 					((1 + _theNacelles.getKExcr())

@@ -2398,14 +2398,12 @@ public class MomentCalc {
 			Amount<Area> wingSurface,
 			Amount<Area> horizontalTailSurface,
 			List<Double> wingFuselageLiftCoefficient,
-			List<Double> wingDragCoefficient,
 			List<Double> wingMomentCoefficient,
 			List<Double> fuselageMomentCoefficient,
 			List<Double> fuselageDragCoefficient,
 			List<Double> nacelleMomentCoefficient,
 			List<Double> nacelleDragCoefficient,
 			List<Double> horizontalTailLiftCoefficient,
-			List<Double> horizontalTailDragCoefficient,
 			List<Double> horizontalTailMomentCoefficient,
 			Double landingGearDragCoefficient,
 			Double horizontalTailDynamicPressureRatio,
@@ -2428,7 +2426,6 @@ public class MomentCalc {
 				wingMeanAerodynamicChord, 
 				wingSurface, 
 				wingFuselageLiftCoefficient, 
-				wingDragCoefficient, 
 				wingMomentCoefficient, 
 				alphaBodyList, 
 				pendularStability
@@ -2478,8 +2475,7 @@ public class MomentCalc {
 					wingSurface, 
 					horizontalTailSurface, 
 					horizontalTailLiftCoefficient, 
-					horizontalTailDragCoefficient, 
-					horizontalTailMomentCoefficient, 
+					horizontalTailMomentCoefficient,
 					horizontalTailDynamicPressureRatio, 
 					alphaBodyList,
 					pendularStability
@@ -2524,7 +2520,6 @@ public class MomentCalc {
 			Amount<Length> wingMeanAerodynamicChord,
 			Amount<Area> wingSurface,
 			List<Double> wingFuselageLiftCoefficient,
-			List<Double> wingDragCoefficient,
 			List<Double> wingMomentCoefficient,
 //			List<Amount<Angle>> alphaBodyList,
 			List<Amount<Angle>> alphaWingList,
@@ -2559,12 +2554,10 @@ public class MomentCalc {
 			// WING -----------------------------
 			// forces
 			wingNormalCoefficient.add(
-					wingFuselageLiftCoefficient.get(i)*Math.cos(aw.doubleValue(SI.RADIAN))+
-					wingDragCoefficient.get(i)*Math.sin(aw.doubleValue(SI.RADIAN))
+					wingFuselageLiftCoefficient.get(i)*Math.cos(aw.doubleValue(SI.RADIAN))
 					);
 
-			wingHorizontalCoeffient.add(
-					wingDragCoefficient.get(i)*Math.cos(aw.doubleValue(SI.RADIAN)) - 
+			wingHorizontalCoeffient.add( - 
 					wingFuselageLiftCoefficient.get(i)*Math.sin(aw.doubleValue(SI.RADIAN)));		
 
 			// moment with respect to CG
@@ -2595,7 +2588,6 @@ public class MomentCalc {
 			Amount<Area> wingSurface,
 			Amount<Area> horizontalTailSurface,
 			List<Double> horizontalTailLiftCoefficient,
-			List<Double> horizontalTailDragCoefficient,
 			List<Double> horizontalTailMomentCoefficient,
 			Double horizontalTailDynamicPressureRatio,
 //			List<Amount<Angle>> alphaBodyList
@@ -2641,12 +2633,10 @@ public class MomentCalc {
 			int i = alphaHTailList.indexOf(ah);
 
 			horizontalTailNormalCoefficient.add(
-					horizontalTailLiftCoefficient.get(i)*Math.cos(ah.doubleValue(SI.RADIAN))+
-					horizontalTailDragCoefficient.get(i)*Math.sin(ah.doubleValue(SI.RADIAN))
+					horizontalTailLiftCoefficient.get(i)*Math.cos(ah.doubleValue(SI.RADIAN))
 					);
 
-			horizontalTailHorizontalCoeffient.add(
-					horizontalTailDragCoefficient.get(i)*Math.cos(ah.doubleValue(SI.RADIAN)) - 
+			horizontalTailHorizontalCoeffient.add( - 
 					horizontalTailLiftCoefficient.get(i)*Math.sin(ah.doubleValue(SI.RADIAN)));	
 			
 			//HORIZONTAL TAIL----------------------------

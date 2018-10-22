@@ -2395,6 +2395,17 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			}
 		}
 		
+		//TOTAL DRAG
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CD_TOTAL)) {
+
+			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.CD_TOTAL)) {
+			case FROM_BALANCE_EQUATION:
+				ACAerodynamicAndStabilityManagerUtils.calculateTotalPolarSemiempirical(this);
+				break;
+			default:
+				break;
+			}
+		}
 		
 		
 
@@ -3316,6 +3327,15 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 	public void set_current3DVerticalTailLiftCurve(Map<Amount<Angle>, List<Double>> _current3DVerticalTailLiftCurve) {
 		this._current3DVerticalTailLiftCurve = _current3DVerticalTailLiftCurve;
+	}
+
+	public Map<Double, Map<ComponentEnum, List<Double>>> get_totalMomentCoefficientBreakDown() {
+		return _totalMomentCoefficientBreakDown;
+	}
+
+	public void set_totalMomentCoefficientBreakDown(
+			Map<Double, Map<ComponentEnum, List<Double>>> _totalMomentCoefficientBreakDown) {
+		this._totalMomentCoefficientBreakDown = _totalMomentCoefficientBreakDown;
 	}
 
 }

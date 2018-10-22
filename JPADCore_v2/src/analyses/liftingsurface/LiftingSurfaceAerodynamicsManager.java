@@ -160,6 +160,7 @@ public class LiftingSurfaceAerodynamicsManager {
 	// DRAG
 	private Map <MethodEnum, Double> _cD0;
 	private Map <MethodEnum, List<Double>> _cDParasite;
+	private Map <MethodEnum, Double> _cDGap;
 	private Map <MethodEnum, Double> _oswaldFactor;
 	private Map <MethodEnum, Double> _cDInduced;
 	private Map <MethodEnum, Double> _cDWave;
@@ -2274,6 +2275,52 @@ public class LiftingSurfaceAerodynamicsManager {
 					cDParasite);
 		}
 		
+		public void semiempirical(
+				double machTransonictThreshold,
+				double currentMachNumber,
+				Amount<Length> currentAltitude
+				) {
+			
+			
+			Double cD0Parasite = DragCalc.calculateCD0ParasiteLiftingSurface(
+					getTheLiftingSurface(),
+					machTransonictThreshold,
+					currentMachNumber,
+					currentAltitude
+					);
+			
+			List<Double> cD0ParasiteList = new ArrayList<>();
+			
+			for(int i=0; i<_alphaArrayClean.size(); i++) {
+				cD0ParasiteList.add(cD0Parasite);
+			}
+			
+			_cDParasite.put(
+					MethodEnum.SEMIEMPIRICAL,
+					cD0ParasiteList);
+		}
+		
+	}
+	//............................................................................
+	// END OF THE CALC CDParasite INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// CALC CDGap INNER CLASS
+	//............................................................................
+	public class CalcCD0Gap {
+
+		public void semiempirical(
+				Double mach,
+				Amount<Length> altitude
+				) {
+
+			double cD0Gap = DragCalc.calculateCDGap(_theLiftingSurface);
+
+			_cDGap.put(
+					MethodEnum.AIRFOIL_DISTRIBUTION,
+					cD0Gap);
+		}
 	}
 	//............................................................................
 	// END OF THE CALC CDParasite INNER CLASS
@@ -2291,18 +2338,16 @@ public class LiftingSurfaceAerodynamicsManager {
 			
 			Double kExcr = _theLiftingSurface.getKExcr();
 			
-			Double cD0Parasite = DragCalc.calculateCD0ParasiteLiftingSurface(
-					_theLiftingSurface,
-					_theOperatingConditions.getMachTransonicThreshold(),
-					mach,
-					altitude
-					);
-			Double cD0Gap = DragCalc.calculateCDGap(_theLiftingSurface);
+			CalcCDParasite calcCDParasite = new CalcCDParasite();
+			calcCDParasite.semiempirical(_theOperatingConditions.getMachTransonicThreshold(), mach, altitude);
+			
+			CalcCD0Gap calcCDGap= new CalcCD0Gap();
+			calcCDGap.semiempirical(mach, altitude);
 			
 			_cD0.put(
 					MethodEnum.SEMIEMPIRICAL,
-					cD0Parasite*(1+kExcr)
-					+ cD0Gap
+					_cDParasite.get(MethodEnum.SEMIEMPIRICAL).get(0)*(1+kExcr)
+					+ _cDGap.get(MethodEnum.SEMIEMPIRICAL)
 					);
 		}
 		
