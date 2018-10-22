@@ -108,7 +108,7 @@
 				<k_climb_weight_AEO></k_climb_weight_AEO> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
 				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
 				<initial_climb_altitude unit="ft">1500.0</initial_climb_altitude>
-				<final_climb_altitude unit="ft">25000.0</final_climb_altitude>
+				<final_climb_altitude unit="ft">30000.0</final_climb_altitude>
 				<climb_speed_CAS unit="kn">190</climb_speed_CAS>
 			</climb>
 			<cruise>

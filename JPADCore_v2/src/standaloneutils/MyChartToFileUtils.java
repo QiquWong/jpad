@@ -2825,6 +2825,7 @@ public class MyChartToFileUtils {
 		xylineChart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
 		xylineChart.getXYPlot().setRangeGridlinesVisible(true);
 		xylineChart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
+		
 		xylineChart.removeLegend(); 
 
 		final Paint[] paintArray;
@@ -2852,10 +2853,14 @@ public class MyChartToFileUtils {
 		
 		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
 		domain.setRange(xMin, xMax);
+		domain.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		//        domain.setTickUnit(new NumberTickUnit(0.1));
 		//        domain.setVerticalTickLabels(true);
 		NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
 		range.setRange(yMin, yMax);
+		range.setLabelFont(new Font("Sans-serif", Font.PLAIN, LABEL_SIZE));
+		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 		//        range.setTickUnit(new NumberTickUnit(0.1));
 
 		File XYChart = new File(filenameWithPath + ".png"); 

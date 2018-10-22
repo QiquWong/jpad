@@ -132,7 +132,7 @@ public class ClimbCalc {
 		double[] altitudeArray = MyArrayUtils.linspace(
 				initialClimbAltitude.doubleValue(SI.METER),
 				finalClimbAltitude.doubleValue(SI.METER),
-				5
+				10
 				);
 							
 		//----------------------------------------------------------------------------------
@@ -152,7 +152,7 @@ public class ClimbCalc {
 							altitudeArray[i],
 							startClimbMassAEO.times(AtmosphereCalc.g0).getEstimatedValue(),
 							_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-							_cLmaxClean
+							Arrays.stream(_polarCLClimb).mapToDouble(cL -> cL).max().getAsDouble()
 							),
 					SpeedCalc.calculateTAS(
 							_theOperatingConditions.getMachCruise(),
@@ -317,7 +317,7 @@ public class ClimbCalc {
 								altitudeArray[i],
 								startClimbMassOEI.times(AtmosphereCalc.g0).getEstimatedValue(),
 								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean
+								Arrays.stream(_polarCLClimb).mapToDouble(cL -> cL).max().getAsDouble()
 								),
 						SpeedCalc.calculateTAS(
 								_theOperatingConditions.getMachCruise(),
