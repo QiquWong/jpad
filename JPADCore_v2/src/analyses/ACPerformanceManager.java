@@ -254,6 +254,7 @@ public class ACPerformanceManager {
 	private Map<Double, List<Amount<Angle>>> _climbAngleMissionListMap;
 	private Map<Double, List<Double>> _fuelFlowMissionListMap;
 	private Map<Double, List<Double>>_sfcMissionListMap;
+	private Map<Double, List<Double>>_throttleMissionListMap;
 	
 	private Map<Double, Amount<Mass>> _initialFuelMassMap;
 	private Map<Double, Amount<Mass>> _totalFuelUsedMap;
@@ -426,6 +427,7 @@ public class ACPerformanceManager {
 		this._climbAngleMissionListMap= new HashMap<>();
 		this._fuelFlowMissionListMap= new HashMap<>();
 		this._sfcMissionListMap= new HashMap<>();
+		this._throttleMissionListMap = new HashMap<>();
 		
 		this._initialFuelMassMap= new HashMap<>();
 		this._totalFuelUsedMap= new HashMap<>();
@@ -3163,6 +3165,8 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"CD at cruise ending"," ", _dragCoefficientMissionListMap.get(xcg).get(5).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"Efficiency at cruise start"," ", _efficiencyMissionListMap.get(xcg).get(4).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"Efficiency at cruise ending"," ", _efficiencyMissionListMap.get(xcg).get(5).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Throttle at cruise start"," ", _throttleMissionListMap.get(xcg).get(0).doubleValue()});
+    			dataListMissionProfile.add(new Object[] {"Throttle at cruise ending"," ", _throttleMissionListMap.get(xcg).get(1).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"Thrust at cruise start","lbf", _thrustMissionListMap.get(xcg).get(4).doubleValue(NonSI.POUND_FORCE)});
         		dataListMissionProfile.add(new Object[] {"Thrust at cruise ending","lbf", _thrustMissionListMap.get(xcg).get(5).doubleValue(NonSI.POUND_FORCE)});
         		dataListMissionProfile.add(new Object[] {"Drag at cruise start","lbf", _dragMissionListMap.get(xcg).get(4).doubleValue(NonSI.POUND_FORCE)});
@@ -3243,6 +3247,8 @@ public class ACPerformanceManager {
         			dataListMissionProfile.add(new Object[] {"CD at alternate cruise ending"," ", _dragCoefficientMissionListMap.get(xcg).get(11).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Efficiency at alternate cruise start"," ", _efficiencyMissionListMap.get(xcg).get(10).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Efficiency at alternate cruise ending"," ", _efficiencyMissionListMap.get(xcg).get(11).doubleValue()});
+        			dataListMissionProfile.add(new Object[] {"Throttle at alternate cruise start"," ", _throttleMissionListMap.get(xcg).get(2).doubleValue()});
+        			dataListMissionProfile.add(new Object[] {"Throttle at alternate cruise ending"," ", _throttleMissionListMap.get(xcg).get(3).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Thrust at alternate cruise start","lbf", _thrustMissionListMap.get(xcg).get(10).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Thrust at alternate cruise ending","lbf", _thrustMissionListMap.get(xcg).get(11).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Drag at alternate cruise start","lbf", _dragMissionListMap.get(xcg).get(10).doubleValue(NonSI.POUND_FORCE)});
@@ -3297,6 +3303,8 @@ public class ACPerformanceManager {
         			dataListMissionProfile.add(new Object[] {"CD at holding ending"," ", _dragCoefficientMissionListMap.get(xcg).get(15).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Efficiency at holding start"," ", _efficiencyMissionListMap.get(xcg).get(14).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Efficiency at holding ending"," ", _efficiencyMissionListMap.get(xcg).get(15).doubleValue()});
+        			dataListMissionProfile.add(new Object[] {"Throttle at holding start"," ", _throttleMissionListMap.get(xcg).get(4).doubleValue()});
+        			dataListMissionProfile.add(new Object[] {"Throttle at holding ending"," ", _throttleMissionListMap.get(xcg).get(5).doubleValue()});
         			dataListMissionProfile.add(new Object[] {"Thrust at holding start","lbf", _thrustMissionListMap.get(xcg).get(14).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Thrust at holding ending","lbf", _thrustMissionListMap.get(xcg).get(15).doubleValue(NonSI.POUND_FORCE)});
         			dataListMissionProfile.add(new Object[] {"Drag at holding start","lbf", _dragMissionListMap.get(xcg).get(14).doubleValue(NonSI.POUND_FORCE)});
@@ -4288,7 +4296,7 @@ public class ACPerformanceManager {
 				Amount<Mass> startClimbMassOEI,
 				Amount<Length> initialClimbAltitude,
 				Amount<Length> finalClimbAltitude,
-				boolean performOEI ,
+				boolean performOEI,
 				Double xcg
 				) {
 			
@@ -4310,7 +4318,8 @@ public class ACPerformanceManager {
 					startClimbMassOEI,
 					initialClimbAltitude,
 					finalClimbAltitude,
-					performOEI
+					performOEI,
+					true
 					);
 			
 			_rcAEOMap.put(xcg, _theClimbCalculatorMap.get(xcg).getRCMapAEO());
@@ -6278,6 +6287,7 @@ public class ACPerformanceManager {
 			_climbAngleMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getClimbAngleMissionList());
 			_fuelFlowMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getFuelFlowMissionList());
 			_sfcMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getSFCMissionList());
+			_throttleMissionListMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getThrottleMissionList());
 			
 			_initialFuelMassMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getInitialFuelMass());
 			_totalFuelUsedMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalFuel());
@@ -7448,6 +7458,14 @@ public class ACPerformanceManager {
 
 	public void setTotalMissionRangeMap(Map<Double, Amount<Length>> _totalMissionRangeMap) {
 		this._totalMissionRangeMap = _totalMissionRangeMap;
+	}
+
+	public Map<Double, List<Double>> getThrottleMissionListMap() {
+		return _throttleMissionListMap;
+	}
+
+	public void setThrottleMissionListMap(Map<Double, List<Double>> _throttleMissionListMap) {
+		this._throttleMissionListMap = _throttleMissionListMap;
 	}
 
 }

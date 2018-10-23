@@ -121,6 +121,7 @@ public class MissionProfileCalc {
 	private List<Amount<Angle>> _climbAngleMissionList;
 	private List<Double> _fuelFlowMissionList;
 	private List<Double> _sfcMissionList;
+	private List<Double> _throttleMissionList;
 	
 	private Amount<Mass> _initialFuelMass;
 	private Amount<Mass> _totalFuel;
@@ -267,6 +268,7 @@ public class MissionProfileCalc {
 		this._climbAngleMissionList = new ArrayList<>();
 		this._fuelFlowMissionList = new ArrayList<>();
 		this._sfcMissionList = new ArrayList<>();
+		this._throttleMissionList = new ArrayList<>();
 
 	}
 
@@ -367,6 +369,8 @@ public class MissionProfileCalc {
 		double cLAtCruiseEnding = 0.0;
 		double cDAtCruiseStart = 0.0;
 		double cDAtCruiseEnding = 0.0;
+		double throttleCruiseStart = 0.0;
+		double throttleCruiseEnding = 0.0;
 		Amount<Force> thrustAtCruiseStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtCruiseEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtCruiseStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
@@ -448,6 +452,8 @@ public class MissionProfileCalc {
 		double cLAtAlternateCruiseEnding = 0.0;
 		double cDAtAlternateCruiseStart = 0.0;
 		double cDAtAlternateCruiseEnding = 0.0;
+		double throttleAlternateCruiseStart = 0.0;
+		double throttleAlternateCruiseEnding = 0.0;
 		Amount<Force> thrustAtAlternateCruiseStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtAlternateCruiseEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtAlternateCruiseStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
@@ -502,6 +508,8 @@ public class MissionProfileCalc {
 		double cLAtHoldingEnding = 0.0;
 		double cDAtHoldingStart = 0.0;
 		double cDAtHoldingEnding = 0.0;
+		double throttleHoldingStart = 0.0;
+		double throttleHoldingEnding = 0.0;
 		Amount<Force> thrustAtHoldingStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> thrustAtHoldingEnding = Amount.valueOf(0.0, NonSI.POUND_FORCE);
 		Amount<Force> dragAtHoldingStart = Amount.valueOf(0.0, NonSI.POUND_FORCE);
@@ -744,6 +752,7 @@ public class MissionProfileCalc {
 					aircraftMassAtClimbStart,
 					_obstacleTakeOff.to(SI.METER),
 					_theOperatingConditions.getAltitudeCruise().to(SI.METER),
+					false,
 					false
 					);
 
@@ -1307,6 +1316,8 @@ public class MissionProfileCalc {
 				dragAtCruiseEnding = dragPerStep.get(dragPerStep.size()-1).to(NonSI.POUND_FORCE);
 				thrustAtCruiseStart = dragAtCruiseStart;
 				thrustAtCruiseEnding = dragAtCruiseEnding;
+				throttleCruiseStart = phi.get(0);
+				throttleCruiseEnding = phi.get(phi.size()-1);
 				rateOfClimbAtCruiseStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
 				rateOfClimbAtCruiseEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
 				climbAngleAtCruiseStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
@@ -1406,6 +1417,7 @@ public class MissionProfileCalc {
 						aircraftMassAtSecondClimbStart,
 						_holdingAltitude.to(SI.METER),
 						_alternateCruiseAltitude.to(SI.METER),
+						false,
 						false
 						);
 
@@ -2057,6 +2069,8 @@ public class MissionProfileCalc {
 						dragAtAlternateCruiseEnding = dragPerStepAlternateCruise.get(dragPerStepAlternateCruise.size()-1).to(NonSI.POUND_FORCE);
 						thrustAtAlternateCruiseStart = dragAtAlternateCruiseStart;
 						thrustAtAlternateCruiseEnding = dragAtAlternateCruiseEnding;
+						throttleAlternateCruiseStart = phiAlternateCruise.get(0);
+						throttleAlternateCruiseEnding = phiAlternateCruise.get(phiAlternateCruise.size()-1);
 						rateOfClimbAtAlternateCruiseStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
 						rateOfClimbAtAlternateCruiseEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
 						climbAngleAtAlternateCruiseStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
@@ -2650,6 +2664,8 @@ public class MissionProfileCalc {
 						dragAtHoldingEnding = dragPerStepHolding.get(dragPerStepHolding.size()-1).to(NonSI.POUND_FORCE);
 						thrustAtHoldingStart = dragAtHoldingStart;
 						thrustAtHoldingEnding = dragAtHoldingEnding;
+						throttleHoldingStart = phiHolding.get(0);
+						throttleHoldingEnding = phiHolding.get(phiHolding.size()-1);
 						rateOfClimbAtHoldingStart = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
 						rateOfClimbAtHoldingEnding = Amount.valueOf(0.0, MyUnits.FOOT_PER_MINUTE);
 						climbAngleAtHoldingStart = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
@@ -3268,6 +3284,14 @@ public class MissionProfileCalc {
 		_efficiencyMissionList.add(_liftingCoefficientMissionList.get(19)/_dragCoefficientMissionList.get(19));
 		
 		//......................................................................
+		_throttleMissionList.add(throttleCruiseStart);
+		_throttleMissionList.add(throttleCruiseEnding);
+		_throttleMissionList.add(throttleAlternateCruiseStart);
+		_throttleMissionList.add(throttleAlternateCruiseEnding);
+		_throttleMissionList.add(throttleHoldingStart);
+		_throttleMissionList.add(throttleHoldingEnding);
+		
+		//......................................................................
 		_thrustMissionList.add(thrustAtTakeOffStart.to(NonSI.POUND_FORCE));
 		_thrustMissionList.add(thrustAtTakeOffEnding.to(NonSI.POUND_FORCE));
 		_thrustMissionList.add(thrustAtClimbStart.to(NonSI.POUND_FORCE));
@@ -3736,6 +3760,8 @@ public class MissionProfileCalc {
 				.append("\t\tCD at cruise ending  = " + _dragCoefficientMissionList.get(5) + " \n")
 				.append("\t\tEfficiency at cruise start  = " + _efficiencyMissionList.get(4) + " \n")
 				.append("\t\tEfficiency at cruise ending  = " + _efficiencyMissionList.get(5) + " \n")
+				.append("\t\tThrottle at cruise start  = " + _throttleMissionList.get(0) + " \n")
+				.append("\t\tThrottle at cruise ending  = " + _throttleMissionList.get(1) + " \n")
 				.append("\t\tThrust at cruise start  = " + _thrustMissionList.get(4).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tThrust at cruise ending  = " + _thrustMissionList.get(5).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at cruise start  = " + _dragMissionList.get(4).to(NonSI.POUND_FORCE) + " \n")
@@ -3819,6 +3845,8 @@ public class MissionProfileCalc {
 			.append("\t\tCD at alternate cruise ending  = " + _dragCoefficientMissionList.get(11) + " \n")
 			.append("\t\tEfficiency at alternate cruise start  = " + _efficiencyMissionList.get(10) + " \n")
 			.append("\t\tEfficiency at alternate cruise ending  = " + _efficiencyMissionList.get(11) + " \n")
+			.append("\t\tThrottle at alternate cruise start  = " + _throttleMissionList.get(2) + " \n")
+			.append("\t\tThrottle at alternate cruise ending  = " + _throttleMissionList.get(3) + " \n")
 			.append("\t\tThrust at alternate cruise start  = " + _thrustMissionList.get(10).to(NonSI.POUND_FORCE) + " \n")
 			.append("\t\tThrust at alternate cruise ending  = " + _thrustMissionList.get(11).to(NonSI.POUND_FORCE) + " \n")
 			.append("\t\tDrag at alternate cruise start  = " + _dragMissionList.get(10).to(NonSI.POUND_FORCE) + " \n")
@@ -3875,6 +3903,8 @@ public class MissionProfileCalc {
 				.append("\t\tCD at holding ending  = " + _dragCoefficientMissionList.get(15) + " \n")
 				.append("\t\tEfficiency at holding start  = " + _efficiencyMissionList.get(14) + " \n")
 				.append("\t\tEfficiency at holding ending  = " + _efficiencyMissionList.get(15) + " \n")
+				.append("\t\tThrottle at holding start  = " + _throttleMissionList.get(4) + " \n")
+				.append("\t\tThrottle at holding ending  = " + _throttleMissionList.get(5) + " \n")
 				.append("\t\tThrust at holding start  = " + _thrustMissionList.get(14).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tThrust at holding ending  = " + _thrustMissionList.get(15).to(NonSI.POUND_FORCE) + " \n")
 				.append("\t\tDrag at holding start  = " + _dragMissionList.get(14).to(NonSI.POUND_FORCE) + " \n")
@@ -4607,6 +4637,14 @@ public class MissionProfileCalc {
 
 	public void setSFCMissionList(List<Double> _sfcMissionList) {
 		this._sfcMissionList = _sfcMissionList;
+	}
+
+	public List<Double> getThrottleMissionList() {
+		return _throttleMissionList;
+	}
+
+	public void setThrottleMissionList(List<Double> _throttleMissionList) {
+		this._throttleMissionList = _throttleMissionList;
 	}
 
 }

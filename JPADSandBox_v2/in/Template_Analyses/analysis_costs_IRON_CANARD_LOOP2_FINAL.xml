@@ -6,6 +6,8 @@
 			performance_from_previous_analysis="true"
 			>
 			<weights>
+			<!--RIBLETS OFF == MTOM = 55174 (xcg/c -0.22), TOW(400nm) = 50940 (M=0.64, xcg/c -0.26 TO/CLIMB) / 50932 (M=0.62, xcg/c -0.26 TO/CLIMB)  -->
+			<!--RIBLETS ON == MTOM = 55174 (xcg/c -0.22), TOW(400nm) = 50860 (M=0.64, xcg/c -0.26 TO/CLIMB) / 50851 (M=0.62, xcg/c -0.26 TO/CLIMB)  -->
 				<maximum_take_off_mass unit="kg">55174</maximum_take_off_mass>
 				<operating_empty_mass unit="kg">34167</operating_empty_mass>
 				<payload unit="kg">14040</payload>

@@ -437,6 +437,7 @@ public class PayloadRangeCalcMissionProfile{
 					aircraftMassAtClimbStart,
 					_obstacleTakeOff.to(SI.METER),
 					_theOperatingConditions.getAltitudeCruise().to(SI.METER),
+					false,
 					false
 					);
 
@@ -929,6 +930,7 @@ public class PayloadRangeCalcMissionProfile{
 						aircraftMassAtSecondClimbStart,
 						_holdingAltitude.to(SI.METER),
 						_alternateCruiseAltitude.to(SI.METER),
+						false,
 						false
 						);
 

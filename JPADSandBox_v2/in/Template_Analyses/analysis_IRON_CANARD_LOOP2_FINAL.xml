@@ -64,19 +64,18 @@
 	/>
 	-->
 	<performance
-			file="analysis_performance_IRON_CANARD_LOOP2_FINAL_no_riblets.xml"
+			file="analysis_performance_IRON_CANARD_LOOP2_FINAL_riblets.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
 			take_off="FALSE"
-			climb="TRUE"
+			climb="FALSE"
 			cruise="FALSE"
 			descent="FALSE"
 			landing="FALSE"
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
-			mission_profile="FALSE"
+			mission_profile="TRUE"
 	/> 
-	<!--
  	<costs 
 			file="analysis_costs_IRON_CANARD_LOOP2_FINAL.xml"
 			plot="TRUE"
@@ -92,7 +91,6 @@
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
 	/>
-	-->
 	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>

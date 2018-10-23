@@ -118,7 +118,8 @@ public class ClimbCalc {
 			Amount<Mass> startClimbMassOEI,
 			Amount<Length> initialClimbAltitude,
 			Amount<Length> finalClimbAltitude,
-			boolean performOEI
+			boolean performOEI,
+			boolean performCeilings
 			) {
 		
 		if(initialClimbAltitude.doubleValue(SI.METER) == finalClimbAltitude.doubleValue(SI.METER))
@@ -280,19 +281,23 @@ public class ClimbCalc {
 						)
 				);
 		//..................................................................................................
-		_ceilingMapAEO = PerformanceCalcUtils.calculateCeiling(_rcMapAEO, false);
-		//..................................................................................................
-		// COLLECTING RESULTS
-		_absoluteCeilingAEO = Amount.valueOf(
-				_ceilingMapAEO.getAbsoluteCeiling(),
-				SI.METER
-				);
-		
-		_serviceCeilingAEO = Amount.valueOf(
-				_ceilingMapAEO.getServiceCeiling(),
-				SI.METER
-				);
-		
+		if(performCeilings == true) {
+			
+			_ceilingMapAEO = PerformanceCalcUtils.calculateCeiling(_rcMapAEO);
+			
+			//..................................................................................................
+			// COLLECTING RESULTS
+			_absoluteCeilingAEO = Amount.valueOf(
+					_ceilingMapAEO.getAbsoluteCeiling(),
+					SI.METER
+					);
+
+			_serviceCeilingAEO = Amount.valueOf(
+					_ceilingMapAEO.getServiceCeiling(),
+					SI.METER
+					);
+			
+		}
 		_minimumClimbTimeAEO = PerformanceCalcUtils.calculateMinimumClimbTime(_rcMapAEO).to(NonSI.MINUTE);
 		
 		if(_climbSpeed != null)
@@ -394,19 +399,23 @@ public class ClimbCalc {
 							)
 					);
 			//..................................................................................................
-			_ceilingMapOEI = PerformanceCalcUtils.calculateCeiling(_rcMapOEI, true);
-			//..................................................................................................
-			// COLLECTING RESULTS
-			_absoluteCeilingOEI = Amount.valueOf(
-					_ceilingMapOEI.getAbsoluteCeiling(),
-					SI.METER
-					);
+			if(performCeilings == true) {
 
-			_serviceCeilingOEI = Amount.valueOf(
-					_ceilingMapOEI.getServiceCeiling(),
-					SI.METER
-					);
+				_ceilingMapOEI = PerformanceCalcUtils.calculateCeiling(_rcMapOEI);
 
+				//..................................................................................................
+				// COLLECTING RESULTS
+				_absoluteCeilingOEI = Amount.valueOf(
+						_ceilingMapOEI.getAbsoluteCeiling(),
+						SI.METER
+						);
+
+				_serviceCeilingOEI = Amount.valueOf(
+						_ceilingMapOEI.getServiceCeiling(),
+						SI.METER
+						);
+			
+			}
 		}
 		
 		//--------------------------------------------------------------------------------------
@@ -1725,10 +1734,6 @@ public class ClimbCalc {
 			List<Double> altitudeListAEO_SI = new ArrayList<Double>();
 			List<Double> altitudeListAEO_Imperial = new ArrayList<Double>();
 
-			maxRateOfClimbListAEO_SI.add(0.0);
-			maxRateOfClimbListAEO_Imperial.add(0.0);
-			altitudeListAEO_SI.add(_absoluteCeilingAEO.doubleValue(SI.METER));
-			altitudeListAEO_Imperial.add(_absoluteCeilingAEO.doubleValue(NonSI.FOOT));
 			for(int i=0; i<_rcMapAEO.size(); i++) {
 				maxRateOfClimbListAEO_SI.add(_rcMapAEO.get(_rcMapAEO.size()-1-i).getRCmax());
 				maxRateOfClimbListAEO_Imperial.add(
@@ -1764,10 +1769,6 @@ public class ClimbCalc {
 			List<Double> altitudeListOEI_SI = new ArrayList<Double>();
 			List<Double> altitudeListOEI_Imperial = new ArrayList<Double>();
 
-			maxRateOfClimbListOEI_SI.add(0.0);
-			maxRateOfClimbListOEI_Imperial.add(0.0);
-			altitudeListOEI_SI.add(_absoluteCeilingOEI.doubleValue(SI.METER));
-			altitudeListOEI_Imperial.add(_absoluteCeilingOEI.doubleValue(NonSI.FOOT));
 			for(int i=0; i<_rcMapOEI.size(); i++) {
 				maxRateOfClimbListOEI_SI.add(_rcMapOEI.get(_rcMapOEI.size()-1-i).getRCmax());
 				maxRateOfClimbListOEI_Imperial.add(
@@ -1806,9 +1807,6 @@ public class ClimbCalc {
 			List<Double> altitudeListAEO_SI = new ArrayList<Double>();
 			List<Double> altitudeListAEO_Imperial = new ArrayList<Double>();
 			
-			maxClimbAngleListAEO.add(0.0);
-			altitudeListAEO_SI.add(_absoluteCeilingAEO.doubleValue(SI.METER));
-			altitudeListAEO_Imperial.add(_absoluteCeilingAEO.doubleValue(NonSI.FOOT));
 			for(int i=0; i<_rcMapAEO.size(); i++) {
 				maxClimbAngleListAEO.add(MyArrayUtils.getMax(_rcMapAEO.get(_rcMapAEO.size()-1-i).getGamma()));
 				altitudeListAEO_SI.add(_rcMapAEO.get(_rcMapAEO.size()-1-i).getAltitude());
@@ -1839,9 +1837,6 @@ public class ClimbCalc {
 			List<Double> altitudeListOEI_SI = new ArrayList<Double>();
 			List<Double> altitudeListOEI_Imperial = new ArrayList<Double>();
 			
-			maxClimbAngleListOEI.add(0.0);
-			altitudeListOEI_SI.add(_absoluteCeilingOEI.doubleValue(SI.METER));
-			altitudeListOEI_Imperial.add(_absoluteCeilingOEI.doubleValue(NonSI.FOOT));
 			for(int i=0; i<_rcMapOEI.size(); i++) {
 				maxClimbAngleListOEI.add(MyArrayUtils.getMax(_rcMapOEI.get(_rcMapOEI.size()-1-i).getGamma()));
 				altitudeListOEI_SI.add(_rcMapOEI.get(_rcMapOEI.size()-1-i).getAltitude());	

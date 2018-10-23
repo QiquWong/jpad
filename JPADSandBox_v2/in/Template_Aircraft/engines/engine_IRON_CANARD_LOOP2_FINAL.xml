@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<engine id="IRON Engine" type="TURBOPROP" database="Normalized_Turboprop_100CRUISE_ISA10_v4.h5">
+	<engine id="IRON Engine" type="TURBOPROP" database="Normalized_Turboprop_100CRUISE_ISA0_v4.h5">
 		<dimensions>
 			<length unit="m">5.28</length>
 			<propeller_diameter unit="ft">14.00</propeller_diameter>
