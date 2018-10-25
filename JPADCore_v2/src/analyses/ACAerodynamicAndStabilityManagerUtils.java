@@ -14,6 +14,7 @@ import javax.measure.unit.SI;
 
 import org.jcae.opencascade.jni.Geom_TrimmedCurve;
 import org.jscience.physics.amount.Amount;
+import org.moeaframework.problem.misc.Lis;
 
 import analyses.ACAerodynamicAndStabilityManager_v2;
 import analyses.ACAerodynamicAndStabilityManager.CalcTotalLiftCoefficient;
@@ -477,6 +478,59 @@ public class ACAerodynamicAndStabilityManagerUtils {
 						),
 				aerodynamicAndStabilityManager.getDownwashGradientMap().get(ComponentEnum.WING).get(MethodEnum.ROSKAM).get(Boolean.TRUE).get(0)
 				);
+	}
+	
+	public static void calculateLandingGearDataSemiempirical(
+			ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager
+			) {
+
+		IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
+		double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
+		
+		if(!_theAerodynamicBuilderInterface.isCalculateLandingGearDeltaDragCoefficient()) {
+			_theAerodynamicBuilderInterface=(
+					IACAerodynamicAndStabilityManager_v2.Builder.from(_theAerodynamicBuilderInterface).setLandingGearDragCoefficient(
+						_theAerodynamicBuilderInterface.getLandingGearDeltaDragCoefficient()
+						).build()
+					);
+		}
+			
+		else {	
+			if(aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+					.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLAtAlpha calcCLAtAlpha = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+						.get(ComponentEnum.WING).new CalcCLAtAlpha();
+				calcCLAtAlpha.nasaBlackwellCompleteCurve(aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+						.get(ComponentEnum.WING).getCurrentAlpha());
+			}
+			
+			if(aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+					.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL) == null) {
+				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+						.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
+				calcHighLiftDevicesEffects.semiempirical(
+						_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+						_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+						currentMachNumber
+						);
+
+			}
+			
+			_theAerodynamicBuilderInterface = (
+					IACAerodynamicAndStabilityManager_v2.Builder.from(_theAerodynamicBuilderInterface).setLandingGearDragCoefficient(
+							DragCalc.calculateDeltaCD0LandingGears(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing(), 
+									_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears(), 
+									aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+									.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL), 
+									aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+									.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL)
+									)
+							).build()
+					);
+			
+		}
+		
 	}
 
 	public static void initializeDataForDownwashCanard(ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager) {
@@ -1593,10 +1647,49 @@ public class ACAerodynamicAndStabilityManagerUtils {
 					.collect(Collectors.toList())
 					);
 		});
+		
+		//----------- scale factors
+
+		_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> {
+			List<Double> temporaryDragCoefficient = new ArrayList<>();
+			for(int i=0; i<aerodynamicAndStabilityManager.getAlphaBodyList().size(); i++) {
+				temporaryDragCoefficient.add(
+						aerodynamicAndStabilityManager.getTotalDragCoefficient().get(de).get(i)*
+						_theAerodynamicBuilderInterface.getTotalDragCalibrationCDScaleFactor()
+						);
+			}
+		aerodynamicAndStabilityManager.getTotalLiftCoefficient().put(
+				de,
+				temporaryDragCoefficient
+				);
+		});
+		
+		
+
+		_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> {
+		
+		List<Double> temporaryCLCoefficient = new ArrayList<>();
+		aerodynamicAndStabilityManager.getTotalLiftCoefficient().get(de).stream().forEach(cl ->
+		temporaryCLCoefficient.add(cl * _theAerodynamicBuilderInterface.getTotalDragCalibrationCLScaleFactor()));
+		
+		aerodynamicAndStabilityManager.getTotalDragCoefficient().put(
+				de,
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(temporaryCLCoefficient)),
+						MyArrayUtils.convertToDoublePrimitive(aerodynamicAndStabilityManager.getTotalDragCoefficient().get(de)),
+						MyArrayUtils.convertToDoublePrimitive(
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										aerodynamicAndStabilityManager.getTotalLiftCoefficient().get(de)))
+						)
+						)
+				);
+		});
+
 	}
 	
 	//............................................................................
-	// Total Moment Coefficient INNER CLASS
+	// Total Moment Coefficient 
 	//............................................................................
 
 		public void calculateTotalMomentfromAircraftComponents(
@@ -1758,7 +1851,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								_theAerodynamicBuilderInterface.getZCGLandingGear(), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord(),  
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(), 
-								_landingGearUsedDrag,
+								_theAerodynamicBuilderInterface.getLandingGearDragCoefficient(),
 								aerodynamicAndStabilityManager.getAlphaBodyList(),
 								_theAerodynamicBuilderInterface.isCalculateWingPendularStability()
 								)
@@ -1829,9 +1922,9 @@ public class ACAerodynamicAndStabilityManagerUtils {
 										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 												.get(ComponentEnum.NACELLE)
 												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
-								_current3DHorizontalTailLiftCurve.get(de),
-								_current3DHorizontalTailMomentCurve.get(de),
-								_landingGearUsedDrag,
+								aerodynamicAndStabilityManager.getCurrent3DHorizontalTailLiftCurve().get(de),
+								aerodynamicAndStabilityManager.getCurrent3DHorizontalTailMomentCurve().get(de),
+								_theAerodynamicBuilderInterface.getLandingGearDragCoefficient(),
 								_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio(), 
 								aerodynamicAndStabilityManager.getAlphaBodyList(),
 								_theAerodynamicBuilderInterface.isCalculateWingPendularStability())						

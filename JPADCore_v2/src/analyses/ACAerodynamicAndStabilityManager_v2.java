@@ -2347,35 +2347,12 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		//LANDING GEARS 
 		//------------------------------------------------------------------------------
 		
-		if(_theAerodynamicBuilderInterface.getLandingGearDragCoefficient() == null) {
-			
-			if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlpha();
-				calcCLAtAlpha.nasaBlackwellCompleteCurve(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCurrentAlpha());
-			}
-			
-			if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL) == null) {
-				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
-				calcHighLiftDevicesEffects.semiempirical(
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-						_currentMachNumber
-						);
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears() != null) {
 
-			}
-			
-			setTheAerodynamicBuilderInterface(
-					IACAerodynamicAndStabilityManager_v2.Builder.from(_theAerodynamicBuilderInterface).setLandingGearDragCoefficient(
-							DragCalc.calculateDeltaCD0LandingGears(
-									_theAerodynamicBuilderInterface.getTheAircraft().getWing(), 
-									_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears(), 
-									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL), 
-									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL)
-									)
-							).build()
-					);
+				ACAerodynamicAndStabilityManagerUtils.calculateLandingGearDataSemiempirical(this);
 			
 		}
+			
 		
 		
 		//------------------------------------------------------------------------------
@@ -2517,6 +2494,20 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		switch (_theAerodynamicBuilderInterface.getNacellesAnalysisType()) {
 		case SEMIEMPIRICAL:
 			ACAerodynamicAndStabilityManagerUtils.calculateNacellesDataSemiempirical(
+					this
+					);
+			break;
+		default:
+			break;
+		}
+
+	}
+	
+	private void calculateLandingGearData() {
+
+		switch (_theAerodynamicBuilderInterface.getNacellesAnalysisType()) {
+		case SEMIEMPIRICAL:
+			ACAerodynamicAndStabilityManagerUtils.calculateLandingGearDataSemiempirical(
 					this
 					);
 			break;
