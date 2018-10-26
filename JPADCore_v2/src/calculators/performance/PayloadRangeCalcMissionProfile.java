@@ -2231,23 +2231,13 @@ public class PayloadRangeCalcMissionProfile{
 		_payloadArray = new ArrayList<Double>();
 		
 		// POINT 1
-		_payloadArray.add(Double.valueOf(_theAircraft.getCabinConfiguration().getMaximumPassengerNumber()));
+		_payloadArray.add(_passengersNumberAtMaxPayload.doubleValue());
 		// POINT 2
-		_payloadArray.add(Double.valueOf(_theAircraft.getCabinConfiguration().getMaximumPassengerNumber()));
+		_payloadArray.add(_passengersNumberAtMaxPayload.doubleValue());
 		// POINT 3
-		_payloadArray.add(Double.valueOf(_theAircraft.getCabinConfiguration().getMaximumPassengerNumber()));
+		_payloadArray.add(_passengersNumberAtDesignPayload.doubleValue());
 		// POINT 4
-		_payloadArray.add(
-				Double.valueOf(
-						Math.round(
-								(_maximumTakeOffMass.to(SI.KILOGRAM)
-										.minus(_operatingEmptyMass.to(SI.KILOGRAM))
-										.minus(_maxFuelMass.to(SI.KILOGRAM)))
-								.divide(_singlePassengerMass.to(SI.KILOGRAM))
-								.getEstimatedValue()
-								)
-						)
-				);
+		_payloadArray.add(_passengersNumberAtMaxFuel.doubleValue());
 		// POINT 5
 		_payloadArray.add(0.0);
 

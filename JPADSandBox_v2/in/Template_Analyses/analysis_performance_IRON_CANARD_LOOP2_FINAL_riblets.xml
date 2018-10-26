@@ -40,6 +40,11 @@
 						<!-- xc/c -0.22 -->
 							<polar_curve_CL>-0.01993;0.05248;0.12489;0.19729;0.26970;0.34211;0.41452;0.48693;0.55933;0.63174;0.70415;0.77656;0.84897;0.92137;0.99378;1.06619;1.13860;1.21101;1.28341;1.35582;1.42823</polar_curve_CL>
 							<polar_curve_CD>0.02409;0.02377;0.02377;0.02410;0.02475;0.02573;0.02703;0.02865;0.03060;0.03287;0.03547;0.03839;0.04163;0.04520;0.04909;0.05331;0.05785;0.06271;0.06790;0.07342;0.07925</polar_curve_CD>
+						<!-- xc/c -0.22 Fully Turbulent -->
+						<!--
+							<polar_curve_CL>-0.01993;0.05248;0.12489;0.19729;0.26970;0.34211;0.41452;0.48693;0.55933;0.63174;0.70415;0.77656;0.84897;0.92137;0.99378;1.06619;1.13860;1.21101;1.28341;1.35582;1.42823</polar_curve_CL>
+							<polar_curve_CD>0.02782;0.02726;0.02704;0.02717;0.02766;0.02848;0.02966;0.03118;0.03305;0.03527;0.03784;0.04075;0.04401;0.04762;0.05158;0.05588;0.06053;0.06553;0.07088;0.07657;0.08261</polar_curve_CD>
+						-->
 						</cruise>
 						<climb> 
 						<!-- xc/c -0.22 -->
@@ -116,8 +121,8 @@
 			<!-- Climb speed in this consditions = 123 kn-->
 				<k_climb_weight_AEO></k_climb_weight_AEO> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
 				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
-				<initial_climb_altitude unit="ft">1500.0</initial_climb_altitude>
-				<final_climb_altitude unit="ft">25000.0</final_climb_altitude>
+				<initial_climb_altitude unit="ft">0.0</initial_climb_altitude>
+				<final_climb_altitude unit="ft">20000.0</final_climb_altitude>
 				<!--
 				<initial_climb_altitude unit="ft">5430.0</initial_climb_altitude>
 				<final_climb_altitude unit="ft">5800.0</final_climb_altitude>

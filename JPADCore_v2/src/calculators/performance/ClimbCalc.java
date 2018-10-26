@@ -133,7 +133,7 @@ public class ClimbCalc {
 		double[] altitudeArray = MyArrayUtils.linspace(
 				initialClimbAltitude.doubleValue(SI.METER),
 				finalClimbAltitude.doubleValue(SI.METER),
-				10
+				5
 				);
 							
 		//----------------------------------------------------------------------------------

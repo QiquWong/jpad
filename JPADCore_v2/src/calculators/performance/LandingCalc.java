@@ -588,10 +588,14 @@ public class LandingCalc {
 		// Horizontal Forces v.s. ground roll distance
 		double[][] xMatrix2_SI = new double[4][totalForce.size()];
 		double[][] xMatrix2_Imperial = new double[4][totalForce.size()];
-		for(int i=0; i<xMatrix1_SI.length; i++) {
-			xMatrix2_SI[i] = groundRollDistance_SI;
-			xMatrix2_Imperial[i] = groundRollDistance_Imperial;
-		}
+		xMatrix2_SI[0] = groundRollDistance_SI;
+		xMatrix2_SI[1] = groundRollDistance_SI;
+		xMatrix2_SI[2] = groundRollDistance_SI;
+		xMatrix2_SI[3] = groundRollDistance_SI;
+		xMatrix2_Imperial[0] = groundRollDistance_Imperial;
+		xMatrix2_Imperial[1] = groundRollDistance_Imperial;
+		xMatrix2_Imperial[2] = groundRollDistance_Imperial;
+		xMatrix2_Imperial[3] = groundRollDistance_Imperial;
 
 		double[][] yMatrix2_SI = new double[4][totalForce.size()];
 		double[][] yMatrix2_Imperial = new double[4][totalForce.size()];
