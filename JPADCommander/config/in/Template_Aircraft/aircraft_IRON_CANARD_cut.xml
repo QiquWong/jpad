@@ -48,18 +48,18 @@
             </fuselage>
         </fuselages>
 		<power_plant>
-            <engine file="engine_IRON_LOOP1_updated.xml">
+            <engine file="engine_IRON_NEW.xml">
                 <position>
-                    <x unit="m">29.48</x>
+                    <x unit="m">29.44</x>
                     <y unit="m">4.53</y>
                     <z unit="m">0.272</z>
                 </position>
                 <tilting_angle unit="deg">0.0</tilting_angle>
 				<mounting_point>HTAIL</mounting_point>
             </engine>
-            <engine file="engine_IRON_LOOP1_updated.xml">
+            <engine file="engine_IRON_NEW.xml">
                 <position>
-                    <x unit="m">29.48</x>
+                    <x unit="m">29.44</x>
                     <y unit="m">-4.53</y>
                     <z unit="m">0.272</z>
                 </position>
@@ -68,17 +68,17 @@
             </engine>
 		</power_plant> 
 		<nacelles>
-            <nacelle file="nacelle_IRON_LOOP1_updated.xml">
+            <nacelle file="nacelle_IRON.xml">
                 <position>
-                    <x unit="m">29.48</x>
+                    <x unit="m">29.44</x>
                     <y unit="m">4.53</y>
                     <z unit="m">0.272</z>
                 </position>
                 <mounting_point>HTAIL</mounting_point>
             </nacelle>
-            <nacelle file="nacelle_IRON_LOOP1_updated.xml">
+            <nacelle file="nacelle_IRON.xml">
                 <position>
-                    <x unit="m">29.48</x>
+                    <x unit="m">29.44</x>
                     <y unit="m">-4.53</y>
                     <z unit="m">0.272</z>
                 </position>

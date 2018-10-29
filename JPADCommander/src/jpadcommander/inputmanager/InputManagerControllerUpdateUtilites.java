@@ -30,6 +30,8 @@ import aircraft.components.fuselage.IFuselage;
 import aircraft.components.liftingSurface.ILiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
+import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator;
+import aircraft.components.liftingSurface.creator.IAsymmetricFlapCreator;
 import aircraft.components.liftingSurface.creator.IEquivalentWing;
 import aircraft.components.liftingSurface.creator.ILiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.ISlatCreator;
@@ -1324,11 +1326,11 @@ public class InputManagerControllerUpdateUtilites {
 		// DATA INITIALIZATION
 		//.................................................................................................
 		boolean wingEquivalentFlag = false;
-		String wingMainSparLoacation = "";
+		String wingMainSparLocation = "";
 		String wingSecondarySparLocation = "";
 		String wingRoughness = "";
 		String wingRoughnessUnit = "";
-		String wingWingletHeigth = "";
+		String wingWingletHeight = "";
 		String wingWingletHeightUnit = "";
 		//.................................................................................................
 		String wingEquivalentArea = "";
@@ -1420,7 +1422,7 @@ public class InputManagerControllerUpdateUtilites {
 		if(theController.getEquivalentWingCheckBox().isSelected())
 			wingEquivalentFlag = true;
 		if(theController.getTextFieldWingMainSparAdimensionalPosition().getText() != null)
-			wingMainSparLoacation = theController.getTextFieldWingMainSparAdimensionalPosition().getText();
+			wingMainSparLocation = theController.getTextFieldWingMainSparAdimensionalPosition().getText();
 		if(theController.getTextFieldWingSecondarySparAdimensionalPosition().getText() != null)
 			wingSecondarySparLocation = theController.getTextFieldWingSecondarySparAdimensionalPosition().getText();
 		if(theController.getTextFieldWingRoughness().getText() != null)
@@ -1428,7 +1430,7 @@ public class InputManagerControllerUpdateUtilites {
 		if(!theController.getWingRoughnessUnitChoiceBox().getSelectionModel().isEmpty())
 			wingRoughnessUnit = theController.getWingRoughnessUnitChoiceBox().getSelectionModel().getSelectedItem().toString();
 		if(theController.getTextFieldWingWingletHeight().getText() != null)
-			wingWingletHeigth = theController.getTextFieldWingWingletHeight().getText();
+			wingWingletHeight = theController.getTextFieldWingWingletHeight().getText();
 		if(!theController.getWingWingletHeightUnitChoiceBox().getSelectionModel().isEmpty())
 			wingWingletHeightUnit = theController.getWingWingletHeightUnitChoiceBox().getSelectionModel().getSelectedItem().toString();
 		//.................................................................................................
@@ -1856,91 +1858,49 @@ public class InputManagerControllerUpdateUtilites {
 		}
 		
 		//.................................................................................................
-		// FILTERING FILLED AILERONS TABS ... /*TODO*/
-		//.................................................................................................
-//		int numberOfFilledWingAileronTabs = Arrays.asList(
-//				wingSpoilersInnerSpanwisePositionList.size(),
-//				wingSpoilersOuterSpanwisePositionList.size(),
-//				wingSpoilersInnerChordwisePositionList.size(),
-//				wingSpoilersOuterChordwisePositionList.size(),
-//				wingSpoilersMaximumDeflectionList.size(),
-//				wingSpoilersMaximumDeflectionUnitList.size(),
-//				wingSpoilersMinimumDeflectionList.size(),
-//				wingSpoilersMinimumDeflectionUnitList.size()
-//				).stream()
-//				.mapToInt(size -> size)
-//				.min()
-//				.getAsInt();
-//
-//		if (numberOfFilledWingSpoilerTabs > 0) {
-//			if (tabPaneWingSpoilers.getTabs().size() > numberOfFilledWingSpoilerTabs) {
-//
-//				Platform.runLater(new Runnable() {
-//
-//					@Override
-//					public void run() {
-//
-//						//..................................................................................
-//						// WING SPOILERS UPDATE WARNING
-//						Stage wingSpoilersUpdateWarning = new Stage();
-//
-//						wingSpoilersUpdateWarning.setTitle("Wing Spoiler Update Warning");
-//						wingSpoilersUpdateWarning.initModality(Modality.WINDOW_MODAL);
-//						wingSpoilersUpdateWarning.initStyle(StageStyle.UNDECORATED);
-//						wingSpoilersUpdateWarning.initOwner(Main.getPrimaryStage());
-//
-//						FXMLLoader loader = new FXMLLoader();
-//						loader.setLocation(Main.class.getResource("inputmanager/UpdateWingSpoilersWarning.fxml"));
-//						BorderPane wingSpoilersUpdateWarningBorderPane = null;
-//						try {
-//							wingSpoilersUpdateWarningBorderPane = loader.load();
-//						} catch (IOException e) {
-//							e.printStackTrace();
-//						}
-//
-//						Button continueButton = (Button) wingSpoilersUpdateWarningBorderPane.lookup("#warningContinueButton");
-//						continueButton.setOnAction(new EventHandler<ActionEvent>() {
-//
-//							@Override
-//							public void handle(ActionEvent arg0) {
-//								wingSpoilersUpdateWarning.close();
-//							}
-//
-//						});
-//
-//						Scene scene = new Scene(wingSpoilersUpdateWarningBorderPane);
-//						wingSpoilersUpdateWarning.setScene(scene);
-//						wingSpoilersUpdateWarning.sizeToScene();
-//						wingSpoilersUpdateWarning.show();
-//
-//					}
-//				});
-//
-//			}
-//		}
-//		
-//		List<AsymmetricFlapCreator> aileronList = new ArrayList<>();
-//		
-//		for (int i=0; i<numberOfFilledWingSpoilerTabs; i++) {
-//		
-//			spoilersList.add(
-//					new SpoilerCreator.SpoilerBuilder(
-//							"Wing Spoiler " + (i+1) + " - " + Main.getTheAircraft().getId(), 
-//							Double.valueOf(wingSpoilersInnerSpanwisePositionList.get(i)), 
-//							Double.valueOf(wingSpoilersOuterSpanwisePositionList.get(i)), 
-//							Double.valueOf(wingSpoilersInnerChordwisePositionList.get(i)), 
-//							Double.valueOf(wingSpoilersOuterChordwisePositionList.get(i)), 
-//							(Amount<Angle>) Amount.valueOf(
-//									Double.valueOf(wingSpoilersMinimumDeflectionList.get(i)),
-//									Unit.valueOf(wingSpoilersMinimumDeflectionUnitList.get(i))
-//									),
-//							(Amount<Angle>) Amount.valueOf(
-//									Double.valueOf(wingSpoilersMaximumDeflectionList.get(i)), 
-//									Unit.valueOf(wingSpoilersMaximumDeflectionUnitList.get(i))
-//									)
-//							).build()
-//					);
-//		}
+		// FILTERING FILLED AILERONS TABS ... 
+		//.................................................................................................		
+		List<AsymmetricFlapCreator> aileronList = new ArrayList<>();
+			
+		aileronList.add(
+				new AsymmetricFlapCreator(new IAsymmetricFlapCreator.Builder()
+						.setId("Left aileron - " + Main.getTheAircraft().getId())
+						.setType(FlapTypeEnum.valueOf(wingLeftAileronType))
+						.setInnerStationSpanwisePosition(Double.valueOf(wingLeftAileronInnerPosition))
+						.setOuterStationSpanwisePosition(Double.valueOf(wingLeftAileronOuterPosition))
+						.setInnerChordRatio(Double.valueOf(wingLeftAileronInnerChordRatio))
+						.setOuterChordRatio(Double.valueOf(wingLeftAileronOuterChordRatio))
+						.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
+								Double.valueOf(wingLeftAileronMinimumDeflection),
+								Unit.valueOf(wingLeftAileronMinimumDeflectionUnit)
+								))
+						.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
+								Double.valueOf(wingLeftAileronMaximumDeflection),
+								Unit.valueOf(wingLeftAileronMaximumDeflectionUnit)
+								))
+						.build()
+						)
+				);
+
+		aileronList.add(
+				new AsymmetricFlapCreator(new IAsymmetricFlapCreator.Builder()
+						.setId("Right aileron - " + Main.getTheAircraft().getId())
+						.setType(FlapTypeEnum.valueOf(wingRightAileronType))
+						.setInnerStationSpanwisePosition(Double.valueOf(wingRightAileronInnerPosition))
+						.setOuterStationSpanwisePosition(Double.valueOf(wingRightAileronOuterPosition))
+						.setInnerChordRatio(Double.valueOf(wingRightAileronInnerChordRatio))
+						.setOuterChordRatio(Double.valueOf(wingRightAileronOuterChordRatio))
+						.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
+								Double.valueOf(wingRightAileronMinimumDeflection),
+								Unit.valueOf(wingRightAileronMinimumDeflectionUnit)
+								))
+						.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
+								Double.valueOf(wingRightAileronMaximumDeflection),
+								Unit.valueOf(wingRightAileronMaximumDeflectionUnit)
+								))
+						.build()
+						)
+				);
 		
 		//.................................................................................................
 		// FILTERING FILLED SPOILERS TABS ...
@@ -2037,7 +1997,7 @@ public class InputManagerControllerUpdateUtilites {
 		Main.getTheAircraft().getWing().setTheLiftingSurfaceInterface(ILiftingSurface.Builder.from(
 				Main.getTheAircraft().getWing().getTheLiftingSurfaceInterface()
 				)
-				.setMainSparDimensionlessPosition(Double.valueOf(wingMainSparLoacation))
+				.setMainSparDimensionlessPosition(Double.valueOf(wingMainSparLocation))
 				.setSecondarySparDimensionlessPosition(Double.valueOf(wingSecondarySparLocation))
 				.build()
 				);
@@ -2049,7 +2009,7 @@ public class InputManagerControllerUpdateUtilites {
 				);
 		Main.getTheAircraft().getWing().setWingletHeight(
 				(Amount<Length>) Amount.valueOf(
-						Double.valueOf(wingWingletHeigth),
+						Double.valueOf(wingWingletHeight),
 						Unit.valueOf(wingWingletHeightUnit)
 						)
 				);
@@ -2285,21 +2245,15 @@ public class InputManagerControllerUpdateUtilites {
 								
 			}
 			
-			Main.getTheAircraft().getWing().getPanels().clear();
 			Main.getTheAircraft().getWing().setPanels(panelsList);
 			
 		}
 		//.................................................................................................
 		
-		Main.getTheAircraft().getWing().getSymmetricFlaps().clear();
-		Main.getTheAircraft().getWing().getAsymmetricFlaps().clear();
-		Main.getTheAircraft().getWing().getSlats().clear();
-		Main.getTheAircraft().getWing().getSpoilers().clear();
-		
-		Main.getTheAircraft().getWing().getSymmetricFlaps().addAll(flapList);
-//		Main.getTheAircraft().getWing().getAsymmetricFlaps().addAll(flapList);
-		Main.getTheAircraft().getWing().getSlats().addAll(slatList);
-		Main.getTheAircraft().getWing().getSpoilers().addAll(spoilersList);
+		Main.getTheAircraft().getWing().setSymmetricFlaps(flapList);
+		Main.getTheAircraft().getWing().setAsymmetricFlaps(aileronList);
+		Main.getTheAircraft().getWing().setSlats(slatList);
+		Main.getTheAircraft().getWing().setSpoilers(spoilersList);
 		
 		//.................................................................................................
 		Main.getTheAircraft().getWing().calculateGeometry(
@@ -2313,21 +2267,1242 @@ public class InputManagerControllerUpdateUtilites {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void updateHTailTabData() {
 		
-		// TODO: AFTER MATHCING ADJUST CRITERION WITH THE DATA MODEL
+		//.................................................................................................
+		// DATA INITIALIZATION
+		//.................................................................................................
+		String hTailMainSparLocation = "";
+		String hTailSecondarySparLocation = "";
+		String hTailRoughness = "";
+		String hTailRoughnessUnit = "";
+		//.................................................................................................
+		List<String> hTailPanelsSpanList = new ArrayList<>();
+		List<String> hTailPanelsSpanUnitList = new ArrayList<>();
+		List<String> hTailPanelsSweepLEList = new ArrayList<>();
+		List<String> hTailPanelsSweepLEUnitList = new ArrayList<>();
+		List<String> hTailPanelsDihedralList = new ArrayList<>();
+		List<String> hTailPanelsDihedralUnitList = new ArrayList<>();
+		List<String> hTailPanelsInnerChordList = new ArrayList<>();
+		List<String> hTailPanelsInnerChordUnitList = new ArrayList<>();
+		List<String> hTailPanelsInnerTwistList = new ArrayList<>();
+		List<String> hTailPanelsInnerTwistUnitList = new ArrayList<>();
+		List<String> hTailPanelsInnerAirfoilPathList = new ArrayList<>();
+		List<String> hTailPanelsOuterChordList = new ArrayList<>();
+		List<String> hTailPanelsOuterChordUnitList = new ArrayList<>();
+		List<String> hTailPanelsOuterTwistList = new ArrayList<>();
+		List<String> hTailPanelsOuterTwistUnitList = new ArrayList<>();
+		List<String> hTailPanelsOuterAirfoilPathList = new ArrayList<>();
+		//.................................................................................................
+		List<String> hTailElevatorsTypeList = new ArrayList<>();
+		List<String> hTailElevatorsInnerPositionList = new ArrayList<>();
+		List<String> hTailElevatorsOuterPositionList = new ArrayList<>();
+		List<String> hTailElevatorsInnerChordRatioList = new ArrayList<>();
+		List<String> hTailElevatorsOuterChordRatioList = new ArrayList<>();
+		List<String> hTailElevatorsMinimumDeflectionList = new ArrayList<>();
+		List<String> hTailElevatorsMinimumDeflectionUnitList = new ArrayList<>();
+		List<String> hTailElevatorsMaximumDeflectionList = new ArrayList<>();
+		List<String> hTailElevatorsMaximumDeflectionUnitList = new ArrayList<>();
+		
+		//.................................................................................................
+		// FETCHING DATA FROM GUI FIELDS ...
+		//.................................................................................................
+		if(theController.getTextFieldHTailMainSparAdimensionalPosition().getText() != null)
+			hTailMainSparLocation = theController.getTextFieldHTailMainSparAdimensionalPosition().getText();
+		if(theController.getTextFieldHTailSecondarySparAdimensionalPosition().getText() != null)
+			hTailSecondarySparLocation = theController.getTextFieldHTailSecondarySparAdimensionalPosition().getText();
+		if(theController.getTextFieldHTailRoughness().getText() != null)
+			hTailRoughness = theController.getTextFieldHTailRoughness().getText();
+		if(!theController.gethTailRoughnessUnitChoiceBox().getSelectionModel().isEmpty())
+			hTailRoughnessUnit = theController.gethTailRoughnessUnitChoiceBox().getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(!theController.getTextFieldHTailSpanPanelList().isEmpty())
+			theController.getTextFieldHTailSpanPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailPanelsSpanList.add(tf.getText()));
+		if(!theController.getChoiceBoxHTailSpanPanelUnitList().isEmpty())
+			theController.getChoiceBoxHTailSpanPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> hTailPanelsSpanUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldHTailSweepLEPanelList().isEmpty())
+			theController.getTextFieldHTailSweepLEPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailPanelsSweepLEList.add(tf.getText()));
+		if(!theController.getChoiceBoxHTailSweepLEPanelUnitList().isEmpty())
+			theController.getChoiceBoxHTailSweepLEPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> hTailPanelsSweepLEUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldHTailDihedralPanelList().isEmpty())
+			theController.getTextFieldHTailDihedralPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailPanelsDihedralList.add(tf.getText()));
+		if(!theController.getChoiceBoxHTailDihedralPanelUnitList().isEmpty())
+			theController.getChoiceBoxHTailDihedralPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> hTailPanelsDihedralUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldHTailInnerChordPanelList().isEmpty())
+			theController.getTextFieldHTailInnerChordPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailPanelsInnerChordList.add(tf.getText()));
+		if(!theController.getChoiceBoxHTailInnerChordPanelUnitList().isEmpty())
+			theController.getChoiceBoxHTailInnerChordPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> hTailPanelsInnerChordUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldHTailInnerTwistPanelList().isEmpty())
+			theController.getTextFieldHTailInnerTwistPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailPanelsInnerTwistList.add(tf.getText()));
+		if(!theController.getChoiceBoxHTailInnerTwistPanelUnitList().isEmpty())
+			theController.getChoiceBoxHTailInnerTwistPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> hTailPanelsInnerTwistUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldHTailInnerAirfoilPanelList().isEmpty())
+			theController.getTextFieldHTailInnerAirfoilPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailPanelsInnerAirfoilPathList.add(tf.getText()));
+		if(!theController.getTextFieldHTailOuterChordPanelList().isEmpty())
+			theController.getTextFieldHTailOuterChordPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailPanelsOuterChordList.add(tf.getText()));
+		if(!theController.getChoiceBoxHTailOuterChordPanelUnitList().isEmpty())
+			theController.getChoiceBoxHTailOuterChordPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> hTailPanelsOuterChordUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldHTailOuterTwistPanelList().isEmpty())
+			theController.getTextFieldHTailOuterTwistPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailPanelsOuterTwistList.add(tf.getText()));
+		if(!theController.getChoiceBoxHTailOuterTwistPanelUnitList().isEmpty())
+			theController.getChoiceBoxHTailOuterTwistPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> hTailPanelsOuterTwistUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldHTailOuterAirfoilPanelList().isEmpty())
+			theController.getTextFieldHTailOuterAirfoilPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailPanelsOuterAirfoilPathList.add(tf.getText()));
+		//.................................................................................................
+		if(!theController.getChoiceBoxHTailElevatorTypeList().isEmpty())
+			theController.getChoiceBoxHTailElevatorTypeList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> hTailElevatorsTypeList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldHTailInnerPositionElevatorList().isEmpty())
+			theController.getTextFieldHTailInnerPositionElevatorList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailElevatorsInnerPositionList.add(tf.getText()));
+		if(!theController.getTextFieldHTailOuterPositionElevatorList().isEmpty())
+			theController.getTextFieldHTailOuterPositionElevatorList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailElevatorsOuterPositionList.add(tf.getText()));
+		if(!theController.getTextFieldHTailInnerChordRatioElevatorList().isEmpty())
+			theController.getTextFieldHTailInnerChordRatioElevatorList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailElevatorsInnerChordRatioList.add(tf.getText()));
+		if(!theController.getTextFieldHTailOuterChordRatioElevatorList().isEmpty())
+			theController.getTextFieldHTailOuterChordRatioElevatorList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailElevatorsOuterChordRatioList.add(tf.getText()));
+		if(!theController.getTextFieldHTailMaximumDeflectionAngleElevatorList().isEmpty())
+			theController.getTextFieldHTailMaximumDeflectionAngleElevatorList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailElevatorsMaximumDeflectionList.add(tf.getText()));
+		if(!theController.getChoiceBoxHTailMaximumDeflectionAngleElevatorUnitList().isEmpty())
+			theController.getChoiceBoxHTailMaximumDeflectionAngleElevatorUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> hTailElevatorsMaximumDeflectionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldHTailMinimumDeflectionAngleElevatorList().isEmpty())
+			theController.getTextFieldHTailMinimumDeflectionAngleElevatorList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> hTailElevatorsMinimumDeflectionList.add(tf.getText()));
+		if(!theController.getChoiceBoxHTailMinimumDeflectionAngleElevatorUnitList().isEmpty())
+			theController.getChoiceBoxHTailMinimumDeflectionAngleElevatorUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> hTailElevatorsMinimumDeflectionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		
+		//.................................................................................................
+		// FILTERING FILLED ELEVATORS TABS ...
+		//.................................................................................................
+		int numberOfFilledHTailElevatorsTabs = Arrays.asList(
+				hTailElevatorsTypeList.size(),
+				hTailElevatorsInnerPositionList.size(),
+				hTailElevatorsOuterPositionList.size(),
+				hTailElevatorsInnerChordRatioList.size(),
+				hTailElevatorsOuterChordRatioList.size(),
+				hTailElevatorsMaximumDeflectionList.size(),
+				hTailElevatorsMaximumDeflectionUnitList.size(),
+				hTailElevatorsMinimumDeflectionList.size(),
+				hTailElevatorsMinimumDeflectionUnitList.size()
+				).stream()
+				.mapToInt(size -> size)
+				.min()
+				.getAsInt();
+
+		if (numberOfFilledHTailElevatorsTabs > 0) {
+			if (theController.getTabPaneHTailElevators().getTabs().size() > numberOfFilledHTailElevatorsTabs) {
+
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+
+						//..................................................................................
+						// HTAIL ELEVATORS UPDATE WARNING
+						Stage hTailElevatorsUpdateWarning = new Stage();
+
+						hTailElevatorsUpdateWarning.setTitle("HTail Elevators Update Warning");
+						hTailElevatorsUpdateWarning.initModality(Modality.WINDOW_MODAL);
+						hTailElevatorsUpdateWarning.initStyle(StageStyle.UNDECORATED);
+						hTailElevatorsUpdateWarning.initOwner(Main.getPrimaryStage());
+
+						FXMLLoader loader = new FXMLLoader();
+						loader.setLocation(Main.class.getResource("inputmanager/UpdateHTailElevatorsWarning.fxml"));
+						BorderPane hTailElevatorsUpdateWarningBorderPane = null;
+						try {
+							hTailElevatorsUpdateWarningBorderPane = loader.load();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						Button continueButton = (Button) hTailElevatorsUpdateWarningBorderPane.lookup("#warningContinueButton");
+						continueButton.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(ActionEvent arg0) {
+								hTailElevatorsUpdateWarning.close();
+							}
+
+						});
+
+						Scene scene = new Scene(hTailElevatorsUpdateWarningBorderPane);
+						hTailElevatorsUpdateWarning.setScene(scene);
+						hTailElevatorsUpdateWarning.sizeToScene();
+						hTailElevatorsUpdateWarning.show();
+
+					}
+				});
+
+			}
+		}
+		
+		List<SymmetricFlapCreator> elevatorList = new ArrayList<>();
+		
+		for (int i=0; i<numberOfFilledHTailElevatorsTabs; i++) {
+		
+			elevatorList.add(
+					new SymmetricFlapCreator(new ISymmetricFlapCreator.Builder()
+							.setId("HTail elevator " + (i+1) + " - " + Main.getTheAircraft().getId())
+							.setType(FlapTypeEnum.valueOf(hTailElevatorsTypeList.get(i)))
+							.setInnerStationSpanwisePosition(Double.valueOf(hTailElevatorsInnerPositionList.get(i))) 
+							.setOuterStationSpanwisePosition(Double.valueOf(hTailElevatorsOuterPositionList.get(i))) 
+							.setInnerChordRatio(Double.valueOf(hTailElevatorsInnerChordRatioList.get(i))) 
+							.setOuterChordRatio(Double.valueOf(hTailElevatorsOuterChordRatioList.get(i)))
+							.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
+									Double.valueOf(hTailElevatorsMinimumDeflectionList.get(i)),
+									Unit.valueOf(hTailElevatorsMinimumDeflectionUnitList.get(i))
+									))
+							.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
+									Double.valueOf(hTailElevatorsMaximumDeflectionList.get(i)),
+									Unit.valueOf(hTailElevatorsMaximumDeflectionUnitList.get(i))
+									))
+							.build()
+							)
+					);
+		}
+		
+		//.................................................................................................
+		// SETTING ALL DATA INSIDE THE AIRCRAFT OBJECT ...
+		//.................................................................................................
+		Main.getTheAircraft().getHTail().setTheLiftingSurfaceInterface(ILiftingSurface.Builder.from(
+				Main.getTheAircraft().getHTail().getTheLiftingSurfaceInterface()
+				)
+				.setMainSparDimensionlessPosition(Double.valueOf(hTailMainSparLocation))
+				.setSecondarySparDimensionlessPosition(Double.valueOf(hTailSecondarySparLocation))
+				.build()
+				);
+		Main.getTheAircraft().getHTail().setRoughness(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(hTailRoughness),
+						Unit.valueOf(hTailRoughnessUnit)
+						)
+				);
+		
+		//.................................................................................................
+		// FILTERING FILLED HTAIL PANELS TABS ...
+		//.................................................................................................
+		int numberOfFilledHTailPanelsTabs = Arrays.asList(
+				hTailPanelsSpanList.size(),
+				hTailPanelsSpanUnitList.size(),
+				hTailPanelsSweepLEList.size(),
+				hTailPanelsSweepLEUnitList.size(),
+				hTailPanelsDihedralList.size(),
+				hTailPanelsDihedralUnitList.size(),
+				hTailPanelsInnerChordList.size(),
+				hTailPanelsInnerChordUnitList.size(),
+				hTailPanelsInnerTwistList.size(),
+				hTailPanelsInnerTwistUnitList.size(),
+				hTailPanelsInnerAirfoilPathList.size(),
+				hTailPanelsOuterChordList.size(),
+				hTailPanelsOuterChordUnitList.size(),
+				hTailPanelsOuterTwistList.size(),
+				hTailPanelsOuterTwistUnitList.size(),
+				hTailPanelsOuterAirfoilPathList.size()
+				).stream()
+				.mapToInt(size -> size)
+				.min()
+				.getAsInt();
+		
+		if (numberOfFilledHTailPanelsTabs > 0) {
+			if (theController.getTabPaneHTailPanels().getTabs().size() > numberOfFilledHTailPanelsTabs) {
+
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+
+						//..................................................................................
+						// HTAIL PANELS UPDATE WARNING
+						Stage hTailPanelsUpdateWarning = new Stage();
+
+						hTailPanelsUpdateWarning.setTitle("HTail Panels Update Warning");
+						hTailPanelsUpdateWarning.initModality(Modality.WINDOW_MODAL);
+						hTailPanelsUpdateWarning.initStyle(StageStyle.UNDECORATED);
+						hTailPanelsUpdateWarning.initOwner(Main.getPrimaryStage());
+
+						FXMLLoader loader = new FXMLLoader();
+						loader.setLocation(Main.class.getResource("inputmanager/UpdateHTailPanelsWarning.fxml"));
+						BorderPane hTailPanelsUpdateWarningBorderPane = null;
+						try {
+							hTailPanelsUpdateWarningBorderPane = loader.load();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						Button continueButton = (Button) hTailPanelsUpdateWarningBorderPane.lookup("#warningContinueButton");
+						continueButton.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(ActionEvent arg0) {
+								hTailPanelsUpdateWarning.close();
+							}
+
+						});
+
+						Scene scene = new Scene(hTailPanelsUpdateWarningBorderPane);
+						hTailPanelsUpdateWarning.setScene(scene);
+						hTailPanelsUpdateWarning.sizeToScene();
+						hTailPanelsUpdateWarning.show();
+
+					}
+				});
+
+			}
+		}
+		
+		List<LiftingSurfacePanelCreator> hTailPanelsList = new ArrayList<>();
+		
+		for (int i=0; i<numberOfFilledHTailPanelsTabs; i++) {
+		
+			hTailPanelsList.add(
+					new LiftingSurfacePanelCreator(
+							new ILiftingSurfacePanelCreator.Builder()
+							.setId("HTail Panels " + (i+1) + " - " + Main.getTheAircraft().getId())
+							.setLinkedTo(false)
+							.setChordRoot(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(hTailPanelsInnerChordList.get(i)),
+											Unit.valueOf(hTailPanelsInnerChordUnitList.get(i))
+											)
+									)
+							.setChordTip(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(hTailPanelsOuterChordList.get(i)),
+											Unit.valueOf(hTailPanelsOuterChordUnitList.get(i))
+											)
+									)
+							.setAirfoilRoot(Airfoil.importFromXML(hTailPanelsInnerAirfoilPathList.get(i)))
+							.setAirfoilTip(Airfoil.importFromXML(hTailPanelsOuterAirfoilPathList.get(i)))
+							.setTwistGeometricAtRoot(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(hTailPanelsInnerTwistList.get(i)),
+											Unit.valueOf(hTailPanelsInnerTwistUnitList.get(i))
+											)
+									)
+							.setTwistGeometricAtTip(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(hTailPanelsOuterTwistList.get(i)),
+											Unit.valueOf(hTailPanelsOuterTwistUnitList.get(i))
+											)
+									)
+							.setSpan(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(hTailPanelsSpanList.get(i)),
+											Unit.valueOf(hTailPanelsSpanUnitList.get(i))
+											)
+									)
+							.setSweepLeadingEdge(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(hTailPanelsSweepLEList.get(i)),
+											Unit.valueOf(hTailPanelsSweepLEUnitList.get(i))
+											)
+									)
+							.setDihedral(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(hTailPanelsDihedralList.get(i)),
+											Unit.valueOf(hTailPanelsDihedralUnitList.get(i))
+											)
+									)
+							.setAirfoilRootFilePath(
+									hTailPanelsInnerAirfoilPathList.get(i)
+									)
+							.setAirfoilTipFilePath(
+									hTailPanelsOuterAirfoilPathList.get(i)
+									)
+							.build()
+							)
+					);
+							
+		}
+		
+		Main.getTheAircraft().getHTail().setPanels(hTailPanelsList);
+		
+		//.................................................................................................		
+		Main.getTheAircraft().getHTail().setSymmetricFlaps(elevatorList);
+		
+		//.................................................................................................
+		Main.getTheAircraft().getHTail().calculateGeometry(
+				40,
+				Main.getTheAircraft().getHTail().getType(),
+				Main.getTheAircraft().getHTail().isMirrored()
+				);
+		Main.getTheAircraft().getHTail().populateAirfoilList(
+				Main.getTheAircraft().getHTail().getEquivalentWingFlag()
+				);
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void updateVTailTabData() {
 		
-		// TODO: AFTER MATHCING ADJUST CRITERION WITH THE DATA MODEL
+		//.................................................................................................
+		// DATA INITIALIZATION
+		//.................................................................................................
+		String vTailMainSparLocation = "";
+		String vTailSecondarySparLocation = "";
+		String vTailRoughness = "";
+		String vTailRoughnessUnit = "";
+		//.................................................................................................
+		List<String> vTailPanelsSpanList = new ArrayList<>();
+		List<String> vTailPanelsSpanUnitList = new ArrayList<>();
+		List<String> vTailPanelsSweepLEList = new ArrayList<>();
+		List<String> vTailPanelsSweepLEUnitList = new ArrayList<>();
+		List<String> vTailPanelsDihedralList = new ArrayList<>();
+		List<String> vTailPanelsDihedralUnitList = new ArrayList<>();
+		List<String> vTailPanelsInnerChordList = new ArrayList<>();
+		List<String> vTailPanelsInnerChordUnitList = new ArrayList<>();
+		List<String> vTailPanelsInnerTwistList = new ArrayList<>();
+		List<String> vTailPanelsInnerTwistUnitList = new ArrayList<>();
+		List<String> vTailPanelsInnerAirfoilPathList = new ArrayList<>();
+		List<String> vTailPanelsOuterChordList = new ArrayList<>();
+		List<String> vTailPanelsOuterChordUnitList = new ArrayList<>();
+		List<String> vTailPanelsOuterTwistList = new ArrayList<>();
+		List<String> vTailPanelsOuterTwistUnitList = new ArrayList<>();
+		List<String> vTailPanelsOuterAirfoilPathList = new ArrayList<>();
+		//.................................................................................................
+		List<String> vTailRuddersTypeList = new ArrayList<>();
+		List<String> vTailRuddersInnerPositionList = new ArrayList<>();
+		List<String> vTailRuddersOuterPositionList = new ArrayList<>();
+		List<String> vTailRuddersInnerChordRatioList = new ArrayList<>();
+		List<String> vTailRuddersOuterChordRatioList = new ArrayList<>();
+		List<String> vTailRuddersMinimumDeflectionList = new ArrayList<>();
+		List<String> vTailRuddersMinimumDeflectionUnitList = new ArrayList<>();
+		List<String> vTailRuddersMaximumDeflectionList = new ArrayList<>();
+		List<String> vTailRuddersMaximumDeflectionUnitList = new ArrayList<>();
+		
+		//.................................................................................................
+		// FETCHING DATA FROM GUI FIELDS ...
+		//.................................................................................................
+		if(theController.getTextFieldVTailMainSparAdimensionalPosition().getText() != null)
+			vTailMainSparLocation = theController.getTextFieldVTailMainSparAdimensionalPosition().getText();
+		if(theController.getTextFieldVTailSecondarySparAdimensionalPosition().getText() != null)
+			vTailSecondarySparLocation = theController.getTextFieldVTailSecondarySparAdimensionalPosition().getText();
+		if(theController.getTextFieldVTailRoughness().getText() != null)
+			vTailRoughness = theController.getTextFieldVTailRoughness().getText();
+		if(!theController.getvTailRoughnessUnitChoiceBox().getSelectionModel().isEmpty())
+			vTailRoughnessUnit = theController.getvTailRoughnessUnitChoiceBox().getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(!theController.getTextFieldVTailSpanPanelList().isEmpty())
+			theController.getTextFieldVTailSpanPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailPanelsSpanList.add(tf.getText()));
+		if(!theController.getChoiceBoxVTailSpanPanelUnitList().isEmpty())
+			theController.getChoiceBoxVTailSpanPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> vTailPanelsSpanUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldVTailSweepLEPanelList().isEmpty())
+			theController.getTextFieldVTailSweepLEPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailPanelsSweepLEList.add(tf.getText()));
+		if(!theController.getChoiceBoxVTailSweepLEPanelUnitList().isEmpty())
+			theController.getChoiceBoxVTailSweepLEPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> vTailPanelsSweepLEUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldVTailDihedralPanelList().isEmpty())
+			theController.getTextFieldVTailDihedralPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailPanelsDihedralList.add(tf.getText()));
+		if(!theController.getChoiceBoxVTailDihedralPanelUnitList().isEmpty())
+			theController.getChoiceBoxVTailDihedralPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> vTailPanelsDihedralUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldVTailInnerChordPanelList().isEmpty())
+			theController.getTextFieldVTailInnerChordPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailPanelsInnerChordList.add(tf.getText()));
+		if(!theController.getChoiceBoxVTailInnerChordPanelUnitList().isEmpty())
+			theController.getChoiceBoxVTailInnerChordPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> vTailPanelsInnerChordUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldVTailInnerTwistPanelList().isEmpty())
+			theController.getTextFieldVTailInnerTwistPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailPanelsInnerTwistList.add(tf.getText()));
+		if(!theController.getChoiceBoxVTailInnerTwistPanelUnitList().isEmpty())
+			theController.getChoiceBoxVTailInnerTwistPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> vTailPanelsInnerTwistUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldVTailInnerAirfoilPanelList().isEmpty())
+			theController.getTextFieldVTailInnerAirfoilPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailPanelsInnerAirfoilPathList.add(tf.getText()));
+		if(!theController.getTextFieldVTailOuterChordPanelList().isEmpty())
+			theController.getTextFieldVTailOuterChordPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailPanelsOuterChordList.add(tf.getText()));
+		if(!theController.getChoiceBoxVTailOuterChordPanelUnitList().isEmpty())
+			theController.getChoiceBoxVTailOuterChordPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> vTailPanelsOuterChordUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldVTailOuterTwistPanelList().isEmpty())
+			theController.getTextFieldVTailOuterTwistPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailPanelsOuterTwistList.add(tf.getText()));
+		if(!theController.getChoiceBoxVTailOuterTwistPanelUnitList().isEmpty())
+			theController.getChoiceBoxVTailOuterTwistPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> vTailPanelsOuterTwistUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldVTailOuterAirfoilPanelList().isEmpty())
+			theController.getTextFieldVTailOuterAirfoilPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailPanelsOuterAirfoilPathList.add(tf.getText()));
+		//.................................................................................................
+		if(!theController.getChoiceBoxVTailRudderTypeList().isEmpty())
+			theController.getChoiceBoxVTailRudderTypeList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> vTailRuddersTypeList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldVTailInnerPositionRudderList().isEmpty())
+			theController.getTextFieldVTailInnerPositionRudderList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailRuddersInnerPositionList.add(tf.getText()));
+		if(!theController.getTextFieldVTailOuterPositionRudderList().isEmpty())
+			theController.getTextFieldVTailOuterPositionRudderList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailRuddersOuterPositionList.add(tf.getText()));
+		if(!theController.getTextFieldVTailInnerChordRatioRudderList().isEmpty())
+			theController.getTextFieldVTailInnerChordRatioRudderList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailRuddersInnerChordRatioList.add(tf.getText()));
+		if(!theController.getTextFieldVTailOuterChordRatioRudderList().isEmpty())
+			theController.getTextFieldVTailOuterChordRatioRudderList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailRuddersOuterChordRatioList.add(tf.getText()));
+		if(!theController.getTextFieldVTailMaximumDeflectionAngleRudderList().isEmpty())
+			theController.getTextFieldVTailMaximumDeflectionAngleRudderList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailRuddersMaximumDeflectionList.add(tf.getText()));
+		if(!theController.getChoiceBoxVTailMaximumDeflectionAngleRudderUnitList().isEmpty())
+			theController.getChoiceBoxVTailMaximumDeflectionAngleRudderUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> vTailRuddersMaximumDeflectionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldVTailMinimumDeflectionAngleRudderList().isEmpty())
+			theController.getTextFieldVTailMinimumDeflectionAngleRudderList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> vTailRuddersMinimumDeflectionList.add(tf.getText()));
+		if(!theController.getChoiceBoxVTailMinimumDeflectionAngleRudderUnitList().isEmpty())
+			theController.getChoiceBoxVTailMinimumDeflectionAngleRudderUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> vTailRuddersMinimumDeflectionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		
+		//.................................................................................................
+		// FILTERING FILLED RUDDERS TABS ...
+		//.................................................................................................
+		int numberOfFilledVTailRuddersTabs = Arrays.asList(
+				vTailRuddersTypeList.size(),
+				vTailRuddersInnerPositionList.size(),
+				vTailRuddersOuterPositionList.size(),
+				vTailRuddersInnerChordRatioList.size(),
+				vTailRuddersOuterChordRatioList.size(),
+				vTailRuddersMaximumDeflectionList.size(),
+				vTailRuddersMaximumDeflectionUnitList.size(),
+				vTailRuddersMinimumDeflectionList.size(),
+				vTailRuddersMinimumDeflectionUnitList.size()
+				).stream()
+				.mapToInt(size -> size)
+				.min()
+				.getAsInt();
+
+		if (numberOfFilledVTailRuddersTabs > 0) {
+			if (theController.getTabPaneVTailRudders().getTabs().size() > numberOfFilledVTailRuddersTabs) {
+
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+
+						//..................................................................................
+						// VTAIL RUDDERS UPDATE WARNING
+						Stage vTailRuddersUpdateWarning = new Stage();
+
+						vTailRuddersUpdateWarning.setTitle("VTail Rudders Update Warning");
+						vTailRuddersUpdateWarning.initModality(Modality.WINDOW_MODAL);
+						vTailRuddersUpdateWarning.initStyle(StageStyle.UNDECORATED);
+						vTailRuddersUpdateWarning.initOwner(Main.getPrimaryStage());
+
+						FXMLLoader loader = new FXMLLoader();
+						loader.setLocation(Main.class.getResource("inputmanager/UpdateVTailRuddersWarning.fxml"));
+						BorderPane vTailRuddersUpdateWarningBorderPane = null;
+						try {
+							vTailRuddersUpdateWarningBorderPane = loader.load();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						Button continueButton = (Button) vTailRuddersUpdateWarningBorderPane.lookup("#warningContinueButton");
+						continueButton.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(ActionEvent arg0) {
+								vTailRuddersUpdateWarning.close();
+							}
+
+						});
+
+						Scene scene = new Scene(vTailRuddersUpdateWarningBorderPane);
+						vTailRuddersUpdateWarning.setScene(scene);
+						vTailRuddersUpdateWarning.sizeToScene();
+						vTailRuddersUpdateWarning.show();
+
+					}
+				});
+
+			}
+		}
+		
+		List<SymmetricFlapCreator> rudderList = new ArrayList<>();
+		
+		for (int i=0; i<numberOfFilledVTailRuddersTabs; i++) {
+		
+			rudderList.add(
+					new SymmetricFlapCreator(new ISymmetricFlapCreator.Builder()
+							.setId("VTail rudder " + (i+1) + " - " + Main.getTheAircraft().getId())
+							.setType(FlapTypeEnum.valueOf(vTailRuddersTypeList.get(i)))
+							.setInnerStationSpanwisePosition(Double.valueOf(vTailRuddersInnerPositionList.get(i))) 
+							.setOuterStationSpanwisePosition(Double.valueOf(vTailRuddersOuterPositionList.get(i))) 
+							.setInnerChordRatio(Double.valueOf(vTailRuddersInnerChordRatioList.get(i))) 
+							.setOuterChordRatio(Double.valueOf(vTailRuddersOuterChordRatioList.get(i)))
+							.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
+									Double.valueOf(vTailRuddersMinimumDeflectionList.get(i)),
+									Unit.valueOf(vTailRuddersMinimumDeflectionUnitList.get(i))
+									))
+							.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
+									Double.valueOf(vTailRuddersMaximumDeflectionList.get(i)),
+									Unit.valueOf(vTailRuddersMaximumDeflectionUnitList.get(i))
+									))
+							.build()
+							)
+					);
+		}
+		
+		//.................................................................................................
+		// SETTING ALL DATA INSIDE THE AIRCRAFT OBJECT ...
+		//.................................................................................................
+		Main.getTheAircraft().getVTail().setTheLiftingSurfaceInterface(ILiftingSurface.Builder.from(
+				Main.getTheAircraft().getVTail().getTheLiftingSurfaceInterface()
+				)
+				.setMainSparDimensionlessPosition(Double.valueOf(vTailMainSparLocation))
+				.setSecondarySparDimensionlessPosition(Double.valueOf(vTailSecondarySparLocation))
+				.build()
+				);
+		Main.getTheAircraft().getVTail().setRoughness(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(vTailRoughness),
+						Unit.valueOf(vTailRoughnessUnit)
+						)
+				);
+		
+		//.................................................................................................
+		// FILTERING FILLED VTAIL PANELS TABS ...
+		//.................................................................................................
+		int numberOfFilledVTailPanelsTabs = Arrays.asList(
+				vTailPanelsSpanList.size(),
+				vTailPanelsSpanUnitList.size(),
+				vTailPanelsSweepLEList.size(),
+				vTailPanelsSweepLEUnitList.size(),
+				vTailPanelsDihedralList.size(),
+				vTailPanelsDihedralUnitList.size(),
+				vTailPanelsInnerChordList.size(),
+				vTailPanelsInnerChordUnitList.size(),
+				vTailPanelsInnerTwistList.size(),
+				vTailPanelsInnerTwistUnitList.size(),
+				vTailPanelsInnerAirfoilPathList.size(),
+				vTailPanelsOuterChordList.size(),
+				vTailPanelsOuterChordUnitList.size(),
+				vTailPanelsOuterTwistList.size(),
+				vTailPanelsOuterTwistUnitList.size(),
+				vTailPanelsOuterAirfoilPathList.size()
+				).stream()
+				.mapToInt(size -> size)
+				.min()
+				.getAsInt();
+		
+		if (numberOfFilledVTailPanelsTabs > 0) {
+			if (theController.getTabPaneVTailPanels().getTabs().size() > numberOfFilledVTailPanelsTabs) {
+
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+
+						//..................................................................................
+						// VTAIL PANELS UPDATE WARNING
+						Stage vTailPanelsUpdateWarning = new Stage();
+
+						vTailPanelsUpdateWarning.setTitle("VTail Panels Update Warning");
+						vTailPanelsUpdateWarning.initModality(Modality.WINDOW_MODAL);
+						vTailPanelsUpdateWarning.initStyle(StageStyle.UNDECORATED);
+						vTailPanelsUpdateWarning.initOwner(Main.getPrimaryStage());
+
+						FXMLLoader loader = new FXMLLoader();
+						loader.setLocation(Main.class.getResource("inputmanager/UpdateVTailPanelsWarning.fxml"));
+						BorderPane vTailPanelsUpdateWarningBorderPane = null;
+						try {
+							vTailPanelsUpdateWarningBorderPane = loader.load();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						Button continueButton = (Button) vTailPanelsUpdateWarningBorderPane.lookup("#warningContinueButton");
+						continueButton.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(ActionEvent arg0) {
+								vTailPanelsUpdateWarning.close();
+							}
+
+						});
+
+						Scene scene = new Scene(vTailPanelsUpdateWarningBorderPane);
+						vTailPanelsUpdateWarning.setScene(scene);
+						vTailPanelsUpdateWarning.sizeToScene();
+						vTailPanelsUpdateWarning.show();
+
+					}
+				});
+
+			}
+		}
+		
+		List<LiftingSurfacePanelCreator> vTailPanelsList = new ArrayList<>();
+		
+		for (int i=0; i<numberOfFilledVTailPanelsTabs; i++) {
+		
+			vTailPanelsList.add(
+					new LiftingSurfacePanelCreator(
+							new ILiftingSurfacePanelCreator.Builder()
+							.setId("VTail Panels " + (i+1) + " - " + Main.getTheAircraft().getId())
+							.setLinkedTo(false)
+							.setChordRoot(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(vTailPanelsInnerChordList.get(i)),
+											Unit.valueOf(vTailPanelsInnerChordUnitList.get(i))
+											)
+									)
+							.setChordTip(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(vTailPanelsOuterChordList.get(i)),
+											Unit.valueOf(vTailPanelsOuterChordUnitList.get(i))
+											)
+									)
+							.setAirfoilRoot(Airfoil.importFromXML(vTailPanelsInnerAirfoilPathList.get(i)))
+							.setAirfoilTip(Airfoil.importFromXML(vTailPanelsOuterAirfoilPathList.get(i)))
+							.setTwistGeometricAtRoot(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(vTailPanelsInnerTwistList.get(i)),
+											Unit.valueOf(vTailPanelsInnerTwistUnitList.get(i))
+											)
+									)
+							.setTwistGeometricAtTip(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(vTailPanelsOuterTwistList.get(i)),
+											Unit.valueOf(vTailPanelsOuterTwistUnitList.get(i))
+											)
+									)
+							.setSpan(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(vTailPanelsSpanList.get(i)),
+											Unit.valueOf(vTailPanelsSpanUnitList.get(i))
+											)
+									)
+							.setSweepLeadingEdge(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(vTailPanelsSweepLEList.get(i)),
+											Unit.valueOf(vTailPanelsSweepLEUnitList.get(i))
+											)
+									)
+							.setDihedral(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(vTailPanelsDihedralList.get(i)),
+											Unit.valueOf(vTailPanelsDihedralUnitList.get(i))
+											)
+									)
+							.setAirfoilRootFilePath(
+									vTailPanelsInnerAirfoilPathList.get(i)
+									)
+							.setAirfoilTipFilePath(
+									vTailPanelsOuterAirfoilPathList.get(i)
+									)
+							.build()
+							)
+					);
+							
+		}
+		
+		Main.getTheAircraft().getVTail().setPanels(vTailPanelsList);
+		
+		//.................................................................................................		
+		Main.getTheAircraft().getVTail().setSymmetricFlaps(rudderList);
+		
+		//.................................................................................................
+		Main.getTheAircraft().getVTail().calculateGeometry(
+				40,
+				Main.getTheAircraft().getVTail().getType(),
+				Main.getTheAircraft().getVTail().isMirrored()
+				);
+		Main.getTheAircraft().getVTail().populateAirfoilList(
+				Main.getTheAircraft().getVTail().getEquivalentWingFlag()
+				);
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void updateCanardTabData() {
 		
-		// TODO: AFTER MATHCING ADJUST CRITERION WITH THE DATA MODEL
+		//.................................................................................................
+		// DATA INITIALIZATION
+		//.................................................................................................
+		String canardMainSparLocation = "";
+		String canardSecondarySparLocation = "";
+		String canardRoughness = "";
+		String canardRoughnessUnit = "";
+		//.................................................................................................
+		List<String> canardPanelsSpanList = new ArrayList<>();
+		List<String> canardPanelsSpanUnitList = new ArrayList<>();
+		List<String> canardPanelsSweepLEList = new ArrayList<>();
+		List<String> canardPanelsSweepLEUnitList = new ArrayList<>();
+		List<String> canardPanelsDihedralList = new ArrayList<>();
+		List<String> canardPanelsDihedralUnitList = new ArrayList<>();
+		List<String> canardPanelsInnerChordList = new ArrayList<>();
+		List<String> canardPanelsInnerChordUnitList = new ArrayList<>();
+		List<String> canardPanelsInnerTwistList = new ArrayList<>();
+		List<String> canardPanelsInnerTwistUnitList = new ArrayList<>();
+		List<String> canardPanelsInnerAirfoilPathList = new ArrayList<>();
+		List<String> canardPanelsOuterChordList = new ArrayList<>();
+		List<String> canardPanelsOuterChordUnitList = new ArrayList<>();
+		List<String> canardPanelsOuterTwistList = new ArrayList<>();
+		List<String> canardPanelsOuterTwistUnitList = new ArrayList<>();
+		List<String> canardPanelsOuterAirfoilPathList = new ArrayList<>();
+		//.................................................................................................
+		List<String> canardControlSurfacesTypeList = new ArrayList<>();
+		List<String> canardControlSurfacesInnerPositionList = new ArrayList<>();
+		List<String> canardControlSurfacesOuterPositionList = new ArrayList<>();
+		List<String> canardControlSurfacesInnerChordRatioList = new ArrayList<>();
+		List<String> canardControlSurfacesOuterChordRatioList = new ArrayList<>();
+		List<String> canardControlSurfacesMinimumDeflectionList = new ArrayList<>();
+		List<String> canardControlSurfacesMinimumDeflectionUnitList = new ArrayList<>();
+		List<String> canardControlSurfacesMaximumDeflectionList = new ArrayList<>();
+		List<String> canardControlSurfacesMaximumDeflectionUnitList = new ArrayList<>();
+		
+		//.................................................................................................
+		// FETCHING DATA FROM GUI FIELDS ...
+		//.................................................................................................
+		if(theController.getTextFieldCanardMainSparAdimensionalPosition().getText() != null)
+			canardMainSparLocation = theController.getTextFieldCanardMainSparAdimensionalPosition().getText();
+		if(theController.getTextFieldCanardSecondarySparAdimensionalPosition().getText() != null)
+			canardSecondarySparLocation = theController.getTextFieldCanardSecondarySparAdimensionalPosition().getText();
+		if(theController.getTextFieldCanardRoughness().getText() != null)
+			canardRoughness = theController.getTextFieldCanardRoughness().getText();
+		if(!theController.getCanardRoughnessUnitChoiceBox().getSelectionModel().isEmpty())
+			canardRoughnessUnit = theController.getCanardRoughnessUnitChoiceBox().getSelectionModel().getSelectedItem().toString();
+		//.................................................................................................
+		if(!theController.getTextFieldCanardSpanPanelList().isEmpty())
+			theController.getTextFieldCanardSpanPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardPanelsSpanList.add(tf.getText()));
+		if(!theController.getChoiceBoxCanardSpanPanelUnitList().isEmpty())
+			theController.getChoiceBoxCanardSpanPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> canardPanelsSpanUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldCanardSweepLEPanelList().isEmpty())
+			theController.getTextFieldCanardSweepLEPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardPanelsSweepLEList.add(tf.getText()));
+		if(!theController.getChoiceBoxCanardSweepLEPanelUnitList().isEmpty())
+			theController.getChoiceBoxCanardSweepLEPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> canardPanelsSweepLEUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldCanardDihedralPanelList().isEmpty())
+			theController.getTextFieldCanardDihedralPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardPanelsDihedralList.add(tf.getText()));
+		if(!theController.getChoiceBoxCanardDihedralPanelUnitList().isEmpty())
+			theController.getChoiceBoxCanardDihedralPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> canardPanelsDihedralUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldCanardInnerChordPanelList().isEmpty())
+			theController.getTextFieldCanardInnerChordPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardPanelsInnerChordList.add(tf.getText()));
+		if(!theController.getChoiceBoxCanardInnerChordPanelUnitList().isEmpty())
+			theController.getChoiceBoxCanardInnerChordPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> canardPanelsInnerChordUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldCanardInnerTwistPanelList().isEmpty())
+			theController.getTextFieldCanardInnerTwistPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardPanelsInnerTwistList.add(tf.getText()));
+		if(!theController.getChoiceBoxCanardInnerTwistPanelUnitList().isEmpty())
+			theController.getChoiceBoxCanardInnerTwistPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> canardPanelsInnerTwistUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldCanardInnerAirfoilPanelList().isEmpty())
+			theController.getTextFieldCanardInnerAirfoilPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardPanelsInnerAirfoilPathList.add(tf.getText()));
+		if(!theController.getTextFieldCanardOuterChordPanelList().isEmpty())
+			theController.getTextFieldCanardOuterChordPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardPanelsOuterChordList.add(tf.getText()));
+		if(!theController.getChoiceBoxCanardOuterChordPanelUnitList().isEmpty())
+			theController.getChoiceBoxCanardOuterChordPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> canardPanelsOuterChordUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldCanardOuterTwistPanelList().isEmpty())
+			theController.getTextFieldCanardOuterTwistPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardPanelsOuterTwistList.add(tf.getText()));
+		if(!theController.getChoiceBoxCanardOuterTwistPanelUnitList().isEmpty())
+			theController.getChoiceBoxCanardOuterTwistPanelUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> canardPanelsOuterTwistUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldCanardOuterAirfoilPanelList().isEmpty())
+			theController.getTextFieldCanardOuterAirfoilPanelList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardPanelsOuterAirfoilPathList.add(tf.getText()));
+		//.................................................................................................
+		if(!theController.getChoiceBoxCanardControlSurfaceTypeList().isEmpty())
+			theController.getChoiceBoxCanardControlSurfaceTypeList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> canardControlSurfacesTypeList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldCanardInnerPositionControlSurfaceList().isEmpty())
+			theController.getTextFieldCanardInnerPositionControlSurfaceList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardControlSurfacesInnerPositionList.add(tf.getText()));
+		if(!theController.getTextFieldCanardOuterPositionControlSurfaceList().isEmpty())
+			theController.getTextFieldCanardOuterPositionControlSurfaceList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardControlSurfacesOuterPositionList.add(tf.getText()));
+		if(!theController.getTextFieldCanardInnerChordRatioControlSurfaceList().isEmpty())
+			theController.getTextFieldCanardInnerChordRatioControlSurfaceList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardControlSurfacesInnerChordRatioList.add(tf.getText()));
+		if(!theController.getTextFieldCanardOuterChordRatioControlSurfaceList().isEmpty())
+			theController.getTextFieldCanardOuterChordRatioControlSurfaceList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardControlSurfacesOuterChordRatioList.add(tf.getText()));
+		if(!theController.getTextFieldCanardMaximumDeflectionAngleControlSurfaceList().isEmpty())
+			theController.getTextFieldCanardMaximumDeflectionAngleControlSurfaceList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardControlSurfacesMaximumDeflectionList.add(tf.getText()));
+		if(!theController.getChoiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList().isEmpty())
+			theController.getChoiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> canardControlSurfacesMaximumDeflectionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldCanardMinimumDeflectionAngleControlSurfaceList().isEmpty())
+			theController.getTextFieldCanardMinimumDeflectionAngleControlSurfaceList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> canardControlSurfacesMinimumDeflectionList.add(tf.getText()));
+		if(!theController.getChoiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList().isEmpty())
+			theController.getChoiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> canardControlSurfacesMinimumDeflectionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		
+		//.................................................................................................
+		// FILTERING FILLED CONTROL SURFACES TABS ...
+		//.................................................................................................
+		int numberOfFilledCanardControlSurfacesTabs = Arrays.asList(
+				canardControlSurfacesTypeList.size(),
+				canardControlSurfacesInnerPositionList.size(),
+				canardControlSurfacesOuterPositionList.size(),
+				canardControlSurfacesInnerChordRatioList.size(),
+				canardControlSurfacesOuterChordRatioList.size(),
+				canardControlSurfacesMaximumDeflectionList.size(),
+				canardControlSurfacesMaximumDeflectionUnitList.size(),
+				canardControlSurfacesMinimumDeflectionList.size(),
+				canardControlSurfacesMinimumDeflectionUnitList.size()
+				).stream()
+				.mapToInt(size -> size)
+				.min()
+				.getAsInt();
+
+		if (numberOfFilledCanardControlSurfacesTabs > 0) {
+			if (theController.getTabPaneCanardControlSurfaces().getTabs().size() > numberOfFilledCanardControlSurfacesTabs) {
+
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+
+						//..................................................................................
+						// CANARD CONTROL SURFACES UPDATE WARNING
+						Stage canardControlSurfacesUpdateWarning = new Stage();
+
+						canardControlSurfacesUpdateWarning.setTitle("Canard Control Surfaces Update Warning");
+						canardControlSurfacesUpdateWarning.initModality(Modality.WINDOW_MODAL);
+						canardControlSurfacesUpdateWarning.initStyle(StageStyle.UNDECORATED);
+						canardControlSurfacesUpdateWarning.initOwner(Main.getPrimaryStage());
+
+						FXMLLoader loader = new FXMLLoader();
+						loader.setLocation(Main.class.getResource("inputmanager/UpdateCanardControlSurfacesWarning.fxml"));
+						BorderPane canardControlSurfacesUpdateWarningBorderPane = null;
+						try {
+							canardControlSurfacesUpdateWarningBorderPane = loader.load();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						Button continueButton = (Button) canardControlSurfacesUpdateWarningBorderPane.lookup("#warningContinueButton");
+						continueButton.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(ActionEvent arg0) {
+								canardControlSurfacesUpdateWarning.close();
+							}
+
+						});
+
+						Scene scene = new Scene(canardControlSurfacesUpdateWarningBorderPane);
+						canardControlSurfacesUpdateWarning.setScene(scene);
+						canardControlSurfacesUpdateWarning.sizeToScene();
+						canardControlSurfacesUpdateWarning.show();
+
+					}
+				});
+
+			}
+		}
+		
+		List<SymmetricFlapCreator> canardControlSurfaceList = new ArrayList<>();
+		
+		for (int i=0; i<numberOfFilledCanardControlSurfacesTabs; i++) {
+		
+			canardControlSurfaceList.add(
+					new SymmetricFlapCreator(new ISymmetricFlapCreator.Builder()
+							.setId("Canard control surface " + (i+1) + " - " + Main.getTheAircraft().getId())
+							.setType(FlapTypeEnum.valueOf(canardControlSurfacesTypeList.get(i)))
+							.setInnerStationSpanwisePosition(Double.valueOf(canardControlSurfacesInnerPositionList.get(i))) 
+							.setOuterStationSpanwisePosition(Double.valueOf(canardControlSurfacesOuterPositionList.get(i))) 
+							.setInnerChordRatio(Double.valueOf(canardControlSurfacesInnerChordRatioList.get(i))) 
+							.setOuterChordRatio(Double.valueOf(canardControlSurfacesOuterChordRatioList.get(i)))
+							.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
+									Double.valueOf(canardControlSurfacesMinimumDeflectionList.get(i)),
+									Unit.valueOf(canardControlSurfacesMinimumDeflectionUnitList.get(i))
+									))
+							.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
+									Double.valueOf(canardControlSurfacesMaximumDeflectionList.get(i)),
+									Unit.valueOf(canardControlSurfacesMaximumDeflectionUnitList.get(i))
+									))
+							.build()
+							)
+					);
+		}
+		
+		//.................................................................................................
+		// SETTING ALL DATA INSIDE THE AIRCRAFT OBJECT ...
+		//.................................................................................................
+		Main.getTheAircraft().getCanard().setTheLiftingSurfaceInterface(ILiftingSurface.Builder.from(
+				Main.getTheAircraft().getCanard().getTheLiftingSurfaceInterface()
+				)
+				.setMainSparDimensionlessPosition(Double.valueOf(canardMainSparLocation))
+				.setSecondarySparDimensionlessPosition(Double.valueOf(canardSecondarySparLocation))
+				.build()
+				);
+		Main.getTheAircraft().getCanard().setRoughness(
+				(Amount<Length>) Amount.valueOf(
+						Double.valueOf(canardRoughness),
+						Unit.valueOf(canardRoughnessUnit)
+						)
+				);
+		
+		//.................................................................................................
+		// FILTERING FILLED CANARD PANELS TABS ...
+		//.................................................................................................
+		int numberOfFilledCanardPanelsTabs = Arrays.asList(
+				canardPanelsSpanList.size(),
+				canardPanelsSpanUnitList.size(),
+				canardPanelsSweepLEList.size(),
+				canardPanelsSweepLEUnitList.size(),
+				canardPanelsDihedralList.size(),
+				canardPanelsDihedralUnitList.size(),
+				canardPanelsInnerChordList.size(),
+				canardPanelsInnerChordUnitList.size(),
+				canardPanelsInnerTwistList.size(),
+				canardPanelsInnerTwistUnitList.size(),
+				canardPanelsInnerAirfoilPathList.size(),
+				canardPanelsOuterChordList.size(),
+				canardPanelsOuterChordUnitList.size(),
+				canardPanelsOuterTwistList.size(),
+				canardPanelsOuterTwistUnitList.size(),
+				canardPanelsOuterAirfoilPathList.size()
+				).stream()
+				.mapToInt(size -> size)
+				.min()
+				.getAsInt();
+		
+		if (numberOfFilledCanardPanelsTabs > 0) {
+			if (theController.getTabPaneCanardPanels().getTabs().size() > numberOfFilledCanardPanelsTabs) {
+
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+
+						//..................................................................................
+						// CANARD PANELS UPDATE WARNING
+						Stage canardPanelsUpdateWarning = new Stage();
+
+						canardPanelsUpdateWarning.setTitle("Canard Panels Update Warning");
+						canardPanelsUpdateWarning.initModality(Modality.WINDOW_MODAL);
+						canardPanelsUpdateWarning.initStyle(StageStyle.UNDECORATED);
+						canardPanelsUpdateWarning.initOwner(Main.getPrimaryStage());
+
+						FXMLLoader loader = new FXMLLoader();
+						loader.setLocation(Main.class.getResource("inputmanager/UpdateCanardPanelsWarning.fxml"));
+						BorderPane canardPanelsUpdateWarningBorderPane = null;
+						try {
+							canardPanelsUpdateWarningBorderPane = loader.load();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						Button continueButton = (Button) canardPanelsUpdateWarningBorderPane.lookup("#warningContinueButton");
+						continueButton.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(ActionEvent arg0) {
+								canardPanelsUpdateWarning.close();
+							}
+
+						});
+
+						Scene scene = new Scene(canardPanelsUpdateWarningBorderPane);
+						canardPanelsUpdateWarning.setScene(scene);
+						canardPanelsUpdateWarning.sizeToScene();
+						canardPanelsUpdateWarning.show();
+
+					}
+				});
+
+			}
+		}
+		
+		List<LiftingSurfacePanelCreator> canardPanelsList = new ArrayList<>();
+		
+		for (int i=0; i<numberOfFilledCanardPanelsTabs; i++) {
+		
+			canardPanelsList.add(
+					new LiftingSurfacePanelCreator(
+							new ILiftingSurfacePanelCreator.Builder()
+							.setId("Canard Panels " + (i+1) + " - " + Main.getTheAircraft().getId())
+							.setLinkedTo(false)
+							.setChordRoot(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(canardPanelsInnerChordList.get(i)),
+											Unit.valueOf(canardPanelsInnerChordUnitList.get(i))
+											)
+									)
+							.setChordTip(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(canardPanelsOuterChordList.get(i)),
+											Unit.valueOf(canardPanelsOuterChordUnitList.get(i))
+											)
+									)
+							.setAirfoilRoot(Airfoil.importFromXML(canardPanelsInnerAirfoilPathList.get(i)))
+							.setAirfoilTip(Airfoil.importFromXML(canardPanelsOuterAirfoilPathList.get(i)))
+							.setTwistGeometricAtRoot(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(canardPanelsInnerTwistList.get(i)),
+											Unit.valueOf(canardPanelsInnerTwistUnitList.get(i))
+											)
+									)
+							.setTwistGeometricAtTip(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(canardPanelsOuterTwistList.get(i)),
+											Unit.valueOf(canardPanelsOuterTwistUnitList.get(i))
+											)
+									)
+							.setSpan(
+									(Amount<Length>) Amount.valueOf(
+											Double.valueOf(canardPanelsSpanList.get(i)),
+											Unit.valueOf(canardPanelsSpanUnitList.get(i))
+											)
+									)
+							.setSweepLeadingEdge(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(canardPanelsSweepLEList.get(i)),
+											Unit.valueOf(canardPanelsSweepLEUnitList.get(i))
+											)
+									)
+							.setDihedral(
+									(Amount<Angle>) Amount.valueOf(
+											Double.valueOf(canardPanelsDihedralList.get(i)),
+											Unit.valueOf(canardPanelsDihedralUnitList.get(i))
+											)
+									)
+							.setAirfoilRootFilePath(
+									canardPanelsInnerAirfoilPathList.get(i)
+									)
+							.setAirfoilTipFilePath(
+									canardPanelsOuterAirfoilPathList.get(i)
+									)
+							.build()
+							)
+					);
+							
+		}
+		
+		Main.getTheAircraft().getCanard().setPanels(canardPanelsList);
+		
+		//.................................................................................................		
+		Main.getTheAircraft().getCanard().setSymmetricFlaps(canardControlSurfaceList);
+		
+		//.................................................................................................
+		Main.getTheAircraft().getCanard().calculateGeometry(
+				40,
+				Main.getTheAircraft().getCanard().getType(),
+				Main.getTheAircraft().getCanard().isMirrored()
+				);
+		Main.getTheAircraft().getCanard().populateAirfoilList(
+				Main.getTheAircraft().getCanard().getEquivalentWingFlag()
+				);
 		
 	}
 	

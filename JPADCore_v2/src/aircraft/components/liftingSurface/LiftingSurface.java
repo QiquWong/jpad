@@ -2520,7 +2520,8 @@ public class LiftingSurface {
 				throw new IllegalArgumentException("ROOT_CHORD CAN'T BE ZERO !!");
 			}
 			
-			surface = (rootChord + tipChord)*ar*0.5;
+//			surface = (rootChord + tipChord)*ar*0.5;
+			surface = Math.pow(rootChord + tipChord, 2)*ar*0.25;
 			span = Math.sqrt(surface*ar);
 			
 			break;
@@ -2538,7 +2539,8 @@ public class LiftingSurface {
 				throw new IllegalArgumentException("ROOT_CHORD CAN'T BE ZERO !!");
 			}
 			
-			surface = rootChord*(1 + taperRatio)*ar*0.5;
+//			surface = rootChord*(1 + taperRatio)*ar*0.5;
+			surface = Math.pow(rootChord*(1 + taperRatio), 2)*ar*0.25;
 			span = Math.sqrt(surface*ar);
 			tipChord = rootChord*taperRatio;
 			
@@ -2554,7 +2556,8 @@ public class LiftingSurface {
 				throw new IllegalArgumentException("ASPECT_RATIO CAN'T BE ZERO !!");
 			}
 			
-			surface = (tipChord + (taperRatio/tipChord))*ar*0.5;
+//			surface = (tipChord + (taperRatio/tipChord))*ar*0.5;
+			surface = Math.pow(tipChord + (tipChord/taperRatio), 2)*ar*0.25;
 			span = Math.sqrt(surface*ar);
 			rootChord = tipChord/taperRatio;
 			

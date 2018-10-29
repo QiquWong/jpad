@@ -261,9 +261,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getEquivalentWing().getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -273,9 +271,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -472,7 +468,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			else
 				currentLiftingSurfaceAreaLabel = new Label(
@@ -482,7 +478,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
@@ -589,7 +585,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			else
 				currentLiftingSurfaceAreaLabel = new Label(
@@ -599,7 +595,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
@@ -614,9 +610,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getEquivalentWing().getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -626,9 +620,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -710,7 +702,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			else
 				currentLiftingSurfaceAreaLabel = new Label(
@@ -720,7 +712,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
@@ -841,7 +833,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 			//.......................................................................................
 			Label liftingSurfaceTipChordLabel = new Label("Tip Chord:");
 			gridpane.add(liftingSurfaceTipChordLabel, 0, 3);
-			liftingSurfaceTipChordTextField= new TextField();
+			liftingSurfaceTipChordTextField = new TextField();
 			gridpane.add(liftingSurfaceTipChordTextField, 1, 3);
 			Label currentLiftingSurfaceTipChordLabel = null;
 			if(type.equals(ComponentEnum.WING))
@@ -850,9 +842,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getEquivalentWing().getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -862,9 +852,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -998,7 +986,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 						currentLiftingSurface.adjustDimensions(
 								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
 								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
-								Double.valueOf(liftingSurfaceTaperRatioLabel.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
 								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(),
 								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getDihedral(), 
 								currentLiftingSurface.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(),
@@ -1008,11 +996,11 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 						currentLiftingSurface.adjustDimensions(
 								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
 								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
-								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
 								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
 								currentLiftingSurface.getPanels().get(0).getDihedral(), 
 								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-								WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
+								WingAdjustCriteriaEnum.AR_ROOTCHORD_TAPER
 								);
 					close();
 
@@ -1059,9 +1047,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getEquivalentWing().getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -1071,9 +1057,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -1126,12 +1110,12 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 					else
 						currentLiftingSurface.adjustDimensions(
 								Double.valueOf(liftingSurfaceAspectRatioTextField.getText()),
-								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
 								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
 								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
 								currentLiftingSurface.getPanels().get(0).getDihedral(), 
 								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-								WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
+								WingAdjustCriteriaEnum.AR_TIPCHORD_TAPER
 								);
 					close();
 
@@ -1182,7 +1166,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			else
 				currentLiftingSurfaceAreaLabel = new Label(
@@ -1192,7 +1176,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
@@ -1301,7 +1285,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 									"%.02f",
 									2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 									)
-							+ " m²"
+							+ " mÂ²"
 					);
 			else
 				currentLiftingSurfaceAreaLabel = new Label(
@@ -1311,7 +1295,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
@@ -1326,9 +1310,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getEquivalentWing().getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -1338,9 +1320,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -1424,7 +1404,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			else
 				currentLiftingSurfaceAreaLabel = new Label(
@@ -1434,7 +1414,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 2);
 			//.......................................................................................
@@ -1566,9 +1546,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getEquivalentWing().getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -1578,9 +1556,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -1608,12 +1584,12 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 					else
 						currentLiftingSurface.adjustDimensions(
 								Double.valueOf(liftingSurfaceSpanTextField.getText()),
-								Double.valueOf(liftingSurfaceAreaTextField.getText()),
-								Double.valueOf(liftingSurfaceTaperRatioTextField.getText()),
+								Double.valueOf(liftingSurfaceRootChordTextField.getText()),
+								Double.valueOf(liftingSurfaceTipChordTextField.getText()),
 								currentLiftingSurface.getPanels().get(0).getSweepLeadingEdge(),
 								currentLiftingSurface.getPanels().get(0).getDihedral(), 
 								currentLiftingSurface.getPanels().get(0).getTwistGeometricAtTip(),
-								WingAdjustCriteriaEnum.SPAN_AREA_TAPER
+								WingAdjustCriteriaEnum.SPAN_ROOTCHORD_TIPCHORD
 								);
 					close();
 
@@ -1779,9 +1755,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getEquivalentWing().getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METRE)
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordTip().doubleValue(SI.METRE)
 										)
 								+ " m"
 						);
@@ -1791,9 +1765,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METRE)
+										currentLiftingSurface.getPanels().get(0).getChordTip().doubleValue(SI.METRE)
 										)
 								+ " m"
 						);
@@ -1875,7 +1847,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			else
 				currentLiftingSurfaceAreaLabel = new Label(
@@ -1885,7 +1857,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 1);
 			//.......................................................................................
@@ -1927,9 +1899,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getEquivalentWing().getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -1939,9 +1909,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METER)
+										currentLiftingSurface.getPanels().get(0).getChordTip().doubleValue(SI.METER)
 										)
 								+ " m"
 						);
@@ -1998,7 +1966,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			else
 				currentLiftingSurfaceAreaLabel = new Label(
@@ -2008,7 +1976,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 1);
 			//.......................................................................................
@@ -2115,7 +2083,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			else
 				currentLiftingSurfaceAreaLabel = new Label(
@@ -2125,7 +2093,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 										"%.02f",
 										2*currentLiftingSurface.getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
 										)
-								+ " m²"
+								+ " mÂ²"
 						);
 			gridpane.add(currentLiftingSurfaceAreaLabel, 2, 1);
 			//.......................................................................................
@@ -2140,9 +2108,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getEquivalentWing().getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METRE)
+										currentLiftingSurface.getEquivalentWing().getPanels().get(0).getChordTip().doubleValue(SI.METRE)
 										)
 								+ " m"
 						);
@@ -2152,9 +2118,7 @@ public class LiftingSurfaceAdjustCriterionDialog extends Stage {
 								+ String.format(
 										Locale.ROOT,
 										"%.02f",
-										currentLiftingSurface.getPanels()
-										.get(currentLiftingSurface.getPanels().size()-1)
-										.getChordTip().doubleValue(SI.METRE)
+										currentLiftingSurface.getPanels().get(0).getChordTip().doubleValue(SI.METRE)
 										)
 								+ " m"
 						);
