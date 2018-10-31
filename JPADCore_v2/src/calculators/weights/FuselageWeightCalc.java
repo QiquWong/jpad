@@ -154,6 +154,8 @@ public class FuselageWeightCalc {
 			k = k + 0.08;
 		if (aircraft.getLandingGears().getMountingPosition().equals(LandingGearsMountingPositionEnum.FUSELAGE)) 
 			k = k + 0.07;
+		if (aircraft.getPowerPlant().getMountingPosition().equals(EngineMountingPositionEnum.AFT_FUSELAGE)) 
+			k = k + 0.04;
 
 		return Amount.valueOf((1 + k) * 0.23 * 
 				Math.sqrt(

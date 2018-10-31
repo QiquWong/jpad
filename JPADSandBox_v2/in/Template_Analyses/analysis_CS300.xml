@@ -12,6 +12,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
 	<analyses id="CS300 analysis" iterative_loop="FALSE" balance_from_previous_analysis="TRUE">
+	<!--
         <weights 
             file="analysis_weights_CS300.xml" 
 			plot="TRUE"
@@ -32,6 +33,8 @@
 			method_furnishings_and_equipments=""
 			method_control_surfaces=""
             />
+		-->
+		<!--
 		<balance 
 			file="analysis_balance_CS300.xml"
 			plot="TRUE"
@@ -45,7 +48,8 @@
 			method_power_plant=""
 			method_landing_gears=""
 		/>	
-	<!--
+		-->
+		<!--
 		<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="FALSE"
@@ -58,6 +62,7 @@
 			landing_condition="FALSE"
 			file_landing_condition="analysis_aerodynamics_CS300_landing.xml"
 		/>
+		-->
 		<performance 
 			file="analysis_performance_CS300.xml"
 			plot="TRUE"
@@ -71,6 +76,7 @@
 			V_n_diagram="FALSE"
 			mission_profile="TRUE"
 		/>
+		<!--
 		<costs 
 			file="analysis_costs_CS300.xml"
 			plot="TRUE"
@@ -86,7 +92,7 @@
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
 		/> 
-	-->
+		-->
 	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>
