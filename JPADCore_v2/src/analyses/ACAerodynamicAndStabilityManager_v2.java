@@ -17,6 +17,7 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
+import analyses.ACAerodynamicAndStabilityManager.CalcLongitudinalStability;
 import analyses.ACAerodynamicAndStabilityManager.CalcSideForceCoefficient;
 import analyses.ACAerodynamicAndStabilityManager.CalcTotalLiftCoefficient;
 import analyses.fuselage.FuselageAerodynamicsManager;
@@ -2353,11 +2354,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		if(_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears() != null) {
 
 				ACAerodynamicAndStabilityManagerUtils.calculateLandingGearDataSemiempirical(this);
-			
 		}
-			
-		
-		
 
 	}
 	
@@ -2534,6 +2531,18 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.SIDE_FORCE)) {
 			case NAPOLITANO_DATCOM:
 				ACAerodynamicAndStabilityManagerUtils.calculateSideForceCoeffient(this);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		//LONGITUDINAL STABILITY
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+
+			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+			case FROM_BALANCE_EQUATION:
+				ACAerodynamicAndStabilityManagerUtils.calculateLongitudinalStaticStability(this);
 				break;
 			default:
 				break;

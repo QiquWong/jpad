@@ -20759,7 +20759,6 @@ public class ACAerodynamicAndStabilityManager {
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
 								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurfacePlanform(), 
 								_current3DWingLiftCurve,
-								_current3DWingPolarCurve,
 								_current3DWingMomentCurve,
 								MyArrayUtils.convertDoubleArrayToListDouble(_fuselageAerodynamicManagers
 										.get(ComponentEnum.FUSELAGE)

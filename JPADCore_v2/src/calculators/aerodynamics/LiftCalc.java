@@ -2183,7 +2183,6 @@ public class LiftCalc {
 			Amount<Area> wingSurface,
 			Amount<Area> horizontalTailSurface,
 			List<Double> wingFuselageLiftCoefficient,
-			List<Double> wingDragCoefficient,
 			List<Double> wingMomentCoefficient,
 			List<Double> fuselageMomentCoefficient,
 			List<Double> fuselageDragCoefficient,
@@ -2287,12 +2286,10 @@ public class LiftCalc {
 			// WING -----------------------------
 			// forces
 			wingNormalCoefficient.add(
-					wingFuselageLiftCoefficient.get(i)*Math.cos(alphaWingList.get(i).doubleValue(SI.RADIAN))+
-					wingDragCoefficient.get(i)*Math.sin(alphaWingList.get(i).doubleValue(SI.RADIAN))
+					wingFuselageLiftCoefficient.get(i)*Math.cos(alphaWingList.get(i).doubleValue(SI.RADIAN))
 					);
 
-			wingHorizontalCoeffient.add(
-					wingDragCoefficient.get(i)*Math.cos(alphaWingList.get(i).doubleValue(SI.RADIAN)) - 
+			wingHorizontalCoeffient.add( - 
 					wingFuselageLiftCoefficient.get(i)*Math.sin(alphaWingList.get(i).doubleValue(SI.RADIAN)));		
 
 			// moment with respect to CG
