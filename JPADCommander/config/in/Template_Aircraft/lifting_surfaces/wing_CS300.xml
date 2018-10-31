@@ -2,8 +2,8 @@
 <jpad_config>
     <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE" equivalent="FALSE">
         <global_data>
-			<main_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.25</main_spar_non_dimensional_position>
-			<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.55</secondary_spar_non_dimensional_position>
+			<main_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.20</main_spar_non_dimensional_position>
+			<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.60</secondary_spar_non_dimensional_position>
 			<roughness unit="m">0.405e-5</roughness>
 			<winglet_height unit="m">0.0</winglet_height>
 		</global_data>

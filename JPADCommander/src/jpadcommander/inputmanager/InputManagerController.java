@@ -571,7 +571,7 @@ public class InputManagerController {
 			"ft"
 			);
 	ObservableList<String> angleUnitsList = FXCollections.observableArrayList(
-			"°",
+			"Â°",
 			"rad" 
 			);
 	ObservableList<String> massUnitsList = FXCollections.observableArrayList(
@@ -579,8 +579,8 @@ public class InputManagerController {
 			"lb" 
 			);
 	ObservableList<String> areaUnitsList = FXCollections.observableArrayList(
-			"m²",
-			"ft²" 
+			"mÂ²",
+			"ftÂ²" 
 			);
 	ObservableList<String> forceUnitsList = FXCollections.observableArrayList(
 			"N",

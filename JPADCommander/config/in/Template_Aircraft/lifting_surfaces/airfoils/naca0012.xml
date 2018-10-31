@@ -20,7 +20,7 @@
             <laminar_bucket_semi_extension>0.000000</laminar_bucket_semi_extension>
             <laminar_bucket_depth>0.000000</laminar_bucket_depth>
             <K_factor_drag_polar>0.003500</K_factor_drag_polar>
-            <Cm_alpha_quarter_chord unit="1/deg">0.0000</Cm_alpha_quarter_chord>
+            <Cm_alpha_quarter_chord unit="1/°">0.0000</Cm_alpha_quarter_chord>
             <Cm_ac>0.000000</Cm_ac>
             <Cm_ac_at_stall>-0.090000</Cm_ac_at_stall>
             <x_ac_normalized>0.2500</x_ac_normalized>

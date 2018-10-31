@@ -9,6 +9,7 @@ import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.inferred.freebuilder.shaded.org.apache.commons.lang3.ArrayUtils;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.powerplant.PowerPlant;
@@ -23,6 +24,7 @@ import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -229,6 +231,63 @@ public class PerformanceCalcUtils {
 				bpr, flightCondition);
 	}
 
+	public static CeilingMap calculateCeiling(List<RCMap> listRC) {
+		
+		int nAlt = listRC.size();
+		double[] altitude = new double[nAlt];
+		double[] altitudeFitted = MyArrayUtils.linspace(
+				listRC.get(0).getAltitude(),
+				listRC.get(listRC.size()-1).getAltitude(),
+				500
+				);
+		double[] rcMaxAtAltitude = new double[nAlt];
+		double[] rcMaxAtAltitudeFitted = new double[altitudeFitted.length];
+
+		for (int i=0; i < nAlt; i++) {
+			rcMaxAtAltitude[i] = listRC.get(i).getRCmax();
+			altitude[i] = listRC.get(i).getAltitude();
+		}
+
+		for(int i=0; i< altitudeFitted.length; i++) {
+			rcMaxAtAltitudeFitted[i] = MyMathUtils.getInterpolatedValue1DLinear(
+					altitude,
+					rcMaxAtAltitude,
+					altitudeFitted[i]
+					);
+		}
+		
+		int M=0;
+		for (int i=0; i < altitudeFitted.length; i++){
+			if (rcMaxAtAltitudeFitted[i] > 0.) 
+				M=M+1;
+		}
+
+		double absoluteCeiling = 0.0;
+		double serviceCeiling = 0.0;
+		
+		if (M < rcMaxAtAltitudeFitted.length) {
+
+			double[] rcMaxArrayReverse = ArrayUtils.subarray(rcMaxAtAltitudeFitted, 0, M-1);
+			double[] altitudeArrayReverse = ArrayUtils.subarray(altitudeFitted, 0, M-1);
+			ArrayUtils.reverse(rcMaxArrayReverse);
+			ArrayUtils.reverse(altitudeArrayReverse);
+			
+			MyInterpolatingFunction rcInterpolatingFunction = new MyInterpolatingFunction();
+			rcInterpolatingFunction.interpolate(rcMaxArrayReverse, altitudeArrayReverse);
+			
+			absoluteCeiling = rcInterpolatingFunction.value(0.0);
+			serviceCeiling = rcInterpolatingFunction.value(0.508);
+
+		}
+		else {
+			System.err.println("WARNING: (CEILING CALCULATION - CLIMB) RCmax > 0.0 AT CLIMB MAX ALTITUDE. CEILINGS CALCULATION FAILED...");
+		}
+
+		return new CeilingMap(absoluteCeiling, serviceCeiling, listRC.get(0).getWeight(), listRC.get(0).getPhi(),
+				listRC.get(0).getBpr(), listRC.get(0).getFlightCondition());
+		
+	}
+	
 	public static CeilingMap calculateCeiling(List<RCMap> listRC, boolean isOEI) {
 		
 		int nAlt = listRC.size();
