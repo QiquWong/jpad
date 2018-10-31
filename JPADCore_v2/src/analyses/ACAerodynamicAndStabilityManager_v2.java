@@ -1,5 +1,6 @@
 package analyses;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
+import analyses.ACAerodynamicAndStabilityManager.CalcSideForceCoefficient;
 import analyses.ACAerodynamicAndStabilityManager.CalcTotalLiftCoefficient;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
@@ -66,6 +68,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
+import writers.JPADStaticWriteUtils;
 
 public class ACAerodynamicAndStabilityManager_v2 {
 
@@ -2355,36 +2358,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			
 		
 		
-		//------------------------------------------------------------------------------
-		// AIRCRAFT 
-		//------------------------------------------------------------------------------
-		
-		
-		//TOTAL LIFT
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CL_TOTAL)) {
-
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.CL_TOTAL)) {
-			case FROM_BALANCE_EQUATION:
-				ACAerodynamicAndStabilityManagerUtils.calculateTotalLiftCoefficientFromAircraftComponents(this);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//TOTAL DRAG
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CD_TOTAL)) {
-
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.CD_TOTAL)) {
-			case FROM_BALANCE_EQUATION:
-				ACAerodynamicAndStabilityManagerUtils.calculateTotalPolarSemiempirical(this);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		
 
 	}
 	
@@ -2516,10 +2489,70 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		}
 
 	}
+	
+	private void calculateAircraftData() {
 
-	//TODO continue here. aggiusta metodo fusoliera con semiempirico e metti quello di nacelle. poi metti qui il richiamo ai metodi.
+		//TOTAL LIFT
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CL_TOTAL)) {
+
+			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.CL_TOTAL)) {
+			case FROM_BALANCE_EQUATION:
+				ACAerodynamicAndStabilityManagerUtils.calculateTotalLiftCoefficientFromAircraftComponents(this);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		//TOTAL DRAG
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CD_TOTAL)) {
+
+			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.CD_TOTAL)) {
+			case FROM_BALANCE_EQUATION:
+				ACAerodynamicAndStabilityManagerUtils.calculateTotalPolarSemiempirical(this);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		//TOTAL MOMENT
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL)) {
+
+			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.CM_TOTAL)) {
+			case FROM_BALANCE_EQUATION:
+				ACAerodynamicAndStabilityManagerUtils.calculateTotalMomentfromAircraftComponents(this);
+				break;
+			default:
+				break;
+			}
+		}
+
+		//SIDE FORCE
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.SIDE_FORCE)) {
+
+			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.SIDE_FORCE)) {
+			case NAPOLITANO_DATCOM:
+				ACAerodynamicAndStabilityManagerUtils.calculateSideForceCoeffient(this);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
 	public void calculate(String resultsFolderPath) {
+		
+		String aerodynamicAndStabilityFolderPath = JPADStaticWriteUtils.createNewFolder(
+				resultsFolderPath 
+				+ "AERODYNAMIC_AND_STABILITY_" + _theAerodynamicBuilderInterface.getCurrentCondition().toString()
+				+ File.separator
+				);
 
+		// TODO write output
+		
+		initializeAnalysis();
+		calculateAircraftData();
 		// TODO
 		/*
 		 * CALLS FOR INITIALIZE ANALYSIS 

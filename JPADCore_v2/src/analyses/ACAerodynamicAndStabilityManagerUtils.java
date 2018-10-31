@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -58,10 +59,13 @@ import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
+import calculators.aerodynamics.SideForceCalc;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
+import javaslang.Tuple;
+import javaslang.Tuple2;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 
@@ -486,51 +490,56 @@ public class ACAerodynamicAndStabilityManagerUtils {
 
 		IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
 		double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
-		
-		if(!_theAerodynamicBuilderInterface.isCalculateLandingGearDeltaDragCoefficient()) {
-			_theAerodynamicBuilderInterface=(
-					IACAerodynamicAndStabilityManager_v2.Builder.from(_theAerodynamicBuilderInterface).setLandingGearDragCoefficient(
-						_theAerodynamicBuilderInterface.getLandingGearDeltaDragCoefficient()
-						).build()
-					);
-		}
-			
-		else {	
-			if(aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
-					.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcCLAtAlpha calcCLAtAlpha = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
-						.get(ComponentEnum.WING).new CalcCLAtAlpha();
-				calcCLAtAlpha.nasaBlackwellCompleteCurve(aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
-						.get(ComponentEnum.WING).getCurrentAlpha());
+
+		//DRAG
+		if(aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getCurrentCondition() == ConditionEnum.TAKE_OFF || 
+				aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getCurrentCondition() == ConditionEnum.LANDING
+				) {
+			if(!_theAerodynamicBuilderInterface.isCalculateLandingGearDeltaDragCoefficient()) {
+				_theAerodynamicBuilderInterface=(
+						IACAerodynamicAndStabilityManager_v2.Builder.from(_theAerodynamicBuilderInterface).setLandingGearDragCoefficient(
+								_theAerodynamicBuilderInterface.getLandingGearDeltaDragCoefficient()
+								).build()
+						);
 			}
-			
-			if(aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
-					.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL) == null) {
-				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
-						.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
-				calcHighLiftDevicesEffects.semiempirical(
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-						currentMachNumber
+
+			else {	
+				if(aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+						.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL) == null) {
+					CalcCLAtAlpha calcCLAtAlpha = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+							.get(ComponentEnum.WING).new CalcCLAtAlpha();
+					calcCLAtAlpha.nasaBlackwellCompleteCurve(aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+							.get(ComponentEnum.WING).getCurrentAlpha());
+				}
+
+				if(aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+						.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL) == null) {
+					CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+							.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
+					calcHighLiftDevicesEffects.semiempirical(
+							_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+							_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+							currentMachNumber
+							);
+
+				}
+
+				_theAerodynamicBuilderInterface = (
+						IACAerodynamicAndStabilityManager_v2.Builder.from(_theAerodynamicBuilderInterface).setLandingGearDragCoefficient(
+								DragCalc.calculateDeltaCD0LandingGears(
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing(), 
+										_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears(), 
+										aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+										.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL), 
+										aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+										.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL)
+										)
+								).build()
 						);
 
 			}
-			
-			_theAerodynamicBuilderInterface = (
-					IACAerodynamicAndStabilityManager_v2.Builder.from(_theAerodynamicBuilderInterface).setLandingGearDragCoefficient(
-							DragCalc.calculateDeltaCD0LandingGears(
-									_theAerodynamicBuilderInterface.getTheAircraft().getWing(), 
-									_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears(), 
-									aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
-									.get(ComponentEnum.WING).getCLAtAlpha().get(MethodEnum.NASA_BLACKWELL), 
-									aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
-									.get(ComponentEnum.WING).getDeltaCL0Flap().get(MethodEnum.SEMIEMPIRICAL)
-									)
-							).build()
-					);
-			
 		}
-		
+
 	}
 
 	public static void initializeDataForDownwashCanard(ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager) {
@@ -1692,7 +1701,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 	// Total Moment Coefficient 
 	//............................................................................
 
-		public void calculateTotalMomentfromAircraftComponents(
+		public static void calculateTotalMomentfromAircraftComponents(
 				ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager
 				){
 			
@@ -1938,4 +1947,169 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			});
 		}
 
+		//............................................................................
+		// Side force Coefficient 
+		//............................................................................
+
+			public static void calculateSideForceCoeffient(
+					ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager
+					){
+				
+				IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
+				double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
+				Amount<Length> currentAltitude = aerodynamicAndStabilityManager.getCurrentAltitude();
+				
+				aerodynamicAndStabilityManager.setCYBetaWing(
+							SideForceCalc.calcCYBetaWing(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralMean())
+							);
+					
+					// Assuming that x1 is the coordinate corresponding to the middle of the tail trunk fuselage
+					Amount<Length> x1 =
+							_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getNoseLength()
+							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getCylinderLength())
+							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageLength()).divide(2);
+					Amount<Length> x0 = _theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageLength().times(0.378).plus(x1.times(0.527));
+					
+					Amount<Area> surfacePArrowV = Amount.valueOf(
+							Math.pow(
+									_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getEquivalentDiameterAtX(x0.doubleValue(SI.METER)),
+									2
+									)*Math.PI/4,
+							SI.SQUARE_METRE
+							);
+					
+					aerodynamicAndStabilityManager.setCYBetaFuselage(
+							SideForceCalc.calcCYBetaFuselage(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
+									surfacePArrowV, 
+									_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().opposite()
+									));
+					
+					aerodynamicAndStabilityManager.setCYBetaHorizontal(
+							SideForceCalc.calcCYBetaHorizontalTail(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurfacePlanform(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getDihedralMean(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().opposite()
+									));
+					
+					aerodynamicAndStabilityManager.setCYBetaVertical(
+							SideForceCalc.calcCYBetaVerticalTail(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSurfacePlanform(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSpan(),
+									 aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.VERTICAL_TAIL).getCLAlpha().get(MethodEnum.HELMBOLD_DIEDERICH),
+									_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getSectionCylinderHeight(),
+									Amount.valueOf(
+											_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getZOutlineXZUpperAtX(
+													_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
+													.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getPanels().get(0).getChordRoot().divide(4)).doubleValue(SI.METER))
+											- _theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getZOutlineXZLowerAtX(
+													_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
+													.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getPanels().get(0).getChordRoot().divide(4)).doubleValue(SI.METER)),
+											SI.METER
+											),
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().opposite(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
+									));
+					
+					aerodynamicAndStabilityManager.setCYBetaTotal(
+							SideForceCalc.calcCYBetaTotal(
+									aerodynamicAndStabilityManager.getCYBetaWing(),
+									aerodynamicAndStabilityManager.getCYBetaFuselage(),
+									aerodynamicAndStabilityManager.getCYBetaHorizontal(),
+									aerodynamicAndStabilityManager.getCYBetaVertical()
+									));
+					
+					// Assuming that CY_delta_A = 0
+					
+					aerodynamicAndStabilityManager.setCYDeltaR(
+							SideForceCalc.calcCYDeltaR(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSurfacePlanform(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getEquivalentWing().getPanels().get(0).getTaperRatio(),
+									 aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.VERTICAL_TAIL).getCLAlpha().get(MethodEnum.HELMBOLD_DIEDERICH),
+									_theAerodynamicBuilderInterface.getVTailDynamicPressureRatio(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getTheSymmetricFlapInterface().getInnerStationSpanwisePosition(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getTheSymmetricFlapInterface().getOuterStationSpanwisePosition(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getMeanChordRatio(),
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
+									));
+					
+					List<Tuple2<Double, Amount<?>>> listOfCYp = new ArrayList();
+					
+					for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
+
+						Amount<?> temporaryCYp = SideForceCalc.calcCYp(
+								aerodynamicAndStabilityManager.getCYBetaVertical(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
+								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeX())
+								.plus((_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChord()).times(0.25))
+								.minus(
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
+										.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
+										.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
+										),
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
+								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeZ()),
+								_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise()
+								);
+
+						listOfCYp.add(
+								Tuple.of(
+										_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
+										temporaryCYp
+										)
+								);
+						
+						aerodynamicAndStabilityManager.getCYp().put(
+								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
+								temporaryCYp
+								);
+					}
+					
+					
+					List<Tuple2<Double, Amount<?>>> listOfCYr = new ArrayList();
+					
+					for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
+
+						Amount<?> temporaryCYr = SideForceCalc.calcCYr(
+								aerodynamicAndStabilityManager.getCYBetaVertical(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getXApexConstructionAxes()
+								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeX())
+								.plus((_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChord()).times(0.25))
+								.minus(
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().times(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
+										.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX())
+										.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes())
+										),
+								_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
+								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeZ()),
+								_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise()
+								);
+
+						listOfCYr.add(
+								Tuple.of(
+										_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
+										temporaryCYr
+										)
+								);
+						
+						aerodynamicAndStabilityManager.getCYr().put(
+								_theAerodynamicBuilderInterface.getXCGAircraft().get(i),
+								temporaryCYr
+								);
+						
+					}
+					
+			}
+					
 }
