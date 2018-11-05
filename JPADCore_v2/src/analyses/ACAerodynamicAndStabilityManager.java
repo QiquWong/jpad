@@ -20229,18 +20229,19 @@ public class ACAerodynamicAndStabilityManager {
 					_currentAltitude
 					);
 			
-			Double cD0TotalAircraft = DragCalc.calculateCD0Total(
-					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL), 
-					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Parasite().get(MethodEnum.SEMIEMPIRICAL), 
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
-					cD0ParasiteWing,
-					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL), 
-					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Parasite().get(MethodEnum.SEMIEMPIRICAL),
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
-					cD0ParasiteHTail, 
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
-					cD0ParasiteVTail
-					);
+			Double cD0TotalAircraft = 0.0;
+			//DragCalc.calculateCD0Total(
+//					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL), 
+//					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Parasite().get(MethodEnum.SEMIEMPIRICAL), 
+//					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
+//					cD0ParasiteWing,
+//					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL), 
+//					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Parasite().get(MethodEnum.SEMIEMPIRICAL),
+//					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
+//					cD0ParasiteHTail, 
+//					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
+//					cD0ParasiteVTail
+//					);
 			
 			Double oswaldFactorTotalAircraft = AerodynamicCalc.calculateOswaldHowe(
 					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTaperRatio(),
@@ -20995,40 +20996,36 @@ public class ACAerodynamicAndStabilityManager {
 			// Calculating MSS position vs alpha body ...
 			//=======================================================================================
 
-			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
-
-				_staticStabilityMarginMap.put(
-						xcg,
-						MyArrayUtils.convertDoubleArrayToListDouble(
-								MyArrayUtils.convertFromDoubleToPrimitive(
-										MyMathUtils.calculateArrayFirstDerivative(
-												MyArrayUtils.convertToDoublePrimitive(_totalEquilibriumLiftCoefficient.get(xcg)), 
-												MyArrayUtils.convertToDoublePrimitive(
-														_totalMomentCoefficient.get(xcg).get(
-																Amount.valueOf(
-																		0.0,
-																		NonSI.DEGREE_ANGLE
-																		)
-																)
-														)
-												)
-										)
-								)
-						);
-			});
-			
+//			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
+//
+//				_staticStabilityMarginMap.put(
+//						xcg,
+//										MyMathUtils.calculateArrayFirstDerivative(
+//												MyArrayUtils.convertToDoublePrimitive(_totalEquilibriumLiftCoefficient.get(xcg)), 
+//												MyArrayUtils.convertToDoublePrimitive(
+//														_totalMomentCoefficient.get(xcg).get(
+//																Amount.valueOf(
+//																		0.0,
+//																		NonSI.DEGREE_ANGLE
+//																		)
+//																)
+//														)
+//												)
+//						);
+//			});
+//			
 			//=======================================================================================
 			// Calculating neutral point position vs alpha body ... 
 			//=======================================================================================
 
-			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
-
-				_neutralPointPositionMap.put(
-						xcg,
-						_staticStabilityMarginMap.get(xcg).stream().map(ssm -> xcg-ssm).collect(Collectors.toList())
-				);
-				
-			});
+//			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
+//
+//				_neutralPointPositionMap.put(
+//						xcg,
+//						_staticStabilityMarginMap.get(xcg).stream().map(ssm -> xcg-ssm).collect(Collectors.toList())
+//				);
+//				
+//			});
 			
 		}
 	}
@@ -21657,18 +21654,19 @@ public class ACAerodynamicAndStabilityManager {
 					_currentAltitude
 					);
 
-			Double cD0TotalAircraft = DragCalc.calculateCD0Total(
-					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL), 
-					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Parasite().get(MethodEnum.SEMIEMPIRICAL), 
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
-					cD0ParasiteWing,
-					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL), 
-					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Parasite().get(MethodEnum.SEMIEMPIRICAL),
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
-					cD0ParasiteHTail, 
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
-					cD0ParasiteVTail
-					);
+			Double cD0TotalAircraft = 0.0;
+//			DragCalc.calculateCD0Total(
+//					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL), 
+//					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Parasite().get(MethodEnum.SEMIEMPIRICAL), 
+//					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
+//					cD0ParasiteWing,
+//					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Total().get(MethodEnum.SEMIEMPIRICAL), 
+//					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Parasite().get(MethodEnum.SEMIEMPIRICAL),
+//					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
+//					cD0ParasiteHTail, 
+//					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCD0().get(MethodEnum.SEMIEMPIRICAL), 
+//					cD0ParasiteVTail
+//					);
 
 			_cNrWing.put(
 					MethodEnum.NAPOLITANO_DATCOM,

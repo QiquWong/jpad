@@ -184,7 +184,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Map<Double, Double> _staticStabilityMarginMap; // xcg, SSM
 	private Map<Double, Double> _maximumTrimmedLiftingCoefficientMap; // xcg, CLmax_trim
 	private Map<Double, Amount<?>> _cLAlphaEquilibriumMap; // xcg, CL_alpha_e
+	private Map<Double, Double> _cLZeroEquilibriumMap; // xcg, CL_zero_e
 	private Map<Double, Amount<?>> _cMAlphaEquilibriumMap; // xcg, CM_alpha_e
+	private Map<Double, Double> _cDZeroTotalEquilibriumMap; // xcg, CD_zero_e
+	private Double _deltaCDZeroLandingGear;
+	private Double _deltaCDZeroFlap;
 
 	// lateral static stability
 	private Amount<?> _cRollBetaWingBody;
@@ -1370,7 +1374,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				else { 
 					calculateDeltaCD0LandingGears = true;
 
-					// FIXME: NEED A METHOD TO ESTIMATE ... CHECK DRAG_CALC
+					// Delta landing gear drag will be calculated using the method in ACAerodynamicAndStabilityManager
 					deltaCD0LandingGears = 0.0;
 				}
 
@@ -3369,6 +3373,22 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	public void set_totalMomentCoefficientBreakDown(
 			Map<Double, Map<ComponentEnum, List<Double>>> _totalMomentCoefficientBreakDown) {
 		this._totalMomentCoefficientBreakDown = _totalMomentCoefficientBreakDown;
+	}
+
+	public Double get_deltaCDZeroLandingGear() {
+		return _deltaCDZeroLandingGear;
+	}
+
+	public void set_deltaCDZeroLandingGear(Double _deltaCDZeroLandingGear) {
+		this._deltaCDZeroLandingGear = _deltaCDZeroLandingGear;
+	}
+
+	public Double get_deltaCDZeroFlap() {
+		return _deltaCDZeroFlap;
+	}
+
+	public void set_deltaCDZeroFlap(Double _deltaCDZeroFlap) {
+		this._deltaCDZeroFlap = _deltaCDZeroFlap;
 	}
 
 }
