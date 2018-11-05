@@ -157,6 +157,52 @@ public final class MyMathUtils {
 	public static double[] solveLinearSystem(RealMatrix a, MyArray b) {
 		return new LUDecomposition(a).getSolver().solve(b.getRealVector()).toArray();
 	}
+	
+	/**
+	 * Calculates triangle area from points P1, P2, P3 ordered counter-clockwise
+	 * @param p1
+	 * @param p2
+	 * @param p3
+	 * @return area
+	 */
+	public static double areaTriangle(double[] p1, double[] p2, double[] p3) {
+		
+		double area = 0.0;		
+		area = 0.5*(p1[0]*p2[1] + p2[0]*p3[1] + p3[0]*p1[1] - p2[0]*p1[1] - p3[0]*p2[1] - p1[0]*p3[1]);
+		
+		return area;	
+	}
+	
+	/**
+	 * Calculate polygon area from an array of points ordered counter-clockwise
+	 * @param pts
+	 * @return area
+	 */
+	public static double areaPolygon(double[] ... pts) {
+		double area = 0.0;
+		int numPts = pts.length;
+		
+		if(numPts < 3) {
+			throw new IllegalArgumentException();
+		}
+		
+		if(numPts == 3) {
+			return areaTriangle(pts[0], pts[1], pts[2]);
+		}
+			
+		List<double[]> ptsList = new ArrayList<>();
+		ptsList.addAll(Arrays.asList(pts));
+		ptsList.add(pts[0]);
+		
+		for(int i = 0; i < ptsList.size()-1; i++) {
+			area += ptsList.get(i)[0] * ptsList.get(i+1)[1] - 
+					ptsList.get(i+1)[0] * ptsList.get(i)[1];
+		}
+		
+		area = 0.5 * Math.abs(area);
+		
+		return area;
+	}
 
 	/**
 	 * Numerical trapezoidal integration of y(x) function

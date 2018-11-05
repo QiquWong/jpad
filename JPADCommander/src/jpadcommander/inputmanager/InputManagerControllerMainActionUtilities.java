@@ -1806,10 +1806,10 @@ public class InputManagerControllerMainActionUtilities {
 						);
 
 				if (Main.getTheAircraft().getWing().getSurfacePlanform()
-						.getUnit().toString().equalsIgnoreCase("m²"))
+						.getUnit().toString().equalsIgnoreCase("mÂ²"))
 					theController.getEquivalentWingAreaUnitChoiceBox().getSelectionModel().select(0);
 				else if (Main.getTheAircraft().getFuselage().getFuselageLength()
-						.getUnit().toString().equalsIgnoreCase("ft²"))
+						.getUnit().toString().equalsIgnoreCase("ftÂ²"))
 					theController.getEquivalentWingAreaUnitChoiceBox().getSelectionModel().select(1);
 
 			}
@@ -1831,7 +1831,7 @@ public class InputManagerControllerMainActionUtilities {
 						);
 
 				if(Main.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0)
-						.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+						.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("Â°")
 						|| Main.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0)
 						.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
 					theController.getEquivalentWingSweepLEUnitChoiceBox().getSelectionModel().select(0);
@@ -1878,7 +1878,7 @@ public class InputManagerControllerMainActionUtilities {
 							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
 							);
 					
-					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("Â°")
 							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxWingSweepLEPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
@@ -1983,7 +1983,7 @@ public class InputManagerControllerMainActionUtilities {
 							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
 							);
 					
-					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("Â°")
 							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxHTailSweepLEPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
@@ -2088,7 +2088,7 @@ public class InputManagerControllerMainActionUtilities {
 							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
 							);
 					
-					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("Â°")
 							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxVTailSweepLEPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
@@ -2193,7 +2193,7 @@ public class InputManagerControllerMainActionUtilities {
 							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
 							);
 					
-					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("Â°")
 							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxCanardSweepLEPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
@@ -2256,56 +2256,83 @@ public class InputManagerControllerMainActionUtilities {
 						updateProgress(1, numberOfOperations);
 						updateMessage("Updating Fuselage Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement) + "%");
-						if(!theController.isUpdateFuselageDataFromFile()) 
-							theController.getInputManagerControllerUpdateUtilites().updateFuselageTabData();
+						if(!theController.isUpdateFuselageDataFromFile()) {
+							if(Main.getTheAircraft().getFuselage() != null) {
+								theController.getInputManagerControllerUpdateUtilites().updateFuselageTabData();
+							}
+						}
 						
 						updateProgress(2, numberOfOperations);
 						updateMessage("Updating Cabin Configuration Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*2) + "%");
-						if(!theController.isUpdateCabinConfigurationDataFromFile())
-							theController.getInputManagerControllerUpdateUtilites().updateCabinConfigurationTabData();
+						if(!theController.isUpdateCabinConfigurationDataFromFile()) {
+							if(Main.getTheAircraft().getCabinConfiguration() != null) {
+								theController.getInputManagerControllerUpdateUtilites().updateCabinConfigurationTabData();
+							}
+						}
 						
 						updateProgress(3, numberOfOperations);
 						updateMessage("Updating Wing Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*3) + "%");
-						if(!theController.isUpdateWingDataFromFile())
-							theController.getInputManagerControllerUpdateUtilites().updateWingTabData();
+						if(!theController.isUpdateWingDataFromFile()) {
+							if(Main.getTheAircraft().getWing() != null) {
+								theController.getInputManagerControllerUpdateUtilites().updateWingTabData();
+							}						
+						}
 						
 						updateProgress(4, numberOfOperations);
 						updateMessage("Updating Horizontal Tail Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*4) + "%");
-						if(!theController.isUpdateHTailDataFromFile())
-							theController.getInputManagerControllerUpdateUtilites().updateHTailTabData();
+						if(!theController.isUpdateHTailDataFromFile()) {
+							if(Main.getTheAircraft().getHTail() != null) {
+								theController.getInputManagerControllerUpdateUtilites().updateHTailTabData();
+							}						
+						}
 						
 						updateProgress(5, numberOfOperations);
 						updateMessage("Updating Vertical Tail Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*5) + "%");
-						if(!theController.isUpdateVTailDataFromFile())
-							theController.getInputManagerControllerUpdateUtilites().updateVTailTabData();
+						if(!theController.isUpdateVTailDataFromFile()) {
+							if(Main.getTheAircraft().getVTail() != null) {
+								theController.getInputManagerControllerUpdateUtilites().updateVTailTabData();
+							}
+						}
 						
 						updateProgress(6, numberOfOperations);
 						updateMessage("Updating Canard Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*6)+ "%");
-						if(!theController.isUpdateCanardDataFromFile())
-							theController.getInputManagerControllerUpdateUtilites().updateCanardTabData();
+						if(!theController.isUpdateCanardDataFromFile()) {					
+							if(Main.getTheAircraft().getCanard() != null) {
+								theController.getInputManagerControllerUpdateUtilites().updateCanardTabData();
+							}
+						}						
 						
 						updateProgress(7, numberOfOperations);
 						updateMessage("Updating Nacelles Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*7) + "%");
-						if(!theController.isUpdateNacellesDataFromFile())
-							theController.getInputManagerControllerUpdateUtilites().updateNacelleTabData();
+						if(!theController.isUpdateNacellesDataFromFile()) {
+							if(Main.getTheAircraft().getNacelles() != null) {
+								theController.getInputManagerControllerUpdateUtilites().updateNacelleTabData();
+							}
+						}
 						
 						updateProgress(8, numberOfOperations);
 						updateMessage("Updating Power Plant Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*8) + "%");
-						if(!theController.isUpdatePowerPlantDataFromFile())
-							theController.getInputManagerControllerUpdateUtilites().updatePowerPlantTabData();
+						if(!theController.isUpdatePowerPlantDataFromFile()) {
+							if(Main.getTheAircraft().getPowerPlant() != null) {
+								theController.getInputManagerControllerUpdateUtilites().updatePowerPlantTabData();
+							}
+						}
 						
 						updateProgress(9, numberOfOperations);
 						updateMessage("Updating Landing Gears Tab Data ...");
 						updateTitle(String.valueOf(progressIncrement*9) + "%");
-						if(!theController.isUpdateLandingGearsDataFromFile())
-							theController.getInputManagerControllerUpdateUtilites().updateLandingGearsTabData();
+						if(!theController.isUpdateLandingGearsDataFromFile()) {
+							if(Main.getTheAircraft().getLandingGears() != null) {
+								theController.getInputManagerControllerUpdateUtilites().updateLandingGearsTabData();
+							}
+						}
 						
 						updateProgress(10, numberOfOperations);
 						updateMessage("Updating Aircraft Tab Data ...");

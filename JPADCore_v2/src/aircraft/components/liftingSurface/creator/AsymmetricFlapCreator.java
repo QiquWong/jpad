@@ -191,7 +191,7 @@ public class AsymmetricFlapCreator {
 	}
 	
 	public double getOuterStationSpanwisePosition() {
-		return _theAsymmetricFlapInterface.getInnerStationSpanwisePosition();
+		return _theAsymmetricFlapInterface.getOuterStationSpanwisePosition();
 	}
 	
 	public void setOuterStationSpanwisePosition (double _outerStationSpanwisePosition) {

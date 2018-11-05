@@ -3496,7 +3496,7 @@ public class InputManagerController {
 		textFieldWingInnerPositionSlatList.add(slatInnerPositionTextField);
 		textFieldWingOuterPositionSlatList.add(slatOuterPositionTextField);
 		textFieldWingInnerChordRatioSlatList.add(slatInnerChordRatioTextField);
-		textFieldWingOuterChordRatioSlatList.add(slatExtensionRatioTextField);
+		textFieldWingOuterChordRatioSlatList.add(slatOuterChordRatioTextField);
 		textFieldWingExtensionRatioSlatList.add(slatExtensionRatioTextField);
 		textFieldWingMinimumDeflectionAngleSlatList.add(slatMinimumDeflectionTextField);
 		textFieldWingMaximumDeflectionAngleSlatList.add(slatMaximumDeflectionTextField);
