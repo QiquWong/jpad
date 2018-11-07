@@ -290,19 +290,16 @@ public class TakeOffCalc {
 		System.out.println("---------------------------------------------------");
 		System.out.println("CalcTakeOff :: ODE integration\n\n");
 
-		/*
-		 * FIXME: CORRECTION FOR IRON LOOP2. REMEMBER TO REMOVE THIS.
-		 */
-//		if(vMC != null) {
-//			if(1.06*vMC.doubleValue(SI.METERS_PER_SECOND) > (kRot*vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
-//					) {
-//				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
-//				vRot = vMC.to(SI.METERS_PER_SECOND).times(1.06);
-//			}
-//			else
-//				vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
-//		}
-//		else
+		if(vMC != null) {
+			if(1.06*vMC.doubleValue(SI.METERS_PER_SECOND) > (kRot*vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+					) {
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+				vRot = vMC.to(SI.METERS_PER_SECOND).times(1.06);
+			}
+			else
+				vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
+		}
+		else
 			vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
 		
 		int i=0;

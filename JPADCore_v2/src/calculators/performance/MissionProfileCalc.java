@@ -984,9 +984,6 @@ public class MissionProfileCalc {
 								)
 						);
 
-				/*
-				 * FIXME: INTERPOLATING FUNCTION ASSEIGNED FOR IRON LOOP-2 ANALYSIS. REMEMBER TO DELETE IT -> (VITTORIO)
-				 */
 				List<Amount<Force>> dragPerStep = new ArrayList<>();
 				dragPerStep.add(
 						Amount.valueOf(
@@ -1000,10 +997,10 @@ public class MissionProfileCalc {
 												MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 												MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 												cLSteps.get(0))
-										+ (-0.000000000002553*Math.pow(aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM), 2)
-												+ 0.000000209147028*aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)	
-												-0.003767654434394
-												)
+//										+ (-0.000000000002553*Math.pow(aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM), 2)
+//												+ 0.000000209147028*aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)	
+//												-0.003767654434394
+//												)
 										),
 								SI.NEWTON
 								)
@@ -1180,9 +1177,6 @@ public class MissionProfileCalc {
 							);
 					
 
-					/*
-					 * FIXME: INTERPOLATING FUNCTION ASSEIGNED FOR IRON LOOP-2 ANALYSIS. REMEMBER TO DELETE IT -> (VITTORIO)
-					 */
 					dragPerStep.add(
 							Amount.valueOf(
 									DragCalc.calculateDragAtSpeed(
@@ -1195,10 +1189,10 @@ public class MissionProfileCalc {
 													MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 													MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 													cLSteps.get(j))
-											+ (-0.000000000002553*Math.pow(aircraftMassPerStep.get(j).doubleValue(SI.KILOGRAM), 2)
-													+ 0.000000209147028*aircraftMassPerStep.get(j).doubleValue(SI.KILOGRAM)	
-													-0.003767654434394
-													)
+//											+ (-0.000000000002553*Math.pow(aircraftMassPerStep.get(j).doubleValue(SI.KILOGRAM), 2)
+//													+ 0.000000209147028*aircraftMassPerStep.get(j).doubleValue(SI.KILOGRAM)	
+//													-0.003767654434394
+//													)
 											),
 									SI.NEWTON
 									)
@@ -1694,9 +1688,6 @@ public class MissionProfileCalc {
 									)
 							);
 
-					/*
-					 * FIXME: INTERPOLATING FUNCTION ASSEIGNED FOR IRON LOOP-2 ANALYSIS. REMEMBER TO DELETE IT -> (VITTORIO)
-					 */
 					List<Amount<Force>> dragPerStepAlternateCruise = new ArrayList<>();
 					dragPerStepAlternateCruise.add(
 							Amount.valueOf(
@@ -1710,10 +1701,10 @@ public class MissionProfileCalc {
 													MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 													MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 													cLStepsAlternateCruise.get(0))
-											+ (-0.000000000002553*Math.pow(aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM), 2)
-													+ 0.000000209147028*aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)	
-													-0.003767654434394
-													)
+//											+ (-0.000000000002553*Math.pow(aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM), 2)
+//													+ 0.000000209147028*aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)	
+//													-0.003767654434394
+//													)
 											),
 									SI.NEWTON
 									)
@@ -1930,9 +1921,6 @@ public class MissionProfileCalc {
 										_alternateCruiseAltitude.doubleValue(SI.METER)
 										)
 								);
-						/*
-						 * FIXME: INTERPOLATING FUNCTION ASSEIGNED FOR IRON LOOP-2 ANALYSIS. REMEMBER TO DELETE IT -> (VITTORIO)
-						 */
 						dragPerStepAlternateCruise.add(
 								Amount.valueOf(
 										DragCalc.calculateDragAtSpeed(
@@ -1945,10 +1933,10 @@ public class MissionProfileCalc {
 														MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 														MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 														cLStepsAlternateCruise.get(j))
-												+ (-0.000000000002553*Math.pow(aircraftMassPerStep.get(j).doubleValue(SI.KILOGRAM), 2)
-														+ 0.000000209147028*aircraftMassPerStep.get(j).doubleValue(SI.KILOGRAM)	
-														-0.003767654434394
-														)
+//												+ (-0.000000000002553*Math.pow(aircraftMassPerStep.get(j).doubleValue(SI.KILOGRAM), 2)
+//														+ 0.000000209147028*aircraftMassPerStep.get(j).doubleValue(SI.KILOGRAM)	
+//														-0.003767654434394
+//														)
 												),
 										SI.NEWTON
 										)
