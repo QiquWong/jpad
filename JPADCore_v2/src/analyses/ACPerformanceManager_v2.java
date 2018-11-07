@@ -81,13 +81,15 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import writers.JPADStaticWriteUtils;
 
-public class ACPerformanceManager {
+public class ACPerformanceManager_v2 {
 
 	/*
 	 *******************************************************************************
 	 * @author Vittorio Trifari
 	 *******************************************************************************
 	 */
+	
+	// TODO: IMPLEMENT HERE NEW MODIFICATIONS
 	
 	//------------------------------------------------------------------------------
 	// VARIABLES DECLARATION:
@@ -441,7 +443,7 @@ public class ACPerformanceManager {
 	}
 	
 	@SuppressWarnings({ "unchecked" })
-	public static ACPerformanceManager importFromXML (
+	public static ACPerformanceManager_v2 importFromXML (
 			String pathToXML,
 			Aircraft theAircraft,
 			OperatingConditions theOperatingConditions
@@ -2424,7 +2426,7 @@ public class ACPerformanceManager {
 				.addAllPlotList(plotList)
 				.build();
 		
-		ACPerformanceManager thePerformanceManager = new ACPerformanceManager();
+		ACPerformanceManager_v2 thePerformanceManager = new ACPerformanceManager_v2();
 		thePerformanceManager.setThePerformanceInterface(thePerformanceManagerInterface);
 		
 		return thePerformanceManager;
@@ -4393,6 +4395,9 @@ public class ACPerformanceManager {
 				}
 				
 				//..................................................................................................
+				/*
+				 * FIXME: INTERPOLATING FUNCTION ASSEIGNED FOR IRON LOOP-2 ANALYSIS. REMEMBER TO DELETE IT -> (VITTORIO)
+				 */
 				_dragListAltitudeParameterizationMap.get(xcg).add(
 						DragCalc.calculateDragAndPowerRequired(
 								_thePerformanceInterface.getAltitudeListCruise().get(i).doubleValue(SI.METER),
@@ -4404,17 +4409,16 @@ public class ACPerformanceManager {
 								_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
-								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCDCruise().get(xcg)),
-//								MyArrayUtils.convertToDoublePrimitive(
-//										Arrays.stream(_thePerformanceInterface.getPolarCDCruise().get(xcg))
-//										.map(cd -> cd + (
-//												-0.000000000002553*Math.pow(startCruiseMass.doubleValue(SI.KILOGRAM), 2)
-//												+ 0.000000209147028*startCruiseMass.doubleValue(SI.KILOGRAM)	
-//												-0.003767654434394
-//												)
-//												)
-//										.collect(Collectors.toList())
-//										),
+								MyArrayUtils.convertToDoublePrimitive(
+										Arrays.stream(_thePerformanceInterface.getPolarCDCruise().get(xcg))
+										.map(cd -> cd + (
+												-0.000000000002553*Math.pow(startCruiseMass.doubleValue(SI.KILOGRAM), 2)
+												+ 0.000000209147028*startCruiseMass.doubleValue(SI.KILOGRAM)	
+												-0.003767654434394
+												)
+												)
+										.collect(Collectors.toList())
+										),
 								_thePerformanceInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 								meanAirfoil.getThicknessToChordRatio(),
 								meanAirfoil.getType()
@@ -4573,7 +4577,10 @@ public class ACPerformanceManager {
 					System.exit(1);
 				}
 				//..................................................................................................
-//				double currentWeight = _weightListCruiseMap.get(xcg).get(i).doubleValue(SI.NEWTON)/9.81;
+				/*
+				 * FIXME: INTERPOLATING FUNCTION ASSEIGNED FOR IRON LOOP-2 ANALYSIS. REMEMBER TO DELETE IT -> (VITTORIO)
+				 */
+				double currentWeight = _weightListCruiseMap.get(xcg).get(i).doubleValue(SI.NEWTON)/9.81;
 				_dragListWeightParameterizationMap.get(xcg).add(
 						DragCalc.calculateDragAndPowerRequired(
 								_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
@@ -4582,17 +4589,16 @@ public class ACPerformanceManager {
 								_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
-								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCDCruise().get(xcg)),
-//								MyArrayUtils.convertToDoublePrimitive(
-//										Arrays.stream(_thePerformanceInterface.getPolarCDCruise().get(xcg))
-//										.map(cd -> cd + (
-//												-0.000000000002553*Math.pow(currentWeight, 2)
-//												+ 0.000000209147028*currentWeight	
-//												-0.003767654434394
-//												)
-//												)
-//										.collect(Collectors.toList())
-//										),
+								MyArrayUtils.convertToDoublePrimitive(
+										Arrays.stream(_thePerformanceInterface.getPolarCDCruise().get(xcg))
+										.map(cd -> cd + (
+												-0.000000000002553*Math.pow(currentWeight, 2)
+												+ 0.000000209147028*currentWeight	
+												-0.003767654434394
+												)
+												)
+										.collect(Collectors.toList())
+										),
 								_thePerformanceInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 								meanAirfoil.getThicknessToChordRatio(),
 								meanAirfoil.getType()
@@ -4659,6 +4665,9 @@ public class ACPerformanceManager {
 					nPointSpeed
 					);
 			//..................................................................................................
+			/*
+			 * FIXME: INTERPOLATING FUNCTION ASSEIGNED FOR IRON LOOP-2 ANALYSIS. REMEMBER TO DELETE IT -> (VITTORIO)
+			 */
 			dragList.add(
 					DragCalc.calculateDragAndPowerRequired(
 							altitude.get(0).doubleValue(SI.METER),
@@ -4670,17 +4679,16 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 							MyArrayUtils.getMax(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
 							MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
-							MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCDCruise().get(xcg)),
-//							MyArrayUtils.convertToDoublePrimitive(
-//									Arrays.stream(_thePerformanceInterface.getPolarCDCruise().get(xcg))
-//									.map(cd -> cd + (
-//											-0.000000000002553*Math.pow(startCruiseMass.doubleValue(SI.KILOGRAM), 2)
-//											+ 0.000000209147028*startCruiseMass.doubleValue(SI.KILOGRAM)	
-//											-0.003767654434394
-//											)
-//											)
-//									.collect(Collectors.toList())
-//									),
+							MyArrayUtils.convertToDoublePrimitive(
+									Arrays.stream(_thePerformanceInterface.getPolarCDCruise().get(xcg))
+									.map(cd -> cd + (
+											-0.000000000002553*Math.pow(startCruiseMass.doubleValue(SI.KILOGRAM), 2)
+											+ 0.000000209147028*startCruiseMass.doubleValue(SI.KILOGRAM)	
+											-0.003767654434394
+											)
+											)
+									.collect(Collectors.toList())
+									),
 							_thePerformanceInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 							meanAirfoil.getThicknessToChordRatio(),
 							meanAirfoil.getType()
@@ -4754,6 +4762,9 @@ public class ACPerformanceManager {
 						nPointSpeed
 						);
 				//..................................................................................................
+				/*
+				 * FIXME: INTERPOLATING FUNCTION ASSEIGNED FOR IRON LOOP-2 ANALYSIS. REMEMBER TO DELETE IT -> (VITTORIO)
+				 */
 				dragList.add(
 						DragCalc.calculateDragAndPowerRequired(
 								altitude.get(i).doubleValue(SI.METER),
@@ -4765,17 +4776,16 @@ public class ACPerformanceManager {
 								_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
-								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCDCruise().get(xcg)),
-//								MyArrayUtils.convertToDoublePrimitive(
-//										Arrays.stream(_thePerformanceInterface.getPolarCDCruise().get(xcg))
-//										.map(cd -> cd + (
-//												-0.000000000002553*Math.pow(startCruiseMass.doubleValue(SI.KILOGRAM), 2)
-//												+ 0.000000209147028*startCruiseMass.doubleValue(SI.KILOGRAM)	
-//												-0.003767654434394
-//												)
-//												)
-//										.collect(Collectors.toList())
-//										),
+								MyArrayUtils.convertToDoublePrimitive(
+										Arrays.stream(_thePerformanceInterface.getPolarCDCruise().get(xcg))
+										.map(cd -> cd + (
+												-0.000000000002553*Math.pow(startCruiseMass.doubleValue(SI.KILOGRAM), 2)
+												+ 0.000000209147028*startCruiseMass.doubleValue(SI.KILOGRAM)	
+												-0.003767654434394
+												)
+												)
+										.collect(Collectors.toList())
+										),
 								_thePerformanceInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 								meanAirfoil.getThicknessToChordRatio(),
 								meanAirfoil.getType()
@@ -5049,7 +5059,10 @@ public class ACPerformanceManager {
 			
 			for(int i=0; i<_weightListCruiseMap.get(xcg).size(); i++) {
 				//..................................................................................................
-//				double currentWeight = _weightListCruiseMap.get(xcg).get(i).doubleValue(SI.NEWTON)/9.81;
+				/*
+				 * FIXME: INTERPOLATING FUNCTION ASSEIGNED FOR IRON LOOP-2 ANALYSIS. REMEMBER TO DELETE IT -> (VITTORIO)
+				 */
+				double currentWeight = _weightListCruiseMap.get(xcg).get(i).doubleValue(SI.NEWTON)/9.81;
 				dragListWeightParameterization.add(
 						DragCalc.calculateDragAndPowerRequired(
 								_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
@@ -5058,17 +5071,16 @@ public class ACPerformanceManager {
 								_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
 								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
-								MyArrayUtils.convertToDoublePrimitive(_thePerformanceInterface.getPolarCDCruise().get(xcg)),
-//								MyArrayUtils.convertToDoublePrimitive(
-//										Arrays.stream(_thePerformanceInterface.getPolarCDCruise().get(xcg))
-//										.map(cd -> cd + (
-//												-0.000000000002553*Math.pow(currentWeight, 2)
-//												+ 0.000000209147028*currentWeight	
-//												-0.003767654434394
-//												)
-//												)
-//										.collect(Collectors.toList())
-//										),
+								MyArrayUtils.convertToDoublePrimitive(
+										Arrays.stream(_thePerformanceInterface.getPolarCDCruise().get(xcg))
+										.map(cd -> cd + (
+												-0.000000000002553*Math.pow(currentWeight, 2)
+												+ 0.000000209147028*currentWeight	
+												-0.003767654434394
+												)
+												)
+										.collect(Collectors.toList())
+										),
 								_thePerformanceInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
 								meanAirfoil.getThicknessToChordRatio(),
 								meanAirfoil.getType()
