@@ -459,6 +459,24 @@ public class DragCalc {
 		if (diff > 0) return 20.*Math.pow(diff,4);
 		return 0.;
 	}
+	
+	/**
+	 * @author Manuela Ruocco
+	 * @param cL
+	 * @param machCurrent
+	 * @param machCr
+	 * @return
+	 */
+	public static double calculateOswaldFactorModificationDueToWinglet(Amount<Length> wingletHeight, Amount<Length> wingSpan ) {
+
+		double oswaldModificationFactor = 0.0;
+		double [] wingletHeightValues = {0, 0.1};
+		double [] oswaldFactorValues = {1, 1.1};
+		
+		double diff = wingletHeight.doubleValue(SI.METER)/wingSpan.doubleValue(SI.METER);
+		oswaldModificationFactor = MyMathUtils.getInterpolatedValue1DLinear(wingletHeightValues, oswaldFactorValues, diff);
+		return oswaldModificationFactor;
+	}
 
 	/**
 	 * @author Lorenzo Attanasio
@@ -473,6 +491,20 @@ public class DragCalc {
 			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
 		double cdWawe = calculateCDWaveLockKorn(cL, mach, AerodynamicCalc.calculateMachCriticalKornMason(cL, sweepHalfChord, tcMax, airfoilType));
 		return cdWawe;
+	}
+	
+	/**
+	 * @author Manuela Ruocco
+	 * @param cL
+	 * @param mach
+	 * @param sweepHalfChord
+	 * @param tcMax
+	 * @param airfoilType
+	 * @return
+	 */
+	public static double calculateOswaldModificationDueToWinglet(Amount<Length> wingletHeight) {
+		double oswaldFactorModification = calculateCDWaveLockKorn(cL, mach, AerodynamicCalc.calculateMachCriticalKornMason(cL, sweepHalfChord, tcMax, airfoilType));
+		return oswaldFactorModification;
 	}
 	
 	/**
