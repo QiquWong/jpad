@@ -1,18 +1,11 @@
 package database.databasefunctions.engine;
 
-import java.io.File;
-
-import javax.measure.quantity.Power;
-
 import aircraft.components.powerplant.PowerPlant;
-import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 
 
 public class EngineDatabaseManager {
-
-	private static double kCorrectionSFC = 1.0;
 
 	/**
 	 * 
@@ -65,19 +58,11 @@ public class EngineDatabaseManager {
 			) {
 
 		if (engineType.equals(EngineTypeEnum.TURBOFAN)) {
-			return kCorrectionSFC*thePowerPlant.getTurbofanEngineDatabaseReader().getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition); 
+			return thePowerPlant.getTurbofanEngineDatabaseReader().getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition); 
 
 		} else {
-			return kCorrectionSFC*thePowerPlant.getTurbopropEngineDatabaseReader().getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition);
+			return thePowerPlant.getTurbopropEngineDatabaseReader().getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition);
 		}
-	}
-
-	public static double getkCorrectionSFC() {
-		return kCorrectionSFC;
-	}
-
-	public static void setkCorrectionSFC(double kCorrectionSFC) {
-		EngineDatabaseManager.kCorrectionSFC = kCorrectionSFC;
 	}
 
 }

@@ -12,8 +12,13 @@ import standaloneutils.database.hdf.MyHDFReader;
 public abstract class EngineDatabaseReader extends DatabaseReader{
 
 	protected MyInterpolatingFunction 
-	takeOffThrustFunction, continuousThrustFunction, climbThrustFunction, cruiseThrustFunction, 
-	descentThrustFunction, sfcFunction, descentFuelFlowFunction; 
+	takeOffThrustFunction,
+	continuousThrustFunction,
+	climbThrustFunction,
+	cruiseThrustFunction, 
+	descentThrustFunction,
+	sfcFunction,
+	descentFuelFlowFunction; 
 
 	public EngineDatabaseReader(String databaseFolderPath, String engineDatabaseFileName) {
 		super(databaseFolderPath, engineDatabaseFileName);
