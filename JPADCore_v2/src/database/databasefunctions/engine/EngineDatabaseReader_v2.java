@@ -6,8 +6,7 @@ import javax.measure.quantity.Temperature;
 import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.EngineOperatingConditionEnum;
-import database.databasefunctions.DatabaseReader;
-import flanagan.interpolation.QuadriCubicSpline;
+import flanagan.interpolation.PolyCubicSpline;
 
 /**
  * @author Vittorio Trifari
@@ -21,7 +20,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * Thrust Ratio Interpolating Functions
 	 */
-	protected QuadriCubicSpline 
+	protected PolyCubicSpline 
 	takeOffThrustRatioFunction,
 	aprThrustRatioFunction,
 	climbThrustRatioFunction,
@@ -33,7 +32,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * SFC Interpolating Functions
 	 */
-	protected QuadriCubicSpline
+	protected PolyCubicSpline
 	takeOffSFCFunction,
 	aprSFCFunction,
 	climbSFCFunction,
@@ -45,7 +44,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * NOx Emission Index Interpolating Functions
 	 */
-	protected QuadriCubicSpline
+	protected PolyCubicSpline
 	takeOffNOxEmissionIndexFunction,
 	aprNOxEmissionIndexFunction,
 	climbNOxEmissionIndexFunction,
@@ -57,7 +56,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * CO Emission Index Interpolating Functions
 	 */
-	protected QuadriCubicSpline
+	protected PolyCubicSpline
 	takeOffCOEmissionIndexFunction,
 	aprCOEmissionIndexFunction,
 	climbCOEmissionIndexFunction,
@@ -69,7 +68,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * HC Emission Index Interpolating Functions
 	 */
-	protected QuadriCubicSpline
+	protected PolyCubicSpline
 	takeOffHCEmissionIndexFunction,
 	aprHCEmissionIndexFunction,
 	climbHCEmissionIndexFunction,
@@ -81,7 +80,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * CO2 Emission Index Interpolating Functions
 	 */
-	protected QuadriCubicSpline
+	protected PolyCubicSpline
 	takeOffCO2EmissionIndexFunction,
 	aprCO2EmissionIndexFunction,
 	climbCO2EmissionIndexFunction,
@@ -93,7 +92,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * H2O Emission Index Interpolating Functions
 	 */
-	protected QuadriCubicSpline
+	protected PolyCubicSpline
 	takeOffH2OEmissionIndexFunction,
 	aprH2OEmissionIndexFunction,
 	climbH2OEmissionIndexFunction,

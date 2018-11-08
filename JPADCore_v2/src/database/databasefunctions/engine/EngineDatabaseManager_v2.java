@@ -1,14 +1,28 @@
 package database.databasefunctions.engine;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Temperature;
+import javax.measure.unit.Unit;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.EngineOperatingConditionEnum;
-import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
+import database.DatabaseInterpolationUtils;
+import flanagan.interpolation.PolyCubicSpline;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
@@ -20,55 +34,210 @@ import writers.JPADStaticWriteUtils;
 public class EngineDatabaseManager_v2 extends EngineDatabaseReader_v2 {
 
 	//-------------------------------------------------------------------
+	// VARIABLE DECLARATION
+	//-------------------------------------------------------------------
+	public static final int numberOfInput = 4;
+	public static final int numberOfOutput = 7;
+	private File serializedEngineDatabaseFile;
+	/*
+	 * Index legend:
+	 * 0 = Thrust Ratio
+	 * 1 = TSFC [lb/lb*hr]
+	 * 2 = NOx Emission Index
+	 * 3 = CO Emission Index
+	 * 4 = HC Emission Index
+	 * 5 = CO2 Emission Index
+	 * 6 = H2O Emission Index
+	 */
+	private Map<Integer, PolyCubicSpline> interpolatedTakeOffDataMap;
+	private Map<Integer, PolyCubicSpline> interpolatedAPRDataMap;
+	private Map<Integer, PolyCubicSpline> interpolatedClimbDataMap;
+	private Map<Integer, PolyCubicSpline> interpolatedContinuousDataMap;
+	private Map<Integer, PolyCubicSpline> interpolatedCruiseDataMap;
+	private Map<Integer, PolyCubicSpline> interpolatedFlightIdleDataMap;
+	private Map<Integer, PolyCubicSpline> interpolatedGroundIdleDataMap;
+
+	//-------------------------------------------------------------------
 	// BUILDER
 	//-------------------------------------------------------------------
 	public EngineDatabaseManager_v2(String databaseFolderPath, String engineDatabaseFileName) {
-		
-		readDatabaseFromFile(databaseFolderPath, engineDatabaseFileName);
-		serializeDatabase(databaseFolderPath, engineDatabaseFileName);
+
+		importDatabaseFromFile(databaseFolderPath, engineDatabaseFileName);
 		
 	}
 
 	//-------------------------------------------------------------------
 	// METHODS
 	//-------------------------------------------------------------------
-	public void readDatabaseFromFile(String databaseFolderPath, String engineDatabaseFileName) {
+	public void importDatabaseFromFile(String databaseFolderPath, String engineDatabaseFileName) {
 		
-		// TODO: ADD READ DATA FROM FILE (CHOOSE THE BEST INPUT FILE FORMAT)
+		/*
+		 * READING DATA FROM EXCEL FILE ...
+		 */
+		File engineDatabaseFile = new File(databaseFolderPath + engineDatabaseFileName);
+		if(!engineDatabaseFile.exists()) {
+			System.err.println("WARNING (IMPORT ENGINE DATABASE): THE ENGINE DATABASE FILE DOES NOT EXIST!! TERMINATING...");
+			System.exit(1);
+		}
+
+		Map<String, List<List<String>>> dataMap = new HashMap<>(); 
+		DataFormatter dataFormatter = new DataFormatter();
+		try {
+			Workbook workbook = WorkbookFactory.create(engineDatabaseFile);
+			System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets: ");
+			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+				System.out.println("\n" + workbook.getSheetName(i));
+				System.out.println("Iterating over Rows and Columns ...");
+				List<List<String>> sheetData = new ArrayList<>();
+				workbook.getSheetAt(i).forEach(row -> {
+					List<String> sheetRowData = new ArrayList<>();
+					row.forEach(cell -> {
+						sheetRowData.add(dataFormatter.formatCellValue(cell));
+					});
+					sheetData.add(sheetRowData);
+				});
+				dataMap.put(workbook.getSheetName(i), sheetData);
+			}
+		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
+		/*
+		 * CREATING INTERPOLATING FUNCTIONS ...
+		 */
+		createInterpolatedDataMap(dataMap, "TAKE-OFF", interpolatedTakeOffDataMap);
+		createInterpolatedDataMap(dataMap, "APR", interpolatedAPRDataMap);
+		createInterpolatedDataMap(dataMap, "CLIMB", interpolatedClimbDataMap);
+		createInterpolatedDataMap(dataMap, "CONTINUOUS", interpolatedContinuousDataMap);
+		createInterpolatedDataMap(dataMap, "CRUISE", interpolatedCruiseDataMap);
+		createInterpolatedDataMap(dataMap, "FLIGHT IDLE", interpolatedFlightIdleDataMap);
+		createInterpolatedDataMap(dataMap, "GROUND IDLE", interpolatedGroundIdleDataMap);
 	}
 	
-	public void serializeDatabase(String databaseFolderPath, String engineDatabaseFileName) {
+	@SuppressWarnings("unchecked")
+	private void createInterpolatedDataMap (
+			Map<String, List<List<String>>> dataMap, 
+			String engineSetting, 
+			Map<Integer, PolyCubicSpline> interpolatedTakeOffDataMap
+			) {
 		
-		String databaseNameXML = null;
-		
-		// TODO: CHANGE FILE EXTENSION
-		if(engineDatabaseFileName.endsWith(".h5"))
-			databaseNameXML = engineDatabaseFileName.replace(".h5", ".xml");
-		
-		String interpolatedEngineDatabaseSerializedDirectory = databaseFolderPath + File.separator + "serializedDatabase" 
-				+ File.separator; 
-		String interpolatedEngineDatabaseSerializedFullName = interpolatedEngineDatabaseSerializedDirectory +  
-				File.separator + databaseNameXML;
-
-		File serializedDatabaseFile = new File(interpolatedEngineDatabaseSerializedFullName);
-
-		if(!serializedDatabaseFile.exists()){
-			System.out.println(	"Serializing file " + "==> " + engineDatabaseFileName + "  ==> "+ 
-					serializedDatabaseFile.getAbsolutePath() + " ...");
-
-			File dir = new File(interpolatedEngineDatabaseSerializedDirectory);
-			if(!dir.exists()){
-				dir.mkdirs(); 
-			} 
-			else {
-				JPADStaticWriteUtils.serializeObject(
-						this, 
-						interpolatedEngineDatabaseSerializedDirectory,
-						databaseNameXML
-						);
-			}
+	    List<List<String>> sheetData = dataMap.get(engineSetting);
+	    String altitudeUnit = sheetData.get(1).get(0);
+	    String deltaTemperatureUnit = sheetData.get(1).get(2);
+	    List<Amount<Length>> altitudeList = new ArrayList<>();
+	    List<Double> machList = new ArrayList<>();
+	    List<Amount<Temperature>> deltaTemperatureList = new ArrayList<>();
+	    List<Double> throttleList = new ArrayList<>();
+	    List<Double> thrustRatioList = new ArrayList<>();
+	    List<Double> sfcList = new ArrayList<>();
+	    List<Double> emissionIndexNOxList = new ArrayList<>();
+	    List<Double> emissionIndexCOList = new ArrayList<>();
+	    List<Double> emissionIndexHCList = new ArrayList<>();
+	    List<Double> emissionIndexCO2List = new ArrayList<>();
+	    List<Double> emissionIndexH2OList = new ArrayList<>();
+	    for (int i = 2; i < sheetData.size(); i++) {
+	    	altitudeList.add(
+	    			(Amount<Length>) Amount.valueOf(
+	    					Double.valueOf(sheetData.get(i).get(0).replace(',', '.')),
+	    					Unit.valueOf(altitudeUnit)
+	    					)
+	    			);
+	    	machList.add(Double.valueOf(sheetData.get(i).get(1).replace(',', '.')));
+	    	deltaTemperatureList.add(
+	    			(Amount<Temperature>) Amount.valueOf(
+	    					Double.valueOf(sheetData.get(i).get(2).replace(',', '.')),
+	    					Unit.valueOf(deltaTemperatureUnit)
+	    					)
+	    			);
+	    	throttleList.add(Double.valueOf(sheetData.get(i).get(3).replace(',', '.')));
+	    	thrustRatioList.add(Double.valueOf(sheetData.get(i).get(4).replace(',', '.')));
+	    	sfcList.add(Double.valueOf(sheetData.get(i).get(5).replace(',', '.')));
+	    	emissionIndexNOxList.add(Double.valueOf(sheetData.get(i).get(6).replace(',', '.')));
+	    	emissionIndexCOList.add(Double.valueOf(sheetData.get(i).get(7).replace(',', '.')));
+	    	emissionIndexHCList.add(Double.valueOf(sheetData.get(i).get(8).replace(',', '.')));
+	    	emissionIndexCO2List.add(Double.valueOf(sheetData.get(i).get(9).replace(',', '.')));
+	    	emissionIndexH2OList.add(Double.valueOf(sheetData.get(i).get(10).replace(',', '.')));
 		}
+	    
+	    List<double[]> inputDoubleArrayList = new ArrayList<>();
+	    inputDoubleArrayList.add(MyArrayUtils.convertListOfAmountTodoubleArray(altitudeList));
+	    inputDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(machList));
+	    inputDoubleArrayList.add(MyArrayUtils.convertListOfAmountTodoubleArray(deltaTemperatureList));
+	    inputDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(throttleList));
+	    
+	    List<double[]> engineDataDoubleArrayList = new ArrayList<>();
+	    engineDataDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(thrustRatioList));
+	    engineDataDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(sfcList));
+	    engineDataDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(emissionIndexNOxList));
+	    engineDataDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(emissionIndexCOList));
+	    engineDataDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(emissionIndexHCList));
+	    engineDataDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(emissionIndexCO2List));
+	    engineDataDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(emissionIndexH2OList));
+	    
+		List<List<List<Integer>>> columnIndexList = new ArrayList<>();
+		List<List<Integer>> currentVariableElementList = new ArrayList<>();
+		List<Integer> currentIndexElementList = new ArrayList<>();
+		for(int i=0; i<numberOfInput; i++) {
+			currentVariableElementList = new ArrayList<>();
+			for(int j=0; j<inputDoubleArrayList.get(i).length; j++) {
+				currentIndexElementList = new ArrayList<>();
+				for(int k=2; k<sheetData.size(); k++) {
+					if(Double.valueOf(sheetData.get(k).get(i)) == inputDoubleArrayList.get(i)[j])
+						currentIndexElementList.add(k);
+				}
+				currentVariableElementList.add(currentIndexElementList);
+			}
+			columnIndexList.add(currentVariableElementList);
+		}
+
+		List<Integer> arrayDimensionList = inputDoubleArrayList.stream().map(x -> x.length).collect(Collectors.toList());
+		
+		List<List<Integer>> inputPermutationList = new ArrayList<>();
+		for(int i=0; i<numberOfInput; i++) {
+			inputPermutationList.add(
+					MyArrayUtils.convertIntArrayToListInteger(
+							MyArrayUtils.linspaceInt(
+									0,
+									arrayDimensionList.get(i)-1, 
+									arrayDimensionList.get(i)
+									)
+							)
+					);
+		}
+		List<List<Double>> variablePermutationList = new ArrayList<>();
+		for(int i=0; i<numberOfInput; i++) {
+			variablePermutationList.add(
+					MyArrayUtils.convertDoubleArrayToListDouble(
+							MyArrayUtils.convertFromDoubleToPrimitive(
+									inputDoubleArrayList.get(i)
+									)
+							)
+					);
+		}
+		
+		Collection<List<Integer>> permutationResults = DatabaseInterpolationUtils.permutations(inputPermutationList);
+		
+		Map<List<Integer>, Integer> interpolatingMatrixIndexes = new HashMap<>();
+		for(int i=0; i<permutationResults.size(); i++) 
+			interpolatingMatrixIndexes = DatabaseInterpolationUtils.buildInterpolatingMatrixIndexes(
+					columnIndexList, 
+					(List<Integer>) permutationResults.toArray()[i], 
+					interpolatingMatrixIndexes,
+					numberOfInput
+					);
+		
+		for(int i=0; i<numberOfOutput; i++)
+			DatabaseInterpolationUtils.createMultiDimensionalMatrix(
+					numberOfInput,
+					i,
+					inputDoubleArrayList,
+					engineDataDoubleArrayList.get(i),
+					interpolatingMatrixIndexes,
+					interpolatedTakeOffDataMap
+					);
+		
 	}
 	
 	@Override

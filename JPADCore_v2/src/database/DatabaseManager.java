@@ -8,6 +8,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
+import database.databasefunctions.engine.EngineDatabaseManager_v2;
 import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
 import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
@@ -413,6 +414,49 @@ public class DatabaseManager {
 			}
 		}
 		return reader;
+	}
+	
+	public static EngineDatabaseManager_v2 initializeEngineDatabase(EngineDatabaseManager_v2 databaseManager, String databaseDirectory, String databaseName){
+
+		String databaseNameXML = null;
+		
+		if(databaseName.endsWith(".xlsx"))
+			databaseNameXML = databaseName.replace(".xlsx", ".xml");
+		else if(databaseName.endsWith(".xls"))
+			databaseNameXML = databaseName.replace(".xls", ".xml");
+		
+		String serializedDatabaseDirectory = databaseDirectory + File.separator + "serializedDatabase" 
+				+ File.separator; 
+		String serializedDatabaseFullName = serializedDatabaseDirectory +  
+				File.separator + databaseName;
+
+		File serializedEngineDatabaseFile = new File(serializedDatabaseFullName);
+
+		if(serializedEngineDatabaseFile.exists()){
+			System.out.println("De-serializing file: " + serializedEngineDatabaseFile.getAbsolutePath() + " ...");
+			databaseManager = (EngineDatabaseManager_v2) 
+					MyXMLReaderUtils.deserializeObject(
+							databaseManager,
+							serializedDatabaseFullName
+							);
+		}
+		else {
+			System.out.println(	"Serializing file " + "==> " + databaseName + "  ==> "+ 
+					serializedEngineDatabaseFile.getAbsolutePath() + " ...");
+			databaseManager = new EngineDatabaseManager_v2(databaseDirectory, databaseName);
+
+
+			File dir = new File(serializedDatabaseDirectory);
+			if(!dir.exists()){
+				dir.mkdirs(); 
+			}else{
+				JPADStaticWriteUtils.serializeObject(
+						databaseManager, 
+						serializedDatabaseDirectory,
+						databaseNameXML);
+			}
+		}
+		return databaseManager;
 	}
 	
 	public static FuelFractionDatabaseReader initializeFuelFractionDatabase(FuelFractionDatabaseReader reader, String databaseDirectory) {
