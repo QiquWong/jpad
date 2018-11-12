@@ -1,8 +1,6 @@
 package sandbox2.vt;
 
 
-import java.io.File;
-
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.engine.EngineDatabaseManager_v2;

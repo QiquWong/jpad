@@ -23,8 +23,6 @@ import configuration.enumerations.EngineOperatingConditionEnum;
 import database.DatabaseInterpolationUtils;
 import flanagan.interpolation.PolyCubicSpline;
 import standaloneutils.MyArrayUtils;
-import standaloneutils.MyXMLReaderUtils;
-import writers.JPADStaticWriteUtils;
 
 /**
  * 
@@ -38,7 +36,9 @@ public class EngineDatabaseManager_v2 extends EngineDatabaseReader_v2 {
 	//-------------------------------------------------------------------
 	public static final int numberOfInput = 4;
 	public static final int numberOfOutput = 7;
-	private File serializedEngineDatabaseFile;
+	
+	private double byPassRatio;
+	
 	/*
 	 * Index legend:
 	 * 0 = Thrust Ratio
@@ -85,7 +85,14 @@ public class EngineDatabaseManager_v2 extends EngineDatabaseReader_v2 {
 		try {
 			Workbook workbook = WorkbookFactory.create(engineDatabaseFile);
 			System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets: ");
-			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+			String engineType = dataFormatter.formatCellValue(workbook.getSheetAt(0).getRow(0).getCell(1));
+			System.out.println("Engine Type: " + engineType);
+			if(!engineType.equalsIgnoreCase("TURBOPROP") && !engineType.equalsIgnoreCase("PISTON")) {
+				byPassRatio = Double.valueOf(dataFormatter.formatCellValue(workbook.getSheetAt(0).getRow(1).getCell(1)));
+				System.out.println("BPR: " + byPassRatio);
+			}
+				
+			for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
 				System.out.println("\n" + workbook.getSheetName(i));
 				System.out.println("Iterating over Rows and Columns ...");
 				List<List<String>> sheetData = new ArrayList<>();
@@ -94,7 +101,7 @@ public class EngineDatabaseManager_v2 extends EngineDatabaseReader_v2 {
 					row.forEach(cell -> {
 						sheetRowData.add(dataFormatter.formatCellValue(cell));
 					});
-					sheetData.add(sheetRowData);
+					sheetData.add(sheetRowData.stream().filter(data -> !data.isEmpty()).collect(Collectors.toList()));
 				});
 				dataMap.put(workbook.getSheetName(i), sheetData);
 			}
@@ -138,34 +145,45 @@ public class EngineDatabaseManager_v2 extends EngineDatabaseReader_v2 {
 	    List<Double> emissionIndexCO2List = new ArrayList<>();
 	    List<Double> emissionIndexH2OList = new ArrayList<>();
 	    for (int i = 2; i < sheetData.size(); i++) {
-	    	altitudeList.add(
-	    			(Amount<Length>) Amount.valueOf(
-	    					Double.valueOf(sheetData.get(i).get(0).replace(',', '.')),
-	    					Unit.valueOf(altitudeUnit)
-	    					)
-	    			);
-	    	machList.add(Double.valueOf(sheetData.get(i).get(1).replace(',', '.')));
-	    	deltaTemperatureList.add(
-	    			(Amount<Temperature>) Amount.valueOf(
-	    					Double.valueOf(sheetData.get(i).get(2).replace(',', '.')),
-	    					Unit.valueOf(deltaTemperatureUnit)
-	    					)
-	    			);
-	    	throttleList.add(Double.valueOf(sheetData.get(i).get(3).replace(',', '.')));
-	    	thrustRatioList.add(Double.valueOf(sheetData.get(i).get(4).replace(',', '.')));
-	    	sfcList.add(Double.valueOf(sheetData.get(i).get(5).replace(',', '.')));
-	    	emissionIndexNOxList.add(Double.valueOf(sheetData.get(i).get(6).replace(',', '.')));
-	    	emissionIndexCOList.add(Double.valueOf(sheetData.get(i).get(7).replace(',', '.')));
-	    	emissionIndexHCList.add(Double.valueOf(sheetData.get(i).get(8).replace(',', '.')));
-	    	emissionIndexCO2List.add(Double.valueOf(sheetData.get(i).get(9).replace(',', '.')));
-	    	emissionIndexH2OList.add(Double.valueOf(sheetData.get(i).get(10).replace(',', '.')));
+	    	if(sheetData.get(i).size() >= 1)
+	    		altitudeList.add(
+	    				(Amount<Length>) Amount.valueOf(
+	    						Double.valueOf(sheetData.get(i).get(0).replace(',', '.')),
+	    						Unit.valueOf(altitudeUnit)
+	    						)
+	    				);
+	    	if(sheetData.get(i).size() >= 2)
+	    		machList.add(Double.valueOf(sheetData.get(i).get(1).replace(',', '.')));
+	    	if(sheetData.get(i).size() >= 3)
+	    		deltaTemperatureList.add(
+	    				(Amount<Temperature>) Amount.valueOf(
+	    						Double.valueOf(sheetData.get(i).get(2).replace(',', '.')),
+	    						Unit.valueOf(deltaTemperatureUnit)
+	    						)
+	    				);
+	    	if(sheetData.get(i).size() >= 4)
+	    		throttleList.add(Double.valueOf(sheetData.get(i).get(3).replace(',', '.')));
+	    	if(sheetData.get(i).size() >= 5)
+	    		thrustRatioList.add(Double.valueOf(sheetData.get(i).get(4).replace(',', '.')));
+	    	if(sheetData.get(i).size() >= 6)
+	    		sfcList.add(Double.valueOf(sheetData.get(i).get(5).replace(',', '.')));
+	    	if(sheetData.get(i).size() >= 7)
+	    		emissionIndexNOxList.add(Double.valueOf(sheetData.get(i).get(6).replace(',', '.')));
+	    	if(sheetData.get(i).size() >= 8)
+	    		emissionIndexCOList.add(Double.valueOf(sheetData.get(i).get(7).replace(',', '.')));
+	    	if(sheetData.get(i).size() >= 9)
+	    		emissionIndexHCList.add(Double.valueOf(sheetData.get(i).get(8).replace(',', '.')));
+	    	if(sheetData.get(i).size() >= 10)
+	    		emissionIndexCO2List.add(Double.valueOf(sheetData.get(i).get(9).replace(',', '.')));
+	    	if(sheetData.get(i).size() >= 11)	    	
+	    		emissionIndexH2OList.add(Double.valueOf(sheetData.get(i).get(10).replace(',', '.')));
 		}
 	    
 	    List<double[]> inputDoubleArrayList = new ArrayList<>();
-	    inputDoubleArrayList.add(MyArrayUtils.convertListOfAmountTodoubleArray(altitudeList));
-	    inputDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(machList));
-	    inputDoubleArrayList.add(MyArrayUtils.convertListOfAmountTodoubleArray(deltaTemperatureList));
-	    inputDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(throttleList));
+	    inputDoubleArrayList.add(MyArrayUtils.convertListOfAmountTodoubleArray(altitudeList.stream().distinct().collect(Collectors.toList())));
+	    inputDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(machList.stream().distinct().collect(Collectors.toList())));
+	    inputDoubleArrayList.add(MyArrayUtils.convertListOfAmountTodoubleArray(deltaTemperatureList.stream().distinct().collect(Collectors.toList())));
+	    inputDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(throttleList.stream().distinct().collect(Collectors.toList())));
 	    
 	    List<double[]> engineDataDoubleArrayList = new ArrayList<>();
 	    engineDataDoubleArrayList.add(MyArrayUtils.convertToDoublePrimitive(thrustRatioList));
@@ -184,7 +202,7 @@ public class EngineDatabaseManager_v2 extends EngineDatabaseReader_v2 {
 			for(int j=0; j<inputDoubleArrayList.get(i).length; j++) {
 				currentIndexElementList = new ArrayList<>();
 				for(int k=2; k<sheetData.size(); k++) {
-					if(Double.valueOf(sheetData.get(k).get(i)) == inputDoubleArrayList.get(i)[j])
+					if(Double.valueOf(sheetData.get(k).get(i).replace(',', '.')) == inputDoubleArrayList.get(i)[j])
 						currentIndexElementList.add(k);
 				}
 				currentVariableElementList.add(currentIndexElementList);
@@ -237,6 +255,8 @@ public class EngineDatabaseManager_v2 extends EngineDatabaseReader_v2 {
 					interpolatingMatrixIndexes,
 					interpolatedTakeOffDataMap
 					);
+		
+		System.out.println(engineSetting + " data have been interpolated!");
 		
 	}
 	
@@ -827,6 +847,14 @@ public class EngineDatabaseManager_v2 extends EngineDatabaseReader_v2 {
 			Amount<Temperature> deltaTemperature, double throttleSetting) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public double getByPassRatio() {
+		return byPassRatio;
+	}
+
+	public void setByPassRatio(double byPassRatio) {
+		this.byPassRatio = byPassRatio;
 	}
 
 }
