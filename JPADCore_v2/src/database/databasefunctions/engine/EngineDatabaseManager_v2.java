@@ -214,15 +214,21 @@ public class EngineDatabaseManager_v2 extends EngineDatabaseReader_v2 {
 		
 		List<List<Integer>> inputPermutationList = new ArrayList<>();
 		for(int i=0; i<numberOfInput; i++) {
-			inputPermutationList.add(
-					MyArrayUtils.convertIntArrayToListInteger(
-							MyArrayUtils.linspaceInt(
-									0,
-									arrayDimensionList.get(i)-1, 
-									arrayDimensionList.get(i)
-									)
-							)
-					);
+			if (arrayDimensionList.get(i) == 1) {
+				List<Integer> permutationListIn = new ArrayList<>();
+				permutationListIn.add(0);
+				inputPermutationList.add(permutationListIn);
+			}
+			else
+				inputPermutationList.add(
+						MyArrayUtils.convertIntArrayToListInteger(
+								MyArrayUtils.linspaceInt(
+										0,
+										arrayDimensionList.get(i)-1, 
+										arrayDimensionList.get(i)
+										)
+								)
+						);
 		}
 		List<List<Double>> variablePermutationList = new ArrayList<>();
 		for(int i=0; i<numberOfInput; i++) {
