@@ -425,10 +425,8 @@ public class DatabaseManager {
 		else if(databaseName.endsWith(".xls"))
 			databaseNameXML = databaseName.replace(".xls", ".xml");
 		
-		String serializedDatabaseDirectory = databaseDirectory + File.separator + "serializedDatabase" 
-				+ File.separator; 
-		String serializedDatabaseFullName = serializedDatabaseDirectory +  
-				File.separator + databaseName;
+		String serializedDatabaseDirectory = databaseDirectory + "serializedDatabase"; 
+		String serializedDatabaseFullName = serializedDatabaseDirectory + File.separator + databaseNameXML;
 
 		File serializedEngineDatabaseFile = new File(serializedDatabaseFullName);
 
@@ -443,8 +441,8 @@ public class DatabaseManager {
 		else {
 			System.out.println(	"Serializing file " + "==> " + databaseName + "  ==> "+ 
 					serializedEngineDatabaseFile.getAbsolutePath() + " ...");
-			databaseManager = new EngineDatabaseManager_v2(databaseDirectory, databaseName);
-
+			databaseManager = new EngineDatabaseManager_v2();
+			databaseManager.importDatabaseFromFile(databaseDirectory, databaseName);
 
 			File dir = new File(serializedDatabaseDirectory);
 			if(!dir.exists()){

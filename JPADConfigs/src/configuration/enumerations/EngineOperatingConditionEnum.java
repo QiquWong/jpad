@@ -10,7 +10,7 @@ package configuration.enumerations;
 // see: https://www.mkyong.com/java/java-convert-string-to-enum-object/
 	
 public enum EngineOperatingConditionEnum {
-	TAKE_OFF("TAKE_OFF"),
+	TAKE_OFF("TAKE-OFF"),
 	APR("APR"),
 	CONTINUOUS("CONTINUOUS"),
 	CLIMB("CLIMB"),

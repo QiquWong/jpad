@@ -6,7 +6,7 @@ import javax.measure.quantity.Temperature;
 import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.EngineOperatingConditionEnum;
-import flanagan.interpolation.PolyCubicSpline;
+import standaloneutils.MyInterpolatingFunction;
 
 /**
  * @author Vittorio Trifari
@@ -20,7 +20,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * Thrust Ratio Interpolating Functions
 	 */
-	protected PolyCubicSpline 
+	protected MyInterpolatingFunction 
 	takeOffThrustRatioFunction,
 	aprThrustRatioFunction,
 	climbThrustRatioFunction,
@@ -32,7 +32,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * SFC Interpolating Functions
 	 */
-	protected PolyCubicSpline
+	protected MyInterpolatingFunction
 	takeOffSFCFunction,
 	aprSFCFunction,
 	climbSFCFunction,
@@ -44,7 +44,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * NOx Emission Index Interpolating Functions
 	 */
-	protected PolyCubicSpline
+	protected MyInterpolatingFunction
 	takeOffNOxEmissionIndexFunction,
 	aprNOxEmissionIndexFunction,
 	climbNOxEmissionIndexFunction,
@@ -56,7 +56,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * CO Emission Index Interpolating Functions
 	 */
-	protected PolyCubicSpline
+	protected MyInterpolatingFunction
 	takeOffCOEmissionIndexFunction,
 	aprCOEmissionIndexFunction,
 	climbCOEmissionIndexFunction,
@@ -68,7 +68,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * HC Emission Index Interpolating Functions
 	 */
-	protected PolyCubicSpline
+	protected MyInterpolatingFunction
 	takeOffHCEmissionIndexFunction,
 	aprHCEmissionIndexFunction,
 	climbHCEmissionIndexFunction,
@@ -80,7 +80,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * CO2 Emission Index Interpolating Functions
 	 */
-	protected PolyCubicSpline
+	protected MyInterpolatingFunction
 	takeOffCO2EmissionIndexFunction,
 	aprCO2EmissionIndexFunction,
 	climbCO2EmissionIndexFunction,
@@ -92,7 +92,7 @@ public abstract class EngineDatabaseReader_v2 {
 	/*
 	 * H2O Emission Index Interpolating Functions
 	 */
-	protected PolyCubicSpline
+	protected MyInterpolatingFunction
 	takeOffH2OEmissionIndexFunction,
 	aprH2OEmissionIndexFunction,
 	climbH2OEmissionIndexFunction,
@@ -101,6 +101,75 @@ public abstract class EngineDatabaseReader_v2 {
 	flightIdleH2OEmissionIndexFunction,
 	groundIdleH2OEmissionIndexFunction;
 
+	//----------------------------------------------------------------------------------------
+	// METHODS
+	//----------------------------------------------------------------------------------------
+	public EngineDatabaseReader_v2 () {
+		
+		/* THRUST RATIOS */
+		takeOffThrustRatioFunction = new MyInterpolatingFunction();
+		aprThrustRatioFunction = new MyInterpolatingFunction(); 
+		climbThrustRatioFunction = new MyInterpolatingFunction();
+		continuousThrustRatioFunction = new MyInterpolatingFunction();
+		cruiseThrustRatioFunction = new MyInterpolatingFunction();
+		flightIdleThrustRatioFunction = new MyInterpolatingFunction();
+		groundIdleThrustRatioFunction = new MyInterpolatingFunction();
+		
+		/* SFC */
+		takeOffSFCFunction = new MyInterpolatingFunction();
+		aprSFCFunction = new MyInterpolatingFunction(); 
+		climbSFCFunction = new MyInterpolatingFunction();
+		continuousSFCFunction = new MyInterpolatingFunction();
+		cruiseSFCFunction = new MyInterpolatingFunction();
+		flightIdleSFCFunction = new MyInterpolatingFunction();
+		groundIdleSFCFunction = new MyInterpolatingFunction();
+		
+		/* NOx EMISSION INDEX */
+		takeOffNOxEmissionIndexFunction = new MyInterpolatingFunction();
+		aprNOxEmissionIndexFunction = new MyInterpolatingFunction(); 
+		climbNOxEmissionIndexFunction = new MyInterpolatingFunction();
+		continuousNOxEmissionIndexFunction = new MyInterpolatingFunction();
+		cruiseNOxEmissionIndexFunction = new MyInterpolatingFunction();
+		flightIdleNOxEmissionIndexFunction = new MyInterpolatingFunction();
+		groundIdleNOxEmissionIndexFunction = new MyInterpolatingFunction();
+		
+		/* CO EMISSION INDEX */
+		takeOffCOEmissionIndexFunction = new MyInterpolatingFunction();
+		aprCOEmissionIndexFunction = new MyInterpolatingFunction(); 
+		climbCOEmissionIndexFunction = new MyInterpolatingFunction();
+		continuousCOEmissionIndexFunction = new MyInterpolatingFunction();
+		cruiseCOEmissionIndexFunction = new MyInterpolatingFunction();
+		flightIdleCOEmissionIndexFunction = new MyInterpolatingFunction();
+		groundIdleCOEmissionIndexFunction = new MyInterpolatingFunction();
+		
+		/* HC EMISSION INDEX */
+		takeOffHCEmissionIndexFunction = new MyInterpolatingFunction();
+		aprHCEmissionIndexFunction = new MyInterpolatingFunction(); 
+		climbHCEmissionIndexFunction = new MyInterpolatingFunction();
+		continuousHCEmissionIndexFunction = new MyInterpolatingFunction();
+		cruiseHCEmissionIndexFunction = new MyInterpolatingFunction();
+		flightIdleHCEmissionIndexFunction = new MyInterpolatingFunction();
+		groundIdleHCEmissionIndexFunction = new MyInterpolatingFunction();
+		
+		/* CO2 EMISSION INDEX */
+		takeOffCO2EmissionIndexFunction = new MyInterpolatingFunction();
+		aprCO2EmissionIndexFunction = new MyInterpolatingFunction(); 
+		climbCO2EmissionIndexFunction = new MyInterpolatingFunction();
+		continuousCO2EmissionIndexFunction = new MyInterpolatingFunction();
+		cruiseCO2EmissionIndexFunction = new MyInterpolatingFunction();
+		flightIdleCO2EmissionIndexFunction = new MyInterpolatingFunction();
+		groundIdleCO2EmissionIndexFunction = new MyInterpolatingFunction();
+		
+		/* H2O EMISSION INDEX */
+		takeOffH2OEmissionIndexFunction = new MyInterpolatingFunction();
+		aprH2OEmissionIndexFunction = new MyInterpolatingFunction(); 
+		climbH2OEmissionIndexFunction = new MyInterpolatingFunction();
+		continuousH2OEmissionIndexFunction = new MyInterpolatingFunction();
+		cruiseH2OEmissionIndexFunction = new MyInterpolatingFunction();
+		flightIdleH2OEmissionIndexFunction = new MyInterpolatingFunction();
+		groundIdleH2OEmissionIndexFunction = new MyInterpolatingFunction();
+	}
+	
 	//----------------------------------------------------------------------------------------
 	// METHODS
 	//----------------------------------------------------------------------------------------
