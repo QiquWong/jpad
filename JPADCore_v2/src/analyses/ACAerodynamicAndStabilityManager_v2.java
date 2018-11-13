@@ -188,7 +188,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Map<Double, Amount<?>> _cMAlphaEquilibriumMap; // xcg, CM_alpha_e
 	private Map<Double, Double> _cDZeroTotalEquilibriumMap; // xcg, CD_zero_e
 	private Double _deltaCDZeroLandingGear;
+	private Double _deltaCDZeroExcrescences;
+	private Double _deltaCDZeroInterferences;
+	private Double _deltaCDZeroCooling;
 	private Double _deltaCDZeroFlap;
+	private Double _deltaCLZeroFlap;
 
 	// lateral static stability
 	private Amount<?> _cRollBetaWingBody;
@@ -1185,10 +1189,14 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 		// total drag
 		MethodEnum aircraftTotalPolarCurveMethod = null;
-		boolean calculateDeltaCD0Miscellaneous = true;
 		boolean calculateDeltaCD0LandingGears = false;
-		double deltaCD0Miscellaneous = 0.0;
+		boolean calculatedeltaCD0Excrescences = false;
+		boolean calculateDeltaCD0Interferences = false;
+		boolean calculateDeltaCD0Cooling = false;
+		double deltaCD0Cooling = 0.0;
 		double deltaCD0LandingGears = 0.0;
+		double deltaCD0Excrescences = 0.0;
+		double deltaCD0Interferences = 0.0;
 		double totalDragCalibrationCLScaleFactor = 1.0;
 		double totalDragCalibrationCDScaleFactor = 1.0;
 
@@ -1327,33 +1335,9 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 		if(aircraftTotalPolarCurvePerformString.equalsIgnoreCase("TRUE")){
 
-			String aircraftCalculateDeltaCD0MiscellaneousString = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//aircraft/total_drag_polar/delta_CD0_miscellaneous/@calculate");
-
-			if(aircraftCalculateDeltaCD0MiscellaneousString != null) {
-
-				if(aircraftCalculateDeltaCD0MiscellaneousString.equalsIgnoreCase("TRUE")) { 
-					calculateDeltaCD0Miscellaneous = true;
-
-					// FIXME: NEED A METHOD TO ESTIMATE ... 
-					deltaCD0Miscellaneous = 0.0;
-				}
-				else {
-					calculateDeltaCD0Miscellaneous = false;
-					String aircraftDeltaCD0MiscellaneousString = MyXMLReaderUtils
-							.getXMLPropertyByPath(
-									reader.getXmlDoc(), reader.getXpath(),
-									"//aircraft/total_drag_polar/delta_CD0_miscellaneous/@value");
-
-					if(aircraftDeltaCD0MiscellaneousString != null) 
-						deltaCD0Miscellaneous = Double.valueOf(aircraftDeltaCD0MiscellaneousString);
-
-				}
-
-			}
-
+			//DELTA CD miscellaneous
+			
+			//LANDING GEAR
 			String aircraftCalculateDeltaCD0LandingGearsString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -1379,7 +1363,90 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				}
 
 			}
+			
+			//Excrescences
+			String aircraftCalculateDeltaCD0ExcrescencesString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft/total_drag_polar/delta_CD0_excrescences/@calculate");
 
+			if(aircraftCalculateDeltaCD0ExcrescencesString != null) {
+
+				if(aircraftCalculateDeltaCD0ExcrescencesString.equalsIgnoreCase("FALSE")) {
+					calculatedeltaCD0Excrescences = false;
+					String aircraftDeltaCD0ExcrescencesString = MyXMLReaderUtils
+							.getXMLPropertyByPath(
+									reader.getXmlDoc(), reader.getXpath(),
+									"//aircraft/total_drag_polar/delta_CD0_excrescences/@value");
+
+					if(aircraftDeltaCD0ExcrescencesString != null) 
+						deltaCD0Excrescences = Double.valueOf(aircraftDeltaCD0ExcrescencesString);
+				}
+				else { 
+					calculatedeltaCD0Excrescences = true;
+
+					// Delta landing gear drag will be calculated using the method in ACAerodynamicAndStabilityManager
+					deltaCD0Excrescences = 0.0;
+				}
+
+			}
+			
+			//Interferences 
+			String aircraftCalculateDeltaCD0InterferencesString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft/total_drag_polar/delta_CD0_Interferences/@calculate");
+
+			if(aircraftCalculateDeltaCD0InterferencesString != null) {
+
+				if(aircraftCalculateDeltaCD0InterferencesString.equalsIgnoreCase("FALSE")) {
+					calculateDeltaCD0Interferences = false;
+					String aircraftDeltaCD0InterferencesString = MyXMLReaderUtils
+							.getXMLPropertyByPath(
+									reader.getXmlDoc(), reader.getXpath(),
+									"//aircraft/total_drag_polar/delta_CD0_Interferences/@value");
+
+					if(aircraftDeltaCD0InterferencesString != null) 
+						deltaCD0Interferences = Double.valueOf(aircraftDeltaCD0InterferencesString);
+				}
+				else { 
+					calculateDeltaCD0Interferences = true;
+
+					// Delta landing gear drag will be calculated using the method in ACAerodynamicAndStabilityManager
+					deltaCD0Interferences = 0.0;
+				}
+
+			}
+			
+			//COOLING
+			String aircraftCalculateDeltaCD0CoolingString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft/total_drag_polar/delta_CD0_Cooling/@calculate");
+
+			if(aircraftCalculateDeltaCD0CoolingString != null) {
+
+				if(aircraftCalculateDeltaCD0CoolingString.equalsIgnoreCase("FALSE")) {
+					calculateDeltaCD0Cooling = false;
+					String aircraftDeltaCD0CoolingString = MyXMLReaderUtils
+							.getXMLPropertyByPath(
+									reader.getXmlDoc(), reader.getXpath(),
+									"//aircraft/total_drag_polar/delta_CD0_Cooling/@value");
+
+					if(aircraftDeltaCD0CoolingString != null) 
+						deltaCD0Cooling = Double.valueOf(aircraftDeltaCD0CoolingString);
+				}
+				else { 
+					calculateDeltaCD0Cooling = true;
+
+					// Delta landing gear drag will be calculated using the method in ACAerodynamicAndStabilityManager
+					deltaCD0Cooling = 0.0;
+				}
+
+			}
+			
+
+			//--------------------------------
 			String aircraftTotalPolarCurveMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -1939,10 +2006,14 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				.setFuselageEffectOnWingLiftCurve(fuselageEffectOnWingLiftCurve)
 				.setTotalLiftCalibrationAlphaScaleFactor(totalLiftCalibrationAlphaScaleFactor)
 				.setTotalLiftCalibrationCLScaleFactor(totalLiftCalibrationCLScaleFactor)
-				.setCalculateMiscellaneousDeltaDragCoefficient(calculateDeltaCD0Miscellaneous)
-				.setMiscellaneousDeltaDragCoefficient(deltaCD0Miscellaneous)
 				.setCalculateLandingGearDeltaDragCoefficient(calculateDeltaCD0LandingGears)
 				.setLandingGearDeltaDragCoefficient(deltaCD0LandingGears)
+				.setCalculateCoolingDeltaDragCoefficient(calculateDeltaCD0Cooling)
+				.setCoolingDeltaDragCoefficient(deltaCD0Cooling)
+				.setCalculateExcrescencesDeltaDragCoefficient(calculatedeltaCD0Excrescences)
+				.setExcrescencesDeltaDragCoefficient(deltaCD0Excrescences)
+				.setCalculateInterferencesDeltaDragCoefficient(calculateDeltaCD0Interferences)
+				.setInterferencesDeltaDragCoefficient(deltaCD0Interferences)
 				.setTotalDragCalibrationCLScaleFactor(totalDragCalibrationCLScaleFactor)
 				.setTotalDragCalibrationCDScaleFactor(totalDragCalibrationCDScaleFactor)
 				.setTotalMomentCalibrationAlphaScaleFactor(totalMomentCalibrationAlphaScaleFactor)
@@ -3389,6 +3460,38 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 	public void set_deltaCDZeroFlap(Double _deltaCDZeroFlap) {
 		this._deltaCDZeroFlap = _deltaCDZeroFlap;
+	}
+
+	public Double get_deltaCLZeroFlap() {
+		return _deltaCLZeroFlap;
+	}
+
+	public void set_deltaCLZeroFlap(Double _deltaCLZeroFlap) {
+		this._deltaCLZeroFlap = _deltaCLZeroFlap;
+	}
+
+	public Double get_deltaCDZeroExcrescences() {
+		return _deltaCDZeroExcrescences;
+	}
+
+	public void set_deltaCDZeroExcrescences(Double _deltaCDZeroExcrescences) {
+		this._deltaCDZeroExcrescences = _deltaCDZeroExcrescences;
+	}
+
+	public Double get_deltaCDZeroInterferences() {
+		return _deltaCDZeroInterferences;
+	}
+
+	public void set_deltaCDZeroInterferences(Double _deltaCDZeroInterferences) {
+		this._deltaCDZeroInterferences = _deltaCDZeroInterferences;
+	}
+
+	public Double get_deltaCDZeroCooling() {
+		return _deltaCDZeroCooling;
+	}
+
+	public void set_deltaCDZeroCooling(Double _deltaCDZeroCooling) {
+		this._deltaCDZeroCooling = _deltaCDZeroCooling;
 	}
 
 }

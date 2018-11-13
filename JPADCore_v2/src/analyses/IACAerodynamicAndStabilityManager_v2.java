@@ -101,10 +101,14 @@ public interface IACAerodynamicAndStabilityManager_v2 {
 	boolean isFuselageEffectOnWingLiftCurve(); // if TRUE--> included, if FALSE--> not included
 	double  getTotalLiftCalibrationAlphaScaleFactor();
 	double  getTotalLiftCalibrationCLScaleFactor();
-	boolean isCalculateMiscellaneousDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
-	double getMiscellaneousDeltaDragCoefficient();
 	boolean isCalculateLandingGearDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
 	double getLandingGearDeltaDragCoefficient();
+	boolean isCalculateExcrescencesDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
+	double getExcrescencesDeltaDragCoefficient();
+	boolean isCalculateInterferencesDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
+	double getInterferencesDeltaDragCoefficient();
+	boolean isCalculateCoolingDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
+	double getCoolingDeltaDragCoefficient();
 	double  getTotalDragCalibrationCLScaleFactor();
 	double  getTotalDragCalibrationCDScaleFactor();
 	double  getTotalMomentCalibrationAlphaScaleFactor();

@@ -266,27 +266,22 @@ public class DragCalc {
 	
 	public static Double calculateCD0Total(
 			Double cD0TotalFuselage,
-			Double cD0ParasiteFuselage,
 			Double cD0TotalWing,
-			Double cD0ParasiteWing,
 			Double cD0TotalNacelles,
-			Double cD0ParasiteNacelles,
 			Double cD0TotalHTail,
-			Double cD0ParasiteHTail,
 			Double cD0TotalVTail,
-			Double cD0ParasiteVTail,
 			Double cD0TotalCanard,
-			Double cD0ParasiteCanard,
-			Double deltaCD0FLap
+			Double deltaCD0FLap,
+			Amount<Area> sWet
 			) {
 		Double cD0Total;
-		Double cD0Parasite = cD0ParasiteFuselage 
-				+ cD0ParasiteWing 
-				+ cD0ParasiteNacelles 
-				+ cD0ParasiteHTail 
-				+ cD0ParasiteVTail
-				+ cD0ParasiteCanard;
-		
+//		Double cD0Parasite = cD0ParasiteFuselage 
+//				+ cD0ParasiteWing 
+//				+ cD0ParasiteNacelles 
+//				+ cD0ParasiteHTail 
+//				+ cD0ParasiteVTail
+//				+ cD0ParasiteCanard;
+//		
 		Double cD0 = cD0TotalFuselage 
 				+ cD0TotalWing 
 				+ cD0TotalNacelles 
@@ -295,33 +290,31 @@ public class DragCalc {
 				+ cD0TotalCanard
 				+ deltaCD0FLap;
 
-		Double cDRough = AerodynamicCalc.calculateRoughness(cD0);
-		Double cDCool = AerodynamicCalc.calculateCoolings(cD0Parasite);
+		//	Double cDRough = AerodynamicCalc.calculateRoughness(cD0);
+//		Double cDExc = cD0 * calculateKExcrescences(sWet.doubleValue(SI.SQUARE_METRE));
+//		Double cDCool = AerodynamicCalc.calculateCoolings(cD0Parasite);
 
-		cD0Total = (cD0 + cDRough + cDCool);
+//		cD0Total = (cD0 + cDExc + cDCool);
+		cD0Total = cD0;
 
 		return cD0Total; 
 	}
 	
 	public static Double calculateCD0Total(
 			Double cD0TotalFuselage,
-			Double cD0ParasiteFuselage,
 			Double cD0TotalWing,
-			Double cD0ParasiteWing,
 			Double cD0TotalNacelles,
-			Double cD0ParasiteNacelles,
 			Double cD0TotalHTail,
-			Double cD0ParasiteHTail,
 			Double cD0TotalVTail,
-			Double cD0ParasiteVTail,
-			Double deltaCD0FLap
+			Double deltaCD0FLap,
+			Amount<Area> sWet
 			) {
 		Double cD0Total;
-		Double cD0Parasite = cD0ParasiteFuselage 
-				+ cD0ParasiteWing 
-				+ cD0ParasiteNacelles 
-				+ cD0ParasiteHTail 
-				+ cD0ParasiteVTail;
+//		Double cD0Parasite = cD0ParasiteFuselage 
+//				+ cD0ParasiteWing 
+//				+ cD0ParasiteNacelles 
+//				+ cD0ParasiteHTail 
+//				+ cD0ParasiteVTail;
 		
 		Double cD0 = cD0TotalFuselage 
 				+ cD0TotalWing 
@@ -330,16 +323,66 @@ public class DragCalc {
 				+ cD0TotalVTail
 				+ deltaCD0FLap;
 
-		Double cDRough = AerodynamicCalc.calculateRoughness(cD0);
-		Double cDCool = AerodynamicCalc.calculateCoolings(cD0Parasite);
+	//	Double cDRough = AerodynamicCalc.calculateRoughness(cD0);
+//		Double cDExc = cD0 * calculateKExcrescences(sWet.doubleValue(SI.SQUARE_METRE));
+//		Double cDCool = AerodynamicCalc.calculateCoolings(cD0Parasite);
 
-		cD0Total = (cD0 + cDRough + cDCool);
+//		cD0Total = (cD0 + cDExc + cDCool);
+		cD0Total = cD0;
 
 		return cD0Total; 
 	}
 	
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Manuela Ruocco
+	 * @return
+	 */
+	public static Double calculateCD0Excrescences(
+			Double cD0TotalFuselage, 
+			Double cD0TotalWing, 
+			Double cD0TotalNacelles,
+			Double cD0TotalHTail, 
+			Double cD0TotalVTail,
+			Double S_wet) {
+		
+		
+		Double cD0 = cD0TotalFuselage 
+				+ cD0TotalWing 
+				+ cD0TotalNacelles 
+				+ cD0TotalHTail
+				+ cD0TotalVTail;
+
+		Double cD0Excrescences = cD0 * calculateKExcrescences(S_wet);
+		
+		return cD0Excrescences;
+	}
+	
+	/**
+	 * @author Manuela Ruocco
+	 * @return
+	 */
+	public static Double calculateCD0Cooling(
+			Double cD0ParasiteFuselage, 
+			Double cD0ParasiteWing, 
+			Double cD0ParasiteNacelles,
+			Double cD0ParasiteHTail, 
+			Double cD0ParasiteVTail
+			) {
+		
+		Double cD0Parasite = cD0ParasiteFuselage 
+		+ cD0ParasiteWing 
+		+ cD0ParasiteNacelles 
+		+ cD0ParasiteHTail 
+		+ cD0ParasiteVTail;
+
+
+		Double cDCool = AerodynamicCalc.calculateCoolings(cD0Parasite);
+		
+		return cDCool;
+	}
+	
+	/**
+	 * @author Manuela Ruocco
 	 * @param S_wet
 	 * @return
 	 */
@@ -349,6 +392,7 @@ public class DragCalc {
 				+ 5e-10*Math.pow(S_wet,2) 
 				- 7e-6*S_wet + 0.0825;
 	}
+
 
 	/***********************************************************************************************
 	 * The drag coefficient of the undercarriage is the sum of the main an nose gears contributions.
@@ -445,6 +489,23 @@ public class DragCalc {
 		return deltaCD0;
 	}
 	
+	
+	/**
+	 * @author Manuela Ruocco
+	 * @param cL
+	 * @param machCurrent
+	 * @param machCr
+	 * @return
+	 */
+	public static double calculateDeltaCD0DueToWingFuselageInterference( double hw, double tcRoot, Amount<Area> sWet, Amount<Length> chordRoot) {
+
+		double deltaCD0 = 0.0;
+		
+		deltaCD0 = (0.5 * Math.pow(hw, 2) + 1.25 * hw + 0.75) * 2.16 * Math.pow(chordRoot.doubleValue(SI.METER),2) * Math.pow(tcRoot,3);  
+				
+		return deltaCD0;
+	}
+	
 	/**
 	 * @author Lorenzo Attanasio
 	 * @param cL
@@ -493,19 +554,6 @@ public class DragCalc {
 		return cdWawe;
 	}
 	
-	/**
-	 * @author Manuela Ruocco
-	 * @param cL
-	 * @param mach
-	 * @param sweepHalfChord
-	 * @param tcMax
-	 * @param airfoilType
-	 * @return
-	 */
-	public static double calculateOswaldModificationDueToWinglet(Amount<Length> wingletHeight) {
-		double oswaldFactorModification = calculateCDWaveLockKorn(cL, mach, AerodynamicCalc.calculateMachCriticalKornMason(cL, sweepHalfChord, tcMax, airfoilType));
-		return oswaldFactorModification;
-	}
 	
 	/**
 	 * @author Vittorio Trifari
@@ -1413,7 +1461,6 @@ public class DragCalc {
 			Double cD0Nacelle,
 			Double cD0Cooling,
 			Double cD0excrescences,
-			Double cD0Winglet,
 			Double cD0Wawe,
 			Double cD0canard,
 			Double cD0Wing,
@@ -1426,24 +1473,24 @@ public class DragCalc {
 			){
 		List<Double> trimmedPolar = new ArrayList<>();
 		
-		Double cD0TotalOtherSources = cD0VerticalTail+
-				cD0Fuselage +
+		Double cD0TotalOtherSources = 
 				cD0WingFuselageInterference +
-				cD0Nacelle +
 				cD0Cooling +
 				cD0excrescences +
-				cD0Winglet +
-				cD0Flap +
-				cD0Wawe;
+				cD0Flap;
 		
 		
 		Double cD0TotalLiftingSurfaces = cD0canard +
 				cD0Wing +
-				cD0HorizontalTail;
+				cD0HorizontalTail +
+				cD0VerticalTail +
+				cD0Fuselage +
+				cD0Nacelle
+				;
 		
 		cLTotalTrimmed.stream().forEach( cle-> {
 		trimmedPolar.add(
-				cD0TotalOtherSources + cD0TotalLiftingSurfaces + Math.pow(cle, 2)/(Math.PI * wingAspectRatio * aircraftOswaldFactor)
+				cD0TotalOtherSources + cD0TotalLiftingSurfaces + cD0Wawe + Math.pow(cle, 2)/(Math.PI * wingAspectRatio * aircraftOswaldFactor)
 				);
 		});
 		

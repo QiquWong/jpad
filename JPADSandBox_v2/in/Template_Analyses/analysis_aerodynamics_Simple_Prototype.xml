@@ -88,8 +88,10 @@
 					</calibration>
 				</total_lift_curve>
 				<total_drag_polar perform="TRUE" method="FROM_BALANCE_EQUATION">
-					<delta_CD0_miscellaneous calculate="TRUE" value=""/> <!-- calculate: if not set, default value = TRUE -->
 					<delta_CD0_landing_gears calculate="FALSE" value="0.0"/> <!-- calculate: if not set, default value = FALSE -->
+					<delta_CD0_excrescences calculate="FALSE" value="0.0"/> <!-- calculate: if not set, default value = FALSE -->
+					<delta_CD0_cooling calculate="FALSE" value="0.0"/> <!-- calculate: if not set, default value = FALSE -->
+					<delta_CD0_interferences calculate="FALSE" value="0.0"/> <!-- calculate: if not set, default value = FALSE -->
 					<calibration>
 						<scale_factor_cL value="1.0"/> <!-- if not set, default value = 1.0-->
 						<scale_factor_cD value="1.0"/> <!-- if not set, default value = 1.0 -->
