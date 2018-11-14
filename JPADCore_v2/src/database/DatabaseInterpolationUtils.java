@@ -20,7 +20,8 @@ public class DatabaseInterpolationUtils {
 			List<double[]> variableArrayList,
 			double[] values, 
 			Map<List<Integer>, Integer> interpolatingMatrixIndexes,
-			Map<Integer, MyInterpolatingFunction> outputMap	
+			Map<Integer, MyInterpolatingFunction> outputMap,
+			double[] inputLowerBounds, double[] inputUpperBounds
 			) {
 
 		if(numberOfVariable != variableArrayList.size()) {
@@ -39,6 +40,14 @@ public class DatabaseInterpolationUtils {
 		List<List<Integer>> matrixIndexSet = new ArrayList<>(interpolatingMatrixIndexes.keySet());
 		List<Integer> matrixIndexValues = new ArrayList<>(interpolatingMatrixIndexes.values());
 		MyInterpolatingFunction interpolatedResponseSurface = new MyInterpolatingFunction();
+		interpolatedResponseSurface.setxMin(inputLowerBounds[0]);
+		interpolatedResponseSurface.setyMin(inputLowerBounds[1]);
+		interpolatedResponseSurface.setzMin(inputLowerBounds[2]);
+		interpolatedResponseSurface.setkMin(inputLowerBounds[3]);
+		interpolatedResponseSurface.setxMax(inputUpperBounds[0]);
+		interpolatedResponseSurface.setyMax(inputUpperBounds[1]);
+		interpolatedResponseSurface.setzMax(inputUpperBounds[2]);
+		interpolatedResponseSurface.setkMax(inputUpperBounds[3]);
 		double[] variableMatrixX1;
 		double[] variableMatrixX2;
 		double[] variableMatrixX3;

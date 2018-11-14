@@ -9,7 +9,7 @@ import calculators.aerodynamics.LiftCalc;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
-import database.databasefunctions.engine.EngineDatabaseManager;
+import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -125,7 +125,7 @@ public class RangeCalc {
 		thrustBreguet = ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, altitude, mach);
 		double tT0Ratio = thrustBreguet/(t0*nEngine);
 
-		sfcBreguet = EngineDatabaseManager.getSFC(
+		sfcBreguet = EngineDatabaseManager_old.getSFC(
 				mach,
 				altitude,
 				tT0Ratio,
@@ -383,7 +383,7 @@ public class RangeCalc {
 		double tT0Ratio = thrust/(t0*nEngine);
 		
 		if (thrust >= drag) 
-			return calculateDeltaRangeJetSFC(EngineDatabaseManager.getSFC(mach, altitude, tT0Ratio, bpr, engineType, flightCondition, thePowerPlant), 
+			return calculateDeltaRangeJetSFC(EngineDatabaseManager_old.getSFC(mach, altitude, tT0Ratio, bpr, engineType, flightCondition, thePowerPlant), 
 					speed, cl, cd, w);
 		else 
 			return 0.;

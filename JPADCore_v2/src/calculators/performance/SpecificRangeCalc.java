@@ -19,7 +19,7 @@ import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
-import database.databasefunctions.engine.EngineDatabaseManager;
+import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -70,10 +70,10 @@ public class SpecificRangeCalc {
 		Double sfcMach[] = new Double[mach.length];
 
 		for (int i=0; i<mach.length; i++) {
-			sfcMach[i] = EngineDatabaseManager.getSFC(
+			sfcMach[i] = EngineDatabaseManager_old.getSFC(
 					mach[i],
 					altitude,
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							mach[i],
 							altitude,
 							bpr,

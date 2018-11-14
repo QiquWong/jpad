@@ -12,7 +12,7 @@ import standaloneutils.atmosphere.AtmosphereCalc;
  * @author Lorenzo Attanasio
  *
  */
-public class TurbofanEngineDatabaseReader extends EngineDatabaseReader {
+public class TurbofanEngineDatabaseReader extends EngineDatabaseReader_old {
 
 	private double t_T0Ratio = 0.00, bPR = 0., machN = 0.0, alt = 0., res = 0.;
 

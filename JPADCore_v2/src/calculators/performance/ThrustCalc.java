@@ -13,7 +13,7 @@ import calculators.performance.customdata.ThrustMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
-import database.databasefunctions.engine.EngineDatabaseManager;
+import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -144,7 +144,7 @@ public class ThrustCalc {
 			PowerPlant thePowerPlant,
 			double altitude, double mach) {
 		
-		double thrustRatio = EngineDatabaseManager.getThrustRatio(mach, altitude, bpr, engineType, flightCondition, thePowerPlant);
+		double thrustRatio = EngineDatabaseManager_old.getThrustRatio(mach, altitude, bpr, engineType, flightCondition, thePowerPlant);
 		
 		double tDisp = thrustRatio*t0*nEngine*phi;
 

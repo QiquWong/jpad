@@ -30,7 +30,7 @@ import aircraft.components.powerplant.PowerPlant;
 import calculators.performance.customdata.TakeOffResultsMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
-import database.databasefunctions.engine.EngineDatabaseManager;
+import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
@@ -747,13 +747,13 @@ public class TakeOffCalc {
 									)
 									.doubleValue(SI.NEWTON))
 							*(0.224809)*(0.454/60)
-							*EngineDatabaseManager.getSFC(
+							*EngineDatabaseManager_old.getSFC(
 									SpeedCalc.calculateMach(
 											x[3],
 											x[1]
 											),
 									x[3],
-									EngineDatabaseManager.getThrustRatio(
+									EngineDatabaseManager_old.getThrustRatio(
 											SpeedCalc.calculateMach(
 													x[3],
 													x[1]
