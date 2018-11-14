@@ -28,6 +28,8 @@
 /JPADSandbox_v2/out/IRON_NO_CANARD_OPT_cut
 /JPADSandbox_v2/data/Turbofan_High_BPR.h5
 /JPADSandbox_v2/data/EngineDatabaseTP.xlsx
+/JPADSandbox_v2/data/EngineDatabaseUSF.xlsx
+/JPADSandbox_v2/data/EngineDatabaseTF_HBPR.xlsx
 /JPADSandbox_v2/data/Normalized_TurboProp_100%Cruise_ISA0.h5
 /JPADSandbox_v2/data/Normalized_TurboProp_100%Cruise_ISA10.h5
 /JPADSandbox_v2/data/Normalized_TurboProp_100%Cruise_ISA30.h5
@@ -68,6 +70,8 @@
 /JPADSandbox_v2/data/Normalized_Turboprop_40CRUISE_ISA10_v4.h5
 /JPADSandbox_v2/data/Normalized_Turboprop_40CRUISE_ISA30_v4.h5
 /JPADSandbox_v2/data/serializedDatabase/EngineDatabaseTP.xml
+/JPADSandbox_v2/data/serializedDatabase/EngineDatabaseUSF.xml
+/JPADSandbox_v2/data/serializedDatabase/EngineDatabaseTF_HBPR.xml
 /JPADSandbox_v2/data/serializedDatabase/Normalized_TurboProp_100%Cruise_ISA0.xml
 /JPADSandbox_v2/data/serializedDatabase/Normalized_TurboProp_100%Cruise_ISA10.xml
 /JPADSandbox_v2/data/serializedDatabase/Normalized_TurboProp_100%Cruise_ISA30.xml

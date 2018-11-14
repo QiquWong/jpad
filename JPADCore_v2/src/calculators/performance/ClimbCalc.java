@@ -29,7 +29,7 @@ import calculators.performance.customdata.RCMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.PerformancePlotEnum;
-import database.databasefunctions.engine.EngineDatabaseManager;
+import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyMathUtils;
@@ -581,7 +581,7 @@ public class ClimbCalc {
 
 			if(_climbSpeed == null) {
 				_sfcList.add(
-						EngineDatabaseManager.getSFC(
+						EngineDatabaseManager_old.getSFC(
 								SpeedCalc.calculateMach(
 										_rcMapAEO.get(i).getAltitude(),
 										_rcMapAEO.get(i).getRCMaxSpeed()
@@ -616,7 +616,7 @@ public class ClimbCalc {
 			}
 			else {
 				_sfcList.add(
-						EngineDatabaseManager.getSFC(
+						EngineDatabaseManager_old.getSFC(
 								SpeedCalc.calculateMach(
 										_rcMapAEO.get(i).getAltitude(),
 										climbSpeedTAS.get(i).doubleValue(SI.METERS_PER_SECOND)

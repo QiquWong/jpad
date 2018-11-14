@@ -20,7 +20,7 @@ import analyses.OperatingConditions;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import configuration.enumerations.EngineOperatingConditionEnum;
-import database.databasefunctions.engine.EngineDatabaseManager;
+import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
@@ -354,10 +354,10 @@ public class DescentCalc {
 				*0.454
 				*0.224809
 				/60
-				*EngineDatabaseManager.getSFC(
+				*EngineDatabaseManager_old.getSFC(
 						machList.get(0),
 						_descentAltitudes.get(0).doubleValue(SI.METER),
-						EngineDatabaseManager.getThrustRatio(
+						EngineDatabaseManager_old.getThrustRatio(
 								machList.get(0),
 								_descentAltitudes.get(0).doubleValue(SI.METER),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
@@ -377,10 +377,10 @@ public class DescentCalc {
 				*0.454
 				*0.224809
 				/60
-				*EngineDatabaseManager.getSFC(
+				*EngineDatabaseManager_old.getSFC(
 						machList.get(0),
 						_descentAltitudes.get(0).doubleValue(SI.METER),
-						EngineDatabaseManager.getThrustRatio(
+						EngineDatabaseManager_old.getThrustRatio(
 								machList.get(0),
 								_descentAltitudes.get(0).doubleValue(SI.METER),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
@@ -637,10 +637,10 @@ public class DescentCalc {
 					*0.454
 					*0.224809
 					/60
-					*EngineDatabaseManager.getSFC(
+					*EngineDatabaseManager_old.getSFC(
 							machList.get(i),
 							_descentAltitudes.get(i).doubleValue(SI.METER),
-							EngineDatabaseManager.getThrustRatio(
+							EngineDatabaseManager_old.getThrustRatio(
 									machList.get(i),
 									_descentAltitudes.get(i).doubleValue(SI.METER),
 									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
@@ -661,10 +661,10 @@ public class DescentCalc {
 					*0.454
 					*0.224809
 					/60
-					*EngineDatabaseManager.getSFC(
+					*EngineDatabaseManager_old.getSFC(
 							machList.get(i),
 							_descentAltitudes.get(i).doubleValue(SI.METER),
-							EngineDatabaseManager.getThrustRatio(
+							EngineDatabaseManager_old.getThrustRatio(
 									machList.get(i),
 									_descentAltitudes.get(i).doubleValue(SI.METER),
 									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),

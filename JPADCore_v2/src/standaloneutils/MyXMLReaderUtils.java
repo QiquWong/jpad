@@ -2,6 +2,7 @@ package standaloneutils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -346,7 +347,7 @@ public class MyXMLReaderUtils {
 		return tempField;
 	}
 
-	public static Object deserializeObject(Object obj, String fileNameWithPath) {
+	public static Object deserializeObject(Object obj, String fileNameWithPath, Charset charset) {
 
 		byte[] encodedBytes;
 		String input = "";
@@ -356,7 +357,7 @@ public class MyXMLReaderUtils {
 			else input = fileNameWithPath;
 
 			encodedBytes = Files.readAllBytes(Paths.get(input));
-			String xml = new String(encodedBytes, StandardCharsets.UTF_8);
+			String xml = new String(encodedBytes, charset);
 			XStream xstream = new XStream(new DomDriver());
 			obj = xstream.fromXML(xml);
 			System.out.println(obj.getClass().getName() + " de-serialization complete");

@@ -171,8 +171,8 @@ public class MyInterpolatingFunction {
 		if (y > yMax) y = yMax;
 		if (z < zMin) z = zMin;
 		if (z > zMax) z = zMax;
-		if (k < kMin) k = kMin;
-		if (k > kMax) k = kMax;
+		if (k < getkMin()) k = getkMin();
+		if (k > getkMax()) k = getkMax();
 		return qif.value(x,y,z,k);
 	}
 	
@@ -186,6 +186,10 @@ public class MyInterpolatingFunction {
 
 	public double[] getZ() {
 		return z;
+	}
+
+	public double[] getK() {
+		return k;
 	}
 
 	public double getxMin() {
@@ -212,6 +216,46 @@ public class MyInterpolatingFunction {
 		return zMax;
 	}
 
+	public double getkMin() {
+		return kMin;
+	}
+
+	public double getkMax() {
+		return kMax;
+	}
+	
+	public void setxMin(double xMin) {
+		this.xMin = xMin;
+	}
+
+	public void setxMax(double xMax) {
+		this.xMax = xMax;
+	}
+
+	public void setyMin(double yMin) {
+		this.yMin = yMin;
+	}
+
+	public void setyMax(double yMax) {
+		this.yMax = yMax;
+	}
+
+	public void setzMin(double zMin) {
+		this.zMin = zMin;
+	}
+
+	public void setzMax(double zMax) {
+		this.zMax = zMax;
+	}
+
+	public void setkMin(double kMin) {
+		this.kMin = kMin;
+	}
+
+	public void setkMax(double kMax) {
+		this.kMax = kMax;
+	}
+	
 	public static class BilinearInterpolatingFunction {
 		
 		double[] x;
@@ -524,5 +568,5 @@ public class MyInterpolatingFunction {
 		}
 		
 	}
-	
+
 }

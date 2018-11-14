@@ -27,7 +27,7 @@ import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
-import database.databasefunctions.engine.EngineDatabaseManager;
+import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
@@ -630,10 +630,10 @@ public class PayloadRangeCalcMissionProfile{
 							dragPerStep.get(0).doubleValue(SI.NEWTON)
 							*(0.224809)*(0.454/60)
 							*(2-phi.get(0))
-							*EngineDatabaseManager.getSFC(
+							*EngineDatabaseManager_old.getSFC(
 									cruiseMissionMachNumber.get(0),
 									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
-									EngineDatabaseManager.getThrustRatio(
+									EngineDatabaseManager_old.getThrustRatio(
 											cruiseMissionMachNumber.get(0),
 											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
 											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
@@ -818,10 +818,10 @@ public class PayloadRangeCalcMissionProfile{
 								dragPerStep.get(j).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
 								*(2-phi.get(j))
-								*EngineDatabaseManager.getSFC(
+								*EngineDatabaseManager_old.getSFC(
 										cruiseMissionMachNumber.get(j),
 										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
-										EngineDatabaseManager.getThrustRatio(
+										EngineDatabaseManager_old.getThrustRatio(
 												cruiseMissionMachNumber.get(j),
 												_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
 												_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
@@ -1162,10 +1162,10 @@ public class PayloadRangeCalcMissionProfile{
 								dragPerStepAlternateCruise.get(0).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
 								*(2-phiAlternateCruise.get(0))
-								*EngineDatabaseManager.getSFC(
+								*EngineDatabaseManager_old.getSFC(
 										alternateCruiseMachNumberList.get(0),
 										_alternateCruiseAltitude.doubleValue(SI.METER), 
-										EngineDatabaseManager.getThrustRatio(
+										EngineDatabaseManager_old.getThrustRatio(
 												alternateCruiseMachNumberList.get(0),
 												_alternateCruiseAltitude.doubleValue(SI.METER), 
 												_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
@@ -1394,10 +1394,10 @@ public class PayloadRangeCalcMissionProfile{
 									dragPerStepAlternateCruise.get(j).doubleValue(SI.NEWTON)
 									*(0.224809)*(0.454/60)
 									*(2-phiAlternateCruise.get(j))
-									*EngineDatabaseManager.getSFC(
+									*EngineDatabaseManager_old.getSFC(
 											alternateCruiseMachNumberList.get(j),
 											_alternateCruiseAltitude.doubleValue(SI.METER), 
-											EngineDatabaseManager.getThrustRatio(
+											EngineDatabaseManager_old.getThrustRatio(
 													alternateCruiseMachNumberList.get(j),
 													_alternateCruiseAltitude.doubleValue(SI.METER), 
 													_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
@@ -1693,10 +1693,10 @@ public class PayloadRangeCalcMissionProfile{
 								dragPerStepHolding.get(0).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
 								*(2-phiHolding.get(0))
-								*EngineDatabaseManager.getSFC(
+								*EngineDatabaseManager_old.getSFC(
 										holdingMachNumberList.get(0),
 										_holdingAltitude.doubleValue(SI.METER), 
-										EngineDatabaseManager.getThrustRatio(
+										EngineDatabaseManager_old.getThrustRatio(
 												holdingMachNumberList.get(0),
 												_holdingAltitude.doubleValue(SI.METER), 
 												_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
@@ -1908,10 +1908,10 @@ public class PayloadRangeCalcMissionProfile{
 									dragPerStepHolding.get(j).doubleValue(SI.NEWTON)
 									*(0.224809)*(0.454/60)
 									*(2-phiHolding.get(j))
-									*EngineDatabaseManager.getSFC(
+									*EngineDatabaseManager_old.getSFC(
 											holdingMachNumberList.get(j),
 											_holdingAltitude.doubleValue(SI.METER), 
-											EngineDatabaseManager.getThrustRatio(
+											EngineDatabaseManager_old.getThrustRatio(
 													holdingMachNumberList.get(j),
 													_holdingAltitude.doubleValue(SI.METER), 
 													_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),

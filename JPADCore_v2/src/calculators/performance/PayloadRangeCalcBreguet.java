@@ -29,7 +29,7 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.DatabaseManager;
 import database.databasefunctions.FuelFractionDatabaseReader;
-import database.databasefunctions.engine.EngineDatabaseManager;
+import database.databasefunctions.engine.EngineDatabaseManager_old;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -375,10 +375,10 @@ public class PayloadRangeCalcBreguet{
 				(engineType==EngineTypeEnum.PISTON ||
 				engineType==EngineTypeEnum.TURBOPROP)) {
 
-			sfcAtMaxPayloadBestRange = EngineDatabaseManager.getSFC(
+			sfcAtMaxPayloadBestRange = EngineDatabaseManager_old.getSFC(
 					bestRangeMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							bestRangeMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
@@ -422,10 +422,10 @@ public class PayloadRangeCalcBreguet{
 				(engineType==EngineTypeEnum.PISTON ||
 				 engineType==EngineTypeEnum.TURBOPROP)) {
 
-			sfcAtMaxPayloadCurrentMach = EngineDatabaseManager.getSFC(
+			sfcAtMaxPayloadCurrentMach = EngineDatabaseManager_old.getSFC(
 					cruiseMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							cruiseMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
@@ -471,10 +471,10 @@ public class PayloadRangeCalcBreguet{
 				 engineType == EngineTypeEnum.PROPFAN  ||
 				 engineType == EngineTypeEnum.RAMJET)) {
 			
-			sfcAtMaxPayloadBestRange = EngineDatabaseManager.getSFC(
+			sfcAtMaxPayloadBestRange = EngineDatabaseManager_old.getSFC(
 					bestRangeMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							bestRangeMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
@@ -524,10 +524,10 @@ public class PayloadRangeCalcBreguet{
 				 engineType == EngineTypeEnum.PROPFAN  ||
 				 engineType == EngineTypeEnum.RAMJET)) {
 
-			sfcAtMaxPayloadCurrentMach = EngineDatabaseManager.getSFC(
+			sfcAtMaxPayloadCurrentMach = EngineDatabaseManager_old.getSFC(
 					cruiseMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							cruiseMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
@@ -609,10 +609,10 @@ public class PayloadRangeCalcBreguet{
 				(engineType==EngineTypeEnum.PISTON ||
 				 engineType==EngineTypeEnum.TURBOPROP)) {
 
-			sfcAtMaxFuelBestRange = EngineDatabaseManager.getSFC(
+			sfcAtMaxFuelBestRange = EngineDatabaseManager_old.getSFC(
 					bestRangeMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							bestRangeMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
@@ -656,10 +656,10 @@ public class PayloadRangeCalcBreguet{
 				(engineType==EngineTypeEnum.PISTON ||
 				 engineType==EngineTypeEnum.TURBOPROP)) {
 
-			sfcAtMaxFuelCurrentMach = EngineDatabaseManager.getSFC(
+			sfcAtMaxFuelCurrentMach = EngineDatabaseManager_old.getSFC(
 					cruiseMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							cruiseMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
@@ -705,10 +705,10 @@ public class PayloadRangeCalcBreguet{
 				 engineType == EngineTypeEnum.PROPFAN  ||
 				 engineType == EngineTypeEnum.RAMJET)) {
 
-			sfcAtMaxFuelBestRange = EngineDatabaseManager.getSFC(
+			sfcAtMaxFuelBestRange = EngineDatabaseManager_old.getSFC(
 					bestRangeMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							bestRangeMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
@@ -758,10 +758,10 @@ public class PayloadRangeCalcBreguet{
 				 engineType == EngineTypeEnum.PROPFAN  ||
 				 engineType == EngineTypeEnum.RAMJET)) {
 
-			sfcAtMaxFuelCurrentMach = EngineDatabaseManager.getSFC(
+			sfcAtMaxFuelCurrentMach = EngineDatabaseManager_old.getSFC(
 					cruiseMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							cruiseMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
@@ -839,10 +839,10 @@ public class PayloadRangeCalcBreguet{
 				(engineType==EngineTypeEnum.PISTON ||
 				 engineType==EngineTypeEnum.TURBOPROP)) {
 
-			sfcAtZeroPayloadBestRange = EngineDatabaseManager.getSFC(
+			sfcAtZeroPayloadBestRange = EngineDatabaseManager_old.getSFC(
 					bestRangeMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							bestRangeMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
@@ -886,10 +886,10 @@ public class PayloadRangeCalcBreguet{
 				(engineType==EngineTypeEnum.PISTON ||
 				 engineType==EngineTypeEnum.TURBOPROP)) {
 
-			sfcAtZeroPayloadCurrentMach = EngineDatabaseManager.getSFC(
+			sfcAtZeroPayloadCurrentMach = EngineDatabaseManager_old.getSFC(
 					cruiseMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							cruiseMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
@@ -935,10 +935,10 @@ public class PayloadRangeCalcBreguet{
 				 engineType == EngineTypeEnum.PROPFAN  ||
 				 engineType == EngineTypeEnum.RAMJET)) {
 
-			sfcAtZeroPayloadBestRange = EngineDatabaseManager.getSFC(
+			sfcAtZeroPayloadBestRange = EngineDatabaseManager_old.getSFC(
 					bestRangeMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							bestRangeMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
@@ -988,10 +988,10 @@ public class PayloadRangeCalcBreguet{
 				 engineType == EngineTypeEnum.PROPFAN  ||
 				 engineType == EngineTypeEnum.RAMJET)) {
 
-			sfcAtZeroPayloadCurrentMach = EngineDatabaseManager.getSFC(
+			sfcAtZeroPayloadCurrentMach = EngineDatabaseManager_old.getSFC(
 					cruiseMach,
 					altitude.doubleValue(SI.METER),
-					EngineDatabaseManager.getThrustRatio(
+					EngineDatabaseManager_old.getThrustRatio(
 							cruiseMach,
 							altitude.doubleValue(SI.METER),
 							byPassRatio,

@@ -1,6 +1,7 @@
 package database;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 import configuration.MyConfiguration;
 import database.databasefunctions.FuelFractionDatabaseReader;
@@ -8,7 +9,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
-import database.databasefunctions.engine.EngineDatabaseManager_v2;
+import database.databasefunctions.engine.EngineDatabaseManager;
 import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
 import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
@@ -37,8 +38,11 @@ public class DatabaseManager {
 		if (fileVeDSC.exists()) {
 
 			System.out.println("De-serializing file: " + fileVeDSC.getAbsolutePath() + " ...");
-			reader = (VeDSCDatabaseReader) MyXMLReaderUtils.deserializeObject(reader,
-					MyConfiguration.interpolaterVeDSCDatabaseSerializedFullName);
+			reader = (VeDSCDatabaseReader) MyXMLReaderUtils.deserializeObject(
+					reader,
+					MyConfiguration.interpolaterVeDSCDatabaseSerializedFullName,
+					StandardCharsets.UTF_8
+					);
 
 		} else {
 
@@ -75,8 +79,11 @@ public class DatabaseManager {
 		if (fileVeDSC.exists()) {
 
 			System.out.println("De-serializing file: " + fileVeDSC.getAbsolutePath() + " ...");
-			reader = (VeDSCDatabaseReader) MyXMLReaderUtils.deserializeObject(reader,
-					interpolaterVeDSCDatabaseSerializedFullName);
+			reader = (VeDSCDatabaseReader) MyXMLReaderUtils.deserializeObject(
+					reader,
+					interpolaterVeDSCDatabaseSerializedFullName,
+					StandardCharsets.UTF_8
+					);
 
 		} else {
 
@@ -114,8 +121,11 @@ public class DatabaseManager {
 		if(fileFusDes.exists()){
 			System.out.println("De-serializing file: " + fileFusDes.getAbsolutePath() + " ...");
 			reader = (FusDesDatabaseReader) 
-					MyXMLReaderUtils.deserializeObject(reader,
-							MyConfiguration.interpolaterFusDesatabaseSerializedFullName);
+					MyXMLReaderUtils.deserializeObject(
+							reader,
+							MyConfiguration.interpolaterFusDesatabaseSerializedFullName,
+							StandardCharsets.UTF_8
+							);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> FusDes_database.h5 ==> "+ 
@@ -157,8 +167,11 @@ public class DatabaseManager {
 		if(fileFusDes.exists()){
 			System.out.println("De-serializing file: " + fileFusDes.getAbsolutePath() + " ...");
 			reader = (FusDesDatabaseReader) 
-					MyXMLReaderUtils.deserializeObject(reader,
-							interpolaterFusDesatabaseSerializedFullName);
+					MyXMLReaderUtils.deserializeObject(
+							reader,
+							interpolaterFusDesatabaseSerializedFullName,
+							StandardCharsets.UTF_8
+							);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> FusDes_database.h5 ==> "+ 
@@ -191,8 +204,11 @@ public class DatabaseManager {
 		if(fileAeroDatabase.exists()){
 			System.out.println("De-serializing file: " + fileAeroDatabase.getAbsolutePath() + " ...");
 			reader = (AerodynamicDatabaseReader) 
-					MyXMLReaderUtils.deserializeObject(reader,
-							MyConfiguration.interpolaterAerodynamicDatabaseSerializedFullName);
+					MyXMLReaderUtils.deserializeObject(
+							reader,
+							MyConfiguration.interpolaterAerodynamicDatabaseSerializedFullName,
+							StandardCharsets.UTF_8
+							);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> Aerodynamic_Database_Ultimate.h5 ==> "+ 
@@ -235,8 +251,11 @@ public class DatabaseManager {
 		if(fileAeroDatabase.exists()){
 			System.out.println("De-serializing file: " + fileAeroDatabase.getAbsolutePath() + " ...");
 			reader = (AerodynamicDatabaseReader) 
-					MyXMLReaderUtils.deserializeObject(reader,
-							interpolaterAerodynamicDatabaseSerializedFullName);
+					MyXMLReaderUtils.deserializeObject(
+							reader,
+							interpolaterAerodynamicDatabaseSerializedFullName,
+							StandardCharsets.UTF_8
+							);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> Aerodynamic_Database_Ultimate.h5 ==> "+ 
@@ -269,8 +288,11 @@ public class DatabaseManager {
 		if(fileHighLiftDatabase.exists()){
 			System.out.println("De-serializing file: " + fileHighLiftDatabase.getAbsolutePath() + " ...");
 			reader = (HighLiftDatabaseReader) 
-					MyXMLReaderUtils.deserializeObject(reader,
-							MyConfiguration.interpolaterHighLiftDatabaseSerializedFullName);
+					MyXMLReaderUtils.deserializeObject(
+							reader,
+							MyConfiguration.interpolaterHighLiftDatabaseSerializedFullName,
+							StandardCharsets.UTF_8
+							);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> HighLiftDatabase.h5 ==> "+ 
@@ -313,8 +335,11 @@ public class DatabaseManager {
 		if(fileHighLiftDatabase.exists()){
 			System.out.println("De-serializing file: " + fileHighLiftDatabase.getAbsolutePath() + " ...");
 			reader = (HighLiftDatabaseReader) 
-					MyXMLReaderUtils.deserializeObject(reader,
-							interpolaterHighLiftDatabaseSerializedFullName);
+					MyXMLReaderUtils.deserializeObject(
+							reader,
+							interpolaterHighLiftDatabaseSerializedFullName,
+							StandardCharsets.UTF_8
+							);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> HighLiftDatabase.h5 ==> "+ 
@@ -351,8 +376,11 @@ public class DatabaseManager {
 		if(fileTurbofanDatabase.exists()){
 			System.out.println("De-serializing file: " + fileTurbofanDatabase.getAbsolutePath() + " ...");
 			reader = (TurbofanEngineDatabaseReader) 
-					MyXMLReaderUtils.deserializeObject(reader,
-							interpolaterTurbofanDatabaseSerializedFullName);
+					MyXMLReaderUtils.deserializeObject(
+							reader,
+							interpolaterTurbofanDatabaseSerializedFullName,
+							StandardCharsets.UTF_8
+							);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> " + databaseName + " ==> "+ 
@@ -389,8 +417,11 @@ public class DatabaseManager {
 		if(fileTurbopropDatabase.exists()){
 			System.out.println("De-serializing file: " + fileTurbopropDatabase.getAbsolutePath() + " ...");
 			reader = (TurbopropEngineDatabaseReader) 
-					MyXMLReaderUtils.deserializeObject(reader,
-							interpolaterTurbopropDatabaseSerializedFullName);
+					MyXMLReaderUtils.deserializeObject(
+							reader,
+							interpolaterTurbopropDatabaseSerializedFullName,
+							StandardCharsets.UTF_8
+							);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> " + databaseName + "  ==> "+ 
@@ -416,7 +447,7 @@ public class DatabaseManager {
 		return reader;
 	}
 	
-	public static EngineDatabaseManager_v2 initializeEngineDatabase(EngineDatabaseManager_v2 databaseManager, String databaseDirectory, String databaseName){
+	public static EngineDatabaseManager initializeEngineDatabase(EngineDatabaseManager databaseManager, String databaseDirectory, String databaseName){
 
 		String databaseNameXML = null;
 		
@@ -432,16 +463,17 @@ public class DatabaseManager {
 
 		if(serializedEngineDatabaseFile.exists()){
 			System.out.println("De-serializing file: " + serializedEngineDatabaseFile.getAbsolutePath() + " ...");
-			databaseManager = (EngineDatabaseManager_v2) 
+			databaseManager = (EngineDatabaseManager) 
 					MyXMLReaderUtils.deserializeObject(
 							databaseManager,
-							serializedDatabaseFullName
+							serializedDatabaseFullName,
+							StandardCharsets.ISO_8859_1
 							);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> " + databaseName + "  ==> "+ 
 					serializedEngineDatabaseFile.getAbsolutePath() + " ...");
-			databaseManager = new EngineDatabaseManager_v2();
+			databaseManager = new EngineDatabaseManager();
 			databaseManager.importDatabaseFromFile(databaseDirectory, databaseName);
 
 			File dir = new File(serializedDatabaseDirectory);
@@ -469,8 +501,11 @@ public class DatabaseManager {
 		if(fileFuelFractionsDatabase.exists()){
 			System.out.println("De-serializing file: " + fileFuelFractionsDatabase.getAbsolutePath() + " ...");
 			reader = (FuelFractionDatabaseReader) 
-					MyXMLReaderUtils.deserializeObject(reader,
-							interpolaterFuelFractionDatabaseSerializedFullName);
+					MyXMLReaderUtils.deserializeObject(
+							reader,
+							interpolaterFuelFractionDatabaseSerializedFullName,
+							StandardCharsets.UTF_8
+							);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> FuelFractions.h5 ==> "+ 

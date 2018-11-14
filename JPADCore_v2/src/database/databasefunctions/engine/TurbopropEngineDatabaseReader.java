@@ -4,7 +4,7 @@ import configuration.enumerations.EngineOperatingConditionEnum;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.MyInterpolatingFunction;
 
-public class TurbopropEngineDatabaseReader extends EngineDatabaseReader{
+public class TurbopropEngineDatabaseReader extends EngineDatabaseReader_old{
 
 	private MyInterpolatingFunction takeOffSFCFunction, continuousSFCFunction, climbSFCFunction,
 	cruiseSFCFunction, descentSFCFunction, aprSFCFunction, aprThrustFunction;

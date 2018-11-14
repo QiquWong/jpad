@@ -35,7 +35,7 @@ import aircraft.components.powerplant.PowerPlant;
 import calculators.aerodynamics.AerodynamicCalc;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.UnitFormatEnum;
-import database.databasefunctions.engine.EngineDatabaseManager;
+import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
@@ -2239,13 +2239,13 @@ public class TakeOffNoiseTrajectoryCalc {
 			
 			double fuelFlow = thrust(speed, time, time, altitude)
 					*(0.224809)*(0.454/3600)
-					*EngineDatabaseManager.getSFC(
+					*EngineDatabaseManager_old.getSFC(
 							SpeedCalc.calculateMach(
 									altitude,
 									speed
 									),
 							altitude,
-							EngineDatabaseManager.getThrustRatio(
+							EngineDatabaseManager_old.getThrustRatio(
 									SpeedCalc.calculateMach(
 											altitude,
 											speed

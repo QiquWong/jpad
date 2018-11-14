@@ -16,7 +16,7 @@ public enum EngineOperatingConditionEnum {
 	CLIMB("CLIMB"),
 	CRUISE("CRUISE"),
 	DESCENT("DESCENT"),
-	FILD("FILD"),
+	FIDL("FILD"),
 	GIDL("GIDL"),
 	UNKNOWN("UNKNOWN");
 	
