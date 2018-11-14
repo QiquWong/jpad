@@ -195,6 +195,14 @@ public abstract class CADShapeFactory {
 	public abstract CADSolid newSolidFromAdjacentFaces(List<CADFace> cadFaces);
 	
 	/**
+	 * Create a solid from adjacent shells
+	 * @param cadShells adjacent shells
+	 * @return the created CADSolid
+	 */
+	public abstract CADSolid newSolidFromAdjacentShells(CADShell ... cadShells);
+	public abstract CADSolid newSolidFromAdjacentShells(List<CADShell> cadShells);
+	
+	/**
 	 * Create a new CADVertex from a triplet of coordinates
 	 * @param x, y, z the cartesian coordinates
 	 * @return The created CADVertex

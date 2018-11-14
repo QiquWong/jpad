@@ -9,84 +9,43 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
+import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.WingAdjustCriteriaEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
+import it.unina.daf.jpadcad.occ.OCCUtils;
+import it.unina.daf.jpadcadsandbox.utils.AircraftCADUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils.FileExtension;
 
 public class Test31mds {
 
 	public static void main(String[] args) {
-		System.out.println("-------------------");
-		System.out.println("JPADCADSandbox Test");
-		System.out.println("-------------------");
+		
+		System.out.println("---------------------------------------------");
+		System.out.println("--------- AircraftCADUtils Test -------------");
+		System.out.println("---------------------------------------------");
 		
 		Aircraft aircraft = AircraftUtils.importAircraft(args);
 		
-		LiftingSurface originalWing = aircraft.getWing();
-		LiftingSurface modWing_0 = AircraftUtils.importAircraft(args).getWing();
-		LiftingSurface modWing_1 = AircraftUtils.importAircraft(args).getWing();
+		Fuselage fuselage = aircraft.getFuselage();
+		LiftingSurface wing = aircraft.getWing();
 		
-		modWing_0.getPanels().get(0).setSweepAtLeadingEdge(Amount.valueOf(25, NonSI.DEGREE_ANGLE));
-		modWing_0.getPanels().get(1).setSweepAtLeadingEdge(Amount.valueOf(45, NonSI.DEGREE_ANGLE));
-		modWing_0.calculateGeometry(originalWing.getType(), originalWing.isMirrored());
-		modWing_0.setAirfoilList(originalWing.getAirfoilList());
+		fuselage.setYApexConstructionAxes(Amount.valueOf(2, SI.METER));
 		
-		modWing_1.getPanels().get(0).setSweepAtLeadingEdge(Amount.valueOf(25, NonSI.DEGREE_ANGLE));
-		modWing_1.getPanels().get(1).setSweepAtLeadingEdge(Amount.valueOf(45, NonSI.DEGREE_ANGLE));
-		modWing_1.calculateGeometry(originalWing.getType(), originalWing.isMirrored());
-		modWing_1.setAirfoilList(originalWing.getAirfoilList());
+		List<OCCShape> fuselageShapes = AircraftCADUtils.getFuselageCAD(fuselage, 
+				7, 7, 
+				true, true, true);
 		
-		System.out.println("----------------------------------------------");
-		System.out.println("WING ADJUST DIMENSION TESTING ----------------");
-		System.out.println("----------------------------------------------");
+//		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, 
+//				ComponentEnum.WING, 1e-3, 
+//				false, true, false);
 		
-		System.out.println("AR = " + modWing_1.getAspectRatio());
-		System.out.println("Root chord = " + modWing_1.getPanels().get(0).getChordRoot().doubleValue(SI.METER));
-		System.out.println("Kink chord = " + modWing_1.getPanels().get(0).getChordTip().doubleValue(SI.METER));
-		System.out.println("Tip chord = " + modWing_1.getPanels().get(1).getChordTip().doubleValue(SI.METER));
-		System.out.println("Area = " + modWing_1.getSurfacePlanform().doubleValue(SI.SQUARE_METRE));
-		System.out.println("Span = " + modWing_1.getSpan().doubleValue(SI.METER));
-		System.out.println("Sweep LE panel 1 = " + modWing_1.getPanels().get(0).getSweepLeadingEdge());
-		System.out.println("Sweep LE panel 2 = " + modWing_1.getPanels().get(1).getSweepLeadingEdge());
+		String filename = "AircraftCADUtils_Test.brep";
 		
-		int i = 0;
-		while(i < 10) {
-			modWing_1.adjustDimensions(
-					modWing_1.getEquivalentWing().getPanels().get(0).getSurfacePlanform().doubleValue(SI.SQUARE_METRE)*2,
-					modWing_1.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER), 
-					modWing_1.getEquivalentWing().getPanels().get(0).getChordTip().doubleValue(SI.METER),
-					modWing_1.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge(), 
-					modWing_1.getEquivalentWing().getPanels().get(0).getDihedral(), 
-					modWing_1.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(), 
-					WingAdjustCriteriaEnum.AREA_ROOTCHORD_TIPCHORD
-					);
-			
-			i++;
-		}
-		
-		modWing_1.setXApexConstructionAxes(modWing_0.getXApexConstructionAxes().plus(Amount.valueOf(10, SI.METER)));
-//		modWing_1.setZApexConstructionAxes(modWing_0.getZApexConstructionAxes().plus(Amount.valueOf(3, SI.METER)));
-		
-		System.out.println("AR = " + modWing_1.getAspectRatio());
-		System.out.println("Root chord = " + modWing_1.getPanels().get(0).getChordRoot().doubleValue(SI.METER));
-		System.out.println("Kink chord = " + modWing_1.getPanels().get(0).getChordTip().doubleValue(SI.METER));
-		System.out.println("Tip chord = " + modWing_1.getPanels().get(1).getChordTip().doubleValue(SI.METER));
-		System.out.println("Area = " + modWing_1.getSurfacePlanform().doubleValue(SI.SQUARE_METRE));
-		System.out.println("Span = " + modWing_1.getSpan().doubleValue(SI.METER));
-		System.out.println("Sweep LE panel 1 = " + modWing_1.getPanels().get(0).getSweepLeadingEdge());
-		System.out.println("Sweep LE panel 2 = " + modWing_1.getPanels().get(1).getSweepLeadingEdge());
-		
-		List<OCCShape> originalWingShapes = AircraftUtils.getLiftingSurfaceCAD(modWing_0, ComponentEnum.WING, 1e-3, false, true, false);
-		List<OCCShape> modWingShapes = AircraftUtils.getLiftingSurfaceCAD(modWing_1, ComponentEnum.WING, 1e-3, false, true, false);
-		
-		List<OCCShape> allShapes = new ArrayList<>();
-		allShapes.addAll(originalWingShapes);
-		allShapes.addAll(modWingShapes);
-		
-		AircraftUtils.getAircraftSolidFile(allShapes, "AdjDim_Wing_Test", FileExtension.STEP);
+		if (OCCUtils.write(filename, fuselageShapes))
+			System.out.println("[Test31mds] CAD shapes correctly written to file (" + filename + ")");
 	}
 
 }

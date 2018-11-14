@@ -263,7 +263,8 @@ public class InputManagerControllerMainActionUtilities {
 	
 	private void cleanFuselageData() {
 		
-		theController.getFuselageAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
+//		theController.getFuselageAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
+		theController.getFuselageAdjustCriterionChoiceBox().getSelectionModel().select(0);
 		theController.getFuselageAdjustCriterionChoiceBox().setDisable(true);
 		
 		// Pressurized
@@ -380,7 +381,9 @@ public class InputManagerControllerMainActionUtilities {
 	
 	private void cleanWingData() {
 		
-		theController.getWingAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
+//		theController.getWingAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
+		theController.getWingAdjustCriterionChoiceBox().getSelectionModel().select(0);
+		theController.getWingAdjustCriterionChoiceBox().setDisable(true);
 		theController.getEquivalentWingCheckBox().setSelected(false);
 		theController.getTextFieldWingMainSparAdimensionalPosition().clear();
 		theController.getTextFieldWingSecondarySparAdimensionalPosition().clear();
@@ -577,7 +580,9 @@ public class InputManagerControllerMainActionUtilities {
 	
 	private void cleanHTailData() {
 		
-		theController.gethTailAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
+//		theController.gethTailAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
+		theController.gethTailAdjustCriterionChoiceBox().getSelectionModel().select(0);
+		theController.gethTailAdjustCriterionChoiceBox().setDisable(true);
 		theController.getTextFieldHTailMainSparAdimensionalPosition().clear();
 		theController.getTextFieldHTailSecondarySparAdimensionalPosition().clear();
 		theController.getTextFieldHTailRoughness().clear();
@@ -678,7 +683,9 @@ public class InputManagerControllerMainActionUtilities {
 	
 	private void cleanVTailData() {
 		
-		theController.getvTailAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
+//		theController.getvTailAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
+		theController.getvTailAdjustCriterionChoiceBox().getSelectionModel().select(0);
+		theController.getvTailAdjustCriterionChoiceBox().setDisable(true);
 		theController.getTextFieldVTailMainSparAdimensionalPosition().clear();
 		theController.getTextFieldVTailSecondarySparAdimensionalPosition().clear();
 		theController.getTextFieldVTailRoughness().clear();
@@ -779,7 +786,9 @@ public class InputManagerControllerMainActionUtilities {
 	
 	private void cleanCanardData() {
 		
-		theController.getCanardAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
+//		theController.getCanardAdjustCriterionChoiceBox().getSelectionModel().clearSelection();
+		theController.getCanardAdjustCriterionChoiceBox().getSelectionModel().select(0);
+		theController.getCanardAdjustCriterionChoiceBox().setDisable(true);
 		theController.getTextFieldCanardMainSparAdimensionalPosition().clear();
 		theController.getTextFieldCanardSecondarySparAdimensionalPosition().clear();
 		theController.getTextFieldCanardRoughness().clear();

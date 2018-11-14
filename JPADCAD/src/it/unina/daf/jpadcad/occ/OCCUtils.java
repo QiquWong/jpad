@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import opencascade.BOPAlgo_PaveFiller;
 import opencascade.BOPDS_DS;
 import opencascade.BRepBuilderAPI_MakeVertex;
+import opencascade.BRepBuilderAPI_Transform;
 import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
@@ -24,7 +25,10 @@ import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
 import opencascade.TopoDS_Shape;
 import opencascade.TopoDS_Vertex;
+import opencascade.gp_Ax2;
+import opencascade.gp_Dir;
 import opencascade.gp_Pnt;
+import opencascade.gp_Trsf;
 import processing.core.PVector;
 
 public final class OCCUtils {
@@ -327,35 +331,13 @@ public final class OCCUtils {
 		
 		CADVertex projection = OCCUtils.pointProjectionOnCurve(cadCurve, pnt);
 		
-//		GeomAPI_ProjectPointOnCurve poc = new GeomAPI_ProjectPointOnCurve();
-//		gp_Pnt gpPnt = new gp_Pnt(pnt[0], pnt[1], pnt[2]);
-//		poc.Init(gpPnt, ((OCCGeomCurve3D)cadCurve).getAdaptorCurve().Curve());
-//		poc.Perform(gpPnt);
-//		System.out.println("[OCCUtils.splitEdge]>> Projecting point (" + gpPnt.X() +", "+ gpPnt.Y() +", "+ gpPnt.Z() + ") onto Guide-Curve-1");
-//		System.out.println("[OCCUtils.splitEdge]>> N. projections: " + poc.NbPoints());
-//		gp_Pnt gpPnt_1 = null;
-//		double par_1;
-//		TopoDS_Edge e1 = null;
-//		TopoDS_Edge e2 = null;
 		TopoDS_Vertex vtx_1 = null;
 		
 		gp_Pnt gpPnt_1 = new gp_Pnt(projection.pnt()[0], projection.pnt()[1], projection.pnt()[2]);
 		
 		// check if at least one projection occurred
 		if(!projection.equals(null)) {
-//		if (poc.NbPoints() > 0) {			
-//			gpPnt_1 = poc.Point(1);
-//			System.out.println("[OCCUtils.splitEdge]>> Projected point (" + gpPnt_1.X() +", "+ gpPnt_1.Y() +", "+ gpPnt_1.Z() + ")" );
-//			par_1 = poc.Parameter(1);
-//			System.out.println("[OCCUtils.splitEdge]>> Projected point parameter: " + par_1);
-			
-//			gpPnt_1 = poc.NearestPoint();
-//			System.out.println("[OCCUtils.splitEdge]>> Projected point (" + gpPnt_1.X() +", "+ gpPnt_1.Y() +", "+ gpPnt_1.Z() + ")" );
-			
-			// https://www.opencascade.com/doc/occt-7.0.0/overview/html/occt_user_guides__boolean_operations.html
-			// https://github.com/DLR-SC/tigl/src/boolean_operations/CCutShape.cpp
-			// http://www.algotopia.com/contents/opencascade/opencascade_basic
-			
+		
 			// prepare filler
 			TopTools_ListOfShape listOfArguments = new TopTools_ListOfShape();
 			
@@ -466,14 +448,6 @@ public final class OCCUtils {
 		}		
 		return result;
 	}
-	
-//	// BRepAlgoAPI_Cut cutter(_source->Shape(), _tool->Shape(), *_dsfiller, Standard_True);
-//	BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(tds_edgeS1, vtxS1Ap_1, paveFiller, 1);
-//	cutter.Build();
-//	System.out.println(">> BRepAlgoAPI_Cut build error status: " + cutter.ErrorStatus());
-//	
-//	TopoDS_Shape tds_shape = cutter.Shape();
-//	System.out.println(">> BRepAlgoAPI_Cut shape is null? " + tds_shape.IsNull());
 
 	public static OCCVertex getVertexFromEdge(OCCEdge occEdge, int idx) {
 		OCCVertex result = null;
@@ -490,6 +464,37 @@ public final class OCCUtils {
 			result = listVtx.get(idx);
 		}
 		return result;
+	}
+	
+	/**
+	 * Mirrors the provided shape with respect to a plane
+	 * @param shape - The shape to mirror.
+	 * @param mirrorPlaneOrigin - The origin of the mirror plane.
+	 * @param mirrorPlaneNormal - The normal to the mirror plane.
+	 * @param mirrorPlaneInDirection - A direction normal to the previous one and contained in the mirror plane.
+	 * @return mirroredShape - The original shape mirrored with respect to the provided plane.
+	 */
+	public static OCCShape getShapeMirrored(OCCShape shape, 
+			PVector mirrorPlaneOrigin, PVector mirrorPlaneNormal, PVector mirrorPlaneInDirection) {
+		
+		OCCShape mirroredShape = null;
+		
+		// Initialize the transformation
+		gp_Trsf mirroring = new gp_Trsf();
+		
+		// Generate the symmetry plane
+		gp_Ax2 mirrorPlane = new gp_Ax2(
+				new gp_Pnt(mirrorPlaneOrigin.x, mirrorPlaneOrigin.y, mirrorPlaneOrigin.z), 
+				new gp_Dir(mirrorPlaneNormal.x, mirrorPlaneNormal.y, mirrorPlaneNormal.z),
+				new gp_Dir(mirrorPlaneInDirection.x, mirrorPlaneInDirection.y, mirrorPlaneInDirection.z)
+				);
+		mirroring.SetMirror(mirrorPlane);
+		
+		// Generate the mirrored shape
+		mirroredShape = (OCCShape) OCCUtils.theFactory.newShape(
+				new BRepBuilderAPI_Transform(shape.getShape(), mirroring, 0).Shape());
+			
+		return mirroredShape;
 	}
 	
 }

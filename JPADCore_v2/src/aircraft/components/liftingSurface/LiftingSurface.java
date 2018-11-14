@@ -1219,18 +1219,8 @@ public class LiftingSurface {
 		// X coordinates of root, tip and kink chords, 
 		// using actual offsets with respect to the equivalent wing root chord TODO
 		double actualXOffsetLE = getXOffsetEquivalentWingRootLE();
-//		double actualXOffsetTE = getXOffsetEquivalentWingRootTE();
 		
 		Amount<Length> xLERoot = Amount.valueOf(0.0 ,SI.METER);
-		
-//		Amount<Length> xLETip = Amount.valueOf(
-//				Math.tan(sweepLeadingEdgeEquivalentWing.doubleValue(SI.RADIAN)) * 
-//				span.doubleValue(SI.METER)/2 + (chordLinPanel.doubleValue(SI.METER) 
-//						* actualXOffsetLE
-//						* (1 - nonDimensionalSpanStationKink)
-//						),
-//				SI.METER
-//				);
 		
 		Amount<Length> xLETip = Amount.valueOf(
 				actualXOffsetLE + 
@@ -1238,21 +1228,6 @@ public class LiftingSurface {
 						span.doubleValue(SI.METER)/2, 
 				SI.METER
 				);
-		
-//		Amount<Length> xLEKink = Amount.valueOf(0.0 ,SI.METER);
-//		if ((xOffsetLE != 0.0 
-//				| xOffsetTE != 0.0) 
-//				| nonDimensionalSpanStationKink == 1.0) {
-//			xLEKink = Amount.valueOf(chordLinPanel.doubleValue(SI.METER) * 
-//					actualXOffsetLE + nonDimensionalSpanStationKink
-//					* (xLETip.doubleValue(SI.METER) - chordLinPanel.doubleValue(SI.METER) 
-//							* actualXOffsetLE
-//							),
-//					SI.METER
-//					);
-//		} else {
-//			xLEKink = (Amount<Length>) JPADStaticWriteUtils.cloneAmount(xLERoot);
-//		}
 		
 		Amount<Length> xLEKink = Amount.valueOf(0.0, SI.METER);
 		if ((xOffsetLE != 0.0 | xOffsetTE != 0.0)
@@ -1618,7 +1593,7 @@ public class LiftingSurface {
 						);
 		
 		// setting equivalent wing x offsets with respect to the equivalent wing root chord TODO	
-		xOffsetEquivalentWingRootTE = -10*xOffsetEquivalentWingRootTE;
+//		xOffsetEquivalentWingRootTE = -xOffsetEquivalentWingRootTE;
 		
 		setXOffsetEquivalentWingRootLE(xOffsetEquivalentWingRootLE);
 		setXOffsetEquivalentWingRootTE(xOffsetEquivalentWingRootTE);

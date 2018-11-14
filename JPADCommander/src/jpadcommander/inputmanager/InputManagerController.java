@@ -1717,22 +1717,40 @@ public class InputManagerController {
 		    	 
 		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Cabin Configuration"))
 		    		updateCabinConfigurationDataFromFile = true;
+		    	else
+		    		updateCabinConfigurationDataFromFile = false;
 		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Fuselage"))
 		    		updateFuselageDataFromFile = true;
+		    	else
+		    		updateFuselageDataFromFile = false;
 		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Wing"))
 		    		updateWingDataFromFile = true;
+		    	else
+		    		updateWingDataFromFile = false;
 		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Horizontal Tail"))
 		    		updateHTailDataFromFile = true;
+		    	else 
+		    		updateHTailDataFromFile = false;
 		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Vertical Tail"))
 		    		updateVTailDataFromFile = true;
+		    	else
+		    		updateVTailDataFromFile = false;
 		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Canard"))
 		    		updateCanardDataFromFile = true;
+		    	else 
+		    		updateCanardDataFromFile = false;
 		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Power Plant"))
 		    		updatePowerPlantDataFromFile = true;
+		    	else
+		    		updatePowerPlantDataFromFile = false;
 		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Nacelles"))
 		    		updateNacellesDataFromFile = true;
+		    	else
+		    		updateNacellesDataFromFile = false;
 		    	if (updateAircraftDataFromFileComboBox.getCheckModel().getCheckedItems().contains("Landing Gears"))
 		    		updateLandingGearsDataFromFile = true;
+		    	else
+		    		updateLandingGearsDataFromFile = false;
 		     }
 		 });
 		actionButtonToolbar.getItems().add(updateAircraftDataFromFileComboBox);
@@ -1979,6 +1997,14 @@ public class InputManagerController {
 		landingGearsFrontalWheelsWidthUnitChoiceBox.setItems(lengthUnitsList);
 		landingGearsRearWheelsHeigthUnitChoiceBox.setItems(lengthUnitsList);
 		landingGearsRearWheelsWidthUnitChoiceBox.setItems(lengthUnitsList);
+		
+		//.......................................................................................
+		// ADJUST CRITERIA CHOICE BOXES INITIALIZATION TODO: eventually move this initialization elsewhere
+		fuselageAdjustCriterionChoiceBox.getSelectionModel().select(0);
+		wingAdjustCriterionChoiceBox.getSelectionModel().select(0);
+		hTailAdjustCriterionChoiceBox.getSelectionModel().select(0);
+		vTailAdjustCriterionChoiceBox.getSelectionModel().select(0);
+		canardAdjustCriterionChoiceBox.getSelectionModel().select(0);
 		
 		//.......................................................................................
 		// AIRCRAFT ENGINE LISTS INITIALIZATION
@@ -4566,7 +4592,7 @@ public class InputManagerController {
 		rudderTypeChoiceBox.setLayoutY(21);
 		rudderTypeChoiceBox.setPrefWidth(340);
 		rudderTypeChoiceBox.setPrefHeight(31);
-		rudderTypeChoiceBox.setItems(angleUnitsList);
+		rudderTypeChoiceBox.setItems(rudderTypeList);
 		contentPane.getChildren().add(rudderTypeChoiceBox);
 		
 		Label rudderInnerPositionLabel = new Label("Inner position (% semispan):");

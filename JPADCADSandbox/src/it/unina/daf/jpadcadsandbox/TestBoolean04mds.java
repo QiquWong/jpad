@@ -710,7 +710,7 @@ public class TestBoolean04mds {
 				);
 		mirroring.SetMirror(mirrorPlane);
 	
-		return new BRepBuilderAPI_Transform(shape, mirroring, 1).Shape();
+		return new BRepBuilderAPI_Transform(shape, mirroring, 0).Shape();
 	}
 	
 	public static List<TopoDS_Solid> performBooleanCutOperation(

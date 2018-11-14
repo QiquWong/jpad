@@ -474,6 +474,25 @@ public class OCCShapeFactory extends CADShapeFactory
 		}
 		return ret;
 	}
+	
+	@Override
+	public CADSolid newSolidFromAdjacentShells(CADShell ... cadShells) {
+		return newSolidFromAdjacentShells(Arrays.asList(cadShells));
+	}
+	
+	@Override
+	public CADSolid newSolidFromAdjacentShells(List<CADShell> cadShells) {
+		CADSolid ret = null;
+		BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
+		
+		for (int i = 0; i < cadShells.size(); i++) {
+			solidMaker.Add(TopoDS.ToShell(((OCCShell) cadShells.get(i)).getShape()));
+		}
+		solidMaker.Build();
+		ret = (CADSolid) newShape(solidMaker.Solid());
+		
+		return ret;
+	}
 
 	@Override
 	public CADVertex newVertex(double x, double y, double z) {

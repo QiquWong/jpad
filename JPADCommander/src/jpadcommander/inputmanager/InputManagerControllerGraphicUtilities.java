@@ -2801,31 +2801,74 @@ public class InputManagerControllerGraphicUtilities {
 		//--------------------------------------------------
 		int nSec = Main.getTheAircraft().getWing().getDiscretizedXle().size();
 		int nPanels = Main.getTheAircraft().getWing().getPanels().size();
-
+		
+		double xOffsetLE = Main.getTheAircraft().getWing().getXOffsetEquivalentWingRootLE();
+		double xOffsetTE = Main.getTheAircraft().getWing().getXOffsetEquivalentWingRootTE();
+		Amount<Length> equivalentWingSemispan = Main.getTheAircraft().getWing().getDiscretizedYs().get(nSec - 1);
+		Amount<Angle> equivalentWingSweepLE = Main.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getSweepLeadingEdge();
+		
 		XYSeries seriesEquivalentWingTopView = new XYSeries("Equivalent Wing", false);
+		
 		seriesEquivalentWingTopView.add(
-				Main.getTheAircraft().getWing().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE(),
+				Main.getTheAircraft().getWing().getDiscretizedXle().get(0)
+					.plus(Amount.valueOf(xOffsetLE, SI.METER)).doubleValue(SI.METER),
 				0.0
 				);
+		
 		seriesEquivalentWingTopView.add(
-				Main.getTheAircraft().getWing().getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER),
-				Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER)
+				Main.getTheAircraft().getWing().getDiscretizedXle().get(0)
+					.plus(Amount.valueOf(xOffsetLE, SI.METER))
+					.plus(equivalentWingSemispan
+						.times(Math.tan(equivalentWingSweepLE.doubleValue(SI.RADIAN)))).doubleValue(SI.METER),
+				equivalentWingSemispan.doubleValue(SI.METER)
 				);
+		
 		seriesEquivalentWingTopView.add(
-				Main.getTheAircraft().getWing().getDiscretizedXle().get(nSec - 1).plus(
-						Main.getTheAircraft().getWing().getPanels().get(nPanels - 1).getChordTip()
-						).doubleValue(SI.METER),
-				Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER)
+				Main.getTheAircraft().getWing().getDiscretizedXle().get(0)
+					.plus(Amount.valueOf(xOffsetLE, SI.METER))
+					.plus(equivalentWingSemispan
+						.times(Math.tan(equivalentWingSweepLE.doubleValue(SI.RADIAN))))
+					.plus(Main.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getChordTip()).doubleValue(SI.METER),
+				equivalentWingSemispan.doubleValue(SI.METER)
 				);
+		
 		seriesEquivalentWingTopView.add(
-				Main.getTheAircraft().getWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
-				- Main.getTheAircraft().getWing().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordTE(),
+				Main.getTheAircraft().getWing().getDiscretizedXle().get(0)
+					.plus(Main.getTheAircraft().getWing().getDiscretizedChords().get(0))
+					.plus(Amount.valueOf(xOffsetTE, SI.METER)).doubleValue(SI.METER),
 				0.0
 				);
+		
 		seriesEquivalentWingTopView.add(
-				Main.getTheAircraft().getWing().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE(),
+				Main.getTheAircraft().getWing().getDiscretizedXle().get(0)
+					.plus(Amount.valueOf(xOffsetLE, SI.METER)).doubleValue(SI.METER),
 				0.0
 				);
+
+//		XYSeries seriesEquivalentWingTopView = new XYSeries("Equivalent Wing", false);
+//		seriesEquivalentWingTopView.add(
+//				Main.getTheAircraft().getWing().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE(),
+//				0.0
+//				);
+//		seriesEquivalentWingTopView.add(
+//				Main.getTheAircraft().getWing().getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER),
+//				Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER)
+//				);
+//		seriesEquivalentWingTopView.add(
+//				Main.getTheAircraft().getWing().getDiscretizedXle().get(nSec - 1).plus(
+//						Main.getTheAircraft().getWing().getPanels().get(nPanels - 1).getChordTip()
+//						).doubleValue(SI.METER),
+//				Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER)
+//				);
+//		seriesEquivalentWingTopView.add(
+//				Main.getTheAircraft().getWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+//				- Main.getTheAircraft().getWing().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordTE(),
+//				0.0
+//				);
+//		seriesEquivalentWingTopView.add(
+//				Main.getTheAircraft().getWing().getEquivalentWing().getRealWingDimensionlessXOffsetRootChordLE(),
+//				0.0
+//				);
 		
 		XYSeries seriesMeanAerodinamicChordView = new XYSeries("M.A.C.", false);
 		seriesMeanAerodinamicChordView.add(
