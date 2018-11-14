@@ -490,6 +490,73 @@ public class MyXMLReaderUtils {
 			return null;
 		}
 	}
+
+	/**
+	 * Get the first occurrence of an attribute for a given XPath search string
+	 * into a _node_
+	 *
+	 * @author Agostino De Marco
+	 * @param node to start searching
+	 * @param path to node where attribute is searched for
+	 * @param attribute label
+	 * @return property value
+	 */	
+	public static String getXMLAttributeByPath(Node node, String path, String attribute) {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(node, true);
+			doc.appendChild(importedNode);
+			
+			List<String> attributes = MyXMLReaderUtils.getXMLPropertiesByPath(doc, path+"/@"+ attribute);
+					
+			System.out.println("getXMLAttributeByPath :: attributes \""+ attribute +"\" found: " + attributes.size());
+			
+			System.out.println("props[0] " + attributes.get(0));
+			if (attributes.size() == 0)
+				return null;
+			else
+				return attributes.get(0);
+			
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Get a list of occurrences of an attribute for a given XPath search string
+	 * into a _node_
+	 *
+	 * @author Agostino De Marco
+	 * @param node to start searching
+	 * @param path to node where attribute is searched for
+	 * @param attribute label
+	 * @return list of attribute values
+	 */	
+	public static List<String> getXMLAttributesByPath(Node node, String path, String attribute) {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(node, true);
+			doc.appendChild(importedNode);
+			
+			List<String> attributes = MyXMLReaderUtils.getXMLPropertiesByPath(doc, path+"/@"+ attribute);
+					
+			System.out.println("getXMLAttributeByPath :: attributes \""+ attribute +"\" found: " + attributes.size());
+			return attributes;
+			
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	public static NodeList getXMLNodeListByPath(Document doc, String expression) {
 		try {
@@ -565,7 +632,6 @@ public class MyXMLReaderUtils {
 			return list_elements;
 
 		} catch (XPathExpressionException ex1) {
-
 			ex1.printStackTrace();
 			return null; // ??
 		}

@@ -165,7 +165,22 @@ public class JPADXmlReader {
 			return null;
 		}		
 	}
-	
+
+	/*
+	 * Search all occurrences of a given attribute via XPath
+	 * @param path       the XPath expression pointing to the XML tag
+	 * @param sttribute  the attribute name
+	 * @return           a list of strings; null if nothing found
+	 */
+	public List<String> getXMLAttributesByPath(String path, String attribute) {
+		if (this.isStatusOK()) {
+			return MyXMLReaderUtils
+					.getXMLPropertiesByPath(_xmlDoc, _xpath, path + "/@" + attribute);
+		} else {
+			return null;
+		}		
+	}
+
 	/*
 	 * Search first occurrence of a given expression via XPath
 	 * @param expression  the XPath expression
@@ -193,7 +208,7 @@ public class JPADXmlReader {
 			return null;
 		}		
 	}
-	
+
 	/*
 	 * Get the quantity from XML path; unit attribute is mandatory; if search fails return null
 	 * <p>
@@ -483,7 +498,7 @@ public class JPADXmlReader {
 		String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
 
 		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/@unit");
-		
+
 		List<Amount<T>> outputList = new ArrayList<Amount<T>>();
 		inputString = inputString.trim();
 
@@ -503,9 +518,9 @@ public class JPADXmlReader {
 		arraysString = inputString.split(",");
 
 		for(int i=0; i<arraysString.length; i++){
-			
+
 			Amount<?> tempAmount = null;
-			
+
 			if(unitStr.startsWith("1/", 0)) {
 				Double value = Double.parseDouble(arraysString[i].trim());
 				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr).inverse());
@@ -514,7 +529,7 @@ public class JPADXmlReader {
 				Double value = Double.parseDouble(arraysString[i].trim());
 				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
 			}
-			
+
 			outputList.add((Amount<T>) tempAmount);
 
 		}
@@ -527,7 +542,7 @@ public class JPADXmlReader {
 		String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
 
 		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/@unit");
-		
+
 		List<Amount<?>> outputList = new ArrayList<Amount<?>>();
 		inputString = inputString.trim();
 
@@ -547,9 +562,9 @@ public class JPADXmlReader {
 		arraysString = inputString.split(",");
 
 		for(int i=0; i<arraysString.length; i++){
-			
+
 			Amount<?> tempAmount = null;
-			
+
 			if(unitStr.startsWith("1/", 0)) {
 				Double value = Double.parseDouble(arraysString[i].trim());
 				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr.substring(2)).inverse());
@@ -558,13 +573,13 @@ public class JPADXmlReader {
 				Double value = Double.parseDouble(arraysString[i].trim());
 				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
 			}
-			
+
 			outputList.add((Amount<?>) tempAmount);
 
 		}
 		return outputList;
 	}
-	
+
 	public Document getXmlDoc() {
 		return _xmlDoc;
 	}
