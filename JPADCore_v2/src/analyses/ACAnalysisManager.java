@@ -1363,13 +1363,10 @@ public class ACAnalysisManager {
 		// Maximum cruise TAS
 		_vMaxCruise = Amount.valueOf(
 				_theAnalysisManagerInterface.getTheOperatingConditions().getMachCruise() * 
-				OperatingConditions.getAtmosphere(
-						_theAnalysisManagerInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)).getSpeedOfSound(), 
+				_theAnalysisManagerInterface.getTheOperatingConditions().getAtmosphereCruise().getSpeedOfSound(), 
 				SI.METERS_PER_SECOND);
 		_vMaxCruiseEAS = _vMaxCruise.
-				divide(Math.sqrt(
-						OperatingConditions.getAtmosphere(
-								_theAnalysisManagerInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)).getDensityRatio()));
+				divide(Math.sqrt(_theAnalysisManagerInterface.getTheOperatingConditions().getAtmosphereCruise().getDensityRatio()));
 
 		_vOptimumCruise = Amount.valueOf(_theAnalysisManagerInterface.getTheOperatingConditions().getMachCruise()
 				*AtmosphereCalc.getSpeedOfSound(

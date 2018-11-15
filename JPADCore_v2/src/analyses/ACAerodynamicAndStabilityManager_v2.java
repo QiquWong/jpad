@@ -3,7 +3,6 @@ package analyses;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,45 +16,10 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
-import analyses.ACAerodynamicAndStabilityManager.CalcLongitudinalStability;
-import analyses.ACAerodynamicAndStabilityManager.CalcSideForceCoefficient;
-import analyses.ACAerodynamicAndStabilityManager.CalcTotalLiftCoefficient;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlpha0L;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlphaStall;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcAlphaStar;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCD0;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCDAtAlpha;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCDAtAlphaHighLift;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCDInduced;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCDWave;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCL0;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLAlpha;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLAtAlpha;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLAtAlphaHighLift;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLStar;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLmax;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCMAlpha;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCMAtAlpha;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCMAtAlphaHighLift;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCMac;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcDragDistributions;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcHighLiftCurve;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcHighLiftDevicesEffects;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcHighLiftMomentCurve;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcHighLiftPolarCurve;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcLiftCurve;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcLiftDistributions;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMachCr;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentCurve;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentDistribution;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcOswaldFactor;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcPolar;
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcXAC;
 import analyses.nacelles.NacelleAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
-import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
@@ -2036,38 +2000,30 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		_downwashGradientMap = new HashMap<>();
 		_downwashAngleMap = new HashMap<>();
 
-		// TODO: THESE HAVE TO BE DEFINED LOALLY WITHIN THE METHOD --> (MANUELA)
-		//		_verticalDistanceZeroLiftDirectionWingHTailVariable = new HashMap<>();
-		//		_discretizedWingAirfoilsCl = new ArrayList<List<Double>>();
-		//		_discretizedWingAirfoilsCd = new ArrayList<List<Double>>();
-		//		_discretizedWingAirfoilsCm = new ArrayList<List<Double>>();
-		//		_discretizedHTailAirfoilsCl = new ArrayList<List<Double>>();
-		//		_discretizedHTailAirfoilsCd = new ArrayList<List<Double>>();
-
 		switch (_theAerodynamicBuilderInterface.getCurrentCondition()) {
 		case TAKE_OFF:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachTakeOff();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeTakeOff();
-			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentTakeOff();
-			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaCurrentTakeOff();
+			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaTakeOff();
+			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaTakeOff();
 			break;
 		case CLIMB:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachClimb();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeClimb();
-			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentClimb();
-			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaCurrentClimb();
+			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaClimb();
+			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaClimb();
 			break;
 		case CRUISE:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachCruise();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeCruise();
-			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise();
-			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaCurrentCruise();
+			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCruise();
+			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaCruise();
 			break;
 		case LANDING:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachLanding();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeLanding();
-			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentLanding();
-			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaCurrentLanding();
+			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaLanding();
+			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaLanding();
 			break;
 		default:
 			break;
@@ -2145,8 +2101,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				+ _theAerodynamicBuilderInterface.getTheAircraft().getCanard().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
 				SI.METER
 				);
-
-		// TODO: CONTINUE
 
 
 	}
@@ -2428,7 +2382,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		
 		if(_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears() != null) {
 
-				ACAerodynamicAndStabilityManagerUtils.calculateLandingGearDataSemiempirical(this);
+				calculateLandingGearData();
 		}
 
 	}
@@ -3450,7 +3404,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		return _deltaCDZeroLandingGear;
 	}
 
-	public void set_deltaCDZeroLandingGear(Double _deltaCDZeroLandingGear) {
+	public void setDeltaCDZeroLandingGear(Double _deltaCDZeroLandingGear) {
 		this._deltaCDZeroLandingGear = _deltaCDZeroLandingGear;
 	}
 
@@ -3458,7 +3412,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		return _deltaCDZeroFlap;
 	}
 
-	public void set_deltaCDZeroFlap(Double _deltaCDZeroFlap) {
+	public void setDeltaCDZeroFlap(Double _deltaCDZeroFlap) {
 		this._deltaCDZeroFlap = _deltaCDZeroFlap;
 	}
 
@@ -3466,7 +3420,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		return _deltaCLZeroFlap;
 	}
 
-	public void set_deltaCLZeroFlap(Double _deltaCLZeroFlap) {
+	public void setDeltaCLZeroFlap(Double _deltaCLZeroFlap) {
 		this._deltaCLZeroFlap = _deltaCLZeroFlap;
 	}
 

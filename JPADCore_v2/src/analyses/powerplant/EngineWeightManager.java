@@ -72,9 +72,9 @@ public class EngineWeightManager {
 		_totalMassEstimated = Amount.valueOf(0., SI.KILOGRAM);
 		_totalMassReference = theAircraft.getTheAnalysisManager().getTheWeights().getPowerPlantReferenceMass();
 
-		theAircraft.getPowerPlant().getEngineList().stream().forEach(eng -> {
-			calculateMass(theAircraft, theAircraft.getPowerPlant().getEngineType(), methodsMapWeights);
-		});
+		for(int i=0; i<theAircraft.getPowerPlant().getEngineNumber(); i++)
+			calculateMass(theAircraft, theAircraft.getPowerPlant().getEngineType().get(i), methodsMapWeights);
+		
 		_totalMassMap.put(
 				methodsMapWeights.get(ComponentEnum.POWER_PLANT), 
 				Amount.valueOf(
