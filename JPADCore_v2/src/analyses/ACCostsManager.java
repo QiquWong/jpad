@@ -796,30 +796,36 @@ public class ACCostsManager {
 		
 		if(calculateEnginePriceString.equalsIgnoreCase("TRUE")){
 			if(theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOFAN) 
-					|| theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOJET))
-			enginePrice = Amount.valueOf(
-					CostsCalcUtils.calcSingleEngineCostSforza(
-					theAircraft.getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE), 
-					theAircraft.getPowerPlant().getTurbofanEngineDatabaseReader().getSFC(
-							theOperatingConditions.getMachCruise(), 
-							theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
-							theAircraft.getPowerPlant().getTurbofanEngineDatabaseReader().getThrustRatio(
-														theOperatingConditions.getMachCruise(),
-														theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-														theAircraft.getPowerPlant().getEngineList().get(0).getBPR(), 
-														EngineOperatingConditionEnum.CRUISE
-														), 
-							theAircraft.getPowerPlant().getEngineList().get(0).getBPR(), 
-							EngineOperatingConditionEnum.CRUISE)
-							),
-					Currency.USD
-					);
-			else if(theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP) 
-					|| theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)) {
-				
-				// TODO : (for Vincenzo) IMPLEMENT THE METHOD FOR TURBOPROP ... 
-				
+					|| theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOJET)) {
+				List<Amount<Money>> enginePriceList = new ArrayList<>();
+				for(int i=0; i<theAircraft.getPowerPlant().getEngineNumber(); i++) {
+					enginePriceList.add(
+							Amount.valueOf(
+									CostsCalcUtils.calcSingleEngineCostSforza(
+											theAircraft.getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE), 
+											theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(i).getSfc(
+													theOperatingConditions.getMachCruise(),
+													theOperatingConditions.getAltitudeCruise(),
+													theOperatingConditions.getDeltaTemperatureCruise(),
+													theOperatingConditions.getThrottleCruise(),
+													EngineOperatingConditionEnum.CRUISE
+													)
+											),
+									Currency.USD
+									)
+							);
+				}
+				enginePrice = Amount.valueOf(
+						enginePriceList.stream().mapToDouble(ep -> ep.doubleValue(Currency.USD)).sum(),
+						Currency.USD
+						);
 			}
+		else if(theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP) 
+				|| theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)) {
+
+			// TODO : (for Vincenzo) IMPLEMENT THE METHOD FOR TURBOPROP ... 
+
+		}
 					
 		}
 		else{
@@ -935,7 +941,7 @@ public class ACCostsManager {
 				.setEmissionsChargesHC(emissionChargesHC)
 				.setAirframeLabourRate(airframeLabourRate)
 				.setEngineLabourRate(engineLabourRate)
-				.setEnginePrice(enginePrice)
+				.setEnginesPrice(enginePrice)
 				.build();
 		
 		ACCostsManager theCostsManager = new ACCostsManager();
@@ -987,14 +993,11 @@ public class ACCostsManager {
 				
 		_airframeCost = 
 				_theCostsBuilderInterface.getAircraftPrice()
-				.minus(_theCostsBuilderInterface.getEnginePrice()
-						.times(_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber())
-						);
+				.minus(_theCostsBuilderInterface.getEnginesPrice());
 		
 		_totalInvestment = CostsCalcUtils.calcTotalInvestments(
 				_airframeCost,
-				_theCostsBuilderInterface.getEnginePrice(),
-				_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber(),
+				_theCostsBuilderInterface.getEnginesPrice(),
 				_theCostsBuilderInterface.getAirframeRelativeSparesCosts(),
 				_theCostsBuilderInterface.getEnginesRelativeSparesCosts()
 				);
@@ -2082,8 +2085,7 @@ public class ACCostsManager {
 			_materialAirframeMaintenanceCharges.put(MethodEnum.ATA, 
 					CostsCalcUtils.calcDOCMaterialAirframeMaintenanceATA(
 							_theCostsBuilderInterface.getAircraftPrice(),
-							_theCostsBuilderInterface.getEnginePrice(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber(),
+							_theCostsBuilderInterface.getEnginesPrice(),
 							_theCostsBuilderInterface.getFlightTime(),
 							_blockTime,
 							_theCostsBuilderInterface.getRange())
@@ -2096,44 +2098,61 @@ public class ACCostsManager {
 							_materialAirframeMaintenanceCharges.get(MethodEnum.ATA).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE),
 							MyUnits.USD_PER_NAUTICAL_MILE)
 							);
-			
+
 			// ENGINE: Labour cost
-			if(_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN){
-			_labourEngineMaintenanceCharges.put(MethodEnum.ATA, 
-					CostsCalcUtils.calcDOCLabourEngineMaintenanceATA(
-							_theCostsBuilderInterface.getAirframeLabourRate(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber(),
-							_theCostsBuilderInterface.getFlightTime(),
-							_blockTime,
-							_theCostsBuilderInterface.getRange())
+			for (int i=0; i<_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber(); i++) {
+				
+				List<Amount<?>> labourEngineMaintenanceChargesList = new ArrayList<>();
+				Amount<?> labourEngineMaintenanceCharges = Amount.valueOf(0.0, MyUnits.USD_PER_NAUTICAL_MILE);
+				
+				if(_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType().get(i) == EngineTypeEnum.TURBOFAN
+						|| _theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType().get(i) == EngineTypeEnum.TURBOJET){
+					labourEngineMaintenanceChargesList.add( 
+							CostsCalcUtils.calcDOCLabourEngineMaintenanceATA(
+									_theCostsBuilderInterface.getAirframeLabourRate(),
+									_theCostsBuilderInterface.getAircraft().getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE),
+									_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType().get(i),
+									_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber(),
+									_theCostsBuilderInterface.getFlightTime(),
+									_blockTime,
+									_theCostsBuilderInterface.getRange())
 							);
-			}
-			else if(_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP){
-				_labourEngineMaintenanceCharges.put(MethodEnum.ATA, 
-						CostsCalcUtils.calcDOCLabourEngineMaintenanceATA(
-								_theCostsBuilderInterface.getAirframeLabourRate(),
-								_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total().doubleValue(NonSI.HORSEPOWER),
-								_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
-								_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber(),
-								_theCostsBuilderInterface.getFlightTime(),
-								_blockTime,
-								_theCostsBuilderInterface.getRange())
-								);
+				}
+				else if(_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType().get(i) == EngineTypeEnum.TURBOPROP
+						|| _theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType().get(i) == EngineTypeEnum.PISTON){
+					labourEngineMaintenanceChargesList.add( 
+							CostsCalcUtils.calcDOCLabourEngineMaintenanceATA(
+									_theCostsBuilderInterface.getAirframeLabourRate(),
+									_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total().doubleValue(NonSI.HORSEPOWER),
+									_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType().get(i),
+									_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber(),
+									_theCostsBuilderInterface.getFlightTime(),
+									_blockTime,
+									_theCostsBuilderInterface.getRange())
+							);
+				}
+				
+				labourEngineMaintenanceCharges = Amount.valueOf(
+						labourEngineMaintenanceChargesList.stream().mapToDouble(charges -> charges.doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)).sum(),
+						MyUnits.USD_PER_NAUTICAL_MILE
+						);
+				
+				_labourEngineMaintenanceCharges.put(
+						MethodEnum.ATA,
+						labourEngineMaintenanceCharges
+						);
 				
 			}
-			
 			// ENGINE: Material cost
 			_materialEngineMaintenanceCharges.put(MethodEnum.ATA, 
 					CostsCalcUtils.calcDOCMaterialEngineMaintenanceATA(
-							_theCostsBuilderInterface.getEnginePrice(),
+							_theCostsBuilderInterface.getEnginesPrice(),
 							_theCostsBuilderInterface.getFlightTime(),
 							_blockTime,
 							_theCostsBuilderInterface.getRange(),
-							_theCostsBuilderInterface.getOperatingConditions().getMachCruise(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber())
-							);
+							_theCostsBuilderInterface.getOperatingConditions().getMachCruise()
+							)
+					);
 			
 			// ENGINE maintenance cost
 			_engineMaintenanceCharges.put(MethodEnum.ATA, 
