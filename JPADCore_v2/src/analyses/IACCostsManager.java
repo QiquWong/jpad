@@ -57,7 +57,7 @@ public interface IACCostsManager {
 	
 	Amount<?> getAirframeLabourRate();
 	Amount<?> getEngineLabourRate();
-	Amount<Money> getEnginePrice();
+	Amount<Money> getEnginesPrice();
 	
 	Map<CostsEnum, MethodEnum> getTaskList();
 	List<CostsPlotEnum> getPlotList();

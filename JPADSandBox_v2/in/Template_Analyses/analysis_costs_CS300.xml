@@ -59,7 +59,7 @@
 					<maintenance>
 						<airframe_labour_rate unit="USD/h"></airframe_labour_rate> <!-- Default: 40 $/hr --> 
 						<engine_labour_rate unit="USD/h"></engine_labour_rate> <!-- Default: 40 $/hr -->					
-						<engine_price calculate="FALSE" method="SFORZA" unit="USD">10000000</engine_price>
+						<engine_price calculate="FALSE" method="SFORZA" unit="USD">20000000</engine_price> <!-- sum of the price of all engines -->
 					</maintenance>
 				</doc>
 			<!-- add ioc tags when available-->

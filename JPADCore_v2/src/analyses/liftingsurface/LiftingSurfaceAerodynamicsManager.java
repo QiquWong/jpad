@@ -216,22 +216,22 @@ public class LiftingSurfaceAerodynamicsManager {
 		case TAKE_OFF:
 			this._currentMachNumber = this._theOperatingConditions.getMachTakeOff();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeTakeOff();
-			this._currentAlpha = this._theOperatingConditions.getAlphaCurrentTakeOff();
+			this._currentAlpha = this._theOperatingConditions.getAlphaTakeOff();
 			break;
 		case CLIMB:
 			this._currentMachNumber = this._theOperatingConditions.getMachClimb();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeClimb();
-			this._currentAlpha = this._theOperatingConditions.getAlphaCurrentClimb();
+			this._currentAlpha = this._theOperatingConditions.getAlphaClimb();
 			break;
 		case CRUISE:
 			this._currentMachNumber = this._theOperatingConditions.getMachCruise();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeCruise();
-			this._currentAlpha = this._theOperatingConditions.getAlphaCurrentCruise();
+			this._currentAlpha = this._theOperatingConditions.getAlphaCruise();
 			break;
 		case LANDING:
 			this._currentMachNumber = this._theOperatingConditions.getMachLanding();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeLanding();
-			this._currentAlpha = this._theOperatingConditions.getAlphaCurrentLanding();
+			this._currentAlpha = this._theOperatingConditions.getAlphaLanding();
 			break;
 		default:
 			break;
