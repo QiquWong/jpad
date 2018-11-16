@@ -2623,8 +2623,21 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				break;
 			}
 		}
+		
+		//LATERAL STABILITY
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LATERAL_STABILITY)) {
+
+			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.LATERAL_STABILITY)) {
+			case FROM_BALANCE_EQUATION:
+				ACAerodynamicAndStabilityManagerUtils.calculateLateralStability(this);
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
+	
 	public void calculate(String resultsFolderPath) {
 		
 		String aerodynamicAndStabilityFolderPath = JPADStaticWriteUtils.createNewFolder(
@@ -3492,6 +3505,86 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 	public void set_deltaCDZeroCooling(Double _deltaCDZeroCooling) {
 		this._deltaCDZeroCooling = _deltaCDZeroCooling;
+	}
+
+	public Amount<?> get_cRollBetaWingBody() {
+		return _cRollBetaWingBody;
+	}
+
+	public void set_cRollBetaWingBody(Amount<?> _cRollBetaWingBody) {
+		this._cRollBetaWingBody = _cRollBetaWingBody;
+	}
+
+	public Amount<?> get_cRollDeltaA() {
+		return _cRollDeltaA;
+	}
+
+	public void set_cRollDeltaA(Amount<?> _cRollDeltaA) {
+		this._cRollDeltaA = _cRollDeltaA;
+	}
+
+	public Map<Double, Amount<?>> get_cRollDeltaR() {
+		return _cRollDeltaR;
+	}
+
+	public void set_cRollDeltaR(Map<Double, Amount<?>> _cRollDeltaR) {
+		this._cRollDeltaR = _cRollDeltaR;
+	}
+
+	public Amount<?> get_cRollpWingBody() {
+		return _cRollpWingBody;
+	}
+
+	public void set_cRollpWingBody(Amount<?> _cRollpWingBody) {
+		this._cRollpWingBody = _cRollpWingBody;
+	}
+
+	public Amount<?> get_cRollpHorizontal() {
+		return _cRollpHorizontal;
+	}
+
+	public void set_cRollpHorizontal(Amount<?> _cRollpHorizontal) {
+		this._cRollpHorizontal = _cRollpHorizontal;
+	}
+
+	public Amount<?> get_cRollpVertical() {
+		return _cRollpVertical;
+	}
+
+	public void set_cRollpVertical(Amount<?> _cRollpVertical) {
+		this._cRollpVertical = _cRollpVertical;
+	}
+
+	public Amount<?> get_cRollpTotal() {
+		return _cRollpTotal;
+	}
+
+	public void set_cRollpTotal(Amount<?> _cRollpTotal) {
+		this._cRollpTotal = _cRollpTotal;
+	}
+
+	public Amount<?> get_cRollrWing() {
+		return _cRollrWing;
+	}
+
+	public void set_cRollrWing(Amount<?> _cRollrWing) {
+		this._cRollrWing = _cRollrWing;
+	}
+
+	public Map<Double, Amount<?>> get_cRollrVertical() {
+		return _cRollrVertical;
+	}
+
+	public void set_cRollrVertical(Map<Double, Amount<?>> _cRollrVertical) {
+		this._cRollrVertical = _cRollrVertical;
+	}
+
+	public Map<Double, Amount<?>> get_cRollrTotal() {
+		return _cRollrTotal;
+	}
+
+	public void set_cRollrTotal(Map<Double, Amount<?>> _cRollrTotal) {
+		this._cRollrTotal = _cRollrTotal;
 	}
 
 }
