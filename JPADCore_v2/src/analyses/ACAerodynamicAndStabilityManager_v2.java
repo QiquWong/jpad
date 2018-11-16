@@ -151,12 +151,12 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Map<Double, Double> _cLZeroEquilibriumMap; // xcg, CL_zero_e
 	private Map<Double, Amount<?>> _cMAlphaEquilibriumMap; // xcg, CM_alpha_e
 	private Map<Double, Double> _cDZeroTotalEquilibriumMap; // xcg, CD_zero_e
-	private Double _deltaCDZeroLandingGear;
-	private Double _deltaCDZeroExcrescences;
-	private Double _deltaCDZeroInterferences;
-	private Double _deltaCDZeroCooling;
-	private Double _deltaCDZeroFlap;
-	private Double _deltaCLZeroFlap;
+	private Double _deltaCDZeroLandingGear = 0.0;
+	private Double _deltaCDZeroExcrescences = 0.0;
+	private Double _deltaCDZeroInterferences = 0.0;
+	private Double _deltaCDZeroCooling = 0.0;
+	private Double _deltaCDZeroFlap = 0.0;
+	private Double _deltaCLZeroFlap = 0.0;
 
 	// lateral static stability
 	private Amount<?> _cRollBetaWingBody;
@@ -1161,6 +1161,10 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		double deltaCD0LandingGears = 0.0;
 		double deltaCD0Excrescences = 0.0;
 		double deltaCD0Interferences = 0.0;
+		double kCD0Cooling = 1.0;
+		double kCD0LandingGears = 1.0;
+		double kCD0Excrescences = 1.0;
+		double kCD0Interferences = 1.0;
 		double totalDragCalibrationCLScaleFactor = 1.0;
 		double totalDragCalibrationCDScaleFactor = 1.0;
 
@@ -1326,6 +1330,13 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					deltaCD0LandingGears = 0.0;
 				}
 
+
+				String aircraftKCD0LandingGearString = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//aircraft/total_drag_polar/delta_CD0_landing_gears/@kFactor");
+				
+				kCD0Excrescences = Double.valueOf(aircraftKCD0LandingGearString);
 			}
 			
 			//Excrescences
@@ -1353,6 +1364,12 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					deltaCD0Excrescences = 0.0;
 				}
 
+				String aircraftKCD0ExcrescencesString = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//aircraft/total_drag_polar/delta_CD0_excrescences/@kFactor");
+				
+				kCD0Excrescences = Double.valueOf(aircraftKCD0ExcrescencesString);
 			}
 			
 			//Interferences 
@@ -1380,6 +1397,13 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					deltaCD0Interferences = 0.0;
 				}
 
+				String aircraftKCD0InterferencesString = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//aircraft/total_drag_polar/delta_CD0_Interferences/@kFactor");
+				
+				kCD0Excrescences = Double.valueOf(aircraftKCD0InterferencesString);
+				
 			}
 			
 			//COOLING
@@ -1407,6 +1431,13 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					deltaCD0Cooling = 0.0;
 				}
 
+				String aircraftKCD0CoolingString = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//aircraft/total_drag_polar/delta_CD0_Cooling/@kFactor");
+				
+				kCD0Excrescences = Double.valueOf(aircraftKCD0CoolingString);
+				
 			}
 			
 
