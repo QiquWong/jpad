@@ -9,6 +9,7 @@ public enum PerformanceEnum {
 	LANDING,
 	PAYLOAD_RANGE,
 	V_n_DIAGRAM,
+	NOISE_TRAJECTORIES,
 	MISSION_PROFILE
 	
 }

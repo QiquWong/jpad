@@ -101,14 +101,14 @@ public class LandingNoiseTrajectoryCalc {
 	private List<Amount<Duration>> timeList;
 	private List<Amount<Mass>> fuelUsedList;
 	private List<Amount<Force>> weightList;
-	
+
 	private final PrintStream originalOut = System.out;
 	private PrintStream filterStream = new PrintStream(new OutputStream() {
 		public void write(int b) {
 			// write nothing
 		}
 	});
-	
+
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
 
@@ -135,7 +135,7 @@ public class LandingNoiseTrajectoryCalc {
 			) {
 
 		this.createCSV = createCSV;
-		
+
 		// Required data
 		this.aspectRatio = aspectRatio;
 		this.surface = surface;
@@ -162,7 +162,7 @@ public class LandingNoiseTrajectoryCalc {
 		this.cLmaxLND = cLmaxLND;
 		this.cLalphaLND = cLalphaLND;
 		this.cL0LND = cLZeroLND;
-		
+
 		// Reference velocities definition
 		vSLanding = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
@@ -191,7 +191,7 @@ public class LandingNoiseTrajectoryCalc {
 		this.timeBreakPoints = new ArrayList<Double>();
 		this.gammaDot = new ArrayList<Double>();
 		this.thrust = new ArrayList<Amount<Force>>();
-		
+
 		// Output maps initialization
 		this.timeList = new ArrayList<>();
 		this.speedList = new ArrayList<>();
@@ -216,7 +216,7 @@ public class LandingNoiseTrajectoryCalc {
 		this.verticalDistanceList = new ArrayList<>();
 		this.fuelUsedList = new ArrayList<>();
 		this.weightList = new ArrayList<>();
-		
+
 	}
 	//-------------------------------------------------------------------------------------
 	// METHODS:
@@ -235,7 +235,7 @@ public class LandingNoiseTrajectoryCalc {
 		timeBreakPoints.clear();
 		gammaDot.clear();
 		thrust.clear();
-		
+
 		// values initialization
 		double cLInitial = LiftCalc.calculateLiftCoeff(
 				maxLandingMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0.to(SI.METERS_PER_SQUARE_SECOND)).getEstimatedValue()
@@ -247,14 +247,14 @@ public class LandingNoiseTrajectoryCalc {
 		alpha.add(
 				Amount.valueOf(
 						((cLInitial - cL0LND)
-						/ cLalphaLND.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
+								/ cLalphaLND.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
 						+ iw.doubleValue(NonSI.DEGREE_ANGLE),
 						NonSI.DEGREE_ANGLE
 						)
 				);
 		gammaDot.add(0.0);
 		time.add(Amount.valueOf(0.0, SI.SECOND));
-		
+
 		tObstacle = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
 		tTouchDown = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
 		tZeroGamma = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
@@ -275,294 +275,294 @@ public class LandingNoiseTrajectoryCalc {
 		System.out.println("\tRUNNING SIMULATION ...\n\n");
 
 
-//		int i=0;
-//		Amount<Duration> newFlareDuration = Amount.valueOf(0.0, SI.SECOND);
-//		dtFlare = Amount.valueOf(3.0, SI.SECOND); // First guess value
-//		
-//		altitudeAtFlareEnding = intialAltitude;  // Initialization at an impossible value
+		//		int i=0;
+		//		Amount<Duration> newFlareDuration = Amount.valueOf(0.0, SI.SECOND);
+		//		dtFlare = Amount.valueOf(3.0, SI.SECOND); // First guess value
+		//		
+		//		altitudeAtFlareEnding = intialAltitude;  // Initialization at an impossible value
 
-//		while (Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 0.0) >= 1e-1) {
-//
-//			if(i >= 1) 
-//				dtFlare = newFlareDuration;
+		//		while (Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 0.0) >= 1e-1) {
+		//
+		//			if(i >= 1) 
+		//				dtFlare = newFlareDuration;
 
-			initialize();
+		initialize();
 
-			theIntegrator = new HighamHall54Integrator(
-					1e-10,
-					1,
-					1e-12,
-					1e-12
-					);
-			ode = new DynamicsEquationsLandingNoiseTrajectory();
+		theIntegrator = new HighamHall54Integrator(
+				1e-10,
+				1,
+				1e-12,
+				1e-12
+				);
+		ode = new DynamicsEquationsLandingNoiseTrajectory();
 
-			EventHandler ehCheckStop = new EventHandler() {
+		EventHandler ehCheckStop = new EventHandler() {
 
-				@Override
-				public void init(double t0, double[] y0, double t) {
+			@Override
+			public void init(double t0, double[] y0, double t) {
 
-				}
+			}
 
-				@Override
-				public void resetState(double t, double[] y) {
+			@Override
+			public void resetState(double t, double[] y) {
 
-				}
+			}
 
-				// Discrete event, switching function
-				@Override
-				public double g(double t, double[] x) {
-					double speed = x[1];
-					return speed - 0.0;
-				}
+			// Discrete event, switching function
+			@Override
+			public double g(double t, double[] x) {
+				double speed = x[1];
+				return speed - 0.0;
+			}
 
-				@Override
-				public Action eventOccurred(double t, double[] x, boolean increasing) {
-					// Handle an event and choose what to do next.
-					System.out.println("\n\t\tEND OF GROUND ROLL PHASE");
-					System.out.println("\n\tswitching function changes sign at t = " + t);
-					System.out.println(
-							"\n\tx[0] = s = " + x[0] + " m" +
-									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
-									"\n\tx[3] = altitude = " + x[3] + " m"
-							);
+			@Override
+			public Action eventOccurred(double t, double[] x, boolean increasing) {
+				// Handle an event and choose what to do next.
+				System.out.println("\n\t\tEND OF GROUND ROLL PHASE");
+				System.out.println("\n\tswitching function changes sign at t = " + t);
+				System.out.println(
+						"\n\tx[0] = s = " + x[0] + " m" +
+								"\n\tx[1] = V = " + x[1] + " m/s" + 
+								"\n\tx[2] = gamma = " + x[2] + " °" +
+								"\n\tx[3] = altitude = " + x[3] + " m"
+						);
 
-					timeBreakPoints.add(t);
+				timeBreakPoints.add(t);
 
-					System.out.println("\n---------------------------DONE!-------------------------------");
-					return  Action.STOP;
-				}
-			};
-			EventHandler ehCheckObstacle = new EventHandler() {
+				System.out.println("\n---------------------------DONE!-------------------------------");
+				return  Action.STOP;
+			}
+		};
+		EventHandler ehCheckObstacle = new EventHandler() {
 
-				@Override
-				public void init(double t0, double[] y0, double t) {
+			@Override
+			public void init(double t0, double[] y0, double t) {
 
-				}
+			}
 
-				@Override
-				public void resetState(double t, double[] y) {
+			@Override
+			public void resetState(double t, double[] y) {
 
-				}
+			}
 
-				// Discrete event, switching function
-				@Override
-				public double g(double t, double[] x) {
-					return x[3] - obstacle.doubleValue(SI.METER);
-				}
+			// Discrete event, switching function
+			@Override
+			public double g(double t, double[] x) {
+				return x[3] - obstacle.doubleValue(SI.METER);
+			}
 
-				@Override
-				public Action eventOccurred(double t, double[] x, boolean increasing) {
-					// Handle an event and choose what to do next.
-					System.out.println("\n\t\tEND OF DESCENT PHASE :: FLARE ROTATION");
-					System.out.println("\n\tswitching function changes sign at t = " + t);
-					System.out.println(
-							"\n\tx[0] = s = " + x[0] + " m" +
-									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
-									"\n\tx[3] = altitude = " + x[3] + " m" 
-							);
+			@Override
+			public Action eventOccurred(double t, double[] x, boolean increasing) {
+				// Handle an event and choose what to do next.
+				System.out.println("\n\t\tEND OF DESCENT PHASE :: FLARE ROTATION");
+				System.out.println("\n\tswitching function changes sign at t = " + t);
+				System.out.println(
+						"\n\tx[0] = s = " + x[0] + " m" +
+								"\n\tx[1] = V = " + x[1] + " m/s" + 
+								"\n\tx[2] = gamma = " + x[2] + " °" +
+								"\n\tx[3] = altitude = " + x[3] + " m" 
+						);
 
-					tObstacle = Amount.valueOf(t, SI.SECOND);
-					timeBreakPoints.add(t);
-					thrustAtFlareStart = 
-							Amount.valueOf( 
-									((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
-											x[1],
-											((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
-											x[2],
-											tObstacle.doubleValue(SI.SECOND),
-											x[3]
-											),
-									SI.NEWTON
-									);
-					
-					thrustFlareFunction = new MyInterpolatingFunction();
-					thrustFlareFunction.interpolateLinear(
-							new double[] {
-									tObstacle.doubleValue(SI.SECOND),
-									tObstacle.plus(dtFlare).doubleValue(SI.SECOND) 
-									},
-							new double[] {
-									thrustAtFlareStart.doubleValue(SI.NEWTON),
-									thePowerPlant.getEngineList().get(0).getT0().getEstimatedValue()
-									*((DynamicsEquationsLandingNoiseTrajectory)ode).throttleGroundIdle(vTouchDown.doubleValue(SI.METERS_PER_SECOND))
-									*thePowerPlant.getEngineNumber()
-									}
-							);
-					
-					// TODO: REMOVE
-					// alphaDotFlare = - ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha
-					//		/ dtFlare.doubleValue(SI.SECOND);
+				tObstacle = Amount.valueOf(t, SI.SECOND);
+				timeBreakPoints.add(t);
+				thrustAtFlareStart = 
+						Amount.valueOf( 
+								((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
+										x[1],
+										((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
+										x[2],
+										tObstacle.doubleValue(SI.SECOND),
+										x[3]
+										),
+								SI.NEWTON
+								);
 
-					System.out.println("\n---------------------------DONE!-------------------------------");
-					return  Action.STOP;
-				}
-			};
-			EventHandler ehCheckTouchDown = new EventHandler() {
+				thrustFlareFunction = new MyInterpolatingFunction();
+				thrustFlareFunction.interpolateLinear(
+						new double[] {
+								tObstacle.doubleValue(SI.SECOND),
+								tObstacle.plus(dtFlare).doubleValue(SI.SECOND) 
+						},
+						new double[] {
+								thrustAtFlareStart.doubleValue(SI.NEWTON),
+								thePowerPlant.getEngineList().get(0).getT0().getEstimatedValue()
+								*((DynamicsEquationsLandingNoiseTrajectory)ode).throttleGroundIdle(vTouchDown.doubleValue(SI.METERS_PER_SECOND))
+								*thePowerPlant.getEngineNumber()
+						}
+						);
 
-				@Override
-				public void init(double t0, double[] y0, double t) {
+				// TODO: REMOVE
+				// alphaDotFlare = - ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha
+				//		/ dtFlare.doubleValue(SI.SECOND);
 
-				}
+				System.out.println("\n---------------------------DONE!-------------------------------");
+				return  Action.STOP;
+			}
+		};
+		EventHandler ehCheckTouchDown = new EventHandler() {
 
-				@Override
-				public void resetState(double t, double[] y) {
+			@Override
+			public void init(double t0, double[] y0, double t) {
 
-				}
+			}
 
-				// Discrete event, switching function
-				@Override
-				public double g(double t, double[] x) {
+			@Override
+			public void resetState(double t, double[] y) {
 
-					return x[3] - 0.0;
-				}
+			}
 
-				@Override
-				public Action eventOccurred(double t, double[] x, boolean increasing) {
-					// Handle an event and choose what to do next.
-					System.out.println("\n\t\tEND OF FLARE PHASE :: TOUCH-DOWN");
-					System.out.println("\n\tswitching function changes sign at t = " + t);
-					System.out.println(
-							"\n\tx[0] = s = " + x[0] + " m" +
-									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
-									"\n\tx[3] = altitude = " + x[3] + " m" 
-							);
+			// Discrete event, switching function
+			@Override
+			public double g(double t, double[] x) {
 
-					tTouchDown = Amount.valueOf(t, SI.SECOND);
-					timeBreakPoints.add(t);
+				return x[3] - 0.0;
+			}
 
-					System.out.println("\n---------------------------DONE!-------------------------------");
-					return  Action.CONTINUE;
-				}
-			};
-			EventHandler ehCheckZeroGamma = new EventHandler() {
+			@Override
+			public Action eventOccurred(double t, double[] x, boolean increasing) {
+				// Handle an event and choose what to do next.
+				System.out.println("\n\t\tEND OF FLARE PHASE :: TOUCH-DOWN");
+				System.out.println("\n\tswitching function changes sign at t = " + t);
+				System.out.println(
+						"\n\tx[0] = s = " + x[0] + " m" +
+								"\n\tx[1] = V = " + x[1] + " m/s" + 
+								"\n\tx[2] = gamma = " + x[2] + " °" +
+								"\n\tx[3] = altitude = " + x[3] + " m" 
+						);
 
-				@Override
-				public void init(double t0, double[] y0, double t) {
+				tTouchDown = Amount.valueOf(t, SI.SECOND);
+				timeBreakPoints.add(t);
 
-				}
+				System.out.println("\n---------------------------DONE!-------------------------------");
+				return  Action.CONTINUE;
+			}
+		};
+		EventHandler ehCheckZeroGamma = new EventHandler() {
 
-				@Override
-				public void resetState(double t, double[] y) {
+			@Override
+			public void init(double t0, double[] y0, double t) {
 
-				}
+			}
 
-				// Discrete event, switching function
-				@Override
-				public double g(double t, double[] x) {
+			@Override
+			public void resetState(double t, double[] y) {
 
-					return x[2] - 0.0;
-				}
+			}
 
-				@Override
-				public Action eventOccurred(double t, double[] x, boolean increasing) {
-					// Handle an event and choose what to do next.
-					System.out.println("\n\t\tGAMMA = 0.0 DURING FLARE ROTATION");
-					System.out.println("\n\tswitching function changes sign at t = " + t);
-					System.out.println(
-							"\n\tx[0] = s = " + x[0] + " m" +
-									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
-									"\n\tx[3] = altitude = " + x[3] + " m" 
-							);
+			// Discrete event, switching function
+			@Override
+			public double g(double t, double[] x) {
 
-					tZeroGamma = Amount.valueOf(t, SI.SECOND);
-					timeBreakPoints.add(t);
-					altitudeAtFlareEnding = Amount.valueOf(x[3], SI.METER);
-					System.out.println("\nAltitude @ Flare Ending = " + altitudeAtFlareEnding);
+				return x[2] - 0.0;
+			}
 
-					System.out.println("\n---------------------------DONE!-------------------------------");
-					return  Action.STOP;
-				}
-			};
+			@Override
+			public Action eventOccurred(double t, double[] x, boolean increasing) {
+				// Handle an event and choose what to do next.
+				System.out.println("\n\t\tGAMMA = 0.0 DURING FLARE ROTATION");
+				System.out.println("\n\tswitching function changes sign at t = " + t);
+				System.out.println(
+						"\n\tx[0] = s = " + x[0] + " m" +
+								"\n\tx[1] = V = " + x[1] + " m/s" + 
+								"\n\tx[2] = gamma = " + x[2] + " °" +
+								"\n\tx[3] = altitude = " + x[3] + " m" 
+						);
 
-			theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
-			theIntegrator.addEventHandler(ehCheckZeroGamma, 1.0, 1e-3, 20);
-			theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-3, 20);
-			theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-3, 20);
+				tZeroGamma = Amount.valueOf(t, SI.SECOND);
+				timeBreakPoints.add(t);
+				altitudeAtFlareEnding = Amount.valueOf(x[3], SI.METER);
+				System.out.println("\nAltitude @ Flare Ending = " + altitudeAtFlareEnding);
 
-			// handle detailed info
-			StepHandler stepHandler = new StepHandler() {
+				System.out.println("\n---------------------------DONE!-------------------------------");
+				return  Action.STOP;
+			}
+		};
 
-				public void init(double t0, double[] x0, double t) {
-				}
+		theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
+		theIntegrator.addEventHandler(ehCheckZeroGamma, 1.0, 1e-3, 20);
+		theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-3, 20);
+		theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-3, 20);
 
-				@Override
-				public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
+		// handle detailed info
+		StepHandler stepHandler = new StepHandler() {
 
-					double   t = interpolator.getCurrentTime();
-					double[] xDot = interpolator.getInterpolatedDerivatives();
-					double[] x = interpolator.getInterpolatedState();			
+			public void init(double t0, double[] x0, double t) {
+			}
 
-					//----------------------------------------------------------------------------------------
-					// TIME:
-					LandingNoiseTrajectoryCalc.this.getTime().add(Amount.valueOf(t, SI.SECOND));
-					//----------------------------------------------------------------------------------------
-					// ALPHA:
-					LandingNoiseTrajectoryCalc.this.getAlpha().add(Amount.valueOf(
-							((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
-							NonSI.DEGREE_ANGLE)
-							);
-					//----------------------------------------------------------------------------------------
-					// GAMMA_DOT:
-					LandingNoiseTrajectoryCalc.this.getGammaDot().add(xDot[2]);
-					//----------------------------------------------------------------------------------------
-					// THRUST:
-					LandingNoiseTrajectoryCalc.this.getThrust().add(
-							Amount.valueOf(
-									((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
-											x[1],
-											((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
-											x[2],
-											t,
-											x[3]
-											), 
-									SI.NEWTON)
-							);
-				}
-			};
-			theIntegrator.addStepHandler(stepHandler);
+			@Override
+			public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
 
-			//##############################################################################################
-			// Use this handler for post-processing
-			theIntegrator.addStepHandler(new ContinuousOutputModel());
+				double   t = interpolator.getCurrentTime();
+				double[] xDot = interpolator.getInterpolatedDerivatives();
+				double[] x = interpolator.getInterpolatedState();			
 
-			//##############################################################################################
+				//----------------------------------------------------------------------------------------
+				// TIME:
+				LandingNoiseTrajectoryCalc.this.getTime().add(Amount.valueOf(t, SI.SECOND));
+				//----------------------------------------------------------------------------------------
+				// ALPHA:
+				LandingNoiseTrajectoryCalc.this.getAlpha().add(Amount.valueOf(
+						((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
+						NonSI.DEGREE_ANGLE)
+						);
+				//----------------------------------------------------------------------------------------
+				// GAMMA_DOT:
+				LandingNoiseTrajectoryCalc.this.getGammaDot().add(xDot[2]);
+				//----------------------------------------------------------------------------------------
+				// THRUST:
+				LandingNoiseTrajectoryCalc.this.getThrust().add(
+						Amount.valueOf(
+								((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
+										x[1],
+										((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
+										x[2],
+										t,
+										x[3]
+										), 
+								SI.NEWTON)
+						);
+			}
+		};
+		theIntegrator.addStepHandler(stepHandler);
 
-			double[] xAt0 = new double[] {
-					0.0,
-					vDescent.doubleValue(SI.METERS_PER_SECOND),
-					gammaDescent.doubleValue(NonSI.DEGREE_ANGLE),
-					intialAltitude.doubleValue(SI.METER)
-			}; // initial state
+		//##############################################################################################
+		// Use this handler for post-processing
+		theIntegrator.addStepHandler(new ContinuousOutputModel());
 
-			theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
+		//##############################################################################################
 
-//			if(altitudeAtFlareEnding.doubleValue(SI.METER) > 0.0) {
-//				if(altitudeAtFlareEnding.doubleValue(SI.METER) > 2.0)
-//					newFlareDuration = dtFlare.plus(Amount.valueOf(1.0, SI.SECOND));
-//				else if(altitudeAtFlareEnding.doubleValue(SI.METER) <= 2.0
-//						&& altitudeAtFlareEnding.doubleValue(SI.METER) > 0.2)
-//					newFlareDuration = dtFlare.plus(Amount.valueOf(1e-1, SI.SECOND));
-//				else if(altitudeAtFlareEnding.doubleValue(SI.METER) <= 0.2
-//						&& altitudeAtFlareEnding.doubleValue(SI.METER) > 0.1)
-//					newFlareDuration = dtFlare.plus(Amount.valueOf(1e-3, SI.SECOND));
-//			}
-//
-//			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 0.0) < 1e-1) 
-				manageOutputData(1.0, timeHistories);
-//				
-//			theIntegrator.clearEventHandlers();
-//			theIntegrator.clearStepHandlers();
-//
-//			i++;
-//		}
+		double[] xAt0 = new double[] {
+				0.0,
+				vDescent.doubleValue(SI.METERS_PER_SECOND),
+				gammaDescent.doubleValue(NonSI.DEGREE_ANGLE),
+				intialAltitude.doubleValue(SI.METER)
+		}; // initial state
+
+		theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
+
+		//			if(altitudeAtFlareEnding.doubleValue(SI.METER) > 0.0) {
+		//				if(altitudeAtFlareEnding.doubleValue(SI.METER) > 2.0)
+		//					newFlareDuration = dtFlare.plus(Amount.valueOf(1.0, SI.SECOND));
+		//				else if(altitudeAtFlareEnding.doubleValue(SI.METER) <= 2.0
+		//						&& altitudeAtFlareEnding.doubleValue(SI.METER) > 0.2)
+		//					newFlareDuration = dtFlare.plus(Amount.valueOf(1e-1, SI.SECOND));
+		//				else if(altitudeAtFlareEnding.doubleValue(SI.METER) <= 0.2
+		//						&& altitudeAtFlareEnding.doubleValue(SI.METER) > 0.1)
+		//					newFlareDuration = dtFlare.plus(Amount.valueOf(1e-3, SI.SECOND));
+		//			}
+		//
+		//			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 0.0) < 1e-1) 
+		manageOutputData(1.0, timeHistories);
+		//				
+		//			theIntegrator.clearEventHandlers();
+		//			theIntegrator.clearStepHandlers();
+		//
+		//			i++;
+		//		}
 
 		System.out.println("\n---------------------------END!!-------------------------------\n\n");
 	}
-		
+
 	/********************************************************************************************
 	 * This method allows users to fill all the maps of results related to each throttle setting.
 	 * @param dt, time discretization provided by the user
@@ -571,7 +571,7 @@ public class LandingNoiseTrajectoryCalc {
 	 * @throws InstantiationException
 	 */
 	public void manageOutputData(double dt, boolean timeHistories) {
-		
+
 		//#############################################################################
 		// Collect the array of times and associated state vector values according
 		// to the given dt and keeping the the discrete event-times (breakpoints)
@@ -597,7 +597,7 @@ public class LandingNoiseTrajectoryCalc {
 					stateDerivatives.add(cm.getInterpolatedDerivatives());
 
 					t += dt;
-                    // System.out.println("Current time: " + t);
+					// System.out.println("Current time: " + t);
 					// detect breakpoints adjusting time as appropriate
 					for(int i=0; i<timeBreakPoints.size(); i++) {
 						double t_ = timeBreakPoints.get(i);
@@ -607,7 +607,7 @@ public class LandingNoiseTrajectoryCalc {
 							t = t_;
 						}
 					}
-					
+
 				} while (t <= cm.getFinalTime());
 
 				//--------------------------------------------------------------------------------
@@ -616,14 +616,14 @@ public class LandingNoiseTrajectoryCalc {
 
 					double[] x = states.get(i);
 					double[] xDot = stateDerivatives.get(i);
-					
+
 					double alpha = ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha(
 							timeList.get(i).doubleValue(SI.SECOND),
 							x[1],
 							x[3],
 							x[2]
 							);
-					
+
 					//========================================================================================
 					// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 					//----------------------------------------------------------------------------------------
@@ -647,7 +647,7 @@ public class LandingNoiseTrajectoryCalc {
 									x[2],
 									timeList.get(i).doubleValue(SI.SECOND),
 									x[3]
-											),
+									),
 							SI.NEWTON)
 							);
 					//----------------------------------------------------------------------------------------
@@ -688,11 +688,11 @@ public class LandingNoiseTrajectoryCalc {
 										x[2],
 										timeList.get(i).doubleValue(SI.SECOND), 
 										x[3]
-												)*Math.sin(
-										Amount.valueOf(
-												alpha,
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-										),
+										)*Math.sin(
+												Amount.valueOf(
+														alpha,
+														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+												),
 								SI.NEWTON)
 								);
 						//--------------------------------------------------------------------------------
@@ -756,11 +756,11 @@ public class LandingNoiseTrajectoryCalc {
 										x[2],
 										timeList.get(i).doubleValue(SI.SECOND), 
 										x[3]
-												)*Math.cos(
-										Amount.valueOf(
-												alpha,
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-										)
+										)*Math.cos(
+												Amount.valueOf(
+														alpha,
+														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+												)
 								- ((DynamicsEquationsLandingNoiseTrajectory)ode).drag(
 										x[1],
 										alpha,
@@ -886,7 +886,7 @@ public class LandingNoiseTrajectoryCalc {
 			}
 		}
 	}
-	
+
 	/**************************************************************************************
 	 * This method allows users to plot all simulation results producing several output charts
 	 * which have time as independent variables.
@@ -895,7 +895,7 @@ public class LandingNoiseTrajectoryCalc {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public void createOutputCharts(String outputFolderPath, boolean timeHistories, UnitFormatEnum unitFormat) throws InstantiationException, IllegalAccessException {
+	public void createOutputCharts(String outputFolderPath, boolean timeHistories) throws InstantiationException, IllegalAccessException {
 
 		if(timeHistories) {
 			String simulationDetailsOutputFolder = JPADStaticWriteUtils.createNewFolder(
@@ -908,100 +908,100 @@ public class LandingNoiseTrajectoryCalc {
 
 			//.................................................................................
 			// speed v.s. time
-			if(unitFormat == UnitFormatEnum.SI)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-						MyArrayUtils.convertListOfAmountTodoubleArray(speedList),
-						0.0, null, 0.0, null,
-						"Time", "Speed", "s", "m/s",
-						simulationDetailsOutputFolder, "Speed_evolution_SI",true);
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(speedList),
+					0.0, null, 0.0, null,
+					"Time", "Speed", "s", "m/s",
+					simulationDetailsOutputFolder, "Speed_evolution_SI",true);
 
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								speedList.stream()
-								.map(x -> x.to(NonSI.KNOT))
-								.collect(Collectors.toList())
-								),
-						0.0, null, 0.0, null,
-						"Time", "Speed", "s", "kn",
-						simulationDetailsOutputFolder, "Speed_evolution_IMPERIAL",true);
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							speedList.stream()
+							.map(x -> x.to(NonSI.KNOT))
+							.collect(Collectors.toList())
+							),
+					0.0, null, 0.0, null,
+					"Time", "Speed", "s", "kn",
+					simulationDetailsOutputFolder, "Speed_evolution_IMPERIAL",true);
 
 			//.................................................................................
 			// speed v.s. ground distance
-			if(unitFormat == UnitFormatEnum.SI)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
-						MyArrayUtils.convertListOfAmountTodoubleArray(speedList),
-						0.0, null, 0.0, null,
-						"Ground Distance", "Speed", "m", "m/s",
-						simulationDetailsOutputFolder, "Speed_vs_GroundDistance_SI",true);
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								groundDistanceList.stream()
-								.map(x -> x.to(NonSI.FOOT))
-								.collect(Collectors.toList())
-								),
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								speedList.stream()
-								.map(x -> x.to(NonSI.KNOT))
-								.collect(Collectors.toList())
-								),
-						0.0, null, 0.0, null,
-						"Ground Distance", "Speed", "ft", "kn",
-						simulationDetailsOutputFolder, "Speed_vs_GroundDistance_IMPERIAL",true);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(speedList),
+					0.0, null, 0.0, null,
+					"Ground Distance", "Speed", "m", "m/s",
+					simulationDetailsOutputFolder, "Speed_vs_GroundDistance_SI",true);
+
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							groundDistanceList.stream()
+							.map(x -> x.to(NonSI.FOOT))
+							.collect(Collectors.toList())
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							speedList.stream()
+							.map(x -> x.to(NonSI.KNOT))
+							.collect(Collectors.toList())
+							),
+					0.0, null, 0.0, null,
+					"Ground Distance", "Speed", "ft", "kn",
+					simulationDetailsOutputFolder, "Speed_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// acceleration v.s. time
-			if(unitFormat == UnitFormatEnum.SI)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-						MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
-						0.0, null, -10.0, 10.0,
-						"Time", "Acceleration", "s", "m/(s^2)",
-						simulationDetailsOutputFolder, "Acceleration_evolution_SI",true);
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								accelerationList.stream()
-								.map(x -> x.to(MyUnits.FOOT_PER_SQUARE_MINUTE))
-								.collect(Collectors.toList())
-								),
-						0.0, null, -10.0, 10.0,
-						"Time", "Acceleration", "s", "ft/(min^2)",
-						simulationDetailsOutputFolder, "Acceleration_evolution_IMPERIAL",true);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
+					0.0, null, -10.0, 10.0,
+					"Time", "Acceleration", "s", "m/(s^2)",
+					simulationDetailsOutputFolder, "Acceleration_evolution_SI",true);
+
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							accelerationList.stream()
+							.map(x -> x.to(MyUnits.FOOT_PER_SQUARE_MINUTE))
+							.collect(Collectors.toList())
+							),
+					0.0, null, -10.0, 10.0,
+					"Time", "Acceleration", "s", "ft/(min^2)",
+					simulationDetailsOutputFolder, "Acceleration_evolution_IMPERIAL",true);
 
 			//.................................................................................
 			// acceleration v.s. ground distance
-			if(unitFormat == UnitFormatEnum.SI)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
-						MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
-						0.0, null, -10.0, 10.0,
-						"Ground Distance", "Acceleration", "m", "m/(s^2)",
-						simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_SI",true);
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								groundDistanceList.stream()
-								.map(x -> x.to(NonSI.FOOT))
-								.collect(Collectors.toList())
-								),
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								accelerationList.stream()
-								.map(x -> x.to(MyUnits.FOOT_PER_SQUARE_MINUTE))
-								.collect(Collectors.toList())
-								),
-						0.0, null, -10.0, 10.0,
-						"Ground Distance", "Acceleration", "ft", "ft/(min^2)",
-						simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_IMPERIAL",true);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
+					0.0, null, -10.0, 10.0,
+					"Ground Distance", "Acceleration", "m", "m/(s^2)",
+					simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_SI",true);
+
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							groundDistanceList.stream()
+							.map(x -> x.to(NonSI.FOOT))
+							.collect(Collectors.toList())
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							accelerationList.stream()
+							.map(x -> x.to(MyUnits.FOOT_PER_SQUARE_MINUTE))
+							.collect(Collectors.toList())
+							),
+					0.0, null, -10.0, 10.0,
+					"Ground Distance", "Acceleration", "ft", "ft/(min^2)",
+					simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// load factor v.s. time
@@ -1014,73 +1014,73 @@ public class LandingNoiseTrajectoryCalc {
 
 			//.................................................................................
 			// load factor v.s. ground distance
-			if(unitFormat == UnitFormatEnum.SI)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList), 
-						MyArrayUtils.convertToDoublePrimitive(loadFactorList),
-						0.0, null, 0.0, null,
-						"Ground distance", "Load Factor", "m", "",
-						simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_SI",true);
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								groundDistanceList.stream()
-								.map(x -> x.to(NonSI.FOOT))
-								.collect(Collectors.toList())
-								), 
-						MyArrayUtils.convertToDoublePrimitive(loadFactorList),
-						0.0, null, 0.0, null,
-						"Ground distance", "Load Factor", "ft", "",
-						simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_IMPERIAL",true);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList), 
+					MyArrayUtils.convertToDoublePrimitive(loadFactorList),
+					0.0, null, 0.0, null,
+					"Ground distance", "Load Factor", "m", "",
+					simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_SI",true);
+
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							groundDistanceList.stream()
+							.map(x -> x.to(NonSI.FOOT))
+							.collect(Collectors.toList())
+							), 
+					MyArrayUtils.convertToDoublePrimitive(loadFactorList),
+					0.0, null, 0.0, null,
+					"Ground distance", "Load Factor", "ft", "",
+					simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// Rate of Climb v.s. Time
-			if(unitFormat == UnitFormatEnum.SI)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-						MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimbList),
-						0.0, null, null, 0.0,
-						"Time", "Rate of Climb", "s", "m/s",
-						simulationDetailsOutputFolder, "RateOfClimb_evolution_SI",true);
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								rateOfClimbList.stream()
-								.map(x -> x.to(MyUnits.FOOT_PER_MINUTE))
-								.collect(Collectors.toList())
-								),
-						0.0, null, null, 0.0,
-						"Time", "Rate of Climb", "s", "ft/min",
-						simulationDetailsOutputFolder, "RateOfClimb_evolution_IMPERIAL",true);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimbList),
+					0.0, null, null, 0.0,
+					"Time", "Rate of Climb", "s", "m/s",
+					simulationDetailsOutputFolder, "RateOfClimb_evolution_SI",true);
+
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							rateOfClimbList.stream()
+							.map(x -> x.to(MyUnits.FOOT_PER_MINUTE))
+							.collect(Collectors.toList())
+							),
+					0.0, null, null, 0.0,
+					"Time", "Rate of Climb", "s", "ft/min",
+					simulationDetailsOutputFolder, "RateOfClimb_evolution_IMPERIAL",true);
 
 			//.................................................................................
 			// Rate of Climb v.s. Ground distance
-			if(unitFormat == UnitFormatEnum.SI)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList), 
-						MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimbList),
-						0.0, null, null, 0.0,
-						"Ground distance", "Rate of Climb", "m", "m/s",
-						simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_SI",true);
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								groundDistanceList.stream()
-								.map(x -> x.to(NonSI.FOOT))
-								.collect(Collectors.toList())
-								), 
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								rateOfClimbList.stream()
-								.map(x -> x.to(MyUnits.FOOT_PER_MINUTE))
-								.collect(Collectors.toList())
-								),
-						0.0, null, null, 0.0,
-						"Ground distance", "Rate of Climb", "ft", "ft/min",
-						simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_IMPERIAL",true);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimbList),
+					0.0, null, null, 0.0,
+					"Ground distance", "Rate of Climb", "m", "m/s",
+					simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_SI",true);
+
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							groundDistanceList.stream()
+							.map(x -> x.to(NonSI.FOOT))
+							.collect(Collectors.toList())
+							), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							rateOfClimbList.stream()
+							.map(x -> x.to(MyUnits.FOOT_PER_MINUTE))
+							.collect(Collectors.toList())
+							),
+					0.0, null, null, 0.0,
+					"Ground distance", "Rate of Climb", "ft", "ft/min",
+					simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// CL v.s. Time
@@ -1093,25 +1093,25 @@ public class LandingNoiseTrajectoryCalc {
 
 			//.................................................................................
 			// CL v.s. Ground distance
-			if(unitFormat == UnitFormatEnum.SI)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
-						MyArrayUtils.convertToDoublePrimitive(cLList),
-						0.0, null, 0.0, null,
-						"Ground distance", "CL", "m", "",
-						simulationDetailsOutputFolder, "CL_vs_GroundDistance_SI",true);
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								groundDistanceList.stream()
-								.map(x -> x.to(NonSI.FOOT))
-								.collect(Collectors.toList())
-								),
-						MyArrayUtils.convertToDoublePrimitive(cLList),
-						0.0, null, 0.0, null,
-						"Ground distance", "CL", "ft", "",
-						simulationDetailsOutputFolder, "CL_vs_GroundDistance_IMPERIAL",true);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
+					MyArrayUtils.convertToDoublePrimitive(cLList),
+					0.0, null, 0.0, null,
+					"Ground distance", "CL", "m", "",
+					simulationDetailsOutputFolder, "CL_vs_GroundDistance_SI",true);
+
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							groundDistanceList.stream()
+							.map(x -> x.to(NonSI.FOOT))
+							.collect(Collectors.toList())
+							),
+					MyArrayUtils.convertToDoublePrimitive(cLList),
+					0.0, null, 0.0, null,
+					"Ground distance", "CL", "ft", "",
+					simulationDetailsOutputFolder, "CL_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// CD v.s. Time
@@ -1124,29 +1124,29 @@ public class LandingNoiseTrajectoryCalc {
 
 			//.................................................................................
 			// CD v.s. Ground distance
-			if(unitFormat == UnitFormatEnum.SI)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
-						MyArrayUtils.convertToDoublePrimitive(cDList),
-						0.0, null, 0.0, null,
-						"Ground distance", "CD", "m", "",
-						simulationDetailsOutputFolder, "CD_vs_GroundDistance_SI",true);
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL)
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								groundDistanceList.stream()
-								.map(x -> x.to(NonSI.FOOT))
-								.collect(Collectors.toList())
-								),
-						MyArrayUtils.convertToDoublePrimitive(cDList),
-						0.0, null, 0.0, null,
-						"Ground distance", "CD", "ft", "",
-						simulationDetailsOutputFolder, "CD_vs_GroundDistance_IMPERIAL",true);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
+					MyArrayUtils.convertToDoublePrimitive(cDList),
+					0.0, null, 0.0, null,
+					"Ground distance", "CD", "m", "",
+					simulationDetailsOutputFolder, "CD_vs_GroundDistance_SI",true);
+
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							groundDistanceList.stream()
+							.map(x -> x.to(NonSI.FOOT))
+							.collect(Collectors.toList())
+							),
+					MyArrayUtils.convertToDoublePrimitive(cDList),
+					0.0, null, 0.0, null,
+					"Ground distance", "CD", "ft", "",
+					simulationDetailsOutputFolder, "CD_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// Horizontal Forces v.s. Time
-			if(unitFormat == UnitFormatEnum.SI) {
+			{
 				double[][] xMatrix1SI = new double[5][totalForceList.size()];
 				for(int i=0; i<xMatrix1SI.length; i++)
 					xMatrix1SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(timeList);
@@ -1177,7 +1177,7 @@ public class LandingNoiseTrajectoryCalc {
 						);
 			}
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL) {
+			{
 				double[][] xMatrix1IMPERIAL = new double[5][totalForceList.size()];
 				for(int i=0; i<xMatrix1IMPERIAL.length; i++)
 					xMatrix1IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(timeList);
@@ -1225,7 +1225,7 @@ public class LandingNoiseTrajectoryCalc {
 
 			//.................................................................................
 			// Horizontal Forces v.s. Ground Distance
-			if(unitFormat == UnitFormatEnum.SI) {
+			{
 				double[][] xMatrix2SI = new double[5][totalForceList.size()];
 				for(int i=0; i<xMatrix2SI.length; i++)
 					xMatrix2SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList);
@@ -1255,7 +1255,7 @@ public class LandingNoiseTrajectoryCalc {
 						createCSV);
 			}
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL) {
+			{
 				double[][] xMatrix2IMPERIAL = new double[5][totalForceList.size()];
 				for(int i=0; i<xMatrix2IMPERIAL.length; i++)
 					xMatrix2IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList);
@@ -1285,7 +1285,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.multiplyListEbE(
 								gammaList.stream()
 								.map(x -> Math.sin(x.doubleValue(SI.RADIAN)))
-								 .collect(Collectors.toList()),
+								.collect(Collectors.toList()),
 								weightList.stream()
 								.map(x -> x.doubleValue(NonSI.POUND_FORCE))
 								.collect(Collectors.toList())
@@ -1303,7 +1303,7 @@ public class LandingNoiseTrajectoryCalc {
 
 			//.................................................................................
 			// Vertical Forces v.s. Time
-			if(unitFormat == UnitFormatEnum.SI) {
+			{
 				double[][] xMatrix3SI = new double[3][totalForceList.size()];
 				for(int i=0; i<xMatrix3SI.length; i++)
 					xMatrix3SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(timeList);
@@ -1331,7 +1331,7 @@ public class LandingNoiseTrajectoryCalc {
 						createCSV);
 			}
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL) {
+			{
 				double[][] xMatrix3IMPERIAL = new double[3][totalForceList.size()];
 				for(int i=0; i<xMatrix3IMPERIAL.length; i++)
 					xMatrix3IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(timeList);
@@ -1369,7 +1369,7 @@ public class LandingNoiseTrajectoryCalc {
 
 			//.................................................................................
 			// Vertical Forces v.s. ground distance
-			if(unitFormat == UnitFormatEnum.SI) {
+			{
 				double[][] xMatrix4SI = new double[3][totalForceList.size()];
 				for(int i=0; i<xMatrix4SI.length; i++)
 					xMatrix4SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList);
@@ -1397,7 +1397,7 @@ public class LandingNoiseTrajectoryCalc {
 						createCSV);
 			}
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL) {
+			{
 				double[][] xMatrix4IMPERIAL = new double[3][totalForceList.size()];
 				for(int i=0; i<xMatrix4IMPERIAL.length; i++)
 					xMatrix4IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1470,7 +1470,7 @@ public class LandingNoiseTrajectoryCalc {
 
 			//.................................................................................
 			// Angles v.s. Ground Distance
-			if(unitFormat == UnitFormatEnum.SI) {
+			{
 				double[][] xMatrix6SI = new double[3][totalForceList.size()];
 				for(int i=0; i<xMatrix6SI.length; i++)
 					xMatrix6SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList);
@@ -1501,7 +1501,7 @@ public class LandingNoiseTrajectoryCalc {
 						createCSV);
 			}
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL) {
+			{
 				double[][] xMatrix6IMPERIAL = new double[3][totalForceList.size()];
 				for(int i=0; i<xMatrix6IMPERIAL.length; i++)
 					xMatrix6IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1555,7 +1555,7 @@ public class LandingNoiseTrajectoryCalc {
 
 			//.................................................................................
 			// Angular velocity v.s. Ground Distance
-			if(unitFormat == UnitFormatEnum.SI) {
+			{
 				double[][] xMatrix8SI = new double[2][totalForceList.size()];
 				for(int i=0; i<xMatrix8SI.length; i++)
 					xMatrix8SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList);
@@ -1573,7 +1573,7 @@ public class LandingNoiseTrajectoryCalc {
 						createCSV);
 			}
 
-			if(unitFormat == UnitFormatEnum.IMPERIAL) {
+			{
 				double[][] xMatrix8IMPERIAL = new double[2][totalForceList.size()];
 				for(int i=0; i<xMatrix8IMPERIAL.length; i++)
 					xMatrix8IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1597,120 +1597,120 @@ public class LandingNoiseTrajectoryCalc {
 
 			System.out.println("\n---------------------------DONE!-------------------------------");
 		}
-				
+
 		String trajectoryOutputFolder = JPADStaticWriteUtils.createNewFolder(
 				outputFolderPath + "Trajectories" + File.separator
 				);
 		String thrustOutputFolder = JPADStaticWriteUtils.createNewFolder(
 				outputFolderPath + "Thrust" + File.separator
 				);
-		
+
 		System.setOut(originalOut);
 		System.out.println("\tPRINTING TRAJECTORY CHARTS TO FILE ...");
 		System.setOut(filterStream);
-		
+
 		//.................................................................................
 		// take-off trajectory
-		if(unitFormat == UnitFormatEnum.SI)
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
-					MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistanceList),
-					0.0, null, 0.0, null, 
-					"Ground distance", "Altitude",
-					"m", "m",
-					trajectoryOutputFolder, "Trajectory_SI",true
-					);
-		if(unitFormat == UnitFormatEnum.IMPERIAL)
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							groundDistanceList.stream().map(x -> x.to(NonSI.FOOT)).collect(Collectors.toList())
-							),
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							verticalDistanceList.stream().map(x -> x.to(NonSI.FOOT)).collect(Collectors.toList())
-							),
-					0.0, null, 0.0, null, 
-					"Ground distance", "Altitude",
-					"ft", "ft",
-					trajectoryOutputFolder, "Trajectory_IMPERIAL",true
-					);
-			
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
+				MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistanceList),
+				0.0, null, 0.0, null, 
+				"Ground distance", "Altitude",
+				"m", "m",
+				trajectoryOutputFolder, "Trajectory_SI",true
+				);
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						groundDistanceList.stream().map(x -> x.to(NonSI.FOOT)).collect(Collectors.toList())
+						),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						verticalDistanceList.stream().map(x -> x.to(NonSI.FOOT)).collect(Collectors.toList())
+						),
+				0.0, null, 0.0, null, 
+				"Ground distance", "Altitude",
+				"ft", "ft",
+				trajectoryOutputFolder, "Trajectory_IMPERIAL",true
+				);
+
 		//.................................................................................
 		// vertical distance v.s. time
-		if(unitFormat == UnitFormatEnum.SI)
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-					MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistanceList),
-					0.0, null, 0.0, null, 
-					"Time", "Altitude",
-					"s", "m",
-					trajectoryOutputFolder, "Altitude_evolution_SI",true
-					);
-		if(unitFormat == UnitFormatEnum.IMPERIAL)
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							verticalDistanceList.stream().map(x -> x.to(NonSI.FOOT)).collect(Collectors.toList())
-							),
-					0.0, null, 0.0, null, 
-					"Time", "Altitude",
-					"s", "ft",
-					trajectoryOutputFolder, "Altitude_evolution_IMPERIAL",true
-					);
-		
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+				MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistanceList),
+				0.0, null, 0.0, null, 
+				"Time", "Altitude",
+				"s", "m",
+				trajectoryOutputFolder, "Altitude_evolution_SI",true
+				);
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						verticalDistanceList.stream().map(x -> x.to(NonSI.FOOT)).collect(Collectors.toList())
+						),
+				0.0, null, 0.0, null, 
+				"Time", "Altitude",
+				"s", "ft",
+				trajectoryOutputFolder, "Altitude_evolution_IMPERIAL",true
+				);
+
 		System.setOut(originalOut);
 		System.out.println("\tPRINTING THRUST CHARTS TO FILE ...");
 		System.setOut(filterStream);
-		
+
 		//.................................................................................
 		// thrust v.s. time
-		if(unitFormat == UnitFormatEnum.SI)
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-					MyArrayUtils.convertListOfAmountTodoubleArray(thrustList),
-					0.0, null, 0.0, null, 
-					"Time", "Thrust",
-					"s", "N",
-					thrustOutputFolder, "Thrust_evolution_SI",true
-					);
-		if(unitFormat == UnitFormatEnum.IMPERIAL)
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							thrustList.stream().map(x -> x.to(NonSI.POUND_FORCE)).collect(Collectors.toList())
-							),
-					0.0, null, 0.0, null, 
-					"Time", "Thrust",
-					"s", "lbf",
-					thrustOutputFolder, "Thrust_evolution_IMPERIAL",true
-					);
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+				MyArrayUtils.convertListOfAmountTodoubleArray(thrustList),
+				0.0, null, 0.0, null, 
+				"Time", "Thrust",
+				"s", "N",
+				thrustOutputFolder, "Thrust_evolution_SI",true
+				);
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						thrustList.stream().map(x -> x.to(NonSI.POUND_FORCE)).collect(Collectors.toList())
+						),
+				0.0, null, 0.0, null, 
+				"Time", "Thrust",
+				"s", "lbf",
+				thrustOutputFolder, "Thrust_evolution_IMPERIAL",true
+				);
 
 		//.................................................................................
 		// thrust v.s. ground distance
-		if(unitFormat == UnitFormatEnum.SI)
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
-					MyArrayUtils.convertListOfAmountTodoubleArray(thrustList),
-					0.0, null, 0.0, null, 
-					"Ground distance", "Thrust",
-					"m", "N",
-					thrustOutputFolder, "Thrust_vs_GroundDistance_SI",true
-					);
-		if(unitFormat == UnitFormatEnum.IMPERIAL)
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							groundDistanceList.stream().map(x -> x.to(NonSI.FOOT)).collect(Collectors.toList())
-							),
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							thrustList.stream().map(x -> x.to(NonSI.POUND_FORCE)).collect(Collectors.toList())
-							),
-					0.0, null, 0.0, null, 
-					"Ground distance", "Thrust",
-					"ft", "lbf",
-					thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL",true
-					);
-		
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
+				MyArrayUtils.convertListOfAmountTodoubleArray(thrustList),
+				0.0, null, 0.0, null, 
+				"Ground distance", "Thrust",
+				"m", "N",
+				thrustOutputFolder, "Thrust_vs_GroundDistance_SI",true
+				);
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						groundDistanceList.stream().map(x -> x.to(NonSI.FOOT)).collect(Collectors.toList())
+						),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						thrustList.stream().map(x -> x.to(NonSI.POUND_FORCE)).collect(Collectors.toList())
+						),
+				0.0, null, 0.0, null, 
+				"Ground distance", "Thrust",
+				"ft", "lbf",
+				thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL",true
+				);
+
 		System.setOut(originalOut);
-		
+
 	}
 
 	//-------------------------------------------------------------------------------------
@@ -1760,14 +1760,14 @@ public class LandingNoiseTrajectoryCalc {
 					&&  t < tTouchDown.to(SI.SECOND).plus(dtFreeRoll.to(SI.SECOND)).doubleValue(SI.SECOND)) {
 				xDot[0] = speed;
 				xDot[1] = (g0/weight)*(thrust(speed, alpha, gamma, t, altitude) - drag(speed, alpha, gamma, t, altitude)
-			             - (mu(speed)*(weight - lift(speed, alpha, gamma, t, altitude))));
+						- (mu(speed)*(weight - lift(speed, alpha, gamma, t, altitude))));
 				xDot[2] = 0.0;
 				xDot[3] = 0.0;
 			}
 			else if(t >= tTouchDown.to(SI.SECOND).plus(dtFreeRoll.to(SI.SECOND)).doubleValue(SI.SECOND)) {
 				xDot[0] = speed;
 				xDot[1] = (g0/weight)*(thrust(speed, alpha, gamma, t, altitude) - drag(speed, alpha, gamma, t, altitude)
-			             - (muBrake(speed)*(weight - lift(speed, alpha, gamma, t, altitude))));
+						- (muBrake(speed)*(weight - lift(speed, alpha, gamma, t, altitude))));
 				xDot[2] = 0.0;
 				xDot[3] = 0.0;
 			}
@@ -1776,18 +1776,18 @@ public class LandingNoiseTrajectoryCalc {
 		public double thrust(double speed, double alpha, double gamma, double time, double altitude) {
 
 			double theThrust = 0.0;
-			
+
 			if(time <= tObstacle.doubleValue(SI.SECOND))
 				theThrust = gammaDescent.doubleValue(SI.RADIAN)*weight + drag(speed, alpha, gamma, time, altitude);
-			
+
 			else if(time > tObstacle.doubleValue(SI.SECOND) && time <= tTouchDown.doubleValue(SI.SECOND)) 
 				theThrust = thrustFlareFunction.value(time);
-			
+
 			else if(time > tTouchDown.doubleValue(SI.SECOND))
 				theThrust =	LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineList().get(0).getT0().getEstimatedValue()
 				*throttleGroundIdle(speed)
 				*LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber();
-			
+
 			return theThrust;
 		}
 
@@ -1802,11 +1802,11 @@ public class LandingNoiseTrajectoryCalc {
 									LandingNoiseTrajectoryCalc.this.getPolarCDLanding(),
 									LandingNoiseTrajectoryCalc.this.getAspectRatio())
 							);
-			
+
 			// Biot-Savart law for the kGround (see McCormick pag.420)
 			double hb = altitude/(LandingNoiseTrajectoryCalc.this.getSpan().times(Math.PI/4)).getEstimatedValue();
 			LandingNoiseTrajectoryCalc.this.setkGround((Math.pow(16*hb, 2))/(1+(Math.pow(16*hb, 2))));
-			
+
 			cD = MyMathUtils
 					.getInterpolatedValue1DLinear(
 							MyArrayUtils.convertToDoublePrimitive(
@@ -1825,7 +1825,7 @@ public class LandingNoiseTrajectoryCalc {
 
 			if(altitude < 0.0)
 				altitude = 0.0;
-			
+
 			double cD = cD(cL(speed, alpha, gamma, time, altitude), time, speed, altitude);
 			double drag = 0.5
 					*surface.doubleValue(SI.SQUARE_METRE)
@@ -1840,18 +1840,18 @@ public class LandingNoiseTrajectoryCalc {
 							2)
 							)
 					*cD;
-			
+
 			return drag;
 		}
 
 		public double cL(double speed, double alpha, double gamma ,double time, double altitude) {
 
 			double cL = 0.0;
-			
-				double cL0 = LandingNoiseTrajectoryCalc.this.cL0LND;
-				double cLalpha = LandingNoiseTrajectoryCalc.this.getcLalphaLND().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
-				double alphaWing = alpha + LandingNoiseTrajectoryCalc.this.getIw().getEstimatedValue();
-				cL = cL0 + cLalpha*alphaWing;
+
+			double cL0 = LandingNoiseTrajectoryCalc.this.cL0LND;
+			double cLalpha = LandingNoiseTrajectoryCalc.this.getcLalphaLND().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			double alphaWing = alpha + LandingNoiseTrajectoryCalc.this.getIw().getEstimatedValue();
+			cL = cL0 + cLalpha*alphaWing;
 
 			return cL;
 
@@ -1861,7 +1861,7 @@ public class LandingNoiseTrajectoryCalc {
 
 			if(altitude < 0.0)
 				altitude = 0.0;
-			
+
 			double cL = cL(speed, alpha, gamma, time, altitude);
 			double lift = 0.5
 					*surface.doubleValue(SI.SQUARE_METRE)
@@ -1875,7 +1875,7 @@ public class LandingNoiseTrajectoryCalc {
 							2)
 							)
 					*cL;
-			
+
 			return lift;
 		}
 
@@ -1886,118 +1886,118 @@ public class LandingNoiseTrajectoryCalc {
 		public double muBrake(double speed) {
 			return muBrake.value(speed);
 		}
-		
+
 		public double throttleGroundIdle(double speed) {
 			double phiGIDL = phiGroundIdle.value(speed);
 			return phiGIDL;
 		}
-		
+
 		public double alpha(double time, double speed, double altitude, double gamma) {
 
 			double alpha = 0.0;
-			
+
 			if(time <= tObstacle.doubleValue(SI.SECOND)) {
-				
+
 				@SuppressWarnings("unused")
 				int j=0;
-				
+
 				double gammaDot = LandingNoiseTrajectoryCalc.this.getGammaDot().get(
 						LandingNoiseTrajectoryCalc.this.getGammaDot().size()-1
 						);
-						
+
 				alpha = LandingNoiseTrajectoryCalc.this.getAlpha().get(
 						LandingNoiseTrajectoryCalc.this.getAlpha().size()-1
 						).doubleValue(NonSI.DEGREE_ANGLE);
-				
-				
+
+
 				while (Math.abs(gammaDot - 0) >= 5e-3) {
 
 					gammaDot = 57.3*(g0/(weight*speed))*(
 							lift(speed, alpha, gamma, time, altitude) 
 							+ (thrust(speed, alpha, gamma, time, altitude)*Math.sin(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 							- weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
-					
+
 					if (gammaDot > 0) 
 						alpha = alpha - 0.01;
 					else
 						alpha = alpha + 0.01;
-					
+
 					j++;
-					
+
 				}
-				
+
 			}
-			
+
 			else if( time > tObstacle.doubleValue(SI.SECOND) && time <= tZeroGamma.doubleValue(SI.SECOND)) {
-				
+
 				@SuppressWarnings("unused")
 				int j=0;
-				
+
 				double gammaDot = LandingNoiseTrajectoryCalc.this.getGammaDot().get(
 						LandingNoiseTrajectoryCalc.this.getGammaDot().size()-1
 						);
-						
+
 				alpha = LandingNoiseTrajectoryCalc.this.getAlpha().get(
 						LandingNoiseTrajectoryCalc.this.getAlpha().size()-1
 						).doubleValue(NonSI.DEGREE_ANGLE);
-				
+
 				double gammaDotTarget = 
 						(0 - LandingNoiseTrajectoryCalc.this.getGammaDescent().doubleValue(NonSI.DEGREE_ANGLE))
 						/ LandingNoiseTrajectoryCalc.this.getDtFlare().doubleValue(SI.SECOND);
-				
+
 				while (Math.abs(gammaDot - gammaDotTarget) >= 5e-3) {
 
 					gammaDot = 57.3*(g0/(weight*speed))*(
 							lift(speed, alpha, gamma, time, altitude) 
 							+ (thrust(speed, alpha, gamma, time, altitude)*Math.sin(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 							- weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
-					
+
 					if (gammaDot > gammaDotTarget) 
 						alpha = alpha - 0.01;
 					else
 						alpha = alpha + 0.01;
-					
+
 					j++;
-					
+
 				}
-				
+
 			}
 
 			else if( time > tZeroGamma.doubleValue(SI.SECOND) ) {
-				
+
 				@SuppressWarnings("unused")
 				int j=0;
-				
+
 				double gammaDot = LandingNoiseTrajectoryCalc.this.getGammaDot().get(
 						LandingNoiseTrajectoryCalc.this.getGammaDot().size()-1
 						);
-						
+
 				alpha = LandingNoiseTrajectoryCalc.this.getAlpha().get(
 						LandingNoiseTrajectoryCalc.this.getAlpha().size()-1
 						).doubleValue(NonSI.DEGREE_ANGLE);
-				
-				
+
+
 				while (Math.abs(gammaDot - 0) >= 5e-3) {
 
 					gammaDot = 57.3*(g0/(weight*speed))*(
 							lift(speed, alpha, gamma, time, altitude) 
 							+ (thrust(speed, alpha, gamma, time, altitude)*Math.sin(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 							- weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
-					
+
 					if (gammaDot > 0) 
 						alpha = alpha - 0.01;
 					else
 						alpha = alpha + 0.01;
-					
+
 					j++;
-					
+
 				}
-				
+
 			}
-			
+
 			else if( time > tTouchDown.doubleValue(SI.SECOND))
 				alpha = LandingNoiseTrajectoryCalc.this.getAlphaGround().doubleValue(NonSI.DEGREE_ANGLE);
-			
+
 			return alpha;
 		}
 	}
@@ -2005,10 +2005,10 @@ public class LandingNoiseTrajectoryCalc {
 	//									END NESTED CLASS	
 	//-------------------------------------------------------------------------------------
 
-	
+
 	//-------------------------------------------------------------------------------------
 	// GETTERS AND SETTERS:
-	
+
 	public Double getAspectRatio() {
 		return aspectRatio;
 	}
