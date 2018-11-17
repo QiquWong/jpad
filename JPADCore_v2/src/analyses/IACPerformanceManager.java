@@ -45,6 +45,9 @@ public interface IACPerformanceManager {
 	Map<Double, Double> getCLmaxLanding();
 	Map<Double, Amount<?>> getCLAlphaLanding();
 	Map<Double, Double> getCLZeroLanding();
+	Map<Double, Double> getDeltaCD0FlapTakeOff();
+	Map<Double, Double> getDeltaCD0FlapLanding();
+	Map<Double, Double> getDeltaCD0LandingGears();
 	Map<Double, Double[]> getPolarCLCruise();
 	Map<Double, Double[]> getPolarCDCruise();
 	Map<Double, Double[]> getPolarCLClimb();
@@ -87,15 +90,24 @@ public interface IACPerformanceManager {
 	List<Amount<Length>> getAltitudeListCruise();
 	Double getKCruiseWeight();
 	//..............................................................................
-	// Flight maneuvering and gust envelope
-	Double getCLmaxInverted();
-	//..............................................................................
 	// Descent
 	Amount<Velocity> getSpeedDescentCAS();
 	Amount<Velocity> getRateOfDescent();
-	Double getKDescentWeight();
+	double getKDescentWeight();
 	Amount<Length> getInitialDescentAltitude();
 	Amount<Length> getFinalDescentAltitude();
+	//..............................................................................
+	// Flight maneuvering and gust envelope
+	double getCLmaxInverted();
+	//..............................................................................
+	// Noise Trajectories
+	Amount<Length> getTakeOffNoiseTrajectoryXEndSimulation();
+	Amount<Length> getTakeOffNoiseTrajectoryCutbackAltitude();
+	int getTakeOffNoiseTrajectoryNumberOfThrustSettingCutback();
+	Amount<Duration> getTakeOffNoiseTrajectoryLandingGearRetractionTimeInterval();
+	Amount<Duration> getTakeOffNoiseTrajectoryThrustReductionCutbackTimeInterval();
+	Amount<Length> getLandingNoiseTrajectoryInitialAltitude();
+	Amount<Angle> getLandingNoiseTrajectoryTrajectoryAngle();
 	//..............................................................................
 	// Mission Profile:
 	Amount<Length> getMissionRange();
@@ -103,18 +115,17 @@ public interface IACPerformanceManager {
 	Amount<Length> getAlternateCruiseAltitude();
 	Amount<Duration> getHoldingDuration();
 	Amount<Length> getHoldingAltitude();
-	Double getHoldingMachNumber();
-	Double getFuelReserve();
+	double getHoldingMachNumber();
+	double getFuelReserve();
 	Amount<Length> getFirstGuessCruiseLength();
-	Boolean getCalculateSFCCruise();
-	Boolean getCalculateSFCAlternateCruise();
-	Boolean getCalculateSFCHolding();
+	boolean getCalculateSFCCruise();
+	boolean getCalculateSFCAlternateCruise();
+	boolean getCalculateSFCHolding();
 	MyInterpolatingFunction getSfcFunctionCruise();
 	MyInterpolatingFunction getSfcFunctionAlternateCruise();
 	MyInterpolatingFunction getSfcFunctionHolding();
 	Amount<Mass> getFirstGuessInitialMissionFuelMass();
 	Amount<Length> getTakeOffMissionAltitude();
-	Double getLandingFuelFlow();
 	//..............................................................................
 	// Plot and Task Maps
 	List<PerformanceEnum> getTaskList();

@@ -77,6 +77,7 @@
 			landing="FALSE"
 			payload_range="TRUE"
 			V_n_diagram="FALSE"
+			noise_trajectories="FALSE"
 			mission_profile="TRUE"
 	/> 
  	<costs 
