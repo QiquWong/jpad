@@ -1336,7 +1336,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 								reader.getXmlDoc(), reader.getXpath(),
 								"//aircraft/total_drag_polar/delta_CD0_landing_gears/@kFactor");
 				
-				kCD0Excrescences = Double.valueOf(aircraftKCD0LandingGearString);
+				kCD0LandingGears = Double.valueOf(aircraftKCD0LandingGearString);
 			}
 			
 			//Excrescences
@@ -1402,7 +1402,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 								reader.getXmlDoc(), reader.getXpath(),
 								"//aircraft/total_drag_polar/delta_CD0_Interferences/@kFactor");
 				
-				kCD0Excrescences = Double.valueOf(aircraftKCD0InterferencesString);
+				kCD0Interferences = Double.valueOf(aircraftKCD0InterferencesString);
 				
 			}
 			
@@ -1436,7 +1436,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 								reader.getXmlDoc(), reader.getXpath(),
 								"//aircraft/total_drag_polar/delta_CD0_Cooling/@kFactor");
 				
-				kCD0Excrescences = Double.valueOf(aircraftKCD0CoolingString);
+				kCD0Cooling = Double.valueOf(aircraftKCD0CoolingString);
 				
 			}
 			
@@ -2003,12 +2003,16 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				.setTotalLiftCalibrationCLScaleFactor(totalLiftCalibrationCLScaleFactor)
 				.setCalculateLandingGearDeltaDragCoefficient(calculateDeltaCD0LandingGears)
 				.setLandingGearDeltaDragCoefficient(deltaCD0LandingGears)
+				.setLandingGearDragKFactor(kCD0LandingGears)
 				.setCalculateCoolingDeltaDragCoefficient(calculateDeltaCD0Cooling)
 				.setCoolingDeltaDragCoefficient(deltaCD0Cooling)
+				.setCoolingDragKFactor(kCD0Cooling)
 				.setCalculateExcrescencesDeltaDragCoefficient(calculatedeltaCD0Excrescences)
 				.setExcrescencesDeltaDragCoefficient(deltaCD0Excrescences)
+				.setExcrescencesDragKFactor(kCD0Excrescences)
 				.setCalculateInterferencesDeltaDragCoefficient(calculateDeltaCD0Interferences)
 				.setInterferencesDeltaDragCoefficient(deltaCD0Interferences)
+				.setInterferencesDragKFactor(kCD0Interferences)
 				.setTotalDragCalibrationCLScaleFactor(totalDragCalibrationCLScaleFactor)
 				.setTotalDragCalibrationCDScaleFactor(totalDragCalibrationCDScaleFactor)
 				.setTotalMomentCalibrationAlphaScaleFactor(totalMomentCalibrationAlphaScaleFactor)

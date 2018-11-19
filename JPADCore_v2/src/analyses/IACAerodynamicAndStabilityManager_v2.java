@@ -103,12 +103,16 @@ public interface IACAerodynamicAndStabilityManager_v2 {
 	double  getTotalLiftCalibrationCLScaleFactor();
 	boolean isCalculateLandingGearDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
 	double getLandingGearDeltaDragCoefficient();
+	double getLandingGearDragKFactor();
 	boolean isCalculateExcrescencesDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
 	double getExcrescencesDeltaDragCoefficient();
+	double getExcrescencesDragKFactor();
 	boolean isCalculateInterferencesDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
 	double getInterferencesDeltaDragCoefficient();
+	double getInterferencesDragKFactor();
 	boolean isCalculateCoolingDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
 	double getCoolingDeltaDragCoefficient();
+	double getCoolingDragKFactor();
 	double  getTotalDragCalibrationCLScaleFactor();
 	double  getTotalDragCalibrationCDScaleFactor();
 	double  getTotalMomentCalibrationAlphaScaleFactor();
