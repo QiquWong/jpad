@@ -49,7 +49,7 @@ public class LiftingSurfaceWeightManager {
 		
 	}
 	
-	public void calculateMass(Aircraft aircraft, ComponentEnum liftingSurfaceType, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateMass(Aircraft aircraft, ComponentEnum liftingSurfaceType, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 		
 		if (liftingSurfaceType.equals(ComponentEnum.WING)) {
 //			calculateMass(aircraft, liftingSurfaceType, MethodEnum.ROSKAM);
@@ -90,9 +90,9 @@ public class LiftingSurfaceWeightManager {
 		}
 		
 		
-		if(!methodsMapWeights.get(liftingSurfaceType).equals(MethodEnum.AVERAGE)) {
+		if(!methodsMapWeights.get(liftingSurfaceType).get(0).equals(MethodEnum.AVERAGE)) {
 			_percentDifference =  new double[_massMap.size()];
-			_massEstimated = _massMap.get(methodsMapWeights.get(liftingSurfaceType));
+			_massEstimated = _massMap.get(methodsMapWeights.get(liftingSurfaceType).get(0));
 		}
 		else {
 			_percentDifference =  new double[_massMap.size()];

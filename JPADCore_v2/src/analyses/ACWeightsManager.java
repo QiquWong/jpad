@@ -1679,7 +1679,7 @@ public class ACWeightsManager {
 	public void calculateAllMasses(
 			Aircraft aircraft,
 			OperatingConditions operatingConditions,
-			Map <ComponentEnum, MethodEnum> methodsMap
+			Map <ComponentEnum, List<MethodEnum>> methodsMap
 			) {
 
 		System.out.println("\n-----------------------------------------------");
@@ -1739,10 +1739,10 @@ public class ACWeightsManager {
 			calculateStructuralMass(aircraft, operatingConditions, methodsMap);
 			// --- END OF STRUCTURE MASS-----------------------------------
 			
-			calculateManufacturerEmptyMass(aircraft, methodsMap);
+			calculateManufacturerEmptyMass();
 			// --- END OF MANUFACTURER EMPTY MASS-----------------------------------
 			
-			calculateOperatingEmptyMass(aircraft);
+			calculateOperatingEmptyMass();
 			// --- END OF OPERATING EMPTY MASS-----------------------------------
 			
 			calculateEmptyMass();
@@ -1751,7 +1751,7 @@ public class ACWeightsManager {
 			calculateMaximumZeroFuelMass(aircraft);
 			// --- END ZERO FUEL MASS-----------------------------------
 			
-			calculateMaximumTakeOffMass(aircraft);
+			calculateMaximumTakeOffMass();
 			// --- END TAKE-OFF MASS-----------------------------------
 			
 			calculateMaximumLandingMass();
@@ -1775,7 +1775,7 @@ public class ACWeightsManager {
 		
 	}
 
-	private void calculateSystemsAndPowerPlantMasses (Aircraft aircraft, Map <ComponentEnum, MethodEnum> methodsMap) {
+	private void calculateSystemsAndPowerPlantMasses (Aircraft aircraft, Map <ComponentEnum, List<MethodEnum>> methodsMap) {
 		
 		if (aircraft.getPowerPlant() != null) {
 			aircraft.getPowerPlant().getTheWeights().calculateTotalMass(aircraft, methodsMap);
@@ -1813,7 +1813,7 @@ public class ACWeightsManager {
 	private void calculateStructuralMass(
 			Aircraft aircraft, 
 			OperatingConditions operatingConditions,
-			Map <ComponentEnum, MethodEnum> methodsMap) {
+			Map <ComponentEnum, List<MethodEnum>> methodsMap) {
 
 		if(aircraft.getNacelles() != null) {
 			aircraft.getNacelles().getTheWeights().calculateTotalMass(aircraft, methodsMap);
@@ -1868,7 +1868,7 @@ public class ACWeightsManager {
 		
 	}
 
-	private void calculateManufacturerEmptyMass(Aircraft aircraft, Map <ComponentEnum, MethodEnum> methodsMap) {
+	private void calculateManufacturerEmptyMass() {
 		
 		_manufacturerEmptyMass = 
 				_structuralMass.to(SI.KILOGRAM)
@@ -1882,7 +1882,7 @@ public class ACWeightsManager {
 				.plus(_furnishingsAndEquipmentsMass.to(SI.KILOGRAM));
 	}
 	
-	private void calculateOperatingEmptyMass(Aircraft aircraft) {
+	private void calculateOperatingEmptyMass() {
 		
 		_operatingEmptyMass = 
 				_manufacturerEmptyMass.to(SI.KILOGRAM)
@@ -1905,7 +1905,7 @@ public class ACWeightsManager {
 		
 	}
 	
-	private void calculateMaximumTakeOffMass(Aircraft aircraft) {
+	private void calculateMaximumTakeOffMass() {
 		
 		// Take-off mass
 		_takeOffMass = 

@@ -1,5 +1,6 @@
 package aircraft.components.powerplant;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import javax.measure.quantity.Force;
 import javax.measure.quantity.Power;
 import javax.measure.unit.SI;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.physics.amount.Amount;
 
 import analyses.powerplant.EngineBalanceManager;
@@ -72,13 +74,17 @@ public class PowerPlant {
 		_engineDatabaseReaderList = new ArrayList<>();
 		this._engineList.stream().forEach(engine -> {
 			try {
-				_engineDatabaseReaderList.add(
-						DatabaseManager.initializeEngineDatabase(
-								new EngineDatabaseManager(), 
-								MyConfiguration.getDir(FoldersEnum.DATABASE_DIR),
-								_engineList.get(0).getEngineDatabaseName()
-								)
-						);
+				try {
+					_engineDatabaseReaderList.add(
+							DatabaseManager.initializeEngineDatabase(
+									new EngineDatabaseManager(), 
+									MyConfiguration.getDir(FoldersEnum.DATABASE_DIR),
+									_engineList.get(0).getEngineDatabaseName()
+									)
+							);
+				} catch (InvalidFormatException | IOException e) {
+					e.printStackTrace();
+				}
 				
 			} catch (NullPointerException e) {
 				e.printStackTrace();

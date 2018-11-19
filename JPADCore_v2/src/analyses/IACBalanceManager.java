@@ -82,6 +82,44 @@ public interface IACBalanceManager {
 	@Nullable
 	Amount<Length> getFurnishingsAndEquipmentsPositionZ();
 	
+	// CALIBRATION DATA
+	@Nullable
+	double getFuselageXCGCorrectionFactor();
+	@Nullable
+	double getFuselageZCGCorrectionFactor();
+	@Nullable
+	double getWingXCGCorrectionFactor();
+	@Nullable
+	double getWingZCGCorrectionFactor();
+	@Nullable
+	double getFuelTankXCGCorrectionFactor();
+	@Nullable
+	double getFuelTankZCGCorrectionFactor();
+	@Nullable
+	double getHorizontalTailXCGCorrectionFactor();
+	@Nullable
+	double getHorizontalTailZCGCorrectionFactor();
+	@Nullable
+	double getVerticalTailXCGCorrectionFactor();
+	@Nullable
+	double getVerticalTailZCGCorrectionFactor();
+	@Nullable
+	double getCanardXCGCorrectionFactor();
+	@Nullable
+	double getCanardZCGCorrectionFactor();
+	@Nullable
+	double getNacellesXCGCorrectionFactor();
+	@Nullable
+	double getNacellesZCGCorrectionFactor();
+	@Nullable
+	double getPowerPlantXCGCorrectionFactor();
+	@Nullable
+	double getPowerPlantZCGCorrectionFactor();
+	@Nullable
+	double getLandingGearsXCGCorrectionFactor();
+	@Nullable
+	double getLandingGearsZCGCorrectionFactor();
+	
 	class Builder extends IACBalanceManager_Builder {
 		public Builder() {
 			

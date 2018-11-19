@@ -483,12 +483,12 @@ public class FuelTank {
 		_zCG = _theWing.getTheBalanceManager().getCG().getZBRF();
 		
 		_cG = new CenterOfGravity();
-		_cG.setX0(_xApexConstructionAxes.to(SI.METER));
-		_cG.setY0(_yApexConstructionAxes.to(SI.METER));
-		_cG.setZ0(_zApexConstructionAxes.to(SI.METER));
-		_cG.setXLRFref(_xCGLRF.to(SI.METER));
-		_cG.setYLRFref(_yCGLRF.to(SI.METER));
-		_cG.setZLRFref(_zCGLRF.to(SI.METER));
+		_cG.setX0(_theWing.getXApexConstructionAxes().to(SI.METER));
+		_cG.setY0(_theWing.getYApexConstructionAxes().to(SI.METER));
+		_cG.setZ0(_theWing.getZApexConstructionAxes().to(SI.METER));
+		_cG.setXLRF(_xCGLRF.to(SI.METER));
+		_cG.setYLRF(_yCGLRF.to(SI.METER));
+		_cG.setZLRF(_zCGLRF.to(SI.METER));
 		
 		_cG.calculateCGinBRF(ComponentEnum.FUEL_TANK);
 		

@@ -25,6 +25,7 @@ import java.util.stream.IntStream;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
 import javax.measure.unit.SI;
 
 import org.jfree.chart.ChartColor;
@@ -61,6 +62,7 @@ import javaslang.Tuple;
 import javaslang.Tuple2;
 import standaloneutils.GeometryCalc;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.customdata.CenterOfGravity;
 
 public class AircraftAndComponentsViewPlotUtils {
 
@@ -4156,8 +4158,8 @@ public class AircraftAndComponentsViewPlotUtils {
 	public static void createAircraftSideViewWithCGPositions(
 			Aircraft aircraft, 
 			String outputDirectoryPath,
-			Map<ComponentEnum, Amount<Length>> xCGMap,
-			Map<ComponentEnum, Amount<Length>> zCGMap
+			Map<ComponentEnum, CenterOfGravity> cgMap,
+			Map<ComponentEnum, Amount<Mass>> massMap
 			) {
 		
 		//--------------------------------------------------
@@ -4441,13 +4443,13 @@ public class AircraftAndComponentsViewPlotUtils {
 		//-------------------------------------------------------------------------------------
 		// XCG and ZCG SERIES CREATION
 		List<XYSeries> cgPositionsSeriesList = new ArrayList<>();
-		if(xCGMap.size() != zCGMap.size())
-			System.err.println("XCG MAP AND ZCG MAP DIMENSIONS MUST BE EQUAL!");
-		else {
-			for(int iSeries=0; iSeries<xCGMap.size(); iSeries++) {
-				XYSeries currentSeries = new XYSeries(xCGMap.keySet().toArray()[iSeries].toString(), false);
-				Amount<Length> currentXCG = (Amount<Length>) xCGMap.values().toArray()[iSeries]; 
-				Amount<Length> currentZCG = (Amount<Length>) zCGMap.values().toArray()[iSeries];
+		for(int iSeries=0; iSeries<cgMap.size(); iSeries++) {
+			XYSeries currentSeries = new XYSeries(cgMap.keySet().toArray()[iSeries].toString(), false);
+			CenterOfGravity currentCG = (CenterOfGravity) cgMap.values().toArray()[iSeries];
+			Amount<Length> currentXCG = currentCG.getXBRF(); 
+			Amount<Length> currentZCG = currentCG.getZBRF();
+			Amount<Mass> currentMass = (Amount<Mass>) massMap.values().toArray()[iSeries];
+			if(currentMass.doubleValue(SI.KILOGRAM) != 0.0) {
 				currentSeries.add(
 						currentXCG.doubleValue(SI.METER),
 						currentZCG.doubleValue(SI.METER)

@@ -63,8 +63,7 @@ public class ACBalanceManager {
 	private CenterOfGravity _cgOperatingEmptyMass;
 	private CenterOfGravity _cgMaximumZeroFuelMass;
 	private CenterOfGravity _cgMaximumTakeOffMass;
-	private Map<ComponentEnum, Amount<Length>> _xCGMap;
-	private Map<ComponentEnum, Amount<Length>> _zCGMap;
+	private Map<ComponentEnum, CenterOfGravity>_cgMap;
 	private Map<ComponentEnum, Amount<Mass>> _massMap;
 	private Double _maxForwardOperativeCG;
 	private Double _maxAftCG;
@@ -746,6 +745,106 @@ public class ACBalanceManager {
 
 		}
 		
+		double fuselageXCGCorrectionFactor = 1.0;
+		double fuselageZCGCorrectionFactor = 1.0;
+		double wingXCGCorrectionFactor = 1.0;
+		double wingZCGCorrectionFactor = 1.0;
+		double fuelTankXCGCorrectionFactor = 1.0;
+		double fuelTankZCGCorrectionFactor = 1.0;
+		double horizontalTailXCGCorrectionFactor = 1.0;
+		double horizontalTailZCGCorrectionFactor = 1.0;
+		double verticalTailXCGCorrectionFactor = 1.0;
+		double verticalTailZCGCorrectionFactor = 1.0;
+		double canardXCGCorrectionFactor = 1.0;
+		double canardZCGCorrectionFactor = 1.0;
+		double nacellesXCGCorrectionFactor = 1.0;
+		double nacellesZCGCorrectionFactor = 1.0;
+		double powerPlantXCGCorrectionFactor = 1.0;
+		double powerPlantZCGCorrectionFactor = 1.0;
+		double landingGearsXCGCorrectionFactor = 1.0;
+		double landingGearsZCGCorrectionFactor = 1.0;
+		
+		//---------------------------------------------------------------
+		// FUELAGE CORRECTION FACTORS
+		String fuselageXCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/fuselage/xcg_correction_factor");
+		String fuselageZCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/fuselage/zcg_correction_factor");
+		if(fuselageXCGCorrectionFactorProperty != null)
+			fuselageXCGCorrectionFactor = Double.valueOf(fuselageXCGCorrectionFactor);
+		if(fuselageZCGCorrectionFactorProperty != null)
+			fuselageZCGCorrectionFactor = Double.valueOf(fuselageZCGCorrectionFactor);
+		
+		//---------------------------------------------------------------
+		// WING CORRECTION FACTORS
+		String wingXCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/wing/xcg_correction_factor");
+		String wingZCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/wing/zcg_correction_factor");
+		if(wingXCGCorrectionFactorProperty != null)
+			wingXCGCorrectionFactor = Double.valueOf(wingXCGCorrectionFactor);
+		if(wingZCGCorrectionFactorProperty != null)
+			wingZCGCorrectionFactor = Double.valueOf(wingZCGCorrectionFactor);
+		
+		//---------------------------------------------------------------
+		// FUEL TANK CORRECTION FACTORS
+		String fuelTankXCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/fuel_tank/xcg_correction_factor");
+		String fuelTankZCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/fuel_tank/zcg_correction_factor");
+		if(fuelTankXCGCorrectionFactorProperty != null)
+			fuelTankXCGCorrectionFactor = Double.valueOf(fuelTankXCGCorrectionFactor);
+		if(fuelTankZCGCorrectionFactorProperty != null)
+			fuelTankZCGCorrectionFactor = Double.valueOf(fuelTankZCGCorrectionFactor);
+
+		//---------------------------------------------------------------
+		// HORIZONTAL TAIL CORRECTION FACTORS
+		String horizontalTailXCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/horizontal_tail/xcg_correction_factor");
+		String horizontalTailZCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/horizontal_tail/zcg_correction_factor");
+		if(horizontalTailXCGCorrectionFactorProperty != null)
+			horizontalTailXCGCorrectionFactor = Double.valueOf(horizontalTailXCGCorrectionFactor);
+		if(horizontalTailZCGCorrectionFactorProperty != null)
+			horizontalTailZCGCorrectionFactor = Double.valueOf(horizontalTailZCGCorrectionFactor);
+		
+		//---------------------------------------------------------------
+		// VERTICAL TAIL CORRECTION FACTORS
+		String verticalTailXCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/vertical_tail/xcg_correction_factor");
+		String verticalTailZCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/vertical_tail/zcg_correction_factor");
+		if(verticalTailXCGCorrectionFactorProperty != null)
+			verticalTailXCGCorrectionFactor = Double.valueOf(verticalTailXCGCorrectionFactor);
+		if(verticalTailZCGCorrectionFactorProperty != null)
+			verticalTailZCGCorrectionFactor = Double.valueOf(verticalTailZCGCorrectionFactor);
+		
+		//---------------------------------------------------------------
+		// CANARD CORRECTION FACTORS
+		String canardXCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/canard/xcg_correction_factor");
+		String canardZCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/canard/zcg_correction_factor");
+		if(canardXCGCorrectionFactorProperty != null)
+			canardXCGCorrectionFactor = Double.valueOf(canardXCGCorrectionFactor);
+		if(canardZCGCorrectionFactorProperty != null)
+			canardZCGCorrectionFactor = Double.valueOf(canardZCGCorrectionFactor);
+		
+		//---------------------------------------------------------------
+		// NACELLES CORRECTION FACTORS
+		String nacellesXCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/nacelles/xcg_correction_factor");
+		String nacellesZCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/nacelles/zcg_correction_factor");
+		if(nacellesXCGCorrectionFactorProperty != null)
+			nacellesXCGCorrectionFactor = Double.valueOf(nacellesXCGCorrectionFactor);
+		if(nacellesZCGCorrectionFactorProperty != null)
+			nacellesZCGCorrectionFactor = Double.valueOf(nacellesZCGCorrectionFactor);
+		
+		//---------------------------------------------------------------
+		// POWER PLANT CORRECTION FACTORS
+		String powerPlantXCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/power_plant/xcg_correction_factor");
+		String powerPlantZCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/power_plant/zcg_correction_factor");
+		if(powerPlantXCGCorrectionFactorProperty != null)
+			powerPlantXCGCorrectionFactor = Double.valueOf(powerPlantXCGCorrectionFactor);
+		if(powerPlantZCGCorrectionFactorProperty != null)
+			powerPlantZCGCorrectionFactor = Double.valueOf(powerPlantZCGCorrectionFactor);
+		
+		//---------------------------------------------------------------
+		// LANDING GEARS CORRECTION FACTORS
+		String landingGearsXCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/landing_gears/xcg_correction_factor");
+		String landingGearsZCGCorrectionFactorProperty = reader.getXMLPropertyByPath("//calibration/landing_gears/zcg_correction_factor");
+		if(landingGearsXCGCorrectionFactorProperty != null)
+			landingGearsXCGCorrectionFactor = Double.valueOf(landingGearsXCGCorrectionFactor);
+		if(landingGearsZCGCorrectionFactorProperty != null)
+			landingGearsZCGCorrectionFactor = Double.valueOf(landingGearsZCGCorrectionFactor);
+		
 		/********************************************************************************************
 		 * Once the data are ready, it's possible to create the ACBalanceManager object can be created
 		 * using the builder pattern.
@@ -787,6 +886,24 @@ public class ACBalanceManager {
 				.setControlSurfacesPositionZ(controlSurfacesPositionZ)
 				.setFurnishingsAndEquipmentsPositionX(furnishingsAndEquipmentsPositionX)
 				.setFurnishingsAndEquipmentsPositionZ(furnishingsAndEquipmentsPositionZ)
+				.setFuselageXCGCorrectionFactor(fuselageXCGCorrectionFactor)
+				.setFuselageZCGCorrectionFactor(fuselageZCGCorrectionFactor)
+				.setWingXCGCorrectionFactor(wingXCGCorrectionFactor)
+				.setWingZCGCorrectionFactor(wingZCGCorrectionFactor)
+				.setFuelTankXCGCorrectionFactor(fuelTankXCGCorrectionFactor)
+				.setFuelTankZCGCorrectionFactor(fuelTankZCGCorrectionFactor)
+				.setHorizontalTailXCGCorrectionFactor(horizontalTailXCGCorrectionFactor)
+				.setHorizontalTailZCGCorrectionFactor(horizontalTailZCGCorrectionFactor)
+				.setVerticalTailXCGCorrectionFactor(verticalTailXCGCorrectionFactor)
+				.setVerticalTailZCGCorrectionFactor(verticalTailZCGCorrectionFactor)
+				.setCanardXCGCorrectionFactor(canardXCGCorrectionFactor)
+				.setCanardZCGCorrectionFactor(canardZCGCorrectionFactor)
+				.setNacellesXCGCorrectionFactor(nacellesXCGCorrectionFactor)
+				.setNacellesZCGCorrectionFactor(nacellesZCGCorrectionFactor)
+				.setPowerPlantXCGCorrectionFactor(powerPlantXCGCorrectionFactor)
+				.setPowerPlantZCGCorrectionFactor(powerPlantZCGCorrectionFactor)
+				.setLandingGearsXCGCorrectionFactor(landingGearsXCGCorrectionFactor)
+				.setLandingGearsZCGCorrectionFactor(landingGearsZCGCorrectionFactor)
 				.build();
 
 		ACBalanceManager theBalanceManager = new ACBalanceManager();
@@ -853,59 +970,174 @@ public class ACBalanceManager {
 				.append("\tCOMPONENTS:\n")
 				.append("\t-------------------------------------\n");
 		if(_theBalanceManagerInterface.getTheAircraft().getFuselage() != null) {
-			sb.append("\t\tXcg Fuselage MAC: " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXMAC()*100 + "\n")
-			.append("\t\tXcg Fuselage BRF: " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXBRF().to(SI.METER) + "\n")
-			.append("\t\tZcg Fuselage MAC: " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZMAC()*100 + "\n")
-			.append("\t\tZcg Fuselage BRF: " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZBRF().to(SI.METER) + "\n")
+			sb.append("\t\tXcg Fuselage Correction Factor: " + _theBalanceManagerInterface.getFuselageXCGCorrectionFactor() + "\n")
+			.append("\t\tZcg Fuselage Correction Factor: " + _theBalanceManagerInterface.getFuselageZCGCorrectionFactor() + "\n")
+			.append("\t\tXcg Fuselage MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXMAC()*100 + "\n")
+			.append("\t\tXcg Fuselage MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.FUSELAGE).getXMAC()*100 + "\n")
+			.append("\t\tXcg Fuselage LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Fuselage LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.FUSELAGE).getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Fuselage BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXBRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Fuselage BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.FUSELAGE).getXBRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Fuselage LRF: " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getYLRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Fuselage BRF: " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getYBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Fuselage MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZMAC()*100 + "\n")
+			.append("\t\tZcg Fuselage MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.FUSELAGE).getZMAC()*100 + "\n")
+			.append("\t\tZcg Fuselage LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Fuselage LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.FUSELAGE).getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Fuselage BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Fuselage BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.FUSELAGE).getZBRF().to(SI.METER) + "\n")
 			.append("\t\t·····································\n");
 		}
 		if(_theBalanceManagerInterface.getTheAircraft().getWing() != null) {
-			sb.append("\t\tXcg Wing MAC: " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXMAC()*100 + "\n")
-			.append("\t\tXcg Wing BRF: " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXBRF().to(SI.METER) + "\n")
-			.append("\t\tZcg Wing MAC: " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZMAC()*100 + "\n")
-			.append("\t\tZcg Wing BRF: " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZBRF().to(SI.METER) + "\n")
+			sb.append("\t\tXcg Wing Correction Factor: " + _theBalanceManagerInterface.getWingXCGCorrectionFactor() + "\n")
+			.append("\t\tZcg Wing Correction Factor: " + _theBalanceManagerInterface.getWingZCGCorrectionFactor() + "\n")
+			.append("\t\tXcg Wing MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXMAC()*100 + "\n")
+			.append("\t\tXcg Wing MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.WING).getXMAC()*100 + "\n")
+			.append("\t\tXcg Wing LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Wing LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.WING).getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Wing BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXBRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Wing BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.WING).getXBRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Wing LRF: " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getYLRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Wing BRF: " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getYBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Wing MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZMAC()*100 + "\n")
+			.append("\t\tZcg Wing MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.WING).getZMAC()*100 + "\n")
+			.append("\t\tZcg Wing LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Wing LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.WING).getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Wing BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Wing BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.WING).getZBRF().to(SI.METER) + "\n")
+			.append("\t\t·····································\n");
+		}
+		if(_theBalanceManagerInterface.getTheAircraft().getFuelTank() != null) {
+			sb.append("\t\tXcg Fuel Tank Correction Factor: " + _theBalanceManagerInterface.getFuelTankXCGCorrectionFactor() + "\n")
+			.append("\t\tZcg Fuel Tank Correction Factor: " + _theBalanceManagerInterface.getFuelTankZCGCorrectionFactor() + "\n")
+			.append("\t\tXcg Fuel Tank MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuelTank().getCG().getXMAC()*100 + "\n")
+			.append("\t\tXcg Fuel Tank MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.FUEL_TANK).getXMAC()*100 + "\n")
+			.append("\t\tXcg Fuel Tank LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuelTank().getXCGLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Fuel Tank LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.FUEL_TANK).getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Fuel Tank BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuelTank().getXCG().to(SI.METER) + "\n")
+			.append("\t\tXcg Fuel Tank BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.FUEL_TANK).getXBRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Fuel Tank LRF: " + _theBalanceManagerInterface.getTheAircraft().getFuelTank().getYCGLRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Fuel Tank BRF: " + _theBalanceManagerInterface.getTheAircraft().getFuelTank().getYCG().to(SI.METER) + "\n")
+			.append("\t\tZcg Fuel Tank MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuelTank().getCG().getZMAC()*100 + "\n")
+			.append("\t\tZcg Fuel Tank MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.FUEL_TANK).getZMAC()*100 + "\n")
+			.append("\t\tZcg Fuel Tank LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuelTank().getZCGLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Fuel Tank LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.FUEL_TANK).getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Fuel Tank BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getFuelTank().getZCG().to(SI.METER) + "\n")
+			.append("\t\tZcg Fuel Tank BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.FUEL_TANK).getZBRF().to(SI.METER) + "\n")
 			.append("\t\t·····································\n");
 		}
 		if(_theBalanceManagerInterface.getTheAircraft().getHTail() != null) {
-			sb.append("\t\tXcg Horizontal Tail MAC: " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXMAC()*100 + "\n")
-			.append("\t\tXcg Horizontal Tail BRF: " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXBRF().to(SI.METER) + "\n")
-			.append("\t\tZcg Horizontal Tail MAC: " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZMAC()*100 + "\n")
-			.append("\t\tZcg Horizontal Tail BRF: " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZBRF().to(SI.METER) + "\n")
+			sb.append("\t\tXcg Horizontal Tail Correction Factor: " + _theBalanceManagerInterface.getHorizontalTailXCGCorrectionFactor() + "\n")
+			.append("\t\tZcg Horizontal Tail Correction Factor: " + _theBalanceManagerInterface.getHorizontalTailZCGCorrectionFactor() + "\n")
+			.append("\t\tXcg Horizontal Tail MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXMAC()*100 + "\n")
+			.append("\t\tXcg Horizontal Tail MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getXMAC()*100 + "\n")
+			.append("\t\tXcg Horizontal Tail LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Horizontal Tail LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Horizontal Tail BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXBRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Horizontal Tail BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getXBRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Horizontal Tail LRF: " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getYLRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Horizontal Tail BRF: " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getYBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Horizontal Tail MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZMAC()*100 + "\n")
+			.append("\t\tZcg Horizontal Tail MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getZMAC()*100 + "\n")
+			.append("\t\tZcg Horizontal Tail LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Horizontal Tail LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Horizontal Tail BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Horizontal Tail BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getZBRF().to(SI.METER) + "\n")
 			.append("\t\t·····································\n");
 		}
 		if(_theBalanceManagerInterface.getTheAircraft().getVTail() != null) {
-			sb.append("\t\tXcg Vertical Tail MAC: " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXMAC()*100 + "\n")
-			.append("\t\tXcg Vertical Tail BRF: " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXBRF().to(SI.METER) + "\n")
-			.append("\t\tZcg Vertical Tail MAC: " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZMAC()*100 + "\n")
-			.append("\t\tZcg Vertical Tail BRF: " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZBRF().to(SI.METER) + "\n")
+			sb.append("\t\tXcg Vertical Tail Correction Factor: " + _theBalanceManagerInterface.getVerticalTailXCGCorrectionFactor() + "\n")
+			.append("\t\tZcg Vertical Tail Correction Factor: " + _theBalanceManagerInterface.getVerticalTailZCGCorrectionFactor() + "\n")
+			.append("\t\tXcg Vertical Tail MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXMAC()*100 + "\n")
+			.append("\t\tXcg Vertical Tail MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.VERTICAL_TAIL).getXMAC()*100 + "\n")
+			.append("\t\tXcg Vertical Tail LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Vertical Tail LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.VERTICAL_TAIL).getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Vertical Tail BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXBRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Vertical Tail BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.VERTICAL_TAIL).getXBRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Vertical Tail LRF: " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getYLRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Vertical Tail BRF: " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getYBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Vertical Tail MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZMAC()*100 + "\n")
+			.append("\t\tZcg Vertical Tail MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.VERTICAL_TAIL).getZMAC()*100 + "\n")
+			.append("\t\tZcg Vertical Tail LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Vertical Tail LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.VERTICAL_TAIL).getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Vertical Tail BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Vertical Tail BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.VERTICAL_TAIL).getZBRF().to(SI.METER) + "\n")
 			.append("\t\t·····································\n");
 		}
 		if(_theBalanceManagerInterface.getTheAircraft().getCanard() != null) {
-			sb.append("\t\tXcg Canard MAC: " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXMAC()*100 + "\n")
-			.append("\t\tXcg Canard BRF: " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXBRF().to(SI.METER) + "\n")
-			.append("\t\tZcg Canard MAC: " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZMAC()*100 + "\n")
-			.append("\t\tZcg Canard BRF: " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZBRF().to(SI.METER) + "\n")
+			sb.append("\t\tXcg Canard Correction Factor: " + _theBalanceManagerInterface.getCanardXCGCorrectionFactor() + "\n")
+			.append("\t\tZcg Canard Correction Factor: " + _theBalanceManagerInterface.getCanardZCGCorrectionFactor() + "\n")
+			.append("\t\tXcg Canard MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXMAC()*100 + "\n")
+			.append("\t\tXcg Canard MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.CANARD).getXMAC()*100 + "\n")
+			.append("\t\tXcg Canard LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Canard LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.CANARD).getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Canard BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXBRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Canard BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.CANARD).getXBRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Canard LRF: " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getYLRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Canard BRF: " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getYBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Canard MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZMAC()*100 + "\n")
+			.append("\t\tZcg Canard MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.CANARD).getZMAC()*100 + "\n")
+			.append("\t\tZcg Canard LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Canard LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.CANARD).getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Canard BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Canard BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.CANARD).getZBRF().to(SI.METER) + "\n")
 			.append("\t\t·····································\n");
 		}
 		if(_theBalanceManagerInterface.getTheAircraft().getNacelles() != null) {
-			sb.append("\t\tXcg Nacelles MAC: " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXMAC()*100 + "\n")
-			.append("\t\tXcg Nacelles BRF: " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXBRF().to(SI.METER) + "\n")
-			.append("\t\tZcg Nacelles MAC: " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZMAC()*100 + "\n")
-			.append("\t\tZcg Nacelles BRF: " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZBRF().to(SI.METER) + "\n")
+			sb.append("\t\tXcg Nacelles Correction Factor: " + _theBalanceManagerInterface.getNacellesXCGCorrectionFactor() + "\n")
+			.append("\t\tZcg Nacelles Correction Factor: " + _theBalanceManagerInterface.getNacellesZCGCorrectionFactor() + "\n")
+			.append("\t\tXcg Nacelles MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXMAC()*100 + "\n")
+			.append("\t\tXcg Nacelles MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.NACELLE).getXMAC()*100 + "\n")
+			.append("\t\tXcg Nacelles LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Nacelles LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.NACELLE).getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Nacelles BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXBRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Nacelles BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.NACELLE).getXBRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Nacelles LRF: " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getYLRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Nacelles BRF: " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getYBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Nacelles MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZMAC()*100 + "\n")
+			.append("\t\tZcg Nacelles MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.NACELLE).getZMAC()*100 + "\n")
+			.append("\t\tZcg Nacelles LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZMAC()*100 + "\n")
+			.append("\t\tZcg Nacelles LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.NACELLE).getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Nacelles BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Nacelles BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.NACELLE).getZBRF().to(SI.METER) + "\n")
 			.append("\t\t·····································\n");
 		}
 		if(_theBalanceManagerInterface.getTheAircraft().getPowerPlant() != null) {
-			sb.append("\t\tXcg Power Plant MAC: " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXMAC()*100 + "\n")
-			.append("\t\tXcg Power Plant BRF: " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXBRF().to(SI.METER) + "\n")
-			.append("\t\tZcg Power Plant MAC: " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZMAC()*100 + "\n")
-			.append("\t\tZcg Power Plant BRF: " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZBRF().to(SI.METER) + "\n")
+			sb.append("\t\tXcg Power Plant Correction Factor: " + _theBalanceManagerInterface.getPowerPlantXCGCorrectionFactor() + "\n")
+			.append("\t\tZcg Power Plant Correction Factor: " + _theBalanceManagerInterface.getPowerPlantZCGCorrectionFactor() + "\n")
+			.append("\t\tXcg Power Plant MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXMAC()*100 + "\n")
+			.append("\t\tXcg Power Plant MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.POWER_PLANT).getXMAC()*100 + "\n")
+			.append("\t\tXcg Power Plant LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Power Plant LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.POWER_PLANT).getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Power Plant BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXBRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Power Plant BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.POWER_PLANT).getXBRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Power Plant LRF: " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getYLRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Power Plant BRF: " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getYBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Power Plant MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZMAC()*100 + "\n")
+			.append("\t\tZcg Power Plant MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.POWER_PLANT).getZMAC()*100 + "\n")
+			.append("\t\tZcg Power Plant LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Power Plant LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.POWER_PLANT).getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Power Plant BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Power Plant BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.POWER_PLANT).getZBRF().to(SI.METER) + "\n")
 			.append("\t\t·····································\n");
 		}
 		if(_theBalanceManagerInterface.getTheAircraft().getLandingGears() != null) {
-			sb.append("\t\tXcg Total Landing Gear MAC: " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXMAC()*100 + "\n")
-			.append("\t\tXcg Total Landing Gear BRF: " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXBRF().to(SI.METER) + "\n")
-			.append("\t\tZcg Total Landing Gear MAC: " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZMAC()*100 + "\n")
-			.append("\t\tZcg Total Landing Gear BRF: " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZBRF().to(SI.METER) + "\n")
+			sb.append("\t\tXcg Landing Gears Correction Factor: " + _theBalanceManagerInterface.getLandingGearsXCGCorrectionFactor() + "\n")
+			.append("\t\tZcg Landing Gears Correction Factor: " + _theBalanceManagerInterface.getLandingGearsZCGCorrectionFactor() + "\n")
+			.append("\t\tXcg Landing Gears MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXMAC()*100 + "\n")
+			.append("\t\tXcg Landing Gears MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.LANDING_GEAR).getXMAC()*100 + "\n")
+			.append("\t\tXcg Landing Gears LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Landing Gears LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.LANDING_GEAR).getXLRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Landing Gears BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXBRF().to(SI.METER) + "\n")
+			.append("\t\tXcg Landing Gears BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.LANDING_GEAR).getXBRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Landing Gears LRF: " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getYLRF().to(SI.METER) + "\n")
+			.append("\t\tYcg Landing Gears BRF: " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getYBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Landing Gears MAC (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZMAC()*100 + "\n")
+			.append("\t\tZcg Landing Gears MAC (CALIBRATED): " + _cgMap.get(ComponentEnum.LANDING_GEAR).getZMAC()*100 + "\n")
+			.append("\t\tZcg Landing Gears LRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Landing Gears LRF (CALIBRATED): " + _cgMap.get(ComponentEnum.LANDING_GEAR).getZLRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Landing Gears BRF (NOT CALIBRATED): " + _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZBRF().to(SI.METER) + "\n")
+			.append("\t\tZcg Landing Gears BRF (CALIBRATED): " + _cgMap.get(ComponentEnum.LANDING_GEAR).getZBRF().to(SI.METER) + "\n")
 			.append("\t\t·····································\n");
 		}
 		if(_theBalanceManagerInterface.getIncludeSystemsPosition() == true) {
@@ -1161,15 +1393,27 @@ public class ACBalanceManager {
 			Sheet sheetFuselage = wb.createSheet("FUSELAGE");
 			List<Object[]> dataListFuselage = new ArrayList<>();
 			dataListFuselage.add(new Object[] {"Description","Unit","Value"});
-			dataListFuselage.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Ycg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Xcg calibration factor", "", _theBalanceManagerInterface.getFuselageXCGCorrectionFactor()});
+			dataListFuselage.add(new Object[] {"Zcg calibration factor", "", _theBalanceManagerInterface.getFuselageZCGCorrectionFactor()});
 			dataListFuselage.add(new Object[] {" "});
-			dataListFuselage.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Ycg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListFuselage.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Xcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXMAC()*100});
+			dataListFuselage.add(new Object[] {"Xcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.FUSELAGE).getXMAC()*100});
+			dataListFuselage.add(new Object[] {"Xcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Xcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.FUSELAGE).getXLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Xcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Xcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.FUSELAGE).getXBRF().doubleValue(SI.METER)});
 			dataListFuselage.add(new Object[] {" "});
-			dataListFuselage.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
+			dataListFuselage.add(new Object[] {"Ycg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Ycg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {" "});
+			dataListFuselage.add(new Object[] {"Zcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZMAC()*100});
+			dataListFuselage.add(new Object[] {"Zcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.FUSELAGE).getZMAC()*100});
+			dataListFuselage.add(new Object[] {"Zcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Zcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.FUSELAGE).getZLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Zcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {"Zcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.FUSELAGE).getZBRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {" "});
+			dataListFuselage.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getXCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getXCGMap().get(methods) != null) 
 					dataListFuselage.add(
@@ -1196,7 +1440,7 @@ public class ACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetFuselage.setDefaultColumnWidth(35);
+				sheetFuselage.setDefaultColumnWidth(70);
 				sheetFuselage.setColumnWidth(1, 2048);
 				sheetFuselage.setColumnWidth(2, 3840);
 			}
@@ -1227,15 +1471,27 @@ public class ACBalanceManager {
 			Sheet sheetWing = wb.createSheet("WING");
 			List<Object[]> dataListWing = new ArrayList<>();
 			dataListWing.add(new Object[] {"Description","Unit","Value"});
-			dataListWing.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Xcg calibration factor", "", _theBalanceManagerInterface.getWingXCGCorrectionFactor()});
+			dataListWing.add(new Object[] {"Zcg calibration factor", "", _theBalanceManagerInterface.getWingZCGCorrectionFactor()});
+			dataListWing.add(new Object[] {" "});
+			dataListWing.add(new Object[] {"Xcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXMAC()*100});
+			dataListWing.add(new Object[] {"Xcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.WING).getXMAC()*100});
+			dataListWing.add(new Object[] {"Xcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Xcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.WING).getXLRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Xcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Xcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.WING).getXBRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {" "});
 			dataListWing.add(new Object[] {"Ycg LRF (semi-wing)","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListWing.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
-			dataListWing.add(new Object[] {" "});
-			dataListWing.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
 			dataListWing.add(new Object[] {"Ycg BRF (semi-wing)","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListWing.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListWing.add(new Object[] {" "});
-			dataListWing.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
+			dataListWing.add(new Object[] {"Zcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZMAC()*100});
+			dataListWing.add(new Object[] {"Zcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.WING).getZMAC()*100});
+			dataListWing.add(new Object[] {"Zcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Zcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.WING).getZLRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Zcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Zcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.WING).getZBRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {" "});
+			dataListWing.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getXCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getXCGMap().get(methods) != null) 
 					dataListWing.add(
@@ -1247,7 +1503,7 @@ public class ACBalanceManager {
 							);
 			}
 			dataListWing.add(new Object[] {" "});
-			dataListWing.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
+			dataListWing.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getYCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getYCGMap().get(methods) != null) 
 					dataListWing.add(
@@ -1274,7 +1530,7 @@ public class ACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetWing.setDefaultColumnWidth(35);
+				sheetWing.setDefaultColumnWidth(70);
 				sheetWing.setColumnWidth(1, 2048);
 				sheetWing.setColumnWidth(2, 3840);
 			}
@@ -1305,13 +1561,25 @@ public class ACBalanceManager {
 			Sheet sheetFuelTank = wb.createSheet("FUEL TANK");
 			List<Object[]> dataListFuelTank = new ArrayList<>();
 			dataListFuelTank.add(new Object[] {"Description","Unit","Value"});
-			dataListFuelTank.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getXCGLRF().doubleValue(SI.METER)});
-			dataListFuelTank.add(new Object[] {"Ycg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getYCGLRF().doubleValue(SI.METER)});
-			dataListFuelTank.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getZCGLRF().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Xcg calibration factor", "", _theBalanceManagerInterface.getFuelTankXCGCorrectionFactor()});
+			dataListFuelTank.add(new Object[] {"Zcg calibration factor", "", _theBalanceManagerInterface.getFuelTankZCGCorrectionFactor()});
 			dataListFuelTank.add(new Object[] {" "});
-			dataListFuelTank.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getXCG().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Xcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getCG().getXMAC()*100});
+			dataListFuelTank.add(new Object[] {"Xcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.FUEL_TANK).getXMAC()*100});
+			dataListFuelTank.add(new Object[] {"Xcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getXCGLRF().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Xcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.FUEL_TANK).getXLRF().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Xcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getXCG().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Xcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.FUEL_TANK).getXBRF().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {" "});
+			dataListFuelTank.add(new Object[] {"Ycg LRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getYCGLRF().doubleValue(SI.METER)});
 			dataListFuelTank.add(new Object[] {"Ycg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getYCG().doubleValue(SI.METER)});
-			dataListFuelTank.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getZCG().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {" "});
+			dataListFuelTank.add(new Object[] {"Zcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getCG().getZMAC()*100});
+			dataListFuelTank.add(new Object[] {"Zcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.FUEL_TANK).getZMAC()*100});
+			dataListFuelTank.add(new Object[] {"Zcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getZCGLRF().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Zcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.FUEL_TANK).getZLRF().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Zcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getFuelTank().getZCG().doubleValue(SI.METER)});
+			dataListFuelTank.add(new Object[] {"Zcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.FUEL_TANK).getZBRF().doubleValue(SI.METER)});
 			dataListFuelTank.add(new Object[] {" "});
 			
 			Row rowFuelTank = sheetFuelTank.createRow(0);
@@ -1329,7 +1597,7 @@ public class ACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetFuelTank.setDefaultColumnWidth(35);
+				sheetFuelTank.setDefaultColumnWidth(70);
 				sheetFuelTank.setColumnWidth(1, 2048);
 				sheetFuelTank.setColumnWidth(2, 3840);
 			}
@@ -1361,15 +1629,27 @@ public class ACBalanceManager {
 			Sheet sheetHTail = wb.createSheet("HORIZONTAL TAIL");
 			List<Object[]> dataListHTail = new ArrayList<>();
 			dataListHTail.add(new Object[] {"Description","Unit","Value"});
-			dataListHTail.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Xcg calibration factor", "", _theBalanceManagerInterface.getHorizontalTailXCGCorrectionFactor()});
+			dataListHTail.add(new Object[] {"Zcg calibration factor", "", _theBalanceManagerInterface.getHorizontalTailZCGCorrectionFactor()});
+			dataListHTail.add(new Object[] {" "});
+			dataListHTail.add(new Object[] {"Xcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXMAC()*100});
+			dataListHTail.add(new Object[] {"Xcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getXMAC()*100});
+			dataListHTail.add(new Object[] {"Xcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Xcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getXLRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Xcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Xcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getXBRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {" "});
 			dataListHTail.add(new Object[] {"Ycg LRF (semi-tail)","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListHTail.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
-			dataListHTail.add(new Object[] {" "});
-			dataListHTail.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
 			dataListHTail.add(new Object[] {"Ycg BRF (semi-tail)","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListHTail.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListHTail.add(new Object[] {" "});
-			dataListHTail.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
+			dataListHTail.add(new Object[] {"Zcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZMAC()*100});
+			dataListHTail.add(new Object[] {"Zcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getZMAC()*100});
+			dataListHTail.add(new Object[] {"Zcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Zcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getZLRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Zcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Zcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getZBRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {" "});
+			dataListHTail.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getXCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getXCGMap().get(methods) != null) 
 					dataListHTail.add(
@@ -1381,7 +1661,7 @@ public class ACBalanceManager {
 							);
 			}
 			dataListHTail.add(new Object[] {" "});
-			dataListHTail.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
+			dataListHTail.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getYCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getYCGMap().get(methods) != null) 
 					dataListHTail.add(
@@ -1408,7 +1688,7 @@ public class ACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetHTail.setDefaultColumnWidth(35);
+				sheetHTail.setDefaultColumnWidth(70);
 				sheetHTail.setColumnWidth(1, 2048);
 				sheetHTail.setColumnWidth(2, 3840);
 			}
@@ -1440,15 +1720,27 @@ public class ACBalanceManager {
 			Sheet sheetVTail = wb.createSheet("VERTICAL TAIL");
 			List<Object[]> dataListVTail = new ArrayList<>();
 			dataListVTail.add(new Object[] {"Description","Unit","Value"});
-			dataListVTail.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Xcg calibration factor", "", _theBalanceManagerInterface.getVerticalTailXCGCorrectionFactor()});
+			dataListVTail.add(new Object[] {"Zcg calibration factor", "", _theBalanceManagerInterface.getVerticalTailZCGCorrectionFactor()});
+			dataListVTail.add(new Object[] {" "});
+			dataListVTail.add(new Object[] {"Xcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXMAC()*100});
+			dataListVTail.add(new Object[] {"Xcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.VERTICAL_TAIL).getXMAC()*100});
+			dataListVTail.add(new Object[] {"Xcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Xcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.VERTICAL_TAIL).getXLRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Xcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Xcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.VERTICAL_TAIL).getXBRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {" "});
 			dataListVTail.add(new Object[] {"Ycg LRF (semi-tail)","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListVTail.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
-			dataListVTail.add(new Object[] {" "});
-			dataListVTail.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
 			dataListVTail.add(new Object[] {"Ycg BRF (semi-tail)","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListVTail.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListVTail.add(new Object[] {" "});
-			dataListVTail.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
+			dataListVTail.add(new Object[] {"Zcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZMAC()*100});
+			dataListVTail.add(new Object[] {"Zcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.VERTICAL_TAIL).getZMAC()*100});
+			dataListVTail.add(new Object[] {"Zcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Zcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.VERTICAL_TAIL).getZLRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Zcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Zcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.VERTICAL_TAIL).getZBRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {" "});
+			dataListVTail.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getXCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getXCGMap().get(methods) != null) 
 					dataListVTail.add(
@@ -1460,7 +1752,7 @@ public class ACBalanceManager {
 							);
 			}
 			dataListVTail.add(new Object[] {" "});
-			dataListVTail.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
+			dataListVTail.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getYCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getYCGMap().get(methods) != null) 
 					dataListVTail.add(
@@ -1487,7 +1779,7 @@ public class ACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetVTail.setDefaultColumnWidth(35);
+				sheetVTail.setDefaultColumnWidth(70);
 				sheetVTail.setColumnWidth(1, 2048);
 				sheetVTail.setColumnWidth(2, 3840);
 			}
@@ -1519,15 +1811,27 @@ public class ACBalanceManager {
 			Sheet sheetCanard = wb.createSheet("CANARD");
 			List<Object[]> dataListCanard = new ArrayList<>();
 			dataListCanard.add(new Object[] {"Description","Unit","Value"});
-			dataListCanard.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Xcg calibration factor", "", _theBalanceManagerInterface.getCanardXCGCorrectionFactor()});
+			dataListCanard.add(new Object[] {"Zcg calibration factor", "", _theBalanceManagerInterface.getCanardZCGCorrectionFactor()});
+			dataListCanard.add(new Object[] {" "});
+			dataListCanard.add(new Object[] {"Xcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXMAC()*100});
+			dataListCanard.add(new Object[] {"Xcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.CANARD).getXMAC()*100});
+			dataListCanard.add(new Object[] {"Xcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Xcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.CANARD).getXLRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Xcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Xcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.CANARD).getXBRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {" "});
 			dataListCanard.add(new Object[] {"Ycg LRF (semi-canard)","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListCanard.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
-			dataListCanard.add(new Object[] {" "});
-			dataListCanard.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXBRF().doubleValue(SI.METER)});
 			dataListCanard.add(new Object[] {"Ycg BRF (semi-canard)","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListCanard.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListCanard.add(new Object[] {" "});
-			dataListCanard.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
+			dataListCanard.add(new Object[] {"Zcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZMAC()*100});
+			dataListCanard.add(new Object[] {"Zcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.CANARD).getZMAC()*100});
+			dataListCanard.add(new Object[] {"Zcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Zcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.CANARD).getZLRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Zcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Zcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.CANARD).getZBRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {" "});
+			dataListCanard.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getXCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getXCGMap().get(methods) != null) 
 					dataListCanard.add(
@@ -1539,7 +1843,7 @@ public class ACBalanceManager {
 							);
 			}
 			dataListCanard.add(new Object[] {" "});
-			dataListCanard.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
+			dataListCanard.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getYCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getYCGMap().get(methods) != null) 
 					dataListCanard.add(
@@ -1566,7 +1870,7 @@ public class ACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetCanard.setDefaultColumnWidth(35);
+				sheetCanard.setDefaultColumnWidth(70);
 				sheetCanard.setColumnWidth(1, 2048);
 				sheetCanard.setColumnWidth(2, 3840);
 			}
@@ -1598,15 +1902,27 @@ public class ACBalanceManager {
 			Sheet sheetNacelles = wb.createSheet("NACELLES");
 			List<Object[]> dataListNacelles = new ArrayList<>();
 			dataListNacelles.add(new Object[] {"Description","Unit","Value"});
-			dataListNacelles.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXLRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {"Xcg calibration factor", "", _theBalanceManagerInterface.getNacellesXCGCorrectionFactor()});
+			dataListNacelles.add(new Object[] {"Zcg calibration factor", "", _theBalanceManagerInterface.getNacellesZCGCorrectionFactor()});
+			dataListNacelles.add(new Object[] {" "});
+			dataListNacelles.add(new Object[] {"Xcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXMAC()*100});
+			dataListNacelles.add(new Object[] {"Xcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.NACELLE).getXMAC()*100});
+			dataListNacelles.add(new Object[] {"Xcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXLRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {"Xcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.NACELLE).getXLRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {"Xcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXBRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {"Xcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.NACELLE).getXBRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {" "});
 			dataListNacelles.add(new Object[] {"Ycg LRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getYLRF().doubleValue(SI.METER)});
-			dataListNacelles.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZLRF().doubleValue(SI.METER)});
-			dataListNacelles.add(new Object[] {" "});
-			dataListNacelles.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXBRF().doubleValue(SI.METER)});
 			dataListNacelles.add(new Object[] {"Ycg BRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getYBRF().doubleValue(SI.METER)});
-			dataListNacelles.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZBRF().doubleValue(SI.METER)});
 			dataListNacelles.add(new Object[] {" "});
-			dataListNacelles.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
+			dataListNacelles.add(new Object[] {"Zcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZMAC()*100});
+			dataListNacelles.add(new Object[] {"Zcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.NACELLE).getZMAC()*100});
+			dataListNacelles.add(new Object[] {"Zcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZLRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {"Zcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.NACELLE).getZLRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {"Zcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZBRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {"Zcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.NACELLE).getZBRF().doubleValue(SI.METER)});
+			dataListNacelles.add(new Object[] {" "});
+			dataListNacelles.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getXCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getXCGMap().get(methods) != null) 
 					dataListNacelles.add(
@@ -1633,7 +1949,7 @@ public class ACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetNacelles.setDefaultColumnWidth(35);
+				sheetNacelles.setDefaultColumnWidth(70);
 				sheetNacelles.setColumnWidth(1, 2048);
 				sheetNacelles.setColumnWidth(2, 3840);
 			}
@@ -1665,15 +1981,27 @@ public class ACBalanceManager {
 			Sheet sheetPowerPlant = wb.createSheet("POWER PLANT");
 			List<Object[]> dataListPowerPlant = new ArrayList<>();
 			dataListPowerPlant.add(new Object[] {"Description","Unit","Value"});
-			dataListPowerPlant.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXLRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {"Xcg calibration factor", "", _theBalanceManagerInterface.getPowerPlantXCGCorrectionFactor()});
+			dataListPowerPlant.add(new Object[] {"Zcg calibration factor", "", _theBalanceManagerInterface.getPowerPlantZCGCorrectionFactor()});
+			dataListPowerPlant.add(new Object[] {" "});
+			dataListPowerPlant.add(new Object[] {"Xcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXMAC()*100});
+			dataListPowerPlant.add(new Object[] {"Xcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.POWER_PLANT).getXMAC()*100});
+			dataListPowerPlant.add(new Object[] {"Xcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXLRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {"Xcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.POWER_PLANT).getXLRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {"Xcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXBRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {"Xcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.POWER_PLANT).getXBRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {" "});
 			dataListPowerPlant.add(new Object[] {"Ycg LRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getYLRF().doubleValue(SI.METER)});
-			dataListPowerPlant.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZLRF().doubleValue(SI.METER)});
-			dataListPowerPlant.add(new Object[] {" "});
-			dataListPowerPlant.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXBRF().doubleValue(SI.METER)});
 			dataListPowerPlant.add(new Object[] {"Ycg BRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getYBRF().doubleValue(SI.METER)});
-			dataListPowerPlant.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZBRF().doubleValue(SI.METER)});
 			dataListPowerPlant.add(new Object[] {" "});
-			dataListPowerPlant.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
+			dataListPowerPlant.add(new Object[] {"Zcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZMAC()*100});
+			dataListPowerPlant.add(new Object[] {"Zcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.POWER_PLANT).getZMAC()*100});
+			dataListPowerPlant.add(new Object[] {"Zcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZLRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {"Zcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.POWER_PLANT).getZLRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {"Zcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZBRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {"Zcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.POWER_PLANT).getZBRF().doubleValue(SI.METER)});
+			dataListPowerPlant.add(new Object[] {" "});
+			dataListPowerPlant.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getXCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getXCGMap().get(methods) != null) 
 					dataListPowerPlant.add(
@@ -1700,7 +2028,7 @@ public class ACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetPowerPlant.setDefaultColumnWidth(35);
+				sheetPowerPlant.setDefaultColumnWidth(70);
 				sheetPowerPlant.setColumnWidth(1, 2048);
 				sheetPowerPlant.setColumnWidth(2, 3840);
 			}
@@ -1732,15 +2060,27 @@ public class ACBalanceManager {
 			Sheet sheetLandingGears = wb.createSheet("LANDING GEARS");
 			List<Object[]> dataListLandingGears = new ArrayList<>();
 			dataListLandingGears.add(new Object[] {"Description","Unit","Value"});
-			dataListLandingGears.add(new Object[] {"Xcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Xcg calibration factor", "", _theBalanceManagerInterface.getLandingGearsXCGCorrectionFactor()});
+			dataListLandingGears.add(new Object[] {"Zcg calibration factor", "", _theBalanceManagerInterface.getLandingGearsZCGCorrectionFactor()});
+			dataListLandingGears.add(new Object[] {" "});
+			dataListLandingGears.add(new Object[] {"Xcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXMAC()*100});
+			dataListLandingGears.add(new Object[] {"Xcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.LANDING_GEAR).getXMAC()*100});
+			dataListLandingGears.add(new Object[] {"Xcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXLRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Xcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.LANDING_GEAR).getXLRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Xcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Xcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.LANDING_GEAR).getXBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {" "});
 			dataListLandingGears.add(new Object[] {"Ycg LRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListLandingGears.add(new Object[] {"Zcg LRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZLRF().doubleValue(SI.METER)});
-			dataListLandingGears.add(new Object[] {" "});
-			dataListLandingGears.add(new Object[] {"Xcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXBRF().doubleValue(SI.METER)});
 			dataListLandingGears.add(new Object[] {"Ycg BRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getYBRF().doubleValue(SI.METER)});
-			dataListLandingGears.add(new Object[] {"Zcg BRF","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListLandingGears.add(new Object[] {" "});
-			dataListLandingGears.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
+			dataListLandingGears.add(new Object[] {"Zcg MAC (NOT CALIBRATED)","%", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZMAC()*100});
+			dataListLandingGears.add(new Object[] {"Zcg MAC (CALIBRATED)","%", _cgMap.get(ComponentEnum.LANDING_GEAR).getZMAC()*100});
+			dataListLandingGears.add(new Object[] {"Zcg LRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Zcg LRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.LANDING_GEAR).getZLRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Zcg BRF (NOT CALIBRATED)","m", _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Zcg BRF (CALIBRATED)","m", _cgMap.get(ComponentEnum.LANDING_GEAR).getZBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {" "});
+			dataListLandingGears.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getXCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getXCGMap().get(methods) != null) 
 					dataListLandingGears.add(
@@ -1752,7 +2092,7 @@ public class ACBalanceManager {
 							);
 			}
 			dataListLandingGears.add(new Object[] {" "});
-			dataListLandingGears.add(new Object[] {"Zcg ESTIMATION METHOD COMPARISON"});
+			dataListLandingGears.add(new Object[] {"Zcg ESTIMATION METHOD COMPARISON (WITHOUT CALIBRATIONS)"});
 			for(MethodEnum methods : _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getZCGMap().keySet()) {
 				if(_theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getZCGMap().get(methods) != null) 
 					dataListLandingGears.add(
@@ -1779,7 +2119,7 @@ public class ACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetLandingGears.setDefaultColumnWidth(35);
+				sheetLandingGears.setDefaultColumnWidth(70);
 				sheetLandingGears.setColumnWidth(1, 2048);
 				sheetLandingGears.setColumnWidth(2, 3840);
 			}
@@ -1863,7 +2203,7 @@ public class ACBalanceManager {
 					} else if (obj instanceof Double) {
 						cell.setCellValue((Double) obj);
 					}
-					sheetSystems.setDefaultColumnWidth(35);
+					sheetSystems.setDefaultColumnWidth(70);
 					sheetSystems.setColumnWidth(1, 2048);
 					sheetSystems.setColumnWidth(2, 3840);
 				}
@@ -1900,8 +2240,7 @@ public class ACBalanceManager {
 	
 	private void initializeData() {
 		
-		_xCGMap = new HashMap<>();
-		_zCGMap = new HashMap<>();
+		_cgMap = new HashMap<>();
 		_massMap = new HashMap<>();
 		
 		_payloadMass = _theBalanceManagerInterface.getSinglePassengerMass().times(
@@ -2035,8 +2374,8 @@ public class ACBalanceManager {
 		AircraftAndComponentsViewPlotUtils.createAircraftSideViewWithCGPositions(
 				_theBalanceManagerInterface.getTheAircraft(),
 				balanceOutputFolderPath,
-				_xCGMap, 
-				_zCGMap
+				_cgMap,
+				_massMap
 				);
 		
 	}
@@ -2062,8 +2401,23 @@ public class ACBalanceManager {
 					Amount.valueOf(0., SI.METER), 
 					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
 					);
-			_xCGMap.put(ComponentEnum.FUSELAGE, _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXBRF().to(SI.METER));
-			_zCGMap.put(ComponentEnum.FUSELAGE, _theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZBRF().to(SI.METER));
+			CenterOfGravity fuselageCG = new CenterOfGravity(
+					_theBalanceManagerInterface.getTheAircraft().getFuselage().getXApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getFuselage().getYApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getFuselage().getZApexConstructionAxes()
+					);
+			fuselageCG.setXLRF(_theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getXLRF().times(_theBalanceManagerInterface.getFuselageXCGCorrectionFactor()));
+			fuselageCG.setYLRF(_theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getYLRF());
+			fuselageCG.setZLRF(_theBalanceManagerInterface.getTheAircraft().getFuselage().getTheBalance().getCG().getZLRF().times(_theBalanceManagerInterface.getFuselageZCGCorrectionFactor()));
+			fuselageCG.calculateCGinBRF(ComponentEnum.FUSELAGE);
+			fuselageCG.calculateCGinMAC(
+					(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER))), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
+					Amount.valueOf(0., SI.METER), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
+					);
+			_cgMap.put(ComponentEnum.FUSELAGE, fuselageCG);
 			_massMap.put(ComponentEnum.FUSELAGE, _theBalanceManagerInterface.getFuselageMass().to(SI.KILOGRAM));
 		}
 		
@@ -2076,8 +2430,23 @@ public class ACBalanceManager {
 					Amount.valueOf(0., SI.METER), 
 					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
 					);
-			_xCGMap.put(ComponentEnum.WING, _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXBRF().to(SI.METER));
-			_zCGMap.put(ComponentEnum.WING, _theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZBRF().to(SI.METER));
+			CenterOfGravity wingCG = new CenterOfGravity(
+					_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getWing().getYApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getWing().getZApexConstructionAxes()
+					);
+			wingCG.setXLRF(_theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getXLRF().times(_theBalanceManagerInterface.getWingXCGCorrectionFactor()));
+			wingCG.setYLRF(_theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getYLRF());
+			wingCG.setZLRF(_theBalanceManagerInterface.getTheAircraft().getWing().getTheBalanceManager().getCG().getZLRF().times(_theBalanceManagerInterface.getWingZCGCorrectionFactor()));
+			wingCG.calculateCGinBRF(ComponentEnum.WING);
+			wingCG.calculateCGinMAC(
+					(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER))), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
+					Amount.valueOf(0., SI.METER), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
+					);
+			_cgMap.put(ComponentEnum.WING, wingCG);
 			_massMap.put(ComponentEnum.WING, _theBalanceManagerInterface.getWingMass().to(SI.KILOGRAM));
 		}
 		
@@ -2090,8 +2459,25 @@ public class ACBalanceManager {
 					Amount.valueOf(0., SI.METER), 
 					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
 					);
-			_xCGMap.put(ComponentEnum.FUEL_TANK, _theBalanceManagerInterface.getTheAircraft().getFuelTank().getCG().getXBRF().to(SI.METER));
-			_zCGMap.put(ComponentEnum.FUEL_TANK, _theBalanceManagerInterface.getTheAircraft().getFuelTank().getCG().getZBRF().to(SI.METER));
+			CenterOfGravity fuelTankCG = new CenterOfGravity(
+					_theBalanceManagerInterface.getTheAircraft().getFuelTank().getXApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getFuelTank().getYApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getFuelTank().getZApexConstructionAxes()
+					);
+			fuelTankCG.setXLRF(_theBalanceManagerInterface.getTheAircraft().getFuelTank().getXCGLRF().times(_theBalanceManagerInterface.getFuelTankXCGCorrectionFactor()));
+			fuelTankCG.setYLRF(_theBalanceManagerInterface.getTheAircraft().getFuelTank().getYCGLRF());
+			fuelTankCG.setZLRF(_theBalanceManagerInterface.getTheAircraft().getFuelTank().getZCGLRF().times(_theBalanceManagerInterface.getFuelTankZCGCorrectionFactor()));
+			fuelTankCG.setXBRF(_theBalanceManagerInterface.getTheAircraft().getFuelTank().getXCG().times(_theBalanceManagerInterface.getFuelTankXCGCorrectionFactor()));
+			fuelTankCG.setYBRF(_theBalanceManagerInterface.getTheAircraft().getFuelTank().getYCG());
+			fuelTankCG.setZBRF(_theBalanceManagerInterface.getTheAircraft().getFuelTank().getZCG().times(_theBalanceManagerInterface.getFuelTankZCGCorrectionFactor()));
+			fuelTankCG.calculateCGinMAC(
+					(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER))), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
+					Amount.valueOf(0., SI.METER), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
+					);
+			_cgMap.put(ComponentEnum.FUEL_TANK, fuelTankCG);
 			_massMap.put(ComponentEnum.FUEL_TANK, _theBalanceManagerInterface.getDesignFuelMass().to(SI.KILOGRAM));
 		}
 		
@@ -2104,8 +2490,23 @@ public class ACBalanceManager {
 					Amount.valueOf(0., SI.METER), 
 					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
 					);
-			_xCGMap.put(ComponentEnum.HORIZONTAL_TAIL, _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXBRF().to(SI.METER));
-			_zCGMap.put(ComponentEnum.HORIZONTAL_TAIL, _theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZBRF().to(SI.METER));
+			CenterOfGravity hTailCG = new CenterOfGravity(
+					_theBalanceManagerInterface.getTheAircraft().getHTail().getXApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getHTail().getYApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getHTail().getZApexConstructionAxes()
+					);
+			hTailCG.setXLRF(_theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getXLRF().times(_theBalanceManagerInterface.getHorizontalTailXCGCorrectionFactor()));
+			hTailCG.setYLRF(_theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getYLRF());
+			hTailCG.setZLRF(_theBalanceManagerInterface.getTheAircraft().getHTail().getTheBalanceManager().getCG().getZLRF().times(_theBalanceManagerInterface.getHorizontalTailZCGCorrectionFactor()));
+			hTailCG.calculateCGinBRF(ComponentEnum.HORIZONTAL_TAIL);
+			hTailCG.calculateCGinMAC(
+					(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER))), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
+					Amount.valueOf(0., SI.METER), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
+					);
+			_cgMap.put(ComponentEnum.HORIZONTAL_TAIL, hTailCG);
 			_massMap.put(ComponentEnum.HORIZONTAL_TAIL, _theBalanceManagerInterface.getHTailMass().to(SI.KILOGRAM));
 		}
 		
@@ -2118,8 +2519,23 @@ public class ACBalanceManager {
 					Amount.valueOf(0., SI.METER), 
 					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
 					);
-			_xCGMap.put(ComponentEnum.VERTICAL_TAIL, _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXBRF().to(SI.METER));
-			_zCGMap.put(ComponentEnum.VERTICAL_TAIL, _theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZBRF().to(SI.METER));
+			CenterOfGravity vTailCG = new CenterOfGravity(
+					_theBalanceManagerInterface.getTheAircraft().getVTail().getXApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getVTail().getYApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getVTail().getZApexConstructionAxes()
+					);
+			vTailCG.setXLRF(_theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getXLRF().times(_theBalanceManagerInterface.getVerticalTailXCGCorrectionFactor()));
+			vTailCG.setYLRF(_theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getYLRF());
+			vTailCG.setZLRF(_theBalanceManagerInterface.getTheAircraft().getVTail().getTheBalanceManager().getCG().getZLRF().times(_theBalanceManagerInterface.getVerticalTailZCGCorrectionFactor()));
+			vTailCG.calculateCGinBRF(ComponentEnum.VERTICAL_TAIL);
+			vTailCG.calculateCGinMAC(
+					(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER))), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
+					Amount.valueOf(0., SI.METER), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
+					);
+			_cgMap.put(ComponentEnum.VERTICAL_TAIL, vTailCG);
 			_massMap.put(ComponentEnum.VERTICAL_TAIL, _theBalanceManagerInterface.getVTailMass().to(SI.KILOGRAM));
 		}
 		
@@ -2132,8 +2548,23 @@ public class ACBalanceManager {
 					Amount.valueOf(0., SI.METER), 
 					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
 					);
-			_xCGMap.put(ComponentEnum.CANARD, _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXBRF().to(SI.METER));
-			_zCGMap.put(ComponentEnum.CANARD, _theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZBRF().to(SI.METER));
+			CenterOfGravity canardCG = new CenterOfGravity(
+					_theBalanceManagerInterface.getTheAircraft().getCanard().getXApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getCanard().getYApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getCanard().getZApexConstructionAxes()
+					);
+			canardCG.setXLRF(_theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getXLRF().times(_theBalanceManagerInterface.getCanardXCGCorrectionFactor()));
+			canardCG.setYLRF(_theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getYLRF());
+			canardCG.setZLRF(_theBalanceManagerInterface.getTheAircraft().getCanard().getTheBalanceManager().getCG().getZLRF().times(_theBalanceManagerInterface.getCanardZCGCorrectionFactor()));
+			canardCG.calculateCGinBRF(ComponentEnum.CANARD);
+			canardCG.calculateCGinMAC(
+					(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER))), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
+					Amount.valueOf(0., SI.METER), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
+					);
+			_cgMap.put(ComponentEnum.CANARD, canardCG);
 			_massMap.put(ComponentEnum.CANARD, _theBalanceManagerInterface.getCanardMass().to(SI.KILOGRAM));
 		}
 		
@@ -2146,8 +2577,23 @@ public class ACBalanceManager {
 					Amount.valueOf(0., SI.METER), 
 					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
 					);
-			_xCGMap.put(ComponentEnum.NACELLE, _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXBRF().to(SI.METER));
-			_zCGMap.put(ComponentEnum.NACELLE, _theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZBRF().to(SI.METER));
+			CenterOfGravity nacellesCG = new CenterOfGravity(
+					_theBalanceManagerInterface.getTheAircraft().getNacelles().getNacellesList().get(0).getXApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getNacelles().getNacellesList().get(0).getYApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getNacelles().getNacellesList().get(0).getZApexConstructionAxes()
+					);
+			nacellesCG.setXLRF(_theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getXLRF().times(_theBalanceManagerInterface.getNacellesXCGCorrectionFactor()));
+			nacellesCG.setYLRF(_theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getYLRF());
+			nacellesCG.setZLRF(_theBalanceManagerInterface.getTheAircraft().getNacelles().getTheBalance().getTotalCG().getZLRF().times(_theBalanceManagerInterface.getNacellesZCGCorrectionFactor()));
+			nacellesCG.calculateCGinBRF(ComponentEnum.NACELLE);
+			nacellesCG.calculateCGinMAC(
+					(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER))), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
+					Amount.valueOf(0., SI.METER), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
+					);
+			_cgMap.put(ComponentEnum.NACELLE, nacellesCG);
 			_massMap.put(ComponentEnum.NACELLE, _theBalanceManagerInterface.getNacellesMass().to(SI.KILOGRAM));
 		}
 		
@@ -2160,8 +2606,23 @@ public class ACBalanceManager {
 					Amount.valueOf(0., SI.METER), 
 					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
 					);
-			_xCGMap.put(ComponentEnum.POWER_PLANT, _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXBRF().to(SI.METER));
-			_zCGMap.put(ComponentEnum.POWER_PLANT, _theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZBRF().to(SI.METER));
+			CenterOfGravity powerPlantCG = new CenterOfGravity(
+					_theBalanceManagerInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getXApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getYApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getZApexConstructionAxes()
+					);
+			powerPlantCG.setXLRF(_theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getXLRF().times(_theBalanceManagerInterface.getPowerPlantXCGCorrectionFactor()));
+			powerPlantCG.setYLRF(_theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getYLRF());
+			powerPlantCG.setZLRF(_theBalanceManagerInterface.getTheAircraft().getPowerPlant().getTheBalance().getTotalCG().getZLRF().times(_theBalanceManagerInterface.getPowerPlantZCGCorrectionFactor()));
+			powerPlantCG.calculateCGinBRF(ComponentEnum.POWER_PLANT);
+			powerPlantCG.calculateCGinMAC(
+					(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER))), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
+					Amount.valueOf(0., SI.METER), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
+					);
+			_cgMap.put(ComponentEnum.POWER_PLANT, powerPlantCG);
 			_massMap.put(ComponentEnum.POWER_PLANT, _theBalanceManagerInterface.getPowerPlantMass().to(SI.KILOGRAM));
 		}
 			
@@ -2174,69 +2635,107 @@ public class ACBalanceManager {
 					Amount.valueOf(0., SI.METER), 
 					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
 					);
-			_xCGMap.put(ComponentEnum.LANDING_GEAR, _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXBRF().to(SI.METER));
-			_zCGMap.put(ComponentEnum.LANDING_GEAR, _theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZBRF().to(SI.METER));
+			CenterOfGravity landingGearsCG = new CenterOfGravity(
+					_theBalanceManagerInterface.getTheAircraft().getFuselage().getXApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getFuselage().getYApexConstructionAxes(),
+					_theBalanceManagerInterface.getTheAircraft().getLandingGears().getZApexConstructionAxesMainGear()
+					);
+			landingGearsCG.setXLRF(_theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getXLRF().times(_theBalanceManagerInterface.getLandingGearsXCGCorrectionFactor()));
+			landingGearsCG.setYLRF(_theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getYLRF());
+			landingGearsCG.setZLRF(_theBalanceManagerInterface.getTheAircraft().getLandingGears().getTheBalance().getCG().getZLRF().times(_theBalanceManagerInterface.getLandingGearsZCGCorrectionFactor()));
+			landingGearsCG.calculateCGinBRF(ComponentEnum.LANDING_GEAR);
+			landingGearsCG.calculateCGinMAC(
+					(_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+							.plus(_theBalanceManagerInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER))), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
+					Amount.valueOf(0., SI.METER), 
+					_theBalanceManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().to(SI.METER)
+					);
+			_cgMap.put(ComponentEnum.LANDING_GEAR, landingGearsCG);
 			_massMap.put(ComponentEnum.LANDING_GEAR, _theBalanceManagerInterface.getLandingGearMass().to(SI.KILOGRAM));
 		}
 
+		CenterOfGravity apuCG = new CenterOfGravity();
+		CenterOfGravity airConditioningAndAntiIcingSystemCG = new CenterOfGravity();
+		CenterOfGravity instrumentsAndNavigationSystemCG = new CenterOfGravity();
+		CenterOfGravity hydraulicAndPneumaticSystemCG = new CenterOfGravity();
+		CenterOfGravity electricalSystemsCG = new CenterOfGravity();
+		CenterOfGravity controlSurfacesCG = new CenterOfGravity();
+		CenterOfGravity furnishingsAndEquipmentsCG = new CenterOfGravity();
+		
 		if(_theBalanceManagerInterface.getTheAircraft().getSystems() != null) {
 			if(_theBalanceManagerInterface.getIncludeSystemsPosition() == true) {
 
-				_xCGMap.put(ComponentEnum.APU, _theBalanceManagerInterface.getAPUPositionX().to(SI.METER));
-				_zCGMap.put(ComponentEnum.APU, _theBalanceManagerInterface.getAPUPositionZ().to(SI.METER));
+				apuCG.setXBRF(_theBalanceManagerInterface.getAPUPositionX().to(SI.METER));
+				apuCG.setZBRF(_theBalanceManagerInterface.getAPUPositionZ().to(SI.METER));
+				_cgMap.put(ComponentEnum.APU, apuCG);
 				_massMap.put(ComponentEnum.APU, _theBalanceManagerInterface.getAPUMass().to(SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER));
-				_zCGMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, _theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER));
+				airConditioningAndAntiIcingSystemCG.setXBRF(_theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionX().to(SI.METER));
+				airConditioningAndAntiIcingSystemCG.setZBRF(_theBalanceManagerInterface.getAirConditioningAndAntiIcingSystemPositionZ().to(SI.METER));
+				_cgMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, airConditioningAndAntiIcingSystemCG);
 				_massMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, _theBalanceManagerInterface.getAirConditioningAndAntiIcingMass().to(SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionX().to(SI.METER));
-				_zCGMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, _theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionZ().to(SI.METER));
+				instrumentsAndNavigationSystemCG.setXBRF(_theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionX().to(SI.METER));
+				instrumentsAndNavigationSystemCG.setZBRF(_theBalanceManagerInterface.getInstrumentsAndNavigationSystemPositionZ().to(SI.METER));
+				_cgMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, instrumentsAndNavigationSystemCG);
 				_massMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, _theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass().to(SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionX().to(SI.METER));
-				_zCGMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().to(SI.METER));
+				hydraulicAndPneumaticSystemCG.setXBRF(_theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionX().to(SI.METER));
+				hydraulicAndPneumaticSystemCG.setZBRF(_theBalanceManagerInterface.getHydraulicAndPneumaticSystemsPositionZ().to(SI.METER));
+				_cgMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, hydraulicAndPneumaticSystemCG);
 				_massMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, _theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass().to(SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, _theBalanceManagerInterface.getElectricalSystemsPositionX().to(SI.METER));
-				_zCGMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, _theBalanceManagerInterface.getElectricalSystemsPositionZ().to(SI.METER));
+				electricalSystemsCG.setXBRF(_theBalanceManagerInterface.getElectricalSystemsPositionX().to(SI.METER));
+				electricalSystemsCG.setZBRF(_theBalanceManagerInterface.getElectricalSystemsPositionZ().to(SI.METER));
+				_cgMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, electricalSystemsCG);
 				_massMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, _theBalanceManagerInterface.getElectricalSystemsMass().to(SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.CONTROL_SURFACES, _theBalanceManagerInterface.getControlSurfacesPositionZ().to(SI.METER));
-				_zCGMap.put(ComponentEnum.CONTROL_SURFACES, _theBalanceManagerInterface.getControlSurfacesPositionZ().to(SI.METER));
+				controlSurfacesCG.setXBRF(_theBalanceManagerInterface.getControlSurfacesPositionX().to(SI.METER));
+				controlSurfacesCG.setZBRF(_theBalanceManagerInterface.getControlSurfacesPositionZ().to(SI.METER));
+				_cgMap.put(ComponentEnum.CONTROL_SURFACES, controlSurfacesCG);
 				_massMap.put(ComponentEnum.CONTROL_SURFACES, _theBalanceManagerInterface.getControlSurfacesMass().to(SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionX().to(SI.METER));
-				_zCGMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, _theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().to(SI.METER));
+				furnishingsAndEquipmentsCG.setXBRF(_theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionX().to(SI.METER));
+				furnishingsAndEquipmentsCG.setZBRF(_theBalanceManagerInterface.getFurnishingsAndEquipmentsPositionZ().to(SI.METER));
+				_cgMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, furnishingsAndEquipmentsCG);
 				_massMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, _theBalanceManagerInterface.getFurnishingsAndEquipmentsMass().to(SI.KILOGRAM));
 
 			} else {
-				_xCGMap.put(ComponentEnum.APU, Amount.valueOf(0.0, SI.METER));
-				_zCGMap.put(ComponentEnum.APU, Amount.valueOf(0.0, SI.METER));
+				
+				apuCG.setXBRF(Amount.valueOf(0.0, SI.METER));
+				apuCG.setZBRF(Amount.valueOf(0.0, SI.METER));
+				_cgMap.put(ComponentEnum.APU, apuCG);
 				_massMap.put(ComponentEnum.APU, Amount.valueOf(0.0, SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, Amount.valueOf(0.0, SI.METER));
-				_zCGMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, Amount.valueOf(0.0, SI.METER));
+				airConditioningAndAntiIcingSystemCG.setXBRF(Amount.valueOf(0.0, SI.METER));
+				airConditioningAndAntiIcingSystemCG.setZBRF(Amount.valueOf(0.0, SI.METER));
+				_cgMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, airConditioningAndAntiIcingSystemCG);
 				_massMap.put(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING, Amount.valueOf(0.0, SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, Amount.valueOf(0.0, SI.METER));
-				_zCGMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, Amount.valueOf(0.0, SI.METER));
+				instrumentsAndNavigationSystemCG.setXBRF(Amount.valueOf(0.0, SI.METER));
+				instrumentsAndNavigationSystemCG.setZBRF(Amount.valueOf(0.0, SI.METER));
+				_cgMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, instrumentsAndNavigationSystemCG);
 				_massMap.put(ComponentEnum.INSTRUMENTS_AND_NAVIGATION, Amount.valueOf(0.0, SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, Amount.valueOf(0.0, SI.METER));
-				_zCGMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, Amount.valueOf(0.0, SI.METER));
+				hydraulicAndPneumaticSystemCG.setXBRF(Amount.valueOf(0.0, SI.METER));
+				hydraulicAndPneumaticSystemCG.setZBRF(Amount.valueOf(0.0, SI.METER));
+				_cgMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, hydraulicAndPneumaticSystemCG);
 				_massMap.put(ComponentEnum.HYDRAULIC_AND_PNEUMATICS, Amount.valueOf(0.0, SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, Amount.valueOf(0.0, SI.METER));
-				_zCGMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, Amount.valueOf(0.0, SI.METER));
+				electricalSystemsCG.setXBRF(Amount.valueOf(0.0, SI.METER));
+				electricalSystemsCG.setZBRF(Amount.valueOf(0.0, SI.METER));
+				_cgMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, electricalSystemsCG);
 				_massMap.put(ComponentEnum.ELECTRICAL_SYSTEMS, Amount.valueOf(0.0, SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.CONTROL_SURFACES, Amount.valueOf(0.0, SI.METER));
-				_zCGMap.put(ComponentEnum.CONTROL_SURFACES, Amount.valueOf(0.0, SI.METER));
+				controlSurfacesCG.setXBRF(Amount.valueOf(0.0, SI.METER));
+				controlSurfacesCG.setZBRF(Amount.valueOf(0.0, SI.METER));
+				_cgMap.put(ComponentEnum.CONTROL_SURFACES, controlSurfacesCG);
 				_massMap.put(ComponentEnum.CONTROL_SURFACES, Amount.valueOf(0.0, SI.KILOGRAM));
 
-				_xCGMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, Amount.valueOf(0.0, SI.METER));
-				_zCGMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, Amount.valueOf(0.0, SI.METER));
+				furnishingsAndEquipmentsCG.setXBRF(Amount.valueOf(0.0, SI.METER));
+				furnishingsAndEquipmentsCG.setZBRF(Amount.valueOf(0.0, SI.METER));
+				_cgMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, furnishingsAndEquipmentsCG);
 				_massMap.put(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS, Amount.valueOf(0.0, SI.KILOGRAM));
 			}
 		}
@@ -2248,44 +2747,44 @@ public class ACBalanceManager {
 		double prodX = 0., prodZ = 0., sum = 0.;
 		
 		if(_theBalanceManagerInterface.getTheAircraft().getFuselage() != null) {
-			prodX += _xCGMap.get(ComponentEnum.FUSELAGE).doubleValue(SI.METER)*_massMap.get(ComponentEnum.FUSELAGE).doubleValue(SI.KILOGRAM);
-			prodZ += _zCGMap.get(ComponentEnum.FUSELAGE).doubleValue(SI.METER)*_massMap.get(ComponentEnum.FUSELAGE).doubleValue(SI.KILOGRAM);
+			prodX += _cgMap.get(ComponentEnum.FUSELAGE).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.FUSELAGE).doubleValue(SI.KILOGRAM);
+			prodZ += _cgMap.get(ComponentEnum.FUSELAGE).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.FUSELAGE).doubleValue(SI.KILOGRAM);
 			sum += _massMap.get(ComponentEnum.FUSELAGE).doubleValue(SI.KILOGRAM);
 		}
 		
 		if(_theBalanceManagerInterface.getTheAircraft().getWing() != null) {
-			prodX += _xCGMap.get(ComponentEnum.WING).doubleValue(SI.METER)*_massMap.get(ComponentEnum.WING).doubleValue(SI.KILOGRAM);
-			prodZ += _zCGMap.get(ComponentEnum.WING).doubleValue(SI.METER)*_massMap.get(ComponentEnum.WING).doubleValue(SI.KILOGRAM);
+			prodX += _cgMap.get(ComponentEnum.WING).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.WING).doubleValue(SI.KILOGRAM);
+			prodZ += _cgMap.get(ComponentEnum.WING).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.WING).doubleValue(SI.KILOGRAM);
 			sum += _massMap.get(ComponentEnum.WING).doubleValue(SI.KILOGRAM);
 		}
 		
 		if(_theBalanceManagerInterface.getTheAircraft().getHTail() != null) {
-			prodX += _xCGMap.get(ComponentEnum.HORIZONTAL_TAIL).doubleValue(SI.METER)*_massMap.get(ComponentEnum.HORIZONTAL_TAIL).doubleValue(SI.KILOGRAM);
-			prodZ += _zCGMap.get(ComponentEnum.HORIZONTAL_TAIL).doubleValue(SI.METER)*_massMap.get(ComponentEnum.HORIZONTAL_TAIL).doubleValue(SI.KILOGRAM);
+			prodX += _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.HORIZONTAL_TAIL).doubleValue(SI.KILOGRAM);
+			prodZ += _cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.HORIZONTAL_TAIL).doubleValue(SI.KILOGRAM);
 			sum += _massMap.get(ComponentEnum.HORIZONTAL_TAIL).doubleValue(SI.KILOGRAM);
 		}
 		
 		if(_theBalanceManagerInterface.getTheAircraft().getVTail() != null) {
-			prodX += _xCGMap.get(ComponentEnum.VERTICAL_TAIL).doubleValue(SI.METER)*_massMap.get(ComponentEnum.VERTICAL_TAIL).doubleValue(SI.KILOGRAM);
-			prodZ += _zCGMap.get(ComponentEnum.VERTICAL_TAIL).doubleValue(SI.METER)*_massMap.get(ComponentEnum.VERTICAL_TAIL).doubleValue(SI.KILOGRAM);
+			prodX += _cgMap.get(ComponentEnum.VERTICAL_TAIL).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.VERTICAL_TAIL).doubleValue(SI.KILOGRAM);
+			prodZ += _cgMap.get(ComponentEnum.VERTICAL_TAIL).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.VERTICAL_TAIL).doubleValue(SI.KILOGRAM);
 			sum += _massMap.get(ComponentEnum.VERTICAL_TAIL).doubleValue(SI.KILOGRAM);
 		}
 		
 		if(_theBalanceManagerInterface.getTheAircraft().getCanard() != null) {
-			prodX += _xCGMap.get(ComponentEnum.CANARD).doubleValue(SI.METER)*_massMap.get(ComponentEnum.CANARD).doubleValue(SI.KILOGRAM);
-			prodZ += _zCGMap.get(ComponentEnum.CANARD).doubleValue(SI.METER)*_massMap.get(ComponentEnum.CANARD).doubleValue(SI.KILOGRAM);
+			prodX += _cgMap.get(ComponentEnum.CANARD).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.CANARD).doubleValue(SI.KILOGRAM);
+			prodZ += _cgMap.get(ComponentEnum.CANARD).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.CANARD).doubleValue(SI.KILOGRAM);
 			sum += _massMap.get(ComponentEnum.CANARD).doubleValue(SI.KILOGRAM);
 		}
 		
 		if(_theBalanceManagerInterface.getTheAircraft().getNacelles() != null) {
-			prodX += _xCGMap.get(ComponentEnum.NACELLE).doubleValue(SI.METER)*_massMap.get(ComponentEnum.NACELLE).doubleValue(SI.KILOGRAM);
-			prodZ += _zCGMap.get(ComponentEnum.NACELLE).doubleValue(SI.METER)*_massMap.get(ComponentEnum.NACELLE).doubleValue(SI.KILOGRAM);
+			prodX += _cgMap.get(ComponentEnum.NACELLE).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.NACELLE).doubleValue(SI.KILOGRAM);
+			prodZ += _cgMap.get(ComponentEnum.NACELLE).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.NACELLE).doubleValue(SI.KILOGRAM);
 			sum += _massMap.get(ComponentEnum.NACELLE).doubleValue(SI.KILOGRAM);
 		}
 		
 		if(_theBalanceManagerInterface.getTheAircraft().getLandingGears() != null) {
-			prodX += _xCGMap.get(ComponentEnum.LANDING_GEAR).doubleValue(SI.METER)*_massMap.get(ComponentEnum.LANDING_GEAR).doubleValue(SI.KILOGRAM);
-			prodZ += _zCGMap.get(ComponentEnum.LANDING_GEAR).doubleValue(SI.METER)*_massMap.get(ComponentEnum.LANDING_GEAR).doubleValue(SI.KILOGRAM);
+			prodX += _cgMap.get(ComponentEnum.LANDING_GEAR).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.LANDING_GEAR).doubleValue(SI.KILOGRAM);
+			prodZ += _cgMap.get(ComponentEnum.LANDING_GEAR).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.LANDING_GEAR).doubleValue(SI.KILOGRAM);
 			sum += _massMap.get(ComponentEnum.LANDING_GEAR).doubleValue(SI.KILOGRAM);
 		}
 
@@ -2311,7 +2810,7 @@ public class ACBalanceManager {
 		
 		_cgStructureAndPower.setXBRF(
 				Amount.valueOf(
-						( (_xCGMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.METER)*_massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM))
+						( (_cgMap.get(ComponentEnum.POWER_PLANT).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM))
 								+ (sum*_cgStructure.getXBRF().doubleValue(SI.METER))
 								)
 						/(sum + _massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM)),
@@ -2320,7 +2819,7 @@ public class ACBalanceManager {
 
 		_cgStructureAndPower.setZBRF(
 				Amount.valueOf(
-						( (_zCGMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.METER)*_massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM))
+						( (_cgMap.get(ComponentEnum.POWER_PLANT).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM))
 								+ (sum*_cgStructure.getZBRF().doubleValue(SI.METER))
 								)
 						/(sum + _massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM)),
@@ -2342,13 +2841,13 @@ public class ACBalanceManager {
 			
 			_cgManufacturerEmptuMass.setXBRF(
 					Amount.valueOf(
-							( (_xCGMap.get(ComponentEnum.APU).doubleValue(SI.METER)*_massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM))
-									+ (_xCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.METER)*_massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM))
-									+ (_xCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.METER)*_massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM))
-									+ (_xCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM))
-									+ (_xCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM))
-									+ (_xCGMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.METER)*_massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM))
-									+ (_xCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM))
+							( (_cgMap.get(ComponentEnum.APU).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.CONTROL_SURFACES).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).getXBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM))
 									+ (_cgStructureAndPower.getXBRF().doubleValue(SI.METER)*(_massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM) + sum))
 									)
 							/(sum + _massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM)
@@ -2365,13 +2864,13 @@ public class ACBalanceManager {
 
 			_cgManufacturerEmptuMass.setZBRF(
 					Amount.valueOf(
-							( (_zCGMap.get(ComponentEnum.APU).doubleValue(SI.METER)*_massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM))
-									+ (_zCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.METER)*_massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM))
-									+ (_zCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.METER)*_massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM))
-									+ (_zCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM))
-									+ (_zCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM))
-									+ (_zCGMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.METER)*_massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM))
-									+ (_zCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.METER)*_massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM))
+							( (_cgMap.get(ComponentEnum.APU).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.APU).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.CONTROL_SURFACES).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.CONTROL_SURFACES).doubleValue(SI.KILOGRAM))
+									+ (_cgMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).getZBRF().doubleValue(SI.METER)*_massMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).doubleValue(SI.KILOGRAM))
 									+ (_cgStructureAndPower.getZBRF().doubleValue(SI.METER)*(_massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM) + sum))
 									)
 							/(sum + _massMap.get(ComponentEnum.POWER_PLANT).doubleValue(SI.KILOGRAM)
@@ -2602,16 +3101,16 @@ public class ACBalanceManager {
 			fuselageInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getFuselageMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.FUSELAGE), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.FUSELAGE).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			fuselageInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getFuselageMass(),
-					_zCGMap.get(ComponentEnum.FUSELAGE), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.FUSELAGE), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.FUSELAGE).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.FUSELAGE).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			fuselageInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getFuselageMass(),
-					_xCGMap.get(ComponentEnum.FUSELAGE), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.FUSELAGE).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 		}
@@ -2622,16 +3121,16 @@ public class ACBalanceManager {
 			wingInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getWingMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.WING).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			wingInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getWingMass(),
-					_zCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.WING).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.WING).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			wingInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getWingMass(),
-					_xCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.WING).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 		}
@@ -2642,16 +3141,16 @@ public class ACBalanceManager {
 			hTailInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getHTailMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			hTailInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getHTailMass(),
-					_zCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			hTailInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getHTailMass(),
-					_xCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 		}
@@ -2662,16 +3161,16 @@ public class ACBalanceManager {
 			vTailInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getVTailMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.VERTICAL_TAIL).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			vTailInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getVTailMass(),
-					_zCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.VERTICAL_TAIL).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.VERTICAL_TAIL).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			vTailInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getVTailMass(),
-					_xCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.VERTICAL_TAIL).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 		}
@@ -2682,16 +3181,16 @@ public class ACBalanceManager {
 			canardInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getCanardMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.CANARD).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			canardInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getCanardMass(),
-					_zCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.CANARD).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.CANARD).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			canardInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getCanardMass(),
-					_xCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.CANARD).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 		}
@@ -2702,16 +3201,16 @@ public class ACBalanceManager {
 			nacellesInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getNacellesMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.NACELLE).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			nacellesInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getNacellesMass(),
-					_zCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.NACELLE).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.NACELLE).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			nacellesInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getNacellesMass(),
-					_xCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.NACELLE).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 		}
@@ -2722,16 +3221,16 @@ public class ACBalanceManager {
 			powerPlantInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getPowerPlantMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.POWER_PLANT).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			powerPlantInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getPowerPlantMass(),
-					_zCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.POWER_PLANT).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.POWER_PLANT).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			powerPlantInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getPowerPlantMass(),
-					_xCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.POWER_PLANT).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 		}
@@ -2742,16 +3241,16 @@ public class ACBalanceManager {
 			landingGearsInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getLandingGearMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.LANDING_GEAR).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			landingGearsInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getLandingGearMass(),
-					_zCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.LANDING_GEAR).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.LANDING_GEAR).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			landingGearsInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getLandingGearMass(),
-					_xCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.LANDING_GEAR).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 		}
@@ -2763,16 +3262,16 @@ public class ACBalanceManager {
 			apuInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getAPUMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.APU).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			apuInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getAPUMass(),
-					_zCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.APU).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.APU).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			apuInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getAPUMass(),
-					_xCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.APU).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			
@@ -2781,16 +3280,16 @@ public class ACBalanceManager {
 			airConditioningAndAntiIcingSystemInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getAirConditioningAndAntiIcingMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			airConditioningAndAntiIcingSystemInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getAirConditioningAndAntiIcingMass(),
-					_zCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			airConditioningAndAntiIcingSystemInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getAirConditioningAndAntiIcingMass(),
-					_xCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			
@@ -2799,16 +3298,16 @@ public class ACBalanceManager {
 			instrumentsAndNavigationSystemInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			instrumentsAndNavigationSystemInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass(),
-					_zCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			instrumentsAndNavigationSystemInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass(),
-					_xCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			
@@ -2817,16 +3316,16 @@ public class ACBalanceManager {
 			electricalSystemInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getElectricalSystemsMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			electricalSystemInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getElectricalSystemsMass(),
-					_zCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			electricalSystemInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getElectricalSystemsMass(),
-					_xCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).getZBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			
@@ -2835,16 +3334,16 @@ public class ACBalanceManager {
 			hydraulicAndPneumaticSystemsInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			hydraulicAndPneumaticSystemsInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass(),
-					_zCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			hydraulicAndPneumaticSystemsInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass(),
-					_xCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			
@@ -2853,16 +3352,16 @@ public class ACBalanceManager {
 			controlSurfacesInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getControlSurfacesMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.CONTROL_SURFACES).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			controlSurfacesInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getControlSurfacesMass(),
-					_zCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.CONTROL_SURFACES).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.CONTROL_SURFACES).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			controlSurfacesInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getControlSurfacesMass(),
-					_xCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.CONTROL_SURFACES).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			
@@ -2871,16 +3370,16 @@ public class ACBalanceManager {
 			furnishingsAndEquipmentsInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 					_theBalanceManagerInterface.getFurnishingsAndEquipmentsMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			furnishingsAndEquipmentsInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 					_theBalanceManagerInterface.getFurnishingsAndEquipmentsMass(),
-					_zCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getZBRF(),
-					_xCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getXBRF()
+					_cgMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+					_cgMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 					);
 			furnishingsAndEquipmentsInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 					_theBalanceManagerInterface.getFurnishingsAndEquipmentsMass(),
-					_xCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 		}
@@ -2924,16 +3423,16 @@ public class ACBalanceManager {
 				fuelTankInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 						_theBalanceManagerInterface.getDesignFuelMass(),
 						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-						_zCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getZBRF()
+						_cgMap.get(ComponentEnum.FUEL_TANK).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 						);
 				fuelTankInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 						_theBalanceManagerInterface.getDesignFuelMass(),
-						_zCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getZBRF(),
-						_xCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getXBRF()
+						_cgMap.get(ComponentEnum.FUEL_TANK).getZBRF(), _cgMaximumTakeOffMass.getZBRF(),
+						_cgMap.get(ComponentEnum.FUEL_TANK).getXBRF(), _cgMaximumTakeOffMass.getXBRF()
 						);
 				fuelTankInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 						_theBalanceManagerInterface.getDesignFuelMass(),
-						_xCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getXBRF(),
+						_cgMap.get(ComponentEnum.FUEL_TANK).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 						);
 			}
@@ -3062,18 +3561,18 @@ public class ACBalanceManager {
 		if(_theBalanceManagerInterface.getTheAircraft().getFuselage() != null) {
 			fuselageInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getFuselageMass(),
-					_xCGMap.get(ComponentEnum.FUSELAGE), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.FUSELAGE).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			fuselageInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getFuselageMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.FUSELAGE), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.FUSELAGE).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			fuselageInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getFuselageMass(),
-					_xCGMap.get(ComponentEnum.FUSELAGE), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.FUSELAGE), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.FUSELAGE).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.FUSELAGE).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 		}
 		
@@ -3082,18 +3581,18 @@ public class ACBalanceManager {
 		if(_theBalanceManagerInterface.getTheAircraft().getWing() != null) {
 			wingInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getWingMass(),
-					_xCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.WING).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			wingInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getWingMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.WING).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			wingInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getWingMass(),
-					_xCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.WING), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.WING).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.WING).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 		}
 		
@@ -3102,18 +3601,18 @@ public class ACBalanceManager {
 		if(_theBalanceManagerInterface.getTheAircraft().getHTail() != null) {
 			hTailInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getHTailMass(),
-					_xCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			hTailInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getHTailMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			hTailInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getHTailMass(),
-					_xCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.HORIZONTAL_TAIL), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.HORIZONTAL_TAIL).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 		}
 		
@@ -3122,18 +3621,18 @@ public class ACBalanceManager {
 		if(_theBalanceManagerInterface.getTheAircraft().getVTail() != null) {
 			vTailInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getVTailMass(),
-					_xCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.VERTICAL_TAIL).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			vTailInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getVTailMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.VERTICAL_TAIL).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			vTailInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getVTailMass(),
-					_xCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.VERTICAL_TAIL), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.VERTICAL_TAIL).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.VERTICAL_TAIL).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 		}
 		
@@ -3142,18 +3641,18 @@ public class ACBalanceManager {
 		if(_theBalanceManagerInterface.getTheAircraft().getCanard() != null) {
 			canardInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getCanardMass(),
-					_xCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.CANARD).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			canardInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getCanardMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.CANARD).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			canardInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getCanardMass(),
-					_xCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.CANARD), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.CANARD).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.CANARD).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 		}
 		
@@ -3162,18 +3661,18 @@ public class ACBalanceManager {
 		if(_theBalanceManagerInterface.getTheAircraft().getNacelles() != null) {
 			nacellesInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getNacellesMass(),
-					_xCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.NACELLE).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			nacellesInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getNacellesMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.NACELLE).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			nacellesInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getNacellesMass(),
-					_xCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.NACELLE), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.NACELLE).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.NACELLE).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 		}
 		
@@ -3182,18 +3681,18 @@ public class ACBalanceManager {
 		if(_theBalanceManagerInterface.getTheAircraft().getPowerPlant() != null) {
 			powerPlantInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getPowerPlantMass(),
-					_xCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.POWER_PLANT).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			powerPlantInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getPowerPlantMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.POWER_PLANT).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			powerPlantInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getPowerPlantMass(),
-					_xCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.POWER_PLANT), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.POWER_PLANT).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.POWER_PLANT).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 		}
 		
@@ -3202,18 +3701,18 @@ public class ACBalanceManager {
 		if(_theBalanceManagerInterface.getTheAircraft().getLandingGears() != null) {
 			landingGearsInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getLandingGearMass(),
-					_xCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.LANDING_GEAR).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			landingGearsInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getLandingGearMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.LANDING_GEAR).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			landingGearsInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getLandingGearMass(),
-					_xCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.LANDING_GEAR), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.LANDING_GEAR).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.LANDING_GEAR).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 		}
 		
@@ -3223,126 +3722,126 @@ public class ACBalanceManager {
 			// APU
 			apuInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getAPUMass(),
-					_xCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.APU).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			apuInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getAPUMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.APU).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			apuInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getAPUMass(),
-					_xCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.APU), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.APU).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.APU).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			
 			//------------------------------------------------------------------------------------------------
 			// AIR CONDITIONING AND ANTI-ICING SYSTEM
 			airConditioningAndAntiIcingSystemInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getAirConditioningAndAntiIcingMass(),
-					_xCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			airConditioningAndAntiIcingSystemInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getAirConditioningAndAntiIcingMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			airConditioningAndAntiIcingSystemInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getAirConditioningAndAntiIcingMass(),
-					_xCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			
 			//------------------------------------------------------------------------------------------------
 			// INSTRUMENTS AND NAVIGATION SYSTEM
 			instrumentsAndNavigationSystemInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass(),
-					_xCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			instrumentsAndNavigationSystemInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			instrumentsAndNavigationSystemInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getInstrumentsAndNavigationSystemMass(),
-					_xCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			
 			//------------------------------------------------------------------------------------------------
 			// ELECTRICAL SYSTEMS
 			electricalSystemInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getElectricalSystemsMass(),
-					_xCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			electricalSystemInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getElectricalSystemsMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			electricalSystemInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getElectricalSystemsMass(),
-					_xCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.ELECTRICAL_SYSTEMS), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.ELECTRICAL_SYSTEMS).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			
 			//------------------------------------------------------------------------------------------------
 			// HYDRAULIC AND PNEUMATIC SYSTEMS
 			hydraulicAndPneumaticSystemsInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass(),
-					_xCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			hydraulicAndPneumaticSystemsInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			hydraulicAndPneumaticSystemsInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getHydraulicAndPneumaticSystemsMass(),
-					_xCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			
 			//------------------------------------------------------------------------------------------------
 			// CONTROL SURFACES
 			controlSurfacesInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getControlSurfacesMass(),
-					_xCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.CONTROL_SURFACES).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			controlSurfacesInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getControlSurfacesMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.CONTROL_SURFACES).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			controlSurfacesInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getControlSurfacesMass(),
-					_xCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.CONTROL_SURFACES), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.CONTROL_SURFACES).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.CONTROL_SURFACES).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			
 			//------------------------------------------------------------------------------------------------
 			// FURNISHINGS AND EQUIPMENTS
 			furnishingsAndEquipmentsInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 					_theBalanceManagerInterface.getFurnishingsAndEquipmentsMass(),
-					_xCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 					);
 			furnishingsAndEquipmentsInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 					_theBalanceManagerInterface.getFurnishingsAndEquipmentsMass(),
 					Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-					_zCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 			furnishingsAndEquipmentsInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 					_theBalanceManagerInterface.getFurnishingsAndEquipmentsMass(),
-					_xCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getXBRF(),
-					_zCGMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS), _cgMaximumTakeOffMass.getZBRF()
+					_cgMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+					_cgMap.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 					);
 
 		}
@@ -3389,18 +3888,18 @@ public class ACBalanceManager {
 				
 				fuelTankInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 						_theBalanceManagerInterface.getDesignFuelMass(),
-						_xCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getXBRF(),
+						_cgMap.get(ComponentEnum.FUEL_TANK).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
 						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF()
 						);
 				fuelTankInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 						_theBalanceManagerInterface.getDesignFuelMass(),
 						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
-						_zCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getZBRF()
+						_cgMap.get(ComponentEnum.FUEL_TANK).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 						);
 				fuelTankInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 						_theBalanceManagerInterface.getDesignFuelMass(),
-						_xCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getXBRF(),
-						_zCGMap.get(ComponentEnum.FUEL_TANK), _cgMaximumTakeOffMass.getZBRF()
+						_cgMap.get(ComponentEnum.FUEL_TANK).getXBRF(), _cgMaximumTakeOffMass.getXBRF(),
+						_cgMap.get(ComponentEnum.FUEL_TANK).getZBRF(), _cgMaximumTakeOffMass.getZBRF()
 						);
 				
 			}
@@ -3499,22 +3998,6 @@ public class ACBalanceManager {
 
 	public void setMaxForwardOperativeCG(Double _maxForwardCG) {
 		this._maxForwardOperativeCG = _maxForwardCG;
-	}
-
-	public Map<ComponentEnum, Amount<Length>> getXCGMap() {
-		return _xCGMap;
-	}
-
-	public void setXCGMap(Map<ComponentEnum, Amount<Length>> _xCGMap) {
-		this._xCGMap = _xCGMap;
-	}
-
-	public Map<ComponentEnum, Amount<Length>> getZCGMap() {
-		return _zCGMap;
-	}
-
-	public void setZCGMap(Map<ComponentEnum, Amount<Length>> _zCGMap) {
-		this._zCGMap = _zCGMap;
 	}
 
 	public Map<ComponentEnum, Amount<Mass>> getMassMap() {
@@ -3619,6 +4102,14 @@ public class ACBalanceManager {
 
 	public void setAircraftInertiaProductIxz(Amount<?> _aircraftInertiaProductIxz) {
 		this._aircraftInertiaProductIxz = _aircraftInertiaProductIxz;
+	}
+
+	public Map<ComponentEnum, CenterOfGravity> getCGMap() {
+		return _cgMap;
+	}
+
+	public void setCGMap(Map<ComponentEnum, CenterOfGravity> _cgMap) {
+		this._cgMap = _cgMap;
 	}
 	
 }

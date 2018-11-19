@@ -67,38 +67,36 @@ public class NacelleWeightManager {
 		
 	}
 	
-	public void calculateTotalMass(Aircraft theAircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateTotalMass(Aircraft theAircraft, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 
 		_totalMassEstimated = Amount.valueOf(0., SI.KILOGRAM);
 		_totalMassReference = theAircraft.getTheAnalysisManager().getTheWeights().getNacellesReferenceMass();
 
-		for(int i=0; i<theAircraft.getPowerPlant().getEngineNumber(); i++)
-			calculateMass(theAircraft, theAircraft.getPowerPlant().getEngineType().get(i), methodsMapWeights);
+		for(int i=0; i<theAircraft.getPowerPlant().getEngineNumber(); i++) {
+			if(methodsMapWeights.get(ComponentEnum.NACELLE).size() == 0)
+				calculateMass(theAircraft, theAircraft.getPowerPlant().getEngineType().get(i), methodsMapWeights, 0);
+			else
+				calculateMass(theAircraft, theAircraft.getPowerPlant().getEngineType().get(i), methodsMapWeights, i);
+		}
 		
 		_totalMassMap.put(
-				methodsMapWeights.get(ComponentEnum.NACELLE), 
+				MethodEnum.OVERALL, 
 				Amount.valueOf(
 						theAircraft.getNacelles().getTheWeights().getMassEstimatedList().stream().mapToDouble(m -> m.doubleValue(SI.KILOGRAM)).sum(),
 						SI.KILOGRAM
 						)
 				);
 		
-		if(!methodsMapWeights.get(ComponentEnum.NACELLE).equals(MethodEnum.AVERAGE)) {
-			_totalPercentDifference =  new double[_totalMassMap.size()];
-			_totalMassEstimated = _totalMassMap.get(methodsMapWeights.get(ComponentEnum.NACELLE)).to(SI.KILOGRAM);
-		}
-		else {
-			_totalPercentDifference =  new double[_totalMassMap.size()];
-			_totalMassEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-					_totalMassReference,
-					_totalMassMap,
-					_totalPercentDifference,
-					100.).getMean(), SI.KILOGRAM);
-		}
-		
+		_totalPercentDifference =  new double[_totalMassMap.size()];
+		_totalMassEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+				_totalMassReference,
+				_totalMassMap,
+				_totalPercentDifference,
+				100.).getMean(), SI.KILOGRAM);
+
 	}
 	
-	private void calculateMass (Aircraft theAircraft, EngineTypeEnum engineType, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	private void calculateMass (Aircraft theAircraft, EngineTypeEnum engineType, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights, int indexOfNacelle) {
 		
 		if (engineType.equals(EngineTypeEnum.TURBOFAN) || engineType.equals(EngineTypeEnum.TURBOJET)) {
 			calculateMass(theAircraft, engineType, MethodEnum.JENKINSON);
@@ -113,9 +111,9 @@ public class NacelleWeightManager {
 			calculateMass(theAircraft, engineType, MethodEnum.KUNDU);
 		}
 		
-		if(!methodsMapWeights.get(ComponentEnum.NACELLE).equals(MethodEnum.AVERAGE)) {
+		if(!methodsMapWeights.get(ComponentEnum.NACELLE).get(indexOfNacelle).equals(MethodEnum.AVERAGE)) {
 			_percentDifference = new double[_massMap.size()];
-			_massEstimatedList.add(_massMap.get(methodsMapWeights.get(ComponentEnum.NACELLE)));
+			_massEstimatedList.add(_massMap.get(methodsMapWeights.get(ComponentEnum.NACELLE).get(indexOfNacelle)));
 		}
 		else {
 			_percentDifference = new double[_massMap.size()];

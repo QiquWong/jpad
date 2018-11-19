@@ -11,6 +11,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
 	<analyses id="IRON analysis" iterative_loop="FALSE">
+	 <!-- FOR NACELLES AND POWER PLANT: insert one method per element separated by "," or left blank to make an avareged value -->
 	<!--
 		<weights 
             file="analysis_weights_IRON_WM.xml" 

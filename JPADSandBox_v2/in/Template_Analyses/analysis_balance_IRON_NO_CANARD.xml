@@ -55,6 +55,44 @@
 					<z unit="m">0.0</z>
 				</furnishings_and_equipments>
 			</systems_positions>
+			<calibration> <!-- Default values: 1.0 - Corrections are applied in Local Reference Frame (LRF) reference frame -->
+				<fuselage>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</fuselage>
+				<wing>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</wing>
+				<fuel_tank>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</fuel_tank>
+				<horizontal_tail>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</horizontal_tail>
+				<vertical_tail>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</vertical_tail>
+				<canard>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</canard>
+				<nacelles>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</nacelles>
+				<power_plant>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</power_plant>
+				<landing_gears>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</landing_gears>
+			</calibration>
         </balance>
     </analysis>        
 </jpad_config>

@@ -50,7 +50,7 @@ public class FuselageWeightManager {
 		
 	}
 	
-	public void calculateMass(Aircraft aircraft, OperatingConditions operatingConditions, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateMass(Aircraft aircraft, OperatingConditions operatingConditions, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 		
 		calculateMass(aircraft, operatingConditions, MethodEnum.JENKINSON);
 		calculateMass(aircraft, operatingConditions, MethodEnum.NICOLAI_1984);
@@ -61,9 +61,9 @@ public class FuselageWeightManager {
 		calculateMass(aircraft, operatingConditions, MethodEnum.TORENBEEK_1976);
 		calculateMass(aircraft, operatingConditions, MethodEnum.TORENBEEK_2013);
 		
-		if(!methodsMapWeights.get(ComponentEnum.FUSELAGE).equals(MethodEnum.AVERAGE)) { 
+		if(!methodsMapWeights.get(ComponentEnum.FUSELAGE).get(0).equals(MethodEnum.AVERAGE)) { 
 			_percentDifference =  new double[_massMap.size()];
-			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.FUSELAGE));
+			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.FUSELAGE).get(0));
 		}
 		else {
 			_percentDifference =  new double[_massMap.size()];
