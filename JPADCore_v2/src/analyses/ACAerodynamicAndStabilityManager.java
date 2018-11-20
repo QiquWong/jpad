@@ -7082,35 +7082,35 @@ public class ACAerodynamicAndStabilityManager {
 				if(theAircraft.getTheAnalysisManager().getTheBalance() != null) {
 					
 					//---------------------------------------------------------------
-					// XCG POSITIONS
-					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxForwardOperativeCG());
-					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxAftCG());
+//					// XCG POSITIONS
+//					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxForwardOperativeCG());
+//					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxAftCG());
+//
+//					//---------------------------------------------------------------
+//					// ZCG POSITIONS
+//					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getZMAC());
+//					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getZMAC());
 
-					//---------------------------------------------------------------
-					// ZCG POSITIONS
-					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getZMAC());
-					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMaximumTakeOffMass().getZMAC());
-
-					//---------------------------------------------------------------
-					// XCG AND ZCG POSITIONS FUSELAGE
-					if(theAircraft.getFuselage() != null) {
-						xCGFuselage = theAircraft.getTheAnalysisManager().getTheBalance().getXCGMap().get(ComponentEnum.FUSELAGE).to(SI.METER);
-						zCGFuselage = theAircraft.getTheAnalysisManager().getTheBalance().getZCGMap().get(ComponentEnum.FUSELAGE).to(SI.METER);
-					}
-
-					//---------------------------------------------------------------
-					// XCG AND ZCG POSITIONS LANDING GEAR
-					if(theAircraft.getLandingGears() != null) {
-						xCGLandingGears = theAircraft.getTheAnalysisManager().getTheBalance().getXCGMap().get(ComponentEnum.LANDING_GEAR).to(SI.METER);
-						zCGLandingGears = theAircraft.getTheAnalysisManager().getTheBalance().getZCGMap().get(ComponentEnum.LANDING_GEAR).to(SI.METER);
-					}
+//					//---------------------------------------------------------------
+//					// XCG AND ZCG POSITIONS FUSELAGE
+//					if(theAircraft.getFuselage() != null) {
+//						xCGFuselage = theAircraft.getTheAnalysisManager().getTheBalance().getXCGMap().get(ComponentEnum.FUSELAGE).to(SI.METER);
+//						zCGFuselage = theAircraft.getTheAnalysisManager().getTheBalance().getZCGMap().get(ComponentEnum.FUSELAGE).to(SI.METER);
+//					}
+//
+//					//---------------------------------------------------------------
+//					// XCG AND ZCG POSITIONS LANDING GEAR
+//					if(theAircraft.getLandingGears() != null) {
+//						xCGLandingGears = theAircraft.getTheAnalysisManager().getTheBalance().getXCGMap().get(ComponentEnum.LANDING_GEAR).to(SI.METER);
+//						zCGLandingGears = theAircraft.getTheAnalysisManager().getTheBalance().getZCGMap().get(ComponentEnum.LANDING_GEAR).to(SI.METER);
+//					}
 
 					//---------------------------------------------------------------
 					// XCG AND ZCG POSITIONS NACELLE
-					if(theAircraft.getNacelles() != null) {
-						xCGNacelles = theAircraft.getTheAnalysisManager().getTheBalance().getXCGMap().get(ComponentEnum.NACELLE).to(SI.METER);
-						zCGNacelles = theAircraft.getTheAnalysisManager().getTheBalance().getXCGMap().get(ComponentEnum.NACELLE).to(SI.METER);
-					}
+//					if(theAircraft.getNacelles() != null) {
+//						xCGNacelles = theAircraft.getTheAnalysisManager().getTheBalance().getXCGMap().get(ComponentEnum.NACELLE).to(SI.METER);
+//						zCGNacelles = theAircraft.getTheAnalysisManager().getTheBalance().getXCGMap().get(ComponentEnum.NACELLE).to(SI.METER);
+//					}
 				}
 				else {
 					System.err.println("WARNING!! THE BALANCE ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");

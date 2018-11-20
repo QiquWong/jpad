@@ -1517,7 +1517,9 @@ public class ACAerodynamicAndStabilityManagerUtils {
 
 		IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
 
-		/* FIXME: ADD CANARD TO EQUATION. FORTHEMORE, CREATE LOCAL MAP, SCALE VALUES EVETUALLY, THEN "PUTALL" INSIDE THE AC MANAGER FIELD  */
+		Map<Amount<Angle>, List<Double>> clTotalCurveTemporary = new HashMap<>();
+		
+		/* FIXME: ADD CANARD TO EQUATION.   */
 		_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> 
 		aerodynamicAndStabilityManager.getTotalLiftCoefficient().put(
 				de,
@@ -1532,7 +1534,6 @@ public class ACAerodynamicAndStabilityManagerUtils {
 
 				)
 				);
-
 		//----------- scale factors
 
 		List<Amount<Angle>> alphaBodyTemporary = new ArrayList<>();
@@ -1541,7 +1542,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				);
 
 		_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> 
-		aerodynamicAndStabilityManager.getTotalLiftCoefficient().put(
+		aerodynamicAndStabilityManager.getTotalLiftCoefficient().replace(
 				de,
 				MyArrayUtils.convertDoubleArrayToListDouble(
 						MyMathUtils.getInterpolatedValue1DLinear(
@@ -1561,7 +1562,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 						_theAerodynamicBuilderInterface.getTotalLiftCalibrationCLScaleFactor()
 						);
 			}
-		aerodynamicAndStabilityManager.getTotalLiftCoefficient().put(
+		aerodynamicAndStabilityManager.getTotalLiftCoefficient().replace(
 				de,
 				temporaryLiftCoefficient
 				);
@@ -1751,7 +1752,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		
 		/* TODO: ADD DELTA CD ELEVATOR DEFLECTION WHEN AVAILABLE */ 
 		_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de -> {
-			aerodynamicAndStabilityManager.getTotalDragCoefficient().put(
+			aerodynamicAndStabilityManager.getTotalDragCoefficient().replace(
 					de, 
 					aerodynamicAndStabilityManager.getTotalLiftCoefficient().get(de).stream().map(cL -> 
 					cD0TotalAircraft + (Math.pow(cL, 2)*kDragPolarAircraft) + cDWave)
@@ -1761,7 +1762,6 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		
 		//----------- scale factors
 
-		/* FIXME : SAME 'PUT' ISSUE AS FOR TOTAL LIFT */
 		_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> {
 			List<Double> temporaryDragCoefficient = new ArrayList<>();
 			for(int i=0; i<aerodynamicAndStabilityManager.getAlphaBodyList().size(); i++) {
@@ -1770,7 +1770,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 						_theAerodynamicBuilderInterface.getTotalDragCalibrationCDScaleFactor()
 						);
 			}
-		aerodynamicAndStabilityManager.getTotalLiftCoefficient().put(
+		aerodynamicAndStabilityManager.getTotalLiftCoefficient().replace(
 				de,
 				temporaryDragCoefficient
 				);
