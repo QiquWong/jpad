@@ -459,7 +459,7 @@ public class DatabaseManager {
 		else if(databaseName.endsWith(".xls"))
 			databaseNameXML = databaseName.replace(".xls", ".xml");
 		
-		String serializedDatabaseDirectory = databaseDirectory + "serializedDatabase"; 
+		String serializedDatabaseDirectory = databaseDirectory + File.separator + "serializedDatabase"; 
 		String serializedDatabaseFullName = serializedDatabaseDirectory + File.separator + databaseNameXML;
 
 		File serializedEngineDatabaseFile = new File(serializedDatabaseFullName);

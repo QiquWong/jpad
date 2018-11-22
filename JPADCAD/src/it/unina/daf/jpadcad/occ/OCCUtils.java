@@ -106,59 +106,105 @@ public final class OCCUtils {
 	}
 	
 	public static OCCShape makePatchThruSections(
-			CADVertex v0, List<CADGeomCurve3D> geomcurves, CADVertex v1) {
+			CADVertex v0, List<CADWire> cadWires, CADVertex v1) {
 
 		// the global factory variable must be non-null
 		if (OCCUtils.theFactory == null)
 			return null;
-		if (geomcurves.size() < 2)
+		if (cadWires.size() < 2)
 			return null;
 		
 		// The CADShell object
 		System.out.println("OCCUtils.makePatchThruSections.Surfacing ...");
 		CADShell cadShell = OCCUtils.theFactory
 				                    .newShell(
-				                    	(OCCVertex) v0, // initial vertex
-				                    	geomcurves.stream() // purge the null objects
-									      				.filter(Objects::nonNull)
-									      				.collect(Collectors.toList()),
-									    (OCCVertex) v1 // final vertex
+				                        v0, // initial vertex
+				                    	cadWires.stream() // purge the null objects
+									      		.filter(Objects::nonNull)
+									      		.collect(Collectors.toList()),
+									    v1 // final vertex
 									);
-		return (OCCShape)cadShell;		
+		return (OCCShape) cadShell;		
 	}
 	
 	public static OCCShape makePatchThruSections(
-			CADVertex v0, List<CADGeomCurve3D> geomcurves) {
-		return makePatchThruSections(v0, geomcurves, null);
+			CADVertex v0, List<CADWire> cadWires) {
+		return makePatchThruSections(v0, cadWires, null);
 	}
 
 	public static OCCShape makePatchThruSections(
-			List<CADGeomCurve3D> geomcurves, CADVertex v1) {
-		return makePatchThruSections(null, geomcurves, v1);
+			List<CADWire> cadWires, CADVertex v1) {
+		return makePatchThruSections(null, cadWires, v1);
 	}
 	
-	public static OCCShape makePatchThruSections(List<CADGeomCurve3D> geomcurves) {
-		return makePatchThruSections(null, geomcurves, null);
+	public static OCCShape makePatchThruSections(List<CADWire> cadWires) {
+		return makePatchThruSections(null, cadWires, null);
 	}
 	
-	public static OCCShape makePatchThruSections(CADGeomCurve3D ... geomcurvesArray) {
-		if (geomcurvesArray.length < 2)
+	public static OCCShape makePatchThruSections(CADWire ... cadWires) {
+		if (cadWires.length < 2)
 			return null;
-		return makePatchThruSections(null, 
-				Arrays.stream(geomcurvesArray).collect(Collectors.toList()), // from array of CADGeomCurve3D to a List<>
+		return makePatchThruSections(
+				null, 
+				Arrays.stream(cadWires).collect(Collectors.toList()), // from array of CADWire to a List<>
 				null);
 	}
 	
-	public static OCCShape makePatchThruSectionsP(CADVertex v0, List<CADGeomCurve3D> geomcurves) {
-		return makePatchThruSections(v0, geomcurves, null);
+	public static OCCShape makePatchThruCurveSections(
+			CADVertex v0, List<CADGeomCurve3D> cadCurves, CADVertex v1) {
+		
+		// The global factory variable must be non-null
+		if (OCCUtils.theFactory == null)
+			return null;
+		if (cadCurves.size() < 2)
+			return null;
+		
+		// Generate a wire for each single curve and add them to a list
+		List<CADWire> cadWires = new ArrayList<>();
+		cadWires.addAll(cadCurves.stream()
+			     .map(crv -> crv.edge())
+			     .map(e -> theFactory.newWireFromAdjacentEdges(e))
+			     .collect(Collectors.toList()));
+		
+		// Generate the CADShell object
+		System.out.println("OCCUtils.makePatchThruCurveSections. Surfacing ...");
+		CADShell cadShell = OCCUtils.theFactory
+				                    .newShell(
+				                        v0, // initial vertex
+				                    	cadWires.stream() // purge the null objects
+									      		.filter(Objects::nonNull)
+									      		.collect(Collectors.toList()),
+									    v1 // final vertex
+									);
+		return (OCCShape) cadShell;		
 	}
 	
-	public static OCCShape makePatchThruSectionsP(List<CADGeomCurve3D> geomcurves, CADVertex v1) {
-		return makePatchThruSections(null, geomcurves, v1);
+	public static OCCShape makePatchThruCurveSections(
+			CADVertex v0, List<CADGeomCurve3D> cadCurves) {
+		return makePatchThruCurveSections(v0, cadCurves, null);
+	}
+	
+	public static OCCShape makePatchThruCurveSections(
+			List<CADGeomCurve3D> cadCurves, CADVertex v1) {
+		return makePatchThruCurveSections(null, cadCurves, v1);
+	}
+	
+	public static OCCShape makePatchThruCurveSections(List<CADGeomCurve3D> cadCurves) {
+		return makePatchThruCurveSections(null, cadCurves, null);
+	}
+	
+	public static OCCShape makePatchThruCurveSections(CADGeomCurve3D ... cadCurves) {
+		if (cadCurves.length < 2)
+			return null;
+		return makePatchThruCurveSections(
+				null, 
+				Arrays.stream(cadCurves).collect(Collectors.toList()),
+				null);
 	}
 	
 	public static OCCShape makePatchThruSectionsP(
 			PVector p0, List<List<PVector>> sections, PVector p1) {
+		
 		// the global factory variable must be non-null
 		if (OCCUtils.theFactory == null)
 			return null;
@@ -173,23 +219,15 @@ public final class OCCUtils {
 		if (p1 != null)
 			v1 = OCCUtils.theFactory.newVertex(p1.x, p1.y, p1.z);
 
-		List<CADGeomCurve3D> cadGeomCurveList = new ArrayList<CADGeomCurve3D>();
-
-		boolean isPeriodic = false;
-		for(List<PVector> sectionPoints : sections) {
-			cadGeomCurveList.add(
-					OCCUtils.theFactory.newCurve3D(
-							sectionPoints.stream()
-							.map(p -> new double[]{p.x, p.y, p.z})
-							.collect(Collectors.toList()), // convert from List<PVector> to List<double[]>
-							isPeriodic)
-					);
-		}
-		return OCCUtils.makePatchThruSections(v0, cadGeomCurveList, v1);
-	}
-	
-	public static OCCShape makePatchThruSectionsP(List<List<PVector>> sections) {
-		return makePatchThruSectionsP(null, sections, null);
+		List<CADWire> cadWireList = new ArrayList<>();
+		
+		cadWireList.addAll(sections.stream()
+				.map(pvs -> theFactory.newCurve3DP(pvs, false))
+				.map(crv -> crv.edge())
+				.map(edg -> theFactory.newWireFromAdjacentEdges(edg))
+				.collect(Collectors.toList()));
+		
+		return OCCUtils.makePatchThruSections(v0, cadWireList, v1);
 	}
 	
 	public static OCCShape makePatchThruSectionsP(PVector p0, List<List<PVector>> sections) {
@@ -200,9 +238,12 @@ public final class OCCUtils {
 		return makePatchThruSectionsP(null, sections, p1);
 	}
 	
+	public static OCCShape makePatchThruSectionsP(List<List<PVector>> sections) {
+		return makePatchThruSectionsP(null, sections, null);
+	}
+	
 	public static CADShape makeFilledFace(TopoDS_Shape ... shapesArray) {
-		// TODO: add checks
-		
+		// TODO: add checks	
 		return makeFilledFace(Arrays.stream(shapesArray).collect(Collectors.toList()));
 	}
 

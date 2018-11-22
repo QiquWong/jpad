@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64/OCCJavaWrapper.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/trove/trove-3.1a1.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/vecmath/vecmath.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar" sourcepath="/LIBRARY_FOLDER"/>
@@ -20,5 +19,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jim/jimObjModelImporterJFX.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/vvecmath/VVecMath.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/javaslang/javaslang-2.0.4.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64/OCCJavaWrapper.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

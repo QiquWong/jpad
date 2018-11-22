@@ -340,13 +340,13 @@ public class Test25mds {
 		}
 
 		// Create patches
-		OCCShape upperPatch = OCCUtils.makePatchThruSections(
+		OCCShape upperPatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newVertex(pointA2[0], pointA2[1], pointA2[2]), 
 				upperCurves, 
 				OCCUtils.theFactory.newVertex(pointC2[0], pointC2[1], pointC2[2])
 				);	
 		
-		OCCShape lowerPatch = OCCUtils.makePatchThruSections(
+		OCCShape lowerPatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newVertex(pointA[0], pointA[1], pointA[2]), 
 				lowerCurves, 
 				OCCUtils.theFactory.newVertex(pointC[0], pointC[1], pointC[2])
@@ -366,7 +366,7 @@ public class Test25mds {
 			explorerLow.Next();
 		}	
 		
-		OCCShape sidePatch = OCCUtils.makePatchThruSections(
+		OCCShape sidePatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newCurve3D((CADEdge) OCCUtils.theFactory.newShape(upperEdges.get(1))),
 				OCCUtils.theFactory.newCurve3D((CADEdge) OCCUtils.theFactory.newShape(lowerEdges.get(3)))
 				);

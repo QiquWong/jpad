@@ -447,13 +447,13 @@ public class Test28mds {
 		}
 		
 		// Create patches
-		OCCShape upperPatch = OCCUtils.makePatchThruSections(
+		OCCShape upperPatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newVertex(pntA[0], pntA[1], pntA[2]), 
 				mainSegments, 
 				OCCUtils.theFactory.newVertex(pntE[0], pntE[1], pntE[2])
 				);	
 		
-		OCCShape lowerPatch = OCCUtils.makePatchThruSections(
+		OCCShape lowerPatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newVertex(pntG[0], pntG[1], pntG[2]), 
 				bottomSegments, 
 				OCCUtils.theFactory.newVertex(pntF[0], pntF[1], pntF[2])
@@ -473,7 +473,7 @@ public class Test28mds {
 			explorerLow.Next();
 		}	
 		
-		OCCShape sidePatch = OCCUtils.makePatchThruSections(
+		OCCShape sidePatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newCurve3D((CADEdge) OCCUtils.theFactory.newShape(upperEdges.get(1))),
 				OCCUtils.theFactory.newCurve3D((CADEdge) OCCUtils.theFactory.newShape(lowerEdges.get(1)))
 				);
@@ -796,13 +796,13 @@ public class Test28mds {
 		}
 		
 		// Create patches
-		OCCShape upperPatch = OCCUtils.makePatchThruSections(
+		OCCShape upperPatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newVertex(pntA[0], pntA[1], pntA[2]), 
 				mainSegments, 
 				OCCUtils.theFactory.newVertex(pntE[0], pntE[1], pntE[2])
 				);	
 
-		OCCShape lowerPatch = OCCUtils.makePatchThruSections(
+		OCCShape lowerPatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newVertex(pntG[0], pntG[1], pntG[2]), 
 				bottomSegments, 
 				OCCUtils.theFactory.newVertex(pntF[0], pntF[1], pntF[2])
@@ -822,7 +822,7 @@ public class Test28mds {
 			explorerLow.Next();
 		}	
 
-		OCCShape sidePatch = OCCUtils.makePatchThruSections(
+		OCCShape sidePatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newCurve3D((CADEdge) OCCUtils.theFactory.newShape(upperEdges.get(1))),
 				OCCUtils.theFactory.newCurve3D((CADEdge) OCCUtils.theFactory.newShape(lowerEdges.get(1)))
 				);

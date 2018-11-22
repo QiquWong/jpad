@@ -79,7 +79,7 @@ public class PowerPlant {
 							DatabaseManager.initializeEngineDatabase(
 									new EngineDatabaseManager(), 
 									MyConfiguration.getDir(FoldersEnum.DATABASE_DIR),
-									_engineList.get(0).getEngineDatabaseName()
+									engine.getEngineDatabaseName()
 									)
 							);
 				} catch (InvalidFormatException | IOException e) {
@@ -134,7 +134,7 @@ public class PowerPlant {
 		  ;
 		for(int i=0; i<this._engineList.size(); i++)
 			sb.append("\t-------------------------------------\n")
-			  .append("\tEngine n° " + (i+1) + "\n")
+			  .append("\tEngine nï¿½ " + (i+1) + "\n")
 			  .append("\t-------------------------------------\n")
 			  .append(this._engineList.get(i).toString())
 			  ;

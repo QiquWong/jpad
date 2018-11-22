@@ -16,6 +16,7 @@ import configuration.enumerations.WingAdjustCriteriaEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftCADUtils;
+import it.unina.daf.jpadcadsandbox.utils.AircraftCADUtils.WingTipType;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils.FileExtension;
 
@@ -31,20 +32,35 @@ public class Test31mds {
 		
 		Fuselage fuselage = aircraft.getFuselage();
 		LiftingSurface wing = aircraft.getWing();
+		LiftingSurface horizontal = aircraft.getHTail();
+		LiftingSurface vertical = aircraft.getVTail();
 		
-		fuselage.setYApexConstructionAxes(Amount.valueOf(2, SI.METER));
+//		fuselage.setYApexConstructionAxes(Amount.valueOf(2, SI.METER));
+//		wing.setYApexConstructionAxes(Amount.valueOf(3, SI.METER));
+//		vertical.setYApexConstructionAxes(Amount.valueOf(-1, SI.METER));
 		
-		List<OCCShape> fuselageShapes = AircraftCADUtils.getFuselageCAD(fuselage, 
-				7, 7, 
+//		List<OCCShape> fuselageShapes = AircraftCADUtils.getFuselageCAD(fuselage, 
+//				10, 7, 
+//				true, true, true);
+		
+//		List<OCCShape> wingShapes = AircraftCADUtils.getLiftingSurfaceCAD(wing, 
+//				WingTipType.ROUNDED, 
+////				ComponentEnum.WING, 1e-3,
+//				true, false, false);
+		
+		List<OCCShape> horizontalShapes = AircraftCADUtils.getLiftingSurfaceCAD(horizontal, 
+				WingTipType.CUTOFF, 
+//				ComponentEnum.HORIZONTAL_TAIL, 1e-3,
 				true, true, true);
 		
-//		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, 
-//				ComponentEnum.WING, 1e-3, 
-//				false, true, false);
+//		List<OCCShape> verticalShapes = AircraftCADUtils.getLiftingSurfaceCAD(vertical, 
+//				WingTipType.CUTOFF, 
+////				ComponentEnum.VERTICAL_TAIL, 1e-3,
+//				true, true, true);
 		
 		String filename = "AircraftCADUtils_Test.brep";
 		
-		if (OCCUtils.write(filename, fuselageShapes))
+		if (OCCUtils.write(filename, horizontalShapes))
 			System.out.println("[Test31mds] CAD shapes correctly written to file (" + filename + ")");
 	}
 

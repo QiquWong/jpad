@@ -30,6 +30,7 @@ import opencascade.TopoDS;
 import opencascade.TopoDS_Face;
 import opencascade.TopoDS_Shape;
 import opencascade.TopoDS_Shell;
+import opencascade.TopoDS_Wire;
 import opencascade.gp_Pnt;
 import processing.core.PVector;
 
@@ -39,7 +40,7 @@ import processing.core.PVector;
  */
 public class OCCShapeFactory extends CADShapeFactory
 {
-	private static final Logger logger=Logger.getLogger(OCCShapeFactory.class.getName());
+	private static final Logger logger = Logger.getLogger(OCCShapeFactory.class.getName());
 	
 	@Override
 	public final CADShape newShape(Object o)
@@ -86,7 +87,7 @@ public class OCCShapeFactory extends CADShapeFactory
 		TopoDS_Shape brepShape;
 		if (fileName.endsWith(".step") || fileName.endsWith(".stp"))
 		{
-			logger.fine("Read STEP file: "+fileName);
+			logger.fine("Read STEP file: " + fileName);
 			STEPControl_Reader aReader = new STEPControl_Reader();
 			aReader.ReadFile(fileName);
 			logger.fine("Transfer roots into shape...");
@@ -97,7 +98,7 @@ public class OCCShapeFactory extends CADShapeFactory
 		}
 		else if (fileName.endsWith(".igs"))
 		{
-			logger.fine("Read IGES file: "+fileName);
+			logger.fine("Read IGES file: " + fileName);
 			IGESControl_Reader aReader = new IGESControl_Reader();
 			aReader.ReadFile(fileName);
 			logger.fine("Transfer roots into shape...");
@@ -108,8 +109,7 @@ public class OCCShapeFactory extends CADShapeFactory
 		}
 		else
 		{
-			logger.fine("Read BREP file: "+fileName);
-			//brepShape = BRepTools.read(fileName, new BRep_Builder());
+			logger.fine("Read BREP file: " + fileName);
 			TopoDS_Shape shape = new TopoDS_Shape();
 			BRepTools.Read(shape, fileName, new BRep_Builder());
 			brepShape = shape;
@@ -119,7 +119,7 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	/**
-	 * @param type 'u'=fuse 'n'=common '\\'=cut
+	 * @param type 'u' = fuse, 'n' = common, '\\' = cut
 	 */
 	@Override
 	public CADShape newShape(CADShape o1, CADShape o2, char type)
@@ -127,19 +127,7 @@ public class OCCShapeFactory extends CADShapeFactory
 		CADShape res = null;
 		TopoDS_Shape s1 = ((OCCShape) o1).getShape();
 		TopoDS_Shape s2 = ((OCCShape) o2).getShape();
-/* With libOccJava
-		short t = -1;
-		if (type == 'u')
-			t = 0;
-		else if (type == 'n')
-			t = 1;
-		else if (type == '\\')
-			t = 2;
-		BRepAlgoAPI_BooleanOperation op = new BRepAlgoAPI_BooleanOperation(s1, s2, t);
-		TopoDS_Shape s = op.shape();
-		if (s != null)
-			res = newShape(s);
-*/
+
 		BRepAlgoAPI_BooleanOperation op = null;
 		try
 		{
@@ -315,11 +303,11 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	@Override
-	public CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList) {
+	public CADShell newShell(List<CADWire> cadWireList) {
 		CADShell shell = null;
 		try
 		{
-			shell = new OCCShell(cadGeomCurveList); // defaults: isSolid=0, ruled=0, pres3d=1.0e-06
+			shell = new OCCShell(cadWireList); // defaults: isSolid = 0, ruled = 0, pres3d = 1.0e-06
 		}
 		catch (RuntimeException ex)
 		{
@@ -329,11 +317,11 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 
 	@Override
-	public CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList, long isSolid, long ruled, double pres3d) {
+	public CADShell newShell(List<CADWire> cadWireList, long isSolid, long ruled, double pres3d) {
 		CADShell shell = null;
 		try
 		{
-			shell = new OCCShell(cadGeomCurveList, isSolid, ruled, pres3d);
+			shell = new OCCShell(cadWireList, isSolid, ruled, pres3d);
 		}
 		catch (RuntimeException ex)
 		{
@@ -343,11 +331,11 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	@Override
-	public CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList, long isSolid, long ruled) {
+	public CADShell newShell(List<CADWire> cadWireList, long isSolid, long ruled) {
 		CADShell shell = null;
 		try
 		{
-			shell = new OCCShell(cadGeomCurveList, isSolid, ruled);
+			shell = new OCCShell(cadWireList, isSolid, ruled);
 		}
 		catch (RuntimeException ex)
 		{
@@ -357,11 +345,11 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	@Override
-	public CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1) {
+	public CADShell newShell(CADVertex v0, List<CADWire> cadWireList, CADVertex v1) {
 		CADShell shell = null;
 		try
 		{
-			shell = new OCCShell(v0, cadGeomCurveList, v1); // defaults: isSolid=0, ruled=0, pres3d=1.0e-06
+			shell = new OCCShell(v0, cadWireList, v1); // defaults: isSolid = 0, ruled = 0, pres3d = 1.0e-06
 		}
 		catch (RuntimeException ex)
 		{
@@ -371,11 +359,11 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	@Override
-	public CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled, double pres3d) {
+	public CADShell newShell(CADVertex v0, List<CADWire> cadWireList, CADVertex v1, long isSolid, long ruled, double pres3d) {
 		CADShell shell = null;
 		try
 		{
-			shell = new OCCShell(v0, cadGeomCurveList, v1, isSolid, ruled, pres3d);
+			shell = new OCCShell(v0, cadWireList, v1, isSolid, ruled, pres3d);
 		}
 		catch (RuntimeException ex)
 		{
@@ -385,11 +373,11 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	@Override
-	public CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled) {
+	public CADShell newShell(CADVertex v0, List<CADWire> cadWireList, CADVertex v1, long isSolid, long ruled) {
 		CADShell shell = null;
 		try
 		{
-			shell = new OCCShell(v0, cadGeomCurveList, v1, isSolid, ruled);
+			shell = new OCCShell(v0, cadWireList, v1, isSolid, ruled);
 		}
 		catch (RuntimeException ex)
 		{
@@ -430,6 +418,15 @@ public class OCCShapeFactory extends CADShapeFactory
 	@Override
 	public CADFace newFacePlanar(CADVertex v0, CADVertex v1, CADVertex v2) {
 		return newFacePlanar(v0.pnt(), v1.pnt(), v2.pnt());		
+	}
+	
+	@Override
+	public CADFace newFacePlanar(CADWire wire) {
+		TopoDS_Wire tdsWire = TopoDS.ToWire(((OCCShape) wire).getShape());
+		
+		BRepBuilderAPI_MakeFace faceMaker = new BRepBuilderAPI_MakeFace(tdsWire, 1);
+		
+		return (CADFace) newShape(faceMaker.Face());
 	}
 	
 	@Override
@@ -492,6 +489,16 @@ public class OCCShapeFactory extends CADShapeFactory
 		ret = (CADSolid) newShape(solidMaker.Solid());
 		
 		return ret;
+	}
+	
+	@Override
+	public CADWire newWireFromAdjacentEdges(CADEdge ... cadEdges) {
+		return new OCCWire(Arrays.asList(cadEdges));
+	}
+	
+	@Override
+	public CADWire newWireFromAdjacentEdges(List<CADEdge> cadEdges) {
+		return new OCCWire(cadEdges);
 	}
 
 	@Override
