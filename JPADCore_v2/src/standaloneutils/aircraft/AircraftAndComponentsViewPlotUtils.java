@@ -4,16 +4,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
-import java.awt.PaintContext;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.ColorModel;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -32,9 +26,10 @@ import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
 import org.jfree.chart.LegendItemSource;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -42,7 +37,6 @@ import org.jfree.chart.renderer.xy.XYAreaRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.ui.RectangleEdge;
-import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -274,8 +268,8 @@ public class AircraftAndComponentsViewPlotUtils {
 		if(aircraft.getPowerPlant() != null) {
 			for(int i=0; i<aircraft.getPowerPlant().getEngineList().size(); i++) {
 
-				if (aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
-						|| aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+				if (aircraft.getPowerPlant().getEngineType().get(i).equals(EngineTypeEnum.PISTON)
+						|| aircraft.getPowerPlant().getEngineType().get(i).equals(EngineTypeEnum.TURBOPROP)) {
 
 					XYSeries seriesPropellerCruvesTopView = new XYSeries("Propeller " + i, false);
 					seriesPropellerCruvesTopView.add(
@@ -692,8 +686,8 @@ public class AircraftAndComponentsViewPlotUtils {
 		if(aircraft.getPowerPlant() != null) {
 			for(int i=0; i<aircraft.getPowerPlant().getEngineList().size(); i++) {
 
-				if (aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
-						|| aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+				if (aircraft.getPowerPlant().getEngineType().get(i).equals(EngineTypeEnum.PISTON)
+						|| aircraft.getPowerPlant().getEngineType().get(i).equals(EngineTypeEnum.TURBOPROP)) {
 
 					XYSeries seriesPropellerCruvesSideView = new XYSeries("Propeller " + i, false);
 					seriesPropellerCruvesSideView.add(
@@ -860,21 +854,12 @@ public class AircraftAndComponentsViewPlotUtils {
 					);
 		}
 
-		if (aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
-				|| aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
-			plot.setRenderer(2, xyLineAndShapeRenderer);
-			plot.setDataset(2, dataset);
-			plot.setRenderer(1, xyAreaRenderer);
-			plot.setDataset(1, dataset);
-			plot.setRenderer(0, xyLineAndShapePropRenderer);
-			plot.setDataset(0, dataset);
-		}
-		else {
-			plot.setRenderer(1, xyLineAndShapeRenderer);
-			plot.setDataset(1, dataset);
-			plot.setRenderer(0, xyAreaRenderer);
-			plot.setDataset(0, dataset);
-		}
+		plot.setRenderer(2, xyLineAndShapeRenderer);
+		plot.setDataset(2, dataset);
+		plot.setRenderer(1, xyAreaRenderer);
+		plot.setDataset(1, dataset);
+		plot.setRenderer(0, xyLineAndShapePropRenderer);
+		plot.setDataset(0, dataset);
 
 		//-------------------------------------------------------------------------------------
 		// EXPORT TO SVG
@@ -1249,8 +1234,8 @@ public class AircraftAndComponentsViewPlotUtils {
 		if(aircraft.getPowerPlant() != null) {
 			for(int i=0; i<aircraft.getPowerPlant().getEngineList().size(); i++) {
 
-				if (aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
-						|| aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+				if (aircraft.getPowerPlant().getEngineType().get(i).equals(EngineTypeEnum.PISTON)
+						|| aircraft.getPowerPlant().getEngineType().get(i).equals(EngineTypeEnum.TURBOPROP)) {
 					
 					Amount<Length> radius = aircraft.getPowerPlant().getEngineList().get(i).getPropellerDiameter().divide(2);
 					Double[] centerPosition = new Double[] {
@@ -4385,8 +4370,8 @@ public class AircraftAndComponentsViewPlotUtils {
 		if(aircraft.getPowerPlant() != null) {
 			for(int i=0; i<aircraft.getPowerPlant().getEngineList().size(); i++) {
 
-				if (aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
-						|| aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+				if (aircraft.getPowerPlant().getEngineType().get(i).equals(EngineTypeEnum.PISTON)
+						|| aircraft.getPowerPlant().getEngineType().get(i).equals(EngineTypeEnum.TURBOPROP)) {
 
 					XYSeries seriesPropellerCruvesSideView = new XYSeries("Propeller " + i, false);
 					seriesPropellerCruvesSideView.add(
@@ -4499,13 +4484,8 @@ public class AircraftAndComponentsViewPlotUtils {
 		if (aircraft.getVTail() != null)
 			seriesAndColorList.add(Tuple.of(seriesVTailSideView, Color.decode("#FFD700")));
 		
-		Color[] colorArray = new Color[17];
-		for(int i=0; i<colorArray.length; i++) {
-			int color = (int) (Math.random() * 256);
-			colorArray[i] = new Color(color, color, color); 
-		}
 		for(int i=0; i<cgPositionsSeriesList.size(); i++)
-			seriesAndColorListCGPositions.add(Tuple.of(cgPositionsSeriesList.get(i), colorArray[i]));
+			seriesAndColorListCGPositions.add(Tuple.of(cgPositionsSeriesList.get(i), Color.BLACK));
 		
 		
 		XYSeriesCollection dataset = new XYSeriesCollection();
@@ -4528,12 +4508,6 @@ public class AircraftAndComponentsViewPlotUtils {
 		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
 		chart.setAntiAlias(true);
 		chart.removeLegend();
-		
-		// TODO: ADD CUSTOMIZED LEGEND... 
-//		LegendTitle legend = new LegendTitle();
-//		legend.setPosition(RectangleEdge.BOTTOM);
-//		legend.setBackgroundPaint((Paint)ChartColor.WHITE);
-//		chart.addLegend(legend);
 		
 		XYPlot plot = (XYPlot) chart.getPlot();
 		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
@@ -4581,6 +4555,25 @@ public class AircraftAndComponentsViewPlotUtils {
 			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
 		}
 
+		/* COLOR ARRAY FOR EACH COMPONENT */
+		List<Color> colorList = new ArrayList<>();
+		colorList.add(new Color(255,0,0));
+		colorList.add(new Color(115,0,0));
+		colorList.add(new Color(99,109,20));
+		colorList.add(new Color(99,106,103));
+		colorList.add(new Color(99,106,205));
+		colorList.add(new Color(0,0,188));
+		colorList.add(new Color(0,255,0));
+		colorList.add(new Color(0,0,0));
+		colorList.add(new Color(237,29,0));
+		colorList.add(new Color(246,129,168));
+		colorList.add(new Color(181,98,0));
+		colorList.add(new Color(181,250,6));
+		colorList.add(new Color(102,255,255));
+		colorList.add(new Color(51,51,0));
+		colorList.add(new Color(0,102,255));
+		colorList.add(new Color(255,255,0));
+		
 		XYLineAndShapeRenderer xyLineAndShapeRendererCGPositions = new XYLineAndShapeRenderer();
 		xyLineAndShapeRendererCGPositions.setDefaultShapesVisible(true);
 		xyLineAndShapeRendererCGPositions.setDefaultLinesVisible(false);
@@ -4590,26 +4583,45 @@ public class AircraftAndComponentsViewPlotUtils {
 		xyLineAndShapeRendererCGPositions.setDefaultEntityRadius(25);
 		for(int i=0; i<dataset.getSeries().size(); i++) {
 			xyLineAndShapeRendererCGPositions.setSeriesShape(i, ShapeUtils.createDiamond(5.0f));
+			xyLineAndShapeRendererCGPositions.setSeriesPaint(i, Color.RED );
 			for(int j=0; j<seriesAndColorList.size(); j++)
-				if(dataset.getSeries().get(i).equals(seriesAndColorList.get(j)._1()))
+				if(dataset.getSeries().get(i).equals(seriesAndColorList.get(j)._1())) 
 					xyLineAndShapeRendererCGPositions.setSeriesVisible(i, false);
+			for(int j=0; j<seriesAndColorListCGPositions.size(); j++)
+				if(dataset.getSeries().get(i).equals(seriesAndColorListCGPositions.get(j)._1())) {
+					xyLineAndShapeRendererCGPositions.setSeriesPaint(i, colorList.get(j));
+				}
 		}
 		
-		if (aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)
-				|| aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
-			plot.setRenderer(2, xyLineAndShapeRendererCGPositions);
-			plot.setDataset(2, dataset);
-			plot.setRenderer(1, xyLineAndShapeRenderer);
-			plot.setDataset(1, dataset);
-			plot.setRenderer(0, xyLineAndShapePropRenderer);
-			plot.setDataset(0, dataset);
-		}
-		else {
-			plot.setRenderer(1, xyLineAndShapeRendererCGPositions);
-			plot.setDataset(1, dataset);
-			plot.setRenderer(0, xyLineAndShapeRenderer);
-			plot.setDataset(0, dataset);
-		}
+		LegendItemSource source = new LegendItemSource() {
+			public LegendItemCollection getLegendItems() {
+				LegendItemCollection lic = new LegendItemCollection();
+				for(int i=0; i<dataset.getSeries().size(); i++) {
+					for(int j=0; j<seriesAndColorListCGPositions.size(); j++)
+						if(dataset.getSeries().get(i).equals(seriesAndColorListCGPositions.get(j)._1())) {
+							LegendItem li = new LegendItem(seriesAndColorListCGPositions.get(j)._1().getKey().toString());
+							li.setShape(xyLineAndShapeRendererCGPositions.getSeriesShape(i));
+							li.setFillPaint(xyLineAndShapeRendererCGPositions.getSeriesPaint(i));
+							li.setOutlinePaint(xyLineAndShapeRendererCGPositions.getDefaultOutlinePaint());
+							li.setOutlineStroke(xyLineAndShapeRendererCGPositions.getDefaultOutlineStroke());
+							lic.add(li);
+						}
+				}
+				return lic;
+			}
+		};
+		
+		LegendTitle legend = new LegendTitle(source);
+		legend.setPosition(RectangleEdge.BOTTOM);
+		legend.setBackgroundPaint((Paint)ChartColor.WHITE);
+		chart.addLegend(legend);
+		
+		plot.setRenderer(2, xyLineAndShapeRendererCGPositions);
+		plot.setDataset(2, dataset);
+		plot.setRenderer(1, xyLineAndShapeRenderer);
+		plot.setDataset(1, dataset);
+		plot.setRenderer(0, xyLineAndShapePropRenderer);
+		plot.setDataset(0, dataset);
 
 		//-------------------------------------------------------------------------------------
 		// EXPORT TO SVG

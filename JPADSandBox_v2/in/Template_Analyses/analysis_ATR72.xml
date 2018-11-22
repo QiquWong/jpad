@@ -33,7 +33,6 @@
 			method_furnishings_and_equipments=""
 			method_control_surfaces=""
             />
-			<!--
 		<balance 
 			file="analysis_balance_ATR72.xml"
 			plot="TRUE"
@@ -47,7 +46,6 @@
 			method_power_plant=""
 			method_landing_gears=""
 		/>
-		-->
 		<!--
 		<aerodynamic_and_stability
 			plot="FALSE"

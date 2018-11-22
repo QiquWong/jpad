@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jpad_config>
-   <engine database="TurbopropEngineDatabase.h5"
+   <engine database="EngineDatabaseTP.xlsx"
            id="ATR-72 Engine"
            type="TURBOPROP">
       <dimensions>
