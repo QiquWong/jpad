@@ -37,12 +37,12 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 
 public class Test26mds {
 	
-	public static final String workingFolderPath = "C:\\Users\\Mario\\Documents\\Tesi\\JPADCAD_Aircrafts\\Testing";
+	public static final String workingFolderPath = "C:\\Users\\Mario\\Documents\\Tesi_Magistrale\\Test_Macro_Star";
 	public static final String jpadCADFolder = "C:\\Users\\Mario\\JPAD_PROJECT\\jpad\\JPADCADSandbox";
 	public static final String macroPath = "Users\\Mario\\eclipse-workspace\\STARCCM\\src\\test";
 	public static final String macroName = "Test_MultipleExecutes.java";
-	public static final String starExePath = "C:\\Program Files\\CD-adapco\\12.04.011-R8\\STAR-CCM+12.04.011-R8\\star\\bin\\starccm+.exe";
-	public static final String starOptions = "-cpubind -power -podkey 2jHU+QkwqexqrAOdVZ6ZzQ -licpath 1999@flex.cd-adapco.com -np 4 -rsh ssh";
+	public static final String starExePath = "C:\\Program Files\\CD-adapco\\13.04.010-R8\\STAR-CCM+13.04.010-R8\\star\\bin\\starccm+.exe";
+	public static final String starOptions = "-cpubind -np 4 -rsh ssh";
 
 	public static void main(String[] args) throws IOException {
 		System.out.println("-------------------");
@@ -120,59 +120,59 @@ public class Test26mds {
 		}
 		
 		// Add custom lifting surfaces
-		AeroComponents customComponentEnum = AeroComponents.CANARD;
-		if(aeroMap.containsKey(customComponentEnum)) {
-			
-			if(customComponentEnum.equals(AeroComponents.FUSELAGE)) return;
-			
-			LiftingSurface originalComponent = (LiftingSurface) aeroMap.get(customComponentEnum).get(0);
-			LiftingSurface customComponent = null;
-			
-			switch(customComponentEnum.name()) {
-			
-			case "WING": 
-				customComponent = AircraftUtils.importAircraft(args).getWing();
-				break;
-				
-			case "HORIZONTAL":
-				customComponent = AircraftUtils.importAircraft(args).getHTail();
-				break;
-				
-			case "VERTICAL":
-				customComponent = AircraftUtils.importAircraft(args).getVTail();
-				break;
-				
-			case "CANARD":
-				customComponent = AircraftUtils.importAircraft(args).getCanard();
-				break;
-				
-			default:
-				break;
-			}
-					
-			customComponent.adjustDimensions(
-					originalComponent
-							.getAspectRatio()*1.2,
-					originalComponent.getEquivalentWing().getPanels().get(0)
-							.getChordRoot().doubleValue(SI.METER)*1.1,
-					originalComponent.getEquivalentWing().getPanels().get(0)
-							.getChordTip().doubleValue(SI.METER)*0.9, 
-					originalComponent.getEquivalentWing().getPanels().get(0)
-							.getSweepLeadingEdge(),
-					originalComponent.getEquivalentWing().getPanels().get(0)
-							.getDihedral(), 
-					originalComponent.getEquivalentWing().getPanels().get(0)
-							.getTwistGeometricAtTip(), 
-					WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
-					);
-			
-			customComponent.setAirfoilList(originalComponent.getAirfoilList());	
-			customComponent.setXApexConstructionAxes(originalComponent.getXApexConstructionAxes().plus(Amount.valueOf(3, SI.METER)));
-			customComponent.setYApexConstructionAxes(originalComponent.getYApexConstructionAxes());
-			customComponent.setZApexConstructionAxes(originalComponent.getZApexConstructionAxes().plus(Amount.valueOf(0.1, SI.METER)));
-			
-			aeroMap.get(customComponentEnum).add(customComponent);
-		}
+//		AeroComponents customComponentEnum = AeroComponents.CANARD;
+//		if(aeroMap.containsKey(customComponentEnum)) {
+//			
+//			if(customComponentEnum.equals(AeroComponents.FUSELAGE)) return;
+//			
+//			LiftingSurface originalComponent = (LiftingSurface) aeroMap.get(customComponentEnum).get(0);
+//			LiftingSurface customComponent = null;
+//			
+//			switch(customComponentEnum.name()) {
+//			
+//			case "WING": 
+//				customComponent = AircraftUtils.importAircraft(args).getWing();
+//				break;
+//				
+//			case "HORIZONTAL":
+//				customComponent = AircraftUtils.importAircraft(args).getHTail();
+//				break;
+//				
+//			case "VERTICAL":
+//				customComponent = AircraftUtils.importAircraft(args).getVTail();
+//				break;
+//				
+//			case "CANARD":
+//				customComponent = AircraftUtils.importAircraft(args).getCanard();
+//				break;
+//				
+//			default:
+//				break;
+//			}
+//					
+//			customComponent.adjustDimensions(
+//					originalComponent
+//							.getAspectRatio()*1.2,
+//					originalComponent.getEquivalentWing().getPanels().get(0)
+//							.getChordRoot().doubleValue(SI.METER)*1.1,
+//					originalComponent.getEquivalentWing().getPanels().get(0)
+//							.getChordTip().doubleValue(SI.METER)*0.9, 
+//					originalComponent.getEquivalentWing().getPanels().get(0)
+//							.getSweepLeadingEdge(),
+//					originalComponent.getEquivalentWing().getPanels().get(0)
+//							.getDihedral(), 
+//					originalComponent.getEquivalentWing().getPanels().get(0)
+//							.getTwistGeometricAtTip(), 
+//					WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
+//					);
+//			
+//			customComponent.setAirfoilList(originalComponent.getAirfoilList());	
+//			customComponent.setXApexConstructionAxes(originalComponent.getXApexConstructionAxes().plus(Amount.valueOf(3, SI.METER)));
+//			customComponent.setYApexConstructionAxes(originalComponent.getYApexConstructionAxes());
+//			customComponent.setZApexConstructionAxes(originalComponent.getZApexConstructionAxes().plus(Amount.valueOf(0.1, SI.METER)));
+//			
+//			aeroMap.get(customComponentEnum).add(customComponent);
+//		}
 			
 		// Define geometric data
 		String cadUnits = "mm";

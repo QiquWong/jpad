@@ -84,7 +84,8 @@ public class Test27mds {
 		
 		// Generate CAD file
 //		String fileName = aircraft.getId();
-		String fileName = "new_fairing_test.brep";
+//		String fileName = "new_fairing_test.brep";
+		String fileName = aircraft.getId().concat("_fairing");
 		
 		List<OCCShape> exportShapes = new ArrayList<>();
 		exportShapes.addAll(fuselageShapes);
@@ -96,9 +97,10 @@ public class Test27mds {
 //		exportShapes.addAll(canardFairingShapes);
 //		exportShapes.add(intersection);
 
-		if(OCCUtils.write(fileName, exportShapes))
-			System.out.println("========== [main] Output written on file: " + fileName);
+//		if(OCCUtils.write(fileName, exportShapes))
+//			System.out.println("========== [main] Output written on file: " + fileName);
 		
+		AircraftUtils.getAircraftSolidFile(exportShapes, fileName, FileExtension.STEP);
 //		AircraftUtils.getAircraftSolidFile(fuselageShapes, "FUSELAGE_1", FileExtension.STEP);
 //		AircraftUtils.getAircraftSolidFile(canardShapes, "CANARD", FileExtension.STEP);
 //		AircraftUtils.getAircraftSolidFile(canardFairingShapes, "FUSELAGE_2", FileExtension.STEP);

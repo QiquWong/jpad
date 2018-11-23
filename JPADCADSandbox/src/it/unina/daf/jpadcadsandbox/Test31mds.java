@@ -35,32 +35,33 @@ public class Test31mds {
 		LiftingSurface horizontal = aircraft.getHTail();
 		LiftingSurface vertical = aircraft.getVTail();
 		
-//		fuselage.setYApexConstructionAxes(Amount.valueOf(2, SI.METER));
-//		wing.setYApexConstructionAxes(Amount.valueOf(3, SI.METER));
-//		vertical.setYApexConstructionAxes(Amount.valueOf(-1, SI.METER));
+		fuselage.setYApexConstructionAxes(Amount.valueOf(2, SI.METER));
+		wing.setYApexConstructionAxes(Amount.valueOf(-3, SI.METER));
+		vertical.setYApexConstructionAxes(Amount.valueOf(-1, SI.METER));
+		vertical.setZApexConstructionAxes(Amount.valueOf(2, SI.METER));
 		
-//		List<OCCShape> fuselageShapes = AircraftCADUtils.getFuselageCAD(fuselage, 
-//				10, 7, 
-//				true, true, true);
+		List<OCCShape> fuselageShapes = AircraftCADUtils.getFuselageCAD(fuselage, 
+				10, 7, 
+				true, true, false);
 		
-//		List<OCCShape> wingShapes = AircraftCADUtils.getLiftingSurfaceCAD(wing, 
-//				WingTipType.ROUNDED, 
-////				ComponentEnum.WING, 1e-3,
-//				true, false, false);
+		List<OCCShape> wingShapes = AircraftCADUtils.getLiftingSurfaceCAD(wing, 
+				WingTipType.ROUNDED, 
+//				ComponentEnum.WING, 1e-3,
+				true, true, false);
 		
 		List<OCCShape> horizontalShapes = AircraftCADUtils.getLiftingSurfaceCAD(horizontal, 
-				WingTipType.CUTOFF, 
+				WingTipType.ROUNDED, 
 //				ComponentEnum.HORIZONTAL_TAIL, 1e-3,
-				true, true, true);
+				true, true, false);
 		
-//		List<OCCShape> verticalShapes = AircraftCADUtils.getLiftingSurfaceCAD(vertical, 
-//				WingTipType.CUTOFF, 
-////				ComponentEnum.VERTICAL_TAIL, 1e-3,
-//				true, true, true);
+		List<OCCShape> verticalShapes = AircraftCADUtils.getLiftingSurfaceCAD(vertical, 
+				WingTipType.ROUNDED, 
+//				ComponentEnum.VERTICAL_TAIL, 1e-3,
+				true, true, false);
 		
 		String filename = "AircraftCADUtils_Test.brep";
 		
-		if (OCCUtils.write(filename, horizontalShapes))
+		if (OCCUtils.write(filename, fuselageShapes, wingShapes, horizontalShapes, verticalShapes))
 			System.out.println("[Test31mds] CAD shapes correctly written to file (" + filename + ")");
 	}
 

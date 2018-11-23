@@ -1,5 +1,6 @@
 package it.unina.daf.jpadcad.occ;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -477,11 +478,22 @@ public class OCCDiscretizeCurve3D
 			  (xyz[i-1] - xyz[i+2]) * (xyz[i-1] - xyz[i+2]));
 		return length;
 	}
+	
+	public double[] getParams() {
+		return a;
+	}
 
     public List<gp_Pnt> getPoints() {
     	return IntStream.range(0, nr)
     			.mapToObj(i -> curve.Value(a[i]))
     			.collect(Collectors.toList());
 	}
+    
+    public List<double[]> getDoublePoints() {
+    	return IntStream.range(0, nr)
+    			.mapToObj(i -> curve.Value(a[i]))
+    			.map(gp -> new double[] {gp.X(), gp.Y(), gp.Z()})
+    			.collect(Collectors.toList());
+    }
 
 }

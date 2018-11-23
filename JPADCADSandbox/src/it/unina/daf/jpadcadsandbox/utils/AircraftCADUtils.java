@@ -3,6 +3,7 @@ package it.unina.daf.jpadcadsandbox.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
 import it.unina.daf.jpadcad.occ.CADShell;
 import it.unina.daf.jpadcad.occ.CADWire;
 import it.unina.daf.jpadcad.occ.OCCEdge;
+import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShell;
 import it.unina.daf.jpadcad.occ.OCCSolid;
@@ -679,6 +681,7 @@ public class AircraftCADUtils {
 		// Generate span wise airfoils
 		// ---------------------------------
 		List<List<CADGeomCurve3D>> airfoilCrvs = new ArrayList<List<CADGeomCurve3D>>();
+		List<Double[]> airfoilYStations = new ArrayList<>();
 		
 		int[] nAirfoils = new int[nPanels];
 		for (int i = 1; i <= liftingSurface.getPanels().size(); i++) {
@@ -726,7 +729,9 @@ public class AircraftCADUtils {
 			airfoilCrvs.add(Arrays.asList(yStations).stream()
 					.map(y -> generateAirfoilAtY(y, liftingSurface))
 					.map(pts -> OCCUtils.theFactory.newCurve3D(pts, false))
-					.collect(Collectors.toList()));			
+					.collect(Collectors.toList()));
+			
+			airfoilYStations.add(yStations);
 		}
 		
 		List<List<CADWire>> airfoilWires = new ArrayList<List<CADWire>>();
@@ -746,6 +751,16 @@ public class AircraftCADUtils {
 					.map(w -> (OCCShape) OCCUtils.theFactory.newShape(((OCCShape) w).getShape()))
 					.collect(Collectors.toList())
 					));
+			
+			airfoilYStations.forEach(yl -> 
+					Arrays.asList(yl).forEach(y -> {
+							supportShapes.add(
+									(OCCShape) OCCUtils.theFactory.newCurve3D(
+											generateChordAtY(y, liftingSurface), false).edge());
+							supportShapes.add(
+									(OCCShape) OCCUtils.theFactory.newCurve3D(
+											generateCamberAtY(y, liftingSurface), false).edge());
+					}));
 		}
 		
 		List<OCCShape> rightFaces = new ArrayList<>();		
@@ -871,12 +886,16 @@ public class AircraftCADUtils {
 				new PVector((float) fTipCurve[0], (float) fTipCurve[1], (float) fTipCurve[2]), 
 				0.5f);
 		
+		// Assign to the point C the same y coordinate of point B
 		PVector pvC = PVector.add(pvD, PVector.mult(teVec, (float) tipWidth/teVec.mag()));
 		if (liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL))
 			pvC.x = (float) ptsTE.get(nPanels)[0];
 		else
 			pvC.y = (float) ptsTE.get(nPanels)[1];
 		
+		// -----------------------------------------------------------
+		// Eventually export the sketching plane for the wing tip
+		// -----------------------------------------------------------
 		if (exportSupportShapes) {
 			wingTipShapes.add((OCCShape) OCCUtils.theFactory.newWireFromAdjacentEdges(
 					OCCUtils.theFactory.newCurve3DP(Arrays.asList(pvA, pvB), false).edge(),
@@ -885,12 +904,109 @@ public class AircraftCADUtils {
 					));
 		}
 		
+		// --------------------------------------
+		// Generate the tip airfoil camber line
+		// --------------------------------------
+		List<double[]> tipCamberPts = generateCamberAtY(
+				liftingSurface.getSemiSpan().doubleValue(SI.METER) - tipWidth,
+				liftingSurface);
+		
+		// TODO: to cancel after function completion
+		if (exportSupportShapes) {
+			wingTipShapes.add((OCCShape) OCCUtils.theFactory.newCurve3D(tipCamberPts, false).edge());
+		}
+		
+		// ------------------------------------------------
+		// Generate in-sketching_plane supporting curves
+		// ------------------------------------------------
+		PVector pvE = PVector.lerp(pvB, pvC, 0.25f);
+		PVector pvG = PVector.lerp(pvC, pvD, 0.25f);
+		PVector pvF = PVector.lerp(
+				PVector.lerp(pvB, pvC, (float) 0.75f), 
+				PVector.lerp(pvA, pvD, (float) 0.75f), 
+				0.10f);
+		
+		List<double[]> sketchPlaneCrv1Pts = new ArrayList<>();
+		sketchPlaneCrv1Pts.add(new double[] {pvA.x, pvA.y, pvA.z});
+		sketchPlaneCrv1Pts.add(new double[] {pvE.x, pvE.y, pvE.z});
+		
+		List<double[]> sketchPlaneCrv2Pts = new ArrayList<>();
+		sketchPlaneCrv2Pts.add(new double[] {pvE.x, pvE.y, pvE.z});
+		sketchPlaneCrv2Pts.add(new double[] {pvF.x, pvF.y, pvF.z});
+		sketchPlaneCrv2Pts.add(new double[] {pvG.x, pvG.y, pvG.z});
+		
+		PVector pvTangA = PVector.sub(pvB, pvA);
+		PVector pvTangE = PVector.sub(pvE, pvB);
+		PVector pvTangG = PVector.sub(pvG, pvF);
+		
+		double tangAFactor = 1;
+		double tangEFactor = pvTangE.mag()/pvTangA.mag() * 0.75;
+		double tangGFactor = tangEFactor;
+		
+		pvTangA.normalize();
+		pvTangE.normalize();
+		pvTangG.normalize();
+		
+		double[] tangA = MyArrayUtils.scaleArray(new double[] {pvTangA.x, pvTangA.y, pvTangA.z}, tangAFactor);
+		double[] tangE = MyArrayUtils.scaleArray(new double[] {pvTangE.x, pvTangE.y, pvTangE.z}, tangEFactor);
+		double[] tangG = MyArrayUtils.scaleArray(new double[] {pvTangG.x, pvTangG.y, pvTangG.z}, tangGFactor);
+		
+		CADGeomCurve3D sketchPlaneCrv1 = OCCUtils.theFactory.newCurve3D(
+				sketchPlaneCrv1Pts, false, tangA, tangE, false);	
+		CADGeomCurve3D sketchPlaneCrv2 = OCCUtils.theFactory.newCurve3D(
+				sketchPlaneCrv2Pts, false, tangE, tangG, false);
+		
+		// TODO: to cancel after function completion
+		if (exportSupportShapes) {
+			wingTipShapes.add((OCCShape) sketchPlaneCrv1.edge());
+			wingTipShapes.add((OCCShape) sketchPlaneCrv2.edge());
+		}
+		
+		// -------------------------------------------
+		// Generate vertical supporting sections
+		// -------------------------------------------
+		double[] vSecVec1 = MyArrayUtils.cosineSpace(0.0, 1.0, 10);
+		double[] vSecVec2 = MyArrayUtils.halfCosine1Space(0.0, 1.0, 7);
+		
+		List<double[]> cTipFrac1 = Arrays.stream(vSecVec1)
+				.skip(1)
+				.mapToObj(d -> PVector.lerp(pvA, PVector.lerp(pvA, pvD, 0.25f), (float) d))
+				.map(pv -> new double[] {pv.x, pv.y, pv.z})
+				.collect(Collectors.toList());
+		
+		List<double[]> cTipFrac2 = Arrays.stream(vSecVec2)
+				.skip(1)
+				.mapToObj(d -> PVector.lerp(PVector.lerp(pvA, pvD, 0.25f), pvD, (float) d))
+				.map(pv -> new double[] {pv.x, pv.y, pv.z})
+				.collect(Collectors.toList());
+		
+		List<double[]> bcSegmFrac1 = Arrays.stream(vSecVec1)
+				.skip(1)
+				.mapToObj(d -> PVector.lerp(pvB, pvE, (float) d))
+				.map(pv -> new double[] {pv.x, pv.y, pv.z})
+				.collect(Collectors.toList());
+		
+		List<double[]> bcSegmFrac2 = Arrays.stream(vSecVec2)
+				.skip(1)
+				.mapToObj(d -> PVector.lerp(pvB, pvC, (float) d))
+				.map(pv -> new double[] {pv.x, pv.y, pv.z})
+				.collect(Collectors.toList());
+		
+//		List<CADGeomCurve3D> inSPSplitSegms1 = IntStream.range(0, vSecVec1.length)
+//				.mapToObj(i -> OCCUtils.theFactory.newCurve3D(cTipFrac1.get(i), bcSegmFrac1.get(i)))
+//				.collect(Collectors.toList());
+//		
+//		List<CADGeomCurve3D> inSPSplitSegms2 = IntStream.range(0, vSecVec2.length)
+//				.mapToObj(i -> OCCUtils.theFactory.newCurve3D(cTipFrac2.get(i), bcSegmFrac2.get(i)))
+//				.collect(Collectors.toList());
+		
+		
+		
+		
 		return wingTipShapes;
 	}
 	
 	private static List<double[]> generateAirfoilAtY(double yStation, LiftingSurface liftingSurface) {
-		
-		List<double[]> airfoilPtsAtY = new ArrayList<>();
 		
 		// ---------------------------------------
 		// Determine the airfoil to be modified
@@ -947,75 +1063,56 @@ public class AircraftCADUtils {
 					noDuplicatesCoords.get(nPts - 1).z - 5e-4f
 					);
 		}
-
-		// ---------------------------
-		// Get interpolated values
-		// ---------------------------		
-		double xLE = MyMathUtils.getInterpolatedValue1DLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getYBreakPoints()), 
-				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getXLEBreakPoints()), 
-				yStation);
-		
-		double zLE = MyMathUtils.getInterpolatedValue1DLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getYBreakPoints()), 
-				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getZLEBreakPoints()), 
-				yStation);
-		
-		double chord = MyMathUtils.getInterpolatedValue1DLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getYBreakPoints()), 
-				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getChordsBreakPoints()), 
-				yStation);
-		
-		double twist = MyMathUtils.getInterpolatedValue1DLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getYBreakPoints()), 
-				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getTwistsBreakPoints().stream()
-						.map(a -> a.to(SI.RADIAN))
-						.collect(Collectors.toList())), 
-				yStation);
 		
 		// ---------------------------------------
 		// Calculate airfoil actual coordinates
 		// ---------------------------------------
-		double x, y, z;
+		List<double[]> basePts = new ArrayList<>();
+		basePts.addAll(noDuplicatesCoords.stream()
+				.map(pv -> new double[] {pv.x, pv.y, pv.z})
+				.collect(Collectors.toList()));
 		
-		for (int i = 0; i < nPts; i++) {
-			
-			// Scale to actual dimensions
-			x = noDuplicatesCoords.get(i).x * chord;
-			y = 0.0;
-			z = noDuplicatesCoords.get(i).z * chord;
-			
-			// Set the rotation due to the twist and the rigging angle			
-			double r = Math.sqrt(x*x + z*z);
-			x = x - r * (1 - Math.cos(twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));
-			z = z - r * Math.sin(twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN));		
-			
-			// Set the actual location
-			x = liftingSurface.getXApexConstructionAxes().doubleValue(SI.METER) + xLE + x;
-			
-			y = liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL) ?
-					liftingSurface.getYApexConstructionAxes().doubleValue(SI.METER) - z :
-					liftingSurface.getYApexConstructionAxes().doubleValue(SI.METER) + yStation;
-			
-			z = liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL) ?
-					liftingSurface.getZApexConstructionAxes().doubleValue(SI.METER) + yStation :
-					liftingSurface.getZApexConstructionAxes().doubleValue(SI.METER) + zLE + z;
-
-			airfoilPtsAtY.add(new double[] {x, y, z});
-		}
-		
-		return airfoilPtsAtY;
+		return generatePtsAtY(basePts, yStation, liftingSurface);
 	}
 	
+	private static List<double[]> generateCamberAtY(double yStation, LiftingSurface liftingSurface) {
+
+		// -----------------------
+		// Determine the airfoil 
+		// -----------------------
+		Airfoil airfoil = null;
+		for (int i = 1; i <= liftingSurface.getPanels().size(); i++) {
+
+			double yIn = liftingSurface.getYBreakPoints().get(i-1).doubleValue(SI.METER);
+			double yOut = liftingSurface.getYBreakPoints().get(i).doubleValue(SI.METER);
+
+			if (yStation > yIn && yStation < yOut || 
+				Math.abs(yStation - yIn) <= 1e-5 || 
+				Math.abs(yStation - yOut) <= 1e-5) {			
+				airfoil = liftingSurface.getAirfoilList().get(i-1);
+				break;
+			}
+		}
+
+		// -----------------------------------------------
+		// Return the camber line at the actual location
+		// -----------------------------------------------
+		return generatePtsAtY(getAirfoilCamberPts(airfoil), yStation, liftingSurface);
+	}
+
 	private static List<double[]> generateChordAtY(double yStation, LiftingSurface liftingSurface) {
+
+		List<double[]> pts = new ArrayList<>();
+		pts.add(new double[] {1.0, 0.0, 0.0});
+		pts.add(new double[] {0.0, 0.0, 0.0});
+
+		return generatePtsAtY(pts, yStation, liftingSurface);
+	}
+	
+	private static List<double[]> generatePtsAtY(List<double[]> pts, 
+			double yStation, LiftingSurface liftingSurface) {
 		
-		List<double[]> chordPtsAtY = new ArrayList<>();
-		
-		// ---------------------------------------
-		// Generate unitary chord points
-		// ---------------------------------------		
-		double[] unitaryChordXs = new double[] {1, 0};
-		double[] unitaryChordZs = new double[] {0, 0};
+		List<double[]> ptsAtY = new ArrayList<>();
 		
 		// ---------------------------
 		// Get interpolated values
@@ -1042,17 +1139,17 @@ public class AircraftCADUtils {
 						.collect(Collectors.toList())), 
 				yStation);
 		
-		// -------------------------------------------
-		// Calculate chord points actual coordinates
-		// -------------------------------------------
+		// -------------------------------
+		// Calculate actual coordinates
+		// -------------------------------
 		double x, y, z;
 		
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < pts.size(); i++) {
 			
 			// Scale to actual dimensions
-			x = unitaryChordXs[i] * chord;
+			x = pts.get(i)[0] * chord;
 			y = 0.0;
-			z = unitaryChordZs[i] * chord;
+			z = pts.get(i)[2] * chord;
 			
 			// Set the rotation due to the twist and the rigging angle			
 			double r = Math.sqrt(x*x + z*z);
@@ -1070,10 +1167,77 @@ public class AircraftCADUtils {
 					liftingSurface.getZApexConstructionAxes().doubleValue(SI.METER) + yStation :
 					liftingSurface.getZApexConstructionAxes().doubleValue(SI.METER) + zLE + z;
 
-			chordPtsAtY.add(new double[] {x, y, z});
+			ptsAtY.add(new double[] {x, y, z});
 		}		
 		
-		return chordPtsAtY;
+		return ptsAtY;	
+	}
+	
+	private static List<double[]> getAirfoilCamberPts(Airfoil airfoil) {
+		
+		List<double[]> camberLinePts = new ArrayList<>();
+		
+		// -------------------------------------------------------------------------------------
+		// Split airfoil points in two separate lists, one for the upper and one for the lower
+		// -------------------------------------------------------------------------------------
+		List<Double> xUpper = new ArrayList<>();
+		List<Double> zUpper = new ArrayList<>();
+		List<Double> xLower = new ArrayList<>(); 
+		List<Double> zLower = new ArrayList<>();
+		
+		double[] x = airfoil.getXCoords();
+		double[] z = airfoil.getZCoords();
+		
+		int nPts = x.length;
+		int iMin = MyArrayUtils.getIndexOfMin(x);
+		
+		IntStream.range(0, iMin + 1).forEach(i -> {
+			xUpper.add(x[i]);
+			zUpper.add(z[i]);
+			});
+		
+		// Making the lower list start from the last point of the upper one, whether necessary
+		if(Math.abs(x[iMin + 1] - x[iMin]) > 1e-5) { 
+			xLower.add(x[iMin]);
+			zLower.add(z[iMin]);
+		}
+		
+		IntStream.range(iMin + 1, nPts).forEach(i -> {
+			xLower.add(x[i]);
+			zLower.add(z[i]);
+			});
+		
+		Collections.reverse(xUpper);
+		Collections.reverse(zUpper);
+		
+		// -----------------------------------------------------
+		// Generate points for the camber line of the airfoil
+		// -----------------------------------------------------
+		List<Double> zCamber = new ArrayList<>();
+		
+		List<Double> xCamber = MyArrayUtils.convertArrayDoublePrimitiveToList(
+				MyArrayUtils.linspace(xUpper.get(iMin), xUpper.get(0), nPts));
+		
+		xCamber.forEach(xc -> {
+			double zUpp = MyMathUtils.getInterpolatedValue1DSpline(
+					MyArrayUtils.convertToDoublePrimitive(xUpper), 
+					MyArrayUtils.convertToDoublePrimitive(zUpper), 
+					xc);
+			double zLow = MyMathUtils.getInterpolatedValue1DSpline(
+					MyArrayUtils.convertToDoublePrimitive(xLower), 
+					MyArrayUtils.convertToDoublePrimitive(zLower), 
+					xc);
+			zCamber.add((zUpp + zLow) * 0.5); 
+		});
+		
+		IntStream.range(0, nPts).forEach(i -> 
+				camberLinePts.add(new double[] {
+						xCamber.get(i),
+						0.0,
+						zCamber.get(i)
+				}));
+	
+		return camberLinePts;
 	}
 	
 	public enum XSpacingType {
