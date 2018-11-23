@@ -87,7 +87,7 @@ public class TakeOffNoiseTrajectoryCalc {
 	private PowerPlant thePowerPlant;
 	private Double[] polarCLTakeOff;
 	private Double[] polarCDTakeOff;
-	private Amount<Duration> dtRot, dtHold, dtLandingGearRetraction, dtThrustCutback,
+	private Amount<Duration> dtHold, dtLandingGearRetraction, dtThrustCutback,
 	tHold = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
 	tEndHold = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
 	tRot = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
@@ -127,13 +127,6 @@ public class TakeOffNoiseTrajectoryCalc {
 	private Map<Double, List<Amount<Mass>>> fuelUsedMap;
 	private Map<Double, List<Amount<Force>>> weightMap;
 
-	private final PrintStream originalOut = System.out;
-	private PrintStream filterStream = new PrintStream(new OutputStream() {
-		public void write(int b) {
-			// write nothing
-		}
-	});
-
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
 
@@ -148,7 +141,6 @@ public class TakeOffNoiseTrajectoryCalc {
 			Double deltaCD0OEI,
 			Double aspectRatio,
 			Amount<Area> surface,
-			Amount<Duration> dtRot,
 			Amount<Duration> dtHold,
 			Amount<Duration> dtLandingGearRetraction,
 			Amount<Duration> dtThrustCutback,
@@ -183,7 +175,6 @@ public class TakeOffNoiseTrajectoryCalc {
 		this.deltaCD0LandingGear = deltaCD0LandingGear;
 		this.deltaCD0OEI = deltaCD0OEI;
 		this.maxTakeOffMass = maxTakeOffMass;
-		this.dtRot = dtRot;
 		this.dtHold = dtHold;
 		this.dtLandingGearRetraction = dtLandingGearRetraction;
 		this.dtThrustCutback = dtThrustCutback;
@@ -302,10 +293,6 @@ public class TakeOffNoiseTrajectoryCalc {
 		System.out.println("---------------------------------------------------");
 		System.out.println("NoiseTrajectoryCalc :: TAKE-OFF ODE integration :: cutback = " + cutback + ":: throttle cutback = " + phiCutback + "\n\n");
 		System.out.println("\tRUNNING SIMULATION ...\n\n");
-		/*
-		 * DISABLE PRINT OUT
-		 */
-		System.setOut(filterStream);
 
 		int i=0;
 		double newAlphaRed = 0.0;
@@ -933,11 +920,6 @@ public class TakeOffNoiseTrajectoryCalc {
 					+ vSTakeOff.to(NonSI.KNOT).times(1.13).plus(Amount.valueOf(20, NonSI.KNOT))
 					);
 		else {
-			/*
-			 * ENABLE PRINT OUT ONLY ON LAST ITERATION
-			 */
-			System.setOut(originalOut);
-
 
 			if(cutback==false && phiCutback==null)
 				manageOutputData(1.0, 1.0, timeHistories, continuousOutputModel);
@@ -1313,10 +1295,7 @@ public class TakeOffNoiseTrajectoryCalc {
 								outputFolderPath + ("PHI=" + String.format( "%.2f", phi)) + File.separator
 								);
 
-						System.setOut(originalOut);
 						System.out.println("\tPRINTING CHARTS FOR PHI="+ String.format( "%.2f", phi ) +" TO FILE ...");
-						System.setOut(filterStream);
-
 						//.................................................................................
 						// speed v.s. time
 						MyChartToFileUtils.plotNoLegend(
@@ -2003,9 +1982,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				outputFolderPath + "FuelUsed" + File.separator
 				);
 
-		System.setOut(originalOut);
 		System.out.println("\tPRINTING TRAJECTORIES CHARTS TO FILE ...");
-		System.setOut(filterStream);
 
 		//.................................................................................
 		// take-off trajectory
@@ -2061,9 +2038,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				trajectoryOutputFolder, "Altitude_Evolution_IMPERIAL", createCSV
 				);
 
-		System.setOut(originalOut);
 		System.out.println("\tPRINTING THRUST CHARTS TO FILE ...");
-		System.setOut(filterStream);
 
 		//.................................................................................
 		// thrust v.s. time
@@ -2118,9 +2093,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL", createCSV
 				);
 
-		System.setOut(originalOut);
 		System.out.println("\tPRINTING FUEL USED CHARTS TO FILE ...");
-		System.setOut(filterStream);
 
 		//.................................................................................
 		// fuelUsed v.s. time
@@ -2161,8 +2134,6 @@ public class TakeOffNoiseTrajectoryCalc {
 				true, (List<String>) groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
 				fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_IMPERIAL", createCSV
 				);
-
-		System.setOut(originalOut);
 
 	}
 
@@ -2493,14 +2464,6 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	//-------------------------------------------------------------------------------------
 	// GETTERS AND SETTERS:
-
-	public Amount<Duration> getDtRot() {
-		return dtRot;
-	}
-
-	public void setDtRot(Amount<Duration> dtRot) {
-		this.dtRot = dtRot;
-	}
 
 	public Amount<Duration> getDtHold() {
 		return dtHold;

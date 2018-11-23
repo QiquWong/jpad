@@ -2129,6 +2129,358 @@ public class ACPerformanceManager {
 		}
 		
 		//===========================================================================================
+		// READING CALIBRATION FACTORS ...
+		//...............................................................
+		// Thrust
+		double takeOffCalibrationFactorThrust = 1.0;
+		double aprCalibrationFactorThrust = 1.0;
+		double climbCalibrationFactorThrust = 1.0;
+		double continuousCalibrationFactorThrust = 1.0;
+		double cruiseCalibrationFactorThrust = 1.0;
+		double flightIdleCalibrationFactorThrust = 1.0;
+		double groundIdleCalibrationFactorThrust = 1.0;
+		
+		String takeOffCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/take_off_calibration_factor");
+		if(!takeOffCalibrationFactorThrustProperty.isEmpty()) {
+			takeOffCalibrationFactorThrust = Double.valueOf(takeOffCalibrationFactorThrustProperty); 
+		}
+		String aprCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/apr_calibration_factor");
+		if(!aprCalibrationFactorThrustProperty.isEmpty()) {
+			aprCalibrationFactorThrust = Double.valueOf(aprCalibrationFactorThrustProperty); 
+		}
+		String climbCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/climb_calibration_factor");
+		if(!climbCalibrationFactorThrustProperty.isEmpty()) {
+			climbCalibrationFactorThrust = Double.valueOf(climbCalibrationFactorThrustProperty); 
+		}
+		String continuousCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/continuous_calibration_factor");
+		if(!continuousCalibrationFactorThrustProperty.isEmpty()) {
+			continuousCalibrationFactorThrust = Double.valueOf(continuousCalibrationFactorThrustProperty); 
+		}
+		String cruiseCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/cruise_calibration_factor");
+		if(!cruiseCalibrationFactorThrustProperty.isEmpty()) {
+			cruiseCalibrationFactorThrust = Double.valueOf(cruiseCalibrationFactorThrustProperty); 
+		}
+		String flightIdleCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/flight_idle_calibration_factor");
+		if(!flightIdleCalibrationFactorThrustProperty.isEmpty()) {
+			flightIdleCalibrationFactorThrust = Double.valueOf(flightIdleCalibrationFactorThrustProperty); 
+		}
+		String groundIdleCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/ground_idle_calibration_factor");
+		if(!groundIdleCalibrationFactorThrustProperty.isEmpty()) {
+			groundIdleCalibrationFactorThrust = Double.valueOf(groundIdleCalibrationFactorThrustProperty); 
+		}
+		//...............................................................
+		// SFC
+		double takeOffCalibrationFactorSFC = 1.0;
+		double aprCalibrationFactorSFC = 1.0;
+		double climbCalibrationFactorSFC = 1.0;
+		double continuousCalibrationFactorSFC = 1.0;
+		double cruiseCalibrationFactorSFC = 1.0;
+		double flightIdleCalibrationFactorSFC = 1.0;
+		double groundIdleCalibrationFactorSFC = 1.0;
+		
+		String takeOffCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/take_off_calibration_factor");
+		if(!takeOffCalibrationFactorSFCProperty.isEmpty()) {
+			takeOffCalibrationFactorSFC = Double.valueOf(takeOffCalibrationFactorSFCProperty); 
+		}
+		String aprCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/apr_calibration_factor");
+		if(!aprCalibrationFactorSFCProperty.isEmpty()) {
+			aprCalibrationFactorSFC = Double.valueOf(aprCalibrationFactorSFCProperty); 
+		}
+		String climbCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/climb_calibration_factor");
+		if(!climbCalibrationFactorSFCProperty.isEmpty()) {
+			climbCalibrationFactorSFC = Double.valueOf(climbCalibrationFactorSFCProperty); 
+		}
+		String continuousCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/continuous_calibration_factor");
+		if(!continuousCalibrationFactorSFCProperty.isEmpty()) {
+			continuousCalibrationFactorSFC = Double.valueOf(continuousCalibrationFactorSFCProperty); 
+		}
+		String cruiseCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/cruise_calibration_factor");
+		if(!cruiseCalibrationFactorSFCProperty.isEmpty()) {
+			cruiseCalibrationFactorSFC = Double.valueOf(cruiseCalibrationFactorSFCProperty); 
+		}
+		String flightIdleCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/flight_idle_calibration_factor");
+		if(!flightIdleCalibrationFactorSFCProperty.isEmpty()) {
+			flightIdleCalibrationFactorSFC = Double.valueOf(flightIdleCalibrationFactorSFCProperty); 
+		}
+		String groundIdleCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/ground_idle_calibration_factor");
+		if(!groundIdleCalibrationFactorSFCProperty.isEmpty()) {
+			groundIdleCalibrationFactorSFC = Double.valueOf(groundIdleCalibrationFactorSFCProperty); 
+		}
+		
+		//...............................................................
+		// EmissionIndexNOx
+		double takeOffCalibrationFactorEmissionIndexNOx = 1.0;
+		double aprCalibrationFactorEmissionIndexNOx = 1.0;
+		double climbCalibrationFactorEmissionIndexNOx = 1.0;
+		double continuousCalibrationFactorEmissionIndexNOx = 1.0;
+		double cruiseCalibrationFactorEmissionIndexNOx = 1.0;
+		double flightIdleCalibrationFactorEmissionIndexNOx = 1.0;
+		double groundIdleCalibrationFactorEmissionIndexNOx = 1.0;
+		
+		String takeOffCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/take_off_calibration_factor");
+		if(!takeOffCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+			takeOffCalibrationFactorEmissionIndexNOx = Double.valueOf(takeOffCalibrationFactorEmissionIndexNOxProperty); 
+		}
+		String aprCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/apr_calibration_factor");
+		if(!aprCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+			aprCalibrationFactorEmissionIndexNOx = Double.valueOf(aprCalibrationFactorEmissionIndexNOxProperty); 
+		}
+		String climbCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/climb_calibration_factor");
+		if(!climbCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+			climbCalibrationFactorEmissionIndexNOx = Double.valueOf(climbCalibrationFactorEmissionIndexNOxProperty); 
+		}
+		String continuousCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/continuous_calibration_factor");
+		if(!continuousCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+			continuousCalibrationFactorEmissionIndexNOx = Double.valueOf(continuousCalibrationFactorEmissionIndexNOxProperty); 
+		}
+		String cruiseCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/cruise_calibration_factor");
+		if(!cruiseCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+			cruiseCalibrationFactorEmissionIndexNOx = Double.valueOf(cruiseCalibrationFactorEmissionIndexNOxProperty); 
+		}
+		String flightIdleCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/flight_idle_calibration_factor");
+		if(!flightIdleCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+			flightIdleCalibrationFactorEmissionIndexNOx = Double.valueOf(flightIdleCalibrationFactorEmissionIndexNOxProperty); 
+		}
+		String groundIdleCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/ground_idle_calibration_factor");
+		if(!groundIdleCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+			groundIdleCalibrationFactorEmissionIndexNOx = Double.valueOf(groundIdleCalibrationFactorEmissionIndexNOxProperty); 
+		}
+		
+		//...............................................................
+		// EmissionIndexCO
+		double takeOffCalibrationFactorEmissionIndexCO = 1.0;
+		double aprCalibrationFactorEmissionIndexCO = 1.0;
+		double climbCalibrationFactorEmissionIndexCO = 1.0;
+		double continuousCalibrationFactorEmissionIndexCO = 1.0;
+		double cruiseCalibrationFactorEmissionIndexCO = 1.0;
+		double flightIdleCalibrationFactorEmissionIndexCO = 1.0;
+		double groundIdleCalibrationFactorEmissionIndexCO = 1.0;
+		
+		String takeOffCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/take_off_calibration_factor");
+		if(!takeOffCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+			takeOffCalibrationFactorEmissionIndexCO = Double.valueOf(takeOffCalibrationFactorEmissionIndexCOProperty); 
+		}
+		String aprCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/apr_calibration_factor");
+		if(!aprCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+			aprCalibrationFactorEmissionIndexCO = Double.valueOf(aprCalibrationFactorEmissionIndexCOProperty); 
+		}
+		String climbCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/climb_calibration_factor");
+		if(!climbCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+			climbCalibrationFactorEmissionIndexCO = Double.valueOf(climbCalibrationFactorEmissionIndexCOProperty); 
+		}
+		String continuousCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/continuous_calibration_factor");
+		if(!continuousCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+			continuousCalibrationFactorEmissionIndexCO = Double.valueOf(continuousCalibrationFactorEmissionIndexCOProperty); 
+		}
+		String cruiseCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/cruise_calibration_factor");
+		if(!cruiseCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+			cruiseCalibrationFactorEmissionIndexCO = Double.valueOf(cruiseCalibrationFactorEmissionIndexCOProperty); 
+		}
+		String flightIdleCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/flight_idle_calibration_factor");
+		if(!flightIdleCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+			flightIdleCalibrationFactorEmissionIndexCO = Double.valueOf(flightIdleCalibrationFactorEmissionIndexCOProperty); 
+		}
+		String groundIdleCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/ground_idle_calibration_factor");
+		if(!groundIdleCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+			groundIdleCalibrationFactorEmissionIndexCO = Double.valueOf(groundIdleCalibrationFactorEmissionIndexCOProperty); 
+		}
+		
+		//...............................................................
+		// EmissionIndexHC
+		double takeOffCalibrationFactorEmissionIndexHC = 1.0;
+		double aprCalibrationFactorEmissionIndexHC = 1.0;
+		double climbCalibrationFactorEmissionIndexHC = 1.0;
+		double continuousCalibrationFactorEmissionIndexHC = 1.0;
+		double cruiseCalibrationFactorEmissionIndexHC = 1.0;
+		double flightIdleCalibrationFactorEmissionIndexHC = 1.0;
+		double groundIdleCalibrationFactorEmissionIndexHC = 1.0;
+		
+		String takeOffCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/take_off_calibration_factor");
+		if(!takeOffCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+			takeOffCalibrationFactorEmissionIndexHC = Double.valueOf(takeOffCalibrationFactorEmissionIndexHCProperty); 
+		}
+		String aprCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/apr_calibration_factor");
+		if(!aprCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+			aprCalibrationFactorEmissionIndexHC = Double.valueOf(aprCalibrationFactorEmissionIndexHCProperty); 
+		}
+		String climbCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/climb_calibration_factor");
+		if(!climbCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+			climbCalibrationFactorEmissionIndexHC = Double.valueOf(climbCalibrationFactorEmissionIndexHCProperty); 
+		}
+		String continuousCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/continuous_calibration_factor");
+		if(!continuousCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+			continuousCalibrationFactorEmissionIndexHC = Double.valueOf(continuousCalibrationFactorEmissionIndexHCProperty); 
+		}
+		String cruiseCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/cruise_calibration_factor");
+		if(!cruiseCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+			cruiseCalibrationFactorEmissionIndexHC = Double.valueOf(cruiseCalibrationFactorEmissionIndexHCProperty); 
+		}
+		String flightIdleCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/flight_idle_calibration_factor");
+		if(!flightIdleCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+			flightIdleCalibrationFactorEmissionIndexHC = Double.valueOf(flightIdleCalibrationFactorEmissionIndexHCProperty); 
+		}
+		String groundIdleCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/ground_idle_calibration_factor");
+		if(!groundIdleCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+			groundIdleCalibrationFactorEmissionIndexHC = Double.valueOf(groundIdleCalibrationFactorEmissionIndexHCProperty); 
+		}
+		
+		//...............................................................
+		// EmissionIndexSoot
+		double takeOffCalibrationFactorEmissionIndexSoot = 1.0;
+		double aprCalibrationFactorEmissionIndexSoot = 1.0;
+		double climbCalibrationFactorEmissionIndexSoot = 1.0;
+		double continuousCalibrationFactorEmissionIndexSoot = 1.0;
+		double cruiseCalibrationFactorEmissionIndexSoot = 1.0;
+		double flightIdleCalibrationFactorEmissionIndexSoot = 1.0;
+		double groundIdleCalibrationFactorEmissionIndexSoot = 1.0;
+		
+		String takeOffCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/take_off_calibration_factor");
+		if(!takeOffCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+			takeOffCalibrationFactorEmissionIndexSoot = Double.valueOf(takeOffCalibrationFactorEmissionIndexSootProperty); 
+		}
+		String aprCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/apr_calibration_factor");
+		if(!aprCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+			aprCalibrationFactorEmissionIndexSoot = Double.valueOf(aprCalibrationFactorEmissionIndexSootProperty); 
+		}
+		String climbCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/climb_calibration_factor");
+		if(!climbCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+			climbCalibrationFactorEmissionIndexSoot = Double.valueOf(climbCalibrationFactorEmissionIndexSootProperty); 
+		}
+		String continuousCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/continuous_calibration_factor");
+		if(!continuousCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+			continuousCalibrationFactorEmissionIndexSoot = Double.valueOf(continuousCalibrationFactorEmissionIndexSootProperty); 
+		}
+		String cruiseCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/cruise_calibration_factor");
+		if(!cruiseCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+			cruiseCalibrationFactorEmissionIndexSoot = Double.valueOf(cruiseCalibrationFactorEmissionIndexSootProperty); 
+		}
+		String flightIdleCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/flight_idle_calibration_factor");
+		if(!flightIdleCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+			flightIdleCalibrationFactorEmissionIndexSoot = Double.valueOf(flightIdleCalibrationFactorEmissionIndexSootProperty); 
+		}
+		String groundIdleCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/ground_idle_calibration_factor");
+		if(!groundIdleCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+			groundIdleCalibrationFactorEmissionIndexSoot = Double.valueOf(groundIdleCalibrationFactorEmissionIndexSootProperty); 
+		}
+		
+		//...............................................................
+		// EmissionIndexCO2
+		double takeOffCalibrationFactorEmissionIndexCO2 = 1.0;
+		double aprCalibrationFactorEmissionIndexCO2 = 1.0;
+		double climbCalibrationFactorEmissionIndexCO2 = 1.0;
+		double continuousCalibrationFactorEmissionIndexCO2 = 1.0;
+		double cruiseCalibrationFactorEmissionIndexCO2 = 1.0;
+		double flightIdleCalibrationFactorEmissionIndexCO2 = 1.0;
+		double groundIdleCalibrationFactorEmissionIndexCO2 = 1.0;
+		
+		String takeOffCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/take_off_calibration_factor");
+		if(!takeOffCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+			takeOffCalibrationFactorEmissionIndexCO2 = Double.valueOf(takeOffCalibrationFactorEmissionIndexCO2Property); 
+		}
+		String aprCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/apr_calibration_factor");
+		if(!aprCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+			aprCalibrationFactorEmissionIndexCO2 = Double.valueOf(aprCalibrationFactorEmissionIndexCO2Property); 
+		}
+		String climbCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/climb_calibration_factor");
+		if(!climbCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+			climbCalibrationFactorEmissionIndexCO2 = Double.valueOf(climbCalibrationFactorEmissionIndexCO2Property); 
+		}
+		String continuousCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/continuous_calibration_factor");
+		if(!continuousCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+			continuousCalibrationFactorEmissionIndexCO2 = Double.valueOf(continuousCalibrationFactorEmissionIndexCO2Property); 
+		}
+		String cruiseCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/cruise_calibration_factor");
+		if(!cruiseCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+			cruiseCalibrationFactorEmissionIndexCO2 = Double.valueOf(cruiseCalibrationFactorEmissionIndexCO2Property); 
+		}
+		String flightIdleCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/flight_idle_calibration_factor");
+		if(!flightIdleCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+			flightIdleCalibrationFactorEmissionIndexCO2 = Double.valueOf(flightIdleCalibrationFactorEmissionIndexCO2Property); 
+		}
+		String groundIdleCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/ground_idle_calibration_factor");
+		if(!groundIdleCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+			groundIdleCalibrationFactorEmissionIndexCO2 = Double.valueOf(groundIdleCalibrationFactorEmissionIndexCO2Property); 
+		}
+		
+		//...............................................................
+		// EmissionIndexSOx
+		double takeOffCalibrationFactorEmissionIndexSOx = 1.0;
+		double aprCalibrationFactorEmissionIndexSOx = 1.0;
+		double climbCalibrationFactorEmissionIndexSOx = 1.0;
+		double continuousCalibrationFactorEmissionIndexSOx = 1.0;
+		double cruiseCalibrationFactorEmissionIndexSOx = 1.0;
+		double flightIdleCalibrationFactorEmissionIndexSOx = 1.0;
+		double groundIdleCalibrationFactorEmissionIndexSOx = 1.0;
+		
+		String takeOffCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/take_off_calibration_factor");
+		if(!takeOffCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+			takeOffCalibrationFactorEmissionIndexSOx = Double.valueOf(takeOffCalibrationFactorEmissionIndexSOxProperty); 
+		}
+		String aprCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/apr_calibration_factor");
+		if(!aprCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+			aprCalibrationFactorEmissionIndexSOx = Double.valueOf(aprCalibrationFactorEmissionIndexSOxProperty); 
+		}
+		String climbCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/climb_calibration_factor");
+		if(!climbCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+			climbCalibrationFactorEmissionIndexSOx = Double.valueOf(climbCalibrationFactorEmissionIndexSOxProperty); 
+		}
+		String continuousCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/continuous_calibration_factor");
+		if(!continuousCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+			continuousCalibrationFactorEmissionIndexSOx = Double.valueOf(continuousCalibrationFactorEmissionIndexSOxProperty); 
+		}
+		String cruiseCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/cruise_calibration_factor");
+		if(!cruiseCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+			cruiseCalibrationFactorEmissionIndexSOx = Double.valueOf(cruiseCalibrationFactorEmissionIndexSOxProperty); 
+		}
+		String flightIdleCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/flight_idle_calibration_factor");
+		if(!flightIdleCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+			flightIdleCalibrationFactorEmissionIndexSOx = Double.valueOf(flightIdleCalibrationFactorEmissionIndexSOxProperty); 
+		}
+		String groundIdleCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/ground_idle_calibration_factor");
+		if(!groundIdleCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+			groundIdleCalibrationFactorEmissionIndexSOx = Double.valueOf(groundIdleCalibrationFactorEmissionIndexSOxProperty); 
+		}
+		
+		//...............................................................
+		// EmissionIndexH2O
+		double takeOffCalibrationFactorEmissionIndexH2O = 1.0;
+		double aprCalibrationFactorEmissionIndexH2O = 1.0;
+		double climbCalibrationFactorEmissionIndexH2O = 1.0;
+		double continuousCalibrationFactorEmissionIndexH2O = 1.0;
+		double cruiseCalibrationFactorEmissionIndexH2O = 1.0;
+		double flightIdleCalibrationFactorEmissionIndexH2O = 1.0;
+		double groundIdleCalibrationFactorEmissionIndexH2O = 1.0;
+		
+		String takeOffCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/take_off_calibration_factor");
+		if(!takeOffCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+			takeOffCalibrationFactorEmissionIndexH2O = Double.valueOf(takeOffCalibrationFactorEmissionIndexH2OProperty); 
+		}
+		String aprCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/apr_calibration_factor");
+		if(!aprCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+			aprCalibrationFactorEmissionIndexH2O = Double.valueOf(aprCalibrationFactorEmissionIndexH2OProperty); 
+		}
+		String climbCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/climb_calibration_factor");
+		if(!climbCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+			climbCalibrationFactorEmissionIndexH2O = Double.valueOf(climbCalibrationFactorEmissionIndexH2OProperty); 
+		}
+		String continuousCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/continuous_calibration_factor");
+		if(!continuousCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+			continuousCalibrationFactorEmissionIndexH2O = Double.valueOf(continuousCalibrationFactorEmissionIndexH2OProperty); 
+		}
+		String cruiseCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/cruise_calibration_factor");
+		if(!cruiseCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+			cruiseCalibrationFactorEmissionIndexH2O = Double.valueOf(cruiseCalibrationFactorEmissionIndexH2OProperty); 
+		}
+		String flightIdleCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/flight_idle_calibration_factor");
+		if(!flightIdleCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+			flightIdleCalibrationFactorEmissionIndexH2O = Double.valueOf(flightIdleCalibrationFactorEmissionIndexH2OProperty); 
+		}
+		String groundIdleCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/ground_idle_calibration_factor");
+		if(!groundIdleCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+			groundIdleCalibrationFactorEmissionIndexH2O = Double.valueOf(groundIdleCalibrationFactorEmissionIndexH2OProperty); 
+		}
+		
+		//===========================================================================================
 		// READING PLOT LIST ...	
 		List<PerformancePlotEnum> plotList = new ArrayList<PerformancePlotEnum>();
 		if(theAircraft.getTheAnalysisManager().getPlotPerformance() == Boolean.TRUE) {
@@ -2504,6 +2856,69 @@ public class ACPerformanceManager {
 				.setSfcFunctionHolding(sfcHoldingFunction)
 				.setFirstGuessInitialMissionFuelMass(maximumFuelMass.to(SI.KILOGRAM).divide(2)) // first guess value equal to 1/2 of the maximum fuel
 				.setTakeOffMissionAltitude(takeOffMissionAltitude.to(SI.METER))
+				.setTakeOffCalibrationFactorThrust(takeOffCalibrationFactorThrust)
+				.setAprCalibrationFactorThrust(aprCalibrationFactorThrust)
+				.setClimbCalibrationFactorThrust(climbCalibrationFactorThrust)
+				.setContinuousCalibrationFactorThrust(continuousCalibrationFactorThrust)
+				.setCruiseCalibrationFactorThrust(cruiseCalibrationFactorThrust)
+				.setFlightIdleCalibrationFactorThrust(flightIdleCalibrationFactorThrust)
+				.setGroundIdleCalibrationFactorThrust(groundIdleCalibrationFactorThrust)
+				.setTakeOffCalibrationFactorSFC(takeOffCalibrationFactorSFC)
+				.setAprCalibrationFactorSFC(aprCalibrationFactorSFC)
+				.setClimbCalibrationFactorSFC(climbCalibrationFactorSFC)
+				.setContinuousCalibrationFactorSFC(continuousCalibrationFactorSFC)
+				.setCruiseCalibrationFactorSFC(cruiseCalibrationFactorSFC)
+				.setFlightIdleCalibrationFactorSFC(flightIdleCalibrationFactorSFC)
+				.setGroundIdleCalibrationFactorSFC(groundIdleCalibrationFactorSFC)
+				.setTakeOffCalibrationFactorEmissionIndexNOx(takeOffCalibrationFactorEmissionIndexNOx)
+				.setAprCalibrationFactorEmissionIndexNOx(aprCalibrationFactorEmissionIndexNOx)
+				.setClimbCalibrationFactorEmissionIndexNOx(climbCalibrationFactorEmissionIndexNOx)
+				.setContinuousCalibrationFactorEmissionIndexNOx(continuousCalibrationFactorEmissionIndexNOx)
+				.setCruiseCalibrationFactorEmissionIndexNOx(cruiseCalibrationFactorEmissionIndexNOx)
+				.setFlightIdleCalibrationFactorEmissionIndexNOx(flightIdleCalibrationFactorEmissionIndexNOx)
+				.setGroundIdleCalibrationFactorEmissionIndexNOx(groundIdleCalibrationFactorEmissionIndexNOx)
+				.setTakeOffCalibrationFactorEmissionIndexCO(takeOffCalibrationFactorEmissionIndexCO)
+				.setAprCalibrationFactorEmissionIndexCO(aprCalibrationFactorEmissionIndexCO)
+				.setClimbCalibrationFactorEmissionIndexCO(climbCalibrationFactorEmissionIndexCO)
+				.setContinuousCalibrationFactorEmissionIndexCO(continuousCalibrationFactorEmissionIndexCO)
+				.setCruiseCalibrationFactorEmissionIndexCO(cruiseCalibrationFactorEmissionIndexCO)
+				.setFlightIdleCalibrationFactorEmissionIndexCO(flightIdleCalibrationFactorEmissionIndexCO)
+				.setGroundIdleCalibrationFactorEmissionIndexCO(groundIdleCalibrationFactorEmissionIndexCO)
+				.setTakeOffCalibrationFactorEmissionIndexHC(takeOffCalibrationFactorEmissionIndexHC)
+				.setAprCalibrationFactorEmissionIndexHC(aprCalibrationFactorEmissionIndexHC)
+				.setClimbCalibrationFactorEmissionIndexHC(climbCalibrationFactorEmissionIndexHC)
+				.setContinuousCalibrationFactorEmissionIndexHC(continuousCalibrationFactorEmissionIndexHC)
+				.setCruiseCalibrationFactorEmissionIndexHC(cruiseCalibrationFactorEmissionIndexHC)
+				.setFlightIdleCalibrationFactorEmissionIndexHC(flightIdleCalibrationFactorEmissionIndexHC)
+				.setGroundIdleCalibrationFactorEmissionIndexHC(groundIdleCalibrationFactorEmissionIndexHC)
+				.setTakeOffCalibrationFactorEmissionIndexSoot(takeOffCalibrationFactorEmissionIndexSoot)
+				.setAprCalibrationFactorEmissionIndexSoot(aprCalibrationFactorEmissionIndexSoot)
+				.setClimbCalibrationFactorEmissionIndexSoot(climbCalibrationFactorEmissionIndexSoot)
+				.setContinuousCalibrationFactorEmissionIndexSoot(continuousCalibrationFactorEmissionIndexSoot)
+				.setCruiseCalibrationFactorEmissionIndexSoot(cruiseCalibrationFactorEmissionIndexSoot)
+				.setFlightIdleCalibrationFactorEmissionIndexSoot(flightIdleCalibrationFactorEmissionIndexSoot)
+				.setGroundIdleCalibrationFactorEmissionIndexSoot(groundIdleCalibrationFactorEmissionIndexSoot)
+				.setTakeOffCalibrationFactorEmissionIndexCO2(takeOffCalibrationFactorEmissionIndexCO2)
+				.setAprCalibrationFactorEmissionIndexCO2(aprCalibrationFactorEmissionIndexCO2)
+				.setClimbCalibrationFactorEmissionIndexCO2(climbCalibrationFactorEmissionIndexCO2)
+				.setContinuousCalibrationFactorEmissionIndexCO2(continuousCalibrationFactorEmissionIndexCO2)
+				.setCruiseCalibrationFactorEmissionIndexCO2(cruiseCalibrationFactorEmissionIndexCO2)
+				.setFlightIdleCalibrationFactorEmissionIndexCO2(flightIdleCalibrationFactorEmissionIndexCO2)
+				.setGroundIdleCalibrationFactorEmissionIndexCO2(groundIdleCalibrationFactorEmissionIndexCO2)
+				.setTakeOffCalibrationFactorEmissionIndexSOx(takeOffCalibrationFactorEmissionIndexSOx)
+				.setAprCalibrationFactorEmissionIndexSOx(aprCalibrationFactorEmissionIndexSOx)
+				.setClimbCalibrationFactorEmissionIndexSOx(climbCalibrationFactorEmissionIndexSOx)
+				.setContinuousCalibrationFactorEmissionIndexSOx(continuousCalibrationFactorEmissionIndexSOx)
+				.setCruiseCalibrationFactorEmissionIndexSOx(cruiseCalibrationFactorEmissionIndexSOx)
+				.setFlightIdleCalibrationFactorEmissionIndexSOx(flightIdleCalibrationFactorEmissionIndexSOx)
+				.setGroundIdleCalibrationFactorEmissionIndexSOx(groundIdleCalibrationFactorEmissionIndexSOx)
+				.setTakeOffCalibrationFactorEmissionIndexH2O(takeOffCalibrationFactorEmissionIndexH2O)
+				.setAprCalibrationFactorEmissionIndexH2O(aprCalibrationFactorEmissionIndexH2O)
+				.setClimbCalibrationFactorEmissionIndexH2O(climbCalibrationFactorEmissionIndexH2O)
+				.setContinuousCalibrationFactorEmissionIndexH2O(continuousCalibrationFactorEmissionIndexH2O)
+				.setCruiseCalibrationFactorEmissionIndexH2O(cruiseCalibrationFactorEmissionIndexH2O)
+				.setFlightIdleCalibrationFactorEmissionIndexH2O(flightIdleCalibrationFactorEmissionIndexH2O)
+				.setGroundIdleCalibrationFactorEmissionIndexH2O(groundIdleCalibrationFactorEmissionIndexH2O)
 				.addAllTaskList(theAircraft.getTheAnalysisManager().getTaskListPerformance())
 				.addAllPlotList(plotList)
 				.build();

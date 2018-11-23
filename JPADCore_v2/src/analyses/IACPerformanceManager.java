@@ -127,6 +127,90 @@ public interface IACPerformanceManager {
 	Amount<Mass> getFirstGuessInitialMissionFuelMass();
 	Amount<Length> getTakeOffMissionAltitude();
 	//..............................................................................
+	// Calibration factors:
+	
+	// Thrust
+	double getTakeOffCalibrationFactorThrust();
+	double getAprCalibrationFactorThrust();
+	double getClimbCalibrationFactorThrust();
+	double getContinuousCalibrationFactorThrust();
+	double getCruiseCalibrationFactorThrust();
+	double getFlightIdleCalibrationFactorThrust();
+	double getGroundIdleCalibrationFactorThrust();
+	
+	// SFC
+	double getTakeOffCalibrationFactorSFC();
+	double getAprCalibrationFactorSFC();
+	double getClimbCalibrationFactorSFC();
+	double getContinuousCalibrationFactorSFC();
+	double getCruiseCalibrationFactorSFC();
+	double getFlightIdleCalibrationFactorSFC();
+	double getGroundIdleCalibrationFactorSFC();
+	
+	// EmissionIndexNOx
+	double getTakeOffCalibrationFactorEmissionIndexNOx();
+	double getAprCalibrationFactorEmissionIndexNOx();
+	double getClimbCalibrationFactorEmissionIndexNOx();
+	double getContinuousCalibrationFactorEmissionIndexNOx();
+	double getCruiseCalibrationFactorEmissionIndexNOx();
+	double getFlightIdleCalibrationFactorEmissionIndexNOx();
+	double getGroundIdleCalibrationFactorEmissionIndexNOx();
+	
+	// EmissionIndexCO
+	double getTakeOffCalibrationFactorEmissionIndexCO();
+	double getAprCalibrationFactorEmissionIndexCO();
+	double getClimbCalibrationFactorEmissionIndexCO();
+	double getContinuousCalibrationFactorEmissionIndexCO();
+	double getCruiseCalibrationFactorEmissionIndexCO();
+	double getFlightIdleCalibrationFactorEmissionIndexCO();
+	double getGroundIdleCalibrationFactorEmissionIndexCO();
+	
+	// EmissionIndexHC
+	double getTakeOffCalibrationFactorEmissionIndexHC();
+	double getAprCalibrationFactorEmissionIndexHC();
+	double getClimbCalibrationFactorEmissionIndexHC();
+	double getContinuousCalibrationFactorEmissionIndexHC();
+	double getCruiseCalibrationFactorEmissionIndexHC();
+	double getFlightIdleCalibrationFactorEmissionIndexHC();
+	double getGroundIdleCalibrationFactorEmissionIndexHC();
+	
+	// EmissionIndexSoot
+	double getTakeOffCalibrationFactorEmissionIndexSoot();
+	double getAprCalibrationFactorEmissionIndexSoot();
+	double getClimbCalibrationFactorEmissionIndexSoot();
+	double getContinuousCalibrationFactorEmissionIndexSoot();
+	double getCruiseCalibrationFactorEmissionIndexSoot();
+	double getFlightIdleCalibrationFactorEmissionIndexSoot();
+	double getGroundIdleCalibrationFactorEmissionIndexSoot();
+	
+	// EmissionIndexCO2
+	double getTakeOffCalibrationFactorEmissionIndexCO2();
+	double getAprCalibrationFactorEmissionIndexCO2();
+	double getClimbCalibrationFactorEmissionIndexCO2();
+	double getContinuousCalibrationFactorEmissionIndexCO2();
+	double getCruiseCalibrationFactorEmissionIndexCO2();
+	double getFlightIdleCalibrationFactorEmissionIndexCO2();
+	double getGroundIdleCalibrationFactorEmissionIndexCO2();
+	
+	// EmissionIndexSOx
+	double getTakeOffCalibrationFactorEmissionIndexSOx();
+	double getAprCalibrationFactorEmissionIndexSOx();
+	double getClimbCalibrationFactorEmissionIndexSOx();
+	double getContinuousCalibrationFactorEmissionIndexSOx();
+	double getCruiseCalibrationFactorEmissionIndexSOx();
+	double getFlightIdleCalibrationFactorEmissionIndexSOx();
+	double getGroundIdleCalibrationFactorEmissionIndexSOx();
+	
+	// EmissionIndexCO
+	double getTakeOffCalibrationFactorEmissionIndexH2O();
+	double getAprCalibrationFactorEmissionIndexH2O();
+	double getClimbCalibrationFactorEmissionIndexH2O();
+	double getContinuousCalibrationFactorEmissionIndexH2O();
+	double getCruiseCalibrationFactorEmissionIndexH2O();
+	double getFlightIdleCalibrationFactorEmissionIndexH2O();
+	double getGroundIdleCalibrationFactorEmissionIndexH2O();
+	
+	//..............................................................................
 	// Plot and Task Maps
 	List<PerformanceEnum> getTaskList();
 	List<PerformancePlotEnum> getPlotList();
