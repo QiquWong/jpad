@@ -12,6 +12,7 @@ import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -32,6 +33,7 @@ import calculators.performance.TakeOffNoiseTrajectoryCalc.DynamicsEquationsTakeO
 import calculators.performance.customdata.TakeOffResultsMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import database.databasefunctions.engine.EngineDatabaseManager;
 import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -81,6 +83,7 @@ public class TakeOffCalc {
 	private Amount<Mass> maxTakeOffMass; 
 	private Amount<Velocity> vSTakeOff, vRot, vMC, vLO, vWind, v1, v2;
 	private Amount<Length> altitude, wingToGroundDistance, obstacle, balancedFieldLength;
+	private Amount<Temperature> deltaTemperature;
 	private Amount<Angle> alphaGround, iw;
 	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, fuelFlow, timeBreakPoints;
 	private List<Amount<Angle>> alpha, theta, gamma;
@@ -130,6 +133,7 @@ public class TakeOffCalc {
 			double[] polarCLTakeOff,
 			double[] polarCDTakeOff,
 			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature,
 			double mach,
 			Amount<Mass> maxTakeOffMass,
 			Amount<Duration> dtHold,
@@ -162,6 +166,7 @@ public class TakeOffCalc {
 		this.polarCLTakeOff = polarCLTakeOff;
 		this.polarCDTakeOff = polarCDTakeOff;
 		this.altitude = altitude;
+		this.deltaTemperature = deltaTemperature;
 		this.mach = mach;
 		this.maxTakeOffMass = maxTakeOffMass;
 		this.dtHold = dtHold;
@@ -768,32 +773,11 @@ public class TakeOffCalc {
 					//--------------------------------------------------------------------------------
 					// FUEL FLOW:
 					TakeOffCalc.this.getFuelFlow().add(
-							(TakeOffCalc.this.getThrust().get(
-									TakeOffCalc.this.getThrust().size()-1
-									)
-									.doubleValue(SI.NEWTON))
-							*(0.224809)*(0.454/60)
-							*EngineDatabaseManager_old.getSFC(
-									SpeedCalc.calculateMach(
-											x[3],
-											x[1]
-											),
-									x[3],
-									EngineDatabaseManager_old.getThrustRatio(
-											SpeedCalc.calculateMach(
-													x[3],
-													x[1]
-													),
-											x[3],
-											TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
-											TakeOffCalc.this.getThePowerPlant().getEngineType(),
-											EngineOperatingConditionEnum.TAKE_OFF,
-											TakeOffCalc.this.getThePowerPlant()
-											),
-									TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
-									TakeOffCalc.this.getThePowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.TAKE_OFF,
-									TakeOffCalc.this.getThePowerPlant()
+							((DynamicsEquationsTakeOff)ode).fuelFlow(
+									x[1],
+									x[2],
+									t,
+									x[3]
 									)
 							);
 
@@ -1391,8 +1375,9 @@ public class TakeOffCalc {
 											x[1],
 											alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 											x[2],
-											times.get(i).doubleValue(SI.SECOND),
-											x[3])),
+											times.get(i).doubleValue(SI.SECOND)
+											)
+									),
 							SI.NEWTON)
 							);
 				else
@@ -1404,8 +1389,8 @@ public class TakeOffCalc {
 								x[1],
 								alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 								x[2],
-								times.get(i).doubleValue(SI.SECOND),
-								x[3]),
+								times.get(i).doubleValue(SI.SECOND)
+								),
 						SI.NEWTON)
 						);
 				//----------------------------------------------------------------------------------------
@@ -1415,8 +1400,8 @@ public class TakeOffCalc {
 								x[1],
 								alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 								x[2],
-								times.get(i).doubleValue(SI.SECOND),
-								x[3]),
+								times.get(i).doubleValue(SI.SECOND)
+								),
 						SI.NEWTON)
 						);
 				//----------------------------------------------------------------------------------------
@@ -1431,16 +1416,16 @@ public class TakeOffCalc {
 								x[1],
 								alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 								x[2],
-								times.get(i).doubleValue(SI.SECOND),
-								x[3])
+								times.get(i).doubleValue(SI.SECOND)
+								)
 						- ((DynamicsEquationsTakeOff)ode).mu(x[1])
 						*(((DynamicsEquationsTakeOff)ode).weight
 								- ((DynamicsEquationsTakeOff)ode).lift(
 										x[1],
 										alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 										x[2],
-										times.get(i).doubleValue(SI.SECOND),
-										x[3]))
+										times.get(i).doubleValue(SI.SECOND)
+										))
 						- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
 								Amount.valueOf(
 										x[2],
@@ -1497,12 +1482,8 @@ public class TakeOffCalc {
 										x[1],
 										alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 										x[2],
-										times.get(i).doubleValue(SI.SECOND),
-										x[3]
-										),
-								times.get(i).doubleValue(SI.SECOND),
-								x[1],
-								x[3]
+										times.get(i).doubleValue(SI.SECOND)
+										)
 								)
 						);
 			}
@@ -2287,118 +2268,64 @@ public class TakeOffCalc {
 
 			if (time <= tFaiulre.getEstimatedValue())
 				theThrust =	ThrustCalc.calculateThrustDatabase(
-						TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-						TakeOffCalc.this.getThePowerPlant().getEngineNumber(),
-						TakeOffCalc.this.getPhi(),
-						TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
-						TakeOffCalc.this.getThePowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.TAKE_OFF,
-						TakeOffCalc.this.getThePowerPlant(),
-						altitude,
-						SpeedCalc.calculateMach(
-								altitude,
-								speed + 
-								(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-										gamma,
-										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-								)
+						TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON), 
+						TakeOffCalc.this.getThePowerPlant().getEngineNumber(), 
+						EngineOperatingConditionEnum.TAKE_OFF, 
+						TakeOffCalc.this.getThePowerPlant(), 
+						Amount.valueOf(altitude, SI.METER),
+						SpeedCalc.calculateMach(altitude, speed),
+						deltaTemperature, 
+						TakeOffCalc.this.getPhi()
 						);
 			else {
 				if(isAborted == false) {
 					if (time <= tFaiulre.getEstimatedValue() + 1)
 						theThrust =	ThrustCalc.calculateThrustDatabase(
-								TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-								TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1,
-								TakeOffCalc.this.getPhi(),
-								TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
-								TakeOffCalc.this.getThePowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.TAKE_OFF,
-								TakeOffCalc.this.getThePowerPlant(),
-								altitude,
-								SpeedCalc.calculateMach(
-										altitude,
-										speed + 
-										(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-												gamma,
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-										)
+								TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON), 
+								TakeOffCalc.this.getThePowerPlant().getEngineNumber() -1, 
+								EngineOperatingConditionEnum.TAKE_OFF, 
+								TakeOffCalc.this.getThePowerPlant(), 
+								Amount.valueOf(altitude, SI.METER),
+								SpeedCalc.calculateMach(altitude, speed),
+								deltaTemperature, 
+								TakeOffCalc.this.getPhi()
 								);
 					else {
-						// CHECK ON THE APR SETTING, if present use this ...
-						if ((TakeOffCalc.this.getThePowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP) 
-								&& (Double.valueOf(
-										TakeOffCalc.this.getThePowerPlant()
-										.getTurbopropEngineDatabaseReader()
-										.getThrustAPR(
-												TakeOffCalc.this.getMach(),
-												TakeOffCalc.this.getAltitude().doubleValue(SI.METER),
-												TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR()
-												)
-										) != 0.0
-										)
-								)
-							theThrust =	ThrustCalc.calculateThrustDatabase(
-									TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-									TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1,
-									TakeOffCalc.this.getPhi(),
-									TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
-									TakeOffCalc.this.getThePowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.APR,
-									TakeOffCalc.this.getThePowerPlant(),
-									altitude,
-									SpeedCalc.calculateMach(
-											altitude,
-											speed + 
-											(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-													gamma,
-													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-											)
-									);
-						else
-							// ... otherwise use TAKE-OFF
-							theThrust =	ThrustCalc.calculateThrustDatabase(
-									TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-									TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1,
-									TakeOffCalc.this.getPhi(),
-									TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
-									TakeOffCalc.this.getThePowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.TAKE_OFF,
-									TakeOffCalc.this.getThePowerPlant(),
-									altitude,
-									SpeedCalc.calculateMach(
-											altitude,
-											speed + 
-											(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-													gamma,
-													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-											)
-									);
+						theThrust =	ThrustCalc.calculateThrustDatabase(
+								TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON), 
+								TakeOffCalc.this.getThePowerPlant().getEngineNumber() -1, 
+								EngineOperatingConditionEnum.APR, 
+								TakeOffCalc.this.getThePowerPlant(), 
+								Amount.valueOf(altitude, SI.METER),
+								SpeedCalc.calculateMach(altitude, speed),
+								deltaTemperature, 
+								TakeOffCalc.this.getPhi()
+								);
 					}
 				}
 				else {
 					if(time < tRec.doubleValue(SI.SECOND))
 						theThrust =	ThrustCalc.calculateThrustDatabase(
-								TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-								TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1,
-								TakeOffCalc.this.getPhi(),
-								TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
-								TakeOffCalc.this.getThePowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.TAKE_OFF,
-								TakeOffCalc.this.getThePowerPlant(),
-								altitude,
-								SpeedCalc.calculateMach(
-										altitude,
-										speed + 
-										(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-												gamma,
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-										)
+								TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON), 
+								TakeOffCalc.this.getThePowerPlant().getEngineNumber() -1, 
+								EngineOperatingConditionEnum.TAKE_OFF, 
+								TakeOffCalc.this.getThePowerPlant(), 
+								Amount.valueOf(altitude, SI.METER),
+								SpeedCalc.calculateMach(altitude, speed),
+								deltaTemperature, 
+								TakeOffCalc.this.getPhi()
 								);
 					else
-						theThrust =	
-						TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON)
-						*throttleGrounIdle(speed)
-						*(TakeOffCalc.this.getThePowerPlant().getEngineNumber() - 1);
+						theThrust =	ThrustCalc.calculateThrustDatabase(
+								TakeOffCalc.this.getThePowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON), 
+								TakeOffCalc.this.getThePowerPlant().getEngineNumber() -1, 
+								EngineOperatingConditionEnum.GIDL, 
+								TakeOffCalc.this.getThePowerPlant(), 
+								Amount.valueOf(altitude, SI.METER),
+								SpeedCalc.calculateMach(altitude, speed),
+								deltaTemperature, 
+								TakeOffCalc.this.getPhi()
+								);
 				}
 			}
 
@@ -2407,6 +2334,8 @@ public class TakeOffCalc {
 
 		public double fuelFlow(double speed, double gamma, double time, double altitude) {
 
+			List<Double> fuelFlowList = new ArrayList<>();
+			
 			double fuelFlow = thrust(speed, time, time, altitude)
 					*(0.224809)*(0.454/3600)
 					*EngineDatabaseManager_old.getSFC(
@@ -2415,7 +2344,7 @@ public class TakeOffCalc {
 									speed
 									),
 							altitude,
-							EngineDatabaseManager_old.getThrustRatio(
+							EngineDatabaseManager.getThrustRatio(
 									SpeedCalc.calculateMach(
 											altitude,
 											speed
@@ -3231,6 +3160,14 @@ public class TakeOffCalc {
 
 	public void setOde(FirstOrderDifferentialEquations ode) {
 		this.ode = ode;
+	}
+
+	public Amount<Temperature> getDeltaTemperature() {
+		return deltaTemperature;
+	}
+
+	public void setDeltaTemperature(Amount<Temperature> deltaTemperature) {
+		this.deltaTemperature = deltaTemperature;
 	}
 
 }

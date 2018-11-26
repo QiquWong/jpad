@@ -37,6 +37,7 @@ package standaloneutils.aerotools.aero;
 *  @author  Joseph A. Huwaldt  Date:	September 27, 1998
 *  @version April 1, 2014
 */
+@SuppressWarnings("serial")
 public abstract class StdAtmos implements java.io.Serializable {
 
 	/*

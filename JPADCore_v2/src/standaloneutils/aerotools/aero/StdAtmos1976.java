@@ -781,6 +781,37 @@ public final class StdAtmos1976 extends StdAtmos {
 		}
 	}
 
+	/**
+	*  Constructor that takes a value of altitude in meters.
+	*  If the specified altitude is outside the range 0 to 86,000
+	*  meters, an IllegalArgumentException exception is thrown.  </p>
+	*
+	*  @param  altitude Altitude at which standard atmosphere is to be
+	*          calculated; value given in meters.
+	*/
+	public StdAtmos1976( double altitude , double deltaTemperature ) throws IllegalArgumentException {
+
+		//	Set the altitude (if out of range, throw exception).
+		if ( altitude < minAltitude() )
+			throw new IllegalArgumentException( "Altitude can not be less than " + (minAltitude()/1000) + " km." );
+		
+		else {
+			if ( altitude > maxAltitude() )
+				throw new IllegalArgumentException( "Altitude can not be greater than " + (maxAltitude()/1000) + " km." );
+			
+			else {
+				//	Reset the altitude only if it has changed.
+
+				if ( abs(altitude - alt) > MathTools.epsilon(altitude) ) {
+					alt = altitude;
+					
+					//	Go off and calculate the standard atmosphere parameters.
+					calculate();
+				}
+			}
+		}
+	}
+	
 	//-----------------------------------------------------------------------------------
 	/**
 	*  Returns the standard sea level temperature for this
