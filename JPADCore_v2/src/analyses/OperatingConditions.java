@@ -539,7 +539,7 @@ public class OperatingConditions {
 	public void calculate() {
 
 		// CLIMB
-		atmosphereClimb = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeClimb().doubleValue(SI.METER));
+		atmosphereClimb = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeClimb().doubleValue(SI.METER), theOperatingConditionsInterface.getDeltaTemperatureClimb().doubleValue(SI.CELSIUS));
 		pressureCoefficientClimb = PressureCalc.calculatePressureCoefficient(theOperatingConditionsInterface.getMachClimb());
 		densityClimb = Amount.valueOf(atmosphereClimb.getDensity()*1000, VolumetricDensity.UNIT);
 		staticPressureClimb = Amount.valueOf(atmosphereClimb.getPressure(), SI.PASCAL);
@@ -579,7 +579,7 @@ public class OperatingConditions {
 								DynamicViscosity.UNIT);
 		
 		// CRUISE
-		atmosphereCruise = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeCruise().doubleValue(SI.METER));
+		atmosphereCruise = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeCruise().doubleValue(SI.METER), theOperatingConditionsInterface.getDeltaTemperatureCruise().doubleValue(SI.CELSIUS));
 		pressureCoefficientCruise = PressureCalc.calculatePressureCoefficient(theOperatingConditionsInterface.getMachCruise());
 		densityCruise = Amount.valueOf(atmosphereCruise.getDensity()*1000, VolumetricDensity.UNIT);
 		staticPressureCruise = Amount.valueOf(atmosphereCruise.getPressure(), SI.PASCAL);
@@ -615,7 +615,7 @@ public class OperatingConditions {
 								DynamicViscosity.UNIT);
 
 		// TAKE-OFF
-		atmosphereTakeOff = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeTakeOff().doubleValue(SI.METER));
+		atmosphereTakeOff = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeTakeOff().doubleValue(SI.METER), theOperatingConditionsInterface.getDeltaTemperatureTakeOff().doubleValue(SI.CELSIUS));
 		pressureCoefficientTakeOff = PressureCalc.calculatePressureCoefficient(theOperatingConditionsInterface.getMachTakeOff());
 		densityTakeOff = Amount.valueOf(atmosphereTakeOff.getDensity()*1000, VolumetricDensity.UNIT);
 		staticPressureTakeOff = Amount.valueOf(atmosphereTakeOff.getPressure(), SI.PASCAL);
@@ -651,7 +651,7 @@ public class OperatingConditions {
 								DynamicViscosity.UNIT);
 		
 		// LANDING
-		atmosphereLanding = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeLanding().doubleValue(SI.METER));
+		atmosphereLanding = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeLanding().doubleValue(SI.METER), theOperatingConditionsInterface.getDeltaTemperatureLanding().doubleValue(SI.CELSIUS));
 		pressureCoefficientLanding = PressureCalc.calculatePressureCoefficient(theOperatingConditionsInterface.getMachLanding());
 		densityLanding = Amount.valueOf(atmosphereLanding.getDensity()*1000, VolumetricDensity.UNIT);
 		staticPressureLanding = Amount.valueOf(atmosphereLanding.getPressure(), SI.PASCAL);
@@ -692,6 +692,10 @@ public class OperatingConditions {
 		return new StdAtmos1976(altitude);
 	}
 	
+	public static StdAtmos1976 getAtmosphere(double altitude, double deltaTemperature) {
+		return new StdAtmos1976(altitude, deltaTemperature);
+	}
+	
 	//-------------------------------------------------------------------------------
 	//	GETTERS & SETTERS
 	//-------------------------------------------------------------------------------
@@ -700,8 +704,6 @@ public class OperatingConditions {
 		return theOperatingConditionsInterface;
 	}
 
-	
-	
 	public void setTheOperatingConditionsInterface(IOperatingConditions theOperatingConditionsInterface) {
 		this.theOperatingConditionsInterface = theOperatingConditionsInterface;
 	}
