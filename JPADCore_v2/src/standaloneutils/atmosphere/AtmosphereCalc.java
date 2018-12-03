@@ -9,7 +9,6 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import standaloneutils.MyUnits;
 import standaloneutils.aerotools.aero.StdAtmos1976;
 
 /**
@@ -30,7 +29,7 @@ public class AtmosphereCalc {
 	public static final double M = 0.0289644; // molar mass of Earth's air (kg/mol)
 	public static final double R = 8.31432; // universal gas constant for air N m/(mol K)
 
-	private static final StdAtmos1976 atmosphere = new StdAtmos1976(0.0);
+	private static final StdAtmos1976 atmosphere = new StdAtmos1976(0.0, 0.0);
 
 	public static StdAtmos1976 getAtmosphere(double altitude) {
 		atmosphere.setAltitude(altitude);
