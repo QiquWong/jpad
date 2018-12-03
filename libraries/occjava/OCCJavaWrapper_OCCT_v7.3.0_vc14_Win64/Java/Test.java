@@ -32,6 +32,8 @@ import opencascade.gp_Ax2;
 import opencascade.gp_Dir;
 import opencascade.gp_Pnt;
 import opencascade.gp_XYZ;
+import opencascade.GeomAdaptor_Curve;
+import opencascade.GCPnts_AbscissaPoint;
 
 public class Test {
 
@@ -356,6 +358,9 @@ public class Test {
 	 * Testing Spline Curve lib
 	 */
 	private static void TestBSplCLib() {
+		System.out.println("-----------------------------------------------");
+		System.out.println("TestBSplCLib");
+
 		TColgp_HArray1OfPnt points1 = new TColgp_HArray1OfPnt(1, 4);
 		points1.SetValue(1, new gp_Pnt( 0,  0, 0));
 		points1.SetValue(2, new gp_Pnt( 0, 10, 5));
@@ -383,7 +388,29 @@ public class Test {
 		}
 		System.out.println("-----------------------------------------------");		
 	}
+	
+	/*
+	 * Testing Spline Curve lib
+	 */
+	private static void TestGCPnts() {
+		System.out.println("-----------------------------------------------");
+		System.out.println("TestGCPnts");
 
+		// create a circle
+		double radius = 10;
+		gp_Pnt p1 = new gp_Pnt(0, 0, 0);
+		gp_Dir cNorm = new gp_Dir(0, 0, 1);
+		gp_Ax2 coordSystem = new gp_Ax2(p1, cNorm);
+
+		Geom_Circle circle = new Geom_Circle(coordSystem, radius);
+		double umin = circle.FirstParameter();
+		double umax = circle.LastParameter();
+		GeomAdaptor_Curve adaptorCurve = new GeomAdaptor_Curve(circle, umin, umax);
+		double len = GCPnts_AbscissaPoint.Length(adaptorCurve, umin, umax);
+		System.out.println("Circle length: " + len);
+		System.out.println("-----------------------------------------------");
+	}
+	
 	public static void main(String[] args) {
 		// run tests in sequence
 		TestIntRef();
@@ -397,9 +424,9 @@ public class Test {
 		TestNestedIterator();
 		TestMMGR();
 		TestPrinter();
+		TestBSplCLib();
+		TestGCPnts();
 
-		TestBSplCLib(); // agodemar
-		
 		// this test should be last one -- if it fails, the system will go down
 		TestGC();
 
