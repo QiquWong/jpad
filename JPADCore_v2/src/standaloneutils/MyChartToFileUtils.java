@@ -3546,97 +3546,101 @@ public class MyChartToFileUtils {
 			String xUnit, String yUnit,
 			int width, int height
 			) {
-		
+
 		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
 		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
 
 		for(int i=0; i<xArrays.length; i++) {
-			XYSeries series = new XYSeries(legendValueString[i], false);
-			for(int j=0; j<xArrays[i].length; j++) {
-				series.add(
-						xArrays[i][j],
-						yArrays[i][j]
-						);
+			if(xArrays[i].length > 1) {
+				XYSeries series = new XYSeries(legendValueString[i], false);
+				for(int j=0; j<xArrays[i].length; j++) {
+					series.add(
+							xArrays[i][j],
+							yArrays[i][j]
+							);
+				}
+				datasetLineChart.addSeries(series);
 			}
-			datasetLineChart.addSeries(series);
 		}
-		
-		PlotOrientation orientation;
-		if (swapXY) orientation = PlotOrientation.HORIZONTAL;
-		else orientation = PlotOrientation.VERTICAL;
 
-		final Paint[] paintArray;
-		// create default colors but modify some colors that are hard to see
-		paintArray = ChartColor.createDefaultPaintArray();
-		paintArray[0] = ChartColor.BLACK;
-		paintArray[1] = ChartColor.BLUE;
-		paintArray[2] = ChartColor.RED;
-		paintArray[3] = ChartColor.DARK_GREEN;
-		paintArray[4] = ChartColor.DARK_YELLOW;
-		paintArray[5] = ChartColor.DARK_GRAY;
-		paintArray[6] = ChartColor.DARK_BLUE;
-		paintArray[7] = ChartColor.DARK_RED;
-		paintArray[8] = ChartColor.VERY_DARK_GREEN;
-		paintArray[9] = ChartColor.ORANGE;
-		
-		JFreeChart xylineChart = ChartFactory.createScatterPlot(
-				fileName, 
-				xLabel + " " + xUnit,
-				yLabel + " " + yUnit, 
-				datasetLineChart,
-				orientation, 
-				true, true, false);
-		xylineChart.setBackgroundPaint(Color.WHITE);
-		xylineChart.setBackgroundImageAlpha(0.0f);
-		xylineChart.setAntiAlias(true);
-		xylineChart.getLegend().setItemFont(new Font("Dialog", Font.PLAIN, LEGEND_FONT_SIZE));
+		if(!datasetLineChart.getSeries().isEmpty()) {
+			PlotOrientation orientation;
+			if (swapXY) orientation = PlotOrientation.HORIZONTAL;
+			else orientation = PlotOrientation.VERTICAL;
 
-		XYPlot plot = (XYPlot) xylineChart.getPlot();
-		plot.setDrawingSupplier(new DefaultDrawingSupplier(
-				paintArray,
-				DefaultDrawingSupplier.DEFAULT_FILL_PAINT_SEQUENCE,
-				DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE,
-				DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,
-				DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,
-				DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
-		plot.setBackgroundPaint(Color.WHITE);
-		plot.setBackgroundAlpha(0.0f);
-		plot.setDomainGridlinesVisible(true);
-		plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
-		plot.setRangeGridlinesVisible(true);
-		plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
-		plot.setDomainPannable(true);
-		plot.setRangePannable(true);
+			final Paint[] paintArray;
+			// create default colors but modify some colors that are hard to see
+			paintArray = ChartColor.createDefaultPaintArray();
+			paintArray[0] = ChartColor.BLACK;
+			paintArray[1] = ChartColor.BLUE;
+			paintArray[2] = ChartColor.RED;
+			paintArray[3] = ChartColor.DARK_GREEN;
+			paintArray[4] = ChartColor.DARK_YELLOW;
+			paintArray[5] = ChartColor.DARK_GRAY;
+			paintArray[6] = ChartColor.DARK_BLUE;
+			paintArray[7] = ChartColor.DARK_RED;
+			paintArray[8] = ChartColor.VERY_DARK_GREEN;
+			paintArray[9] = ChartColor.ORANGE;
 
-		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
-		domain.setRange(xMin, xMax);
-		domain.setLabelFont(new Font("Dialog", Font.PLAIN, LABEL_SIZE));
-		domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
-		NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
-		range.setRange(yMin, yMax);
-		range.setLabelFont(new Font("Dialog", Font.PLAIN, LABEL_SIZE));
-		range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
+			JFreeChart xylineChart = ChartFactory.createScatterPlot(
+					fileName, 
+					xLabel + " " + xUnit,
+					yLabel + " " + yUnit, 
+					datasetLineChart,
+					orientation, 
+					true, true, false);
+			xylineChart.setBackgroundPaint(Color.WHITE);
+			xylineChart.setBackgroundImageAlpha(0.0f);
+			xylineChart.setAntiAlias(true);
+			xylineChart.getLegend().setItemFont(new Font("Dialog", Font.PLAIN, LEGEND_FONT_SIZE));
 
-		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-		renderer.setDefaultShapesVisible(true);
-		renderer.setDefaultLinesVisible(false);
-		renderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
-		renderer.setDefaultEntityRadius(6);
+			XYPlot plot = (XYPlot) xylineChart.getPlot();
+			plot.setDrawingSupplier(new DefaultDrawingSupplier(
+					paintArray,
+					DefaultDrawingSupplier.DEFAULT_FILL_PAINT_SEQUENCE,
+					DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE,
+					DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,
+					DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,
+					DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
+			plot.setBackgroundPaint(Color.WHITE);
+			plot.setBackgroundAlpha(0.0f);
+			plot.setDomainGridlinesVisible(true);
+			plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+			plot.setRangeGridlinesVisible(true);
+			plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+			plot.setDomainPannable(true);
+			plot.setRangePannable(true);
 
-		plot.setRenderer(renderer);
+			NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
+			domain.setRange(xMin, xMax);
+			domain.setLabelFont(new Font("Dialog", Font.PLAIN, LABEL_SIZE));
+			domain.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
+			NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
+			range.setRange(yMin, yMax);
+			range.setLabelFont(new Font("Dialog", Font.PLAIN, LABEL_SIZE));
+			range.setTickLabelFont(new Font("Sans-serif", Font.PLAIN, TICK_LABEL_SIZE));
 
-		try {
-			File f = new File(path + File.separator + fileName + ".svg");
-			if(f.exists()) f.delete();
+			XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+			renderer.setDefaultShapesVisible(true);
+			renderer.setDefaultLinesVisible(false);
+			renderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+			renderer.setDefaultEntityRadius(6);
 
-			SVGGraphics2D g2 = new SVGGraphics2D(width, height);
-			Rectangle r = new Rectangle(width, height);
-			xylineChart.draw(g2, r);
-			SVGUtils.writeToSVG(f, g2.getSVGElement());
-			datasetLineChart.removeAllSeries();
+			plot.setRenderer(renderer);
 
-		} catch (IOException e) {
-			e.printStackTrace();
+			try {
+				File f = new File(path + File.separator + fileName + ".svg");
+				if(f.exists()) f.delete();
+
+				SVGGraphics2D g2 = new SVGGraphics2D(width, height);
+				Rectangle r = new Rectangle(width, height);
+				xylineChart.draw(g2, r);
+				SVGUtils.writeToSVG(f, g2.getSVGElement());
+				datasetLineChart.removeAllSeries();
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -3697,21 +3701,24 @@ public class MyChartToFileUtils {
 	}
 
 	public void createMultiTraceScatterPlot(double[][]xArrays, double[][]yArrays) {
-		
+
 		for(int i=0; i<xArrays.length; i++) {
-			XYSeries series = new XYSeries(legendValueString[i], false);
-			for(int j=0; j<xArrays[i].length; j++) {
-				series.add(
-						xArrays[i][j],
-						yArrays[i][j]
-						);
+			if(xArrays[i].length > 1) {
+				XYSeries series = new XYSeries(legendValueString[i], false);
+				for(int j=0; j<xArrays[i].length; j++) {
+					series.add(
+							xArrays[i][j],
+							yArrays[i][j]
+							);
+				}
+				datasetLineChart.addSeries(series);
 			}
-			datasetLineChart.addSeries(series);
 		}
-			
-		createMultiTraceScatterPlot(path, fileName, 
-				xLabel, yLabel, xUnit, yUnit, legendValueString,
-				stripTrailingZeros);
+		
+		if(!datasetLineChart.getSeries().isEmpty())
+			createMultiTraceScatterPlot(path, fileName, 
+					xLabel, yLabel, xUnit, yUnit, legendValueString,
+					stripTrailingZeros);
 	}
 	
 	public void createMultiTraceChart() {

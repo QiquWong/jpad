@@ -2,6 +2,7 @@ package it.unina.daf;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,9 +21,12 @@ import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 
 import configuration.MyConfiguration;
+import configuration.enumerations.ConstraintsViolationConditionEnum;
 import configuration.enumerations.FoldersEnum;
+import javaslang.Tuple2;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentsOptimization {
@@ -101,16 +105,20 @@ public class OptimizationMain  {
 			// Defining the optimization problem ...
 			InputManagerInterface inputManager = MOEAProblemResponseSurface.importInputFile(inputFilePath);
 			
-			MOEAProblemResponseSurface problem = new MOEAProblemResponseSurface(
-					inputManager.getNumberOfVariables(),
-					inputManager.getNumberOfObjectives(),
-					inputManager.getNumberOfConstraints()
+			MOEAProblemResponseSurface problem = OptimizationMain.manageResponseSurfaceData(
+					new MOEAProblemResponseSurface(
+							inputManager.getNumberOfVariables(),
+							inputManager.getNumberOfObjectives(),
+							inputManager.getNumberOfConstraints()
+							), 
+					inputManager, 
+					MyConfiguration.getDir(FoldersEnum.INPUT_DIR), 
+					va.getResponseSurfaceFile().getName(),
+					inputManager.getMaximizationProblemConditionArray(),
+					inputManager.getVariablesLowerBounds(),
+					inputManager.getVariablesUpperBounds(),
+					inputManager.getConstraintsDictionary()
 					);
-			problem.setMaximizationProblemConditionArray(inputManager.getMaximizationProblemConditionArray());
-			problem.importResponseSurface(responseSurfacePath);
-			problem.setVariablesLowerBounds(inputManager.getVariablesLowerBounds());
-			problem.setVariablesUpperBounds(inputManager.getVariablesUpperBounds());
-			problem.setConstraintsDictionary(inputManager.getConstraintsDictionary());
 			
 			//......................................................................
 			// Defining the optimization problem ...
@@ -280,4 +288,68 @@ public class OptimizationMain  {
 
 		System.exit(1);
 	}
+	
+	public static MOEAProblemResponseSurface manageResponseSurfaceData(
+			MOEAProblemResponseSurface responseSurfaceManager, 
+			InputManagerInterface theInputManager,
+			String responseSurfaceDirectory, 
+			String responseSurfaceName,
+			Boolean[] maximizationProblemConditionArray,
+			double[] variablesLowerBounds,
+			double[] variablesUpperBounds,
+			List<Tuple2<ConstraintsViolationConditionEnum, List<Double>>> constraintsDictionary
+			) throws InvalidFormatException, IOException{
+
+		String responseSurfaceNameXML = null;
+		
+		if(responseSurfaceName.endsWith(".csv"))
+			responseSurfaceNameXML = responseSurfaceName.replace(".csv", ".xml");
+		
+		String serializedResponseSurfaceDirectory = responseSurfaceDirectory + File.separator + "serializedResponseSurfaces"; 
+		String serializedResponseSurfaceFullName = serializedResponseSurfaceDirectory + File.separator + responseSurfaceNameXML;
+
+		File serializedResponseSurfaceFile = new File(serializedResponseSurfaceFullName);
+		File responseSurfaceFile = new File(responseSurfaceDirectory + File.separator + responseSurfaceName);
+
+		if(serializedResponseSurfaceFile.exists()){
+			System.out.println("De-serializing file: " + serializedResponseSurfaceFile.getAbsolutePath() + " ...");
+			responseSurfaceManager = (MOEAProblemResponseSurface) 
+					MyXMLReaderUtils.deserializeObject(
+							responseSurfaceManager,
+							serializedResponseSurfaceFullName,
+							StandardCharsets.ISO_8859_1
+							);
+		}
+		else {
+			System.out.println(	"Serializing file " + "==> " + responseSurfaceName + "  ==> "+ 
+					serializedResponseSurfaceFile.getAbsolutePath() + " ...");
+			responseSurfaceManager = new MOEAProblemResponseSurface(
+					theInputManager.getNumberOfVariables(), 
+					theInputManager.getNumberOfObjectives(), 
+					theInputManager.getNumberOfConstraints()
+					);
+			responseSurfaceManager.setMaximizationProblemConditionArray(theInputManager.getMaximizationProblemConditionArray());
+			responseSurfaceManager.importResponseSurface(responseSurfaceFile.getAbsolutePath());
+			responseSurfaceManager.setVariablesLowerBounds(theInputManager.getVariablesLowerBounds());
+			responseSurfaceManager.setVariablesUpperBounds(theInputManager.getVariablesUpperBounds());
+			responseSurfaceManager.setConstraintsDictionary(theInputManager.getConstraintsDictionary());
+
+			File dir = new File(serializedResponseSurfaceDirectory);
+			if(!dir.exists()){
+				dir.mkdirs(); 
+				JPADStaticWriteUtils.serializeObject(
+						responseSurfaceManager, 
+						serializedResponseSurfaceDirectory,
+						responseSurfaceNameXML);
+			}else{
+				JPADStaticWriteUtils.serializeObject(
+						responseSurfaceManager, 
+						serializedResponseSurfaceDirectory,
+						responseSurfaceNameXML);
+			}
+		}
+		
+		return responseSurfaceManager;
+	}
+	
 }
