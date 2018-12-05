@@ -57,7 +57,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 		/*
 		 * READING DATA FROM EXCEL FILE ...
 		 */
-		File engineDatabaseFile = new File(databaseFolderPath + engineDatabaseFileName);
+		File engineDatabaseFile = new File(databaseFolderPath + File.separator + engineDatabaseFileName);
 		if(!engineDatabaseFile.exists()) {
 			System.err.println("WARNING (IMPORT ENGINE DATABASE): THE ENGINE DATABASE FILE DOES NOT EXIST!! TERMINATING...");
 			System.exit(1);
