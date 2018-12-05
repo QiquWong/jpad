@@ -59,7 +59,9 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 		 */
 		File engineDatabaseFile = new File(databaseFolderPath + File.separator + engineDatabaseFileName);
 		if(!engineDatabaseFile.exists()) {
-			System.err.println("WARNING (IMPORT ENGINE DATABASE): THE ENGINE DATABASE FILE DOES NOT EXIST!! TERMINATING...");
+			System.err.format(
+					"WARNING (IMPORT ENGINE DATABASE): THE ENGINE DATABASE FILE\n\t %s\nDOES NOT EXIST!! TERMINATING...\n",
+					engineDatabaseFile.getAbsolutePath());
 			System.exit(1);
 		}
 
