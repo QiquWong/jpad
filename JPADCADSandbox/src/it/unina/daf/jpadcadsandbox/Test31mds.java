@@ -11,6 +11,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
+import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.WingAdjustCriteriaEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
@@ -32,36 +33,46 @@ public class Test31mds {
 		
 		Fuselage fuselage = aircraft.getFuselage();
 		LiftingSurface wing = aircraft.getWing();
+//		LiftingSurface canard = aircraft.getCanard();
 		LiftingSurface horizontal = aircraft.getHTail();
 		LiftingSurface vertical = aircraft.getVTail();
 		
-		fuselage.setYApexConstructionAxes(Amount.valueOf(2, SI.METER));
-		wing.setYApexConstructionAxes(Amount.valueOf(-3, SI.METER));
-		vertical.setYApexConstructionAxes(Amount.valueOf(-1, SI.METER));
-		vertical.setZApexConstructionAxes(Amount.valueOf(2, SI.METER));
+//		fuselage.setYApexConstructionAxes(Amount.valueOf(2, SI.METER));
+//		wing.setYApexConstructionAxes(Amount.valueOf(-3, SI.METER));
+//		vertical.setYApexConstructionAxes(Amount.valueOf(-1, SI.METER));
+//		vertical.setZApexConstructionAxes(Amount.valueOf(2, SI.METER));
 		
-		List<OCCShape> fuselageShapes = AircraftCADUtils.getFuselageCAD(fuselage, 
-				10, 7, 
-				true, true, false);
+//		List<OCCShape> fuselageShapes = AircraftCADUtils.getFuselageCAD(fuselage, 
+//				10, 7, 
+//				true, true, false);
 		
 		List<OCCShape> wingShapes = AircraftCADUtils.getLiftingSurfaceCAD(wing, 
 				WingTipType.ROUNDED, 
 //				ComponentEnum.WING, 1e-3,
 				true, true, false);
 		
-		List<OCCShape> horizontalShapes = AircraftCADUtils.getLiftingSurfaceCAD(horizontal, 
-				WingTipType.ROUNDED, 
-//				ComponentEnum.HORIZONTAL_TAIL, 1e-3,
-				true, true, false);
+//		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(
+//				canard, 
+//				ComponentEnum.CANARD, 
+//				1e-3, 
+//				false, 
+//				true, 
+//				false
+//				);			
 		
-		List<OCCShape> verticalShapes = AircraftCADUtils.getLiftingSurfaceCAD(vertical, 
-				WingTipType.ROUNDED, 
-//				ComponentEnum.VERTICAL_TAIL, 1e-3,
-				true, true, false);
+//		List<OCCShape> horizontalShapes = AircraftCADUtils.getLiftingSurfaceCAD(horizontal, 
+//				WingTipType.ROUNDED, 
+////				ComponentEnum.HORIZONTAL_TAIL, 1e-3,
+//				true, true, false);
+		
+//		List<OCCShape> verticalShapes = AircraftCADUtils.getLiftingSurfaceCAD(vertical, 
+//				WingTipType.ROUNDED, 
+////				ComponentEnum.VERTICAL_TAIL, 1e-3,
+//				true, true, false);
 		
 		String filename = "AircraftCADUtils_Test.brep";
 		
-		if (OCCUtils.write(filename, fuselageShapes, wingShapes, horizontalShapes, verticalShapes))
+		if (OCCUtils.write(filename, wingShapes))
 			System.out.println("[Test31mds] CAD shapes correctly written to file (" + filename + ")");
 	}
 

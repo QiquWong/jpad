@@ -14,8 +14,10 @@ import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
 import opencascade.BRep_Tool;
+import opencascade.GeomAPI_ExtremaCurveCurve;
 import opencascade.GeomAPI_ProjectPointOnCurve;
 import opencascade.GeomAbs_Shape;
+import opencascade.Geom_Curve;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
 import opencascade.TopTools_ListOfShape;
@@ -355,16 +357,38 @@ public final class OCCUtils {
 		gp_Pnt gpPnt = new gp_Pnt(pnt[0], pnt[1], pnt[2]);
 		poc.Init(gpPnt, ((OCCGeomCurve3D)cadCurve).getAdaptorCurve().Curve());
 		poc.Perform(gpPnt);
-		System.out.println("[OCCUtils.pointProjectionOnCurve]>> Projecting point (" + gpPnt.X() +", "+ gpPnt.Y() +", "+ gpPnt.Z());
-		System.out.println("[OCCUtils.pointProjectionOnCurve]>> N. projections: " + poc.NbPoints());
+//		System.out.println("[OCCUtils.pointProjectionOnCurve]>> Projecting point (" + gpPnt.X() +", "+ gpPnt.Y() +", "+ gpPnt.Z());
+//		System.out.println("[OCCUtils.pointProjectionOnCurve]>> N. projections: " + poc.NbPoints());
 		gp_Pnt gpPntP = null;
 		if(poc.NbPoints() > 0) {
 			gpPntP = poc.NearestPoint();
 			CADVertex projection = OCCUtils.theFactory.newVertex(gpPntP.X(), gpPntP.Y(), gpPntP.Z());
-			System.out.println("[OCCUtils.pointProjectionOnCurve]>> Projected point (" + Arrays.toString(projection.pnt()));
+//			System.out.println("[OCCUtils.pointProjectionOnCurve]>> Projected point (" + Arrays.toString(projection.pnt()));
 			result = projection;
 		}	
 		return result;
+	}
+	
+	public static double pointProjectionOnCurveParam(CADGeomCurve3D cadCurve, double[] pnt) {
+		double param = 0;
+		
+		GeomAPI_ProjectPointOnCurve projector = new GeomAPI_ProjectPointOnCurve();
+		gp_Pnt gpPnt = new gp_Pnt(pnt[0], pnt[1], pnt[2]);
+		
+		Geom_Curve curve = ((OCCGeomCurve3D) cadCurve).getAdaptorCurve().Curve();
+		double uMin = curve.FirstParameter();
+		double uMax = curve.LastParameter();
+		
+		projector.Init(curve, uMin, uMax);
+		projector.Perform(gpPnt);
+		
+		if (projector.NbPoints() > 0) {
+			param = projector.LowerDistanceParameter();
+		} else {
+			System.out.println("[OCCUtils::pointProjectionOnCurveParam] No projection found!");
+		}
+		
+		return param;
 	}
 	
 	public static List<OCCEdge> splitEdge(CADGeomCurve3D cadCurve, double[] pnt) {
@@ -399,16 +423,16 @@ public final class OCCUtils {
 			paveFiller.Perform();
 			
 			BOPDS_DS bopds_ds = paveFiller.DS();
-			System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS is null? " + (bopds_ds == null));
-			System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS NShapes " + bopds_ds.NbShapes());
+//			System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS is null? " + (bopds_ds == null));
+//			System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS NShapes " + bopds_ds.NbShapes());
 			for (int k = 0; k < bopds_ds.NbShapes(); k++) {
-				System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS shape " + k + " type: " + bopds_ds.ShapeInfo(k).ShapeType());
+//				System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS shape " + k + " type: " + bopds_ds.ShapeInfo(k).ShapeType());
 				if (k > 1) {
 					if (bopds_ds.ShapeInfo(k).ShapeType() == TopAbs_ShapeEnum.TopAbs_EDGE) {
 						result.add((OCCEdge) OCCUtils.theFactory.newShape(bopds_ds.Shape(k)));
-						System.out.println(
-								"[OCCUtils.splitEdge]>> Paves -> edge, has BRep? " + bopds_ds.ShapeInfo(k).HasBRep()
-						);
+//						System.out.println(
+//								"[OCCUtils.splitEdge]>> Paves -> edge, has BRep? " + bopds_ds.ShapeInfo(k).HasBRep()
+//						);
 					}
 				}
 			}
@@ -416,79 +440,79 @@ public final class OCCUtils {
 		return result;
 	}
 	
-	public static List<OCCEdge> splitEdge(CADGeomCurve3D cadCurve, List<Double> crvFracs) {
-		List<OCCEdge> result = new ArrayList<>();
-		if(crvFracs.stream().anyMatch(f -> (f <= 0) || (f >= 1))) {
-			System.out.println("[OCCUtils.splitEdge] Values must be positive and less than 1");
-			return result;
-		}
-		int len = crvFracs.size();
-		double[] crvRange = cadCurve.getRange();	
-		List<double[]> pnts = new ArrayList<>();		
-		pnts = crvFracs.stream()
-				       .sorted()
-		               .map(f -> cadCurve.value(f*(crvRange[1] - crvRange[0]) + crvRange[0]))
-					   .collect(Collectors.toList());		
-		TopTools_ListOfShape listOfArguments = new TopTools_ListOfShape();
-		TopoDS_Shape tdsEdge = ((OCCEdge)((OCCGeomCurve3D)cadCurve).edge()).getShape();		
-		pnts.forEach(p -> {
-			gp_Pnt gpPnt = new gp_Pnt(p[0], p[1], p[2]);
-			BRepBuilderAPI_MakeVertex vertexBuilder = new BRepBuilderAPI_MakeVertex(gpPnt);
-			TopoDS_Vertex vtx = vertexBuilder.Vertex();
-			listOfArguments.Append(vtx);
-		});		
-		listOfArguments.Append(tdsEdge);		
-		BOPAlgo_PaveFiller paveFiller = new BOPAlgo_PaveFiller();
-		paveFiller.SetArguments(listOfArguments);
-		paveFiller.Perform();
-		
-		BOPDS_DS bopdsDS = paveFiller.DS();
-		System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS is null? " + (bopdsDS == null));
-		System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS NShapes " + bopdsDS.NbShapes());
-		for(int k = 0; k < bopdsDS.NbShapes(); k++) {
-			System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS shape " + k + " type: " + bopdsDS.ShapeInfo(k).ShapeType());
-			if(k > (len + 1)) {
-				if(bopdsDS.ShapeInfo(k).ShapeType() == TopAbs_ShapeEnum.TopAbs_EDGE) {
-					result.add((OCCEdge) OCCUtils.theFactory.newShape(bopdsDS.Shape(k)));
-					System.out.println("[OCCUtils.splitEdge]>> Paves -> edge, has BRep? " + bopdsDS.ShapeInfo(k).HasBRep()
-					);
-				}
-			}
-		}		
-		return result;
-	}
+//	public static List<OCCEdge> splitEdge(CADGeomCurve3D cadCurve, List<Double> crvFracs) {
+//		List<OCCEdge> result = new ArrayList<>();
+//		if(crvFracs.stream().anyMatch(f -> (f <= 0) || (f >= 1))) {
+////			System.out.println("[OCCUtils.splitEdge] Values must be positive and less than 1");
+//			return result;
+//		}
+//		int len = crvFracs.size();
+//		double[] crvRange = cadCurve.getRange();	
+//		List<double[]> pnts = new ArrayList<>();		
+//		pnts = crvFracs.stream()
+//				       .sorted()
+//		               .map(f -> cadCurve.value(f*(crvRange[1] - crvRange[0]) + crvRange[0]))
+//					   .collect(Collectors.toList());		
+//		TopTools_ListOfShape listOfArguments = new TopTools_ListOfShape();
+//		TopoDS_Shape tdsEdge = ((OCCEdge)((OCCGeomCurve3D)cadCurve).edge()).getShape();		
+//		pnts.forEach(p -> {
+//			gp_Pnt gpPnt = new gp_Pnt(p[0], p[1], p[2]);
+//			BRepBuilderAPI_MakeVertex vertexBuilder = new BRepBuilderAPI_MakeVertex(gpPnt);
+//			TopoDS_Vertex vtx = vertexBuilder.Vertex();
+//			listOfArguments.Append(vtx);
+//		});		
+//		listOfArguments.Append(tdsEdge);		
+//		BOPAlgo_PaveFiller paveFiller = new BOPAlgo_PaveFiller();
+//		paveFiller.SetArguments(listOfArguments);
+//		paveFiller.Perform();
+//		
+//		BOPDS_DS bopdsDS = paveFiller.DS();
+////		System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS is null? " + (bopdsDS == null));
+////		System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS NShapes " + bopdsDS.NbShapes());
+//		for(int k = 0; k < bopdsDS.NbShapes(); k++) {
+////			System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS shape " + k + " type: " + bopdsDS.ShapeInfo(k).ShapeType());
+//			if(k > (len + 1)) {
+//				if(bopdsDS.ShapeInfo(k).ShapeType() == TopAbs_ShapeEnum.TopAbs_EDGE) {
+//					result.add((OCCEdge) OCCUtils.theFactory.newShape(bopdsDS.Shape(k)));
+////					System.out.println("[OCCUtils.splitEdge]>> Paves -> edge, has BRep? " + bopdsDS.ShapeInfo(k).HasBRep()
+////					);
+//				}
+//			}
+//		}		
+//		return result;
+//	}
 	
-	public static List<OCCEdge> splitEdgeByPntsList(CADGeomCurve3D cadCurve, List<double[]> pnts) {
-		List<OCCEdge> result = new ArrayList<>();
-		int len = pnts.size();
-		TopTools_ListOfShape listOfArguments = new TopTools_ListOfShape();
-		TopoDS_Shape tdsEdge = ((OCCEdge)((OCCGeomCurve3D)cadCurve).edge()).getShape();
-		pnts.forEach(p -> {
-			gp_Pnt gpPnt = new gp_Pnt(p[0], p[1], p[2]);
-			BRepBuilderAPI_MakeVertex vertexBuilder = new BRepBuilderAPI_MakeVertex(gpPnt);
-			TopoDS_Vertex vtx = vertexBuilder.Vertex();
-			listOfArguments.Append(vtx);
-		});	
-		listOfArguments.Append(tdsEdge);		
-		BOPAlgo_PaveFiller paveFiller = new BOPAlgo_PaveFiller();
-		paveFiller.SetArguments(listOfArguments);
-		paveFiller.Perform();
-		
-		BOPDS_DS bopdsDS = paveFiller.DS();
-		System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS is null? " + (bopdsDS == null));
-		System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS NShapes " + bopdsDS.NbShapes());
-		for(int k = 0; k < bopdsDS.NbShapes(); k++) {
-			System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS shape " + k + " type: " + bopdsDS.ShapeInfo(k).ShapeType());
-			if(k > (len + 1)) {
-				if(bopdsDS.ShapeInfo(k).ShapeType() == TopAbs_ShapeEnum.TopAbs_EDGE) {
-					result.add((OCCEdge) OCCUtils.theFactory.newShape(bopdsDS.Shape(k)));
-					System.out.println("[OCCUtils.splitEdge]>> Paves -> edge, has BRep? " + bopdsDS.ShapeInfo(k).HasBRep()
-					);
-				}
-			}
-		}		
-		return result;
-	}
+//	public static List<OCCEdge> splitEdgeByPntsList(CADGeomCurve3D cadCurve, List<double[]> pnts) {
+//		List<OCCEdge> result = new ArrayList<>();
+//		int len = pnts.size();
+//		TopTools_ListOfShape listOfArguments = new TopTools_ListOfShape();
+//		TopoDS_Shape tdsEdge = ((OCCEdge)((OCCGeomCurve3D)cadCurve).edge()).getShape();
+//		pnts.forEach(p -> {
+//			gp_Pnt gpPnt = new gp_Pnt(p[0], p[1], p[2]);
+//			BRepBuilderAPI_MakeVertex vertexBuilder = new BRepBuilderAPI_MakeVertex(gpPnt);
+//			TopoDS_Vertex vtx = vertexBuilder.Vertex();
+//			listOfArguments.Append(vtx);
+//		});	
+//		listOfArguments.Append(tdsEdge);		
+//		BOPAlgo_PaveFiller paveFiller = new BOPAlgo_PaveFiller();
+//		paveFiller.SetArguments(listOfArguments);
+//		paveFiller.Perform();
+//		
+//		BOPDS_DS bopdsDS = paveFiller.DS();
+////		System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS is null? " + (bopdsDS == null));
+////		System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS NShapes " + bopdsDS.NbShapes());
+//		for(int k = 0; k < bopdsDS.NbShapes(); k++) {
+////			System.out.println("[OCCUtils.splitEdge]>> BOPDS_DS shape " + k + " type: " + bopdsDS.ShapeInfo(k).ShapeType());
+//			if(k > (len + 1)) {
+//				if(bopdsDS.ShapeInfo(k).ShapeType() == TopAbs_ShapeEnum.TopAbs_EDGE) {
+//					result.add((OCCEdge) OCCUtils.theFactory.newShape(bopdsDS.Shape(k)));
+////					System.out.println("[OCCUtils.splitEdge]>> Paves -> edge, has BRep? " + bopdsDS.ShapeInfo(k).HasBRep()
+////					);
+//				}
+//			}
+//		}		
+//		return result;
+//	}
 
 	public static OCCVertex getVertexFromEdge(OCCEdge occEdge, int idx) {
 		OCCVertex result = null;
@@ -538,4 +562,53 @@ public final class OCCUtils {
 		return mirroredShape;
 	}
 	
+	public static List<double[]> getIntersectionPts(CADGeomCurve3D curve1, CADGeomCurve3D curve2, double tol) {
+		List<double[]> intersectionPts = new ArrayList<>();
+		
+		Geom_Curve geomCurve1 = ((OCCGeomCurve3D) curve1).getAdaptorCurve().Curve();
+		Geom_Curve geomCurve2 = ((OCCGeomCurve3D) curve2).getAdaptorCurve().Curve();
+		
+		List<Double> intersectionParams = getParamIntersectionPts(geomCurve1, geomCurve2, tol);
+		
+		intersectionParams.forEach(d -> intersectionPts.add(new double[] {
+				geomCurve1.Value(d).X(),
+				geomCurve1.Value(d).Y(),
+				geomCurve1.Value(d).Z()}));
+		
+		return intersectionPts;
+	}
+	
+	public static List<double[]> getIntersectionPts(CADGeomCurve3D curve1, CADGeomCurve3D curve2) {
+		return getIntersectionPts(curve1, curve2, 1e-5);
+	}
+	
+	// Computes intersection between two curves and returns the intersection parameter on curve1
+	private static List<Double> getParamIntersectionPts(Geom_Curve geomCurve1, Geom_Curve geomCurve2, double tol) {
+		GeomAPI_ExtremaCurveCurve extrema = new GeomAPI_ExtremaCurveCurve(geomCurve1, geomCurve2);
+		int nExtrema = extrema.NbExtrema();
+		
+		List<Double> pars = new ArrayList<>();
+		
+		if (nExtrema > 0) {		
+			for (int i = 1; i <= nExtrema; i++) {	
+				double[] par = new double[] {0};
+				
+				gp_Pnt p1 = new gp_Pnt();
+				gp_Pnt p2 = new gp_Pnt();
+				
+				extrema.Points(i, p1, p2);
+				
+				if (p1.IsEqual(p2, tol) == 1) {
+					extrema.Parameters(1, par, new double[] {0});
+					pars.add(par[0]);
+				}
+			}
+			
+		} else {
+			System.out.println("OCCUtils::getParamIntersectionPt - "
+					+ "Warning: no intersections found, returning empty list.");
+		}
+		
+		return pars;		
+	}
 }

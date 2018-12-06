@@ -5,8 +5,8 @@
     <analysis>
         <weights id="A320neo - WEIGHTS">
 			<global_data>
-				<first_guess_maximum_take_off_mass unit="kg">75000</first_guess_maximum_take_off_mass>
-				<relative_maximum_landing_mass>0.9</relative_maximum_landing_mass> <!-- with respect to Max Take-Off mass. Default = 0.9 -->
+				<first_guess_maximum_take_off_mass unit="kg">80000</first_guess_maximum_take_off_mass>
+				<relative_maximum_landing_mass>0.85</relative_maximum_landing_mass> <!-- with respect to Max Take-Off mass. Default = 0.9 -->
 				<single_passenger_mass unit="kg">100</single_passenger_mass>
 				<reference_mission_range unit="nmi">3500</reference_mission_range>
 			</global_data>
@@ -14,21 +14,21 @@
 			<mission_profile_data estimate_mission_fuel="TRUE" mission_fuel_mass="18000"> 				
 				<cruise_phase>
 					<range unit="nmi">3300</range> 
-					<sfc>0.50</sfc>
+					<sfc>0.35</sfc>
 					<efficiency>18</efficiency>
 				</cruise_phase>
 				<alternate_phase>
 					<range unit="nmi">100</range> 
 					<altitude unit="ft">25000</altitude>
 					<mach>0.7</mach>
-					<sfc>0.50</sfc> 
+					<sfc>0.35</sfc> 
 					<efficiency>17</efficiency> 
 				</alternate_phase>
 				<holding_phase>
-					<duration unit="min">30</duration> 
+					<duration unit="min">20</duration> 
 					<altitude unit="ft">1500</altitude>
 					<mach>0.3</mach>
-					<sfc>0.50</sfc> 
+					<sfc>0.35</sfc> 
 					<efficiency>18</efficiency> 
 				</holding_phase>
 			</mission_profile_data>

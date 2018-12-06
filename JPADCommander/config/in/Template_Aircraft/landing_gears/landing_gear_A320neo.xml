@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<landing_gears id="AIRBUS A-320neo Landing Gears">
+		<global_data>
+			<main_gear_legs_length unit="m">2.32</main_gear_legs_length> <!-- 2.87 -->
+			<distance_between_wheels unit="m">7.59</distance_between_wheels>
+			<number_of_frontal_wheels>2</number_of_frontal_wheels>
+			<number_of_rear_wheels>4</number_of_rear_wheels>
+		</global_data>
+		<frontal_wheels_data>
+			<wheel_height unit="m">1.15</wheel_height> <!-- 0.80 -->
+			<wheel_width unit="m">0.23</wheel_width>
+		</frontal_wheels_data>
+		<rear_wheels_data>
+			<wheel_height unit="m">1.15</wheel_height> <!-- 1.18 -->
+			<wheel_width unit="m">0.41</wheel_width>
+		</rear_wheels_data>
+	</landing_gears>
+</jpad_config>

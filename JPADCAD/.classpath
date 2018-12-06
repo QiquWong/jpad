@@ -19,6 +19,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jim/jimObjModelImporterJFX.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/vvecmath/VVecMath.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/javaslang/javaslang-2.0.4.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64/OCCJavaWrapper.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.3.0_vc14_Win64/OCCJavaWrapper.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

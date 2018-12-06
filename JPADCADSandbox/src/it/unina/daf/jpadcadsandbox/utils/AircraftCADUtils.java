@@ -848,12 +848,42 @@ public class AircraftCADUtils {
 				false
 				).edge().vertices()[1].pnt();
 		
-		List<OCCEdge> airfoilTipCrvs = OCCUtils.splitEdge(tipCurve, ptA);
+		System.out.println(Arrays.toString(ptA));
+		
+		List<OCCEdge> airfoilTipEdgs = OCCUtils.splitEdge(tipCurve, ptA);
+		
+		CADGeomCurve3D airfoilTipCrvUpper = OCCUtils.theFactory.newCurve3D(airfoilTipEdgs.get(0));
+		CADGeomCurve3D airfoilTipCrvLower = OCCUtils.theFactory.newCurve3D(airfoilTipEdgs.get(1));
+		
+		List<CADGeomCurve3D> airfoilTipCrvs = new ArrayList<>();
+		airfoilTipCrvs.add(airfoilTipCrvUpper);
+		airfoilTipCrvs.add(airfoilTipCrvLower);
 		
 		// TODO: to cancel after function completion
 		if (exportSupportShapes) {		
-			wingTipShapes.addAll(airfoilTipCrvs);
+			wingTipShapes.addAll(airfoilTipEdgs);
 		}
+		
+		// ------------------------------------------------------------
+		// Split the second to last airfoil curve at the leading edge
+		// ------------------------------------------------------------
+		double preTipYStation = liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL) ?
+				preTipCurve.edge().vertices()[0].pnt()[2] - liftingSurface.getZApexConstructionAxes().doubleValue(SI.METER):
+				preTipCurve.edge().vertices()[0].pnt()[1] - liftingSurface.getYApexConstructionAxes().doubleValue(SI.METER);
+				
+		double[] ptA2 = OCCUtils.theFactory.newCurve3D(
+				generateChordAtY(preTipYStation, liftingSurface), 
+				false
+				).edge().vertices()[1].pnt();
+				
+		List<OCCEdge> airfoilPreTipEdgs = OCCUtils.splitEdge(preTipCurve, ptA2);
+		
+		CADGeomCurve3D airfoilPreTipCrvUpper = OCCUtils.theFactory.newCurve3D(airfoilPreTipEdgs.get(0));
+		CADGeomCurve3D airfoilPreTipCrvLower = OCCUtils.theFactory.newCurve3D(airfoilPreTipEdgs.get(1));
+		
+		List<CADGeomCurve3D> airfoilPreTipCrvs = new ArrayList<>();
+		airfoilPreTipCrvs.add(airfoilPreTipCrvUpper);
+		airfoilPreTipCrvs.add(airfoilPreTipCrvLower);
 		
 		// ---------------------------------------------------
 		// Create a sketching plane next to the tip airfoil
@@ -886,6 +916,21 @@ public class AircraftCADUtils {
 				new PVector((float) fTipCurve[0], (float) fTipCurve[1], (float) fTipCurve[2]), 
 				0.5f);
 		
+		// Generate PVectors for the second to last airfoil
+		double[] iPreTipCurve = preTipCurve.edge().vertices()[0].pnt();
+		double[] fPreTipCurve = preTipCurve.edge().vertices()[1].pnt();
+		
+		PVector pvA2 = new PVector(
+				(float) ptA2[0],
+				(float) ptA2[1],
+				(float) ptA2[2]
+				);
+		
+		PVector pvD2 = PVector.lerp(
+				new PVector((float) iPreTipCurve[0], (float) iPreTipCurve[1], (float) iPreTipCurve[2]), 
+				new PVector((float) fPreTipCurve[0], (float) fPreTipCurve[1], (float) fPreTipCurve[2]), 
+				0.5f);
+		
 		// Assign to the point C the same y coordinate of point B
 		PVector pvC = PVector.add(pvD, PVector.mult(teVec, (float) tipWidth/teVec.mag()));
 		if (liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL))
@@ -911,14 +956,16 @@ public class AircraftCADUtils {
 				liftingSurface.getSemiSpan().doubleValue(SI.METER) - tipWidth,
 				liftingSurface);
 		
+		CADGeomCurve3D tipCamberCrv = OCCUtils.theFactory.newCurve3D(tipCamberPts, false);
+		
 		// TODO: to cancel after function completion
 		if (exportSupportShapes) {
-			wingTipShapes.add((OCCShape) OCCUtils.theFactory.newCurve3D(tipCamberPts, false).edge());
+			wingTipShapes.add((OCCShape) tipCamberCrv.edge());
 		}
 		
-		// ------------------------------------------------
-		// Generate in-sketching_plane supporting curves
-		// ------------------------------------------------
+		// --------------------------------------------
+		// Generate sketching plane supporting curves
+		// --------------------------------------------
 		PVector pvE = PVector.lerp(pvB, pvC, 0.25f);
 		PVector pvG = PVector.lerp(pvC, pvD, 0.25f);
 		PVector pvF = PVector.lerp(
@@ -962,45 +1009,560 @@ public class AircraftCADUtils {
 			wingTipShapes.add((OCCShape) sketchPlaneCrv2.edge());
 		}
 		
-		// -------------------------------------------
-		// Generate vertical supporting sections
-		// -------------------------------------------
-		double[] vSecVec1 = MyArrayUtils.cosineSpace(0.0, 1.0, 10);
-		double[] vSecVec2 = MyArrayUtils.halfCosine1Space(0.0, 1.0, 7);
+		// ----------------------------------------------
+		// Generate vertical supporting sections points
+		// ----------------------------------------------
+		int nVSec1 = 10;
+		int nVSec2 = 7;
 		
-		List<double[]> cTipFrac1 = Arrays.stream(vSecVec1)
-				.skip(1)
-				.mapToObj(d -> PVector.lerp(pvA, PVector.lerp(pvA, pvD, 0.25f), (float) d))
-				.map(pv -> new double[] {pv.x, pv.y, pv.z})
-				.collect(Collectors.toList());
+		double mainVSecStation = 0.25;
 		
-		List<double[]> cTipFrac2 = Arrays.stream(vSecVec2)
-				.skip(1)
-				.mapToObj(d -> PVector.lerp(PVector.lerp(pvA, pvD, 0.25f), pvD, (float) d))
-				.map(pv -> new double[] {pv.x, pv.y, pv.z})
-				.collect(Collectors.toList());
+		Double[] vec1 = MyArrayUtils.cosineSpaceDouble(0.0, 1.0, nVSec1);
+		Double[] vec2 = MyArrayUtils.halfCosine1SpaceDouble(0.0, 1.0, nVSec2);
 		
-		List<double[]> bcSegmFrac1 = Arrays.stream(vSecVec1)
-				.skip(1)
-				.mapToObj(d -> PVector.lerp(pvB, pvE, (float) d))
-				.map(pv -> new double[] {pv.x, pv.y, pv.z})
-				.collect(Collectors.toList());
+		double[] vSecVec1 = MyArrayUtils.convertToDoublePrimitive(
+				Arrays.asList(vec1).stream()
+									   .skip(1)
+									   .collect(Collectors.toList()));
 		
-		List<double[]> bcSegmFrac2 = Arrays.stream(vSecVec2)
-				.skip(1)
-				.mapToObj(d -> PVector.lerp(pvB, pvC, (float) d))
-				.map(pv -> new double[] {pv.x, pv.y, pv.z})
-				.collect(Collectors.toList());
+		double[] vSecVec2 = MyArrayUtils.convertToDoublePrimitive(
+				Arrays.asList(vec2).stream()
+									   .skip(1)
+									   .limit(nVSec2 - 2)
+									   .collect(Collectors.toList()));
+				
+		// Generate normal vectors for airfoil and camber line splitting operations
+		PVector tipChordNormal = liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL) ?
+				(new PVector(0.0f, 0.0f, 1.0f)).cross(PVector.sub(pvA, pvD)).normalize():
+				(new PVector(0.0f, 1.0f, 0.0f)).cross(PVector.sub(pvA, pvD)).normalize();
+				
+		tipChordNormal.mult(PVector.sub(pvA, pvD).mag() * 0.5f);
 		
-//		List<CADGeomCurve3D> inSPSplitSegms1 = IntStream.range(0, vSecVec1.length)
+		// Generate splitting segments for the construction plane supporting curve
+		List<CADGeomCurve3D> inSPSplitSegms1 = new ArrayList<>();
+		List<CADGeomCurve3D> inSPSplitSegms2 = new ArrayList<>();
+		
+		for (int i = 0; i < vSecVec1.length; i++) {
+			List<PVector> pvList = new ArrayList<>();
+			
+			PVector pv1 = PVector.lerp(pvA, PVector.lerp(pvA, pvD, (float) mainVSecStation), (float) vSecVec1[i]);
+			PVector pv2 = PVector.lerp(pvB, pvE, (float) vSecVec1[i]);
+			
+			pvList.add(pv1);
+			pvList.add(pv2);
+			
+			inSPSplitSegms1.add(OCCUtils.theFactory.newCurve3DP(pvList, false));
+		}
+		
+		for (int i = 0; i < vSecVec2.length; i++) {
+			List<PVector> pvList = new ArrayList<>();
+			
+			PVector pv1 = PVector.lerp(PVector.lerp(pvA, pvD, (float) mainVSecStation), pvD, (float) vSecVec2[i]);
+			PVector pv2 = PVector.lerp(pvE, pvC, (float) vSecVec2[i]);
+			
+			pvList.add(pv1);
+			pvList.add(pv2);
+			
+			inSPSplitSegms2.add(OCCUtils.theFactory.newCurve3DP(pvList, false));
+		}	
+		
+		System.out.println("========== BEFORE SPLITTING TIP AIRFOIL ==========");
+		
+		// Generate tip airfoil upper points for the supporting curves
+		List<double[]> tipAirfoilUpperPts1 = new ArrayList<>();
+		List<double[]> tipAirfoilUpperPts2 = new ArrayList<>();
+		
+		tipAirfoilUpperPts1.addAll(getCrvIntersectionWithNormalSegments(
+				airfoilTipCrvs.get(0), 
+				tipChordNormal, 
+				pvA, 
+				PVector.lerp(pvA, pvD, (float) mainVSecStation), 
+				vSecVec1
+				));
+		
+		tipAirfoilUpperPts2.addAll(getCrvIntersectionWithNormalSegments(
+				airfoilTipCrvs.get(0), 
+				tipChordNormal, 
+				PVector.lerp(pvA, pvD, (float) mainVSecStation), 
+				pvD, 
+				vSecVec2
+				));
+		
+		// Generate tip airfoil lower points for the supporting curves
+		List<double[]> tipAirfoilLowerPts1 = new ArrayList<>();
+		List<double[]> tipAirfoilLowerPts2 = new ArrayList<>();
+		
+		tipAirfoilLowerPts1.addAll(getCrvIntersectionWithNormalSegments(
+				airfoilTipCrvs.get(1), 
+				tipChordNormal, 
+				pvA, 
+				PVector.lerp(pvA, pvD, (float) mainVSecStation), 
+				vSecVec1
+				));
+		
+		tipAirfoilLowerPts2.addAll(getCrvIntersectionWithNormalSegments(
+				airfoilTipCrvs.get(1), 
+				tipChordNormal, 
+				PVector.lerp(pvA, pvD, (float) mainVSecStation), 
+				pvD, 
+				vSecVec2
+				));
+		
+		System.out.println("========== AFTER SPLITTING TIP AIRFOIL ==========");
+		System.out.println("========== BEFORE SPLITTING CAMBER LINE ==========");
+		
+		// Generate points on the camber line
+		List<double[]> camberLinePts1 = new ArrayList<>();
+		List<double[]> camberLinePts2 = new ArrayList<>();
+		
+		camberLinePts1.addAll(getCrvIntersectionWithNormalSegments(
+				tipCamberCrv, 
+				tipChordNormal, 
+				pvA, 
+				PVector.lerp(pvA, pvD, (float) mainVSecStation), 
+				vSecVec1
+				));
+		
+		camberLinePts2.addAll(getCrvIntersectionWithNormalSegments(
+				tipCamberCrv, 
+				tipChordNormal, 
+				PVector.lerp(pvA, pvD, (float) mainVSecStation), 
+				pvD, 
+				vSecVec2
+				));
+		
+		System.out.println("========== AFTER SPLITTING CAMBER LINE ==========");
+		System.out.println("========== BEFORE SPLITTING CONSTRUCTION PLANE ==========");
+		
+		// Split the construction plane supporting
+		List<PVector> camberLinePvs1 = new ArrayList<>();
+		List<PVector> camberLinePvs2 = new ArrayList<>();
+		
+		camberLinePvs1.addAll(inSPSplitSegms1.stream()
+				.map(s -> {
+					double[] start = s.edge().vertices()[0].pnt();
+					double[] intersect = getCrvIntersectionWithSegment(sketchPlaneCrv1, s);
+					PVector pv1 = new PVector((float) intersect[0], (float) intersect[1], (float) intersect[2]);
+					PVector pv0 = new PVector((float) start[0], (float) start[1], (float) start[2]);					
+					return PVector.sub(pv0, pv1);
+				})
+				.collect(Collectors.toList()));
+		
+		camberLinePvs2.addAll(inSPSplitSegms2.stream()
+				.map(s -> {
+					double[] start = s.edge().vertices()[0].pnt();
+					double[] intersect = getCrvIntersectionWithSegment(sketchPlaneCrv2, s);
+					PVector pv1 = new PVector((float) intersect[0], (float) intersect[1], (float) intersect[2]);
+					PVector pv0 = new PVector((float) start[0], (float) start[1], (float) start[2]);					
+					return PVector.sub(pv0, pv1);
+					})
+				.collect(Collectors.toList()));
+		
+		System.out.println("========== AFTER SPLITTING CONSTRUCTION PLANE ==========");
+		
+		// Generate vertical supporting curves apexes
+		List<double[]> verticalCrvsApexes1 = new ArrayList<>();
+		List<double[]> verticalCrvsApexes2 = new ArrayList<>();
+	
+		for (int i = 0; i < camberLinePts1.size(); i++) {
+			PVector pv0 = new PVector(
+					(float) camberLinePts1.get(i)[0], 
+					(float) camberLinePts1.get(i)[1], 
+					(float) camberLinePts1.get(i)[2]);
+			
+			PVector pv1 = pv0.add(camberLinePvs1.get(i));
+			
+			verticalCrvsApexes1.add(new double[] {pv1.x, pv1.y, pv1.z});
+		}
+		
+		for (int i = 0; i < camberLinePts2.size(); i++) {
+			PVector pv0 = new PVector(
+					(float) camberLinePts2.get(i)[0], 
+					(float) camberLinePts2.get(i)[1], 
+					(float) camberLinePts2.get(i)[2]);
+			
+			PVector pv1 = pv0.add(camberLinePvs2.get(i));
+			
+			verticalCrvsApexes2.add(new double[] {pv1.x, pv1.y, pv1.z});
+		}
+		
+		// ----------------------------------------------------
+		// Generate vertical supporting curves tangent vectors
+		// ----------------------------------------------------
+		
+		// Generate normal vectors for airfoil and camber line splitting operations
+		PVector preTipChordNormal = liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL) ?
+				(new PVector(0.0f, 0.0f, 1.0f)).cross(PVector.sub(pvA2, pvD2)).normalize():
+				(new PVector(0.0f, 1.0f, 0.0f)).cross(PVector.sub(pvA2, pvD2)).normalize();
+
+		preTipChordNormal.mult(PVector.sub(pvA2, pvD2).mag() * 0.5f);
+		
+		// Generate second to last airfoil points for the tangent vector
+		List<double[]> preTipAirfoilUpperPts1 = new ArrayList<>();
+		List<double[]> preTipAirfoilUpperPts2 = new ArrayList<>();
+		List<double[]> preTipAirfoilLowerPts1 = new ArrayList<>();
+		List<double[]> preTipAirfoilLowerPts2 = new ArrayList<>();
+		
+		System.out.println("========== BEFORE SPLITTING PRE TIP AIRFOIL ==========");
+		
+		preTipAirfoilUpperPts1.addAll(getCrvIntersectionWithNormalSegments(
+				airfoilPreTipCrvs.get(0), 
+				preTipChordNormal, 
+				pvA2, 
+				PVector.lerp(pvA2, pvD2, (float) mainVSecStation), 
+				vSecVec1
+				));
+		
+		preTipAirfoilUpperPts2.addAll(getCrvIntersectionWithNormalSegments(
+				airfoilPreTipCrvs.get(0), 
+				preTipChordNormal, 
+				PVector.lerp(pvA2, pvD2, (float) mainVSecStation), 
+				pvD2, 
+				vSecVec2
+				));
+		
+		preTipAirfoilLowerPts1.addAll(getCrvIntersectionWithNormalSegments(
+				airfoilPreTipCrvs.get(1), 
+				preTipChordNormal, 
+				pvA2, 
+				PVector.lerp(pvA2, pvD2, (float) mainVSecStation), 
+				vSecVec1
+				));
+		
+		preTipAirfoilLowerPts2.addAll(getCrvIntersectionWithNormalSegments(
+				airfoilPreTipCrvs.get(1), 
+				preTipChordNormal, 
+				PVector.lerp(pvA2, pvD2, (float) mainVSecStation), 
+				pvD2, 
+				vSecVec2
+				));
+		
+		System.out.println("========== AFTER SPLITTING PRE TIP AIRFOIL ==========");
+		
+		// Generate tangent vectors for the supporting curves
+		List<double[]> verCrvTngsUpper1 = new ArrayList<>();
+		List<double[]> verCrvTngsUpper2 = new ArrayList<>();
+		List<double[]> verCrvTngsLower1 = new ArrayList<>();
+		List<double[]> verCrvTngsLower2 = new ArrayList<>();	
+		
+		verCrvTngsUpper1.addAll(IntStream.range(0, tipAirfoilUpperPts1.size())
+				 .mapToObj(i -> PVector.sub(
+						 new PVector(
+								 (float) preTipAirfoilUpperPts1.get(i)[0], 
+								 (float) preTipAirfoilUpperPts1.get(i)[1], 
+								 (float) preTipAirfoilUpperPts1.get(i)[2]),
+						 new PVector(
+								 (float) tipAirfoilUpperPts1.get(i)[0],
+								 (float) tipAirfoilUpperPts1.get(i)[1],
+								 (float) tipAirfoilUpperPts1.get(i)[2])
+						 ))
+				 .map(pv -> new double[] {pv.x, pv.y, pv.z})
+				 .collect(Collectors.toList()));
+		
+		verCrvTngsUpper2.addAll(IntStream.range(0, tipAirfoilUpperPts2.size())
+				 .mapToObj(i -> PVector.sub(
+						 new PVector(
+								 (float) preTipAirfoilUpperPts2.get(i)[0], 
+								 (float) preTipAirfoilUpperPts2.get(i)[1], 
+								 (float) preTipAirfoilUpperPts2.get(i)[2]),
+						 new PVector(
+								 (float) tipAirfoilUpperPts2.get(i)[0],
+								 (float) tipAirfoilUpperPts2.get(i)[1],
+								 (float) tipAirfoilUpperPts2.get(i)[2])
+						 ))
+				 .map(pv -> new double[] {pv.x, pv.y, pv.z})
+				 .collect(Collectors.toList()));
+		
+		verCrvTngsLower1.addAll(IntStream.range(0, tipAirfoilLowerPts1.size())
+				 .mapToObj(i -> PVector.sub(
+						 new PVector(
+								 (float) preTipAirfoilLowerPts1.get(i)[0], 
+								 (float) preTipAirfoilLowerPts1.get(i)[1], 
+								 (float) preTipAirfoilLowerPts1.get(i)[2]),
+						 new PVector(
+								 (float) tipAirfoilLowerPts1.get(i)[0],
+								 (float) tipAirfoilLowerPts1.get(i)[1],
+								 (float) tipAirfoilLowerPts1.get(i)[2])
+						 ))
+				 .map(pv -> new double[] {pv.x, pv.y, pv.z})
+				 .collect(Collectors.toList()));
+		
+		verCrvTngsLower2.addAll(IntStream.range(0, tipAirfoilLowerPts2.size())
+				 .mapToObj(i -> PVector.sub(
+						 new PVector(
+								 (float) preTipAirfoilLowerPts2.get(i)[0], 
+								 (float) preTipAirfoilLowerPts2.get(i)[1], 
+								 (float) preTipAirfoilLowerPts2.get(i)[2]),
+						 new PVector(
+								 (float) tipAirfoilLowerPts2.get(i)[0],
+								 (float) tipAirfoilLowerPts2.get(i)[1],
+								 (float) tipAirfoilLowerPts2.get(i)[2])
+						 ))
+				 .map(pv -> new double[] {pv.x, pv.y, pv.z})
+				 .collect(Collectors.toList()));
+		
+		// -------------------------------------
+		// Generate vertical supporting curves
+		// -------------------------------------
+		List<CADWire> vertCrvs1 = new ArrayList<>();
+		List<CADWire> vertCrvs2 = new ArrayList<>();
+		
+		vertCrvs1.addAll(generateRoundedTipSuppCrvs(
+				tipAirfoilUpperPts1, 
+				verticalCrvsApexes1, 
+				tipAirfoilLowerPts1, 
+				verCrvTngsUpper1, 
+				verCrvTngsLower1, 
+				liftingSurface.getType()
+				));
+		
+		vertCrvs2.addAll(generateRoundedTipSuppCrvs(
+				tipAirfoilUpperPts2, 
+				verticalCrvsApexes2, 
+				tipAirfoilLowerPts2, 
+				verCrvTngsUpper2, 
+				verCrvTngsLower2, 
+				liftingSurface.getType()
+				));
+		
+		if (exportSupportShapes) {
+			vertCrvs1.forEach(w -> wingTipShapes.add((OCCShape) w));
+			vertCrvs2.forEach(w -> wingTipShapes.add((OCCShape) w));
+		}
+		
+//		// Generate splitting segments, laying in the construction plane and to be used to split
+//		// both the camber line curve and the construction plane supporting curves.
+//		List<double[]> cTipFrac1 = Arrays.stream(vec1)
+//				.skip(1)			
+//				.mapToObj(d -> PVector.lerp(pvA, PVector.lerp(pvA, pvD, 0.25f), (float) d))
+//				.map(pv -> new double[] {pv.x, pv.y, pv.z})
+//				.collect(Collectors.toList());
+//		
+//		List<double[]> cTipFrac2 = Arrays.stream(vec2)
+//				.skip(1)
+//				.limit(nVSec2 - 2)
+//				.mapToObj(d -> PVector.lerp(PVector.lerp(pvA, pvD, 0.25f), pvD, (float) d))
+//				.map(pv -> new double[] {pv.x, pv.y, pv.z})
+//				.collect(Collectors.toList());
+//		
+//		List<double[]> bcSegmFrac1 = Arrays.stream(vec1)
+//				.skip(1)
+//				.mapToObj(d -> PVector.lerp(pvB, pvE, (float) d))
+//				.map(pv -> new double[] {pv.x, pv.y, pv.z})
+//				.collect(Collectors.toList());
+//		
+//		List<double[]> bcSegmFrac2 = Arrays.stream(vec2)
+//				.skip(1)
+//				.limit(nVSec2 - 2)
+//				.mapToObj(d -> PVector.lerp(pvE, pvC, (float) d))
+//				.map(pv -> new double[] {pv.x, pv.y, pv.z})
+//				.collect(Collectors.toList());
+//		
+//		List<CADGeomCurve3D> inSPSplitSegms1 = IntStream.range(0, cTipFrac1.size())
 //				.mapToObj(i -> OCCUtils.theFactory.newCurve3D(cTipFrac1.get(i), bcSegmFrac1.get(i)))
 //				.collect(Collectors.toList());
 //		
-//		List<CADGeomCurve3D> inSPSplitSegms2 = IntStream.range(0, vSecVec2.length)
+//		List<CADGeomCurve3D> inSPSplitSegms2 = IntStream.range(0, cTipFrac2.size())
 //				.mapToObj(i -> OCCUtils.theFactory.newCurve3D(cTipFrac2.get(i), bcSegmFrac2.get(i)))
 //				.collect(Collectors.toList());
-		
-		
+//		
+//		// TODO: to cancel after function completion
+//		if (exportSupportShapes) {
+//			inSPSplitSegms1.forEach(c -> wingTipShapes.add((OCCShape) c.edge()));
+//			inSPSplitSegms2.forEach(c -> wingTipShapes.add((OCCShape) c.edge()));
+//		}
+//		
+//		// Split the construction plane supporting curves
+//		List<double[]> inSPSupportPts1 = new ArrayList<>();
+//		List<double[]> inSPSupportPts2 = new ArrayList<>();
+//		
+//		List<PVector> camberLinePvs1 = new ArrayList<>();
+//		List<PVector> camberLinePvs2 = new ArrayList<>();
+//		
+//		for (int i = 0; i < inSPSplitSegms1.size(); i++) {
+//			List<double[]> intersecPts = OCCUtils.getIntersectionPts(sketchPlaneCrv1, inSPSplitSegms1.get(i));
+//			
+//			if (intersecPts.size() == 1) {
+//				inSPSupportPts1.add(intersecPts.get(0));
+//				
+//				double[] pt0 = inSPSplitSegms1.get(i).edge().vertices()[0].pnt();
+//				camberLinePvs1.add(
+//						new PVector((float) pt0[0], (float) pt0[1], (float) pt0[2]).add(
+//								new PVector((float) intersecPts.get(0)[0], (float) intersecPts.get(0)[1], (float) intersecPts.get(0)[2])));
+//			} else {
+//				System.out.println("========== [AircraftCADUtils::getLiftingSurfaceCAD::generateRoundedWingTip - "
+//						+ "Warning: the number of intersection points found is incorrect!");
+//			}
+//		}
+//		
+//		for (int i = 0; i < inSPSplitSegms2.size(); i++) {
+//			List<double[]> intersecPts = OCCUtils.getIntersectionPts(sketchPlaneCrv2, inSPSplitSegms2.get(i));
+//			
+//			if (intersecPts.size() == 1) {
+//				inSPSupportPts2.add(intersecPts.get(0));
+//				
+//				double[] pt0 = inSPSplitSegms2.get(i).edge().vertices()[0].pnt();
+//				camberLinePvs2.add(
+//						new PVector((float) pt0[0], (float) pt0[1], (float) pt0[2]).add(
+//								new PVector((float) intersecPts.get(0)[0], (float) intersecPts.get(0)[1], (float) intersecPts.get(0)[2])));
+//			} else {
+//				System.out.println("========== [AircraftCADUtils::getLiftingSurfaceCAD::generateRoundedWingTip - "
+//						+ "Warning: the number of intersection points found is incorrect!");
+//			}
+//		}
+//		
+//		// Generate vertical splitting vectors
+//		PVector segmentADNormal = liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL) ?
+//				(new PVector(0.0f, 0.0f, 1.0f)).cross(PVector.sub(pvA, pvD)).normalize() :
+//				(new PVector(0.0f, 1.0f, 0.0f)).cross(PVector.sub(pvA, pvD)).normalize();
+//				
+//		segmentADNormal.setMag(PVector.sub(pvA, pvD).mag() * 0.5f);
+//		
+//		List<CADGeomCurve3D> outSPSplitSegmsUpper1 = new ArrayList<>();
+//		List<CADGeomCurve3D> outSPSplitSegmsLower1 = new ArrayList<>();
+//		List<CADGeomCurve3D> outSPSplitSegmsUpper2 = new ArrayList<>();	
+//		List<CADGeomCurve3D> outSPSplitSegmsLower2 = new ArrayList<>();
+//		
+//		List<CADGeomCurve3D> outSPSplitSegms1 = new ArrayList<>();
+//		List<CADGeomCurve3D> outSPSplitSegms2 = new ArrayList<>();
+//		
+//		cTipFrac1.forEach(c -> {		
+//			PVector cUpp = new PVector((float) c[0], (float) c[1], (float) c[2]).add(segmentADNormal);	
+//			PVector cLow = new PVector((float) c[0], (float) c[1], (float) c[2]).add(PVector.mult(segmentADNormal, -1));		
+//			outSPSplitSegmsUpper1.add(OCCUtils.theFactory.newCurve3D(c, new double[] {cUpp.x, cUpp.y, cUpp.z}));
+//			outSPSplitSegmsLower1.add(OCCUtils.theFactory.newCurve3D(c, new double[] {cLow.x, cLow.y, cLow.z}));
+//			outSPSplitSegms1.add(OCCUtils.theFactory.newCurve3D(
+//					new double[] {cLow.x, cLow.y, cLow.z}, 
+//					new double[] {cUpp.x, cUpp.y, cUpp.z}));
+//			});
+//		
+//		cTipFrac2.forEach(c -> {		
+//			PVector cUpp = new PVector((float) c[0], (float) c[1], (float) c[2]).add(segmentADNormal);
+//			PVector cLow = new PVector((float) c[0], (float) c[1], (float) c[2]).add(PVector.mult(segmentADNormal, -1));	
+//			outSPSplitSegmsUpper2.add(OCCUtils.theFactory.newCurve3D(c, new double[] {cUpp.x, cUpp.y, cUpp.z}));
+//			outSPSplitSegmsLower2.add(OCCUtils.theFactory.newCurve3D(c, new double[] {cLow.x, cLow.y, cLow.z}));
+//			outSPSplitSegms2.add(OCCUtils.theFactory.newCurve3D(
+//					new double[] {cLow.x, cLow.y, cLow.z}, 
+//					new double[] {cUpp.x, cUpp.y, cUpp.z}));
+//			});
+//		
+//		// TODO: to cancel after function completion
+//		if (exportSupportShapes) {
+//			outSPSplitSegms1.forEach(c -> wingTipShapes.add((OCCShape) c.edge()));
+//			outSPSplitSegms2.forEach(c -> wingTipShapes.add((OCCShape) c.edge()));
+//		}
+//		
+//		// Split the camber line
+//		List<double[]> camberLinePts1 = new ArrayList<>();
+//		List<double[]> camberLinePts2 = new ArrayList<>();
+//		
+//		for (int i = 0; i < outSPSplitSegms1.size(); i++) {
+//			List<double[]> intersecPts = OCCUtils.getIntersectionPts(tipCamberCrv, outSPSplitSegms1.get(i));
+//
+//			if (intersecPts.size() == 1) {
+//				camberLinePts1.add(intersecPts.get(0));
+//			} else {
+//				System.out.println("========== [AircraftCADUtils::getLiftingSurfaceCAD::generateRoundedWingTip - "
+//						+ "Warning: the number of intersection points found is incorrect!");
+//			}
+//		}
+//		
+//		for (int i = 0; i < outSPSplitSegms2.size(); i++) {
+//			List<double[]> intersecPts = OCCUtils.getIntersectionPts(tipCamberCrv, outSPSplitSegms2.get(i));
+//
+//			if (intersecPts.size() == 1) {
+//				camberLinePts2.add(intersecPts.get(0));
+//			} else {
+//				System.out.println("========== [AircraftCADUtils::getLiftingSurfaceCAD::generateRoundedWingTip - "
+//						+ "Warning: the number of intersection points found is incorrect!");
+//			}
+//		}
+//		
+//		// Split the airfoil curves
+//		List<double[]> tipAirfoilUpperPts1 = new ArrayList<>();
+//		List<double[]> tipAirfoilLowerPts1 = new ArrayList<>();
+//		List<double[]> tipAirfoilUpperPts2 = new ArrayList<>();		
+//		List<double[]> tipAirfoilLowerPts2 = new ArrayList<>();
+//		
+//		for (int i = 0; i < outSPSplitSegmsUpper1.size(); i++) {
+//			List<double[]> intersecUpperPts = OCCUtils.getIntersectionPts(
+//					OCCUtils.theFactory.newCurve3D(airfoilTipCrvs.get(0)), 
+//					outSPSplitSegmsUpper1.get(i));
+//			
+//			List<double[]> intersecLowerPts = OCCUtils.getIntersectionPts(
+//					OCCUtils.theFactory.newCurve3D(airfoilTipCrvs.get(1)), 
+//					outSPSplitSegmsLower1.get(i));
+//
+//			if (intersecUpperPts.size() == 1) {
+//				tipAirfoilUpperPts1.add(intersecUpperPts.get(0));
+//			} else {
+//				System.out.println("========== [AircraftCADUtils::getLiftingSurfaceCAD::generateRoundedWingTip - "
+//						+ "Warning: the number of intersection points found is incorrect!");
+//			}
+//			
+//			if (intersecLowerPts.size() == 1) {
+//				tipAirfoilLowerPts1.add(intersecLowerPts.get(0));
+//			} else {
+//				System.out.println("========== [AircraftCADUtils::getLiftingSurfaceCAD::generateRoundedWingTip - "
+//						+ "Warning: the number of intersection points found is incorrect!");
+//			}
+//		}
+//		
+//		for (int i = 0; i < outSPSplitSegmsUpper2.size(); i++) {
+//			List<double[]> intersecUpperPts = OCCUtils.getIntersectionPts(
+//					OCCUtils.theFactory.newCurve3D(airfoilTipCrvs.get(0)), 
+//					outSPSplitSegmsUpper2.get(i));
+//			
+//			List<double[]> intersecLowerPts = OCCUtils.getIntersectionPts(
+//					OCCUtils.theFactory.newCurve3D(airfoilTipCrvs.get(1)), 
+//					outSPSplitSegmsLower2.get(i));
+//
+//			if (intersecUpperPts.size() == 1) {
+//				tipAirfoilUpperPts2.add(intersecUpperPts.get(0));
+//			} else {
+//				System.out.println("========== [AircraftCADUtils::getLiftingSurfaceCAD::generateRoundedWingTip - "
+//						+ "Warning: the number of intersection points found is incorrect!");
+//			}
+//			
+//			if (intersecLowerPts.size() == 1) {
+//				tipAirfoilLowerPts2.add(intersecLowerPts.get(0));
+//			} else {
+//				System.out.println("========== [AircraftCADUtils::getLiftingSurfaceCAD::generateRoundedWingTip - "
+//						+ "Warning: the number of intersection points found is incorrect!");
+//			}
+//		}
+//		
+//		// Generate vertical supporting curves apexes
+//		List<double[]> verticalCrvsApexes1 = new ArrayList<>();
+//		List<double[]> verticalCrvsApexes2 = new ArrayList<>();
+//		
+//		for (int i = 0; i < camberLinePts1.size(); i++) {
+//			PVector pv0 = new PVector(
+//					(float) camberLinePts1.get(i)[0], 
+//					(float) camberLinePts1.get(i)[1], 
+//					(float) camberLinePts1.get(i)[2]);
+//			
+//			PVector pv1 = pv0.add(camberLinePvs1.get(i));
+//			
+//			verticalCrvsApexes1.add(new double[] {pv1.x, pv1.y, pv1.z});
+//		}
+//		
+//		for (int i = 0; i < camberLinePts2.size(); i++) {
+//			PVector pv0 = new PVector(
+//					(float) camberLinePts2.get(i)[0], 
+//					(float) camberLinePts2.get(i)[1], 
+//					(float) camberLinePts2.get(i)[2]);
+//			
+//			PVector pv1 = pv0.add(camberLinePvs2.get(i));
+//			
+//			verticalCrvsApexes2.add(new double[] {pv1.x, pv1.y, pv1.z});
+//		}
+//		
+//		// Generate the tangent vectors for the supporting curves
+//		
+//		
+//		List<CADWire> verticalCrvs1 = new ArrayList<>();
+//		List<CADWire> verticalCrvs2 = new ArrayList<>();
 		
 		
 		return wingTipShapes;
@@ -1238,6 +1800,171 @@ public class AircraftCADUtils {
 				}));
 	
 		return camberLinePts;
+	}
+	
+	private static List<double[]> getCrvIntersectionWithNormalSegments(
+			CADGeomCurve3D curve,
+			PVector normalVector,
+			PVector pv0,
+			PVector pv1,
+			double[] xs
+			) {
+		
+		List<double[]> intersections = new ArrayList<>();
+		
+		// -----------------------------------------
+		// Generate mid points between the extrema
+		// -----------------------------------------
+		List<double[]> midPts = Arrays.stream(xs)		
+				.mapToObj(d -> PVector.lerp(pv0, pv1, (float) d))
+				.map(pv -> new double[] {pv.x, pv.y, pv.z})
+				.collect(Collectors.toList());	
+			
+		// ---------------------------
+		// Generate splitting vectors
+		// ---------------------------
+		List<CADGeomCurve3D> vertSegments = new ArrayList<>();
+		
+		midPts.forEach(pt0 -> {		
+			PVector pt1 = new PVector((float) pt0[0], (float) pt0[1], (float) pt0[2]).add(normalVector);	
+			PVector pt2 = new PVector((float) pt0[0], (float) pt0[1], (float) pt0[2]).add(PVector.mult(normalVector, -1));
+			
+			System.out.println("Point 1 = " + pt1);
+			System.out.println("Point 2 = " + pt2);
+			
+			vertSegments.add(OCCUtils.theFactory.newCurve3D( 
+					new double[] {pt1.x, pt1.y, pt1.z},
+					new double[] {pt2.x, pt2.y, pt2.z}));
+			});
+		
+		vertSegments.forEach(c -> {
+			double[] range = c.edge().range();
+			double midpar = (range[1] - range[0])/2;
+			
+			System.out.println("Point 1 = " + Arrays.toString(c.edge().vertices()[0].pnt()));
+			System.out.println("Mid_Pnt = " + Arrays.toString(c.value(midpar)));
+			System.out.println("Point 2 = " + Arrays.toString(c.edge().vertices()[1].pnt()));
+		});
+		
+		vertSegments.forEach(c -> System.out.println("Point 1 = " + Arrays.toString(c.edge().vertices()[0].pnt())));
+		vertSegments.forEach(c -> System.out.println("MidPoint = " + Arrays.toString(c.edge().vertices()[0].pnt())));
+		vertSegments.forEach(c -> System.out.println("Point 2 = " + Arrays.toString(c.edge().vertices()[1].pnt())));
+		
+		// -------------------------
+		// Calculate intersections
+		// -------------------------
+		intersections.addAll(vertSegments.stream()
+					.map(s -> getCrvIntersectionWithSegment(curve, s))
+					.collect(Collectors.toList()));	
+		
+		return intersections;
+	}
+	
+	private static double[] getCrvIntersectionWithSegment(
+			CADGeomCurve3D curve,
+			CADGeomCurve3D segment	
+			) {
+		
+		double[] intersection = null;
+		
+		// ---------------------------------------
+		// Calculate the intersection, if exists
+		// ---------------------------------------
+		List<double[]> intersecPts = OCCUtils.getIntersectionPts(curve, segment, 1e-2);
+		
+		System.out.println(intersecPts.size());
+
+		if (intersecPts.size() == 1) {
+			intersection = intersecPts.get(0);
+		} else {
+			System.out.println("========== [AircraftCADUtils::getLiftingSurfaceCAD::generateRoundedWingTip - "
+					+ "Warning: the number of intersection points found is incorrect! Returning a null ...");
+		}
+		
+		return intersection;
+ 	}
+	
+	private static List<CADWire> generateRoundedTipSuppCrvs(
+			List<double[]> airfoilUpperPts,
+			List<double[]> suppCrvsApexPts,
+			List<double[]> airfoilLowerPts,	
+			List<double[]> upperTngs,
+			List<double[]> lowerTngs,
+			ComponentEnum lsType
+			) {
+		
+		List<CADWire> suppCrvs = new ArrayList<>();
+		int nPts = airfoilUpperPts.size();
+		
+		// -------------------------------
+		// Generate the supporting wires
+		// -------------------------------
+		suppCrvs.addAll(IntStream.range(0, nPts)
+				 .mapToObj(i -> {
+					 List<double[]> upperPts = new ArrayList<>();
+					 List<double[]> lowerPts = new ArrayList<>();
+					 
+					 upperPts.add(airfoilUpperPts.get(i));
+					 upperPts.add(suppCrvsApexPts.get(i));
+					 
+					 lowerPts.add(suppCrvsApexPts.get(i));
+					 lowerPts.add(airfoilLowerPts.get(i));
+					 
+					 return generateRoundedTipSuppCrv(
+							 upperPts, 
+							 lowerPts, 
+							 upperTngs.get(i), 
+							 lowerTngs.get(i), 
+							 lsType);
+				 })
+				 .collect(Collectors.toList()));
+		
+		return suppCrvs;
+		
+	}
+	
+	private static CADWire generateRoundedTipSuppCrv(
+			List<double[]> upperPts,
+			List<double[]> lowerPts,
+			double[] upperTng,
+			double[] lowerTng,
+			ComponentEnum lsType
+			) {
+		
+		CADWire suppCrv = null;
+		
+		// ----------------------------
+		// Fix the apex tangent
+		// ----------------------------
+		double[] apexTng = lsType.equals(ComponentEnum.VERTICAL_TAIL) ?
+				new double[] {0.0, 1.0, 0.0}:
+				new double[] {0.0, 0.0, -1.0};
+		
+		// ------------------------------------
+		// Generate the upper and lower curve
+		// ------------------------------------
+		CADGeomCurve3D upperCrv = OCCUtils.theFactory.newCurve3D(
+				upperPts, 
+				false, 
+				upperTng, 
+				apexTng, 
+				false);
+		
+		CADGeomCurve3D lowerCrv = OCCUtils.theFactory.newCurve3D(
+				lowerPts, 
+				false, 
+				apexTng,
+				lowerTng,  
+				false);
+		
+		// ------------------------------------
+		// Generate the supporting wire
+		// ------------------------------------
+		suppCrv = OCCUtils.theFactory.newWireFromAdjacentEdges(
+				upperCrv.edge(), 
+				lowerCrv.edge());
+		
+		return suppCrv;
 	}
 	
 	public enum XSpacingType {
