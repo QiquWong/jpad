@@ -1,9 +1,12 @@
 package analyses;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +17,16 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
@@ -4054,10 +4067,4140 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		return sb.toString();
 	}
 
-	public void toXLS(String filenameWithPathAndExt) {
+	public void toXLS(String filenameWithPathAndExt) throws IOException {
 
-		
-	}
+			Workbook wb;
+			File outputFile = new File(filenameWithPathAndExt + ".xlsx");
+			if (outputFile.exists()) { 
+				outputFile.delete();		
+				System.out.println("Deleting the old .xls file ...");
+			} 
+
+			if (outputFile.getName().endsWith(".xls")) {
+				wb = new HSSFWorkbook();
+			}
+			else if (outputFile.getName().endsWith(".xlsx")) {
+				wb = new XSSFWorkbook();
+			}
+			else {
+				throw new IllegalArgumentException("I don't know how to create that kind of new file");
+			}
+
+			CellStyle styleHead = wb.createCellStyle();
+			styleHead.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			styleHead.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			Font font = wb.createFont();
+			font.setFontHeightInPoints((short) 20);
+			font.setColor(IndexedColors.BLACK.getIndex());
+			font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			styleHead.setFont(font);
+
+			CellStyle styleHeader = wb.createCellStyle();
+			Font fontBold = wb.createFont();
+			fontBold.setFontHeightInPoints((short) 15);
+			fontBold.setColor(IndexedColors.BLACK.getIndex());
+			fontBold.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			styleHeader.setFont(fontBold);
+
+			//--------------------------------------------------------------------------------
+			// WING ANALYSIS RESULTS:
+			//--------------------------------------------------------------------------------
+			if(_theAerodynamicBuilderInterface.isPerformWingAnalyses()) {
+
+				Sheet wingSheet = wb.createSheet("WING");
+				List<Object[]> dataListWing = new ArrayList<>();
+
+				List<Integer> boldRowIndex = new ArrayList<>();
+				int currentBoldIndex = 1;
+
+				dataListWing.add(new Object[] {"Description","Unit","Value"});
+
+				dataListWing.add(new Object[] {"GLOBAL DATA"});
+				currentBoldIndex = 2;
+				boldRowIndex.add(currentBoldIndex);
+
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
+					dataListWing.add(new Object[] {
+							"Critical Mach Number",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCriticalMachNumber().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
+					dataListWing.add(new Object[] {
+							"Aerodynamic Center (LRF)",
+							"m",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacLRF().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
+									).doubleValue(SI.METER)
+					});
+					dataListWing.add(new Object[] {
+							"Aerodynamic Center (MAC)",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacMRF().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
+									)
+					});
+					currentBoldIndex = currentBoldIndex+2;
+				}
+
+				dataListWing.add(new Object[] {""});
+				dataListWing.add(new Object[] {""});
+				dataListWing.add(new Object[] {"LIFT"});
+				currentBoldIndex = currentBoldIndex+3;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_ALPHA)) {
+					dataListWing.add(new Object[] {
+							"CL_alpha",
+							"1/deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_ALPHA)
+									).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_ZERO)) {
+					dataListWing.add(new Object[] {
+							"CL_zero",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLZero().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_ZERO)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_STAR)) {
+					dataListWing.add(new Object[] {
+							"CL_star",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStar().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_STAR)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_MAX)) {
+					dataListWing.add(new Object[] {
+							"CL_max",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMax().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_MAX)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
+					dataListWing.add(new Object[] {
+							"Alpha_zero_lift",
+							"deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLift().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
+									).doubleValue(NonSI.DEGREE_ANGLE)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.ALPHA_STAR)) {
+					dataListWing.add(new Object[] {
+							"Alpha_star",
+							"deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStar().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.ALPHA_STAR)
+									).doubleValue(NonSI.DEGREE_ANGLE)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.ALPHA_STALL)) {
+					dataListWing.add(new Object[] {
+							"Alpha_stall",
+							"deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStall().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.ALPHA_STALL)
+									).doubleValue(NonSI.DEGREE_ANGLE)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
+					dataListWing.add(new Object[] {
+							"CL at Alpha = " + _alphaWingCurrent,
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
+
+					/*
+					 * THIS IS ONLY THE CLEAN CURVE SO YOU DON'T HAVE TO CONSIDER THE _currentWingLiftCurve3D
+					 */
+					dataListWing.add(new Object[] {""});
+					dataListWing.add(new Object[] {"LIFT CURVE"});
+
+					Object[] liftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().size()+2];
+					liftCurveAlpha[0] = "Alpha";
+					liftCurveAlpha[1] = "deg";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().size(); i++) 
+						liftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					Object[] liftCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+							).length+2];
+					liftCurveCL[0] = "CL";
+					liftCurveCL[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+									).length; 
+							i++) 
+						liftCurveCL[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+								)[i];
+
+					dataListWing.add(liftCurveAlpha);
+					dataListWing.add(liftCurveCL);
+					dataListWing.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
+
+					dataListWing.add(new Object[] {""});
+					dataListWing.add(new Object[] {"LIFT DISTRIBUTIONS"});
+
+					Object[] yStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getYStationDistribution().size()+2];
+					yStationsLift[0] = "y stations";
+					yStationsLift[1] = "m";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getYStationDistribution().size(); i++) 
+						yStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getYStationDistribution().get(i).doubleValue(SI.METER);
+
+					dataListWing.add(yStationsLift);
+					
+					Object[] etaStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution().length+2];
+					etaStationsLift[0] = "eta stations";
+					etaStationsLift[1] = "";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution().length; i++) 
+						etaStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()[i];
+
+					dataListWing.add(etaStationsLift);
+
+					currentBoldIndex = currentBoldIndex+4;
+
+					for(int i=0; i<_theAerodynamicBuilderInterface.getAlphaWingForDistribution().size(); i++) {
+
+						dataListWing.add(new Object[] {""});
+						dataListWing.add(new Object[] {"Alpha = " + _theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + " deg"});
+						dataListWing.add(new Object[] {""});
+
+						//..................................................................................................................................................
+						Object[] cLDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						cLDistribution[0] = "Cl";
+						cLDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							cLDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j);
+						dataListWing.add(cLDistribution);
+						//..................................................................................................................................................
+						Object[] cLAdditionalDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionAdditionalLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						cLAdditionalDistribution[0] = "Cl_additional";
+						cLAdditionalDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionAdditionalLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							cLAdditionalDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionAdditionalLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j);
+						dataListWing.add(cLAdditionalDistribution);
+						//..................................................................................................................................................
+						Object[] cLBasicDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionBasicLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						cLBasicDistribution[0] = "Cl_basic";
+						cLBasicDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionBasicLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							cLBasicDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionBasicLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j);
+						dataListWing.add(cLBasicDistribution);
+						//..................................................................................................................................................
+						Object[] cCLDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						cCLDistribution[0] = "cCl";
+						cCLDistribution[1] = "m";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							cCLDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j).doubleValue(SI.METER);
+						dataListWing.add(cCLDistribution);
+						//..................................................................................................................................................
+						Object[] cCLAdditionalDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionAdditionalLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						cCLAdditionalDistribution[0] = "cCl_additional";
+						cCLAdditionalDistribution[1] = "m";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionAdditionalLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							cCLAdditionalDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionAdditionalLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j).doubleValue(SI.METER);
+						dataListWing.add(cCLAdditionalDistribution);
+						//..................................................................................................................................................
+						Object[] cCLBasicDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionBasicLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						cCLBasicDistribution[0] = "cCl_basic";
+						cCLBasicDistribution[1] = "m";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionBasicLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							cCLBasicDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionBasicLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j).doubleValue(SI.METER);
+						dataListWing.add(cCLBasicDistribution);
+						//..................................................................................................................................................
+						Object[] gammaDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						gammaDistribution[0] = "Gamma";
+						gammaDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							gammaDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j);
+						dataListWing.add(gammaDistribution);
+						//..................................................................................................................................................
+						Object[] gammaAdditionalDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionAdditionalLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						gammaAdditionalDistribution[0] = "Gamma_additional";
+						gammaAdditionalDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionAdditionalLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							gammaAdditionalDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionAdditionalLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j);
+						dataListWing.add(gammaAdditionalDistribution);
+						//..................................................................................................................................................
+						Object[] gammaBasicDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionBasicLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						gammaBasicDistribution[0] = "Gamma_basic";
+						gammaBasicDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionBasicLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							gammaBasicDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionBasicLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j);
+						dataListWing.add(gammaBasicDistribution);
+						//..................................................................................................................................................
+						Object[] wingLoadDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						wingLoadDistribution[0] = "Wing load";
+						wingLoadDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							wingLoadDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListWing.add(wingLoadDistribution);
+						//..................................................................................................................................................
+						Object[] wingAdditionalLoadDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAdditionalLoadDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						wingAdditionalLoadDistribution[0] = "Additional load";
+						wingAdditionalLoadDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAdditionalLoadDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							wingAdditionalLoadDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAdditionalLoadDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListWing.add(wingAdditionalLoadDistribution);
+						//..................................................................................................................................................	
+						Object[] wingBasicLoadDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getBasicLoadDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						wingBasicLoadDistribution[0] = "Basic load";
+						wingBasicLoadDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getBasicLoadDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							wingBasicLoadDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getBasicLoadDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListWing.add(wingBasicLoadDistribution);
+						//..................................................................................................................................................
+
+						currentBoldIndex = currentBoldIndex+15;
+
+					}
+				}
+
+				dataListWing.add(new Object[] {""});
+				dataListWing.add(new Object[] {""});
+				dataListWing.add(new Object[] {"DRAG"});
+				currentBoldIndex = currentBoldIndex+3;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD0)) {
+					dataListWing.add(new Object[] {
+							"CD_zero",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCD0().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD0)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
+					dataListWing.add(new Object[] {
+							"Oswald factor",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getOswaldFactor().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.OSWALD_FACTOR)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
+					dataListWing.add(new Object[] {
+							"CD_induced at Alpha = " + _alphaWingCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCDInduced().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_WAVE)) {
+					dataListWing.add(new Object[] {
+							"CD_wave",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCDWave().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_WAVE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
+					dataListWing.add(new Object[] {
+							"CD at alpha = " + _alphaWingCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCDAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
+
+					/*
+					 * THIS IS ONLY THE CLEAN CURVE SO YOU DON'T HAVE TO CONSIDER THE _currentWingPolarCurve3D
+					 */
+					dataListWing.add(new Object[] {""});
+					dataListWing.add(new Object[] {"DRAG POLAR CURVE"});
+
+					Object[] polarCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+							).length+2];
+					polarCurveCL[0] = "CL";
+					polarCurveCL[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+									).length; 
+							i++) 
+						polarCurveCL[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+								)[i];
+
+					Object[] polarCurveCD = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+							).length+2];
+					polarCurveCD[0] = "CD";
+					polarCurveCD[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+									).length; 
+							i++) 
+						polarCurveCD[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+								)[i];
+
+					dataListWing.add(polarCurveCL);
+					dataListWing.add(polarCurveCD);
+					dataListWing.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
+
+					dataListWing.add(new Object[] {""});
+					dataListWing.add(new Object[] {"DRAG DISTRIBUTIONS"});
+
+					Object[] yStationsDrag = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getYStationDistribution().size()+2];
+					yStationsDrag[0] = "y stations";
+					yStationsDrag[1] = "m";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getYStationDistribution().size(); i++) 
+						yStationsDrag[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getYStationDistribution().get(i).doubleValue(SI.METER);
+
+					dataListWing.add(yStationsDrag);
+
+					Object[] etaStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution().length+2];
+					etaStationsLift[0] = "eta stations";
+					etaStationsLift[1] = "";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution().length; i++) 
+						etaStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()[i];
+
+					dataListWing.add(etaStationsLift);
+					
+					currentBoldIndex = currentBoldIndex+4;
+
+					for(int i=0; i<_theAerodynamicBuilderInterface.getAlphaWingForDistribution().size(); i++) {
+
+						dataListWing.add(new Object[] {""});
+						dataListWing.add(new Object[] {"Alpha = " + _theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + " deg"});
+						dataListWing.add(new Object[] {""});
+
+						//..................................................................................................................................................
+						Object[] cDParasiteDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getParasiteDragCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						cDParasiteDistribution[0] = "Cd_parasite";
+						cDParasiteDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getParasiteDragCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							cDParasiteDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getParasiteDragCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j);
+						dataListWing.add(cDParasiteDistribution);
+						//..................................................................................................................................................
+						Object[] cDInducedDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getInducedDragCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						cDInducedDistribution[0] = "Cd_induced";
+						cDInducedDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getInducedDragCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							cDInducedDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getInducedDragCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j);
+						dataListWing.add(cDInducedDistribution);
+						//..................................................................................................................................................
+						Object[] cDDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						cDDistribution[0] = "Cd";
+						cDDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							cDDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j);
+						dataListWing.add(cDDistribution);
+						//..................................................................................................................................................
+						Object[] dragDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						dragDistribution[0] = "Drag";
+						dragDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							dragDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListWing.add(dragDistribution);
+						//..................................................................................................................................................
+
+						currentBoldIndex = currentBoldIndex+7;
+
+					}
+				}
+
+				dataListWing.add(new Object[] {""});
+				dataListWing.add(new Object[] {""});
+				dataListWing.add(new Object[] {"PITCHING MOMENT"});
+				currentBoldIndex = currentBoldIndex+3;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
+					dataListWing.add(new Object[] {
+							"CM_ac",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCMac().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)) {
+					dataListWing.add(new Object[] {
+							"CM_alpha",
+							"1/deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCMAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)
+									).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
+					dataListWing.add(new Object[] {
+							"CM at alpha = " + _alphaWingCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCMAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
+
+					/*
+					 * THIS IS ONLY THE CLEAN CURVE SO YOU DON'T HAVE TO CONSIDER THE _currentWingMomentCurve3D
+					 */
+					dataListWing.add(new Object[] {""});
+					dataListWing.add(new Object[] {"PITCHING MOMENT CURVE"});
+
+					Object[] momentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().size()+2];
+					momentCurveAlpha[0] = "Alpha";
+					momentCurveAlpha[1] = "deg";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().size(); i++) 
+						momentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					Object[] momentCurveCM = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
+							).length+2];
+					momentCurveCM[0] = "CM";
+					momentCurveCM[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
+									).length; 
+							i++) 
+						momentCurveCM[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
+								)[i];
+
+					dataListWing.add(momentCurveAlpha);
+					dataListWing.add(momentCurveCM);
+					dataListWing.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
+
+					dataListWing.add(new Object[] {""});
+					dataListWing.add(new Object[] {"PITCHING MOMENT DISTRIBUTIONS"});
+
+					Object[] yStationsMoment = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getYStationDistribution().size()+2];
+					yStationsMoment[0] = "y stations";
+					yStationsMoment[1] = "m";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getYStationDistribution().size(); i++) 
+						yStationsMoment[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getYStationDistribution().get(i).doubleValue(SI.METER);
+
+					dataListWing.add(yStationsMoment);
+
+					Object[] etaStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution().length+2];
+					etaStationsLift[0] = "eta stations";
+					etaStationsLift[1] = "";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution().length; i++) 
+						etaStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()[i];
+
+					dataListWing.add(etaStationsLift);
+					
+					currentBoldIndex = currentBoldIndex+4;
+
+					for(int i=0; i<_theAerodynamicBuilderInterface.getAlphaWingForDistribution().size(); i++) {
+
+						dataListWing.add(new Object[] {""});
+						dataListWing.add(new Object[] {"Alpha = " + _theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + " deg"});
+						dataListWing.add(new Object[] {""});
+
+						//..................................................................................................................................................
+						Object[] cMDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						cMDistribution[0] = "Cm";
+						cMDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							cMDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j);
+						dataListWing.add(cMDistribution);
+						//..................................................................................................................................................
+						Object[] momentDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+								).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size()+2];
+						momentDistribution[0] = "Moment";
+						momentDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+										).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).size(); 
+								j++) 
+							momentDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+									).get(_theAerodynamicBuilderInterface.getAlphaWingForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListWing.add(momentDistribution);
+						//..................................................................................................................................................
+
+						currentBoldIndex = currentBoldIndex+5;
+
+					}
+				}
+
+				if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF) 
+						|| _theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING)) {
+
+					dataListWing.add(new Object[] {""});
+					dataListWing.add(new Object[] {""});
+					dataListWing.add(new Object[] {"HIGH LIFT"});
+					currentBoldIndex = currentBoldIndex+3;
+					boldRowIndex.add(currentBoldIndex);
+
+					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
+
+						dataListWing.add(new Object[] {""});
+						dataListWing.add(new Object[] {"HIGH LIFT DEVICES EFFECTS (2D)"});
+
+						//.........................................................................................................................................
+						Object[] deltaCl0List = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCl0FlapList().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+								).size()+2];
+						deltaCl0List[0] = "Delta Cl0 (each flap)";
+						deltaCl0List[1] = "";
+						for(int i=0; 
+								i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCl0FlapList().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										).size(); 
+								i++) 
+							deltaCl0List[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCl0FlapList().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+									).get(i);
+
+						dataListWing.add(deltaCl0List);
+						//.........................................................................................................................................
+						dataListWing.add(new Object[] {
+								"Delta Cl0 (total)",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCl0Flap().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										)});
+						//.........................................................................................................................................
+						Object[] deltaClmaxFlapList = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaClmaxFlapList().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+								).size()+2];
+						deltaClmaxFlapList[0] = "Delta Clmax (each flap)";
+						deltaClmaxFlapList[1] = "";
+						for(int i=0; 
+								i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaClmaxFlapList().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										).size(); 
+								i++) 
+							deltaClmaxFlapList[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaClmaxFlapList().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+									).get(i);
+						dataListWing.add(deltaClmaxFlapList);
+						//.........................................................................................................................................
+						dataListWing.add(new Object[] {
+								"Delta Clmax (all flaps)",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaClmaxFlap().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										)});
+						//.........................................................................................................................................
+						if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaClmaxSlatList().get(MethodEnum.SEMIEMPIRICAL) != null) {
+
+							Object[] deltaClmaxSlatList = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaClmaxSlatList().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+									).size()+2];
+							deltaClmaxSlatList[0] = "Delta Clmax (each slat)";
+							deltaClmaxSlatList[1] = "";
+							for(int i=0; 
+									i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaClmaxSlatList().get(
+											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+											).size(); 
+									i++) 
+								deltaClmaxSlatList[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaClmaxSlatList().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										).get(i);
+
+							dataListWing.add(deltaClmaxSlatList);
+							//.........................................................................................................................................
+							dataListWing.add(new Object[] {
+									"Delta Clmax (all slats)",
+									"",
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaClmaxSlat().get(
+											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+											)});
+							//.........................................................................................................................................
+						}
+
+						dataListWing.add(new Object[] {""});
+						dataListWing.add(new Object[] {"HIGH LIFT DEVICES EFFECTS (3D)"});
+
+						//.........................................................................................................................................
+						Object[] deltaCL0List = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCL0FlapList().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+								).size()+2];
+						deltaCL0List[0] = "Delta CL0 (each flap)";
+						deltaCL0List[1] = "";
+						for(int i=0; 
+								i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCL0FlapList().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										).size(); 
+								i++) 
+							deltaCL0List[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCL0FlapList().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+									).get(i);
+
+						dataListWing.add(deltaCL0List);
+						//.........................................................................................................................................
+						dataListWing.add(new Object[] {
+								"Delta CL0 (total)",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCL0Flap().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										)});
+						//.........................................................................................................................................
+						Object[] deltaCLmaxFlapList = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCLmaxFlapList().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+								).size()+2];
+						deltaCLmaxFlapList[0] = "Delta CLmax (each flap)";
+						deltaCLmaxFlapList[1] = "";
+						for(int i=0; 
+								i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCLmaxFlapList().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										).size(); 
+								i++) 
+							deltaCLmaxFlapList[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCLmaxFlapList().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+									).get(i);
+
+						dataListWing.add(deltaCLmaxFlapList);
+						//.........................................................................................................................................
+						dataListWing.add(new Object[] {
+								"Delta CLmax (all flaps)",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCLmaxFlap().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										)});
+						//.........................................................................................................................................
+						if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCLmaxSlatList().get(MethodEnum.SEMIEMPIRICAL) != null) {
+
+							Object[] deltaCLmaxSlatList = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCLmaxSlatList().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+									).size()+2];
+							deltaCLmaxSlatList[0] = "Delta CLmax (each slat)";
+							deltaCLmaxSlatList[1] = "";
+							for(int i=0; 
+									i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCLmaxSlatList().get(
+											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+											).size(); 
+									i++) 
+								deltaCLmaxSlatList[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCLmaxSlatList().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										).get(i);
+
+							dataListWing.add(deltaCLmaxSlatList);
+							//.........................................................................................................................................
+							dataListWing.add(new Object[] {
+									"Delta CLmax (all slats)",
+									"",
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCLmaxSlat().get(
+											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+											)});
+							//.........................................................................................................................................
+						}
+
+						//.........................................................................................................................................
+						Object[] deltaCD0List = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCD0List().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+								).size()+2];
+						deltaCD0List[0] = "Delta CD0 (each flap)";
+						deltaCD0List[1] = "";
+						for(int i=0; 
+								i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCD0List().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										).size(); 
+								i++) 
+							deltaCD0List[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCD0List().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+									).get(i);
+
+						dataListWing.add(deltaCD0List);
+						//.........................................................................................................................................
+						dataListWing.add(new Object[] {
+								"Delta CD0 (total)",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCD0().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										)});
+						//.........................................................................................................................................
+						Object[] deltaCMc4List = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCMc4List().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+								).size()+2];
+						deltaCMc4List[0] = "Delta CM_c/4 (each flap)";
+						deltaCMc4List[1] = "";
+						for(int i=0; 
+								i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCMc4List().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										).size(); 
+								i++) 
+							deltaCMc4List[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCMc4List().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+									).get(i);
+
+						dataListWing.add(deltaCMc4List);
+						//.........................................................................................................................................
+						dataListWing.add(new Object[] {
+								"Delta CM_c/4 (total)",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCMc4().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										)});
+						//.........................................................................................................................................
+
+						dataListWing.add(new Object[] {""});
+						dataListWing.add(new Object[] {"GLOBAL HIGH LIFT EFFECTS"});
+						dataListWing.add(new Object[] {
+								"Alpha stall (High Lift)",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStallHighLift().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										).doubleValue(NonSI.DEGREE_ANGLE)});
+						dataListWing.add(new Object[] {
+								"Alpha star (High Lift)",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStarHighLift().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										).doubleValue(NonSI.DEGREE_ANGLE)});
+						dataListWing.add(new Object[] {
+								"CL_max (High Lift)",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMaxHighLift().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										)});
+						dataListWing.add(new Object[] {
+								"CL_star (High Lift)",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStarHighLift().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										)});
+						dataListWing.add(new Object[] {
+								"CL_alpha (High Lift)",
+								"1/deg",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlphaHighLift().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)
+										).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()});
+
+						if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDeltaCLmaxSlatList().get(MethodEnum.SEMIEMPIRICAL) != null) 
+							currentBoldIndex = currentBoldIndex+27;
+						else
+							currentBoldIndex = currentBoldIndex+23;
+
+					}
+
+					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
+
+						dataListWing.add(new Object[] {""});
+						dataListWing.add(new Object[] {"HIGH LIFT CURVE"});
+
+						Object[] highLiftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().size()+2];
+						highLiftCurveAlpha[0] = "Alpha";
+						highLiftCurveAlpha[1] = "deg";
+						for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().size(); i++) 
+							highLiftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+						Object[] highLiftCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
+								).length+2];
+						highLiftCurveCL[0] = "CL";
+						highLiftCurveCL[1] = "";
+						for(int i=0; 
+								i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
+										).length; 
+								i++) 
+							highLiftCurveCL[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
+									)[i];
+
+						dataListWing.add(highLiftCurveAlpha);
+						dataListWing.add(highLiftCurveCL);
+						dataListWing.add(new Object[] {""});
+
+						currentBoldIndex = currentBoldIndex+5;
+					}
+
+					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)) {
+
+						dataListWing.add(new Object[] {""});
+						dataListWing.add(new Object[] {"HIGH LIFT DRAG POLAR CURVE"});
+
+						Object[] highLiftPolarCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
+								).length+2];
+						highLiftPolarCurveCL[0] = "CL";
+						highLiftPolarCurveCL[1] = "";
+						for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
+								).length; i++) 
+							highLiftPolarCurveCL[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
+									)[i];
+
+						Object[] highLiftPolarCurveCD = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurveHighLift().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)
+								).length+2];
+						highLiftPolarCurveCD[0] = "CD";
+						highLiftPolarCurveCD[1] = "";
+						for(int i=0; 
+								i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurveHighLift().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)
+										).length; 
+								i++) 
+							highLiftPolarCurveCD[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurveHighLift().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)
+									)[i];
+
+						dataListWing.add(highLiftPolarCurveCL);
+						dataListWing.add(highLiftPolarCurveCD);
+						dataListWing.add(new Object[] {""});
+
+						currentBoldIndex = currentBoldIndex+5;
+					}
+
+					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)) {
+
+						dataListWing.add(new Object[] {""});
+						dataListWing.add(new Object[] {"HIGH LIFT PITCHING MOMENT CURVE"});
+
+						Object[] highLiftMomentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().size()+2];
+						highLiftMomentCurveAlpha[0] = "Alpha";
+						highLiftMomentCurveAlpha[1] = "deg";
+						for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().size(); i++) 
+							highLiftMomentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+						Object[] highLiftMomentCurveCM = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficient3DCurveHighLift().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)
+								).length+2];
+						highLiftMomentCurveCM[0] = "CM";
+						highLiftMomentCurveCM[1] = "";
+						for(int i=0; 
+								i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficient3DCurveHighLift().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)
+										).length; 
+								i++) 
+							highLiftMomentCurveCM[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficient3DCurveHighLift().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)
+									)[i];
+
+						dataListWing.add(highLiftMomentCurveAlpha);
+						dataListWing.add(highLiftMomentCurveCM);
+						dataListWing.add(new Object[] {""});
+
+						currentBoldIndex = currentBoldIndex+5;
+					}
+
+					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT)) {
+						dataListWing.add(new Object[] {
+								"CL (High Lift) at Alpha = " + _alphaWingCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAtAlphaHighLift().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT)
+										)});
+						currentBoldIndex = currentBoldIndex+1;
+					}
+					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_HIGH_LIFT)) {
+						dataListWing.add(new Object[] {
+								"CD (High Lift) at Alpha = " + _alphaWingCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCDAtAlphaHighLift().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_HIGH_LIFT)
+										)});
+						currentBoldIndex = currentBoldIndex+1;
+					}
+					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_HIGH_LIFT)) {
+						dataListWing.add(new Object[] {
+								"CM (High Lift) at Alpha = " + _alphaWingCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+								"",
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCMAtAlphaHighLift().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_HIGH_LIFT)
+										)});
+						currentBoldIndex = currentBoldIndex+1;
+					}
+
+				}
+
+				//------------------------------------------------------------------------------------------------------------------------
+				// CREATING CELLS ...
+				//--------------------------------------------------------------------------------
+				Row rowWing = wingSheet.createRow(0);
+				Object[] objArrWing = dataListWing.get(0);
+				int cellnumWing = 0;
+				for (Object obj : objArrWing) {
+					Cell cell = rowWing.createCell(cellnumWing++);
+					cell.setCellStyle(styleHead);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+
+				int rownumWing = 1;
+				for (int i = 1; i < dataListWing.size(); i++) {
+					objArrWing = dataListWing.get(i);
+					rowWing = wingSheet.createRow(rownumWing++);
+					cellnumWing = 0;
+					Boolean isBold = Boolean.FALSE;
+					for(int bri=0; bri<boldRowIndex.size(); bri++) 
+						if(rownumWing == boldRowIndex.get(bri))
+							isBold = Boolean.TRUE;
+					for (Object obj : objArrWing) {
+						Cell cell = rowWing.createCell(cellnumWing++);
+						if(isBold == Boolean.TRUE)
+							cell.setCellStyle(styleHeader);
+						if (obj instanceof Date) {
+							cell.setCellValue((Date) obj);
+						} else if (obj instanceof Boolean) {
+							cell.setCellValue((Boolean) obj);
+						} else if (obj instanceof String) {
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Double) {
+							cell.setCellValue((Double) obj);
+						}
+					}
+
+					wingSheet.setDefaultColumnWidth(35);
+					wingSheet.setColumnWidth(1, 2048);
+					for(int k=2; k<100; k++)
+						wingSheet.setColumnWidth(k, 3840);
+
+				}
+			}
+
+			//--------------------------------------------------------------------------------
+			// HTAIL ANALYSIS RESULTS:
+			//--------------------------------------------------------------------------------
+			if(_theAerodynamicBuilderInterface.isPerformHTailAnalyses()) {
+
+				Sheet hTailSheet = wb.createSheet("HORIZONTAL_TAIL");
+				List<Object[]> dataListHTail = new ArrayList<>();
+
+				List<Integer> boldRowIndex = new ArrayList<>();
+				int currentBoldIndex = 1;
+
+				dataListHTail.add(new Object[] {"Description","Unit","Value"});
+
+				dataListHTail.add(new Object[] {"GLOBAL DATA"});
+				currentBoldIndex = 2;
+				boldRowIndex.add(currentBoldIndex);
+
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
+					dataListHTail.add(new Object[] {
+							"Critical Mach Number",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCriticalMachNumber().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
+					dataListHTail.add(new Object[] {
+							"Aerodynamic Center (LRF)",
+							"m",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacLRF().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
+									).doubleValue(SI.METER)
+					});
+					dataListHTail.add(new Object[] {
+							"Aerodynamic Center (MAC)",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacMRF().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
+									)
+					});
+					currentBoldIndex = currentBoldIndex+2;
+				}
+
+				dataListHTail.add(new Object[] {""});
+				dataListHTail.add(new Object[] {""});
+				dataListHTail.add(new Object[] {"LIFT"});
+				currentBoldIndex = currentBoldIndex+3;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_ALPHA)) {
+					dataListHTail.add(new Object[] {
+							"CL_alpha",
+							"1/deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCLAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_ALPHA)
+									).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_ZERO)) {
+					dataListHTail.add(new Object[] {
+							"CL_zero",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCLZero().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_ZERO)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_STAR)) {
+					dataListHTail.add(new Object[] {
+							"CL_star",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCLStar().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_STAR)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_MAX)) {
+					dataListHTail.add(new Object[] {
+							"CL_max",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCLMax().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_MAX)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
+					dataListHTail.add(new Object[] {
+							"Alpha_zero_lift",
+							"deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaZeroLift().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
+									).doubleValue(NonSI.DEGREE_ANGLE)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_STAR)) {
+					dataListHTail.add(new Object[] {
+							"Alpha_star",
+							"deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaStar().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STAR)
+									).doubleValue(NonSI.DEGREE_ANGLE)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_STALL)) {
+					dataListHTail.add(new Object[] {
+							"Alpha_stall",
+							"deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaStall().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STALL)
+									).doubleValue(NonSI.DEGREE_ANGLE)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
+					dataListHTail.add(new Object[] {
+							"CL at Alpha = " + _alphaHTailCurrent,
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCLAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
+
+					/*
+					 * THIS IS ONLY THE CLEAN CURVE SO YOU DON'T HAVE TO CONSIDER THE _currentWingLiftCurve3D
+					 */
+					dataListHTail.add(new Object[] {""});
+					dataListHTail.add(new Object[] {"LIFT CURVE"});
+
+					Object[] liftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().size()+2];
+					liftCurveAlpha[0] = "Alpha";
+					liftCurveAlpha[1] = "deg";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().size(); i++) 
+						liftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					Object[] liftCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+							).length+2];
+					liftCurveCL[0] = "CL";
+					liftCurveCL[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+									).length; 
+							i++) 
+						liftCurveCL[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+								)[i];
+
+					dataListHTail.add(liftCurveAlpha);
+					dataListHTail.add(liftCurveCL);
+					dataListHTail.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
+
+					dataListHTail.add(new Object[] {""});
+					dataListHTail.add(new Object[] {"LIFT DISTRIBUTIONS"});
+
+					Object[] yStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getYStationDistribution().size()+2];
+					yStationsLift[0] = "y stations";
+					yStationsLift[1] = "m";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getYStationDistribution().size(); i++) 
+						yStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getYStationDistribution().get(i).doubleValue(SI.METER);
+
+					dataListHTail.add(yStationsLift);
+
+					Object[] etaStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution().length+2];
+					etaStationsLift[0] = "eta stations";
+					etaStationsLift[1] = "";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution().length; i++) 
+						etaStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()[i];
+
+					dataListHTail.add(etaStationsLift);
+					
+					currentBoldIndex = currentBoldIndex+4;
+
+					for(int i=0; i<_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().size(); i++) {
+
+						dataListHTail.add(new Object[] {""});
+						dataListHTail.add(new Object[] {"Alpha = " + _theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + " deg"});
+						dataListHTail.add(new Object[] {""});
+
+						//..................................................................................................................................................
+						Object[] cLDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						cLDistribution[0] = "Cl";
+						cLDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							cLDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j);
+						dataListHTail.add(cLDistribution);
+						//..................................................................................................................................................
+						Object[] cLAdditionalDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistributionAdditionalLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						cLAdditionalDistribution[0] = "Cl_additional";
+						cLAdditionalDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistributionAdditionalLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							cLAdditionalDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistributionAdditionalLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j);
+						dataListHTail.add(cLAdditionalDistribution);
+						//..................................................................................................................................................
+						Object[] cLBasicDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistributionBasicLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						cLBasicDistribution[0] = "Cl_basic";
+						cLBasicDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistributionBasicLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							cLBasicDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistributionBasicLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j);
+						dataListHTail.add(cLBasicDistribution);
+						//..................................................................................................................................................
+						Object[] cCLDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						cCLDistribution[0] = "cCl";
+						cCLDistribution[1] = "m";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							cCLDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j).doubleValue(SI.METER);
+						dataListHTail.add(cCLDistribution);
+						//..................................................................................................................................................
+						Object[] cCLAdditionalDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistributionAdditionalLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						cCLAdditionalDistribution[0] = "cCl_additional";
+						cCLAdditionalDistribution[1] = "m";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistributionAdditionalLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							cCLAdditionalDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistributionAdditionalLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j).doubleValue(SI.METER);
+						dataListHTail.add(cCLAdditionalDistribution);
+						//..................................................................................................................................................
+						Object[] cCLBasicDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistributionAdditionalLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						cCLBasicDistribution[0] = "cCl_basic";
+						cCLBasicDistribution[1] = "m";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistributionAdditionalLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							cCLBasicDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistributionAdditionalLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j).doubleValue(SI.METER);
+						dataListHTail.add(cCLBasicDistribution);
+						//..................................................................................................................................................
+						Object[] gammaDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						gammaDistribution[0] = "Gamma";
+						gammaDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							gammaDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j);
+						dataListHTail.add(gammaDistribution);
+						//..................................................................................................................................................
+						Object[] gammaAdditionalDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistributionAdditionalLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						gammaAdditionalDistribution[0] = "Gamma_additional";
+						gammaAdditionalDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistributionAdditionalLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							gammaAdditionalDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistributionAdditionalLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j);
+						dataListHTail.add(gammaAdditionalDistribution);
+						//..................................................................................................................................................
+						Object[] gammaBasicDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistributionBasicLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						gammaBasicDistribution[0] = "Gamma_basic";
+						gammaBasicDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistributionBasicLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							gammaBasicDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistributionBasicLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j);
+						dataListHTail.add(gammaBasicDistribution);
+						//..................................................................................................................................................
+						Object[] wingLoadDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						wingLoadDistribution[0] = "Wing load";
+						wingLoadDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							wingLoadDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListHTail.add(wingLoadDistribution);
+						//..................................................................................................................................................
+						Object[] wingAdditionalLoadDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAdditionalLoadDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						wingAdditionalLoadDistribution[0] = "Additional load";
+						wingAdditionalLoadDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAdditionalLoadDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							wingAdditionalLoadDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAdditionalLoadDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListHTail.add(wingAdditionalLoadDistribution);
+						//..................................................................................................................................................	
+						Object[] wingBasicLoadDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getBasicLoadDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						wingBasicLoadDistribution[0] = "Basic load";
+						wingBasicLoadDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getBasicLoadDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							wingBasicLoadDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getBasicLoadDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListHTail.add(wingBasicLoadDistribution);
+						//..................................................................................................................................................
+
+						currentBoldIndex = currentBoldIndex+15;
+
+					}
+				}
+
+				dataListHTail.add(new Object[] {""});
+				dataListHTail.add(new Object[] {""});
+				dataListHTail.add(new Object[] {"DRAG"});
+				currentBoldIndex = currentBoldIndex+3;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD0)) {
+					dataListHTail.add(new Object[] {
+							"CD_zero",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCD0().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD0)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
+					dataListHTail.add(new Object[] {
+							"Oswald factor",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getOswaldFactor().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.OSWALD_FACTOR)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
+					dataListHTail.add(new Object[] {
+							"CD_induced at Alpha = " + _alphaHTailCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCDInduced().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_WAVE)) {
+					dataListHTail.add(new Object[] {
+							"CD_wave",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCDWave().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_WAVE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
+					dataListHTail.add(new Object[] {
+							"CD at alpha = " + _alphaHTailCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCDAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
+
+					/*
+					 * THIS IS ONLY THE CLEAN CURVE SO YOU DON'T HAVE TO CONSIDER THE _currentWingPolarCurve3D
+					 */
+					dataListHTail.add(new Object[] {""});
+					dataListHTail.add(new Object[] {"DRAG POLAR CURVE"});
+
+					Object[] polarCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+							).length+2];
+					polarCurveCL[0] = "CL";
+					polarCurveCL[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+									).length; 
+							i++) 
+						polarCurveCL[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+								)[i];
+
+					Object[] polarCurveCD = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getPolar3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+							).length+2];
+					polarCurveCD[0] = "CD";
+					polarCurveCD[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getPolar3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+									).length; 
+							i++) 
+						polarCurveCD[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getPolar3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+								)[i];
+
+					dataListHTail.add(polarCurveCL);
+					dataListHTail.add(polarCurveCD);
+					dataListHTail.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
+
+					dataListHTail.add(new Object[] {""});
+					dataListHTail.add(new Object[] {"DRAG DISTRIBUTIONS"});
+
+					Object[] yStationsDrag = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getYStationDistribution().size()+2];
+					yStationsDrag[0] = "y stations";
+					yStationsDrag[1] = "m";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getYStationDistribution().size(); i++) 
+						yStationsDrag[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getYStationDistribution().get(i).doubleValue(SI.METER);
+
+					dataListHTail.add(yStationsDrag);
+
+					Object[] etaStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution().length+2];
+					etaStationsLift[0] = "eta stations";
+					etaStationsLift[1] = "";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution().length; i++) 
+						etaStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()[i];
+
+					dataListHTail.add(etaStationsLift);
+					
+					currentBoldIndex = currentBoldIndex+4;
+
+					for(int i=0; i<_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().size(); i++) {
+
+						dataListHTail.add(new Object[] {""});
+						dataListHTail.add(new Object[] {"Alpha = " + _theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + " deg"});
+						dataListHTail.add(new Object[] {""});
+
+						//..................................................................................................................................................
+						Object[] cDParasiteDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getParasiteDragCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						cDParasiteDistribution[0] = "Cd_parasite";
+						cDParasiteDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getParasiteDragCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							cDParasiteDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getParasiteDragCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j);
+						dataListHTail.add(cDParasiteDistribution);
+						//..................................................................................................................................................
+						Object[] cDInducedDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getInducedDragCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						cDInducedDistribution[0] = "Cd_induced";
+						cDInducedDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getInducedDragCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							cDInducedDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getInducedDragCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j);
+						dataListHTail.add(cDInducedDistribution);
+						//..................................................................................................................................................
+						Object[] cDDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDragCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						cDDistribution[0] = "Cd";
+						cDDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDragCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							cDDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDragCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j);
+						dataListHTail.add(cDDistribution);
+						//..................................................................................................................................................
+						Object[] dragDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDragDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						dragDistribution[0] = "Drag";
+						dragDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDragDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							dragDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDragDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListHTail.add(dragDistribution);
+						//..................................................................................................................................................
+
+						currentBoldIndex = currentBoldIndex+7;
+
+					}
+				}
+
+				dataListHTail.add(new Object[] {""});
+				dataListHTail.add(new Object[] {""});
+				dataListHTail.add(new Object[] {"PITCHING MOMENT"});
+				currentBoldIndex = currentBoldIndex+3;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
+					dataListHTail.add(new Object[] {
+							"CM_ac",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCMac().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)) {
+					dataListHTail.add(new Object[] {
+							"CM_alpha",
+							"1/deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCMAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)
+									).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
+					dataListHTail.add(new Object[] {
+							"CM at alpha = " + _alphaHTailCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCMAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
+
+					/*
+					 * THIS IS ONLY THE CLEAN CURVE SO YOU DON'T HAVE TO CONSIDER THE _currentWingMomentCurve3D
+					 */
+					dataListHTail.add(new Object[] {""});
+					dataListHTail.add(new Object[] {"PITCHING MOMENT CURVE"});
+
+					Object[] momentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().size()+2];
+					momentCurveAlpha[0] = "Alpha";
+					momentCurveAlpha[1] = "deg";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().size(); i++) 
+						momentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					Object[] momentCurveCM = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
+							).length+2];
+					momentCurveCM[0] = "CM";
+					momentCurveCM[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
+									).length; 
+							i++) 
+						momentCurveCM[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
+								)[i];
+
+					dataListHTail.add(momentCurveAlpha);
+					dataListHTail.add(momentCurveCM);
+					dataListHTail.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
+
+					dataListHTail.add(new Object[] {""});
+					dataListHTail.add(new Object[] {"PITCHING MOMENT DISTRIBUTIONS"});
+
+					Object[] yStationsMoment = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getYStationDistribution().size()+2];
+					yStationsMoment[0] = "y stations";
+					yStationsMoment[1] = "m";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getYStationDistribution().size(); i++) 
+						yStationsMoment[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getYStationDistribution().get(i).doubleValue(SI.METER);
+
+					dataListHTail.add(yStationsMoment);
+
+					Object[] etaStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution().length+2];
+					etaStationsLift[0] = "eta stations";
+					etaStationsLift[1] = "";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution().length; i++) 
+						etaStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()[i];
+
+					dataListHTail.add(etaStationsLift);
+					
+					currentBoldIndex = currentBoldIndex+4;
+
+					for(int i=0; i<_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().size(); i++) {
+
+						dataListHTail.add(new Object[] {""});
+						dataListHTail.add(new Object[] {"Alpha = " + _theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + " deg"});
+						dataListHTail.add(new Object[] {""});
+
+						//..................................................................................................................................................
+						Object[] cMDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						cMDistribution[0] = "Cm";
+						cMDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							cMDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j);
+						dataListHTail.add(cMDistribution);
+						//..................................................................................................................................................
+						Object[] momentDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+								).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size()+2];
+						momentDistribution[0] = "Moment";
+						momentDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+										).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).size(); 
+								j++) 
+							momentDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+									).get(_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListHTail.add(momentDistribution);
+						//..................................................................................................................................................
+
+						currentBoldIndex = currentBoldIndex+5;
+
+					}
+				}
+				
+
+				//------------------------------------------------------------------------------------------------------------------------
+				// CREATING CELLS ...
+				//--------------------------------------------------------------------------------
+				Row rowHTail = hTailSheet.createRow(0);
+				Object[] objArrHTail = dataListHTail.get(0);
+				int cellnumHTail = 0;
+				for (Object obj : objArrHTail) {
+					Cell cell = rowHTail.createCell(cellnumHTail++);
+					cell.setCellStyle(styleHead);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+
+				int rownumHTail = 1;
+				for (int i = 1; i < dataListHTail.size(); i++) {
+					objArrHTail = dataListHTail.get(i);
+					rowHTail = hTailSheet.createRow(rownumHTail++);
+					cellnumHTail = 0;
+					Boolean isBold = Boolean.FALSE;
+					for(int bri=0; bri<boldRowIndex.size(); bri++) 
+						if(rownumHTail == boldRowIndex.get(bri))
+							isBold = Boolean.TRUE;
+					for (Object obj : objArrHTail) {
+						Cell cell = rowHTail.createCell(cellnumHTail++);
+						if(isBold == Boolean.TRUE)
+							cell.setCellStyle(styleHeader);
+						if (obj instanceof Date) {
+							cell.setCellValue((Date) obj);
+						} else if (obj instanceof Boolean) {
+							cell.setCellValue((Boolean) obj);
+						} else if (obj instanceof String) {
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Double) {
+							cell.setCellValue((Double) obj);
+						}
+					}
+
+					hTailSheet.setDefaultColumnWidth(35);
+					hTailSheet.setColumnWidth(1, 2048);
+					for(int k=2; k<100; k++)
+						hTailSheet.setColumnWidth(k, 3840);
+
+				}
+			}
+
+			//--------------------------------------------------------------------------------
+			// VTAIL ANALYSIS RESULTS:
+			//--------------------------------------------------------------------------------
+			if(_theAerodynamicBuilderInterface.isPerformVTailAnalyses()) {
+
+				Sheet vTailSheet = wb.createSheet("VERTICAL_TAIL");
+				List<Object[]> dataListVTail = new ArrayList<>();
+
+				List<Integer> boldRowIndex = new ArrayList<>();
+				int currentBoldIndex = 1;
+
+				dataListVTail.add(new Object[] {"Description","Unit","Value"});
+
+				dataListVTail.add(new Object[] {"GLOBAL DATA"});
+				currentBoldIndex = 2;
+				boldRowIndex.add(currentBoldIndex);
+
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
+					dataListVTail.add(new Object[] {
+							"Critical Mach Number",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCriticalMachNumber().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
+					dataListVTail.add(new Object[] {
+							"Aerodynamic Center (LRF)",
+							"m",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getXacLRF().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
+									).doubleValue(SI.METER)
+					});
+					dataListVTail.add(new Object[] {
+							"Aerodynamic Center (MAC)",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getXacMRF().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
+									)
+					});
+					currentBoldIndex = currentBoldIndex+2;
+				}
+
+				dataListVTail.add(new Object[] {""});
+				dataListVTail.add(new Object[] {""});
+				dataListVTail.add(new Object[] {"LIFT"});
+				currentBoldIndex = currentBoldIndex+3;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_ALPHA)) {
+					dataListVTail.add(new Object[] {
+							"CL_alpha",
+							"1/deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CL_ALPHA)
+									).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_ZERO)) {
+					dataListVTail.add(new Object[] {
+							"CL_zero",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLZero().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CL_ZERO)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_STAR)) {
+					dataListVTail.add(new Object[] {
+							"CL_star",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLStar().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CL_STAR)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_MAX)) {
+					dataListVTail.add(new Object[] {
+							"CL_max",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLMax().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CL_MAX)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
+					dataListVTail.add(new Object[] {
+							"Alpha_zero_lift",
+							"deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaZeroLift().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
+									).doubleValue(NonSI.DEGREE_ANGLE)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_STAR)) {
+					dataListVTail.add(new Object[] {
+							"Alpha_star",
+							"deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaStar().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STAR)
+									).doubleValue(NonSI.DEGREE_ANGLE)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_STALL)) {
+					dataListVTail.add(new Object[] {
+							"Alpha_stall",
+							"deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaStall().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STALL)
+									).doubleValue(NonSI.DEGREE_ANGLE)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
+					dataListVTail.add(new Object[] {
+							"CL at Alpha = " + _betaVTailCurrent,
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
+
+					/*
+					 * THIS IS ONLY THE CLEAN CURVE SO YOU DON'T HAVE TO CONSIDER THE _currentWingLiftCurve3D
+					 */
+					dataListVTail.add(new Object[] {""});
+					dataListVTail.add(new Object[] {"LIFT CURVE"});
+
+					Object[] liftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().size()+2];
+					liftCurveAlpha[0] = "Alpha";
+					liftCurveAlpha[1] = "deg";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().size(); i++) 
+						liftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					Object[] liftCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+							).length+2];
+					liftCurveCL[0] = "CL";
+					liftCurveCL[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+									).length; 
+							i++) 
+						liftCurveCL[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+								)[i];
+
+					dataListVTail.add(liftCurveAlpha);
+					dataListVTail.add(liftCurveCL);
+					dataListVTail.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
+
+					dataListVTail.add(new Object[] {""});
+					dataListVTail.add(new Object[] {"LIFT DISTRIBUTIONS"});
+
+					Object[] yStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getYStationDistribution().size()+2];
+					yStationsLift[0] = "y stations";
+					yStationsLift[1] = "m";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getYStationDistribution().size(); i++) 
+						yStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getYStationDistribution().get(i).doubleValue(SI.METER);
+
+					dataListVTail.add(yStationsLift);
+
+					Object[] etaStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution().length+2];
+					etaStationsLift[0] = "eta stations";
+					etaStationsLift[1] = "";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution().length; i++) 
+						etaStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()[i];
+
+					dataListVTail.add(etaStationsLift);
+					
+					currentBoldIndex = currentBoldIndex+4;
+
+					for(int i=0; i<_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().size(); i++) {
+
+						dataListVTail.add(new Object[] {""});
+						dataListVTail.add(new Object[] {"Alpha = " + _theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + " deg"});
+						dataListVTail.add(new Object[] {""});
+
+						//..................................................................................................................................................
+						Object[] cLDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						cLDistribution[0] = "Cl";
+						cLDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							cLDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j);
+						dataListVTail.add(cLDistribution);
+						//..................................................................................................................................................
+						Object[] cLAdditionalDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficientDistributionAdditionalLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						cLAdditionalDistribution[0] = "Cl_additional";
+						cLAdditionalDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficientDistributionAdditionalLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							cLAdditionalDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficientDistributionAdditionalLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j);
+						dataListVTail.add(cLAdditionalDistribution);
+						//..................................................................................................................................................
+						Object[] cLBasicDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficientDistributionBasicLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						cLBasicDistribution[0] = "Cl_basic";
+						cLBasicDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficientDistributionBasicLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							cLBasicDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficientDistributionBasicLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j);
+						dataListVTail.add(cLBasicDistribution);
+						//..................................................................................................................................................
+						Object[] cCLDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCclDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						cCLDistribution[0] = "cCl";
+						cCLDistribution[1] = "m";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCclDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							cCLDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCclDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j).doubleValue(SI.METER);
+						dataListVTail.add(cCLDistribution);
+						//..................................................................................................................................................
+						Object[] cCLAdditionalDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCclDistributionAdditionalLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						cCLAdditionalDistribution[0] = "cCl_additional";
+						cCLAdditionalDistribution[1] = "m";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCclDistributionAdditionalLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							cCLAdditionalDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCclDistributionAdditionalLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j).doubleValue(SI.METER);
+						dataListVTail.add(cCLAdditionalDistribution);
+						//..................................................................................................................................................
+						Object[] cCLBasicDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCclDistributionAdditionalLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						cCLBasicDistribution[0] = "cCl_basic";
+						cCLBasicDistribution[1] = "m";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCclDistributionAdditionalLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							cCLBasicDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCclDistributionAdditionalLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j).doubleValue(SI.METER);
+						dataListVTail.add(cCLBasicDistribution);
+						//..................................................................................................................................................
+						Object[] gammaDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getGammaDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						gammaDistribution[0] = "Gamma";
+						gammaDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getGammaDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							gammaDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getGammaDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j);
+						dataListVTail.add(gammaDistribution);
+						//..................................................................................................................................................
+						Object[] gammaAdditionalDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getGammaDistributionAdditionalLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						gammaAdditionalDistribution[0] = "Gamma_additional";
+						gammaAdditionalDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getGammaDistributionAdditionalLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							gammaAdditionalDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getGammaDistributionAdditionalLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j);
+						dataListVTail.add(gammaAdditionalDistribution);
+						//..................................................................................................................................................
+						Object[] gammaBasicDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getGammaDistributionBasicLoad().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						gammaBasicDistribution[0] = "Gamma_basic";
+						gammaBasicDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getGammaDistributionBasicLoad().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							gammaBasicDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getGammaDistributionBasicLoad().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j);
+						dataListVTail.add(gammaBasicDistribution);
+						//..................................................................................................................................................
+						Object[] wingLoadDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						wingLoadDistribution[0] = "Wing load";
+						wingLoadDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							wingLoadDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListVTail.add(wingLoadDistribution);
+						//..................................................................................................................................................
+						Object[] wingAdditionalLoadDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAdditionalLoadDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						wingAdditionalLoadDistribution[0] = "Additional load";
+						wingAdditionalLoadDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAdditionalLoadDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							wingAdditionalLoadDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAdditionalLoadDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListVTail.add(wingAdditionalLoadDistribution);
+						//..................................................................................................................................................	
+						Object[] wingBasicLoadDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getBasicLoadDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						wingBasicLoadDistribution[0] = "Basic load";
+						wingBasicLoadDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getBasicLoadDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							wingBasicLoadDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getBasicLoadDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListVTail.add(wingBasicLoadDistribution);
+						//..................................................................................................................................................
+
+						currentBoldIndex = currentBoldIndex+15;
+
+					}
+				}
+
+				dataListVTail.add(new Object[] {""});
+				dataListVTail.add(new Object[] {""});
+				dataListVTail.add(new Object[] {"DRAG"});
+				currentBoldIndex = currentBoldIndex+3;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD0)) {
+					dataListVTail.add(new Object[] {
+							"CD_zero",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCD0().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CD0)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
+					dataListVTail.add(new Object[] {
+							"Oswald factor",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getOswaldFactor().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.OSWALD_FACTOR)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
+					dataListVTail.add(new Object[] {
+							"CD_induced at Alpha = " + _betaVTailCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCDInduced().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_WAVE)) {
+					dataListVTail.add(new Object[] {
+							"CD_wave",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCDWave().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CD_WAVE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
+					dataListVTail.add(new Object[] {
+							"CD at alpha = " + _betaVTailCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCDAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
+
+					/*
+					 * THIS IS ONLY THE CLEAN CURVE SO YOU DON'T HAVE TO CONSIDER THE _currentWingPolarCurve3D
+					 */
+					dataListVTail.add(new Object[] {""});
+					dataListVTail.add(new Object[] {"DRAG POLAR CURVE"});
+
+					Object[] polarCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+							).length+2];
+					polarCurveCL[0] = "CL";
+					polarCurveCL[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+									).length; 
+							i++) 
+						polarCurveCL[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+								)[i];
+
+					Object[] polarCurveCD = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getPolar3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+							).length+2];
+					polarCurveCD[0] = "CD";
+					polarCurveCD[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getPolar3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+									).length; 
+							i++) 
+						polarCurveCD[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getPolar3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+								)[i];
+
+					dataListVTail.add(polarCurveCL);
+					dataListVTail.add(polarCurveCD);
+					dataListVTail.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
+
+					dataListVTail.add(new Object[] {""});
+					dataListVTail.add(new Object[] {"DRAG DISTRIBUTIONS"});
+
+					Object[] yStationsDrag = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getYStationDistribution().size()+2];
+					yStationsDrag[0] = "y stations";
+					yStationsDrag[1] = "m";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getYStationDistribution().size(); i++) 
+						yStationsDrag[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getYStationDistribution().get(i).doubleValue(SI.METER);
+
+					dataListVTail.add(yStationsDrag);
+					
+					Object[] etaStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution().length+2];
+					etaStationsLift[0] = "eta stations";
+					etaStationsLift[1] = "";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution().length; i++) 
+						etaStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()[i];
+
+					dataListVTail.add(etaStationsLift);
+					
+					currentBoldIndex = currentBoldIndex+4;
+
+					for(int i=0; i<_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().size(); i++) {
+
+						dataListVTail.add(new Object[] {""});
+						dataListVTail.add(new Object[] {"Alpha = " + _theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + " deg"});
+						dataListVTail.add(new Object[] {""});
+
+						//..................................................................................................................................................
+						Object[] cDParasiteDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getParasiteDragCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						cDParasiteDistribution[0] = "Cd_parasite";
+						cDParasiteDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getParasiteDragCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							cDParasiteDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getParasiteDragCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j);
+						dataListVTail.add(cDParasiteDistribution);
+						//..................................................................................................................................................
+						Object[] cDInducedDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getInducedDragCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						cDInducedDistribution[0] = "Cd_induced";
+						cDInducedDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getInducedDragCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							cDInducedDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getInducedDragCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j);
+						dataListVTail.add(cDInducedDistribution);
+						//..................................................................................................................................................
+						Object[] cDDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDragCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						cDDistribution[0] = "Cd";
+						cDDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDragCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							cDDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDragCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j);
+						dataListVTail.add(cDDistribution);
+						//..................................................................................................................................................
+						Object[] dragDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDragDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						dragDistribution[0] = "Drag";
+						dragDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDragDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							dragDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDragDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListVTail.add(dragDistribution);
+						//..................................................................................................................................................
+
+						currentBoldIndex = currentBoldIndex+7;
+
+					}
+				}
+
+				dataListVTail.add(new Object[] {""});
+				dataListVTail.add(new Object[] {""});
+				dataListVTail.add(new Object[] {"PITCHING MOMENT"});
+				currentBoldIndex = currentBoldIndex+3;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
+					dataListVTail.add(new Object[] {
+							"CM_ac",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCMac().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)) {
+					dataListVTail.add(new Object[] {
+							"CM_alpha",
+							"1/deg",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCMAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)
+									).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
+					dataListVTail.add(new Object[] {
+							"CM at alpha = " + _betaVTailCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCMAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
+
+					/*
+					 * THIS IS ONLY THE CLEAN CURVE SO YOU DON'T HAVE TO CONSIDER THE _currentWingMomentCurve3D
+					 */
+					dataListVTail.add(new Object[] {""});
+					dataListVTail.add(new Object[] {"PITCHING MOMENT CURVE"});
+
+					Object[] momentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().size()+2];
+					momentCurveAlpha[0] = "Alpha";
+					momentCurveAlpha[1] = "deg";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().size(); i++) 
+						momentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					Object[] momentCurveCM = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMoment3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
+							).length+2];
+					momentCurveCM[0] = "CM";
+					momentCurveCM[1] = "";
+					for(int i=0; 
+							i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMoment3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
+									).length; 
+							i++) 
+						momentCurveCM[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMoment3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
+								)[i];
+
+					dataListVTail.add(momentCurveAlpha);
+					dataListVTail.add(momentCurveCM);
+					dataListVTail.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
+
+					dataListVTail.add(new Object[] {""});
+					dataListVTail.add(new Object[] {"PITCHING MOMENT DISTRIBUTIONS"});
+
+					Object[] yStationsMoment = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getYStationDistribution().size()+2];
+					yStationsMoment[0] = "y stations";
+					yStationsMoment[1] = "m";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getYStationDistribution().size(); i++) 
+						yStationsMoment[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getYStationDistribution().get(i).doubleValue(SI.METER);
+
+					dataListVTail.add(yStationsMoment);
+
+					Object[] etaStationsLift = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution().length+2];
+					etaStationsLift[0] = "eta stations";
+					etaStationsLift[1] = "";
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution().length; i++) 
+						etaStationsLift[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()[i];
+
+					dataListVTail.add(etaStationsLift);
+					
+					currentBoldIndex = currentBoldIndex+4;
+
+					for(int i=0; i<_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().size(); i++) {
+
+						dataListVTail.add(new Object[] {""});
+						dataListVTail.add(new Object[] {"Alpha = " + _theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + " deg"});
+						dataListVTail.add(new Object[] {""});
+
+						//..................................................................................................................................................
+						Object[] cMDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentCoefficientDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						cMDistribution[0] = "Cm";
+						cMDistribution[1] = "";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentCoefficientDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							cMDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentCoefficientDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j);
+						dataListVTail.add(cMDistribution);
+						//..................................................................................................................................................
+						Object[] momentDistribution = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentDistribution().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+								).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size()+2];
+						momentDistribution[0] = "Moment";
+						momentDistribution[1] = "N";
+						for(int j=0; 
+								j<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentDistribution().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+										).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).size(); 
+								j++) 
+							momentDistribution[j+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentDistribution().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)
+									).get(_theAerodynamicBuilderInterface.getBetaVerticalTailForDistribution().get(i)).get(j).doubleValue(SI.NEWTON);
+						dataListVTail.add(momentDistribution);
+						//..................................................................................................................................................
+
+						currentBoldIndex = currentBoldIndex+5;
+
+					}
+				}
+
+	
+				//------------------------------------------------------------------------------------------------------------------------
+				// CREATING CELLS ...
+				//--------------------------------------------------------------------------------
+				Row rowVTail = vTailSheet.createRow(0);
+				Object[] objArrVTail = dataListVTail.get(0);
+				int cellnumVTail = 0;
+				for (Object obj : objArrVTail) {
+					Cell cell = rowVTail.createCell(cellnumVTail++);
+					cell.setCellStyle(styleHead);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+
+				int rownumVTail = 1;
+				for (int i = 1; i < dataListVTail.size(); i++) {
+					objArrVTail = dataListVTail.get(i);
+					rowVTail = vTailSheet.createRow(rownumVTail++);
+					cellnumVTail = 0;
+					Boolean isBold = Boolean.FALSE;
+					for(int bri=0; bri<boldRowIndex.size(); bri++) 
+						if(rownumVTail == boldRowIndex.get(bri))
+							isBold = Boolean.TRUE;
+					for (Object obj : objArrVTail) {
+						Cell cell = rowVTail.createCell(cellnumVTail++);
+						if(isBold == Boolean.TRUE)
+							cell.setCellStyle(styleHeader);
+						if (obj instanceof Date) {
+							cell.setCellValue((Date) obj);
+						} else if (obj instanceof Boolean) {
+							cell.setCellValue((Boolean) obj);
+						} else if (obj instanceof String) {
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Double) {
+							cell.setCellValue((Double) obj);
+						}
+					}
+
+					vTailSheet.setDefaultColumnWidth(35);
+					vTailSheet.setColumnWidth(1, 2048);
+					for(int k=2; k<100; k++)
+						vTailSheet.setColumnWidth(k, 3840);
+
+				}
+			}
+
+			//--------------------------------------------------------------------------------
+			// FUSELAGE ANALYSIS RESULTS:
+			//--------------------------------------------------------------------------------
+			if(_theAerodynamicBuilderInterface.isPerformFuselageAnalyses()) {
+
+				Sheet fuselageSheet = wb.createSheet("FUSELAGE");
+				List<Object[]> dataListFuselage = new ArrayList<>();
+
+				List<Integer> boldRowIndex = new ArrayList<>();
+				int currentBoldIndex = 1;
+
+				dataListFuselage.add(new Object[] {"Description","Unit","Value"});
+
+				dataListFuselage.add(new Object[] {"DRAG"});
+				currentBoldIndex = 2;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_PARASITE_FUSELAGE)) {
+					dataListFuselage.add(new Object[] {
+							"CD0_parasite",
+							"",
+							_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Parasite().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_PARASITE_FUSELAGE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_BASE_FUSELAGE)) {
+					dataListFuselage.add(new Object[] {
+							"CD0_base",
+							"",
+							_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Base().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_BASE_FUSELAGE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_UPSWEEP_FUSELAGE)) {
+					dataListFuselage.add(new Object[] {
+							"CD0_upsweep",
+							"",
+							_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Upsweep().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_UPSWEEP_FUSELAGE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_WINDSHIELD_FUSELAGE)) {
+					dataListFuselage.add(new Object[] {
+							"CD0_windshield",
+							"",
+							_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Windshield().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_WINDSHIELD_FUSELAGE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_TOTAL_FUSELAGE)) {
+					dataListFuselage.add(new Object[] {
+							"CD0_total",
+							"",
+							_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_TOTAL_FUSELAGE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
+					dataListFuselage.add(new Object[] {
+							"CD_induced at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCDInduced().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_FUSELAGE)) {
+					dataListFuselage.add(new Object[] {
+							"CD at alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCDAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_FUSELAGE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)) {
+
+					dataListFuselage.add(new Object[] {""});
+					dataListFuselage.add(new Object[] {"DRAG POLAR CURVE"});
+
+					Object[] polarCurveAlpha = new Object[_alphaBodyList.size()+2];
+					polarCurveAlpha[0] = "Alpha";
+					polarCurveAlpha[1] = "deg";
+					for(int i=0; i<_alphaBodyList.size(); i++) 
+						polarCurveAlpha[i+2] = _alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					Object[] polarCurveCD = new Object[_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getPolar3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)
+							).length+2];
+					polarCurveCD[0] = "CD";
+					polarCurveCD[1] = "";
+					for(int i=0; 
+							i<_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getPolar3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)
+									).length; 
+							i++) 
+						polarCurveCD[i+2] = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getPolar3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)
+								)[i];
+
+					dataListFuselage.add(polarCurveAlpha);
+					dataListFuselage.add(polarCurveCD);
+					dataListFuselage.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				dataListFuselage.add(new Object[] {""});
+				dataListFuselage.add(new Object[] {""});
+				dataListFuselage.add(new Object[] {"PITCHING MOMENT"});
+				currentBoldIndex = currentBoldIndex+3;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CM0_FUSELAGE)) {
+					dataListFuselage.add(new Object[] {
+							"CM0",
+							"",
+							_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCM0().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CM0_FUSELAGE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_FUSELAGE)) {
+					dataListFuselage.add(new Object[] {
+							"CM_alpha",
+							"",
+							_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCMAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CM_ALPHA_FUSELAGE)
+									).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_FUSELAGE)) {
+					dataListFuselage.add(new Object[] {
+							"CM at alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCMAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_FUSELAGE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE)) {
+
+					dataListFuselage.add(new Object[] {""});
+					dataListFuselage.add(new Object[] {"PITCHING MOMENT CURVE"});
+
+					Object[] momentCurveAlpha = new Object[_alphaBodyList.size()+2];
+					momentCurveAlpha[0] = "Alpha";
+					momentCurveAlpha[1] = "deg";
+					for(int i=0; i<_alphaBodyList.size(); i++) 
+						momentCurveAlpha[i+2] = _alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					Object[] momentCurveCM = new Object[_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getMoment3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE)
+							).length+2];
+					momentCurveCM[0] = "CM";
+					momentCurveCM[1] = "";
+					for(int i=0; 
+							i<_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getMoment3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE)
+									).length; 
+							i++) 
+						momentCurveCM[i+2] = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getMoment3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE)
+								)[i];
+
+					dataListFuselage.add(momentCurveAlpha);
+					dataListFuselage.add(momentCurveCM);
+					dataListFuselage.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				//------------------------------------------------------------------------------------------------------------------------
+				// CREATING CELLS ...
+				//--------------------------------------------------------------------------------
+				Row rowFuselage = fuselageSheet.createRow(0);
+				Object[] objArrFuselage = dataListFuselage.get(0);
+				int cellnumFuselage = 0;
+				for (Object obj : objArrFuselage) {
+					Cell cell = rowFuselage.createCell(cellnumFuselage++);
+					cell.setCellStyle(styleHead);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+
+				int rownumFuselage = 1;
+				for (int i = 1; i < dataListFuselage.size(); i++) {
+					objArrFuselage = dataListFuselage.get(i);
+					rowFuselage = fuselageSheet.createRow(rownumFuselage++);
+					cellnumFuselage = 0;
+					Boolean isBold = Boolean.FALSE;
+					for(int bri=0; bri<boldRowIndex.size(); bri++) 
+						if(rownumFuselage == boldRowIndex.get(bri))
+							isBold = Boolean.TRUE;
+					for (Object obj : objArrFuselage) {
+						Cell cell = rowFuselage.createCell(cellnumFuselage++);
+						if(isBold == Boolean.TRUE)
+							cell.setCellStyle(styleHeader);
+						if (obj instanceof Date) {
+							cell.setCellValue((Date) obj);
+						} else if (obj instanceof Boolean) {
+							cell.setCellValue((Boolean) obj);
+						} else if (obj instanceof String) {
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Double) {
+							cell.setCellValue((Double) obj);
+						}
+					}
+
+					fuselageSheet.setDefaultColumnWidth(35);
+					fuselageSheet.setColumnWidth(1, 2048);
+					for(int k=2; k<100; k++)
+						fuselageSheet.setColumnWidth(k, 3840);
+
+				}
+			}
+
+			//--------------------------------------------------------------------------------
+			// NACELLE ANALYSIS RESULTS:
+			//--------------------------------------------------------------------------------
+			if(_theAerodynamicBuilderInterface.isPerformNacelleAnalyses()) {
+
+				Sheet nacelleSheet = wb.createSheet("NACELLE");
+				List<Object[]> dataListNacelle = new ArrayList<>();
+
+				List<Integer> boldRowIndex = new ArrayList<>();
+				int currentBoldIndex = 1;
+
+				dataListNacelle.add(new Object[] {"Description","Unit","Value"});
+
+				dataListNacelle.add(new Object[] {"DRAG"});
+				currentBoldIndex = 2;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_PARASITE_NACELLE)) {
+					dataListNacelle.add(new Object[] {
+							"CD0_parasite",
+							"",
+							_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Parasite().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_PARASITE_NACELLE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_BASE_NACELLE)) {
+					dataListNacelle.add(new Object[] {
+							"CD0_base",
+							"",
+							_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Base().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_BASE_NACELLE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_TOTAL_NACELLE)) {
+					dataListNacelle.add(new Object[] {
+							"CD0_total",
+							"",
+							_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Total().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_TOTAL_NACELLE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_NACELLE)) {
+					dataListNacelle.add(new Object[] {
+							"CD_induced at Alpha = " + _alphaNacelleCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCDInduced().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_INDUCED_NACELLE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_NACELLE)) {
+					dataListNacelle.add(new Object[] {
+							"CD at alpha = " + _alphaNacelleCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCDAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_NACELLE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)) {
+
+					dataListNacelle.add(new Object[] {""});
+					dataListNacelle.add(new Object[] {"DRAG POLAR CURVE"});
+
+					Object[] polarCurveAlpha = new Object[getAlphaNacelleList().size()+2];
+					polarCurveAlpha[0] = "Alpha";
+					polarCurveAlpha[1] = "deg";
+					for(int i=0; i< getAlphaNacelleList().size(); i++) 
+						polarCurveAlpha[i+2] = getAlphaNacelleList().get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					Object[] polarCurveCD = new Object[_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getPolar3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)
+							).length+2];
+					polarCurveCD[0] = "CD";
+					polarCurveCD[1] = "";
+					for(int i=0; 
+							i<_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getPolar3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)
+									).length; 
+							i++) 
+						polarCurveCD[i+2] = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getPolar3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)
+								)[i];
+
+					dataListNacelle.add(polarCurveAlpha);
+					dataListNacelle.add(polarCurveCD);
+					dataListNacelle.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				dataListNacelle.add(new Object[] {""});
+				dataListNacelle.add(new Object[] {""});
+				dataListNacelle.add(new Object[] {"PITCHING MOMENT"});
+				currentBoldIndex = currentBoldIndex+3;
+				boldRowIndex.add(currentBoldIndex);
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM0_NACELLE)) {
+					dataListNacelle.add(new Object[] {
+							"CM0",
+							"",
+							_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCM0().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM0_NACELLE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE)) {
+					dataListNacelle.add(new Object[] {
+							"CM_alpha",
+							"",
+							_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCMAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE)
+									).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_NACELLE)) {
+					dataListNacelle.add(new Object[] {
+							"CM at alpha = " + _alphaNacelleCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+							"",
+							_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCMAtAlpha().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_NACELLE)
+									)});
+					currentBoldIndex = currentBoldIndex+1;
+				}
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)) {
+
+					dataListNacelle.add(new Object[] {""});
+					dataListNacelle.add(new Object[] {"PITCHING MOMENT CURVE"});
+
+					Object[] momentCurveAlpha = new Object[getAlphaNacelleList().size()+2];
+					momentCurveAlpha[0] = "Alpha";
+					momentCurveAlpha[1] = "deg";
+					for(int i=0; i<getAlphaNacelleList().size(); i++) 
+						momentCurveAlpha[i+2] = getAlphaNacelleList().get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					Object[] momentCurveCM = new Object[_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getMoment3DCurve().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)
+							).length+2];
+					momentCurveCM[0] = "CM";
+					momentCurveCM[1] = "";
+					for(int i=0; 
+							i<_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getMoment3DCurve().get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)
+									).length; 
+							i++) 
+						momentCurveCM[i+2] = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getMoment3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)
+								)[i];
+
+					dataListNacelle.add(momentCurveAlpha);
+					dataListNacelle.add(momentCurveCM);
+					dataListNacelle.add(new Object[] {""});
+
+					currentBoldIndex = currentBoldIndex+5;
+
+				}
+
+				//------------------------------------------------------------------------------------------------------------------------
+				// CREATING CELLS ...
+				//--------------------------------------------------------------------------------
+				Row rowNacelle = nacelleSheet.createRow(0);
+				Object[] objArrNacelle = dataListNacelle.get(0);
+				int cellnumNacelle = 0;
+				for (Object obj : objArrNacelle) {
+					Cell cell = rowNacelle.createCell(cellnumNacelle++);
+					cell.setCellStyle(styleHead);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+
+				int rownumNacelle = 1;
+				for (int i = 1; i < dataListNacelle.size(); i++) {
+					objArrNacelle = dataListNacelle.get(i);
+					rowNacelle = nacelleSheet.createRow(rownumNacelle++);
+					cellnumNacelle = 0;
+					Boolean isBold = Boolean.FALSE;
+					for(int bri=0; bri<boldRowIndex.size(); bri++) 
+						if(rownumNacelle == boldRowIndex.get(bri))
+							isBold = Boolean.TRUE;
+					for (Object obj : objArrNacelle) {
+						Cell cell = rowNacelle.createCell(cellnumNacelle++);
+						if(isBold == Boolean.TRUE)
+							cell.setCellStyle(styleHeader);
+						if (obj instanceof Date) {
+							cell.setCellValue((Date) obj);
+						} else if (obj instanceof Boolean) {
+							cell.setCellValue((Boolean) obj);
+						} else if (obj instanceof String) {
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Double) {
+							cell.setCellValue((Double) obj);
+						}
+					}
+
+					nacelleSheet.setDefaultColumnWidth(35);
+					nacelleSheet.setColumnWidth(1, 2048);
+					for(int k=2; k<100; k++)
+						nacelleSheet.setColumnWidth(k, 3840);
+
+				}
+			}
+
+			//--------------------------------------------------------------------------------
+			// DOWNWASH ANALYSIS RESULTS:
+			//--------------------------------------------------------------------------------
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.WING_DOWNWASH)) {
+
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null) {
+
+					Sheet downwashSheet = wb.createSheet("DOWNWASH");
+					List<Object[]> dataListDownwash = new ArrayList<>();
+
+					List<Integer> boldRowIndex = new ArrayList<>();
+					int currentBoldIndex = 1;
+
+					dataListDownwash.add(new Object[] {"Description","Unit","Value"});
+
+					Object[] alphaBodyArray = new Object[getAlphaBodyList().size()+2];
+					alphaBodyArray[0] = "Alpha body";
+					alphaBodyArray[1] = "deg";
+					for(int i=0; i<getAlphaBodyList().size(); i++) 
+						alphaBodyArray[i+2] = getAlphaBodyList().get(i).doubleValue(NonSI.DEGREE_ANGLE);			
+
+					dataListDownwash.add(alphaBodyArray);
+					dataListDownwash.add(new Object[] {""});
+					currentBoldIndex = currentBoldIndex+2;
+
+					//-----------------------------------------------------------------------------
+					// CONSTANT GRADIENT
+					if(_theAerodynamicBuilderInterface.getDownwashConstant()) {
+
+						dataListDownwash.add(new Object[] {"LINEAR"});
+						currentBoldIndex = currentBoldIndex+1;
+						boldRowIndex.add(currentBoldIndex);
+
+						Object[] downwashGradientArray = new Object[_downwashGradientMap.get(Boolean.TRUE).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+								).size()+2];
+						downwashGradientArray[0] = "Downwash gradient (" 
+								+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString()
+								+ ")";
+						downwashGradientArray[1] = "";
+						for(int i=0; 
+								i<_downwashGradientMap.get(Boolean.TRUE).get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+										).size();
+								i++) 
+							downwashGradientArray[i+2] = _downwashGradientMap.get(Boolean.TRUE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+									).get(i);
+
+						dataListDownwash.add(downwashGradientArray);
+						currentBoldIndex = currentBoldIndex+1;
+
+						Object[] downwashAngleArray = new Object[_downwashAngleMap.get(Boolean.TRUE).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+								).size()+2];
+						downwashAngleArray[0] = "Downwash angle (" 
+								+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString()
+								+ " )";
+						downwashAngleArray[1] = "deg";
+						for(int i=0; 
+								i<_downwashAngleMap.get(Boolean.TRUE).get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+										).size();
+								i++) 
+							downwashAngleArray[i+2] = _downwashAngleMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+									).get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+						dataListDownwash.add(downwashAngleArray);
+						currentBoldIndex = currentBoldIndex+1;
+
+						dataListDownwash.add(new Object[] {""});
+						currentBoldIndex = currentBoldIndex+1;
+
+						dataListDownwash.add(new Object[] {
+								"Downwash gradient (" + 
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString()
+										+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+										"",
+										MyMathUtils.getInterpolatedValue1DLinear(
+												MyArrayUtils.convertListOfAmountTodoubleArray(
+														_alphaBodyList.stream()
+														.map(a -> a.to(NonSI.DEGREE_ANGLE))
+														.collect(Collectors.toList())
+														),
+												_downwashGradientMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
+														_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+														).stream()
+												.mapToDouble(dg -> dg)
+												.toArray(),
+												_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+												)
+						});
+						currentBoldIndex = currentBoldIndex+1;
+						dataListDownwash.add(new Object[] {
+								"Downwash angle (" +
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString()
+										+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+										"",
+										MyMathUtils.getInterpolatedValue1DLinear(
+												MyArrayUtils.convertListOfAmountTodoubleArray(
+														_alphaBodyList.stream()
+														.map(a -> a.to(NonSI.DEGREE_ANGLE))
+														.collect(Collectors.toList())
+														),
+												_downwashAngleMap.get(ComponentEnum.WING).get(Boolean.TRUE).get(
+														_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+														).stream()
+												.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
+												.toArray(),
+												_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+												)
+						});
+						currentBoldIndex = currentBoldIndex+1;
+
+					}
+					//-----------------------------------------------------------------------------
+					// NON LINEAR GRADIENT
+					else {
+
+						dataListDownwash.add(new Object[] {"LINEAR"});
+						currentBoldIndex = currentBoldIndex+1;
+						boldRowIndex.add(currentBoldIndex);
+
+						Object[] downwashConstantGradientArray = new Object[_downwashGradientMap.get(ComponentEnum.WING).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+								).get(Boolean.TRUE).size()+2];
+						downwashConstantGradientArray[0] = "Downwash gradient (" 
+								+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString()
+								+ ")";
+						downwashConstantGradientArray[1] = "";
+						for(int i=0; 
+								i<_downwashGradientMap.get(ComponentEnum.WING).get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+										).get(Boolean.TRUE).size();
+								i++) 
+							downwashConstantGradientArray[i+2] = _downwashGradientMap.get(ComponentEnum.WING).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+									).get(Boolean.TRUE).get(i);
+
+						dataListDownwash.add(downwashConstantGradientArray);
+						currentBoldIndex = currentBoldIndex+1;
+
+						Object[] downwashAngleConstantGradientArray = new Object[_downwashAngleMap.get(ComponentEnum.WING).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+								).get(Boolean.TRUE).size()+2];
+						downwashAngleConstantGradientArray[0] = "Downwash angle (" 
+								+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString()
+								+ ")";
+						downwashAngleConstantGradientArray[1] = "deg";
+						for(int i=0; 
+								i<_downwashAngleMap.get(ComponentEnum.WING).get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+										).get(Boolean.TRUE).size();
+								i++) 
+							downwashAngleConstantGradientArray[i+2] = _downwashAngleMap.get(ComponentEnum.WING).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+									).get(Boolean.TRUE).get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+						dataListDownwash.add(downwashAngleConstantGradientArray);
+						currentBoldIndex = currentBoldIndex+1;
+
+						dataListDownwash.add(new Object[] {""});
+						currentBoldIndex = currentBoldIndex+1;
+
+						dataListDownwash.add(new Object[] {
+								"Downwash gradient ("+
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString()
+										+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+										"",
+										MyMathUtils.getInterpolatedValue1DLinear(
+												MyArrayUtils.convertListOfAmountTodoubleArray(
+														_alphaBodyList.stream()
+														.map(a -> a.to(NonSI.DEGREE_ANGLE))
+														.collect(Collectors.toList())
+														),
+												_downwashGradientMap.get(ComponentEnum.WING).get(
+														_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+														).get(Boolean.TRUE).stream()
+												.mapToDouble(dg -> dg)
+												.toArray(),
+												_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+												)
+						});
+						currentBoldIndex = currentBoldIndex+1;
+
+						dataListDownwash.add(new Object[] {
+								"Downwash angle (" +
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString()
+										+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+										"",
+										MyMathUtils.getInterpolatedValue1DLinear(
+												MyArrayUtils.convertListOfAmountTodoubleArray(
+														_alphaBodyList.stream()
+														.map(a -> a.to(NonSI.DEGREE_ANGLE))
+														.collect(Collectors.toList())
+														),
+												_downwashAngleMap.get(ComponentEnum.WING).get(
+														_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+														).get(Boolean.TRUE).stream()
+												.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
+												.toArray(),
+												_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+												)
+						});
+						currentBoldIndex = currentBoldIndex+1;
+
+						dataListDownwash.add(new Object[] {""});
+						currentBoldIndex = currentBoldIndex+1;
+
+						//.............................................................................................................................................
+
+						dataListDownwash.add(new Object[] {"NON LINEAR"});
+						currentBoldIndex = currentBoldIndex+1;
+						boldRowIndex.add(currentBoldIndex);
+
+						Object[] downwashNonLinearGradientArray = new Object[_downwashGradientMap.get(ComponentEnum.WING).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+								).get(Boolean.FALSE).size()+2];
+						downwashNonLinearGradientArray[0] = "Downwash gradient (" 
+								+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString() 
+								+ ")";
+						downwashNonLinearGradientArray[1] = "";
+						for(int i=0; 
+								i<_downwashGradientMap.get(ComponentEnum.WING).get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+										).get(Boolean.FALSE).size();
+								i++) 
+							downwashNonLinearGradientArray[i+2] = _downwashGradientMap.get(ComponentEnum.WING).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+									).get(Boolean.FALSE).get(i);
+
+						dataListDownwash.add(downwashNonLinearGradientArray);
+						currentBoldIndex = currentBoldIndex+1;
+
+						Object[] downwashAngleNonLinearGradientArray = new Object[_downwashAngleMap.get(ComponentEnum.WING).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+								).get(Boolean.FALSE).size()+2];
+						downwashAngleNonLinearGradientArray[0] = "Downwash angle (" 
+								+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString() 
+								+ ")";
+						downwashAngleNonLinearGradientArray[1] = "deg";
+						for(int i=0; 
+								i<_downwashAngleMap.get(ComponentEnum.WING).get(
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+										).get(Boolean.FALSE).size();
+								i++) 
+							downwashAngleNonLinearGradientArray[i+2] = _downwashAngleMap.get(ComponentEnum.WING).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+									).get(Boolean.FALSE).get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+						dataListDownwash.add(downwashAngleNonLinearGradientArray);
+						currentBoldIndex = currentBoldIndex+1;
+
+						dataListDownwash.add(new Object[] {""});
+						currentBoldIndex = currentBoldIndex+1;
+
+						dataListDownwash.add(new Object[] {
+								"Downwash gradient (" + 
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString()
+										+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+										"",
+										MyMathUtils.getInterpolatedValue1DLinear(
+												MyArrayUtils.convertListOfAmountTodoubleArray(
+														_alphaBodyList.stream()
+														.map(a -> a.to(NonSI.DEGREE_ANGLE))
+														.collect(Collectors.toList())
+														),
+												_downwashGradientMap.get(ComponentEnum.WING).get(
+														_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+														).get(Boolean.FALSE).stream()
+												.mapToDouble(dg -> dg)
+												.toArray(),
+												_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+												)
+						});
+						currentBoldIndex = currentBoldIndex+1;
+						dataListDownwash.add(new Object[] {
+								"Downwash angle (" +
+										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH).toString()
+										+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+										"",
+										MyMathUtils.getInterpolatedValue1DLinear(
+												MyArrayUtils.convertListOfAmountTodoubleArray(
+														_alphaBodyList.stream()
+														.map(a -> a.to(NonSI.DEGREE_ANGLE))
+														.collect(Collectors.toList())
+														),
+												_downwashAngleMap.get(ComponentEnum.WING).get(
+														_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
+														).get(Boolean.FALSE).stream()
+												.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
+												.toArray(),
+												_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+												)
+						});
+						currentBoldIndex = currentBoldIndex+1;
+
+					}
+
+					//------------------------------------------------------------------------------------------------------------------------
+					// CREATING CELLS ...
+					//--------------------------------------------------------------------------------
+					Row rowDownwashCurves = downwashSheet.createRow(0);
+					Object[] objArrDownwash = dataListDownwash.get(0);
+					int cellnumDownwash = 0;
+					for (Object obj : objArrDownwash) {
+						Cell cell = rowDownwashCurves.createCell(cellnumDownwash++);
+						cell.setCellStyle(styleHead);
+						if (obj instanceof Date) {
+							cell.setCellValue((Date) obj);
+						} else if (obj instanceof Boolean) {
+							cell.setCellValue((Boolean) obj);
+						} else if (obj instanceof String) {
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Double) {
+							cell.setCellValue((Double) obj);
+						}
+					}
+
+					int rownumDownwash = 1;
+					for (int i = 1; i < dataListDownwash.size(); i++) {
+						objArrDownwash = dataListDownwash.get(i);
+						rowDownwashCurves = downwashSheet.createRow(rownumDownwash++);
+						cellnumDownwash = 0;
+						Boolean isBold = Boolean.FALSE;
+						for(int bri=0; bri<boldRowIndex.size(); bri++) 
+							if(rownumDownwash == boldRowIndex.get(bri))
+								isBold = Boolean.TRUE;
+						for (Object obj : objArrDownwash) {
+							Cell cell = rowDownwashCurves.createCell(cellnumDownwash++);
+							if(isBold == Boolean.TRUE)
+								cell.setCellStyle(styleHeader);
+							if (obj instanceof Date) {
+								cell.setCellValue((Date) obj);
+							} else if (obj instanceof Boolean) {
+								cell.setCellValue((Boolean) obj);
+							} else if (obj instanceof String) {
+								cell.setCellValue((String) obj);
+							} else if (obj instanceof Double) {
+								cell.setCellValue((Double) obj);
+							}
+						}
+
+						downwashSheet.setDefaultColumnWidth(55);
+						downwashSheet.setColumnWidth(1, 2048);
+						for(int k=2; k<100; k++)
+							downwashSheet.setColumnWidth(k, 3840);
+
+					}
+				}
+				else
+					System.err.println("WARNING!! DOWNWASH ANGLE AND DOWNWASH GRADIENT CANNOT BE WRITTEN SINCE THERE IS NO HORIZONTAL TAIL ... ");
+			}
+			
+			//--------------------------------------------------------------------------------
+			// TOTAL AIRCRAFT LIFT, DRAG AND MOMENT CURVES RESULTS:
+			//--------------------------------------------------------------------------------
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CL_TOTAL) 
+					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CD_TOTAL)
+					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL)) {
+
+				Sheet totalAircraftCurvesSheet = wb.createSheet("TOTAL AIRCRAFT CURVES");
+				List<Object[]> dataListTotalAircraftCurves = new ArrayList<>();
+
+				List<Integer> boldRowIndex = new ArrayList<>();
+				int currentBoldIndex = 1;
+
+				dataListTotalAircraftCurves.add(new Object[] {"Description","Unit","Value"});
+
+				Object[] alphaBodyArray = new Object[getAlphaBodyList().size()+2];
+				alphaBodyArray[0] = "Alpha body";
+				alphaBodyArray[1] = "deg";
+				for(int i=0; i<getAlphaBodyList().size(); i++) 
+					alphaBodyArray[i+2] = getAlphaBodyList().get(i).doubleValue(NonSI.DEGREE_ANGLE);			
+
+				dataListTotalAircraftCurves.add(alphaBodyArray);
+				currentBoldIndex = currentBoldIndex+1;
+
+				for (int i = 0; i < _theAerodynamicBuilderInterface.getDeltaElevatorList().size(); i++) {
+
+					dataListTotalAircraftCurves.add(new Object[] {""});
+					dataListTotalAircraftCurves.add(new Object[] {"Delta elevator = " + _theAerodynamicBuilderInterface.getDeltaElevatorList().get(i).doubleValue(NonSI.DEGREE_ANGLE) + " deg"});
+					currentBoldIndex = currentBoldIndex+2;
+					boldRowIndex.add(currentBoldIndex);
+					dataListTotalAircraftCurves.add(new Object[] {""});
+					currentBoldIndex = currentBoldIndex+1;
+					
+					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CL_TOTAL)) {
+						
+						Object[] cLHTailArray = new Object[_current3DHorizontalTailLiftCurve.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i)).size()+2];
+						cLHTailArray[0] = "CL horizontal tail";
+						cLHTailArray[1] = "";
+						for(int j=0; j<_current3DHorizontalTailLiftCurve.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i)).size(); j++) 
+							cLHTailArray[j+2] = _current3DHorizontalTailLiftCurve.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i)).get(j);
+						
+						dataListTotalAircraftCurves.add(cLHTailArray);
+						currentBoldIndex = currentBoldIndex+1;
+						
+						Object[] cLTotalArray = new Object[_totalLiftCoefficient.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i)).size()+2];
+						cLTotalArray[0] = "CL total";
+						cLTotalArray[1] = "";
+						for(int j=0; j<_totalLiftCoefficient.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i)).size(); j++) 
+							cLTotalArray[j+2] = _totalLiftCoefficient.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i)).get(j);
+						
+						dataListTotalAircraftCurves.add(cLTotalArray);
+						currentBoldIndex = currentBoldIndex+1;
+						
+					}
+
+					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CD_TOTAL)) {
+						
+						
+						Object[] cDTotalArray = new Object[_totalDragCoefficient.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i)).size()+2];
+						cDTotalArray[0] = "CD total";
+						cDTotalArray[1] = "";
+						for(int j=0; j<_totalDragCoefficient.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i)).size(); j++) 
+							cDTotalArray[j+2] = _totalDragCoefficient.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i)).get(j);
+						
+						dataListTotalAircraftCurves.add(cDTotalArray);
+						currentBoldIndex = currentBoldIndex+1;
+					}
+					
+					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL)) {
+						
+						Object[] cMHTailArray = new Object[_current3DHorizontalTailMomentCurve
+						                                   .get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))
+						                                   .size()+2];
+						cMHTailArray[0] = "CM horizontal Tail";
+						cMHTailArray[1] = "";
+						for(int j=0;
+								j<_current3DHorizontalTailMomentCurve
+								.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i)).size();
+								j++
+								) 
+							cMHTailArray[j+2] = _current3DHorizontalTailMomentCurve
+							.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))
+							.get(j);
+
+						dataListTotalAircraftCurves.add(cMHTailArray);
+						currentBoldIndex = currentBoldIndex+1;
+						
+						for(int k=0; k<_theAerodynamicBuilderInterface.getXCGAircraft().size(); k++) {
+							
+							dataListTotalAircraftCurves.add(new Object[] {""});
+							dataListTotalAircraftCurves.add(new Object[] {"Xcg = " + _theAerodynamicBuilderInterface.getXCGAircraft().get(k)*100 + " %"});
+							currentBoldIndex = currentBoldIndex+2;
+
+							Object[] cMTotalArray = new Object[_totalMomentCoefficient
+							                                   .get(_theAerodynamicBuilderInterface.getXCGAircraft().get(k))
+							                                   .get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))
+							                                   .size()+2];
+							cMTotalArray[0] = "CM total";
+							cMTotalArray[1] = "";
+							for(int j=0;
+									j<_totalMomentCoefficient
+									.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(k))
+									.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i)).size();
+									j++
+									) 
+								cMTotalArray[j+2] = _totalMomentCoefficient
+								.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(k))
+								.get(_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))
+								.get(j);
+
+							dataListTotalAircraftCurves.add(cMTotalArray);
+							currentBoldIndex = currentBoldIndex+1;
+
+						}
+					}
+				}
+
+				//------------------------------------------------------------------------------------------------------------------------
+				// CREATING CELLS ...
+				//--------------------------------------------------------------------------------
+				Row rowTotalAircraftCurves = totalAircraftCurvesSheet.createRow(0);
+				Object[] objArrTotalAircraftCurves = dataListTotalAircraftCurves.get(0);
+				int cellnumTotalAircraftCurves = 0;
+				for (Object obj : objArrTotalAircraftCurves) {
+					Cell cell = rowTotalAircraftCurves.createCell(cellnumTotalAircraftCurves++);
+					cell.setCellStyle(styleHead);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+
+				int rownumTotalAircraftCurves = 1;
+				for (int i = 1; i < dataListTotalAircraftCurves.size(); i++) {
+					objArrTotalAircraftCurves = dataListTotalAircraftCurves.get(i);
+					rowTotalAircraftCurves = totalAircraftCurvesSheet.createRow(rownumTotalAircraftCurves++);
+					cellnumTotalAircraftCurves = 0;
+					Boolean isBold = Boolean.FALSE;
+					for(int bri=0; bri<boldRowIndex.size(); bri++) 
+						if(rownumTotalAircraftCurves == boldRowIndex.get(bri))
+							isBold = Boolean.TRUE;
+					for (Object obj : objArrTotalAircraftCurves) {
+						Cell cell = rowTotalAircraftCurves.createCell(cellnumTotalAircraftCurves++);
+						if(isBold == Boolean.TRUE)
+							cell.setCellStyle(styleHeader);
+						if (obj instanceof Date) {
+							cell.setCellValue((Date) obj);
+						} else if (obj instanceof Boolean) {
+							cell.setCellValue((Boolean) obj);
+						} else if (obj instanceof String) {
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Double) {
+							cell.setCellValue((Double) obj);
+						}
+					}
+
+					totalAircraftCurvesSheet.setDefaultColumnWidth(35);
+					totalAircraftCurvesSheet.setColumnWidth(1, 2048);
+					for(int k=2; k<100; k++)
+						totalAircraftCurvesSheet.setColumnWidth(k, 3840);
+
+				}
+			}
+			
+			//--------------------------------------------------------------------------------
+			// LONGITUDINAL STATIC STABILITY AND CONTROL RESULTS:
+			//--------------------------------------------------------------------------------
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+
+				Sheet longitudinalStaticStabilityAndControlSheet = wb.createSheet("LONGITUDINAL STABILITY AND CONTROL");
+				List<Object[]> dataListlongitudinalStaticStabilityAndControl = new ArrayList<>();
+
+				List<Integer> boldRowIndex = new ArrayList<>();
+				int currentBoldIndex = 1;
+
+				dataListlongitudinalStaticStabilityAndControl.add(new Object[] {"Description","Unit","Value"});
+
+				Object[] alphaBodyArray = new Object[getAlphaBodyList().size()+2];
+				alphaBodyArray[0] = "Alpha body";
+				alphaBodyArray[1] = "deg";
+				for(int i=0; i<getAlphaBodyList().size(); i++) 
+					alphaBodyArray[i+2] = getAlphaBodyList().get(i).doubleValue(NonSI.DEGREE_ANGLE);			
+
+				dataListlongitudinalStaticStabilityAndControl.add(alphaBodyArray);
+				currentBoldIndex = currentBoldIndex+1;
+
+				for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
+
+					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = getAlphaBodyList().size()-1;
+					
+					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
+						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+								.equals(_deltaEForEquilibrium.get(0))
+								) {
+							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
+							break;
+						}
+					
+					dataListlongitudinalStaticStabilityAndControl.add(new Object[] {""});
+					dataListlongitudinalStaticStabilityAndControl.add(new Object[] {"Xcg = " + _theAerodynamicBuilderInterface.getXCGAircraft().get(i)*100 + " %"});
+					currentBoldIndex = currentBoldIndex+2;
+					boldRowIndex.add(currentBoldIndex);
+
+					Object[] cLHTailEquilibriumArray = new Object[_horizontalTailEquilibriumLiftCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+					cLHTailEquilibriumArray[0] = "CL_h equilibrium";
+					cLHTailEquilibriumArray[1] = "";
+					for(int j=0; j<=indexOfFirstMaximumDeltaElevatorOfEquilibrium; j++) 
+						cLHTailEquilibriumArray[j+2] = _horizontalTailEquilibriumLiftCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j);
+
+					dataListlongitudinalStaticStabilityAndControl.add(cLHTailEquilibriumArray);
+					currentBoldIndex = currentBoldIndex+1;
+
+					Object[] cLTotalEquilibriumArray = new Object[_totalEquilibriumLiftCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+					cLTotalEquilibriumArray[0] = "CL_total equilibrium";
+					cLTotalEquilibriumArray[1] = "";
+					for(int j=0; j<=indexOfFirstMaximumDeltaElevatorOfEquilibrium; j++) 
+						cLTotalEquilibriumArray[j+2] = _totalEquilibriumLiftCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j);
+
+					dataListlongitudinalStaticStabilityAndControl.add(cLTotalEquilibriumArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] cDHTailEquilibriumArray = new Object[_horizontalTailEquilibriumDragCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+					cDHTailEquilibriumArray[0] = "CD_h equilibrium";
+					cDHTailEquilibriumArray[1] = "";
+					for(int j=0; j<=indexOfFirstMaximumDeltaElevatorOfEquilibrium; j++) 
+						cDHTailEquilibriumArray[j+2] = _horizontalTailEquilibriumDragCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j);
+					
+					dataListlongitudinalStaticStabilityAndControl.add(cDHTailEquilibriumArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] cDTotalEquilibriumArray = new Object[_totalEquilibriumDragCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+					cDTotalEquilibriumArray[0] = "CD_total equilibrium";
+					cDTotalEquilibriumArray[1] = "";
+					for(int j=0; j<=indexOfFirstMaximumDeltaElevatorOfEquilibrium; j++) 
+						cDTotalEquilibriumArray[j+2] = _totalEquilibriumDragCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j);
+
+					dataListlongitudinalStaticStabilityAndControl.add(cDTotalEquilibriumArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] deltaElevatorEquilibriumArray = new Object[_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+					deltaElevatorEquilibriumArray[0] = "delta_e equilibrium";
+					deltaElevatorEquilibriumArray[1] = "deg";
+					for(int j=0; j<=indexOfFirstMaximumDeltaElevatorOfEquilibrium; j++) 
+						deltaElevatorEquilibriumArray[j+2] = _deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j).doubleValue(NonSI.DEGREE_ANGLE);
+
+					dataListlongitudinalStaticStabilityAndControl.add(deltaElevatorEquilibriumArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] neutralPointArray = new Object[3];
+					neutralPointArray[0] = "Neutral_point";
+					neutralPointArray[1] = "";
+					for(int j=0; j<=indexOfFirstMaximumDeltaElevatorOfEquilibrium; j++) 
+						neutralPointArray[2] = _neutralPointPositionMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+
+					dataListlongitudinalStaticStabilityAndControl.add(neutralPointArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] staticStabilityMarginArray = new Object[3];
+					staticStabilityMarginArray[0] = "Static_Stability_Margin";
+					staticStabilityMarginArray[1] = "";
+					staticStabilityMarginArray[2] = _staticStabilityMarginMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+
+					dataListlongitudinalStaticStabilityAndControl.add(staticStabilityMarginArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] trimmedEquilibriumEfficiencyArray = new Object[_totalEquilibriumEfficiencyMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+					trimmedEquilibriumEfficiencyArray[0] = "Efficiency";
+					trimmedEquilibriumEfficiencyArray[1] = "";
+					for(int j=0; j<=indexOfFirstMaximumDeltaElevatorOfEquilibrium; j++) 
+						trimmedEquilibriumEfficiencyArray[j+2] = _totalEquilibriumEfficiencyMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j);
+
+					dataListlongitudinalStaticStabilityAndControl.add(trimmedEquilibriumEfficiencyArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					dataListlongitudinalStaticStabilityAndControl.add(new Object[] {
+						"Maximum efficiency",
+						"",
+						_totalEquilibriumMaximumEfficiencyMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
+					});
+					currentBoldIndex = currentBoldIndex+1;
+
+				}
+
+				//------------------------------------------------------------------------------------------------------------------------
+				// CREATING CELLS ...
+				//--------------------------------------------------------------------------------
+				Row rowlongitudinalStaticStabilityAndControl = longitudinalStaticStabilityAndControlSheet.createRow(0);
+				Object[] objArrlongitudinalStaticStabilityAndControl = dataListlongitudinalStaticStabilityAndControl.get(0);
+				int cellnumlongitudinalStaticStabilityAndControl = 0;
+				for (Object obj : objArrlongitudinalStaticStabilityAndControl) {
+					Cell cell = rowlongitudinalStaticStabilityAndControl.createCell(cellnumlongitudinalStaticStabilityAndControl++);
+					cell.setCellStyle(styleHead);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+
+				int rownumlongitudinalStaticStabilityAndControl = 1;
+				for (int i = 1; i < dataListlongitudinalStaticStabilityAndControl.size(); i++) {
+					objArrlongitudinalStaticStabilityAndControl = dataListlongitudinalStaticStabilityAndControl.get(i);
+					rowlongitudinalStaticStabilityAndControl = longitudinalStaticStabilityAndControlSheet.createRow(rownumlongitudinalStaticStabilityAndControl++);
+					cellnumlongitudinalStaticStabilityAndControl = 0;
+					Boolean isBold = Boolean.FALSE;
+					for(int bri=0; bri<boldRowIndex.size(); bri++) 
+						if(rownumlongitudinalStaticStabilityAndControl == boldRowIndex.get(bri))
+							isBold = Boolean.TRUE;
+					for (Object obj : objArrlongitudinalStaticStabilityAndControl) {
+						Cell cell = rowlongitudinalStaticStabilityAndControl.createCell(cellnumlongitudinalStaticStabilityAndControl++);
+						if(isBold == Boolean.TRUE)
+							cell.setCellStyle(styleHeader);
+						if (obj instanceof Date) {
+							cell.setCellValue((Date) obj);
+						} else if (obj instanceof Boolean) {
+							cell.setCellValue((Boolean) obj);
+						} else if (obj instanceof String) {
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Double) {
+							cell.setCellValue((Double) obj);
+						}
+					}
+
+					longitudinalStaticStabilityAndControlSheet.setDefaultColumnWidth(35);
+					longitudinalStaticStabilityAndControlSheet.setColumnWidth(1, 2048);
+					for(int k=2; k<100; k++)
+						longitudinalStaticStabilityAndControlSheet.setColumnWidth(k, 3840);
+
+				}
+			}
+			
+			//--------------------------------------------------------------------------------
+			// DIRECTIONAL STABILITY AND CONTROL RESULTS:
+			//--------------------------------------------------------------------------------
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
+
+				Sheet directionalStabilityAndControlSheet = wb.createSheet("DIRECTIONAL STABILITY AND CONTROL");
+				List<Object[]> dataListDirectionalStabilityAndControl = new ArrayList<>();
+
+				List<Integer> boldRowIndex = new ArrayList<>();
+				int currentBoldIndex = 1;
+
+				dataListDirectionalStabilityAndControl.add(new Object[] {"Description","Unit","Value"});
+
+				Object[] betaArray = new Object[getBetaList().size()+2];
+				betaArray[0] = "Beta";
+				betaArray[1] = "deg";
+				for(int i=0; i<getBetaList().size(); i++) 
+					betaArray[i+2] = getBetaList().get(i).doubleValue(NonSI.DEGREE_ANGLE);			
+
+				dataListDirectionalStabilityAndControl.add(betaArray);
+				currentBoldIndex = currentBoldIndex+1;
+
+				for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
+
+					dataListDirectionalStabilityAndControl.add(new Object[] {""});
+					dataListDirectionalStabilityAndControl.add(new Object[] {"Xcg = " + _theAerodynamicBuilderInterface.getXCGAircraft().get(i)*100 + " %"});
+					currentBoldIndex = currentBoldIndex+2;
+					boldRowIndex.add(currentBoldIndex);
+
+					dataListDirectionalStabilityAndControl.add(new Object[] {""});
+					currentBoldIndex = currentBoldIndex+1;
+					
+					dataListDirectionalStabilityAndControl.add(new Object[] {
+							"CN_beta_vertical_tail",
+							"1/deg",
+							_cNBetaVertical.get(i)._2});
+					
+					currentBoldIndex = currentBoldIndex+1;
+					
+					dataListDirectionalStabilityAndControl.add(new Object[] {
+							"CN_beta_fuselage",
+							"1/deg",
+							_cNBetaFuselage.get(i)._2});
+					
+					currentBoldIndex = currentBoldIndex+1;
+					
+					dataListDirectionalStabilityAndControl.add(new Object[] {
+							"CN_beta_wing",
+							"1/deg",
+							_cNBetaWing.get(i)._2});
+					
+					currentBoldIndex = currentBoldIndex+1;
+					
+					dataListDirectionalStabilityAndControl.add(new Object[] {
+							"CN_beta_total",
+							"1/deg",
+							_cNBetaTotal.get(i)._2});
+					
+					currentBoldIndex = currentBoldIndex+1;
+					
+					dataListDirectionalStabilityAndControl.add(new Object[] {""});
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] deltaRudderArray = new Object[_theAerodynamicBuilderInterface.getDeltaRudderList().size()+2];
+					deltaRudderArray[0] = "Delta_rudder";
+					deltaRudderArray[1] = "deg";
+					for(int j=0; j<_theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++) 
+						deltaRudderArray[j+2] = _theAerodynamicBuilderInterface.getDeltaRudderList().get(j).doubleValue(NonSI.DEGREE_ANGLE);			
+					
+					dataListDirectionalStabilityAndControl.add(deltaRudderArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] cNdrArray = new Object[_cNDeltaR.keySet().size()+2];
+					
+					cNdrArray[0] = "CN_delta_rudder";
+					cNdrArray[1] = "1/deg";
+					for(int j=0; 
+							j<_cNDeltaR.keySet().size()+2;
+							j++) 
+						cNdrArray[j+2] = _cNDeltaR.keySet().size()+2;
+					
+					dataListDirectionalStabilityAndControl.add(cNdrArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					dataListDirectionalStabilityAndControl.add(new Object[] {""});
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] cNVerticalTailArray = new Object[_cNVertical.size()+2];
+					
+					cNVerticalTailArray[0] = "CN_vertical_tail";
+					cNVerticalTailArray[1] = "";
+					for(int j=0; 
+							j<_cNVertical.size()+2;
+							j++) 
+						cNVerticalTailArray[j+2] = _cNVertical.get(i)._2().get(j);
+					
+					dataListDirectionalStabilityAndControl.add(cNVerticalTailArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] cNFuslegaArray = new Object[_cNFuselage.get(i)._2().size()+2];
+					
+					cNFuslegaArray[0] = "CN_fuselage";
+					cNFuslegaArray[1] = "";
+					for(int j=0; 
+							j<_cNFuselage.get(i)._2().size(); 
+							j++) 
+						cNFuslegaArray[j+2] = _cNFuselage.get(i)._2().get(j);
+					
+					dataListDirectionalStabilityAndControl.add(cNFuslegaArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] cNWingArray = new Object[_cNWing.get(i)._2().size()+2];
+					cNWingArray[0] = "CN_wing";
+					cNWingArray[1] = "";
+					for(int j=0; 
+							j<_cNWing.get(i)._2().size(); 
+							j++) 
+						cNWingArray[j+2] = _cNWing.get(i)._2().get(j);
+					
+					dataListDirectionalStabilityAndControl.add(cNWingArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] cNTotalArray = new Object[_cNTotal.get(i)._2().size()+2];
+					cNTotalArray[0] = "CN_total";
+					cNTotalArray[1] = "";
+					for(int j=0; 
+							j<_cNTotal.get(i)._2().size(); 
+							j++) 
+						cNTotalArray[j+2] = _cNTotal.get(i)._2().get(j);
+					
+					dataListDirectionalStabilityAndControl.add(cNTotalArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					dataListDirectionalStabilityAndControl.add(new Object[] {""});
+					currentBoldIndex = currentBoldIndex+1;
+					
+					for (int j = 0; j < _theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++) {
+
+						Object[] cNDueToDeltaRudderArray = new Object[_cNDueToDeltaRudder.get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j)).get(i)._2().size()+2];
+						cNDueToDeltaRudderArray[0] = "CN at delta rudder = " + _theAerodynamicBuilderInterface.getDeltaRudderList().get(j).doubleValue(NonSI.DEGREE_ANGLE) + " deg";
+						cNDueToDeltaRudderArray[1] = "";
+						for(int k=0; 
+								k<_cNDueToDeltaRudder.get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j)).get(i)._2().size(); 
+								k++) 
+							cNDueToDeltaRudderArray[k+2] = _cNDueToDeltaRudder.get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j)).get(i)._2().get(k);
+						
+						dataListDirectionalStabilityAndControl.add(cNDueToDeltaRudderArray);
+						currentBoldIndex = currentBoldIndex+1;
+						
+					}
+					
+					dataListDirectionalStabilityAndControl.add(new Object[] {""});
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] deltaRudderEquilibriumArray = new Object[_betaOfEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+					deltaRudderEquilibriumArray[0] = "Delta_rudder equilibrium";
+					deltaRudderEquilibriumArray[1] = "deg";
+					for(int j=0; 
+							j<_betaOfEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); 
+							j++) 
+						deltaRudderEquilibriumArray[j+2] = _betaOfEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+						._1().doubleValue(NonSI.DEGREE_ANGLE);			
+					
+					dataListDirectionalStabilityAndControl.add(deltaRudderEquilibriumArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+					Object[] betaEquilibriumArray = new Object[_betaOfEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+					betaEquilibriumArray[0] = "Beta equilibrium";
+					betaEquilibriumArray[1] = "deg";
+					for(int j=0; 
+							j<_betaOfEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); 
+							j++) 
+						
+						betaEquilibriumArray[j+2] = _betaOfEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+						._2().doubleValue(NonSI.DEGREE_ANGLE);			
+					dataListDirectionalStabilityAndControl.add(betaEquilibriumArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+				}
+
+				//------------------------------------------------------------------------------------------------------------------------
+				// CREATING CELLS ...
+				//--------------------------------------------------------------------------------
+				Row rowDirectionalStabilityAndControl = directionalStabilityAndControlSheet.createRow(0);
+				Object[] objArrDirectionalStabilityAndControl = dataListDirectionalStabilityAndControl.get(0);
+				int cellnumDirectionalStabilityAndControl = 0;
+				for (Object obj : objArrDirectionalStabilityAndControl) {
+					Cell cell = rowDirectionalStabilityAndControl.createCell(cellnumDirectionalStabilityAndControl++);
+					cell.setCellStyle(styleHead);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+
+				int rownumDirectionalStabilityAndControl = 1;
+				for (int i = 1; i < dataListDirectionalStabilityAndControl.size(); i++) {
+					objArrDirectionalStabilityAndControl = dataListDirectionalStabilityAndControl.get(i);
+					rowDirectionalStabilityAndControl = directionalStabilityAndControlSheet.createRow(rownumDirectionalStabilityAndControl++);
+					cellnumDirectionalStabilityAndControl = 0;
+					Boolean isBold = Boolean.FALSE;
+					for(int bri=0; bri<boldRowIndex.size(); bri++) 
+						if(rownumDirectionalStabilityAndControl == boldRowIndex.get(bri))
+							isBold = Boolean.TRUE;
+					for (Object obj : objArrDirectionalStabilityAndControl) {
+						Cell cell = rowDirectionalStabilityAndControl.createCell(cellnumDirectionalStabilityAndControl++);
+						if(isBold == Boolean.TRUE)
+							cell.setCellStyle(styleHeader);
+						if (obj instanceof Date) {
+							cell.setCellValue((Date) obj);
+						} else if (obj instanceof Boolean) {
+							cell.setCellValue((Boolean) obj);
+						} else if (obj instanceof String) {
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Double) {
+							cell.setCellValue((Double) obj);
+						}
+					}
+
+					directionalStabilityAndControlSheet.setDefaultColumnWidth(35);
+					directionalStabilityAndControlSheet.setColumnWidth(1, 2048);
+					for(int k=2; k<100; k++)
+						directionalStabilityAndControlSheet.setColumnWidth(k, 3840);
+
+				}
+			}
+			
+	        //////////////////////////////////////////////////////////////////////
+			// TODO : CONTINUE WITH ALL THE AIRCRAFT ANALYSES (EACH PER SHEET). //
+	        //////////////////////////////////////////////////////////////////////
+
+	        //--------------------------------------------------------------------------------
+			// XLS FILE CREATION:
+			//--------------------------------------------------------------------------------
+			FileOutputStream fileOut = new FileOutputStream(filenameWithPathAndExt + ".xlsx");
+			wb.write(fileOut);
+			fileOut.close();
+			System.out.println("Your excel file has been generated!");
+	        
+		}
+
 
 	//==============================================================================================================
 	/*
