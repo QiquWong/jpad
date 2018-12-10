@@ -1,4 +1,4 @@
-package it.unina.daf.jpadcadsandbox.utils;
+package it.unina.daf.jpadcadsandbox.cfdworkflows;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,73 +7,62 @@ import java.util.List;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
-public class ArgumentsJPADCADSandbox { // see CompleteAnalysisTest
-	@Option(name = "-i", aliases = { "--input" }, required = true,
+public class ArgumentsForCFDSim {
+	
+	@Option(name = "-i", aliases = { "--input" }, required = false,
 			usage = "my input file")
 	private File _inputFile;
-
-	@Option(name = "-ia", aliases = { "--input-analyses" }, required = false,
-			usage = "analyses input file")
-	private File _inputFileAnalyses;
-
-	@Option(name = "-ioc", aliases = { "--input-operating-condition" }, required = false,
-			usage = "operating conditions input file")
-	private File _inputFileOperatingCondition;
-
-	@Option(name = "-db", aliases = { "--database-dir" }, required = true,
+	
+	@Option(name = "-db", aliases = { "--database-dir" }, required = false,
 			usage = "database directory")
 	private File _databaseDirectory;
 	
-	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
-			usage = "airfoil directory path")
-	private File _airfoilDirectory;
-
-	@Option(name = "-df", aliases = { "--dir-fuselages" }, required = true,
+	@Option(name = "-da", aliases = { "--airfoils-dir" }, required = false,
+			usage = "airfoils directory path")
+	private File _airfoilsDirectory;
+	
+	@Option(name = "-df", aliases = { "--fuselages-dir" }, required = false,
 			usage = "fuselages directory path")
 	private File _fuselagesDirectory;
 
-	@Option(name = "-dls", aliases = { "--dir-lifting-surfaces" }, required = true,
+	@Option(name = "-dls", aliases = { "--lifting-surfaces-dir" }, required = false,
 			usage = "lifting surfaces directory path")
 	private File _liftingSurfacesDirectory;
 
-	@Option(name = "-de", aliases = { "--dir-engines" }, required = true,
+	@Option(name = "-de", aliases = { "--engines-dir" }, required = false,
 			usage = "engines directory path")
 	private File _enginesDirectory;
 
-	@Option(name = "-dn", aliases = { "--dir-nacelles" }, required = true,
+	@Option(name = "-dn", aliases = { "--nacelles-dir" }, required = false,
 			usage = "nacelles directory path")
 	private File _nacellesDirectory;
 
-	@Option(name = "-dlg", aliases = { "--dir-landing-gears" }, required = true,
+	@Option(name = "-dlg", aliases = { "--landing-gears-dir" }, required = false,
 			usage = "landing gears directory path")
 	private File _landingGearsDirectory;
 
-	@Option(name = "-dcc", aliases = { "--dir-cabin-configurations" }, required = true,
+	@Option(name = "-dcc", aliases = { "--cabin-configurations-dir" }, required = false,
 			usage = "cabin configurations directory path")
 	private File _cabinConfigurationsDirectory;
+	
+	@Option(name = "-scf", aliases = { "--sim-config-file" }, required = false,
+			usage = "simulation configuration file path")
+	private File _simulationConfigurationFile;
 
 	// receives other command line parameters than options
 	@Argument
 	public List<String> arguments = new ArrayList<String>();
-
+	
 	public File getInputFile() {
 		return _inputFile;
 	}
-
-	public File getInputFileAnalyses() {
-		return _inputFileAnalyses;
-	}
-
-	public File getOperatingConditionsInputFile() {
-		return _inputFileOperatingCondition;
-	}
-
+	
 	public File getDatabaseDirectory() {
 		return _databaseDirectory;
 	}
 	
 	public File getAirfoilDirectory() {
-		return _airfoilDirectory;
+		return _airfoilsDirectory;
 	}
 
 	public File getFuselagesDirectory() {
@@ -99,4 +88,9 @@ public class ArgumentsJPADCADSandbox { // see CompleteAnalysisTest
 	public File getCabinConfigurationDirectory() {
 		return _cabinConfigurationsDirectory;
 	}
+	
+	public File getSimulationConfigurationFile() {
+		return _simulationConfigurationFile;
+	}
+	
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <aircraft id="AIRBUS A-320neo" type="JET" regulations="FAR_25">
+    <aircraft id="A-320neo" type="JET" regulations="FAR_25">
 		<global_data>
 			<cabin_configuration file="cabin_configuration_A320neo.xml"></cabin_configuration>
 		</global_data>

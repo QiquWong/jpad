@@ -2,22 +2,34 @@ package it.unina.daf.jpadcad.occ;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import opencascade.Adaptor3d_Curve;
+import opencascade.Adaptor3d_HCurve;
 import opencascade.BOPAlgo_PaveFiller;
 import opencascade.BOPDS_DS;
+import opencascade.BRepAdaptor_Curve;
+import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepBuilderAPI_MakeVertex;
 import opencascade.BRepBuilderAPI_Transform;
 import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
 import opencascade.BRep_Tool;
+import opencascade.GeomAPI;
 import opencascade.GeomAPI_ExtremaCurveCurve;
+import opencascade.GeomAPI_IntCS;
 import opencascade.GeomAPI_ProjectPointOnCurve;
 import opencascade.GeomAbs_Shape;
+import opencascade.GeomAdaptor_Curve;
+import opencascade.GeomConvert;
+import opencascade.Geom_BSplineCurve;
 import opencascade.Geom_Curve;
+import opencascade.Geom_Geometry;
+import opencascade.Geom_TrimmedCurve;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
 import opencascade.TopTools_ListOfShape;
@@ -300,6 +312,29 @@ public final class OCCUtils {
 		return face;
 	}
 	
+	public static CADFace makeFilledFace(List<CADEdge> closedWire, List<double[]> controlPts) {
+		CADFace face = null;
+		
+		// Initialize the filler
+		BRepOffsetAPI_MakeFilling filler = new BRepOffsetAPI_MakeFilling();
+		
+		filler.SetApproxParam(3, 20);
+		filler.SetConstrParam(0.00001, 0.0001, 0.5, 1.0);
+		filler.SetResolParam(3, 20, 20, 0);
+		
+		// Add each edge and each control point to the filling maker
+		closedWire.forEach(e -> filler.Add(((OCCEdge) e).getShape(), GeomAbs_Shape.GeomAbs_C0));
+		
+		if (controlPts.size() > 0)
+			controlPts.forEach(pt -> filler.Add(new gp_Pnt(pt[0], pt[1], pt[2])));
+		
+		// Generate the face
+		filler.Build();	
+		face = (CADFace) theFactory.newShape(filler.Shape());
+		
+		return face;
+	}
+	
 	public static CADShape makeFilledFace(CADGeomCurve3D ... crvs) {
 		List<TopoDS_Shape> shapes = new ArrayList<>();
 		Arrays.stream(crvs).collect(Collectors.toList()).stream()
@@ -351,7 +386,7 @@ public final class OCCUtils {
 		return sb.toString();
 	}
 	
-	public static CADVertex pointProjectionOnCurve(CADGeomCurve3D cadCurve, double[] pnt) {
+	public static CADVertex pointProjectionOnCurve0(CADGeomCurve3D cadCurve, double[] pnt) {
 		CADVertex result = null;		
 		GeomAPI_ProjectPointOnCurve poc = new GeomAPI_ProjectPointOnCurve();
 		gp_Pnt gpPnt = new gp_Pnt(pnt[0], pnt[1], pnt[2]);
@@ -367,6 +402,15 @@ public final class OCCUtils {
 			result = projection;
 		}	
 		return result;
+	}
+	
+	public static CADVertex pointProjectionOnCurve(CADGeomCurve3D cadCurve, double[] pnt) {
+		CADVertex vertex = null;
+		
+		double param = pointProjectionOnCurveParam(cadCurve, pnt);	
+		vertex = theFactory.newVertex(cadCurve.value(param));
+		
+		return vertex;
 	}
 	
 	public static double pointProjectionOnCurveParam(CADGeomCurve3D cadCurve, double[] pnt) {
@@ -391,10 +435,31 @@ public final class OCCUtils {
 		return param;
 	}
 	
+	public static List<OCCEdge> splitCADCurve(CADGeomCurve3D cadCurve, double[] pnt) {
+		List<OCCEdge> result = new ArrayList<>();
+		
+		double[] range = cadCurve.getRange();
+		double projParam = pointProjectionOnCurveParam(cadCurve, pnt);
+		
+		Geom_BSplineCurve basisCurve = ((OCCGeomCurve3D) cadCurve).getAdaptorCurve().BSpline();
+		
+		Geom_BSplineCurve curve1 = GeomConvert.SplitBSplineCurve(basisCurve, range[0], projParam, 1e-6, 1);
+		Geom_BSplineCurve curve2 = GeomConvert.SplitBSplineCurve(basisCurve, projParam, range[1], 1e-6, 1);
+		
+		result.add(((OCCEdge) theFactory.newShape(new BRepBuilderAPI_MakeEdge(curve1).Edge())));
+		result.add(((OCCEdge) theFactory.newShape(new BRepBuilderAPI_MakeEdge(curve2).Edge())));
+			
+		return result;	
+	}
+	
+	public static List<OCCEdge> splitCADCurve(CADEdge cadEdge, double[] pnt) {
+		return splitCADCurve(theFactory.newCurve3D(cadEdge), pnt);
+	}
+	
 	public static List<OCCEdge> splitEdge(CADGeomCurve3D cadCurve, double[] pnt) {
 		List<OCCEdge> result = new ArrayList<>();
 		
-		CADVertex projection = OCCUtils.pointProjectionOnCurve(cadCurve, pnt);
+		CADVertex projection = pointProjectionOnCurve0(cadCurve, pnt);
 		
 		TopoDS_Vertex vtx_1 = null;
 		
@@ -587,8 +652,7 @@ public final class OCCUtils {
 		GeomAPI_ExtremaCurveCurve extrema = new GeomAPI_ExtremaCurveCurve(geomCurve1, geomCurve2);
 		int nExtrema = extrema.NbExtrema();
 		
-		List<Double> pars = new ArrayList<>();
-		
+		List<Double> pars = new ArrayList<>();		
 		if (nExtrema > 0) {		
 			for (int i = 1; i <= nExtrema; i++) {	
 				double[] par = new double[] {0};
@@ -602,13 +666,13 @@ public final class OCCUtils {
 					extrema.Parameters(1, par, new double[] {0});
 					pars.add(par[0]);
 				}
-			}
+			}	
 			
 		} else {
 			System.out.println("OCCUtils::getParamIntersectionPt - "
 					+ "Warning: no intersections found, returning empty list.");
 		}
-		
+
 		return pars;		
 	}
 }

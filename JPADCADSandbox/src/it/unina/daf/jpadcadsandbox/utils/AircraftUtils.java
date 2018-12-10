@@ -122,11 +122,11 @@ public final class AircraftUtils {
 			String pathToXML = CmdLineUtils.va.getInputFile().getAbsolutePath();
 			System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
 
-			String pathToAnalysesXML = CmdLineUtils.va.getInputFileAnalyses().getAbsolutePath();
-			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
-			
-			String pathToOperatingConditionsXML = CmdLineUtils.va.getOperatingConditionsInputFile().getAbsolutePath();
-			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
+//			String pathToAnalysesXML = CmdLineUtils.va.getInputFileAnalyses().getAbsolutePath();
+//			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
+//			
+//			String pathToOperatingConditionsXML = CmdLineUtils.va.getOperatingConditionsInputFile().getAbsolutePath();
+//			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
 			
 			String dirAirfoil = CmdLineUtils.va.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
@@ -235,9 +235,9 @@ public final class AircraftUtils {
 			System.setOut(originalOut);
 			System.out.println("Defining the operating conditions ... ");
 			System.setOut(filterStream);
-			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
+//			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
 //			System.setOut(originalOut);
-			System.out.println(theOperatingConditions.toString());
+//			System.out.println(theOperatingConditions.toString());
 //			System.setOut(filterStream);			
 			
 			System.setOut(originalOut);

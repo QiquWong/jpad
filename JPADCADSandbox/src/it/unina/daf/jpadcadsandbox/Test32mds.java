@@ -80,8 +80,6 @@ public class Test32mds {
 		}
 		double[] cg = new double[] {sumX/pts.size(), sumY/pts.size(), sumZ/pts.size()};
 		
-		System.out.println("CG = " + Arrays.toString(cg));
-		
 		CADWire wire = OCCUtils.theFactory.newWireFromAdjacentEdges(
 				OCCUtils.theFactory.newCurve3D(ptA, ptB).edge(),
 				OCCUtils.theFactory.newCurve3D(ptB, ptC).edge(),
