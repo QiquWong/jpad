@@ -78,7 +78,6 @@ public interface IACAerodynamicAndStabilityManager_v2 {
 	int getCanardNumberOfPointSemiSpanWise();
 	List<Amount<Angle>> getDeltaElevatorList();
 	List<Amount<Angle>> getDeltaRudderList();
-	List<Amount<Angle>> getDeltaCanardControlSurfaceList();
 	double getAdimensionalWingMomentumPole();
 	double getAdimensionalHTailMomentumPole();
 	double getAdimensionalVTailMomentumPole();

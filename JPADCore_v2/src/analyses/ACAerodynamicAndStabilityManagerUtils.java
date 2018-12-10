@@ -299,26 +299,6 @@ public class ACAerodynamicAndStabilityManagerUtils {
 							);
 				});
 				break;
-			case CANARD:
-				deltaDeflectionList.addAll(aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getDeltaCanardControlSurfaceList());
-				deltaDeflectionList.stream().forEach(delta -> delta.to(NonSI.DEGREE_ANGLE));
-				deltaDeflectionList.stream().forEach(delta -> {
-					calcHighLiftCurve.semiempirical(
-							Arrays.asList(delta), 
-							new ArrayList<>(), 
-							currentMachNumber 
-							);
-					aerodynamicAndStabilityManager.getCurrent3DCanardLiftCurve().put(
-							delta,
-							MyArrayUtils.convertDoubleArrayToListDouble(
-									aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
-									.get(ComponentEnum.CANARD)
-									.getLiftCoefficient3DCurveHighLift()
-									.get(MethodEnum.SEMIEMPIRICAL)
-									)
-							);
-				});
-				break;
 			default:
 				break;
 			}
@@ -2261,11 +2241,17 @@ public class ACAerodynamicAndStabilityManagerUtils {
 									_theAerodynamicBuilderInterface.getZCGLandingGear(),
 									_theAerodynamicBuilderInterface.getXCGNacelles(),
 									_theAerodynamicBuilderInterface.getZCGNacelles(),
+									aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.CANARD).getXacLRF().get(_theAerodynamicBuilderInterface.getComponentTaskList()
+											.get(ComponentEnum.CANARD)
+											.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getXApexConstructionAxes()), 
+									_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getZApexConstructionAxes(),
 									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord(), 
 									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
 									_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurfacePlanform(), 
 									aerodynamicAndStabilityManager.getCurrent3DWingLiftCurve(),
 									aerodynamicAndStabilityManager.getCurrent3DWingMomentCurve(),
+									aerodynamicAndStabilityManager.getCurrent3DCanardLiftCurve(),
+									aerodynamicAndStabilityManager.getCurrent3DCanardMomentCurve(),
 									MyArrayUtils.convertDoubleArrayToListDouble(aerodynamicAndStabilityManager.getFuselageAerodynamicManagers()
 											.get(ComponentEnum.FUSELAGE)
 											.getMoment3DCurve()

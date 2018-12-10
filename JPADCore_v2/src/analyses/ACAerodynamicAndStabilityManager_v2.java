@@ -383,7 +383,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		int numberOfPointsSemispanwiseCanard = 30;
 		List<Amount<Angle>> deltaElevatorList = new ArrayList<>();
 		List<Amount<Angle>> deltaRudderList = new ArrayList<>();
-		List<Amount<Angle>> deltaCanardControlSurfaceList = new ArrayList<>();
 		double adimensionalWingMomentumPole = 0.25;
 		double adimensionalHTailMomentumPole = 0.25;
 		double adimensionalVTailMomentumPole = 0.25;
@@ -528,22 +527,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 		if(!deltaRudderList.contains(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)))
 			deltaRudderList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-
-		//---------------------------------------------------------------
-		// DELTA CANARD CONTROL SURFACE LIST
-		String deltaCanardControlSurfaceListProperty = reader.getXMLPropertyByPath("//global_data/delta_canard_control_surface_array");
-		if(deltaCanardControlSurfaceListProperty != null)
-			deltaCanardControlSurfaceList = reader.readArrayofAmountFromXML("//global_data/delta_canard_control_surface_array");
-		else
-			deltaCanardControlSurfaceList.addAll(
-					MyArrayUtils.convertDoubleArrayToListOfAmount(
-							MyArrayUtils.linspace(5.0, 25.0, 5),
-							NonSI.DEGREE_ANGLE
-							)
-					);
-
-		if(!deltaCanardControlSurfaceList.contains(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)))
-			deltaCanardControlSurfaceList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));	
 
 		//---------------------------------------------------------------
 		// WING MOMENTUM POLE
@@ -1999,7 +1982,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				.setCanardNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseCanard)
 				.addAllDeltaElevatorList(deltaElevatorList)
 				.addAllDeltaRudderList(deltaRudderList)
-				.addAllDeltaCanardControlSurfaceList(deltaCanardControlSurfaceList)
 				.setAdimensionalWingMomentumPole(adimensionalWingMomentumPole)
 				.setAdimensionalHTailMomentumPole(adimensionalHTailMomentumPole)
 				.setAdimensionalVTailMomentumPole(adimensionalVTailMomentumPole)
@@ -2640,7 +2622,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			}
 		}
 	}
-
 	
 	public void calculate(String resultsFolderPath) {
 		

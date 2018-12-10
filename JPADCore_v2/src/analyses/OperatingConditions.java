@@ -235,6 +235,7 @@ public class OperatingConditions {
 		double throttleTakeOff = 0.0;
 		List<Amount<Angle>> deltaFlapListTakeOff = new ArrayList<>();
 		List<Amount<Angle>> deltaSlatListTakeOff = new ArrayList<>();
+		List<Amount<Angle>> deltaCanardListTakeOff = new ArrayList<>();
 		//.............................................................
 		String alphaCurrentTakeOffProperty = reader.getXMLPropertyByPath("//take_off/alpha_current");
 		if(alphaCurrentTakeOffProperty != null)
@@ -303,6 +304,21 @@ public class OperatingConditions {
 		}
 		else
 			deltaSlatListTakeOff.clear();
+		//.............................................................
+		List<String> deltaCanardTakeOffCheck = reader.getXMLPropertiesByPath(
+				"//take_off/delta_canard"
+				);
+		if(!deltaCanardTakeOffCheck.isEmpty()) {
+			List<String> deltaCanardTakeOffProperty = JPADXmlReader.readArrayFromXML(
+					reader.getXMLPropertiesByPath(
+							"//take_off/delta_canard"
+							).get(0)
+					);
+			for(int i=0; i<deltaCanardTakeOffCheck.size(); i++)
+				deltaCanardListTakeOff.add(Amount.valueOf(Double.valueOf(deltaCanardTakeOffProperty.get(i)), NonSI.DEGREE_ANGLE));
+		}
+		else
+			deltaCanardListTakeOff.clear();
 
 		///////////////////////////////////////////////////////////////
 		// LANDING DATA:
@@ -314,6 +330,7 @@ public class OperatingConditions {
 		double throttleLanding = 0.0;
 		List<Amount<Angle>> deltaFlapListLanding = new ArrayList<>();
 		List<Amount<Angle>> deltaSlatListLanding = new ArrayList<>();
+		List<Amount<Angle>> deltaCanardListLanding = new ArrayList<>();
 		//.............................................................
 		String alphaCurrentLandingProperty = reader.getXMLPropertyByPath("//landing/alpha_current");
 		if(alphaCurrentLandingProperty != null)
@@ -382,7 +399,21 @@ public class OperatingConditions {
 		}
 		else
 			deltaSlatListLanding.clear();
-
+		//.............................................................
+		List<String> deltaCanardLandingCheck = reader.getXMLPropertiesByPath(
+				"//landing/delta_canard"
+				);
+		if(!deltaCanardLandingCheck.isEmpty()) {
+			List<String> deltaCanardLandingProperty = JPADXmlReader.readArrayFromXML(
+					reader.getXMLPropertiesByPath(
+							"//landing/delta_canard"
+							).get(0)
+					);
+			for(int i=0; i<deltaCanardLandingCheck.size(); i++)
+				deltaCanardListLanding.add(Amount.valueOf(Double.valueOf(deltaCanardLandingProperty.get(i)), NonSI.DEGREE_ANGLE));
+		}
+		else
+			deltaCanardListLanding.clear();
 
 		///////////////////////////////////////////////////////////////
 		OperatingConditions theOperatingConditions = new OperatingConditions(
