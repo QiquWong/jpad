@@ -1,0 +1,167 @@
+%------------------------------------------------------------------------------------------
+% Meta-commands for the TeXworks editor
+%
+% !TEX encoding = UTF-8
+% !TEX program = pdflatex
+%------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------
+% INITIAL DEFINITIONS
+%------------------------------------------------------------------------------------------
+
+\input{_init}
+
+%------------------------------------------------------------------------------------------
+% LaTeX STARTING DECLARATION
+%------------------------------------------------------------------------------------------
+
+\documentclass[12pt,oneside]{book}
+
+%------------------------------------------------------------------------------------------
+% PREAMBLE
+%------------------------------------------------------------------------------------------
+
+\input{_preamble}
+
+%------------------------------------------------------------------------------------------
+% LOCAL USER-DEFINED MACROS & SETTINGS
+%------------------------------------------------------------------------------------------
+
+\input{_local_macros}
+
+%------------------------------------------------------------------------------------------
+% GLOSSARY SETTINGS
+%------------------------------------------------------------------------------------------
+
+\input{_glossary}
+
+%------------------------------------------------------------------------------------------
+% BEGIN DOCUMENT
+%------------------------------------------------------------------------------------------
+
+\begin{document}
+\selectlanguage{english}
+
+%------------------------------------------------------------------------------------------
+% FRONTISPIECE
+%------------------------------------------------------------------------------------------  
+                                                             
+\begin{frontespizio}
+\begin{Preambolo*}
+\usepackage{newtxtext}
+\renewcommand{\frontlogosep}{30pt}
+\renewcommand{\fronttitlefont}{\fontsize{23}{24}\bfseries }
+\renewcommand{\frontpretitlefont}{\fontsize{14}{16}\mdseries }
+\end{Preambolo*}
+\Margini {3cm}{2.5cm}{3cm}{2cm}
+\Istituzione {Universit\`a degli Studi di Napoli Federico II\\[0.5\baselineskip ] \textsc {Scuola Politecnica e delle Scienze di Base} }
+\Logo [3.5cm]{Immagini/Frontespizio/logounina.pdf}
+\Dipartimento {Ingegneria Industriale}
+\Corso [Laurea]{Ingegneria Aerospaziale}
+\Titoletto {Tesi di Laurea Magistrale\\ in\\ Ingegneria Aerospaziale}
+\Titolo {Aircraft Solid Modeling with JPAD and Automatic Workflows for High-Fidelity Numerical Aerodynamic Simulations}
+\Sottotitolo {\mbox{}\\[5pt]}
+\NCandidato {Candidato}
+\Candidato [M53/241]{Mario~Di~Stasio} 
+\NRelatore {Relatore}{}
+\Relatore {Prof.~Agostino~De~Marco}
+\Piede {Anno Accademico 2017/2018}
+\end{frontespizio}
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% ACKNOWLEDGEMENT
+% --------------------------------------------------------------------------------------------------------------------------------------------
+
+\newpage\null\thispagestyle{empty}
+\newpage\thispagestyle{empty}
+\null\vspace{\stretch{1}}
+\begin{flushright}
+\textit{Ai miei genitori} \\
+\end{flushright}
+\vspace{\stretch{2}}\null
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% ABSTRACT
+% --------------------------------------------------------------------------------------------------------------------------------------------
+
+\newpage\null\thispagestyle{empty}
+\newpage\thispagestyle{empty}
+\frontmatter
+\input{Frontmatter/Abstract}
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% TABLE OF CONTENTS
+% --------------------------------------------------------------------------------------------------------------------------------------------
+
+\tableofcontents
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% MAIN CONTENTS
+% --------------------------------------------------------------------------------------------------------------------------------------------
+
+\mainmatter
+\pagestyle{myBookPageStyle}
+\input{Capitoli/Chapter1}
+\input{Capitoli/Chapter2}
+\input{Capitoli/Chapter3}
+\input{Capitoli/Chapter4}
+\makeatletter
+\renewcommand{\bg@material}{}%
+\makeatother
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% APPENDIX
+% --------------------------------------------------------------------------------------------------------------------------------------------
+
+\clearpage \phantomsection
+\renewcommand{\chaptername}{Appendix}
+\renewcommand{\appendixtocname}{Appendices}
+\renewcommand{\appendixpagename}{Appendices}
+\appendixpage
+\noappendicestocpagenum
+\addappheadtotoc
+\pagestyle{myAppendixPageStyle}
+
+\begin{appendices}
+\input{Appendice/Appendix1}
+\input{Appendice/Appendix2}
+\end{appendices}
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% BIBLIOGRAPHY
+% --------------------------------------------------------------------------------------------------------------------------------------------
+
+\clearpage \phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\pagestyle{myBibliographyPageStyle}
+\nocite{*}
+\printbibliography[heading=myBibliography]
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% GLOSSARY, ACRONYMS, SYMBOLS
+% --------------------------------------------------------------------------------------------------------------------------------------------
+
+\glsaddall
+\glossarystyle{list}
+
+\markboth{}{}
+\clearpage
+\pagestyle{myGlossaryPageStyle}
+\printglossary[type=main]
+
+\markboth{}{}
+\clearpage
+\pagestyle{myAcronymsPageStyle}
+\printglossary[type=\acronymtype]
+
+%\markboth{}{}
+%\clearpage
+%\pagestyle{myListOfSymbolsPageStyle}
+%\printglossary[type=symbols]
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% END DOCUMENT
+% --------------------------------------------------------------------------------------------------------------------------------------------
+
+\end{document}
+

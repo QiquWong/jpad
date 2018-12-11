@@ -51,10 +51,10 @@ public class Test31mds {
 //				ComponentEnum.WING, 1e-3,
 				true, false, false);
 		
-		List<OCCShape> canardShapes = AircraftCADUtils.getLiftingSurfaceCAD(canard, 
-				WingTipType.ROUNDED, 
-//				ComponentEnum.CANARD, 1e-3,
-				true, false, false);		
+//		List<OCCShape> canardShapes = AircraftCADUtils.getLiftingSurfaceCAD(canard, 
+//				WingTipType.ROUNDED, 
+////				ComponentEnum.CANARD, 1e-3,
+//				true, false, false);		
 		
 		List<OCCShape> horizontalShapes = AircraftCADUtils.getLiftingSurfaceCAD(horizontal, 
 				WingTipType.ROUNDED, 
@@ -68,7 +68,7 @@ public class Test31mds {
 		
 		String filename = "AircraftCADUtils_Test.brep";
 		
-		if (OCCUtils.write(filename, wingShapes, canardShapes, horizontalShapes, verticalShapes))
+		if (OCCUtils.write(filename, wingShapes, horizontalShapes, verticalShapes))
 			System.out.println("[Test31mds] CAD shapes correctly written to file (" + filename + ")");
 	}
 

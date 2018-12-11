@@ -22,14 +22,17 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
+import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ComponentEnum;
 import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADExplorer;
 import it.unina.daf.jpadcad.occ.CADFace;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
+import it.unina.daf.jpadcad.occ.CADShapeTypes;
 import it.unina.daf.jpadcad.occ.CADShell;
 import it.unina.daf.jpadcad.occ.CADWire;
 import it.unina.daf.jpadcad.occ.OCCEdge;
+import it.unina.daf.jpadcad.occ.OCCExplorer;
 import it.unina.daf.jpadcad.occ.OCCFace;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
@@ -39,6 +42,7 @@ import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCWire;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils.XSpacingType;
 import opencascade.BRepOffsetAPI_MakeFilling;
+import opencascade.BRep_Tool;
 import opencascade.GeomAbs_Shape;
 import opencascade.TopoDS;
 import opencascade.gp_Pnt;
@@ -1005,18 +1009,12 @@ public class AircraftCADUtils {
 		// ----------------------------------------------
 		// Generate vertical supporting sections points
 		// ----------------------------------------------
-		int nVSec1 = 7;
-		int nVSec2 = 10;
-		
+		int nVSec1 = 9;
+		int nVSec2 = 10;		
 		double mainVSecStation = 0.25;
 		
-//		Double[] vec1 = MyArrayUtils.halfCosine1SpaceDouble(0.0, 1.0, nVSec1);	
-		Double[] vec1_0 = new Double[] {0.008, 0.035};
-		Double[] vec1_1 = MyArrayUtils.convertListOfDoubleToDoubleArray(Arrays.stream(MyArrayUtils.halfCosine1SpaceDouble(vec1_0[1], 1.0, nVSec1)).skip(1).collect(Collectors.toList()));
-		Double[] vec1 = Stream.of(vec1_0, vec1_1).flatMap(Stream::of).toArray(Double[]::new);	
+		Double[] vec1 = MyArrayUtils.halfCosine1SpaceDouble(0.0, 1.0, nVSec1);	
 		Double[] vec2 = MyArrayUtils.linspaceDouble(0.0, 1.0, nVSec2);
-		
-		System.out.println(Arrays.toString(vec1));
 		
 		double[] vSecVec1 = MyArrayUtils.convertToDoublePrimitive(
 				Arrays.asList(vec1).stream()
@@ -1025,7 +1023,6 @@ public class AircraftCADUtils {
 		
 		double[] vSecVec2 = MyArrayUtils.convertToDoublePrimitive(
 				Arrays.asList(vec2).stream()
-//								   .skip(1)
 								   .limit(nVSec2 - 1)
 								   .collect(Collectors.toList()));
 				
@@ -1385,30 +1382,50 @@ public class AircraftCADUtils {
 			vertCrvs2.forEach(w -> wingTipShapes.add((OCCShape) w));
 		}
 		
+		// ---------------------------------------------------------
+		// Generate a guide curve passing through the apex points
+		// ---------------------------------------------------------
+		List<double[]> apexCrvPts1 = new ArrayList<>();
+		apexCrvPts1.add(airfoilTipCrvs.get(0).vertices()[1].pnt());
+		apexCrvPts1.addAll(verticalCrvsApexes1);
+		
+		// Split the guide curve
+		CADEdge apexCrv1 = OCCUtils.splitCADCurve(
+				OCCUtils.theFactory.newCurve3D(apexCrvPts1, false), 
+				vertCrvs1.get(1).vertices().get(1).pnt()
+				).get(0);
+				
 		// ---------------------------------------------------------------------
 		// Patching through the first two sections, creating a filler surface
 		// ---------------------------------------------------------------------
 		
-		// Generate a closed wire for filler surface
-		List<CADEdge> fillerEdges = new ArrayList<>(); 
+		// Generate a closed wire for filler surface (upper)
+		List<CADEdge> fillerEdgesUpp = new ArrayList<>(); 
 		
-		fillerEdges.add(OCCUtils.splitCADCurve(
+		fillerEdgesUpp.add(OCCUtils.splitCADCurve(
 				airfoilTipCrvs.get(0), 
 				vertCrvs1.get(1).vertices().get(0).pnt()
 				).get(1));
 		
-		fillerEdges.add(vertCrvs1.get(1).edges().get(0));
-		fillerEdges.add(vertCrvs1.get(1).edges().get(1));
+		fillerEdgesUpp.add(vertCrvs1.get(1).edges().get(0));
 		
-		fillerEdges.add(OCCUtils.splitCADCurve(
+		fillerEdgesUpp.add(apexCrv1);
+		
+		// Generate a closed wire for filler surface (upper)
+		List<CADEdge> fillerEdgesLow = new ArrayList<>(); 
+		
+		fillerEdgesLow.add(apexCrv1);
+		
+		fillerEdgesLow.add(vertCrvs1.get(1).edges().get(1));
+
+		fillerEdgesLow.add(OCCUtils.splitCADCurve(
 				airfoilTipCrvs.get(1), 
 				vertCrvs1.get(1).vertices().get(2).pnt()
-				).get(0));
+				).get(0));	
 		
 		// Generate control points for the filler surface
 		List<double[]> controlCrvUppPts = new ArrayList<>();
 		List<double[]> controlCrvLowPts = new ArrayList<>();
-		List<double[]> controlCrvPts = new ArrayList<>();
 		
 		CADGeomCurve3D controlCrvUpp = OCCUtils.theFactory.newCurve3D(vertCrvs1.get(0).edges().get(0));
 		CADGeomCurve3D controlCrvLow = OCCUtils.theFactory.newCurve3D(vertCrvs1.get(0).edges().get(1));
@@ -1421,15 +1438,14 @@ public class AircraftCADUtils {
 				controlCrvLowPts.add(controlCrvLow.value(d*(controlCrvLowRng[1] - controlCrvLowRng[0]) + controlCrvLowRng[0]));
 		});
 		
-		controlCrvPts.addAll(controlCrvUppPts);
-		controlCrvPts.addAll(controlCrvLowPts);
-		
-		// Generate the filler surface in one step
-		CADFace wingTipFillerFace = OCCUtils.makeFilledFace(fillerEdges, controlCrvPts);
+		// Generate the filler surface in two steps
+		CADFace wingTipFillerFaceUpp = OCCUtils.makeFilledFace(fillerEdgesUpp, controlCrvUppPts);
+		CADFace wingTipFillerFaceLow = OCCUtils.makeFilledFace(fillerEdgesLow, controlCrvLowPts);
 		
 		// TODO: delete after function completion
 		if (exportSupportShapes) {
-			wingTipShapes.add((OCCShape) wingTipFillerFace);
+			wingTipShapes.add((OCCShape) wingTipFillerFaceUpp);
+			wingTipShapes.add((OCCShape) wingTipFillerFaceLow);
 		}
 		
 		// ---------------------------------------------------------------------
@@ -1442,7 +1458,7 @@ public class AircraftCADUtils {
 		
 		// TODO: delete after function completion
 		if (exportSupportShapes) {
-			wingTipShapes.add((OCCShape) wingTipShell1);
+//			wingTipShapes.add((OCCShape) wingTipShell1);
 		}
 		
 		// ------------------------------------------------------------
@@ -1466,10 +1482,34 @@ public class AircraftCADUtils {
 		
 		// TODO: delete after function completion
 		if (exportSupportShapes) {
-			wingTipShapes.add((OCCShape) wingTipShell2);
-			wingTipShapes.add((OCCShape) wingTipShell3);
-			wingTipShapes.add((OCCShape) wingTipShell4);
+//			wingTipShapes.add((OCCShape) wingTipShell2);
+//			wingTipShapes.add((OCCShape) wingTipShell3);
+//			wingTipShapes.add((OCCShape) wingTipShell4);
 		}
+		
+		// -------------------------------------
+		// Sewing all the tip patches together
+		// -------------------------------------
+		OCCShell wingTipShell = (OCCShell) OCCUtils.theFactory.newShellFromAdjacentShells(
+				OCCUtils.theFactory.newShellFromAdjacentFaces(
+						wingTipFillerFaceUpp, 
+						wingTipFillerFaceLow),
+				wingTipShell1,
+				wingTipShell2,
+				wingTipShell3,
+				wingTipShell4
+				);
+		
+		if (exportSupportShapes) {
+			wingTipShapes.add(wingTipShell);
+		}
+		
+		// ----------------------------------------
+		// Searching for the new tip airfoil wire
+		// ----------------------------------------		
+		OCCExplorer explorer = new OCCExplorer();
+		
+		explorer.init(wingTipShell, CADShapeTypes.WIRE);
 		
 		return wingTipShapes;
 	}

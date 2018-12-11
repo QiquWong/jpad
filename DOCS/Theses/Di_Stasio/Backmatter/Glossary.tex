@@ -1,0 +1,143 @@
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% Meta-commands for the TeXworks editor
+%
+% !TeX root = ./Tesi.tex
+% !TEX encoding = UTF-8
+% !TEX program = pdflatex
+% --------------------------------------------------------------------------------------------------------------------------------------------
+
+% --------------------------------------------------------------------------------------------------------------------------------------------
+% GLOSSARY ENTRIES
+% --------------------------------------------------------------------------------------------------------------------------------------------
+
+% ------------------------ Main glossary
+\newdualentry{MDO}                              % label
+  {MDO}                                                % abbreviation
+  {Multi-disciplinary Design Optimization}  % long form
+  {Multi-disciplinary design optimization (MDO) is a field of engineering that uses optimization methods to solve design problems incorporating a number of disciplines. MDO allows designers to incorporate all relevant disciplines simultaneously. The optimum of the simultaneous problem is superior to the design found by optimizing each discipline sequentially, since it can exploit the interactions between the disciplines. However, including all disciplines simultaneously significantly increases the complexity of the problem}  % description
+  
+\newdualentry{CAD}                              % label
+  {CAD}                                                % abbreviation
+  {Computer-Aided Design}                    % long form
+  {Computer-aided design (CAD) is the use of computer systems to aid in the creation, modification, analysis or optimization of a design. CAD software is used to increase the productivity of the designer, improve the quality of design, improve communications through documentation, and to create a database for manifacturing}                                     % description
+
+\newdualentry{CFD}                              % label
+  {CFD}                                                % abbreviation
+  {Computational Fluid Dynamics}           % long form
+  {Computational fluid dynamics (CFD) is a branch of fluid mechanics tha uses numerical analysis and data structures to solve and analyze problems tha involve fluid flows. Computers are used to perform the calculations required to simulate the interaction of liquids and gases with surfaces defined by boundary conditions. With high-speed supercomputers better solutions can be achieved}   % description
+  
+\newdualentry{FEM}                              % label
+  {FEM}                                                % abbreviation
+  {Finite Element Method}                      % long form
+  {Finite element method (FEM) is a numerical method for solving problems of engineering and mathematical physics. Typical problem areas of interest include structural analysis, heat transfer, fluid flow, mass transport, and electromagnetic potential}   % description
+  
+\newdualentry{JPAD}                             % label
+  {JPAD}                                                % abbreviation
+  {Java Program toolchain for Aircraft Design}  % long form
+  {Collection of libraries and classes with the aim of providing complete aircraft preliminary design analyses through the use of several semi-empirical formulas tested against experimental data}            % description
+  
+\newdualentry{IDE}                                % label
+  {IDE}                                                  % abbreviation
+  {Integrated Development Environment}  % long form
+  {An integrated development environment (IDE) is a software application that provides comprehensive facilities to computer programmers for software development. An IDE normally consists of a source code editor, build automation tools and a debugger. Most modern IDEs have an intelligent code completion. Some IDEs contain a compiler, interpreter, or both, such as NetBeans and Eclipse; others do not, such as SharpDevelop and Lazarus. The boundary between an integrated development environment and other parts of the broader software development environment is not well-defined. Sometimes a version control system, or various tools to simplify the construction of a Graphical User Interface (GUI), are integrated. Many modern IDEs also have a class browser, an object browser, and a class hierarchy diagram, for use in object-oriented software development}  % description
+  
+\newdualentry{OCCT}                            % label
+  {OCCT}                                              % abbreviation
+  {Open CASCADE Technology}               % long form
+  {Open CASCADE Technology (OCCT) is an open-source software development platform for 3D CAD, CAM, CAE, etc. that is developed and supported by Open CASCADE SAS}  % description
+  
+\newdualentry{DOC}                             % label
+  {DOC}                                                % abbreviation
+  {Direct Operative Cost}                        % long form
+  {The totality of aircraft costs directly connected to the aircraft flight. It can be seen as the amount of money necessary to carry 1 ton of payload upon 1 km}
+  
+\newdualentry{CSG}                             % label
+  {CSG}                                                % abbreviation
+  {Constructive Solid Geometry}              % long form
+  {Constructive solid geometry (CSG) (formerly called computational binary solid geometry) is a tecnique used in solid modeling which allows a modeler to create a complex surface or object by using boolean operators to combine simpler objects}  % description
+  
+\newdualentry{BRep}                             % label
+  {BRep}                                               % abbreviation
+  {Boundary Representation}                   % long form
+  {In solid modeling and computer-aided design, boundary representation (BRep) is a method for representing shapes using the limits. A solid is represented as a collection of connected surface elements, the boundary between solid and non-solid. Boundary representation of models are composed of two parts: topology and geometry (points, curves and surfaces)}  % description
+  
+\newdualentry{SWIG}                                       % label
+  {SWIG}                                                         % abbreviation
+  {Simplified Wrapper and Interface Generator}  % long form
+  {The Simplified Wrapper and Interface Generator (SWIG) is an open-source software tool used to connect computer programs or libraries written in C or C++ with languages such as Java}                         % description
+  
+\newglossaryentry{manifold:geometry}{%
+	name=Manifold Geometry,
+	description={Manifold is a geometric topology term meaning that disjoint lumps are allowed to exist in a single logical body. On the other hand, non-manifold means that all disjoint lumps must be their own logical body. In practice, manifold essentially means manufacturable, while non-manifold means non-manufacturable. Disconnected vertices and edges, internal faces, and areas with no thickness, are all examples of non-manifold geometry}
+}
+
+\newglossaryentry{design:pattern}{%
+	name=Design Pattern,
+	description={In software engineering, a design pattern is a general repeatable solution to a commonly occurring problem in software design. A design pattern isn't a finished design that can be transformed directly into code. It is a description or template for how to solve a problem that can be used in many different situations}
+}
+
+\newglossaryentry{List}{%
+	name=List,
+	description={A Java interface, extending the Collection one, that gives users the possibility to generate ordered collections. The user of this interface has control over where in the list each element is inserted. Elements of the list can be accessed using their integer index (i.e., their position in the list). It also allows the user to search for elements in the list}
+}
+
+\newdualentry{JAR}                                         % label
+  {JAR}                                                           % abbreviation
+  {Java ARchive}                                              % long form
+  {A JAR (Java ARchive) is a package file format typically used to aggregate many Java class files and associated metadata and resources into one file for distribution. They are built on the ZIP format and typically have a .jar file extension}  % description
+  
+\newdualentry{CAE}                                         % label
+  {CAE}                                                           % abbreviation
+  {Computer-aided Engineering}                        % long form
+  {Computer-aided engineering (CAE) is the use of computer software to simulate performance in order to improve product designs or assist in the resolution of engineering problems for a wide range of industries. This includes simulation, validation and optimization of products, processes, and manufacturing tools. CAE areas covered include: stress analysis (FEA), thermal and fluid flow analysis (CFD), multibody dynamics and kinematics.}  % description
+  
+\newglossaryentry{Map}{%
+	name=Map,
+	description={A Map is an object that maps keys to values. Each key and value pair is known as an entry. Its is extremely useful in case there is need to search, update or delete elements on the basis of key. The Java general Map interface doesn't allow duplicate keys, but it is possible to have duplicate values. Some implementations of the Map interface allows null keys and values}
+}
+
+\newglossaryentry{File}{%
+	name=File,
+	description={A Java class representing files and directory path names in an abstract manner. This class is used for creation of files and directories, file searching, file deletion, etc. The File object created by means of the File class represents the actual file/directory on the disk}
+}
+  
+% ------------------------ Acronyms
+\newacronym{acr:GUI}{GUI}{%
+  Graphical User Interface
+}
+
+\newacronym{acr:OML}{OML}{%
+  Outer Mold-Line
+}
+
+\newacronym{acr:FFD}{FFD}{%
+  Free-Form Deformation
+}
+
+\newacronym{acr:API}{API}{%
+  Application Programming Interface
+}
+
+\newacronym{acr:NURBS}{NURBS}{%
+  Non-Uniform Rational B-Spline
+} 
+
+\newacronym{acr:SDK}{SDK}{%
+  Software Development Kit
+} 
+
+\newacronym{acr:UML}{UML}{%
+  Unified Modeling Language
+} 
+
+\newacronym{acr:AOA}{AOA}{%
+  angle of attack
+} 
+
+\newacronym{acr:ISA}{ISA}{%
+  International Standard Atmosphere
+} 
+
+\newacronym{acr:ICAO}{ICAO}{%
+  International Civil Aviation Organization
+} 

@@ -11,7 +11,6 @@ public class OCCEdge extends OCCShape implements CADEdge
 	@Override
 	public final TopoDS_Edge getShape()
 	{
-		//return (TopoDS_Edge) myShape;
 		return TopoDS.ToEdge(myShape);
 	}
 
@@ -35,7 +34,7 @@ public class OCCEdge extends OCCShape implements CADEdge
 		//  A CADExplorer must not be used here because it
 		//  does not necessarily return vertices in the same order.
 		//  TopExp.vertices takes care of edge orientation.
-		//TopoDS_Vertex [] tv = TopExp.vertices(getShape());
+		// TopoDS_Vertex[] tv = TopExp.vertices(getShape());
 
 		TopoDS_Vertex tv1 = new TopoDS_Vertex();
 		TopoDS_Vertex tv2 = new TopoDS_Vertex();

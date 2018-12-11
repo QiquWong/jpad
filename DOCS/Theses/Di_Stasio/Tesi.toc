@@ -1,0 +1,82 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {italian}{}
+\babel@toc {italian}{}
+\babel@toc {english}{}
+\babel@toc {italian}{}
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}JPAD: an overview}{8}{chapter.1}
+\contentsline {section}{\numberline {1.1}Java choice}{9}{section.1.1}
+\contentsline {section}{\numberline {1.2}Software architecture}{10}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}Input files}{10}{subsection.1.2.1}
+\contentsline {subsection}{\numberline {1.2.2}Libraries}{14}{subsection.1.2.2}
+\contentsline {subsubsection}{\texttt {JPADCore}}{14}{subsubsection*.5}
+\contentsline {subsubsection}{\texttt {JPADConfigs}}{15}{subsubsection*.6}
+\contentsline {subsubsection}{\texttt {JPADCommander}}{15}{subsubsection*.7}
+\contentsline {subsubsection}{\texttt {JPADSandBox}}{16}{subsubsection*.10}
+\contentsline {subsubsection}{\texttt {JPADCAD} - \texttt {JPADCADSandBox}}{17}{subsubsection*.11}
+\contentsline {subsection}{\numberline {1.2.3}Analyses}{17}{subsection.1.2.3}
+\contentsline {chapter}{\numberline {2}\texttt {JPADCAD} module}{21}{chapter.2}
+\contentsline {section}{\numberline {2.1}CAD: motivations and approaches}{21}{section.2.1}
+\contentsline {section}{\numberline {2.2}Open CASCADE Technology}{23}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Modeling Data and Algorithms}{25}{subsection.2.2.1}
+\contentsline {subsubsection}{Geometry}{25}{subsubsection*.16}
+\contentsline {subsubsection}{Topology}{26}{subsubsection*.17}
+\contentsline {subsubsection}{Geometry Utilities}{27}{subsubsection*.18}
+\contentsline {subsubsection}{Topology Tools and Algorithms}{29}{subsubsection*.19}
+\contentsline {subsection}{\numberline {2.2.2}Data Exchange}{30}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}Open CASCADE Technology Java Wrapper}{31}{subsection.2.2.3}
+\contentsline {section}{\numberline {2.3}\texttt {JPADCAD} structure}{31}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Abstract Factory pattern}{32}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}\texttt {JPADCAD} classes and utilities}{34}{subsection.2.3.2}
+\contentsline {subsubsection}{Shape classes}{34}{subsubsection*.22}
+\contentsline {subsubsection}{Geometry classes}{38}{subsubsection*.26}
+\contentsline {subsubsection}{Factory and Utility classes}{42}{subsubsection*.28}
+\contentsline {subsection}{\numberline {2.3.3}Examples}{44}{subsection.2.3.3}
+\contentsline {chapter}{\numberline {3}A utility class for aircraft modeling: \texttt {AircraftUtils}}{49}{chapter.3}
+\contentsline {section}{\numberline {3.1}Introduction}{49}{section.3.1}
+\contentsline {section}{\numberline {3.2}\texttt {AircraftUtils} overview}{49}{section.3.2}
+\contentsline {section}{\numberline {3.3}Fuselage CAD method}{51}{section.3.3}
+\contentsline {section}{\numberline {3.4}Lifting surface CAD method}{62}{section.3.4}
+\contentsline {section}{\numberline {3.5}\texttt {AircraftUtils} additional methods}{77}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}\texttt {importAircraft}}{78}{subsection.3.5.1}
+\contentsline {subsection}{\numberline {3.5.2}\texttt {enum} classes}{78}{subsection.3.5.2}
+\contentsline {subsubsection}{\texttt {FileExtension}}{78}{subsubsection*.51}
+\contentsline {subsubsection}{\texttt {XSpacingType}}{78}{subsubsection*.52}
+\contentsline {subsection}{\numberline {3.5.3}CAD methods overload}{79}{subsection.3.5.3}
+\contentsline {subsection}{\numberline {3.5.4}\texttt {getAircraftSolidFile}}{82}{subsection.3.5.4}
+\contentsline {section}{\numberline {3.6}Example}{82}{section.3.6}
+\contentsline {chapter}{\numberline {4}Automatic workflows for aerodynamic simulations}{85}{chapter.4}
+\contentsline {section}{\numberline {4.1}Introduction}{85}{section.4.1}
+\contentsline {section}{\numberline {4.2}STAR-CCM+ overview}{86}{section.4.2}
+\contentsline {section}{\numberline {4.3}A supporting package: \texttt {MacroExtras}}{87}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}\texttt {enum} classes}{87}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Simulation data classes}{88}{subsection.4.3.2}
+\contentsline {subsubsection}{\texttt {GeometricData} class}{88}{subsubsection*.55}
+\contentsline {subsubsection}{\texttt {OperatingConditions} class}{91}{subsubsection*.56}
+\contentsline {subsubsection}{\texttt {SimulationParameters} class}{93}{subsubsection*.58}
+\contentsline {subsection}{\numberline {4.3.3}XML operations classes}{94}{subsection.4.3.3}
+\contentsline {subsubsection}{\texttt {DataWriter} class}{94}{subsubsection*.60}
+\contentsline {subsubsection}{\texttt {DataReader} class}{97}{subsubsection*.61}
+\contentsline {subsubsection}{\texttt {MyStringUtils} class}{98}{subsubsection*.62}
+\contentsline {subsection}{\numberline {4.3.4}CAD files management: \texttt {SimulationComponents} class}{98}{subsection.4.3.4}
+\contentsline {section}{\numberline {4.4}Running STAR-CCM+ macros from inside JPAD}{101}{section.4.4}
+\contentsline {subsection}{\numberline {4.4.1}The macro}{102}{subsection.4.4.1}
+\contentsline {subsubsection}{\texttt {initializeSimulation}}{104}{subsubsection*.64}
+\contentsline {subsubsection}{\texttt {importCADParts}}{104}{subsubsection*.65}
+\contentsline {subsubsection}{\texttt {createFluidDomain}}{105}{subsubsection*.66}
+\contentsline {subsubsection}{\texttt {createReferenceValuesReports} - \texttt {createDirectionFieldFunctions}}{107}{subsubsection*.67}
+\contentsline {subsubsection}{\texttt {createMesh}}{108}{subsubsection*.68}
+\contentsline {subsubsection}{\texttt {physicsSetup}}{110}{subsubsection*.71}
+\contentsline {subsubsection}{\texttt {createAerodynamicsCoefficients}}{111}{subsubsection*.72}
+\contentsline {subsubsection}{\texttt {createBoundaryConditions}}{112}{subsubsection*.73}
+\contentsline {subsubsection}{\texttt {runSimulation} - \texttt {saveSimulation} - \texttt {killSimulation}}{114}{subsubsection*.74}
+\contentsline {subsection}{\numberline {4.4.2}The launching class}{114}{subsection.4.4.2}
+\contentsline {subsection}{\numberline {4.4.3}Interoperability example}{121}{subsection.4.4.3}
+\contentsline {chapter}{Appendices}{}{section*.82}
+\contentsline {chapter}{\numberline {A}Advanced aircraft CAD modeling}{125}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Wing-Fuselage fairing modeling}{125}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Control surfaces modeling}{131}{section.a.A.2}
+\contentsline {chapter}{\numberline {B}Importing CAD models into a JavaFX window}{136}{Appendix.a.B}
+\contentsline {chapter}{Bibliography}{139}{section*.98}
+\contentsline {chapter}{Glossary}{141}{section*.100}
+\contentsline {chapter}{Acronyms}{144}{section*.102}

@@ -452,6 +452,26 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	@Override
+	public CADShell newShellFromAdjacentShells(CADShell ... cadShells) {
+		return newShellFromAdjacentShells(Arrays.asList(cadShells));
+	}
+	
+	@Override
+	public CADShell newShellFromAdjacentShells(List<CADShell> cadShells) {
+		CADShell ret = null;
+		BRepBuilderAPI_Sewing sewer = new BRepBuilderAPI_Sewing();
+		cadShells.forEach(s -> sewer.Add(((OCCShell) s).getShape()));
+		sewer.Perform();		
+		TopoDS_Shape sewedShape = sewer.SewedShape();
+		
+		TopExp_Explorer exp = new TopExp_Explorer(sewedShape, TopAbs_ShapeEnum.TopAbs_SHELL);
+		if (exp.More() == 1) {
+			ret = (CADShell) newShape(exp.Current());
+		}	
+		return ret;
+	}
+	
+	@Override
 	public CADSolid newSolidFromAdjacentFaces(CADFace ... cadFaces) {
 		return newSolidFromAdjacentFaces(Arrays.asList(cadFaces));
 	}

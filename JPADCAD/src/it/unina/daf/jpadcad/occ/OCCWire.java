@@ -1,6 +1,8 @@
 package it.unina.daf.jpadcad.occ;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import opencascade.BRepBuilderAPI_MakeWire;
@@ -17,6 +19,7 @@ import opencascade.gp_Pnt;
 
 public class OCCWire extends OCCShape implements CADWire
 {	
+	
 	@Override
 	public final TopoDS_Wire getShape()
 	{
@@ -94,8 +97,13 @@ public class OCCWire extends OCCShape implements CADWire
 		TopoDS_Shape occWire = null;
 		
 		BRepBuilderAPI_MakeWire wireMaker = new BRepBuilderAPI_MakeWire();	
-		for (int i = 0; i < cadEdges.size(); i++) {			
-			wireMaker.Add(((OCCEdge) cadEdges.get(i)).getShape());
+//		for (int i = 0; i < cadEdges.size(); i++) {			
+//			wireMaker.Add(((OCCEdge) cadEdges.get(i)).getShape());
+//		}
+		
+		for (Iterator<CADEdge> iter = cadEdges.iterator(); iter.hasNext(); ) {
+			CADEdge edge = iter.next();		
+			wireMaker.Add(((OCCEdge) edge).getShape());
 		}
 		
 		occWire = wireMaker.Wire();

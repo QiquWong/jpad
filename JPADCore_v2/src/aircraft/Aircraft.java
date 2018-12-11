@@ -64,6 +64,10 @@ public class Aircraft {
 
 	private IAircraft _theAircraftInterface;
 	
+	// TODO: for applications such as CAD automation that do not need analysis tools
+	// agodemar
+	private boolean _searchForDatabasesOnConstruction = true;	
+	
 	//-----------------------------------------------------------------------------------
 	// DERIVED DATA
 	private Amount<Area> _sWetTotal = Amount.valueOf(0.0, SI.SQUARE_METRE);
@@ -1337,6 +1341,10 @@ public class Aircraft {
 
 	public void setSystemsFilePath(String _systemsFilePath) {
 		this._systemsFilePath = _systemsFilePath;
+	}
+
+	public boolean doSearchForDatabasesOnConstruction() {
+		return _searchForDatabasesOnConstruction;
 	}
 	
 } 
