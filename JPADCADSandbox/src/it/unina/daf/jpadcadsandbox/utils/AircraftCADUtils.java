@@ -44,7 +44,12 @@ import it.unina.daf.jpadcadsandbox.utils.AircraftUtils.XSpacingType;
 import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRep_Tool;
 import opencascade.GeomAbs_Shape;
+import opencascade.ShapeAnalysis_FreeBounds;
+import opencascade.TopAbs_ShapeEnum;
+import opencascade.TopExp_Explorer;
 import opencascade.TopoDS;
+import opencascade.TopoDS_Compound;
+import opencascade.TopoDS_Wire;
 import opencascade.gp_Pnt;
 import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
@@ -940,11 +945,11 @@ public class AircraftCADUtils {
 		// Eventually export the sketching plane for the wing tip
 		// -----------------------------------------------------------
 		if (exportSupportShapes) {
-			wingTipShapes.add((OCCShape) OCCUtils.theFactory.newWireFromAdjacentEdges(
-					OCCUtils.theFactory.newCurve3DP(Arrays.asList(pvA, pvB), false).edge(),
-					OCCUtils.theFactory.newCurve3DP(Arrays.asList(pvB, pvC), false).edge(),
-					OCCUtils.theFactory.newCurve3DP(Arrays.asList(pvC, pvD), false).edge()
-					));
+//			wingTipShapes.add((OCCShape) OCCUtils.theFactory.newWireFromAdjacentEdges(
+//					OCCUtils.theFactory.newCurve3DP(Arrays.asList(pvA, pvB), false).edge(),
+//					OCCUtils.theFactory.newCurve3DP(Arrays.asList(pvB, pvC), false).edge(),
+//					OCCUtils.theFactory.newCurve3DP(Arrays.asList(pvC, pvD), false).edge()
+//					));
 		}
 		
 		// --------------------------------------
@@ -958,7 +963,7 @@ public class AircraftCADUtils {
 		
 		// TODO: to cancel after function completion
 		if (exportSupportShapes) {
-			wingTipShapes.add((OCCShape) tipCamberCrv.edge());
+//			wingTipShapes.add((OCCShape) tipCamberCrv.edge());
 		}
 		
 		// --------------------------------------------
@@ -1002,8 +1007,8 @@ public class AircraftCADUtils {
 				sketchPlaneCrv2Pts, false, tangE, tangG, false);
 		
 		if (exportSupportShapes) {
-			wingTipShapes.add((OCCShape) sketchPlaneCrv1.edge());
-			wingTipShapes.add((OCCShape) sketchPlaneCrv2.edge());
+//			wingTipShapes.add((OCCShape) sketchPlaneCrv1.edge());
+//			wingTipShapes.add((OCCShape) sketchPlaneCrv2.edge());
 		}
 		
 		// ----------------------------------------------
@@ -1378,8 +1383,8 @@ public class AircraftCADUtils {
 				));
 		
 		if (exportSupportShapes) {
-			vertCrvs1.forEach(w -> wingTipShapes.add((OCCShape) w));
-			vertCrvs2.forEach(w -> wingTipShapes.add((OCCShape) w));
+//			vertCrvs1.forEach(w -> wingTipShapes.add((OCCShape) w));
+//			vertCrvs2.forEach(w -> wingTipShapes.add((OCCShape) w));
 		}
 		
 		// ---------------------------------------------------------
@@ -1444,8 +1449,8 @@ public class AircraftCADUtils {
 		
 		// TODO: delete after function completion
 		if (exportSupportShapes) {
-			wingTipShapes.add((OCCShape) wingTipFillerFaceUpp);
-			wingTipShapes.add((OCCShape) wingTipFillerFaceLow);
+//			wingTipShapes.add((OCCShape) wingTipFillerFaceUpp);
+//			wingTipShapes.add((OCCShape) wingTipFillerFaceLow);
 		}
 		
 		// ---------------------------------------------------------------------
@@ -1487,6 +1492,26 @@ public class AircraftCADUtils {
 //			wingTipShapes.add((OCCShape) wingTipShell4);
 		}
 		
+		// ------------------------------------------------------------
+		// Generate a face at the trailing edge of the wing tip
+		// ------------------------------------------------------------
+		List<CADEdge> teEdgeList = new ArrayList<>();
+		teEdgeList.addAll(vertCrvs2.get(vertCrvs2.size() - 1).edges());
+		teEdgeList.add(OCCUtils.theFactory.newCurve3D(
+				vertCrvs2.get(vertCrvs2.size() - 1).vertices().get(2).pnt(), 
+				vertCrvs2.get(vertCrvs2.size() - 1).vertices().get(0).pnt()
+				).edge());
+		
+		OCCWire teWire = (OCCWire) OCCUtils.theFactory.newWireFromAdjacentEdges(teEdgeList);
+		
+		// TODO: delete after function completion
+		if (exportSupportShapes) {
+			wingTipShapes.add(teWire);
+		}
+				
+		// TODO: check this function
+		CADFace teTipFace = OCCUtils.theFactory.newFace(teWire);
+		
 		// -------------------------------------
 		// Sewing all the tip patches together
 		// -------------------------------------
@@ -1501,15 +1526,55 @@ public class AircraftCADUtils {
 				);
 		
 		if (exportSupportShapes) {
-			wingTipShapes.add(wingTipShell);
+//			wingTipShapes.add(wingTipShell);
 		}
 		
 		// ----------------------------------------
 		// Searching for the new tip airfoil wire
-		// ----------------------------------------		
-		OCCExplorer explorer = new OCCExplorer();
+		// ----------------------------------------	
+//		System.out.println(OCCUtils.reportOnShape(wingTipShell.getShape(), "Wing tip shell"));
+//		
+		double tipChordLength = PVector.sub(pvA, pvD).mag();
+//		OCCExplorer explorer = new OCCExplorer();
+//		
+//		explorer.init(wingTipShell, CADShapeTypes.WIRE);
+//		List<OCCWire> expWires = new ArrayList<>();
+//		while (explorer.more()) {
+//			double wireLength = ((OCCWire) explorer.current()).length();
+//			
+//			System.out.println("Wire length = " + wireLength);
+//			
+//			if (wireLength > 2 * tipChordLength)
+//				expWires.add((OCCWire) explorer.current());
+//			
+//			explorer.next();
+//		}
+//		
+//		System.out.println("Number of found wires: " + expWires.size());
 		
-		explorer.init(wingTipShell, CADShapeTypes.WIRE);
+		ShapeAnalysis_FreeBounds shapeAnalyzer = new ShapeAnalysis_FreeBounds(wingTipShell.getShape());
+		TopoDS_Compound wires = shapeAnalyzer.GetClosedWires();
+		
+		// Explore the compound of wires
+		List<OCCWire> expWires = new ArrayList<>();
+		TopExp_Explorer explorer = new TopExp_Explorer(wires, TopAbs_ShapeEnum.TopAbs_WIRE);
+		while (explorer.More() > 0) {
+			OCCWire wire = (OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(explorer.Current()));
+			
+			System.out.println("Wire length: " + wire.length());
+			
+			if (wire.length() > 2 * tipChordLength)
+				expWires.add(wire);
+			
+			explorer.Next();			
+		}
+		
+		System.out.println("Number of found wires: " + expWires.size());
+		
+		// TODO: delete after function completion
+		if (exportSupportShapes) {
+//			wingTipShapes.add(expWires.get(0));
+		}
 		
 		return wingTipShapes;
 	}

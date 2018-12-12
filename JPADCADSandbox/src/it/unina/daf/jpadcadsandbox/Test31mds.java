@@ -68,7 +68,7 @@ public class Test31mds {
 		
 		String filename = "AircraftCADUtils_Test.brep";
 		
-		if (OCCUtils.write(filename, wingShapes, horizontalShapes, verticalShapes))
+		if (OCCUtils.write(filename, wingShapes))
 			System.out.println("[Test31mds] CAD shapes correctly written to file (" + filename + ")");
 	}
 

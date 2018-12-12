@@ -430,6 +430,15 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	@Override
+	public CADFace newFace(CADWire wire) {
+		TopoDS_Wire tdsWire = TopoDS.ToWire(((OCCShape) wire).getShape());
+		
+		BRepBuilderAPI_MakeFace faceMaker = new BRepBuilderAPI_MakeFace(tdsWire, 0);
+		
+		return (CADFace) newShape(faceMaker.Face());
+	}
+	
+	@Override
 	public CADShell newShellFromAdjacentFaces(CADFace ... cadFaces) {
 		return newShellFromAdjacentFaces(Arrays.asList(cadFaces));
 	}

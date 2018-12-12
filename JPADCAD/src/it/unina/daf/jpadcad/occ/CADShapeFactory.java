@@ -179,11 +179,18 @@ public abstract class CADShapeFactory {
 	public abstract CADFace newFacePlanar(CADVertex v0, CADVertex v1, CADVertex v2);
 	
 	/**
-	 * Create a new planar CADFace from a wire
-	 * @param wire The wire from which the planar face must be built
+	 * Create a new planar CADFace from a closed wire
+	 * @param wire The closed wire from which the planar face must be built
 	 * @return The created CADFace
 	 */
 	public abstract CADFace newFacePlanar(CADWire wire);
+	
+	/**
+	 * Create a new face (non-planar) from a closed wire
+	 * @param wire The closed wire from which the face must be built 
+	 * @return The created CADFace
+	 */
+	public abstract CADFace newFace(CADWire wire);
 
 	/**
 	 * Create a shell from adjacent faces

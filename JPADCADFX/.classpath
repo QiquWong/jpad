@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JPADCAD"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/vecmath/vecmath.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64/OCCJavaWrapper.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADCAD"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

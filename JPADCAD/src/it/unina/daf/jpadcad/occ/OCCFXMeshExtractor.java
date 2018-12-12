@@ -1,4 +1,4 @@
-package it.unina.daf.jpadcadfx;
+package it.unina.daf.jpadcad.occ;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,11 +12,6 @@ import java.util.stream.Collectors;
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Point3d;
 
-import it.unina.daf.jpadcad.occ.CADEdge;
-import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
-import it.unina.daf.jpadcad.occ.CADVertex;
-import it.unina.daf.jpadcad.occ.OCCDataProvider;
-import it.unina.daf.jpadcad.occ.OCCUtils;
 import javafx.scene.shape.TriangleMesh;
 import opencascade.BRepMesh_IncrementalMesh;
 import opencascade.BRepTools;
@@ -42,41 +37,8 @@ import opencascade.gp_Pnt;
 import opencascade.gp_Pnt2d;
 import standaloneutils.MyArrayUtils;
 
-//import org.jcae.opencascade.Utilities;
-//import org.jcae.opencascade.jni.BRepBndLib;
-//import org.jcae.opencascade.jni.BRepMesh_IncrementalMesh;
-//import org.jcae.opencascade.jni.BRepTools;
-//import org.jcae.opencascade.jni.BRep_Tool;
-//import org.jcae.opencascade.jni.Bnd_Box;
-//import org.jcae.opencascade.jni.GCPnts_UniformDeflection;
-//import org.jcae.opencascade.jni.GeomAdaptor_Curve;
-//import org.jcae.opencascade.jni.GeomLProp_SLProps;
-//import org.jcae.opencascade.jni.Geom_Curve;
-//import org.jcae.opencascade.jni.Geom_Surface;
-//import org.jcae.opencascade.jni.Poly_Triangulation;
-//import org.jcae.opencascade.jni.ShapeAnalysis_FreeBounds;
-//import org.jcae.opencascade.jni.TopAbs_Orientation;
-//import org.jcae.opencascade.jni.TopAbs_ShapeEnum;
-//import org.jcae.opencascade.jni.TopExp_Explorer;
-//import org.jcae.opencascade.jni.TopLoc_Location;
-//import org.jcae.opencascade.jni.TopoDS_Compound;
-//import org.jcae.opencascade.jni.TopoDS_Edge;
-//import org.jcae.opencascade.jni.TopoDS_Face;
-//import org.jcae.opencascade.jni.TopoDS_Shape;
-//import org.jcae.opencascade.jni.TopoDS_Vertex;
-//import org.jcae.opencascade.jni.TopoDS_Wire;
-//
-//import javafx.scene.shape.TriangleMesh;
-//
-///**
-// * This class compute different type of meshes (vertices, edges, faces...) from
-// * a TopoDS_Shape.
-// * @author Agodemar
-// */
-////TODO try to remove dependency over java3d (javax.vecmath.*) ???
+public class OCCFXMeshExtractor {
 
-public class OCCFXMeshExtractor
-{
 	public static class VertexData extends OCCDataProvider
 	{
 		private final TopoDS_Vertex vertex;
@@ -578,5 +540,4 @@ public class OCCFXMeshExtractor
 	public TopoDS_Shape getShape() {
 		return shape;
 	}
-
-} // end-of-class OCCMeshExtractor
+}

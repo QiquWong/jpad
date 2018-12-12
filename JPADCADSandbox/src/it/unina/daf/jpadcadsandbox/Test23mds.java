@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 import aircraft.Aircraft;
 import configuration.enumerations.ComponentEnum;
+import it.unina.daf.jpadcad.occ.OCCFXMeshExtractor;
 import it.unina.daf.jpadcad.occ.OCCShape;
-import it.unina.daf.jpadcadfx.OCCFXMeshExtractor;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
 import javafx.application.Application;
 import javafx.event.EventHandler;
