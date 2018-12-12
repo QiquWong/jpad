@@ -7,7 +7,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/args4j/args4j-2.0.21.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/v3.3.6/library/core.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64/OCCJavaWrapper.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCADFX"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/javaslang/javaslang-2.0.4-javadoc.jar"/>
@@ -18,5 +17,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/poi/poi-ooxml-schemas-3.10.1-20140818.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/poi/poi-excelant-3.10.1-20140818.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/poi/poi-examples-3.10.1-20140818.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.3.0_vc14_Win64/OCCJavaWrapper.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

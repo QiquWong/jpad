@@ -3,6 +3,8 @@ package it.unina.daf.jpadcadsandbox;
 import it.unina.daf.jpadcad.occ.OCCShapeFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
+
 import aircraft.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
@@ -17,6 +19,7 @@ import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepBuilderAPI_MakeFace;
 import opencascade.BRepBuilderAPI_MakeWire;
 import opencascade.BRepPrimAPI_MakePrism;
+import opencascade.BRep_Tool;
 import opencascade.TColgp_Array1OfPnt;
 import opencascade.TopTools_ListOfShape;
 import opencascade.TopoDS;
@@ -58,7 +61,7 @@ public class Test06as {
 		OCCUtils.initCADShapeFactory();
 		BRepBuilderAPI_MakeWire airfoilWire = new BRepBuilderAPI_MakeWire();
 		airfoilWire.Add(TopoDS.ToEdge(((OCCShape) OCCUtils.theFactory.newCurve3D(airfoilPoints, false).edge()).getShape()));
-
+		
 		// Adding Edge on trailing edge if airfoil is opened
 		if((airfoilPoints.get(0)[2] - airfoilPoints.get(airfoilPoints.size()-1)[2]) > 1e-5)
 			airfoilWire.Add(
@@ -81,8 +84,8 @@ public class Test06as {
 
 
 
-		Double[] airfoilCutZCoords = AircraftUtils.getThicknessAtX(airfoil, 1-flapChordRatio+0.05);
-		Double[] airfoilCutZCoords1 = AircraftUtils.getThicknessAtX(airfoil, 1-flapChordRatio+0.05 -0.01);
+		Double[] airfoilCutZCoords  = AircraftUtils.getThicknessAtX(airfoil, 1 - flapChordRatio + 0.05);
+		Double[] airfoilCutZCoords1 = AircraftUtils.getThicknessAtX(airfoil, 1 - flapChordRatio + 0.05 - 0.01);
 
 		List<gp_Pnt> airfoilCutPoints = new ArrayList<>();
 		airfoilCutPoints.add(new gp_Pnt(1-flapChordRatio+0.05, flapInnerSection, airfoilCutZCoords[0]));
@@ -98,29 +101,36 @@ public class Test06as {
 
 		TopoDS_Edge cutEdge1 = TopoDS.ToEdge(((OCCShape) OCCUtils.theFactory.newCurve3DGP(airfoilGapPoints, false).edge()).getShape());
 
-		double[] firstFlapPointCut = {airfoilCutPoints.get(0).X(),airfoilCutPoints.get(0).Y(),airfoilCutPoints.get(0).Z()};
-		List<OCCEdge> cutAirfoil1 = OCCUtils.splitEdge( OCCUtils.theFactory.newCurve3D(airfoilPoints, false),firstFlapPointCut);
-		TopoDS_Edge cutAirfoil_1 = TopoDS.ToEdge(cutAirfoil1.get(0).getShape());
-		TopoDS_Edge cutAirfoil_2 = TopoDS.ToEdge(cutAirfoil1.get(1).getShape());
-		double[] secondFlapPointCut = {airfoilCutPoints.get(airfoilCutPoints.size()-1).X(),airfoilCutPoints.get(airfoilCutPoints.size()-1).Y(),airfoilCutPoints.get(airfoilCutPoints.size()-1).Z()};
+		double[] firstFlapPointCut = { airfoilCutPoints.get(0).X(), airfoilCutPoints.get(0).Y(), airfoilCutPoints.get(0).Z() };
+		List<OCCEdge> cutsAirfoil1 = OCCUtils.splitEdge( OCCUtils.theFactory.newCurve3D(airfoilPoints, false), firstFlapPointCut);
+		TopoDS_Edge cutAirfoil_1 = TopoDS.ToEdge(cutsAirfoil1.get(0).getShape());
+		TopoDS_Edge cutAirfoil_2 = TopoDS.ToEdge(cutsAirfoil1.get(1).getShape());
+		
+		double[] secondFlapPointCut = { airfoilCutPoints.get(airfoilCutPoints.size()-1).X(), airfoilCutPoints.get(airfoilCutPoints.size()-1).Y(), airfoilCutPoints.get(airfoilCutPoints.size()-1).Z() };
 		//		
 		//		List<double[]> pointsCut = new ArrayList<>();
 		//		pointsCut.add(firstFlapPointCut);
 		//		pointsCut.add(secondFlapPointCut);
 		//		List<OCCEdge> cutAirfoil = OCCUtils.splitEdgeByPntsList(OCCUtils.theFactory.newCurve3D(airfoilPoints, false),pointsCut);
 
-	//	List<OCCEdge> cutAirfoil2 = OCCUtils.splitEdge( OCCUtils.theFactory.newCurve3D((CADEdge) cutAirfoil_2),secondFlapPointCut);
-//		TopoDS_Edge cutAirfoil_3 = TopoDS.ToEdge(cutAirfoil1.get(0).getShape());
-//		TopoDS_Edge cutAirfoil_4 = TopoDS.ToEdge(cutAirfoil1.get(1).getShape());
+		
+		
+		List<OCCEdge> cutsAirfoil2 = OCCUtils.splitEdge(
+				OCCUtils.theFactory.newCurve3D((CADEdge) OCCUtils.theFactory.newShape(cutAirfoil_2)),
+				secondFlapPointCut
+				);
+
+		TopoDS_Edge cutAirfoil_3 = TopoDS.ToEdge(cutsAirfoil2.get(0).getShape());
+		TopoDS_Edge cutAirfoil_4 = TopoDS.ToEdge(cutsAirfoil2.get(1).getShape());
 
 
 		List<OCCShape> exportShapes = new ArrayList<>();
 		//		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(firstWingSection));
 		//		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutEdge));
 		//		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutEdge1));
-				exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutAirfoil_1));
-				exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutAirfoil_2));
-		//exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutAirfoil_3));
+		//		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutAirfoil_1));
+		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutAirfoil_2));
+		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutAirfoil_4));
 		//exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(cutAirfoil_4));
 
 
