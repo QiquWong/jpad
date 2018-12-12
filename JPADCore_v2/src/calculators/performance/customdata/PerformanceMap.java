@@ -1,30 +1,27 @@
 package calculators.performance.customdata;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
+
+import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.EngineOperatingConditionEnum;
 
 public abstract class PerformanceMap{
 	
-	protected static List<? extends PerformanceMap> list = new ArrayList<>();
-	protected double weight, bpr, phi, altitude;
+	protected Amount<Mass> weight; 
+	protected double phi;
+	protected Amount<Length> altitude;
+	protected Amount<Temperature> deltaTemperature;
 	protected EngineOperatingConditionEnum flightCondition;
 
-	public double getWeight() {
+	public Amount<Mass> getWeight() {
 		return weight;
 	}
 
-	public void setWeight(double weight) {
+	public void setWeight(Amount<Mass> weight) {
 		this.weight = weight;
-	}
-
-	public double getBpr() {
-		return bpr;
-	}
-
-	public void setBPR(double bPR) {
-		bpr = bPR;
 	}
 
 	public double getPhi() {
@@ -43,16 +40,20 @@ public abstract class PerformanceMap{
 		this.flightCondition = flightCondition;
 	}
 
-	public double getAltitude() {
+	public Amount<Length> getAltitude() {
 		return altitude;
 	}
 
-	public void setAltitude(double altitude) {
+	public void setAltitude(Amount<Length> altitude) {
 		this.altitude = altitude;
 	}
 
-	// TODO: this method should be removed if not used in the future
-	public static List<? extends PerformanceMap> getList() {
-		return list;
+	public Amount<Temperature> getDeltaTemperature() {
+		return deltaTemperature;
 	}
+
+	public void setDeltaTemperature(Amount<Temperature> deltaTemperature) {
+		this.deltaTemperature = deltaTemperature;
+	}
+
 }

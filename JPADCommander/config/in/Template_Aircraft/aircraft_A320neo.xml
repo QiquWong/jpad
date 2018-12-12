@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <aircraft id="AIRBUS A-320neo" type="GENERAL_AVIATION" regulations="FAR_25">
+		<global_data>
+			<cabin_configuration file="cabin_configuration_A320neo.xml"></cabin_configuration>
+		</global_data>
+        <lifting_surfaces>
+            <wing file="wing_A320neo.xml">
+                <position>
+                    <x unit="m">11.89</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">-1.24</z>
+                </position>
+                <rigging_angle unit="deg">2</rigging_angle>
+            </wing>
+            <horizontal_tail file="htail_A320neo.xml">
+                <position>
+                    <x unit="m">31.53</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">0.67</z>
+                </position>
+                <rigging_angle unit="deg">0.0</rigging_angle>
+            </horizontal_tail>
+            <vertical_tail file="vtail_A320neo.xml">
+                <position>
+                    <x unit="m">29.9</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">1.80</z>
+                </position>
+                <rigging_angle unit="deg">0.0</rigging_angle>
+            </vertical_tail>
+        </lifting_surfaces>
+        <fuselages>
+            <fuselage file="fuselage_A320neo.xml">
+                <position>
+                    <x unit="m">0.0</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">0.0</z>
+                </position>
+            </fuselage>
+        </fuselages>
+		<power_plant>
+            <engine file="engine_A320neo.xml">
+                <position>
+                    <x unit="m">11.18</x>
+                    <y unit="m">5.75</y>
+                    <z unit="m">-2.02</z>
+                </position>
+                <tilting_angle unit="deg">0.0</tilting_angle>
+				<mounting_point>WING</mounting_point>
+            </engine>
+            <engine file="engine_A320neo.xml">
+                <position>
+                    <x unit="m">11.18</x>
+                    <y unit="m">-5.75</y>
+                    <z unit="m">-2.02</z>
+                </position>
+                <tilting_angle unit="deg">0.0</tilting_angle>
+                <mounting_point>WING</mounting_point>
+            </engine>
+		</power_plant> 
+		<nacelles>
+            <nacelle file="nacelle_A320neo.xml">
+                <position>
+                    <x unit="m">11.18</x>
+                    <y unit="m">5.75</y>
+                    <z unit="m">-2.02</z>
+                </position>
+                <mounting_point>WING</mounting_point>
+            </nacelle>
+            <nacelle file="nacelle_A320neo.xml">
+                <position>
+                    <x unit="m">11.18</x>
+                    <y unit="m">-5.75</y>
+                    <z unit="m">-2.02</z>
+                </position>
+                <mounting_point>WING</mounting_point>
+            </nacelle>
+		</nacelles> 
+		<landing_gears file="landing_gear_A320neo.xml">
+			<position>
+				<nose_gear>
+					<x unit="m">5.0</x> <!-- 4.10 -->
+					<y unit="m">0.0</y>
+					<z unit="m">-0.45</z> <!-- -1.45 -->
+				</nose_gear>
+				<main_gear>
+					<x unit="m">17.71</x> <!-- 17.50 -->
+					<y unit="m">0.0</y>
+					<z unit="m">-0.45</z> <!-- -1.45 -->
+				</main_gear>
+            </position>
+			<mounting_point>WING</mounting_point>
+		</landing_gears>
+		<systems primary_electrical_systems_type="AC"/> <!-- AC or DC --> 
+    </aircraft>
+</jpad_config>

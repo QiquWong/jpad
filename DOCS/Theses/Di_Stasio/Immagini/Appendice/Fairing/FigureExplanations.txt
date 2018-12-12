@@ -1,0 +1,60 @@
+FairingWireframe_01, FairingWireframe_02 - Pics show how main fairing supporting curves are made. Pics show fairing on low wing aircraft. Actually,
+		the same method implemented in AicraftUtils can perform fairing construction in case of different scenarios. Currently high wing
+		aircraft fairing is also supported, altough more work is needed to obtain more realistic results (i.e., fairing shapes closer
+		to what they look like in real world). First picture shows fairing profile shapes. The curve formed by points A, B, C, D, and E
+		is called main curve in the code, and is obtained through the newCurve3D factory method (so it's a NURBS). No tangency constraints
+		are imposed on this curve. The other segments are obtained by simply connecting the remaining points. This points are calculated and 
+		their position can be changed by simply providing the getFairingShapes method the parameters we want to impose. Fisrt of all,
+		the algorithm must be provided the aircraft components (in terms of JPAD Fuselage and LiftingSurface instances), the the algorithm
+		takes as input: the front length factor (how much the fairing extends forward - in the negative x direction - in terms of lifting
+		surface root chord), the back length factor (the same, but in the positive x direction), the side size factor (how large the
+		fairing is compared to fuselage diameter; actually the code does not allow to make the fairing larger than the fuselage; in case
+		the lifting surface is not detached from the fuselage, there is a minimum side size that the fairing must respect, in order to be
+                sure it "wraps" the lifting surface, which is fairing main purpose; this limit is automatically imposed), the fairing height factor
+		(how much the fairing extends above or below the fuselage - if the lifting surface is completely contained in the fuselage - or the
+		lifting surface - in case the lifting surface top/bottom surface exceeds fuselage limits -; the actual distance is then calculated
+		in terms of root chord thickness), the fillet radius factor (the radius of the fillet to be applied to the lower edge of the 
+		fairing right shape - before being mirrored -; the actual radius is obtained by multiplying this factor to the distance between
+		the points A and G, in order to make sure the fillet operation can be actually performed - otherwise, the fillet algorithm, which is
+		provided by OCCT BRepFilletAPI_MakeFillet class, would encounter some problems while performing the necessary operations -).
+
+		Other factors could be provided to the method but they are not relevant as the aforementioned onec, or, at least, they can be
+		fixed once and not touched anymore. These factors are the height below contact and the height above contact factors. The contact to 
+		which they make reference is the point in which the fairing, with its side size, actually "touches" the fuselage and enters in it
+		/exits from it. Being the fuselage comparable to some sort of cylinder, two contacts point can be actually distinguished. In order to 
+		make sure the fairing has some appropriate behaviour, is necessary it doesn't exceeds some limits fixed by these contact points. For 
+		example, in case of low wing fairing, as in the pictures reported above, points A and G are obtained by use of these factors.
+		Point G must be higher than the low contact line, but lower than the high contact line, in order for the fairing to not exceeds
+		fuselage limits. Point A is lower than low contact line, but must be higher than fuselage minimum (fuselage low outline). The values
+		of these factors are just relevant for the fillet final radius, since the distance between point A and G is used as reference lenght
+		for the fillet radius.
+
+		So point A, E, G, and F are calculated as explained above. Their x-coordinate is related to back and front length factor, the points
+		from which these x-distances are calculated from are root airfoil (depicted in the figure) LE and TE. Their y-coordinate is simply 0.
+		Point B, C and D have x-coordinates equal to root airfoil LE, Top, and TE x-coordinates respectively. Their z-coordinate is 
+		calculated taking into account the fairing height factor and the root chord thickness, and it must be lower than the fuselage 
+		minimum z-coordinate. Point B and D have actually higher values for their z-coordinate, in order for main curve to have a proper shape.
+
+		Figure FairingWireframe_02 shows the other construction curve used to build fairing elements. This curve, called in the code side
+		curve, is used as a reference in order to build the actual curves and segments which serve fairing construction. Points A and E
+		are the ones calculated above; I, L and M have x-coordinates equal to root airfoil LE, Top, and TE x-coordinates respectively (as
+		for points B, C, and D. Their y-coordinate is related to the side size factor and the fuselage diameter of course.
+
+FairingWireframeSupCurves_01, FairingWireframeSupCurves_02 - These pictures show the skeleton of the fairing, which is made by all the C-shaped 
+		elements shown in the figures. These elements are used in order to build patches, by use of the makePatchThruSections method. How 
+		much these C-shaped wires extend in the y direction is related to the side curve, depicted in the previous figures, which serves as 
+		a reference, or at least the y-coordinates of its points. A certain distribution (the same for the main curve and the segment formed
+		by G and F points) of points is selected. Then, from these points, new ones are obtained by extending them in the y-direction of
+		an amount equal to the extension in the y direction of the side curve at the same x location (this is made by simply using 
+		interpolation methods provided by JPAD API). The final result are the upper and lower segments shown in the figures. The side segment
+		are simply obtained by connecting the extremities of the just generated segments. These side segments are not actually used in the
+		following and serve just for graphical purposes.
+
+FairingPatches - Upper and lower curves of the previously shown C-shaped elements are used in order to build patches by making pass a surface through
+		them. Once upper and lower surface have been obtained, their side curve have been used in order to build the side patch. The right 
+		shell has been finally obtained by using the sewing algorithm wrapped by the newShellFromAdjacentFaces factory method.
+
+FairingSolidPlusFillet - Once the shell has been created, a fillet is applied to it, by using the OCCT class BRepFilletAPI_MakeFillet. The radius of
+		the fillet depends on the fillet radius factor and the distance between the points A and G (fixed by the height above and below
+		contact factors). 
+ 

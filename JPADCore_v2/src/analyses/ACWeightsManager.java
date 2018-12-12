@@ -1679,7 +1679,7 @@ public class ACWeightsManager {
 	public void calculateAllMasses(
 			Aircraft aircraft,
 			OperatingConditions operatingConditions,
-			Map <ComponentEnum, MethodEnum> methodsMap
+			Map <ComponentEnum, List<MethodEnum>> methodsMap
 			) {
 
 		System.out.println("\n-----------------------------------------------");
@@ -1739,10 +1739,10 @@ public class ACWeightsManager {
 			calculateStructuralMass(aircraft, operatingConditions, methodsMap);
 			// --- END OF STRUCTURE MASS-----------------------------------
 			
-			calculateManufacturerEmptyMass(aircraft, methodsMap);
+			calculateManufacturerEmptyMass();
 			// --- END OF MANUFACTURER EMPTY MASS-----------------------------------
 			
-			calculateOperatingEmptyMass(aircraft);
+			calculateOperatingEmptyMass();
 			// --- END OF OPERATING EMPTY MASS-----------------------------------
 			
 			calculateEmptyMass();
@@ -1751,7 +1751,7 @@ public class ACWeightsManager {
 			calculateMaximumZeroFuelMass(aircraft);
 			// --- END ZERO FUEL MASS-----------------------------------
 			
-			calculateMaximumTakeOffMass(aircraft);
+			calculateMaximumTakeOffMass();
 			// --- END TAKE-OFF MASS-----------------------------------
 			
 			calculateMaximumLandingMass();
@@ -1775,7 +1775,7 @@ public class ACWeightsManager {
 		
 	}
 
-	private void calculateSystemsAndPowerPlantMasses (Aircraft aircraft, Map <ComponentEnum, MethodEnum> methodsMap) {
+	private void calculateSystemsAndPowerPlantMasses (Aircraft aircraft, Map <ComponentEnum, List<MethodEnum>> methodsMap) {
 		
 		if (aircraft.getPowerPlant() != null) {
 			aircraft.getPowerPlant().getTheWeights().calculateTotalMass(aircraft, methodsMap);
@@ -1813,7 +1813,7 @@ public class ACWeightsManager {
 	private void calculateStructuralMass(
 			Aircraft aircraft, 
 			OperatingConditions operatingConditions,
-			Map <ComponentEnum, MethodEnum> methodsMap) {
+			Map <ComponentEnum, List<MethodEnum>> methodsMap) {
 
 		if(aircraft.getNacelles() != null) {
 			aircraft.getNacelles().getTheWeights().calculateTotalMass(aircraft, methodsMap);
@@ -1868,7 +1868,7 @@ public class ACWeightsManager {
 		
 	}
 
-	private void calculateManufacturerEmptyMass(Aircraft aircraft, Map <ComponentEnum, MethodEnum> methodsMap) {
+	private void calculateManufacturerEmptyMass() {
 		
 		_manufacturerEmptyMass = 
 				_structuralMass.to(SI.KILOGRAM)
@@ -1882,7 +1882,7 @@ public class ACWeightsManager {
 				.plus(_furnishingsAndEquipmentsMass.to(SI.KILOGRAM));
 	}
 	
-	private void calculateOperatingEmptyMass(Aircraft aircraft) {
+	private void calculateOperatingEmptyMass() {
 		
 		_operatingEmptyMass = 
 				_manufacturerEmptyMass.to(SI.KILOGRAM)
@@ -1905,7 +1905,7 @@ public class ACWeightsManager {
 		
 	}
 	
-	private void calculateMaximumTakeOffMass(Aircraft aircraft) {
+	private void calculateMaximumTakeOffMass() {
 		
 		// Take-off mass
 		_takeOffMass = 
@@ -2000,118 +2000,39 @@ public class ACWeightsManager {
 				break;
 			}
 
-			// calculating the mass ratios of cruise, alternate and holding phases ...
+			// calculating the mass ratios of cruise, alternate and holding phases (ASSUMPTION: BREGUET JET FOR EACH CONDITION)...
 			double massRatioCruise = 1.0;
 			double massRatioAlternate = 1.0;
 			double massRatioHolding = 1.0;
 
-			switch (aircraft.getPowerPlant().getEngineType()) {
-			case PISTON:
-				massRatioCruise = 1/Math.exp(
-						(_theWeightsManagerInterface.getCruiseRange().doubleValue(SI.KILOMETER)*_theWeightsManagerInterface.getCruiseSFC())
-						/(603.5*aircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller()*_theWeightsManagerInterface.getCruiseEfficiency())
-						);
-				massRatioAlternate = 1/Math.exp(
-						(_theWeightsManagerInterface.getAlternateCruiseRange().doubleValue(SI.KILOMETER)*_theWeightsManagerInterface.getAlternateCruiseSFC())
-						/(603.5*aircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller()*_theWeightsManagerInterface.getAlternateCruiseEfficiency())
-						);
-				massRatioHolding = 1/Math.exp(
-						(_theWeightsManagerInterface.getHoldingDuration().doubleValue(NonSI.HOUR)*_theWeightsManagerInterface.getHoldingSFC()*
-								Amount.valueOf(
-										SpeedCalc.calculateTAS(
-												_theWeightsManagerInterface.getHoldingMachNumber(),
-												_theWeightsManagerInterface.getHoldingAltitide().doubleValue(SI.METER)
-												),
-										SI.METERS_PER_SECOND
-										).doubleValue(NonSI.KILOMETERS_PER_HOUR)
-								)
-						/(603.5*aircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller()*_theWeightsManagerInterface.getHoldingEfficiency())
-						);
-				break;
-			case TURBOPROP:
-				massRatioCruise = 1/Math.exp(
-						(_theWeightsManagerInterface.getCruiseRange().doubleValue(SI.KILOMETER)*_theWeightsManagerInterface.getCruiseSFC())
-						/(603.5*aircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller()*_theWeightsManagerInterface.getCruiseEfficiency())
-						);
-				massRatioAlternate = 1/Math.exp(
-						(_theWeightsManagerInterface.getAlternateCruiseRange().doubleValue(SI.KILOMETER)*_theWeightsManagerInterface.getAlternateCruiseSFC())
-						/(603.5*aircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller()*_theWeightsManagerInterface.getAlternateCruiseEfficiency())
-						);
-				massRatioHolding = 1/Math.exp(
-						(_theWeightsManagerInterface.getHoldingDuration().doubleValue(NonSI.HOUR)*_theWeightsManagerInterface.getHoldingSFC()*
-								Amount.valueOf(
-										SpeedCalc.calculateTAS(
-												_theWeightsManagerInterface.getHoldingMachNumber(), 
-												_theWeightsManagerInterface.getHoldingAltitide().doubleValue(SI.METER)),
-										SI.METERS_PER_SECOND
-										).doubleValue(NonSI.KILOMETERS_PER_HOUR)
-								)
-						/(603.5*aircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller()*_theWeightsManagerInterface.getHoldingEfficiency())
-						);
-				break;
-			case TURBOFAN:
-				massRatioCruise = 1/Math.exp(
-						(_theWeightsManagerInterface.getCruiseRange().doubleValue(NonSI.NAUTICAL_MILE)*_theWeightsManagerInterface.getCruiseSFC())
-						/(_theWeightsManagerInterface.getCruiseEfficiency()*
-								Amount.valueOf(
-										SpeedCalc.calculateTAS(
-												_theWeightsManagerInterface.getTheOperatingConditions().getMachCruise(),
-												_theWeightsManagerInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
-												),
-										SI.METERS_PER_SECOND
-										).doubleValue(NonSI.KNOT)
-								)
-						);
-				massRatioAlternate = 1/Math.exp(
-						(_theWeightsManagerInterface.getAlternateCruiseRange().doubleValue(NonSI.NAUTICAL_MILE)*_theWeightsManagerInterface.getAlternateCruiseSFC())
-						/(_theWeightsManagerInterface.getAlternateCruiseEfficiency()*
-								Amount.valueOf(
-										SpeedCalc.calculateTAS(
-												_theWeightsManagerInterface.getAlternateCruiseMachNumber(),
-												_theWeightsManagerInterface.getAlternateCruiseAltitide().doubleValue(SI.METER)
-												),
-										SI.METERS_PER_SECOND
-										).doubleValue(NonSI.KNOT)
-								)
-						);
-				massRatioHolding = 1/Math.exp(
-						(_theWeightsManagerInterface.getHoldingDuration().doubleValue(NonSI.HOUR)*_theWeightsManagerInterface.getHoldingSFC())
-						/(_theWeightsManagerInterface.getHoldingEfficiency())
-						);
-				break;
-			case TURBOJET:
-				massRatioCruise = 1/Math.exp(
-						(_theWeightsManagerInterface.getCruiseRange().doubleValue(NonSI.NAUTICAL_MILE)*_theWeightsManagerInterface.getCruiseSFC())
-						/(_theWeightsManagerInterface.getCruiseEfficiency()*
-								Amount.valueOf(
-										SpeedCalc.calculateTAS(
-												_theWeightsManagerInterface.getTheOperatingConditions().getMachCruise(),
-												_theWeightsManagerInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
-												),
-										SI.METERS_PER_SECOND
-										).doubleValue(NonSI.KNOT)
-								)
-						);
-				massRatioAlternate = 1/Math.exp(
-						(_theWeightsManagerInterface.getAlternateCruiseRange().doubleValue(NonSI.NAUTICAL_MILE)*_theWeightsManagerInterface.getAlternateCruiseSFC())
-						/(_theWeightsManagerInterface.getAlternateCruiseEfficiency()*
-								Amount.valueOf(
-										SpeedCalc.calculateTAS(
-												_theWeightsManagerInterface.getAlternateCruiseMachNumber(),
-												_theWeightsManagerInterface.getAlternateCruiseAltitide().doubleValue(SI.METER)
-												),
-										SI.METERS_PER_SECOND
-										).doubleValue(NonSI.KNOT)
-								)
-						);
-				massRatioHolding = 1/Math.exp(
-						(_theWeightsManagerInterface.getHoldingDuration().doubleValue(NonSI.HOUR)*_theWeightsManagerInterface.getHoldingSFC())
-						/(_theWeightsManagerInterface.getHoldingEfficiency())
-						);
-				break;
-			default:
-				break;
-			}
+			massRatioCruise = 1/Math.exp(
+					(_theWeightsManagerInterface.getCruiseRange().doubleValue(NonSI.NAUTICAL_MILE)*_theWeightsManagerInterface.getCruiseSFC())
+					/(_theWeightsManagerInterface.getCruiseEfficiency()*
+							Amount.valueOf(
+									SpeedCalc.calculateTAS(
+											_theWeightsManagerInterface.getTheOperatingConditions().getMachCruise(),
+											_theWeightsManagerInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
+											),
+									SI.METERS_PER_SECOND
+									).doubleValue(NonSI.KNOT)
+							)
+					);
+			massRatioAlternate = 1/Math.exp(
+					(_theWeightsManagerInterface.getAlternateCruiseRange().doubleValue(NonSI.NAUTICAL_MILE)*_theWeightsManagerInterface.getAlternateCruiseSFC())
+					/(_theWeightsManagerInterface.getAlternateCruiseEfficiency()*
+							Amount.valueOf(
+									SpeedCalc.calculateTAS(
+											_theWeightsManagerInterface.getAlternateCruiseMachNumber(),
+											_theWeightsManagerInterface.getAlternateCruiseAltitide().doubleValue(SI.METER)
+											),
+									SI.METERS_PER_SECOND
+									).doubleValue(NonSI.KNOT)
+							)
+					);
+			massRatioHolding = 1/Math.exp(
+					(_theWeightsManagerInterface.getHoldingDuration().doubleValue(NonSI.HOUR)*_theWeightsManagerInterface.getHoldingSFC())
+					/(_theWeightsManagerInterface.getHoldingEfficiency())
+					);
 
 			// calculating the mission fuel mass ...
 			mffRatio *= massRatioCruise*massRatioAlternate*massRatioHolding;
@@ -2119,16 +2040,16 @@ public class ACWeightsManager {
 			_fuelMass = _maximumTakeOffMass.times(1-mffRatio);
 		}
 	}
-	
+
 	private void calculateEmptyMass() {
-		
+
 		if(_maximumTakeOffMass.doubleValue(NonSI.POUND) < 100000)
 			_trappedFuelOilMass = Amount.valueOf(0.0, SI.KILOGRAM);
 		else
 			_trappedFuelOilMass = _maximumTakeOffMass.times(0.005);
-			
+
 		_emptyMass =_operatingEmptyMass.minus(_crewMass).minus(_trappedFuelOilMass);
-		
+
 	}
 	
 	private void estimateComponentsReferenceMasses(Aircraft aircraft) {

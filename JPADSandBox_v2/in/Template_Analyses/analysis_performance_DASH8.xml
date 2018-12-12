@@ -22,16 +22,15 @@
 					<cLmax_landing_configuration>2.8</cLmax_landing_configuration>
 					<cL_alpha_landing unit="1/deg">0.0925</cL_alpha_landing>
 					<cL0_landing_configuration>1.25</cL0_landing_configuration>
+					<delta_CD0_flap_take_off>0.015</delta_CD0_flap_take_off>
+					<delta_CD0_flap_landing>0.0673</delta_CD0_flap_landing>
+					<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
 					<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
 					<cD0>0.0265</cD0>
 					<oswald_cruise>0.83</oswald_cruise> 
 					<oswald_climb>0.83</oswald_climb>
 					<oswald_take_off>0.80</oswald_take_off>
 					<oswald_landing>0.80</oswald_landing>
-					<delta_CD0_flap_take_off>0.015</delta_CD0_flap_take_off>
-					<delta_CD0_flap_landing>0.0673</delta_CD0_flap_landing>
-					<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
-					<delta_CD0_spoilers>0.0</delta_CD0_spoilers>
 					<!---->
 					<polar_curves>
 						<cruise>
@@ -110,6 +109,19 @@
 			<flight_maneuvering_and_gust_envelope>
 				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the manoeuvring flight and gust envelope (default = -1.0) --> 
 			</flight_maneuvering_and_gust_envelope>
+			<noise_trajectories>
+				<take_off>
+					<ground_distance_end_simulation unit="m"></ground_distance_end_simulation>
+					<cutback_altitude unit="ft"></cutback_altitude>
+					<number_of_thrust_settings_cutback></number_of_thrust_settings_cutback>
+					<dt_landing_gear_retraction unit="s"></dt_landing_gear_retraction>
+					<dt_thrust_cutback unit="s"></dt_thrust_cutback>
+				</take_off>
+				<landing>
+					<initial_altitude unit="ft"></initial_altitude>
+					<trajectory_angle unti="deg"></trajectory_angle>
+				</landing>
+			</noise_trajectories>
 			<mission_profile_and_payload_range>
 			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
 				<mission_range unit="nmi">1100</mission_range> 
@@ -131,9 +143,91 @@
 					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
 				</holding_sfc_function>
 				<take_off_mission_altitude unit="ft">0.0</take_off_mission_altitude>
-				<landing_ground_idle_fuel_flow unit="kg/min">2.65</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile_and_payload_range>
         </performance>
+		<calibrations> <!-- default values = 1.0 -->
+			<thrust>
+				<take_off_calibration_factor></take_off_calibration_factor>
+				<apr_calibration_factor></apr_calibration_factor>
+				<climb_calibration_factor></climb_calibration_factor>
+				<continuous_calibration_factor></continuous_calibration_factor>
+				<cruise_calibration_factor></cruise_calibration_factor>
+				<flight_idle_calibration_factor></flight_idle_calibration_factor>
+				<ground_idle_calibration_factor></ground_idle_calibration_factor>
+			</thrust>
+			<sfc>
+				<take_off_calibration_factor></take_off_calibration_factor>
+				<apr_calibration_factor></apr_calibration_factor>
+				<climb_calibration_factor></climb_calibration_factor>
+				<continuous_calibration_factor></continuous_calibration_factor>
+				<cruise_calibration_factor></cruise_calibration_factor>
+				<flight_idle_calibration_factor></flight_idle_calibration_factor>
+				<ground_idle_calibration_factor></ground_idle_calibration_factor>
+			</sfc>
+			<emission_index_NOx>
+				<take_off_calibration_factor></take_off_calibration_factor>
+				<apr_calibration_factor></apr_calibration_factor>
+				<climb_calibration_factor></climb_calibration_factor>
+				<continuous_calibration_factor></continuous_calibration_factor>
+				<cruise_calibration_factor></cruise_calibration_factor>
+				<flight_idle_calibration_factor></flight_idle_calibration_factor>
+				<ground_idle_calibration_factor></ground_idle_calibration_factor>
+			</emission_index_NOx>
+			<emission_index_CO>
+				<take_off_calibration_factor></take_off_calibration_factor>
+				<apr_calibration_factor></apr_calibration_factor>
+				<climb_calibration_factor></climb_calibration_factor>
+				<continuous_calibration_factor></continuous_calibration_factor>
+				<cruise_calibration_factor></cruise_calibration_factor>
+				<flight_idle_calibration_factor></flight_idle_calibration_factor>
+				<ground_idle_calibration_factor></ground_idle_calibration_factor>
+			</emission_index_CO>
+			<emission_index_HC>
+				<take_off_calibration_factor></take_off_calibration_factor>
+				<apr_calibration_factor></apr_calibration_factor>
+				<climb_calibration_factor></climb_calibration_factor>
+				<continuous_calibration_factor></continuous_calibration_factor>
+				<cruise_calibration_factor></cruise_calibration_factor>
+				<flight_idle_calibration_factor></flight_idle_calibration_factor>
+				<ground_idle_calibration_factor></ground_idle_calibration_factor>
+			</emission_index_HC>
+			<emission_index_Soot>
+				<take_off_calibration_factor></take_off_calibration_factor>
+				<apr_calibration_factor></apr_calibration_factor>
+				<climb_calibration_factor></climb_calibration_factor>
+				<continuous_calibration_factor></continuous_calibration_factor>
+				<cruise_calibration_factor></cruise_calibration_factor>
+				<flight_idle_calibration_factor></flight_idle_calibration_factor>
+				<ground_idle_calibration_factor></ground_idle_calibration_factor>
+			</emission_index_Soot>
+			<emission_index_CO2>
+				<take_off_calibration_factor></take_off_calibration_factor>
+				<apr_calibration_factor></apr_calibration_factor>
+				<climb_calibration_factor></climb_calibration_factor>
+				<continuous_calibration_factor></continuous_calibration_factor>
+				<cruise_calibration_factor></cruise_calibration_factor>
+				<flight_idle_calibration_factor></flight_idle_calibration_factor>
+				<ground_idle_calibration_factor></ground_idle_calibration_factor>
+			</emission_index_CO2>
+			<emission_index_SOx>
+				<take_off_calibration_factor></take_off_calibration_factor>
+				<apr_calibration_factor></apr_calibration_factor>
+				<climb_calibration_factor></climb_calibration_factor>
+				<continuous_calibration_factor></continuous_calibration_factor>
+				<cruise_calibration_factor></cruise_calibration_factor>
+				<flight_idle_calibration_factor></flight_idle_calibration_factor>
+				<ground_idle_calibration_factor></ground_idle_calibration_factor>
+			</emission_index_SOx>
+			<emission_index_H2O>
+				<take_off_calibration_factor></take_off_calibration_factor>
+				<apr_calibration_factor></apr_calibration_factor>
+				<climb_calibration_factor></climb_calibration_factor>
+				<continuous_calibration_factor></continuous_calibration_factor>
+				<cruise_calibration_factor></cruise_calibration_factor>
+				<flight_idle_calibration_factor></flight_idle_calibration_factor>
+				<ground_idle_calibration_factor></ground_idle_calibration_factor>
+			</emission_index_H2O>
+		</calibrations>
     </analysis>
 	<plot>
 		<takeoff>
@@ -165,6 +259,10 @@
 		</landing>
 		<payload_range perform="TRUE"/>
 		<maneuvering_flight_and_gust_envelope perform="TRUE"/>
+		<noise_trajectories>
+			<take_off perform="TRUE"/>
+			<landing perform="TRUE"/>
+		</noise_trajectories>
 		<mission_profile>
 			<range_profile perform="TRUE"/>
 			<time_profile perform="TRUE"/>

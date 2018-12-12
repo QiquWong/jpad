@@ -78,7 +78,6 @@ public interface IACAerodynamicAndStabilityManager_v2 {
 	int getCanardNumberOfPointSemiSpanWise();
 	List<Amount<Angle>> getDeltaElevatorList();
 	List<Amount<Angle>> getDeltaRudderList();
-	List<Amount<Angle>> getDeltaCanardControlSurfaceList();
 	double getAdimensionalWingMomentumPole();
 	double getAdimensionalHTailMomentumPole();
 	double getAdimensionalVTailMomentumPole();
@@ -103,12 +102,16 @@ public interface IACAerodynamicAndStabilityManager_v2 {
 	double  getTotalLiftCalibrationCLScaleFactor();
 	boolean isCalculateLandingGearDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
 	double getLandingGearDeltaDragCoefficient();
+	double getLandingGearDragKFactor();
 	boolean isCalculateExcrescencesDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
 	double getExcrescencesDeltaDragCoefficient();
+	double getExcrescencesDragKFactor();
 	boolean isCalculateInterferencesDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
 	double getInterferencesDeltaDragCoefficient();
+	double getInterferencesDragKFactor();
 	boolean isCalculateCoolingDeltaDragCoefficient(); // if TRUE--> calculated, if FALSE--> not calculated
 	double getCoolingDeltaDragCoefficient();
+	double getCoolingDragKFactor();
 	double  getTotalDragCalibrationCLScaleFactor();
 	double  getTotalDragCalibrationCDScaleFactor();
 	double  getTotalMomentCalibrationAlphaScaleFactor();

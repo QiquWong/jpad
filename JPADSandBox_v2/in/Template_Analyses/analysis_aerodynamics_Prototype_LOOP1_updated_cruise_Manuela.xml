@@ -45,7 +45,6 @@
 				<maximum_elevator_deflection unit="deg">-25.0</maximum_elevator_deflection>
 				<delta_elevator_array unit="deg">5.0;0.0;-5.0;-10.0;-15.0;-20.0;-25.0;-30.0</delta_elevator_array>
 				<delta_rudder_array unit="deg">5.0;10.0;15.0;20.0;25.0</delta_rudder_array>
-				<delta_canard_control_surface_array unit="deg">5.0;0.0;-5.0;-10.0;-15.0;-20.0;-25.0</delta_canard_control_surface_array>
 				<adimensional_wing_momentum_pole>0.25</adimensional_wing_momentum_pole> 
 				<adimensional_horizontal_tail_momentum_pole>0.25</adimensional_horizontal_tail_momentum_pole> 
 				<adimensional_vertical_tail_momentum_pole>0.25</adimensional_vertical_tail_momentum_pole> 

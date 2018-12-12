@@ -12,8 +12,8 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
 	<analyses id="CS300 analysis" iterative_loop="FALSE" balance_from_previous_analysis="TRUE">
-	<!--
-        <weights 
+        <!-- FOR NACELLES AND POWER PLANT: insert one method per element separated by "," or left blank to make an avareged value -->
+		<weights 
             file="analysis_weights_CS300.xml" 
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -22,7 +22,7 @@
             method_htail=""
             method_vtail=""
 			method_canard=""
-			method_nacelles=""
+			method_nacelles="" 
 			method_power_plant=""
 			method_landing_gears=""
 			method_APU=""
@@ -33,8 +33,6 @@
 			method_furnishings_and_equipments=""
 			method_control_surfaces=""
             />
-		-->
-		<!--
 		<balance 
 			file="analysis_balance_CS300.xml"
 			plot="TRUE"
@@ -48,7 +46,6 @@
 			method_power_plant=""
 			method_landing_gears=""
 		/>	
-		-->
 		<!--
 		<aerodynamic_and_stability
 			plot="TRUE"
@@ -63,6 +60,7 @@
 			file_landing_condition="analysis_aerodynamics_CS300_landing.xml"
 		/>
 		-->
+		<!--
 		<performance 
 			file="analysis_performance_CS300.xml"
 			plot="TRUE"
@@ -76,6 +74,7 @@
 			V_n_diagram="FALSE"
 			mission_profile="TRUE"
 		/>
+		-->
 		<!--
 		<costs 
 			file="analysis_costs_CS300.xml"

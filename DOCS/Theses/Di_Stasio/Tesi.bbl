@@ -1,0 +1,646 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{wikiAbstractFactoryPattern}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{%
+           family={Authors},
+           familyi={A\bibinitperiod},
+           given={Various},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{bibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorbibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authornamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorfullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{d77c7cdd82ff690d4c3ef13216f92f0b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Abstract Factory Pattern}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Abstract_factory_pattern
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Abstract_factory_pattern
+      \endverb
+    \endentry
+    \entry{BuilderPatternWiki}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{%
+           family={Authors},
+           familyi={A\bibinitperiod},
+           given={Various},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{bibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorbibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authornamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorfullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{d77c7cdd82ff690d4c3ef13216f92f0b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Builder Pattern}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Builder_pattern
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Builder_pattern
+      \endverb
+    \endentry
+    \entry{xmlWiki}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{%
+           family={Authors},
+           familyi={A\bibinitperiod},
+           given={Various},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{bibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorbibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authornamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorfullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{d77c7cdd82ff690d4c3ef13216f92f0b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{eXtensible Markup Language (XML)}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/XML
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/XML
+      \endverb
+    \endentry
+    \entry{HDFWiki}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{%
+           family={Authors},
+           familyi={A\bibinitperiod},
+           given={Various},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{bibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorbibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authornamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorfullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{d77c7cdd82ff690d4c3ef13216f92f0b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Hierarchical Data Format (HDF)}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Hierarchical_Data_Format
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Hierarchical_Data_Format
+      \endverb
+    \endentry
+    \entry{webOpenCASCADE}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{%
+           family={Authors},
+           familyi={A\bibinitperiod},
+           given={Various},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{bibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorbibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authornamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorfullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{d77c7cdd82ff690d4c3ef13216f92f0b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Open CASCADE Technology (OCCT)}
+      \verb{urlraw}
+      \verb https://www.opencascade.com/content/overview
+      \endverb
+      \verb{url}
+      \verb https://www.opencascade.com/content/overview
+      \endverb
+    \endentry
+    \entry{PVector}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{%
+           family={Authors},
+           familyi={A\bibinitperiod},
+           given={Various},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{bibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorbibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authornamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorfullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{d77c7cdd82ff690d4c3ef13216f92f0b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Processing Foundation}
+      \verb{urlraw}
+      \verb https://processing.org/reference/PVector.html
+      \endverb
+      \verb{url}
+      \verb https://processing.org/reference/PVector.html
+      \endverb
+    \endentry
+    \entry{webSWIG}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{%
+           family={Authors},
+           familyi={A\bibinitperiod},
+           given={Various},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{bibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorbibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authornamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorfullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{d77c7cdd82ff690d4c3ef13216f92f0b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Simplified Wrapper and Interface Generator (SWIG)}
+      \verb{urlraw}
+      \verb http://www.swig.org/
+      \endverb
+      \verb{url}
+      \verb http://www.swig.org/
+      \endverb
+    \endentry
+    \entry{wikiDesignPatterns}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{%
+           family={Authors},
+           familyi={A\bibinitperiod},
+           given={Various},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{bibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorbibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authornamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorfullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{d77c7cdd82ff690d4c3ef13216f92f0b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Software Design Patterns}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Software_design_pattern
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Software_design_pattern
+      \endverb
+    \endentry
+    \entry{STARCCMUserGuide}{book}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{%
+           family={Authors},
+           familyi={A\bibinitperiod},
+           given={Various},
+           giveni={V\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Siemens PLM Software}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{bibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorbibnamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authornamehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{authorfullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{d77c7cdd82ff690d4c3ef13216f92f0b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{STAR-CCM+ v12.04 User Guide}
+      \field{year}{2017}
+    \endentry
+    \entry{JavaFile}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2baf8209f62fd23c32fa375f52fbf33f}{%
+           family={Corporation},
+           familyi={C\bibinitperiod},
+           given={Oracle},
+           giveni={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{fullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{bibnamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authorbibnamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authornamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authorfullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{File}
+      \verb{urlraw}
+      \verb https://docs.oracle.com/javase/8/docs/api/java/io/File.html
+      \endverb
+      \verb{url}
+      \verb https://docs.oracle.com/javase/8/docs/api/java/io/File.html
+      \endverb
+    \endentry
+    \entry{JavaEnum}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2baf8209f62fd23c32fa375f52fbf33f}{%
+           family={Corporation},
+           familyi={C\bibinitperiod},
+           given={Oracle},
+           giveni={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{fullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{bibnamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authorbibnamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authornamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authorfullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Java Enum Types}
+      \verb{urlraw}
+      \verb https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
+      \endverb
+      \verb{url}
+      \verb https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
+      \endverb
+    \endentry
+    \entry{JavaFXPlatform}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2baf8209f62fd23c32fa375f52fbf33f}{%
+           family={Corporation},
+           familyi={C\bibinitperiod},
+           given={Oracle},
+           giveni={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{fullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{bibnamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authorbibnamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authornamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authorfullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{JavaFX}
+      \verb{urlraw}
+      \verb https://docs.oracle.com/javafx/2/overview/jfxpub-overview.htm
+      \endverb
+      \verb{url}
+      \verb https://docs.oracle.com/javafx/2/overview/jfxpub-overview.htm
+      \endverb
+    \endentry
+    \entry{JavaList}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2baf8209f62fd23c32fa375f52fbf33f}{%
+           family={Corporation},
+           familyi={C\bibinitperiod},
+           given={Oracle},
+           giveni={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{fullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{bibnamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authorbibnamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authornamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authorfullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{List}
+      \verb{urlraw}
+      \verb https://docs.oracle.com/javase/8/docs/api/java/util/List.html
+      \endverb
+      \verb{url}
+      \verb https://docs.oracle.com/javase/8/docs/api/java/util/List.html
+      \endverb
+    \endentry
+    \entry{JavaMap}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2baf8209f62fd23c32fa375f52fbf33f}{%
+           family={Corporation},
+           familyi={C\bibinitperiod},
+           given={Oracle},
+           giveni={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{fullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{bibnamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authorbibnamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authornamehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{authorfullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Map}
+      \verb{urlraw}
+      \verb https://docs.oracle.com/javase/8/docs/api/java/util/Map.html
+      \endverb
+      \verb{url}
+      \verb https://docs.oracle.com/javase/8/docs/api/java/util/Map.html
+      \endverb
+    \endentry
+    \entry{Amount}{online}{}
+      \name{author}{1}{}{%
+        {{hash=0b7efb23d6d6cb790ea8b2de617d7141}{%
+           family={Group},
+           familyi={G\bibinitperiod},
+           given={JScience},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{0b7efb23d6d6cb790ea8b2de617d7141}
+      \strng{fullhash}{0b7efb23d6d6cb790ea8b2de617d7141}
+      \strng{bibnamehash}{0b7efb23d6d6cb790ea8b2de617d7141}
+      \strng{authorbibnamehash}{0b7efb23d6d6cb790ea8b2de617d7141}
+      \strng{authornamehash}{0b7efb23d6d6cb790ea8b2de617d7141}
+      \strng{authorfullhash}{0b7efb23d6d6cb790ea8b2de617d7141}
+      \field{sortinit}{G}
+      \field{sortinithash}{5e8d2bf9d38de41b1528bd307546008f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Amount}
+      \verb{urlraw}
+      \verb http://jscience.org/api/org/jscience/physics/amount/Amount.html
+      \endverb
+      \verb{url}
+      \verb http://jscience.org/api/org/jscience/physics/amount/Amount.html
+      \endverb
+    \endentry
+    \entry{AIAApaperHaimesDrela}{book}{}
+      \name{author}{2}{}{%
+        {{hash=70130b2df4fa4ad8f2087dc47c46316f}{%
+           family={Haimes},
+           familyi={H\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+        {{hash=169b25015254192954d272e85b4141a6}{%
+           family={Drela},
+           familyi={D\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Nashville, Tennessee}%
+      }
+      \list{publisher}{2}{%
+        {50th AIAA Aerospace Sciences Meeting including the New Horizons Forum}%
+        {Aerospace Exposition}%
+      }
+      \strng{namehash}{8abe3249fbac90fce29c05276c461335}
+      \strng{fullhash}{8abe3249fbac90fce29c05276c461335}
+      \strng{bibnamehash}{8abe3249fbac90fce29c05276c461335}
+      \strng{authorbibnamehash}{8abe3249fbac90fce29c05276c461335}
+      \strng{authornamehash}{8abe3249fbac90fce29c05276c461335}
+      \strng{authorfullhash}{8abe3249fbac90fce29c05276c461335}
+      \field{sortinit}{H}
+      \field{sortinithash}{5f15a7bc777ad49ff15aa4d2831b1681}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{On The Construction of Aircraft Conceptual Geometry for High-Fidelity Analysis and Design}
+      \warn{\item Entry 'AIAApaperHaimesDrela' (Backmatter/Bibliografia.bib): Invalid format '9-12 January 2012' of date field 'date' - ignoring}
+    \endentry
+    \entry{args4j}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2e8f18a1d63274a1eae7ecfcd8c5c6c9}{%
+           family={Kawaguchi},
+           familyi={K\bibinitperiod},
+           given={K.},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{2e8f18a1d63274a1eae7ecfcd8c5c6c9}
+      \strng{fullhash}{2e8f18a1d63274a1eae7ecfcd8c5c6c9}
+      \strng{bibnamehash}{2e8f18a1d63274a1eae7ecfcd8c5c6c9}
+      \strng{authorbibnamehash}{2e8f18a1d63274a1eae7ecfcd8c5c6c9}
+      \strng{authornamehash}{2e8f18a1d63274a1eae7ecfcd8c5c6c9}
+      \strng{authorfullhash}{2e8f18a1d63274a1eae7ecfcd8c5c6c9}
+      \field{sortinit}{K}
+      \field{sortinithash}{9fd838a31ba64d981e8f44562bd33f89}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Args4j}
+      \verb{urlraw}
+      \verb http://args4j.kohsuke.org/
+      \endverb
+      \verb{url}
+      \verb http://args4j.kohsuke.org/
+      \endverb
+    \endentry
+    \entry{AIAApaperKenwayKennedy}{book}{}
+      \name{author}{3}{}{%
+        {{hash=fe8e77c4b01eba36aa615a2fa9238eb5}{%
+           family={Kenway},
+           familyi={K\bibinitperiod},
+           given={G.K.W.},
+           giveni={G\bibinitperiod}}}%
+        {{hash=ba2077eb30e1925f08391a2319e83477}{%
+           family={Kennedy},
+           familyi={K\bibinitperiod},
+           given={G.J.},
+           giveni={G\bibinitperiod}}}%
+        {{hash=efc4f325d865feb4f0c9fa4a4778fe34}{%
+           family={Martins},
+           familyi={M\bibinitperiod},
+           given={J.R.R.A.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Fort Worth, Texas}%
+      }
+      \list{publisher}{1}{%
+        {13th AIAA/ISSMO Multidisciplinary Analysis Optimization Conference}%
+      }
+      \strng{namehash}{21905a27223f66d94c01b3d20bb896f2}
+      \strng{fullhash}{21905a27223f66d94c01b3d20bb896f2}
+      \strng{bibnamehash}{21905a27223f66d94c01b3d20bb896f2}
+      \strng{authorbibnamehash}{21905a27223f66d94c01b3d20bb896f2}
+      \strng{authornamehash}{21905a27223f66d94c01b3d20bb896f2}
+      \strng{authorfullhash}{21905a27223f66d94c01b3d20bb896f2}
+      \field{sortinit}{K}
+      \field{sortinithash}{9fd838a31ba64d981e8f44562bd33f89}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{A CAD-Free Approach to High-Fidelity Aerostructural Optimization}
+      \warn{\item Entry 'AIAApaperKenwayKennedy' (Backmatter/Bibliografia.bib): Invalid format '13-15 September 2010' of date field 'date' - ignoring}
+    \endentry
+    \entry{nicolai2010fundamentals}{book}{}
+      \name{author}{2}{}{%
+        {{hash=c25a463e317f67b479eb2e1c12d08ff9}{%
+           family={Nicolai},
+           familyi={N\bibinitperiod},
+           given={L.M.},
+           giveni={L\bibinitperiod}}}%
+        {{hash=569c86bc872c7673a9e06d36d5187bd2}{%
+           family={Carichner},
+           familyi={C\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{2}{%
+        {American Institute of Aeronautics}%
+        {Astronautics}%
+      }
+      \strng{namehash}{8d1512dd3bb1074ce71988e3c31db325}
+      \strng{fullhash}{8d1512dd3bb1074ce71988e3c31db325}
+      \strng{bibnamehash}{8d1512dd3bb1074ce71988e3c31db325}
+      \strng{authorbibnamehash}{8d1512dd3bb1074ce71988e3c31db325}
+      \strng{authornamehash}{8d1512dd3bb1074ce71988e3c31db325}
+      \strng{authorfullhash}{8d1512dd3bb1074ce71988e3c31db325}
+      \field{sortinit}{N}
+      \field{sortinithash}{f7242c3ed3dc50029fca1be76c497c7c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{series}{AIAA education series}
+      \field{title}{Fundamentals of Aircraft and Airship Design}
+      \field{year}{2010}
+    \endentry
+    \entry{paperCADinAero}{book}{}
+      \name{author}{1}{}{%
+        {{hash=15980e448e4f9000c8429782ec526bb1}{%
+           family={Ronzheimer},
+           familyi={R\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Braunschweig, Germany}%
+      }
+      \list{publisher}{1}{%
+        {Deutscher Luft- und Raumfahrtkongress}%
+      }
+      \strng{namehash}{15980e448e4f9000c8429782ec526bb1}
+      \strng{fullhash}{15980e448e4f9000c8429782ec526bb1}
+      \strng{bibnamehash}{15980e448e4f9000c8429782ec526bb1}
+      \strng{authorbibnamehash}{15980e448e4f9000c8429782ec526bb1}
+      \strng{authornamehash}{15980e448e4f9000c8429782ec526bb1}
+      \strng{authorfullhash}{15980e448e4f9000c8429782ec526bb1}
+      \field{sortinit}{R}
+      \field{sortinithash}{da6b42bd3ab22fee61abed031ee405f7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{CAD in Aerodynamic Aircraft Design}
+      \field{year}{2017}
+      \field{dateera}{ce}
+    \endentry
+    \entry{roskamAirplane}{book}{}
+      \name{author}{1}{}{%
+        {{hash=f21425413dd55dbd465800547a46b61c}{%
+           family={Roskam},
+           familyi={R\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {DARcorporation}%
+      }
+      \strng{namehash}{f21425413dd55dbd465800547a46b61c}
+      \strng{fullhash}{f21425413dd55dbd465800547a46b61c}
+      \strng{bibnamehash}{f21425413dd55dbd465800547a46b61c}
+      \strng{authorbibnamehash}{f21425413dd55dbd465800547a46b61c}
+      \strng{authornamehash}{f21425413dd55dbd465800547a46b61c}
+      \strng{authorfullhash}{f21425413dd55dbd465800547a46b61c}
+      \field{sortinit}{R}
+      \field{sortinithash}{da6b42bd3ab22fee61abed031ee405f7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{number}{pt. 1-6}
+      \field{series}{Airplane Design}
+      \field{title}{Airplane Design}
+      \field{year}{2000}
+    \endentry
+    \entry{SUAVEProject}{online}{}
+      \name{author}{1}{}{%
+        {{hash=b3df137b6012b18b0bd3ab387dfcbadf}{%
+           family={Stanford\bibnamedelima University},
+           familyi={S\bibinitperiod\bibinitdelim U\bibinitperiod},
+           given={Aerospace\bibnamedelimb Design\bibnamedelima Lab},
+           giveni={A\bibinitperiod\bibinitdelim D\bibinitperiod\bibinitdelim L\bibinitperiod},
+           prefix={at},
+           prefixi={a\bibinitperiod}}}%
+      }
+      \strng{namehash}{b3df137b6012b18b0bd3ab387dfcbadf}
+      \strng{fullhash}{b3df137b6012b18b0bd3ab387dfcbadf}
+      \strng{bibnamehash}{b3df137b6012b18b0bd3ab387dfcbadf}
+      \strng{authorbibnamehash}{b3df137b6012b18b0bd3ab387dfcbadf}
+      \strng{authornamehash}{b3df137b6012b18b0bd3ab387dfcbadf}
+      \strng{authorfullhash}{b3df137b6012b18b0bd3ab387dfcbadf}
+      \field{sortinit}{S}
+      \field{sortinithash}{322b1d5276f2f6c1bccdcd15920dbee6}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{SUAVE - An Aerospace Vehicle Environment for Designing Future Aircraft}
+      \verb{urlraw}
+      \verb http://suave.stanford.edu/
+      \endverb
+      \verb{url}
+      \verb http://suave.stanford.edu/
+      \endverb
+    \endentry
+    \entry{torenbeekAAD}{book}{}
+      \name{author}{1}{}{%
+        {{hash=c1b36875a18efe5403d2947a46417ec5}{%
+           family={Torenbeek},
+           familyi={T\bibinitperiod},
+           given={E.},
+           giveni={E\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Wiley}%
+      }
+      \strng{namehash}{c1b36875a18efe5403d2947a46417ec5}
+      \strng{fullhash}{c1b36875a18efe5403d2947a46417ec5}
+      \strng{bibnamehash}{c1b36875a18efe5403d2947a46417ec5}
+      \strng{authorbibnamehash}{c1b36875a18efe5403d2947a46417ec5}
+      \strng{authornamehash}{c1b36875a18efe5403d2947a46417ec5}
+      \strng{authorfullhash}{c1b36875a18efe5403d2947a46417ec5}
+      \field{sortinit}{T}
+      \field{sortinithash}{6f7aff9db9dcfeb7f95fd5bbd2f78df9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Advanced Aircraft Design}
+      \field{year}{2013}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

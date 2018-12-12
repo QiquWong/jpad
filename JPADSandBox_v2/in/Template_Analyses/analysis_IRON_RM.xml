@@ -11,6 +11,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
 	<analyses id="IRON analysis" iterative_loop="FALSE">
+	 <!-- FOR NACELLES AND POWER PLANT: insert one method per element separated by "," or left blank to make an avareged value -->
 	<!--
 		<weights 
             file="analysis_weights_IRON_NO_CANARD.xml" 
@@ -74,6 +75,7 @@
 			landing="FALSE"
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
+			noise_trajectories="FALSE"
 			mission_profile="TRUE"
 	/> 
  	<costs 

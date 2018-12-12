@@ -2179,11 +2179,15 @@ public class LiftCalc {
 			Amount<Length> zCGLandingGears,
 			Amount<Length> xCGNacelles,
 			Amount<Length> zCGNacelles,
+			Amount<Length> xACCanard,
+			Amount<Length> zACCanard,
 			Amount<Length> wingMeanAerodynamicChord,
 			Amount<Area> wingSurface,
 			Amount<Area> horizontalTailSurface,
 			List<Double> wingFuselageLiftCoefficient,
 			List<Double> wingMomentCoefficient,
+			List<Double> canardLiftCoefficient,
+			List<Double> canardMomentCoefficient,
 			List<Double> fuselageMomentCoefficient,
 			List<Double> fuselageDragCoefficient,
 			List<Double> nacellesMomentCoefficient,
@@ -2193,11 +2197,15 @@ public class LiftCalc {
 			List<Amount<Angle>> alphaBodyList,
 			List<Amount<Angle>> alphaWingList,
 			List<Amount<Angle>> alphaNacelleList,
+			List<Amount<Angle>> alphaCanardList,
 			boolean pendularStability
 			) {
 		
 		List<Double>  horizontalTailEquilibriumLiftCoefficient = new ArrayList<>();
 
+		List<Double> canardNormalCoefficient = new ArrayList<>();
+		List<Double> canardHorizontalCoeffient = new ArrayList<>();
+		List<Double> canardMomentCoefficientWithRespectToCG = new ArrayList<>(); 
 		List<Double> wingNormalCoefficient = new ArrayList<>();
 		List<Double> wingHorizontalCoeffient = new ArrayList<>();
 		List<Double> wingMomentCoefficientWithRespectToCG = new ArrayList<>();
@@ -2278,11 +2286,43 @@ public class LiftCalc {
 				xCGPosition.doubleValue(SI.METER) - xACHorizontalTail.doubleValue(SI.METER),
 				SI.METER);
 
+		//Canard
+		Amount<Length> canardHorizontalDistanceACtoCG = Amount.valueOf(
+				xCGPosition.doubleValue(SI.METER) - xACCanard.doubleValue(SI.METER),
+				SI.METER);
+		Double nondimensionalCanardHorizontalDistance = 
+				canardHorizontalDistanceACtoCG.doubleValue(SI.METER)/
+				wingMeanAerodynamicChord.doubleValue(SI.METER);
+		
+		Amount<Length> canardVerticalDistanceACtoCG = Amount.valueOf(
+				zACCanard.doubleValue(SI.METER) -
+				zCGPosition.doubleValue(SI.METER),
+				SI.METER);
+		Double nondimensionalCanardVerticalDistance = 
+				canardVerticalDistanceACtoCG.doubleValue(SI.METER)/
+				wingMeanAerodynamicChord.doubleValue(SI.METER);
 		
 		alphaBodyList.stream().forEach( ab-> {
 
 			int i = alphaBodyList.indexOf(ab);
 
+			// CANARD -----------------------------
+			// forces
+			canardNormalCoefficient.add(
+					canardLiftCoefficient.get(i)*Math.cos(alphaCanardList.get(i).doubleValue(SI.RADIAN))
+					);
+
+			canardHorizontalCoeffient.add( - 
+					canardLiftCoefficient.get(i)*Math.sin(alphaCanardList.get(i).doubleValue(SI.RADIAN)));		
+
+			// moment with respect to CG
+				canardMomentCoefficientWithRespectToCG.add(
+						canardNormalCoefficient.get(i)* nondimensionalCanardHorizontalDistance+
+						canardHorizontalCoeffient.get(i)* nondimensionalCanardVerticalDistance+
+						canardMomentCoefficient.get(i)
+						);
+
+				
 			// WING -----------------------------
 			// forces
 			wingNormalCoefficient.add(
@@ -2380,6 +2420,7 @@ public class LiftCalc {
 
 			horizontalTailEquilibriumLiftCoefficient.add(i,
 					(- wingMomentCoefficientWithRespectToCG.get(i)
+							- canardMomentCoefficientWithRespectToCG.get(i)
 							- fuselageMomentCoefficientWithRespectToCG.get(i)
 							- nacellesMomentCoefficientWithRespectToCG.get(i)
 							- landingGearMomentCoefficientWithRespectToCG.get(i)

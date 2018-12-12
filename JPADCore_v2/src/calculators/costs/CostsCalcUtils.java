@@ -1,5 +1,8 @@
 package calculators.costs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
@@ -13,7 +16,6 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.special.Erf;
-import org.apache.commons.math3.util.FastMath;
 import org.jscience.economics.money.Currency;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
@@ -62,7 +64,7 @@ public class CostsCalcUtils {
 	 * 
 	 * @author AC
 	 * @param airframeCost (USD)
-	 * @param singleEngineCost (USD)
+	 * @param totalEngineCost (USD)
 	 * @param numberOfEngines
 	 * @param sparesAirframePerCosts airframe relative spares costs w.r.t. the airframe cost (0.1 typical) 
 	 * @param sparesEnginesPerCosts engines relative spares costs w.r.t. the engines cost (0.3 typical) 
@@ -70,14 +72,13 @@ public class CostsCalcUtils {
 	 */
 	public static Amount<Money> calcTotalInvestments(
 			Amount<Money> airframeCost,
-			Amount<Money> singleEngineCost,
-			int numberOfEngines,
+			Amount<Money> totalEngineCost,
 			double sparesAirframePerCosts,
 			double sparesEnginesPerCosts){
 
 		return Amount.valueOf(
 				airframeCost.doubleValue(Currency.USD) * (1 + sparesAirframePerCosts) + 
-				numberOfEngines * singleEngineCost.doubleValue(Currency.USD) * (1 + sparesEnginesPerCosts),
+				totalEngineCost.doubleValue(Currency.USD) * (1 + sparesEnginesPerCosts),
 				Currency.USD)
 				;
 	}
@@ -418,18 +419,25 @@ public class CostsCalcUtils {
  
 	 */
 	@SuppressWarnings("unchecked")
-	public static Amount<?> calcCockpitCrewCostATA(int cabinCrewNumber, Amount<Mass> MTOM, EngineTypeEnum _engineType) {
+	public static Amount<?> calcCockpitCrewCostATA(int cabinCrewNumber, Amount<Mass> MTOM, List<EngineTypeEnum> _engineType) {
 
+		List<Double> aircraftTypeConstList = new ArrayList<>();
 		double aircraftTypeConst = 0.0;
 
-		if (_engineType.equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 2){
-			aircraftTypeConst = 697.0;
-		}
-		else if (_engineType.equals(EngineTypeEnum.TURBOPROP) && cabinCrewNumber == 2){
-			aircraftTypeConst = 439.0;
-		}
-		else if (_engineType.equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 3){
-			aircraftTypeConst = 836.4;
+		for (int i=0; i<_engineType.size(); i++) {
+
+			if (_engineType.get(i).equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 2){
+				aircraftTypeConstList.add(697.0);
+			}
+			else if (_engineType.get(i).equals(EngineTypeEnum.TURBOPROP) && cabinCrewNumber == 2){
+				aircraftTypeConstList.add(439.0);
+			}
+			else if (_engineType.get(i).equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 3){
+				aircraftTypeConstList.add(836.4);
+			}
+			
+			aircraftTypeConst = aircraftTypeConstList.stream().mapToDouble(ac -> ac).average().getAsDouble();
+			
 		}
 
 		return Amount.valueOf(
@@ -800,12 +808,12 @@ public class CostsCalcUtils {
 	 * @return DOC material airframe, ATA method
 	 */
 	@SuppressWarnings("unchecked")
-	public static Amount<?> calcDOCMaterialAirframeMaintenanceATA(Amount<Money> airplaneCost, Amount<Money> engineCost,	int numberOfEngines, Amount<Duration> flightTime, 
+	public static Amount<?> calcDOCMaterialAirframeMaintenanceATA(Amount<Money> airplaneCost, Amount<Money> enginesCost, Amount<Duration> flightTime, 
 			Amount<Duration> blockTime, Amount<Length> range) {
 
 		
 		Amount<Money> airplaneCostLessEngine = Amount.valueOf(
-				airplaneCost.doubleValue(Currency.USD) - numberOfEngines*engineCost.doubleValue(Currency.USD),
+				airplaneCost.doubleValue(Currency.USD) - enginesCost.doubleValue(Currency.USD),
 				Currency.USD
 				);
 				
@@ -919,8 +927,8 @@ public class CostsCalcUtils {
 	 * @return DOC material engine, ATA method
 	 */
 	@SuppressWarnings({ "unchecked"})
-	public static Amount<?> calcDOCMaterialEngineMaintenanceATA(Amount<Money> engineCost, Amount<Duration> flightTime, Amount<Duration> blockTime, 
-			Amount<Length> range, Double mach, int numberOfEngines) {
+	public static Amount<?> calcDOCMaterialEngineMaintenanceATA(Amount<Money> enginesCost, Amount<Duration> flightTime, Amount<Duration> blockTime, 
+			Amount<Length> range, Double mach) {
 		
 		
 		Amount<?> CFHE = null;
@@ -930,13 +938,13 @@ public class CostsCalcUtils {
 		if(mach<1){
 			
 			CFCE = Amount.valueOf(
-					2.0*numberOfEngines*engineCost.doubleValue(Currency.USD)/Math.pow(10, 5),
+					2.0*enginesCost.doubleValue(Currency.USD)/Math.pow(10, 5),
 					MyUnits.USD_PER_HOUR);
 			
 		}
 		else{
 			CFCE= Amount.valueOf(
-					2.9*numberOfEngines*engineCost.doubleValue(Currency.USD)/Math.pow(10, 5),
+					2.9*enginesCost.doubleValue(Currency.USD)/Math.pow(10, 5),
 					MyUnits.USD_PER_HOUR);
 		}
 		
@@ -944,13 +952,13 @@ public class CostsCalcUtils {
 		if(mach<1){
 			
 			CFHE= Amount.valueOf(
-					2.5*numberOfEngines*engineCost.doubleValue(Currency.USD)/Math.pow(10, 5),
+					2.5*enginesCost.doubleValue(Currency.USD)/Math.pow(10, 5),
 					MyUnits.USD_PER_FLIGHT);
 			
 		}
 		else{
 			CFHE= Amount.valueOf(
-					4.2*numberOfEngines*engineCost.doubleValue(Currency.USD)/Math.pow(10, 5),
+					4.2*enginesCost.doubleValue(Currency.USD)/Math.pow(10, 5),
 					MyUnits.USD_PER_FLIGHT);
 		}
 		

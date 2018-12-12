@@ -60,49 +60,52 @@ public class Test27mds {
 		
 		Fuselage fuselage = aircraft.getFuselage();
 		LiftingSurface wing = aircraft.getWing();
-		LiftingSurface canard = aircraft.getCanard();
+//		LiftingSurface canard = aircraft.getCanard();
 		LiftingSurface horTail = aircraft.getHTail();
 		LiftingSurface verTail = aircraft.getVTail();
 		
 		// Get fairing shapes
-		List<OCCShape> canardFairingShapes = getFairingShapes(fuselage, canard,
-				1.0, 1.0, 0.45, 0.18, 0.50, 0.90, 0.20);	
+//		List<OCCShape> canardFairingShapes = getFairingShapes(fuselage, canard,
+//				1.0, 1.0, 0.45, 0.18, 0.50, 0.90, 0.20);	
 		List<OCCShape> wingFairingShapes = getFairingShapes(fuselage, wing,
-				1.00, 1.00, 0.90, 0.10, 0.70, 0.10, 0.50);
+				0.35, 0.50, 0.05, 0.05, 0.70, 0.10, 0.60);
 		
-		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, 7, 7, true, true, false);
+		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, 10, 7, true, true, false);
 		List<OCCShape> wingShapes = AircraftUtils.getLiftingSurfaceCAD(wing, ComponentEnum.WING, 1e-3, false, true, false);
-		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.CANARD, 1e-3, false, true, false);
+//		List<OCCShape> canardShapes = AircraftUtils.getLiftingSurfaceCAD(canard, ComponentEnum.CANARD, 1e-3, false, true, false);
 		List<OCCShape> horTailShapes = AircraftUtils.getLiftingSurfaceCAD(horTail, ComponentEnum.HORIZONTAL_TAIL, 1e-3, false, true, false);
 		List<OCCShape> verTailShapes = AircraftUtils.getLiftingSurfaceCAD(verTail, ComponentEnum.VERTICAL_TAIL, 1e-3, false, true, false);
 		
-		BRepAlgoAPI_Section sectionMaker = new BRepAlgoAPI_Section();
-		sectionMaker.Init1(fuselageShapes.get(0).getShape());
-		sectionMaker.Init2(canardFairingShapes.get(0).getShape());
-		sectionMaker.Build();
-		OCCShape intersection = (OCCShape) OCCUtils.theFactory.newShape(sectionMaker.Shape());
+//		BRepAlgoAPI_Section sectionMaker = new BRepAlgoAPI_Section();
+//		sectionMaker.Init1(fuselageShapes.get(0).getShape());
+//		sectionMaker.Init2(canardFairingShapes.get(0).getShape());
+//		sectionMaker.Build();
+//		OCCShape intersection = (OCCShape) OCCUtils.theFactory.newShape(sectionMaker.Shape());
 		
 		// Generate CAD file
-		String fileName = aircraft.getId();
+//		String fileName = aircraft.getId();
+//		String fileName = "new_fairing_test.brep";
+		String fileName = aircraft.getId().concat("_fairing");
 		
 		List<OCCShape> exportShapes = new ArrayList<>();
 		exportShapes.addAll(fuselageShapes);
 		exportShapes.addAll(wingShapes);
-		exportShapes.addAll(canardShapes);
+//		exportShapes.addAll(canardShapes);
 		exportShapes.addAll(horTailShapes);
 		exportShapes.addAll(verTailShapes);
 		exportShapes.addAll(wingFairingShapes);
-		exportShapes.addAll(canardFairingShapes);
-		exportShapes.add(intersection);
+//		exportShapes.addAll(canardFairingShapes);
+//		exportShapes.add(intersection);
 
-		if(OCCUtils.write(fileName, canardFairingShapes))
-			System.out.println("========== [main] Output written on file: " + fileName);
+//		if(OCCUtils.write(fileName, exportShapes))
+//			System.out.println("========== [main] Output written on file: " + fileName);
 		
+		AircraftUtils.getAircraftSolidFile(exportShapes, fileName, FileExtension.STEP);
 //		AircraftUtils.getAircraftSolidFile(fuselageShapes, "FUSELAGE_1", FileExtension.STEP);
 //		AircraftUtils.getAircraftSolidFile(canardShapes, "CANARD", FileExtension.STEP);
 //		AircraftUtils.getAircraftSolidFile(canardFairingShapes, "FUSELAGE_2", FileExtension.STEP);
 		
-		AircraftUtils.getAircraftSolidFile(exportShapes, fileName, FileExtension.STEP);
+//		AircraftUtils.getAircraftSolidFile(exportShapes, fileName, FileExtension.STEP);
 	}
 	
 	public static List<OCCShape> getFairingShapes(
@@ -207,7 +210,7 @@ public class Test27mds {
 		Collections.reverse(fuselageSCMiddleLowerZCoords);
 		Collections.reverse(fuselageSCMiddleLowerYCoords);
 		
-		// Call to specific fairing generator method
+		// Call to a specific fairing generator method
 		AttachmentType attachmentType = getAttachmentType(rootAirfoilPnts, tipAirfoilPnts, fuselage);
 		double fairingWidth;
 		
@@ -270,7 +273,8 @@ public class Test27mds {
 					tipTopPnt[2]
 			};
 			
-			fairingWidth = fusWingContactPnt[1] + (fusWidthAtMiddle - fusWingContactPnt[1])*sideSizeFactor;
+//			fairingWidth = fusWingContactPnt[1] + (fusWidthAtMiddle - fusWingContactPnt[1])*sideSizeFactor;
+			fairingWidth = fusWidthAtMiddle + fusWidthAtMiddle*sideSizeFactor;
 			
 			fairingShapes.addAll(generateAttachedDownFairingShapes(
 					fairingHeightFactor,
@@ -556,19 +560,19 @@ public class Test27mds {
 		
 		double[] pntI = new double[] {
 				rootLeadingEdge[0],
-				fuselageLowContactPnt[1] - (fuselageLowContactPnt[1] - rootLeadingEdge[1])*0.05,
+				fuselageLowContactPnt[1] - (fuselageLowContactPnt[1] - rootLeadingEdge[1])*0.15,
 				pntA[2]
 		};
 		
 		double[] pntL = new double[] {
 				rootTopPnt[0],
-				fuselageLowContactPnt[1] - (fuselageLowContactPnt[1] - rootTopPnt[1])*0.05,
+				fuselageLowContactPnt[1] - (fuselageLowContactPnt[1] - rootTopPnt[1])*0.0,
 				pntA[2]
 		};
 		
 		double[] pntM = new double[] {
 				rootTrailingEdge[0],
-				fuselageLowContactPnt[1] - (fuselageLowContactPnt[1] - rootTrailingEdge[1])*0.05,
+				fuselageLowContactPnt[1] - (fuselageLowContactPnt[1] - rootTrailingEdge[1])*0.15,
 				pntA[2]
 		};
 		
@@ -676,13 +680,13 @@ public class Test27mds {
 		}
 		
 		// Create patches
-		OCCShape upperPatch = OCCUtils.makePatchThruSections(
+		OCCShape upperPatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newVertex(pntA[0], pntA[1], pntA[2]), 
 				mainSegments, 
 				OCCUtils.theFactory.newVertex(pntE[0], pntE[1], pntE[2])
 				);	
 		
-		OCCShape lowerPatch = OCCUtils.makePatchThruSections(
+		OCCShape lowerPatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newVertex(pntG[0], pntG[1], pntG[2]), 
 				bottomSegments, 
 				OCCUtils.theFactory.newVertex(pntF[0], pntF[1], pntF[2])
@@ -702,7 +706,7 @@ public class Test27mds {
 			explorerLow.Next();
 		}	
 		
-		OCCShape sidePatch = OCCUtils.makePatchThruSections(
+		OCCShape sidePatch = OCCUtils.makePatchThruCurveSections(
 				OCCUtils.theFactory.newCurve3D((CADEdge) OCCUtils.theFactory.newShape(upperEdges.get(1))),
 				OCCUtils.theFactory.newCurve3D((CADEdge) OCCUtils.theFactory.newShape(lowerEdges.get(1)))
 				);
@@ -733,6 +737,7 @@ public class Test27mds {
 			shellExplorer.Next();
 		}
 		filletMaker.Add(filletRadius, shellEdges.get(1));
+		filletMaker.Add(filletRadius*0.80, shellEdges.get(6));
 
 		List<TopoDS_Shell> filletShells = new ArrayList<>();
 		TopExp_Explorer filletShellExplorer = new TopExp_Explorer(filletMaker.Shape(), TopAbs_ShapeEnum.TopAbs_SHELL);

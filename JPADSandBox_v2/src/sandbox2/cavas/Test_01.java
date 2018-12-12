@@ -190,7 +190,7 @@ public class Test_01 {
 				);
 		
 		// Cl_beta_WB
-		Amount<Velocity> velocityTAS = operatingConditions.getTASCruise();
+		Amount<Velocity> velocityTAS = operatingConditions.getTasCruise();
 		Amount<Mass> maxTakeOffWeight = Amount.valueOf(56000.0, SI.KILOGRAM);
 		Amount<Force> weight = Amount.valueOf(
 				maxTakeOffWeight.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
@@ -396,7 +396,7 @@ public class Test_01 {
 		System.out.println("-------------------------");
 		
 		// Cl_beta_V
-		Amount<Angle> angleOfAttack = operatingConditions.getAlphaCurrentCruise().to(NonSI.DEGREE_ANGLE);
+		Amount<Angle> angleOfAttack = operatingConditions.getAlphaCruise().to(NonSI.DEGREE_ANGLE);
 		Amount<Length> xCG = wing.getMeanAerodynamicChord().times(0.4)
 				.plus(wing.getMeanAerodynamicChordLeadingEdgeX())
 				.plus(wing.getXApexConstructionAxes());

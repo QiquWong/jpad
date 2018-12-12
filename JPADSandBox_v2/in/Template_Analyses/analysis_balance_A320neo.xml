@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analysis>
+        <balance 
+            id="A320neo - BALANCE" 
+            weights_from_previous_analysis="true" 
+            >
+			<weights>
+				<operating_empty_mass unit="kg"></operating_empty_mass>
+				<fuel_mass unit="kg"></fuel_mass>
+				<passengers_single_mass unit='kg'></passengers_single_mass>
+				<fuselage_mass unit="kg"></fuselage_mass>
+				<wing_mass unit="kg"></wing_mass>
+				<horizontal_tail_mass unit="kg"></horizontal_tail_mass>
+				<vertical_tail_mass unit="kg"></vertical_tail_mass>
+				<canard_mass unit="kg"></canard_mass>
+				<nacelles_mass unit="kg"></nacelles_mass>
+				<power_plant_mass unit="kg"></power_plant_mass>
+				<landing_gears_mass unit="kg"></landing_gears_mass>
+				<APU_mass unit="kg"></APU_mass>
+				<air_conditioning_and_anti_icing_system_mass unit="kg"></air_conditioning_and_anti_icing_system_mass>
+				<instruments_and_navigation_system_mass unit="kg"></instruments_and_navigation_system_mass>
+				<hydraulic_and_pneumatic_systems_mass unit="kg"></hydraulic_and_pneumatic_systems_mass>
+				<electrical_systems_mass unit="kg"></electrical_systems_mass>
+				<control_surfaces_mass unit="kg"></control_surfaces_mass>
+				<furnishings_and_equipments_mass unit="kg"></furnishings_and_equipments_mass>
+			</weights>
+			<systems_positions include_systems="FALSE" use_standard_positions="TRUE"> <!-- Sforza-Aircraft Design suggestions (pag.343, Fig. 8.38 and 8.39) -->
+				<APU>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</APU>
+				<air_conditioning_and_anti_icing_system>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</air_conditioning_and_anti_icing_system>
+				<instruments_and_navigation_system>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</instruments_and_navigation_system>
+				<hydraulic_and_pneumatic_systems>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</hydraulic_and_pneumatic_systems>
+				<electrical_systems>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</electrical_systems>
+				<control_surfaces>
+					<x unit="m"></x>
+					<z unit="m"></z>					
+				</control_surfaces>
+				<furnishings_and_equipments>
+					<x unit="m"></x>
+					<z unit="m"></z>
+				</furnishings_and_equipments>
+			</systems_positions>
+			<calibration> <!-- Default values: 1.0 - Corrections are applied in Local Reference Frame (LRF) reference frame-->
+				<fuselage>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</fuselage>
+				<wing>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</wing>
+				<fuel_tank>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</fuel_tank>
+				<horizontal_tail>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</horizontal_tail>
+				<vertical_tail>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</vertical_tail>
+				<canard>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</canard>
+				<nacelles>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</nacelles>
+				<power_plant>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</power_plant>
+				<landing_gears>
+					<xcg_correction_factor></xcg_correction_factor>
+					<zcg_correction_factor></zcg_correction_factor>
+				</landing_gears>
+			</calibration>
+        </balance>
+    </analysis>        
+</jpad_config>

@@ -28,11 +28,14 @@ public class EngineDatabaseManager_old {
 			) {
 
 		if (engineType.equals(EngineTypeEnum.TURBOFAN)) {
-			return thePowerPlant.getTurbofanEngineDatabaseReader().getThrustRatio(mach, altitude, bpr, engineOperatingCondition);
+//			return thePowerPlant.getTurbofanEngineDatabaseReader().getThrustRatio(mach, altitude, bpr, engineOperatingCondition);
 
 		} else {
-			return thePowerPlant.getTurbopropEngineDatabaseReader().getThrustRatio(mach, altitude, bpr, engineOperatingCondition);
+//			return thePowerPlant.getTurbopropEngineDatabaseReader().getThrustRatio(mach, altitude, bpr, engineOperatingCondition);
 		}
+		
+		return 0.0;
+		
 	}
 
 	/**
@@ -58,11 +61,13 @@ public class EngineDatabaseManager_old {
 			) {
 
 		if (engineType.equals(EngineTypeEnum.TURBOFAN)) {
-			return thePowerPlant.getTurbofanEngineDatabaseReader().getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition); 
+//			return thePowerPlant.getTurbofanEngineDatabaseReader().getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition); 
 
 		} else {
-			return thePowerPlant.getTurbopropEngineDatabaseReader().getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition);
+//			return thePowerPlant.getTurbopropEngineDatabaseReader().getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition);
 		}
+		
+		return 0.0;
 	}
 
 }

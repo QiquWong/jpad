@@ -11,6 +11,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
 	<analyses id="CS-300 analysis" iterative_loop="FALSE">
+	<!-- FOR NACELLES AND POWER PLANT: insert one method per element separated by "," or left blank to make an avareged value -->
 	<!--
         <weights 
             file="analysis_weights_DASH8.xml" 
@@ -74,6 +75,7 @@
 			landing="TRUE"
 			payload_range="TRUE"
 			V_n_diagram="TRUE"
+			noise_trajectories="FALSE"
 			mission_profile="TRUE"
 	/>
 	<!--

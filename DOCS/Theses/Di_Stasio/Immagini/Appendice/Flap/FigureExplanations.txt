@@ -1,0 +1,116 @@
+No getFlappedWing method is actually contained in AircraftUtils, tests have been made in order to estimate OCCT library Boolean
+algorithms capabilities. Tests have been conducted for symmetric Fowler flaps, altough the same tests can be easily adapted
+in order to produce different flap types (by simply modifying the part of the part of code that actually realizes shapes for 
+wing and flaps Boolean cutting operations).
+
+The algorithm implemented in the test class firstly requires a shape (a solid one) to begin with. So once the getLiftingSurface
+method has been called, a check must be made in order to make sure the shape passed is a solid.
+
+Once the solid has been acquired, next step is to collect data on the flaps, such as their locations and their extension (at the 
+moment no information on the flap typology is collected, since tests have been conducted just for Fowler type flaps, so all the
+flaps realized by using the test class are Fowler flaps).
+
+In order to generate the flapped wing, Boolean operations are needed, in order to:
+	- generate the "cut" wing (wing cut but with no flaps),
+	- generate the flap itself.
+OCCT comes with a package dedicated to Boolean operation which is BRepAlgoAPI, that contains BRepAlgoAPI_Cut class which is the 
+class actually used in order to perform the Boolean operation described in the following.
+In order to perform these operations solids for Boolean cutting are needed. These solids need to be made from scratch, using data
+on flaps previously collected.
+
+In order to produce the so-called "cutting solids", first thing to do is to generate lifitng surface sections at desired locations,
+i.e., locations at which wires to patch through in order to obtain the solids for cutting operations need to be realized.
+
+Linear spacing has been used for Boolean section operations (these operations have been performed by means of another class of the 
+BRepAlgoAPI package, which is BRepAlgoAPI_Section). Section operation actually produces a compound, so edges must be searched in
+this compound in order to find the one regarding the main airfoil and the one regarding the trailing edge segment. The main airfoil
+edge is the one used in order to determine points from which the construction of the cutting wires (needed for cutting solid
+construction) starts. 
+
+Wires are generated in the code by use of a method (contained in the same test class) which is called generateCuttingWires. This
+function actually generates wires for:
+	- wing cutting operations,
+	- flap LE adjustment.
+The last operation is something quite always needed after Boolean cutting operations have been performed: in fact, the LE of the
+flap must be rounded after the cutting operations have been made. This last operation could actually be avoided, by using instead
+the MakeFillet method seen for the fairing. But some problems could be encountered while performing the MakeFillet operations if
+a double edge is created at the flap LE once the Boolean cut has been made. In order to prevent this possibility, the code performs
+the rounding of the LE of the flap in the aforementioned manner, though it's not the most orthodox way to accomplish it.
+The generateCuttingWires method returns two lists of wires arrays and a list of points. These points are those used in the 
+following in order to generate the flap rotation axis.
+
+These two list of wire arrays (two arrays actually, one for the inner flap, one for the outer flap) contain:
+	- wing cutting wires,
+	- flap cutting wires (for LE adjustment).
+These wires are then used in order to generate solids for cutting operations by use of the OCCUtils methods MakePatchThruSections.
+Mirroring operation are performed for these solids if necessary.
+
+
+WingSectionPlusWingCuttingWire, FlapSectionPlusFlapCuttingWire_02 - these figures show how basic shapes for cutting solids are 
+		generated. In order to create these wires, the first thing to do is to get points on section airfoils, one on
+		the upper side, one on the lower one. The function that performs this operation in the test is called 
+		getParamsIntersectionPointsOnAirfoil: it receives as input the edge entity underlying the airfoil, the flap
+		chord and the leap factor, which multiplies the flap chord and determines the shape of the Fowler flap. Points
+		on the airfoil are obtained by intersecting the airfoil with two circles, both centered in the trailing edge but
+		with different radius: one is equal to the flap chord, the other one is equal to the flap chord multiplied by 
+		the leap factor. The intersection algorithm returns the params of the two points. Once these params have been 
+		obtained, is possible to get the corresponding points and the tangents to the airfoil curve corresponding to these
+		points (P1 and P6 in the figure). These tangents are useful for double reason: they help in designing the curve
+		which gives the proper shape to the flap (the P6P1 curve), and can be used to calculate normal vectors to the 
+		airfoil curve, which are useful for both designing the aforementioned curve and build the cutting wires segments.
+		Flap chord length serves as a reference for cutting wires segments lengths. 
+		P6P1 curve is obtained thorugh the OCCUtils method newCurve3D, by providing it two points (P6 and P1), and the
+		two tangency constraint (at the initial and at the ending point): one equal to the the normal to the airfoil curve
+		(in P6) the other one "almost" equal (just slightly modified in order to prevent eventual errors while 
+		performing Boolean operations) to the tangent to the airfoil in P1.
+		P6 points are collected into a list and later used to create the pitch rotation axis for the flaps.
+
+		The procedure for creating the flap cutting wires is almost equal. The main difference consists in how P6 and P1 
+		points are determined. This time P1 is not taken on the airfoil curve, but on the P6P1 curve previously obtained.
+		On the other hand, P6 is still being taken on the airfoil curve. In order to determine this point, the same
+		function previously mentioned is used: a value a little bit less than the one used before is selected (like
+		95% of the flap chord instead of 100%). P1 is determined as the point at 10% of the P6P1 curve obtained before.
+		As it was done before, points coordinates are calculated along with the tangents to the curves. These taangents 
+		will serve in order to build the wire. 
+
+WingCuttingSolidsRightPlusWingCuttingWires - once needed wires have been crated for inner and outer flaps, makePatchThruSections
+		function can be used, along with makeFilledFace in order to fill the remaining faces, to create the solids
+		necessary for wing cutting operations. If necessary (i.e., the lifitng surface is not a vtail), mirroring operations
+		are automatically performed on the cutting solids. The same happens for the wires generated for flap cutting
+		operations.
+
+WingCutSolid_01, WingCutSolid_02 - first, cuts must be performed on the wing in order to obtain the so-called "cut wing", which
+		is the wing without flaps. Cutting solids are "subtracted" one by one from the original wing, obtaining the shape
+		represented in figure.
+
+WingPlusAuxWingPlusNotRoundedFlap - in order to obtain the flaps, more cutting operations are needed. First, auxiliary cut wing
+		must be created (the one at the center). These solids are obtained in the same way the cut wing has been obtained 
+		before, the only difference is that the shape provided to the algorithm which performs the Boolean operation is 
+		not updated every time a cut has been made, but is always the starting one (i.e., the original wing). In this way,
+		inner and outer flap are originated, and mirrored whether necessary.
+
+FlapPlusFlapCuttingSolid_01, FlapPlusFlapCuttingSolid_02 - Boolean cutting operations are performed on the flap too, in order to 
+		obtain a rounded LE. This operation is performed before the mirroring one, of course.
+
+CompleteFlappedWing_01, CompleteFlappedWing_02 - once the flaps have been obtained, along with their pitch rotation axis, some 
+		OCCT classes can be used in order to translate and rotate the flaps. One thing needs to be clarified: the actual
+		operations needed to move Fowler flaps correctly are much more complicated than those used in the test. So the
+		pictures just show how basic transformation algorithms provided by Open CASCADE API can be used in order to move 
+		the flaps, though actual Fowler flap movements implementation requires more work on the code. In this example, 
+		flaps have been pushed backwards (in the positive x direction) and rotated respect to their pitch rotation axis
+		of an angle equal to 35°.
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+

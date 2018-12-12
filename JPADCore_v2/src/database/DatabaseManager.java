@@ -1,7 +1,10 @@
 package database;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import configuration.MyConfiguration;
 import database.databasefunctions.FuelFractionDatabaseReader;
@@ -447,7 +450,7 @@ public class DatabaseManager {
 		return reader;
 	}
 	
-	public static EngineDatabaseManager initializeEngineDatabase(EngineDatabaseManager databaseManager, String databaseDirectory, String databaseName){
+	public static EngineDatabaseManager initializeEngineDatabase(EngineDatabaseManager databaseManager, String databaseDirectory, String databaseName) throws InvalidFormatException, IOException{
 
 		String databaseNameXML = null;
 		
@@ -456,7 +459,7 @@ public class DatabaseManager {
 		else if(databaseName.endsWith(".xls"))
 			databaseNameXML = databaseName.replace(".xls", ".xml");
 		
-		String serializedDatabaseDirectory = databaseDirectory + "serializedDatabase"; 
+		String serializedDatabaseDirectory = databaseDirectory + File.separator + "serializedDatabase"; 
 		String serializedDatabaseFullName = serializedDatabaseDirectory + File.separator + databaseNameXML;
 
 		File serializedEngineDatabaseFile = new File(serializedDatabaseFullName);

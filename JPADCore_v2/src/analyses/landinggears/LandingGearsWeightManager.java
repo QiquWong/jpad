@@ -53,13 +53,13 @@ public class LandingGearsWeightManager {
 		
 	}
 	
-	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 		
 		calculateMass(aircraft, MethodEnum.TORENBEEK_1976);
 		
-		if(!methodsMapWeights.get(ComponentEnum.LANDING_GEAR).equals(MethodEnum.AVERAGE)) { 
+		if(!methodsMapWeights.get(ComponentEnum.LANDING_GEAR).get(0).equals(MethodEnum.AVERAGE)) { 
 			_percentDifference =  new double[_massMap.size()];
-			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.LANDING_GEAR));
+			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.LANDING_GEAR).get(0));
 		}
 		else {
 			_percentDifference =  new double[_massMap.size()];

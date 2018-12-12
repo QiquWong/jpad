@@ -5,30 +5,30 @@
     <analysis>
         <weights id="CS300 - WEIGHTS">
 			<global_data>
-				<first_guess_maximum_take_off_mass unit="kg">67585</first_guess_maximum_take_off_mass>
-				<relative_maximum_landing_mass>0.9</relative_maximum_landing_mass> <!-- with respect to Max Take-Off mass. Default = 0.9 -->
-				<single_passenger_mass unit="kg">105</single_passenger_mass>
+				<first_guess_maximum_take_off_mass unit="kg">70000</first_guess_maximum_take_off_mass>
+				<relative_maximum_landing_mass>0.85</relative_maximum_landing_mass> <!-- with respect to Max Take-Off mass. Default = 0.9 -->
+				<single_passenger_mass unit="kg">100</single_passenger_mass>
 				<reference_mission_range unit="nmi">3300</reference_mission_range>
 			</global_data>
 			<!-- the user can estimate the mission fuel or assign it. If the 'estimate_mission_fuel' tag is FALSE, the code reads the 'mission_fuel_mass' tag (Fuel Mass in kg) -->
-			<mission_profile_data estimate_mission_fuel="FALSE" mission_fuel_mass="16200"> 				
+			<mission_profile_data estimate_mission_fuel="TRUE" mission_fuel_mass="16200"> 				
 				<cruise_phase>
 					<range unit="nmi">3100</range> 
-					<sfc>0.57</sfc>
+					<sfc>0.33</sfc>
 					<efficiency>18</efficiency>
 				</cruise_phase>
 				<alternate_phase>
 					<range unit="nmi">35</range> 
 					<altitude unit="ft">20000</altitude>
 					<mach>0.7</mach>
-					<sfc>0.57</sfc> 
+					<sfc>0.33</sfc> 
 					<efficiency>17</efficiency> 
 				</alternate_phase>
 				<holding_phase>
 					<duration unit="min">30</duration> 
 					<altitude unit="ft">1500</altitude>
 					<mach>0.3</mach>
-					<sfc>0.57</sfc> 
+					<sfc>0.33</sfc> 
 					<efficiency>18</efficiency> 
 				</holding_phase>
 			</mission_profile_data>

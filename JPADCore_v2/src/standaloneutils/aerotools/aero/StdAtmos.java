@@ -37,6 +37,7 @@ package standaloneutils.aerotools.aero;
 *  @author  Joseph A. Huwaldt  Date:	September 27, 1998
 *  @version April 1, 2014
 */
+@SuppressWarnings("serial")
 public abstract class StdAtmos implements java.io.Serializable {
 
 	/*
@@ -234,6 +235,25 @@ public abstract class StdAtmos implements java.io.Serializable {
 	*          to be calculated (in meters).
 	*/
 	public abstract void setAltitude( double altitude ) throws IllegalArgumentException;
+	
+	/**
+	*  Sets the ISA deviation where the standard
+	*  atmosphere is to be calculated.
+	*
+	*  @param  deltaTemperature at which standard atmosphere is
+	*          to be calculated (in °C).
+	*/
+	public abstract void setDeltaTemperature ( double deltaTemperature ) throws IllegalArgumentException;
+	
+	/**
+	*  Sets altitude and delta ISA for the standard atmosphere
+	*  is to be calculated.
+	*
+	*  @param  altitude Geometric altitude at which standard atmosphere is to be calculated;  value given in meters.
+	*  @param  deltaTemperature at which standard atmosphere is to be calculated;  value given in °C.
+	*          
+	*/
+	public abstract void setAltitudeAndDeltaTemperature ( double altitude, double deltaTemperature ) throws IllegalArgumentException;
 
 }
 

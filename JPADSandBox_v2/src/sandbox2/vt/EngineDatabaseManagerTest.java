@@ -1,6 +1,7 @@
 package sandbox2.vt;
 
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.Unit;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.physics.amount.Amount;
 
 import configuration.MyConfiguration;
@@ -34,16 +36,21 @@ public class EngineDatabaseManagerTest {
 		MyConfiguration.initWorkingDirectoryTree();
 		
 		String engineDatabaseFileDirectory = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-		String engineDatabaseFileName = "EngineDatabaseTP.xlsx";
+		String engineDatabaseFileName = "EngineDatabaseTF_HBPR.xlsx";
 		System.out.println("Engine database file --> " + engineDatabaseFileDirectory + engineDatabaseFileName);
 		System.out.println("Done!");
 		
 		System.out.println("\nCreating the Database Manager ...");
-		EngineDatabaseManager engineDatabaseManager = DatabaseManager.initializeEngineDatabase(
-				new EngineDatabaseManager(), 
-				engineDatabaseFileDirectory, 
-				engineDatabaseFileName
-				);
+		EngineDatabaseManager engineDatabaseManager = null;
+		try {
+			engineDatabaseManager = DatabaseManager.initializeEngineDatabase(
+					new EngineDatabaseManager(), 
+					engineDatabaseFileDirectory, 
+					engineDatabaseFileName
+					);
+		} catch (InvalidFormatException | IOException e) {
+			e.printStackTrace();
+		}
 		System.out.println("\n\nDone!");
 		
 		System.out.println("\nTesting getters ...");

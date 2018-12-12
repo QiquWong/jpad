@@ -12,6 +12,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
     <analyses id="ATR-72 analysis" iterative_loop="FALSE">
+	 <!-- FOR NACELLES AND POWER PLANT: insert one method per element separated by "," or left blank to make an avareged value -->
 		<weights 
             file="analysis_weights_ATR72.xml" 
 			plot="TRUE"
@@ -32,7 +33,6 @@
 			method_furnishings_and_equipments=""
 			method_control_surfaces=""
             />
-			<!--
 		<balance 
 			file="analysis_balance_ATR72.xml"
 			plot="TRUE"
@@ -46,7 +46,6 @@
 			method_power_plant=""
 			method_landing_gears=""
 		/>
-		-->
 		<!--
 		<aerodynamic_and_stability
 			plot="FALSE"

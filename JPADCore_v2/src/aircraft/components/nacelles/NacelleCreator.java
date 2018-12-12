@@ -74,8 +74,8 @@ public class NacelleCreator {
 		this._theNacelleCreatorInterface = theNacelleCreatorInterface;
 		this._theEngine = theEngine;
 		
-		if((_theNacelleCreatorInterface.getLength().doubleValue(SI.METER) == 0.0)
-				&& (_theNacelleCreatorInterface.getDiameterMax().doubleValue(SI.METER) == 0.0)) {
+		if(( (_theNacelleCreatorInterface.getLength() == null) || (_theNacelleCreatorInterface.getLength().doubleValue(SI.METER) == 0.0))
+				|| ( (_theNacelleCreatorInterface.getDiameterMax() == null) || (_theNacelleCreatorInterface.getDiameterMax().doubleValue(SI.METER) == 0.0) ) ) {
 			estimateDimensions(_theEngine);
 		}
 		

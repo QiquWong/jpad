@@ -74,16 +74,16 @@ public final class StdAtmos1976 extends StdAtmos {
 	private static final double z8 = 91;
 	private static final double z9 = 110;
 	
-	//	Standard sea level density in slugs/ft^3.
+	//	Standard sea level ISA+0°C density in slugs/ft^3.
 	private static final double densr =0.23768927474626480034e-02;
 
-	//	Standard sea level pressure in psf.
+	//	Standard sea level ISA+0°C pressure in psf.
 	private static final double presr = 0.21162383956248054346e04;
 
-	//	Standard sea level temperature in deg. Rankine.
+	//	Standard sea level ISA+0°C temperature in deg. Rankine.
 	private static final double tempr = 0.51866997527360945242e03;
 
-	//	Standard sea level speed of sound (ft/s).
+	//	Standard sea level ISA+0°C speed of sound (ft/s).
 	private static final double csr = 0.11164500056016072449e04;
 	
 	//	anshgh are values for very high altitudes where the atmosphere appears constant.
@@ -775,12 +775,43 @@ public final class StdAtmos1976 extends StdAtmos {
 					alt = altitude;
 					
 					//	Go off and calculate the standard atmosphere parameters.
-					calculate();
+					calculate( 0.0 );
 				}
 			}
 		}
 	}
 
+	/**
+	*  Constructor that takes a value of altitude in meters.
+	*  If the specified altitude is outside the range 0 to 86,000
+	*  meters, an IllegalArgumentException exception is thrown.  </p>
+	*
+	*  @param  altitude Altitude at which standard atmosphere is to be
+	*          calculated; value given in meters.
+	*/
+	public StdAtmos1976( double altitude , double deltaTemperature ) throws IllegalArgumentException {
+
+		//	Set the altitude (if out of range, throw exception).
+		if ( altitude < minAltitude() )
+			throw new IllegalArgumentException( "Altitude can not be less than " + (minAltitude()/1000) + " km." );
+		
+		else {
+			if ( altitude > maxAltitude() )
+				throw new IllegalArgumentException( "Altitude can not be greater than " + (maxAltitude()/1000) + " km." );
+			
+			else {
+				//	Reset the altitude only if it has changed.
+
+				if ( abs(altitude - alt) > MathTools.epsilon(altitude) ) {
+					alt = altitude;
+					
+					//	Go off and calculate the standard atmosphere parameters.
+					calculate(deltaTemperature);
+				}
+			}
+		}
+	}
+	
 	//-----------------------------------------------------------------------------------
 	/**
 	*  Returns the standard sea level temperature for this
@@ -875,27 +906,83 @@ public final class StdAtmos1976 extends StdAtmos {
 					alt = altitude;
 					
 					//	Go off and calculate the standard atmosphere parameters.
-					calculate();
+					calculate( 0.0 );
 				}
 			}
 		}
 	}
 
 	/**
-	 * Calculates the properties of the 1976 IACO Standard Atmosphere.
+	*  Sets the delta ISA for the standard atmosphere
+	*  is to be calculated.
+	*
+	*  @param  altitude Geometric altitude at which standard atmosphere is to be
+	*          calculated;  value given in meters.
+	*/
+    @Override
+    public void setDeltaTemperature( double deltaTemperature ) throws IllegalArgumentException {
+    	//	Set the altitude (if out of range, throw exception).
+    	if ( deltaTemperature < -40.0 )
+    		throw new IllegalArgumentException( "Delta Temperature can not be less than " + -40 + " °C" );
+    	else if ( deltaTemperature > 40.0 )
+    		throw new IllegalArgumentException( "Delta Temperature can not be greater than " + 40 + " °C" );
+    	else {
+    		//	Reset the delta Temperature only if it has changed.
+    		calculate( deltaTemperature );
+    	}
+    }
+    
+	/**
+	*  Sets altitude and delta ISA for the standard atmosphere
+	*  is to be calculated.
+	*
+	*  @param  altitude Geometric altitude at which standard atmosphere is to be calculated;  value given in meters.
+	*  @param  deltaTemperature at which standard atmosphere is to be calculated;  value given in °C.
+	*          
+	*/
+    @Override
+    public void setAltitudeAndDeltaTemperature( double altitude, double deltaTemperature ) throws IllegalArgumentException {
+
+    	// 	Set the altitude (if out of range, throw exception).
+    	if ( altitude < minAltitude() )
+    		throw new IllegalArgumentException( "Altitude can not be less than " + (minAltitude()/1000) + " km." );
+    	else if ( altitude > maxAltitude() )
+    		throw new IllegalArgumentException( "Altitude can not be greater than " + (maxAltitude()/1000) + " km." );
+    	else {
+			//	Reset the altitude only if it has changed.
+			if ( abs(altitude - alt) > MathTools.epsilon(altitude) ) 
+				alt = altitude;
+			} 
+    	if ( deltaTemperature < -40.0 )
+    		throw new IllegalArgumentException( "Delta Temperature can not be less than " + -40 + " °C" );
+    	else if ( deltaTemperature > 40.0 )
+    		throw new IllegalArgumentException( "Delta Temperature can not be greater than " + 40 + " °C" );
+    	
+    	calculate( deltaTemperature );
+    }
+
+    
+	/**
+	 * Calculates the properties of the 1976 IACO Standard Atmosphere with ISA deviation effects (-40°C, +40°C).
 	 *  
 	 * Source:  Fortran atmos76 routine created by Computer Sciences Corporation, April 1, 1984.
 	 * 			Ported to Java by Joseph A. Huwaldt, January 14, 2012.
 	 */
-	private void calculate() {
+	private void calculate(double deltaTemperature) {
 		double zft = alt/conv1;		//	Convert input altitude from meters to feet.
+		
+		/* This updates the reference values at ISA+0°C taking into account for the deltaTemperature parameter (in °C) */
+		double temprMod = 1.8*deltaTemperature + 518.67;
+		double presrMod = presr;
+		double densrMod = 0.0000000292*Math.pow(deltaTemperature, 2) - 0.0000083583*deltaTemperature + 0.0023770779;
+		double csrMod = -0.0016896125*Math.pow(deltaTemperature, 2) + 1.9404119118*deltaTemperature + 1116.4517910217;
 		
 		if (zft >= 3280839.9) {
 			//	For z greater than 3280839.9 ft, define output values equal to those at that altitude.
-			theta = anshgh[2]*1.8/tempr;
-			delta = anshgh[1]/presr;
-			sigma = anshgh[0]/densr;
-			cs = anshgh[3]/csr;
+			theta = anshgh[2]*1.8/temprMod;
+			delta = anshgh[1]/presrMod;
+			sigma = anshgh[0]/densrMod;
+			cs = anshgh[3]/csrMod;
 			return;
 		}
 		
@@ -1039,12 +1126,12 @@ public final class StdAtmos1976 extends StdAtmos {
 			cs  = 894.50046;
 		
 		//	Calculate the outputs.
-		theta = t*1.8/tempr;
-		delta = pin/presr;
-		sigma = rho/densr;
-		cs = cs/csr;
+		theta = t*1.8/temprMod;
+		delta = pin/presrMod;
+		sigma = rho/densrMod;
+		cs = cs/csrMod;
 	}
-
+	
 	/**
 	 * Subroutine iuni uses first or second order Lagrangian interpolation to estimate the values
 	 * of a set of functions at a point x0.  iuni uses one independent variable table and a dependent

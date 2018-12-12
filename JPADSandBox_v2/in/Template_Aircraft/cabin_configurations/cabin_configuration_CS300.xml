@@ -2,8 +2,8 @@
 <jpad_config>
     <configuration id="CS300 Cabin Configuration">
 		<global_data>
-			<actual_passengers_number>130</actual_passengers_number>
-			<maximum_passengers_number>130</maximum_passengers_number>
+			<actual_passengers_number>165</actual_passengers_number>
+			<maximum_passengers_number>165</maximum_passengers_number>
 			<flight_crew_number>2</flight_crew_number>
 			<classes_number>1</classes_number>
 			<classes_type>ECONOMY</classes_type>

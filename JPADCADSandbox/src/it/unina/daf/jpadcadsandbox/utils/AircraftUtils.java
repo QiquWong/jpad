@@ -122,11 +122,11 @@ public final class AircraftUtils {
 			String pathToXML = CmdLineUtils.va.getInputFile().getAbsolutePath();
 			System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
 
-			String pathToAnalysesXML = CmdLineUtils.va.getInputFileAnalyses().getAbsolutePath();
-			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
-			
-			String pathToOperatingConditionsXML = CmdLineUtils.va.getOperatingConditionsInputFile().getAbsolutePath();
-			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
+//			String pathToAnalysesXML = CmdLineUtils.va.getInputFileAnalyses().getAbsolutePath();
+//			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
+//			
+//			String pathToOperatingConditionsXML = CmdLineUtils.va.getOperatingConditionsInputFile().getAbsolutePath();
+//			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
 			
 			String dirAirfoil = CmdLineUtils.va.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
@@ -235,9 +235,9 @@ public final class AircraftUtils {
 			System.setOut(originalOut);
 			System.out.println("Defining the operating conditions ... ");
 			System.setOut(filterStream);
-			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
+//			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
 //			System.setOut(originalOut);
-			System.out.println(theOperatingConditions.toString());
+//			System.out.println(theOperatingConditions.toString());
 //			System.setOut(filterStream);			
 			
 			System.setOut(originalOut);
@@ -485,7 +485,7 @@ public final class AircraftUtils {
 			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-2, loft: nose patch
 			System.out.println("Constructing the nose patch, Patch-2");
 			// patch2 = OCCUtils.makePatchThruSectionsP(sections2);
-			patch2 = OCCUtils.makePatchThruSections(cadCurvesNoseTrunk);
+			patch2 = OCCUtils.makePatchThruCurveSections(cadCurvesNoseTrunk);
 		}
 		
 		// nose Patch-2 terminal section
@@ -517,7 +517,7 @@ public final class AircraftUtils {
 
 		if (exportLofts) {
 			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-3, loft: cylinder
-			patch3 = OCCUtils.makePatchThruSections(
+			patch3 = OCCUtils.makePatchThruCurveSections(
 					cadCrvCylinderInitialSection, cadCrvCylinderMidSection, cadCrvCylinderTerminalSection);
 		}
 		
@@ -557,7 +557,7 @@ public final class AircraftUtils {
 		
 		if(exportLofts) {
 			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-4, loft: tail
-			patch4 = OCCUtils.makePatchThruSections(
+			patch4 = OCCUtils.makePatchThruCurveSections(
 					cadCurvesTailTrunk);
 		}
 		
@@ -594,7 +594,7 @@ public final class AircraftUtils {
 
 		if (exportLofts) {
 			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap
-			patch5 = OCCUtils.makePatchThruSections(cadCurvesTailCapTrunk, vertexTailTip);
+			patch5 = OCCUtils.makePatchThruCurveSections(cadCurvesTailCapTrunk, vertexTailTip);
 		}
 		
 		BRepBuilderAPI_Sewing sewMaker = new BRepBuilderAPI_Sewing();
@@ -1180,7 +1180,7 @@ public final class AircraftUtils {
 //			}
 //		}
 		patchWing.addAll(cadCurveAirfoilList.stream()
-		                   .map(OCCUtils::makePatchThruSections)
+		                   .map(OCCUtils::makePatchThruCurveSections)
 		                   .collect(Collectors.toList()));
 		
 		// Closing the trailing edge
@@ -1636,8 +1636,8 @@ public final class AircraftUtils {
 				);
 		sectionsListP1Low.add(mainVSections.get(0)[1]);
 		
-		patchWingTip.add(OCCUtils.makePatchThruSections(sectionsListP1Upp));
-		patchWingTip.add(OCCUtils.makePatchThruSections(sectionsListP1Low));
+		patchWingTip.add(OCCUtils.makePatchThruCurveSections(sectionsListP1Upp));
+		patchWingTip.add(OCCUtils.makePatchThruCurveSections(sectionsListP1Low));
 		
 		// patching through patch #2 vertical sections, first step
 		List<CADGeomCurve3D> sectionsListP2_1Upp = new ArrayList<>();
@@ -1657,8 +1657,8 @@ public final class AircraftUtils {
 											.collect(Collectors.toList())		
 				);
 		
-		patchWingTip.add(OCCUtils.makePatchThruSections(sectionsListP2_1Upp));
-		patchWingTip.add(OCCUtils.makePatchThruSections(sectionsListP2_1Low));
+		patchWingTip.add(OCCUtils.makePatchThruCurveSections(sectionsListP2_1Upp));
+		patchWingTip.add(OCCUtils.makePatchThruCurveSections(sectionsListP2_1Low));
 		
 		// patching through patch #2 vertical sections, second step
 		List<CADGeomCurve3D> sectionsListP2_2Upp = new ArrayList<>();
@@ -1678,8 +1678,8 @@ public final class AircraftUtils {
 				);
 		sectionsListP2_2Low.add(mainVSections.get(1)[1]);
 		
-		patchWingTip.add(OCCUtils.makePatchThruSections(sectionsListP2_2Upp));
-		patchWingTip.add(OCCUtils.makePatchThruSections(sectionsListP2_2Low));
+		patchWingTip.add(OCCUtils.makePatchThruCurveSections(sectionsListP2_2Upp));
+		patchWingTip.add(OCCUtils.makePatchThruCurveSections(sectionsListP2_2Low));
 		
 		// patching through patch #3 vertical sections
 		List<CADGeomCurve3D> sectionsListP3Upp = new ArrayList<>();
@@ -1699,8 +1699,8 @@ public final class AircraftUtils {
 				);
 		sectionsListP3Low.add(mainVSections.get(2)[1]);
 		
-		patchWingTip.add(OCCUtils.makePatchThruSections(sectionsListP3Upp));
-		patchWingTip.add(OCCUtils.makePatchThruSections(sectionsListP3Low));
+		patchWingTip.add(OCCUtils.makePatchThruCurveSections(sectionsListP3Upp));
+		patchWingTip.add(OCCUtils.makePatchThruCurveSections(sectionsListP3Low));
 				
 		// filling the wing tip trailing edge		
 		CADShape wingTipTE = OCCUtils.makeFilledFace(

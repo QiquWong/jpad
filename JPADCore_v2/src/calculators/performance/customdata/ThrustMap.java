@@ -1,6 +1,11 @@
 package calculators.performance.customdata;
 
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
+
 import org.apache.commons.math3.util.MathArrays;
+import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.EngineOperatingConditionEnum;
 
@@ -20,14 +25,22 @@ public class ThrustMap extends PerformanceMap{
 	 * @param drag (N)
 	 * @param speed (m/s)
 	 */
-	public ThrustMap( double altitude, double phi, double[] thrust,
-			double[] speed, double BPR, EngineOperatingConditionEnum flightCondition) {
+	public ThrustMap(
+			Amount<Mass> weight,
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature, 
+			double phi, 
+			double[] thrust,
+			double[] speed,
+			EngineOperatingConditionEnum flightCondition
+			) {
+		this.weight = weight;
 		this.altitude = altitude;
 		this.phi = phi;
 		this.thrust = thrust;
 		this.speed = speed;
-		this.bpr = BPR;
 		this.flightCondition = flightCondition;
+		this.deltaTemperature = deltaTemperature;
 		this.power = MathArrays.ebeMultiply(speed,thrust);
 	}
 

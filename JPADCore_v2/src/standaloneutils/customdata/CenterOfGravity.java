@@ -114,38 +114,14 @@ public class CenterOfGravity {
 	public void calculateCGinBRF(ComponentEnum type) {
 
 		if(type == ComponentEnum.VERTICAL_TAIL) {
-			if (_xBRF == null) {
-				_xBRF = Amount.valueOf(_xLRF.getEstimatedValue(), SI.METER);
-			} else {
-				_xBRF = _x0.plus(_xLRF);
-			}
-
+			_xBRF = _x0.plus(_xLRF);
 			_yBRF = Amount.valueOf(0.0, SI.METER);
-
-			if (_zBRF == null) {
-				_zBRF = Amount.valueOf(_yLRF.getEstimatedValue(), SI.METER);
-			} else {
-				_zBRF = _z0.plus(_yLRF);
-			}
+			_zBRF = _z0.plus(_yLRF);
 		}
 		else {
-			if (_xBRF == null) {
-				_xBRF = Amount.valueOf(_xLRF.getEstimatedValue(), SI.METER);
-			} else {
-				_xBRF = _x0.plus(_xLRF);
-			}
-
-			if (_yBRF == null) {
-				_yBRF = Amount.valueOf(_yLRF.getEstimatedValue(), SI.METER);
-			} else {
-				_yBRF = _y0.plus(_yLRF);
-			}
-
-			if (_zBRF == null) {
-				_zBRF = Amount.valueOf(_zLRF.getEstimatedValue(), SI.METER);
-			} else {
-				_zBRF = _z0.plus(_zLRF);
-			}
+			_xBRF = _x0.plus(_xLRF);
+			_yBRF = _y0.plus(_yLRF);
+			_zBRF = _z0.plus(_zLRF);
 		}
 	}
 
@@ -220,7 +196,7 @@ public class CenterOfGravity {
 		return _yBRF;
 	}
 
-	public void set_yBRF(Amount<Length> _yBRF) {
+	public void setYBRF(Amount<Length> _yBRF) {
 		this._yBRF = _yBRF;
 	}
 
@@ -298,6 +274,10 @@ public class CenterOfGravity {
 
 	public void setZMAC(Double _zMAC) {
 		this._zMAC = _zMAC;
+	}
+
+	public void setXMAC(Double _xMAC) {
+		this._xMAC = _xMAC;
 	}
 
 }

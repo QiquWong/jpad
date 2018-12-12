@@ -3,6 +3,7 @@ package it.unina.daf.jpadcadsandbox;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADExplorer;
@@ -19,6 +20,7 @@ import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShapeFactory;
 import it.unina.daf.jpadcad.occ.OCCShell;
+import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCVertex;
 import opencascade.BRepGProp;
 import opencascade.BRepOffsetAPI_MakeFilling;
@@ -88,7 +90,9 @@ public class Test09 {
 		cadGeomCurveList.add(cadGeomCurve3D3);
 		
 		// The CADShell object
-		CADShell cadShell = factory.newShell(cadGeomCurveList);
+		CADShell cadShell = factory.newShell(cadGeomCurveList.stream()
+				.map(crv -> factory.newWireFromAdjacentEdges(crv.edge()))
+				.collect(Collectors.toList()));
 		
 		System.out.println("Is cadShell null?: " + (cadShell == null));
 		

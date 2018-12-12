@@ -56,7 +56,7 @@ public class Test19 {
 		cadSections.add(cadSec1);
 		cadSections.add(cadSec2);
 		cadSections.add(cadSec3);
-		OCCShape patch1 = OCCUtils.makePatchThruSections( // -> OCCShell
+		OCCShape patch1 = OCCUtils.makePatchThruCurveSections( // -> OCCShell
 				new OCCVertex(0.0, 0.0, 0.0),
 				cadSections
 				);

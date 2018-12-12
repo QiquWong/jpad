@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="JPADCADFX/src/|JPADSandBox_v2/src/sandbox2/bsp/|DOCS/Theses/Scarlatella_Dynamic_Stability/TESI_SCARLATELLA_JAVA_PROGRAM/newproj/src/|JPAD-Apps/Test_Costs/src/|libraries/commons-math3-3.5-src/src/main/java/|libraries/jscience-4.3/src/|JPAD-Apps/Test_Wing_Analysis_Complete/src/|libraries/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64/Java/|JPAD-Apps/Test_TakeOff/src/|JPAD-Apps/Test_Wing_Analysis_noDihedral/src/|JPAD-Apps/Test_Template/src/|JPADConfigs/src/|Jupyter/Sandbox/matlab/export_fig/|Wing_Analysis_GUI_HighLift/src/|JPAD-Apps/Test_Wing/src/|Wing_Analysis_GUI/src/|JNLWing/src/|JPAD-Apps/JPAD_Executable/src/|JPADCore_v2/.apt_generated/|JPADSandBox_v2/src/|Wing_Analysis_Complete/src/|JPAD-Apps/Test_Post_Processor_Excel/src/|JPADCAD/src/|JPADCADSandbox/src/|libraries/occjava/OCCJavaWrapper_OCCT_v7.3.0_vc14_Win64/Java/|libraries/tigl/v2.2.1/|JPADCore/src/|libraries/commons-math3-3.5-src/src/test/maxima/special/RealFunctionValidation/|JPAD-Apps/Test_MeanAirfoil/src/|JPAD-Apps/Test_TakeOff_v2/src/|JPAD-Apps/Test_Directional_Stability/src/|JPADSandBox/src/|libraries/commons-math3-3.5-src/src/userguide/java/|JPAD-Apps/Test_High_Lift_Devices/src/|JPAD-Apps/Test_High_Lift_Devices_v2/src/|libraries/tigl/win32-x86-64/|libraries/tigl/v2.2.0/|libraries/commons-math3-3.5-src/src/test/java/|GroovyTest/src/|JPADCommander/src/|JPADCore_v2/src/|JPAD-Apps/JPADResponseSurfaceOptimizer/src/|CGAL/src/|JPAD-Apps/Test_Wing_Analysis/src/" kind="src" path=""/>
+	<classpathentry kind="src" path="CGAL/src"/>
+	<classpathentry kind="src" path="DOCS/Theses/Scarlatella_Dynamic_Stability/TESI_SCARLATELLA_JAVA_PROGRAM/newproj/src"/>
+	<classpathentry kind="src" path="GroovyTest/src"/>
+	<classpathentry kind="src" path="JNLWing/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/JPAD_Executable/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/JPADResponseSurfaceOptimizer/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_Costs/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_Directional_Stability/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_High_Lift_Devices_v2/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_High_Lift_Devices/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_MeanAirfoil/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_Post_Processor_Excel/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_TakeOff_v2/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_TakeOff/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_Template/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_Wing_Analysis_Complete/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_Wing_Analysis_noDihedral/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_Wing_Analysis/src"/>
+	<classpathentry kind="src" path="JPAD-Apps/Test_Wing/src"/>
+	<classpathentry kind="src" path="JPADCAD/src"/>
+	<classpathentry kind="src" path="JPADCADFX/src"/>
+	<classpathentry kind="src" path="JPADCADSandbox/src"/>
+	<classpathentry kind="src" path="JPADCommander/src"/>
+	<classpathentry kind="src" path="JPADConfigs/src"/>
+	<classpathentry kind="src" path="JPADCore_v2/.apt_generated"/>
+	<classpathentry kind="src" path="JPADCore_v2/src"/>
+	<classpathentry kind="src" path="JPADCore/src"/>
+	<classpathentry excluding="sandbox2/bsp/" kind="src" path="JPADSandBox_v2/src"/>
+	<classpathentry kind="src" path="JPADSandBox_v2/src/sandbox2/bsp"/>
+	<classpathentry kind="src" path="JPADSandBox/src"/>
+	<classpathentry kind="src" path="Jupyter/Sandbox/matlab/export_fig"/>
+	<classpathentry kind="src" path="libraries/commons-math3-3.5-src/src/main/java"/>
+	<classpathentry kind="src" path="libraries/commons-math3-3.5-src/src/test/java"/>
+	<classpathentry kind="src" path="libraries/commons-math3-3.5-src/src/test/maxima/special/RealFunctionValidation"/>
+	<classpathentry kind="src" path="libraries/commons-math3-3.5-src/src/userguide/java"/>
+	<classpathentry kind="src" path="libraries/jscience-4.3/src"/>
+	<classpathentry kind="src" path="libraries/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64/Java"/>
+	<classpathentry kind="src" path="libraries/occjava/OCCJavaWrapper_OCCT_v7.3.0_vc14_Win64/Java"/>
+	<classpathentry kind="src" path="libraries/tigl/v2.2.0"/>
+	<classpathentry kind="src" path="libraries/tigl/v2.2.1"/>
+	<classpathentry kind="src" path="libraries/tigl/win32-x86-64"/>
+	<classpathentry kind="src" path="Wing_Analysis_Complete/src"/>
+	<classpathentry kind="src" path="Wing_Analysis_GUI_HighLift/src"/>
+	<classpathentry kind="src" path="Wing_Analysis_GUI/src"/>
+	<classpathentry kind="output" path="DOCS/Theses/Scarlatella_Dynamic_Stability/TESI_SCARLATELLA_JAVA_PROGRAM/newproj/bin"/>
+</classpath>

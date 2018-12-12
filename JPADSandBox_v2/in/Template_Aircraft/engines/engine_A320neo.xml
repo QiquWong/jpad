@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<engine id="PW1127G-JM" type="TURBOFAN" database="EngineDatabaseTF_HBPR.xlsx">
+		<dimensions>
+			<length unit="m">3.401</length>
+		</dimensions>
+		<specifications>
+			<static_thrust unit="lbf">27075</static_thrust>
+			<by_pass_ratio>12.5</by_pass_ratio>
+			<dry_mass calculate="FALSE" unit="kg">2857.6</dry_mass>
+			<number_of_compressor_stages>8</number_of_compressor_stages> <!-- just HPC stages -->
+			<number_of_shafts>2</number_of_shafts>
+			<overall_pressure_ratio>50.0</overall_pressure_ratio> <!-- to be checked -->
+		</specifications>
+	</engine>
+</jpad_config>

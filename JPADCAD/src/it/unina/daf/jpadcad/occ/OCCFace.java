@@ -11,7 +11,6 @@ public class OCCFace extends OCCShape implements CADFace
 	@Override
 	public final TopoDS_Face getShape()
 	{
-		//return (TopoDS_Face) myShape;
 		return TopoDS.ToFace(myShape);
 	}
 

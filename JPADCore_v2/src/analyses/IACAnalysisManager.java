@@ -23,7 +23,7 @@ public interface IACAnalysisManager {
 	List<AnalysisTypeEnum> getAnalysisList();
 	double getPositiveLimitLoadFactor();
 	double getNegativeLimitLoadFactor();
-	Map<ComponentEnum, MethodEnum> getMethodsMapWeights();
+	Map<ComponentEnum, List<MethodEnum>> getMethodsMapWeights();
 	Map<ComponentEnum, MethodEnum> getMethodsMapBalance();
 	List<PerformanceEnum> getTaskListPerfromance();
 	List<ConditionEnum> getTaskListAerodynamicAndStability();

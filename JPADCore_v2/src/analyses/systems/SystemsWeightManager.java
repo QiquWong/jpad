@@ -83,7 +83,7 @@ public class SystemsWeightManager {
 		
 	}
 	
-	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 
 		calculateAPUMass(aircraft, methodsMapWeights);
 		calculateAirConditionAndAntiIcing(aircraft, methodsMapWeights);
@@ -115,13 +115,13 @@ public class SystemsWeightManager {
 		
 	}
 	
-	public void calculateControlSurfaceMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateControlSurfaceMass(Aircraft aircraft, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 		
 		calculateControlSurfaceMass(aircraft, MethodEnum.TORENBEEK_1982);
 		
-		if(!methodsMapWeights.get(ComponentEnum.CONTROL_SURFACES).equals(MethodEnum.AVERAGE)) { 
+		if(!methodsMapWeights.get(ComponentEnum.CONTROL_SURFACES).get(0).equals(MethodEnum.AVERAGE)) { 
 			_percentDifferenceControlSurfaces =  new double[_massMapControlSurfaces.size()];
-			_massEstimatedControlSurface = _massMapControlSurfaces.get(methodsMapWeights.get(ComponentEnum.CONTROL_SURFACES));
+			_massEstimatedControlSurface = _massMapControlSurfaces.get(methodsMapWeights.get(ComponentEnum.CONTROL_SURFACES).get(0));
 		}
 		else {
 			_percentDifferenceControlSurfaces =  new double[_massMapControlSurfaces.size()];
@@ -148,13 +148,13 @@ public class SystemsWeightManager {
 
 	}
 	
-	public void calculateAPUMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateAPUMass(Aircraft aircraft, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 
 		calculateAPUMass(aircraft, MethodEnum.TORENBEEK_1982);
 		
-		if(!methodsMapWeights.get(ComponentEnum.APU).equals(MethodEnum.AVERAGE)) { 
+		if(!methodsMapWeights.get(ComponentEnum.APU).get(0).equals(MethodEnum.AVERAGE)) { 
 			_percentDifferenceAPU =  new double[_massMapAPU.size()];
-			_massEstimatedAPU = _massMapAPU.get(methodsMapWeights.get(ComponentEnum.APU));
+			_massEstimatedAPU = _massMapAPU.get(methodsMapWeights.get(ComponentEnum.APU).get(0));
 		}
 		else {
 			_percentDifferenceAPU =  new double[_massMapAPU.size()];
@@ -181,13 +181,13 @@ public class SystemsWeightManager {
 		
 	}
 
-	public void calculateInstrumentAndNavigationMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateInstrumentAndNavigationMass(Aircraft aircraft, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 
 		calculateInstrumentAndNavigationMass(aircraft, MethodEnum.TORENBEEK_1982);
 		
-		if(!methodsMapWeights.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).equals(MethodEnum.AVERAGE)) { 
+		if(!methodsMapWeights.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).get(0).equals(MethodEnum.AVERAGE)) { 
 			_percentDifferenceInstrumentsAndNavigationSystem =  new double[_massMapInstrumentsAndNavigationSystem.size()];
-			_massEstimatedInstrumentsAndNavigation = _massMapInstrumentsAndNavigationSystem.get(methodsMapWeights.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION));
+			_massEstimatedInstrumentsAndNavigation = _massMapInstrumentsAndNavigationSystem.get(methodsMapWeights.get(ComponentEnum.INSTRUMENTS_AND_NAVIGATION).get(0));
 		}
 		else {
 			_percentDifferenceInstrumentsAndNavigationSystem =  new double[_massMapInstrumentsAndNavigationSystem.size()];
@@ -214,13 +214,13 @@ public class SystemsWeightManager {
 		
 	}
 
-	public void calculateElectricalSystemsMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateElectricalSystemsMass(Aircraft aircraft, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 		
 		calculateElectricalSystemsMass(aircraft, MethodEnum.TORENBEEK_1982);
 		
-		if(!methodsMapWeights.get(ComponentEnum.ELECTRICAL_SYSTEMS).equals(MethodEnum.AVERAGE)) { 
+		if(!methodsMapWeights.get(ComponentEnum.ELECTRICAL_SYSTEMS).get(0).equals(MethodEnum.AVERAGE)) { 
 			_percentDifferenceElectricalSystems =  new double[_massMapElectricalSystems.size()];
-			_massEstimatedElectricalSystems = _massMapElectricalSystems.get(methodsMapWeights.get(ComponentEnum.ELECTRICAL_SYSTEMS));
+			_massEstimatedElectricalSystems = _massMapElectricalSystems.get(methodsMapWeights.get(ComponentEnum.ELECTRICAL_SYSTEMS).get(0));
 		}
 		else {
 			_percentDifferenceElectricalSystems =  new double[_massMapElectricalSystems.size()];
@@ -247,13 +247,13 @@ public class SystemsWeightManager {
 		
 	}
 
-	public void calculateAirConditionAndAntiIcing(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateAirConditionAndAntiIcing(Aircraft aircraft, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 
 		calculateAirConditionAndAntiIcing(aircraft, MethodEnum.TORENBEEK_1982);
 		
-		if(!methodsMapWeights.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).equals(MethodEnum.AVERAGE)) { 
+		if(!methodsMapWeights.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).get(0).equals(MethodEnum.AVERAGE)) { 
 			_percentDifferenceAirConditioningAndAntiIcing =  new double[_massMapAirConditioningAndAntiIcing.size()];
-			_massEstimatedAirConditioningAndAntiIcing = _massMapAirConditioningAndAntiIcing.get(methodsMapWeights.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING));
+			_massEstimatedAirConditioningAndAntiIcing = _massMapAirConditioningAndAntiIcing.get(methodsMapWeights.get(ComponentEnum.AIR_CONDITIONING_AND_ANTI_ICING).get(0));
 		}
 		else {
 			_percentDifferenceAirConditioningAndAntiIcing =  new double[_massMapAirConditioningAndAntiIcing.size()];
@@ -280,14 +280,14 @@ public class SystemsWeightManager {
 		
 	}
 
-	public void calculateFurnishingsAndEquipmentsMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateFurnishingsAndEquipmentsMass(Aircraft aircraft, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 		
 		calculateFurnishingsAndEquipmentsMass(aircraft, MethodEnum.TORENBEEK_1982);
 		calculateFurnishingsAndEquipmentsMass(aircraft, MethodEnum.TORENBEEK_2013);
 		
-		if(!methodsMapWeights.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).equals(MethodEnum.AVERAGE)) { 
+		if(!methodsMapWeights.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).get(0).equals(MethodEnum.AVERAGE)) { 
 			_percentDifferenceFurnishingsAndEquipments =  new double[_massMapFurnishingsAndEquipments.size()];
-			_massEstimatedFurnishingsAndEquipment = _massMapFurnishingsAndEquipments.get(methodsMapWeights.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS));
+			_massEstimatedFurnishingsAndEquipment = _massMapFurnishingsAndEquipments.get(methodsMapWeights.get(ComponentEnum.FURNISHINGS_AND_EQUIPMENTS).get(0));
 		}
 		else {
 			_percentDifferenceFurnishingsAndEquipments =  new double[_massMapFurnishingsAndEquipments.size()];
@@ -317,13 +317,13 @@ public class SystemsWeightManager {
 		
 	}
 
-	public void calculateHydraulicAndPneumaticMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+	public void calculateHydraulicAndPneumaticMass(Aircraft aircraft, Map<ComponentEnum, List<MethodEnum>> methodsMapWeights) {
 		
 		calculateHydraulicAndPneumaticMass(aircraft, MethodEnum.TORENBEEK_1982);
 		
-		if(!methodsMapWeights.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).equals(MethodEnum.AVERAGE)) { 
+		if(!methodsMapWeights.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).get(0).equals(MethodEnum.AVERAGE)) { 
 			_percentDifferenceHydraulicAndPneumaticSystems =  new double[_massMapHydraulicAndPneumaticSystems.size()];
-			_massEstimatedHydraulicAndPneumatic = _massMapHydraulicAndPneumaticSystems.get(methodsMapWeights.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS));
+			_massEstimatedHydraulicAndPneumatic = _massMapHydraulicAndPneumaticSystems.get(methodsMapWeights.get(ComponentEnum.HYDRAULIC_AND_PNEUMATICS).get(0));
 		}
 		else {
 			_percentDifferenceHydraulicAndPneumaticSystems =  new double[_massMapHydraulicAndPneumaticSystems.size()];

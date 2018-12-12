@@ -12,11 +12,11 @@ public class ArgumentsJPADCADSandbox { // see CompleteAnalysisTest
 			usage = "my input file")
 	private File _inputFile;
 
-	@Option(name = "-ia", aliases = { "--input-analyses" }, required = true,
+	@Option(name = "-ia", aliases = { "--input-analyses" }, required = false,
 			usage = "analyses input file")
 	private File _inputFileAnalyses;
 
-	@Option(name = "-ioc", aliases = { "--input-operating-condition" }, required = true,
+	@Option(name = "-ioc", aliases = { "--input-operating-condition" }, required = false,
 			usage = "operating conditions input file")
 	private File _inputFileOperatingCondition;
 

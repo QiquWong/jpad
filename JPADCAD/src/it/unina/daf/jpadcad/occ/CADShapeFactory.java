@@ -12,7 +12,7 @@ import processing.core.PVector;
  * Class to provide factory methods
  */
 public abstract class CADShapeFactory {
-	private static final Logger LOGGER=Logger.getLogger(CADShapeFactory.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(CADShapeFactory.class.getName());
 	private static CADShapeFactory factory;
 	
 	protected CADShapeFactory() {
@@ -53,7 +53,7 @@ public abstract class CADShapeFactory {
 	 * @param o An object of the underlying implementation
 	 * @return The created CADShape
 	 */
-	public abstract CADShape newShape (Object o);
+	public abstract CADShape newShape(Object o);
 	
 	/**
 	 * Create a new CADShape with boolean operation on 2 shapes.
@@ -62,7 +62,7 @@ public abstract class CADShapeFactory {
 	 * @param op Boolean operator
 	 * @return The created CADShape
 	 */
-	public abstract CADShape newShape (CADShape s1, CADShape s2, char op);
+	public abstract CADShape newShape(CADShape s1, CADShape s2, char op);
 	
 	/**
 	 * Create a new CADShape by loading it from a file
@@ -158,17 +158,17 @@ public abstract class CADShapeFactory {
 	
 	/**
 	 * Create a new CADShell by constructing a loft surface (see BRepOffsetAPI_ThruSections)
-	 * @param cadGeomCurveList The list of CADGeomCurve3D through which the loft passes
+	 * @param cadWireList The list of CADWire objects through which the loft passes
 	 * @return The created CADShell
 	 */
-	public abstract CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList);
+	public abstract CADShell newShell(List<CADWire> cadWireList);
 
-	public abstract CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList, long isSolid, long ruled, double pres3d);	
-	public abstract CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList, long isSolid, long ruled);	
+	public abstract CADShell newShell(List<CADWire> cadWireList, long isSolid, long ruled, double pres3d);	
+	public abstract CADShell newShell(List<CADWire> cadWireList, long isSolid, long ruled);	
 
-	public abstract CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1);
-	public abstract CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled, double pres3d);
-	public abstract CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled);
+	public abstract CADShell newShell(CADVertex v0, List<CADWire> cadWireList, CADVertex v1);
+	public abstract CADShell newShell(CADVertex v0, List<CADWire> cadWireList, CADVertex v1, long isSolid, long ruled, double pres3d);
+	public abstract CADShell newShell(CADVertex v0, List<CADWire> cadWireList, CADVertex v1, long isSolid, long ruled);
 	
 	/**
 	 * Create a new CADFace as a planar triangle connecting three vertices 
@@ -177,6 +177,13 @@ public abstract class CADShapeFactory {
 	 */
 	public abstract CADFace newFacePlanar(double[] v0, double[] v1, double[] v2);
 	public abstract CADFace newFacePlanar(CADVertex v0, CADVertex v1, CADVertex v2);
+	
+	/**
+	 * Create a new planar CADFace from a wire
+	 * @param wire The wire from which the planar face must be built
+	 * @return The created CADFace
+	 */
+	public abstract CADFace newFacePlanar(CADWire wire);
 
 	/**
 	 * Create a shell from adjacent faces
@@ -185,6 +192,14 @@ public abstract class CADShapeFactory {
 	 */
 	public abstract CADShell newShellFromAdjacentFaces(CADFace ... cadFaces);
 	public abstract CADShell newShellFromAdjacentFaces(List<CADFace> cadFaces);	
+	
+	/**
+	 * Create a new shell from adjacent shells
+	 * @param cadFaces adjacent shells
+	 * @return the created CADShell
+	 */
+	public abstract CADShell newShellFromAdjacentShells(CADShell ... cadShells);
+	public abstract CADShell newShellFromAdjacentShells(List<CADShell> cadShells);
 	
 	/**
 	 * Create a solid from adjacent faces
@@ -201,6 +216,14 @@ public abstract class CADShapeFactory {
 	 */
 	public abstract CADSolid newSolidFromAdjacentShells(CADShell ... cadShells);
 	public abstract CADSolid newSolidFromAdjacentShells(List<CADShell> cadShells);
+	
+	/**
+	 * Create a wire from adjacent edges
+	 * @param cadEdges adjacent edges
+	 * @return the created wire
+	 */
+	public abstract CADWire newWireFromAdjacentEdges(CADEdge ... cadEdges);
+	public abstract CADWire newWireFromAdjacentEdges(List<CADEdge> cadEdges);
 	
 	/**
 	 * Create a new CADVertex from a triplet of coordinates

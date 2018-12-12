@@ -2,7 +2,6 @@ package analyses;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.DynamicViscosity;
@@ -18,11 +17,10 @@ import org.jscience.physics.amount.Amount;
 
 import configuration.MyConfiguration;
 //WARNING: Density is in g/cm3 ( = 1000 kg/m3)
+
 import standaloneutils.JPADXmlReader;
-import standaloneutils.MyArrayUtils;
-import standaloneutils.MyInterpolatingFunction;
+import standaloneutils.MyUnits;
 import standaloneutils.MyXMLReaderUtils;
-import standaloneutils.aerotools.aero.StdAtmos;
 import standaloneutils.aerotools.aero.StdAtmos1976;
 import standaloneutils.atmosphere.PressureCalc;
 import standaloneutils.atmosphere.SpeedCalc;
@@ -31,350 +29,96 @@ import standaloneutils.atmosphere.TemperatureCalc;
 /**
  * Set the aircraft current operating conditions
  *   
- * @author Lorenzo Attanasio
+ * @author Vittorio Trifari
  */
-public class OperatingConditions implements IOperatingConditions {
+public class OperatingConditions {
 
-	private String _id;
-	
+	//-------------------------------------------------------------------------------
+	//	VARIABLES DECLARATION
+	//-------------------------------------------------------------------------------
+	private IOperatingConditions theOperatingConditionsInterface;
+
 	// Global data
-	private Double _machTransonicThreshold = 0.7;
+	private double machTransonicThreshold = 0.7;
 	
-	// Climb data
-	private Amount<Angle> _alphaCurrentClimb;
-	private Amount<Angle> _betaCurrentClimb;
-	private Double _machClimb;
-	private Amount<Length> _altitudeClimb;
-	
-	// Cruise data
-	private Amount<Angle> _alphaCurrentCruise;
-	private Amount<Angle> _betaCurrentCruise;
-	private Amount<Length> _altitudeCruise;
-	private Double _machCruise;
-	private Double _throttleCruise;
-
-	// Take-off data
-	private Amount<Angle> _alphaCurrentTakeOff;
-	private Amount<Angle> _betaCurrentTakeOff;
-	private Amount<Length> _altitudeTakeOff;
-	private Double _machTakeOff;
-	private Double _throttleTakeOff;
-	private MyInterpolatingFunction _throttleGroundIdleTakeOff;
-	private List<Amount<Angle>> _flapDeflectionTakeOff;
-	private List<Amount<Angle>> _slatDeflectionTakeOff;
-
-	// Landing data
-	private Amount<Angle> _alphaCurrentLanding;
-	private Amount<Angle> _betaCurrentLanding;
-	private Amount<Length> _altitudeLanding;
-	private Double _machLanding;
-	private MyInterpolatingFunction _throttleGroundIdleLanding;
-	private List<Amount<Angle>> _flapDeflectionLanding;
-	private List<Amount<Angle>> _slatDeflectionLanding;
-	
-	// TO BE CALCULATED:
+	// CLIMB
+	private StdAtmos1976 atmosphereClimb; 
+	private Double pressureCoefficientClimb;
+	private Amount<Velocity> tasClimb;
+	private Amount<Velocity> casClimb;
+	private Amount<Velocity> easClimb;
+	private Amount<VolumetricDensity> densityClimb;
+	private Amount<Pressure> staticPressureClimb;
+	private Amount<Pressure> dynamicPressureClimb;
+	private Amount<Pressure> stagnationPressureClimb; 
+	private Amount<Pressure> maxDeltaPressureClimb;
+	private Amount<Pressure> maxDynamicPressureClimb;
+	private Amount<DynamicViscosity> muClimb;
+	private Amount<Temperature> staticTemperatureClimb;
+	private Amount<Temperature> stagnationTemperatureClimb;
 	
 	// CRUISE
-	private StdAtmos1976 _atmosphereCruise; 
-	private Double _pressureCoefficientCruise;
-	private Amount<Velocity> _tasCruise;
-	private Amount<Velocity> _casCruise;
-	private Amount<Velocity> _easCruise;
-	private Amount<VolumetricDensity> _densityCruise;
-	private Amount<Pressure> _staticPressureCruise;
-	private Amount<Pressure> _dynamicPressureCruise;
-	private Amount<Pressure> _stagnationPressureCruise; 
-	private Amount<Pressure> _maxDeltaPressureCruise;
-	private Amount<Pressure> _maxDynamicPressureCruise;
-	private Amount<DynamicViscosity> _muCruise;
-	private Amount<Temperature> _staticTemperatureCruise;
-	private Amount<Temperature> _stagnationTemperatureCruise;
+	private StdAtmos1976 atmosphereCruise; 
+	private Double pressureCoefficientCruise;
+	private Amount<Velocity> tasCruise;
+	private Amount<Velocity> casCruise;
+	private Amount<Velocity> easCruise;
+	private Amount<VolumetricDensity> densityCruise;
+	private Amount<Pressure> staticPressureCruise;
+	private Amount<Pressure> dynamicPressureCruise;
+	private Amount<Pressure> stagnationPressureCruise; 
+	private Amount<Pressure> maxDeltaPressureCruise;
+	private Amount<Pressure> maxDynamicPressureCruise;
+	private Amount<DynamicViscosity> muCruise;
+	private Amount<Temperature> staticTemperatureCruise;
+	private Amount<Temperature> stagnationTemperatureCruise;
 
 	// TAKE-OFF
-	private StdAtmos1976 _atmosphereTakeOff;
-	private Double _pressureCoefficientTakeOff;
-	private Amount<Velocity> _tasTakeOff;
-	private Amount<Velocity> _casTakeOff;
-	private Amount<Velocity> _easTakeOff;
-	private Amount<VolumetricDensity> _densityTakeOff;
-	private Amount<Pressure> _staticPressureTakeOff;
-	private Amount<Pressure> _dynamicPressureTakeOff;
-	private Amount<Pressure> _stagnationPressureTakeOff; 
-	private Amount<Pressure> _maxDeltaPressureTakeOff;
-	private Amount<Pressure> _maxDynamicPressureTakeOff;
-	private Amount<DynamicViscosity> _muTakeOff;
-	private Amount<Temperature> _staticTemperatureTakeOff;
-	private Amount<Temperature> _stagnationTemperatureTakeOff;
+	private StdAtmos1976 atmosphereTakeOff;
+	private Double pressureCoefficientTakeOff;
+	private Amount<Velocity> tasTakeOff;
+	private Amount<Velocity> casTakeOff;
+	private Amount<Velocity> easTakeOff;
+	private Amount<VolumetricDensity> densityTakeOff;
+	private Amount<Pressure> staticPressureTakeOff;
+	private Amount<Pressure> dynamicPressureTakeOff;
+	private Amount<Pressure> stagnationPressureTakeOff; 
+	private Amount<Pressure> maxDeltaPressureTakeOff;
+	private Amount<Pressure> maxDynamicPressureTakeOff;
+	private Amount<DynamicViscosity> muTakeOff;
+	private Amount<Temperature> staticTemperatureTakeOff;
+	private Amount<Temperature> stagnationTemperatureTakeOff;
 
 	// LANDING
-	private StdAtmos1976 _atmosphereLanding;
-	private Double _pressureCoefficientLanding;
-	private Amount<Velocity> _tasLanding;
-	private Amount<Velocity> _casLanding;
-	private Amount<Velocity> _easLanding;
-	private Amount<VolumetricDensity> _densityLanding;
-	private Amount<Pressure> _staticPressureLanding;
-	private Amount<Pressure> _dynamicPressureLanding;
-	private Amount<Pressure> _stagnationPressureLanding; 
-	private Amount<Pressure> _maxDeltaPressureLanding;
-	private Amount<Pressure> _maxDynamicPressureLanding;
-	private Amount<DynamicViscosity> _muLanding;
-	private Amount<Temperature> _staticTemperatureLanding;
-	private Amount<Temperature> _stagnationTemperatureLanding;
+	private StdAtmos1976 atmosphereLanding;
+	private Double pressureCoefficientLanding;
+	private Amount<Velocity> tasLanding;
+	private Amount<Velocity> casLanding;
+	private Amount<Velocity> easLanding;
+	private Amount<VolumetricDensity> densityLanding;
+	private Amount<Pressure> staticPressureLanding;
+	private Amount<Pressure> dynamicPressureLanding;
+	private Amount<Pressure> stagnationPressureLanding; 
+	private Amount<Pressure> maxDeltaPressureLanding;
+	private Amount<Pressure> maxDynamicPressureLanding;
+	private Amount<DynamicViscosity> muLanding;
+	private Amount<Temperature> staticTemperatureLanding;
+	private Amount<Temperature> stagnationTemperatureLanding;
 
-	//============================================================================================
-	// Builder pattern 
-	//============================================================================================
-	public static class OperatingConditionsBuilder {
+	//-------------------------------------------------------------------------------
+	//	BUILDER
+	//-------------------------------------------------------------------------------
+	public OperatingConditions(IOperatingConditions theOperatingConditionsInterface) {
 		
-		// required parameters
-		private String __id;
-
-		// optional parameters ... defaults
-		// ...
-		
-		// Climb data
-		private Amount<Angle> __alphaCurrentClimb;
-		private Amount<Angle> __betaCurrentClimb;
-		private Double __machClimb;
-		private Amount<Length> __altitudeClimb;
-		
-		// Cruise data
-		private Amount<Angle> __alphaCurrentCruise;
-		private Amount<Angle> __betaCurrentCruise;
-		private Amount<Length> __altitudeCruise;
-		private Double __machCruise;
-		private Double __throttleCruise;
-
-		// Take-off data
-		private Amount<Angle> __alphaCurrentTakeOff;
-		private Amount<Angle> __betaCurrentTakeOff;
-		private Amount<Length> __altitudeTakeOff;
-		private Double __machTakeOff;
-		private Double __throttleTakeOff;
-		private MyInterpolatingFunction __throttleGroundIdleTakeOff;
-		private List<Amount<Angle>> __flapDeflectionTakeOff;
-		private List<Amount<Angle>> __slatDeflectionTakeOff;
-
-		// Landing data
-		private Amount<Angle> __alphaCurrentLanding;
-		private Amount<Angle> __betaCurrentLanding;
-		private Amount<Length> __altitudeLanding;
-		private Double __machLanding;
-		private MyInterpolatingFunction __throttleGroundIdleLanding;
-		private List<Amount<Angle>> __flapDeflectionLanding;
-		private List<Amount<Angle>> __slatDeflectionLanding;
-		
-		public OperatingConditionsBuilder id(String id) {
-			this.__id = id;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder alphaCurrentClimb(Amount<Angle> alphaCurrentClimb) {
-			this.__alphaCurrentClimb = alphaCurrentClimb; 
-			return this;
-		}
-		
-		public OperatingConditionsBuilder alphaCurrentCruise(Amount<Angle> alphaCurrentCruise) {
-			this.__alphaCurrentCruise = alphaCurrentCruise; 
-			return this;
-		}
-		
-		public OperatingConditionsBuilder alphaCurrentTakeOff(Amount<Angle> alphaCurrentTakeOff) {
-			this.__alphaCurrentTakeOff = alphaCurrentTakeOff; 
-			return this;
-		}
-		
-		public OperatingConditionsBuilder alphaCurrentLanding(Amount<Angle> alphaCurrentLanding) {
-			this.__alphaCurrentLanding = alphaCurrentLanding; 
-			return this;
-		}
-		
-		public OperatingConditionsBuilder betaCurrentClimb(Amount<Angle> betaCurrentClimb) {
-			this.__betaCurrentClimb = betaCurrentClimb; 
-			return this;
-		}
-		
-		public OperatingConditionsBuilder betaCurrentCruise(Amount<Angle> betaCurrentCruise) {
-			this.__betaCurrentCruise = betaCurrentCruise; 
-			return this;
-		}
-		
-		public OperatingConditionsBuilder betaCurrentTakeOff(Amount<Angle> betaCurrentTakeOff) {
-			this.__betaCurrentTakeOff = betaCurrentTakeOff; 
-			return this;
-		}
-		
-		public OperatingConditionsBuilder betaCurrentLanding(Amount<Angle> betaCurrentLanding) {
-			this.__betaCurrentLanding = betaCurrentLanding; 
-			return this;
-		}
-		
-		public OperatingConditionsBuilder machCruise (Double machCruise) {
-			this.__machCruise = machCruise;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder machClimb (Double machClimb) {
-			this.__machClimb = machClimb;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder altitudeClimb (Amount<Length> altitudeClimb) {
-			this.__altitudeClimb = altitudeClimb;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder altitudeCruise (Amount<Length> altitudeCruise) {
-			this.__altitudeCruise = altitudeCruise;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder throttleCruise (Double throttleCruise) {
-			this.__throttleCruise = throttleCruise;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder machTakeOff (Double machTakeOff) {
-			this.__machTakeOff = machTakeOff;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder altitudeTakeOff (Amount<Length> altitudeTakeOff) {
-			this.__altitudeTakeOff = altitudeTakeOff;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder throttleTakeOff (Double throttleTakeOff) {
-			this.__throttleTakeOff = throttleTakeOff;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder throttleGroundIdleTakeOff (MyInterpolatingFunction throttleGroundIdleTakeOff) {
-			this.__throttleGroundIdleTakeOff = throttleGroundIdleTakeOff;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder flapDeflectionTakeOff (List<Amount<Angle>> deltaFlapTakeOff) {
-			this.__flapDeflectionTakeOff = deltaFlapTakeOff;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder slatDeflectionTakeOff (List<Amount<Angle>> deltaSlatTakeOff) {
-			this.__slatDeflectionTakeOff = deltaSlatTakeOff;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder machLanding (Double machLanding) {
-			this.__machLanding = machLanding;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder altitudeLanding (Amount<Length> altitudeLanding) {
-			this.__altitudeLanding = altitudeLanding;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder throttleGroundIdleLanding (MyInterpolatingFunction throttleGroundIdleLanding) {
-			this.__throttleGroundIdleLanding = throttleGroundIdleLanding;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder flapDeflectionLanding (List<Amount<Angle>> deltaFlapLanding) {
-			this.__flapDeflectionLanding = deltaFlapLanding;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder slatDeflectionLanding (List<Amount<Angle>> deltaSlatLanding) {
-			this.__slatDeflectionLanding = deltaSlatLanding;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder(String id) {
-			this.__id = id;
-			initializeDefaultVariables();
-		}
-		
-		private void initializeDefaultVariables() {
-			
-			// DEFAULT DATA ATR-72	
-			this.__alphaCurrentClimb = Amount.valueOf(15.0, NonSI.DEGREE_ANGLE);
-			this.__betaCurrentClimb = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-			this.__machClimb = 0.3;
-			this.__altitudeClimb = Amount.valueOf(6000.0, SI.METER);
-			
-			this.__alphaCurrentCruise = Amount.valueOf(1.0, NonSI.DEGREE_ANGLE);
-			this.__betaCurrentCruise = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-			this.__machCruise = 0.6;
-			this.__altitudeCruise = Amount.valueOf(6000.0, SI.METER);
-			this.__throttleCruise = 1.0;
-			
-			this.__alphaCurrentTakeOff = Amount.valueOf(10.0, NonSI.DEGREE_ANGLE);
-			this.__betaCurrentTakeOff = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-			this.__machTakeOff = 0.2;
-			this.__altitudeTakeOff = Amount.valueOf(0.0, SI.METER);
-			this.__throttleGroundIdleTakeOff = null; 
-			this.__flapDeflectionTakeOff = new ArrayList<>();
-			this.__slatDeflectionTakeOff = new ArrayList<>();
-			
-			this.__alphaCurrentLanding = Amount.valueOf(8.0, NonSI.DEGREE_ANGLE);
-			this.__betaCurrentTakeOff = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-			this.__machLanding = 0.2;
-			this.__altitudeLanding = Amount.valueOf(0.0, SI.METER);
-			this.__throttleGroundIdleLanding = null;
-			this.__flapDeflectionLanding = new ArrayList<>();
-			this.__slatDeflectionLanding = new ArrayList<>();
-			
-		}
-		
-		public OperatingConditions build() {
-			return new OperatingConditions(this);
-		}
-		
-	}
-	
-	private OperatingConditions(OperatingConditionsBuilder builder) {
-		
-		this._id = builder.__id;
-		
-		this._alphaCurrentClimb = builder.__alphaCurrentClimb;
-		this._alphaCurrentCruise = builder.__alphaCurrentCruise;
-		this._alphaCurrentTakeOff = builder.__alphaCurrentTakeOff;
-		this._alphaCurrentLanding = builder.__alphaCurrentLanding;
-		
-		this._betaCurrentClimb = builder.__betaCurrentClimb;
-		this._betaCurrentCruise = builder.__betaCurrentCruise;
-		this._betaCurrentTakeOff = builder.__betaCurrentTakeOff;
-		this._betaCurrentLanding = builder.__betaCurrentLanding;
-		
-		this._machClimb = builder.__machClimb;
-		this._altitudeClimb = builder.__altitudeClimb;
-		
-		this._machCruise = builder.__machCruise;
-		this._altitudeCruise = builder.__altitudeCruise;
-		this._throttleCruise = builder.__throttleCruise;
-		
-		this._machTakeOff = builder.__machTakeOff;
-		this._altitudeTakeOff = builder.__altitudeTakeOff;
-		this._throttleTakeOff = builder.__throttleTakeOff;
-		this._throttleGroundIdleTakeOff = builder.__throttleGroundIdleTakeOff;
-		this._flapDeflectionTakeOff = builder.__flapDeflectionTakeOff;
-		this._slatDeflectionTakeOff = builder.__slatDeflectionTakeOff;
-		
-		this._machLanding = builder.__machLanding;
-		this._altitudeLanding = builder.__altitudeLanding;
-		this._throttleGroundIdleLanding = builder.__throttleGroundIdleLanding;
-		this._flapDeflectionLanding = builder.__flapDeflectionLanding;
-		this._slatDeflectionLanding = builder.__slatDeflectionLanding;
-		
+		this.theOperatingConditionsInterface = theOperatingConditionsInterface;
 		calculate();
 		
 	}
 	
-	//============================================================================================
-	// End of the builder pattern 
-	//============================================================================================
-
+	//-------------------------------------------------------------------------------
+	//	METHODS
+	//-------------------------------------------------------------------------------
+	@SuppressWarnings("unchecked")
 	public static OperatingConditions importFromXML(String pathToXML) {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -389,10 +133,12 @@ public class OperatingConditions implements IOperatingConditions {
 		
 		///////////////////////////////////////////////////////////////
 		// CLIMB DATA:
-		Double machClimb = null;
-		Amount<Length> altitudeClimb = null;
-		Amount<Angle> alphaCurrentClimb = null;
-		Amount<Angle> betaCurrentClimb = null;
+		Amount<Angle> alphaCurrentClimb = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> betaCurrentClimb = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double machClimb = 0.0;
+		Amount<Length> altitudeClimb = Amount.valueOf(0.0, SI.METER);
+		Amount<Temperature> deltaTemperatureClimb = Amount.valueOf(0.0, SI.CELSIUS);
+		double throttleClimb = 0.0;
 		//.............................................................
 		String alphaCurrentClimbProperty = reader.getXMLPropertyByPath("//climb/alpha_current");
 		if(alphaCurrentClimbProperty != null)
@@ -418,19 +164,28 @@ public class OperatingConditions implements IOperatingConditions {
 		//.............................................................
 		String machClimbProperty = reader.getXMLPropertyByPath("//climb/mach");
 		if(machClimbProperty != null)
-			machClimb = Double.valueOf(reader.getXMLPropertyByPath("//climb/mach"));
+			machClimb = Double.valueOf(machClimbProperty);
 		//.............................................................
 		String altitudeClimbProperty = reader.getXMLPropertyByPath("//climb/altitude");
 		if(altitudeClimbProperty != null)
 			altitudeClimb = reader.getXMLAmountLengthByPath("//climb/altitude");
+		//.............................................................
+		String deltaTemperatureClimbProperty = reader.getXMLPropertyByPath("//climb/ISA_deviation");
+		if(deltaTemperatureClimbProperty != null)
+			deltaTemperatureClimb = (Amount<Temperature>) reader.getXMLAmountWithUnitByPath("//climb/ISA_deviation");
+		//.............................................................
+		String throttleClimbProperty = reader.getXMLPropertyByPath("//climb/throttle");
+		if(throttleClimbProperty != null)
+			throttleClimb= Double.valueOf(throttleClimbProperty);
 		
 		///////////////////////////////////////////////////////////////
 		// CRUISE DATA:
-		Double machCruise = null;
-		Amount<Length> altitudeCruise = null;
-		Double throttleCruise = null;
-		Amount<Angle> alphaCurrentCruise = null;
-		Amount<Angle> betaCurrentCruise = null;
+		Amount<Angle> alphaCurrentCruise = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> betaCurrentCruise = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double machCruise = 0.0;
+		Amount<Length> altitudeCruise = Amount.valueOf(0.0, SI.METER);
+		Amount<Temperature> deltaTemperatureCruise = Amount.valueOf(0.0, SI.CELSIUS);
+		double throttleCruise = 0.0;
 		//.............................................................
 		String alphaCurrentCruiseProperty = reader.getXMLPropertyByPath("//cruise/alpha_current");
 		if(alphaCurrentCruiseProperty != null)
@@ -453,32 +208,34 @@ public class OperatingConditions implements IOperatingConditions {
 							),
 					NonSI.DEGREE_ANGLE)
 			.to(SI.RADIAN);
-		else
-			betaCurrentCruise = Amount.valueOf(0.0,SI.RADIAN);
 		//.............................................................
 		String machCruiseProperty = reader.getXMLPropertyByPath("//cruise/mach");
 		if(machCruiseProperty != null)
-			machCruise = Double.valueOf(reader.getXMLPropertyByPath("//cruise/mach"));
+			machCruise = Double.valueOf(machCruiseProperty);
 		//.............................................................
 		String altitudeCruiseProperty = reader.getXMLPropertyByPath("//cruise/altitude");
 		if(altitudeCruiseProperty != null)
-			altitudeCruise = reader.getXMLAmountLengthByPath("//cruise/altitude").to(SI.METER);
+			altitudeCruise = reader.getXMLAmountLengthByPath("//cruise/altitude");
+		//.............................................................
+		String deltaTemperatureCruiseProperty = reader.getXMLPropertyByPath("//cruise/ISA_deviation");
+		if(deltaTemperatureCruiseProperty != null)
+			deltaTemperatureCruise = (Amount<Temperature>) reader.getXMLAmountWithUnitByPath("//cruise/ISA_deviation");
 		//.............................................................
 		String throttleCruiseProperty = reader.getXMLPropertyByPath("//cruise/throttle");
 		if(throttleCruiseProperty != null)
-			throttleCruise = Double.valueOf(reader.getXMLPropertyByPath("//cruise/throttle"));
+			throttleCruise= Double.valueOf(throttleCruiseProperty);
 		
 		///////////////////////////////////////////////////////////////
 		// TAKE-OFF DATA:
-		Double machTakeOff = 0.2;
+		Amount<Angle> alphaCurrentTakeOff = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> betaCurrentTakeOff = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double machTakeOff = 0.0;
 		Amount<Length> altitudeTakeOff = Amount.valueOf(0.0, SI.METER);
-		Double throttleTakeOff = 1.0;
-		List<Double> throttleGroundIdleTakeOffFunction = new ArrayList<>();
-		List<Amount<Velocity>> speedThrottleGroundIdleTakeOffFunction = new ArrayList<>();
-		List<Amount<Angle>> deltaFlapTakeOff = new ArrayList<>();
-		List<Amount<Angle>> deltaSlatTakeOff = new ArrayList<>();
-		Amount<Angle> alphaCurrentTakeOff = null;
-		Amount<Angle> betaCurrentTakeOff = null;
+		Amount<Temperature> deltaTemperatureTakeOff = Amount.valueOf(0.0, SI.CELSIUS);
+		double throttleTakeOff = 0.0;
+		List<Amount<Angle>> deltaFlapListTakeOff = new ArrayList<>();
+		List<Amount<Angle>> deltaSlatListTakeOff = new ArrayList<>();
+		List<Amount<Angle>> deltaCanardTakeOff = new ArrayList<>();
 		//.............................................................
 		String alphaCurrentTakeOffProperty = reader.getXMLPropertyByPath("//take_off/alpha_current");
 		if(alphaCurrentTakeOffProperty != null)
@@ -501,50 +258,22 @@ public class OperatingConditions implements IOperatingConditions {
 							),
 					NonSI.DEGREE_ANGLE)
 			.to(SI.RADIAN);
-		else
-			betaCurrentTakeOff = Amount.valueOf(0.0,SI.RADIAN);
-		//.............................................................		
+		//.............................................................
 		String machTakeOffProperty = reader.getXMLPropertyByPath("//take_off/mach");
 		if(machTakeOffProperty != null)
-			machTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//take_off/mach"));
+			machTakeOff = Double.valueOf(machTakeOffProperty);
 		//.............................................................
 		String altitudeTakeOffProperty = reader.getXMLPropertyByPath("//take_off/altitude");
 		if(altitudeTakeOffProperty != null)
-			altitudeTakeOff = reader.getXMLAmountLengthByPath("//take_off/altitude").to(SI.METER);
+			altitudeTakeOff = reader.getXMLAmountLengthByPath("//take_off/altitude");
+		//.............................................................
+		String deltaTemperatureTakeOffProperty = reader.getXMLPropertyByPath("//take_off/ISA_deviation");
+		if(deltaTemperatureTakeOffProperty != null)
+			deltaTemperatureTakeOff = (Amount<Temperature>) reader.getXMLAmountWithUnitByPath("//take_off/ISA_deviation");
 		//.............................................................
 		String throttleTakeOffProperty = reader.getXMLPropertyByPath("//take_off/throttle");
 		if(throttleTakeOffProperty != null)
-			throttleTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//take_off/throttle"));
-		//.............................................................
-		String throttleGroundIdleTakeOffFunctionProperty = reader.getXMLPropertyByPath("//landing/throttle_ground_idle/throttle");
-		if(throttleGroundIdleTakeOffFunctionProperty != null)
-			throttleGroundIdleTakeOffFunction = reader.readArrayDoubleFromXML("//landing/throttle_ground_idle/throttle"); 
-		String speedThrottleGroundIdleTakeOffFunctionProperty = reader.getXMLPropertyByPath("//landing/throttle_ground_idle/speed");
-		if(speedThrottleGroundIdleTakeOffFunctionProperty != null) 
-			speedThrottleGroundIdleTakeOffFunction = reader.readArrayofAmountFromXML("//landing/throttle_ground_idle/speed");
-		
-		List<Amount<Velocity>> speedMeterPerSecondThrottleGroundIdleTakeOffFunction = 
-				speedThrottleGroundIdleTakeOffFunction.stream()
-				.map(s -> s.to(SI.METERS_PER_SECOND))
-				.collect(Collectors.toList());
-		
-		if(throttleGroundIdleTakeOffFunction.size() > 1)
-			if(throttleGroundIdleTakeOffFunction.size() != throttleGroundIdleTakeOffFunction.size())
-			{
-				System.err.println("SFC ARRAY AND THE RELATED THROTTLE ARRAY MUST HAVE THE SAME LENGTH !");
-				System.exit(1);
-			}
-		if(throttleGroundIdleTakeOffFunction.size() == 1) {
-			throttleGroundIdleTakeOffFunction.add(throttleGroundIdleTakeOffFunction.get(0));
-			speedMeterPerSecondThrottleGroundIdleTakeOffFunction.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
-			speedMeterPerSecondThrottleGroundIdleTakeOffFunction.add(Amount.valueOf(1.0, SI.METERS_PER_SECOND));
-		}
-		
-		MyInterpolatingFunction throttleGroundIdleTakeOffInterpolatingFunction = new MyInterpolatingFunction();
-		throttleGroundIdleTakeOffInterpolatingFunction.interpolateLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(speedMeterPerSecondThrottleGroundIdleTakeOffFunction),
-				MyArrayUtils.convertToDoublePrimitive(throttleGroundIdleTakeOffFunction)
-				);
+			throttleTakeOff= Double.valueOf(throttleTakeOffProperty);
 		//.............................................................
 		List<String> deltaFlapTakeOffCheck = reader.getXMLPropertiesByPath(
 				"//take_off/delta_flap"
@@ -556,10 +285,10 @@ public class OperatingConditions implements IOperatingConditions {
 							).get(0)
 					);
 			for(int i=0; i<deltaFlapTakeOffProperty.size(); i++)
-				deltaFlapTakeOff.add(Amount.valueOf(Double.valueOf(deltaFlapTakeOffProperty.get(i)), NonSI.DEGREE_ANGLE));
+				deltaFlapListTakeOff.add(Amount.valueOf(Double.valueOf(deltaFlapTakeOffProperty.get(i)), NonSI.DEGREE_ANGLE));
 		}
 		else
-			deltaFlapTakeOff.clear();
+			deltaFlapListTakeOff.clear();
 		//.............................................................
 		List<String> deltaSlatTakeOffCheck = reader.getXMLPropertiesByPath(
 				"//take_off/delta_slat"
@@ -571,21 +300,38 @@ public class OperatingConditions implements IOperatingConditions {
 							).get(0)
 					);
 			for(int i=0; i<deltaSlatTakeOffProperty.size(); i++)
-				deltaSlatTakeOff.add(Amount.valueOf(Double.valueOf(deltaSlatTakeOffProperty.get(i)), NonSI.DEGREE_ANGLE));
+				deltaSlatListTakeOff.add(Amount.valueOf(Double.valueOf(deltaSlatTakeOffProperty.get(i)), NonSI.DEGREE_ANGLE));
 		}
 		else
-			deltaSlatTakeOff.clear();
-		
+			deltaSlatListTakeOff.clear();
+		//.............................................................
+		List<String> deltaCanardTakeOffCheck = reader.getXMLPropertiesByPath(
+				"//take_off/delta_canard"
+				);
+		if(!deltaCanardTakeOffCheck.isEmpty()) {
+			List<String> deltaCanardTakeOffProperty = JPADXmlReader.readArrayFromXML(
+					reader.getXMLPropertiesByPath(
+							"//take_off/delta_canard"
+							).get(0)
+					);
+			for(int i=0; i<deltaCanardTakeOffProperty.size(); i++)
+				deltaCanardTakeOff.add(Amount.valueOf(Double.valueOf(deltaCanardTakeOffProperty.get(i)), NonSI.DEGREE_ANGLE));
+		}
+		else
+			deltaCanardTakeOff.clear();
+
+
 		///////////////////////////////////////////////////////////////
 		// LANDING DATA:
-		Double machLanding = 0.2;
+		Amount<Angle> alphaCurrentLanding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> betaCurrentLanding = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		double machLanding = 0.0;
 		Amount<Length> altitudeLanding = Amount.valueOf(0.0, SI.METER);
-		List<Double> throttleGroundIdleLandingFunction = new ArrayList<>();
-		List<Amount<Velocity>> speedThrottleGroundIdleLanidngFunction = new ArrayList<>();
-		List<Amount<Angle>> deltaFlapLanding = new ArrayList<>();
-		List<Amount<Angle>> deltaSlatLanding = new ArrayList<>();
-		Amount<Angle> alphaCurrentLanding = null;
-		Amount<Angle> betaCurrentLanding = null;
+		Amount<Temperature> deltaTemperatureLanding = Amount.valueOf(0.0, SI.CELSIUS);
+		double throttleLanding = 0.0;
+		List<Amount<Angle>> deltaFlapListLanding = new ArrayList<>();
+		List<Amount<Angle>> deltaSlatListLanding = new ArrayList<>();
+		List<Amount<Angle>> deltaCanardLanding = new ArrayList<>();
 		//.............................................................
 		String alphaCurrentLandingProperty = reader.getXMLPropertyByPath("//landing/alpha_current");
 		if(alphaCurrentLandingProperty != null)
@@ -608,47 +354,22 @@ public class OperatingConditions implements IOperatingConditions {
 							),
 					NonSI.DEGREE_ANGLE)
 			.to(SI.RADIAN);
-		else
-			betaCurrentLanding = Amount.valueOf(0.0, SI.RADIAN);
-		//.............................................................		
+		//.............................................................
 		String machLandingProperty = reader.getXMLPropertyByPath("//landing/mach");
 		if(machLandingProperty != null)
-			machLanding = Double.valueOf(reader.getXMLPropertyByPath("//landing/mach"));
+			machLanding = Double.valueOf(machLandingProperty);
 		//.............................................................
 		String altitudeLandingProperty = reader.getXMLPropertyByPath("//landing/altitude");
 		if(altitudeLandingProperty != null)
-			altitudeLanding = reader.getXMLAmountLengthByPath("//landing/altitude").to(SI.METER);
+			altitudeLanding = reader.getXMLAmountLengthByPath("//landing/altitude");
 		//.............................................................
-		String throttleGroundIdleLandingFunctionProperty = reader.getXMLPropertyByPath("//landing/throttle_ground_idle/throttle");
-		if(throttleGroundIdleLandingFunctionProperty != null)
-			throttleGroundIdleLandingFunction = reader.readArrayDoubleFromXML("//landing/throttle_ground_idle/throttle"); 
-		String speedThrottleGroundIdleLanidngFunctionProperty = reader.getXMLPropertyByPath("//landing/throttle_ground_idle/speed");
-		if(speedThrottleGroundIdleLanidngFunctionProperty != null) {
-			speedThrottleGroundIdleLanidngFunction = reader.readArrayofAmountFromXML("//landing/throttle_ground_idle/speed");
-		}
-		
-		List<Amount<Velocity>> speedMeterPerSecondThrottleGroundIdleLanidngFunction = 
-				speedThrottleGroundIdleLanidngFunction.stream()
-				.map(s -> s.to(SI.METERS_PER_SECOND))
-				.collect(Collectors.toList());
-		
-		if(throttleGroundIdleLandingFunction.size() > 1)
-			if(throttleGroundIdleLandingFunction.size() != throttleGroundIdleLandingFunction.size())
-			{
-				System.err.println("SFC ARRAY AND THE RELATED THROTTLE ARRAY MUST HAVE THE SAME LENGTH !");
-				System.exit(1);
-			}
-		if(throttleGroundIdleLandingFunction.size() == 1) {
-			throttleGroundIdleLandingFunction.add(throttleGroundIdleLandingFunction.get(0));
-			speedMeterPerSecondThrottleGroundIdleLanidngFunction.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
-			speedMeterPerSecondThrottleGroundIdleLanidngFunction.add(Amount.valueOf(1.0, SI.METERS_PER_SECOND));
-		}
-		
-		MyInterpolatingFunction throttleGroundIdleLandingInterpolatingFunction = new MyInterpolatingFunction();
-		throttleGroundIdleLandingInterpolatingFunction.interpolateLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(speedMeterPerSecondThrottleGroundIdleLanidngFunction),
-				MyArrayUtils.convertToDoublePrimitive(throttleGroundIdleLandingFunction)
-				);
+		String deltaTemperatureLandingProperty = reader.getXMLPropertyByPath("//landing/ISA_deviation");
+		if(deltaTemperatureLandingProperty != null)
+			deltaTemperatureLanding = (Amount<Temperature>) reader.getXMLAmountWithUnitByPath("//landing/ISA_deviation");
+		//.............................................................
+		String throttleLandingProperty = reader.getXMLPropertyByPath("//landing/throttle");
+		if(throttleLandingProperty != null)
+			throttleLanding= Double.valueOf(throttleLandingProperty);
 		//.............................................................
 		List<String> deltaFlapLandingCheck = reader.getXMLPropertiesByPath(
 				"//landing/delta_flap"
@@ -660,10 +381,10 @@ public class OperatingConditions implements IOperatingConditions {
 							).get(0)
 					);
 			for(int i=0; i<deltaFlapLandingProperty.size(); i++)
-				deltaFlapLanding.add(Amount.valueOf(Double.valueOf(deltaFlapLandingProperty.get(i)), NonSI.DEGREE_ANGLE));
+				deltaFlapListLanding.add(Amount.valueOf(Double.valueOf(deltaFlapLandingProperty.get(i)), NonSI.DEGREE_ANGLE));
 		}
 		else
-			deltaFlapLanding.clear();
+			deltaFlapListLanding.clear();
 		//.............................................................
 		List<String> deltaSlatLandingCheck = reader.getXMLPropertiesByPath(
 				"//landing/delta_slat"
@@ -675,40 +396,65 @@ public class OperatingConditions implements IOperatingConditions {
 							).get(0)
 					);
 			for(int i=0; i<deltaSlatLandingProperty.size(); i++)
-				deltaSlatLanding.add(Amount.valueOf(Double.valueOf(deltaSlatLandingProperty.get(i)), NonSI.DEGREE_ANGLE));
+				deltaSlatListLanding.add(Amount.valueOf(Double.valueOf(deltaSlatLandingProperty.get(i)), NonSI.DEGREE_ANGLE));
 		}
 		else
-			deltaSlatLanding.clear();
-
+			deltaSlatListLanding.clear();
+		//.............................................................
+		
+		List<String> deltaCanardLandingCheck = reader.getXMLPropertiesByPath(
+				"//take_off/delta_canard"
+				);
+		if(!deltaCanardLandingCheck.isEmpty()) {
+			List<String> deltaCanardLandingProperty = JPADXmlReader.readArrayFromXML(
+					reader.getXMLPropertiesByPath(
+							"//take_off/delta_canard"
+							).get(0)
+					);
+			for(int i=0; i<deltaCanardLandingProperty.size(); i++)
+				deltaCanardLanding.add(Amount.valueOf(Double.valueOf(deltaCanardLandingProperty.get(i)), NonSI.DEGREE_ANGLE));
+		}
+		else
+			deltaCanardLanding.clear();
+		
 		///////////////////////////////////////////////////////////////
-		OperatingConditions theConditions = new OperatingConditionsBuilder(id)
-				.alphaCurrentClimb(alphaCurrentClimb)
-				.alphaCurrentCruise(alphaCurrentCruise)
-				.alphaCurrentTakeOff(alphaCurrentTakeOff)
-				.alphaCurrentLanding(alphaCurrentLanding)
-				.betaCurrentClimb(betaCurrentClimb)
-				.betaCurrentCruise(betaCurrentCruise)
-				.betaCurrentTakeOff(betaCurrentTakeOff)
-				.betaCurrentLanding(betaCurrentLanding)
-				.machClimb(machClimb)
-				.altitudeClimb(altitudeClimb)
-				.machCruise(machCruise)
-				.altitudeCruise(altitudeCruise)
-				.throttleCruise(throttleCruise)
-				.machTakeOff(machTakeOff)
-				.altitudeTakeOff(altitudeTakeOff)
-				.throttleTakeOff(throttleTakeOff)
-				.throttleGroundIdleTakeOff(throttleGroundIdleTakeOffInterpolatingFunction)
-				.flapDeflectionTakeOff(deltaFlapTakeOff)
-				.slatDeflectionTakeOff(deltaSlatTakeOff)
-				.machLanding(machLanding)
-				.altitudeLanding(altitudeLanding)
-				.throttleGroundIdleLanding(throttleGroundIdleLandingInterpolatingFunction)
-				.flapDeflectionLanding(deltaFlapLanding)
-				.slatDeflectionLanding(deltaSlatLanding)
-				.build();
-				
-		return theConditions;
+		OperatingConditions theOperatingConditions = new OperatingConditions(
+				new IOperatingConditions.Builder()
+				.setID(id)
+				.setAlphaClimb(alphaCurrentClimb)
+				.setBetaClimb(betaCurrentClimb)
+				.setMachClimb(machClimb)
+				.setAltitudeClimb(altitudeClimb)
+				.setDeltaTemperatureClimb(deltaTemperatureClimb)
+				.setThrottleClimb(throttleClimb)
+				.setAlphaCruise(alphaCurrentCruise)
+				.setBetaCruise(betaCurrentCruise)
+				.setMachCruise(machCruise)
+				.setAltitudeCruise(altitudeCruise)
+				.setDeltaTemperatureCruise(deltaTemperatureCruise)
+				.setThrottleCruise(throttleCruise)
+				.setAlphaTakeOff(alphaCurrentTakeOff)
+				.setBetaTakeOff(betaCurrentTakeOff)
+				.setMachTakeOff(machTakeOff)
+				.setAltitudeTakeOff(altitudeTakeOff)
+				.setDeltaTemperatureTakeOff(deltaTemperatureTakeOff)
+				.setThrottleTakeOff(throttleTakeOff)
+				.addAllTakeOffSlatDefletctionList(deltaFlapListTakeOff)
+				.addAllTakeOffSlatDefletctionList(deltaSlatListTakeOff)
+				.setAlphaLanding(alphaCurrentLanding)
+				.setBetaLanding(betaCurrentLanding)
+				.setMachLanding(machLanding)
+				.setAltitudeLanding(altitudeLanding)
+				.setDeltaTemperatureLanding(deltaTemperatureLanding)
+				.setThrottleLanding(throttleLanding)
+				.addAllLandingSlatDefletctionList(deltaFlapListLanding)
+				.addAllLandingSlatDefletctionList(deltaSlatListLanding)
+				.addAllTakeOffCanardDefletction(deltaCanardTakeOff)
+				.addAllLandingCanardDefletction(deltaCanardLanding)
+				.build()
+				);
+		
+		return theOperatingConditions;
 		
 	}
 	
@@ -721,80 +467,100 @@ public class OperatingConditions implements IOperatingConditions {
 				.append("\t-------------------------------------\n")
 				.append("\tOperating Conditions\n")
 				.append("\t-------------------------------------\n")
-				.append("\tID: '" + _id + "' \n")
+				.append("\tID: '" + theOperatingConditionsInterface.getID() + "' \n")
 				.append("\t.....................................\n")
-				.append("\tAlpha current Climb: " + _alphaCurrentClimb.to(NonSI.DEGREE_ANGLE) + "\n")
-				.append("\tBeta current Climb: " + _betaCurrentClimb.to(NonSI.DEGREE_ANGLE) + "\n")
-				.append("\tMach Climb: " + _machClimb + "\n")
-				.append("\tAltitude Climb: " + _altitudeClimb.to(NonSI.FOOT) + "\n")
+				.append("\tAlpha current Climb: " + theOperatingConditionsInterface.getAlphaClimb().to(NonSI.DEGREE_ANGLE) + "\n")
+				.append("\tBeta current Climb: " + theOperatingConditionsInterface.getBetaClimb().to(NonSI.DEGREE_ANGLE) + "\n")
+				.append("\tMach Climb: " + theOperatingConditionsInterface.getMachClimb() + "\n")
+				.append("\tAltitude Climb: " + theOperatingConditionsInterface.getAltitudeClimb().to(NonSI.FOOT) + "\n")
+				.append("\tISA Deviation Climb: " + theOperatingConditionsInterface.getDeltaTemperatureClimb().to(SI.CELSIUS) + "\n")
+				.append("\tThrottle Climb: " + theOperatingConditionsInterface.getThrottleClimb() + "\n")
 				.append("\t.....................................\n")
-				.append("\tAlpha current Cruise: " + _alphaCurrentCruise.to(NonSI.DEGREE_ANGLE) + "\n")
-				.append("\tBeta current Cruise: " + _betaCurrentCruise.to(NonSI.DEGREE_ANGLE) + "\n")
-				.append("\tMach Cruise: " + _machCruise + "\n")
-				.append("\tAltitude Cruise: " + _altitudeCruise.to(NonSI.FOOT) + "\n")
-				.append("\tThrottle Cruise (phi): " + _throttleCruise + "\n")
+				.append("\tAlpha current Cruise: " + theOperatingConditionsInterface.getAlphaCruise().to(NonSI.DEGREE_ANGLE) + "\n")
+				.append("\tBeta current Cruise: " + theOperatingConditionsInterface.getBetaCruise().to(NonSI.DEGREE_ANGLE) + "\n")
+				.append("\tMach Cruise: " + theOperatingConditionsInterface.getMachCruise() + "\n")
+				.append("\tAltitude Cruise: " + theOperatingConditionsInterface.getAltitudeCruise().to(NonSI.FOOT) + "\n")
+				.append("\tISA Deviation Cruise: " + theOperatingConditionsInterface.getDeltaTemperatureCruise().to(SI.CELSIUS) + "\n")
+				.append("\tThrottle Cruise: " + theOperatingConditionsInterface.getThrottleCruise() + "\n")
 				.append("\t.....................................\n")
-				.append("\tAlpha current Take-off: " + _alphaCurrentTakeOff.to(NonSI.DEGREE_ANGLE) + "\n")
-				.append("\tBeta current Take-off: " + _betaCurrentTakeOff.to(NonSI.DEGREE_ANGLE) + "\n")
-				.append("\tMach Take-off: " + _machTakeOff + "\n")
-				.append("\tAltitude Take-off: " + _altitudeTakeOff.to(NonSI.FOOT) + "\n")
-				.append("\tThrottle Take-off (phi): " + _throttleTakeOff + "\n");
-		if(!_flapDeflectionTakeOff.isEmpty())
-				sb.append("\tFlap deflections Take-off: " + _flapDeflectionTakeOff + "\n");
-		if(!_slatDeflectionTakeOff.isEmpty())
-				sb.append("\tSlat deflections Take-off: " + _slatDeflectionTakeOff + "\n");
+				.append("\tAlpha current TakeOff: " + theOperatingConditionsInterface.getAlphaTakeOff().to(NonSI.DEGREE_ANGLE) + "\n")
+				.append("\tBeta current TakeOff: " + theOperatingConditionsInterface.getBetaTakeOff().to(NonSI.DEGREE_ANGLE) + "\n")
+				.append("\tMach TakeOff: " + theOperatingConditionsInterface.getMachTakeOff() + "\n")
+				.append("\tAltitude TakeOff: " + theOperatingConditionsInterface.getAltitudeTakeOff().to(NonSI.FOOT) + "\n")
+				.append("\tISA Deviation TakeOff: " + theOperatingConditionsInterface.getDeltaTemperatureTakeOff().to(SI.CELSIUS) + "\n")
+				.append("\tThrottle TakeOff: " + theOperatingConditionsInterface.getThrottleTakeOff() + "\n");
+		if(!theOperatingConditionsInterface.getTakeOffFlapDefletctionList().isEmpty())
+				sb.append("\tFlap deflections Take-off: " + theOperatingConditionsInterface.getTakeOffFlapDefletctionList() + "\n");
+		if(!theOperatingConditionsInterface.getTakeOffSlatDefletctionList().isEmpty())
+				sb.append("\tSlat deflections Take-off: " + theOperatingConditionsInterface.getTakeOffSlatDefletctionList() + "\n");
 				sb.append("\t.....................................\n")
-				.append("\tAlpha current Landing: " + _alphaCurrentLanding.to(NonSI.DEGREE_ANGLE) + "\n")
-				.append("\tBeta current Landing: " + _betaCurrentLanding.to(NonSI.DEGREE_ANGLE) + "\n")
-				.append("\tMach Landing: " + _machLanding + "\n")
-				.append("\tAltitude Landing: " + _altitudeLanding.to(NonSI.FOOT) + "\n");
-		if(!_flapDeflectionLanding.isEmpty())
-				sb.append("\tFlap deflections Landing: " + _flapDeflectionLanding + "\n");
-		if(!_slatDeflectionLanding.isEmpty())
-				sb.append("\tSlat deflections Landing: " + _slatDeflectionLanding + "\n");
+				.append("\tAlpha current Landing: " + theOperatingConditionsInterface.getAlphaLanding().to(NonSI.DEGREE_ANGLE) + "\n")
+				.append("\tBeta current Landing: " + theOperatingConditionsInterface.getBetaLanding().to(NonSI.DEGREE_ANGLE) + "\n")
+				.append("\tMach Landing: " + theOperatingConditionsInterface.getMachLanding() + "\n")
+				.append("\tAltitude Landing: " + theOperatingConditionsInterface.getAltitudeLanding().to(NonSI.FOOT) + "\n")
+				.append("\tISA Deviation Landing: " + theOperatingConditionsInterface.getDeltaTemperatureLanding().to(SI.CELSIUS) + "\n")
+				.append("\tThrottle Landing: " + theOperatingConditionsInterface.getThrottleLanding() + "\n");
+		if(!theOperatingConditionsInterface.getLandingFlapDefletctionList().isEmpty())
+				sb.append("\tFlap deflections Landing: " + theOperatingConditionsInterface.getLandingFlapDefletctionList() + "\n");
+		if(!theOperatingConditionsInterface.getLandingSlatDefletctionList().isEmpty())
+				sb.append("\tSlat deflections Landing: " + theOperatingConditionsInterface.getLandingSlatDefletctionList() + "\n");
 		
 				sb.append("\n\t.....................................\n")
+				.append("\tCLIMB\n")
+				.append("\tClimb pressure coefficient: " + pressureCoefficientClimb + "\n")
+				.append("\tClimb density: " + densityClimb + "\n")
+				.append("\tClimb static pressure: " + staticPressureClimb + "\n")
+				.append("\tClimb dynamic pressure: " + dynamicPressureClimb + "\n")
+				.append("\tClimb stagnation pressure: " + stagnationPressureClimb + "\n")
+				.append("\tClimb maximum delta pressure outside-inside: " + maxDeltaPressureClimb + "\n")
+				.append("\tClimb static temperature: " + staticTemperatureClimb + "\n")
+				.append("\tClimb stagnation temperature: " + stagnationTemperatureClimb + "\n")
+				.append("\tClimb speed (TAS): " + tasClimb + "\n")
+				.append("\tClimb speed (CAS): " + casClimb + "\n")
+				.append("\tClimb speed (EAS): " + easClimb + "\n")
+				.append("\tClimb dynamic viscosity: " + muClimb + "\n")
+				.append("\t.....................................\n")
 				.append("\tCRUISE\n")
-				.append("\tCruise pressure coefficient: " + _pressureCoefficientCruise + "\n")
-				.append("\tCruise density: " + _densityCruise + "\n")
-				.append("\tCruise static pressure: " + _staticPressureCruise + "\n")
-				.append("\tCruise dynamic pressure: " + _dynamicPressureCruise + "\n")
-				.append("\tCruise stagnation pressure: " + _stagnationPressureCruise + "\n")
-				.append("\tCruise maximum delta pressure outside-inside: " + _maxDeltaPressureCruise + "\n")
-				.append("\tCruise static temperature: " + _staticTemperatureCruise + "\n")
-				.append("\tCruise stagnation temperature: " + _stagnationTemperatureCruise + "\n")
-				.append("\tCruise speed (TAS): " + _tasCruise + "\n")
-				.append("\tCruise speed (CAS): " + _casCruise + "\n")
-				.append("\tCruise speed (EAS): " + _easCruise + "\n")
-				.append("\tCruise dynamic viscosity: " + _muCruise + "\n")
+				.append("\tCruise pressure coefficient: " + pressureCoefficientCruise + "\n")
+				.append("\tCruise density: " + densityCruise + "\n")
+				.append("\tCruise static pressure: " + staticPressureCruise + "\n")
+				.append("\tCruise dynamic pressure: " + dynamicPressureCruise + "\n")
+				.append("\tCruise stagnation pressure: " + stagnationPressureCruise + "\n")
+				.append("\tCruise maximum delta pressure outside-inside: " + maxDeltaPressureCruise + "\n")
+				.append("\tCruise static temperature: " + staticTemperatureCruise + "\n")
+				.append("\tCruise stagnation temperature: " + stagnationTemperatureCruise + "\n")
+				.append("\tCruise speed (TAS): " + tasCruise + "\n")
+				.append("\tCruise speed (CAS): " + casCruise + "\n")
+				.append("\tCruise speed (EAS): " + easCruise + "\n")
+				.append("\tCruise dynamic viscosity: " + muCruise + "\n")
 				.append("\t.....................................\n")
 				.append("\tTAKE-OFF\n")
-				.append("\tTake-off pressure coefficient: " + _pressureCoefficientTakeOff + "\n")
-				.append("\tTake-off density: " + _densityTakeOff + "\n")
-				.append("\tTake-off static pressure: " + _staticPressureTakeOff + "\n")
-				.append("\tTake-off dynamic pressure: " + _dynamicPressureTakeOff + "\n")
-				.append("\tTake-off stagnation pressure: " + _stagnationPressureTakeOff + "\n")
-				.append("\tTake-off maximum delta pressure outside-inside: " + _maxDeltaPressureTakeOff + "\n")
-				.append("\tTake-off static temperature: " + _staticTemperatureTakeOff + "\n")
-				.append("\tTake-off stagnation temperature: " + _stagnationTemperatureTakeOff + "\n")
-				.append("\tTake-off speed (TAS): " + _tasTakeOff + "\n")
-				.append("\tTake-off speed (CAS): " + _casTakeOff + "\n")
-				.append("\tTake-off speed (EAS): " + _easTakeOff + "\n")
-				.append("\tTake-off dynamic viscosity: " + _muTakeOff + "\n")
+				.append("\tTake-off pressure coefficient: " + pressureCoefficientTakeOff + "\n")
+				.append("\tTake-off density: " + densityTakeOff + "\n")
+				.append("\tTake-off static pressure: " + staticPressureTakeOff + "\n")
+				.append("\tTake-off dynamic pressure: " + dynamicPressureTakeOff + "\n")
+				.append("\tTake-off stagnation pressure: " + stagnationPressureTakeOff + "\n")
+				.append("\tTake-off maximum delta pressure outside-inside: " + maxDeltaPressureTakeOff + "\n")
+				.append("\tTake-off static temperature: " + staticTemperatureTakeOff + "\n")
+				.append("\tTake-off stagnation temperature: " + stagnationTemperatureTakeOff + "\n")
+				.append("\tTake-off speed (TAS): " + tasTakeOff + "\n")
+				.append("\tTake-off speed (CAS): " + casTakeOff + "\n")
+				.append("\tTake-off speed (EAS): " + easTakeOff + "\n")
+				.append("\tTake-off dynamic viscosity: " + muTakeOff + "\n")
 				.append("\t.....................................\n")
 				.append("\tLANDING\n")
-				.append("\tLanding pressure coefficient: " + _pressureCoefficientLanding + "\n")
-				.append("\tLanding density: " + _densityLanding + "\n")
-				.append("\tLanding static pressure: " + _staticPressureLanding + "\n")
-				.append("\tLanding dynamic pressure: " + _dynamicPressureLanding + "\n")
-				.append("\tLanding stagnation pressure: " + _stagnationPressureLanding + "\n")
-				.append("\tLanding maximum delta pressure outside-inside: " + _maxDeltaPressureLanding + "\n")
-				.append("\tLanding static temperature: " + _staticTemperatureLanding + "\n")
-				.append("\tLanding stagnation temperature: " + _stagnationTemperatureLanding + "\n")
-				.append("\tLanding speed (TAS): " + _tasLanding + "\n")
-				.append("\tLanding speed (CAS): " + _casLanding + "\n")
-				.append("\tLanding speed (EAS): " + _easLanding + "\n")
-				.append("\tLanding dynamic viscosity: " + _muLanding + "\n")
+				.append("\tLanding pressure coefficient: " + pressureCoefficientLanding + "\n")
+				.append("\tLanding density: " + densityLanding + "\n")
+				.append("\tLanding static pressure: " + staticPressureLanding + "\n")
+				.append("\tLanding dynamic pressure: " + dynamicPressureLanding + "\n")
+				.append("\tLanding stagnation pressure: " + stagnationPressureLanding + "\n")
+				.append("\tLanding maximum delta pressure outside-inside: " + maxDeltaPressureLanding + "\n")
+				.append("\tLanding static temperature: " + staticTemperatureLanding + "\n")
+				.append("\tLanding stagnation temperature: " + stagnationTemperatureLanding + "\n")
+				.append("\tLanding speed (TAS): " + tasLanding + "\n")
+				.append("\tLanding speed (CAS): " + casLanding + "\n")
+				.append("\tLanding speed (EAS): " + easLanding + "\n")
+				.append("\tLanding dynamic viscosity: " + muLanding + "\n")
 				.append("\t.....................................\n")
 				;
 				
@@ -807,31 +573,31 @@ public class OperatingConditions implements IOperatingConditions {
 	 */
 	public void calculate() {
 
-		// CRUISE
-		_atmosphereCruise = new StdAtmos1976(_altitudeCruise.getEstimatedValue());
-		_pressureCoefficientCruise = PressureCalc.calculatePressureCoefficient(_machCruise);
-		_densityCruise = Amount.valueOf(_atmosphereCruise.getDensity()*1000, VolumetricDensity.UNIT);
-		_staticPressureCruise = Amount.valueOf(_atmosphereCruise.getPressure(), SI.PASCAL);
-		_dynamicPressureCruise = Amount.valueOf(
-				PressureCalc.calculateDynamicPressure(_machCruise, _staticPressureCruise.getEstimatedValue())
+		// CLIMB
+		atmosphereClimb = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeClimb().doubleValue(SI.METER), theOperatingConditionsInterface.getDeltaTemperatureClimb().doubleValue(SI.CELSIUS));
+		pressureCoefficientClimb = PressureCalc.calculatePressureCoefficient(theOperatingConditionsInterface.getMachClimb());
+		densityClimb = Amount.valueOf(atmosphereClimb.getDensity()*1000, VolumetricDensity.UNIT);
+		staticPressureClimb = Amount.valueOf(atmosphereClimb.getPressure(), SI.PASCAL);
+		dynamicPressureClimb = Amount.valueOf(
+				PressureCalc.calculateDynamicPressure(theOperatingConditionsInterface.getMachClimb(), staticPressureClimb.doubleValue(SI.PASCAL))
 				, SI.PASCAL);
-		_stagnationPressureCruise = _dynamicPressureCruise.times(_pressureCoefficientCruise).plus(_staticPressureCruise);
-		_tasCruise = Amount.valueOf(_machCruise * _atmosphereCruise.getSpeedOfSound(), SI.METERS_PER_SECOND);
-		_casCruise = Amount.valueOf(
-				SpeedCalc.calculateCAS(_stagnationPressureCruise.getEstimatedValue(), _staticPressureCruise.getEstimatedValue())
+		stagnationPressureClimb = dynamicPressureClimb.times(pressureCoefficientClimb).plus(staticPressureClimb);
+		tasClimb = Amount.valueOf(theOperatingConditionsInterface.getMachClimb() * atmosphereClimb.getSpeedOfSound(), SI.METERS_PER_SECOND);
+		casClimb = Amount.valueOf(
+				SpeedCalc.calculateCAS(stagnationPressureClimb.doubleValue(SI.PASCAL), staticPressureClimb.doubleValue(SI.PASCAL))
 				, SI.METERS_PER_SECOND);
-		_easCruise = Amount.valueOf(Math.sqrt(_atmosphereCruise.getDensityRatio())
-				* SpeedCalc.calculateIsentropicVelocity(_stagnationPressureCruise.getEstimatedValue(), 
-						_staticPressureCruise.getEstimatedValue(), _densityCruise.getEstimatedValue())
+		easClimb = Amount.valueOf(Math.sqrt(atmosphereClimb.getDensityRatio())
+				* SpeedCalc.calculateIsentropicVelocity(stagnationPressureClimb.doubleValue(SI.PASCAL), 
+						staticPressureClimb.doubleValue(SI.PASCAL), densityClimb.doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER))
 						, SI.METERS_PER_SECOND);
-		_staticTemperatureCruise = Amount.valueOf(_atmosphereCruise.getTemperature(), SI.KELVIN);
-		_stagnationTemperatureCruise = _staticTemperatureCruise
-				.times(TemperatureCalc.calculateStagnationTemperatureToStaticTemperatureRatio(_machCruise));
+		staticTemperatureClimb = Amount.valueOf(atmosphereClimb.getTemperature(), SI.KELVIN);
+		stagnationTemperatureClimb = staticTemperatureClimb
+				.times(TemperatureCalc.calculateStagnationTemperatureToStaticTemperatureRatio(theOperatingConditionsInterface.getMachClimb()));
 
 		// Maximum pressure difference between outside and inside
-		_maxDeltaPressureCruise = Amount.valueOf(
+		maxDeltaPressureClimb = Amount.valueOf(
 				Math.abs(
-						_staticPressureCruise.getEstimatedValue() 
+						staticPressureClimb.doubleValue(SI.PASCAL) 
 						- ((new StdAtmos1976(2000.)).getPressure()))
 						, SI.PASCAL);
 
@@ -839,654 +605,834 @@ public class OperatingConditions implements IOperatingConditions {
 		double T0 = 288.166667; // K
 		double C = 110.4; // K
 
-		_muCruise = Amount.valueOf(
+		muClimb = Amount.valueOf(
 				mu0*((T0 + C)
-						/ (_atmosphereCruise.getTemperature() + C))
+						/ (atmosphereClimb.getTemperature() + C))
 						* Math.pow(
-								_atmosphereCruise.getTemperature()/T0, 
+								atmosphereClimb.getTemperature()/T0, 
+								3/2), 
+								DynamicViscosity.UNIT);
+		
+		// CRUISE
+		atmosphereCruise = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeCruise().doubleValue(SI.METER), theOperatingConditionsInterface.getDeltaTemperatureCruise().doubleValue(SI.CELSIUS));
+		pressureCoefficientCruise = PressureCalc.calculatePressureCoefficient(theOperatingConditionsInterface.getMachCruise());
+		densityCruise = Amount.valueOf(atmosphereCruise.getDensity()*1000, VolumetricDensity.UNIT);
+		staticPressureCruise = Amount.valueOf(atmosphereCruise.getPressure(), SI.PASCAL);
+		dynamicPressureCruise = Amount.valueOf(
+				PressureCalc.calculateDynamicPressure(theOperatingConditionsInterface.getMachCruise(), staticPressureCruise.doubleValue(SI.PASCAL))
+				, SI.PASCAL);
+		stagnationPressureCruise = dynamicPressureCruise.times(pressureCoefficientCruise).plus(staticPressureCruise);
+		tasCruise = Amount.valueOf(theOperatingConditionsInterface.getMachCruise() * atmosphereCruise.getSpeedOfSound(), SI.METERS_PER_SECOND);
+		casCruise = Amount.valueOf(
+				SpeedCalc.calculateCAS(stagnationPressureCruise.doubleValue(SI.PASCAL), staticPressureCruise.doubleValue(SI.PASCAL))
+				, SI.METERS_PER_SECOND);
+		easCruise = Amount.valueOf(Math.sqrt(atmosphereCruise.getDensityRatio())
+				* SpeedCalc.calculateIsentropicVelocity(stagnationPressureCruise.doubleValue(SI.PASCAL), 
+						staticPressureCruise.doubleValue(SI.PASCAL), densityCruise.doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER))
+						, SI.METERS_PER_SECOND);
+		staticTemperatureCruise = Amount.valueOf(atmosphereCruise.getTemperature(), SI.KELVIN);
+		stagnationTemperatureCruise = staticTemperatureCruise
+				.times(TemperatureCalc.calculateStagnationTemperatureToStaticTemperatureRatio(theOperatingConditionsInterface.getMachCruise()));
+
+		// Maximum pressure difference between outside and inside
+		maxDeltaPressureCruise = Amount.valueOf(
+				Math.abs(
+						staticPressureCruise.doubleValue(SI.PASCAL) 
+						- ((new StdAtmos1976(2000.)).getPressure()))
+						, SI.PASCAL);
+
+		muCruise = Amount.valueOf(
+				mu0*((T0 + C)
+						/ (atmosphereCruise.getTemperature() + C))
+						* Math.pow(
+								atmosphereCruise.getTemperature()/T0, 
 								3/2), 
 								DynamicViscosity.UNIT);
 
 		// TAKE-OFF
-		_atmosphereTakeOff = new StdAtmos1976(_altitudeTakeOff.getEstimatedValue());
-		_pressureCoefficientTakeOff = PressureCalc.calculatePressureCoefficient(_machTakeOff);
-		_densityTakeOff = Amount.valueOf(_atmosphereTakeOff.getDensity()*1000, VolumetricDensity.UNIT);
-		_staticPressureTakeOff = Amount.valueOf(_atmosphereTakeOff.getPressure(), SI.PASCAL);
-		_dynamicPressureTakeOff = Amount.valueOf(
-				PressureCalc.calculateDynamicPressure(_machTakeOff, _staticPressureTakeOff.getEstimatedValue())
+		atmosphereTakeOff = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeTakeOff().doubleValue(SI.METER), theOperatingConditionsInterface.getDeltaTemperatureTakeOff().doubleValue(SI.CELSIUS));
+		pressureCoefficientTakeOff = PressureCalc.calculatePressureCoefficient(theOperatingConditionsInterface.getMachTakeOff());
+		densityTakeOff = Amount.valueOf(atmosphereTakeOff.getDensity()*1000, VolumetricDensity.UNIT);
+		staticPressureTakeOff = Amount.valueOf(atmosphereTakeOff.getPressure(), SI.PASCAL);
+		dynamicPressureTakeOff = Amount.valueOf(
+				PressureCalc.calculateDynamicPressure(theOperatingConditionsInterface.getMachTakeOff(), staticPressureTakeOff.doubleValue(SI.PASCAL))
 				, SI.PASCAL);
-		_stagnationPressureTakeOff = _dynamicPressureTakeOff.times(_pressureCoefficientTakeOff).plus(_staticPressureTakeOff);
-		_tasTakeOff = Amount.valueOf(_machTakeOff * _atmosphereTakeOff.getSpeedOfSound(), SI.METERS_PER_SECOND);
-		_casTakeOff = Amount.valueOf(
-				SpeedCalc.calculateCAS(_stagnationPressureTakeOff.getEstimatedValue(), _staticPressureTakeOff.getEstimatedValue())
+		stagnationPressureTakeOff = dynamicPressureTakeOff.times(pressureCoefficientTakeOff).plus(staticPressureTakeOff);
+		tasTakeOff = Amount.valueOf(theOperatingConditionsInterface.getMachTakeOff() * atmosphereTakeOff.getSpeedOfSound(), SI.METERS_PER_SECOND);
+		casTakeOff = Amount.valueOf(
+				SpeedCalc.calculateCAS(stagnationPressureTakeOff.doubleValue(SI.PASCAL), staticPressureTakeOff.doubleValue(SI.PASCAL))
 				, SI.METERS_PER_SECOND);
-		_easTakeOff = Amount.valueOf(Math.sqrt(_atmosphereTakeOff.getDensityRatio())
-				* SpeedCalc.calculateIsentropicVelocity(_stagnationPressureTakeOff.getEstimatedValue(), 
-						_staticPressureTakeOff.getEstimatedValue(), _densityTakeOff.getEstimatedValue())
+		easTakeOff = Amount.valueOf(Math.sqrt(atmosphereTakeOff.getDensityRatio())
+				* SpeedCalc.calculateIsentropicVelocity(stagnationPressureTakeOff.doubleValue(SI.PASCAL), 
+						staticPressureTakeOff.doubleValue(SI.PASCAL), densityTakeOff.doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER))
 						, SI.METERS_PER_SECOND);
-		_staticTemperatureTakeOff = Amount.valueOf(_atmosphereTakeOff.getTemperature(), SI.KELVIN);
-		_stagnationTemperatureTakeOff = _staticTemperatureTakeOff
-				.times(TemperatureCalc.calculateStagnationTemperatureToStaticTemperatureRatio(_machTakeOff));
+		staticTemperatureTakeOff = Amount.valueOf(atmosphereTakeOff.getTemperature(), SI.KELVIN);
+		stagnationTemperatureTakeOff = staticTemperatureTakeOff
+				.times(TemperatureCalc.calculateStagnationTemperatureToStaticTemperatureRatio(theOperatingConditionsInterface.getMachTakeOff()));
 
 		// Maximum pressure difference between outside and inside
-		_maxDeltaPressureTakeOff = Amount.valueOf(
+		maxDeltaPressureTakeOff = Amount.valueOf(
 				Math.abs(
-						_staticPressureTakeOff.getEstimatedValue() 
+						staticPressureTakeOff.doubleValue(SI.PASCAL) 
 						- ((new StdAtmos1976(2000.)).getPressure()))
 						, SI.PASCAL);
 
-		_muTakeOff = Amount.valueOf(
+		muTakeOff = Amount.valueOf(
 				mu0*((T0 + C)
-						/ (_atmosphereTakeOff.getTemperature() + C))
+						/ (atmosphereTakeOff.getTemperature() + C))
 						* Math.pow(
-								_atmosphereTakeOff.getTemperature()/T0, 
+								atmosphereTakeOff.getTemperature()/T0, 
 								3/2), 
 								DynamicViscosity.UNIT);
 		
 		// LANDING
-		_atmosphereLanding = new StdAtmos1976(_altitudeLanding.getEstimatedValue());
-		_pressureCoefficientLanding = PressureCalc.calculatePressureCoefficient(_machLanding);
-		_densityLanding = Amount.valueOf(_atmosphereLanding.getDensity()*1000, VolumetricDensity.UNIT);
-		_staticPressureLanding = Amount.valueOf(_atmosphereLanding.getPressure(), SI.PASCAL);
-		_dynamicPressureLanding = Amount.valueOf(
-				PressureCalc.calculateDynamicPressure(_machLanding, _staticPressureLanding.getEstimatedValue())
+		atmosphereLanding = new StdAtmos1976(theOperatingConditionsInterface.getAltitudeLanding().doubleValue(SI.METER), theOperatingConditionsInterface.getDeltaTemperatureLanding().doubleValue(SI.CELSIUS));
+		pressureCoefficientLanding = PressureCalc.calculatePressureCoefficient(theOperatingConditionsInterface.getMachLanding());
+		densityLanding = Amount.valueOf(atmosphereLanding.getDensity()*1000, VolumetricDensity.UNIT);
+		staticPressureLanding = Amount.valueOf(atmosphereLanding.getPressure(), SI.PASCAL);
+		dynamicPressureLanding = Amount.valueOf(
+				PressureCalc.calculateDynamicPressure(theOperatingConditionsInterface.getMachLanding(), staticPressureLanding.doubleValue(SI.PASCAL))
 				, SI.PASCAL);
-		_stagnationPressureLanding = _dynamicPressureLanding.times(_pressureCoefficientLanding).plus(_staticPressureLanding);
-		_tasLanding = Amount.valueOf(_machLanding * _atmosphereLanding.getSpeedOfSound(), SI.METERS_PER_SECOND);
-		_casLanding = Amount.valueOf(
-				SpeedCalc.calculateCAS(_stagnationPressureLanding.getEstimatedValue(), _staticPressureLanding.getEstimatedValue())
+		stagnationPressureLanding = dynamicPressureLanding.times(pressureCoefficientLanding).plus(staticPressureLanding);
+		tasLanding = Amount.valueOf(theOperatingConditionsInterface.getMachLanding() * atmosphereLanding.getSpeedOfSound(), SI.METERS_PER_SECOND);
+		casLanding = Amount.valueOf(
+				SpeedCalc.calculateCAS(stagnationPressureLanding.doubleValue(SI.PASCAL), staticPressureLanding.doubleValue(SI.PASCAL))
 				, SI.METERS_PER_SECOND);
-		_easLanding = Amount.valueOf(Math.sqrt(_atmosphereLanding.getDensityRatio())
-				* SpeedCalc.calculateIsentropicVelocity(_stagnationPressureLanding.getEstimatedValue(), 
-						_staticPressureLanding.getEstimatedValue(), _densityLanding.getEstimatedValue())
+		easLanding = Amount.valueOf(Math.sqrt(atmosphereLanding.getDensityRatio())
+				* SpeedCalc.calculateIsentropicVelocity(stagnationPressureLanding.doubleValue(SI.PASCAL), 
+						staticPressureLanding.doubleValue(SI.PASCAL), densityLanding.doubleValue(MyUnits.KILOGRAM_PER_CUBIC_METER))
 						, SI.METERS_PER_SECOND);
-		_staticTemperatureLanding = Amount.valueOf(_atmosphereLanding.getTemperature(), SI.KELVIN);
-		_stagnationTemperatureLanding = _staticTemperatureLanding
-				.times(TemperatureCalc.calculateStagnationTemperatureToStaticTemperatureRatio(_machLanding));
+		staticTemperatureLanding = Amount.valueOf(atmosphereLanding.getTemperature(), SI.KELVIN);
+		stagnationTemperatureLanding = staticTemperatureLanding
+				.times(TemperatureCalc.calculateStagnationTemperatureToStaticTemperatureRatio(theOperatingConditionsInterface.getMachLanding()));
 
 		// Maximum pressure difference between outside and inside
-		_maxDeltaPressureLanding = Amount.valueOf(
+		maxDeltaPressureLanding = Amount.valueOf(
 				Math.abs(
-						_staticPressureLanding.getEstimatedValue() 
+						staticPressureLanding.doubleValue(SI.PASCAL) 
 						- ((new StdAtmos1976(2000.)).getPressure()))
 						, SI.PASCAL);
 
-		_muLanding = Amount.valueOf(
+		muLanding = Amount.valueOf(
 				mu0*((T0 + C)
-						/ (_atmosphereLanding.getTemperature() + C))
+						/ (atmosphereLanding.getTemperature() + C))
 						* Math.pow(
-								_atmosphereLanding.getTemperature()/T0, 
+								atmosphereLanding.getTemperature()/T0, 
 								3/2), 
 								DynamicViscosity.UNIT);
 		
-	}
-
-	// GETTERS AND SETTERS ---------------------------------------------------------
-
-	public Double getMachCruise() {
-		return _machCruise;
-	}
-
-	public void setMachCurrent(Double _mach) {
-		this._machCruise = _mach;
-	}
-
-	public Double getMachTransonicThreshold() {
-		return _machTransonicThreshold;
-	}
-
-	public void setMachTransonicThreshold(Double _machTransonicThreshold) {
-		this._machTransonicThreshold = _machTransonicThreshold;
-	}
-
-	public Amount<Length> getAltitudeCruise() {
-		return _altitudeCruise;
-	}
-
-	public void setAltitude(Amount<Length> _altitude) {
-		this._altitudeCruise = _altitude;
 	}
 
 	public static StdAtmos1976 getAtmosphere(double altitude) {
 		return new StdAtmos1976(altitude);
 	}
-
-	public String getId() {
-		return _id;
-	}
-
-	public void setId(String id) {
-		this._id = id;
-	}
-
-	/**
-	 * @return the _machClimb
-	 */
-	public Double getMachClimb() {
-		return _machClimb;
-	}
-
-	/**
-	 * @param _machClimb the _machClimb to set
-	 */
-	public void setMachClimb(Double _machClimb) {
-		this._machClimb = _machClimb;
-	}
-
-	public Double getThrottleCruise() {
-		return _throttleCruise;
-	}
-
-	public void setThrottleCruise(Double _throttleCruise) {
-		this._throttleCruise = _throttleCruise;
-	}
-
-	public Amount<Length> getAltitudeTakeOff() {
-		return _altitudeTakeOff;
-	}
-
-	public void setAltitudeTakeOff(Amount<Length> _altitudeTakeOff) {
-		this._altitudeTakeOff = _altitudeTakeOff;
-	}
-
-	public Double getMachTakeOff() {
-		return _machTakeOff;
-	}
-
-	public void setMachTakeOff(Double _machTakeOff) {
-		this._machTakeOff = _machTakeOff;
-	}
-
-	public Double getThrottleTakeOff() {
-		return _throttleTakeOff;
-	}
-
-	public void setThrottleTakeOff(Double _throttleTakeOff) {
-		this._throttleTakeOff = _throttleTakeOff;
-	}
-
-	public List<Amount<Angle>> getFlapDeflectionTakeOff() {
-		return _flapDeflectionTakeOff;
-	}
-
-	public void setFlapDeflectionTakeOff(List<Amount<Angle>> _flapDeflectionTakeOff) {
-		this._flapDeflectionTakeOff = _flapDeflectionTakeOff;
-	}
-
-	public List<Amount<Angle>> getSlatDeflectionTakeOff() {
-		return _slatDeflectionTakeOff;
-	}
-
-	public void setSlatDeflectionTakeOff(List<Amount<Angle>> _slatDeflectionTakeOff) {
-		this._slatDeflectionTakeOff = _slatDeflectionTakeOff;
-	}
-
-	public Amount<Length> getAltitudeLanding() {
-		return _altitudeLanding;
-	}
-
-	public void setAltitudeLanding(Amount<Length> _altitudeLanding) {
-		this._altitudeLanding = _altitudeLanding;
-	}
-
-	public Double getMachLanding() {
-		return _machLanding;
-	}
-
-	public void setMachLanding(Double _machLanding) {
-		this._machLanding = _machLanding;
-	}
-
-	public List<Amount<Angle>> getFlapDeflectionLanding() {
-		return _flapDeflectionLanding;
-	}
-
-	public void setFlapDeflectionLanding(List<Amount<Angle>> _flapDeflectionLanding) {
-		this._flapDeflectionLanding = _flapDeflectionLanding;
-	}
-
-	public List<Amount<Angle>> getSlatDeflectionLanding() {
-		return _slatDeflectionLanding;
-	}
-
-	public void setSlatDeflectionLanding(List<Amount<Angle>> _slatDeflectionLanding) {
-		this._slatDeflectionLanding = _slatDeflectionLanding;
-	}
-
-	public Double getPpressureCoefficientTakeOff() {
-		return _pressureCoefficientTakeOff;
-	}
-
-	public void setPressureCoefficientTakeOff(Double _pressureCoefficientTakeOff) {
-		this._pressureCoefficientTakeOff = _pressureCoefficientTakeOff;
-	}
-
-	public Amount<Velocity> getTASTakeOff() {
-		return _tasTakeOff;
-	}
-
-	public void setTASTakeOff(Amount<Velocity> _tasTakeOff) {
-		this._tasTakeOff = _tasTakeOff;
-	}
-
-	public Amount<Velocity> getCASTakeOff() {
-		return _casTakeOff;
-	}
-
-	public void setCASTakeOff(Amount<Velocity> _casTakeOff) {
-		this._casTakeOff = _casTakeOff;
-	}
-
-	public Amount<Velocity> getEASTakeOff() {
-		return _easTakeOff;
-	}
-
-	public void setEASTakeOff(Amount<Velocity> _easTakeOff) {
-		this._easTakeOff = _easTakeOff;
-	}
-
-	public Amount<VolumetricDensity> getDensityTakeOff() {
-		return _densityTakeOff;
-	}
-
-	public void setDensityTakeOff(Amount<VolumetricDensity> _densityTakeOff) {
-		this._densityTakeOff = _densityTakeOff;
-	}
-
-	public Amount<Pressure> getStaticPressureTakeOff() {
-		return _staticPressureTakeOff;
-	}
-
-	public void setStaticPressureTakeOff(Amount<Pressure> _staticPressureTakeOff) {
-		this._staticPressureTakeOff = _staticPressureTakeOff;
-	}
-
-	public Amount<Pressure> getDynamicPressureTakeOff() {
-		return _dynamicPressureTakeOff;
-	}
-
-	public void setDynamicPressureTakeOff(Amount<Pressure> _dynamicPressureTakeOff) {
-		this._dynamicPressureTakeOff = _dynamicPressureTakeOff;
-	}
-
-	public Amount<Pressure> getStagnationPressureTakeOff() {
-		return _stagnationPressureTakeOff;
-	}
-
-	public void setStagnationPressureTakeOff(Amount<Pressure> _stagnationPressureTakeOff) {
-		this._stagnationPressureTakeOff = _stagnationPressureTakeOff;
-	}
-
-	public Amount<Pressure> getMaxDeltaPressureTakeOff() {
-		return _maxDeltaPressureTakeOff;
-	}
-
-	public void setMaxDeltaPressureTakeOff(Amount<Pressure> _maxDeltaPressureTakeOff) {
-		this._maxDeltaPressureTakeOff = _maxDeltaPressureTakeOff;
-	}
-
-	public Amount<Pressure> getMaxDynamicPressureTakeOff() {
-		return _maxDynamicPressureTakeOff;
-	}
-
-	public void setMaxDynamicPressureTakeOff(Amount<Pressure> _maxDynamicPressureTakeOff) {
-		this._maxDynamicPressureTakeOff = _maxDynamicPressureTakeOff;
-	}
-
-	public Amount<DynamicViscosity> getMuTakeOff() {
-		return _muTakeOff;
-	}
-
-	public void setMuTakeOff(Amount<DynamicViscosity> _muTakeOff) {
-		this._muTakeOff = _muTakeOff;
-	}
-
-	public Amount<Temperature> getStaticTemperatureTakeOff() {
-		return _staticTemperatureTakeOff;
-	}
-
-	public void setStaticTemperatureTakeOff(Amount<Temperature> _staticTemperatureTakeOff) {
-		this._staticTemperatureTakeOff = _staticTemperatureTakeOff;
-	}
-
-	public Amount<Temperature> getStagnationTemperatureTakeOff() {
-		return _stagnationTemperatureTakeOff;
-	}
-
-	public void setStagnationTemperatureTakeOff(Amount<Temperature> _stagnationTemperatureTakeOff) {
-		this._stagnationTemperatureTakeOff = _stagnationTemperatureTakeOff;
-	}
-
-	public Double getPressureCoefficientLanding() {
-		return _pressureCoefficientLanding;
-	}
-
-	public void setPressureCoefficientLanding(Double _pressureCoefficientLanding) {
-		this._pressureCoefficientLanding = _pressureCoefficientLanding;
-	}
-
-	public Amount<Velocity> getTASLanding() {
-		return _tasLanding;
+	
+	public static StdAtmos1976 getAtmosphere(double altitude, double deltaTemperature) {
+		return new StdAtmos1976(altitude, deltaTemperature);
 	}
-
-	public void setTASLanding(Amount<Velocity> _tasLanding) {
-		this._tasLanding = _tasLanding;
-	}
-
-	public Amount<Velocity> getCASLanding() {
-		return _casLanding;
-	}
-
-	public void setCASLanding(Amount<Velocity> _casLanding) {
-		this._casLanding = _casLanding;
-	}
-
-	public Amount<Velocity> getEASLanding() {
-		return _easLanding;
-	}
-
-	public void setEASLanding(Amount<Velocity> _easLanding) {
-		this._easLanding = _easLanding;
-	}
-
-	public Amount<VolumetricDensity> getDensityLanding() {
-		return _densityLanding;
-	}
-
-	public void setDensityLanding(Amount<VolumetricDensity> _densityLanding) {
-		this._densityLanding = _densityLanding;
-	}
-
-	public Amount<Pressure> getStaticPressureLanding() {
-		return _staticPressureLanding;
-	}
-
-	public void setStaticPressureLanding(Amount<Pressure> _staticPressureLanding) {
-		this._staticPressureLanding = _staticPressureLanding;
-	}
-
-	public Amount<Pressure> getDynamicPressureLanding() {
-		return _dynamicPressureLanding;
-	}
-
-	public void setDynamicPressureLanding(Amount<Pressure> _dynamicPressureLanding) {
-		this._dynamicPressureLanding = _dynamicPressureLanding;
-	}
-
-	public Amount<Pressure> getStagnationPressureLanding() {
-		return _stagnationPressureLanding;
-	}
-
-	public void setStagnationPressureLanding(Amount<Pressure> _stagnationPressureLanding) {
-		this._stagnationPressureLanding = _stagnationPressureLanding;
-	}
-
-	public Amount<Pressure> getMaxDeltaPressureLanding() {
-		return _maxDeltaPressureLanding;
-	}
-
-	public void setMaxDeltaPressureLanding(Amount<Pressure> _maxDeltaPressureLanding) {
-		this._maxDeltaPressureLanding = _maxDeltaPressureLanding;
-	}
-
-	public Amount<Pressure> getMaxDynamicPressureLanding() {
-		return _maxDynamicPressureLanding;
-	}
-
-	public void setMaxDynamicPressureLanding(Amount<Pressure> _maxDynamicPressureLanding) {
-		this._maxDynamicPressureLanding = _maxDynamicPressureLanding;
-	}
-
-	public Amount<DynamicViscosity> getMuLanding() {
-		return _muLanding;
+	
+	//-------------------------------------------------------------------------------
+	//	GETTERS & SETTERS
+	//-------------------------------------------------------------------------------
+	
+	public IOperatingConditions getTheOperatingConditionsInterface() {
+		return theOperatingConditionsInterface;
 	}
 
-	public void setMuLanding(Amount<DynamicViscosity> _muLanding) {
-		this._muLanding = _muLanding;
+	public void setTheOperatingConditionsInterface(IOperatingConditions theOperatingConditionsInterface) {
+		this.theOperatingConditionsInterface = theOperatingConditionsInterface;
 	}
 
-	public Amount<Temperature> getStaticTemperatureLanding() {
-		return _staticTemperatureLanding;
+	public double getMachTransonicThreshold() {
+		return machTransonicThreshold;
 	}
 
-	public void setStaticTemperatureLanding(Amount<Temperature> _staticTemperatureLanding) {
-		this._staticTemperatureLanding = _staticTemperatureLanding;
+	public void setMachTransonicThreshold(double machTransonicThreshold) {
+		this.machTransonicThreshold = machTransonicThreshold;
 	}
 
-	public Amount<Temperature> getStagnationTemperatureLanding() {
-		return _stagnationTemperatureLanding;
+	public StdAtmos1976 getAtmosphereClimb() {
+		return atmosphereClimb;
 	}
 
-	public void setStagnationTemperatureLanding(Amount<Temperature> _stagnationTemperatureLanding) {
-		this._stagnationTemperatureLanding = _stagnationTemperatureLanding;
+	public void setAtmosphereClimb(StdAtmos1976 atmosphereClimb) {
+		this.atmosphereClimb = atmosphereClimb;
 	}
 
-	public Double getPressureCoefficientCruise() {
-		return _pressureCoefficientCruise;
+	public Double getPressureCoefficientClimb() {
+		return pressureCoefficientClimb;
 	}
 
-	public void setPressureCoefficientCruise(Double _pressureCoefficientCruise) {
-		this._pressureCoefficientCruise = _pressureCoefficientCruise;
+	public void setPressureCoefficientClimb(Double pressureCoefficientClimb) {
+		this.pressureCoefficientClimb = pressureCoefficientClimb;
 	}
 
-	public Amount<Velocity> getTASCruise() {
-		return _tasCruise;
+	public Amount<Velocity> getTasClimb() {
+		return tasClimb;
 	}
 
-	public void setTASCruise(Amount<Velocity> _tasCruise) {
-		this._tasCruise = _tasCruise;
+	public void setTasClimb(Amount<Velocity> tasClimb) {
+		this.tasClimb = tasClimb;
 	}
 
-	public Amount<Velocity> getCASCruise() {
-		return _casCruise;
+	public Amount<Velocity> getCasClimb() {
+		return casClimb;
 	}
 
-	public void setCASCruise(Amount<Velocity> _casCruise) {
-		this._casCruise = _casCruise;
+	public void setCasClimb(Amount<Velocity> casClimb) {
+		this.casClimb = casClimb;
 	}
 
-	public Amount<Velocity> getEASCruise() {
-		return _easCruise;
+	public Amount<Velocity> getEasClimb() {
+		return easClimb;
 	}
 
-	public void setEASCruise(Amount<Velocity> _easCruise) {
-		this._easCruise = _easCruise;
+	public void setEasClimb(Amount<Velocity> easClimb) {
+		this.easClimb = easClimb;
 	}
 
-	public Amount<VolumetricDensity> getDensityCruise() {
-		return _densityCruise;
+	public Amount<VolumetricDensity> getDensityClimb() {
+		return densityClimb;
 	}
 
-	public void setDensityCruise(Amount<VolumetricDensity> _densityCruise) {
-		this._densityCruise = _densityCruise;
+	public void setDensityClimb(Amount<VolumetricDensity> densityClimb) {
+		this.densityClimb = densityClimb;
 	}
 
-	public Amount<Pressure> getStaticPressureCruise() {
-		return _staticPressureCruise;
+	public Amount<Pressure> getStaticPressureClimb() {
+		return staticPressureClimb;
 	}
 
-	public void setStaticPressureCruise(Amount<Pressure> _staticPressureCruise) {
-		this._staticPressureCruise = _staticPressureCruise;
+	public void setStaticPressureClimb(Amount<Pressure> staticPressureClimb) {
+		this.staticPressureClimb = staticPressureClimb;
 	}
 
-	public Amount<Pressure> getDynamicPressureCruise() {
-		return _dynamicPressureCruise;
+	public Amount<Pressure> getDynamicPressureClimb() {
+		return dynamicPressureClimb;
 	}
 
-	public void setDynamicPressureCruise(Amount<Pressure> _dynamicPressureCruise) {
-		this._dynamicPressureCruise = _dynamicPressureCruise;
+	public void setDynamicPressureClimb(Amount<Pressure> dynamicPressureClimb) {
+		this.dynamicPressureClimb = dynamicPressureClimb;
 	}
 
-	public Amount<Pressure> getStagnationPressureCruise() {
-		return _stagnationPressureCruise;
+	public Amount<Pressure> getStagnationPressureClimb() {
+		return stagnationPressureClimb;
 	}
 
-	public void setStagnationPressureCruise(Amount<Pressure> _stagnationPressureCruise) {
-		this._stagnationPressureCruise = _stagnationPressureCruise;
+	public void setStagnationPressureClimb(Amount<Pressure> stagnationPressureClimb) {
+		this.stagnationPressureClimb = stagnationPressureClimb;
 	}
 
-	public Amount<Pressure> getMaxDeltaPressureCruise() {
-		return _maxDeltaPressureCruise;
+	public Amount<Pressure> getMaxDeltaPressureClimb() {
+		return maxDeltaPressureClimb;
 	}
 
-	public void setMaxDeltaPressureCruise(Amount<Pressure> _maxDeltaPressureCruise) {
-		this._maxDeltaPressureCruise = _maxDeltaPressureCruise;
+	public void setMaxDeltaPressureClimb(Amount<Pressure> maxDeltaPressureClimb) {
+		this.maxDeltaPressureClimb = maxDeltaPressureClimb;
 	}
 
-	public Amount<Pressure> getMaxDynamicPressureCruise() {
-		return _maxDynamicPressureCruise;
+	public Amount<Pressure> getMaxDynamicPressureClimb() {
+		return maxDynamicPressureClimb;
 	}
 
-	public void setMaxDynamicPressureCruise(Amount<Pressure> _maxDynamicPressureCruise) {
-		this._maxDynamicPressureCruise = _maxDynamicPressureCruise;
+	public void setMaxDynamicPressureClimb(Amount<Pressure> maxDynamicPressureClimb) {
+		this.maxDynamicPressureClimb = maxDynamicPressureClimb;
 	}
 
-	public Amount<DynamicViscosity> getMuCruise() {
-		return _muCruise;
+	public Amount<DynamicViscosity> getMuClimb() {
+		return muClimb;
 	}
 
-	public void setMuCruise(Amount<DynamicViscosity> _muCruise) {
-		this._muCruise = _muCruise;
+	public void setMuClimb(Amount<DynamicViscosity> muClimb) {
+		this.muClimb = muClimb;
 	}
 
-	public Amount<Temperature> getStaticTemperatureCruise() {
-		return _staticTemperatureCruise;
+	public Amount<Temperature> getStaticTemperatureClimb() {
+		return staticTemperatureClimb;
 	}
 
-	public void setStaticTemperatureCruise(Amount<Temperature> _staticTemperatureCruise) {
-		this._staticTemperatureCruise = _staticTemperatureCruise;
+	public void setStaticTemperatureClimb(Amount<Temperature> staticTemperatureClimb) {
+		this.staticTemperatureClimb = staticTemperatureClimb;
 	}
 
-	public Amount<Temperature> getStagnationTemperatureCruise() {
-		return _stagnationTemperatureCruise;
+	public Amount<Temperature> getStagnationTemperatureClimb() {
+		return stagnationTemperatureClimb;
 	}
 
-	public void setStagnationTemperatureCruise(Amount<Temperature> _stagnationTemperatureCruise) {
-		this._stagnationTemperatureCruise = _stagnationTemperatureCruise;
+	public void setStagnationTemperatureClimb(Amount<Temperature> stagnationTemperatureClimb) {
+		this.stagnationTemperatureClimb = stagnationTemperatureClimb;
 	}
 
 	public StdAtmos1976 getAtmosphereCruise() {
-		return _atmosphereCruise;
+		return atmosphereCruise;
 	}
 
-	public void setAtmosphereCruise(StdAtmos1976 _atmoshpereCruise) {
-		this._atmosphereCruise = _atmoshpereCruise;
+	public void setAtmosphereCruise(StdAtmos1976 atmosphereCruise) {
+		this.atmosphereCruise = atmosphereCruise;
+	}
+
+	public Double getPressureCoefficientCruise() {
+		return pressureCoefficientCruise;
+	}
+
+	public void setPressureCoefficientCruise(Double pressureCoefficientCruise) {
+		this.pressureCoefficientCruise = pressureCoefficientCruise;
+	}
+
+	public Amount<Velocity> getTasCruise() {
+		return tasCruise;
+	}
+
+	public void setTasCruise(Amount<Velocity> tasCruise) {
+		this.tasCruise = tasCruise;
+	}
+
+	public Amount<Velocity> getCasCruise() {
+		return casCruise;
+	}
+
+	public void setCasCruise(Amount<Velocity> casCruise) {
+		this.casCruise = casCruise;
+	}
+
+	public Amount<Velocity> getEasCruise() {
+		return easCruise;
+	}
+
+	public void setEasCruise(Amount<Velocity> easCruise) {
+		this.easCruise = easCruise;
+	}
+
+	public Amount<VolumetricDensity> getDensityCruise() {
+		return densityCruise;
+	}
+
+	public void setDensityCruise(Amount<VolumetricDensity> densityCruise) {
+		this.densityCruise = densityCruise;
+	}
+
+	public Amount<Pressure> getStaticPressureCruise() {
+		return staticPressureCruise;
+	}
+
+	public void setStaticPressureCruise(Amount<Pressure> staticPressureCruise) {
+		this.staticPressureCruise = staticPressureCruise;
+	}
+
+	public Amount<Pressure> getDynamicPressureCruise() {
+		return dynamicPressureCruise;
+	}
+
+	public void setDynamicPressureCruise(Amount<Pressure> dynamicPressureCruise) {
+		this.dynamicPressureCruise = dynamicPressureCruise;
+	}
+
+	public Amount<Pressure> getStagnationPressureCruise() {
+		return stagnationPressureCruise;
+	}
+
+	public void setStagnationPressureCruise(Amount<Pressure> stagnationPressureCruise) {
+		this.stagnationPressureCruise = stagnationPressureCruise;
+	}
+
+	public Amount<Pressure> getMaxDeltaPressureCruise() {
+		return maxDeltaPressureCruise;
+	}
+
+	public void setMaxDeltaPressureCruise(Amount<Pressure> maxDeltaPressureCruise) {
+		this.maxDeltaPressureCruise = maxDeltaPressureCruise;
+	}
+
+	public Amount<Pressure> getMaxDynamicPressureCruise() {
+		return maxDynamicPressureCruise;
+	}
+
+	public void setMaxDynamicPressureCruise(Amount<Pressure> maxDynamicPressureCruise) {
+		this.maxDynamicPressureCruise = maxDynamicPressureCruise;
+	}
+
+	public Amount<DynamicViscosity> getMuCruise() {
+		return muCruise;
+	}
+
+	public void setMuCruise(Amount<DynamicViscosity> muCruise) {
+		this.muCruise = muCruise;
+	}
+
+	public Amount<Temperature> getStaticTemperatureCruise() {
+		return staticTemperatureCruise;
+	}
+
+	public void setStaticTemperatureCruise(Amount<Temperature> staticTemperatureCruise) {
+		this.staticTemperatureCruise = staticTemperatureCruise;
+	}
+
+	public Amount<Temperature> getStagnationTemperatureCruise() {
+		return stagnationTemperatureCruise;
+	}
+
+	public void setStagnationTemperatureCruise(Amount<Temperature> stagnationTemperatureCruise) {
+		this.stagnationTemperatureCruise = stagnationTemperatureCruise;
 	}
 
 	public StdAtmos1976 getAtmosphereTakeOff() {
-		return _atmosphereTakeOff;
+		return atmosphereTakeOff;
 	}
 
-	public void setAtmosphereTakeOff(StdAtmos1976 _atmoshpereTakeOff) {
-		this._atmosphereTakeOff = _atmoshpereTakeOff;
+	public void setAtmosphereTakeOff(StdAtmos1976 atmosphereTakeOff) {
+		this.atmosphereTakeOff = atmosphereTakeOff;
+	}
+
+	public Double getPressureCoefficientTakeOff() {
+		return pressureCoefficientTakeOff;
+	}
+
+	public void setPressureCoefficientTakeOff(Double pressureCoefficientTakeOff) {
+		this.pressureCoefficientTakeOff = pressureCoefficientTakeOff;
+	}
+
+	public Amount<Velocity> getTasTakeOff() {
+		return tasTakeOff;
+	}
+
+	public void setTasTakeOff(Amount<Velocity> tasTakeOff) {
+		this.tasTakeOff = tasTakeOff;
+	}
+
+	public Amount<Velocity> getCasTakeOff() {
+		return casTakeOff;
+	}
+
+	public void setCasTakeOff(Amount<Velocity> casTakeOff) {
+		this.casTakeOff = casTakeOff;
+	}
+
+	public Amount<Velocity> getEasTakeOff() {
+		return easTakeOff;
+	}
+
+	public void setEasTakeOff(Amount<Velocity> easTakeOff) {
+		this.easTakeOff = easTakeOff;
+	}
+
+	public Amount<VolumetricDensity> getDensityTakeOff() {
+		return densityTakeOff;
+	}
+
+	public void setDensityTakeOff(Amount<VolumetricDensity> densityTakeOff) {
+		this.densityTakeOff = densityTakeOff;
+	}
+
+	public Amount<Pressure> getStaticPressureTakeOff() {
+		return staticPressureTakeOff;
+	}
+
+	public void setStaticPressureTakeOff(Amount<Pressure> staticPressureTakeOff) {
+		this.staticPressureTakeOff = staticPressureTakeOff;
+	}
+
+	public Amount<Pressure> getDynamicPressureTakeOff() {
+		return dynamicPressureTakeOff;
+	}
+
+	public void setDynamicPressureTakeOff(Amount<Pressure> dynamicPressureTakeOff) {
+		this.dynamicPressureTakeOff = dynamicPressureTakeOff;
+	}
+
+	public Amount<Pressure> getStagnationPressureTakeOff() {
+		return stagnationPressureTakeOff;
+	}
+
+	public void setStagnationPressureTakeOff(Amount<Pressure> stagnationPressureTakeOff) {
+		this.stagnationPressureTakeOff = stagnationPressureTakeOff;
+	}
+
+	public Amount<Pressure> getMaxDeltaPressureTakeOff() {
+		return maxDeltaPressureTakeOff;
+	}
+
+	public void setMaxDeltaPressureTakeOff(Amount<Pressure> maxDeltaPressureTakeOff) {
+		this.maxDeltaPressureTakeOff = maxDeltaPressureTakeOff;
+	}
+
+	public Amount<Pressure> getMaxDynamicPressureTakeOff() {
+		return maxDynamicPressureTakeOff;
+	}
+
+	public void setMaxDynamicPressureTakeOff(Amount<Pressure> maxDynamicPressureTakeOff) {
+		this.maxDynamicPressureTakeOff = maxDynamicPressureTakeOff;
+	}
+
+	public Amount<DynamicViscosity> getMuTakeOff() {
+		return muTakeOff;
+	}
+
+	public void setMuTakeOff(Amount<DynamicViscosity> muTakeOff) {
+		this.muTakeOff = muTakeOff;
+	}
+
+	public Amount<Temperature> getStaticTemperatureTakeOff() {
+		return staticTemperatureTakeOff;
+	}
+
+	public void setStaticTemperatureTakeOff(Amount<Temperature> staticTemperatureTakeOff) {
+		this.staticTemperatureTakeOff = staticTemperatureTakeOff;
+	}
+
+	public Amount<Temperature> getStagnationTemperatureTakeOff() {
+		return stagnationTemperatureTakeOff;
+	}
+
+	public void setStagnationTemperatureTakeOff(Amount<Temperature> stagnationTemperatureTakeOff) {
+		this.stagnationTemperatureTakeOff = stagnationTemperatureTakeOff;
 	}
 
 	public StdAtmos1976 getAtmosphereLanding() {
-		return _atmosphereLanding;
+		return atmosphereLanding;
 	}
 
-	public void setAtmosphereLanding(StdAtmos1976 _atmoshpereLanding) {
-		this._atmosphereLanding = _atmoshpereLanding;
+	public void setAtmosphereLanding(StdAtmos1976 atmosphereLanding) {
+		this.atmosphereLanding = atmosphereLanding;
 	}
 
-	public MyInterpolatingFunction getThrottleGroundIdleTakeOff() {
-		return _throttleGroundIdleTakeOff;
+	public Double getPressureCoefficientLanding() {
+		return pressureCoefficientLanding;
 	}
 
-	public void setThrottleGroundIdleTakeOff(MyInterpolatingFunction _throttleGroundIdleTakeOff) {
-		this._throttleGroundIdleTakeOff = _throttleGroundIdleTakeOff;
+	public void setPressureCoefficientLanding(Double pressureCoefficientLanding) {
+		this.pressureCoefficientLanding = pressureCoefficientLanding;
 	}
 
-	public MyInterpolatingFunction getThrottleGroundIdleLanding() {
-		return _throttleGroundIdleLanding;
+	public Amount<Velocity> getTasLanding() {
+		return tasLanding;
 	}
 
-	public void setThrottleGroundIdleLanding(MyInterpolatingFunction _throttleGroundIdleLanding) {
-		this._throttleGroundIdleLanding = _throttleGroundIdleLanding;
+	public void setTasLanding(Amount<Velocity> tasLanding) {
+		this.tasLanding = tasLanding;
+	}
+
+	public Amount<Velocity> getCasLanding() {
+		return casLanding;
+	}
+
+	public void setCasLanding(Amount<Velocity> casLanding) {
+		this.casLanding = casLanding;
+	}
+
+	public Amount<Velocity> getEasLanding() {
+		return easLanding;
+	}
+
+	public void setEasLanding(Amount<Velocity> easLanding) {
+		this.easLanding = easLanding;
+	}
+
+	public Amount<VolumetricDensity> getDensityLanding() {
+		return densityLanding;
+	}
+
+	public void setDensityLanding(Amount<VolumetricDensity> densityLanding) {
+		this.densityLanding = densityLanding;
+	}
+
+	public Amount<Pressure> getStaticPressureLanding() {
+		return staticPressureLanding;
+	}
+
+	public void setStaticPressureLanding(Amount<Pressure> staticPressureLanding) {
+		this.staticPressureLanding = staticPressureLanding;
+	}
+
+	public Amount<Pressure> getDynamicPressureLanding() {
+		return dynamicPressureLanding;
+	}
+
+	public void setDynamicPressureLanding(Amount<Pressure> dynamicPressureLanding) {
+		this.dynamicPressureLanding = dynamicPressureLanding;
+	}
+
+	public Amount<Pressure> getStagnationPressureLanding() {
+		return stagnationPressureLanding;
+	}
+
+	public void setStagnationPressureLanding(Amount<Pressure> stagnationPressureLanding) {
+		this.stagnationPressureLanding = stagnationPressureLanding;
+	}
+
+	public Amount<Pressure> getMaxDeltaPressureLanding() {
+		return maxDeltaPressureLanding;
+	}
+
+	public void setMaxDeltaPressureLanding(Amount<Pressure> maxDeltaPressureLanding) {
+		this.maxDeltaPressureLanding = maxDeltaPressureLanding;
+	}
+
+	public Amount<Pressure> getMaxDynamicPressureLanding() {
+		return maxDynamicPressureLanding;
+	}
+
+	public void setMaxDynamicPressureLanding(Amount<Pressure> maxDynamicPressureLanding) {
+		this.maxDynamicPressureLanding = maxDynamicPressureLanding;
+	}
+
+	public Amount<DynamicViscosity> getMuLanding() {
+		return muLanding;
+	}
+
+	public void setMuLanding(Amount<DynamicViscosity> muLanding) {
+		this.muLanding = muLanding;
+	}
+
+	public Amount<Temperature> getStaticTemperatureLanding() {
+		return staticTemperatureLanding;
+	}
+
+	public void setStaticTemperatureLanding(Amount<Temperature> staticTemperatureLanding) {
+		this.staticTemperatureLanding = staticTemperatureLanding;
+	}
+
+	public Amount<Temperature> getStagnationTemperatureLanding() {
+		return stagnationTemperatureLanding;
+	}
+
+	public void setStagnationTemperatureLanding(Amount<Temperature> stagnationTemperatureLanding) {
+		this.stagnationTemperatureLanding = stagnationTemperatureLanding;
+	}
+
+	public Amount<Angle> getAlphaClimb() {
+		return theOperatingConditionsInterface.getAlphaClimb();
+	}
+
+	public void setAlphaClimb(Amount<Angle> alphaClimb) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setAlphaClimb(alphaClimb).build());
+	}
+
+	public Amount<Angle> getBetaClimb() {
+		return theOperatingConditionsInterface.getBetaClimb();
+	}
+
+	public void setBetaClimb(Amount<Angle> betaClimb) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setBetaClimb(betaClimb).build());
+	}
+
+	public double getMachClimb() {
+		return theOperatingConditionsInterface.getMachClimb();
+	}
+
+	public void setMachClimb(double machClimb) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setMachClimb(machClimb).build());
 	}
 
 	public Amount<Length> getAltitudeClimb() {
-		return _altitudeClimb;
+		return theOperatingConditionsInterface.getAltitudeClimb();
 	}
 
-	public void setAltitudeClimb(Amount<Length> _altitudeClimb) {
-		this._altitudeClimb = _altitudeClimb;
+	public void setAltitudeClimb(Amount<Length> altitudeClimb) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setAltitudeClimb(altitudeClimb).build());
 	}
 
-	public Amount<Angle> getAlphaCurrentClimb() {
-		return _alphaCurrentClimb;
+	public Amount<Temperature> getDeltaTemperatureClimb() {
+		return theOperatingConditionsInterface.getDeltaTemperatureClimb();
 	}
 
-	public void setAlphaCurrentClimb(Amount<Angle> _alphaCurrentClimb) {
-		this._alphaCurrentClimb = _alphaCurrentClimb;
+	public void setDeltaTemperatureClimb(Amount<Temperature> deltaTemperatureClimb) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setDeltaTemperatureClimb(deltaTemperatureClimb).build());
 	}
 
-	public Amount<Angle> getAlphaCurrentCruise() {
-		return _alphaCurrentCruise;
+	public double getThrottleClimb() {
+		return theOperatingConditionsInterface.getThrottleClimb();
 	}
 
-	public void setAlphaCurrentCruise(Amount<Angle> _alphaCurrentCruise) {
-		this._alphaCurrentCruise = _alphaCurrentCruise;
+	public void setThrottleClimb(double throttleClimb) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setThrottleClimb(throttleClimb).build());
 	}
 
-	public Amount<Angle> getAlphaCurrentTakeOff() {
-		return _alphaCurrentTakeOff;
+	public Amount<Angle> getAlphaCruise() {
+		return theOperatingConditionsInterface.getAlphaCruise();
 	}
 
-	public void setAlphaCurrentTakeOff(Amount<Angle> _alphaCurrentTakeOff) {
-		this._alphaCurrentTakeOff = _alphaCurrentTakeOff;
+	public void setAlphaCruise(Amount<Angle> alphaCruise) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setAlphaCruise(alphaCruise).build());
 	}
 
-	public Amount<Angle> getAlphaCurrentLanding() {
-		return _alphaCurrentLanding;
+	public Amount<Angle> getBetaCruise() {
+		return theOperatingConditionsInterface.getBetaCruise();
 	}
 
-	public void setAlphaCurrentLanding(Amount<Angle> _alphaCurrentLanding) {
-		this._alphaCurrentLanding = _alphaCurrentLanding;
+	public void setBetaCruise(Amount<Angle> betaCruise) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setBetaCruise(betaCruise).build());
 	}
 
-	@Override
-	public Amount<Angle> getBetaCurrentClimb() {
-		return _betaCurrentClimb;
+	public double getMachCruise() {
+		return theOperatingConditionsInterface.getMachCruise();
 	}
 
-	@Override
-	public void setBetaCurrentClimb(Amount<Angle> _betaCurrentClimb) {
-		this._betaCurrentClimb = _betaCurrentClimb;
-		
+	public void setMachCruise(double machCruise) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setMachCruise(machCruise).build());
 	}
 
-	@Override
-	public Amount<Angle> getBetaCurrentCruise() {
-		return _betaCurrentCruise;
+	public Amount<Length> getAltitudeCruise() {
+		return theOperatingConditionsInterface.getAltitudeCruise();
 	}
 
-	@Override
-	public void setBetaCurrentCruise(Amount<Angle> _betaCurrentCruise) {
-		this._betaCurrentCruise = _betaCurrentCruise;
-		
+	public void setAltitudeCruise(Amount<Length> altitudeCruise) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setAltitudeCruise(altitudeCruise).build());
 	}
 
-	@Override
-	public Amount<Angle> getBetaCurrentTakeOff() {
-		return _betaCurrentTakeOff;
+	public Amount<Temperature> getDeltaTemperatureCruise() {
+		return theOperatingConditionsInterface.getDeltaTemperatureCruise();
 	}
 
-	@Override
-	public void setBetaCurrentTakeOff(Amount<Angle> _betaCurrentTakeOff) {
-		this._betaCurrentTakeOff = _betaCurrentTakeOff;
-		
+	public void setDeltaTemperatureCruise(Amount<Temperature> deltaTemperatureCruise) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setDeltaTemperatureCruise(deltaTemperatureCruise).build());
 	}
 
-	@Override
-	public Amount<Angle> getBetaCurrentLanding() {
-		return _betaCurrentLanding;
+	public double getThrottleCruise() {
+		return theOperatingConditionsInterface.getThrottleCruise();
 	}
 
-	@Override
-	public void setBetaCurrentLanding(Amount<Angle> _betaCurrentLanding) {
-		this._betaCurrentLanding = _betaCurrentLanding;
-		
+	public void setThrottleCruise(double throttleCruise) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setThrottleCruise(throttleCruise).build());
 	}
-	
-} // end of class
+
+	public Amount<Angle> getAlphaTakeOff() {
+		return theOperatingConditionsInterface.getAlphaTakeOff();
+	}
+
+	public void setAlphaTakeOff(Amount<Angle> alphaTakeOff) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setAlphaTakeOff(alphaTakeOff).build());
+	}
+
+	public Amount<Angle> getBetaTakeOff() {
+		return theOperatingConditionsInterface.getBetaTakeOff();
+	}
+
+	public void setBetaTakeOff(Amount<Angle> betaTakeOff) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setBetaTakeOff(betaTakeOff).build());
+	}
+
+	public double getMachTakeOff() {
+		return theOperatingConditionsInterface.getMachTakeOff();
+	}
+
+	public void setMachTakeOff(double machTakeOff) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setMachTakeOff(machTakeOff).build());
+	}
+
+	public Amount<Length> getAltitudeTakeOff() {
+		return theOperatingConditionsInterface.getAltitudeTakeOff();
+	}
+
+	public void setAltitudeTakeOff(Amount<Length> altitudeTakeOff) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setAltitudeTakeOff(altitudeTakeOff).build());
+	}
+
+	public Amount<Temperature> getDeltaTemperatureTakeOff() {
+		return theOperatingConditionsInterface.getDeltaTemperatureTakeOff();
+	}
+
+	public void setDeltaTemperatureTakeOff(Amount<Temperature> deltaTemperatureTakeOff) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setDeltaTemperatureTakeOff(deltaTemperatureTakeOff).build());
+	}
+
+	public double getThrottleTakeOff() {
+		return theOperatingConditionsInterface.getThrottleTakeOff();
+	}
+
+	public void setThrottleTakeOff(double throttleTakeOff) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setThrottleTakeOff(throttleTakeOff).build());
+	}
+
+	public List<Amount<Angle>> getTakeOffFlapDefletctionList() {
+		return theOperatingConditionsInterface.getTakeOffFlapDefletctionList();
+	}
+
+	public void setTakeOffFlapDefletctionList(List<Amount<Angle>> takeOffFlapDefletctionList) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface)
+				.clearTakeOffFlapDefletctionList()
+				.addAllTakeOffFlapDefletctionList(takeOffFlapDefletctionList)
+				.build());
+	}
+
+	public List<Amount<Angle>> getTakeOffSlatDefletctionList() {
+		return theOperatingConditionsInterface.getTakeOffSlatDefletctionList();
+	}
+
+	public void setTakeOffSlatDefletctionList(List<Amount<Angle>> takeOffSlatDefletctionList) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface)
+				.clearTakeOffSlatDefletctionList()
+				.addAllTakeOffSlatDefletctionList(takeOffSlatDefletctionList)
+				.build());
+	}
+
+	public Amount<Angle> getAlphaLanding() {
+		return theOperatingConditionsInterface.getAlphaLanding();
+	}
+
+	public void setAlphaLanding(Amount<Angle> alphaLanding) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setAlphaLanding(alphaLanding).build());
+	}
+
+	public Amount<Angle> getBetaLanding() {
+		return theOperatingConditionsInterface.getBetaLanding();
+	}
+
+	public void setBetaLanding(Amount<Angle> betaLanding) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setBetaLanding(betaLanding).build());
+	}
+
+	public double getMachLanding() {
+		return theOperatingConditionsInterface.getMachLanding();
+	}
+
+	public void setMachLanding(double machLanding) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setMachLanding(machLanding).build());
+	}
+
+	public Amount<Length> getAltitudeLanding() {
+		return theOperatingConditionsInterface.getAltitudeLanding();
+	}
+
+	public void setAltitudeLanding(Amount<Length> altitudeLanding) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setAltitudeLanding(altitudeLanding).build());
+	}
+
+	public Amount<Temperature> getDeltaTemperatureLanding() {
+		return theOperatingConditionsInterface.getDeltaTemperatureLanding();
+	}
+
+	public void setDeltaTemperatureLanding(Amount<Temperature> deltaTemperatureLanding) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setDeltaTemperatureLanding(deltaTemperatureLanding).build());
+	}
+
+	public double getThrottleLanding() {
+		return theOperatingConditionsInterface.getThrottleLanding();
+	}
+
+	public void setThrottleLanding(double throttleLanding) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface).setThrottleLanding(throttleLanding).build());
+	}
+
+	public List<Amount<Angle>> getLandingFlapDefletctionList() {
+		return theOperatingConditionsInterface.getLandingFlapDefletctionList();
+	}
+
+	public void setLandingFlapDefletctionList(List<Amount<Angle>> landingFlapDefletctionList) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface)
+				.clearLandingFlapDefletctionList()
+				.addAllLandingFlapDefletctionList(landingFlapDefletctionList)
+				.build());
+	}
+
+	public List<Amount<Angle>> getLandingSlatDefletctionList() {
+		return theOperatingConditionsInterface.getLandingSlatDefletctionList();
+	}
+
+	public void setLandingSlatDefletctionList(List<Amount<Angle>> landingSlatDefletctionList) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface)
+				.clearLandingSlatDefletctionList()
+				.addAllLandingSlatDefletctionList(landingSlatDefletctionList)
+				.build());
+	}
+
+} 
