@@ -65,12 +65,13 @@ public class Test18mds {
 		List<TopoDS_Shape> tds_shapes = new ArrayList<>();
 		List<OCCShape> allShapes = wingShapes;
 		allShapes.addAll(fuselageShapes);
+		allShapes.addAll(wingShapes);
 		
 		allShapes.stream()
 				  .forEach( sh -> {
 					  TopoDS_Shape tds_shape1 = sh.getShape();
 					  // filter solids
-					  TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SOLID);
+					  TopExp_Explorer exp1 = new TopExp_Explorer(tds_shape1, TopAbs_ShapeEnum.TopAbs_SHELL);
 					  while (exp1.More() > 0) {
 						  System.out.println(">> [main] solid!");
 						  tds_shapes.add(exp1.Current());
