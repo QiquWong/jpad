@@ -34,7 +34,6 @@ import calculators.performance.customdata.TakeOffResultsMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import database.databasefunctions.engine.EngineDatabaseManager;
-import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
@@ -189,14 +188,13 @@ public class TakeOffCalc {
 		this.cLground = cLZeroTO + (cLalphaFlap*iw.getEstimatedValue());
 		
 		// Reference velocities definition
-		vSTakeOff = Amount.valueOf(
-				SpeedCalc.calculateSpeedStall(
-						getAltitude().doubleValue(SI.METER),
-						maxTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
-						surface.doubleValue(SI.SQUARE_METRE),
+		vSTakeOff = SpeedCalc.calculateSpeedStall(
+						altitude,
+						deltaTemperature,
+						maxTakeOffMass,
+						surface,
 						cLmaxTO
-						),
-				SI.METERS_PER_SECOND);
+						);
 		
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("CLmaxTO = " + cLmaxTO);

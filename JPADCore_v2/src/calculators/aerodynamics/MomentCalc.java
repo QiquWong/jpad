@@ -9,20 +9,15 @@ import java.util.stream.Collectors;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import org.jfree.chart.util.ParamChecks;
 import org.jscience.physics.amount.Amount;
 
-import com.sun.pisces.Surface;
-
-import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLAlpha;
 import calculators.geometry.FusNacGeometryCalc;
 import calculators.stability.StabilityCalculators;
 import configuration.enumerations.AirfoilFamilyEnum;
-import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
@@ -130,15 +125,16 @@ public class MomentCalc {
 			List<Amount<Angle>> twistDistribution,
 			List<Amount<Angle>> alphaZeroLiftDistribution,
 			List<Amount<Length>> airfoilACToWingACDistribution,
-			Double vortexSemiSpanToSemiSpanRatio,
-			Double mach,
+			double vortexSemiSpanToSemiSpanRatio,
+			double mach,
 			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature,
 			Amount<Angle> alphaZeroLift
 			) {
 		
 		NasaBlackwell theNasaBlackwellCalculatorAlphaZeroLift = new NasaBlackwell(
-				semiSpan.doubleValue(SI.METER),
-				surface.doubleValue(SI.SQUARE_METRE),
+				semiSpan,
+				surface,
 				MyArrayUtils.convertListOfAmountTodoubleArray(yDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(chordDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistribution),
@@ -146,9 +142,10 @@ public class MomentCalc {
 				twistDistribution,
 				alphaZeroLiftDistribution,
 				vortexSemiSpanToSemiSpanRatio,
-				0.0,
+				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 				mach,
-				altitude.doubleValue(SI.METER)
+				altitude,
+				deltaTemperature
 				);
 		
 		theNasaBlackwellCalculatorAlphaZeroLift.calculate(alphaZeroLift);

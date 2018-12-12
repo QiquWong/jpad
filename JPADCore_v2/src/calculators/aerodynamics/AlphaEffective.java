@@ -3,7 +3,11 @@ package calculators.aerodynamics;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
+import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
@@ -30,7 +34,10 @@ public class AlphaEffective {
 	LiftingSurfaceAerodynamicsManager theLSManager;
 	LiftingSurface theWing;
 
-	double vortexSemiSpan, vortexSemiSpanToSemiSpanRatio, surface, semispan, mach, altitude ;
+	double vortexSemiSpan, vortexSemiSpanToSemiSpanRatio, mach;
+	Amount<Area> surface;
+	Amount<Length> semispan, altitude;
+	Amount<Temperature> deltaTemperature;
 	double [] yStationsActual, dihedral,  twist, alpha0l, xLEvsYActual, chordsVsYActual, alpha0lArray,
 	yStationsAirfoil, yStationsAlpha;
 	double [] alphaInduced;
@@ -47,10 +54,9 @@ public class AlphaEffective {
 		this.theWing = theWing;
 		this.theOperatingConditions = theOperatingConditions;
 
-//		vortexSemiSpanToSemiSpanRatio = theLSManager.get_vortexSemiSpanToSemiSpanRatio();
 		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * theWing.getSemiSpan().getEstimatedValue();
 		mach = theOperatingConditions.getMachCruise();
-		semispan = theWing.getSemiSpan().getEstimatedValue();
+		semispan = theWing.getSemiSpan();
 
 		dihedral = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
@@ -68,8 +74,8 @@ public class AlphaEffective {
 				.convertListOfAmountTodoubleArray(
 						theWing.getChordsBreakPoints()
 						);
-		yStationsActual = MyArrayUtils.linspace(0., semispan, numberOfPoints);
-		yStationsAlpha = MyArrayUtils.linspace(0., semispan, 50);
+		yStationsActual = MyArrayUtils.linspace(0., semispan.doubleValue(SI.METER), numberOfPoints);
+		yStationsAlpha = MyArrayUtils.linspace(0., semispan.doubleValue(SI.METER), 50);
 		yStationsAirfoil = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
 						theWing.getYBreakPoints()
@@ -78,10 +84,10 @@ public class AlphaEffective {
 				.convertListOfAmountTodoubleArray(
 						theWing.getXLEBreakPoints()
 						);
-		surface = theWing.getSurfacePlanform().getEstimatedValue();
-		altitude = theOperatingConditions.getAltitudeCruise().getEstimatedValue();
+		surface = theWing.getSurfacePlanform();
+		altitude = theOperatingConditions.getAltitudeCruise();
+		deltaTemperature = theOperatingConditions.getDeltaTemperatureCruise();
 
-//		alpha0l = theLSManager.get_alpha0lDistribution().toArray();
 	}
 
 
@@ -103,21 +109,18 @@ public class AlphaEffective {
 		double summ =0.0 ;
 		int lowerLimit = 0, upperLimit=(numberOfPoints-1);
 
-//	System.out.println("\n alpha " + alphaInitial.to(NonSI.DEGREE_ANGLE));
 		NasaBlackwell theCalculator = new NasaBlackwell(
 				semispan, surface, yStationsActual,
 				chordsVsYActual, xLEvsYActual,
 				dihedral, theWing.getTwistsBreakPoints(),
 				theWing.getAlpha0VsY(), vortexSemiSpanToSemiSpanRatio,
-				alphaInitial.getEstimatedValue(), mach, altitude);
+				alphaInitial, mach, altitude, deltaTemperature);
 
 		theCalculator.calculateVerticalVelocity(alphaInitial);
 		influenceFactor = theCalculator.getInfluenceFactor();
 		gamma = theCalculator.getGamma();
 
 		velocity = vTAS.getEstimatedValue(); //meters per second
-		//velocity = SpeedCalc.calculateTAS(mach, altitude);
-
 
 		Double[] twistDistribution = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(

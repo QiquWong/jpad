@@ -1532,7 +1532,7 @@ public class ACPerformanceManager {
 								DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 										polarCLCruise.get(xcg)[i],
 										theOperatingConditions.getMachClimb(),
-										theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
+										theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord(),
 										theAircraft.getWing().getAirfoilList().get(0).getThicknessToChordRatio(),
 										theAircraft.getWing().getAirfoilList().get(0).getType()
 										)
@@ -1546,7 +1546,7 @@ public class ACPerformanceManager {
 								DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 										polarCLCruise.get(xcg)[i],
 										theOperatingConditions.getMachCruise(),
-										theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
+										theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord(),
 										theAircraft.getWing().getAirfoilList().get(0).getThicknessToChordRatio(),
 										theAircraft.getWing().getAirfoilList().get(0).getType()
 										)
@@ -1560,7 +1560,7 @@ public class ACPerformanceManager {
 								DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 										polarCLTakeOff.get(xcg)[i],
 										theOperatingConditions.getMachCruise(),
-										theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
+										theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord(),
 										theAircraft.getWing().getAirfoilList().get(0).getThicknessToChordRatio(),
 										theAircraft.getWing().getAirfoilList().get(0).getType()
 										)
@@ -1574,7 +1574,7 @@ public class ACPerformanceManager {
 								DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 										polarCLLanding.get(xcg)[i],
 										theOperatingConditions.getMachCruise(),
-										theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
+										theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord(),
 										theAircraft.getWing().getAirfoilList().get(0).getThicknessToChordRatio(),
 										theAircraft.getWing().getAirfoilList().get(0).getType()
 										)
@@ -4617,43 +4617,17 @@ public class ACPerformanceManager {
 					250
 					);
 
-			double[] thrust = new double[speed.length];
-			if ((_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP) 
-					&& (Double.valueOf(
-							_thePerformanceInterface.getTheAircraft()
-							.getPowerPlant()
-							.getTurbopropEngineDatabaseReader()
-							.getThrustAPR(
-									_thePerformanceInterface.getTheOperatingConditions().getMachTakeOff(),
-									_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER),
-									_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR()
-									)
-							) != 0.0
-						)
-					)
-				thrust = ThrustCalc.calculateThrustVsSpeed(
-						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-						_thePerformanceInterface.getTheOperatingConditions().getThrottleTakeOff(),
-						_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER),
-						EngineOperatingConditionEnum.APR,
-						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType(),
-						_thePerformanceInterface.getTheAircraft().getPowerPlant(),
-						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
-						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()-1,
-						speed
-						);
-			else
-				thrust = ThrustCalc.calculateThrustVsSpeed(
-						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-						_thePerformanceInterface.getTheOperatingConditions().getThrottleTakeOff(),
-						_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER),
-						EngineOperatingConditionEnum.TAKE_OFF,
-						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType(),
-						_thePerformanceInterface.getTheAircraft().getPowerPlant(),
-						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
-						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()-1,
-						speed
-						);
+			List<Amount<Force>> thrust = new ArrayList<>();
+			thrust = ThrustCalc.calculateThrustVsSpeed(
+					_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getT0(),
+					EngineOperatingConditionEnum.APR,
+					_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+					_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()-1,
+					MyArrayUtils.convertDoubleArrayToListOfAmount(speed, SI.METERS_PER_SECOND),
+					_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff(),
+					_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureTakeOff(),
+					_thePerformanceInterface.getTheOperatingConditions().getThrottleTakeOff()
+					);
 
 			List<Amount<Length>> enginesArms = new ArrayList<>();
 			for(int i=0; i<_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().size(); i++)
@@ -4671,18 +4645,18 @@ public class ACPerformanceManager {
 			
 			_thrustMomentOEIMap.put(
 					xcg, 
-					new double[thrust.length]
+					new double[thrust.size()]
 					);
 			
-			for(int i=0; i < thrust.length; i++){
-				_thrustMomentOEIMap.get(xcg)[i] = thrust[i]*maxEngineArm.doubleValue(SI.METER);
+			for(int i=0; i < thrust.size(); i++){
+				_thrustMomentOEIMap.get(xcg)[i] = thrust.get(i).doubleValue(SI.NEWTON)*maxEngineArm.doubleValue(SI.METER);
 			}
 
 			//..................................................................................
 			// CALCULATING THE VERTICAL TAIL YAWING MOMENT
 			_yawingMomentOEIMap.put(xcg, new double[_thrustMomentOEIMap.get(xcg).length]);
 			
-			for(int i=0; i < thrust.length; i++){
+			for(int i=0; i < thrust.size(); i++){
 			_yawingMomentOEIMap.get(xcg)[i] = cNbVertical*
 					_thePerformanceInterface.getTauRudderMap().get(xcg).value(
 							_thePerformanceInterface.getTheAircraft().getVTail().getSymmetricFlaps().get(0).getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE)
@@ -4760,14 +4734,16 @@ public class ACPerformanceManager {
 			double[] speed = MyArrayUtils.linspace(
 					SpeedCalc.calculateTAS(
 							0.05,
-							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER)
-							)
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff(),
+							_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureTakeOff()
+							).doubleValue(SI.METERS_PER_SECOND)
 					/SpeedCalc.calculateSpeedStall(
-							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER),
-							_thePerformanceInterface.getMaximumTakeOffMass().to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff(),
+							_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureTakeOff(),
+							_thePerformanceInterface.getMaximumTakeOffMass(),
+							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(),
 							_thePerformanceInterface.getCLmaxTakeOff().get(xcg)
-							),
+							).doubleValue(SI.METERS_PER_SECOND),
 					1.20, // maximum possible value of the VMC
 					250
 					);

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -29,6 +30,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.aerotools.aero.StdAtmos1976;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import standaloneutils.atmosphere.SpeedCalc;
 
 /**
  * A collection of Aerodynamic static functions
@@ -98,12 +100,12 @@ public class AerodynamicCalc {
 	 */
 	public static double calculateReCutOff(
 			double mach, double machTransonicThreshold, 
-			double lenght, double k){
+			Amount<Length> lenght, Amount<Length> k){
 
 		if (mach <= machTransonicThreshold) 
-			return 38.21*Math.pow(lenght/k, 1.053);  //Reynolds  cut-off for wing   // ADAS pag 91. Subsonic case
+			return 38.21*Math.pow(lenght.doubleValue(SI.METER)/k.doubleValue(SI.METER), 1.053);  //Reynolds  cut-off for wing   // ADAS pag 91. Subsonic case
 		else 
-			return 44.62*Math.pow(lenght/k,1.053)*Math.pow(mach, 1.16); // Transonic or supersonic case
+			return 44.62*Math.pow(lenght.doubleValue(SI.METER)/k.doubleValue(SI.METER),1.053)*Math.pow(mach, 1.16); // Transonic or supersonic case
 	}
 
 	/**
@@ -119,8 +121,8 @@ public class AerodynamicCalc {
 	 */
 	public static double calculateReynoldsEffective(
 			double mach, double machTransonicThreshold,
-			double density, double tas, double mu,
-			double lenght, double roughness){
+			double density, Amount<Velocity> tas, double mu,
+			Amount<Length> lenght, Amount<Length> roughness){
 
 		double re = calculateReynolds(density, tas, lenght, mu);
 
@@ -133,9 +135,9 @@ public class AerodynamicCalc {
 	
 	public static double calculateReynoldsEffective(
 			double mach, double machTransonicThreshold,
-			double altitude, double lenght, double roughness){
+			Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Length> lenght, Amount<Length> roughness){
 
-		double re = calculateReynolds(altitude, mach, lenght);
+		double re = calculateReynolds(altitude, deltaTemperature, mach, lenght);
 
 		if (calculateReCutOff(mach, machTransonicThreshold, lenght, roughness) < re) {
 			re = calculateReCutOff(mach, machTransonicThreshold, lenght, roughness);
@@ -153,9 +155,9 @@ public class AerodynamicCalc {
 	 * @return
 	 */
 	public static double calculateReynolds(
-			double density, double tas, double lenght,
+			double density, Amount<Velocity> tas, Amount<Length> lenght,
 			double mu) {
-		return density*tas*lenght/mu;
+		return density*tas.doubleValue(SI.METERS_PER_SECOND)*lenght.doubleValue(SI.METER)/mu;
 	}
 
 	/**
@@ -165,10 +167,13 @@ public class AerodynamicCalc {
 	 * @param lenght
 	 * @return
 	 */
-	public static double calculateReynolds(double altitude, double mach, double lenght) {
-		return calculateReynolds(AtmosphereCalc.getDensity(altitude), 
-				mach*AtmosphereCalc.getSpeedOfSound(altitude), lenght, 
-				calculateDynamicViscosity(AtmosphereCalc.getAtmosphere(altitude).getTemperature()));
+	public static double calculateReynolds(Amount<Length> altitude, Amount<Temperature> deltaTemperature, double mach, Amount<Length> lenght) {
+		return calculateReynolds(
+				AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)), 
+				SpeedCalc.calculateTAS(mach, altitude, deltaTemperature), 
+				lenght, 
+				calculateDynamicViscosity(AtmosphereCalc.getAtmosphere(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)).getTemperature())
+				);
 	}
 
 	/**

@@ -618,7 +618,12 @@ public class AVLExternalJob implements IAVLExternalJob {
 				.back()
 				.oper()
 				.c1()
-				.velocity(SpeedCalc.calculateTAS(theOperatingConditions.getMachCruise(), theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)))
+				.velocity(SpeedCalc.calculateTAS(
+						theOperatingConditions.getMachCruise(), 
+						theOperatingConditions.getAltitudeCruise(),
+						theOperatingConditions.getDeltaTemperatureCruise()
+						).doubleValue(SI.METERS_PER_SECOND)
+						)
 				.back()
 				.runCase()
 				.stabilityDerivatives(this.getOutputStabilityDerivativesFile().getName())

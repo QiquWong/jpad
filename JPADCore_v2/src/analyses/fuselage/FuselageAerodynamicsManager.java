@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -49,6 +50,7 @@ public class FuselageAerodynamicsManager {
 	//..............................................................................
 	// DERIVED INPUT	
 	private Amount<Length> _currentAltitude;
+	private Amount<Temperature> _currentDeltaTemperature;
 	private Double _currentMachNumber;
 	private Double _cF;
 	private Amount<Area> _fuselageFrontSurface;
@@ -121,18 +123,22 @@ public class FuselageAerodynamicsManager {
 		case TAKE_OFF:
 			this._currentMachNumber = this._theOperatingConditions.getMachTakeOff();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeTakeOff();
+			this._currentDeltaTemperature = this._theOperatingConditions.getDeltaTemperatureTakeOff();
 			break;
 		case CLIMB:
 			this._currentMachNumber = this._theOperatingConditions.getMachClimb();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeClimb();
+			this._currentDeltaTemperature = this._theOperatingConditions.getDeltaTemperatureClimb();
 			break;
 		case CRUISE:
 			this._currentMachNumber = this._theOperatingConditions.getMachCruise();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeCruise();
+			this._currentDeltaTemperature = this._theOperatingConditions.getDeltaTemperatureCruise();
 			break;
 		case LANDING:
 			this._currentMachNumber = this._theOperatingConditions.getMachLanding();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeLanding();
+			this._currentDeltaTemperature = this._theOperatingConditions.getDeltaTemperatureLanding();
 			break;
 		default:
 			break;
@@ -165,9 +171,10 @@ public class FuselageAerodynamicsManager {
 						);
 		_cF = AerodynamicCalc.calculateCf(
 				AerodynamicCalc.calculateReynolds(
-						_currentAltitude.doubleValue(SI.METER),
+						_currentAltitude,
+						_currentDeltaTemperature,
 						_currentMachNumber,
-						_theFuselage.getFuselageLength().doubleValue(SI.METER)
+						_theFuselage.getFuselageLength()
 						), 
 				_currentMachNumber, 
 				0.
@@ -352,9 +359,10 @@ public class FuselageAerodynamicsManager {
 
 			double cDFlatPlate = AerodynamicCalc.calculateCfTurb(
 					AerodynamicCalc.calculateReynolds(
-							_currentAltitude.doubleValue(SI.METER),
+							_currentAltitude,
+							_currentDeltaTemperature,
 							_currentMachNumber,
-							_theFuselage.getFuselageLength().doubleValue(SI.METER)
+							_theFuselage.getFuselageLength()
 							), 
 					_currentMachNumber
 					);
@@ -1000,6 +1008,14 @@ public class FuselageAerodynamicsManager {
 
 	public Double getCurrentMachNumber() {
 		return _currentMachNumber;
+	}
+
+	public Amount<Temperature> getCurrentDeltaTemperature() {
+		return _currentDeltaTemperature;
+	}
+
+	public void setCurrentDeltaTemperature(Amount<Temperature> _currentDeltaTemperature) {
+		this._currentDeltaTemperature = _currentDeltaTemperature;
 	}
 
 	public Double getCF() {

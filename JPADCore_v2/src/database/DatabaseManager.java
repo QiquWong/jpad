@@ -13,9 +13,6 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import database.databasefunctions.engine.EngineDatabaseManager;
-import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
-import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
-import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
@@ -357,94 +354,6 @@ public class DatabaseManager {
 				JPADStaticWriteUtils.serializeObject(reader, 
 						interpolaterHighLiftDatabaseSerializedDirectory,
 						MyConfiguration.interpolaterHighLiftDatabaseSerializedName);
-			}
-		}
-		return reader;
-	}
-	
-	public static TurbofanEngineDatabaseReader initializeTurbofanDatabase(TurbofanEngineDatabaseReader reader, String databaseDirectory, String databaseName){
-
-		String databaseNameXML = null;
-		
-		if(databaseName.endsWith(".h5"))
-			databaseNameXML = databaseName.replace(".h5", ".xml");
-		
-		String interpolaterTurbofanDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
-				+ File.separator; 
-		String interpolaterTurbofanDatabaseSerializedFullName = interpolaterTurbofanDatabaseSerializedDirectory +  
-				File.separator + databaseNameXML;
-
-		File fileTurbofanDatabase = new File(interpolaterTurbofanDatabaseSerializedFullName);
-
-		if(fileTurbofanDatabase.exists()){
-			System.out.println("De-serializing file: " + fileTurbofanDatabase.getAbsolutePath() + " ...");
-			reader = (TurbofanEngineDatabaseReader) 
-					MyXMLReaderUtils.deserializeObject(
-							reader,
-							interpolaterTurbofanDatabaseSerializedFullName,
-							StandardCharsets.UTF_8
-							);
-		}
-		else {
-			System.out.println(	"Serializing file " + "==> " + databaseName + " ==> "+ 
-					fileTurbofanDatabase.getAbsolutePath() + " ...");
-			reader = new TurbofanEngineDatabaseReader(databaseDirectory, databaseName);
-
-
-			File dir = new File(interpolaterTurbofanDatabaseSerializedDirectory);
-			if(!dir.exists()){
-				dir.mkdirs(); 
-			}else{
-				JPADStaticWriteUtils.serializeObject(reader, 
-						interpolaterTurbofanDatabaseSerializedDirectory,
-						databaseNameXML);
-			}
-		}
-		return reader;
-	}
-	
-	public static TurbopropEngineDatabaseReader initializeTurbopropDatabase(TurbopropEngineDatabaseReader reader, String databaseDirectory, String databaseName){
-
-		String databaseNameXML = null;
-		
-		if(databaseName.endsWith(".h5"))
-			databaseNameXML = databaseName.replace(".h5", ".xml");
-		
-		String interpolaterTurbopropDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
-				+ File.separator; 
-		String interpolaterTurbopropDatabaseSerializedFullName = interpolaterTurbopropDatabaseSerializedDirectory +  
-				File.separator + databaseNameXML;
-
-		File fileTurbopropDatabase = new File(interpolaterTurbopropDatabaseSerializedFullName);
-
-		if(fileTurbopropDatabase.exists()){
-			System.out.println("De-serializing file: " + fileTurbopropDatabase.getAbsolutePath() + " ...");
-			reader = (TurbopropEngineDatabaseReader) 
-					MyXMLReaderUtils.deserializeObject(
-							reader,
-							interpolaterTurbopropDatabaseSerializedFullName,
-							StandardCharsets.UTF_8
-							);
-		}
-		else {
-			System.out.println(	"Serializing file " + "==> " + databaseName + "  ==> "+ 
-					fileTurbopropDatabase.getAbsolutePath() + " ...");
-			try {
-				reader = new TurbopropEngineDatabaseReader(databaseDirectory, databaseName);
-			} catch (HDF5LibraryException e) {
-				e.printStackTrace();
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-			}
-
-
-			File dir = new File(interpolaterTurbopropDatabaseSerializedDirectory);
-			if(!dir.exists()){
-				dir.mkdirs(); 
-			}else{
-				JPADStaticWriteUtils.serializeObject(reader, 
-						interpolaterTurbopropDatabaseSerializedDirectory,
-						databaseNameXML);
 			}
 		}
 		return reader;

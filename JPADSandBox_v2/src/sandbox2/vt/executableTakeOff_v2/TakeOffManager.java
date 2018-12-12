@@ -17,6 +17,7 @@ import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -1222,6 +1223,7 @@ public class TakeOffManager {
 		private Amount<Mass> maxTakeOffMass; 
 		private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2;
 		private Amount<Length> altitude, wingToGroundDistance, obstacle, balancedFieldLength;
+		private Amount<Temperature> deltaTemperature;
 		private Amount<Angle> alphaGround, iw;
 		private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, sfc;
 		private List<Amount<Angle>> alpha, theta, gamma;
@@ -1286,14 +1288,13 @@ public class TakeOffManager {
 			this.cLground = cL0 + (cLalphaFlap*iw.getEstimatedValue());
 			
 			// Reference velocities definition
-			vSTakeOff = Amount.valueOf(
-					SpeedCalc.calculateSpeedStall(
-							getAltitude().doubleValue(SI.METER),
-							maxTakeOffMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-							input.getWingSurface().doubleValue(SI.SQUARE_METRE),
+			vSTakeOff = SpeedCalc.calculateSpeedStall(
+							altitude,
+							deltaTemperature,
+							maxTakeOffMass,
+							input.getWingSurface(),
 							cLmaxTO
-							),
-					SI.METERS_PER_SECOND);
+							);
 			vRot = vSTakeOff.times(kRot);
 			
 			System.out.println("\n-----------------------------------------------------------");
@@ -3118,7 +3119,7 @@ public class TakeOffManager {
 						theThrust = input.getnEngine()*input.getT0().getEstimatedValue()*thrustRatio;
 					}
 					else
-						theThrust = input.getNetThrust().value(SpeedCalc.calculateMach(altitude, speed))*input.getnEngine();
+						theThrust = input.getNetThrust().value(SpeedCalc.calculateMach(TakeOffCalculator.this.altitude, TakeOffCalculator.this.deltaTemperature, Amount.valueOf(speed, SI.METERS_PER_SECOND)))*input.getnEngine();
 				}
 				else if ((!isAborted) && (time >= tFailure.getEstimatedValue())) {
 					if(input.isEngineModel()) {
@@ -3126,7 +3127,7 @@ public class TakeOffManager {
 						theThrust = (input.getnEngine()-1)*input.getT0().getEstimatedValue()*thrustRatio;
 					}
 					else
-						theThrust = input.getNetThrust().value(SpeedCalc.calculateMach(altitude, speed))*(input.getnEngine()-1);
+						theThrust = input.getNetThrust().value(SpeedCalc.calculateMach(TakeOffCalculator.this.altitude, TakeOffCalculator.this.deltaTemperature, Amount.valueOf(speed, SI.METERS_PER_SECOND)))*(input.getnEngine()-1);
 				}
 				else if ((isAborted) && (time >= tFailure.getEstimatedValue()) && (time < tRec.getEstimatedValue())) {
 					if(input.isEngineModel()) {
@@ -3134,7 +3135,7 @@ public class TakeOffManager {
 						theThrust = (input.getnEngine()-1)*input.getT0().getEstimatedValue()*thrustRatio;
 					}
 					else
-						theThrust = input.getNetThrust().value(SpeedCalc.calculateMach(altitude, speed))*(input.getnEngine()-1);
+						theThrust = input.getNetThrust().value(SpeedCalc.calculateMach(TakeOffCalculator.this.altitude, TakeOffCalculator.this.deltaTemperature, Amount.valueOf(speed, SI.METERS_PER_SECOND)))*(input.getnEngine()-1);
 				}
 				else
 					theThrust = 0.0;
@@ -3163,7 +3164,9 @@ public class TakeOffManager {
 				return 	0.5
 						*input.getWingSurface().doubleValue(SI.SQUARE_METRE)
 						*AtmosphereCalc.getDensity(
-								altitude)
+								TakeOffCalculator.this.altitude.doubleValue(SI.METER),
+								TakeOffCalculator.this.deltaTemperature.doubleValue(SI.CELSIUS)
+								)
 						*(Math.pow(speed + (vWind*Math.cos(Amount.valueOf(
 								gamma,
 								NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())), 2))
@@ -3184,7 +3187,9 @@ public class TakeOffManager {
 					return (2*weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))/
 							(input.getWingSurface().doubleValue(SI.SQUARE_METRE)*
 									AtmosphereCalc.getDensity(
-											altitude)*
+											TakeOffCalculator.this.altitude.doubleValue(SI.METER),
+											TakeOffCalculator.this.deltaTemperature.doubleValue(SI.CELSIUS)
+											)*
 									Math.pow(speed, 2));
 			}
 
@@ -3195,7 +3200,9 @@ public class TakeOffManager {
 				return 	0.5
 						*input.getWingSurface().doubleValue(SI.SQUARE_METRE)
 						*AtmosphereCalc.getDensity(
-								altitude)
+								TakeOffCalculator.this.altitude.doubleValue(SI.METER),
+								TakeOffCalculator.this.deltaTemperature.doubleValue(SI.CELSIUS)
+								)
 						*(Math.pow(speed + (vWind*Math.cos(Amount.valueOf(
 								gamma,
 								NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())), 2))
@@ -3818,6 +3825,14 @@ public class TakeOffManager {
 
 		public void setAbortedTakeOffArrayFitted(double[] abortedTakeOffArrayFitted) {
 			this.abortedTakeOffArrayFitted = abortedTakeOffArrayFitted;
+		}
+
+		public Amount<Temperature> getDeltaTemperature() {
+			return deltaTemperature;
+		}
+
+		public void setDeltaTemperature(Amount<Temperature> deltaTemperature) {
+			this.deltaTemperature = deltaTemperature;
 		}
 	}
 	//-------------------------------------------------------------------------------------

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -65,6 +66,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	// DERIVED INPUT	
 	private double _currentMachNumber;
 	private Amount<Length> _currentAltitude;
+	private Amount<Temperature> _currentDeltaTemperature;
 	private Amount<Angle> _alphaBodyCurrent;
 	private Amount<Angle> _alphaCanardCurrent;
 	private Amount<Angle> _alphaWingCurrent;
@@ -2036,24 +2038,28 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		case TAKE_OFF:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachTakeOff();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeTakeOff();
+			this._currentDeltaTemperature = _theAerodynamicBuilderInterface.getTheOperatingConditions().getDeltaTemperatureTakeOff();
 			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaTakeOff();
 			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaTakeOff();
 			break;
 		case CLIMB:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachClimb();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeClimb();
+			this._currentDeltaTemperature = _theAerodynamicBuilderInterface.getTheOperatingConditions().getDeltaTemperatureClimb();
 			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaClimb();
 			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaClimb();
 			break;
 		case CRUISE:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachCruise();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeCruise();
+			this._currentDeltaTemperature = _theAerodynamicBuilderInterface.getTheOperatingConditions().getDeltaTemperatureCruise();
 			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCruise();
 			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaCruise();
 			break;
 		case LANDING:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachLanding();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeLanding();
+			this._currentDeltaTemperature = _theAerodynamicBuilderInterface.getTheOperatingConditions().getDeltaTemperatureLanding();
 			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaLanding();
 			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaLanding();
 			break;
@@ -8210,6 +8216,14 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	public void setCurrentAltitude(Amount<Length> _currentAltitude) {
 		this._currentAltitude = _currentAltitude;
 	}
+	public Amount<Temperature> getCurrentDeltaTemperature() {
+		return _currentDeltaTemperature;
+	}
+
+	public void setCurrentDeltaTemperature(Amount<Temperature> _currentDeltaTemperature) {
+		this._currentDeltaTemperature = _currentDeltaTemperature;
+	}
+
 	public Amount<Angle> getAlphaBodyCurrent() {
 		return _alphaBodyCurrent;
 	}

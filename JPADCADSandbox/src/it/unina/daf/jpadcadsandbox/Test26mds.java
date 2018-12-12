@@ -223,14 +223,16 @@ public class Test26mds {
 		double sideslipAngle = 0.0;
 		double machNumber = 0.64;
 		double altitude = 30000; 
+		double deltaTemperature = 0.0;
 		double altitudeM = Amount.valueOf(altitude, NonSI.FOOT).doubleValue(SI.METER);
+		double deltaTemperatureM = Amount.valueOf(deltaTemperature, SI.CELSIUS).doubleValue(SI.CELSIUS);
 		
-		StdAtmos1976 atmosphere = AtmosphereCalc.getAtmosphere(altitudeM);
+		StdAtmos1976 atmosphere = AtmosphereCalc.getAtmosphere(altitudeM, deltaTemperatureM);
 		double pressure = atmosphere.getPressure();
 		double density = atmosphere.getDensity()*1000;
 		double temperature = atmosphere.getTemperature();
 		double speedOfSound = atmosphere.getSpeedOfSound();
-		double dynamicViscosity = AtmosphereCalc.getDynamicViscosity(altitudeM);
+		double dynamicViscosity = AtmosphereCalc.getDynamicViscosity(altitudeM, deltaTemperatureM);
 		double velocity = speedOfSound*machNumber;
 		double reynoldsNumber = density*velocity*wingMAC/dynamicViscosity;
 		

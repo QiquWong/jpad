@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -19,7 +20,6 @@ import org.jscience.physics.amount.Amount;
 import org.moeaframework.problem.misc.Lis;
 
 import analyses.ACAerodynamicAndStabilityManager_v2;
-import analyses.ACAerodynamicAndStabilityManager.CalcTotalLiftCoefficient;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Base;
 import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Parasite;
@@ -71,13 +71,14 @@ import javaslang.Tuple2;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import standaloneutils.atmosphere.SpeedCalc;
 import sun.print.resources.serviceui;
 
 
 public class ACAerodynamicAndStabilityManagerUtils {
 	
-	static Double  cD0TotalAircraft = 0.0 ;
-	static Double oswaldFactorTotalAircraft = 0.0;
+	static double  cD0TotalAircraft = 0.0 ;
+	static double oswaldFactorTotalAircraft = 0.0;
 
 	public static void calculateLiftingSurfaceDataSemiempirical(
 			ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager,
@@ -105,6 +106,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 
 		double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
 		Amount<Length> currentAltitude = aerodynamicAndStabilityManager.getCurrentAltitude();
+		Amount<Temperature> currentDeltaTemperature = aerodynamicAndStabilityManager.getCurrentDeltaTemperature();
 
 
 		//.........................................................................................................................
@@ -176,7 +178,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		//.........................................................................................................................
 		//	CD0
 		CalcCD0 calcCD0 = liftingSurfaceAerodynamicManager.new CalcCD0();
-		calcCD0.semiempirical(currentMachNumber, currentAltitude);
+		calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 		//.........................................................................................................................
 		//	CD_WAVE 
@@ -760,6 +762,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
 		double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
 		Amount<Length> currentAltitude = aerodynamicAndStabilityManager.getCurrentAltitude();
+		Amount<Temperature> currentDeltaTemperature = aerodynamicAndStabilityManager.getCurrentDeltaTemperature();
 
 		//...................................................................................
 		// PRELIMINARY CHECKS
@@ -861,7 +864,8 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLiftDistribution(),
 				_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getVortexSemiSpanToSemiSpanRatio(),
 				0.0,
-				currentAltitude
+				currentAltitude,
+				currentDeltaTemperature
 				);
 
 		// Roskam method
@@ -1741,6 +1745,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
 		double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
 		Amount<Length> currentAltitude = aerodynamicAndStabilityManager.getCurrentAltitude();
+		Amount<Temperature> currentDeltaTemperature = aerodynamicAndStabilityManager.getCurrentDeltaTemperature();
 		FuselageAerodynamicsManager fuselageAerodynamicManagers = aerodynamicAndStabilityManager.getFuselageAerodynamicManagers().get(ComponentEnum.FUSELAGE);
 		NacelleAerodynamicsManager nacelleAerodynamicManagers = aerodynamicAndStabilityManager.getNacelleAerodynamicManagers().get(ComponentEnum.NACELLE);
 	
@@ -1752,7 +1757,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		if(_theAerodynamicBuilderInterface.isPerformWingAnalyses() == false) {
 			//	CD0
 			CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.WING).new CalcCD0();
-			calcCD0.semiempirical(currentMachNumber, currentAltitude);
+			calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 			//	CD_WAVE 
 			CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.WING).new CalcCDWave();
@@ -1762,7 +1767,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		if(_theAerodynamicBuilderInterface.isPerformHTailAnalyses() == false) {
 			//	CD0
 			CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).new CalcCD0();
-			calcCD0.semiempirical(currentMachNumber, currentAltitude);
+			calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 			//	CD_WAVE 
 			CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDWave();
@@ -1772,7 +1777,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		if(_theAerodynamicBuilderInterface.isPerformVTailAnalyses() == false) {
 			//	CD0
 			CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.VERTICAL_TAIL).new CalcCD0();
-			calcCD0.semiempirical(currentMachNumber, currentAltitude);
+			calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 			//	CD_WAVE 
 			CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.VERTICAL_TAIL).new CalcCDWave();
@@ -1782,7 +1787,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		if(_theAerodynamicBuilderInterface.isPerformCanardAnalyses() == false) {
 			//	CD0
 			CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.CANARD).new CalcCD0();
-			calcCD0.semiempirical(currentMachNumber, currentAltitude);
+			calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 			//	CD_WAVE 
 			CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.CANARD).new CalcCDWave();
@@ -2578,6 +2583,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				//=======================================================================================
 
 				Amount<Length> currentAltitude = aerodynamicAndStabilityManager.getCurrentAltitude();
+				Amount<Temperature> currentDeltaTemperature = aerodynamicAndStabilityManager.getCurrentDeltaTemperature();
 				FuselageAerodynamicsManager fuselageAerodynamicManagers = aerodynamicAndStabilityManager.getFuselageAerodynamicManagers().get(ComponentEnum.FUSELAGE);
 				NacelleAerodynamicsManager nacelleAerodynamicManagers = aerodynamicAndStabilityManager.getNacelleAerodynamicManagers().get(ComponentEnum.NACELLE);
 				
@@ -2586,7 +2592,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				if(_theAerodynamicBuilderInterface.isPerformWingAnalyses() == false) {
 					//	CD0
 					CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.WING).new CalcCD0();
-					calcCD0.semiempirical(currentMachNumber, currentAltitude);
+					calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 					//	CD_WAVE 
 					CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.WING).new CalcCDWave();
@@ -2596,7 +2602,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				if(_theAerodynamicBuilderInterface.isPerformHTailAnalyses() == false) {
 					//	CD0
 					CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).new CalcCD0();
-					calcCD0.semiempirical(currentMachNumber, currentAltitude);
+					calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 					//	CD_WAVE 
 					CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDWave();
@@ -2606,7 +2612,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				if(_theAerodynamicBuilderInterface.isPerformVTailAnalyses() == false) {
 					//	CD0
 					CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.VERTICAL_TAIL).new CalcCD0();
-					calcCD0.semiempirical(currentMachNumber, currentAltitude);
+					calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 					//	CD_WAVE 
 					CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.VERTICAL_TAIL).new CalcCDWave();
@@ -2616,7 +2622,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				if(_theAerodynamicBuilderInterface.isPerformCanardAnalyses() == false) {
 					//	CD0
 					CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.CANARD).new CalcCD0();
-					calcCD0.semiempirical(currentMachNumber, currentAltitude);
+					calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 					//	CD_WAVE 
 					CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.CANARD).new CalcCDWave();
@@ -2833,6 +2839,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
 				double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
 				Amount<Length> currentAltitude = aerodynamicAndStabilityManager.getCurrentAltitude();
+				Amount<Temperature> currentDeltaTemperature = aerodynamicAndStabilityManager.getCurrentDeltaTemperature();
 				
 				if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.SIDE_FORCE)) {
 					calculateSideForceCoeffient(aerodynamicAndStabilityManager);
@@ -2862,13 +2869,15 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								SI.METER
 								),
 						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().opposite(), 
-						LiftCalc.calculateLiftCoeff((
-										_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
+						LiftCalc.calculateLiftCoeff(
+								Amount.valueOf((_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
 										+ _theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(SI.KILOGRAM)
 										)/2*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-								currentMachNumber*AtmosphereCalc.getSpeedOfSound(currentAltitude.doubleValue(SI.METER)),
-								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-								currentAltitude.doubleValue(SI.METER)
+								SI.NEWTON),
+								SpeedCalc.calculateTAS(currentMachNumber, currentAltitude, currentDeltaTemperature),
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
+								currentAltitude, 
+								currentDeltaTemperature
 								),
 						currentMachNumber,
 						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader() 
@@ -3045,13 +3054,15 @@ public class ACAerodynamicAndStabilityManagerUtils {
 									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getEquivalentWing().getPanels().get(0).getTwistAerodynamicAtTip(), 
 									aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.WING).getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
 									LiftCalc.calculateLiftCoeff(
-											(
+											Amount.valueOf((
 													_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
 													+ _theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(SI.KILOGRAM)
 													)/2*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-											currentMachNumber*AtmosphereCalc.getSpeedOfSound(currentAltitude.doubleValue(SI.METER)),
-											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-											currentAltitude.doubleValue(SI.METER)
+													SI.NEWTON),
+											SpeedCalc.calculateTAS(currentMachNumber, currentAltitude, currentDeltaTemperature),
+											_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
+											currentAltitude,
+											currentDeltaTemperature
 											),
 									currentMachNumber,
 									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
@@ -3114,6 +3125,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 					IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
 					double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
 					Amount<Length> currentAltitude = aerodynamicAndStabilityManager.getCurrentAltitude();
+					Amount<Temperature> currentDeltaTemperature = aerodynamicAndStabilityManager.getCurrentDeltaTemperature();
 					
 					if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.SIDE_FORCE)) {
 						calculateSideForceCoeffient(aerodynamicAndStabilityManager);
@@ -3507,13 +3519,15 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAsymmetricFlaps().get(1).getTheAsymmetricFlapInterface().getInnerStationSpanwisePosition(),
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAsymmetricFlaps().get(1).getTheAsymmetricFlapInterface().getOuterStationSpanwisePosition(),
 								LiftCalc.calculateLiftCoeff(
-										(
+										Amount.valueOf((
 												_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
 												+ _theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(SI.KILOGRAM)
 												)/2*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-										currentMachNumber*AtmosphereCalc.getSpeedOfSound(currentAltitude.doubleValue(SI.METER)),
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-										currentAltitude.doubleValue(SI.METER)
+												SI.NEWTON),
+										SpeedCalc.calculateTAS(currentMachNumber, currentAltitude, currentDeltaTemperature),
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
+										currentAltitude,
+										currentDeltaTemperature
 										),
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
 								).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
@@ -3547,13 +3561,15 @@ public class ACAerodynamicAndStabilityManagerUtils {
 												aerodynamicAndStabilityManager.getStaticStabilityMarginMap().get(indexOfAlphaBody),
 												_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCruise(),
 												LiftCalc.calculateLiftCoeff(
-														(
+														Amount.valueOf((
 																_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
 																+ _theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(SI.KILOGRAM)
 																)/2*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-														currentMachNumber*AtmosphereCalc.getSpeedOfSound(currentAltitude.doubleValue(SI.METER)),
-														_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-														currentAltitude.doubleValue(SI.METER)
+																SI.NEWTON),
+														SpeedCalc.calculateTAS(currentMachNumber, currentAltitude, currentDeltaTemperature),
+														_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
+														currentAltitude,
+														currentDeltaTemperature
 														),
 												currentMachNumber,
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
@@ -3611,7 +3627,7 @@ if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIR
 	if(_theAerodynamicBuilderInterface.isPerformWingAnalyses() == false) {
 		//	CD0
 		CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.WING).new CalcCD0();
-		calcCD0.semiempirical(currentMachNumber, currentAltitude);
+		calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 		//	CD_WAVE 
 		CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.WING).new CalcCDWave();
@@ -3621,7 +3637,7 @@ if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIR
 	if(_theAerodynamicBuilderInterface.isPerformHTailAnalyses() == false) {
 		//	CD0
 		CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).new CalcCD0();
-		calcCD0.semiempirical(currentMachNumber, currentAltitude);
+		calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 		//	CD_WAVE 
 		CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDWave();
@@ -3631,7 +3647,7 @@ if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIR
 	if(_theAerodynamicBuilderInterface.isPerformVTailAnalyses() == false) {
 		//	CD0
 		CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.VERTICAL_TAIL).new CalcCD0();
-		calcCD0.semiempirical(currentMachNumber, currentAltitude);
+		calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 		//	CD_WAVE 
 		CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.VERTICAL_TAIL).new CalcCDWave();
@@ -3641,7 +3657,7 @@ if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIR
 	if(_theAerodynamicBuilderInterface.isPerformCanardAnalyses() == false) {
 		//	CD0
 		CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.CANARD).new CalcCD0();
-		calcCD0.semiempirical(currentMachNumber, currentAltitude);
+		calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
 
 		//	CD_WAVE 
 		CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.CANARD).new CalcCDWave();
@@ -3773,13 +3789,15 @@ aerodynamicAndStabilityManager.setCNrWing(
 												aerodynamicAndStabilityManager.getStaticStabilityMarginMap().get(indexOfAlphaBody),
 												cD0TotalAircraft,
 												LiftCalc.calculateLiftCoeff(
-														(
+														Amount.valueOf((
 																_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)
 																+ _theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().doubleValue(SI.KILOGRAM)
 																)/2*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-														currentMachNumber*AtmosphereCalc.getSpeedOfSound(currentAltitude.doubleValue(SI.METER)),
-														_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-														currentAltitude.doubleValue(SI.METER)
+																SI.NEWTON),
+														SpeedCalc.calculateTAS(currentMachNumber, currentAltitude, currentDeltaTemperature),
+														_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(),
+														currentAltitude,
+														currentDeltaTemperature
 														),
 												_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAeroDatabaseReader()
 												).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()

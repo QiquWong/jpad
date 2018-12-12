@@ -14,13 +14,17 @@ import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
+import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.util.MathArrays;
+import org.apache.poi.ss.formula.functions.Delta;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.creator.SlatCreator;
@@ -147,21 +151,6 @@ public class LiftCalc {
 	}
 
 	/**
-	 * This method allows the user to evaluate the lift with an assigned CL, assuming a leveled
-	 * flight at which L=W;
-	 * 
-	 * @author Vittorio Trifari
-	 * @param speed
-	 * @param surface
-	 * @param altitude
-	 * @param cL
-	 * @return
-	 */
-	public static double calculateLift(double speed, double surface, double altitude, double cL) {
-		return 0.5*AtmosphereCalc.getDensity(altitude)*surface*Math.pow(speed, 2)*cL;
-	}
-	
-	/**
 	 * @author Lorenzo Attanasio
 	 * 
 	 * @param lift
@@ -170,8 +159,12 @@ public class LiftCalc {
 	 * @param altitude
 	 * @return
 	 */
-	public static double calculateLiftCoeff(double lift, double speed, double surface, double altitude) {
-		return 2.*lift/(speed*speed*AtmosphereCalc.getDensity(altitude)*surface);
+	public static double calculateLiftCoeff(Amount<Force> lift, Amount<Velocity> speed, Amount<Area> surface, Amount<Length> altitude, Amount<Temperature> deltaTemperature) {
+		return 2.*lift.doubleValue(SI.NEWTON)
+				/(Math.pow(speed.doubleValue(SI.METERS_PER_SECOND),2)
+						*AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS))
+						*surface.doubleValue(SI.SQUARE_METRE)
+						);
 	}
 
 	/**
@@ -266,12 +259,13 @@ public class LiftCalc {
 			List<Amount<Angle>> alphaZeroLiftDistribution,
 			double vortexSemiSpanToSemiSpanRatio,
 			double currentMach,
-			Amount<Length> altitude
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature
 			) {
 		
 		NasaBlackwell theNasaBlackwellCalculator = new NasaBlackwell(
-				semiSpan.doubleValue(SI.METER),
-				surface.doubleValue(SI.SQUARE_METRE),
+				semiSpan,
+				surface,
 				MyArrayUtils.convertListOfAmountTodoubleArray(yStationDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(chordDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistribution),
@@ -279,9 +273,10 @@ public class LiftCalc {
 				twistDistribution,
 				alphaZeroLiftDistribution,
 				vortexSemiSpanToSemiSpanRatio,
-				0.0, // alpha 
+				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // alpha 
 				currentMach,
-				altitude.doubleValue(SI.METER)
+				altitude,
+				deltaTemperature
 				);
 		
 		Amount<Angle> alphaOne = Amount.valueOf(toRadians(0.), SI.RADIAN);
@@ -778,8 +773,8 @@ public class LiftCalc {
 	@SuppressWarnings("unused")
 	public static double calculateCLMax(
 			double[] maximumLiftCoefficient, 
-			double semispan, 
-			double surface,
+			Amount<Length> semispan, 
+			Amount<Area> surface,
 			double[] yStationsActual,
 			double[] chordsVsYActual,
 			double[] xLEvsYActual,
@@ -787,9 +782,11 @@ public class LiftCalc {
 			List<Amount<Angle>> twist,
 			List<Amount<Angle>> alpha0l,
 			double vortexSemiSpanToSemiSpanRatio,
-			double alpha,
+			Amount<Angle> alpha,
 			double mach,
-			double altitude){
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature
+			){
 
 		// parameters definition
 
@@ -828,9 +825,11 @@ public class LiftCalc {
 				twist,
 				alpha0l,
 				vortexSemiSpanToSemiSpanRatio,
-				0.0,
+				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 				mach,
-				altitude);
+				altitude,
+				deltaTemperature
+				);
 
 		for (int j=0; j < _numberOfAlpha; j++) {
 			if (found == false) {
@@ -913,8 +912,8 @@ public class LiftCalc {
 	
 	public static double calculateCLMaxHIGHLIFT(
 			double[] maximumLiftCoefficient, 
-			double semispan, 
-			double surface,
+			Amount<Length> semispan, 
+			Amount<Area> surface,
 			double[] yStationsActual,
 			double[] chordsVsYActual,
 			double[] xLEvsYActual,
@@ -922,9 +921,10 @@ public class LiftCalc {
 			List<Amount<Angle>> twist,
 			List<Amount<Angle>> alpha0l,
 			double vortexSemiSpanToSemiSpanRatio,
-			double alpha,
+			Amount<Angle> alpha,
 			double mach,
-			double altitude,
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature,
 			double[] chordsOld){
 
 		// parameters definition
@@ -964,9 +964,10 @@ public class LiftCalc {
 				twist,
 				alpha0l,
 				vortexSemiSpanToSemiSpanRatio,
-				0.0,
+				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 				mach,
-				altitude);
+				altitude,
+				deltaTemperature);
 
 		for (int j=0; j < _numberOfAlpha; j++) {
 			if (found == false) {

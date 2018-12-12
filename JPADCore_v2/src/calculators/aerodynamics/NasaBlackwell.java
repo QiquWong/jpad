@@ -11,6 +11,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -18,6 +21,7 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.DecompositionSolver;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.jscience.geography.coordinates.Altitude;
 import org.jscience.physics.amount.Amount;
 
 import standaloneutils.GeometryCalc;
@@ -52,7 +56,12 @@ import writers.JPADStaticWriteUtils;
  */
 public class NasaBlackwell {
 
-	private double mach, altitude, surface, semispan, meanGeometricChord, vortexSemiSpan, vortexSemiSpanToSemiSpanRatio;
+	private double mach;
+	private Amount<Length> altitude;
+	private Amount<Temperature> deltaTemperature;
+	private Amount<Area> surface;
+	private Amount<Length> semispan, meanGeometricChord;
+	private double vortexSemiSpan, vortexSemiSpanToSemiSpanRatio;
 	private int nPointsSemispanWise;
 	private List<MyPoint> _listVortexPoints;
 	private List<MyPoint> _listControlPoints;
@@ -80,12 +89,9 @@ public class NasaBlackwell {
 
 	Amount<Angle> alphaInitial;
 
-
-
-
 	public NasaBlackwell(
-			double semispan, 
-			double surface,
+			Amount<Length> semispan, 
+			Amount<Area> surface,
 			double[] yStationsActual,
 			double[] chordsVsYActual,
 			double[] xLEvsYActual,
@@ -93,12 +99,14 @@ public class NasaBlackwell {
 			List<Amount<Angle>> twist,
 			List<Amount<Angle>> alpha0l,
 			double vortexSemiSpanToSemiSpanRatio,
-			double alpha,
+			Amount<Angle> alpha,
 			double mach,
-			double altitude) {
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature) {
 
 		this.mach = mach;
 		this.altitude = altitude;
+		this.deltaTemperature = deltaTemperature;
 		this.surface = surface;
 		this.semispan = semispan;
 		this.yStationsActual = yStationsActual;
@@ -106,7 +114,7 @@ public class NasaBlackwell {
 		this.xLEvsYActual = xLEvsYActual;
 		this.alpha0l = alpha0l;
 
-		this.meanGeometricChord = surface/(2*semispan);
+		this.meanGeometricChord = Amount.valueOf(surface.doubleValue(SI.SQUARE_METRE)/(2*semispan.doubleValue(SI.METER)), SI.METER);
 		this.vortexSemiSpanToSemiSpanRatio = vortexSemiSpanToSemiSpanRatio;
 		this.nPointsSemispanWise = (int) (1./(2*vortexSemiSpanToSemiSpanRatio));
 
@@ -117,11 +125,11 @@ public class NasaBlackwell {
 		if (dihedral.length != nPointsSemispanWise) this.dihedral = new double[nPointsSemispanWise];
 		else this.dihedral = dihedral;
 
-		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * semispan;
-		yStations = MyArrayUtils.linspace(0., semispan, nPointsSemispanWise);
+		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * semispan.doubleValue(SI.METER);
+		yStations = MyArrayUtils.linspace(0., semispan.doubleValue(SI.METER), nPointsSemispanWise);
 		yStationsNB = MyArray.createArray(MyArrayUtils.linspace(
 				vortexSemiSpan,
-				semispan - vortexSemiSpan,
+				semispan.doubleValue(SI.METER) - vortexSemiSpan,
 				nPointsSemispanWise));
 
 		prepareDiscreteSurface();
@@ -423,7 +431,7 @@ public class NasaBlackwell {
 			sum = sum + _gammaSignedDistribution.get(i)*2.*vortexSemiSpan;
 		}
 
-		_cLCurrent = (16*Math.PI/surface) * sum;
+		_cLCurrent = (16*Math.PI/surface.doubleValue(SI.SQUARE_METRE)) * sum;
 
 		//JPADStaticWriteUtils.logToConsole("\nCL lifting surface: " + _cLCurrent + "\n");
 
@@ -439,7 +447,7 @@ public class NasaBlackwell {
 		_clAdditionalDistribution.clear();
 		_clTotalDistribution.clear();
 		MyArray yy = yStationsNB.clone();
-		yy.add(semispan);
+		yy.add(semispan.doubleValue(SI.METER));
 		yy.toArray();
 
 		for(int i=0; i < nPointsSemispanWise+1; i++) {
@@ -457,11 +465,11 @@ public class NasaBlackwell {
 
 		for(int i=0; i < nPointsSemispanWise+1; i++) {
 			_gammaDistribution.add(
-					4 * Math.PI * SpeedCalc.calculateTAS(mach, altitude)
+					4 * Math.PI * SpeedCalc.calculateTAS(mach, altitude, deltaTemperature).doubleValue(SI.METERS_PER_SECOND)
 					* _gammaSignedDistribution.get(i));
 
 			_ccLDistribution.add(
-					_cLCurrent * meanGeometricChord * semispan * _gammaSignedDistribution.get(i)
+					_cLCurrent * meanGeometricChord.doubleValue(SI.METER) * semispan.doubleValue(SI.METER) * _gammaSignedDistribution.get(i)
 					/sum);
 
 			_clAdditionalDistribution.add(
@@ -482,7 +490,7 @@ public class NasaBlackwell {
 		//				+ "\nLoad distribution: " + Arrays.toString(_gammaSignedDistribution.times(semispan/sum)) 
 		//				+ "\n");
 
-		return _gammaSignedDistribution.times(semispan/sum);
+		return _gammaSignedDistribution.times(semispan.doubleValue(SI.METER)/sum);
 	}
 
 	public void calculate(Amount<Angle> alpha) {

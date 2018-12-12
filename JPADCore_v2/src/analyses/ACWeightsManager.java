@@ -2008,24 +2008,20 @@ public class ACWeightsManager {
 			massRatioCruise = 1/Math.exp(
 					(_theWeightsManagerInterface.getCruiseRange().doubleValue(NonSI.NAUTICAL_MILE)*_theWeightsManagerInterface.getCruiseSFC())
 					/(_theWeightsManagerInterface.getCruiseEfficiency()*
-							Amount.valueOf(
-									SpeedCalc.calculateTAS(
-											_theWeightsManagerInterface.getTheOperatingConditions().getMachCruise(),
-											_theWeightsManagerInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
-											),
-									SI.METERS_PER_SECOND
+							SpeedCalc.calculateTAS(
+									_theWeightsManagerInterface.getTheOperatingConditions().getMachCruise(),
+									_theWeightsManagerInterface.getTheOperatingConditions().getAltitudeCruise(),
+									_theWeightsManagerInterface.getTheOperatingConditions().getDeltaTemperatureCruise()
 									).doubleValue(NonSI.KNOT)
 							)
 					);
 			massRatioAlternate = 1/Math.exp(
 					(_theWeightsManagerInterface.getAlternateCruiseRange().doubleValue(NonSI.NAUTICAL_MILE)*_theWeightsManagerInterface.getAlternateCruiseSFC())
 					/(_theWeightsManagerInterface.getAlternateCruiseEfficiency()*
-							Amount.valueOf(
-									SpeedCalc.calculateTAS(
-											_theWeightsManagerInterface.getAlternateCruiseMachNumber(),
-											_theWeightsManagerInterface.getAlternateCruiseAltitide().doubleValue(SI.METER)
-											),
-									SI.METERS_PER_SECOND
+							SpeedCalc.calculateTAS(
+									_theWeightsManagerInterface.getAlternateCruiseMachNumber(),
+									_theWeightsManagerInterface.getAlternateCruiseAltitide(),
+									_theWeightsManagerInterface.getTheOperatingConditions().getDeltaTemperatureCruise()
 									).doubleValue(NonSI.KNOT)
 							)
 					);

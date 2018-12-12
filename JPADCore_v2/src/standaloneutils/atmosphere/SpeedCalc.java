@@ -2,12 +2,14 @@ package standaloneutils.atmosphere;
 
 import static java.lang.Math.sqrt;
 
+import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
-
-import standaloneutils.MyArrayUtils;
 
 public class SpeedCalc {
 
@@ -19,22 +21,14 @@ public class SpeedCalc {
 	 * @param CLmax
 	 * @return
 	 */
-	public static double calculateSpeedStall(
-			double altitude, double weight,
-			double surface, double CLmax) {
-		return sqrt((2*weight)/(surface*CLmax*AtmosphereCalc.getDensity(altitude)));
-	}
-
-	/**
-	 * 
-	 * @param lift (N)
-	 * @param s (m2)
-	 * @param rho (kg/m3)
-	 * @param cl
-	 * @return speed (m/s)
-	 */
-	public static double calculateSpeedAtCL(double lift, double s, double rho, double cl) {
-		return Math.sqrt(2*lift/(rho*s*cl));
+	public static Amount<Velocity> calculateSpeedStall(
+			Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> weight,
+			Amount<Area> surface, double CLmax) {
+		return Amount.valueOf(
+				sqrt((2*weight.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+						/(surface.doubleValue(SI.SQUARE_METRE)*CLmax*AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)))),
+				SI.METERS_PER_SECOND
+				);
 	}
 
 	/**
@@ -50,12 +44,15 @@ public class SpeedCalc {
 						- 1));
 	}
 	
-	public static double calculateTAS(double mach, double altitude) {
-		return mach*AtmosphereCalc.getSpeedOfSound(altitude);
+	public static Amount<Velocity> calculateTAS(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature) {
+		return Amount.valueOf(
+				mach*AtmosphereCalc.getSpeedOfSound(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)),
+				SI.METERS_PER_SECOND
+				);
 	}
 
-	public static Amount<Velocity> calculateTAS(Amount<Velocity> VTAS, double altitude) {
-		return VTAS.to(SI.METERS_PER_SECOND).divide(Math.sqrt(AtmosphereCalc.getAtmosphere(altitude).getDensityRatio()));
+	public static Amount<Velocity> calculateTAS(Amount<Velocity> VTAS, Amount<Length> altitude, Amount<Temperature> deltaTemperature) {
+		return VTAS.to(SI.METERS_PER_SECOND).divide(Math.sqrt(AtmosphereCalc.getAtmosphere(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)).getDensityRatio()));
 	}
 	
 	/**
@@ -73,25 +70,15 @@ public class SpeedCalc {
 						- 1));
 	}
 
-	public static double[] createSpeedArray(double stallSpeed, double maxSpeed, int size) {
-		return MyArrayUtils.linspace(stallSpeed, maxSpeed, size);
-	}
-	
-	public static double[] createSpeedArray(
-			double altitude, double weight, 
-			double surface, double CLmax, 
-			double maxSpeed, int size) {
-		return MyArrayUtils.linspace(calculateSpeedStall(altitude, weight, surface, CLmax), maxSpeed, size);
-	}
-
 	/**
 	 * 
 	 * @param altitude (m)
 	 * @param speed (m/s)
 	 * @return
 	 */
-	public static double calculateMach(double altitude, double speed) {
-		return speed/AtmosphereCalc.getAtmosphere(altitude).getSpeedOfSound();
+	public static double calculateMach(Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Velocity> speed) {
+		return speed.doubleValue(SI.METERS_PER_SECOND)
+				/AtmosphereCalc.getAtmosphere(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)).getSpeedOfSound();
 	}
 
 }

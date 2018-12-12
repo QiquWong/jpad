@@ -8,7 +8,11 @@ import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
+import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
+import javax.measure.quantity.Velocity;
 import javax.measure.quantity.Volume;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -45,11 +49,18 @@ public class DragCalc {
 	 * @param cD
 	 * @return
 	 */
-	public static double calculateDragAtSpeed(
-			double weight, double altitude, 
-			double surface,double speed,
+	public static Amount<Force> calculateDragAtSpeed(
+			Amount<Mass> weight, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
+			Amount<Area> surface, Amount<Velocity> speed,
 			double cD) {
-		return 0.5*AtmosphereCalc.getDensity(altitude)*speed*speed*surface*cD;
+		return Amount.valueOf(
+				0.5
+				*AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS))
+				*Math.pow(speed.doubleValue(SI.METERS_PER_SECOND), 2)
+				*surface.doubleValue(SI.SQUARE_METRE)
+				*cD,
+				SI.NEWTON
+				);
 	}
 	
 	/**
@@ -68,12 +79,12 @@ public class DragCalc {
 	 * @param airfoilType
 	 * @return drag (N)
 	 */
-	public static double calculateDragAtSpeed(double weight, double altitude, 
-			double surface, double speed, double cd0, double cL, double ar, double e,
-			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
+	public static Amount<Force> calculateDragAtSpeed(Amount<Mass> weight, Amount<Length> altitude, Amount<Temperature> deltaTemperature, 
+			Amount<Area> surface, Amount<Velocity> speed, double cd0, double cL, double ar, double e,
+			Amount<Angle> sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
 		
-		return calculateDragAtSpeed( weight, altitude, surface, speed, 
-				calculateCDTotal(cd0, cL, ar, e, SpeedCalc.calculateMach(altitude, speed), 
+		return calculateDragAtSpeed( weight, altitude, deltaTemperature, surface, speed, 
+				calculateCDTotal(cd0, cL, ar, e, SpeedCalc.calculateMach(altitude, deltaTemperature, speed), 
 						sweepHalfChord, tcMax, airfoilType) );
 	}
 	
@@ -91,12 +102,18 @@ public class DragCalc {
 	 * @param airfoilType
 	 * @return drag (N)
 	 */
-	public static double calculateDragAtSpeedLevelFlight(double weight, double altitude, 
-			double surface, double speed, double cd0, double ar, double e,
-			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
+	public static Amount<Force> calculateDragAtSpeedLevelFlight(Amount<Mass> weight, Amount<Length> altitude, Amount<Temperature> deltaTemperature,  
+			Amount<Area> surface, Amount<Velocity> speed, double cd0, double ar, double e,
+			Amount<Angle> sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
 		
-		return calculateDragAtSpeed(weight, altitude, surface, speed, cd0, 
-				LiftCalc.calculateLiftCoeff(weight, speed, surface, altitude), 
+		return calculateDragAtSpeed(weight, altitude, deltaTemperature, surface, speed, cd0, 
+				LiftCalc.calculateLiftCoeff(
+						Amount.valueOf(weight.doubleValue(SI.KILOGRAM)*9.81, SI.NEWTON),
+						speed,
+						surface, 
+						altitude, 
+						deltaTemperature
+						), 
 				ar, e, sweepHalfChord, tcMax, airfoilType);
 	}
 	
@@ -173,30 +190,32 @@ public class DragCalc {
 			LiftingSurface theLiftingSurface,
 			Double machTransonicThreshold,
 			Double mach,
-			Amount<Length> altitude
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature
 			){
 		
 		Double cD0Parasite = 0.0;
 		Double cF = 0.0;
 		
 		Double reynolds = AerodynamicCalc.calculateReynolds(
-				altitude.doubleValue(SI.METER),
+				altitude,
+				deltaTemperature,
 				mach,
-				theLiftingSurface.getMeanAerodynamicChord().getEstimatedValue()
+				theLiftingSurface.getMeanAerodynamicChord()
 				);
 		
 		if (AerodynamicCalc.calculateReCutOff(
 				mach,
 				machTransonicThreshold,
-				theLiftingSurface.getMeanAerodynamicChord().getEstimatedValue(), 
-				theLiftingSurface.getRoughness().getEstimatedValue()) < 
+				theLiftingSurface.getMeanAerodynamicChord(), 
+				theLiftingSurface.getRoughness()) < 
 				reynolds) {
 
 			reynolds = AerodynamicCalc.calculateReCutOff(
 					mach,
 					machTransonicThreshold,
-					theLiftingSurface.getMeanAerodynamicChord().getEstimatedValue(), 
-					theLiftingSurface.getRoughness().getEstimatedValue());
+					theLiftingSurface.getMeanAerodynamicChord(), 
+					theLiftingSurface.getRoughness());
 
 			cF  = (AerodynamicCalc.calculateCf(
 					reynolds, mach, 
@@ -565,8 +584,8 @@ public class DragCalc {
 	 * @return
 	 */
 	public static double calculateCDWaveLockKornCriticalMachKroo(double cL, double mach, 
-			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
-		return calculateCDWaveLockKorn(cL, mach, AerodynamicCalc.calculateMachCriticalKroo(cL, Amount.valueOf(sweepHalfChord,SI.RADIAN), tcMax, airfoilType));
+			Amount<Angle> sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
+		return calculateCDWaveLockKorn(cL, mach, AerodynamicCalc.calculateMachCriticalKroo(cL, sweepHalfChord, tcMax, airfoilType));
 	}
 	
 	/**
@@ -601,7 +620,7 @@ public class DragCalc {
 	 */
 	public static double calculateCDTotal(
 			double cd0, double cL, double ar, double e, double mach, 
-			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
+			Amount<Angle> sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
 		return calculateCDTotal(cd0, cL, ar, e, mach, 
 				calculateCDWaveLockKornCriticalMachKroo(cL, mach, sweepHalfChord, tcMax, airfoilType));
 	}
@@ -641,20 +660,17 @@ public class DragCalc {
 	 * @param airfoilType
 	 * @return
 	 */
-	public static double[] calculateDragVsSpeed(
-			double weight, double altitude, 
-			double surface, double cD0, double ar, double oswald,
-			double speed[], 
-			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType
+	public static List<Amount<Force>> calculateDragVsSpeed(
+			Amount<Mass> weight, Amount<Length> altitude, Amount<Temperature> deltaTemperature, 
+			Amount<Area> surface, double cD0, double ar, double oswald,
+			List<Amount<Velocity>> speed, 
+			Amount<Angle> sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType
 			) {
 
-		double cL, mach, cD;
-		double[] drag = new double[speed.length];
-		for (int i=0; i< speed.length; i++){
-			cL = LiftCalc.calculateLiftCoeff(weight, speed[i], surface, altitude);
-			mach = SpeedCalc.calculateMach(altitude, speed[i]);
-			cD = calculateCDTotal(cD0, cL, ar, oswald, mach, sweepHalfChord, tcMax, airfoilType);
-			drag[i] = calculateDragAtSpeed(weight, altitude, surface, speed[i], cD);
+		List<Amount<Force>> drag = new ArrayList<>();
+		for (int i=0; i< speed.size(); i++){
+			double cL = LiftCalc.calculateLiftCoeff(Amount.valueOf(weight.doubleValue(SI.KILOGRAM)*9.81, SI.NEWTON), speed.get(i), surface, altitude, deltaTemperature);
+			drag.add(calculateDragAtSpeed(weight, altitude, deltaTemperature, surface, speed.get(i), cD0, cL, ar, oswald, sweepHalfChord, tcMax, airfoilType));
 		}
 		return drag;
 	}
@@ -675,23 +691,23 @@ public class DragCalc {
 	 * @param airfoilType
 	 * @return
 	 */
-	public static double[] calculateDragVsSpeed(
-			double weight, double altitude, 
-			double surface, 
+	public static List<Amount<Force>> calculateDragVsSpeed(
+			Amount<Mass> weight, Amount<Length> altitude, Amount<Temperature> deltaTemperature, 
+			Amount<Area> surface,
 			double[] polarCL,
 			double[] polarCD,
-			double speed[], 
-			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType
+			List<Amount<Velocity>> speed, 
+			Amount<Angle> sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType
 			) {
 
 		double cL, cD, cDWave, cDTot;
-		double[] drag = new double[speed.length];
-		for (int i=0; i< speed.length; i++){
-			cL = LiftCalc.calculateLiftCoeff(weight, speed[i], surface, altitude);
+		List<Amount<Force>> drag = new ArrayList<>();
+		for (int i=0; i< speed.size(); i++){
+			cL = LiftCalc.calculateLiftCoeff(Amount.valueOf(weight.doubleValue(SI.KILOGRAM)*9.81, SI.NEWTON), speed.get(i), surface, altitude, deltaTemperature);
 			cD = MyMathUtils.getInterpolatedValue1DLinear(polarCL, polarCD, cL);
 			cDWave = calculateCDWaveLockKorn(
 					cL, 
-					SpeedCalc.calculateMach(altitude, speed[i]), 
+					SpeedCalc.calculateMach(altitude, deltaTemperature, speed.get(i)), 
 					AerodynamicCalc.calculateMachCriticalKornMason(
 							cL, 
 							sweepHalfChord,
@@ -699,13 +715,13 @@ public class DragCalc {
 							airfoilType)
 					);
 			cDTot = cD + cDWave;
-			drag[i] = calculateDragAtSpeed(weight, altitude, surface, speed[i], cDTot);
+			drag.add(calculateDragAtSpeed(weight, altitude, deltaTemperature, surface, speed.get(i), cDTot));
 		}
 		return drag;
 	}
 	
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude (m)
 	 * @param phi
 	 * @param weight (N)
@@ -721,20 +737,19 @@ public class DragCalc {
 	 * @return
 	 */
 	public static List<DragMap> calculateDragAndPowerRequired(
-			double[] altitude, double[] phi, double[] weight,
-			double[] speed,
-			double surface, double CLmax, double cD0,
-			double ar, double oswald, double sweepHalfChord, 
+			List<Amount<Length>> altitude, Amount<Temperature> deltaTemperature, List<Amount<Mass>> weight,
+			List<Amount<Velocity>> speed,
+			Amount<Area> surface, double CLmax, double cD0,
+			double ar, double oswald, Amount<Angle> sweepHalfChord, 
 			double tcMax, AirfoilTypeEnum airfoilType) {
 
-		int nAlt = altitude.length;
 		List<DragMap> list = new ArrayList<DragMap>();
 
-		for(int k=0; k<weight.length; k++) {
-				for(int i=0; i<nAlt; i++) {
+		for(int k=0; k<weight.size(); k++) {
+				for(int i=0; i<altitude.size(); i++) {
 
-					list.add(new DragMap(weight[k], altitude[i], 
-							calculateDragVsSpeed(weight[k], altitude[i], 
+					list.add(new DragMap(weight.get(k), altitude.get(i), deltaTemperature,
+							calculateDragVsSpeed(weight.get(k), altitude.get(i), deltaTemperature, 
 									surface, cD0, ar, oswald, speed, sweepHalfChord, tcMax, airfoilType), 
 									speed));
 				}
@@ -744,7 +759,7 @@ public class DragCalc {
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
 	 * @param weight
 	 * @param speed
@@ -759,46 +774,47 @@ public class DragCalc {
 	 * @return
 	 */
 	public static DragMap calculateDragAndPowerRequired(
-			double altitude, double weight, double[] speed,
-			double surface,
-			double CLmax, double cD0, double ar,
-			double oswald, double sweepHalfChord, double tcMax, 
+			Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> weight, List<Amount<Velocity>> speed,
+			Amount<Area> surface,
+			double cLmax, double cD0, double ar,
+			double oswald, Amount<Angle> sweepHalfChord, double tcMax, 
 			AirfoilTypeEnum airfoilType) {
 
-		return new DragMap(weight, altitude, 
-				calculateDragVsSpeed(weight, altitude, 
+		return new DragMap(weight, altitude, deltaTemperature, 
+				calculateDragVsSpeed(weight, altitude, deltaTemperature, 
 						surface, cD0, ar, oswald, speed, sweepHalfChord, tcMax, airfoilType), 
 						speed);
 	}
 
 	public static List<DragMap> calculateDragAndPowerRequired(
-			double[] altitude,
-			double[] phi,
-			double[] weight,
-			double[] speed,
-			double surface,
-			double CLmax,
+			List<Amount<Length>> altitude,
+			Amount<Temperature> deltaTemperature,
+			List<Double> phi,
+			List<Amount<Mass>> weight,
+			List<Amount<Velocity>> speed,
+			Amount<Area> surface,
+			double cLmax,
 			double polarCL[],
 			double polarCD[],
-			double sweepHalfChord,
+			Amount<Angle> sweepHalfChord,
 			double tcMax, 
 			AirfoilTypeEnum airfoilType
 			) {
 
-		int nAlt = altitude.length;
-		int nThrottle = phi.length;
 		List<DragMap> list = new ArrayList<DragMap>();
 
-		for(int f=0; f<nThrottle; f++) {
-			for(int i=0; i<nAlt; i++) {
-				for(int k=0; k<weight.length; k++) {
+		for(int f=0; f<phi.size(); f++) {
+			for(int i=0; i<altitude.size(); i++) {
+				for(int k=0; k<weight.size(); k++) {
 
 				list.add(new DragMap(
-						weight[k],
-						altitude[i], 
+						weight.get(k),
+						altitude.get(i),
+						deltaTemperature,
 						calculateDragVsSpeed(
-								weight[k],
-								altitude[i], 
+								weight.get(k),
+								altitude.get(i),
+								deltaTemperature,
 								surface,
 								polarCL,
 								polarCD,
@@ -834,21 +850,23 @@ public class DragCalc {
 	 * @return
 	 */
 	public static DragMap calculateDragAndPowerRequired(
-			double altitude, double weight, double[] speed,
-			double surface,
-			double CLmax,
+			Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> weight, List<Amount<Velocity>> speed,
+			Amount<Area> surface,
+			double cLmax,
 			double polarCL[],
 			double polarCD[],
-			double sweepHalfChord,
+			Amount<Angle> sweepHalfChord,
 			double tcMax, 
 			AirfoilTypeEnum airfoilType) {
 
 		return new DragMap(
 				weight,
-				altitude, 
+				altitude,
+				deltaTemperature,
 				calculateDragVsSpeed(
 						weight,
 						altitude,
+						deltaTemperature,
 						surface,
 						polarCL,
 						polarCD,
@@ -859,21 +877,6 @@ public class DragCalc {
 						), 
 				speed
 				);
-	}
-	
-	/**
-	 * @author Lorenzo Attanasio
-	 * @param rho density (kg/m3)
-	 * @param cD0 zero lift drag coefficient
-	 * @param w weight (N)
-	 * @param s surface (m2)
-	 * @param v speed (m/s)
-	 * @param K
-	 * @return
-	 */
-	public static double calculatePowerRequiredAtSpeed(
-			double rho, double cD0, double w, double s, double v, double K) {
-		return 0.5 * rho*cD0*s*v*v*v + (2/rho)*s*K*(w/s)*(w/s)/v;
 	}
 	
 	/**

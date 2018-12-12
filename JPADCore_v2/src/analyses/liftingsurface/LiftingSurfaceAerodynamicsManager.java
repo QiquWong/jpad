@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -61,7 +62,8 @@ public class LiftingSurfaceAerodynamicsManager {
 	private List<Amount<Angle>> _alphaArray;
 	private List<Amount<Angle>> _alphaArrayClean; 
 	private Amount<Length> _currentAltitude;
-	private Double _currentMachNumber;
+	private Amount<Temperature> _currentDeltaTemperature;
+	private double _currentMachNumber;
 	private Amount<Angle> _currentAlpha;
 	private double[] _etaStationDistribution; 
 	private List<Amount<Length>> _yStationDistribution;
@@ -431,8 +433,8 @@ public class LiftingSurfaceAerodynamicsManager {
 		}
 
 		theNasaBlackwellCalculator = new NasaBlackwell(
-				_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
-				_theLiftingSurface.getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+				_theLiftingSurface.getSemiSpan(),
+				_theLiftingSurface.getSurfacePlanform(),
 				MyArrayUtils.convertListOfAmountTodoubleArray(_yStationDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(_chordDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(_xLEDistribution),
@@ -440,14 +442,15 @@ public class LiftingSurfaceAerodynamicsManager {
 				_twistDistribution,
 				_alphaZeroLiftDistribution,
 				_vortexSemiSpanToSemiSpanRatio,
-				0.0,
+				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 				_currentMachNumber,
-				_currentAltitude.doubleValue(SI.METER)
+				_currentAltitude,
+				getCurrentDeltaTemperature()
 				);
 		
 		theNasaBlackwellCalculatorAlphaZeroLift = new NasaBlackwell(
-				_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
-				_theLiftingSurface.getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+				_theLiftingSurface.getSemiSpan(),
+				_theLiftingSurface.getSurfacePlanform(),
 				MyArrayUtils.convertListOfAmountTodoubleArray(_yStationDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(_chordDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(_xLEDistribution),
@@ -455,9 +458,10 @@ public class LiftingSurfaceAerodynamicsManager {
 				_twistDistribution,
 				_alphaZeroLiftDistribution,
 				_vortexSemiSpanToSemiSpanRatio,
-				0.0,
+				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 				_currentMachNumber,
-				_currentAltitude.doubleValue(SI.METER)
+				_currentAltitude,
+				_currentDeltaTemperature
 				);
 
 		//----------------------------------------------------------------------------------------------------------------------
@@ -2278,7 +2282,8 @@ public class LiftingSurfaceAerodynamicsManager {
 		public void semiempirical(
 				double machTransonictThreshold,
 				double currentMachNumber,
-				Amount<Length> currentAltitude
+				Amount<Length> currentAltitude,
+				Amount<Temperature> currentDeltaTemperature
 				) {
 			
 			
@@ -2286,7 +2291,8 @@ public class LiftingSurfaceAerodynamicsManager {
 					getTheLiftingSurface(),
 					machTransonictThreshold,
 					currentMachNumber,
-					currentAltitude
+					currentAltitude, 
+					currentDeltaTemperature
 					);
 			
 			List<Double> cD0ParasiteList = new ArrayList<>();
@@ -2333,13 +2339,14 @@ public class LiftingSurfaceAerodynamicsManager {
 		
 		public void semiempirical(
 				Double mach,
-				Amount<Length> altitude
+				Amount<Length> altitude, 
+				Amount<Temperature> deltaTemperature
 				) {
 			
 			Double kExcr = _theLiftingSurface.getKExcr();
 			
 			CalcCDParasite calcCDParasite = new CalcCDParasite();
-			calcCDParasite.semiempirical(_theOperatingConditions.getMachTransonicThreshold(), mach, altitude);
+			calcCDParasite.semiempirical(_theOperatingConditions.getMachTransonicThreshold(), mach, altitude, deltaTemperature);
 			
 			CalcCD0Gap calcCDGap= new CalcCD0Gap();
 			calcCDGap.semiempirical(mach, altitude);
@@ -2498,7 +2505,7 @@ public class LiftingSurfaceAerodynamicsManager {
 					DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 							calcCLAtAlpha.nasaBlackwellCompleteCurve(_currentAlpha),
 							_currentMachNumber,
-							_theLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
+							_theLiftingSurface.getEquivalentWing().getPanels().get(0).getSweepHalfChord(),
 							_meanAirfoil.getThicknessToChordRatio(),
 							_meanAirfoil.getType()
 							)
@@ -2648,8 +2655,9 @@ public class LiftingSurfaceAerodynamicsManager {
 	public class CalcPolar {
 
 		public void semiempirical(
-				Double mach,
-				Amount<Length> altitude
+				double mach,
+				Amount<Length> altitude,
+				Amount<Temperature> deltaTemperature
 				) {
 			
 			if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null) {
@@ -2664,7 +2672,8 @@ public class LiftingSurfaceAerodynamicsManager {
 				cDArray[i] = calcCDAtAlpha.semiempirical(
 						_alphaArrayClean.get(i).to(SI.RADIAN),
 						mach,
-						altitude
+						altitude, 
+						deltaTemperature
 						);
 			}
 			
@@ -2710,13 +2719,14 @@ public class LiftingSurfaceAerodynamicsManager {
 		public double semiempirical(
 				Amount<Angle> alpha,
 				Double mach,
-				Amount<Length> altitude) {
+				Amount<Length> altitude,
+				Amount<Temperature> deltaTemperature) {
 			
 			double cDActual = 0.0;
 			
 			if(_cD0.get(MethodEnum.SEMIEMPIRICAL) == null) {
 				CalcCD0 calcCD0 = new CalcCD0(); 
-				calcCD0.semiempirical(mach, altitude);
+				calcCD0.semiempirical(mach, altitude, deltaTemperature);
 			}
 			
 			// TODO : CHECK WHICH OSWALD IS BETTER !
@@ -2823,6 +2833,7 @@ public class LiftingSurfaceAerodynamicsManager {
 					_vortexSemiSpanToSemiSpanRatio,
 					_currentMachNumber,
 					_currentAltitude, 
+					_currentDeltaTemperature,
 					_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST)
 					);
 			
@@ -3781,6 +3792,14 @@ public class LiftingSurfaceAerodynamicsManager {
 
 	public void setCurrentAltitude(Amount<Length> _currentAltitude) {
 		this._currentAltitude = _currentAltitude;
+	}
+
+	public Amount<Temperature> getCurrentDeltaTemperature() {
+		return _currentDeltaTemperature;
+	}
+
+	public void setCurrentDeltaTemperature(Amount<Temperature> _currentDeltaTemperature) {
+		this._currentDeltaTemperature = _currentDeltaTemperature;
 	}
 
 	public Double getCurrentMachNumber() {

@@ -2,11 +2,9 @@ package sandbox2.vt;
 
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilFamilyEnum;
-import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
-import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
 
 public class DatabaseTest {
 
@@ -138,38 +136,6 @@ public class DatabaseTest {
 		System.out.println("kHf_vs_zh_over_bv1_low_wing: " + kHf_vs_zh_over_bv1_low_wing + " m"); // expected = 0.9996310358631683
 		System.out.println("----------------------------------------------------------------------\n");
 		
-		
-		//----------------------------------------------------------------------------------------
-		// TURBOFAN DATABASE
-		TurbofanEngineDatabaseReader turbofanReader = new TurbofanEngineDatabaseReader(
-				MyConfiguration.getDir(FoldersEnum.DATABASE_DIR),
-				"TurbofanEngineDatabase.h5");
-		
-		System.out.println("\n\n\n\n----------------------------------------------------------------------");
-		double takeOffThrustFunction = turbofanReader.getThrustTakeOff(0.6, 1524, 6.5); 
-		System.out.println("takeOffThrustFunction: " + takeOffThrustFunction + " m"); // expected = 0.6277028528255855
-		System.out.println("----------------------------------------------------------------------\n");
-	
-		
-		System.out.println("----------------------------------------------------------------------");
-		double climbThrustFunction = turbofanReader.getThrustMaximumClimb(0.6779661016949152, 7620, 6.5); 
-		System.out.println("climbThrustFunction: " + climbThrustFunction + " m"); // expected = 0.2608490029162512
-		System.out.println("----------------------------------------------------------------------\n");
-		
-		System.out.println("----------------------------------------------------------------------");
-		double cruiseThrustFunction = turbofanReader.getThrustMaximumCruise(0.6779661016949152, 7620, 6.5); 
-		System.out.println("cruiseThrustFunction: " + cruiseThrustFunction + " m"); // expected = 0.2586108556884798
-		System.out.println("----------------------------------------------------------------------\n");
-		
-		System.out.println("----------------------------------------------------------------------");
-		double descentThrustFunction = turbofanReader.getThrustDescent(0.6779661016949152, 7620, 6.5); 
-		System.out.println("descentThrustFunction: " + descentThrustFunction + " m"); // expected = -0.004850378389293979
-		System.out.println("----------------------------------------------------------------------\n");
-		
-		System.out.println("----------------------------------------------------------------------");
-		double sfcFunction = turbofanReader.getSFC(0.45, 0.0, 0.99661016949152554, 6.5, EngineOperatingConditionEnum.CRUISE); 
-		System.out.println("sfcFunction: " + sfcFunction + " m"); // expected = 0.5343414371867597
-		System.out.println("----------------------------------------------------------------------\n");
 		
 	}
 

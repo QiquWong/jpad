@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
@@ -37,11 +38,12 @@ public class NacelleAerodynamicsManager {
 	private LiftingSurfaceAerodynamicsManager _theWingAerodynamicManager;
 	private List<Amount<Angle>> _alphaArray;
 	private ConditionEnum _theCondition;
-	private Double _reynolds;
-	private Double _xTransition;
-	private Double _cF;
-	private Double _currentMach;
+	private double _reynolds;
+	private double _xTransition;
+	private double _cF;
+	private double _currentMach;
 	private Amount<Length> _currentAltitude;
+	private Amount<Temperature> _currentDeltaTemperature;
 	private final double[] _positionOfC4ToNacelleLength = {.1,.2,.3,.4,.5,.6,.7};
 	private final double[] _kF = {.115, .172, .344, .487, .688, .888, 1.146};
 
@@ -90,27 +92,32 @@ public class NacelleAerodynamicsManager {
 		case TAKE_OFF:
 			_currentMach = _theOperatingConditions.getMachTakeOff();
 			_currentAltitude = _theOperatingConditions.getAltitudeTakeOff().to(SI.METER);
+			_currentDeltaTemperature = _theOperatingConditions.getDeltaTemperatureTakeOff().to(SI.CELSIUS);
 			break;
 		case CLIMB:
 			_currentMach = _theOperatingConditions.getMachClimb();
 			_currentAltitude = _theOperatingConditions.getAltitudeClimb().to(SI.METER);
+			_currentDeltaTemperature = _theOperatingConditions.getDeltaTemperatureClimb().to(SI.CELSIUS);
 			break;
 		case CRUISE:
 			_currentMach = _theOperatingConditions.getMachCruise();
 			_currentAltitude = _theOperatingConditions.getAltitudeCruise().to(SI.METER);
+			_currentDeltaTemperature = _theOperatingConditions.getDeltaTemperatureCruise().to(SI.CELSIUS);
 			break;
 		case LANDING:
 			_currentMach = _theOperatingConditions.getMachLanding();
 			_currentAltitude = _theOperatingConditions.getAltitudeLanding().to(SI.METER);
+			_currentDeltaTemperature = _theOperatingConditions.getDeltaTemperatureLanding().to(SI.CELSIUS);
 			break;
 		}
 		
 		_reynolds = AerodynamicCalc.calculateReynoldsEffective(
 				_currentMach,
 				0.3,
-				_currentAltitude.doubleValue(SI.METER), 
-				_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER),
-				_theNacelles.getNacellesList().get(0).getRoughness().doubleValue(SI.METER)
+				_currentAltitude,
+				_currentDeltaTemperature,
+				_theNacelles.getNacellesList().get(0).getLength(),
+				_theNacelles.getNacellesList().get(0).getRoughness()
 				);
 		_xTransition = 0.0; // TODO : Why ???
 		_cF = AerodynamicCalc.calculateCf(_reynolds, _currentMach, _xTransition);
@@ -695,6 +702,14 @@ public class NacelleAerodynamicsManager {
 
 	public void setCurrentAltitude(Amount<Length> _currentAltitude) {
 		this._currentAltitude = _currentAltitude;
+	}
+
+	public Amount<Temperature> getCurrentDeltaTemperature() {
+		return _currentDeltaTemperature;
+	}
+
+	public void setCurrentDeltaTemperature(Amount<Temperature> _currentDeltaTemperature) {
+		this._currentDeltaTemperature = _currentDeltaTemperature;
 	}
 
 	public void setCD0Parasite(Map<MethodEnum, Double> _cD0Parasite) {

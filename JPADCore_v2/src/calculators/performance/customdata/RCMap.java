@@ -1,102 +1,129 @@
 package calculators.performance.customdata;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
+import javax.measure.quantity.Power;
+import javax.measure.quantity.Temperature;
+import javax.measure.quantity.Velocity;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
+
 import configuration.enumerations.EngineOperatingConditionEnum;
 import standaloneutils.atmosphere.SpeedCalc;
 
 public class RCMap extends PerformanceMap{
 
-	private double RCmax, theta, RCMaxSpeed, RCMaxMach;
-	double[] powerRequired, powerAvailable, RC, speed, gamma;
+	private Amount<Velocity> rcMax, rcMaxSpeed; 
+	private double rcMaxMach;
+	private Amount<Angle> theta;
+	private List<Amount<Power>> powerRequired, powerAvailable;
+	private List<Amount<Velocity>> rc, speed;
+	private List<Amount<Angle>> gamma;
 
-	public RCMap(double altitude, double phi, double[] powerRequired, double[] powerAvailable,
-			double[] RC, double RCMax, double BPR, double weight, EngineOperatingConditionEnum flightCondition,
-			double[] speed, double RCMaxSpeed) {
+	public RCMap(Amount<Length> altitude, Amount<Temperature> deltaTemperature, double phi, List<Amount<Power>> powerRequired, List<Amount<Power>> powerAvailable,
+			List<Amount<Velocity>> rc, Amount<Velocity> rcMax, Amount<Mass> weight, EngineOperatingConditionEnum flightCondition,
+			List<Amount<Velocity>> speed, Amount<Velocity> rcMaxSpeed) {
 		this.altitude = altitude;
+		this.deltaTemperature = deltaTemperature;
 		this.phi = phi;
 		this.powerRequired = powerRequired;
 		this.powerAvailable = powerAvailable;
-		this.bpr = BPR;
 		this.flightCondition = flightCondition;
-		this.RC = RC;
-		this.RCmax = RCMax;
+		this.rc = rc;
+		this.rcMax = rcMax;
 		this.weight = weight;
 		this.speed = speed;
-		this.RCMaxSpeed = RCMaxSpeed;
-		this.RCMaxMach = SpeedCalc.calculateMach(altitude, RCMaxSpeed);
+		this.rcMaxSpeed = rcMaxSpeed;
+		this.rcMaxMach = SpeedCalc.calculateMach(altitude, deltaTemperature, rcMaxSpeed);
 		
-		this.theta = Math.asin(RCMax/RCMaxSpeed);
-		this.gamma = new double[RC.length];
-		for (int i=0; i<RC.length; i++) {
-			this.gamma[i] = Math.asin(RC[i]/speed[i]);
+		this.theta = Amount.valueOf(Math.asin(rcMax.doubleValue(SI.METERS_PER_SECOND)/rcMaxSpeed.doubleValue(SI.METERS_PER_SECOND)), SI.RADIAN).to(NonSI.DEGREE_ANGLE);
+		this.gamma = new ArrayList<>();
+		for (int i=0; i<rc.size(); i++) {
+			gamma.add(
+					Amount.valueOf(
+							Math.asin(rc.get(i).doubleValue(SI.METERS_PER_SECOND)/speed.get(i).doubleValue(SI.METERS_PER_SECOND)),
+							SI.RADIAN)
+					.to(NonSI.DEGREE_ANGLE)
+					);
 		}
 	}
 
-	public double getRCmax() {
-		return RCmax;
+	public Amount<Velocity> getRcMax() {
+		return rcMax;
 	}
 
-	public void setRCmax(double rCmax) {
-		RCmax = rCmax;
+	public void setRcMax(Amount<Velocity> rcMax) {
+		this.rcMax = rcMax;
 	}
 
-	public double getTheta() {
+	public Amount<Velocity> getRcMaxSpeed() {
+		return rcMaxSpeed;
+	}
+
+	public void setRcMaxSpeed(Amount<Velocity> rcMaxSpeed) {
+		this.rcMaxSpeed = rcMaxSpeed;
+	}
+
+	public double getRcMaxMach() {
+		return rcMaxMach;
+	}
+
+	public void setRcMaxMach(double rcMaxMach) {
+		this.rcMaxMach = rcMaxMach;
+	}
+
+	public Amount<Angle> getTheta() {
 		return theta;
 	}
 
-	public void setTheta(double theta) {
+	public void setTheta(Amount<Angle> theta) {
 		this.theta = theta;
 	}
 
-	public double getRCMaxMach() {
-		return RCMaxMach;
-	}
-
-	public void setRCMaxMach(double rCMaxMach) {
-		RCMaxMach = rCMaxMach;
-	}
-
-	public double[] getPowerRequired() {
+	public List<Amount<Power>> getPowerRequired() {
 		return powerRequired;
 	}
 
-	public void setPowerRequired(double[] powerRequired) {
+	public void setPowerRequired(List<Amount<Power>> powerRequired) {
 		this.powerRequired = powerRequired;
 	}
 
-	public double[] getPowerAvailable() {
+	public List<Amount<Power>> getPowerAvailable() {
 		return powerAvailable;
 	}
 
-	public void setPowerAvailable(double[] powerAvailable) {
+	public void setPowerAvailable(List<Amount<Power>> powerAvailable) {
 		this.powerAvailable = powerAvailable;
 	}
 
-	public double[] getRC() {
-		return RC;
+	public List<Amount<Velocity>> getRc() {
+		return rc;
 	}
 
-	public void setRC(double[] rC) {
-		RC = rC;
+	public void setRc(List<Amount<Velocity>> rc) {
+		this.rc = rc;
 	}
 
-	public double[] getSpeed() {
+	public List<Amount<Velocity>> getSpeed() {
 		return speed;
 	}
 
-	public void setSpeed(double[] speed) {
+	public void setSpeed(List<Amount<Velocity>> speed) {
 		this.speed = speed;
 	}
 
-	public double[] getGamma() {
+	public List<Amount<Angle>> getGamma() {
 		return gamma;
 	}
 
-	public void setGamma(double[] gamma) {
+	public void setGamma(List<Amount<Angle>> gamma) {
 		this.gamma = gamma;
-	}
-
-	public double getRCMaxSpeed() {
-		return RCMaxSpeed;
 	}
 
 }

@@ -1449,7 +1449,9 @@ public class ACAnalysisManager {
 
 		_vOptimumCruise = Amount.valueOf(_theAnalysisManagerInterface.getTheOperatingConditions().getMachCruise()
 				*AtmosphereCalc.getSpeedOfSound(
-						_theAnalysisManagerInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)), SI.METERS_PER_SECOND);
+						_theAnalysisManagerInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
+						_theAnalysisManagerInterface.getTheOperatingConditions().getDeltaTemperatureCruise().doubleValue(SI.CELSIUS)
+						), SI.METERS_PER_SECOND);
 		
 		// FAR Part 25 paragraph 25.335
 		_vDive = _vMaxCruise.times(1.25); 

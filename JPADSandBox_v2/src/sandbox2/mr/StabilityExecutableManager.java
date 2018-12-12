@@ -15,6 +15,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -86,6 +87,7 @@ public class StabilityExecutableManager {
 	private Amount<Length> _zCGAircraft;
 
 	private Amount<Length> _altitude;
+	private Amount<Temperature> _deltaTemperature;
 	private Double _machCurrent;
 	private Double _reynoldsCurrent;
 
@@ -1471,8 +1473,8 @@ public class StabilityExecutableManager {
 		//NASA BLACKWELL
 		// wing
 		theNasaBlackwellCalculatorMachActualWing = new NasaBlackwell(
-				this._wingSemiSpan.doubleValue(SI.METER),
-				this._wingSurface.doubleValue(SI.SQUARE_METRE),
+				this._wingSemiSpan,
+				this._wingSurface,
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingYDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingChordsDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingXleDistribution),
@@ -1480,14 +1482,15 @@ public class StabilityExecutableManager {
 				_wingTwistDistribution,
 				_wingAlphaStarDistribution,
 				_wingVortexSemiSpanToSemiSpanRatio,
-				0.0,
+				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 				this._machCurrent,
-				this.getAltitude().doubleValue(SI.METER)
+				this._altitude,
+				this._deltaTemperature
 				);
 
 		theNasaBlackwellCalculatorMachZero = new NasaBlackwell(
-				this._wingSemiSpan.doubleValue(SI.METER),
-				this._wingSurface.doubleValue(SI.SQUARE_METRE),
+				this._wingSemiSpan,
+				this._wingSurface,
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingYDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingChordsDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingXleDistribution),
@@ -1495,15 +1498,16 @@ public class StabilityExecutableManager {
 				_wingTwistDistribution,
 				_wingAlphaStarDistribution,
 				_wingVortexSemiSpanToSemiSpanRatio,
+				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 				0.0,
-				0.0,
-				this.getAltitude().doubleValue(SI.METER)
+				this._altitude,
+				this._deltaTemperature
 				);
 		
 		if( _theCondition == ConditionEnum.TAKE_OFF || _theCondition == ConditionEnum.LANDING){
 			theNasaBlackwellCalculatorMachActualWingCLEAN = new NasaBlackwell(
-					this._wingSemiSpan.doubleValue(SI.METER),
-					this._wingSurface.doubleValue(SI.SQUARE_METRE),
+					this._wingSemiSpan,
+					this._wingSurface,
 					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingYDistributionCLEAN),
 					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingChordsDistributionCLEAN),
 					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingXleDistributionCLEAN),
@@ -1511,14 +1515,15 @@ public class StabilityExecutableManager {
 					_wingTwistDistributionCLEAN,
 					_wingAlphaStarDistributionCLEAN,
 					_wingVortexSemiSpanToSemiSpanRatio,
-					0.0,
+					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 					this._machCurrent,
-					this.getAltitude().doubleValue(SI.METER)
+					this._altitude,
+					this._deltaTemperature
 					);
 
 			theNasaBlackwellCalculatorMachZeroCLEAN = new NasaBlackwell(
-					this._wingSemiSpan.doubleValue(SI.METER),
-					this._wingSurface.doubleValue(SI.SQUARE_METRE),
+					this._wingSemiSpan,
+					this._wingSurface,
 					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingYDistributionCLEAN),
 					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingChordsDistributionCLEAN),
 					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingXleDistributionCLEAN),
@@ -1526,16 +1531,17 @@ public class StabilityExecutableManager {
 					_wingTwistDistributionCLEAN,
 					_wingAlphaStarDistributionCLEAN,
 					_wingVortexSemiSpanToSemiSpanRatio,
+					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 					0.0,
-					0.0,
-					this.getAltitude().doubleValue(SI.METER)
+					this._altitude,
+					this._deltaTemperature
 					);
 		}
 
 		// horizontal tail
 		theNasaBlackwellCalculatorMachActualHTail = new NasaBlackwell(
-				this._hTailSemiSpan.doubleValue(SI.METER),
-				this._hTailSurface.doubleValue(SI.SQUARE_METRE),
+				this._hTailSemiSpan,
+				this._hTailSurface,
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._hTailYDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._hTailChordsDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._hTailXleDistribution),
@@ -1543,9 +1549,10 @@ public class StabilityExecutableManager {
 				_hTailTwistDistribution,
 				_hTailAlphaZeroLiftDistribution,
 				_hTailVortexSemiSpanToSemiSpanRatio,
-				0.0,
+				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 				this._machCurrent,
-				this.getAltitude().doubleValue(SI.METER)
+				this._altitude,
+				this._deltaTemperature
 				);
 
 

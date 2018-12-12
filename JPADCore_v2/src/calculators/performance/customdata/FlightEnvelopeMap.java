@@ -1,30 +1,39 @@
 package calculators.performance.customdata;
 
+
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
+import javax.measure.quantity.Velocity;
+
+import org.jscience.physics.amount.Amount;
+
 import configuration.enumerations.EngineOperatingConditionEnum;
 import standaloneutils.atmosphere.SpeedCalc;
 
 public class FlightEnvelopeMap extends PerformanceMap{
 
-	double maxSpeed, minSpeed, maxMach, minMach;
+	private Amount<Velocity> maxSpeed, minSpeed;
+	private double maxMach, minMach;
 
-	public FlightEnvelopeMap( double altitude, double phi, double weight, 
-			double BPR, EngineOperatingConditionEnum flightCondition, double maxSpeed, double minSpeed) {
+	public FlightEnvelopeMap( Amount<Length> altitude, Amount<Temperature> deltaTemperature, double phi, Amount<Mass> weight, 
+			EngineOperatingConditionEnum flightCondition, Amount<Velocity> maxSpeed, Amount<Velocity> minSpeed) {
 		this.altitude = altitude;
+		this.deltaTemperature = deltaTemperature;
 		this.phi = phi;
-		this.bpr = BPR;
 		this.flightCondition = flightCondition;
 		this.maxSpeed = maxSpeed;
 		this.minSpeed = minSpeed;
 		this.weight = weight;
-		this.maxMach = SpeedCalc.calculateMach(altitude, maxSpeed);
-		this.minMach = SpeedCalc.calculateMach(altitude, minSpeed);
+		this.maxMach = SpeedCalc.calculateMach(altitude, deltaTemperature, maxSpeed);
+		this.minMach = SpeedCalc.calculateMach(altitude, deltaTemperature, minSpeed);
 	}
 
-	public double getMaxSpeed() {
+	public Amount<Velocity> getMaxSpeed() {
 		return maxSpeed;
 	}
 
-	public double getMinSpeed() {
+	public Amount<Velocity> getMinSpeed() {
 		return minSpeed;
 	}
 

@@ -199,10 +199,11 @@ public class Test_01 {
 		Amount<Area> surfaceWing = wing.getSurfacePlanform();
 		
 		double cL1 = LiftCalc.calculateLiftCoeff(
-				weight.doubleValue(SI.NEWTON),
-				velocityTAS.doubleValue(SI.METERS_PER_SECOND),
-				surfaceWing.doubleValue(SI.SQUARE_METRE),
-				operatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+				weight,
+				velocityTAS,
+				surfaceWing,
+				operatingConditions.getAltitudeCruise(),
+				operatingConditions.getDeltaTemperatureCruise()
 				);
 		
 		Amount<Angle> dihedralWing = wing.getDihedralMean();
