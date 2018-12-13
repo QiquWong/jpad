@@ -48,4 +48,7 @@
 		<heightAboveContactFactor></heightAboveContactFactor>
 		<filletRadiusFactor>0.60</filletRadiusFactor>
 	</canard_fairing>
+	<export_to_file value="TRUE">
+		<file_format>STEP</file_format>
+	</export_to_file>
 </jpad_config>
