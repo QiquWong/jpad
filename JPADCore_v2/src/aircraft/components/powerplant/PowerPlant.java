@@ -31,13 +31,11 @@ public class PowerPlant {
 
 	//--------------------------------------------------------------------------------------------------
 	// VARIABLES DECLARATION
-	private Integer _engineNumber;
+	private int _engineNumber;
 	private List<Engine> _engineList;
 	private List<EngineTypeEnum> _engineType;
 	private List<EngineMountingPositionEnum> _mountingPosition;
 	private List<EngineDatabaseManager> _engineDatabaseReaderList;
-//	private TurbofanEngineDatabaseReader _turbofanEngineDatabaseReader;
-//	private TurbopropEngineDatabaseReader _turbopropEngineDatabaseReader;
 	private Amount<Force> _t0Total;
 	private Amount<Power> _p0Total;
 	
@@ -56,8 +54,6 @@ public class PowerPlant {
 			_mountingPosition.add(engine.getMountingPosition());
 			_engineType.add(engine.getEngineType());
 		});
-//		this._mountingPosition = engineList.get(0).getMountingPosition(); //TODO: this could be changed in future to account for different architectures (mixed engines)
-//		this._engineType = engineList.get(0).getEngineType(); //TODO: this could be changed in future to account for different architectures (mixed engines)
 		
 		this._t0Total = Amount.valueOf(
 				engineList.stream().mapToDouble(eng -> eng.getT0().doubleValue(SI.NEWTON)).sum(),
@@ -147,11 +143,11 @@ public class PowerPlant {
 	//--------------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS
 	
-	public Integer getEngineNumber() {
+	public int getEngineNumber() {
 		return _engineNumber;
 	}
 	
-	public void setEngineNumber(Integer _engineNumber) {
+	public void setEngineNumber(int _engineNumber) {
 		this._engineNumber = _engineNumber;
 	}
 	

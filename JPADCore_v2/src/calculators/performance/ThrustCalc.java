@@ -24,7 +24,7 @@ public class ThrustCalc {
 			List<Amount<Velocity>> speed,
 			List<EngineOperatingConditionEnum> flightCondition,
 			PowerPlant thePowerPlant,
-			Amount<Force> t0, int nEngine) {
+			Amount<Force> t0) {
 
 		List<ThrustMap> list = new ArrayList<ThrustMap>();
 
@@ -42,7 +42,6 @@ public class ThrustCalc {
 												t0, 
 												flightCondition.get(f), 
 												thePowerPlant, 
-												nEngine, 
 												speed, 
 												altitude.get(i), 
 												deltaTemperature, 
@@ -66,7 +65,7 @@ public class ThrustCalc {
 			List<Amount<Velocity>> speed,
 			EngineOperatingConditionEnum flightCondition,
 			PowerPlant thePowerPlant,
-			Amount<Force> t0, int nEngine) {
+			Amount<Force> t0) {
 	
 		return new ThrustMap(
 				weight,
@@ -77,7 +76,6 @@ public class ThrustCalc {
 						t0,
 						flightCondition,
 						thePowerPlant,
-						nEngine, 
 						speed, 
 						altitude, 
 						deltaTemperature, 
@@ -89,14 +87,14 @@ public class ThrustCalc {
 	}
 
 	public static Amount<Force> calculateThrustDatabase(
-			Amount<Force> t0, int nEngine,  
+			Amount<Force> t0, 
 			EngineOperatingConditionEnum flightCondition,
 			PowerPlant thePowerPlant,
 			Amount<Length> altitude, double mach, Amount<Temperature> deltaTemperature, double phi) {
 		
 		List<Double> thrustRatio = new ArrayList<>();
 		List<Double> tDisp = new ArrayList<>();
-		for (int i=0; i<nEngine; i++) {
+		for (int i=0; i<thePowerPlant.getEngineNumber(); i++) {
 			thrustRatio.add(
 					thePowerPlant.getEngineDatabaseReaderList().get(i).getThrustRatio(
 							mach,
@@ -106,7 +104,7 @@ public class ThrustCalc {
 							flightCondition
 							)
 					);
-			tDisp.add(thrustRatio.get(i)*t0.doubleValue(SI.NEWTON)*nEngine*phi);
+			tDisp.add(thrustRatio.get(i)*t0.doubleValue(SI.NEWTON)*phi);
 		}
 
 		return Amount.valueOf(
@@ -117,14 +115,14 @@ public class ThrustCalc {
 	
 	public static List<Amount<Force>> calculateThrustVsSpeed(
 			Amount<Force> t0, EngineOperatingConditionEnum flightCondition,  
-			PowerPlant thePowerPlant, int nEngine,
+			PowerPlant thePowerPlant, 
 			List<Amount<Velocity>> speed, Amount<Length> altitude, Amount<Temperature> deltaTemperature, double phi) {
 	
 		List<Amount<Force>> thrust = new ArrayList<>();
 	
 		for (int i=0; i< speed.size(); i++){
 			double mach = SpeedCalc.calculateMach(altitude, deltaTemperature, speed.get(i));
-				thrust.add(calculateThrustDatabase(t0, nEngine, flightCondition, thePowerPlant, altitude, mach, deltaTemperature, phi));
+				thrust.add(calculateThrustDatabase(t0, flightCondition, thePowerPlant, altitude, mach, deltaTemperature, phi));
 		}
 	
 		return thrust;
