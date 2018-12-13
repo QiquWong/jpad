@@ -45,7 +45,13 @@ public class ATsiTest01 {
 	}
 	
 //	public static void main(String[] args) {
+//		
+//		System.out.println("Hello ATsiTest01 !!!");
+//		
+//		ATsiTest01 obj = new ATsiTest01();
+//		
+//		System.out.println("n1 = " + obj.n1);
 //
 //	}
-	
+
 }
