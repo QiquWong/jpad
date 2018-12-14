@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -170,6 +171,13 @@ public class Test26mds {
 					.getTwistGeometricAtTip(), 
 			WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
 			);
+			
+			Amount<Angle> sweepLE = originalComponent.getPanels().get(0).getSweepLeadingEdge();
+			
+			List<Amount<Angle>> sweeps = new ArrayList<>();		
+			sweeps.add(Amount.valueOf(0, NonSI.DEGREE_ANGLE));
+			sweeps.add(sweepLE.to(NonSI.DEGREE_ANGLE));
+			sweeps.add(sweepLE.opposite().to(NonSI.DEGREE_ANGLE));
 			
 			customComponent.setAirfoilList(originalComponent.getAirfoilList());	
 			customComponent.setXApexConstructionAxes(originalComponent.getXApexConstructionAxes().plus(Amount.valueOf(1.0, SI.METER)));

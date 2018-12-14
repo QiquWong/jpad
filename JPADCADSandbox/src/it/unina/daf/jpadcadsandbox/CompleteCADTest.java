@@ -1,6 +1,8 @@
 package it.unina.daf.jpadcadsandbox;
 
 import java.io.File;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,13 +11,28 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.Aircraft;
+import configuration.MyConfiguration;
+import configuration.enumerations.FoldersEnum;
+import database.DatabaseManager;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 class CADArguments {
-	@Option(name = "-i", aliases = { "--input" }, required = true,
-			usage = "my input file")
-	private File _inputFile;
+	@Option(name = "-aci", aliases = { "--ac-input" }, required = true,
+			usage = "aircraft input file")
+	private File _aircraftInputFile;
+	
+	@Option(name = "-cci", aliases = { "--cc-input" }, required = true,
+			usage = "CAD configuration input file")
+	private File _cadConfigurationInputFile;
+	
+	@Option(name = "-db", aliases = { "--dir-database" }, required = true,
+			usage = "database directory")
+	private File _databaseDirectory;
 	
 	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
 			usage = "airfoil directory path")
@@ -49,8 +66,16 @@ class CADArguments {
 	@Argument
 	public List<String> arguments = new ArrayList<String>();
 
-	public File getInputFile() {
-		return _inputFile;
+	public File getAircraftInputFile() {
+		return _aircraftInputFile;
+	}
+	
+	public File getCADConfigurationInputFile() {
+		return _cadConfigurationInputFile;
+	}
+	
+	public File getDatabaseDirectory() {
+		return _databaseDirectory;
 	}
 	
 	public File getAirfoilDirectory() {
@@ -84,7 +109,7 @@ class CADArguments {
 
 public class CompleteCADTest extends Application {
 	
-	// declaration necessary for Concrete Object usage
+	// Declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
 
 	//-------------------------------------------------------------
@@ -96,22 +121,117 @@ public class CompleteCADTest extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
-		//--------------------------------------------------
-		// get the aircraft object
-		System.out.println("\n\n##################");
-		System.out.println("function start :: getting the aircraft object ...");
-
-		Aircraft aircraft = CompleteCADTest.theAircraft;
-		if (aircraft == null) {
-			System.out.println("aircraft object null, returning.");
-			return;
-		}
-	}
+		
+	};
 
 	public static void main(String[] args) {
 		
+		//---------------------------------------------------------------
+		// IMPORT THE AIRCRAFT
+		//---------------------------------------------------------------
+		theAircraft = importAircraftFromXML(args);
+		
+		//---------------------------------------------------------------
+		// SET-UP THE FOLDERS
+		//---------------------------------------------------------------
 		
 
+		System.exit(0);
 	}
+	
+	public static Aircraft importAircraftFromXML(String[] args) {
+		Aircraft aircraft = null;
+		
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {}
+		});
+		
+		CADArguments cadArguments = new CADArguments();
+		theCmdLineParser = new CmdLineParser(cadArguments);
+		
+		try {
+			theCmdLineParser.parseArgument(args);
+			
+			String pathToXML = cadArguments.getAircraftInputFile().getAbsolutePath();
+			System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
+			
+			String dirAirfoil = cadArguments.getAirfoilDirectory().getCanonicalPath();
+			System.out.println("AIRFOILS ===> " + dirAirfoil);
+
+			String dirFuselages = cadArguments.getFuselagesDirectory().getCanonicalPath();
+			System.out.println("FUSELAGES ===> " + dirFuselages);
+			
+			String dirLiftingSurfaces = cadArguments.getLiftingSurfacesDirectory().getCanonicalPath();
+			System.out.println("LIFTING SURFACES ===> " + dirLiftingSurfaces);
+			
+			String dirEngines = cadArguments.getEnginesDirectory().getCanonicalPath();
+			System.out.println("ENGINES ===> " + dirEngines);
+			
+			String dirNacelles = cadArguments.getNacellesDirectory().getCanonicalPath();
+			System.out.println("NACELLES ===> " + dirNacelles);
+			
+			String dirLandingGears = cadArguments.getLandingGearsDirectory().getCanonicalPath();
+			System.out.println("LANDING GEARS ===> " + dirLandingGears);
+			
+			String dirCabinConfiguration = cadArguments.getCabinConfigurationDirectory().getCanonicalPath();
+			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
+			
+			System.out.println("--------------");
+			
+			// Setup database(s)
+			MyConfiguration.setDir(FoldersEnum.DATABASE_DIR, cadArguments.getDatabaseDirectory().getAbsolutePath());
+			
+			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
+			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+			String fusDesDatabaseFilename = "FusDes_database.h5";
+			String vedscDatabaseFilename = "VeDSC_database.h5";
+			
+			AerodynamicDatabaseReader aeroDatabaseReader = DatabaseManager.initializeAeroDatabase(
+					new AerodynamicDatabaseReader(databaseFolderPath, aerodynamicDatabaseFileName),
+					databaseFolderPath);
+			
+			HighLiftDatabaseReader highLiftDatabaseReader = DatabaseManager.initializeHighLiftDatabase(
+					new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName),
+					databaseFolderPath);
+			
+			FusDesDatabaseReader fusDesDatabaseReader = DatabaseManager.initializeFusDes(
+					new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename),
+					databaseFolderPath);
+			
+			VeDSCDatabaseReader veDSCDatabaseReader = DatabaseManager.initializeVeDSC(
+					new VeDSCDatabaseReader(databaseFolderPath,	vedscDatabaseFilename),
+					databaseFolderPath);
+			
+			// Creating the aircraft from the XML
+			System.setOut(filterStream);
+  
+			aircraft = Aircraft.importFromXML(
+					pathToXML,
+					dirLiftingSurfaces,
+					dirFuselages,
+					dirEngines,
+					dirNacelles,
+					dirLandingGears,
+					dirCabinConfiguration,
+					dirAirfoil,
+					aeroDatabaseReader,
+					highLiftDatabaseReader,
+					fusDesDatabaseReader,
+					veDSCDatabaseReader);
+			
+		} catch (Exception e) {			
+			System.err.println("Error: " + e.getMessage());
+			theCmdLineParser.printUsage(System.err);
+			System.err.println();
+			System.err.println("Must launch this app with proper command line arguments!");
+			System.exit(1);
+		}
+		
+		System.setOut(originalOut);
+		return aircraft;
+	}
+	
 
 }
