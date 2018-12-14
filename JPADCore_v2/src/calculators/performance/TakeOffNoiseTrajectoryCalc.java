@@ -2168,7 +2168,8 @@ public class TakeOffNoiseTrajectoryCalc {
 		public int getDimension() {
 			return 5;
 		}
-
+		
+		/* TODO: CONTINUE FROM HERE */
 		@Override
 		public void computeDerivatives(double t, double[] x, double[] xDot)
 				throws MaxCountExceededException, DimensionMismatchException {
@@ -2747,19 +2748,19 @@ public class TakeOffNoiseTrajectoryCalc {
 		this.thePowerPlant = thePowerPlant;
 	}
 
-	public Double[] getPolarCLTakeOff() {
+	public double[] getPolarCLTakeOff() {
 		return polarCLTakeOff;
 	}
 
-	public void setPolarCLTakeOff(Double[] polarCLTakeOff) {
+	public void setPolarCLTakeOff(double[] polarCLTakeOff) {
 		this.polarCLTakeOff = polarCLTakeOff;
 	}
 
-	public Double[] getPolarCDTakeOff() {
+	public double[] getPolarCDTakeOff() {
 		return polarCDTakeOff;
 	}
 
-	public void setPolarCDTakeOff(Double[] polarCDTakeOff) {
+	public void setPolarCDTakeOff(double[] polarCDTakeOff) {
 		this.polarCDTakeOff = polarCDTakeOff;
 	}
 
