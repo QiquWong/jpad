@@ -3,6 +3,15 @@ package calculators.performance;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
+import javax.measure.quantity.Power;
+import javax.measure.quantity.Temperature;
+import javax.measure.quantity.Velocity;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
+
 import aircraft.components.powerplant.PowerPlant;
 import calculators.aerodynamics.DragCalc;
 import calculators.performance.customdata.DragMap;
@@ -18,70 +27,72 @@ import standaloneutils.atmosphere.SpeedCalc;
 public class RateOfClimbCalc {
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Lorenzo Attanasio, Vittorio Trifari
 	 * @param altitude
-	 * @param phi
+	 * @param deltaTemperature
 	 * @param weight
 	 * @param flightCondition
-	 * @param t0
-	 * @param nEngine
-	 * @param bpr
-	 * @param surface
-	 * @param ar
-	 * @param sweepHalfChord
-	 * @param tcMax
-	 * @param airfoilType
-	 * @param cLmax
-	 * @param cD0
-	 * @param oswald
+	 * @param phi
 	 * @param listDrag
 	 * @param listThrust
 	 * @return
 	 */
 	public static List<RCMap> calculateRC(
-			double[] altitude,
-			double[] phi,
-			double[] weight,
-			EngineOperatingConditionEnum[] flightCondition,
-			double bpr,
+			List<Amount<Length>> altitude,
+			Amount<Temperature> deltaTemperature,
+			List<Double> phi,
+			List<Amount<Mass>> weight,
+			List<EngineOperatingConditionEnum> flightCondition,
 			List<DragMap> listDrag,
 			List<ThrustMap> listThrust
 			) {
 
-		double[] speed = null;
-		double[] powerAvailable, powerRequired;
+		List<Amount<Velocity>> speed = new ArrayList<>();
+		List<Amount<Power>> powerAvailable, powerRequired;
 		List<RCMap> list = new ArrayList<RCMap>();
 
-		for(int f=0; f<flightCondition.length; f++) {
-			for (int p=0; p<phi.length; p++) {
-				for (int w=0; w<weight.length; w++) { 
-					for(int i=0; i<altitude.length; i++) {
-						double rcMax = 0., rcMaxSpeed = 0.;
+		for(int f=0; f<flightCondition.size(); f++) {
+			for (int p=0; p<phi.size(); p++) {
+				for (int w=0; w<weight.size(); w++) { 
+					for(int i=0; i<altitude.size(); i++) {
+						Amount<Velocity> rcMax, rcMaxSpeed;
 
-						powerAvailable = PerformanceDataManager.getPowerAvailable(altitude[i], phi[p],
-								flightCondition[f], bpr, listThrust);
-						powerRequired = PerformanceDataManager.getPowerRequired(altitude[i],
-								weight[w], listDrag);
-						speed = PerformanceDataManager.getSpeed(altitude[i], phi[p],
-								flightCondition[f], bpr, listThrust);
+						powerAvailable = PerformanceDataManager.getPowerAvailable(altitude.get(i), deltaTemperature, phi.get(p), flightCondition.get(f), listThrust);
+						powerRequired = PerformanceDataManager.getPowerRequired(altitude.get(i), deltaTemperature, weight.get(w), listDrag);
+						speed = PerformanceDataManager.getSpeed(altitude.get(i), deltaTemperature, phi.get(p), flightCondition.get(f), listThrust);
 
-						double[] rc = new double[powerAvailable.length];
+						List<Amount<Velocity>> rc = new ArrayList<>();
 
-						for (int pa=0; pa<powerAvailable.length; pa++) {
-							rc[pa] = (powerAvailable[pa] - powerRequired[pa])/weight[w]; 
+						for (int pa=0; pa<powerAvailable.size(); pa++) {
+							rc.add(Amount.valueOf(
+											(powerAvailable.get(pa).doubleValue(SI.WATT) - powerRequired.get(pa).doubleValue(SI.WATT))/(weight.get(w).doubleValue(SI.KILOGRAM)*9.81),
+											SI.METERS_PER_SECOND
+											)
+									); 
 						}
 						
-						rcMax = MyArrayUtils.getMax(MyArrayUtils.convertFromDoubleToPrimitive(rc));
-						int rcMaxSpeedIndex = MyArrayUtils.getIndexOfMax(rc);
-						rcMaxSpeed = speed[rcMaxSpeedIndex];
+						rcMax = Amount.valueOf(
+								rc.stream().mapToDouble(r -> r.doubleValue(SI.METERS_PER_SECOND)).max().getAsDouble(),
+								SI.METERS_PER_SECOND
+								);
+						int rcMaxSpeedIndex = MyArrayUtils.getIndexOfMax(MyArrayUtils.convertListOfAmountTodoubleArray(rc));
+						rcMaxSpeed = speed.get(rcMaxSpeedIndex);
 
 						list.add(
-								new RCMap(altitude[i], phi[p], powerRequired, 
-								powerAvailable, rc, rcMax, bpr, weight[w], 
-								flightCondition[f], speed, rcMaxSpeed
-								)
+								new RCMap(
+										altitude.get(i),
+										deltaTemperature,
+										phi.get(p),
+										powerRequired,
+										powerAvailable, 
+										rc,
+										rcMax,
+										weight.get(w), 
+										flightCondition.get(f), 
+										speed, 
+										rcMaxSpeed
+										)
 								);
-
 					}
 				}
 			}
@@ -92,64 +103,51 @@ public class RateOfClimbCalc {
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Lorenzo Attanasio, Vittorio Trifari
 	 * @param altitude
-	 * @param phi
+	 * @param deltaTemperature
 	 * @param weight
 	 * @param flightCondition
-	 * @param t0
-	 * @param nEngine
-	 * @param bpr
-	 * @param surface
-	 * @param ar
-	 * @param sweepHalfChord
-	 * @param tcMax
-	 * @param airfoilType
-	 * @param cLmax
-	 * @param cD0
-	 * @param oswald
+	 * @param phi
 	 * @param listDrag
 	 * @param listThrust
 	 * @return
 	 */
 	public static RCMap calculateRC(
-			double altitude,
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature,
 			double phi,
-			double weight,
+			Amount<Mass> weight,
 			EngineOperatingConditionEnum flightCondition,
-			EngineTypeEnum engineType,
-			double bpr,
 			List<DragMap> listDrag,
 			List<ThrustMap> listThrust
 			) {
 
-		double[] speed = null;
-		double RCMax = 0.;
-		double RCMaxSpeed = 0.;
+		List<Amount<Velocity>> speed = new ArrayList<>();
+		Amount<Velocity> rcMax = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		Amount<Velocity> rcMaxSpeed = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 
-		double[] powerAvailable = PerformanceDataManager.getPowerAvailable(altitude, phi,
-				flightCondition, bpr, listThrust);
-		double[] powerRequired = PerformanceDataManager.getPowerRequired(altitude,
-				weight, listDrag);
-		speed = PerformanceDataManager.getSpeed(altitude, phi,
-				flightCondition, bpr, listThrust);
+		List<Amount<Power>> powerAvailable = PerformanceDataManager.getPowerAvailable(altitude, deltaTemperature, phi, flightCondition, listThrust);
+		List<Amount<Power>> powerRequired = PerformanceDataManager.getPowerRequired(altitude, deltaTemperature, weight, listDrag);
+		speed = PerformanceDataManager.getSpeed(altitude, deltaTemperature, phi, flightCondition, listThrust);
 
-		double[] RC = new double[powerAvailable.length];
+		List<Amount<Velocity>> rc = new ArrayList<>();
 
-		for (int pa=0; pa<powerAvailable.length; pa++) {
-			RC[pa] = (powerAvailable[pa] - powerRequired[pa])/weight; 
-			//			gamma[pa] = Math.asin(RC[pa]/speed[pa]);
+		for (int pa=0; pa<powerAvailable.size(); pa++) {
+			rc.add(Amount.valueOf(
+							(powerAvailable.get(pa).doubleValue(SI.WATT) - powerRequired.get(pa).doubleValue(SI.WATT))/(weight.doubleValue(SI.KILOGRAM)*9.81),
+							SI.METERS_PER_SECOND
+							)
+					); 
 
-			if( RC[pa] > RCMax) { 
-				RCMax = RC[pa];
-				RCMaxSpeed = speed[pa];
-				//				theta = Math.asin(RCMax/RCMaxSpeed);
+			if( rc.get(pa).doubleValue(SI.METERS_PER_SECOND) > rcMax.doubleValue(SI.METERS_PER_SECOND)) { 
+				rcMax = rc.get(pa);
+				rcMaxSpeed = speed.get(pa);
 			}
 		}
 
-		return new RCMap(altitude, phi, powerRequired, 
-				powerAvailable, RC, RCMax, bpr, weight, 
-				flightCondition, speed, RCMaxSpeed);
+		return new RCMap(altitude, deltaTemperature, phi, powerRequired, powerAvailable, rc, rcMax, weight, flightCondition, speed, rcMaxSpeed);
+				
 	}
 
 	/**

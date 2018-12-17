@@ -467,7 +467,7 @@ public class PerformanceCalcUtils {
 					).getDensity()*1000/1.225; 
 			
 			rcInverseArray[i] = 1/(MyMathUtils.getInterpolatedValue1DLinear(
-						rcList.get(i).getSpeed(),
+						rcList.get(i).getSpeedList(),
 						rcList.get(i).getRC(),
 						speed.divide(Math.sqrt(sigma)).doubleValue(SI.METERS_PER_SECOND)
 						)

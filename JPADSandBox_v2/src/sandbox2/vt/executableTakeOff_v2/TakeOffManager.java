@@ -1517,26 +1517,12 @@ public class TakeOffManager {
 						System.out.println("\n\tCOLLECTING DATA AT THE END OF GROUND ROLL PHASE ...");
 						takeOffResults.collectResults(
 								time.get(time.size()-1),
-								thrust.get(thrust.size()-1),
-								thrustHorizontal.get(thrustHorizontal.size()-1),
-								thrustVertical.get(thrustVertical.size()-1),
-								friction.get(friction.size()-1),
-								lift.get(lift.size()-1),
-								drag.get(drag.size()-1),
-								totalForce.get(totalForce.size()-1),
-								loadFactor.get(loadFactor.size()-1),
 								speed.get(speed.size()-1),
-								rateOfClimb.get(rateOfClimb.size()-1),
-								acceleration.get(acceleration.size()-1),
 								groundDistance.get(groundDistance.size()-1),
 								verticalDistance.get(verticalDistance.size()-1),
 								alpha.get(alpha.size()-1),
-								alphaDot.get(alphaDot.size()-1),
 								gamma.get(gamma.size()-1),
-								gammaDot.get(gammaDot.size()-1),
-								theta.get(theta.size()-1),
-								cL.get(cL.size()-1),
-								cD.get(cD.size()-1)
+								theta.get(theta.size()-1)
 								);
 						System.out.println("\n---------------------------DONE!-------------------------------");
 						return  Action.CONTINUE;
@@ -1609,26 +1595,12 @@ public class TakeOffManager {
 						System.out.println("\n\tCOLLECTING DATA AT THE END OF AIRBORNE PHASE ...");
 						takeOffResults.collectResults(
 								time.get(time.size()-1),
-								thrust.get(thrust.size()-1),
-								thrustHorizontal.get(thrustHorizontal.size()-1),
-								thrustVertical.get(thrustVertical.size()-1),
-								friction.get(friction.size()-1),
-								lift.get(lift.size()-1),
-								drag.get(drag.size()-1),
-								totalForce.get(totalForce.size()-1),
-								loadFactor.get(loadFactor.size()-1),
 								speed.get(speed.size()-1),
-								rateOfClimb.get(rateOfClimb.size()-1),
-								acceleration.get(acceleration.size()-1),
 								groundDistance.get(groundDistance.size()-1),
 								verticalDistance.get(verticalDistance.size()-1),
 								alpha.get(alpha.size()-1),
-								alphaDot.get(alphaDot.size()-1),
 								gamma.get(gamma.size()-1),
-								gammaDot.get(gammaDot.size()-1),
-								theta.get(theta.size()-1),
-								cL.get(cL.size()-1),
-								cD.get(cD.size()-1)
+								theta.get(theta.size()-1)
 								);
 						
 						v2 = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
@@ -1747,26 +1719,12 @@ public class TakeOffManager {
 								System.out.println("\n\tCOLLECTING DATA AT THE END OF ROTATION PHASE ...");
 								takeOffResults.collectResults(
 										time.get(time.size()-1),
-										thrust.get(thrust.size()-1),
-										thrustHorizontal.get(thrustHorizontal.size()-1),
-										thrustVertical.get(thrustVertical.size()-1),
-										friction.get(friction.size()-1),
-										lift.get(lift.size()-1),
-										drag.get(drag.size()-1),
-										totalForce.get(totalForce.size()-1),
-										loadFactor.get(loadFactor.size()-1),
 										speed.get(speed.size()-1),
-										rateOfClimb.get(rateOfClimb.size()-1),
-										acceleration.get(acceleration.size()-1),
 										groundDistance.get(groundDistance.size()-1),
 										verticalDistance.get(verticalDistance.size()-1),
 										alpha.get(alpha.size()-1),
-										alphaDot.get(alphaDot.size()-1),
 										gamma.get(gamma.size()-1),
-										gammaDot.get(gammaDot.size()-1),
-										theta.get(theta.size()-1),
-										cL.get(cL.size()-1),
-										cD.get(cD.size()-1)
+										theta.get(theta.size()-1)
 										);
 								System.out.println("\n---------------------------DONE!-------------------------------");
 

@@ -461,7 +461,7 @@ public class ClimbCalc {
 				
 				rcAtClimbSpeed.add(
 						MyMathUtils.getInterpolatedValue1DLinear(
-								_rcMapAEO.get(i).getSpeed(),
+								_rcMapAEO.get(i).getSpeedList(),
 								_rcMapAEO.get(i).getRC(),
 								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
 								)
@@ -534,7 +534,7 @@ public class ClimbCalc {
 								Amount.valueOf(
 										((_rcMapAEO.get(i-1).getRCMaxSpeed()+_rcMapAEO.get(i).getRCMaxSpeed())/2)
 										*(climbTimeListAEO.get(i).minus(climbTimeListAEO.get(i-1)).doubleValue(SI.SECOND))
-										*Math.cos(((_rcMapAEO.get(i-1).getTheta()+_rcMapAEO.get(i).getTheta())/2)),
+										*Math.cos(((_rcMapAEO.get(i-1).getClimbAngle()+_rcMapAEO.get(i).getClimbAngle())/2)),
 										SI.METER
 										)
 								)
@@ -566,7 +566,7 @@ public class ClimbCalc {
 								Amount.valueOf(
 										((climbSpeedTAS.get(i-1).plus(climbSpeedTAS.get(i))).divide(2)).getEstimatedValue()
 										*(climbTimeListAEO.get(i).minus(climbTimeListAEO.get(i-1)).doubleValue(SI.SECOND))
-										*Math.cos(((_rcMapAEO.get(i-1).getTheta()+_rcMapAEO.get(i).getTheta())/2)),
+										*Math.cos(((_rcMapAEO.get(i-1).getClimbAngle()+_rcMapAEO.get(i).getClimbAngle())/2)),
 										SI.METER
 										)
 								)
@@ -1315,10 +1315,10 @@ public class ClimbCalc {
 						_rcMapAEO.get(i).getAltitude()
 						).getSpeedOfSound();
 				
-				speedTAS_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_rcMapAEO.get(i).getSpeed()));
+				speedTAS_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_rcMapAEO.get(i).getSpeedList()));
 				speedTAS_Imperial.add(
 						MyArrayUtils.convertFromDoubleToPrimitive(
-								Arrays.stream(_rcMapAEO.get(i).getSpeed())
+								Arrays.stream(_rcMapAEO.get(i).getSpeedList())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
@@ -1532,10 +1532,10 @@ public class ClimbCalc {
 						_rcMapAEO.get(i).getAltitude()
 						).getSpeedOfSound();
 				
-				speedTAS_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_rcMapAEO.get(i).getSpeed()));
+				speedTAS_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_rcMapAEO.get(i).getSpeedList()));
 				speedTAS_Imperial.add(
 						MyArrayUtils.convertFromDoubleToPrimitive(
-								Arrays.stream(_rcMapAEO.get(i).getSpeed())
+								Arrays.stream(_rcMapAEO.get(i).getSpeedList())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
@@ -1569,7 +1569,7 @@ public class ClimbCalc {
 				climbAngleAEO.add(
 						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.scaleArray(
-										_rcMapAEO.get(i).getGamma(),
+										_rcMapAEO.get(i).getClimbAngleList(),
 										57.3)
 								)
 						);
@@ -1652,7 +1652,7 @@ public class ClimbCalc {
 				climbAngleOEI.add(
 						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.scaleArray(
-										_rcMapOEI.get(i).getGamma(),
+										_rcMapOEI.get(i).getClimbAngleList(),
 										57.3)
 								)
 						);
@@ -1808,7 +1808,7 @@ public class ClimbCalc {
 			List<Double> altitudeListAEO_Imperial = new ArrayList<Double>();
 			
 			for(int i=0; i<_rcMapAEO.size(); i++) {
-				maxClimbAngleListAEO.add(MyArrayUtils.getMax(_rcMapAEO.get(_rcMapAEO.size()-1-i).getGamma()));
+				maxClimbAngleListAEO.add(MyArrayUtils.getMax(_rcMapAEO.get(_rcMapAEO.size()-1-i).getClimbAngleList()));
 				altitudeListAEO_SI.add(_rcMapAEO.get(_rcMapAEO.size()-1-i).getAltitude());
 				altitudeListAEO_Imperial.add(
 						Amount.valueOf(_rcMapAEO.get(_rcMapAEO.size()-1-i).getAltitude(), SI.METER)
@@ -1838,7 +1838,7 @@ public class ClimbCalc {
 			List<Double> altitudeListOEI_Imperial = new ArrayList<Double>();
 			
 			for(int i=0; i<_rcMapOEI.size(); i++) {
-				maxClimbAngleListOEI.add(MyArrayUtils.getMax(_rcMapOEI.get(_rcMapOEI.size()-1-i).getGamma()));
+				maxClimbAngleListOEI.add(MyArrayUtils.getMax(_rcMapOEI.get(_rcMapOEI.size()-1-i).getClimbAngleList()));
 				altitudeListOEI_SI.add(_rcMapOEI.get(_rcMapOEI.size()-1-i).getAltitude());	
 				altitudeListOEI_Imperial.add(
 						Amount.valueOf(_rcMapOEI.get(_rcMapOEI.size()-1-i).getAltitude(), SI.METER)

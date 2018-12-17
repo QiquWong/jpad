@@ -817,29 +817,29 @@ public class MissionProfileCalc {
 			dragAtClimbEnding = theClimbCalculator.getDragAtClimbEnding().to(NonSI.POUND_FORCE);
 			rateOfClimbAtClimbStart = Amount.valueOf(
 					MyMathUtils.getInterpolatedValue1DLinear(
-							theClimbCalculator.getRCMapAEO().get(0).getSpeed(), 
+							theClimbCalculator.getRCMapAEO().get(0).getSpeedList(), 
 							theClimbCalculator.getRCMapAEO().get(0).getRC(),
 							speedTASAtClimbStart.doubleValue(SI.METERS_PER_SECOND)
 							),
 					SI.METERS_PER_SECOND).to(MyUnits.FOOT_PER_MINUTE);
 			rateOfClimbAtClimbEnding = Amount.valueOf(
 					MyMathUtils.getInterpolatedValue1DLinear(
-							theClimbCalculator.getRCMapAEO().get(theClimbCalculator.getRCMapAEO().size()-1).getSpeed(), 
+							theClimbCalculator.getRCMapAEO().get(theClimbCalculator.getRCMapAEO().size()-1).getSpeedList(), 
 							theClimbCalculator.getRCMapAEO().get(theClimbCalculator.getRCMapAEO().size()-1).getRC(),
 							speedTASAtClimbEnding.doubleValue(SI.METERS_PER_SECOND)
 							),
 					SI.METERS_PER_SECOND).to(MyUnits.FOOT_PER_MINUTE);
 			climbAngleAtClimbStart = Amount.valueOf(
 					MyMathUtils.getInterpolatedValue1DLinear(
-							theClimbCalculator.getRCMapAEO().get(0).getSpeed(), 
-							theClimbCalculator.getRCMapAEO().get(0).getGamma(),
+							theClimbCalculator.getRCMapAEO().get(0).getSpeedList(), 
+							theClimbCalculator.getRCMapAEO().get(0).getClimbAngleList(),
 							speedTASAtClimbStart.doubleValue(SI.METERS_PER_SECOND)
 							),
 					SI.RADIAN).to(NonSI.DEGREE_ANGLE);
 			climbAngleAtClimbEnding = Amount.valueOf(
 					MyMathUtils.getInterpolatedValue1DLinear(
-							theClimbCalculator.getRCMapAEO().get(theClimbCalculator.getRCMapAEO().size()-1).getSpeed(), 
-							theClimbCalculator.getRCMapAEO().get(theClimbCalculator.getRCMapAEO().size()-1).getGamma(),
+							theClimbCalculator.getRCMapAEO().get(theClimbCalculator.getRCMapAEO().size()-1).getSpeedList(), 
+							theClimbCalculator.getRCMapAEO().get(theClimbCalculator.getRCMapAEO().size()-1).getClimbAngleList(),
 							speedTASAtClimbEnding.doubleValue(SI.METERS_PER_SECOND)
 							),
 					SI.RADIAN).to(NonSI.DEGREE_ANGLE);
@@ -1475,29 +1475,29 @@ public class MissionProfileCalc {
 					dragAtSecondClimbEnding = theSecondClimbCalculator.getDragAtClimbEnding().to(NonSI.POUND_FORCE);
 					rateOfClimbAtSecondClimbStart = Amount.valueOf(
 							MyMathUtils.getInterpolatedValue1DLinear(
-									theSecondClimbCalculator.getRCMapAEO().get(0).getSpeed(), 
+									theSecondClimbCalculator.getRCMapAEO().get(0).getSpeedList(), 
 									theSecondClimbCalculator.getRCMapAEO().get(0).getRC(),
 									speedTASAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND)
 									),
 							SI.METERS_PER_SECOND).to(MyUnits.FOOT_PER_MINUTE);
 					rateOfClimbAtSecondClimbEnding = Amount.valueOf(
 							MyMathUtils.getInterpolatedValue1DLinear(
-									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getSpeed(), 
+									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getSpeedList(), 
 									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getRC(),
 									speedTASAtSecondClimbEnding.doubleValue(SI.METERS_PER_SECOND)
 									),
 							SI.METERS_PER_SECOND).to(MyUnits.FOOT_PER_MINUTE);
 					climbAngleAtSecondClimbStart = Amount.valueOf(
 							MyMathUtils.getInterpolatedValue1DLinear(
-									theSecondClimbCalculator.getRCMapAEO().get(0).getSpeed(), 
-									theSecondClimbCalculator.getRCMapAEO().get(0).getGamma(),
+									theSecondClimbCalculator.getRCMapAEO().get(0).getSpeedList(), 
+									theSecondClimbCalculator.getRCMapAEO().get(0).getClimbAngleList(),
 									speedTASAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND)
 									),
 							SI.RADIAN).to(NonSI.DEGREE_ANGLE);
 					climbAngleAtSecondClimbStart = Amount.valueOf(
 							MyMathUtils.getInterpolatedValue1DLinear(
-									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getSpeed(), 
-									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getGamma(),
+									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getSpeedList(), 
+									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getClimbAngleList(),
 									speedTASAtSecondClimbEnding.doubleValue(SI.METERS_PER_SECOND)
 									),
 							SI.RADIAN).to(NonSI.DEGREE_ANGLE);

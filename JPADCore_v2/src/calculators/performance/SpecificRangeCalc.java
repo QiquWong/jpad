@@ -3,26 +3,21 @@ package calculators.performance;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.measure.quantity.Angle;
+
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
+
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.powerplant.PowerPlant;
-import calculators.aerodynamics.DragCalc;
-import calculators.aerodynamics.LiftCalc;
-import calculators.performance.customdata.DragMap;
-import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
-import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
-import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
-import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import writers.JPADStaticWriteUtils;
 
@@ -60,31 +55,24 @@ public class SpecificRangeCalc {
 	 * @param engineType
 	 * @return
 	 */
-	public static Double[] calculateSfcVsMach(
-			Double[] mach,
-			double altitude,
-			double bpr,
-			EngineTypeEnum engineType,
-			PowerPlant thePowerPlant) {
+	public static double[] calculateSfcVsMach(
+			double[] mach,
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature,
+			double phi,
+			PowerPlant thePowerPlant
+			) {
 		
-		Double sfcMach[] = new Double[mach.length];
+		double sfcMach[] = new double[mach.length];
 
 		for (int i=0; i<mach.length; i++) {
-			sfcMach[i] = EngineDatabaseManager_old.getSFC(
+			
+			sfcMach[i] = thePowerPlant.getEngineDatabaseReaderList().get(i).getSfc(
 					mach[i],
 					altitude,
-					EngineDatabaseManager_old.getThrustRatio(
-							mach[i],
-							altitude,
-							bpr,
-							engineType,
-							EngineOperatingConditionEnum.CRUISE,
-							thePowerPlant
-							),
-					bpr,
-					engineType,
-					EngineOperatingConditionEnum.CRUISE,
-					thePowerPlant
+					deltaTemperature,
+					phi,
+					EngineOperatingConditionEnum.CRUISE
 					);
 		}
 		return sfcMach;
@@ -108,23 +96,22 @@ public class SpecificRangeCalc {
 	 */
 	public static Double[] calculateSpecificRangeVsMach(
 			Amount<Mass> maxTakeOffMass,
-			Double[] mach,
-			Double[] sfc,
-			Double[] efficiency,
-			double altitude,
-			double bpr,
+			double[] mach,
+			double[] sfc,
+			double[] efficiency,
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature,
 			double eta,
-			EngineTypeEnum engineType) {
+			EngineTypeEnum engineType
+			) {
 		
 		Double specificRange[] = new Double[mach.length];
 		
 		if (engineType == EngineTypeEnum.TURBOFAN) {
 			
-			Double speed[] = new Double [mach.length];
-			for (int i=0; i<mach.length; i++) {
-				speed[i] = SpeedCalc.calculateTAS(mach[i], altitude);
-				speed[i] = Amount.valueOf(speed[i],SI.METERS_PER_SECOND).to(NonSI.KNOT).getEstimatedValue();
-			}
+			double speed[] = new double [mach.length];
+			for (int i=0; i<mach.length; i++) 
+				speed[i] = SpeedCalc.calculateTAS(mach[i], altitude, deltaTemperature).doubleValue(NonSI.KNOT);
 			for (int i=0; i<sfc.length; i++)
 				specificRange[i] = ((speed[i]*efficiency[i])/sfc[i])/(maxTakeOffMass.to(NonSI.POUND).getEstimatedValue());
 		}
@@ -132,7 +119,7 @@ public class SpecificRangeCalc {
 			
 			for (int i=0; i<sfc.length; i++) 
 				// the constant is needed in order to use sfc in lb/(hp*h) and obtain [nmi]/[lbs]
-				specificRange[i] = 325.8640495*(((eta*efficiency[i])/sfc[i])/(maxTakeOffMass.to(NonSI.POUND).getEstimatedValue()));
+				specificRange[i] = 325.8640495*(((eta*efficiency[i])/sfc[i])/(maxTakeOffMass.doubleValue(NonSI.POUND)));
 		}
 		
 		return specificRange;
