@@ -2722,8 +2722,9 @@ public static Aircraft importAircraft(String[] args) {
 //			tdsSolids.forEach(s -> stepWriter.Transfer(s, STEPControl_StepModelType.STEPControl_AsIs));
 			
 			System.out.println(".step file writing ...");
-			IFSelect_ReturnStatus statusStep = stepWriter.Write(fileNameStep);
-			System.out.println("========== [AircraftUtils::getAircraftSolidFile] file status: " + statusStep);
+			stepWriter.Write(fileNameStep);
+//			IFSelect_ReturnStatus statusStep = stepWriter.Write(fileNameStep);
+//			System.out.println("========== [AircraftUtils::getAircraftSolidFile] file status: " + statusStep);
 			
 			break;
 			
@@ -2985,11 +2986,11 @@ public static Aircraft importAircraft(String[] args) {
 				PVector.mult(chordTipNVector, (tipAirfoilThickAtPnt[1].floatValue())*tipChordLength)
 				);
 
-		double[] tipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve(
+		double[] tipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve0(
 				OCCUtils.theFactory.newCurve3D(tipAirfoil.get(0)), 
 				new double[] {pntOnTipAirfoilUCrv.x, pntOnTipAirfoilUCrv.y, pntOnTipAirfoilUCrv.z}
 				).pnt();			
-		double[] tipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve(
+		double[] tipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve0(
 				OCCUtils.theFactory.newCurve3D(tipAirfoil.get(1)),
 				new double[] {pntOnTipAirfoilLCrv.x, pntOnTipAirfoilLCrv.y, pntOnTipAirfoilLCrv.z}
 				).pnt();
@@ -3011,11 +3012,11 @@ public static Aircraft importAircraft(String[] args) {
 				PVector.mult(chordPreTipNVector, (preTipAirfoilThickAtPnt[1].floatValue())*preTipChordLength)
 				);
 
-		double[] preTipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve(
+		double[] preTipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve0(
 				(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(preTipAirfoil.get(0)),
 				new double[] {pntOnPreTipAirfoilUCrv.x, pntOnPreTipAirfoilUCrv.y, pntOnPreTipAirfoilUCrv.z}
 				).pnt();			
-		double[] preTipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve(
+		double[] preTipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve0(
 				(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(preTipAirfoil.get(1)),
 				new double[] {pntOnPreTipAirfoilLCrv.x, pntOnPreTipAirfoilLCrv.y, pntOnPreTipAirfoilLCrv.z}
 				).pnt();

@@ -18,7 +18,14 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
+import it.unina.daf.jpadcad.CADManager;
 import javafx.application.Application;
+import javafx.scene.DepthTest;
+import javafx.scene.Scene;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 
 class CADArguments {
@@ -115,37 +122,89 @@ public class CompleteCADTest extends Application {
 	//-------------------------------------------------------------
 
 	public static Aircraft theAircraft;
+	public static CADManager theCADManager;
 
 	//-------------------------------------------------------------
+	
+	// Console output management
+	public final static PrintStream originalOut = System.out;
+	public final static PrintStream filterStream = new PrintStream(new OutputStream() {
+		public void write(int b) {} // write nothing
+	});
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
+		theCADManager.getTheFXRoot().getChildren().add(theCADManager.getTheFXWorld());
+		theCADManager.getTheFXRoot().setDepthTest(DepthTest.ENABLE);
 		
+		theCADManager.buildCamera();
+		theCADManager.buildAxes();
+		theCADManager.buildAircraftGroup();
+		
+		Scene scene = new Scene(theCADManager.getTheFXRoot(), 1024, 768, true);
+		scene.setFill(new RadialGradient(225, 225, 300, 300, 500, false,
+                CycleMethod.NO_CYCLE, new Stop[]
+                { new Stop(0f, Color.LIGHTSKYBLUE),
+                  new Stop(1f, Color.LIGHTBLUE) }));
+		
+		theCADManager.handleKeyboard(scene, theCADManager.getTheFXWorld());
+		theCADManager.handleMouse(scene, theCADManager.getTheFXWorld());
+		
+		primaryStage.setTitle("AIRCRAFT FX");
+		primaryStage.setScene(scene);
+		primaryStage.show();
+		
+		scene.setCamera(theCADManager.getTheCamera());
 	};
 
 	public static void main(String[] args) {
 		
 		//---------------------------------------------------------------
-		// IMPORT THE AIRCRAFT
+		// IMPORT DATA FROM XMLS
 		//---------------------------------------------------------------
-		theAircraft = importAircraftFromXML(args);
+		importFromXML(args);
 		
 		//---------------------------------------------------------------
-		// SET-UP THE FOLDERS
-		//---------------------------------------------------------------
+		// PRINT CAD CONFIGURATION OPTIONS TO CONSOLE
+		//---------------------------------------------------------------	
+		System.out.println(theCADManager.toString());
 		
+		//---------------------------------------------------------------
+		// GENERATE THE AIRCRAFT CAD
+		//---------------------------------------------------------------
+		System.setOut(filterStream);
+		theCADManager.generateCAD();
+		System.setOut(originalOut);
+		
+		System.out.println("\tAIRCRAFT CAD SUCCESFULLY GENERATED ... \n");
+		
+		//---------------------------------------------------------------
+		// EXPORT THE AIRCRAFT CAD TO FILE
+		//---------------------------------------------------------------
+		if (theCADManager.getTheCADBuilderInterface().getExportToFile()) {
+			
+			System.out.println("\tEXPORTING THE AIRCRAFT CAD TO FILE ... \n");
 
-		System.exit(0);
+			MyConfiguration.setDir(FoldersEnum.OUTPUT_DIR, MyConfiguration.outputDirectory);			
+			String outputFolderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
+			
+			System.setOut(filterStream);
+			theCADManager.exportCAD(outputFolderPath);
+			System.setOut(originalOut);
+			
+			System.out.println("\n\n\tTHE AIRCRAFT CAD FILE (." + 
+						theCADManager.getTheCADBuilderInterface().getFileExtension().toString() + 
+						" FORMAT) HAS BEEN SUCCESFULLY CREATED\n");
+			
+			System.out.println("\tTHE FILE HAS BEEN GENERATED AT: " + outputFolderPath + "\n");
+		}
+		
+		launch();
+//		System.exit(0);
 	}
 	
-	public static Aircraft importAircraftFromXML(String[] args) {
-		Aircraft aircraft = null;
-		
-		final PrintStream originalOut = System.out;
-		PrintStream filterStream = new PrintStream(new OutputStream() {
-		    public void write(int b) {}
-		});
+	public static void importFromXML(String[] args) {
 		
 		CADArguments cadArguments = new CADArguments();
 		theCmdLineParser = new CmdLineParser(cadArguments);
@@ -153,8 +212,11 @@ public class CompleteCADTest extends Application {
 		try {
 			theCmdLineParser.parseArgument(args);
 			
-			String pathToXML = cadArguments.getAircraftInputFile().getAbsolutePath();
-			System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
+			String pathToAircraftXML = cadArguments.getAircraftInputFile().getAbsolutePath();
+			System.out.println("AIRCRAFT INPUT ===> " + pathToAircraftXML);
+			
+			String pathToCADConfigXML = cadArguments.getCADConfigurationInputFile().getAbsolutePath();
+			System.out.println("CAD CONFIGURATION INPUT ===> " + pathToCADConfigXML);
 			
 			String dirAirfoil = cadArguments.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
@@ -207,8 +269,8 @@ public class CompleteCADTest extends Application {
 			// Creating the aircraft from the XML
 			System.setOut(filterStream);
   
-			aircraft = Aircraft.importFromXML(
-					pathToXML,
+			theAircraft = Aircraft.importFromXML(
+					pathToAircraftXML,
 					dirLiftingSurfaces,
 					dirFuselages,
 					dirEngines,
@@ -221,6 +283,10 @@ public class CompleteCADTest extends Application {
 					fusDesDatabaseReader,
 					veDSCDatabaseReader);
 			
+			theCADManager = CADManager.importFromXML(
+					pathToCADConfigXML, 
+					theAircraft);
+			
 		} catch (Exception e) {			
 			System.err.println("Error: " + e.getMessage());
 			theCmdLineParser.printUsage(System.err);
@@ -230,8 +296,6 @@ public class CompleteCADTest extends Application {
 		}
 		
 		System.setOut(originalOut);
-		return aircraft;
 	}
 	
-
 }

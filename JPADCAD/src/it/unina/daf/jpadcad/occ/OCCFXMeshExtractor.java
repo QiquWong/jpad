@@ -400,7 +400,7 @@ public class OCCFXMeshExtractor {
 						normals = new float[n.length];
 						for (int i = 0; i < n.length; i++)
 							normals[i] = (float) 0.;
-						System.err.println("Normal computation failed " + face + "\n");
+//						System.err.println("Normal computation failed " + face + "\n");
 					} else {
 						//convert into floats
 						normals = new float[n.length];

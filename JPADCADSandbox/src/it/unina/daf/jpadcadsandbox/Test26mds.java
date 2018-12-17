@@ -156,21 +156,20 @@ public class Test26mds {
 			}
 			
 			customComponent.adjustDimensions(
-			originalComponent
-					.getAspectRatio()*1.2,
-			originalComponent.getEquivalentWing().getPanels().get(0)
-					.getChordRoot().doubleValue(SI.METER)*1.0,
-			originalComponent.getEquivalentWing().getPanels().get(0)
-					.getChordTip().doubleValue(SI.METER)*1.0, 
-//			originalComponent.getEquivalentWing().getPanels().get(0)
-//					.getSweepLeadingEdge(),
-			Amount.valueOf(25, NonSI.DEGREE_ANGLE).to(SI.RADIAN),
-			originalComponent.getEquivalentWing().getPanels().get(0)
-					.getDihedral(), 
-			originalComponent.getEquivalentWing().getPanels().get(0)
-					.getTwistGeometricAtTip(), 
-			WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
-			);
+					originalComponent
+						.getAspectRatio()*1.2,
+					originalComponent.getEquivalentWing().getPanels().get(0)
+						.getChordRoot().doubleValue(SI.METER)*1.0,
+					originalComponent.getEquivalentWing().getPanels().get(0)
+						.getChordTip().doubleValue(SI.METER)*1.0, 
+					originalComponent.getEquivalentWing().getPanels().get(0)
+						.getSweepLeadingEdge(),
+					originalComponent.getEquivalentWing().getPanels().get(0)
+						.getDihedral(), 
+					originalComponent.getEquivalentWing().getPanels().get(0)
+						.getTwistGeometricAtTip(), 
+					WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
+					);
 			
 			Amount<Angle> sweepLE = originalComponent.getPanels().get(0).getSweepLeadingEdge();
 			

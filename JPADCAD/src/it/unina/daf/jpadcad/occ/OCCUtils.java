@@ -459,7 +459,7 @@ public final class OCCUtils {
 	public static List<OCCEdge> splitEdge(CADGeomCurve3D cadCurve, double[] pnt) {
 		List<OCCEdge> result = new ArrayList<>();
 		
-		CADVertex projection = pointProjectionOnCurve0(cadCurve, pnt);
+		CADVertex projection = OCCUtils.pointProjectionOnCurve0(cadCurve, pnt);
 		
 		TopoDS_Vertex vtx_1 = null;
 		

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<!-- CAD input data -->
+	<fuselage generate="TRUE">
+		<noseCapSectionFactor1></noseCapSectionFactor1>
+		<noseCapSectionFactor2></noseCapSectionFactor2>
+		<numberNoseCapSections></numberNoseCapSections>
+		<numberNoseTrunkSections>7</numberNoseTrunkSections>
+		<spacingTypeNoseTrunk>COSINUS</spacingTypeNoseTrunk>
+		<numberTailTrunkSections>7</numberTailTrunkSections>
+		<spacingTypeTailTrunk>COSINUS</spacingTypeTailTrunk>
+		<tailCapSectionFactor1></tailCapSectionFactor1>
+		<tailCapSectionFactor2></tailCapSectionFactor2>
+		<numberTailCapSections></numberTailCapSections>
+		<exportSupportShapes>FALSE</exportSupportShapes>
+	</fuselage>
+	<wing generate="TRUE">
+		<tipTolerance></tipTolerance>
+		<exportSupportShapes>FALSE</exportSupportShapes>
+	</wing>
+	<horizontal generate="TRUE">
+		<tipTolerance></tipTolerance>
+		<exportSupportShapes>FALSE</exportSupportShapes>
+	</horizontal>
+	<vertical generate="TRUE">
+		<tipTolerance></tipTolerance>
+		<exportSupportShapes>FALSE</exportSupportShapes>
+	</vertical>
+	<canard generate="TRUE">
+		<tipTolerance></tipTolerance>
+		<exportSupportShapes>FALSE</exportSupportShapes>
+	</canard>
+	<wing_fairing generate="FALSE">
+		<frontLengthFactor>1.25</frontLengthFactor>
+		<backLengthFactor>1.25</backLengthFactor>
+		<sideSizeFactor>0.25</sideSizeFactor>
+		<fairingHeightFactor>0.25</fairingHeightFactor>
+		<heightBelowContactFactor></heightBelowContactFactor>
+		<heightAboveContactFactor></heightAboveContactFactor>
+		<filletRadiusFactor>0.60</filletRadiusFactor>
+	</wing_fairing>
+	<canard_fairing generate="FALSE">
+		<frontLengthFactor>1.25</frontLengthFactor>
+		<backLengthFactor>1.25</backLengthFactor>
+		<sideSizeFactor>0.25</sideSizeFactor>
+		<fairingHeightFactor>0.25</fairingHeightFactor>
+		<heightBelowContactFactor></heightBelowContactFactor>
+		<heightAboveContactFactor></heightAboveContactFactor>
+		<filletRadiusFactor>0.60</filletRadiusFactor>
+	</canard_fairing>
+	<export_to_file value="TRUE">
+		<file_format>STEP</file_format>
+	</export_to_file>
+</jpad_config>

@@ -1556,6 +1556,15 @@ public final class AircraftUtils {
 				subVSecP1.get(1)[0].edge().vertices()[1].pnt()
 				));
 		
+		System.out.println(Arrays.toString(airfoilUpperCrvs.get(1).vertices()[0].pnt()) + ", " + 
+						   Arrays.toString(subVSecP1.get(1)[0].edge().vertices()[0].pnt()));
+		
+		System.out.println(Arrays.toString(subVSecP1.get(1)[0].edge().vertices()[1].pnt()) + ", " + 
+						   Arrays.toString(constPlaneGuideCrvs1.get(0).vertices()[1].pnt()));
+		
+		System.out.println(Arrays.toString(constPlaneGuideCrvs1.get(0).vertices()[0].pnt()) + ", " + 
+						   Arrays.toString(airfoilUpperCrvs.get(1).vertices()[1].pnt()));
+		
 		// creating a filler surface at the wing tip leading edge, upper		
 		double[] contrCrvUppRng = subVSecP1.get(0)[0].getRange();
 		double[] contrPntUpp1 = subVSecP1.get(0)[0].value(0.25*(contrCrvUppRng[1] - contrCrvUppRng[0]) + contrCrvUppRng[0]);
@@ -2275,11 +2284,11 @@ public final class AircraftUtils {
 				PVector.mult(chordTipNVector, (tipAirfoilThickAtPnt[1].floatValue())*tipChordLength)
 				);
 
-		double[] tipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve(
+		double[] tipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve0(
 				OCCUtils.theFactory.newCurve3D(tipAirfoil.get(0)), 
 				new double[] {pntOnTipAirfoilUCrv.x, pntOnTipAirfoilUCrv.y, pntOnTipAirfoilUCrv.z}
 				).pnt();			
-		double[] tipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve(
+		double[] tipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve0(
 				OCCUtils.theFactory.newCurve3D(tipAirfoil.get(1)),
 				new double[] {pntOnTipAirfoilLCrv.x, pntOnTipAirfoilLCrv.y, pntOnTipAirfoilLCrv.z}
 				).pnt();
@@ -2301,11 +2310,11 @@ public final class AircraftUtils {
 				PVector.mult(chordPreTipNVector, (preTipAirfoilThickAtPnt[1].floatValue())*preTipChordLength)
 				);
 
-		double[] preTipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve(
+		double[] preTipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve0(
 				(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(preTipAirfoil.get(0)),
 				new double[] {pntOnPreTipAirfoilUCrv.x, pntOnPreTipAirfoilUCrv.y, pntOnPreTipAirfoilUCrv.z}
 				).pnt();			
-		double[] preTipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve(
+		double[] preTipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve0(
 				(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(preTipAirfoil.get(1)),
 				new double[] {pntOnPreTipAirfoilLCrv.x, pntOnPreTipAirfoilLCrv.y, pntOnPreTipAirfoilLCrv.z}
 				).pnt();
