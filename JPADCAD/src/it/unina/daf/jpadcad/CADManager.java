@@ -1,18 +1,23 @@
 package it.unina.daf.jpadcad;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.unit.SI;
 
 import aircraft.Aircraft;
-import it.unina.daf.jpadcad.occ.OCCFXMeshExtractor;
+import configuration.enumerations.ComponentEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
+import it.unina.daf.jpadcad.occfx.OCCFXForm;
+import it.unina.daf.jpadcad.occfx.OCCFXMeshExtractor;
 import it.unina.daf.jpadcad.utils.AircraftUtils;
 import it.unina.daf.jpadcad.utils.AircraftUtils.FileExtension;
 import it.unina.daf.jpadcad.utils.AircraftUtils.XSpacingType;
 import javafx.event.EventHandler;
+import javafx.scene.DepthTest;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.PerspectiveCamera;
@@ -20,14 +25,14 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.PhongMaterial;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 
@@ -36,17 +41,19 @@ public class CADManager {
 	private ICADManager _theCADBuilderInterface;
 	
 	private Aircraft _theAircraft;
-	private List<OCCShape> _theAircraftSolidParts = new ArrayList<>();
+	private List<OCCShape> _theAircraftShapes = new ArrayList<>();
+	private Map<CADComponentEnum, List<OCCShape>> _theAircraftSolidsMap = new HashMap<>();
 	
 	// ------- JavaFX material ---------- //
-	private final Group root = new Group();
-	private final Xform axisGroup = new Xform();
-	private final Xform aircraftGroup = new Xform();
-	private final Xform world = new Xform();
-	private final PerspectiveCamera camera = new PerspectiveCamera(true);
-	private final Xform cameraXform = new Xform();
-	private final Xform cameraXform2 = new Xform();
-	private final Xform cameraXform3 = new Xform();
+	private Scene _theScene;
+	private final Group _theRoot = new Group();
+	private final OCCFXForm _theAxisGroup = new OCCFXForm();
+	private final OCCFXForm _theAircraftGroup = new OCCFXForm();
+	private final OCCFXForm _theWorld = new OCCFXForm();
+	private final PerspectiveCamera _theCamera = new PerspectiveCamera(true);
+	private final OCCFXForm _theCameraXform = new OCCFXForm();
+	private final OCCFXForm _theCameraXform2 = new OCCFXForm();
+	private final OCCFXForm _theCameraXform3 = new OCCFXForm();
 	
 	private static final double CAMERA_INITIAL_DISTANCE = -150;
 	private static final double CAMERA_INITIAL_X_ANGLE = -45.0;
@@ -134,7 +141,7 @@ public class CADManager {
 		int numberTailCapSections = 3;
 		boolean exportFuselageSupportShapes = false;
 		
-		// Read FUSELAGE CAD parameters from the xml file
+		// Read FUSELAGE CAD parameters from the XML file
 		if (generateFuselage && (theAircraft.getFuselage() != null)) { 
 			
 			String noseCapSectionFactor1String = reader.getXMLPropertyByPath("//fuselage/noseCapSectionFactor1");
@@ -238,7 +245,7 @@ public class CADManager {
 		double verticalTipTolerance = 1e-3;
 		boolean exportVerticalSupportShapes = false;
 
-		// Read vertical tail CAD parameters from the xml file
+		// Read vertical tail CAD parameters from the XML file
 		if (generateVertical && (theAircraft.getVTail() != null)) { 
 
 			String verticalTipToleranceString = reader.getXMLPropertyByPath("//vertical/tipTolerance");
@@ -262,7 +269,7 @@ public class CADManager {
 		double canardTipTolerance = 1e-3;
 		boolean exportCanardSupportShapes = false;
 
-		// Read vertical tail CAD parameters from the xml file
+		// Read vertical tail CAD parameters from the XML file
 		if (generateCanard && (theAircraft.getCanard() != null)) { 
 
 			String canardTipToleranceString = reader.getXMLPropertyByPath("//canard/tipTolerance");
@@ -340,7 +347,7 @@ public class CADManager {
 		double canardFairingHeightAboveContactFactor = 0.10;
 		double canardFairingFilletRadiusFactor = 0.60;
 
-		// Read CANARD FAIRING CAD parameters from the xml file
+		// Read CANARD FAIRING CAD parameters from the XML file
 		if (generateCanardFairing && (theAircraft.getCanard() != null) && (theAircraft.getFuselage() != null)) { 
 
 			String canardFairingFrontLengthFactorString = reader.getXMLPropertyByPath("//canard_fairing/frontLengthFactor");
@@ -539,8 +546,39 @@ public class CADManager {
 		return stringBuilder.toString();
 	}
 	
+	private void initializeCADMap() {
+		
+		if (_theCADBuilderInterface.getGenerateFuselage()) {
+			_theAircraftSolidsMap.put(CADComponentEnum.FUSELAGE, new ArrayList<OCCShape>());
+		}
+		
+		if (_theCADBuilderInterface.getGenerateWing()) {
+			_theAircraftSolidsMap.put(CADComponentEnum.WING, new ArrayList<OCCShape>());
+		}
+		
+		if (_theCADBuilderInterface.getGenerateHorizontal()) {
+			_theAircraftSolidsMap.put(CADComponentEnum.HORIZONTAL, new ArrayList<OCCShape>());
+		}
+		
+		if (_theCADBuilderInterface.getGenerateVertical()) {
+			_theAircraftSolidsMap.put(CADComponentEnum.VERTICAL, new ArrayList<OCCShape>());
+		}
+		
+		if (_theCADBuilderInterface.getGenerateCanard()) {
+			_theAircraftSolidsMap.put(CADComponentEnum.CANARD, new ArrayList<OCCShape>());
+		}
+		
+		if (_theCADBuilderInterface.getGenerateWingFairing()) {
+			_theAircraftSolidsMap.put(CADComponentEnum.WING_FAIRING, new ArrayList<OCCShape>());
+		}
+		
+		if (_theCADBuilderInterface.getGenerateCanardFairing()) {
+			_theAircraftSolidsMap.put(CADComponentEnum.CANARD_FAIRING, new ArrayList<OCCShape>());
+		}
+	}
+	
 	public void generateCAD() {
-		List<OCCShape> solids = new ArrayList<>();
+		initializeCADMap();
 		
 		//---------------------------------------------------------------
 		// GENERATE THE AIRCRAFT CAD
@@ -566,7 +604,8 @@ public class CADManager {
 					_theCADBuilderInterface.getExportFuselageSupportShapes()
 					);
 			
-			solids.addAll(fuselageShapes);
+			_theAircraftShapes.addAll(fuselageShapes);
+			_theAircraftSolidsMap.get(CADComponentEnum.FUSELAGE).addAll(AircraftUtils.getAircraftSolid(fuselageShapes));
 		}
 		
 		// WING
@@ -581,7 +620,8 @@ public class CADManager {
 					_theCADBuilderInterface.getExportWingSupportShapes()
 					);
 
-			solids.addAll(wingShapes);
+			_theAircraftShapes.addAll(wingShapes);
+			_theAircraftSolidsMap.get(CADComponentEnum.WING).addAll(AircraftUtils.getAircraftSolid(wingShapes));
 		}
 		
 		// HORIZONTAL
@@ -596,7 +636,8 @@ public class CADManager {
 					_theCADBuilderInterface.getExportHorizontalSupportShapes()
 					);
 
-			solids.addAll(horizontalShapes);
+			_theAircraftShapes.addAll(horizontalShapes);
+			_theAircraftSolidsMap.get(CADComponentEnum.HORIZONTAL).addAll(AircraftUtils.getAircraftSolid(horizontalShapes));
 		}
 		
 		// VERTICAL
@@ -611,7 +652,8 @@ public class CADManager {
 					_theCADBuilderInterface.getExportVerticalSupportShapes()
 					);
 
-			solids.addAll(verticalShapes);
+			_theAircraftShapes.addAll(verticalShapes);
+			_theAircraftSolidsMap.get(CADComponentEnum.VERTICAL).addAll(AircraftUtils.getAircraftSolid(verticalShapes));
 		}
 		
 		// CANARD
@@ -626,7 +668,8 @@ public class CADManager {
 					_theCADBuilderInterface.getExportCanardSupportShapes()
 					);
 
-			solids.addAll(canardShapes);
+			_theAircraftShapes.addAll(canardShapes);
+			_theAircraftSolidsMap.get(CADComponentEnum.CANARD).addAll(AircraftUtils.getAircraftSolid(canardShapes));
 		}
 		
 		// WING/FUSELAGE FAIRING 
@@ -644,7 +687,8 @@ public class CADManager {
 					_theCADBuilderInterface.getWingFairingFilletRadiusFactor()
 					);
 			
-			solids.addAll(wingFairingShapes);
+			_theAircraftShapes.addAll(wingFairingShapes);
+			_theAircraftSolidsMap.get(CADComponentEnum.WING_FAIRING).addAll(AircraftUtils.getAircraftSolid(wingFairingShapes));
 		}
 		
 		// CANARD/FUSELAGE FAIRING
@@ -662,10 +706,9 @@ public class CADManager {
 					_theCADBuilderInterface.getCanardFairingFilletRadiusFactor()
 					);
 			
-			solids.addAll(canardFairingShapes);
+			_theAircraftShapes.addAll(canardFairingShapes);
+			_theAircraftSolidsMap.get(CADComponentEnum.CANARD_FAIRING).addAll(AircraftUtils.getAircraftSolid(canardFairingShapes));
 		}
-		
-		_theAircraftSolidParts.addAll(solids);
 	}
 	
 	public void exportCAD(String outputFolderPath) {
@@ -676,20 +719,39 @@ public class CADManager {
 		String outputFileAbsolutePath = outputFolderPath + _theAircraft.getId().replaceAll("\\s", "");
 		
 		AircraftUtils.getAircraftFile(
-				_theAircraftSolidParts, 
+				_theAircraftShapes, 
 				outputFileAbsolutePath, 
 				_theCADBuilderInterface.getFileExtension());
 		
 	}
 	
-	public void buildAircraftGroup() {
+	public void generateScene() {
+		
+		_theRoot.getChildren().add(_theWorld);
+		_theRoot.setDepthTest(DepthTest.ENABLE);
+		
+		buildCamera();
+		buildAxes();
+		buildAircraftGroup();
+		
+		_theScene = new Scene(_theRoot, 1024, 768, true);
+		_theScene.setFill(new RadialGradient(225, 225, 300, 300, 500, false,
+                CycleMethod.NO_CYCLE, new Stop[]
+                { new Stop(0f, Color.LIGHTSKYBLUE),
+                  new Stop(1f, Color.LIGHTBLUE) }));
+		
+		handleKeyboard(_theScene, _theRoot);
+		handleMouse(_theScene, _theRoot);
+	}
+	
+	private void buildAircraftGroup() {
 		
 		//---------------------------------------------------------------
 		// GENERATE THE AIRCRAFT XFORM
 		//---------------------------------------------------------------	
 		
 		// Instantiate the XFORM
-		Xform aircraftXform = new Xform();
+		OCCFXForm aircraftXform = new OCCFXForm();
 		
 		// Populate the XFORM
 		List<MeshView> faces = new ArrayList<>();
@@ -704,8 +766,8 @@ public class CADManager {
 				.collect(Collectors.toList()));
 		
 		aircraftXform.getChildren().addAll(faces);					
-		aircraftGroup.getChildren().add(aircraftXform);
-		world.getChildren().addAll(aircraftGroup);
+		_theAircraftGroup.getChildren().add(aircraftXform);
+		_theWorld.getChildren().addAll(_theAircraftGroup);
 	}
 	
 	private List<List<TriangleMesh>> generateTriangleMeshes() {
@@ -715,7 +777,7 @@ public class CADManager {
 		//---------------------------------------------------------------	
 		
 		// Filter the solids
-		List<OCCShape> solids = AircraftUtils.getAircraftSolid(_theAircraftSolidParts);
+		List<OCCShape> solids = AircraftUtils.getAircraftSolid(_theAircraftShapes);
 		
 		// Extract the mesh
 		List<List<TriangleMesh>> triangleMeshes = solids.stream()
@@ -731,23 +793,23 @@ public class CADManager {
 		return triangleMeshes;
 	}
 	
-	public void buildCamera() {
-		root.getChildren().add(cameraXform);
-		cameraXform.getChildren().add(cameraXform2);
-		cameraXform2.getChildren().add(cameraXform3);
-		cameraXform3.getChildren().add(camera);
-		cameraXform3.setRotateZ(180.0);
+	private void buildCamera() {
+		_theRoot.getChildren().add(_theCameraXform);
+		_theCameraXform.getChildren().add(_theCameraXform2);
+		_theCameraXform2.getChildren().add(_theCameraXform3);
+		_theCameraXform3.getChildren().add(_theCamera);
+		_theCameraXform3.setRotateZ(180.0);
 		
-		camera.setNearClip(CAMERA_NEAR_CLIP);
-		camera.setFarClip(CAMERA_FAR_CLIP);
-		camera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
-		cameraXform.ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
-		cameraXform.ry.setPivotX(_theAircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)/2.0); // TODO:
-		cameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
-		cameraXform.rx.setPivotX(_theAircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)/2.0);
+		_theCamera.setNearClip(CAMERA_NEAR_CLIP);
+		_theCamera.setFarClip(CAMERA_FAR_CLIP);
+		_theCamera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
+		_theCameraXform.ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
+		_theCameraXform.ry.setPivotX(_theAircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)/2.0); // TODO:
+		_theCameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
+		_theCameraXform.rx.setPivotX(_theAircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)/2.0);
 	}
 	
-	public void buildAxes() {
+	private void buildAxes() {
 		final PhongMaterial redMaterial = new PhongMaterial();
 		redMaterial.setDiffuseColor(Color.DARKRED);
 		redMaterial.setSpecularColor(Color.RED);
@@ -768,12 +830,12 @@ public class CADManager {
 		yAxis.setMaterial(greenMaterial);
 		zAxis.setMaterial(blueMaterial);
 		
-		axisGroup.getChildren().addAll(xAxis, yAxis, zAxis);
-		axisGroup.setVisible(false);
-		world.getChildren().addAll(axisGroup);
+		_theAxisGroup.getChildren().addAll(xAxis, yAxis, zAxis);
+		_theAxisGroup.setVisible(false);
+		_theWorld.getChildren().addAll(_theAxisGroup);
 	}
 	
-	public void handleMouse(Scene scene, final Node root) {
+	private void handleMouse(Scene scene, final Node root) {
 		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent me) {
@@ -802,39 +864,53 @@ public class CADManager {
 					modifier = SHIFT_MULTIPLIER;
 				}
 				if (me.isPrimaryButtonDown()) {
-					cameraXform.ry.setAngle(cameraXform.ry.getAngle() - mouseDeltaX*MOUSE_SPEED*modifier*ROTATION_SPEED);
-					cameraXform.rx.setAngle(cameraXform.rx.getAngle() + mouseDeltaY*MOUSE_SPEED*modifier*ROTATION_SPEED);
+					_theCameraXform.ry.setAngle(_theCameraXform.ry.getAngle() - mouseDeltaX*MOUSE_SPEED*modifier*ROTATION_SPEED);
+					_theCameraXform.rx.setAngle(_theCameraXform.rx.getAngle() + mouseDeltaY*MOUSE_SPEED*modifier*ROTATION_SPEED);
 				}
 				else if (me.isSecondaryButtonDown()) {
-					double z = camera.getTranslateZ();
+					double z = _theCamera.getTranslateZ();
 					double newZ = z + mouseDeltaX*MOUSE_SPEED*modifier;
-					camera.setTranslateZ(newZ);
+					_theCamera.setTranslateZ(newZ);
 				}
 				else if (me.isMiddleButtonDown()) {
-					cameraXform2.t.setX(cameraXform2.t.getX() + mouseDeltaX*MOUSE_SPEED*modifier*TRACK_SPEED);
-					cameraXform2.t.setY(cameraXform2.t.getY() + mouseDeltaY*MOUSE_SPEED*modifier*TRACK_SPEED);
+					_theCameraXform2.t.setX(_theCameraXform2.t.getX() + mouseDeltaX*MOUSE_SPEED*modifier*TRACK_SPEED);
+					_theCameraXform2.t.setY(_theCameraXform2.t.getY() + mouseDeltaY*MOUSE_SPEED*modifier*TRACK_SPEED);
 				}
 			}
 		});
 	}
 	
-	public void handleKeyboard(Scene scene, final Node root) {
+	private void handleKeyboard(Scene scene, final Node root) {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
-				case Z:
-					cameraXform2.t.setX(0.0);
-					cameraXform2.t.setY(0.0);
-					camera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
-					cameraXform.ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
-					cameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
+				case A: // Side view
+					_theCameraXform2.t.setX(0.0);
+					_theCameraXform2.t.setY(0.0);
+					_theCamera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
+					_theCameraXform.ry.setAngle(-90.0);
+					_theCameraXform.rx.setAngle(180.0);
 					break;
-				case X:
-					axisGroup.setVisible(!axisGroup.isVisible());
+				case S: // Up view
+					_theCameraXform2.t.setX(0.0);
+					_theCameraXform2.t.setY(0.0);
+					_theCamera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
+					_theCameraXform.ry.setAngle(0.0);
+					_theCameraXform.rx.setAngle(180.0);
 					break;
-				case V:
-					aircraftGroup.setVisible(!aircraftGroup.isVisible());
+				case Z: // Reset camera
+					_theCameraXform2.t.setX(0.0);
+					_theCameraXform2.t.setY(0.0);
+					_theCamera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
+					_theCameraXform.ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
+					_theCameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
+					break;
+				case X: // Toggle axis visibility
+					_theAxisGroup.setVisible(!_theAxisGroup.isVisible());
+					break;
+				case V: // Toggle aircraft group visibility
+					_theAircraftGroup.setVisible(!_theAircraftGroup.isVisible());
 					break;
 				default:
 					break;
@@ -859,174 +935,38 @@ public class CADManager {
 		this._theAircraft = theAircraft;
 	}
 	
-	public List<OCCShape> getTheAircraftSolidParts() {
-		return _theAircraftSolidParts;
+	public List<OCCShape> getTheAircraftShapes() {
+		return _theAircraftShapes;
 	}
 	
-	public void setTheAircraftSolidParts(List<OCCShape> theAircraftSolidParts) {
-		this._theAircraftSolidParts = theAircraftSolidParts;
+	public void setTheAircraftShapes(List<OCCShape> theAircraftSolidParts) {
+		this._theAircraftShapes = theAircraftSolidParts;
+	}
+	
+	public Scene getTheFXScene() {
+		return _theScene;
 	}
 	
 	public Group getTheFXRoot() {
-		return root;
+		return _theRoot;
 	}
 	
-	public Xform getTheFXWorld() {
-		return world;
+	public OCCFXForm getTheFXWorld() {
+		return _theWorld;
 	}
 	
 	public PerspectiveCamera getTheCamera() {
-		return camera;
-	}
- 	
-	public class Xform extends Group {
-		
-		public Translate t  = new Translate();
-		public Translate p  = new Translate();
-		public Translate ip = new Translate();
-		
-		public Rotate rx = new Rotate();
-		{ rx.setAxis(Rotate.X_AXIS); }		
-		public Rotate ry = new Rotate();
-		{ ry.setAxis(Rotate.Y_AXIS); }	
-		public Rotate rz = new Rotate();
-		{ rz.setAxis(Rotate.Z_AXIS); }
-		
-		public Scale s = new Scale();
-		
-		public Xform() {
-			super();
-			getTransforms().addAll(t, rz, ry, rx, s);
-		}
-		
-		public Xform(RotateOrder rotateOrder) {
-			
-			switch (rotateOrder) {
-			case XYZ:
-				getTransforms().addAll(t, p, rz, ry, rx, s, ip);
-				break;
-			case XZY:
-				getTransforms().addAll(t, p, ry, rz, rx, s, ip);
-				break;
-			case YXZ:
-				getTransforms().addAll(t, p, rz, rx, ry, s, ip);
-				break;
-			case YZX:
-				getTransforms().addAll(t, p, rx, rz, ry, s, ip);
-				break;
-			case ZXY:
-				getTransforms().addAll(t, p, ry, rx, rz, s, ip);
-				break;
-			case ZYX:
-				getTransforms().addAll(t, p, rx, ry, rz, s, ip);
-				break;
-			}
-		}
-		
-		public void setTranslate(double x, double y, double z) {
-			t.setX(x);
-			t.setY(y);
-			t.setZ(z);
-		}
-		
-		public void setTranslate(double x, double y) {
-			t.setX(x);
-			t.setY(y);
-		}
-		
-		public void setTx(double x) { t.setX(x); }
-		public void setTy(double y) { t.setY(y); }
-		public void setTz(double z) { t.setZ(z); }
-		
-		public void setRotate(double x, double y, double z) {
-			rx.setAngle(x);
-			ry.setAngle(y);
-			rz.setAngle(z);
-		}
-		
-		public void setRotateX(double x) { rx.setAngle(x); }
-		public void setRotateY(double y) { ry.setAngle(y); }
-		public void setRotateZ(double z) { rz.setAngle(z); }
-		
-		public void setScale(double scaleFactor) {
-			s.setX(scaleFactor);
-			s.setY(scaleFactor);
-			s.setZ(scaleFactor);
-		}
-		
-		public void setSx(double x) { s.setX(x); }
-		public void setSy(double y) { s.setY(y); }
-		public void setSz(double z) { s.setZ(z); }
-		
-		public void setPivot(double x, double y, double z) {
-			p.setX(x);
-			p.setY(y);
-			p.setZ(z);
-			ip.setX(-x);
-			ip.setY(-y);
-			ip.setZ(-z);
-		}
-		
-		public void reset() {
-			t.setX(0.0);
-			t.setY(0.0);
-			t.setZ(0.0);
-			rx.setAngle(0.0);
-			ry.setAngle(0.0);
-			rz.setAngle(0.0);
-			s.setX(0.0);
-			s.setY(0.0);
-			s.setZ(0.0);
-			p.setX(0.0);
-			p.setY(0.0);
-			p.setZ(0.0);
-			ip.setX(0.0);
-			ip.setY(0.0);
-			ip.setZ(0.0);
-		}
-		
-		public void resetTSP() {
-			t.setX(0.0);
-			t.setY(0.0);
-			t.setZ(0.0);
-			s.setX(0.0);
-			s.setY(0.0);
-			s.setZ(0.0);
-			p.setX(0.0);
-			p.setY(0.0);
-			p.setZ(0.0);
-			ip.setX(0.0);
-			ip.setY(0.0);
-			ip.setZ(0.0);
-		}
-		
-		public void debug() {
-			System.out.println("t = (" + 
-							   t.getX() + ", " + 
-							   t.getY() + ", " + 
-							   t.getZ() + ")  " + 
-							   "r = (" + 
-							   rx.getAngle() + ", " + 
-							   ry.getAngle() + ", " + 
-							   rz.getAngle() + ")  " + 
-							   "s = (" + 
-							   s.getX() + ", " + 
-							   s.getY() + ", " + 
-							   s.getZ() + ")  " +
-							   "p = (" + 
-							   p.getX() + ", " + 
-							   p.getY() + ", " + 
-							   p.getZ() + ")  " +
-							   "ip = (" + 
-							   ip.getX() + ", " + 
-							   ip.getY() + ", " + 
-							   ip.getZ() + ")");
-		}
-				
+		return _theCamera;
 	}
 	
-	public enum RotateOrder {
-		XYZ, XZY, YXZ, YZX, ZXY, ZYX
+	public enum CADComponentEnum {
+		FUSELAGE,
+		WING,
+		HORIZONTAL,
+		VERTICAL,
+		CANARD,
+		WING_FAIRING,
+		CANARD_FAIRING;
 	}
 	
 }

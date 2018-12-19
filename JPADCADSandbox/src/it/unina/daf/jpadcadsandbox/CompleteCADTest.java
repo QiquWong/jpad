@@ -135,24 +135,11 @@ public class CompleteCADTest extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
-		theCADManager.getTheFXRoot().getChildren().add(theCADManager.getTheFXWorld());
-		theCADManager.getTheFXRoot().setDepthTest(DepthTest.ENABLE);
-		
-		theCADManager.buildCamera();
-		theCADManager.buildAxes();
-		theCADManager.buildAircraftGroup();
-		
-		Scene scene = new Scene(theCADManager.getTheFXRoot(), 1024, 768, true);
-		scene.setFill(new RadialGradient(225, 225, 300, 300, 500, false,
-                CycleMethod.NO_CYCLE, new Stop[]
-                { new Stop(0f, Color.LIGHTSKYBLUE),
-                  new Stop(1f, Color.LIGHTBLUE) }));
-		
-		theCADManager.handleKeyboard(scene, theCADManager.getTheFXWorld());
-		theCADManager.handleMouse(scene, theCADManager.getTheFXWorld());
+		theCADManager.generateScene();
+		Scene scene = theCADManager.getTheFXScene();
 		
 		primaryStage.setTitle("AIRCRAFT FX");
-		primaryStage.setScene(scene);
+		primaryStage.setScene(theCADManager.getTheFXScene());
 		primaryStage.show();
 		
 		scene.setCamera(theCADManager.getTheCamera());
