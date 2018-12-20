@@ -43,6 +43,8 @@ public class CADManager {
 	private Aircraft _theAircraft;
 	private List<OCCShape> _theAircraftShapes = new ArrayList<>();
 	private Map<CADComponentEnum, List<OCCShape>> _theAircraftSolidsMap = new HashMap<>();
+	private double _importedPartsMaxDimension = 0.0;
+	private double _importedPartsGeometricCenter = 0.0;
 	
 	// ------- JavaFX material ---------- //
 	private Scene _theScene;
@@ -221,7 +223,7 @@ public class CADManager {
 		double horizontalTipTolerance = 1e-3;
 		boolean exportHorizontalSupportShapes = false;
 
-		// Read horizontal tail CAD parameters from the xml file
+		// Read horizontal tail CAD parameters from the XML file
 		if (generateHorizontal && (theAircraft.getHTail() != null)) {
 			
 			String horizontalTipToleranceString = reader.getXMLPropertyByPath("//horizontal/tipTolerance");
@@ -939,8 +941,20 @@ public class CADManager {
 		return _theAircraftShapes;
 	}
 	
+	public Map<CADComponentEnum, List<OCCShape>> getTheAircraftSolidsMap() {
+		return _theAircraftSolidsMap;
+	}
+	
 	public void setTheAircraftShapes(List<OCCShape> theAircraftSolidParts) {
 		this._theAircraftShapes = theAircraftSolidParts;
+	}
+	
+	public double getImportedPartsMaxDimension() {
+		return _importedPartsMaxDimension;
+	}
+	
+	public double getImportedPartsGeometricCenter() {
+		return _importedPartsGeometricCenter;
 	}
 	
 	public Scene getTheFXScene() {

@@ -18,8 +18,10 @@ import javafx.scene.AmbientLight;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.PointLight;
+import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
@@ -27,6 +29,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.MeshView;
@@ -37,13 +40,11 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import opencascade.TopoDS_Face;
-import opencascade.TopoDS_Shape;
 
 public class OCCFX3DView {
 	
 	// Observation point setting for 3D view
 	public static enum VantagePoint3DView {
-		SELECT("Select"),
 		BOTTOM("Bottom (Z+)"),
 		CORNER("Corner"),
 		FRONT("Front (X+)"),
@@ -67,11 +68,18 @@ public class OCCFX3DView {
 		}
 	}
 	
+	private static final double SHIFT_MULTIPLIER = 10.0;
+	private static final double CONTROL_MULTIPLIER = 0.1;
+	private static final double ROTATE_MULTIPLIER = 0.1;
+	private static final double TRANSLATE_MULTIPLIER = 0.05;
+	private static final double SCROLL_MULTIPLIER = 0.025;
+
 	private double _axisLength = 1.0;
 	private double _axisThickness = 0.5;
 	
 	private VantagePoint3DView _lastSelectedVantagePoint = VantagePoint3DView.FRONT;
 	
+	private Scene _theScene = null;
 	private SubScene _theSubScene = null;
 	
 	private Group _theViewingGroup = null;
@@ -86,44 +94,55 @@ public class OCCFX3DView {
 	private AmbientLight _theAmbientLight = null;
 	private PointLight _thePointLight = null;
 	
-	private Group _theAxisGroup = null;
+	private Group _theAxisGroup = new Group();
 	
 	private BoundingBox _theBoundingBoxInLocal = null;
 	private double _sceneDiameter = 0; // The max dimension of the object that need to be rendered inside the scene (wing span or fuselage length, for example)
 	
 	private Transform _theCurrentRotate = null;
 	
-	private List<TriangleMesh> _theAircraftImportedMesh = null;
-	private List<TriangleMesh> _theFuselageImportedMesh = null;
-	private List<TriangleMesh> _theWingImportedMesh = null;
-	private List<TriangleMesh> _theHTailImportedMesh = null;
-	private List<TriangleMesh> _theVTailImportedMesh = null;
-	private List<TriangleMesh> _theCanardImportedMesh = null;
-	private List<TriangleMesh> _theWingFairingImportedMesh = null;
-	private List<TriangleMesh> _theCanardFairingImportedMesh = null;
-	private List<MeshView> _theAircraftImportedMeshView = null;
-	private List<MeshView> _theFuselageImportedMeshView = null;
-	private List<MeshView> _theWingImportedMeshView = null;
-	private List<MeshView> _theHTailImportedMeshView = null;
-	private List<MeshView> _theVTailImportedMeshView = null;
-	private List<MeshView> _theCanardImportedMeshView = null;
-	private List<MeshView> _theWingFairingImportedMeshView = null;
-	private List<MeshView> _theCanardFairingImportedMeshView = null;
+	private List<TriangleMesh> _theAircraftImportedMesh = new ArrayList<>();
+	private List<TriangleMesh> _theFuselageImportedMesh = new ArrayList<>();
+	private List<TriangleMesh> _theWingImportedMesh = new ArrayList<>();
+	private List<TriangleMesh> _theHTailImportedMesh = new ArrayList<>();
+	private List<TriangleMesh> _theVTailImportedMesh = new ArrayList<>();
+	private List<TriangleMesh> _theCanardImportedMesh = new ArrayList<>();
+	private List<TriangleMesh> _theWingFairingImportedMesh = new ArrayList<>();
+	private List<TriangleMesh> _theCanardFairingImportedMesh = new ArrayList<>();
+	private List<MeshView> _theAircraftImportedMeshView = new ArrayList<>();
+	private List<MeshView> _theFuselageImportedMeshView = new ArrayList<>();
+	private List<MeshView> _theWingImportedMeshView = new ArrayList<>();
+	private List<MeshView> _theHTailImportedMeshView = new ArrayList<>();
+	private List<MeshView> _theVTailImportedMeshView = new ArrayList<>();
+	private List<MeshView> _theCanardImportedMeshView = new ArrayList<>();
+	private List<MeshView> _theWingFairingImportedMeshView = new ArrayList<>();
+	private List<MeshView> _theCanardFairingImportedMeshView = new ArrayList<>();
 	
-	private Group _theSubSceneRoot;
+	private Group _theSceneRoot = new Group();
+	private Group _theSubSceneRoot = new Group();
+	
+	private boolean _viewOnSubScene = false;
 	
 	private Map<CADComponentEnum, List<OCCShape>> _theAircraftSolidsMap = new HashMap<>();
 	private Map<CADComponentEnum, List<TriangleMesh>> _theAircraftMeshMap = new HashMap<>();
 	private Map<CADComponentEnum, List<MeshView>> _theAircraftMeshViewMap = new HashMap<>();
 	
-	// Constructor
-	public OCCFX3DView(Map<CADComponentEnum, List<OCCShape>> aircraftSolidsMap) {	
+	public OCCFX3DView(Map<CADComponentEnum, List<OCCShape>> aircraftSolidsMap) {
+		init(aircraftSolidsMap, false);
+	}
+	
+	public OCCFX3DView(Map<CADComponentEnum, List<OCCShape>> aircraftSolidsMap, boolean viewOnSubScene) {			
+		init(aircraftSolidsMap, viewOnSubScene);
+	}
+	
+	private void init(Map<CADComponentEnum, List<OCCShape>> aircraftSolidsMap, boolean viewOnSubScene) {
 		
 		this._theAircraftSolidsMap = aircraftSolidsMap;
+		this._viewOnSubScene = viewOnSubScene;
 		
 		convertSolidsToMeshViews();
 		createBaseScene();
-		createSubScene(1024, 800, SceneAntialiasing.BALANCED);
+		createScene(1024, 800, SceneAntialiasing.BALANCED);
 		setVantagePoint(_lastSelectedVantagePoint);	
 	}
 	
@@ -142,6 +161,9 @@ public class OCCFX3DView {
 			
 			_theAircraftMeshMap.put(comp, mesh);
 			_theAircraftMeshViewMap.put(comp, meshView);
+			
+			_theAircraftImportedMesh.addAll(mesh);
+			_theAircraftImportedMeshView.addAll(meshView);
 			
 			// Fill each mesh view and triangle mesh list
 			switch (comp) {
@@ -219,90 +241,211 @@ public class OCCFX3DView {
 		
 	}
 	
-	private void createSubScene(final double width, final double height, final SceneAntialiasing sceneAA) {
-		
-		// -------------------------------
-		// Sub scene & root
-		// -------------------------------
-		
-		// Generate the sub scene
-		_theSubSceneRoot = new Group();
-		_theSubScene = new SubScene(_theSubSceneRoot, width, height, true, sceneAA);
-//		_theSubScene.setFill(Color.TRANSPARENT);
-		_theSubScene.setFill(new RadialGradient(225, 225, 300, 300, 500, false,
-                CycleMethod.NO_CYCLE, new Stop[]
-                { new Stop(0f, Color.LIGHTSKYBLUE),
-                  new Stop(1f, Color.LIGHTBLUE) }));
-		
-		// Add the perspective camera
-		_theSubScene.setCamera(_thePerspectiveCamera);
-		
-		// Add all to the sub scene
-		_theSubSceneRoot.getChildren().addAll(_theViewingGroup, _theAmbientLight);
-		
-		// Add imported mesh views
-		_theSubSceneRoot.getChildren().addAll(_theAircraftImportedMeshView);
-		
-		// Add the axes
-		buildAxes(_theSubSceneRoot);
-		
-		// Navigator on sub scene
-		final Rotate viewingRotX = new Rotate(0.0, 0.0, 0.0, 0.0, Rotate.X_AXIS);
-		final Rotate viewingRotY = new Rotate(0.0, 0.0, 0.0, 0.0, Rotate.Y_AXIS);
-		
-		_theSubScene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				
-				double multiplier = 1.0;
-				
-				if (event.isShiftDown()) {
-					multiplier = 10.0;
+	private void createScene(double width, double height, SceneAntialiasing sceneAA) {
+		if (_viewOnSubScene) {
+			_theSubScene = new SubScene(_theSubSceneRoot, width, height, true, sceneAA);
+			
+			_theSubScene.setFill(new RadialGradient(225, 225, 300, 300, 500, false,
+	                CycleMethod.NO_CYCLE, new Stop[]
+	                { new Stop(0f, Color.LIGHTSKYBLUE),
+	                  new Stop(1f, Color.LIGHTBLUE) }));
+			
+			_theSubScene.setCamera(_thePerspectiveCamera);
+			_theSubSceneRoot.getChildren().addAll(_theViewingGroup, _theAmbientLight);
+			_theSubSceneRoot.getChildren().addAll(_theAircraftImportedMeshView);
+			
+			buildAxes(_theSubSceneRoot);
+			
+			// Navigator on sub scene
+			final Rotate viewingRotX = new Rotate(0.0, 0.0, 0.0, 0.0, Rotate.X_AXIS);
+			final Rotate viewingRotY = new Rotate(0.0, 0.0, 0.0, 0.0, Rotate.Y_AXIS);
+			
+			_theSubScene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					
+					double multiplier = 1.0;
+					
+					if (event.isShiftDown()) {
+						multiplier = SHIFT_MULTIPLIER;
+					}
+					
+					if (event.isControlDown()) {
+						multiplier = CONTROL_MULTIPLIER;
+					}
+					
+					if (event.isPrimaryButtonDown()) {
+						viewingRotX.setAngle(multiplier*(_startY - event.getSceneY())*ROTATE_MULTIPLIER);
+						viewingRotY.setAngle(multiplier*(event.getSceneX() - _startX)*ROTATE_MULTIPLIER);
+						_theViewingAffineRotate.append(viewingRotX.createConcatenation(viewingRotY));
+					}
+					
+					else if (event.isSecondaryButtonDown()) {
+						_theViewingTranslate.setX(_theViewingTranslate.getX() + multiplier*(_startX - event.getSceneX())*TRANSLATE_MULTIPLIER);
+						_theViewingTranslate.setY(_theViewingTranslate.getY() + multiplier*(_startY - event.getSceneY())*TRANSLATE_MULTIPLIER);
+					}
+					
+					_startX = event.getSceneX();
+					_startY = event.getSceneY();
 				}
-				
-				if (event.isPrimaryButtonDown()) {
-					viewingRotX.setAngle(multiplier*(_startY - event.getSceneY())/10);
-					viewingRotY.setAngle(multiplier*(event.getSceneX() - _startX)/10);
-					_theViewingAffineRotate.append(viewingRotX.createConcatenation(viewingRotY));
+			});
+			
+			_theSubScene.setOnScroll(new EventHandler<ScrollEvent>() {
+				@Override
+				public void handle(ScrollEvent event) {
+					_theViewingTranslate.setZ(_theViewingTranslate.getZ() - event.getDeltaY()*SCROLL_MULTIPLIER);
 				}
-				
-				else if (event.isSecondaryButtonDown()) {
-					_theViewingTranslate.setX(_theViewingTranslate.getX() + multiplier*(_startX - event.getSceneX())/100);
-					_theViewingTranslate.setY(_theViewingTranslate.getY() + multiplier*(_startY - event.getSceneY())/100);
+			});
+			
+			_theSubScene.setOnMousePressed(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					_startX = event.getSceneX();
+					_startY = event.getSceneY();
 				}
-				
-				else if (event.isMiddleButtonDown()) {
-					_theViewingTranslate.setZ(_theViewingTranslate.getZ() + multiplier*(event.getSceneY() - _startY)/40);
+			});
+			
+			_theSubScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+				@Override
+				public void handle(KeyEvent event) {
+					switch (event.getCode()) {
+					case A:
+						_theAxisGroup.setVisible(!_theAxisGroup.isVisible());
+						break;
+					case B:
+						setVantagePoint(VantagePoint3DView.BACK);
+						break;
+					case C:
+						setVantagePoint(VantagePoint3DView.CORNER);
+						break;
+					case D: 
+						setVantagePoint(VantagePoint3DView.BOTTOM);
+						break;
+					case F:
+						setVantagePoint(VantagePoint3DView.FRONT);
+						break;
+					case L:
+						setVantagePoint(VantagePoint3DView.LEFT);
+						break;
+					case P:
+						_theSubSceneRoot.setVisible(!_theSubSceneRoot.isVisible());
+						break;
+					case R:
+						setVantagePoint(VantagePoint3DView.RIGHT);
+						break;		
+					case T:
+						setVantagePoint(VantagePoint3DView.TOP);
+						break;											
+					default:
+						break;
+					}
 				}
-				
-				_startX = event.getSceneX();
-				_startY = event.getSceneY();
-			}
-		});
-		
-		_theSubScene.setOnScroll(new EventHandler<ScrollEvent>() {
-			@Override
-			public void handle(ScrollEvent event) {
-				_theViewingTranslate.setZ(_theViewingTranslate.getZ() - event.getDeltaY()/40);
-			}
-		});
-		
-		_theSubScene.setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				_startX = event.getSceneX();
-				_startY = event.getSceneY();
-			}
-		});
+			});
+			
+		} else {
+			_theScene = new Scene(_theSceneRoot, width, height, true, sceneAA);
+			
+			_theScene.setFill(new RadialGradient(225, 225, 300, 300, 500, false,
+	                CycleMethod.NO_CYCLE, new Stop[]
+	                { new Stop(0f, Color.LIGHTSKYBLUE),
+	                  new Stop(1f, Color.LIGHTBLUE) }));
+			
+			_theScene.setCamera(_thePerspectiveCamera);
+			_theSceneRoot.getChildren().addAll(_theViewingGroup, _theAmbientLight);
+			_theSceneRoot.getChildren().addAll(_theAircraftImportedMeshView);
+			
+			buildAxes(_theSceneRoot);
+			
+			// Navigator on sub scene
+			final Rotate viewingRotX = new Rotate(0.0, 0.0, 0.0, 0.0, Rotate.X_AXIS);
+			final Rotate viewingRotY = new Rotate(0.0, 0.0, 0.0, 0.0, Rotate.Y_AXIS);
+			
+			_theScene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					
+					double multiplier = 1.0;
+					
+					if (event.isShiftDown()) {
+						multiplier = SHIFT_MULTIPLIER;
+					}
+					
+					if (event.isControlDown()) {
+						multiplier = CONTROL_MULTIPLIER;
+					}
+					
+					if (event.isPrimaryButtonDown()) {
+						viewingRotX.setAngle(multiplier*(_startY - event.getSceneY())*ROTATE_MULTIPLIER);
+						viewingRotY.setAngle(multiplier*(event.getSceneX() - _startX)*ROTATE_MULTIPLIER);
+						_theViewingAffineRotate.append(viewingRotX.createConcatenation(viewingRotY));
+					}
+					
+					else if (event.isSecondaryButtonDown()) {
+						_theViewingTranslate.setX(_theViewingTranslate.getX() + multiplier*(_startX - event.getSceneX())*TRANSLATE_MULTIPLIER);
+						_theViewingTranslate.setY(_theViewingTranslate.getY() + multiplier*(_startY - event.getSceneY())*TRANSLATE_MULTIPLIER);
+					}
+					
+					_startX = event.getSceneX();
+					_startY = event.getSceneY();
+				}
+			});
+			
+			_theScene.setOnScroll(new EventHandler<ScrollEvent>() {
+				@Override
+				public void handle(ScrollEvent event) {
+					_theViewingTranslate.setZ(_theViewingTranslate.getZ() - event.getDeltaY()*SCROLL_MULTIPLIER);
+				}
+			});
+			
+			_theScene.setOnMousePressed(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					_startX = event.getSceneX();
+					_startY = event.getSceneY();
+				}
+			});
+			
+			_theScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+				@Override
+				public void handle(KeyEvent event) {
+					switch (event.getCode()) { // TODO: implement axes toggle
+					case A:
+						_theAxisGroup.setVisible(!_theAxisGroup.isVisible());
+						break;
+					case B:
+						setVantagePoint(VantagePoint3DView.BACK);
+						break;
+					case C:
+						setVantagePoint(VantagePoint3DView.CORNER);
+						break;
+					case D: 
+						setVantagePoint(VantagePoint3DView.BOTTOM);
+						break;
+					case F:
+						setVantagePoint(VantagePoint3DView.FRONT);
+						break;
+					case L:
+						setVantagePoint(VantagePoint3DView.LEFT);
+						break;
+					case P:
+						_theSceneRoot.setVisible(!_theSceneRoot.isVisible());
+						break;
+					case R:
+						setVantagePoint(VantagePoint3DView.RIGHT);
+						break;		
+					case T:
+						setVantagePoint(VantagePoint3DView.TOP);
+						break;											
+					default:
+						break;
+					}
+				}
+			});
+		}		
 	}
 	
 	private void buildAxes(Group parentGroup) {
-		Group axis = new Group();
-		
-		// Generate material objects for each axis
-		final PhongMaterial whiteMaterial = new PhongMaterial();
-		whiteMaterial.setDiffuseColor(Color.WHITE);
-		
+	
 		final PhongMaterial redMaterial = new PhongMaterial();
 		redMaterial.setDiffuseColor(Color.DARKRED);
 		redMaterial.setSpecularColor(Color.RED);
@@ -315,94 +458,33 @@ public class OCCFX3DView {
 		blueMaterial.setDiffuseColor(Color.DARKBLUE);
 		blueMaterial.setSpecularColor(Color.BLUE);
 		
-		// Generate cylinders for each axis and a sphere for the center of the reference frame
-		final Sphere sphere = new Sphere(2*_axisThickness);
-		final Cylinder xAxis = new Cylinder(_axisThickness, _axisLength);
-		final Cylinder yAxis = new Cylinder(_axisThickness, _axisLength);
-		final Cylinder zAxis = new Cylinder(_axisThickness, _axisLength);
+		final Box xAxis = new Box(_axisLength, _axisThickness, _axisThickness);
+		final Box yAxis = new Box(_axisThickness, _axisLength, _axisThickness);
+		final Box zAxis = new Box(_axisThickness, _axisThickness, _axisLength);
 		
-		sphere.setMaterial(redMaterial);
-		xAxis.setMaterial(whiteMaterial);
-		yAxis.setMaterial(whiteMaterial);
-		zAxis.setMaterial(whiteMaterial);
+		xAxis.setMaterial(redMaterial);
+		yAxis.setMaterial(greenMaterial);
+		zAxis.setMaterial(blueMaterial);
 		
-		xAxis.setRotationAxis(Rotate.Z_AXIS);
-		xAxis.setTranslateX(_axisLength/2);
-		xAxis.setRotate(90);
-		
-		yAxis.setTranslateY(-_axisLength/2);
-		
-		zAxis.setRotationAxis(Rotate.X_AXIS);
-		zAxis.setTranslateZ(-_axisLength/2);
-		zAxis.setRotate(90);
-		
-		axis.getChildren().addAll(sphere, xAxis, yAxis, zAxis);
-		
-		// Generate a cone for each axis
-		float coneRadius = (float) (2*_axisThickness);
-		float coneHeight = (float) (0.25*_axisLength);
-		
-		TriangleMesh coneMeshX = createCone(coneRadius, coneHeight);		
-		TriangleMesh coneMeshY = createCone(coneRadius, coneHeight);		
-		TriangleMesh coneMeshZ = createCone(coneRadius, coneHeight);	
-		MeshView xCone = new MeshView(coneMeshX);
-		MeshView yCone = new MeshView(coneMeshY);
-		MeshView zCone = new MeshView(coneMeshZ);
-		
-		xCone.setMaterial(redMaterial);
-		xCone.setTranslateY(-coneRadius);
-		xCone.setRotationAxis(Rotate.Z_AXIS);		
-		xCone.setRotate(90);
-		xCone.setTranslateX(_axisLength);
-		xCone.setDrawMode(DrawMode.FILL);
-		
-		yCone.setMaterial(greenMaterial);
-		yCone.setTranslateY(-_axisLength);
-		yCone.setDrawMode(DrawMode.FILL);
-		
-		zCone.setMaterial(blueMaterial);
-		zCone.setTranslateY(-coneRadius);
-		zCone.setRotationAxis(Rotate.X_AXIS);	
-		zCone.setRotate(90);
-		zCone.setTranslateZ(-_axisLength);
-		zCone.setDrawMode(DrawMode.FILL);
-		
-		axis.getChildren().addAll(xCone, yCone, zCone);
-		
-		// Populate the axis group
-		_theAxisGroup.getChildren().add(axis);
+		_theAxisGroup.getChildren().addAll(xAxis, yAxis, zAxis);
+		_theAxisGroup.setVisible(false);
+		parentGroup.getChildren().add(_theAxisGroup);
 		
 	}
 	
-	private TriangleMesh createCone(float radius, float height) {
-		float x, z;
-		double angle;
+	public Scene exchangeScene(final SceneAntialiasing sceneAA) {
 		
-		int divisions = 500;
-		double segmentAngle = 2.0*Math.PI/divisions;	
-		double halfCount = Math.PI/2 - Math.PI/(divisions/2);
+		// Clear the current scene
+		((Group) _theScene.getRoot()).getChildren().clear();
+		_theScene.setCamera(null);
+		_theScene.setOnMouseDragged(null);
+		_theScene.setOnScroll(null);
+		_theScene.setOnMousePressed(null);
 		
-		TriangleMesh mesh = new TriangleMesh();
-		mesh.getPoints().addAll(0, 0, 0);
+		// Create and return a new sub scene
+		createScene(_theScene.getWidth(), _theScene.getHeight(), sceneAA);
 		
-		for (int i = divisions + 1; --i > 0; ) {
-			angle = segmentAngle*i;
-			x = (float) (radius*Math.cos(angle - halfCount));
-			z = (float) (radius*Math.sin(angle - halfCount));
-			mesh.getPoints().addAll(x, height, z);
-		}
-		mesh.getPoints().addAll(0, height, 0);
-		
-		mesh.getTexCoords().addAll(0, 0);
-		
-		for (int i = 1; i < divisions; i++) {
-			mesh.getFaces().addAll(
-					0, 0, i+1, 0, i, 0,
-					divisions+2, 0, i, 0, i+1, 0
-					);
-		}
-		
-		return mesh;
+		return _theScene;
 	}
 	
 	public SubScene exchangeSubScene(final SceneAntialiasing sceneAA) {
@@ -415,12 +497,12 @@ public class OCCFX3DView {
 		_theSubScene.setOnMousePressed(null);
 		
 		// Create and return a new sub scene
-		createSubScene(_theSubScene.getWidth(), _theSubScene.getHeight(), sceneAA);
+		createScene(_theSubScene.getWidth(), _theSubScene.getHeight(), sceneAA);
 		
 		return _theSubScene;
 	}
 	
-	public void setVantagePoint(VantagePoint3DView vp) {
+	private void setVantagePoint(VantagePoint3DView vp) {
 
 		Transform rotate = null;
 
@@ -461,24 +543,22 @@ public class OCCFX3DView {
 			Rotate rotateLeft2 = new Rotate(  0, Rotate.Z_AXIS);
 			rotate = rotateLeft1.createConcatenation(rotateLeft2);
 			break;
-		default:
-			break;
 		}
 		
 		_lastSelectedVantagePoint = vp;
 		
 		_theViewingAffineRotate.setToTransform(rotate);
 		
-		_theViewingTranslate.setX(0);
-		_theViewingTranslate.setY(0);
+		_theViewingTranslate.setX(0.0);
+		_theViewingTranslate.setY(0.0);
 		_theViewingTranslate.setZ(-distance);
 	}
 	
 	private double distToSceneCenter(double sceneRadius) {
 		final double borderFactor = 1.0;
 		final double fov = _thePerspectiveCamera.getFieldOfView();
-		final double c3DWidth = _theSubScene.getWidth();
-		final double c3DHeight = _theSubScene.getHeight();
+		final double c3DWidth = (_viewOnSubScene) ? _theSubScene.getWidth(): _theScene.getWidth();
+		final double c3DHeight = (_viewOnSubScene) ? _theSubScene.getHeight(): _theScene.getHeight();
 		
 		double ratioFactor = 1.0;
 		
@@ -525,8 +605,80 @@ public class OCCFX3DView {
 		return meshViews;
 	}
 	
+	public List<TriangleMesh> getAircraftImportedMesh() {
+		return _theAircraftImportedMesh;
+	}
+	
+	public List<TriangleMesh> getFuselageImportedMesh() {
+		return _theFuselageImportedMesh;
+	}
+	
+	public List<TriangleMesh> getWingImportedMesh() {
+		return _theWingImportedMesh;
+	}
+	
+	public List<TriangleMesh> getHTailImportedMesh() {
+		return _theHTailImportedMesh;
+	}
+	
+	public List<TriangleMesh> getVTailImportedMesh() {
+		return _theVTailImportedMesh;
+	}
+	
+	public List<TriangleMesh> getCanardImportedMesh() {
+		return _theCanardImportedMesh;
+	}
+	
+	public List<TriangleMesh> getWingFairingImportedMesh() {
+		return _theWingFairingImportedMesh;
+	}
+	
+	public List<TriangleMesh> getCanardFairingImportedMesh() {
+		return _theCanardFairingImportedMesh;
+	}
+	
+	public List<MeshView> getAircraftImportedMeshView() {
+		return _theAircraftImportedMeshView;
+	}
+	
+	public List<MeshView> getFuselageImportedMeshView() {
+		return _theFuselageImportedMeshView;
+	}
+	
+	public List<MeshView> getWingImportedMeshView() {
+		return _theWingImportedMeshView;
+	}
+	
+	public List<MeshView> getHTailImportedMeshView() {
+		return _theHTailImportedMeshView;
+	}
+	
+	public List<MeshView> getVTailImportedMeshView() {
+		return _theVTailImportedMeshView;
+	}
+	
+	public List<MeshView> getCanardImportedMeshView() {
+		return _theCanardImportedMeshView;
+	}
+	
+	public List<MeshView> getWingFairingImportedMeshView() {
+		return _theWingFairingImportedMeshView;
+	}
+	
+	public List<MeshView> getCanardFairingImportedMeshView() {
+		return _theCanardFairingImportedMeshView;
+	}
+	
+	public boolean getViewOnSubScene() {
+		return _viewOnSubScene;
+	}
+	
 	public SubScene getSubScene() {
 		return _theSubScene;
+	}
+	
+	public Scene getScene() {
+		return _theScene;
 	}
 	
 	public PerspectiveCamera getPerspectiveCamera() {
