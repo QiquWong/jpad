@@ -13,6 +13,7 @@ import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.inferred.freebuilder.shaded.com.google.googlejavaformat.Op;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
@@ -35,6 +36,7 @@ public class DescentCalc {
 	//............................................................................................
 	// Input:
 	private Aircraft _theAircraft;
+	private OperatingConditions _theOperatingConditions;
 	private Amount<Velocity> _speedDescentCAS;
 	private Amount<Velocity> _rateOfDescent;
 	private Amount<Length> _initialDescentAltitude;
@@ -75,6 +77,7 @@ public class DescentCalc {
 	// BUILDER:
 	public DescentCalc(
 			Aircraft theAircraft,
+			OperatingConditions theOperatingConditions,
 			Amount<Velocity> speedDescentCAS,
 			Amount<Velocity> rateOfDescent,
 			Amount<Length> initialDescentAltitude,
@@ -85,6 +88,7 @@ public class DescentCalc {
 			) {
 		
 		this._theAircraft = theAircraft;
+		this._theOperatingConditions = theOperatingConditions;
 		this._speedDescentCAS = speedDescentCAS;
 		this._rateOfDescent = rateOfDescent;
 		this._initialDescentAltitude = initialDescentAltitude; 
@@ -148,8 +152,9 @@ public class DescentCalc {
 				.divide(Math.sqrt(sigmaList.get(0))));
 		machList.add(
 				SpeedCalc.calculateMach(
-						_initialDescentAltitude.doubleValue(SI.METER),
-						_speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND)
+						_initialDescentAltitude,
+						_theOperatingConditions.getDeltaTemperatureCruise(),
+						_speedListTAS.get(0)
 						)
 				);
 		_descentAngles.add(
@@ -1066,5 +1071,13 @@ public class DescentCalc {
 
 	public void setDescentMaxIterationErrorFlag(boolean _descentMaxIterationErrorFlag) {
 		this._descentMaxIterationErrorFlag = _descentMaxIterationErrorFlag;
+	}
+
+	public OperatingConditions getTheOperatingConditions() {
+		return _theOperatingConditions;
+	}
+
+	public void setTheOperatingConditions(OperatingConditions _theOperatingConditions) {
+		this._theOperatingConditions = _theOperatingConditions;
 	}
 }
