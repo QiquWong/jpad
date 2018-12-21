@@ -3,6 +3,9 @@ package calculators.performance;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
+import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Power;
@@ -21,21 +24,12 @@ import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import standaloneutils.MyArrayUtils;
-import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 
 public class RateOfClimbCalc {
 
 	/**
 	 * @author Lorenzo Attanasio, Vittorio Trifari
-	 * @param altitude
-	 * @param deltaTemperature
-	 * @param weight
-	 * @param flightCondition
-	 * @param phi
-	 * @param listDrag
-	 * @param listThrust
-	 * @return
 	 */
 	public static List<RCMap> calculateRC(
 			List<Amount<Length>> altitude,
@@ -104,14 +98,6 @@ public class RateOfClimbCalc {
 
 	/**
 	 * @author Lorenzo Attanasio, Vittorio Trifari
-	 * @param altitude
-	 * @param deltaTemperature
-	 * @param weight
-	 * @param flightCondition
-	 * @param phi
-	 * @param listDrag
-	 * @param listThrust
-	 * @return
 	 */
 	public static RCMap calculateRC(
 			Amount<Length> altitude,
@@ -152,132 +138,51 @@ public class RateOfClimbCalc {
 
 	/**
 	 * Calculate the rate of climb supposing that the lift equals the weight
-	 * 
-	 * @param altitude (m)
-	 * @param speed (m/s)
-	 * @param phi
-	 * @param weight (N)
-	 * @param flightCondition
-	 * @param t0 (N)
-	 * @param nEngine
-	 * @param bpr
-	 * @param surface (m2)
-	 * @param ar 
-	 * @param sweepHalfChord (radian)
-	 * @param tcMax
-	 * @param airfoilType
-	 * @param cLmax
-	 * @param cd0
-	 * @param oswald
-	 * @return rate of climb (m/s)
 	 */
-	public static double calculateRC(
-			double altitude, double speed, double phi, double weight,
+	public static Amount<Velocity> calculateRC(
+			Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Velocity> speed, double phi, Amount<Mass> weight,
 			EngineOperatingConditionEnum flightCondition, EngineTypeEnum engineType,
 			PowerPlant thePowerPlant,
-			double t0, int nEngine, double bpr,
-			double surface, double ar, double sweepHalfChord,
+			Amount<Force> t0, 
+			Amount<Area> surface, double ar, Amount<Angle> sweepHalfChord,
 			double tcMax, AirfoilTypeEnum airfoilType, 
 			double cd0, double oswald) {
 		
-		double powerAvailable = speed*ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, altitude, SpeedCalc.calculateMach(altitude, speed));
-		double powerRequired = speed*DragCalc.calculateDragAtSpeedLevelFlight(weight, altitude, surface, speed, cd0, ar, oswald, sweepHalfChord, tcMax, airfoilType);
-		return (powerAvailable - powerRequired)/weight;
+		Amount<Power> powerAvailable = 
+				Amount.valueOf(
+						speed.doubleValue(SI.METERS_PER_SECOND)
+						*ThrustCalc.calculateThrustDatabase(
+								t0, 
+								flightCondition,
+								thePowerPlant,
+								altitude,
+								SpeedCalc.calculateMach(altitude, deltaTemperature, speed), 
+								deltaTemperature, 
+								phi
+								).doubleValue(SI.NEWTON), 
+						SI.WATT
+						);
+		Amount<Power> powerRequired = 
+				Amount.valueOf( 
+						speed.doubleValue(SI.METERS_PER_SECOND)
+						*DragCalc.calculateDragAtSpeedLevelFlight(
+								weight, 
+								altitude, 
+								deltaTemperature,
+								surface, 
+								speed, 
+								cd0, 
+								ar,
+								oswald, 
+								sweepHalfChord,
+								tcMax, 
+								airfoilType
+								).doubleValue(SI.NEWTON),
+						SI.WATT
+						);
+		return Amount.valueOf(
+				(powerAvailable.doubleValue(SI.WATT) - powerRequired.doubleValue(SI.WATT))/(weight.doubleValue(SI.KILOGRAM)*9.81),
+				SI.METERS_PER_SECOND
+				);
 	}
-	
-	/**
-	 * @author Lorenzo Attanasio
-	 * @param w weight (N)
-	 * @param s surface (m2)
-	 * @param gamma gamma function
-	 * @param rho density (kg/m3)
-	 * @param cd0 zero lift drag coefficient
-	 * @param t thrust (N)
-	 * @param emax maximum efficiency L/D
-	 * @return
-	 */
-	public static double calculateRCmax(double w, double s, 
-			double gamma, double rho, double cd0, 
-			double t, double emax) {
-		return Math.pow((w/s)*gamma/(3.*rho*cd0), 0.5) 
-				* Math.pow(t/w, 1.5)
-				* (1. - gamma/6. - 3./(2*(t*t/(w*w))*emax*emax*gamma));
-	}
-
-	/**
-	 * Evaluate maximum rate of climb
-	 * 
-	 * @author Lorenzo Attanasio
-	 * @param w weight (N)
-	 * @param s wing reference surface (m2)
-	 * @param rho density (kg/m3)
-	 * @param cd0 zero lift drag coefficient
-	 * @param t thrust(N) 
-	 * @param emax maximum efficiency L/D
-	 * @return
-	 */
-	public static double calculateRCmax(double w, double s, 
-			double rho, double cd0, double t, double emax) {
-		return calculateRCmax(w, s, calculateGamma(emax, t, w), rho, cd0, t, emax);
-	}
-
-	/**
-	 * 
-	 * @param w
-	 * @param s
-	 * @param altitude
-	 * @param cd0
-	 * @param emax
-	 * @param t0
-	 * @param nEngine
-	 * @param phi
-	 * @param bpr
-	 * @param flightCondition
-	 * @return
-	 */
-	public static double calculateRCmax(double w, double s, 
-			double altitude, double mach, double cd0, double emax,
-			double t0, int nEngine, double phi, double bpr, 
-			EngineTypeEnum engineType,
-			EngineOperatingConditionEnum flightCondition,
-			PowerPlant thePowerPlant
-			) {
-
-		double thrust = ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, altitude, mach);
-		return calculateRCmax(w, s, calculateGamma(emax, thrust, w), AtmosphereCalc.getDensity(altitude), cd0, 
-				thrust, emax);
-	}
-
-	/**
-	 * Evaluate maximum rate of climb, propeller engine
-	 * 
-	 * @author Lorenzo Attanasio
-	 * @param etap propeller efficiency
-	 * @param pa power available
-	 * @param w weight (N)
-	 * @param sigma density ratio
-	 * @param ar aspect ratio
-	 * @param cD0 zero lift drag coefficient
-	 * @param s wing surface (m2)
-	 * @return
-	 */
-	public static double calculateRCmaxProp(double etap, double pa, double w, 
-			double sigma, double ar, double cD0, double s) {
-		return 76.*etap*pa/w 
-				- 2.97*Math.sqrt(w/sigma)*Math.pow(cD0, 0.25)/(Math.pow(ar, 0.75)*Math.pow(s, 0.5));
-	}
-
-	/**
-	 * Gamma function used in RCmax evaluation
-	 * 
-	 * @author Lorenzo Attanasio
-	 * @param emax maximum efficiency L/D
-	 * @param t thrust (N)
-	 * @param w weight (N)
-	 * @return
-	 */
-	public static double calculateGamma(double emax, double t, double w) {
-		return 1. + Math.sqrt(1. + 3./(emax*emax*t*t/(w*w)));
-	}
-
 }

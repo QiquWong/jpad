@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -28,64 +29,65 @@ public class FlightManeuveringEnvelopeCalc {
 	// VARIABLES DECLARATION:
 
 	//assigned:
-	RegulationsEnum _regulations;
-	AircraftTypeEnum _aircraftType;
+	private RegulationsEnum _regulations;
+	private AircraftTypeEnum _aircraftType;
 	private boolean _createCSV; 
-	Double _positiveLimitLoadFactor;
-	Double _negativeLimitLoadFactor;
-	Double _cLMaxClean;
-	Double _cLMaxFullFlap;
-	Double _cLMaxInverted;
-	Double _cLMin;
-	Amount<?> _cLAlpha;
-	Amount<Length> _meanAerodynamicChord;
-	Amount<Length> _altitude;
-	Amount<Velocity> _cruisingSpeed;
-	Amount<Velocity> _diveSpeed;
-	Amount<Mass> _maxTakeOffMass;
-	Amount<Mass> _maxLandingMass;
-	Amount<Area> _wingSurface;
+	private double _positiveLimitLoadFactor;
+	private double _negativeLimitLoadFactor;
+	private double _cLMaxClean;
+	private double _cLMaxFullFlap;
+	private double _cLMaxInverted;
+	private double _cLMin;
+	private Amount<?> _cLAlpha;
+	private Amount<Length> _meanAerodynamicChord;
+	private Amount<Length> _altitude;
+	private Amount<Temperature> _deltaTemperature;
+	private Amount<Velocity> _cruisingSpeed;
+	private Amount<Velocity> _diveSpeed;
+	private Amount<Mass> _maxTakeOffMass;
+	private Amount<Mass> _maxLandingMass;
+	private Amount<Area> _wingSurface;
 	
 	//calculated:
-	Amount<Velocity> _stallSpeedFullFlap;
-	Amount<Velocity> _stallSpeedClean;
-	Amount<Velocity> _stallSpeedInverted;
-	Amount<Velocity> _maneuveringSpeed;
-	Amount<Velocity> _maneuveringFlapSpeed;
-	Amount<Velocity> _maneuveringSpeedInverted;
-	Amount<Velocity> _designFlapSpeed;
-	List<Amount<Velocity>> _gustSpeeds;
-	List<Amount<Velocity>> _gustSpeedsFlap;
-	Double _positiveLoadFactorManeuveringSpeed;
-	Double _positiveLoadFactorCruisingSpeed;
-	Double _positiveLoadFactorDiveSpeed;
-	Double _positiveLoadFactorDesignFlapSpeed;
-	Double _negativeLoadFactorManeuveringSpeedInverted;
-	Double _negativeLoadFactorCruisingSpeed;
-	Double _negativeLoadFactorDiveSpeed;
-	Double _positiveLoadFactorManeuveringSpeedWithGust;
-	Double _positiveLoadFactorCruisingSpeedWithGust;
-	Double _positiveLoadFactorDiveSpeedWithGust;
-	Double _positiveLoadFactorDesignFlapSpeedWithGust;
-	Double _negativeLoadFactorManeuveringSpeedInvertedWithGust;
-	Double _negativeLoadFactorCruisingSpeedWithGust;
-	Double _negativeLoadFactorDiveSpeedWithGust;
-	Double _negativeLoadFactorDesignFlapSpeedWithGust;
+	private Amount<Velocity> _stallSpeedFullFlap;
+	private Amount<Velocity> _stallSpeedClean;
+	private Amount<Velocity> _stallSpeedInverted;
+	private Amount<Velocity> _maneuveringSpeed;
+	private Amount<Velocity> _maneuveringFlapSpeed;
+	private Amount<Velocity> _maneuveringSpeedInverted;
+	private Amount<Velocity> _designFlapSpeed;
+	private List<Amount<Velocity>> _gustSpeeds;
+	private List<Amount<Velocity>> _gustSpeedsFlap;
+	private double _positiveLoadFactorManeuveringSpeed;
+	private double _positiveLoadFactorCruisingSpeed;
+	private double _positiveLoadFactorDiveSpeed;
+	private double _positiveLoadFactorDesignFlapSpeed;
+	private double _negativeLoadFactorManeuveringSpeedInverted;
+	private double _negativeLoadFactorCruisingSpeed;
+	private double _negativeLoadFactorDiveSpeed;
+	private double _positiveLoadFactorManeuveringSpeedWithGust;
+	private double _positiveLoadFactorCruisingSpeedWithGust;
+	private double _positiveLoadFactorDiveSpeedWithGust;
+	private double _positiveLoadFactorDesignFlapSpeedWithGust;
+	private double _negativeLoadFactorManeuveringSpeedInvertedWithGust;
+	private double _negativeLoadFactorCruisingSpeedWithGust;
+	private double _negativeLoadFactorDiveSpeedWithGust;
+	private double _negativeLoadFactorDesignFlapSpeedWithGust;
 	
 	// plot:
-	List<Double> _basicManeuveringDiagramLoadFactors;
-	List<Amount<Velocity>> _basicManeuveringDiagramSpeedEAS;
-	List<Double> _gustCurvesLoadFactors;
-	List<Amount<Velocity>> _gustCurvesSpeedEAS;
-	List<Double> _envelopeLoadFactors;
-	List<Amount<Velocity>> _envelopeSpeedEAS;
+	private List<Double> _basicManeuveringDiagramLoadFactors;
+	private List<Amount<Velocity>> _basicManeuveringDiagramSpeedEAS;
+	private List<Double> _gustCurvesLoadFactors;
+	private List<Amount<Velocity>> _gustCurvesSpeedEAS;
+	private List<Double> _envelopeLoadFactors;
+	private List<Amount<Velocity>> _envelopeSpeedEAS;
 	
-	List<Double> _flapManeuveringDiagramLoadFactors;
-	List<Amount<Velocity>> _flapManeuveringDiagramSpeedEAS;
-	List<Double> _gustCurvesLoadFactorsWithFlaps;
-	List<Amount<Velocity>> _gustCurvesSpeedEASWithFlaps;
-	List<Double> _envelopeLoadFactorsWithFlaps;
-	List<Amount<Velocity>> _envelopeSpeedEASWithFlaps;
+	private List<Double> _flapManeuveringDiagramLoadFactors;
+	private List<Amount<Velocity>> _flapManeuveringDiagramSpeedEAS;
+	private List<Double> _gustCurvesLoadFactorsWithFlaps;
+	private List<Amount<Velocity>> _gustCurvesSpeedEASWithFlaps;
+	private List<Double> _envelopeLoadFactorsWithFlaps;
+	private List<Amount<Velocity>> _envelopeSpeedEASWithFlaps;
 	
 	//--------------------------------------------------------------------------------------------
 	// CONSTRUCTOR:
@@ -103,6 +105,7 @@ public class FlightManeuveringEnvelopeCalc {
 			Amount<?> cLAlpha,
 			Amount<Length> meanAerodynamicChord,
 			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature,
 			Amount<Mass> maxTakeOffMass,
 			Amount<Mass> maxLandingMass,
 			Amount<Area> wingSurface
@@ -121,6 +124,7 @@ public class FlightManeuveringEnvelopeCalc {
 		this._cLAlpha = cLAlpha;
 		this._meanAerodynamicChord = meanAerodynamicChord;
 		this._altitude = altitude;
+		this._deltaTemperature = deltaTemperature;
 		this._maxTakeOffMass = maxTakeOffMass;
 		this._maxLandingMass = maxLandingMass;
 		this._wingSurface = wingSurface;
@@ -318,15 +322,13 @@ public class FlightManeuveringEnvelopeCalc {
 		// BASIC MANEUVERING DIAGRAM
 		//.......................................................................................
 		// STALL POINT (n=1)
-		this._stallSpeedClean = Amount.valueOf(
-				SpeedCalc.calculateSpeedStall(
-						0.0, // altitude = 0 -> EAS
-						this._maxTakeOffMass.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.getEstimatedValue(),
-						this._wingSurface.doubleValue(SI.SQUARE_METRE),
+		this._stallSpeedClean = SpeedCalc.calculateSpeedStall(
+						Amount.valueOf(0.0, SI.METER), // altitude = 0 -> EAS,
+						this._deltaTemperature,
+						this._maxTakeOffMass,
+						this._wingSurface,
 						this._cLMaxClean
-						),
-				SI.METERS_PER_SECOND
-				);
+						);
 		
 		// POINT A
 		this._maneuveringSpeed = this._stallSpeedClean.times(
@@ -348,15 +350,12 @@ public class FlightManeuveringEnvelopeCalc {
 		
 		// POINT H and STALL POINT (n = -1)
 		this._cLMin = -(this._negativeLimitLoadFactor*this._cLMaxInverted);
-		this._stallSpeedInverted = Amount.valueOf(
-				SpeedCalc.calculateSpeedStall(
-						0.0, // altitude = 0 -> EAS
-						this._maxTakeOffMass.doubleValue(SI.KILOGRAM)
-						*AtmosphereCalc.g0.getEstimatedValue(),
-						this._wingSurface.doubleValue(SI.SQUARE_METRE),
-						Math.abs(this._cLMin)
-						),
-				SI.METERS_PER_SECOND
+		this._stallSpeedInverted = SpeedCalc.calculateSpeedStall(
+				Amount.valueOf(0.0, SI.METER), // altitude = 0 -> EAS,
+				this._deltaTemperature,
+				this._maxTakeOffMass,
+				this._wingSurface,
+				Math.abs(this._cLMin)
 				);
 		this._maneuveringSpeedInverted = this._stallSpeedInverted.times(
 				Math.sqrt(Math.abs(_negativeLimitLoadFactor))
@@ -366,14 +365,12 @@ public class FlightManeuveringEnvelopeCalc {
 		//.......................................................................................
 		// FLAP MANEUVERING DIAGRAM
 		//.......................................................................................
-		this._stallSpeedFullFlap = Amount.valueOf(
-				SpeedCalc.calculateSpeedStall(
-						0.0, // altitude = 0 -> EAS
-						this._maxTakeOffMass.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.getEstimatedValue(),
-						this._wingSurface.doubleValue(SI.SQUARE_METRE),
-						this._cLMaxFullFlap
-						),
-				SI.METERS_PER_SECOND
+		this._stallSpeedFullFlap = SpeedCalc.calculateSpeedStall(
+				Amount.valueOf(0.0, SI.METER), // altitude = 0 -> EAS,
+				this._deltaTemperature,
+				this._maxTakeOffMass,
+				this._wingSurface,
+				this._cLMaxFullFlap
 				);
 
 		// from regulations
@@ -387,12 +384,12 @@ public class FlightManeuveringEnvelopeCalc {
 		
 		this._designFlapSpeed = Amount.valueOf(
 				1.8*SpeedCalc.calculateSpeedStall(
-						0.0, // altitude = 0 -> EAS 
-						this._maxLandingMass.doubleValue(SI.KILOGRAM)
-						*AtmosphereCalc.g0.getEstimatedValue(),
-						this._wingSurface.doubleValue(SI.SQUARE_METRE),
+						Amount.valueOf(0.0, SI.METER), // altitude = 0 -> EAS,
+						this._deltaTemperature,
+						this._maxTakeOffMass,
+						this._wingSurface,
 						this._cLMaxFullFlap
-						),
+						).doubleValue(SI.METERS_PER_SECOND),
 				SI.METERS_PER_SECOND
 				);
 		
@@ -802,7 +799,7 @@ public class FlightManeuveringEnvelopeCalc {
 		this._gustCurvesLoadFactors.add(1.0);
 		
 		// point A (eventually)
-		if(this._positiveLoadFactorManeuveringSpeedWithGust != null) {
+		if(Double.valueOf(this._positiveLoadFactorManeuveringSpeedWithGust) != null) {
 			this._gustCurvesSpeedEAS.add(_maneuveringSpeed);
 			this._gustCurvesLoadFactors.add(_positiveLoadFactorManeuveringSpeedWithGust);
 		}
@@ -860,7 +857,7 @@ public class FlightManeuveringEnvelopeCalc {
 		this._gustCurvesLoadFactors.add(_negativeLoadFactorCruisingSpeedWithGust);
 		
 		// point H (eventually)
-		if(this._negativeLoadFactorManeuveringSpeedInvertedWithGust != null) {
+		if(Double.valueOf(this._negativeLoadFactorManeuveringSpeedInvertedWithGust) != null) {
 			this._gustCurvesSpeedEAS.add(_maneuveringSpeedInverted);
 			this._gustCurvesLoadFactors.add(_negativeLoadFactorManeuveringSpeedInvertedWithGust);
 		}
@@ -902,7 +899,7 @@ public class FlightManeuveringEnvelopeCalc {
 		}
 		
 		// POINT A:
-		if(this._positiveLoadFactorManeuveringSpeedWithGust != null) {
+		if(Double.valueOf(this._positiveLoadFactorManeuveringSpeedWithGust) != null) {
 			this._envelopeSpeedEAS.add(_maneuveringSpeed);
 			this._envelopeLoadFactors.add(
 					Math.max(
@@ -953,7 +950,7 @@ public class FlightManeuveringEnvelopeCalc {
 				);
 		
 		// POINT H:
-		if(this._negativeLoadFactorManeuveringSpeedInvertedWithGust != null) {
+		if(Double.valueOf(this._negativeLoadFactorManeuveringSpeedInvertedWithGust) != null) {
 			this._envelopeSpeedEAS.add(_maneuveringSpeedInverted);
 			this._envelopeLoadFactors.add(
 					Math.min(
@@ -1596,6 +1593,14 @@ public class FlightManeuveringEnvelopeCalc {
 
 	public void setCreateCSV(boolean _createCSV) {
 		this._createCSV = _createCSV;
+	}
+
+	public Amount<Temperature> getDeltaTemperature() {
+		return _deltaTemperature;
+	}
+
+	public void setDeltaTemperature(Amount<Temperature> _deltaTemperature) {
+		this._deltaTemperature = _deltaTemperature;
 	}
 	
 }
