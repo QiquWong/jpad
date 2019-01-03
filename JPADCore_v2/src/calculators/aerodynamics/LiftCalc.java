@@ -16,6 +16,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
@@ -24,7 +25,6 @@ import javax.measure.unit.SI;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.util.MathArrays;
-import org.apache.poi.ss.formula.functions.Delta;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.creator.SlatCreator;
@@ -2729,4 +2729,28 @@ public class LiftCalc {
 
 	}	
 
+	/**
+	 * @author Vittorio Trifari
+	 * 
+	 * @param weight
+	 * @param altitude
+	 * @param surface
+	 * @param speed
+	 * @param cL
+	 * @return
+	 */
+	public static Amount<Force> calculateLiftAtSpeed(
+			Amount<Length> altitude, Amount<Temperature> deltaTemperature,
+			Amount<Area> surface, Amount<Velocity> speed,
+			double cL) {
+		return Amount.valueOf(
+				0.5
+				*AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS))
+				*Math.pow(speed.doubleValue(SI.METERS_PER_SECOND), 2)
+				*surface.doubleValue(SI.SQUARE_METRE)
+				*cL,
+				SI.NEWTON
+				);
+	}
+	
 }

@@ -411,7 +411,7 @@ public class TakeOffCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[2] = gamma = " + x[2] + " ï¿½" +
 									"\n\tx[3] = altitude = " + x[3] + " m"
 							);
 
@@ -493,7 +493,7 @@ public class TakeOffCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[2] = gamma = " + x[2] + " ï¿½" +
 									"\n\tx[3] = altitude = " + x[3] + " m"
 							);
 
@@ -704,7 +704,7 @@ public class TakeOffCalc {
 							System.out.println(
 									"\n\tx[0] = s = " + x[0] + " m" +
 											"\n\tx[1] = V = " + x[1] + " m/s" + 
-											"\n\tx[2] = gamma = " + x[2] + " °" +
+											"\n\tx[2] = gamma = " + x[2] + " ï¿½" +
 											"\n\tx[3] = altitude = " + x[3] + " m"+
 											"\n\tt = " + t + " s"
 									);
@@ -744,7 +744,7 @@ public class TakeOffCalc {
 											currentAltitude,
 											deltaTemperature
 											) + 
-									"\n\tAlpha Body = " + ((DynamicsEquationsTakeOff)ode).alpha(currentTime) + " °" + 
+									"\n\tAlpha Body = " + ((DynamicsEquationsTakeOff)ode).alpha(currentTime) + " ï¿½" + 
 									"\n\tt = " + t + " s"
 									);
 							System.out.println("\n---------------------------DONE!-------------------------------");

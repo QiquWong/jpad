@@ -13,7 +13,6 @@ import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import org.inferred.freebuilder.shaded.com.google.googlejavaformat.Op;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
@@ -196,12 +195,17 @@ public class DescentCalc {
 		aircraftMassPerStep.add(_initialDescentMass);
 		_cLSteps.add(
 				LiftCalc.calculateLiftCoeff(
-						Math.cos(_descentAngles.get(0).doubleValue(SI.RADIAN))*
-						aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
-							*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-						_speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND),
-						_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-						_initialDescentAltitude.doubleValue(SI.METER)
+						Amount.valueOf(
+								Math.cos(
+										_descentAngles.get(0).doubleValue(SI.RADIAN))
+								*aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
+								*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+								SI.NEWTON
+								),
+						_speedListTAS.get(0),
+						_theAircraft.getWing().getSurfacePlanform(),
+						_initialDescentAltitude, 
+						_theOperatingConditions.getDeltaTemperatureCruise()
 						)
 				);
 		cDSteps.add(
@@ -215,50 +219,54 @@ public class DescentCalc {
 				/cDSteps.get(0)
 				);
 		_dragPerStep.add(
-				Amount.valueOf(
-						DragCalc.calculateDragAtSpeed(
-								aircraftMassPerStep.get(0).times(AtmosphereCalc.g0).getEstimatedValue(),
-								_descentAltitudes.get(0).doubleValue(SI.METER),
-								_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-								_speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND),
-								cDSteps.get(0)
-								),
-						SI.NEWTON
+				DragCalc.calculateDragAtSpeed(
+						_descentAltitudes.get(0), 
+						_theOperatingConditions.getDeltaTemperatureCruise(),
+						_theAircraft.getWing().getSurfacePlanform(), 
+						_speedListTAS.get(0), 
+						cDSteps.get(0)
 						)
 				);
 		
 		//---------------------------------------------------------------------------------------
 		// SFC INTERPOLATION BETWEEN CRUISE AND IDLE:
+		List<Amount<Force>> cruiseThrustDatabaseTemp = new ArrayList<>();
+		List<Amount<Force>> flightIdleThrustDatabaseTemp = new ArrayList<>();
+		for(int ieng=0; ieng<_theAircraft.getPowerPlant().getEngineNumber(); ieng++) {
+			cruiseThrustDatabaseTemp.add(
+					ThrustCalc.calculateThrustDatabase(
+							_theAircraft.getPowerPlant().getEngineList().get(ieng).getT0(), 
+							EngineOperatingConditionEnum.CRUISE, 
+							_theAircraft.getPowerPlant(),
+							_descentAltitudes.get(0), 
+							machList.get(0), 
+							_theOperatingConditions.getDeltaTemperatureCruise(), 
+							_theOperatingConditions.getThrottleCruise()
+							)
+					);
+
+			flightIdleThrustDatabaseTemp.add(
+					ThrustCalc.calculateThrustDatabase(
+							_theAircraft.getPowerPlant().getEngineList().get(ieng).getT0(), 
+							EngineOperatingConditionEnum.FIDL, 
+							_theAircraft.getPowerPlant(),
+							_descentAltitudes.get(0), 
+							machList.get(0), 
+							_theOperatingConditions.getDeltaTemperatureCruise(), 
+							_theOperatingConditions.getThrottleCruise()
+							)
+					);
+		}
+
 		_cruiseThrustFromDatabase.add(
 				Amount.valueOf(
-						ThrustCalc.calculateThrustDatabase(
-								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-								_theAircraft.getPowerPlant().getEngineNumber(),
-								1.0, // phi
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getPowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.CRUISE,
-								_theAircraft.getPowerPlant(),
-								_descentAltitudes.get(0).doubleValue(SI.METER), 
-								machList.get(0)
-								),
+						cruiseThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
 						SI.NEWTON
 						)
 				);
-		
 		_flightIdleThrustFromDatabase.add(
 				Amount.valueOf(
-						ThrustCalc.calculateThrustDatabase(
-								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-								_theAircraft.getPowerPlant().getEngineNumber(),
-								1.0, // phi
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getPowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.DESCENT,
-								_theAircraft.getPowerPlant(),
-								_descentAltitudes.get(0).doubleValue(SI.METER), 
-								machList.get(0)
-								),
+						flightIdleThrustDatabaseTemp.stream().mapToDouble(fthr -> fthr.doubleValue(SI.NEWTON)).sum(),
 						SI.NEWTON
 						)
 				);
@@ -266,16 +274,18 @@ public class DescentCalc {
 		// first guess values
 		weightCruise.add(0.5);
 		weightFlightIdle.add(0.5);
-		
+
 		interpolatedThrustList.add( 
-				(_cruiseThrustFromDatabase.get(0).times(weightCruise.get(0)))
-				.plus(_flightIdleThrustFromDatabase.get(0).times(weightFlightIdle.get(0)))
+				Amount.valueOf(
+						(_cruiseThrustFromDatabase.get(0).doubleValue(SI.NEWTON)*weightCruise.get(0))
+						+ (_flightIdleThrustFromDatabase.get(0).doubleValue(SI.NEWTON)*weightFlightIdle.get(0)),
+						SI.NEWTON)
 				);
-		
+
 		_rateOfDescentList.add(
 				Amount.valueOf(
 						(interpolatedThrustList.get(0).to(SI.NEWTON)
-						.minus(_dragPerStep.get(0).to(SI.NEWTON)))
+								.minus(_dragPerStep.get(0).to(SI.NEWTON)))
 						.times(_speedListTAS.get(0).to(SI.METERS_PER_SECOND))
 						.divide(aircraftMassPerStep.get(0).to(SI.KILOGRAM)
 								.times(AtmosphereCalc.g0.to(SI.METERS_PER_SQUARE_SECOND))
@@ -285,7 +295,7 @@ public class DescentCalc {
 						SI.METERS_PER_SECOND
 						)
 				);
-		
+
 		int iter=0;
 		// iterative loop for the definition of the cruise and flight idle weights
 		while (
@@ -353,27 +363,38 @@ public class DescentCalc {
 		
 		_thrustPerStep.add(interpolatedThrustList.get(0));
 		
+		List<Double> sfcCruiseList = new ArrayList<>();
+		List<Double> sfcFlightIdleList = new ArrayList<>();
+		for(int ieng=0; ieng<_theAircraft.getPowerPlant().getEngineNumber(); ieng++) {
+			sfcCruiseList.add(
+					_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
+							machList.get(0),
+							_descentAltitudes.get(0),
+							_theOperatingConditions.getDeltaTemperatureCruise(),
+							_theOperatingConditions.getThrottleCruise(),
+							EngineOperatingConditionEnum.CRUISE
+							)
+					);
+			sfcFlightIdleList.add(
+					_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
+							machList.get(0),
+							_descentAltitudes.get(0),
+							_theOperatingConditions.getDeltaTemperatureCruise(),
+							_theOperatingConditions.getThrottleCruise(),
+							EngineOperatingConditionEnum.FIDL
+							)
+					);
+		}
+		
+		double sfcCruise = sfcCruiseList.stream().mapToDouble(s -> s).average().getAsDouble();
+		double sfcFlightIdle = sfcFlightIdleList.stream().mapToDouble(s -> s).average().getAsDouble();
+		
 		_fuelFlowCruiseList.add(
 				_cruiseThrustFromDatabase.get(0).doubleValue(SI.NEWTON)
 				*0.454
 				*0.224809
 				/60
-				*EngineDatabaseManager_old.getSFC(
-						machList.get(0),
-						_descentAltitudes.get(0).doubleValue(SI.METER),
-						EngineDatabaseManager_old.getThrustRatio(
-								machList.get(0),
-								_descentAltitudes.get(0).doubleValue(SI.METER),
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getPowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.CRUISE,
-								_theAircraft.getPowerPlant()
-								),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.CRUISE,
-						_theAircraft.getPowerPlant()
-						)
+				*sfcCruise
 				);
 		
 		_fuelFlowFlightIdleList.add(
@@ -381,22 +402,7 @@ public class DescentCalc {
 				*0.454
 				*0.224809
 				/60
-				*EngineDatabaseManager_old.getSFC(
-						machList.get(0),
-						_descentAltitudes.get(0).doubleValue(SI.METER),
-						EngineDatabaseManager_old.getThrustRatio(
-								machList.get(0),
-								_descentAltitudes.get(0).doubleValue(SI.METER),
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getPowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.DESCENT,
-								_theAircraft.getPowerPlant()
-								),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.DESCENT,
-						_theAircraft.getPowerPlant()
-						)
+				*sfcFlightIdle
 				);
 		
 		_interpolatedFuelFlowList.add(
@@ -424,8 +430,9 @@ public class DescentCalc {
 					.divide(Math.sqrt(sigmaList.get(i))));
 			machList.add(
 					SpeedCalc.calculateMach(
-							_descentAltitudes.get(i).doubleValue(SI.METER),
-							_speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
+							_descentAltitudes.get(i),
+							_theOperatingConditions.getDeltaTemperatureCruise(),
+							_speedListTAS.get(i)
 							)
 					);
 			_descentAngles.add(
@@ -473,12 +480,17 @@ public class DescentCalc {
 					);
 			_cLSteps.add(
 					LiftCalc.calculateLiftCoeff(
-							Math.cos(_descentAngles.get(i).doubleValue(SI.RADIAN))*
-							aircraftMassPerStep.get(i).doubleValue(SI.KILOGRAM)
-								*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-							_speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND),
-							_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-							_descentAltitudes.get(i).doubleValue(SI.METER)
+							Amount.valueOf(
+									Math.cos(
+											_descentAngles.get(i).doubleValue(SI.RADIAN))
+									*aircraftMassPerStep.get(i).doubleValue(SI.KILOGRAM)
+									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+									SI.NEWTON
+									),
+							_speedListTAS.get(i),
+							_theAircraft.getWing().getSurfacePlanform(),
+							_descentAltitudes.get(i),
+							_theOperatingConditions.getDeltaTemperatureCruise()
 							)
 					);
 			cDSteps.add(
@@ -492,52 +504,58 @@ public class DescentCalc {
 					/cDSteps.get(i)
 					);
 			_dragPerStep.add(
-					Amount.valueOf(
-							DragCalc.calculateDragAtSpeed(
-									aircraftMassPerStep.get(i).times(AtmosphereCalc.g0).getEstimatedValue(),
-									_descentAltitudes.get(i).doubleValue(SI.METER),
-									_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-									_speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND),
-									cDSteps.get(i)
-									),
-							SI.NEWTON
+					DragCalc.calculateDragAtSpeed(
+							_descentAltitudes.get(i),
+							_theOperatingConditions.getDeltaTemperatureCruise(),
+							_theAircraft.getWing().getSurfacePlanform(),
+							_speedListTAS.get(i),
+							cDSteps.get(i)
 							)
 					);
 			
 			//---------------------------------------------------------------------------------------
 			// SFC INTERPOLATION BETWEEN CRUISE AND IDLE:
+			cruiseThrustDatabaseTemp = new ArrayList<>();
+			flightIdleThrustDatabaseTemp = new ArrayList<>();
+			
+			for(int ieng=0; ieng<_theAircraft.getPowerPlant().getEngineNumber(); ieng++) {
+
+				cruiseThrustDatabaseTemp.add(
+						ThrustCalc.calculateThrustDatabase(
+								_theAircraft.getPowerPlant().getEngineList().get(ieng).getT0(), 
+								EngineOperatingConditionEnum.CRUISE, 
+								_theAircraft.getPowerPlant(),
+								_descentAltitudes.get(i), 
+								machList.get(i), 
+								_theOperatingConditions.getDeltaTemperatureCruise(), 
+								_theOperatingConditions.getThrottleCruise()
+								)
+						);
+
+				flightIdleThrustDatabaseTemp.add(
+						ThrustCalc.calculateThrustDatabase(
+								_theAircraft.getPowerPlant().getEngineList().get(ieng).getT0(), 
+								EngineOperatingConditionEnum.FIDL, 
+								_theAircraft.getPowerPlant(),
+								_descentAltitudes.get(i), 
+								machList.get(i), 
+								_theOperatingConditions.getDeltaTemperatureCruise(), 
+								_theOperatingConditions.getThrottleCruise()
+								)
+						);
+			}
+
 			_cruiseThrustFromDatabase.add(
 					i,
 					Amount.valueOf(
-							ThrustCalc.calculateThrustDatabase(
-									_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-									_theAircraft.getPowerPlant().getEngineNumber(),
-									1.0, // phi
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.CRUISE,
-									_theAircraft.getPowerPlant(),
-									_descentAltitudes.get(i).doubleValue(SI.METER), 
-									machList.get(i)
-									),
+							cruiseThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
 							SI.NEWTON
 							)
 					);
-			
 			_flightIdleThrustFromDatabase.add(
 					i,
 					Amount.valueOf(
-							ThrustCalc.calculateThrustDatabase(
-									_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-									_theAircraft.getPowerPlant().getEngineNumber(),
-									1.0, // phi
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.DESCENT,
-									_theAircraft.getPowerPlant(),
-									_descentAltitudes.get(i).doubleValue(SI.METER), 
-									machList.get(i)
-									),
+							flightIdleThrustDatabaseTemp.stream().mapToDouble(fthr -> fthr.doubleValue(SI.NEWTON)).sum(),
 							SI.NEWTON
 							)
 					);
@@ -635,28 +653,39 @@ public class DescentCalc {
 			
 			_thrustPerStep.add(i, interpolatedThrustList.get(i));
 			
+			sfcCruiseList = new ArrayList<>();
+			sfcFlightIdleList = new ArrayList<>();
+			for(int ieng=0; ieng<_theAircraft.getPowerPlant().getEngineNumber(); ieng++) {
+				sfcCruiseList.add(
+						_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
+								machList.get(i),
+								_descentAltitudes.get(i),
+								_theOperatingConditions.getDeltaTemperatureCruise(),
+								_theOperatingConditions.getThrottleCruise(),
+								EngineOperatingConditionEnum.CRUISE
+								)
+						);
+				sfcFlightIdleList.add(
+						_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
+								machList.get(i),
+								_descentAltitudes.get(i),
+								_theOperatingConditions.getDeltaTemperatureCruise(),
+								_theOperatingConditions.getThrottleCruise(),
+								EngineOperatingConditionEnum.FIDL
+								)
+						);
+			}
+			
+			sfcCruise = sfcCruiseList.stream().mapToDouble(s -> s).average().getAsDouble();
+			sfcFlightIdle = sfcFlightIdleList.stream().mapToDouble(s -> s).average().getAsDouble();
+			
 			_fuelFlowCruiseList.add(
 					i,
 					_cruiseThrustFromDatabase.get(i).doubleValue(SI.NEWTON)
 					*0.454
 					*0.224809
 					/60
-					*EngineDatabaseManager_old.getSFC(
-							machList.get(i),
-							_descentAltitudes.get(i).doubleValue(SI.METER),
-							EngineDatabaseManager_old.getThrustRatio(
-									machList.get(i),
-									_descentAltitudes.get(i).doubleValue(SI.METER),
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.CRUISE,
-									_theAircraft.getPowerPlant()
-									),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-							_theAircraft.getPowerPlant().getEngineType(),
-							EngineOperatingConditionEnum.CRUISE,
-							_theAircraft.getPowerPlant()
-							)
+					*sfcCruise
 					);
 			
 			_fuelFlowFlightIdleList.add(
@@ -665,22 +694,7 @@ public class DescentCalc {
 					*0.454
 					*0.224809
 					/60
-					*EngineDatabaseManager_old.getSFC(
-							machList.get(i),
-							_descentAltitudes.get(i).doubleValue(SI.METER),
-							EngineDatabaseManager_old.getThrustRatio(
-									machList.get(i),
-									_descentAltitudes.get(i).doubleValue(SI.METER),
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.DESCENT,
-									_theAircraft.getPowerPlant()
-									),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-							_theAircraft.getPowerPlant().getEngineType(),
-							EngineOperatingConditionEnum.DESCENT,
-							_theAircraft.getPowerPlant()
-							)
+					*sfcFlightIdle
 					);
 			
 			_interpolatedFuelFlowList.add(

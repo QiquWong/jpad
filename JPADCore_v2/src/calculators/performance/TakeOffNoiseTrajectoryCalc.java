@@ -45,14 +45,14 @@ import writers.JPADStaticWriteUtils;
  * This class have the purpose of calculating the take-off trajectories for the noise certification
  * of a given aircraft by evaluating the following cases:
  *
- * - take-off in ISA+10°C with MAX TAKE-OFF, Landing Gear retraction and a V2=1.2VsTO + (10 or 20 kts)
- * - take-off in ISA+10°C with MAX TAKE-OFF, Landing Gear retraction, a V2=1.2VsTO + (10 or 20 kts) and 
+ * - take-off in ISA+10ï¿½C with MAX TAKE-OFF, Landing Gear retraction and a V2=1.2VsTO + (10 or 20 kts)
+ * - take-off in ISA+10ï¿½C with MAX TAKE-OFF, Landing Gear retraction, a V2=1.2VsTO + (10 or 20 kts) and 
  *   a reduction of the thrust starting from 984ft assuming the lowest throttle setting between:
  *   	
  *   	- the setting which leads to a constant CGR of 4%
  *   	- the setting which in OEI (considering a DeltaCD0OEI) leads to a leveled flight
  *   
- * - take-off in ISA+10°C with MAX TAKE-OFF setting, Landing Gear retraction, a V2=1.2VsTO + (10 or 20 kts) 
+ * - take-off in ISA+10ï¿½C with MAX TAKE-OFF setting, Landing Gear retraction, a V2=1.2VsTO + (10 or 20 kts) 
  *   and a reduction of the thrust starting from 984ft assuming a set of throttle setting between 1.0 and 
  *   the one found at the previous step
  *
@@ -365,7 +365,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[2] = gamma = " + x[2] + " ï¿½" +
 									"\n\tx[3] = altitude = " + x[3] + " m" +
 									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
@@ -437,7 +437,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[2] = gamma = " + x[2] + " ï¿½" +
 									"\n\tx[3] = altitude = " + x[3] + " m" +
 									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
@@ -471,7 +471,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[2] = gamma = " + x[2] + " ï¿½" +
 									"\n\tx[3] = altitude = " + x[3] + " m" +
 									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
@@ -507,7 +507,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" + 
+									"\n\tx[2] = gamma = " + x[2] + " ï¿½" + 
 									"\n\tx[3] = altitude = " + x[3] + " m" +
 									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
@@ -548,7 +548,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[2] = gamma = " + x[2] + " ï¿½" +
 									"\n\tx[3] = altitude = " + x[3] + " m" +
 									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
@@ -581,7 +581,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[2] = gamma = " + x[2] + " ï¿½" +
 									"\n\tx[3] = altitude = " + x[3] + " m" +
 									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
@@ -801,7 +801,7 @@ public class TakeOffNoiseTrajectoryCalc {
 						System.out.println(
 								"\n\tx[0] = s = " + x[0] + " m" +
 										"\n\tx[1] = V = " + x[1] + " m/s" + 
-										"\n\tx[2] = gamma = " + x[2] + " °" +
+										"\n\tx[2] = gamma = " + x[2] + " ï¿½" +
 										"\n\tx[3] = altitude = " + x[3] + " m" +
 										"\n\tx[4] = fuel used = " + x[4] + " kg" +
 										"\n\tt = " + t + " s"
@@ -821,7 +821,7 @@ public class TakeOffNoiseTrajectoryCalc {
 						System.out.println("\n\t\tBEGIN BAR HOLDING");
 						System.out.println(
 								"\n\tCL = " + ((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(alpha) + 
-								"\n\tAlpha Body = " + ((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight) + " °" + 
+								"\n\tAlpha Body = " + ((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight) + " ï¿½" + 
 								"\n\tt = " + t + " s"
 								);
 						System.out.println("\n---------------------------DONE!-------------------------------");
@@ -859,7 +859,7 @@ public class TakeOffNoiseTrajectoryCalc {
 						System.out.println(
 								"\n\tx[0] = s = " + x[0] + " m" +
 										"\n\tx[1] = V = " + x[1] + " m/s" + 
-										"\n\tx[2] = gamma = " + x[2] + " °" +
+										"\n\tx[2] = gamma = " + x[2] + " ï¿½" +
 										"\n\tx[3] = altitude = " + x[3] + " m" +
 										"\n\tx[4] = fuel used = " + x[4] + " kg"
 								);

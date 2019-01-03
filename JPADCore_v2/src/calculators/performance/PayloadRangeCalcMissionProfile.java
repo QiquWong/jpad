@@ -27,7 +27,6 @@ import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
-import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;

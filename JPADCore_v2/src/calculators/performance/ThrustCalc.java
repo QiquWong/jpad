@@ -24,7 +24,8 @@ public class ThrustCalc {
 			List<Amount<Velocity>> speed,
 			List<EngineOperatingConditionEnum> flightCondition,
 			PowerPlant thePowerPlant,
-			Amount<Force> t0) {
+			boolean isOEI
+			) {
 
 		List<ThrustMap> list = new ArrayList<ThrustMap>();
 
@@ -39,13 +40,13 @@ public class ThrustCalc {
 										deltaTemperature, 
 										phi.get(j), 
 										ThrustCalc.calculateThrustVsSpeed(
-												t0, 
 												flightCondition.get(f), 
 												thePowerPlant, 
 												speed, 
 												altitude.get(i), 
 												deltaTemperature, 
-												phi.get(j)
+												phi.get(j),
+												isOEI
 												), 
 										speed, 
 										flightCondition.get(f)
@@ -65,7 +66,7 @@ public class ThrustCalc {
 			List<Amount<Velocity>> speed,
 			EngineOperatingConditionEnum flightCondition,
 			PowerPlant thePowerPlant,
-			Amount<Force> t0) {
+			boolean isOEI) {
 	
 		return new ThrustMap(
 				weight,
@@ -73,13 +74,13 @@ public class ThrustCalc {
 				deltaTemperature,
 				phi, 
 				ThrustCalc.calculateThrustVsSpeed(
-						t0,
 						flightCondition,
 						thePowerPlant,
 						speed, 
 						altitude, 
 						deltaTemperature, 
-						phi
+						phi,
+						isOEI
 						),
 				speed,
 				flightCondition
@@ -114,15 +115,37 @@ public class ThrustCalc {
 	}
 	
 	public static List<Amount<Force>> calculateThrustVsSpeed(
-			Amount<Force> t0, EngineOperatingConditionEnum flightCondition,  
+			EngineOperatingConditionEnum flightCondition,  
 			PowerPlant thePowerPlant, 
-			List<Amount<Velocity>> speed, Amount<Length> altitude, Amount<Temperature> deltaTemperature, double phi) {
+			List<Amount<Velocity>> speed, Amount<Length> altitude, Amount<Temperature> deltaTemperature, double phi, boolean isOEI) {
 	
 		List<Amount<Force>> thrust = new ArrayList<>();
+		List<Amount<Force>> thrustTemp = new ArrayList<>();
 	
+		int engineNumber = thePowerPlant.getEngineNumber();
+		if(isOEI == true) 
+			engineNumber -= 1;
+		
 		for (int i=0; i< speed.size(); i++){
 			double mach = SpeedCalc.calculateMach(altitude, deltaTemperature, speed.get(i));
-				thrust.add(calculateThrustDatabase(t0, flightCondition, thePowerPlant, altitude, mach, deltaTemperature, phi));
+			for (int ieng=0; ieng < engineNumber; i++)
+				thrustTemp.add(
+						calculateThrustDatabase(
+								thePowerPlant.getEngineList().get(ieng).getT0(), 
+								flightCondition, 
+								thePowerPlant,
+								altitude,
+								mach,
+								deltaTemperature,
+								phi
+								)
+						);
+			thrust.add(
+					Amount.valueOf(
+							thrustTemp.stream().mapToDouble(t -> t.doubleValue(SI.NEWTON)).sum(),
+							SI.NEWTON
+							)
+					);
 		}
 	
 		return thrust;

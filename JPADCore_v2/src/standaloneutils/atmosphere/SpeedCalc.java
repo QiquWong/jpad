@@ -51,8 +51,8 @@ public class SpeedCalc {
 				);
 	}
 
-	public static Amount<Velocity> calculateTAS(Amount<Velocity> VTAS, Amount<Length> altitude, Amount<Temperature> deltaTemperature) {
-		return VTAS.to(SI.METERS_PER_SECOND).divide(Math.sqrt(AtmosphereCalc.getAtmosphere(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)).getDensityRatio()));
+	public static Amount<Velocity> calculateTAS(Amount<Velocity> VCAS, Amount<Length> altitude, Amount<Temperature> deltaTemperature) {
+		return VCAS.to(SI.METERS_PER_SECOND).divide(Math.sqrt(AtmosphereCalc.getAtmosphere(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)).getDensityRatio()));
 	}
 	
 	/**

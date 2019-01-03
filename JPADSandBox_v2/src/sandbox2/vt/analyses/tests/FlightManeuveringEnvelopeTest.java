@@ -3,10 +3,12 @@ package sandbox2.vt.analyses.tests;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
+import org.openqa.jetty.util.TempByteHolder;
 
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import configuration.MyConfiguration;
@@ -40,6 +42,7 @@ public class FlightManeuveringEnvelopeTest {
 		Amount<Velocity> cruisingSpeed = Amount.valueOf(151.6, SI.METERS_PER_SECOND);
 		Amount<Velocity> diveSpeed = Amount.valueOf(189.5, SI.METERS_PER_SECOND);
 		Amount<Length> altitude = Amount.valueOf(6000, SI.METER);
+		Amount<Temperature> deltaTemperature = Amount.valueOf(0.0, SI.CELSIUS);
 		RegulationsEnum regulation = RegulationsEnum.FAR_25;
 		AircraftTypeEnum aircraftType = AircraftTypeEnum.TURBOPROP;
 		boolean createCSV = Boolean.TRUE;
@@ -76,6 +79,7 @@ public class FlightManeuveringEnvelopeTest {
 				cLAlpha,
 				meanAerodynamicChord,
 				altitude,
+				deltaTemperature,
 				maxTakeOffMass,
 				maxLandingMass,
 				wingSurface
