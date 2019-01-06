@@ -26,8 +26,8 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.50370144"
-     inkscape:cx="119.70749"
+     inkscape:zoom="1"
+     inkscape:cx="259.71703"
      inkscape:cy="188.56"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
@@ -76,6 +76,12 @@
      id="layer2"
      inkscape:label="Livello 2"
      style="display:inline">
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       d="M 740.75408,771.9523 H 358.68646"
+       style="fill:none;stroke:#787661;stroke-width:1.06666672;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path4648" />
     <path
        id="path3908"
        style="fill:none;stroke:#787661;stroke-width:1.06666672;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -830,7 +836,7 @@
        id="path6157" />
     <g
        id="g6191"
-       transform="translate(111.91177,82.329652)">
+       transform="translate(109.85341,103.01411)">
       <path
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:normal;word-spacing:normal;text-anchor:start;fill:#000000;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10.43299961;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          inkscape:connector-curvature="0"
@@ -852,7 +858,7 @@
         <polygon
            transform="matrix(0.74484233,0,0,-0.74484233,489.60227,827.88625)"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:normal;word-spacing:normal;text-anchor:start;fill:#000000;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10.43299961;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           points="486.07,408.84 462.89,408.84 459.3,406.2 492.14,406.2 476.14,440.57 475.25,440.57 459.3,406.2 462.89,408.84 474.39,433.75 "
+           points="459.3,406.2 462.89,408.84 474.39,433.75 486.07,408.84 462.89,408.84 459.3,406.2 492.14,406.2 476.14,440.57 475.25,440.57 "
            id="polygon6181" />
         <path
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:normal;word-spacing:normal;text-anchor:start;fill:#000000;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10.43299961;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
@@ -1017,6 +1023,23 @@
          inkscape:connector-curvature="0"
          d="m 440.3363,925.94266 v -14.41369 c 0,-1.64346 0.26735,-2.6657 0.78633,-3.01955 0.39318,-0.27522 0.77063,-0.38531 1.81646,-0.4954 v -0.51113 h -6.44016 v 0.51113 c 1.03012,0.0865 1.42329,0.19658 1.83218,0.44035 0.55045,0.38531 0.80208,1.36824 0.80208,3.0746 v 9.23168 L 428.5726,907.50289 h -4.67875 v 0.51113 c 1.17952,0 1.56483,0.22018 2.65784,1.50978 v 12.07824 c 0,2.83083 -0.38531,3.34196 -2.65784,3.51495 v 0.51899 h 6.44016 v -0.51899 c -2.11527,-0.11009 -2.57922,-0.74702 -2.57922,-3.51495 v -10.73359 l 12.1097,15.07421 z"
          id="path3469" />
+    </g>
+    <g
+       style="fill:#0000ff;fill-opacity:1"
+       transform="matrix(0.10940852,0,0,0.10940852,292.27739,717.21076)"
+       id="g4646">
+      <path
+         sodipodi:type="arc"
+         style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:19.49878502;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="path4644"
+         sodipodi:cx="596.60956"
+         sodipodi:cy="500.81598"
+         sodipodi:rx="46.933334"
+         sodipodi:ry="46.933334"
+         d="m 643.54286,500.86962 a 46.933334,46.933334 0 0 1 -46.95292,46.87969 46.933334,46.933334 0 0 1 -46.91371,-46.91893 46.933334,46.933334 0 0 1 46.88491,-46.94771 46.933334,46.933334 0 0 1 46.98168,46.85088"
+         sodipodi:start="0.0011429136"
+         sodipodi:end="6.2814289"
+         sodipodi:open="true" />
     </g>
   </g>
 </svg>
