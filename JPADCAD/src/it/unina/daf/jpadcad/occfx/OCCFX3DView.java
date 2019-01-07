@@ -156,7 +156,9 @@ public class OCCFX3DView {
 			if (solids.size() != 1) 
 				System.err.println("Warning: the number of solids found in " + comp.toString() + " shape list is incorrect!");
 			
-			List<TriangleMesh> mesh = extractMesh(solids.get(0));
+			boolean faceReversed = (comp.equals(CADComponentEnum.WING_FAIRING) || comp.equals(CADComponentEnum.CANARD_FAIRING)) ? false : true;
+			
+			List<TriangleMesh> mesh = extractMesh(solids.get(0), faceReversed);
 			List<MeshView> meshView = generateMeshView(mesh);
 			
 			_theAircraftMeshMap.put(comp, mesh);
@@ -408,7 +410,7 @@ public class OCCFX3DView {
 			_theScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 				@Override
 				public void handle(KeyEvent event) {
-					switch (event.getCode()) { // TODO: implement axes toggle
+					switch (event.getCode()) {
 					case A:
 						_theAxisGroup.setVisible(!_theAxisGroup.isVisible());
 						break;
@@ -570,7 +572,7 @@ public class OCCFX3DView {
 		return distToSceneCenter;
 	}
 	
-	private List<TriangleMesh> extractMesh(OCCShape shape) {
+	private List<TriangleMesh> extractMesh(OCCShape shape, boolean faceReversed) {
 		
 		// Generate the mesh extractor
 		OCCFXMeshExtractor meshExtractor = new OCCFXMeshExtractor(shape.getShape());
@@ -581,7 +583,7 @@ public class OCCFX3DView {
 		
 		mesh.addAll(faces.stream()
 			 .map(f -> {
-				 FaceData data = new FaceData(f, true);
+				 FaceData data = new FaceData(f, faceReversed);
 				 data.load();
 				 return data.getTriangleMesh();
 			 })

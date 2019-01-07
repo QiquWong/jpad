@@ -19,6 +19,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
+import it.unina.daf.jpadcad.CADManager;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -93,6 +94,13 @@ public class InputManagerControllerMainActionUtilities {
 		//..................................................................................
 		// LANDING GEARS
 		cleanLandingGearsData();
+		//..................................................................................
+		// 3D VIEW
+		clean3DViewData();
+		
+		 // Disable the choose aircraft file button
+        if (theController.getChooseCADConfigurationFileButton().isDisable() == false)
+        	theController.getChooseCADConfigurationFileButton().setDisable(true);
 		
 		Main.setTheAircraft(null);
 
@@ -1024,6 +1032,13 @@ public class InputManagerControllerMainActionUtilities {
 		
 	}
 	
+	private void clean3DViewData() {
+		
+		// Just clean the 3D view scene and the data log		
+		theController.getCAD3DViewPane().getChildren().clear();
+		theController.getTextAreaCAD3DViewConsoleOutput().clear();
+	}
+	
 	@SuppressWarnings({ "rawtypes" })
 	public void loadAircraftFileImplementation() throws IOException, InterruptedException {
 		
@@ -1047,6 +1062,7 @@ public class InputManagerControllerMainActionUtilities {
 			cleanNacelleData();
 			cleanPowerPlantData();
 			cleanLandingGearsData();
+			clean3DViewData();
 			
 		}
 		
@@ -1479,6 +1495,10 @@ public class InputManagerControllerMainActionUtilities {
 			                    return null;
 			                }
 			            }
+			            
+			            // Enable the choose aircraft file button once the aircraft has been loaded
+			            if (theController.getChooseCADConfigurationFileButton().isDisable() == true)
+			            	theController.getChooseCADConfigurationFileButton().setDisable(false);
 						
 			    		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
 			    		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
@@ -1532,6 +1552,26 @@ public class InputManagerControllerMainActionUtilities {
 		
 		// write again
 		System.setOut(originalOut);
+		
+	}
+	
+	public void loadCADConfigurationFileImplementation() {
+		
+		Main.setTheCADManager(
+				CADManager.importFromXML(
+						Main.getCADConfigurationFileAbsolutePath(),
+						Main.getTheAircraft()
+						)
+				);
+		
+		theController.getInputManagerControllerLogUtilities().logCADConfigurationFromFileToInterface();
+	}
+	
+	public void updateCAD3DViewImplementation() {
+		
+		// First update the CADManager (by using setters) with the updated values provided by the user
+		
+		// Then show the updated 3D model
 		
 	}
 	

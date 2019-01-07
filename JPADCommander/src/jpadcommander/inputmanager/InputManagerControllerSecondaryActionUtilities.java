@@ -2244,4 +2244,32 @@ public class InputManagerControllerSecondaryActionUtilities {
 		return isAircraftFile;
 	}
 	
+	public boolean isCADConfigurationFile(String pathToCADConfigurationFile) {
+		
+		boolean isCADConfigurationFile = false;
+		
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+			public void write(int b) {
+				// write nothing
+			}
+		});
+		System.setOut(filterStream);
+		
+		if (pathToCADConfigurationFile.endsWith(".xml")) {
+			File configFile = new File(pathToCADConfigurationFile);
+			
+			if (configFile.exists()) {
+				JPADXmlReader reader = new JPADXmlReader(pathToCADConfigurationFile);
+				
+				if (reader.getXmlDoc().getElementsByTagName("jpad_CAD_config").getLength() > 0)
+					isCADConfigurationFile = true;
+
+			}
+		}
+		System.setOut(originalOut);
+		
+		return isCADConfigurationFile;
+	}
+	
 }

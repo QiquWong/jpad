@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineParser;
@@ -20,8 +19,6 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import it.unina.daf.jpadcad.CADManager;
-import it.unina.daf.jpadcad.CADManager.CADComponentEnum;
-import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occfx.OCCFX3DView;
 import javafx.application.Application;
 import javafx.scene.DepthTest;

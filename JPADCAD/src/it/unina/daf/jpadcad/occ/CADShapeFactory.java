@@ -191,6 +191,16 @@ public abstract class CADShapeFactory {
 	 * @return The created CADFace
 	 */
 	public abstract CADFace newFace(CADWire wire);
+	
+	/**
+	 * Create a shell from adjacent shapes (faces and shells)
+	 * @param cadShapes adjacent shapes
+	 * @return the created CADShell
+	 */
+	public abstract CADShell newShellFromAdjacentShapes(CADShape ... cadShapes);
+	public abstract CADShell newShellFromAdjacentShapes(double sewTol, CADShape ... cadShapes);
+	public abstract CADShell newShellFromAdjacentShapes(List<CADShape> cadShapes);
+	public abstract CADShell newShellFromAdjacentShapes(double sewTol, List<CADShape> cadShapes);
 
 	/**
 	 * Create a shell from adjacent faces

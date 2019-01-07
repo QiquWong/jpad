@@ -439,6 +439,45 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	@Override
+	public CADShell newShellFromAdjacentShapes(CADShape ... cadShapes) {
+		return newShellFromAdjacentShapes(Arrays.asList(cadShapes));
+	}
+	
+	@Override
+	public CADShell newShellFromAdjacentShapes(double sewTol, CADShape ... cadShapes) {
+		return newShellFromAdjacentShapes(sewTol, Arrays.asList(cadShapes));
+	}
+	
+	public CADShell newShellFromAdjacentShapes(List<CADShape> cadShapes) {
+		return newShellFromAdjacentShapes(1e-6, cadShapes);
+	}
+	
+	@Override
+	public CADShell newShellFromAdjacentShapes(double sewTol, List<CADShape> cadShapes) {
+		CADShell ret = null;	
+		BRepBuilderAPI_Sewing sewer = new BRepBuilderAPI_Sewing();
+		sewer.SetTolerance(sewTol);
+		
+		// Filter faces and shells
+		List<CADShape> filteredShapes = new ArrayList<>();
+		
+		filteredShapes.addAll(cadShapes.stream()
+				 .filter(s -> ((s instanceof CADFace) || (s instanceof CADShell)))
+				 .collect(Collectors.toList()));
+		
+		// Add them to the sewing object and generate the sewed shell
+		filteredShapes.forEach(s -> sewer.Add(((OCCShape) s).getShape()));
+		sewer.Perform();
+		TopoDS_Shape sewedShape = sewer.SewedShape();
+		
+		TopExp_Explorer exp = new TopExp_Explorer(sewedShape, TopAbs_ShapeEnum.TopAbs_SHELL);
+		if (exp.More() == 1)
+			ret = (CADShell) newShape(exp.Current());
+		
+		return ret;
+	}
+	
+	@Override
 	public CADShell newShellFromAdjacentFaces(CADFace ... cadFaces) {
 		return newShellFromAdjacentFaces(Arrays.asList(cadFaces));
 	}
@@ -546,7 +585,7 @@ public class OCCShapeFactory extends CADShapeFactory
 
 	@Override
 	public CADVertex newVertex(double[] coordinates3d) {
-		return newVertex(coordinates3d[0], coordinates3d[1], coordinates3d[1]);
+		return newVertex(coordinates3d[0], coordinates3d[1], coordinates3d[2]);
 	}
 
 }

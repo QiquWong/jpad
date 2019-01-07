@@ -113,21 +113,21 @@ public class CADConfigReader {
 		
 		theAircraft = importAircarftFromXML(args);
 		
-		File configCADXml = new File("src/sandbox2/mds/config_CAD.xml");
+		File configCADXml = new File("src/sandbox2/mds/config_CAD_v2.xml");
 		
 		if (configCADXml.exists())
 			System.out.println("CAD configuration xml file absolute path: " + configCADXml.getAbsolutePath());
 		else
 			return;
 		
-		// Reading the xml file
+		// Reading the XML file
 		JPADXmlReader reader = new JPADXmlReader(configCADXml.getAbsolutePath());
 		
 		// Detect the parts that need to be rendered
 		Boolean generateFuselage;
 		Boolean generateWing;
-		Boolean generateHorizontal;
-		Boolean generateVertical;
+		Boolean generateHTail;
+		Boolean generateVTail;
 		Boolean generateCanard;
 		Boolean generateWingFairing;
 		Boolean generateCanardFairing;
@@ -138,10 +138,10 @@ public class CADConfigReader {
 		String generateWingString = MyXMLReaderUtils.getXMLPropertyByPath(
 				reader.getXmlDoc(), reader.getXpath(), "//wing/@generate");
 		
-		String generateHorizontalString = MyXMLReaderUtils.getXMLPropertyByPath(
+		String generateHTailString = MyXMLReaderUtils.getXMLPropertyByPath(
 				reader.getXmlDoc(), reader.getXpath(), "//horizontal/@generate");
 		
-		String generateVerticalString = MyXMLReaderUtils.getXMLPropertyByPath(
+		String generateVTailString = MyXMLReaderUtils.getXMLPropertyByPath(
 				reader.getXmlDoc(), reader.getXpath(), "//vertical/@generate");
 		
 		String generateCanardString = MyXMLReaderUtils.getXMLPropertyByPath(
@@ -153,351 +153,343 @@ public class CADConfigReader {
 		String generateCanardFairingString = MyXMLReaderUtils.getXMLPropertyByPath(
 				reader.getXmlDoc(), reader.getXpath(), "//canard_fairing/@generate");
 		
-		generateFuselage = generateFuselageString.equalsIgnoreCase("TRUE") ? true : false;
-		generateWing = generateWingString.equalsIgnoreCase("TRUE") ? true : false;
-		generateHorizontal = generateHorizontalString.equalsIgnoreCase("TRUE") ? true : false;
-		generateVertical = generateVerticalString.equalsIgnoreCase("TRUE") ? true : false;
-		generateCanard = generateCanardString.equalsIgnoreCase("TRUE") ? true : false;
-		generateWingFairing = generateWingFairingString.equalsIgnoreCase("TRUE") ? true : false;
-		generateCanardFairing = generateCanardFairingString.equalsIgnoreCase("TRUE") ? true : false;
+		generateFuselage = (generateFuselageString.equalsIgnoreCase("TRUE")) ? true : false;
+		generateWing = (generateWingString.equalsIgnoreCase("TRUE")) ? true : false;
+		generateHTail = (generateHTailString.equalsIgnoreCase("TRUE")) ? true : false;
+		generateVTail = (generateVTailString.equalsIgnoreCase("TRUE")) ? true : false;
+		generateCanard = (generateCanardString.equalsIgnoreCase("TRUE")) ? true : false;
+		generateWingFairing = (generateWingFairingString.equalsIgnoreCase("TRUE")) ? true : false;
+		generateCanardFairing = (generateCanardFairingString.equalsIgnoreCase("TRUE")) ? true : false;
 		
 		// FUSELAGE	
 		
-		// Initialize fuselage CAD parameters
-		double noseCapSectionFactor1 = 0.15;
-		double noseCapSectionFactor2 = 1.0;
-		int numberNoseCapSections = 3;
+		// Initialize FUSELAGE CAD parameters
 		int numberNoseTrunkSections = 7;
 		XSpacingType spacingTypeNoseTrunk = XSpacingType.COSINUS;
 		int numberTailTrunkSections = 7;
 		XSpacingType spacingTypeTailTrunk = XSpacingType.COSINUS;
-		double tailCapSectionFactor1 = 1.0;
-		double tailCapSectionFactor2 = 0.15;
-		int numberTailCapSections = 3;
-		boolean exportFuselageSupportShapes = false;
 		
-		// Read fuselage CAD parameters from the xml file
-		if (generateFuselage && !(theAircraft.getFuselage() == null)) { 
-			
-			String noseCapSectionFactor1String = reader.getXMLPropertyByPath("//fuselage/noseCapSectionFactor1");
-			if (!(noseCapSectionFactor1String == null)) 
-				noseCapSectionFactor1 = Double.valueOf(noseCapSectionFactor1String);
-			
-			String noseCapSectionFactor2String = reader.getXMLPropertyByPath("//fuselage/noseCapSectionFactor2");
-			if (!(noseCapSectionFactor2String == null)) 
-				noseCapSectionFactor2 = Double.valueOf(noseCapSectionFactor2String);
-			
-			String numberNoseCapSectionsString = reader.getXMLPropertyByPath("//fuselage/numberNoseCapSections");
-			if (!(numberNoseCapSectionsString == null)) 
-				numberNoseCapSections = Integer.valueOf(numberNoseCapSectionsString);
+		// Read FUSELAGE CAD parameters from the XML file
+		if (generateFuselage && (theAircraft.getFuselage() != null)) { 
 			
 			String numberNoseTrunkSectionsString = reader.getXMLPropertyByPath("//fuselage/numberNoseTrunkSections");
-			if (!(numberNoseTrunkSectionsString == null)) 
+			if (numberNoseTrunkSectionsString != null) 
 				numberNoseTrunkSections = Integer.valueOf(numberNoseTrunkSectionsString);
 			
-			String spacingTypeNoseTrunkString = reader.getXMLPropertyByPath("//fuselage/spacingTypeNoseTrunk");
-			if (!(spacingTypeNoseTrunkString == null)) 
+			String spacingTypeNoseTrunkString = MyXMLReaderUtils.getXMLPropertyByPath(
+					reader.getXmlDoc(), reader.getXpath(), "//fuselage/numberNoseTrunkSections/@spacing");
+			if (spacingTypeNoseTrunkString != null) 
 				spacingTypeNoseTrunk = XSpacingType.valueOf(spacingTypeNoseTrunkString);
 			
 			String numberTailTrunkSectionsString = reader.getXMLPropertyByPath("//fuselage/numberTailTrunkSections");
-			if (!(numberTailTrunkSectionsString == null)) 
+			if (numberTailTrunkSectionsString != null) 
 				numberTailTrunkSections = Integer.valueOf(numberTailTrunkSectionsString);
 			
-			String spacingTypeTailTrunkString = reader.getXMLPropertyByPath("//fuselage/spacingTypeTailTrunk");
-			if (!(spacingTypeTailTrunkString == null)) 
+			String spacingTypeTailTrunkString = MyXMLReaderUtils.getXMLPropertyByPath(
+					reader.getXmlDoc(), reader.getXpath(), "//fuselage/numberTailTrunkSections/@spacing");
+			if (spacingTypeTailTrunkString != null) 
 				spacingTypeTailTrunk = XSpacingType.valueOf(spacingTypeTailTrunkString);
 			
-			String tailCapSectionFactor1String = reader.getXMLPropertyByPath("//fuselage/tailCapSectionFactor1");
-			if (!(tailCapSectionFactor1String == null)) 
-				tailCapSectionFactor1 = Double.valueOf(tailCapSectionFactor1String);
+		} else {
 			
-			String tailCapSectionFactor2String = reader.getXMLPropertyByPath("//fuselage/tailCapSectionFactor2");
-			if (!(tailCapSectionFactor2String == null)) 
-				tailCapSectionFactor2 = Double.valueOf(tailCapSectionFactor2String);
-			
-			String numberTailCapSectionsString = reader.getXMLPropertyByPath("//fuselage/numberTailCapSections");
-			if (!(numberTailCapSectionsString == null)) 
-				numberTailCapSections = Integer.valueOf(numberTailCapSectionsString);
-			
+			generateFuselage = false;			
 		}
 		
 		// WING
 		
-		// Initialize wing CAD parameters
-		double wingTipTolerance = 1e-3;
-		boolean exportWingSupportShapes = false;
+		// Initialize WING CAD parameters
+		WingTipType wingTipType = WingTipType.CUTOFF;
 		
-		// Read wing CAD parameters from the xml file
-		if (generateWing && !(theAircraft.getWing() == null)) {
+		double wingletYOffsetFactor = 0.50;
+		double wingletXOffsetFactor = 0.75;
+		double wingletTaperRatio = 0.20;
+		
+		// Read WING CAD parameters from the XML file
+		if (generateWing && (theAircraft.getWing() != null)) {
 			
-			String wingTipToleranceString = reader.getXMLPropertyByPath("//wing/tipTolerance");
-			if (!(wingTipToleranceString == null))
-				wingTipTolerance = Double.valueOf(wingTipToleranceString);
+			String wingTipTypeString = MyXMLReaderUtils.getXMLPropertyByPath(
+					reader.getXmlDoc(), reader.getXpath(), "//wing/@tipType");
+			if (wingTipTypeString != null)
+				wingTipType = WingTipType.valueOf(wingTipTypeString);
 			
-			String exportWingSupportShapesString = reader.getXMLPropertyByPath("//wing/exportSupportShapes");
-			if (!(exportWingSupportShapesString == null)) 
-				exportWingSupportShapes = Boolean.parseBoolean(exportWingSupportShapesString);
+			if (wingTipType.equals(WingTipType.WINGLET)) {
+				
+				String wingletYOffsetFactorString = reader.getXMLPropertyByPath("//wing/wingletParams/yOffsetFactor");
+				if (wingletYOffsetFactorString != null) 
+					wingletYOffsetFactor = Double.valueOf(wingletYOffsetFactorString);
+					
+				String wingletXOffsetFactorString = reader.getXMLPropertyByPath("//wing/wingletParams/xOffsetFactor");
+				if (wingletXOffsetFactorString != null) 
+					wingletXOffsetFactor = Double.valueOf(wingletXOffsetFactorString);
+				
+				String wingletTaperRatioString = reader.getXMLPropertyByPath("//wing/wingletParams/taperRatio");
+				if (wingletTaperRatioString != null) 
+					wingletTaperRatio = Double.valueOf(wingletTaperRatioString);
+								
+			}		
 			
+		} else {
+			
+			generateWing = false;
 		}
 		
 		// HORIZONTAL
 
-		// Initialize horizontal tail CAD parameters
-		double horizontalTipTolerance = 1e-3;
-		boolean exportHorizontalSupportShapes = false;
+		// Initialize HORIZONTAL TAIL CAD parameters
+		WingTipType hTailTipType = WingTipType.CUTOFF;
 
-		// Read horizontal tail CAD parameters from the xml file
-		if (generateHorizontal && !(theAircraft.getHTail() == null)) {
+		// Read HORIZONTAL TAIL CAD parameters from the XML file
+		if (generateHTail && (theAircraft.getHTail() != null)) {
 			
-			String horizontalTipToleranceString = reader.getXMLPropertyByPath("//horizontal/tipTolerance");
-			if (!(horizontalTipToleranceString == null))
-				horizontalTipTolerance = Double.valueOf(horizontalTipToleranceString);
-			
-			String exportHorizontalSupportShapesString = reader.getXMLPropertyByPath("//horizontal/exportSupportShapes");
-			if (!(exportHorizontalSupportShapesString == null)) 
-				exportHorizontalSupportShapes = Boolean.parseBoolean(exportHorizontalSupportShapesString);
+			String hTailTipTypeString = MyXMLReaderUtils.getXMLPropertyByPath(
+					reader.getXmlDoc(), reader.getXpath(), "//horizontal/@tipType");
+			if (hTailTipTypeString != null)
+				hTailTipType = WingTipType.valueOf(hTailTipTypeString);
 
+		} else {
+			
+			generateHTail = false;
 		}
 		
 		// VERTICAL
 
-		// Initialize vertical tail CAD parameters
-		double verticalTipTolerance = 1e-3;
-		boolean exportVerticalSupportShapes = false;
+		// Initialize VERTICAL TAIL CAD parameters
+		WingTipType vTailTipType = WingTipType.CUTOFF;
 
-		// Read vertical tail CAD parameters from the xml file
-		if (generateVertical && !(theAircraft.getVTail() ==  null)) { 
+		// Read VERTICAL TAIL CAD parameters from the XML file
+		if (generateVTail && (theAircraft.getVTail() != null)) { 
 
-			String verticalTipToleranceString = reader.getXMLPropertyByPath("//vertical/tipTolerance");
-			if (!(verticalTipToleranceString == null))
-				verticalTipTolerance = Double.valueOf(verticalTipToleranceString);
+			String vTailTipTypeString = MyXMLReaderUtils.getXMLPropertyByPath(
+					reader.getXmlDoc(), reader.getXpath(), "//vertical/@tipType");
+			if (vTailTipTypeString != null)
+				vTailTipType = WingTipType.valueOf(vTailTipTypeString);
 			
-			String exportVerticalSupportShapesString = reader.getXMLPropertyByPath("//vertical/exportSupportShapes");
-			if (!(exportVerticalSupportShapesString == null)) 
-				exportVerticalSupportShapes = Boolean.parseBoolean(exportVerticalSupportShapesString);
+		} else {
 			
+			generateVTail = false;
 		}
 		
 		// CANARD
 
-		// Initialize canard CAD parameters
-		double canardTipTolerance = 1e-3;
-		boolean exportCanardSupportShapes = false;
+		// Initialize CANARD CAD parameters
+		WingTipType canardTipType = WingTipType.CUTOFF;
+		
+		// Read vertical tail CAD parameters from the XML file
+		if (generateCanard && (theAircraft.getCanard() != null)) { 
 
-		// Read vertical tail CAD parameters from the xml file
-		if (generateCanard && !(theAircraft.getCanard() == null)) { 
-
-			String canardTipToleranceString = reader.getXMLPropertyByPath("//canard/tipTolerance");
-			if (!(canardTipToleranceString == null))
-				canardTipTolerance = Double.valueOf(canardTipToleranceString);
+			String canardTipTypeString = MyXMLReaderUtils.getXMLPropertyByPath(
+					reader.getXmlDoc(), reader.getXpath(), "//canard/@tipType");
+			if (canardTipTypeString != null)
+				canardTipType = WingTipType.valueOf(canardTipTypeString);
 			
-			String exportCanardSupportShapesString = reader.getXMLPropertyByPath("//canard/exportSupportShapes");
-			if (!(exportCanardSupportShapesString == null)) 
-				exportCanardSupportShapes = Boolean.parseBoolean(exportCanardSupportShapesString);
+		} else {
 			
+			generateCanard = false;
 		}
 		
 		// WING-FUSELAGE FAIRING
 
-		// Initialize wing fairing CAD parameters
-		double wingFairingFrontLengthFactor = 1.25;
-		double wingFairingBackLengthFactor = 1.25;
-		double wingFairingSideSizeFactor = 0.25;
-		double wingFairingHeightFactor = 0.25;
-		double wingFairingHeightBelowContactFactor = 0.70;
-		double wingFairingHeightAboveContactFactor = 0.10;
-		double wingFairingFilletRadiusFactor = 0.60;
+		// Initialize WING FAIRING CAD parameters
+		double wingFairingFrontLengthFactor = 1.00;
+		double wingFairingBackLengthFactor = 1.00;
+		double wingFairingWidthFactor = 0.75;
+		double wingFairingHeightFactor = 0.15;
+		double wingFairingHeightBelowReferenceFactor = 0.60;
+		double wingFairingHeightAboveReferenceFactor = 0.45;
+		double wingFairingFilletRadiusFactor = 0.80;
 
-		// Read wing fairing CAD parameters from the xml file
-		if (generateWingFairing && !(theAircraft.getWing() == null) && !(theAircraft.getFuselage() == null)) { 
+		// Read WING FAIRING CAD parameters from the XML file
+		if (generateWingFairing && (theAircraft.getWing() != null) && (theAircraft.getFuselage() != null)) { 
 
 			String wingFairingFrontLengthFactorString = reader.getXMLPropertyByPath("//wing_fairing/frontLengthFactor");
-			if (!(wingFairingFrontLengthFactorString == null))
+			if (wingFairingFrontLengthFactorString != null)
 				wingFairingFrontLengthFactor = Double.valueOf(wingFairingFrontLengthFactorString);
 			
 			String wingFairingBackLengthFactorString = reader.getXMLPropertyByPath("//wing_fairing/backLengthFactor");
-			if (!(wingFairingBackLengthFactorString == null))
+			if (wingFairingBackLengthFactorString != null)
 				wingFairingBackLengthFactor = Double.valueOf(wingFairingBackLengthFactorString);
 			
-			String wingFairingSideSizeFactorString = reader.getXMLPropertyByPath("//wing_fairing/sideSizeFactor");
-			if (!(wingFairingSideSizeFactorString == null))
-				wingFairingSideSizeFactor = Double.valueOf(wingFairingSideSizeFactorString);
+			String wingFairingWidthFactorString = reader.getXMLPropertyByPath("//wing_fairing/widthFactor");
+			if (wingFairingWidthFactorString != null)
+				wingFairingWidthFactor = Double.valueOf(wingFairingWidthFactorString);
 			
-			String wingFairingHeightFactorString = reader.getXMLPropertyByPath("//wing_fairing/fairingHeightFactor");
-			if (!(wingFairingHeightFactorString == null))
+			String wingFairingHeightFactorString = reader.getXMLPropertyByPath("//wing_fairing/heightFactor");
+			if (wingFairingHeightFactorString != null)
 				wingFairingHeightFactor = Double.valueOf(wingFairingHeightFactorString);
 			
-			String wingFairingHeightBelowContactFactorString = reader.getXMLPropertyByPath("//wing_fairing/heightBelowContactFactor");
-			if (!(wingFairingHeightBelowContactFactorString == null))
-				wingFairingHeightBelowContactFactor = Double.valueOf(wingFairingHeightBelowContactFactorString);
+			String wingFairingHeightBelowReferenceFactorString = reader.getXMLPropertyByPath("//wing_fairing/heightBelowReferenceFactor");
+			if (wingFairingHeightBelowReferenceFactorString != null)
+				wingFairingHeightBelowReferenceFactor = Double.valueOf(wingFairingHeightBelowReferenceFactorString);
 			
-			String wingFairingHeightAboveContactFactorString = reader.getXMLPropertyByPath("//wing_fairing/heightAboveContactFactor");
-			if (!(wingFairingHeightAboveContactFactorString == null))
-				wingFairingHeightAboveContactFactor = Double.valueOf(wingFairingHeightAboveContactFactorString);
+			String wingFairingHeightAboveReferenceFactorString = reader.getXMLPropertyByPath("//wing_fairing/heightAboveReferenceFactor");
+			if (wingFairingHeightAboveReferenceFactorString != null)
+				wingFairingHeightAboveReferenceFactor = Double.valueOf(wingFairingHeightAboveReferenceFactorString);
 			
 			String wingFairingFilletRadiusFactorString = reader.getXMLPropertyByPath("//wing_fairing/filletRadiusFactor");
-			if (!(wingFairingFilletRadiusFactorString == null))
+			if (wingFairingFilletRadiusFactorString != null)
 				wingFairingFilletRadiusFactor = Double.valueOf(wingFairingFilletRadiusFactorString);
 			
+		} else {
+			
+			generateWingFairing = false;
 		}
 		
 		// CANARD-FUSELAGE FAIRING
 
-		// Initialize canard fairing CAD parameters
-		double canardFairingFrontLengthFactor = 1.25;
-		double canardFairingBackLengthFactor = 1.25;
-		double canardFairingSideSizeFactor = 0.25;
-		double canardFairingHeightFactor = 0.25;
-		double canardFairingHeightBelowContactFactor = 0.70;
-		double canardFairingHeightAboveContactFactor = 0.10;
-		double canardFairingFilletRadiusFactor = 0.60;
+		// Initialize CANARD FAIRING CAD parameters
+		double canardFairingFrontLengthFactor = 1.00;
+		double canardFairingBackLengthFactor = 1.00;
+		double canardFairingWidthFactor = 0.55;
+		double canardFairingHeightFactor = 0.15;
+		double canardFairingHeightBelowReferenceFactor = 0.70;
+		double canardFairingHeightAboveReferenceFactor = 0.45;
+		double canardFairingFilletRadiusFactor = 0.80;
 
-		// Read canard fairing CAD parameters from the xml file
-		if (generateCanardFairing && !(theAircraft.getCanard() == null) && !(theAircraft.getFuselage() == null)) { 
+		// Read CANARD FAIRING CAD parameters from the XML file
+		if (generateCanardFairing && (theAircraft.getCanard() != null) && (theAircraft.getFuselage() != null)) { 
 
 			String canardFairingFrontLengthFactorString = reader.getXMLPropertyByPath("//canard_fairing/frontLengthFactor");
-			if (!(canardFairingFrontLengthFactorString == null))
+			if (canardFairingFrontLengthFactorString != null)
 				canardFairingFrontLengthFactor = Double.valueOf(canardFairingFrontLengthFactorString);
 			
 			String canardFairingBackLengthFactorString = reader.getXMLPropertyByPath("//canard_fairing/backLengthFactor");
-			if (!(canardFairingBackLengthFactorString == null))
+			if (canardFairingBackLengthFactorString != null)
 				canardFairingBackLengthFactor = Double.valueOf(canardFairingBackLengthFactorString);
 			
-			String canardFairingSideSizeFactorString = reader.getXMLPropertyByPath("//canard_fairing/sideSizeFactor");
-			if (!(canardFairingSideSizeFactorString == null))
-				canardFairingSideSizeFactor = Double.valueOf(canardFairingSideSizeFactorString);
+			String canardFairingWidthFactorString = reader.getXMLPropertyByPath("//canard_fairing/widthFactor");
+			if (canardFairingWidthFactorString != null)
+				canardFairingWidthFactor = Double.valueOf(canardFairingWidthFactorString);
 			
-			String canardFairingHeightFactorString = reader.getXMLPropertyByPath("//canard_fairing/fairingHeightFactor");
-			if (!(canardFairingHeightFactorString == null))
+			String canardFairingHeightFactorString = reader.getXMLPropertyByPath("//canard_fairing/heightFactor");
+			if (canardFairingHeightFactorString != null)
 				canardFairingHeightFactor = Double.valueOf(canardFairingHeightFactorString);
 			
-			String canardFairingHeightBelowContactFactorString = reader.getXMLPropertyByPath("//canard_fairing/heightBelowContactFactor");
-			if (!(canardFairingHeightBelowContactFactorString == null))
-				canardFairingHeightBelowContactFactor = Double.valueOf(canardFairingHeightBelowContactFactorString);
+			String canardFairingHeightBelowReferenceFactorString = reader.getXMLPropertyByPath("//canard_fairing/heightBelowReferenceFactor");
+			if (canardFairingHeightBelowReferenceFactorString != null)
+				canardFairingHeightBelowReferenceFactor = Double.valueOf(canardFairingHeightBelowReferenceFactorString);
 			
-			String canardFairingHeightAboveContactFactorString = reader.getXMLPropertyByPath("//canard_fairing/heightAboveContactFactor");
-			if (!(canardFairingHeightAboveContactFactorString == null))
-				canardFairingHeightAboveContactFactor = Double.valueOf(canardFairingHeightAboveContactFactorString);
+			String canardFairingHeightAboveReferenceFactorString = reader.getXMLPropertyByPath("//canard_fairing/heightAboveReferenceFactor");
+			if (canardFairingHeightAboveReferenceFactorString != null)
+				canardFairingHeightAboveReferenceFactor = Double.valueOf(canardFairingHeightAboveReferenceFactorString);
 			
 			String canardFairingFilletRadiusFactorString = reader.getXMLPropertyByPath("//canard_fairing/filletRadiusFactor");
-			if (!(canardFairingFilletRadiusFactorString == null))
+			if (canardFairingFilletRadiusFactorString != null)
 				canardFairingFilletRadiusFactor = Double.valueOf(canardFairingFilletRadiusFactorString);
 			
+		} else {
+			
+			generateCanardFairing = false;
 		}
 		
 		// EXPORT TO FILE OPTIONS
 		Boolean exportToFile;
-		FileExtension fileExtension;
 		
+		FileExtension fileExtension = FileExtension.STEP;
+		Boolean exportWireframe = false;
+
 		String exportToFileString = MyXMLReaderUtils.getXMLPropertyByPath(
 				reader.getXmlDoc(), reader.getXpath(), "//export_to_file/@value");
 		exportToFile = exportToFileString.equalsIgnoreCase("TRUE") ? true : false;
-		
-		String fileExtensionString = reader.getXMLPropertyByPath("//export_to_file/file_format");
-		fileExtension = FileExtension.valueOf(fileExtensionString);
+
+		if (exportToFile) {
+			
+			String fileExtensionString = MyXMLReaderUtils.getXMLPropertyByPath(
+					reader.getXmlDoc(), reader.getXpath(), "//export_to_file/@format");
+			fileExtension = FileExtension.valueOf(fileExtensionString);
+			
+			String exportWireframeString = MyXMLReaderUtils.getXMLPropertyByPath(
+					reader.getXmlDoc(), reader.getXpath(), "//export_to_file/@exportWireframe");
+			exportWireframe = exportWireframeString.equalsIgnoreCase("TRUE") ? true : false;
+			
+		}		
 		
 		// ***********************************************************************
 		// Check what has been read from the XML file, and print it on the console
 		// _______________________________________________________________________
-		System.out.println("=========================================================");
-		System.out.println("=== CAD XML configuration file - Import from XML test ===");
-		System.out.println("=========================================================");
-		System.out.println();
+		StringBuilder stringBuilder = new StringBuilder()
+				.append("\n\n\t--------------------------------------\n")
+				.append("\tCAD generator input configuration\n")
+				.append("\t--------------------------------------\n\n");
 		
-		System.out.println("=== FUSELAGE CAD Parameters");
-		System.out.println("--- Generate fuselage: " + generateFuselage);
-		if (generateFuselage && !(theAircraft.getFuselage() == null)) {
-			
-			System.out.println("--- Nose cap section factor #1: " + noseCapSectionFactor1);
-			System.out.println("--- Nose cap section factor #2: " + noseCapSectionFactor2);
-			System.out.println("--- Number of nose cap sections: " + numberNoseCapSections);
-			System.out.println("--- Number of nose trunk sections: " + numberNoseTrunkSections);
-			System.out.println("--- Nose trunk spacing type: " + spacingTypeNoseTrunk.toString());
-			System.out.println("--- Number of tail trunk sections: " + numberTailTrunkSections);
-			System.out.println("--- Tail trunk spacing type: " + spacingTypeTailTrunk.toString());
-			System.out.println("--- Tail cap section factor #1: " + tailCapSectionFactor1);
-			System.out.println("--- Tail cap section factor #2: " + tailCapSectionFactor2);
-			System.out.println("--- Number of tail cap sections: " + numberTailCapSections);
-			System.out.println("--- Export fuselage support shapes: " + exportFuselageSupportShapes);
-			
-		}
-		System.out.println();
+		stringBuilder.append("\t[Generate Fuselage CAD]: " + generateFuselage + ".\n");
+		if (!generateFuselage) 		
+			stringBuilder.append("\n");	
+		else			
+			stringBuilder.append("\tNose trunk spacing: " + spacingTypeNoseTrunk.toString() + ".\n")
+						 .append("\tNumber of nose trunk sections: " + numberNoseTrunkSections + ".\n")
+						 .append("\tTail trunk spacing: " + spacingTypeTailTrunk.toString() + ".\n")
+						 .append("\tNumber of tail trunk sections: " + numberTailTrunkSections + ".\n")					
+						 .append("\n");					 
 		
-		System.out.println("=== WING CAD Parameters");
-		System.out.println("--- Generate wing: " + generateWing);
-		if (generateWing && !(theAircraft.getWing() == null)) { 
-			
-			System.out.println("--- Wing tip tolerance: " + wingTipTolerance);
-			System.out.println("--- Export wing support shapes: " + exportWingSupportShapes);
-			
-		}
-		System.out.println();
+		stringBuilder.append("\t[Generate Wing CAD]: " + generateWing + ".\n");	
+		if (!generateWing)
+			stringBuilder.append("\n");
+		else
+			stringBuilder.append("\tTip type: " + wingTipType.toString() + "\n");
+		if (wingTipType.equals(WingTipType.WINGLET))
+			stringBuilder.append("\tWinglet Y offset factor: " + wingletYOffsetFactor + ".\n")
+						 .append("\tWinglet X offset factor: " + wingletXOffsetFactor + ".\n")
+						 .append("\tWinglet taper ratio: " + wingletTaperRatio + ".\n")
+						 .append("\n");
+		else 
+			stringBuilder.append("\n");
 		
-		System.out.println("=== HORIZONTAL TAIL CAD Parameters");
-		System.out.println("--- Generate horizontal tail: " + generateHorizontal);
-		if (generateHorizontal && !(theAircraft.getHTail() == null)) { 
-			
-			System.out.println("--- Horizontal tail tip tolerance: " + horizontalTipTolerance);
-			System.out.println("--- Export horizontal tail support shapes: " + exportHorizontalSupportShapes);
-			
-		}
-		System.out.println();
+		stringBuilder.append("\t[Generate Horizontal Tail CAD]: " + generateHTail + ".\n");	
+		if (!generateHTail)
+			stringBuilder.append("\n");
+		else
+			stringBuilder.append("\tTip type: " + hTailTipType.toString() + ".\n")
+						 .append("\n");
 		
-		System.out.println("=== VERTICAL TAIL CAD Parameters");
-		System.out.println("--- Generate vertical tail: " + generateVertical);
-		if (generateVertical && !(theAircraft.getVTail() == null)) { 
-			
-			System.out.println("--- Vertical tail tip tolerance: " + verticalTipTolerance);
-			System.out.println("--- Export vertical tail support shapes: " + exportVerticalSupportShapes);
-			
-		}
-		System.out.println();
+		stringBuilder.append("\t[Generate Vertical Tail CAD]: " + generateVTail + ".\n");	
+		if (!generateVTail)
+			stringBuilder.append("\n");
+		else
+			stringBuilder.append("\tTip type: " + vTailTipType.toString() + ".\n")
+						 .append("\n");
 		
-		System.out.println("=== CANARD CAD Parameters");
-		System.out.println("--- Generate canard: " + generateCanard);
-		if (generateCanard && !(theAircraft.getCanard() == null)) { 
-			
-			System.out.println("--- Canard tip tolerance: " + canardTipTolerance);
-			System.out.println("--- Export canard support shapes: " + exportCanardSupportShapes);
-			
-		}
-		System.out.println();
+		stringBuilder.append("\t[Generate Canard CAD]: " + generateCanard + ".\n");	
+		if (!generateCanard)
+			stringBuilder.append("\n");
+		else
+			stringBuilder.append("\tTip type: " + canardTipType.toString() + ".\n")
+						 .append("\n");
 		
-		System.out.println("=== WING/FUSELAGE FAIRING CAD Parameters");
-		System.out.println("--- Generate wing/fuselage fairing: " + generateWingFairing);
-		if (generateWingFairing && !(theAircraft.getWing() == null) && !(theAircraft.getFuselage() == null)) {
-			
-			System.out.println("--- Wing/Fuselage fairing front length factor: " + wingFairingFrontLengthFactor);
-			System.out.println("--- Wing/Fuselage fairing back length factor: " + wingFairingBackLengthFactor);
-			System.out.println("--- Wing/Fuselage fairing side size factor: " + wingFairingSideSizeFactor);
-			System.out.println("--- Wing/Fuselage fairing height factor: " + wingFairingHeightFactor);
-			System.out.println("--- Wing/Fuselage fairing height below contact factor: " + wingFairingHeightBelowContactFactor);
-			System.out.println("--- Wing/Fuselage fairing height above contact factor: " + wingFairingHeightAboveContactFactor);
-			System.out.println("--- Wing/Fuselage fairing fillet radius factor: " + wingFairingFilletRadiusFactor);
-			
-		}
-		System.out.println();
+		stringBuilder.append("\t[Generate Wing-Fuselage Fairing CAD]: " + generateWingFairing + ".\n");
+		if (!generateWingFairing) 
+			stringBuilder.append("\n");
+		else
+			stringBuilder.append("\tFront length factor: " + wingFairingFrontLengthFactor + ".\n")
+						 .append("\tBack length factor: " + wingFairingBackLengthFactor + ".\n")
+						 .append("\tWidth factor: " + wingFairingWidthFactor + ".\n")
+						 .append("\tHeight factor: " + wingFairingHeightFactor + ".\n")
+						 .append("\tHeight below reference factor: " + wingFairingHeightBelowReferenceFactor + ".\n")
+						 .append("\tHeight above reference factor: " + wingFairingHeightAboveReferenceFactor + ".\n")
+						 .append("\tFillet radius factor: " + wingFairingFilletRadiusFactor + ".\n")
+						 .append("\n");
 		
-		System.out.println("=== CANARD/FUSELAGE FAIRING CAD Parameters");
-		System.out.println("--- Generate canard/fuselage fairing: " + generateCanardFairing);
-		if (generateCanardFairing && !(theAircraft.getCanard() == null) && !(theAircraft.getFuselage() == null)) {
-			
-			System.out.println("--- Canard/Fuselage fairing front length factor: " + canardFairingFrontLengthFactor);
-			System.out.println("--- Canard/Fuselage fairing back length factor: " + canardFairingBackLengthFactor);
-			System.out.println("--- Canard/Fuselage fairing side size factor: " + canardFairingSideSizeFactor);
-			System.out.println("--- Canard/Fuselage fairing height factor: " + canardFairingHeightFactor);
-			System.out.println("--- Canard/Fuselage fairing height below contact factor: " + canardFairingHeightBelowContactFactor);
-			System.out.println("--- Canard/Fuselage fairing height above contact factor: " + canardFairingHeightAboveContactFactor);
-			System.out.println("--- Canard/Fuselage fairing fillet radius factor: " + canardFairingFilletRadiusFactor);
-			
-		}
-		System.out.println();
+		stringBuilder.append("\t[Generate Canard/Fuselage Fairing CAD]: " + generateCanardFairing + ".\n");
+		if (!generateCanardFairing) 
+			stringBuilder.append("\n");
+		else
+			stringBuilder.append("\tFront length factor: " + canardFairingFrontLengthFactor + ".\n")
+						 .append("\tRear length factor: " + canardFairingBackLengthFactor + ".\n")
+						 .append("\tWidth factor: " + canardFairingWidthFactor + ".\n")
+						 .append("\tHeight factor: " + canardFairingHeightFactor + ".\n")
+						 .append("\tHeight below reference factor: " + canardFairingHeightBelowReferenceFactor + ".\n")
+						 .append("\tHeight above reference factor: " + canardFairingHeightAboveReferenceFactor + ".\n")
+						 .append("\tFillet radius factor: " + canardFairingFilletRadiusFactor + ".\n")
+						 .append("\n");
+				
+		stringBuilder.append("\t[Export shapes to file]: " + exportToFile + ".\n");
+		if (!exportToFile)
+			stringBuilder.append("\n");
+		else
+			stringBuilder.append("\tFile format: " + fileExtension.toString() + ".\n")
+						 .append("\tExport wireframe: " + exportWireframe + ".\n")
+			  			 .append("\n");
 		
-		System.out.println("=== CAD File options");
-		System.out.println("--- Export solids to file: " + exportToFile);
-		if (exportToFile) 
-			System.out.println("--- File format: " + fileExtension.toString());
-		
+		System.out.println(stringBuilder.toString());
 	}
 	
 	public static Aircraft importAircarftFromXML(String[] args) throws InvalidFormatException, HDF5LibraryException {
@@ -614,6 +606,12 @@ public class CADConfigReader {
 		STEP,
 		IGES,
 		STL;
+	}
+	
+	public enum WingTipType {
+		CUTOFF,
+		ROUNDED,
+		WINGLET;
 	}
 
 	public enum XSpacingType {

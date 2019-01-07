@@ -2,73 +2,69 @@ package it.unina.daf.jpadcad;
 
 import org.inferred.freebuilder.FreeBuilder;
 
-import it.unina.daf.jpadcad.utils.AircraftUtils.FileExtension;
-import it.unina.daf.jpadcad.utils.AircraftUtils.XSpacingType;
+import it.unina.daf.jpadcad.occ.OCCUtils.FileExtension;
+import it.unina.daf.jpadcad.utils.AircraftCADUtils.WingTipType;
+import it.unina.daf.jpadcad.utils.AircraftCADUtils.XSpacingType;
 
 @FreeBuilder
 public interface ICADManager {
 
 	// All input from file
 
-	// Fuselage input
+	// FUSELAGE input
 	boolean getGenerateFuselage();
-
-	double getNoseCapSectionFactor1();
-	double getNoseCapSectionFactor2();
-	int getNumberNoseCapSections();	
-	int getNumberNoseTrunkSections();
 	XSpacingType getSpacingTypeNoseTrunk();
-	int getNumberTailTrunkSections();
+	int getNumberNoseTrunkSections();
 	XSpacingType getSpacingTypeTailTrunk();	
-	double getTailCapSectionFactor1();
-	double getTailCapSectionFactor2();
-	int getNumberTailCapSections();	
-	boolean getExportFuselageSupportShapes();
+	int getNumberTailTrunkSections();
 
-	// Wing input
+	// WING input
 	boolean getGenerateWing();
-	double getWingTipTolerance();
-	boolean getExportWingSupportShapes();
-
-	// Horizontal tail input
-	boolean getGenerateHorizontal();
-	double getHorizontalTipTolerance();
-	boolean getExportHorizontalSupportShapes();
-
-	// Vertical tail input
-	boolean getGenerateVertical();
-	double getVerticalTipTolerance();
-	boolean getExportVerticalSupportShapes();
-
-	// Canard input
-	boolean getGenerateCanard();
-	double getCanardTipTolerance();
-	boolean getExportCanardSupportShapes();
+	WingTipType getWingTipType();	
 	
-	// Wing/Fuselage fairing input
+	double getWingletYOffsetFactor();
+	double getWingletXOffsetFactor();
+	double getWingletTaperRatio();
+
+	// HTAIL input
+	boolean getGenerateHTail();
+	WingTipType getHTailTipType();
+
+	// VTAIL input
+	boolean getGenerateVTail();
+	WingTipType getVTailTipType();
+
+	// CANARD input
+	boolean getGenerateCanard();
+	WingTipType getCanardTipType();
+	
+	// WING-FUSELAGE FAIRING input
 	boolean getGenerateWingFairing();
 	double getWingFairingFrontLengthFactor();
 	double getWingFairingBackLengthFactor();
-	double getWingFairingSideSizeFactor();
+	double getWingFairingWidthFactor();
 	double getWingFairingHeightFactor();
-	double getWingFairingHeightBelowContactFactor();
-	double getWingFairingHeightAboveContactFactor();
+	double getWingFairingHeightBelowReferenceFactor();
+	double getWingFairingHeightAboveReferenceFactor();
 	double getWingFairingFilletRadiusFactor();
 	
-	// Canard/Fuselage fairing input
+	// CANARD-FUSELAGE FAIRING input
 	boolean getGenerateCanardFairing();
 	double getCanardFairingFrontLengthFactor();
 	double getCanardFairingBackLengthFactor();
-	double getCanardFairingSideSizeFactor();
+	double getCanardFairingWidthFactor();
 	double getCanardFairingHeightFactor();
-	double getCanardFairingHeightBelowContactFactor();
-	double getCanardFairingHeightAboveContactFactor();
+	double getCanardFairingHeightBelowReferenceFactor();
+	double getCanardFairingHeightAboveReferenceFactor();
 	double getCanardFairingFilletRadiusFactor();
 	
 	// Export to file
 	boolean getExportToFile();
+	
 	FileExtension getFileExtension();
+	boolean getExportWireframe();
 
+	// Class builder
 	class Builder extends ICADManager_Builder {
 		public Builder() {
 			
