@@ -78,7 +78,7 @@ public class TakeOffCalc {
 	tRec = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 	private Amount<Mass> maxTakeOffMass; 
 	private Amount<Velocity> vSTakeOff, vRot, vMC, vLO, vWind, v1, v2;
-	private Amount<Length> altitude, wingToGroundDistance, obstacle, balancedFieldLength;
+	private Amount<Length> altitude, obstacle, balancedFieldLength;
 	private Amount<Temperature> deltaTemperature;
 	private Amount<Angle> alphaGround, iw;
 	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, fuelFlow, timeBreakPoints;
@@ -141,7 +141,6 @@ public class TakeOffCalc {
 			double kAlphaDot,
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
-			Amount<Length> wingToGroundDistance,
 			Amount<Length> obstacle,
 			Amount<Velocity> vWind,
 			Amount<Angle> alphaGround,
@@ -174,7 +173,6 @@ public class TakeOffCalc {
 		this.kAlphaDot = kAlphaDot;
 		this.mu = mu;
 		this.muBrake = muBrake;
-		this.wingToGroundDistance = wingToGroundDistance;
 		this.obstacle = obstacle;
 		this.vWind = vWind;
 		this.alphaGround = alphaGround;
@@ -2477,14 +2475,6 @@ public class TakeOffCalc {
 
 	public void setvWind(Amount<Velocity> vWind) {
 		this.vWind = vWind;
-	}
-
-	public Amount<Length> getWingToGroundDistance() {
-		return wingToGroundDistance;
-	}
-
-	public void setWingToGroundDistance(Amount<Length> wingToGroundDistance) {
-		this.wingToGroundDistance = wingToGroundDistance;
 	}
 
 	public Amount<Length> getObstacle() {

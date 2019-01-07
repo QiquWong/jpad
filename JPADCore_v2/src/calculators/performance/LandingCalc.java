@@ -16,6 +16,7 @@ import javax.measure.unit.SI;
 
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.MaxCountExceededException;
+import org.apache.commons.math3.ode.ContinuousOutputModel;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.events.EventHandler;
@@ -73,9 +74,10 @@ public class LandingCalc {
 	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Force>> thrust, lift, drag, friction, totalForce;
 	private List<Amount<Length>> landingDistance, verticalDistance;
+	private List<Amount<Mass>> fuelUsed;
 	private double cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD;
-	private MyInterpolatingFunction mu, muBrake, phiGroundIdle;
-	
+	private MyInterpolatingFunction mu, muBrake;
+	private ContinuousOutputModel continuousOutputModel;
 	
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
@@ -125,7 +127,6 @@ public class LandingCalc {
 			double cLmaxLanding,
 			double cL0Landing,
 			double cLalphaFlap,
-			MyInterpolatingFunction groundIdleThrottle,
 			Amount<Duration> nFreeRoll,
 			Double[] polarCLLanding,
 			Double[] polarCDLanding
@@ -150,20 +151,18 @@ public class LandingCalc {
 		this.thetaApproach = thetaApproach;
 		this.cLmaxLanding = cLmaxLanding;
 		this.cL0Landing = cL0Landing; 
-		this.phiGroundIdle = groundIdleThrottle;
 		this.nFreeRoll = nFreeRoll;
 		
 		this.cLground = cL0Landing + (cLalphaFlap*iw.getEstimatedValue());
 
 		// Reference velocities definition
-		vSLanding = Amount.valueOf(
-				SpeedCalc.calculateSpeedStall(
-						theConditions.getAltitudeLanding().getEstimatedValue(),
-						maxLandingMass.times(AtmosphereCalc.g0).getEstimatedValue(),
-						aircraft.getWing().getSurfacePlanform().getEstimatedValue(),
+		vSLanding = SpeedCalc.calculateSpeedStall(
+						theConditions.getAltitudeLanding(),
+						theConditions.getDeltaTemperatureLanding(),
+						maxLandingMass,
+						aircraft.getWing().getSurfacePlanform(),
 						cLmaxLanding
-						),
-				SI.METERS_PER_SECOND);
+						);
 		vA = vSLanding.times(kA);
 		vFlare = vSLanding.times(kFlare);
 		vTD = vSLanding.times(kTD);
@@ -188,17 +187,18 @@ public class LandingCalc {
 				+ 0.90793397);
 
 		// List initialization
-		this.time = new ArrayList<Amount<Duration>>();
-		this.speed = new ArrayList<Amount<Velocity>>();
-		this.thrust = new ArrayList<Amount<Force>>();
-		this.lift = new ArrayList<Amount<Force>>();
-		this.loadFactor = new ArrayList<Double>();
-		this.drag = new ArrayList<Amount<Force>>();
-		this.friction = new ArrayList<Amount<Force>>();
-		this.totalForce = new ArrayList<Amount<Force>>();
-		this.acceleration = new ArrayList<Amount<Acceleration>>();
-		this.landingDistance = new ArrayList<Amount<Length>>();
-		this.verticalDistance = new ArrayList<Amount<Length>>();
+		this.time = new ArrayList<>();
+		this.speed = new ArrayList<>();
+		this.thrust = new ArrayList<>();
+		this.lift = new ArrayList<>();
+		this.loadFactor = new ArrayList<>();
+		this.drag = new ArrayList<>();
+		this.friction = new ArrayList<>();
+		this.totalForce = new ArrayList<>();
+		this.acceleration = new ArrayList<>();
+		this.landingDistance = new ArrayList<>();
+		this.verticalDistance = new ArrayList<>();
+		this.fuelUsed = new ArrayList<>();
 	}
 
 	//-------------------------------------------------------------------------------------
@@ -224,6 +224,7 @@ public class LandingCalc {
 		acceleration.clear();
 		landingDistance.clear();
 		verticalDistance.clear();
+		fuelUsed.clear();
 	}
 
 	/**************************************************************************************
@@ -462,6 +463,9 @@ public class LandingCalc {
 			}
 		};
 		theIntegrator.addStepHandler(stepHandler);
+		
+		continuousOutputModel = new ContinuousOutputModel();
+		theIntegrator.addStepHandler(continuousOutputModel);
 		
 		double[] xAt0 = new double[] {
 				sApproach.plus(sFlare).getEstimatedValue(),
@@ -1084,5 +1088,13 @@ public class LandingCalc {
 
 	public void setPolarCDLanding(Double[] polarCDLanding) {
 		this.polarCDLanding = polarCDLanding;
+	}
+
+	public List<Amount<Mass>> getFuelUsed() {
+		return fuelUsed;
+	}
+
+	public void setFuelUsed(List<Amount<Mass>> fuelUsed) {
+		this.fuelUsed = fuelUsed;
 	}
 }

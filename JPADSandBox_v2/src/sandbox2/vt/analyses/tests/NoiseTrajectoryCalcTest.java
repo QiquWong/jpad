@@ -10,8 +10,10 @@ import java.util.List;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
+import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -24,11 +26,14 @@ import org.kohsuke.args4j.Option;
 
 import aircraft.Aircraft;
 import analyses.OperatingConditions;
+import calculators.aerodynamics.MomentCalc;
 import calculators.performance.LandingNoiseTrajectoryCalc;
 import calculators.performance.TakeOffNoiseTrajectoryCalc;
+import calculators.performance.ThrustCalc;
 import configuration.MyConfiguration;
+import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.FoldersEnum;
-import configuration.enumerations.UnitFormatEnum;
+import database.DatabaseManager;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
@@ -39,6 +44,8 @@ import sandbox2.vt.analyses.CompleteAnalysisTest;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyInterpolatingFunction;
+import standaloneutils.MyMathUtils;
+import standaloneutils.atmosphere.SpeedCalc;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentsNoiseTrajectory {
@@ -128,6 +135,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 	//-------------------------------------------------------------
 
 	public static Aircraft theAircraft;
+	public static OperatingConditions theOperatingConditions;
 
 	//-------------------------------------------------------------
 
@@ -260,7 +268,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 			System.setOut(originalOut);
 			System.out.println("\n\n\tDefining the operating conditions ... \n\n");
 			System.setOut(filterStream);
-			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
+			theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
 			System.setOut(originalOut);
 			System.out.println(theOperatingConditions.toString());
 
@@ -273,7 +281,6 @@ public class NoiseTrajectoryCalcTest extends Application {
 			//======================================================================
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			boolean timeHistories = true;
-			UnitFormatEnum unitFormat = UnitFormatEnum.SI;
 			boolean takeOffSimulation = true;
 			boolean landingSimulation = false;
 			
@@ -282,80 +289,69 @@ public class NoiseTrajectoryCalcTest extends Application {
 			Amount<Length> cutbackAltitude = Amount.valueOf(984, NonSI.FOOT); //  also to be done at 1500ft and 2000ft
 			int numberOfThrustSettingCutback = 3;
 			Amount<Mass> maxTakeOffMass = Amount.valueOf(54576, SI.KILOGRAM);
-			Double[] polarCLTakeOff = new Double[] {1.043250448,1.141576131,1.239776085,1.337853062,1.435809837,1.533649199,1.631373953,1.72898692,1.826490931,1.923888831,2.021183473,2.118241834,2.215338557,2.312476516,2.409386821,2.506208241,2.602943664,2.690761362,2.776263811,2.848709361};
-			Double[] polarCDTakeOff = new Double[] {0.086537869,0.092978117,0.09998869,0.10756759,0.115712885,0.124422713,0.133695284,0.143528873,0.15392183,0.164872571,0.176379582,0.188424162,0.201038663,0.214224154,0.227942509,0.242210611,0.257027362,0.270964078,0.284977632,0.297194245};
-			Double deltaCD0LandingGear = 0.015;
-			Double deltaCD0OEI = 0.0050;
-			Amount<Duration> dtRot = Amount.valueOf(4, SI.SECOND);
+			double[] polarCLTakeOff = new double[] {1.683505301,1.727959984,1.774656575,1.823332257,1.873724213,1.925569626,1.978605681,2.032569559,2.087198445,2.142229523,2.197399974,2.252446983,2.307107733,2.361119408,2.41421919,2.466144263,2.516631811,2.565419016,2.612243063,2.656841134,2.698950412,2.738308082,2.774651327,2.807717329,2.837243272,2.86296634,2.884623715,2.901952582,2.914690124,2.922573523,2.925339964};
+			double[] polarCDTakeOff = new double[] {0.134322844,0.134490111,0.134824043,0.135326555,0.135999805,0.136846218,0.137868518,0.139069743,0.14045327,0.142022824,0.143782489,0.145736715,0.147890322,0.150248492,0.15281677,0.155601049,0.158607558,0.161842847,0.165313759,0.16902741,0.172991157,0.177212561,0.181699357,0.186459405,0.191500649,0.196831062,0.202458601,0.20839114,0.214636415,0.221201956,0.228095016};
+			double deltaCD0LandingGear = 0.015;
+			double deltaCD0OEI = 0.0050;
+			double xcgPosition = -0.22;
 			Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 			Amount<Duration> dtLandingGearRetraction = Amount.valueOf(12, SI.SECOND);
 			Amount<Duration> dtThrustCutback = Amount.valueOf(4, SI.SECOND);
-			Double phi = 1.0;
-			Double kcLMax = 0.8;
-			Double kRot = 1.05;
-			Double alphaDotInitial = 3.0; // (deg/s)
-			Double kAlphaDot = 0.06; // (1/deg)
-			Double cLmaxTO = 2.78;
-			Double cLZeroTO = 1.3795;
-			Amount<?> cLalphaFlap = Amount.valueOf(0.1082, NonSI.DEGREE_ANGLE.inverse());
+			double kcLMax = 0.8;
+			double kRot = 1.05;
+			double alphaDotInitial = 3.0; // (deg/s)
+			double kAlphaDot = 0.06; // (1/deg)
+			double cLmaxTO = 2.86;
+			double cLZeroTO = 1.6358;
+			Amount<?> cLalphaFlap = Amount.valueOf(0.1031, NonSI.DEGREE_ANGLE.inverse());
 			
 			MyInterpolatingFunction mu = new MyInterpolatingFunction();
 			mu.interpolateLinear(
 					new double[]{0, 10000},
 					new double[]{0.025, 0.025}
 					);
+			MyInterpolatingFunction tauRudder = new MyInterpolatingFunction();
+			tauRudder.interpolateLinear(
+					new double[]{0.0000, 0.5359, 0.5648, 0.5502, 0.5261},
+					new double[]{0.0, 10.0, 20.0, 25.0, 30.0}
+					);
 			
-			Boolean createCSV = Boolean.TRUE;
+			boolean createCSV = true;
 			
 			//======================================================================
-			
-			Amount<Length> wingToGroundDistance = 
-					theAircraft.getFuselage().getHeightFromGround()
-					.plus(theAircraft.getFuselage().getSectionCylinderHeight().divide(2))
-					.plus(theAircraft.getWing().getZApexConstructionAxes()
-							.plus(theAircraft.getWing().getSemiSpan()
-									.times(Math.sin(
-											theAircraft.getWing()	
-												
-											.getDihedralMean()
-											.doubleValue(SI.RADIAN)
-											)
-											)
-									)
-							);
-			
 			if(takeOffSimulation) {
 				TakeOffNoiseTrajectoryCalc theTakeOffNoiseTrajectoryCalculator = new TakeOffNoiseTrajectoryCalc(
 						xEndSimulation,
 						cutbackAltitude,
 						maxTakeOffMass,
 						theAircraft.getPowerPlant(),
-						polarCLTakeOff,
+						polarCLTakeOff, 
 						polarCDTakeOff, 
-						deltaCD0LandingGear,
+						theOperatingConditions.getAltitudeTakeOff(),
+						deltaCD0LandingGear, 
 						deltaCD0OEI,
 						theAircraft.getWing().getAspectRatio(),
-						theAircraft.getWing().getSurfacePlanform(), 
-						dtRot, 
+						theAircraft.getWing().getSurfacePlanform(),
 						dtHold, 
-						dtLandingGearRetraction,
+						dtLandingGearRetraction, 
 						dtThrustCutback,
-						phi,
+						theOperatingConditions.getThrottleTakeOff(),
 						kcLMax,
-						kRot, 
+						kRot,
 						alphaDotInitial,
 						kAlphaDot,
 						mu,
-						wingToGroundDistance, 
-						theAircraft.getWing().getRiggingAngle(), 
-						cLmaxTO, 
-						cLZeroTO, 
+						theAircraft.getWing().getRiggingAngle(),
+						cLmaxTO,
+						cLZeroTO,
 						cLalphaFlap,
 						createCSV
 						);
 
-				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null, timeHistories);
-				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null, timeHistories);
+				
+				Amount<Velocity> vMC = calculateVMC(xcgPosition, maxTakeOffMass, cLmaxTO, tauRudder);
+				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null, timeHistories,vMC);
+				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null, timeHistories, vMC);
 
 				double lowestPhiCutback = theTakeOffNoiseTrajectoryCalculator.getPhiCutback();
 				double[] phiArray = MyArrayUtils.linspace( (lowestPhiCutback + 0.1), 0.9, numberOfThrustSettingCutback);
@@ -364,13 +360,14 @@ public class NoiseTrajectoryCalcTest extends Application {
 						throttle -> theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(
 								true,
 								throttle, 
-								timeHistories
+								timeHistories,
+								vMC
 								)
 						);
 
 				if(theTakeOffNoiseTrajectoryCalculator.isTargetSpeedFlag() == true)
 					try {
-						theTakeOffNoiseTrajectoryCalculator.createOutputCharts(outputFolderTakeOff, timeHistories, unitFormat);
+						theTakeOffNoiseTrajectoryCalculator.createOutputCharts(outputFolderTakeOff, timeHistories);
 					} catch (InstantiationException | IllegalAccessException e) {
 						e.printStackTrace();
 					}
@@ -410,31 +407,30 @@ public class NoiseTrajectoryCalcTest extends Application {
 			//======================================================================
 			if(landingSimulation) {
 				LandingNoiseTrajectoryCalc theLandingNoiseTrajectoryCalculator = new LandingNoiseTrajectoryCalc(
-						initialAltitude,
+						initialAltitude, 
 						gammaDescent,
 						maxLandingMass,
-						theAircraft.getPowerPlant(),
-						polarCLLanding,
-						polarCDLanding,
-						theAircraft.getWing().getAspectRatio(), 
+						theAircraft.getPowerPlant(), 
+						polarCLLanding, 
+						polarCDLanding, 
+						theAircraft.getWing().getAspectRatio(),
 						theAircraft.getWing().getSurfacePlanform(),
-						dtFlare, 
-						dtFreeRoll,
+						dtFlare,
+						dtFreeRoll, 
 						mu, 
 						muBrake,
-						theOperatingConditions.getThrottleGroundIdleLanding(),
-						wingToGroundDistance,
 						theAircraft.getWing().getRiggingAngle(),
 						cLmaxLND,
 						cLZeroLND,
 						cLalphaLND,
+						theOperatingConditions.getThrottleLanding(),
 						createCSV
 						);
 
 				theLandingNoiseTrajectoryCalculator.calculateNoiseLandingTrajectory(timeHistories);
 
 				try {
-					theLandingNoiseTrajectoryCalculator.createOutputCharts(outputFolderLanding, timeHistories, unitFormat);
+					theLandingNoiseTrajectoryCalculator.createOutputCharts(outputFolderLanding, timeHistories);
 				} catch (InstantiationException | IllegalAccessException e) {
 					e.printStackTrace();
 				}
@@ -457,4 +453,183 @@ public class NoiseTrajectoryCalcTest extends Application {
 		launch(args);
 	}
 
+	public static Amount<Velocity> calculateVMC(
+			double xcg,
+			Amount<Mass> maxTakeOffMass,
+			double cLMaxTakeOff,
+			MyInterpolatingFunction tauRudder
+			) {
+		
+		Amount<Length> dimensionalXcg = 
+				theAircraft.getWing().getMeanAerodynamicChord().to(SI.METER).times(xcg)
+				.plus(theAircraft.getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
+				.plus(theAircraft.getWing().getXApexConstructionAxes().to(SI.METER));
+		
+		String veDSCDatabaseFileName = "VeDSC_database.h5";
+		
+		VeDSCDatabaseReader veDSCDatabaseReader = DatabaseManager.initializeVeDSC(
+				new VeDSCDatabaseReader(
+						MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), veDSCDatabaseFileName
+						),
+				MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
+				);
+
+		// GETTING THE FUSELAGE HEGHT AR V-TAIL MAC (c/4)
+		List<Amount<Length>> vX = theAircraft.getFuselage().getOutlineXZUpperCurveAmountX();
+		List<Amount<Length>> vZUpper = theAircraft.getFuselage().getOutlineXZUpperCurveAmountZ();
+		List<Amount<Length>> vZLower = theAircraft.getFuselage().getOutlineXZLowerCurveAmountZ();
+		
+		List<Amount<Length>> sectionHeightsList = new ArrayList<>();
+		List<Amount<Length>> xListInterpolation = new ArrayList<>();
+		for(int i=vX.size()-5; i<vX.size(); i++) {
+			sectionHeightsList.add(
+					vZUpper.get(i).minus(vZLower.get(i))
+					);
+			xListInterpolation.add(vX.get(i));
+		}
+		
+		Amount<Length> diameterAtVTailQuarteMAC = 
+				Amount.valueOf( 
+						MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertListOfAmountTodoubleArray(xListInterpolation),
+								MyArrayUtils.convertListOfAmountTodoubleArray(sectionHeightsList),
+								theAircraft.getVTail().getMeanAerodynamicChordLeadingEdgeX()
+								.plus(theAircraft.getVTail().getXApexConstructionAxes())
+								.plus(theAircraft.getVTail().getMeanAerodynamicChord().times(0.25))
+								.doubleValue(SI.METER)
+								),
+						SI.METER
+						);
+		
+		double tailConeTipToFuselageRadiusRatio = 
+				theAircraft.getFuselage().getTailTipOffset()
+				.divide(theAircraft.getFuselage().getSectionCylinderHeight().divide(2))
+				.getEstimatedValue();
+		
+		veDSCDatabaseReader.runAnalysis(
+				theAircraft.getWing().getAspectRatio(), 
+				theAircraft.getWing().getPositionRelativeToAttachment(), 
+				theAircraft.getVTail().getAspectRatio(), 
+				theAircraft.getVTail().getSpan().doubleValue(SI.METER), 
+				theAircraft.getHTail().getPositionRelativeToAttachment(),
+				diameterAtVTailQuarteMAC.doubleValue(SI.METER), 
+				tailConeTipToFuselageRadiusRatio
+				);
+
+		if(theAircraft.getTheAnalysisManager().getTheBalance() == null)
+			theAircraft.calculateArms(theAircraft.getVTail(), dimensionalXcg);
+		
+		// cNb vertical [1/deg]
+		double cNbVertical = MomentCalc.calcCNbetaVerticalTailVEDSC(
+				theAircraft.getWing().getAspectRatio(), 
+				theAircraft.getVTail().getAspectRatio(),
+				theAircraft.getVTail().getLiftingSurfaceArm().doubleValue(SI.METER),
+				theAircraft.getWing().getSpan().doubleValue(SI.METER),
+				theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+				theAircraft.getVTail().getSurfacePlanform().doubleValue(SI.SQUARE_METRE), 
+				theAircraft.getVTail().getEquivalentWing().getPanels().get(0).getSweepHalfChord().doubleValue(SI.RADIAN),
+				theAircraft.getVTail().getAirfoilList().get(0)
+					.getClAlphaLinearTrait().to(SI.RADIAN.inverse()).getEstimatedValue(),
+				theOperatingConditions.getMachTakeOff(), 
+				veDSCDatabaseReader.getkFv(),
+				veDSCDatabaseReader.getkWv(),
+				veDSCDatabaseReader.getkHv()
+				);
+		
+		//..................................................................................
+		// CALCULATING THE THRUST YAWING MOMENT
+		double[] speed = MyArrayUtils.linspace(
+				SpeedCalc.calculateTAS(
+						0.05,
+						theOperatingConditions.getAltitudeTakeOff(),
+						Amount.valueOf(10, SI.CELSIUS)
+						).doubleValue(SI.METERS_PER_SECOND),
+				SpeedCalc.calculateSpeedStall(
+						theOperatingConditions.getAltitudeTakeOff(),
+						Amount.valueOf(10, SI.CELSIUS),
+						maxTakeOffMass.to(SI.KILOGRAM),
+						theAircraft.getWing().getSurfacePlanform(),
+						cLMaxTakeOff
+						).times(1.2).doubleValue(SI.METERS_PER_SECOND),
+				250
+				);
+
+		List<Amount<Force>> thrust = ThrustCalc.calculateThrustVsSpeed(
+				EngineOperatingConditionEnum.APR,
+				theAircraft.getPowerPlant(), 
+				MyArrayUtils.convertDoubleArrayToListOfAmount(speed, SI.METERS_PER_SECOND),
+				theOperatingConditions.getAltitudeTakeOff(), 
+				Amount.valueOf(10, SI.CELSIUS), 
+				theOperatingConditions.getThrottleTakeOff(), 
+				true
+				);
+
+		List<Amount<Length>> enginesArms = new ArrayList<>();
+		for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++)
+			enginesArms.add(theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes());
+		
+		Amount<Length> maxEngineArm = 
+				Amount.valueOf(
+						MyArrayUtils.getMax(
+								MyArrayUtils.convertListOfAmountToDoubleArray(
+										enginesArms
+										)
+								),
+						SI.METER
+						);
+		
+		double[] thrustMomentOEI = new double[thrust.size()];
+		
+		for(int i=0; i < thrust.size(); i++){
+			thrustMomentOEI[i] = thrust.get(i).doubleValue(SI.NEWTON)*maxEngineArm.doubleValue(SI.METER);
+		}
+
+		//..................................................................................
+		// CALCULATING THE VERTICAL TAIL YAWING MOMENT
+		double[] yawingMomentOEI = new double[thrustMomentOEI.length];
+		
+		for(int i=0; i < thrust.size(); i++){
+			yawingMomentOEI[i] = cNbVertical*
+				tauRudder.value(
+						theAircraft.getVTail().getSymmetricFlaps().get(0).getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE)
+						)*
+				theAircraft.getVTail().getSymmetricFlaps().get(0).getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE)*
+				0.5*
+				theOperatingConditions.getDensityTakeOff().getEstimatedValue()*
+				Math.pow(speed[i],2)*
+				theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)*
+				theAircraft.getWing().getSpan().doubleValue(SI.METER);
+		}
+		
+		//..................................................................................
+		// CALCULATING THE VMC
+		Amount<Velocity> vMC = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		
+		double[] curvesIntersection = MyArrayUtils.intersectArraysSimple(
+				thrustMomentOEI,
+				yawingMomentOEI
+				);
+		int indexOfVMC = 0;
+		for(int i=0; i<curvesIntersection.length; i++)
+			if(curvesIntersection[i] != 0.0) {
+				indexOfVMC = i;
+			}			
+
+		if(indexOfVMC != 0)
+			vMC = Amount.valueOf(
+					speed[indexOfVMC],
+					SI.METERS_PER_SECOND
+					).to(NonSI.KNOT);
+		else {
+			System.err.println("WARNING: (VMC - TAKE-OFF) NO INTERSECTION FOUND ...");
+			vMC = Amount.valueOf(
+					0.0,
+					SI.METERS_PER_SECOND
+					).to(NonSI.KNOT);
+		}
+
+		return vMC;
+		
+	}
+	
 }

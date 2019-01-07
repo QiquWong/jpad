@@ -88,7 +88,6 @@ public class TakeOffNoiseTrajectoryCalc {
 	private Amount<Mass> maxTakeOffMass; 
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2, vClimb;
 	private Amount<Length> altitude, wingToGroundDistance, obstacle, xEndSimulation, cutbackAltitude;
-	private Amount<Temperature> deltaTemperature;
 	private Amount<Angle> alphaGround, iw;
 	private List<Amount<Angle>> alpha;
 	private List<Amount<Duration>> time;
@@ -126,7 +125,6 @@ public class TakeOffNoiseTrajectoryCalc {
 			double[] polarCLTakeOff,
 			double[] polarCDTakeOff,
 			Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature,
 			double deltaCD0LandingGear,
 			double deltaCD0OEI,
 			double aspectRatio,
@@ -140,7 +138,6 @@ public class TakeOffNoiseTrajectoryCalc {
 			double alphaDotInitial,
 			double kAlphaDot,
 			MyInterpolatingFunction mu,
-			Amount<Length> wingToGroundDistance,
 			Amount<Angle> iw,
 			double cLmaxTO,
 			double cLZeroTO,
@@ -164,7 +161,6 @@ public class TakeOffNoiseTrajectoryCalc {
 		this.polarCDTakeOff = polarCDTakeOff;
 		this.deltaCD0LandingGear = deltaCD0LandingGear;
 		this.altitude = altitude;
-		this.deltaTemperature = deltaTemperature;
 		this.deltaCD0OEI = deltaCD0OEI;
 		this.maxTakeOffMass = maxTakeOffMass;
 		this.dtHold = dtHold;
@@ -176,7 +172,6 @@ public class TakeOffNoiseTrajectoryCalc {
 		this.kAlphaDot = kAlphaDot;
 		this.phi = throttleSetting;
 		this.mu = mu;
-		this.wingToGroundDistance = wingToGroundDistance;
 		this.obstacle = Amount.valueOf(35, NonSI.FOOT);
 		this.vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		this.alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
@@ -190,7 +185,7 @@ public class TakeOffNoiseTrajectoryCalc {
 		// Reference velocities definition
 		vSTakeOff = SpeedCalc.calculateSpeedStall(
 				altitude,
-				deltaTemperature,
+				Amount.valueOf(10, SI.CELSIUS), // ISA+10°C
 				maxTakeOffMass,
 				surface,
 				cLmaxTO
@@ -605,7 +600,7 @@ public class TakeOffNoiseTrajectoryCalc {
 												Amount.valueOf(t, SI.SECOND),
 												Amount.valueOf(x[1], SI.METERS_PER_SECOND),
 												Amount.valueOf(x[3], SI.METER),
-												deltaTemperature,
+												Amount.valueOf(10, SI.CELSIUS), // ISA+10°C
 												Amount.valueOf(x[2], NonSI.DEGREE_ANGLE), 
 												Amount.valueOf(
 														((maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])
@@ -615,7 +610,7 @@ public class TakeOffNoiseTrajectoryCalc {
 										Amount.valueOf(x[2], NonSI.DEGREE_ANGLE),
 										Amount.valueOf(t, SI.SECOND),
 										Amount.valueOf(x[3], SI.METER),
-										deltaTemperature
+										Amount.valueOf(10, SI.CELSIUS) // ISA+10°C
 										).doubleValue(SI.NEWTON);
 						double phiCutback1 = 
 								thrustRequiredCGR4Percent
@@ -626,7 +621,7 @@ public class TakeOffNoiseTrajectoryCalc {
 										Amount.valueOf(x[3], SI.METER),
 										SpeedCalc.calculateMach(
 												Amount.valueOf(x[3], SI.METER),
-												deltaTemperature,
+												Amount.valueOf(10, SI.CELSIUS), // ISA+10°C
 												Amount.valueOf(
 														x[1] + 
 														(TakeOffNoiseTrajectoryCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
@@ -635,7 +630,7 @@ public class TakeOffNoiseTrajectoryCalc {
 														SI.METERS_PER_SECOND
 														)
 												),
-										deltaTemperature,
+										Amount.valueOf(10, SI.CELSIUS), // ISA+10°C
 										TakeOffNoiseTrajectoryCalc.this.getPhi()
 										).doubleValue(SI.NEWTON);
 						System.out.println("\n\tThrottle setting for CGR=4% = " + phiCutback1);
@@ -648,7 +643,7 @@ public class TakeOffNoiseTrajectoryCalc {
 														Amount.valueOf(t, SI.SECOND),
 														Amount.valueOf(x[1], SI.METERS_PER_SECOND),
 														Amount.valueOf(x[3], SI.METER),
-														deltaTemperature,
+														Amount.valueOf(10, SI.CELSIUS), // ISA+10°C
 														Amount.valueOf(x[2], NonSI.DEGREE_ANGLE), 
 														Amount.valueOf(
 																((maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])
@@ -663,7 +658,7 @@ public class TakeOffNoiseTrajectoryCalc {
 								+ deltaCD0OEI;
 						double dragOEI = 
 								0.5
-								*AtmosphereCalc.getDensity(x[3], deltaTemperature.doubleValue(SI.CELSIUS))
+								*AtmosphereCalc.getDensity(x[3], 10 /* ISA+10°C */)
 								*Math.pow(vClimb.doubleValue(SI.METERS_PER_SECOND),2)
 								*surface.doubleValue(SI.SQUARE_METRE)
 								*cDOEI;
@@ -678,7 +673,7 @@ public class TakeOffNoiseTrajectoryCalc {
 										Amount.valueOf(x[3], SI.METER),
 										SpeedCalc.calculateMach(
 												Amount.valueOf(x[3], SI.METER),
-												deltaTemperature,
+												Amount.valueOf(10, SI.CELSIUS), // ISA+10°C
 												Amount.valueOf(
 														x[1] + 
 														(TakeOffNoiseTrajectoryCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
@@ -687,7 +682,7 @@ public class TakeOffNoiseTrajectoryCalc {
 														SI.METERS_PER_SECOND
 														)
 												),
-										deltaTemperature,
+										Amount.valueOf(10, SI.CELSIUS), // ISA+10°C
 										TakeOffNoiseTrajectoryCalc.this.getPhi()
 										).doubleValue(SI.NEWTON);
 						System.out.println("\tThrottle setting for level flight OEI = " + phiCutback2);
@@ -751,6 +746,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					//========================================================================================
 					// PICKING UP ALL VARIABLES AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 					//----------------------------------------------------------------------------------------
+					Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS); // ISA+10°C
 					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
 					Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
 					Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
@@ -1048,6 +1044,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				//========================================================================================
 				// PICKING UP ALL VARIABLES AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 				//----------------------------------------------------------------------------------------
+				Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS);
 				Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
 				Amount<Length> groundDistance = Amount.valueOf(x[0], SI.METER);
 				Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
@@ -2183,6 +2180,7 @@ public class TakeOffNoiseTrajectoryCalc {
 		public void computeDerivatives(double t, double[] x, double[] xDot)
 				throws MaxCountExceededException, DimensionMismatchException {
 
+			Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS);
 			Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
 			Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
 			Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
@@ -3159,11 +3157,4 @@ public class TakeOffNoiseTrajectoryCalc {
 		this.altitude = altitude;
 	}
 
-	public Amount<Temperature> getDeltaTemperature() {
-		return deltaTemperature;
-	}
-
-	public void setDeltaTemperature(Amount<Temperature> deltaTemperature) {
-		this.deltaTemperature = deltaTemperature;
-	}
 }
