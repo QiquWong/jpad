@@ -6092,7 +6092,7 @@ public class InputManagerController {
 	@FXML
 	private void updateCAD3DView() {
 		
-		
+		inputManagerControllerMainActionUtilities.updateCAD3DViewImplementation();
 	}
 
 	@FXML

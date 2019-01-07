@@ -5684,6 +5684,11 @@ public class InputManagerControllerLogUtilities {
 		// WING FAIRING OPTIONS
 		if (Main.getTheAircraft().getWing() != null && Main.getTheAircraft().getFuselage() != null) {
 			
+			if (theController.getGenerateWingFairingCADCheckBox().isDisabled())
+				theController.getGenerateWingFairingCADCheckBox().setDisable(false);
+			theController.getGenerateWingFairingCADCheckBox().setSelected(
+					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateWingFairing());
+			
 			if (theController.getWingFairingCADFrontLengthFactorTextField().isDisabled())
 				theController.getWingFairingCADFrontLengthFactorTextField().setDisable(false);
 			theController.getWingFairingCADFrontLengthFactorTextField().setText(
@@ -5724,6 +5729,11 @@ public class InputManagerControllerLogUtilities {
 		//-------------------------------------------------------------------------
 		// CANARD FAIRING OPTIONS
 		if (Main.getTheAircraft().getCanard() != null && Main.getTheAircraft().getFuselage() != null) {
+			
+			if (theController.getGenerateCanardFairingCADCheckBox().isDisabled())
+				theController.getGenerateCanardFairingCADCheckBox().setDisable(false);
+			theController.getGenerateCanardFairingCADCheckBox().setSelected(
+					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateCanardFairing());
 			
 			if (theController.getCanardFairingCADFrontLengthFactorTextField().isDisabled())
 				theController.getCanardFairingCADFrontLengthFactorTextField().setDisable(false);

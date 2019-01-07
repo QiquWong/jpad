@@ -247,10 +247,11 @@ public class OCCFX3DView {
 		if (_viewOnSubScene) {
 			_theSubScene = new SubScene(_theSubSceneRoot, width, height, true, sceneAA);
 			
-			_theSubScene.setFill(new RadialGradient(225, 225, 300, 300, 500, false,
-	                CycleMethod.NO_CYCLE, new Stop[]
-	                { new Stop(0f, Color.LIGHTSKYBLUE),
-	                  new Stop(1f, Color.LIGHTBLUE) }));
+//			_theSubScene.setFill(new RadialGradient(225, 225, 300, 300, 500, false,
+//	                CycleMethod.NO_CYCLE, new Stop[]
+//	                { new Stop(0f, Color.LIGHTSKYBLUE),
+//	                  new Stop(1f, Color.LIGHTBLUE) }));
+			_theSubScene.setFill(Color.TRANSPARENT);
 			
 			_theSubScene.setCamera(_thePerspectiveCamera);
 			_theSubSceneRoot.getChildren().addAll(_theViewingGroup, _theAmbientLight);
@@ -703,6 +704,10 @@ public class OCCFX3DView {
 		return _theSubSceneRoot;
 	}
 	
+	public Group getSceneRoot() {
+		return _theSceneRoot;
+	}
+	
 	public double getSceneDiameter() {
 		return _sceneDiameter;
 	}
@@ -713,6 +718,18 @@ public class OCCFX3DView {
 	
 	public Group getAxisGroup() {
 		return _theAxisGroup;
+	}
+	
+	public Group getViewingGroup() {
+		return _theViewingGroup;
+	}
+	
+	public AmbientLight getAmbientLight() {
+		return _theAmbientLight;
+	}
+	
+	public Translate getViewingTranslate() {
+		return _theViewingTranslate;
 	}
 	
 }

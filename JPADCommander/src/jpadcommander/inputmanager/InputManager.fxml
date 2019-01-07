@@ -3172,7 +3172,7 @@
                                                                   <Label text="Number tail sections:" GridPane.rowIndex="2" />
                                                                   <Label text="Tail spacing:" GridPane.rowIndex="3" />
                                                                   <Label text="Number nose sections:" />
-                                                                  <TextField id="textFieldAircraftHTailFile" fx:id="fuselageCADNumberNoseSectionsTextField" disable="true" prefHeight="31.0" prefWidth="191.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="fuselageCADNumberNoseSectionsTextField" fx:id="fuselageCADNumberNoseSectionsTextField" disable="true" prefHeight="31.0" prefWidth="191.0" GridPane.columnIndex="1" />
                                                                   <TextField id="textFieldAircraftHTailY" fx:id="fuselageCADNumberTailSectionsTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <ChoiceBox fx:id="fuselageCADNoseSpacingChoiceBox" disable="true" prefHeight="31.0" prefWidth="182.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                   <ChoiceBox fx:id="fuselageCADTailSpacingChoiceBox" disable="true" prefHeight="31.0" prefWidth="188.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
@@ -3318,7 +3318,7 @@
                                                                </font>
                                                             </Label>
                                                             <CheckBox fx:id="generateWingFairingCADCheckBox" disable="true" layoutX="228.0" layoutY="1048.0" mnemonicParsing="false" />
-                                                            <Button id="updateAllButton" fx:id="updateCAD3DViewButton" disable="true" layoutX="5.0" layoutY="8.0" mnemonicParsing="false" onAction="#updateAircraftData" text="Update 3D View" />
+                                                            <Button id="updateAllButton" fx:id="updateCAD3DViewButton" disable="true" layoutX="5.0" layoutY="8.0" mnemonicParsing="false" onAction="#updateCAD3DView" text="Update 3D View" />
                                                             <Separator layoutX="-8.0" layoutY="45.0" prefHeight="0.0" prefWidth="1345.0" />
                                                             <Label layoutX="5.0" layoutY="491.0" text="Tip type:">
                                                                <font>
