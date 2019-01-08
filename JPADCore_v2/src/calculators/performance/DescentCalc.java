@@ -235,9 +235,9 @@ public class DescentCalc {
 		for(int ieng=0; ieng<_theAircraft.getPowerPlant().getEngineNumber(); ieng++) {
 			cruiseThrustDatabaseTemp.add(
 					ThrustCalc.calculateThrustDatabase(
-							_theAircraft.getPowerPlant().getEngineList().get(ieng).getT0(), 
+							_theAircraft.getPowerPlant().getEngineList().get(ieng).getT0(),
+							_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng),
 							EngineOperatingConditionEnum.CRUISE, 
-							_theAircraft.getPowerPlant(),
 							_descentAltitudes.get(0), 
 							machList.get(0), 
 							_theOperatingConditions.getDeltaTemperatureCruise(), 
@@ -248,8 +248,8 @@ public class DescentCalc {
 			flightIdleThrustDatabaseTemp.add(
 					ThrustCalc.calculateThrustDatabase(
 							_theAircraft.getPowerPlant().getEngineList().get(ieng).getT0(), 
+							_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng),
 							EngineOperatingConditionEnum.FIDL, 
-							_theAircraft.getPowerPlant(),
 							_descentAltitudes.get(0), 
 							machList.get(0), 
 							_theOperatingConditions.getDeltaTemperatureCruise(), 
@@ -523,8 +523,8 @@ public class DescentCalc {
 				cruiseThrustDatabaseTemp.add(
 						ThrustCalc.calculateThrustDatabase(
 								_theAircraft.getPowerPlant().getEngineList().get(ieng).getT0(), 
+								_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng),
 								EngineOperatingConditionEnum.CRUISE, 
-								_theAircraft.getPowerPlant(),
 								_descentAltitudes.get(i), 
 								machList.get(i), 
 								_theOperatingConditions.getDeltaTemperatureCruise(), 
@@ -535,8 +535,8 @@ public class DescentCalc {
 				flightIdleThrustDatabaseTemp.add(
 						ThrustCalc.calculateThrustDatabase(
 								_theAircraft.getPowerPlant().getEngineList().get(ieng).getT0(), 
+								_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng),
 								EngineOperatingConditionEnum.FIDL, 
-								_theAircraft.getPowerPlant(),
 								_descentAltitudes.get(i), 
 								machList.get(i), 
 								_theOperatingConditions.getDeltaTemperatureCruise(), 

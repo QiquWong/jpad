@@ -409,7 +409,7 @@ public class TakeOffCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " �" +
+									"\n\tx[2] = gamma = " + x[2] + " °" +
 									"\n\tx[3] = altitude = " + x[3] + " m"
 							);
 
@@ -491,7 +491,7 @@ public class TakeOffCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " �" +
+									"\n\tx[2] = gamma = " + x[2] + " °" +
 									"\n\tx[3] = altitude = " + x[3] + " m"
 							);
 
@@ -702,7 +702,7 @@ public class TakeOffCalc {
 							System.out.println(
 									"\n\tx[0] = s = " + x[0] + " m" +
 											"\n\tx[1] = V = " + x[1] + " m/s" + 
-											"\n\tx[2] = gamma = " + x[2] + " �" +
+											"\n\tx[2] = gamma = " + x[2] + " °" +
 											"\n\tx[3] = altitude = " + x[3] + " m"+
 											"\n\tt = " + t + " s"
 									);
@@ -742,7 +742,7 @@ public class TakeOffCalc {
 											currentAltitude,
 											deltaTemperature
 											) + 
-									"\n\tAlpha Body = " + ((DynamicsEquationsTakeOff)ode).alpha(currentTime) + " �" + 
+									"\n\tAlpha Body = " + ((DynamicsEquationsTakeOff)ode).alpha(currentTime) + " °" + 
 									"\n\tt = " + t + " s"
 									);
 							System.out.println("\n---------------------------DONE!-------------------------------");
@@ -2056,16 +2056,14 @@ public class TakeOffCalc {
 		public List<Amount<Force>> thrust(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature) {
 
 			List<Amount<Force>> theThrustList = new ArrayList<>();
-			List<Amount<Force>> t0List = new ArrayList<>();
-			TakeOffCalc.this.getThePowerPlant().getEngineList().stream().forEach(eng -> t0List.add(eng.getT0()));
 
 			if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND))
 				for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber(); i++) 
 					theThrustList.add(
 							ThrustCalc.calculateThrustDatabase(
-									t0List.get(i), 
+									TakeOffCalc.this.getThePowerPlant().getEngineList().get(i).getT0(),
+									TakeOffCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(i),
 									EngineOperatingConditionEnum.TAKE_OFF, 
-									TakeOffCalc.this.getThePowerPlant(), 
 									altitude, 
 									SpeedCalc.calculateMach(
 											altitude,
@@ -2086,9 +2084,9 @@ public class TakeOffCalc {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
 							theThrustList.add(
 									ThrustCalc.calculateThrustDatabase(
-											t0List.get(i), 
+											TakeOffCalc.this.getThePowerPlant().getEngineList().get(i).getT0(),
+											TakeOffCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(i), 
 											EngineOperatingConditionEnum.TAKE_OFF, 
-											TakeOffCalc.this.getThePowerPlant(), 
 											altitude,
 											SpeedCalc.calculateMach(
 													altitude,
@@ -2107,9 +2105,9 @@ public class TakeOffCalc {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
 							theThrustList.add(
 									ThrustCalc.calculateThrustDatabase(
-											t0List.get(i),  
+											TakeOffCalc.this.getThePowerPlant().getEngineList().get(i).getT0(),
+											TakeOffCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(i),  
 											EngineOperatingConditionEnum.APR, 
-											TakeOffCalc.this.getThePowerPlant(), 
 											altitude, 
 											SpeedCalc.calculateMach(
 													altitude,
@@ -2131,9 +2129,9 @@ public class TakeOffCalc {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
 							theThrustList.add(
 									ThrustCalc.calculateThrustDatabase(
-											t0List.get(i), 
+											TakeOffCalc.this.getThePowerPlant().getEngineList().get(i).getT0(),
+											TakeOffCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(i), 
 											EngineOperatingConditionEnum.TAKE_OFF, 
-											TakeOffCalc.this.getThePowerPlant(), 
 											altitude,
 											SpeedCalc.calculateMach(
 													altitude,
@@ -2152,9 +2150,9 @@ public class TakeOffCalc {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
 							theThrustList.add(
 									ThrustCalc.calculateThrustDatabase(
-											t0List.get(i), 
+											TakeOffCalc.this.getThePowerPlant().getEngineList().get(i).getT0(),
+											TakeOffCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(i), 
 											EngineOperatingConditionEnum.GIDL, 
-											TakeOffCalc.this.getThePowerPlant(), 
 											altitude,
 											SpeedCalc.calculateMach(
 													altitude,

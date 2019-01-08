@@ -15,6 +15,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.powerplant.PowerPlant;
 import calculators.performance.customdata.ThrustMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
+import database.databasefunctions.engine.EngineDatabaseReader;
 import standaloneutils.atmosphere.SpeedCalc;
 
 public class ThrustCalc {
@@ -89,27 +90,21 @@ public class ThrustCalc {
 
 	public static Amount<Force> calculateThrustDatabase(
 			Amount<Force> t0, 
+			EngineDatabaseReader engineDatabaseReader,
 			EngineOperatingConditionEnum flightCondition,
-			PowerPlant thePowerPlant,
-			Amount<Length> altitude, double mach, Amount<Temperature> deltaTemperature, double phi) {
+			Amount<Length> altitude, double mach, Amount<Temperature> deltaTemperature, double phi
+			) {
 		
-		List<Double> thrustRatio = new ArrayList<>();
-		List<Double> tDisp = new ArrayList<>();
-		for (int i=0; i<thePowerPlant.getEngineNumber(); i++) {
-			thrustRatio.add(
-					thePowerPlant.getEngineDatabaseReaderList().get(i).getThrustRatio(
-							mach,
-							altitude,
-							deltaTemperature,
-							phi,
-							flightCondition
-							)
-					);
-			tDisp.add(thrustRatio.get(i)*t0.doubleValue(SI.NEWTON)*phi);
-		}
-
+		double thrustRatio = engineDatabaseReader.getThrustRatio(
+				mach,
+				altitude,
+				deltaTemperature,
+				phi,
+				flightCondition
+				); 
+		
 		return Amount.valueOf(
-				tDisp.stream().mapToDouble(t -> t).sum(),
+				thrustRatio*t0.doubleValue(SI.NEWTON)*phi,
 				SI.NEWTON
 				);
 	}
@@ -120,20 +115,20 @@ public class ThrustCalc {
 			List<Amount<Velocity>> speed, Amount<Length> altitude, Amount<Temperature> deltaTemperature, double phi, boolean isOEI) {
 	
 		List<Amount<Force>> thrust = new ArrayList<>();
-		List<Amount<Force>> thrustTemp = new ArrayList<>();
 	
 		int engineNumber = thePowerPlant.getEngineNumber();
 		if(isOEI == true) 
 			engineNumber -= 1;
 		
 		for (int i=0; i< speed.size(); i++){
+			List<Amount<Force>> thrustTemp = new ArrayList<>();
 			double mach = SpeedCalc.calculateMach(altitude, deltaTemperature, speed.get(i));
-			for (int ieng=0; ieng < engineNumber; i++)
+			for (int ieng=0; ieng < engineNumber; ieng++)
 				thrustTemp.add(
 						calculateThrustDatabase(
 								thePowerPlant.getEngineList().get(ieng).getT0(), 
+								thePowerPlant.getEngineDatabaseReaderList().get(ieng),
 								flightCondition, 
-								thePowerPlant,
 								altitude,
 								mach,
 								deltaTemperature,

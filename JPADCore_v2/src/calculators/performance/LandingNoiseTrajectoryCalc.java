@@ -393,15 +393,13 @@ public class LandingNoiseTrajectoryCalc {
 								);
 
 				List<Amount<Force>> theThrustList = new ArrayList<>();
-				List<Amount<Force>> t0List = new ArrayList<>();
-				thePowerPlant.getEngineList().stream().forEach(eng -> t0List.add(eng.getT0()));
 				
 				for (int i=0; i<LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber(); i++) 
 					theThrustList.add(
 							ThrustCalc.calculateThrustDatabase(
-									t0List.get(i), 
+									thePowerPlant.getEngineList().get(i).getT0(), 
+									thePowerPlant.getEngineDatabaseReaderList().get(i),
 									EngineOperatingConditionEnum.GIDL, 
-									thePowerPlant, 
 									altitude, 
 									SpeedCalc.calculateMach(
 											altitude,
@@ -1736,8 +1734,6 @@ public class LandingNoiseTrajectoryCalc {
 		public List<Amount<Force>> thrust(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Force> weight) {
 
 			List<Amount<Force>> theThrustList = new ArrayList<>();
-			List<Amount<Force>> t0List = new ArrayList<>();
-			LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineList().stream().forEach(eng -> t0List.add(eng.getT0()));
 
 			if (time.doubleValue(SI.SECOND) <= tObstacle.doubleValue(SI.SECOND)) {
 
@@ -1766,9 +1762,9 @@ public class LandingNoiseTrajectoryCalc {
 				for (int i=0; i<LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber(); i++) 
 					theThrustList.add(
 							ThrustCalc.calculateThrustDatabase(
-									t0List.get(i), 
+									thePowerPlant.getEngineList().get(i).getT0(),
+									thePowerPlant.getEngineDatabaseReaderList().get(i),
 									EngineOperatingConditionEnum.GIDL, 
-									LandingNoiseTrajectoryCalc.this.getThePowerPlant(), 
 									altitude, 
 									SpeedCalc.calculateMach(
 											altitude,
