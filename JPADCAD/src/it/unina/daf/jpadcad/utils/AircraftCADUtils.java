@@ -921,10 +921,11 @@ public class AircraftCADUtils {
 				// -----------------------------------------------------------------------
 				// Sew together the right and left shell and generate the solid
 				// -----------------------------------------------------------------------
+				double sewTol = (wingTip.equals(WingTipType.ROUNDED)) ? 1.0e-03 : 1.0e-06;
 				
 				// TODO: check this method
 				OCCSolid liftingSurfaceSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
-						OCCUtils.theFactory.newShellFromAdjacentShapes(
+						OCCUtils.theFactory.newShellFromAdjacentShapes(sewTol,
 								(CADShape) rightShell,
 								(CADShape) leftShell
 								));
