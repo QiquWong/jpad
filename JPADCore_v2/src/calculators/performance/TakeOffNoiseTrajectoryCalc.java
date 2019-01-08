@@ -290,7 +290,6 @@ public class TakeOffNoiseTrajectoryCalc {
 		if(vMC != null) {
 			if(1.06*vMC.doubleValue(SI.METERS_PER_SECOND) > (kRot*vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
 					) {
-				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
 				vRot = vMC.to(SI.METERS_PER_SECOND).times(1.06);
 			}
 			else
@@ -300,12 +299,16 @@ public class TakeOffNoiseTrajectoryCalc {
 			vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
 		
 		vClimb = Amount.valueOf(10000, SI.METERS_PER_SECOND); // initialization to impossible values
-		while (Math.abs(
-				vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
-				- (1.13 
+		
+		while (vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
+				> (1.13 
 						+ Amount.valueOf(20, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
 						)
-				) >= 0.01) { 
+				|| vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
+				< (1.13 
+						+ Amount.valueOf(10, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
+						)
+				) {
 
 			if(i >= 1) {
 				if(newAlphaRed <= 0.0)
@@ -323,10 +326,10 @@ public class TakeOffNoiseTrajectoryCalc {
 			initialize();
 
 			theIntegrator = new HighamHall54Integrator(
-					1e-14,
+					1e-8,
 					1,
-					1e-14,
-					1e-14
+					1e-8,
+					1e-8
 					);
 			ode = new DynamicsEquationsTakeOffNoiseTrajectory();
 
@@ -456,7 +459,6 @@ public class TakeOffNoiseTrajectoryCalc {
 				public double g(double t, double[] x) {
 
 					double position = x[0];
-//					System.out.println("END SIM FUNCTION = " + (position - xEndSimulation.doubleValue(SI.METER)));
 					return position - xEndSimulation.doubleValue(SI.METER);
 				}
 
@@ -534,7 +536,6 @@ public class TakeOffNoiseTrajectoryCalc {
 
 				@Override
 				public double g(double t, double[] x) {
-//					System.out.println("LAND GEAR FUNCTION = " + (t - tLandingGearRetractionStart.plus(dtLandingGearRetraction).doubleValue(SI.SECOND)));
 					return t - tLandingGearRetractionStart.plus(dtLandingGearRetraction).doubleValue(SI.SECOND);					
 				}
 
@@ -746,6 +747,15 @@ public class TakeOffNoiseTrajectoryCalc {
 							);
 					Amount<Angle> alpha = ((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 					
+					System.out.println("\n\tTime = " + time);
+					System.out.println("\tDistance = " + Amount.valueOf(x[0], SI.METER));
+					System.out.println("\tSpeed = " + speed);
+					System.out.println("\tAcceleration = " + Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND));
+					System.out.println("\tAltitude = " + altitude);
+					System.out.println("\tGammaDot = " + xDot[2] + " °/s");
+					System.out.println("\tGamma = " + gamma);
+					System.out.println("\tAlpha = " + alpha);
+					
 					//----------------------------------------------------------------------------------------
 					// TIME:
 					TakeOffNoiseTrajectoryCalc.this.getTime().add(time);
@@ -874,16 +884,6 @@ public class TakeOffNoiseTrajectoryCalc {
 			double[] xAt0 = new double[] {0.0, 0.0, 0.0, 0.0, 0.0}; // initial state
 			theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
 
-			if(Math.abs(
-					vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
-					- (1.13 
-							+ Amount.valueOf(10, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
-							)
-					) >= 0.0) 
-				newAlphaRed = alphaRed + 0.2;
-			else
-				newAlphaRed = alphaRed - 0.2;
-
 			if (vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
 					<= (1.13 
 							+ Amount.valueOf(20, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
@@ -893,31 +893,55 @@ public class TakeOffNoiseTrajectoryCalc {
 							+ Amount.valueOf(10, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
 							)
 					) 
-				setTargetSpeedFlag(true);
+				targetSpeedFlag = true;
+			else if (vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
+					> (1.13 
+							+ Amount.valueOf(20, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
+							))
+				newAlphaRed = alphaRed + 0.2;
+			else if (vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
+					< (1.13 
+							+ Amount.valueOf(10, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
+							))
+				newAlphaRed = alphaRed - 0.2;
 
 			theIntegrator.clearEventHandlers();
 			theIntegrator.clearStepHandlers();
 
 			i++;
+			
 		} 
 
-		if (isTargetSpeedFlag() == false)
+		if (vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
+				> (1.13 
+						+ Amount.valueOf(20, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
+						))
 			System.err.println("ERROR: THE FINAL CLIMB SPEED EXCEEDS THE MAXIMUM LIMITATION OF V2 + 20 knots --> " 
-					+ " v2 current = "
+					+ " vClimb current = "
 					+ vClimb.to(NonSI.KNOT)
 					+ " != "
-					+ " v2 target = "
+					+ " Max Limit = "
 					+ vSTakeOff.to(NonSI.KNOT).times(1.13).plus(Amount.valueOf(20, NonSI.KNOT))
 					);
-		else {
-
+		if (vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
+				< (1.13 
+						+ Amount.valueOf(10, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
+						))
+			System.err.println("ERROR: THE FINAL CLIMB SPEED IS LOWER THAN THE MINIMUM LIMITATION OF V2 + 10 knots --> " 
+					+ " vClimb current = "
+					+ vClimb.to(NonSI.KNOT)
+					+ " != "
+					+ " Min Limit = "
+					+ vSTakeOff.to(NonSI.KNOT).times(1.13).plus(Amount.valueOf(10, NonSI.KNOT))
+					);
+		
+		if (targetSpeedFlag == true)
 			if(cutback==false && phiCutback==null)
-				manageOutputData(1.0, 1.0, timeHistories, continuousOutputModel);
+				manageOutputData(1.5, 1.0, timeHistories, continuousOutputModel);
 			else if(cutback==true && phiCutback==null)
-				manageOutputData(1.0, TakeOffNoiseTrajectoryCalc.this.getPhiCutback(), timeHistories, continuousOutputModel);
+				manageOutputData(1.5, TakeOffNoiseTrajectoryCalc.this.getPhiCutback(), timeHistories, continuousOutputModel);
 			else if(cutback==true && phiCutback!=null)
-				manageOutputData(1.0, phiCutback, timeHistories, continuousOutputModel);
-		}
+				manageOutputData(1.5, phiCutback, timeHistories, continuousOutputModel);
 
 		System.out.println("\n---------------------------END!!-------------------------------\n\n");
 	}
@@ -1056,7 +1080,7 @@ public class TakeOffNoiseTrajectoryCalc {
 						SI.NEWTON)
 						);
 				//--------------------------------------------------------------------------------
-				// FUEL USED (kg/s):
+				// FUEL USED (kg):
 				fuelUsedList.add(Amount.valueOf(x[4], SI.KILOGRAM));
 				//----------------------------------------------------------------------------------------
 				if(timeHistories) {
@@ -1184,7 +1208,7 @@ public class TakeOffNoiseTrajectoryCalc {
 							);
 					//----------------------------------------------------------------------------------------
 					// ACCELERATION:
-					acceleration.add(Amount.valueOf(
+					accelerationList.add(Amount.valueOf(
 							accelerationFunction.value(times.get(i).doubleValue(SI.SECOND)),
 							SI.METERS_PER_SQUARE_SECOND)
 							);
@@ -1215,8 +1239,8 @@ public class TakeOffNoiseTrajectoryCalc {
 					}
 					else if(times.get(i).doubleValue(SI.SECOND) > tZeroAccelration.doubleValue(SI.SECOND)) {
 						double deltaAlpha = 
-								alpha.get(i).doubleValue(NonSI.DEGREE_ANGLE)
-								- alpha.get(i-1).doubleValue(NonSI.DEGREE_ANGLE);
+								alphaList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
+								- alphaList.get(i-1).doubleValue(NonSI.DEGREE_ANGLE);
 						double deltaTime = 
 								times.get(i).doubleValue(SI.SECOND)
 								- times.get(i-1).doubleValue(SI.SECOND);
@@ -2429,49 +2453,79 @@ public class TakeOffNoiseTrajectoryCalc {
 						);
 			else if(time.doubleValue(SI.SECOND) > tZeroAccelration.doubleValue(SI.SECOND)) {
 
-				// FIXME !! CALCULATE ALPHA FROM ACCELERATION = 0.0
-				
 				int j=0;
 
-				Amount<Acceleration> acceleration = 
-						TakeOffNoiseTrajectoryCalc.this.getAcceleration().get(
-						TakeOffNoiseTrajectoryCalc.this.getAcceleration().size()-1
-						).to(SI.METERS_PER_SQUARE_SECOND);
+				// FIXME: GAMMA DOT BECOMES NEGATIVE AFTER A WHILE!!
+				double acceleration = (g0/weight.doubleValue(SI.NEWTON))
+						*( (thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+								*Math.cos(alpha.doubleValue(SI.RADIAN))
+								) 
+								- drag(speed, alpha, gamma, time, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
+								- ( weight.doubleValue(SI.NEWTON)
+										*Math.sin(gamma.doubleValue(SI.RADIAN))
+										)
+								);
 
+				double gammaDot = 57.3*(g0/(weight.doubleValue(SI.NEWTON)*speed.doubleValue(SI.METERS_PER_SECOND)))
+						*( lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
+								+ ( thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+										*Math.sin(alpha.doubleValue(SI.RADIAN))
+										)
+								- ( weight.doubleValue(SI.NEWTON)
+										*Math.cos(gamma.doubleValue(SI.RADIAN))
+										)
+								);
+				
 				alpha = TakeOffNoiseTrajectoryCalc.this.getAlpha().get(
 						TakeOffNoiseTrajectoryCalc.this.getAlpha().size()-1
 						).to(NonSI.DEGREE_ANGLE);
 
-				int maxIterAlpha = 25;
-				while (Math.abs(acceleration.doubleValue(SI.METERS_PER_SQUARE_SECOND) - 0) >= 1e-2) {
+				int maxIterAlpha = 200;
+				while (
+						(Math.abs(acceleration - 0) >= 1e-4)
+						|| (Math.abs(gammaDot - 0) >= 1e-4)
+						) {
 
-					acceleration = Amount.valueOf( 
-							(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)/weight.doubleValue(SI.NEWTON))
+					Amount<Angle> alphaTemp = alpha;
+					
+					acceleration = (g0/weight.doubleValue(SI.NEWTON))
 							*( (thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 									*Math.cos(alpha.doubleValue(SI.RADIAN))
-									)
+									) 
 									- drag(speed, alpha, gamma, time, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
-									- (weight.doubleValue(SI.NEWTON)*Math.sin(gamma.doubleValue(SI.RADIAN)))
-									),
-							SI.METERS_PER_SQUARE_SECOND
-							);
-
-					if (acceleration.doubleValue(SI.METERS_PER_SQUARE_SECOND) > 0) 
-						alpha = alpha.plus(Amount.valueOf(0.01, NonSI.DEGREE_ANGLE));
+									- ( weight.doubleValue(SI.NEWTON)
+											*Math.sin(gamma.doubleValue(SI.RADIAN))
+											)
+									);
+					
+					if (acceleration > 0) 
+						alpha = alpha.plus(Amount.valueOf(0.1, NonSI.DEGREE_ANGLE));
 					else
-						alpha = alpha.minus(Amount.valueOf(0.01, NonSI.DEGREE_ANGLE));
-
-					System.out.println("ALPHA = " + alpha); 
+						alpha = alpha.minus(Amount.valueOf(0.1, NonSI.DEGREE_ANGLE));
+					
+					gammaDot = 57.3*(g0/(weight.doubleValue(SI.NEWTON)*speed.doubleValue(SI.METERS_PER_SECOND)))
+							*( lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
+									+ ( thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+											*Math.sin(alpha.doubleValue(SI.RADIAN))
+											)
+									- ( weight.doubleValue(SI.NEWTON)
+											*Math.cos(gamma.doubleValue(SI.RADIAN))
+											)
+									);
 					
 					if(j > maxIterAlpha)
 						break;
+					if(gammaDot < 0.0) {
+						alpha = alphaTemp;
+						break;
+					}
 					
 					j++;
 
 				}
 
 			}
-
+			
 			return alpha;
 		}
 	}
