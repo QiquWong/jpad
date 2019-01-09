@@ -15,8 +15,8 @@ import configuration.enumerations.ComponentEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCUtils.FileExtension;
-import it.unina.daf.jpadcadsandbox.utils.AircraftCADUtils;
-import it.unina.daf.jpadcadsandbox.utils.AircraftCADUtils.WingTipType;
+import it.unina.daf.jpadcad.utils.AircraftCADUtils;
+import it.unina.daf.jpadcad.utils.AircraftCADUtils.WingTipType;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
 
 public class Test31mds {
@@ -71,7 +71,7 @@ public class Test31mds {
 				true, false, true);
 		
 		List<OCCShape> wingShapes = AircraftCADUtils.getLiftingSurfaceCAD(wing, 
-				WingTipType.WINGLET, 
+				WingTipType.ROUNDED, 
 //				ComponentEnum.WING, 1e-3,
 				true, false, true);
 		
@@ -91,10 +91,10 @@ public class Test31mds {
 				true, false, true);
 		
 		List<OCCShape> allShapes = new ArrayList<>();
-		allShapes.addAll(fuselageShapes);
+//		allShapes.addAll(fuselageShapes);
 		allShapes.addAll(wingShapes);
-		allShapes.addAll(horizontalShapes);
-		allShapes.addAll(verticalShapes);
+//		allShapes.addAll(horizontalShapes);
+//		allShapes.addAll(verticalShapes);
 //		allShapes.addAll(canardShapes);
 		
 		String filename = "AircraftCADUtils_Test";

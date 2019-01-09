@@ -7,7 +7,6 @@
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
-<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="false"/>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="MMGT_OPT" value="1"/>
 <mapEntry key="Path" value="${OCCT_DIR};${OCCT_DIR}\jre1.8.0_171\bin;${JPAD_ROOT}\libraries\hdf;"/>

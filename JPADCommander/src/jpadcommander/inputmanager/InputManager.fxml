@@ -3172,10 +3172,10 @@
                                                                   <Label text="Number tail sections:" GridPane.rowIndex="2" />
                                                                   <Label text="Tail spacing:" GridPane.rowIndex="3" />
                                                                   <Label text="Number nose sections:" />
-                                                                  <TextField id="fuselageCADNumberNoseSectionsTextField" fx:id="fuselageCADNumberNoseSectionsTextField" disable="true" prefHeight="31.0" prefWidth="191.0" GridPane.columnIndex="1" />
-                                                                  <TextField id="textFieldAircraftHTailY" fx:id="fuselageCADNumberTailSectionsTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox fx:id="fuselageCADNoseSpacingChoiceBox" disable="true" prefHeight="31.0" prefWidth="182.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox fx:id="fuselageCADTailSpacingChoiceBox" disable="true" prefHeight="31.0" prefWidth="188.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="fuselageCADNumberNoseSectionsTextField" fx:id="fuselageCADNumberNoseSectionsTextField" prefHeight="31.0" prefWidth="191.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="fuselageCADNumberTailSectionsTextField" fx:id="fuselageCADNumberTailSectionsTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox fx:id="fuselageCADNoseSpacingChoiceBox" prefHeight="31.0" prefWidth="182.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox fx:id="fuselageCADTailSpacingChoiceBox" prefHeight="31.0" prefWidth="188.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="200.0" />
@@ -3194,16 +3194,16 @@
                                                                   <Label text="Width factor:" GridPane.rowIndex="2" />
                                                                   <Label text="Height factor:" GridPane.rowIndex="3" />
                                                                   <Label text="Front length factor:" />
-                                                                  <TextField id="textFieldAircraftCanardFile" fx:id="wingFairingCADFrontLengthFactorTextField" disable="true" GridPane.columnIndex="1" />
-                                                                  <TextField id="textFieldAircraftCanardX" fx:id="wingFairingCADBackLengthFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftCanardZ" fx:id="wingFairingCADHeightFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftCanardY" fx:id="wingFairingCADWidthFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <TextField id="wingFairingCADFrontLengthFactorTextField" fx:id="wingFairingCADFrontLengthFactorTextField" GridPane.columnIndex="1" />
+                                                                  <TextField id="wingFairingCADBackLengthFactorTextField" fx:id="wingFairingCADBackLengthFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="wingFairingCADHeightFactorTextField" fx:id="wingFairingCADHeightFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="wingFairingCADWidthFactorTextField" fx:id="wingFairingCADWidthFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Height below reference factor:" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftCanardRiggingAngle" fx:id="wingFairingCADHeightBelowReferenceFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <TextField id="wingFairingCADHeightBelowReferenceFactorTextField" fx:id="wingFairingCADHeightBelowReferenceFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                                   <Label layoutX="14.0" layoutY="130.0" text="Height above reference factor:" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftCanardRiggingAngle" fx:id="wingFairingCADHeightAboveReferenceFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <TextField id="wingFairingCADHeightAboveReferenceFactorTextField" fx:id="wingFairingCADHeightAboveReferenceFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                                   <Label layoutX="24.0" layoutY="192.0" text="Fillet radius factor:" GridPane.rowIndex="6" />
-                                                                  <TextField id="textFieldAircraftCanardRiggingAngle" fx:id="wingFairingCADFilletRadiusFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                  <TextField id="wingFairingCADFilletRadiusFactorTextField" fx:id="wingFairingCADFilletRadiusFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="223.0" minWidth="10.0" prefWidth="223.0" />
@@ -3220,7 +3220,7 @@
                                                                </rowConstraints>
                                                             </GridPane>
                                                             <Separator layoutX="-33.0" layoutY="1652.0" prefHeight="0.0" prefWidth="1604.0" />
-                                                            <CheckBox fx:id="exportCADToFileCheckBox" disable="true" layoutX="142.0" layoutY="87.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="exportCADToFileCheckBox" layoutX="142.0" layoutY="87.0" mnemonicParsing="false" />
                                                             <Label layoutX="5.0" layoutY="54.0" text="CAD EXPORT OPTIONS" textFill="#0400ff">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
@@ -3236,7 +3236,7 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <ChoiceBox fx:id="fileExtensionCADChoiceBox" disable="true" layoutX="142.0" layoutY="162.0" prefHeight="31.0" prefWidth="236.0" />
+                                                            <ChoiceBox fx:id="fileExtensionCADChoiceBox" layoutX="142.0" layoutY="162.0" prefHeight="31.0" prefWidth="236.0" />
                                                             <Separator layoutY="204.0" prefHeight="0.0" prefWidth="1345.0" />
                                                             <Label layoutX="5.0" layoutY="213.0" text="FUSELAGE OPTIONS" textFill="#0400ff">
                                                                <font>
@@ -3248,13 +3248,13 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <CheckBox fx:id="exportCADWireframeCheckBox" disable="true" layoutX="142.0" layoutY="126.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="exportCADWireframeCheckBox" layoutX="142.0" layoutY="126.0" mnemonicParsing="false" />
                                                             <Label layoutX="5.0" layoutY="243.0" text="Generate">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <CheckBox fx:id="generateFuselageCADCheckBox" disable="true" layoutX="205.0" layoutY="243.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="generateFuselageCADCheckBox" layoutX="205.0" layoutY="243.0" mnemonicParsing="false" />
                                                             <Label layoutX="5.0" layoutY="426.0" text="WING OPTIONS" textFill="#0400ff">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
@@ -3265,7 +3265,7 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <CheckBox fx:id="generateWingCADCheckBox" disable="true" layoutX="131.0" layoutY="456.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="generateWingCADCheckBox" layoutX="131.0" layoutY="456.0" mnemonicParsing="false" />
                                                             <Label layoutX="5.0" layoutY="688.0" text="HTAIL OPTIONS" textFill="#0400ff">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
@@ -3278,7 +3278,7 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <CheckBox fx:id="generateHTailCADCheckBox" disable="true" layoutX="131.0" layoutY="718.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="generateHTailCADCheckBox" layoutX="131.0" layoutY="718.0" mnemonicParsing="false" />
                                                             <Separator layoutX="-12.0" layoutY="789.0" prefHeight="0.0" prefWidth="1345.0" />
                                                             <Label layoutX="5.0" layoutY="798.0" text="VTAIL OPTIONS" textFill="#0400ff">
                                                                <font>
@@ -3291,7 +3291,7 @@
                                                                </font>
                                                             </Label>
                                                             <Separator layoutX="-4.0" layoutY="818.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                            <CheckBox fx:id="generateVTailCADCheckBox" disable="true" layoutX="131.0" layoutY="827.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="generateVTailCADCheckBox" layoutX="131.0" layoutY="827.0" mnemonicParsing="false" />
                                                             <Separator layoutY="897.0" prefHeight="0.0" prefWidth="1345.0" />
                                                             <Label layoutX="5.0" layoutY="906.0" text="CANARD OPTIONS" textFill="#0400ff">
                                                                <font>
@@ -3304,7 +3304,7 @@
                                                                </font>
                                                             </Label>
                                                             <Separator layoutY="927.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                            <CheckBox fx:id="generateCanardCADCheckBox" disable="true" layoutX="131.0" layoutY="937.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="generateCanardCADCheckBox" layoutX="131.0" layoutY="937.0" mnemonicParsing="false" />
                                                             <Label layoutX="5.0" layoutY="1018.0" text="WING FAIRING OPTIONS" textFill="#0400ff">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
@@ -3317,7 +3317,7 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <CheckBox fx:id="generateWingFairingCADCheckBox" disable="true" layoutX="228.0" layoutY="1048.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="generateWingFairingCADCheckBox" layoutX="228.0" layoutY="1048.0" mnemonicParsing="false" />
                                                             <Button id="updateAllButton" fx:id="updateCAD3DViewButton" disable="true" layoutX="5.0" layoutY="8.0" mnemonicParsing="false" onAction="#updateCAD3DView" text="Update 3D View" />
                                                             <Separator layoutX="-8.0" layoutY="45.0" prefHeight="0.0" prefWidth="1345.0" />
                                                             <Label layoutX="5.0" layoutY="491.0" text="Tip type:">
@@ -3325,7 +3325,7 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <ChoiceBox fx:id="wingCADTipTypeChoiceBox" disable="true" layoutX="131.0" layoutY="486.0" prefHeight="31.0" prefWidth="244.0" />
+                                                            <ChoiceBox fx:id="wingCADTipTypeChoiceBox" layoutX="131.0" layoutY="486.0" prefHeight="31.0" prefWidth="244.0" />
                                                             <Label layoutX="4.0" layoutY="535.0" text="Winglet parameters:">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
@@ -3336,9 +3336,9 @@
                                                                   <Label text="X offset factor:" GridPane.rowIndex="1" />
                                                                   <Label text="Taper ratio:" GridPane.rowIndex="2" />
                                                                   <Label text="Y offset factor:" />
-                                                                  <TextField id="textFieldAircraftHTailFile" fx:id="wingletCADYOffsetFactorTextField" disable="true" prefHeight="31.0" prefWidth="191.0" GridPane.columnIndex="1" />
-                                                                  <TextField id="textFieldAircraftHTailY" fx:id="wingletCADTaperRatioTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftHTailFile" fx:id="wingletCADXOffsetFactorTextField" disable="true" layoutX="210.0" layoutY="18.0" prefHeight="31.0" prefWidth="191.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="wingletCADYOffsetFactorTextField" fx:id="wingletCADYOffsetFactorTextField" prefHeight="31.0" prefWidth="191.0" GridPane.columnIndex="1" />
+                                                                  <TextField id="wingletCADTaperRatioTextField" fx:id="wingletCADTaperRatioTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <TextField id="wingletCADXOffsetFactorTextField" fx:id="wingletCADXOffsetFactorTextField" layoutX="210.0" layoutY="18.0" prefHeight="31.0" prefWidth="191.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="200.0" />
@@ -3350,19 +3350,19 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <ChoiceBox fx:id="hTailCADTipTypeChoiceBox" disable="true" layoutX="131.0" layoutY="748.0" prefHeight="31.0" prefWidth="244.0" />
+                                                            <ChoiceBox fx:id="hTailCADTipTypeChoiceBox" layoutX="131.0" layoutY="748.0" prefHeight="31.0" prefWidth="244.0" />
                                                             <Label layoutX="5.0" layoutY="753.0" text="Tip type:">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <ChoiceBox fx:id="vTailCADTipTypeChoiceBox" disable="true" layoutX="131.0" layoutY="856.0" prefHeight="31.0" prefWidth="244.0" />
+                                                            <ChoiceBox fx:id="vTailCADTipTypeChoiceBox" layoutX="131.0" layoutY="856.0" prefHeight="31.0" prefWidth="244.0" />
                                                             <Label layoutX="5.0" layoutY="861.0" text="Tip type:">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <ChoiceBox fx:id="canardCADTipTypeChoiceBox" disable="true" layoutX="131.0" layoutY="966.0" prefHeight="31.0" prefWidth="244.0" />
+                                                            <ChoiceBox fx:id="canardCADTipTypeChoiceBox" layoutX="131.0" layoutY="966.0" prefHeight="31.0" prefWidth="244.0" />
                                                             <Label layoutX="5.0" layoutY="971.0" text="Tip type:">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
@@ -3374,7 +3374,7 @@
                                                                </font>
                                                             </Label>
                                                             <Separator layoutX="2.0" layoutY="1362.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                            <CheckBox fx:id="generateCanardFairingCADCheckBox" disable="true" layoutX="228.0" layoutY="1372.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="generateCanardFairingCADCheckBox" layoutX="228.0" layoutY="1372.0" mnemonicParsing="false" />
                                                             <Label layoutX="5.0" layoutY="1342.0" text="CANARD FAIRING OPTIONS" textFill="#0400ff">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
@@ -3387,16 +3387,16 @@
                                                                   <Label text="Width factor:" GridPane.rowIndex="2" />
                                                                   <Label text="Height factor:" GridPane.rowIndex="3" />
                                                                   <Label text="Front length factor:" />
-                                                                  <TextField id="textFieldAircraftCanardFile" fx:id="canardFairingCADFrontLengthFactorTextField" disable="true" GridPane.columnIndex="1" />
-                                                                  <TextField id="textFieldAircraftCanardX" fx:id="canardFairingCADBackLengthFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftCanardZ" fx:id="canardFairingCADHeightFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftCanardY" fx:id="canardFairingCADWidthFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <TextField id="canardFairingCADFrontLengthFactorTextField" fx:id="canardFairingCADFrontLengthFactorTextField" GridPane.columnIndex="1" />
+                                                                  <TextField id="canardFairingCADBackLengthFactorTextField" fx:id="canardFairingCADBackLengthFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="canardFairingCADHeightFactorTextField" fx:id="canardFairingCADHeightFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="canardFairingCADWidthFactorTextField" fx:id="canardFairingCADWidthFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Height below reference factor:" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftCanardRiggingAngle" fx:id="canardFairingCADHeightBelowReferenceFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <TextField id="canardFairingCADHeightBelowReferenceFactorTextField" fx:id="canardFairingCADHeightBelowReferenceFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                                   <Label layoutX="14.0" layoutY="130.0" text="Height above reference factor:" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftCanardRiggingAngle" fx:id="canardFairingCADHeightAboveReferenceFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <TextField id="canardFairingCADHeightAboveReferenceFactorTextField" fx:id="canardFairingCADHeightAboveReferenceFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                                   <Label layoutX="24.0" layoutY="192.0" text="Fillet radius factor:" GridPane.rowIndex="6" />
-                                                                  <TextField id="textFieldAircraftCanardRiggingAngle" fx:id="canardFairingCADFilletRadiusFactorTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                  <TextField id="canardFairingCADFilletRadiusFactorTextField" fx:id="canardFairingCADFilletRadiusFactorTextField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                                                </children>
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="223.0" minWidth="10.0" prefWidth="223.0" />
@@ -3422,11 +3422,11 @@
                                              <children>
                                                 <BorderPane layoutX="386.0" layoutY="181.0" prefHeight="678.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <center>
-                                                      <SplitPane id="aircraftViewsAndDataLogSplitPane" fx:id="cad3DViewsAndDataLogSplitPane" dividerPositions="0.9" focusTraversable="false" orientation="VERTICAL" prefHeight="400.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+                                                      <SplitPane id="cad3DViewsAndDataLogSplitPane" fx:id="cad3DViewsAndDataLogSplitPane" dividerPositions="0.9" focusTraversable="false" orientation="VERTICAL" prefHeight="400.0" prefWidth="160.0" BorderPane.alignment="CENTER">
                                                          <items>
                                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0">
                                                                <children>
-                                                                  <TabPane fx:id="tabPaneCAD3DView" onMouseClicked="#zoomViewsAircraft" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                  <TabPane fx:id="tabPaneCAD3DView" onMouseClicked="#zoomCAD3DView" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <tabs>
                                                                         <Tab text="Aircraft solid 3D View">
                                                                           <content>
@@ -3438,7 +3438,7 @@
                                                             </AnchorPane>
                                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                                <children>
-                                                                  <TabPane onMouseClicked="#zoomDataLogAndMessagesAircraft" prefHeight="977.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                  <TabPane onMouseClicked="#zoomDataLogAndMessageCAD3DView" prefHeight="977.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <tabs>
                                                                         <Tab text="Data log">
                                                                            <content>
@@ -3476,7 +3476,7 @@
                                           <Insets right="10.0" />
                                        </padding>
                                     </Label>
-                                    <TextField id="textFieldAircraftInputFile" fx:id="cadConfigurationInputFileTextField" prefHeight="31.0" prefWidth="741.0" />
+                                    <TextField id="cadConfigurationInputFileTextField" fx:id="cadConfigurationInputFileTextField" prefHeight="31.0" prefWidth="741.0" />
                                     <Button fx:id="chooseCADConfigurationFileButton" disable="true" mnemonicParsing="false" onAction="#chooseCADConfigurationFile" text="..." />
                                     <Button id="loadButton" fx:id="loadCADConfigurationFileButton" disable="true" mnemonicParsing="false" onAction="#loadCADConfigurationFile" text="Load" />
                                  </items>

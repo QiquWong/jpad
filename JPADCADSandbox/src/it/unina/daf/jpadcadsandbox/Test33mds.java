@@ -180,16 +180,18 @@ public class Test33mds {
 		Amount<Angle> origSweepLE = canard.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge();
 		Amount<Angle> origDihedralLE = canard.getEquivalentWing().getPanels().get(0).getDihedral();
 		Amount<Angle> origTipTwist = canard.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip();
+		Amount<Angle> origRiggAngle = canard.getRiggingAngle();
 		
 		// Modification 
 		LiftingSurface modCanard = AircraftUtils.importAircraft(args).getCanard();
 		
-		double modSpan = modCanard.getEquivalentWing().getPanels().get(0).getSpan().times(2).doubleValue(SI.METRE)*0.85;
+		double modSpan = modCanard.getEquivalentWing().getPanels().get(0).getSpan().times(2).doubleValue(SI.METRE)*1.25;
 		double modSurface = modCanard.getEquivalentWing().getPanels().get(0).getSurfacePlanform().times(2).doubleValue(SI.SQUARE_METRE);
 		double modTaper = modCanard.getEquivalentWing().getPanels().get(0).getTaperRatio();
-		Amount<Angle> modSweepLE = modCanard.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().plus(Amount.valueOf(-25.0, NonSI.DEGREE_ANGLE));
-		Amount<Angle> modDihedralLE = modCanard.getEquivalentWing().getPanels().get(0).getDihedral().plus(Amount.valueOf(-15.0, NonSI.DEGREE_ANGLE));
-		Amount<Angle> modTipTwist = modCanard.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip().plus(Amount.valueOf(-2.0, NonSI.DEGREE_ANGLE));
+		Amount<Angle> modSweepLE = modCanard.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().plus(Amount.valueOf(45.0, NonSI.DEGREE_ANGLE));
+		Amount<Angle> modDihedralLE = modCanard.getEquivalentWing().getPanels().get(0).getDihedral().plus(Amount.valueOf(25.0, NonSI.DEGREE_ANGLE));
+		Amount<Angle> modTipTwist = modCanard.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip().plus(Amount.valueOf(-135, NonSI.DEGREE_ANGLE));
+		Amount<Angle> modRiggAngle = modCanard.getRiggingAngle().plus(Amount.valueOf(43.0, NonSI.DEGREE_ANGLE));
 		
 		modCanard.adjustDimensions(
 				modSpan, 
@@ -208,6 +210,7 @@ public class Test33mds {
 		System.out.println("sweep LE = " + origSweepLE.doubleValue(NonSI.DEGREE_ANGLE));
 		System.out.println("dihedral = " + origDihedralLE.doubleValue(NonSI.DEGREE_ANGLE));
 		System.out.println("tip twist = " + origTipTwist.doubleValue(NonSI.DEGREE_ANGLE));
+		System.out.println("rigging angle = " + origRiggAngle.doubleValue(NonSI.DEGREE_ANGLE));
 		System.out.println("");		
 		System.out.println("Modded values:");
 		System.out.println("span = " + modSpan);
@@ -216,11 +219,12 @@ public class Test33mds {
 		System.out.println("sweep LE = " + modSweepLE.doubleValue(NonSI.DEGREE_ANGLE));
 		System.out.println("dihedral = " + modDihedralLE.doubleValue(NonSI.DEGREE_ANGLE));
 		System.out.println("tip twist = " + modTipTwist.doubleValue(NonSI.DEGREE_ANGLE));
+		System.out.println("rigging angle = " + modRiggAngle.doubleValue(NonSI.DEGREE_ANGLE));
 		
 		modCanard.setAirfoilList(canard.getAirfoilList());	
 		modCanard.setXApexConstructionAxes(canard.getXApexConstructionAxes().plus(Amount.valueOf(5, SI.METER)));
 		modCanard.setZApexConstructionAxes(canard.getZApexConstructionAxes().plus(Amount.valueOf(1.5, SI.METER)));
-		modCanard.setRiggingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		modCanard.setRiggingAngle(modRiggAngle);
 		
 		// Generate the CAD
 		List<OCCShape> canardShapes = AircraftCADUtils.getLiftingSurfaceCAD(

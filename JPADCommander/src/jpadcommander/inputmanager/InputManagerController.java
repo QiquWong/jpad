@@ -2011,7 +2011,7 @@ public class InputManagerController {
 		vTailRudder1TypeChoiceBox.setItems(rudderTypeList);
 		canardControlSurface1TypeChoiceBox.setItems(canardSurfaceTypeList);
 		
-		// 3D View TODO: CAD
+		// 3D View
 		fileExtensionCADChoiceBox.setItems(cadFileExtensionsList);
 		fuselageCADNoseSpacingChoiceBox.setItems(fuselageCADSpacingsList);
 		fuselageCADTailSpacingChoiceBox.setItems(fuselageCADSpacingsList);

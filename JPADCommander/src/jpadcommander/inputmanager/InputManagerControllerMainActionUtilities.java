@@ -102,10 +102,6 @@ public class InputManagerControllerMainActionUtilities {
 		// 3D VIEW
 		clean3DViewData();
 		
-		 // Disable the choose aircraft file button
-        if (theController.getChooseCADConfigurationFileButton().isDisable() == false)
-        	theController.getChooseCADConfigurationFileButton().setDisable(true);
-		
 		Main.setTheAircraft(null);
 
 		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
@@ -1038,9 +1034,60 @@ public class InputManagerControllerMainActionUtilities {
 	
 	private void clean3DViewData() {
 		
-		// Just clean the 3D view scene and the data log		
 		theController.getCAD3DViewPane().getChildren().clear();
+		theController.getCADConfigurationInputFileTextField().clear();
 		theController.getTextAreaCAD3DViewConsoleOutput().clear();
+		
+		theController.getUpdateCAD3DViewButton().setStyle("");
+		theController.getUpdateCAD3DViewButton().setDisable(true);
+		theController.getLoadCADConfigurationFileButton().setDisable(true);
+		theController.getChooseCADConfigurationFileButton().setDisable(true);
+		
+		theController.getExportCADToFileCheckBox().setSelected(false);
+		theController.getExportCADWireframeCheckBox().setSelected(false);
+		theController.getFileExtensionCADChoiceBox().getSelectionModel().clearSelection();
+		
+		theController.getGenerateFuselageCADCheckBox().setSelected(false);
+		theController.getFuselageCADNumberNoseSectionsTextField().clear();
+		theController.getFuselageCADNoseSpacingChoiceBox().getSelectionModel().clearSelection();
+		theController.getFuselageCADNumberTailSectionsTextField().clear();
+		theController.getFuselageCADTailSpacingChoiceBox().getSelectionModel().clearSelection();
+		
+		theController.getGenerateWingCADCheckBox().setSelected(false);
+		theController.getWingCADTipTypeChoiceBox().getSelectionModel().clearSelection();
+		theController.getWingletCADYOffsetFactorTextField().clear();
+		theController.getWingletCADXOffsetFactorTextField().clear();
+		theController.getWingletCADTaperRatioTextField().clear();
+		
+		theController.getGenerateHTailCADCheckBox().setSelected(false);
+		theController.getHTailCADTipTypeChoiceBox().getSelectionModel().clearSelection();
+		
+		theController.getGenerateVTailCADCheckBox().setSelected(false);
+		theController.getVTailCADTipTypeChoiceBox().getSelectionModel().clearSelection();
+		
+		theController.getGenerateCanardCADCheckBox().setSelected(false);
+		theController.getCanardCADTipTypeChoiceBox().getSelectionModel().clearSelection();
+		
+		theController.getGenerateWingFairingCADCheckBox().setSelected(false);
+		theController.getWingFairingCADFrontLengthFactorTextField().clear();
+		theController.getWingFairingCADBackLengthFactorTextField().clear();
+		theController.getWingFairingCADWidthFactorTextField().clear();
+		theController.getWingFairingCADHeightFactorTextField().clear();
+		theController.getWingFairingCADHeightBelowReferenceFactorTextField().clear();
+		theController.getWingFairingCADHeightAboveReferenceFactorTextField().clear();
+		theController.getWingFairingCADFilletRadiusFactorTextField().clear();
+		
+		theController.getGenerateCanardFairingCADCheckBox().setSelected(false);
+		theController.getCanardFairingCADFrontLengthFactorTextField().clear();
+		theController.getCanardFairingCADBackLengthFactorTextField().clear();
+		theController.getCanardFairingCADWidthFactorTextField().clear();
+		theController.getCanardFairingCADHeightFactorTextField().clear();
+		theController.getCanardFairingCADHeightBelowReferenceFactorTextField().clear();
+		theController.getCanardFairingCADHeightAboveReferenceFactorTextField().clear();
+		theController.getCanardFairingCADFilletRadiusFactorTextField().clear();
+		
+		Main.setTheCADManager(null);
+		
 	}
 	
 	@SuppressWarnings({ "rawtypes" })
@@ -1500,9 +1547,11 @@ public class InputManagerControllerMainActionUtilities {
 			                }
 			            }
 			            
-			            // Enable the choose aircraft file button once the aircraft has been loaded
 			            if (theController.getChooseCADConfigurationFileButton().isDisable() == true)
-			            	theController.getChooseCADConfigurationFileButton().setDisable(false);
+			            	theController.getChooseCADConfigurationFileButton().setDisable(false);	
+			            
+			            theController.getChooseCADConfigurationFileButton().setStyle(
+			            		theController.getButtonSuggestedActionStyle());
 						
 			    		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
 			    		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();

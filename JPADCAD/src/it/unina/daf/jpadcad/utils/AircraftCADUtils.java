@@ -2039,9 +2039,17 @@ public class AircraftCADUtils {
 			z = pts.get(i)[2] * chord;
 			
 			// Set the rotation due to the twist and the rigging angle			
-			double r = Math.sqrt(x*x + z*z);
-			x = x - r * (1 - Math.cos(twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));
-			z = z - r * Math.sin(twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN));		
+//			double r = Math.sqrt(x*x + z*z);
+//			x = x - r * (1 - Math.cos(twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));
+//			z = z - r * Math.sin(twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN));			
+			double[] rotPts = rotatePoint2D(
+					new double[] {0.0, 0.0}, 
+					twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN), 
+					new double[] {x, z}
+					);
+			
+			x = rotPts[0];
+			z = rotPts[1];
 			
 			// Set the actual location
 			x = liftingSurface.getXApexConstructionAxes().doubleValue(SI.METER) + xLE + x;
@@ -2125,6 +2133,26 @@ public class AircraftCADUtils {
 				}));
 	
 		return camberLinePts;
+	}
+	
+	private static double[] rotatePoint2D(double[] orig, double angle, double[] pnt) {
+		
+		double s = Math.sin(angle);
+		double c = Math.cos(angle);
+		
+		// translate point back to the origin
+		double x = pnt[0] - orig[0];
+		double y = pnt[1] - orig[1];
+		
+		// rotate point
+		double xNew = x*c + y*s; 
+		double yNew = y*c - x*s;
+		
+		// translate point back
+		x = xNew + orig[0];
+		y = yNew + orig[1];
+		
+		return new double[] {x, y};
 	}
 	
 //	public static List<double[]> interpolateAirfoils(Airfoil airfoil1, Airfoil airfoil2, double w) {
@@ -3407,7 +3435,7 @@ public class AircraftCADUtils {
 					mainPnt, subPnt, sideCurve1XCoords, sideCurve1YCoords);
 			
 			mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));				
-			subSegms.add(OCCUtils.theFactory.newCurve3D(subPnt, sidePts._2()));					
+			subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));					
 			sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), sidePts._2()));		
 		}
 		
@@ -3420,7 +3448,7 @@ public class AircraftCADUtils {
 					mainPnt, subPnt, sideCurve2YCoord);
 			
 			mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));		
-			subSegms.add(OCCUtils.theFactory.newCurve3D(subPnt, sidePts._2()));		
+			subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));		
 			sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), sidePts._2()));
 		}
 		
@@ -3433,7 +3461,7 @@ public class AircraftCADUtils {
 					mainPnt, subPnt, sideCurve3XCoords, sideCurve3YCoords);
 			
 			mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));				
-			subSegms.add(OCCUtils.theFactory.newCurve3D(subPnt, sidePts._2()));					
+			subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));					
 			sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), sidePts._2()));
 		}
 				
@@ -3495,7 +3523,7 @@ public class AircraftCADUtils {
 			
 			OCCShape sidePatch = OCCUtils.makePatchThruCurveSections(
 					OCCUtils.theFactory.newCurve3D(mainEdges.get(1)),
-					OCCUtils.theFactory.newCurve3D(subEdges.get(1))
+					OCCUtils.theFactory.newCurve3D(subEdges.get(3))
 			);
 			
 			OCCShell rightShell = (OCCShell) OCCUtils.theFactory.newShellFromAdjacentShapes(
