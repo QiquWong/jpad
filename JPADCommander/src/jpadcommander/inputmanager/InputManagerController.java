@@ -5999,8 +5999,8 @@ public class InputManagerController {
 	private void chooseCADConfigurationFile() throws IOException {
 
 		cad3DViewFileChooser = new FileChooser();
-		cad3DViewFileChooser.setTitle("Open File");
-		cad3DViewFileChooser.setInitialDirectory(new File(Main.getInputDirectoryPath() + File.separator + "Template_Aircraft"));
+		cad3DViewFileChooser.setTitle("Open CAD Configuration File");
+		cad3DViewFileChooser.setInitialDirectory(new File(Main.getInputDirectoryPath() + File.separator + "Template_CADConfigs"));
 		File file = cad3DViewFileChooser.showOpenDialog(null);
 		if (file != null) {
 			// get full path and populate the text box

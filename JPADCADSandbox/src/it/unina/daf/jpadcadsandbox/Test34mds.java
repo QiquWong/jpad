@@ -115,10 +115,10 @@ public class Test34mds {
 		
 		// Generate compatible fairings
 		List<OCCShape> wingFairingShapes = AircraftCADUtils.getFairingShapes(fuselage, wing, 
-				0.95, 0.95, 1.05, 0.25, 
+				0.95, 0.95, 1.15, 0.25, 
 				0.85, 0.45, 
 				0.85, 
-				false, false, true
+				true, false, false
 				);
 		
 		aircraftShapes.addAll(wingFairingShapes);

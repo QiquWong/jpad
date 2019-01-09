@@ -118,11 +118,11 @@ public class Test35mds {
 		List<OCCShape> hTailShapes = AircraftCADUtils.getLiftingSurfaceCAD(hTail, WingTipType.ROUNDED, false, false, true);
 		List<OCCShape> vTailShapes = AircraftCADUtils.getLiftingSurfaceCAD(vTail, WingTipType.ROUNDED, false, false, true);
 		
-//		shapesList.addAll(fuselageShapes);
-		shapesList.addAll(canardShapes);
-		shapesList.addAll(wingShapes);
-		shapesList.addAll(hTailShapes);
-		shapesList.addAll(vTailShapes);
+		shapesList.addAll(fuselageShapes);
+//		shapesList.addAll(canardShapes);
+//		shapesList.addAll(wingShapes);
+//		shapesList.addAll(hTailShapes);
+//		shapesList.addAll(vTailShapes);
 //		shapesList.add(scaledEngine);
 //		shapesList.add(scaledEngineMirrored);
 		

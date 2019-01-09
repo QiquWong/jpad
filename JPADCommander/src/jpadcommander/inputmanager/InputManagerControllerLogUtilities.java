@@ -5520,7 +5520,7 @@ public class InputManagerControllerLogUtilities {
 	
 	public void logCADConfigurationFromFileToInterface() {
 		
-		// print the CADManager toString() method inside the text area of the GUI ...
+		// Print the CADManager toString() method inside the text area of the GUI ...
 		theController.getTextAreaCAD3DViewConsoleOutput().setText(
 				Main.getTheCADManager().toString()
 				);
@@ -5589,6 +5589,14 @@ public class InputManagerControllerLogUtilities {
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeTailTrunk().equals(XSpacingType.HALFCOSINUS2))
 				theController.getFuselageCADTailSpacingChoiceBox().getSelectionModel().select(3);
 
+		} else {
+			
+			theController.getGenerateFuselageCADCheckBox().setDisable(true);
+			theController.getFuselageCADNumberNoseSectionsTextField().setDisable(true);
+			theController.getFuselageCADNoseSpacingChoiceBox().setDisable(true);
+			theController.getFuselageCADNumberTailSectionsTextField().setDisable(true);
+			theController.getFuselageCADTailSpacingChoiceBox().setDisable(true);
+			
 		}
 		
 		//-------------------------------------------------------------------------
@@ -5624,6 +5632,14 @@ public class InputManagerControllerLogUtilities {
 			theController.getWingletCADTaperRatioTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingletTaperRatio()));
 		
+		} else {
+			
+			theController.getGenerateWingCADCheckBox().setDisable(true);
+			theController.getWingCADTipTypeChoiceBox().setDisable(true);
+			theController.getWingletCADYOffsetFactorTextField().setDisable(true);
+			theController.getWingletCADXOffsetFactorTextField().setDisable(true);
+			theController.getWingletCADTaperRatioTextField().setDisable(true);
+			
 		}
 		
 		//-------------------------------------------------------------------------
@@ -5642,6 +5658,11 @@ public class InputManagerControllerLogUtilities {
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getHTailTipType().equals(WingTipType.ROUNDED))
 				theController.getHTailCADTipTypeChoiceBox().getSelectionModel().select(1);
 		
+		} else {
+			
+			theController.getGenerateHTailCADCheckBox().setDisable(true);
+			theController.getHTailCADTipTypeChoiceBox().setDisable(true);		
+			
 		}
 		
 		//-------------------------------------------------------------------------
@@ -5660,6 +5681,11 @@ public class InputManagerControllerLogUtilities {
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getVTailTipType().equals(WingTipType.ROUNDED))
 				theController.getVTailCADTipTypeChoiceBox().getSelectionModel().select(1);
 		
+		} else {
+			
+			theController.getGenerateVTailCADCheckBox().setDisable(true);
+			theController.getVTailCADTipTypeChoiceBox().setDisable(true);
+			
 		}
 		
 		//-------------------------------------------------------------------------
@@ -5678,6 +5704,11 @@ public class InputManagerControllerLogUtilities {
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getCanardTipType().equals(WingTipType.ROUNDED))
 				theController.getCanardCADTipTypeChoiceBox().getSelectionModel().select(1);
 		
+		} else {
+			
+			theController.getGenerateCanardCADCheckBox().setDisable(true);
+			theController.getCanardCADTipTypeChoiceBox().setDisable(true);
+			
 		}
 		
 		//-------------------------------------------------------------------------
@@ -5724,6 +5755,17 @@ public class InputManagerControllerLogUtilities {
 			theController.getWingFairingCADFilletRadiusFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingFilletRadiusFactor()));
 			
+		} else {
+			
+			theController.getGenerateWingFairingCADCheckBox().setDisable(true);
+			theController.getWingFairingCADFrontLengthFactorTextField().setDisable(true);
+			theController.getWingFairingCADBackLengthFactorTextField().setDisable(true);
+			theController.getWingFairingCADWidthFactorTextField().setDisable(true);
+			theController.getWingFairingCADHeightFactorTextField().setDisable(true);
+			theController.getWingFairingCADHeightBelowReferenceFactorTextField().setDisable(true);
+			theController.getWingFairingCADHeightAboveReferenceFactorTextField().setDisable(true);
+			theController.getWingFairingCADFilletRadiusFactorTextField().setDisable(true);
+			
 		}
 		
 		//-------------------------------------------------------------------------
@@ -5769,6 +5811,17 @@ public class InputManagerControllerLogUtilities {
 				theController.getCanardFairingCADFilletRadiusFactorTextField().setDisable(false);
 			theController.getCanardFairingCADFilletRadiusFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingFilletRadiusFactor()));
+			
+		} else {
+			
+			theController.getGenerateCanardFairingCADCheckBox().setDisable(true);
+			theController.getCanardFairingCADFrontLengthFactorTextField().setDisable(true);
+			theController.getCanardFairingCADBackLengthFactorTextField().setDisable(true);
+			theController.getCanardFairingCADWidthFactorTextField().setDisable(true);
+			theController.getCanardFairingCADHeightFactorTextField().setDisable(true);
+			theController.getCanardFairingCADHeightBelowReferenceFactorTextField().setDisable(true);
+			theController.getCanardFairingCADHeightAboveReferenceFactorTextField().setDisable(true);
+			theController.getCanardFairingCADFilletRadiusFactorTextField().setDisable(true);
 			
 		}
 		

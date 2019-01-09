@@ -1035,7 +1035,6 @@ public class AircraftCADUtils {
 		// Invoke a specific fairing generator method
 		// ----------------------------------------------------------
 		FairingPosition fairingPosition = fairingData.getFairingPosition();
-		System.out.println(fairingPosition.toString());
 		
 		switch (fairingPosition) {
 		
@@ -3434,9 +3433,21 @@ public class AircraftCADUtils {
 			Tuple2<double[], double[]> sidePts = getFairingSidePts(
 					mainPnt, subPnt, sideCurve1XCoords, sideCurve1YCoords);
 			
-			mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));				
-			subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));					
-			sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), sidePts._2()));		
+			if (fairingData._fairingPosition.equals(FairingPosition.ATTACHED_DOWN) ||
+				fairingData._fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
+				
+				mainSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), mainPnt));				
+				subSegms.add(OCCUtils.theFactory.newCurve3D(subPnt, sidePts._2()));					
+				sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), sidePts._1()));	
+				
+			} else if (fairingData._fairingPosition.equals(FairingPosition.DETACHED_UP) ||
+					   fairingData._fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
+				
+				mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));				
+				subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));					
+				sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), sidePts._2()));	
+			}
+				
 		}
 		
 		for (int i = 0; i < nMain; i++) {
@@ -3447,9 +3458,20 @@ public class AircraftCADUtils {
 			Tuple2<double[], double[]> sidePts = getFairingSidePts(
 					mainPnt, subPnt, sideCurve2YCoord);
 			
-			mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));		
-			subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));		
-			sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), sidePts._2()));
+			if (fairingData._fairingPosition.equals(FairingPosition.ATTACHED_DOWN) ||
+				fairingData._fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
+
+				mainSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), mainPnt));				
+				subSegms.add(OCCUtils.theFactory.newCurve3D(subPnt, sidePts._2()));					
+				sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), sidePts._1()));	
+
+			} else if (fairingData._fairingPosition.equals(FairingPosition.DETACHED_UP) ||
+					   fairingData._fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
+
+				mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));				
+				subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));					
+				sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), sidePts._2()));	
+			}
 		}
 		
 		for (int i = 0; i < nMain - 1; i++) {
@@ -3460,9 +3482,20 @@ public class AircraftCADUtils {
 			Tuple2<double[], double[]> sidePts = getFairingSidePts(
 					mainPnt, subPnt, sideCurve3XCoords, sideCurve3YCoords);
 			
-			mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));				
-			subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));					
-			sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), sidePts._2()));
+			if (fairingData._fairingPosition.equals(FairingPosition.ATTACHED_DOWN) ||
+				fairingData._fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
+
+				mainSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), mainPnt));				
+				subSegms.add(OCCUtils.theFactory.newCurve3D(subPnt, sidePts._2()));					
+				sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), sidePts._1()));	
+
+			} else if (fairingData._fairingPosition.equals(FairingPosition.DETACHED_UP) ||
+					   fairingData._fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
+
+				mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));				
+				subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));					
+				sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), sidePts._2()));	
+			}
 		}
 				
 		if (exportSupportShapes) {
@@ -3521,10 +3554,24 @@ public class AircraftCADUtils {
 				expSub.next();
 			}
 			
-			OCCShape sidePatch = OCCUtils.makePatchThruCurveSections(
-					OCCUtils.theFactory.newCurve3D(mainEdges.get(1)),
-					OCCUtils.theFactory.newCurve3D(subEdges.get(3))
-			);
+			OCCShape sidePatch = null;
+			
+			if (fairingData._fairingPosition.equals(FairingPosition.ATTACHED_DOWN) ||
+				fairingData._fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
+
+				sidePatch = OCCUtils.makePatchThruCurveSections(
+						OCCUtils.theFactory.newCurve3D(subEdges.get(1)),
+						OCCUtils.theFactory.newCurve3D(mainEdges.get(3))															
+						);
+
+			} else if (fairingData._fairingPosition.equals(FairingPosition.DETACHED_UP) ||
+					   fairingData._fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
+
+				sidePatch = OCCUtils.makePatchThruCurveSections(
+						OCCUtils.theFactory.newCurve3D(mainEdges.get(1)),
+						OCCUtils.theFactory.newCurve3D(subEdges.get(3))
+						);
+			}	
 			
 			OCCShell rightShell = (OCCShell) OCCUtils.theFactory.newShellFromAdjacentShapes(
 					mainPatch,
@@ -3535,9 +3582,23 @@ public class AircraftCADUtils {
 					mainCurvePts.get(0)[2] - supSegmPts.get(supSegmPts.size() - 1)[2])
 						* 0.45 * fairingData.getFilletRadiusFactor();  
 			
-			int[] edgeIndexes = (fairingData.getWidthFactor() > 1.00) ?
-					new int[] {1, 6}:
-					new int[] {1};
+			int[] edgeIndexes = null;
+			
+			if (fairingData._fairingPosition.equals(FairingPosition.ATTACHED_DOWN) ||
+				fairingData._fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
+				
+				edgeIndexes = (fairingData.getWidthFactor() > 1.00) ?
+						new int[] {3, 4}:
+						new int[] {3};
+				
+			} else if (fairingData._fairingPosition.equals(FairingPosition.DETACHED_UP) ||
+					   fairingData._fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
+				
+				edgeIndexes = (fairingData.getWidthFactor() > 1.00) ?
+						new int[] {1, 6}:
+						new int[] {1};
+						
+			}		
 			
 			OCCShell filletRightShell = OCCUtils.applyFilletOnShell(
 					rightShell, edgeIndexes, filletRadius);

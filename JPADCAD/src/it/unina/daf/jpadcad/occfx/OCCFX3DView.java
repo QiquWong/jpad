@@ -156,9 +156,7 @@ public class OCCFX3DView {
 			if (solids.size() != 1) 
 				System.err.println("Warning: the number of solids found in " + comp.toString() + " shape list is incorrect!");
 			
-			boolean faceReversed = (comp.equals(CADComponentEnum.WING_FAIRING) || comp.equals(CADComponentEnum.CANARD_FAIRING)) ? false : true;
-			
-			List<TriangleMesh> mesh = extractMesh(solids.get(0), faceReversed);
+			List<TriangleMesh> mesh = extractMesh(solids.get(0), true);
 			List<MeshView> meshView = generateMeshView(mesh);
 			
 			_theAircraftMeshMap.put(comp, mesh);
