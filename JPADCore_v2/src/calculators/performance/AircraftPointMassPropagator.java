@@ -1912,8 +1912,8 @@ public class AircraftPointMassPropagator {
 		
 		return ThrustCalc.calculateThrustDatabase(
 				aircraft.getPowerPlant().getEngineList().get(0).getT0(),
+				aircraft.getPowerPlant().getEngineDatabaseReaderList().get(0),
 				engCond, 
-				aircraft.getPowerPlant(), 
 				Amount.valueOf(altitude, SI.METER), 
 				SpeedCalc.calculateMach( // Mach
 						Amount.valueOf(altitude, SI.METER), 

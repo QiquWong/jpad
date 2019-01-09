@@ -23,6 +23,7 @@ import calculators.performance.customdata.ThrustMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import database.databasefunctions.engine.EngineDatabaseReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -144,22 +145,31 @@ public class RateOfClimbCalc {
 			EngineOperatingConditionEnum flightCondition, EngineTypeEnum engineType,
 			PowerPlant thePowerPlant,
 			Amount<Force> t0, 
+			EngineDatabaseReader engineDatabaseReader,
 			Amount<Area> surface, double ar, Amount<Angle> sweepHalfChord,
 			double tcMax, AirfoilTypeEnum airfoilType, 
 			double cd0, double oswald) {
 		
+		Amount<Force> currentTotalThrust = Amount.valueOf(0.0, SI.NEWTON);
+		for(int i=0; i<thePowerPlant.getEngineNumber(); i++)
+			currentTotalThrust = Amount.valueOf(
+					currentTotalThrust.doubleValue(SI.NEWTON)
+					+ ThrustCalc.calculateThrustDatabase(
+							t0, 
+							engineDatabaseReader,
+							flightCondition,
+							altitude,
+							SpeedCalc.calculateMach(altitude, deltaTemperature, speed), 
+							deltaTemperature, 
+							phi
+							).doubleValue(SI.NEWTON),
+					SI.NEWTON
+					);
+		
 		Amount<Power> powerAvailable = 
 				Amount.valueOf(
 						speed.doubleValue(SI.METERS_PER_SECOND)
-						*ThrustCalc.calculateThrustDatabase(
-								t0, 
-								flightCondition,
-								thePowerPlant,
-								altitude,
-								SpeedCalc.calculateMach(altitude, deltaTemperature, speed), 
-								deltaTemperature, 
-								phi
-								).doubleValue(SI.NEWTON), 
+						*currentTotalThrust.doubleValue(SI.NEWTON), 
 						SI.WATT
 						);
 		Amount<Power> powerRequired = 

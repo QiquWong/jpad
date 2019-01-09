@@ -33,7 +33,6 @@ import calculators.performance.ThrustCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.FoldersEnum;
-import database.DatabaseManager;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
@@ -312,8 +311,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 					);
 			MyInterpolatingFunction tauRudder = new MyInterpolatingFunction();
 			tauRudder.interpolateLinear(
-					new double[]{0.0000, 0.5359, 0.5648, 0.5502, 0.5261},
-					new double[]{0.0, 10.0, 20.0, 25.0, 30.0}
+					new double[]{0.0, 10.0, 20.0, 25.0, 30.0},
+					new double[]{0.0000, 0.5359, 0.5648, 0.5502, 0.5261}
 					);
 			
 			boolean createCSV = true;
@@ -349,7 +348,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 						);
 
 				
-				Amount<Velocity> vMC = calculateVMC(xcgPosition, maxTakeOffMass, cLmaxTO, tauRudder);
+				Amount<Velocity> vMC = calculateVMC(xcgPosition, maxTakeOffMass, cLmaxTO, tauRudder, veDSCDatabaseReader, theTakeOffNoiseTrajectoryCalculator.getvSTakeOff());
 				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null, timeHistories,vMC);
 				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null, timeHistories, vMC);
 
@@ -457,7 +456,9 @@ public class NoiseTrajectoryCalcTest extends Application {
 			double xcg,
 			Amount<Mass> maxTakeOffMass,
 			double cLMaxTakeOff,
-			MyInterpolatingFunction tauRudder
+			MyInterpolatingFunction tauRudder,
+			VeDSCDatabaseReader veDSCDatabaseReader,
+			Amount<Velocity> vsTakeOff
 			) {
 		
 		Amount<Length> dimensionalXcg = 
@@ -465,15 +466,6 @@ public class NoiseTrajectoryCalcTest extends Application {
 				.plus(theAircraft.getWing().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER))
 				.plus(theAircraft.getWing().getXApexConstructionAxes().to(SI.METER));
 		
-		String veDSCDatabaseFileName = "VeDSC_database.h5";
-		
-		VeDSCDatabaseReader veDSCDatabaseReader = DatabaseManager.initializeVeDSC(
-				new VeDSCDatabaseReader(
-						MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), veDSCDatabaseFileName
-						),
-				MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
-				);
-
 		// GETTING THE FUSELAGE HEGHT AR V-TAIL MAC (c/4)
 		List<Amount<Length>> vX = theAircraft.getFuselage().getOutlineXZUpperCurveAmountX();
 		List<Amount<Length>> vZUpper = theAircraft.getFuselage().getOutlineXZUpperCurveAmountZ();
@@ -516,8 +508,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 				tailConeTipToFuselageRadiusRatio
 				);
 
-		if(theAircraft.getTheAnalysisManager().getTheBalance() == null)
-			theAircraft.calculateArms(theAircraft.getVTail(), dimensionalXcg);
+		theAircraft.calculateArms(theAircraft.getVTail(), dimensionalXcg);
 		
 		// cNb vertical [1/deg]
 		double cNbVertical = MomentCalc.calcCNbetaVerticalTailVEDSC(
@@ -628,6 +619,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 					).to(NonSI.KNOT);
 		}
 
+		System.out.println("VMC/VsTO = " + vMC.doubleValue(SI.METERS_PER_SECOND)/vsTakeOff.doubleValue(SI.METERS_PER_SECOND));
 		return vMC;
 		
 	}
