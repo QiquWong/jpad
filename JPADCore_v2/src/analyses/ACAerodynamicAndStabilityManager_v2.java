@@ -128,8 +128,8 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	// total aircraft curves
 	private List<Double> _current3DWingLiftCurve;
 	private List<Double> _current3DWingMomentCurve;
-	private Map<Amount<Angle>, List<Double>> _current3DCanardLiftCurve;
-	private Map<Amount<Angle>, List<Double>> _current3DCanardMomentCurve;
+	private List<Double> _current3DCanardLiftCurve;
+	private List<Double> _current3DCanardMomentCurve;
 	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailLiftCurve; //delta_e, CL
 	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailMomentCurve; //delta_e, CM
 	private Map<Amount<Angle>, List<Double>> _current3DVerticalTailLiftCurve; //delta_r CL
@@ -8374,16 +8374,16 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	public void setCurrent3DWingMomentCurve(List<Double> _current3DWingMomentCurve) {
 		this._current3DWingMomentCurve = _current3DWingMomentCurve;
 	}
-	public Map<Amount<Angle>, List<Double>> getCurrent3DCanardLiftCurve() {
+	public List<Double> getCurrent3DCanardLiftCurve() {
 		return _current3DCanardLiftCurve;
 	}
-	public void setCurrent3DCanardLiftCurve(Map<Amount<Angle>, List<Double>> _current3DCanardLiftCurve) {
+	public void setCurrent3DCanardLiftCurve(List<Double> _current3DCanardLiftCurve) {
 		this._current3DCanardLiftCurve = _current3DCanardLiftCurve;
 	}
-	public Map<Amount<Angle>, List<Double>> getCurrent3DCanardMomentCurve() {
+	public List<Double> getCurrent3DCanardMomentCurve() {
 		return _current3DCanardMomentCurve;
 	}
-	public void setCurrent3DCanardMomentCurve(Map<Amount<Angle>, List<Double>> _current3DCanardMomentCurve) {
+	public void setCurrent3DCanardMomentCurve(List<Double> _current3DCanardMomentCurve) {
 		this._current3DCanardMomentCurve = _current3DCanardMomentCurve;
 	}
 	public Map<Amount<Angle>, List<Double>> getCurrent3DHorizontalTailLiftCurve() {

@@ -1136,7 +1136,7 @@ public class LiftCalc {
 			System.err.println("ERROR THE SLAT DEFLECTIONS MUST BE EQUAL TO THE NUMBER OF SLATS!");
 			return null;
 		}
-		
+
 		//--------------------------------------------
 		// Managing flaps types:
 		List<Double> flapTypeIndex = new ArrayList<Double>();
@@ -1168,6 +1168,7 @@ public class LiftCalc {
 				deltaFlapRef.add(40.0);
 			}
 		}
+		
 		//--------------------------------------------
 		// Creating lists of flaps geometric parameters:
 		List<Double> etaInFlap = new ArrayList<Double>();
@@ -1207,7 +1208,7 @@ public class LiftCalc {
 		double [] leadingEdgeRadiusSlatStations = new double [2*slatList.size()];
 		double [] maxTicknessSlatStations = new double [2*slatList.size()];
 		double [] chordSlatStations = new double [2*slatList.size()];
-		
+
 		double [] influenceFactor = new double [2];
 		
 		for ( int i=0; i< flapList.size(); i++){
@@ -1286,7 +1287,8 @@ public class LiftCalc {
 			maxTicknessMeanFlap[i] = maxTicknessFlapStations[kk]* influenceFactor[0] + maxTicknessFlapStations[kk+1]*influenceFactor[1];
 		}
 		
-		if(!slatList.isEmpty()) 
+		//slat 
+		if(!slatList.isEmpty()) {
 			for ( int i=0; i< slatList.size(); i++){
 				int kk = i*2;
 
@@ -1368,6 +1370,8 @@ public class LiftCalc {
 				maxTicknessMeanSlat[i] = maxTicknessSlatStations[kk] * influenceFactor[0] + maxTicknessSlatStations[kk+1]*influenceFactor[1];
 
 			}
+		}
+		
 
 		//---------------------------------------------
 		// deltaCl0 (flap)
