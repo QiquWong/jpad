@@ -45,8 +45,10 @@ public class CADManager {
 	private Aircraft _theAircraft;
 	private List<OCCShape> _theAircraftShapes = new ArrayList<>();
 	private Map<CADComponentEnum, List<OCCShape>> _theAircraftSolidsMap = new HashMap<>();
-	private double _importedPartsMaxDimension = 0.0; // TODO: calculate these values
-	private double _importedPartsGeometricCenter = 0.0;
+	private double _importedPartsMaxDimensionFront = 0.0; // TODO: calculate these values
+	private double _importedPartsMaxDimensionTop = 0.0;
+	private double _importedPartsMaxDimensionSide = 0.0;
+	private double[] _importedPartsGeometricCenter = new double[] {0.0, 0.0, 0.0};
 	
 	// ------- JavaFX material ---------- //
 	private Scene _theScene;
@@ -553,6 +555,33 @@ public class CADManager {
 		}
 	}
 	
+	private void calculateCADMaxDimensions() {
+		
+		double xCenter = 0.0;
+		double yCenter = 0.0;
+		double zCenter = 0.0;
+		
+		double maxXDimension = 0.0;
+		double maxYDimension = 0.0;
+		double maxZDimension = 0.0;
+		
+		List<Double> xCenters = new ArrayList<>();
+		List<Double> yCenters = new ArrayList<>();
+		List<Double> zCenters = new ArrayList<>();
+		
+		if (_theAircraftSolidsMap.containsKey(CADComponentEnum.FUSELAGE)) {
+			
+			xCenter = _theAircraft.getFuselage().getXApexConstructionAxes().plus(
+					_theAircraft.getFuselage().getFuselageLength()).doubleValue(SI.METER);
+			
+			yCenter = _theAircraft.getFuselage().getYApexConstructionAxes().doubleValue(SI.METER);
+			
+			zCenter = _theAircraft.getFuselage().getZApexConstructionAxes().doubleValue(SI.METER);
+		}
+			 
+		
+	}
+	
 	public void generateCAD() {
 		initializeCADMap();
 		
@@ -701,16 +730,23 @@ public class CADManager {
 	
 	public void exportCAD(String outputFolderPath) {
 		
+		exportCADImplementation(outputFolderPath + _theAircraft.getId().replaceAll("\\s", ""));	
+	}
+	
+	public void exportCAD(String outputFolderPath, String fileName) {
+		
+		exportCADImplementation(outputFolderPath + fileName);
+	}
+	
+	private void exportCADImplementation(String outputFileAbsolutePath) {
+		
 		//---------------------------------------------------------------
 		// GENERATE THE AIRCRAFT CAD FILE
 		//---------------------------------------------------------------	
-		String outputFileAbsolutePath = outputFolderPath + _theAircraft.getId().replaceAll("\\s", "");
-		
 		OCCUtils.write(
 				outputFileAbsolutePath, 
 				_theCADBuilderInterface.getFileExtension(), 
 				_theAircraftShapes);
-		
 	}
 	
 	public void generateScene() {
@@ -935,11 +971,19 @@ public class CADManager {
 		this._theAircraftShapes = theAircraftSolidParts;
 	}
 	
-	public double getImportedPartsMaxDimension() {
-		return _importedPartsMaxDimension;
+	public double getImportedPartsMaxDimensionFront() {
+		return _importedPartsMaxDimensionFront;
 	}
 	
-	public double getImportedPartsGeometricCenter() {
+	public double getImportedPartsMaxDimensionTop() {
+		return _importedPartsMaxDimensionTop;
+	}
+	
+	public double getImportedPartsMaxDimensionSide() {
+		return _importedPartsMaxDimensionSide;
+	}
+	
+	public double[] getImportedPartsGeometricCenter() {
 		return _importedPartsGeometricCenter;
 	}
 	

@@ -21,6 +21,7 @@ import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import it.unina.daf.jpadcad.CADManager;
 import it.unina.daf.jpadcad.ICADManager;
+import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCUtils.FileExtension;
 import it.unina.daf.jpadcad.utils.AircraftCADUtils.WingTipType;
 import it.unina.daf.jpadcad.utils.AircraftCADUtils.XSpacingType;
@@ -31,6 +32,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import jpadcommander.Main;
@@ -1040,6 +1042,8 @@ public class InputManagerControllerMainActionUtilities {
 		
 		theController.getUpdateCAD3DViewButton().setStyle("");
 		theController.getUpdateCAD3DViewButton().setDisable(true);
+		theController.getSaveCADToFileButton().setStyle("");
+		theController.getSaveCADToFileButton().setDisable(true);
 		theController.getLoadCADConfigurationFileButton().setDisable(true);
 		theController.getChooseCADConfigurationFileButton().setDisable(true);
 		
@@ -1817,6 +1821,12 @@ public class InputManagerControllerMainActionUtilities {
 		// Then show the updated 3D view
 		theController.getInputManagerControllerGraphicUtilities().createAircraft3DView();
 		
+		// Enable the save button in case it is necessary
+		if (theController.getSaveCADToFileButton().isDisabled())
+			theController.getSaveCADToFileButton().setDisable(false);
+		
+		theController.getSaveCADToFileButton().setStyle(theController.getButtonSuggestedActionStyle());
+		
 		// Eventually save to file the Aircraft CAD model
 		if (theController.getExportCADToFileCheckBox().isSelected()) 
 			saveAircraftCADToFileAt3DViewUpdate();	
@@ -1831,6 +1841,31 @@ public class InputManagerControllerMainActionUtilities {
 				"CAD_output" + 
 				File.separator 
 				);
+	}
+	
+	public void saveCADToFileImplementation() {
+		
+		theController.setSaveCADFileChooser(new FileChooser());
+		theController.getSaveCADFileChooser().setTitle("Save as ...");
+		theController.getSaveCADFileChooser().setInitialDirectory(
+				new File(
+						Main.getOutputDirectoryPath() + 
+						File.separator + 
+						"CAD_output" + 
+						File.separator
+						)
+				);
+		
+		File file = theController.getSaveCADFileChooser().showSaveDialog(null);	
+		
+		if (file != null) 
+		
+			OCCUtils.write(
+					file.getParent() + File.separator + file.getName(), 
+					Main.getTheCADManager().getTheCADBuilderInterface().getFileExtension(),
+					Main.getTheCADManager().getTheAircraftShapes()
+					);
+		
 	}
 	
 	@SuppressWarnings("rawtypes")

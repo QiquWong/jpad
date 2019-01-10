@@ -331,6 +331,8 @@ public class InputManagerController {
 	private Button loadCADConfigurationFileButton;
 	@FXML
 	private Button updateCAD3DViewButton;
+	@FXML
+	private Button saveCADToFileButton;
 	
 	//...........................................................................................
 	// BUTTON MAP:
@@ -455,6 +457,7 @@ public class InputManagerController {
 	private FileChooser nacelleFileChooser;
 	private FileChooser landingGearsFileChooser;
 	private FileChooser cad3DViewFileChooser;
+	private FileChooser saveCADFileChooser;
 	
 	//...........................................................................................
 	// VALIDATIONS (ControlsFX):
@@ -6093,6 +6096,12 @@ public class InputManagerController {
 	private void updateCAD3DView() {
 		
 		inputManagerControllerMainActionUtilities.updateCAD3DViewImplementation();
+	}
+	
+	@FXML
+	private void saveCADToFile() {
+		
+		inputManagerControllerMainActionUtilities.saveCADToFileImplementation();
 	}
 
 	@FXML
@@ -13364,12 +13373,28 @@ public class InputManagerController {
 		this.updateCAD3DViewButton = updateCAD3DViewButton;
 	}
 	
+	public Button getSaveCADToFileButton() {
+		return saveCADToFileButton;
+	}
+	
+	public void setSaveCADToFileButton(Button saveCADToFileButton) {
+		this.saveCADToFileButton = saveCADToFileButton;
+	}
+	
 	public FileChooser getCAD3DViewFileChooser() {
 		return cad3DViewFileChooser;
 	}
 	
 	public void setCAD3DViewFileChooser(FileChooser cad3DViewFileChooser) {
 		this.cad3DViewFileChooser = cad3DViewFileChooser;
+	}
+	
+	public FileChooser getSaveCADFileChooser() {
+		return saveCADFileChooser;
+	}
+	
+	public void setSaveCADFileChooser(FileChooser saveCADFileChooser) {
+		this.saveCADFileChooser = saveCADFileChooser;
 	}
 	
 	public ObservableList<String> getFuselageCADSpacingsList() {
