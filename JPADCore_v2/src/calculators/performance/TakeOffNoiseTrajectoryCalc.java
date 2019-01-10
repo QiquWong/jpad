@@ -326,10 +326,10 @@ public class TakeOffNoiseTrajectoryCalc {
 			initialize();
 
 			theIntegrator = new HighamHall54Integrator(
-					1e-8,
+					1e-6,
 					1,
-					1e-8,
-					1e-8
+					1e-6,
+					1e-6
 					);
 			ode = new DynamicsEquationsTakeOffNoiseTrajectory();
 
@@ -350,9 +350,9 @@ public class TakeOffNoiseTrajectoryCalc {
 				public double g(double t, double[] x) {
 					double speed = x[1];
 					if(t < tRot.doubleValue(SI.SECOND)) 
-						return speed - vRot.getEstimatedValue();
+						return speed - vRot.doubleValue(SI.METERS_PER_SECOND);
 					else
-						return 10; // a generic positive value used to make the event trigger once
+						return 10; // a generic positive value used to make the event triggers only once
 				}
 
 				@Override
@@ -747,15 +747,6 @@ public class TakeOffNoiseTrajectoryCalc {
 							);
 					Amount<Angle> alpha = ((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 					
-					System.out.println("\n\tTime = " + time);
-					System.out.println("\tDistance = " + Amount.valueOf(x[0], SI.METER));
-					System.out.println("\tSpeed = " + speed);
-					System.out.println("\tAcceleration = " + Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND));
-					System.out.println("\tAltitude = " + altitude);
-					System.out.println("\tGammaDot = " + xDot[2] + " °/s");
-					System.out.println("\tGamma = " + gamma);
-					System.out.println("\tAlpha = " + alpha);
-					
 					//----------------------------------------------------------------------------------------
 					// TIME:
 					TakeOffNoiseTrajectoryCalc.this.getTime().add(time);
@@ -842,8 +833,11 @@ public class TakeOffNoiseTrajectoryCalc {
 
 					//========================================================================================
 					// CHECK ON ACCELERATION --> DEFINING THE ISTANT AT WHICH THE SPEED MUST BE KEPT CONSTANT 
+					
+					// FIXME: REPLACE THIS WITH THE EVENT HANDLER THAT MONITORS WHEN THE SPEED REACEHS V2+15KTS (AVERAGED VALUE BETWEEN FAR BOUDARIES)
+					
 					if(t > tRot.doubleValue(SI.SECOND) && tZeroAccelration.doubleValue(SI.SECOND) == 10000 &&
-							(TakeOffNoiseTrajectoryCalc.this.getAcceleration().get(TakeOffNoiseTrajectoryCalc.this.getAcceleration().size()-1).doubleValue(SI.METERS_PER_SQUARE_SECOND)< 0.0) &&
+							(TakeOffNoiseTrajectoryCalc.this.getAcceleration().get(TakeOffNoiseTrajectoryCalc.this.getAcceleration().size()-1).doubleValue(SI.METERS_PER_SQUARE_SECOND) < 0.0) &&
 							(TakeOffNoiseTrajectoryCalc.this.getAcceleration().get(TakeOffNoiseTrajectoryCalc.this.getAcceleration().size()-2).doubleValue(SI.METERS_PER_SQUARE_SECOND) > 0.0)
 							) {
 
@@ -2200,6 +2194,15 @@ public class TakeOffNoiseTrajectoryCalc {
 					);
 			Amount<Angle> alpha = alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 
+//			System.out.println("\n\tTime = " + time);
+//			System.out.println("\tDistance = " + Amount.valueOf(x[0], SI.METER));
+//			System.out.println("\tSpeed = " + speed);
+//			System.out.println("\tAltitude = " + altitude);
+//			System.out.println("\tGamma = " + gamma);
+//			System.out.println("\tAcceleration = " + Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND));
+//			System.out.println("\tGammaDot = " + xDot[2] + " °/s");
+//			System.out.println("\tAlpha = " + alpha);
+			
 			if( t < tEndRot.doubleValue(SI.SECOND)) {
 				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))
@@ -2238,6 +2241,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				xDot[3] = speed.doubleValue(SI.METERS_PER_SECOND)*Math.sin(gamma.doubleValue(SI.RADIAN));
 				xDot[4] = fuelFlow(speed, time, gamma, altitude, deltaTemperature);
 			}
+			
 		}
 
 		public List<Amount<Force>> thrust(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature) {
@@ -2454,8 +2458,12 @@ public class TakeOffNoiseTrajectoryCalc {
 			else if(time.doubleValue(SI.SECOND) > tZeroAccelration.doubleValue(SI.SECOND)) {
 
 				int j=0;
+				
+				List<Amount<Angle>> alphaList = new ArrayList<>();
+				alpha = TakeOffNoiseTrajectoryCalc.this.alpha.get(
+						TakeOffNoiseTrajectoryCalc.this.alpha.size()-1); 
+				alphaList.add(alpha);
 
-				// FIXME: GAMMA DOT BECOMES NEGATIVE AFTER A WHILE!!
 				double acceleration = (g0/weight.doubleValue(SI.NEWTON))
 						*( (thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 								*Math.cos(alpha.doubleValue(SI.RADIAN))
@@ -2465,65 +2473,38 @@ public class TakeOffNoiseTrajectoryCalc {
 										*Math.sin(gamma.doubleValue(SI.RADIAN))
 										)
 								);
-
-				double gammaDot = 57.3*(g0/(weight.doubleValue(SI.NEWTON)*speed.doubleValue(SI.METERS_PER_SECOND)))
-						*( lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
-								+ ( thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-										*Math.sin(alpha.doubleValue(SI.RADIAN))
-										)
-								- ( weight.doubleValue(SI.NEWTON)
-										*Math.cos(gamma.doubleValue(SI.RADIAN))
-										)
-								);
 				
-				alpha = TakeOffNoiseTrajectoryCalc.this.getAlpha().get(
-						TakeOffNoiseTrajectoryCalc.this.getAlpha().size()-1
-						).to(NonSI.DEGREE_ANGLE);
-
-				int maxIterAlpha = 200;
-				while (
-						(Math.abs(acceleration - 0) >= 1e-4)
-						|| (Math.abs(gammaDot - 0) >= 1e-4)
-						) {
-
-					Amount<Angle> alphaTemp = alpha;
+				int maxIterAlpha = 1000;
+				do {
+					
+					Amount<Angle> alphaTemp = alphaList.get(alphaList.size()-1);
 					
 					acceleration = (g0/weight.doubleValue(SI.NEWTON))
 							*( (thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-									*Math.cos(alpha.doubleValue(SI.RADIAN))
+									*Math.cos(alphaTemp.doubleValue(SI.RADIAN))
 									) 
-									- drag(speed, alpha, gamma, time, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
+									- drag(speed, alphaTemp, gamma, time, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
 									- ( weight.doubleValue(SI.NEWTON)
 											*Math.sin(gamma.doubleValue(SI.RADIAN))
 											)
 									);
 					
 					if (acceleration > 0) 
-						alpha = alpha.plus(Amount.valueOf(0.1, NonSI.DEGREE_ANGLE));
-					else
-						alpha = alpha.minus(Amount.valueOf(0.1, NonSI.DEGREE_ANGLE));
+						alphaTemp = alphaTemp.plus(Amount.valueOf(0.1, NonSI.DEGREE_ANGLE));
+					else if (acceleration < 0) 
+						alphaTemp = alphaTemp.minus(Amount.valueOf(0.1, NonSI.DEGREE_ANGLE));
 					
-					gammaDot = 57.3*(g0/(weight.doubleValue(SI.NEWTON)*speed.doubleValue(SI.METERS_PER_SECOND)))
-							*( lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
-									+ ( thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-											*Math.sin(alpha.doubleValue(SI.RADIAN))
-											)
-									- ( weight.doubleValue(SI.NEWTON)
-											*Math.cos(gamma.doubleValue(SI.RADIAN))
-											)
-									);
+					alphaList.add(alphaTemp);
 					
 					if(j > maxIterAlpha)
 						break;
-					if(gammaDot < 0.0) {
-						alpha = alphaTemp;
-						break;
-					}
 					
 					j++;
 
-				}
+				} while (Math.abs(acceleration - 0) >= 1e-4);
 
+				alpha = alphaList.get(alphaList.size()-1);
+				
 			}
 			
 			return alpha;
