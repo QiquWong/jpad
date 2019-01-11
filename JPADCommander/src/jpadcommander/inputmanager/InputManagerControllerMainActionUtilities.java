@@ -1047,7 +1047,6 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getLoadCADConfigurationFileButton().setDisable(true);
 		theController.getChooseCADConfigurationFileButton().setDisable(true);
 		
-		theController.getExportCADToFileCheckBox().setSelected(false);
 		theController.getExportCADWireframeCheckBox().setSelected(false);
 		theController.getFileExtensionCADChoiceBox().getSelectionModel().clearSelection();
 		
@@ -1807,7 +1806,7 @@ public class InputManagerControllerMainActionUtilities {
 				.setCanardFairingHeightBelowReferenceFactor(canardFairingHeightBelowReferenceFactor)
 				.setCanardFairingHeightAboveReferenceFactor(canardFairingHeightAboveReferenceFactor)
 				.setCanardFairingFilletRadiusFactor(canardFairingFilletRadiusFactor)
-				.setExportToFile(theController.getExportCADToFileCheckBox().isSelected())
+				.setExportToFile(false)
 				.setFileExtension(FileExtension.valueOf(theController.getFileExtensionCADChoiceBox().getSelectionModel().getSelectedItem()))
 				.setExportWireframe(theController.getExportCADWireframeCheckBox().isSelected())
 				.build();
@@ -1827,20 +1826,6 @@ public class InputManagerControllerMainActionUtilities {
 		
 		theController.getSaveCADToFileButton().setStyle(theController.getButtonSuggestedActionStyle());
 		
-		// Eventually save to file the Aircraft CAD model
-		if (theController.getExportCADToFileCheckBox().isSelected()) 
-			saveAircraftCADToFileAt3DViewUpdate();	
-		
-	}
-	
-	private void saveAircraftCADToFileAt3DViewUpdate() {
-		
-		Main.getTheCADManager().exportCAD(
-				Main.getOutputDirectoryPath() + 
-				File.separator + 
-				"CAD_output" + 
-				File.separator 
-				);
 	}
 	
 	public void saveCADToFileImplementation() {

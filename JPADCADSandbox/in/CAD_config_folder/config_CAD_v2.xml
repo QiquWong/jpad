@@ -5,7 +5,7 @@
 		<numberNoseTrunkSections spacing="COSINUS">7</numberNoseTrunkSections>
 		<numberTailTrunkSections spacing="COSINUS">7</numberTailTrunkSections>
 	</fuselage>
-	<wing generate="TRUE" tipType="WINGLET">
+	<wing generate="TRUE" tipType="CUTOFF">
 		<wingletParams>
 			<yOffsetFactor>0.75</yOffsetFactor>
 			<xOffsetFactor>0.55</xOffsetFactor>

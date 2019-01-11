@@ -149,11 +149,21 @@ public class CompleteCADTest extends Application {
 //		
 //		scene.setCamera(theCADManager.getTheCamera());
 		
-		// OCCFX classes and methods
-		OCCFX3DView sceneView = new OCCFX3DView(theCADManager.getTheAircraftSolidsMap());
-		Scene scene = sceneView.getScene();
+//		// OCCFX classes and methods
+//		OCCFX3DView sceneView = new OCCFX3DView(theCADManager.getTheAircraftSolidsMap());
+//		Scene scene = sceneView.getScene();
+//		
+//		primaryStage.setTitle("AIRCRAFT FX TEST");
+//		primaryStage.setScene(scene);
+//		primaryStage.show();
 		
-		primaryStage.setTitle("AIRCRAFT FX TEST");
+		// OCCFX classes and methods: SUBSCENE with controls
+		OCCFX3DView sceneView = new OCCFX3DView(theCADManager.getTheAircraftSolidsMap(), 1024, 550, true);
+		sceneView.addControls();	
+		VBox sceneVBox = sceneView.getSubSceneWithControls();
+		Scene scene = new Scene(sceneVBox);
+		
+		primaryStage.setTitle("AIRCRAFT SUBSCENE WITH CONTROLS");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	};

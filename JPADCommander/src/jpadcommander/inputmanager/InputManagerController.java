@@ -1726,8 +1726,6 @@ public class InputManagerController {
 	
 	// CAD file export
 	@FXML
-	private CheckBox exportCADToFileCheckBox;
-	@FXML
 	private CheckBox exportCADWireframeCheckBox;
 	@FXML
 	private ChoiceBox<String> fileExtensionCADChoiceBox;
@@ -13435,14 +13433,6 @@ public class InputManagerController {
 	
 	public void setFileExtensionCADChoiceBox(ChoiceBox<String> fileExtensionCADChoiceBox) {
 		this.fileExtensionCADChoiceBox = fileExtensionCADChoiceBox;
-	}
-	
-	public CheckBox getExportCADToFileCheckBox() {
-		return exportCADToFileCheckBox;
-	}
-	
-	public void setExportCADToFileCheckBox(CheckBox exportCADToFileCheckBox) {
-		this.exportCADToFileCheckBox = exportCADToFileCheckBox;
 	}
 	
 	public CheckBox getExportCADWireframeCheckBox() {

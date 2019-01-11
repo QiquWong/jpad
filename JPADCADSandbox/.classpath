@@ -17,5 +17,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.3.0_vc14_Win64/OCCJavaWrapper.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/poi/ooxml-lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/poi/ooxml-lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

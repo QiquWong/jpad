@@ -5527,11 +5527,6 @@ public class InputManagerControllerLogUtilities {
 		
 		//-------------------------------------------------------------------------
 		// CAD EXPORT OPTIONS
-		if (theController.getExportCADToFileCheckBox().isDisabled())
-			theController.getExportCADToFileCheckBox().setDisable(false);
-		theController.getExportCADToFileCheckBox().setSelected(
-				Main.getTheCADManager().getTheCADBuilderInterface().getExportToFile());
-		
 		if (theController.getExportCADWireframeCheckBox().isDisabled())
 			theController.getExportCADWireframeCheckBox().setDisable(false);
 		theController.getExportCADWireframeCheckBox().setSelected(
