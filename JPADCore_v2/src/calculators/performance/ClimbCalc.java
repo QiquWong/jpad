@@ -44,11 +44,11 @@ public class ClimbCalc {
 	// Input:
 	private Aircraft _theAircraft;
 	private OperatingConditions _theOperatingConditions;
-	private Double _cLmaxClean;
-	private Double[] _polarCLClimb;
-	private Double[] _polarCDClimb;
+	private double _cLmaxClean;
+	private double[] _polarCLClimb;
+	private double[] _polarCDClimb;
 	private Amount<Velocity> _climbSpeed;
-	private Double _dragDueToEnigneFailure;
+	private double _dragDueToEnigneFailure;
 	//............................................................................................
 	// Output:
 	private List<RCMap> _rcMapAEO;
@@ -85,11 +85,11 @@ public class ClimbCalc {
 	public ClimbCalc(
 			Aircraft theAircraft,
 			OperatingConditions theOperatingConditions,
-			Double cLmaxClean,
-			Double[] polarCLClimb,
-			Double[] polarCDClimb,
+			double cLmaxClean,
+			double[] polarCLClimb,
+			double[] polarCDClimb,
 			Amount<Velocity> climbSpeed,
-			Double dragDueToEnigneFailure
+			double dragDueToEnigneFailure
 			) {
 		
 		this._theAircraft = theAircraft;
@@ -157,7 +157,7 @@ public class ClimbCalc {
 									_theOperatingConditions.getDeltaTemperatureClimb(),
 									startClimbMassAEO,
 									_theAircraft.getWing().getSurfacePlanform(),
-									Arrays.stream(_polarCLClimb).mapToDouble(cL -> cL).max().getAsDouble()
+									Arrays.stream(_polarCLClimb).map(cL -> cL).max().getAsDouble()
 									).doubleValue(SI.METERS_PER_SECOND),
 							SpeedCalc.calculateTAS(
 									_theOperatingConditions.getMachCruise(),
@@ -177,8 +177,8 @@ public class ClimbCalc {
 							speedArrayAEO,
 							_theAircraft.getWing().getSurfacePlanform(),
 							_cLmaxClean,
-							MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
-							MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+							_polarCLClimb,
+							_polarCDClimb,
 							_theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord(),
 							meanAirfoil.getThicknessToChordRatio(),
 							meanAirfoil.getType()
@@ -339,7 +339,7 @@ public class ClimbCalc {
 										_theOperatingConditions.getDeltaTemperatureClimb(),
 										startClimbMassOEI,
 										_theAircraft.getWing().getSurfacePlanform(),
-										Arrays.stream(_polarCLClimb).mapToDouble(cL -> cL).max().getAsDouble()
+										Arrays.stream(_polarCLClimb).map(cL -> cL).max().getAsDouble()
 										).doubleValue(SI.METERS_PER_SECOND),
 								SpeedCalc.calculateTAS(
 										_theOperatingConditions.getMachCruise(),
@@ -359,8 +359,8 @@ public class ClimbCalc {
 								speedArrayOEI,
 								_theAircraft.getWing().getSurfacePlanform(),
 								_cLmaxClean, 
-								MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
-								MyArrayUtils.sumNumberToArrayEBE(MyArrayUtils.convertToDoublePrimitive(_polarCDClimb), _dragDueToEnigneFailure),
+								_polarCLClimb,
+								MyArrayUtils.sumNumberToArrayEBE(_polarCDClimb, _dragDueToEnigneFailure),
 								_theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord(),
 								meanAirfoil.getThicknessToChordRatio(),
 								meanAirfoil.getType()
@@ -2046,22 +2046,22 @@ public class ClimbCalc {
 	}
 
 
-	public Double[] getPolarCLClimb() {
+	public double[] getPolarCLClimb() {
 		return _polarCLClimb;
 	}
 
 
-	public void setPolarCLClimb(Double[] _polarCLClimb) {
+	public void setPolarCLClimb(double[] _polarCLClimb) {
 		this._polarCLClimb = _polarCLClimb;
 	}
 
 
-	public Double[] getPolarCDClimb() {
+	public double[] getPolarCDClimb() {
 		return _polarCDClimb;
 	}
 
 
-	public void setPolarCDClimb(Double[] _polarCDClimb) {
+	public void setPolarCDClimb(double[] _polarCDClimb) {
 		this._polarCDClimb = _polarCDClimb;
 	}
 

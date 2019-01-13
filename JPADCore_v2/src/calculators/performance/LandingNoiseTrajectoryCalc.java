@@ -66,15 +66,15 @@ public class LandingNoiseTrajectoryCalc {
 	private Amount<Area> surface; 
 	private Amount<Length> span;
 	private PowerPlant thePowerPlant;
-	private Double[] polarCLLanding;
-	private Double[] polarCDLanding;
+	private double[] polarCLLanding;
+	private double[] polarCDLanding;
 	private Amount<Duration> dtFlare, dtFreeRoll,
 	tObstacle = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tTouchDown = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
 	tZeroGamma = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 	private Amount<Mass> maxLandingMass; 
 	private Amount<Velocity> vSLanding, vApproach, vTouchDown, vWind, vDescent;
-	private Amount<Length> obstacle, intialAltitude, altitudeAtFlareEnding;
+	private Amount<Length> wingToGroundDistance, obstacle, intialAltitude, altitudeAtFlareEnding;
 	private Amount<Angle> gammaDescent, iw, alphaGround;
 	private Amount<Force> thrustAtFlareStart;
 	private List<Amount<Angle>> alpha;
@@ -117,8 +117,8 @@ public class LandingNoiseTrajectoryCalc {
 			Amount<Angle> gammaDescent,
 			Amount<Mass> maxLandingMass,
 			PowerPlant thePowerPlant,
-			Double[] polarCLLanding,
-			Double[] polarCDLanding,
+			double[] polarCLLanding,
+			double[] polarCDLanding,
 			double aspectRatio,
 			Amount<Area> surface,
 			Amount<Duration> dtFlare,
@@ -126,6 +126,7 @@ public class LandingNoiseTrajectoryCalc {
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
 			Amount<Angle> iw,
+			Amount<Length> wingToGroundDistance,
 			double cLmaxLND,
 			double cLZeroLND,
 			Amount<?> cLalphaLND,
@@ -153,6 +154,7 @@ public class LandingNoiseTrajectoryCalc {
 		this.mu = mu;
 		this.muBrake = muBrake;
 		this.obstacle = Amount.valueOf(50, NonSI.FOOT);
+		this.wingToGroundDistance = wingToGroundDistance;
 		this.vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		this.iw = iw;
 		this.alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
@@ -571,7 +573,8 @@ public class LandingNoiseTrajectoryCalc {
 				0.0,
 				vDescent.doubleValue(SI.METERS_PER_SECOND),
 				gammaDescent.doubleValue(NonSI.DEGREE_ANGLE),
-				intialAltitude.doubleValue(SI.METER)
+				intialAltitude.doubleValue(SI.METER),
+				0.0
 		}; // initial state
 
 		theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
@@ -1686,7 +1689,16 @@ public class LandingNoiseTrajectoryCalc {
 					);
 			Amount<Angle> alpha = alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 
-
+			System.out.println("\tTime = " + time);
+			System.out.println("\tSpeed = " + speed);
+			System.out.println("\tAltitude = " + altitude);
+			System.out.println("\tAlpha = " + alpha);
+			System.out.println("\tGamma = " + gamma);
+			System.out.println("\tThrust = " + thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum());
+			System.out.println("\tAcceleration = " + xDot[1] + " m/s^2");
+			System.out.println("\tGammaDot = " + xDot[2] + " °/s");
+			System.out.println("\n");
+			
 			if( t < tTouchDown.doubleValue(SI.SECOND)) {
 				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))*(
@@ -1817,7 +1829,7 @@ public class LandingNoiseTrajectoryCalc {
 
 		public double cD(double cL, Amount<Length> altitude) {
 
-			double hb = altitude.doubleValue(SI.METER)/LandingNoiseTrajectoryCalc.this.span.doubleValue(SI.METER);
+			double hb = (LandingNoiseTrajectoryCalc.this.getWingToGroundDistance().doubleValue(SI.METER) / LandingNoiseTrajectoryCalc.this.getSpan().doubleValue(SI.METER)) + altitude.doubleValue(SI.METER);
 			// Aerodynamics For Naval Aviators: (Hurt)
 			kGround = 1- (-4.48276577 * Math.pow(hb, 5) 
 					+ 15.61174376 * Math.pow(hb, 4)
@@ -1827,8 +1839,8 @@ public class LandingNoiseTrajectoryCalc {
 					+ 0.90793397);
 			
 			double cD = MyMathUtils.getInterpolatedValue1DLinear(
-					MyArrayUtils.convertToDoublePrimitive(polarCLLanding),
-					MyArrayUtils.convertToDoublePrimitive(polarCDLanding), 
+					polarCLLanding,
+					polarCDLanding, 
 					cL);
 
 			double cD0 = MyArrayUtils.getMin(polarCDLanding);
@@ -1902,17 +1914,11 @@ public class LandingNoiseTrajectoryCalc {
 				@SuppressWarnings("unused")
 				int j=0;
 
-				double gammaDot = LandingNoiseTrajectoryCalc.this.getGammaDot().get(
-						LandingNoiseTrajectoryCalc.this.getGammaDot().size()-1
-						);
-
-				alpha = LandingNoiseTrajectoryCalc.this.getAlpha().get(
-						LandingNoiseTrajectoryCalc.this.getAlpha().size()-1
-						).to(NonSI.DEGREE_ANGLE);
-
-
-				while (Math.abs(gammaDot - 0) >= 5e-3) {
-
+				alpha = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+				double gammaDot = 0.0;
+				
+				do {
+					
 					gammaDot = 57.3*(g0/(weight.doubleValue(SI.NEWTON)*speed.doubleValue(SI.METERS_PER_SECOND)))*(
 							lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
 							+ (thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
@@ -1928,8 +1934,40 @@ public class LandingNoiseTrajectoryCalc {
 
 					j++;
 
-				}
+					
+				} while (Math.abs(gammaDot) >= 1e-3);
+				
+				
+//				double gammaDot = LandingNoiseTrajectoryCalc.this.getGammaDot().get(
+//						LandingNoiseTrajectoryCalc.this.getGammaDot().size()-1
+//						);
+//
+//				alpha = LandingNoiseTrajectoryCalc.this.getAlpha().get(
+//						LandingNoiseTrajectoryCalc.this.getAlpha().size()-1
+//						).to(NonSI.DEGREE_ANGLE);
+//
+//
+//				while (Math.abs(gammaDot - 0) >= 5e-3) {
+//
+//					gammaDot = 57.3*(g0/(weight.doubleValue(SI.NEWTON)*speed.doubleValue(SI.METERS_PER_SECOND)))*(
+//							lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
+//							+ (thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+//									*Math.sin(alpha.doubleValue(SI.RADIAN))
+//									)
+//							- (weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN)))
+//							);
+//
+//					if (gammaDot > 0) 
+//						alpha = Amount.valueOf(alpha.doubleValue(NonSI.DEGREE_ANGLE) - 0.01, NonSI.DEGREE_ANGLE);
+//					else
+//						alpha = Amount.valueOf(alpha.doubleValue(NonSI.DEGREE_ANGLE) + 0.01, NonSI.DEGREE_ANGLE);
+//
+//					j++;
+//
+//				}
 
+				
+				
 			}
 
 			else if( time.doubleValue(SI.SECOND) > tObstacle.doubleValue(SI.SECOND) && time.doubleValue(SI.SECOND) <= tZeroGamma.doubleValue(SI.SECOND)) {
@@ -2035,11 +2073,11 @@ public class LandingNoiseTrajectoryCalc {
 		return thePowerPlant;
 	}
 
-	public Double[] getPolarCLLanding() {
+	public double[] getPolarCLLanding() {
 		return polarCLLanding;
 	}
 
-	public Double[] getPolarCDLanding() {
+	public double[] getPolarCDLanding() {
 		return polarCDLanding;
 	}
 
@@ -2259,11 +2297,11 @@ public class LandingNoiseTrajectoryCalc {
 		this.thePowerPlant = thePowerPlant;
 	}
 
-	public void setPolarCLLanding(Double[] polarCLLanding) {
+	public void setPolarCLLanding(double[] polarCLLanding) {
 		this.polarCLLanding = polarCLLanding;
 	}
 
-	public void setPolarCDLanding(Double[] polarCDLanding) {
+	public void setPolarCDLanding(double[] polarCDLanding) {
 		this.polarCDLanding = polarCDLanding;
 	}
 
@@ -2541,6 +2579,14 @@ public class LandingNoiseTrajectoryCalc {
 
 	public void setPhi(double phi) {
 		this.phi = phi;
+	}
+
+	public Amount<Length> getWingToGroundDistance() {
+		return wingToGroundDistance;
+	}
+
+	public void setWingToGroundDistance(Amount<Length> wingToGroundDistance) {
+		this.wingToGroundDistance = wingToGroundDistance;
 	}
 
 }

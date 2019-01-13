@@ -78,7 +78,7 @@ public class TakeOffCalc {
 	tRec = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 	private Amount<Mass> maxTakeOffMass; 
 	private Amount<Velocity> vSTakeOff, vRot, vMC, vLO, vWind, v1, v2;
-	private Amount<Length> altitude, obstacle, balancedFieldLength;
+	private Amount<Length> wingToGroundDistance, altitude, obstacle, balancedFieldLength;
 	private Amount<Temperature> deltaTemperature;
 	private Amount<Angle> alphaGround, iw;
 	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, fuelFlow, timeBreakPoints;
@@ -96,7 +96,7 @@ public class TakeOffCalc {
 	private boolean isAborted;
 	private boolean isTailStrike;
 	
-	private double cLalphaFlap, mach;
+	private double cLalphaFlap;
 
 	// Statistics to be collected at every phase: (initialization of the lists through the builder
 	private TakeOffResultsMap takeOffResults = new TakeOffResultsMap();
@@ -130,7 +130,6 @@ public class TakeOffCalc {
 			double[] polarCDTakeOff,
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double mach,
 			Amount<Mass> maxTakeOffMass,
 			Amount<Duration> dtHold,
 			double kcLMax,
@@ -142,6 +141,7 @@ public class TakeOffCalc {
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
 			Amount<Length> obstacle,
+			Amount<Length> wingToGroundDistance,
 			Amount<Velocity> vWind,
 			Amount<Angle> alphaGround,
 			Amount<Angle> iw,
@@ -162,7 +162,6 @@ public class TakeOffCalc {
 		this.polarCDTakeOff = polarCDTakeOff;
 		this.altitude = altitude;
 		this.deltaTemperature = deltaTemperature;
-		this.mach = mach;
 		this.maxTakeOffMass = maxTakeOffMass;
 		this.dtHold = dtHold;
 		this.kcLMax = kcLMax;
@@ -174,6 +173,7 @@ public class TakeOffCalc {
 		this.mu = mu;
 		this.muBrake = muBrake;
 		this.obstacle = obstacle;
+		this.wingToGroundDistance = wingToGroundDistance;
 		this.vWind = vWind;
 		this.alphaGround = alphaGround;
 		this.iw = iw;
@@ -2298,7 +2298,7 @@ public class TakeOffCalc {
 		
 		public double cD(double cL, Amount<Length> altitude) {
 
-			double hb = altitude.doubleValue(SI.METER)/TakeOffCalc.this.span.doubleValue(SI.METER);
+			double hb = (TakeOffCalc.this.getWingToGroundDistance().doubleValue(SI.METER) / TakeOffCalc.this.getSpan().doubleValue(SI.METER)) + altitude.doubleValue(SI.METER);
 			// Aerodynamics For Naval Aviators: (Hurt)
 			kGround = 1- (-4.48276577 * Math.pow(hb, 5) 
 					+ 15.61174376 * Math.pow(hb, 4)
@@ -2935,14 +2935,6 @@ public class TakeOffCalc {
 		this.altitude = altitude;
 	}
 
-	public double getMach() {
-		return mach;
-	}
-
-	public void setMach(double mach) {
-		this.mach = mach;
-	}
-
 	public List<Double> getFuelFlow() {
 		return fuelFlow;
 	}
@@ -3101,6 +3093,14 @@ public class TakeOffCalc {
 
 	public void setFuelUsed(List<Amount<Mass>> fuelUsed) {
 		this.fuelUsed = fuelUsed;
+	}
+
+	public Amount<Length> getWingToGroundDistance() {
+		return wingToGroundDistance;
+	}
+
+	public void setWingToGroundDistance(Amount<Length> wingToGroundDistance) {
+		this.wingToGroundDistance = wingToGroundDistance;
 	}
 
 }

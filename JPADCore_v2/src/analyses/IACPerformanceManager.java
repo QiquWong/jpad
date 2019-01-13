@@ -48,14 +48,14 @@ public interface IACPerformanceManager {
 	Map<Double, Double> getDeltaCD0FlapTakeOff();
 	Map<Double, Double> getDeltaCD0FlapLanding();
 	Map<Double, Double> getDeltaCD0LandingGears();
-	Map<Double, Double[]> getPolarCLCruise();
-	Map<Double, Double[]> getPolarCDCruise();
-	Map<Double, Double[]> getPolarCLClimb();
-	Map<Double, Double[]> getPolarCDClimb();
-	Map<Double, Double[]> getPolarCLTakeOff();
-	Map<Double, Double[]> getPolarCDTakeOff();
-	Map<Double, Double[]> getPolarCLLanding();
-	Map<Double, Double[]> getPolarCDLanding();
+	Map<Double, double[]> getPolarCLCruise();
+	Map<Double, double[]> getPolarCDCruise();
+	Map<Double, double[]> getPolarCLClimb();
+	Map<Double, double[]> getPolarCDClimb();
+	Map<Double, double[]> getPolarCLTakeOff();
+	Map<Double, double[]> getPolarCDTakeOff();
+	Map<Double, double[]> getPolarCLLanding();
+	Map<Double, double[]> getPolarCDLanding();
 	//..............................................................................
 	// Take-off & Landing
 	Amount<Velocity> getWindSpeed();
