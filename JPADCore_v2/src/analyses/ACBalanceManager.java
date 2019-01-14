@@ -2244,12 +2244,12 @@ public class ACBalanceManager {
 		_massMap = new HashMap<>();
 		
 		_payloadMass = _theBalanceManagerInterface.getSinglePassengerMass().times(
-				_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()
+				_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()
 				);
 		_maximumZeroFuelMass = _theBalanceManagerInterface.getOperatingEmptyMass().to(SI.KILOGRAM)
 				.plus(
 						_theBalanceManagerInterface.getSinglePassengerMass().to(SI.KILOGRAM).times(
-								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getMaximumPassengerNumber()
+								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()
 								)
 						);
 		_maximumTakeOffMass = _theBalanceManagerInterface.getOperatingEmptyMass().to(SI.KILOGRAM)
@@ -2330,7 +2330,7 @@ public class ACBalanceManager {
 		fuelCoGAfterBoardingReferToMAC[1] = (_cgMaximumTakeOffMass.getXMAC()*100); 
 		massWithFuelAfterBoarding[1] = getTheBalanceManagerInterface().getOperatingEmptyMass().doubleValue(SI.KILOGRAM)
 				+ getTheBalanceManagerInterface().getSinglePassengerMass().times(
-						getTheBalanceManagerInterface().getTheAircraft().getCabinConfiguration().getMaximumPassengerNumber()
+						getTheBalanceManagerInterface().getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()
 						).doubleValue(SI.KILOGRAM)
 				+ getTheBalanceManagerInterface().getDesignFuelMass().doubleValue(SI.KILOGRAM);
 				
@@ -3390,14 +3390,14 @@ public class ACBalanceManager {
 			if(_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration() != null) {
 				payloadInertiaMomentIxx = InertiaContributionsCalc.calculateComponentInertiaMomentIxx(
 						_theBalanceManagerInterface.getSinglePassengerMass().times(
-								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()
+								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()
 								),
 						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
 						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getZBRF()
 						);
 				payloadInertiaMomentIyy = InertiaContributionsCalc.calculateComponentInertiaMomentIyy(
 						_theBalanceManagerInterface.getSinglePassengerMass().times(
-								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()
+								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()
 								),
 						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getZBRF(),
 						_theBalanceManagerInterface.getTheAircraft().getFuselage().getNoseLength().to(SI.METER)
@@ -3406,7 +3406,7 @@ public class ACBalanceManager {
 						);
 				payloadInertiaMomentIzz = InertiaContributionsCalc.calculateComponentInertiaMomentIzz(
 						_theBalanceManagerInterface.getSinglePassengerMass().times(
-								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()
+								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()
 								),
 						_theBalanceManagerInterface.getTheAircraft().getFuselage().getNoseLength().to(SI.METER)
 						.plus(_theBalanceManagerInterface.getTheAircraft().getFuselage().getCylinderLength().to(SI.METER).divide(2)),
@@ -3853,7 +3853,7 @@ public class ACBalanceManager {
 				
 				payloadInertiaProductIxy = InertiaContributionsCalc.calculateComponentInertiaProductIxy(
 						_theBalanceManagerInterface.getSinglePassengerMass().times(
-								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()
+								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()
 								),
 						_theBalanceManagerInterface.getTheAircraft().getFuselage().getNoseLength().to(SI.METER)
 						.plus(_theBalanceManagerInterface.getTheAircraft().getFuselage().getCylinderLength().to(SI.METER).divide(2)),
@@ -3863,14 +3863,14 @@ public class ACBalanceManager {
 						);
 				payloadInertiaProductIyz = InertiaContributionsCalc.calculateComponentInertiaProductIyz(
 						_theBalanceManagerInterface.getSinglePassengerMass().times(
-								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()
+								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()
 								),
 						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getYBRF(),
 						Amount.valueOf(0.0, SI.METER), _cgMaximumTakeOffMass.getZBRF()
 						);
 				payloadInertiaProductIxz = InertiaContributionsCalc.calculateComponentInertiaProductIxz(
 						_theBalanceManagerInterface.getSinglePassengerMass().times(
-								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()
+								_theBalanceManagerInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()
 								),
 						_theBalanceManagerInterface.getTheAircraft().getFuselage().getNoseLength().to(SI.METER)
 						.plus(_theBalanceManagerInterface.getTheAircraft().getFuselage().getCylinderLength().to(SI.METER).divide(2)),

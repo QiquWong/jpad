@@ -22,7 +22,7 @@ public class SystemsWeightCalc {
 	
 	public static Amount<Mass> calculateAPUMassTorenbeek1982 (Aircraft aircraft) {
 		
-		double wba = 0.5*aircraft.getCabinConfiguration().getActualPassengerNumber();
+		double wba = 0.5*aircraft.getCabinConfiguration().getDesignPassengerNumber();
 		
 		return Amount.valueOf(
 				2.25

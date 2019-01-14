@@ -1817,28 +1817,16 @@ public class InputManagerControllerLogUtilities {
 
 			//---------------------------------------------------------------------------------
 			// ACTUAL PASSENGERS NUMBER:
-			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()) != null) 
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()) != null) 
 				theController.getTextFieldActualPassengersNumber().setText(
 					Integer.toString(
 							Main.getTheAircraft()
 							.getCabinConfiguration()
-							.getActualPassengerNumber()
+							.getDesignPassengerNumber()
 							)
 					);
 			else
 				theController.getTextFieldActualPassengersNumber().setText("0");
-			//---------------------------------------------------------------------------------
-			// MAXIMUM PASSENGERS NUMBER:
-			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getMaximumPassengerNumber()) != null)
-				theController.getTextFieldMaximumPassengersNumber().setText(
-						Integer.toString(
-								Main.getTheAircraft()
-								.getCabinConfiguration()
-								.getMaximumPassengerNumber()
-								)
-						);
-			else
-				theController.getTextFieldMaximumPassengersNumber().setText("0");
 			//---------------------------------------------------------------------------------
 			// FLIGHT CREW NUMBER:
 			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getFlightCrewNumber()) != null)

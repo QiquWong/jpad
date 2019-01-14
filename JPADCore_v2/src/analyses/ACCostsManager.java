@@ -165,7 +165,7 @@ public class ACCostsManager {
 
 					//---------------------------------------------------------------
 					// PAYLOAD MASS
-					payloadMass = theAircraft.getTheAnalysisManager().getTheWeights().getPaxMass().to(SI.KILOGRAM);
+					payloadMass = theAircraft.getTheAnalysisManager().getTheWeights().getPayload().to(SI.KILOGRAM);
 					
 				}
 				else {
@@ -1242,7 +1242,7 @@ public class ACCostsManager {
 						*_blockTime.doubleValue(NonSI.HOUR)
 						*100
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] {
 					"Interest", 
@@ -1256,7 +1256,7 @@ public class ACCostsManager {
 						*_blockTime.doubleValue(NonSI.HOUR)
 						*100
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] {
 					"Insurance", 
@@ -1270,7 +1270,7 @@ public class ACCostsManager {
 						*_blockTime.doubleValue(NonSI.HOUR)
 						*100
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] {
 					"DOC Capital", 
@@ -1284,7 +1284,7 @@ public class ACCostsManager {
 						*100	
 						*_blockTime.doubleValue(NonSI.HOUR)
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] { });
 		}
@@ -1306,7 +1306,7 @@ public class ACCostsManager {
 						*_blockTime.doubleValue(NonSI.HOUR) 
 						*100
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] {
 					"Cabin Crew", 
@@ -1320,7 +1320,7 @@ public class ACCostsManager {
 						*_blockTime.doubleValue(NonSI.HOUR) 
 						*100
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] {
 					"DOC Crew", 
@@ -1334,7 +1334,7 @@ public class ACCostsManager {
 						*100
 						*_blockTime.doubleValue(NonSI.HOUR) 
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] { });
 		}
@@ -1354,7 +1354,7 @@ public class ACCostsManager {
 					_fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue()
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] { });
 		}
@@ -1374,7 +1374,7 @@ public class ACCostsManager {
 					_landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] {
 					"Navigation charges", 
@@ -1386,7 +1386,7 @@ public class ACCostsManager {
 					_navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 						
 			});
 			dataListDOC.add(new Object[] {
@@ -1399,7 +1399,7 @@ public class ACCostsManager {
 					_groundHandlingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			
 			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES).equals(MethodEnum.ILR_AACHEN)) {
@@ -1414,7 +1414,7 @@ public class ACCostsManager {
 						_noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 				});
 				dataListDOC.add(new Object[] {
 						"Emissions charges", 
@@ -1426,7 +1426,7 @@ public class ACCostsManager {
 						_emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 				});
 				
 			}
@@ -1440,7 +1440,7 @@ public class ACCostsManager {
 					_chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT)
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] { });
 		}
@@ -1464,7 +1464,7 @@ public class ACCostsManager {
 					_airframeMaintenanceCharges.get(
 							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
 							*100		
-							/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+							/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] {
 					"Engine Maintenance Charges", 
@@ -1480,7 +1480,7 @@ public class ACCostsManager {
 					_engineMaintenanceCharges.get(
 							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
 							*100		
-							/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+							/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] {
 					"DOC Maintenance", 
@@ -1496,7 +1496,7 @@ public class ACCostsManager {
 					_maintenanceChargesDOC.get(
 							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
 							*100		
-							/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+							/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 			});
 			dataListDOC.add(new Object[] { });
 		}
@@ -1527,7 +1527,7 @@ public class ACCostsManager {
 				totalDOC
 					/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
 					*100
-					/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+					/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 		});
 		
 		Double cashDOC = 0.0;
@@ -1553,7 +1553,7 @@ public class ACCostsManager {
 				cashDOC
 					/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
 					*100
-					/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+					/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 		});
 		
 		CellStyle styleHead = wb.createCellStyle();
@@ -1700,25 +1700,25 @@ public class ACCostsManager {
 						*_blockTime.doubleValue(NonSI.HOUR)
 						*100
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\t\tInterest: " + _interest.get(
 						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
 						*100
 						*_blockTime.doubleValue(NonSI.HOUR) 
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\t\tInsurance: " + _insurance.get(
 						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
 						*_blockTime.doubleValue(NonSI.HOUR)
 						*100
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\t\tDOC: " + _capitalDOC.get(
 						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
 						*_blockTime.doubleValue(NonSI.HOUR)
 						*100
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t.....................................\n");
 		}
 		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CREW)) {
@@ -1749,17 +1749,17 @@ public class ACCostsManager {
 						*_blockTime.doubleValue(NonSI.HOUR) 
 						*100
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\t\tCabin Crew: " + _cabinCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
 						*100
 						*_blockTime.doubleValue(NonSI.HOUR)
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\t\tDOC: " + _crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
 						*100
 						*_blockTime.doubleValue(NonSI.HOUR)
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t.....................................\n");
 		}
 		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_FUEL)) {
@@ -1776,7 +1776,7 @@ public class ACCostsManager {
 				.append("\t\t\t" + _fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue()
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t.....................................\n");
 		}
 		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CHARGES)) {
@@ -1830,31 +1830,31 @@ public class ACCostsManager {
 				.append("\t\t\tLanding charges: " + _landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\t\tNavigation charges: " + _navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
 						*100		
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\t\tGround handling charges: " + _groundHandlingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
 						*100		
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n");
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n");
 				
 				if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES).equals(MethodEnum.ILR_AACHEN)) {
 					sb.append("\t\t\tNoise charges: " + _noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
 						*100	
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 					.append("\t\t\tEmissions charges: " + _emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
 						*100
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n");
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n");
 				}
 				
 				sb.append("\t\t\tDOC: " + _chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT)
 						*100
 						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t.....................................\n");
 		}
 		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_MAINTENANCE)) {
@@ -1893,15 +1893,15 @@ public class ACCostsManager {
 				.append("\t\t\tAirframe Maintenance Charges: " + _airframeMaintenanceCharges.get(
 						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\t\tEngine Maintenance Charges: " + _engineMaintenanceCharges.get(
 						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\t\tDOC: " + _maintenanceChargesDOC.get(
 						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
 						*100
-						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t.....................................\n");
 		}
 		
@@ -1916,7 +1916,7 @@ public class ACCostsManager {
 		.append("\t\t\t" + totalDOC
 				/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
 				*100
-				/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+				/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 		.append("\t.....................................\n")
 		.append("\tCash DOC\n")
 		.append("\t\t$/flight\n")
@@ -1929,7 +1929,7 @@ public class ACCostsManager {
 		.append("\t\t\t" + cashDOC
 				/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
 				*100
-				/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber() + "\n")
+				/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber() + "\n")
 		.append("\t.....................................\n");
 		
 		return sb.toString();
@@ -2030,7 +2030,7 @@ public class ACCostsManager {
 
 			_cabinCrewCost.put(MethodEnum.ATA,
 					CostsCalcUtils.calcCabinCrewCostATA(
-							_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getActualPassengerNumber()
+							_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getDesignPassengerNumber()
 							)
 					);
 			

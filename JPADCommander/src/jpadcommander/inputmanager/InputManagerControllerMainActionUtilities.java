@@ -346,7 +346,6 @@ public class InputManagerControllerMainActionUtilities {
 	private void cleanCabinConfigurationData() {
 		
 		theController.getTextFieldActualPassengersNumber().clear();
-		theController.getTextFieldMaximumPassengersNumber().clear();
 		theController.getTextFieldFlightCrewNumber().clear();
 		theController.getTextFieldClassesNumber().clear();
 		theController.getCabinConfigurationClassesTypeChoiceBox1().getSelectionModel().clearSelection();

@@ -947,8 +947,6 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldActualPassengersNumber;
 	@FXML
-	private TextField textFieldMaximumPassengersNumber;
-	@FXML
 	private TextField textFieldFlightCrewNumber;
 	@FXML
 	private TextField textFieldClassesNumber;
@@ -9571,14 +9569,6 @@ public class InputManagerController {
 
 	public void setTextFieldActualPassengersNumber(TextField textFieldActualPassengersNumber) {
 		this.textFieldActualPassengersNumber = textFieldActualPassengersNumber;
-	}
-
-	public TextField getTextFieldMaximumPassengersNumber() {
-		return textFieldMaximumPassengersNumber;
-	}
-
-	public void setTextFieldMaximumPassengersNumber(TextField textFieldMaximumPassengersNumber) {
-		this.textFieldMaximumPassengersNumber = textFieldMaximumPassengersNumber;
 	}
 
 	public TextField getTextFieldFlightCrewNumber() {

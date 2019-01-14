@@ -1083,7 +1083,6 @@ public class InputManagerControllerUpdateUtilites {
 		// DATA INITIALIZATION
 		//.................................................................................................
 		String actualPassengerNumber = "";
-		String maximumPassengerNumber = "";
 		String flightCrewNumber = "";
 		String classesNumber = "";
 		List<String> classesType = new ArrayList<>();
@@ -1124,8 +1123,6 @@ public class InputManagerControllerUpdateUtilites {
 		//.................................................................................................
 		if(theController.getTextFieldActualPassengersNumber().getText() != null)
 			actualPassengerNumber = theController.getTextFieldActualPassengersNumber().getText();
-		if(theController.getTextFieldMaximumPassengersNumber().getText() != null)
-			maximumPassengerNumber = theController.getTextFieldMaximumPassengersNumber().getText();
 		if(theController.getTextFieldFlightCrewNumber().getText() != null)
 			flightCrewNumber = theController.getTextFieldFlightCrewNumber().getText();
 		if(theController.getTextFieldClassesNumber().getText() != null)
@@ -1234,8 +1231,7 @@ public class InputManagerControllerUpdateUtilites {
 		CabinConfiguration aircraftCabinConfiguration = new CabinConfiguration(
 				new ICabinConfiguration.Builder()
 				.setId("Cabin Configuration - " + Main.getTheAircraft().getId())
-				.setActualPassengerNumber(Integer.valueOf(actualPassengerNumber))
-				.setMaximumPassengerNumber(Integer.valueOf(maximumPassengerNumber))
+				.setDesignPassengerNumber(Integer.valueOf(actualPassengerNumber))
 				.setFlightCrewNumber(Integer.valueOf(flightCrewNumber))
 				.setClassesNumber(Integer.valueOf(classesNumber))
 				.addAllClassesType(classesType.stream()

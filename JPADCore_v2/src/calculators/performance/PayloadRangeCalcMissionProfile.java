@@ -2147,15 +2147,15 @@ public class PayloadRangeCalcMissionProfile{
 		// RANGE AT DESIGN PAYLOAD
 		_rangeAtDesignPayload = calcRangeAtGivenPayload(
 				_maximumTakeOffMass.to(SI.KILOGRAM),
-				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getActualPassengerNumber()),
+				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getDesignPassengerNumber()),
 				vMC
 				);
-		_designPayload = _singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getActualPassengerNumber());
-		_passengersNumberAtDesignPayload = _theAircraft.getCabinConfiguration().getActualPassengerNumber();
+		_designPayload = _singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getDesignPassengerNumber());
+		_passengersNumberAtDesignPayload = _theAircraft.getCabinConfiguration().getDesignPassengerNumber();
 		_requiredMassAtDesignPayload = _maximumTakeOffMass.to(SI.KILOGRAM)
 				.minus(_operatingEmptyMass.to(SI.KILOGRAM))
 				.minus(_singlePassengerMass.to(SI.KILOGRAM)
-						.times(_theAircraft.getCabinConfiguration().getActualPassengerNumber()
+						.times(_theAircraft.getCabinConfiguration().getDesignPassengerNumber()
 								)
 						);
 		

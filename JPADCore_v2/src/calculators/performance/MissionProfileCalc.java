@@ -3621,7 +3621,7 @@ public class MissionProfileCalc {
 				.append("\t\tBlock fuel = " + _blockFuel + "\n")
 				.append("\t\tTotal fuel = " + _totalFuel + "\n")
 				.append("\t\tFuel reserve = " + _fuelReserve*100 + " %\n")
-				.append("\t\tDesign passengers number = " + _theAircraft.getCabinConfiguration().getActualPassengerNumber() + "\n")
+				.append("\t\tDesign passengers number = " + _theAircraft.getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\tPassengers number for this mission = " + _passengersNumber + "\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tTake-off range = " + _rangeList.get(1).to(NonSI.NAUTICAL_MILE) + " \n")
