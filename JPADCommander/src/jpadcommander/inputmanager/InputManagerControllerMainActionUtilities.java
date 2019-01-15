@@ -416,10 +416,8 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getEquivalentWingSweepLEUnitChoiceBox().getSelectionModel().clearSelection();
 		theController.getEquivalentWingTwistAtTipUnitChoiceBox().getSelectionModel().clearSelection();
 		theController.getEquivalentWingDihedralUnitChoiceBox().getSelectionModel().clearSelection();
-		theController.getWingMinimumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().clearSelection();
-		theController.getWingMaximumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().clearSelection();
-		theController.getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox().getSelectionModel().clearSelection();
-		theController.getWingMaximumDeflectionAngleAileronRightUnitChoiceBox().getSelectionModel().clearSelection();
+		theController.getWingMinimumDeflectionAngleAileron1UnitChoiceBox().getSelectionModel().clearSelection();
+		theController.getWingMaximumDeflectionAngleAileron1UnitChoiceBox().getSelectionModel().clearSelection();
 		
 		// View and TextArea
 		theController.getTextAreaWingConsoleOutput().clear();
@@ -544,19 +542,31 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getTabPaneWingSlats().getTabs().remove(1, theController.getTabPaneWingSlats().getTabs().size());
 
 		// ailerons
-		theController.getTextFieldWingInnerPositionAileronLeft().clear();
-		theController.getTextFieldWingInnerPositionAileronLeft().clear();
-		theController.getTextFieldWingOuterPositionAileronLeft().clear();
-		theController.getTextFieldWingInnerChordRatioAileronLeft().clear();
-		theController.getTextFieldWingOuterChordRatioAileronLeft().clear();
-		theController.getTextFieldWingMinimumDeflectionAngleAileronLeft().clear();
-		theController.getTextFieldWingMaximumDeflectionAngleAileronLeft().clear();
-		theController.getTextFieldWingInnerPositionAileronRight().clear();
-		theController.getTextFieldWingOuterPositionAileronRight().clear();
-		theController.getTextFieldWingInnerChordRatioAileronRight().clear();
-		theController.getTextFieldWingOuterChordRatioAileronRight().clear();
-		theController.getTextFieldWingMinimumDeflectionAngleAileronRight().clear();
-		theController.getTextFieldWingMaximumDeflectionAngleAileronRight().clear();
+		theController.getTextFieldWingInnerPositionAileronList().stream().forEach(tf -> tf.clear());
+		if (theController.getTextFieldWingInnerPositionAileronList().size() > 1)
+			theController.getTextFieldWingInnerPositionAileronList().subList(1, theController.getTextFieldWingInnerPositionAileronList().size()).clear();
+		theController.getTextFieldWingOuterPositionAileronList().stream().forEach(tf -> tf.clear());
+		if (theController.getTextFieldWingOuterPositionAileronList().size() > 1)
+			theController.getTextFieldWingOuterPositionAileronList().subList(1, theController.getTextFieldWingOuterPositionAileronList().size()).clear();
+		theController.getTextFieldWingInnerChordRatioAileronList().stream().forEach(tf -> tf.clear());
+		if (theController.getTextFieldWingInnerChordRatioAileronList().size() > 1)
+			theController.getTextFieldWingInnerChordRatioAileronList().subList(1, theController.getTextFieldWingInnerChordRatioAileronList().size()).clear();
+		theController.getTextFieldWingOuterChordRatioAileronList().stream().forEach(tf -> tf.clear());
+		if (theController.getTextFieldWingOuterChordRatioAileronList().size() > 1)
+			theController.getTextFieldWingOuterChordRatioAileronList().subList(1, theController.getTextFieldWingOuterChordRatioAileronList().size()).clear();
+		theController.getTextFieldWingMinimumDeflectionAngleAileronList().stream().forEach(tf -> tf.clear());
+		if (theController.getTextFieldWingMinimumDeflectionAngleAileronList().size() > 1)
+			theController.getTextFieldWingMinimumDeflectionAngleAileronList().subList(1, theController.getTextFieldWingMinimumDeflectionAngleAileronList().size()).clear();
+		theController.getTextFieldWingMaximumDeflectionAngleAileronList().stream().forEach(tf -> tf.clear());
+		if (theController.getTextFieldWingMaximumDeflectionAngleAileronList().size() > 1)
+			theController.getTextFieldWingMaximumDeflectionAngleAileronList().subList(1, theController.getTextFieldWingMaximumDeflectionAngleAileronList().size()).clear();
+		theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().size() > 1)
+			theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().subList(1, theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().size()).clear();
+		theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().size() > 1)
+			theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().subList(1, theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().size()).clear();
+		theController.getTabPaneWingAilerons().getTabs().remove(1, theController.getTabPaneWingAilerons().getTabs().size());
 		
 		// spoilers
 		theController.getTextFieldWingInnerSpanwisePositionSpoilerList().stream().forEach(tf -> tf.clear());

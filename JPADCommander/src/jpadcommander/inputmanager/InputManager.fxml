@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
@@ -22,7 +27,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="4720.0" prefWidth="1072.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jpadcommander.inputmanager.InputManagerController">
+<BorderPane prefHeight="4720.0" prefWidth="1072.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jpadcommander.inputmanager.InputManagerController">
    <center>
       <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
@@ -1534,9 +1539,9 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TabPane layoutY="2621.0" prefHeight="414.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                      <TabPane fx:id="tabPaneWingAilerons" layoutY="2621.0" prefHeight="414.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
-                                                            <Tab text="Left aileron ">
+                                                            <Tab text="Aileron 1">
                                                                <content>
                                                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="1072.0">
                                                                      <children>
@@ -1545,97 +1550,45 @@
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingInnerPositionAileronLeft" layoutX="6.0" layoutY="76.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingInnerPositionAileron1" layoutX="6.0" layoutY="76.0" prefHeight="31.0" prefWidth="340.0" />
                                                                         <Label layoutX="6.0" layoutY="107.0" prefHeight="21.0" prefWidth="216.0" text="Outer position (% semispan):">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingOuterPositionAileronLeft" layoutX="6.0" layoutY="128.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingOuterPositionAileron1" layoutX="6.0" layoutY="128.0" prefHeight="31.0" prefWidth="340.0" />
                                                                         <Label layoutX="6.0" layoutY="159.0" prefHeight="21.0" prefWidth="252.0" text="Inner chord ratio:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingInnerChordRatioAileronLeft" layoutX="6.0" layoutY="180.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingInnerChordRatioAileron1" layoutX="6.0" layoutY="180.0" prefHeight="31.0" prefWidth="340.0" />
                                                                         <Label layoutX="6.0" layoutY="211.0" prefHeight="21.0" prefWidth="128.0" text="Outer chord ratio:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingOuterChordRatioAileronLeft" layoutX="6.0" layoutY="232.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingMinimumDeflectionAngleAileronLeftUnitChoiceBox" layoutX="348.0" layoutY="285.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingOuterChordRatioAileron1" layoutX="6.0" layoutY="232.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingMinimumDeflectionAngleAileron1UnitChoiceBox" layoutX="348.0" layoutY="285.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="6.0" layoutY="263.0" prefHeight="21.0" prefWidth="197.0" text="Minimum deflection angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingMinimumDeflectionAngleAileronLeft" layoutX="6.0" layoutY="284.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingMaximumDeflectionAngleAileronLeftUnitChoiceBox" layoutX="348.0" layoutY="337.0" prefHeight="30.0" prefWidth="47.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingMinimumDeflectionAngleAileron1" layoutX="6.0" layoutY="284.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingMaximumDeflectionAngleAileron1UnitChoiceBox" layoutX="348.0" layoutY="337.0" prefHeight="30.0" prefWidth="47.0" />
                                                                         <Label layoutX="6.0" layoutY="315.0" prefHeight="21.0" prefWidth="219.0" text="Maximum deflection angle:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingMaximumDeflectionAngleAileronLeft" layoutX="6.0" layoutY="336.0" prefHeight="31.0" prefWidth="340.0" />
+                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingMaximumDeflectionAngleAileron1" layoutX="6.0" layoutY="336.0" prefHeight="31.0" prefWidth="340.0" />
                                                                         <Label layoutX="6.0" prefHeight="21.0" prefWidth="220.0" text="Type:">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <ChoiceBox fx:id="wingLeftAileronTypeChoichBox" layoutX="6.0" layoutY="21.0" prefWidth="340.0" />
-                                                                     </children>
-                                                                  </AnchorPane>
-                                                               </content>
-                                                            </Tab>
-                                                            <Tab text="Right aileron ">
-                                                               <content>
-                                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="1072.0">
-                                                                     <children>
-                                                                        <Label layoutX="6.0" layoutY="55.0" prefHeight="21.0" prefWidth="220.0" text="Inner position (% semispan):">
-                                                                           <font>
-                                                                              <Font name="System Bold" size="15.0" />
-                                                                           </font>
-                                                                        </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingInnerPositionAileronRight" layoutX="6.0" layoutY="76.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Label layoutX="6.0" layoutY="107.0" prefHeight="21.0" prefWidth="216.0" text="Outer position (% semispan):">
-                                                                           <font>
-                                                                              <Font name="System Bold" size="15.0" />
-                                                                           </font>
-                                                                        </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingOuterPositionAileronRight" layoutX="6.0" layoutY="128.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Label layoutX="6.0" layoutY="159.0" prefHeight="21.0" prefWidth="252.0" text="Inner chord ratio:">
-                                                                           <font>
-                                                                              <Font name="System Bold" size="15.0" />
-                                                                           </font>
-                                                                        </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingInnerChordRatioAileronRight" layoutX="6.0" layoutY="180.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Label layoutX="6.0" layoutY="211.0" prefHeight="21.0" prefWidth="128.0" text="Outer chord ratio:">
-                                                                           <font>
-                                                                              <Font name="System Bold" size="15.0" />
-                                                                           </font>
-                                                                        </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingOuterChordRatioAileronRight" layoutX="6.0" layoutY="232.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingMinimumDeflectionAngleAileronRightUnitChoiceBox" layoutX="348.0" layoutY="285.0" prefHeight="30.0" prefWidth="47.0" />
-                                                                        <Label layoutX="6.0" layoutY="263.0" prefHeight="21.0" prefWidth="197.0" text="Minimum deflection angle:">
-                                                                           <font>
-                                                                              <Font name="System Bold" size="15.0" />
-                                                                           </font>
-                                                                        </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingMinimumDeflectionAngleAileronRight" layoutX="6.0" layoutY="284.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="wingMaximumDeflectionAngleAileronRightUnitChoiceBox" layoutX="348.0" layoutY="337.0" prefHeight="30.0" prefWidth="47.0" />
-                                                                        <Label layoutX="6.0" layoutY="315.0" prefHeight="21.0" prefWidth="219.0" text="Maximum deflection angle:">
-                                                                           <font>
-                                                                              <Font name="System Bold" size="15.0" />
-                                                                           </font>
-                                                                        </Label>
-                                                                        <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingMaximumDeflectionAngleAileronRight" layoutX="6.0" layoutY="336.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Label layoutX="6.0" prefHeight="21.0" prefWidth="220.0" text="Type:">
-                                                                           <font>
-                                                                              <Font name="System Bold" size="15.0" />
-                                                                           </font>
-                                                                        </Label>
-                                                                        <ChoiceBox fx:id="wingRightAileronTypeChoichBox" layoutX="6.0" layoutY="21.0" prefWidth="340.0" />
+                                                                        <ChoiceBox fx:id="wingAileron1TypeChoiceBox" layoutX="6.0" layoutY="21.0" prefWidth="340.0" />
                                                                      </children>
                                                                   </AnchorPane>
                                                                </content>
@@ -1698,10 +1651,11 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Button fx:id="wingAddSpoilerButton" layoutX="85.0" layoutY="3043.0" mnemonicParsing="false" onAction="#addSpoiler" text="Add spolier" />
+                                                      <Button fx:id="wingAddSpoilerButton" layoutX="85.0" layoutY="3043.0" mnemonicParsing="false" onAction="#addSpoiler" text="Add spoiler" />
                                                       <Button fx:id="equivalentWingChooseAirfoilKinkButton" layoutX="350.0" layoutY="908.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
                                                       <Button fx:id="equivalentWingChooseAirfoilTipButton" layoutX="350.0" layoutY="960.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
                                                       <Button fx:id="equivalentWingChooseAirfoilRootButton" layoutX="350.0" layoutY="856.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
+                                                      <Button fx:id="wingAddAileronButton" layoutX="92.0" layoutY="2589.0" mnemonicParsing="false" onAction="#addAileron" text="Add aileron" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -3300,7 +3254,7 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <CheckBox fx:id="generateWingFairingCADCheckBox" layoutX="228.0" layoutY="998.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="generateWingFairingCADCheckBox" layoutX="223.0" layoutY="998.0" mnemonicParsing="false" />
                                                             <Button id="updateAllButton" fx:id="updateCAD3DViewButton" disable="true" layoutX="5.0" layoutY="6.0" mnemonicParsing="false" onAction="#updateCAD3DView" text="Update 3D Model" />
                                                             <Separator layoutX="-8.0" layoutY="45.0" prefHeight="0.0" prefWidth="1345.0" />
                                                             <Label layoutX="5.0" layoutY="447.0" text="Tip type:">
@@ -3357,7 +3311,7 @@
                                                                </font>
                                                             </Label>
                                                             <Separator layoutX="1.0" layoutY="1310.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                            <CheckBox fx:id="generateCanardFairingCADCheckBox" layoutX="227.0" layoutY="1320.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="generateCanardFairingCADCheckBox" layoutX="223.0" layoutY="1320.0" mnemonicParsing="false" />
                                                             <Label layoutX="5.0" layoutY="1290.0" text="CANARD FAIRING OPTIONS" textFill="#0400ff">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />

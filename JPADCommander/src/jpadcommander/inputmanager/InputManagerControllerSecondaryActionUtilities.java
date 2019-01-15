@@ -435,6 +435,29 @@ public class InputManagerControllerSecondaryActionUtilities {
 		
 	}
 	
+	public void removeContentOnAileronTabClose(Tab tab) {
+		
+		tab.setOnCloseRequest(new EventHandler<Event>() {
+			
+			@Override
+			public void handle(Event event) {
+				
+				int index = theController.getTabPaneWingAilerons().getTabs().indexOf(tab);
+				
+				theController.getTextFieldWingInnerPositionAileronList().remove(index);
+				theController.getTextFieldWingOuterPositionAileronList().remove(index);
+				theController.getTextFieldWingInnerChordRatioAileronList().remove(index);
+				theController.getTextFieldWingOuterChordRatioAileronList().remove(index);
+				theController.getTextFieldWingMinimumDeflectionAngleAileronList().remove(index);
+				theController.getTextFieldWingMaximumDeflectionAngleAileronList().remove(index);
+				
+				theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().remove(index);
+				theController.getChoiceBoxWingMaximumDeflectionAngleAileronUnitList().remove(index);
+				
+			}
+		});
+	}
+	
 	public void removeContentOnSpoilerTabClose (Tab tab, ComponentEnum type) {
 		
 		tab.setOnCloseRequest(new EventHandler<Event>() {

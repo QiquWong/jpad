@@ -797,7 +797,7 @@ public class CADManager {
 		_theCamera.setFarClip(CAMERA_FAR_CLIP);
 		_theCamera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
 		_theCameraXform.ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
-		_theCameraXform.ry.setPivotX(_theAircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)/2.0); // TODO:
+		_theCameraXform.ry.setPivotX(_theAircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)/2.0);
 		_theCameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
 		_theCameraXform.rx.setPivotX(_theAircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)/2.0);
 	}

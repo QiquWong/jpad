@@ -1383,25 +1383,15 @@ public class InputManagerControllerUpdateUtilites {
 		List<String> wingSlatsMaximumDeflectionList = new ArrayList<>();
 		List<String> wingSlatsMaximumDeflectionUnitList = new ArrayList<>();
 		//.................................................................................................
-		String wingLeftAileronType = "";
-		String wingLeftAileronInnerPosition = "";
-		String wingLeftAileronOuterPosition = "";
-		String wingLeftAileronInnerChordRatio = "";
-		String wingLeftAileronOuterChordRatio = "";
-		String wingLeftAileronMinimumDeflection = "";
-		String wingLeftAileronMinimumDeflectionUnit = "";
-		String wingLeftAileronMaximumDeflection = "";
-		String wingLeftAileronMaximumDeflectionUnit = "";
-		//.................................................................................................
-		String wingRightAileronType = "";
-		String wingRightAileronInnerPosition = "";
-		String wingRightAileronOuterPosition = "";
-		String wingRightAileronInnerChordRatio = "";
-		String wingRightAileronOuterChordRatio = "";
-		String wingRightAileronMinimumDeflection = "";
-		String wingRightAileronMinimumDeflectionUnit = "";
-		String wingRightAileronMaximumDeflection = "";
-		String wingRightAileronMaximumDeflectionUnit = "";
+		List<String> wingAileronsTypeList = new ArrayList<>();
+		List<String> wingAileronsInnerPositionList = new ArrayList<>();
+		List<String> wingAileronsOuterPositionList = new ArrayList<>();
+		List<String> wingAileronsInnerChordRatioList = new ArrayList<>();
+		List<String> wingAileronsOuterChordRatioList = new ArrayList<>();
+		List<String> wingAileronsMinimumDeflectionList = new ArrayList<>();
+		List<String> wingAileronsMinimumDeflectionUnitList = new ArrayList<>();
+		List<String> wingAileronsMaximumDeflectionList = new ArrayList<>();
+		List<String> wingAileronsMaximumDeflectionUnitList = new ArrayList<>();
 		//.................................................................................................
 		List<String> wingSpoilersInnerSpanwisePositionList = new ArrayList<>();
 		List<String> wingSpoilersOuterSpanwisePositionList = new ArrayList<>();
@@ -1602,43 +1592,42 @@ public class InputManagerControllerUpdateUtilites {
 			.filter(cb -> !cb.getSelectionModel().isEmpty())
 			.forEach(cb -> wingSlatsMinimumDeflectionUnitList.add(cb.getSelectionModel().getSelectedItem()));
 		//.................................................................................................
-		if(!theController.getWingLeftAileronTypeChoichBox().getSelectionModel().isEmpty())
-			wingLeftAileronType = theController.getWingLeftAileronTypeChoichBox().getSelectionModel().getSelectedItem();
-		if(theController.getTextFieldWingInnerPositionAileronLeft().getText() != null)
-			wingLeftAileronInnerPosition = theController.getTextFieldWingInnerPositionAileronLeft().getText();
-		if(theController.getTextFieldWingOuterPositionAileronLeft().getText() != null)
-			wingLeftAileronOuterPosition = theController.getTextFieldWingOuterPositionAileronLeft().getText();
-		if(theController.getTextFieldWingInnerChordRatioAileronLeft().getText() != null)
-			wingLeftAileronInnerChordRatio = theController.getTextFieldWingInnerChordRatioAileronLeft().getText();
-		if(theController.getTextFieldWingOuterChordRatioAileronLeft().getText() != null)
-			wingLeftAileronOuterChordRatio = theController.getTextFieldWingOuterChordRatioAileronLeft().getText();
-		if(theController.getTextFieldWingMaximumDeflectionAngleAileronLeft().getText() != null)
-			wingLeftAileronMaximumDeflection = theController.getTextFieldWingMaximumDeflectionAngleAileronLeft().getText();
-		if(!theController.getWingMaximumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().isEmpty())
-			wingLeftAileronMaximumDeflectionUnit = theController.getWingMaximumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().getSelectedItem();
-		if(theController.getTextFieldWingMinimumDeflectionAngleAileronLeft().getText() != null)
-			wingLeftAileronMinimumDeflection = theController.getTextFieldWingMinimumDeflectionAngleAileronLeft().getText();
-		if(!theController.getWingMinimumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().isEmpty())
-			wingLeftAileronMinimumDeflectionUnit = theController.getWingMinimumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().getSelectedItem();
-		//.................................................................................................
-		if(!theController.getWingRightAileronTypeChoichBox().getSelectionModel().isEmpty())
-			wingRightAileronType = theController.getWingRightAileronTypeChoichBox().getSelectionModel().getSelectedItem();
-		if(theController.getTextFieldWingInnerPositionAileronRight().getText() != null)
-			wingRightAileronInnerPosition = theController.getTextFieldWingInnerPositionAileronRight().getText();
-		if(theController.getTextFieldWingOuterPositionAileronRight().getText() != null)
-			wingRightAileronOuterPosition = theController.getTextFieldWingOuterPositionAileronRight().getText();
-		if(theController.getTextFieldWingInnerChordRatioAileronRight().getText() != null)
-			wingRightAileronInnerChordRatio = theController.getTextFieldWingInnerChordRatioAileronRight().getText();
-		if(theController.getTextFieldWingOuterChordRatioAileronRight().getText() != null)
-			wingRightAileronOuterChordRatio = theController.getTextFieldWingOuterChordRatioAileronRight().getText();
-		if(theController.getTextFieldWingMaximumDeflectionAngleAileronRight().getText() != null)
-			wingRightAileronMaximumDeflection = theController.getTextFieldWingMaximumDeflectionAngleAileronRight().getText();
-		if(!theController.getWingMaximumDeflectionAngleAileronRightUnitChoiceBox().getSelectionModel().isEmpty())
-			wingRightAileronMaximumDeflectionUnit = theController.getWingMaximumDeflectionAngleAileronRightUnitChoiceBox().getSelectionModel().getSelectedItem();
-		if(theController.getTextFieldWingMinimumDeflectionAngleAileronRight().getText() != null)
-			wingRightAileronMinimumDeflection = theController.getTextFieldWingMinimumDeflectionAngleAileronRight().getText();
-		if(!theController.getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox().getSelectionModel().isEmpty())
-			wingRightAileronMinimumDeflectionUnit = theController.getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox().getSelectionModel().getSelectedItem();
+		if(!theController.getChoiceBoxWingAileronTypeList().isEmpty())
+			theController.getChoiceBoxWingAileronTypeList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> wingAileronsTypeList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldWingInnerPositionAileronList().isEmpty())
+			theController.getTextFieldWingInnerPositionAileronList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> wingAileronsInnerPositionList.add(tf.getText()));
+		if(!theController.getTextFieldWingOuterPositionAileronList().isEmpty())
+			theController.getTextFieldWingOuterPositionAileronList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> wingAileronsOuterPositionList.add(tf.getText()));
+		if(!theController.getTextFieldWingInnerChordRatioAileronList().isEmpty())
+			theController.getTextFieldWingInnerChordRatioAileronList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> wingAileronsInnerChordRatioList.add(tf.getText()));
+		if(!theController.getTextFieldWingOuterChordRatioAileronList().isEmpty())
+			theController.getTextFieldWingOuterChordRatioAileronList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> wingAileronsOuterChordRatioList.add(tf.getText()));
+		if(!theController.getTextFieldWingMaximumDeflectionAngleAileronList().isEmpty())
+			theController.getTextFieldWingMaximumDeflectionAngleAileronList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> wingAileronsMaximumDeflectionList.add(tf.getText()));
+		if(!theController.getChoiceBoxWingMaximumDeflectionAngleAileronUnitList().isEmpty())
+			theController.getChoiceBoxWingMaximumDeflectionAngleAileronUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> wingAileronsMaximumDeflectionUnitList.add(cb.getSelectionModel().getSelectedItem()));
+		if(!theController.getTextFieldWingMinimumDeflectionAngleAileronList().isEmpty())
+			theController.getTextFieldWingMinimumDeflectionAngleAileronList().stream()
+			.filter(tf -> !tf.getText().isEmpty())
+			.forEach(tf -> wingAileronsMinimumDeflectionList.add(tf.getText()));
+		if(!theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().isEmpty())
+			theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().stream()
+			.filter(cb -> !cb.getSelectionModel().isEmpty())
+			.forEach(cb -> wingAileronsMinimumDeflectionUnitList.add(cb.getSelectionModel().getSelectedItem()));	
 		//.................................................................................................
 		if(!theController.getTextFieldWingInnerSpanwisePositionSpoilerList().isEmpty())
 			theController.getTextFieldWingInnerSpanwisePositionSpoilerList().stream()
@@ -1856,47 +1845,134 @@ public class InputManagerControllerUpdateUtilites {
 		//.................................................................................................
 		// FILTERING FILLED AILERONS TABS ... 
 		//.................................................................................................		
-		List<AsymmetricFlapCreator> aileronList = new ArrayList<>();
-			
-		aileronList.add(
-				new AsymmetricFlapCreator(new IAsymmetricFlapCreator.Builder()
-						.setId("Left aileron - " + Main.getTheAircraft().getId())
-						.setType(FlapTypeEnum.valueOf(wingLeftAileronType))
-						.setInnerStationSpanwisePosition(Double.valueOf(wingLeftAileronInnerPosition))
-						.setOuterStationSpanwisePosition(Double.valueOf(wingLeftAileronOuterPosition))
-						.setInnerChordRatio(Double.valueOf(wingLeftAileronInnerChordRatio))
-						.setOuterChordRatio(Double.valueOf(wingLeftAileronOuterChordRatio))
-						.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
-								Double.valueOf(wingLeftAileronMinimumDeflection),
-								Unit.valueOf(wingLeftAileronMinimumDeflectionUnit)
-								))
-						.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
-								Double.valueOf(wingLeftAileronMaximumDeflection),
-								Unit.valueOf(wingLeftAileronMaximumDeflectionUnit)
-								))
-						.build()
-						)
-				);
+//		List<AsymmetricFlapCreator> aileronList = new ArrayList<>();
+//			
+//		aileronList.add(
+//				new AsymmetricFlapCreator(new IAsymmetricFlapCreator.Builder()
+//						.setId("Left aileron - " + Main.getTheAircraft().getId())
+//						.setType(FlapTypeEnum.valueOf(wingLeftAileronType))
+//						.setInnerStationSpanwisePosition(Double.valueOf(wingLeftAileronInnerPosition))
+//						.setOuterStationSpanwisePosition(Double.valueOf(wingLeftAileronOuterPosition))
+//						.setInnerChordRatio(Double.valueOf(wingLeftAileronInnerChordRatio))
+//						.setOuterChordRatio(Double.valueOf(wingLeftAileronOuterChordRatio))
+//						.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
+//								Double.valueOf(wingLeftAileronMinimumDeflection),
+//								Unit.valueOf(wingLeftAileronMinimumDeflectionUnit)
+//								))
+//						.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
+//								Double.valueOf(wingLeftAileronMaximumDeflection),
+//								Unit.valueOf(wingLeftAileronMaximumDeflectionUnit)
+//								))
+//						.build()
+//						)
+//				);
+//
+//		aileronList.add(
+//				new AsymmetricFlapCreator(new IAsymmetricFlapCreator.Builder()
+//						.setId("Right aileron - " + Main.getTheAircraft().getId())
+//						.setType(FlapTypeEnum.valueOf(wingRightAileronType))
+//						.setInnerStationSpanwisePosition(Double.valueOf(wingRightAileronInnerPosition))
+//						.setOuterStationSpanwisePosition(Double.valueOf(wingRightAileronOuterPosition))
+//						.setInnerChordRatio(Double.valueOf(wingRightAileronInnerChordRatio))
+//						.setOuterChordRatio(Double.valueOf(wingRightAileronOuterChordRatio))
+//						.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
+//								Double.valueOf(wingRightAileronMinimumDeflection),
+//								Unit.valueOf(wingRightAileronMinimumDeflectionUnit)
+//								))
+//						.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
+//								Double.valueOf(wingRightAileronMaximumDeflection),
+//								Unit.valueOf(wingRightAileronMaximumDeflectionUnit)
+//								))
+//						.build()
+//						)
+//				);
+		
+		int numberOfFilledWingAileronsTabs = Arrays.asList(
+				wingAileronsTypeList.size(),
+				wingAileronsInnerPositionList.size(),
+				wingAileronsOuterPositionList.size(),
+				wingAileronsInnerChordRatioList.size(),
+				wingAileronsOuterChordRatioList.size(),
+				wingAileronsMaximumDeflectionList.size(),
+				wingAileronsMaximumDeflectionUnitList.size(),
+				wingAileronsMinimumDeflectionList.size(),
+				wingAileronsMinimumDeflectionUnitList.size()
+				).stream()
+				.mapToInt(size -> size)
+				.min()
+				.getAsInt();
 
-		aileronList.add(
-				new AsymmetricFlapCreator(new IAsymmetricFlapCreator.Builder()
-						.setId("Right aileron - " + Main.getTheAircraft().getId())
-						.setType(FlapTypeEnum.valueOf(wingRightAileronType))
-						.setInnerStationSpanwisePosition(Double.valueOf(wingRightAileronInnerPosition))
-						.setOuterStationSpanwisePosition(Double.valueOf(wingRightAileronOuterPosition))
-						.setInnerChordRatio(Double.valueOf(wingRightAileronInnerChordRatio))
-						.setOuterChordRatio(Double.valueOf(wingRightAileronOuterChordRatio))
-						.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
-								Double.valueOf(wingRightAileronMinimumDeflection),
-								Unit.valueOf(wingRightAileronMinimumDeflectionUnit)
-								))
-						.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
-								Double.valueOf(wingRightAileronMaximumDeflection),
-								Unit.valueOf(wingRightAileronMaximumDeflectionUnit)
-								))
-						.build()
-						)
-				);
+		if (numberOfFilledWingAileronsTabs > 0) {
+			if (theController.getTabPaneWingAilerons().getTabs().size() > numberOfFilledWingAileronsTabs) {
+
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+
+						//..................................................................................
+						// WING AILERONS UPDATE WARNING
+						Stage wingAileronsUpdateWarning = new Stage();
+
+						wingAileronsUpdateWarning.setTitle("Wing Ailerons Update Warning");
+						wingAileronsUpdateWarning.initModality(Modality.WINDOW_MODAL);
+						wingAileronsUpdateWarning.initStyle(StageStyle.UNDECORATED);
+						wingAileronsUpdateWarning.initOwner(Main.getPrimaryStage());
+
+						FXMLLoader loader = new FXMLLoader();
+						loader.setLocation(Main.class.getResource("inputmanager/UpdateWingAileronsWarning.fxml"));
+						BorderPane wingAileronsUpdateWarningBorderPane = null;
+						try {
+							wingAileronsUpdateWarningBorderPane = loader.load();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						Button continueButton = (Button) wingAileronsUpdateWarningBorderPane.lookup("#warningContinueButton");
+						continueButton.setOnAction(new EventHandler<ActionEvent>() {
+
+							@Override
+							public void handle(ActionEvent arg0) {
+								wingAileronsUpdateWarning.close();
+							}
+
+						});
+
+						Scene scene = new Scene(wingAileronsUpdateWarningBorderPane);
+						wingAileronsUpdateWarning.setScene(scene);
+						wingAileronsUpdateWarning.sizeToScene();
+						wingAileronsUpdateWarning.show();
+
+					}
+				});
+
+			}
+		}
+		
+		List<AsymmetricFlapCreator> aileronList = new ArrayList<>();
+		
+		for (int i=0; i<numberOfFilledWingAileronsTabs; i++) {
+		
+			aileronList.add(
+					new AsymmetricFlapCreator(new IAsymmetricFlapCreator.Builder()
+							.setId("Wing Aileron " + (i+1) + " - " + Main.getTheAircraft().getId())
+							.setType(FlapTypeEnum.valueOf(wingAileronsTypeList.get(i)))
+							.setInnerStationSpanwisePosition(Double.valueOf(wingAileronsInnerPositionList.get(i))) 
+							.setOuterStationSpanwisePosition(Double.valueOf(wingAileronsOuterPositionList.get(i))) 
+							.setInnerChordRatio(Double.valueOf(wingAileronsInnerChordRatioList.get(i))) 
+							.setOuterChordRatio(Double.valueOf(wingAileronsOuterChordRatioList.get(i)))
+							.setMinimumDeflection((Amount<Angle>) Amount.valueOf(
+									Double.valueOf(wingAileronsMinimumDeflectionList.get(i)),
+									Unit.valueOf(wingAileronsMinimumDeflectionUnitList.get(i))
+									))
+							.setMaximumDeflection((Amount<Angle>) Amount.valueOf(
+									Double.valueOf(wingAileronsMaximumDeflectionList.get(i)),
+									Unit.valueOf(wingAileronsMaximumDeflectionUnitList.get(i))
+									))
+							.build()
+							)
+					);
+		}		
 		
 		//.................................................................................................
 		// FILTERING FILLED SPOILERS TABS ...

@@ -64,7 +64,7 @@
             </slat>
         </slats>
         <asymmetric_flaps>
-            <asymmetric_flap id="Left aileron" type="PLAIN">
+            <asymmetric_flap id="1" type="PLAIN">
                 <inner_chord_ratio>0.3200</inner_chord_ratio>
                 <outer_chord_ratio>0.3200</outer_chord_ratio>
                 <inner_station_spanwise_position>0.7800</inner_station_spanwise_position>
@@ -72,6 +72,7 @@
                 <min_deflection unit="deg">-25.0000</min_deflection>
                 <max_deflection unit="deg">25.0000</max_deflection>
             </asymmetric_flap>
+			<!--
             <asymmetric_flap id="Right aileron" type="PLAIN">
                 <inner_chord_ratio>0.3200</inner_chord_ratio>
                 <outer_chord_ratio>0.3200</outer_chord_ratio>
@@ -80,6 +81,7 @@
                 <min_deflection unit="deg">-25.0000</min_deflection>
                 <max_deflection unit="deg">25.0000</max_deflection>
             </asymmetric_flap>
+			-->
         </asymmetric_flaps>
     </wing>
 </jpad_config>

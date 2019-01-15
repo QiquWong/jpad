@@ -2542,60 +2542,119 @@ public class InputManagerControllerGraphicUtilities {
 		//--------------------------------------------------
 		// get data vectors from ailerons
 		//--------------------------------------------------
-		XYSeries seriesAileronTopView = new XYSeries("Right Slat", false);
+//		XYSeries seriesAileronTopView = new XYSeries("Right Slat", false);
+//		
+//		if (!Main.getTheAircraft().getWing().getAsymmetricFlaps().isEmpty()) {
+//			
+//			double yIn = Main.getTheAircraft().getWing().getSemiSpan().times(
+//					Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0).getInnerStationSpanwisePosition()
+//					).doubleValue(SI.METER);
+//			double yOut = Main.getTheAircraft().getWing().getSemiSpan().times(
+//					Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0).getOuterStationSpanwisePosition()
+//					).doubleValue(SI.METER);
+//
+//			double localChordInner = GeometryCalc.getChordAtYActual(
+//					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
+//					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedChords()),
+//					yIn);
+//			double localChordOuter = GeometryCalc.getChordAtYActual(
+//					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
+//					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedChords()),
+//					yOut);
+//
+//			double xLELocalInnerChord = GeometryCalc.getXLEAtYActual(
+//					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
+//					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedXle()),
+//					yIn);
+//			double xLELocalOuterChord = GeometryCalc.getXLEAtYActual(
+//					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
+//					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedXle()),
+//					yOut);
+//
+//			double innerChordRatio = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0).getInnerChordRatio();
+//			double outerChordRatio = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0).getOuterChordRatio();
+//
+//			seriesAileronTopView.add(
+//					xLELocalInnerChord + (localChordInner*(1-innerChordRatio)),
+//					yIn
+//					);
+//			seriesAileronTopView.add(
+//					xLELocalInnerChord + (localChordInner),
+//					yIn
+//					);
+//			seriesAileronTopView.add(
+//					xLELocalOuterChord + (localChordOuter),
+//					yOut
+//					);
+//			seriesAileronTopView.add(
+//					xLELocalOuterChord + (localChordOuter*(1-outerChordRatio)),
+//					yOut
+//					);
+//			seriesAileronTopView.add(
+//					xLELocalInnerChord + (localChordInner*(1-innerChordRatio)),
+//					yIn
+//					);
+//
+//		}
 		
+		List<XYSeries> seriesAileronsTopViewList = new ArrayList<>();
 		if (!Main.getTheAircraft().getWing().getAsymmetricFlaps().isEmpty()) {
+			for(int i=0; i<Main.getTheAircraft().getWing().getAsymmetricFlaps().size(); i++) {
+				
+				double yIn = Main.getTheAircraft().getWing().getSemiSpan().times(
+						Main.getTheAircraft().getWing().getAsymmetricFlaps().get(i).getInnerStationSpanwisePosition()
+						).doubleValue(SI.METER);
+				double yOut = Main.getTheAircraft().getWing().getSemiSpan().times(
+						Main.getTheAircraft().getWing().getAsymmetricFlaps().get(i).getOuterStationSpanwisePosition()
+						).doubleValue(SI.METER);
+				
+				double localChordInner = GeometryCalc.getChordAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedChords()),
+						yIn);
+				double localChordOuter = GeometryCalc.getChordAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedChords()),
+						yOut);
+				
+				double xLELocalInnerChord = GeometryCalc.getXLEAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedXle()),
+						yIn);
+				double xLELocalOuterChord = GeometryCalc.getXLEAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedXle()),
+						yOut);
+				
+				double innerChordRatio = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(i).getInnerChordRatio();
+				double outerChordRatio = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(i).getOuterChordRatio();
+				
+				XYSeries seriesAileronsTopView = new XYSeries("Aileron" + i, false);
+				seriesAileronsTopView.add(
+						xLELocalInnerChord + (localChordInner*(1-innerChordRatio)),
+						yIn
+						);
+				seriesAileronsTopView.add(
+						xLELocalInnerChord + (localChordInner),
+						yIn
+						);
+				seriesAileronsTopView.add(
+						xLELocalOuterChord + (localChordOuter),
+						yOut
+						);
+				seriesAileronsTopView.add(
+						xLELocalOuterChord + (localChordOuter*(1-outerChordRatio)),
+						yOut
+						);
+				seriesAileronsTopView.add(
+						xLELocalInnerChord + (localChordInner*(1-innerChordRatio)),
+						yIn
+						);
 			
-			double yIn = Main.getTheAircraft().getWing().getSemiSpan().times(
-					Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0).getInnerStationSpanwisePosition()
-					).doubleValue(SI.METER);
-			double yOut = Main.getTheAircraft().getWing().getSemiSpan().times(
-					Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0).getOuterStationSpanwisePosition()
-					).doubleValue(SI.METER);
-
-			double localChordInner = GeometryCalc.getChordAtYActual(
-					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
-					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedChords()),
-					yIn);
-			double localChordOuter = GeometryCalc.getChordAtYActual(
-					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
-					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedChords()),
-					yOut);
-
-			double xLELocalInnerChord = GeometryCalc.getXLEAtYActual(
-					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
-					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedXle()),
-					yIn);
-			double xLELocalOuterChord = GeometryCalc.getXLEAtYActual(
-					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedYs()),
-					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getDiscretizedXle()),
-					yOut);
-
-			double innerChordRatio = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0).getInnerChordRatio();
-			double outerChordRatio = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0).getOuterChordRatio();
-
-			seriesAileronTopView.add(
-					xLELocalInnerChord + (localChordInner*(1-innerChordRatio)),
-					yIn
-					);
-			seriesAileronTopView.add(
-					xLELocalInnerChord + (localChordInner),
-					yIn
-					);
-			seriesAileronTopView.add(
-					xLELocalOuterChord + (localChordOuter),
-					yOut
-					);
-			seriesAileronTopView.add(
-					xLELocalOuterChord + (localChordOuter*(1-outerChordRatio)),
-					yOut
-					);
-			seriesAileronTopView.add(
-					xLELocalInnerChord + (localChordInner*(1-innerChordRatio)),
-					yIn
-					);
-
+				seriesAileronsTopViewList.add(seriesAileronsTopView);
+			}
 		}
+		
 		//--------------------------------------------------
 		// get data vectors from spoilers
 		//--------------------------------------------------
@@ -2695,7 +2754,9 @@ public class InputManagerControllerGraphicUtilities {
 		seriesSlatsTopViewList.stream().forEach(
 				slat -> seriesAndColorList.add(Tuple.of(slat, Color.decode("#6495ED")))
 				);
-		seriesAndColorList.add(Tuple.of(seriesAileronTopView, Color.decode("#1E90FF")));
+		seriesAileronsTopViewList.stream().forEach(
+				aileron -> seriesAndColorList.add(Tuple.of(aileron, Color.decode("#1E90FF")))
+				);
 		seriesSpoilersTopViewList.stream().forEach(
 				spoiler -> seriesAndColorList.add(Tuple.of(spoiler, Color.decode("#ADD8E6")))
 				);
