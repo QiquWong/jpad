@@ -375,7 +375,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 						);
 				
 				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null, timeHistories,vMC);
-//				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null, timeHistories, vMC);
+				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null, timeHistories, vMC);
 
 				double lowestPhiCutback = theTakeOffNoiseTrajectoryCalculator.getPhiCutback();
 				double[] phiArray = MyArrayUtils.linspace( (lowestPhiCutback + 0.1), 0.9, numberOfThrustSettingCutback);

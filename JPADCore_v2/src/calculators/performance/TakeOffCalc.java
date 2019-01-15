@@ -2321,6 +2321,8 @@ public class TakeOffCalc {
 		
 		public double cD(double cL, Amount<Length> altitude) {
 
+			// FIXME: CALCULATE kGround until h/b=1, THEN USE kGround = 1 */
+			// FIXME: CHECK h/b FROM TESI STRISCIANTE */
 			double hb = (TakeOffCalc.this.getWingToGroundDistance().doubleValue(SI.METER) / TakeOffCalc.this.getSpan().doubleValue(SI.METER)) + altitude.doubleValue(SI.METER);
 			// Aerodynamics For Naval Aviators: (Hurt)
 			kGround = 1- (-4.48276577 * Math.pow(hb, 5) 

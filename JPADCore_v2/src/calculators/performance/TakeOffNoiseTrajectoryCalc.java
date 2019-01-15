@@ -85,7 +85,7 @@ public class TakeOffNoiseTrajectoryCalc {
 	tLandingGearRetractionStart = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tLandingGearRetractionEnd = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tObstacle = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
-	tZeroAccelration = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
+	tZeroAcceleration = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tCutback = Amount.valueOf(10000, SI.SECOND); // initialization to an impossible time
 	private Amount<Mass> maxTakeOffMass; 
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2, vClimb;
@@ -97,7 +97,8 @@ public class TakeOffNoiseTrajectoryCalc {
 	private List<Amount<Force>> weight;
 	private List<Double> loadFactor, cL, timeBreakPoints;
 	private double kAlphaDot, kcLMax, kRot, phi, cLmaxTO, alphaDotInitial, deltaCD0LandingGear, deltaCD0OEI, 
-	alphaRed, cL0, phiCutback, thrustCorrectionFactor, sfcCorrectionFactor;
+	alphaRed, cL0, thrustCorrectionFactor, sfcCorrectionFactor;
+	private Double phiCutback;
 	private Amount<?> cLalphaFlap;
 	private MyInterpolatingFunction mu, deltaCD0LandingGearRetractionSlope, deltaThrustCutbackSlope;
 	
@@ -268,7 +269,9 @@ public class TakeOffNoiseTrajectoryCalc {
 		tLandingGearRetractionEnd = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
 		tCutback = Amount.valueOf(10000, SI.SECOND);	// initialization to an impossible time
 		tObstacle = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
-		tZeroAccelration = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
+		tZeroAcceleration = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
+		
+		phiCutback = null; 
 	}
 
 	/***************************************************************************************
@@ -287,7 +290,7 @@ public class TakeOffNoiseTrajectoryCalc {
 
 		int i=0;
 		double newAlphaRed = 0.0;
-		alphaRed = -1.0;
+		alphaRed = 0.0;
 
 		targetSpeedFlag = false;
 		StepHandler continuousOutputModel = null;
@@ -333,8 +336,8 @@ public class TakeOffNoiseTrajectoryCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-20,
 					1,
-					1e-5,
-					1e-5
+					1e-8,
+					1e-8
 					);
 			ode = new DynamicsEquationsTakeOffNoiseTrajectory();
 
@@ -377,7 +380,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					tRot = Amount.valueOf(t, SI.SECOND);
 
 					System.out.println("\n---------------------------DONE!-------------------------------");
-					return  Action.CONTINUE;
+					return Action.CONTINUE;
 				}
 			};
 			EventHandler ehEndConstantCL = new EventHandler() {
@@ -409,7 +412,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					timeBreakPoints.add(t);
 					tEndHold = Amount.valueOf(t, SI.SECOND);
 
-					return  Action.CONTINUE;
+					return Action.CONTINUE;
 				}
 
 			};
@@ -451,7 +454,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					timeBreakPoints.add(t);
 
 					System.out.println("\n---------------------------DONE!-------------------------------");
-					return  Action.CONTINUE;
+					return Action.CONTINUE;
 				}
 			};
 			EventHandler ehCheckXEndSimulation = new EventHandler() {
@@ -593,14 +596,14 @@ public class TakeOffNoiseTrajectoryCalc {
 
 					if(cutback == true && phiCutback == null){
 						/* 
-						 * CHECKING THE GREATER THRUST SETTING BETWEEN:
-						 *  - THE ONE REQUIRED FOR A CLIM GRADIENT OF 4%
+						 * CHECKING THE GREATEST THRUST SETTING BETWEEN:
+						 *  - THE ONE REQUIRED FOR A CLIMB GRADIENT OF 4%
 						 *  - THE ONE REQUIRED FOR A LEVEL FLIGHT IN OEI CONDITION
 						 */
 						/////////////////////////////////////////////////////////////////////////////
 						// CGR = 4%
 						Amount<Force> thrustRequiredCGR4Percent = Amount.valueOf(
-								0.04
+								0.04 // climb gradient, i.e. flight path angle gamma in radians
 								* ((maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
 								+ ((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
 										Amount.valueOf(x[1], SI.METERS_PER_SECOND),
@@ -674,16 +677,23 @@ public class TakeOffNoiseTrajectoryCalc {
 								+ deltaCD0OEI;
 						double dragOEI = 
 								0.5
-								*AtmosphereCalc.getDensity(x[3], 10 /* ISA+10°C */)
+								*AtmosphereCalc.getDensity(x[3], 10 /* ISA+10°C according to FAR36 */)
 								*Math.pow(vClimb.doubleValue(SI.METERS_PER_SECOND),2)
 								*surface.doubleValue(SI.SQUARE_METRE)
 								*cDOEI;
+
+						// dragOEI is the A/C aerodynamic drag with a OEI 
+						// (includes Delta drag for the inoperative engine nacelle).
+						// dragOEI is also the total required thrust for a level flight in OEI conditions.
+						// Hence: thrustOEI := dragOEI 
+						// Regulations say: apply the thrustOEI to all engines (all operative). 
+						// Hence:						
 						double thrustRequiredOEI = thePowerPlant.getEngineNumber()*dragOEI;
 						
 						double phiCutback2 = thrustRequiredOEI / totalT0.doubleValue(SI.NEWTON);
 						System.out.println("\tThrottle setting for level flight OEI = " + phiCutback2);
 						/////////////////////////////////////////////////////////////////////////////
-						TakeOffNoiseTrajectoryCalc.this.setPhiCutback(Math.max(phiCutback1, phiCutback2));
+						TakeOffNoiseTrajectoryCalc.this.setPhiCutback(Math.max(phiCutback1, phiCutback2)); // as per FAR36
 						System.out.println("\n\tThrottle setting for cutback trajectory = " + TakeOffNoiseTrajectoryCalc.this.getPhiCutback());
 					}
 					if(cutback == true && phiCutback != null) {
@@ -838,9 +848,9 @@ public class TakeOffNoiseTrajectoryCalc {
 
 					//========================================================================================
 					// CHECK ON ACCELERATION --> DEFINING THE ISTANT AT WHICH THE SPEED MUST BE KEPT CONSTANT 
-					if(t > tRot.doubleValue(SI.SECOND) && tZeroAccelration.doubleValue(SI.SECOND) == 10000 &&
-							(TakeOffNoiseTrajectoryCalc.this.getAcceleration().get(TakeOffNoiseTrajectoryCalc.this.getAcceleration().size()-1).doubleValue(SI.METERS_PER_SQUARE_SECOND) < 0.1) &&
-							(TakeOffNoiseTrajectoryCalc.this.getAcceleration().get(TakeOffNoiseTrajectoryCalc.this.getAcceleration().size()-2).doubleValue(SI.METERS_PER_SQUARE_SECOND) > 0.1)
+					if(t > tRot.doubleValue(SI.SECOND) && tZeroAcceleration.doubleValue(SI.SECOND) == 10000 &&
+							(TakeOffNoiseTrajectoryCalc.this.getAcceleration().get(TakeOffNoiseTrajectoryCalc.this.getAcceleration().size()-1).doubleValue(SI.METERS_PER_SQUARE_SECOND) < 0.0) &&
+							(TakeOffNoiseTrajectoryCalc.this.getAcceleration().get(TakeOffNoiseTrajectoryCalc.this.getAcceleration().size()-2).doubleValue(SI.METERS_PER_SQUARE_SECOND) > 0.0)
 							) {
 
 						System.out.println("\n\t\tZERO ACCELERATION REACHED ... ");
@@ -856,7 +866,7 @@ public class TakeOffNoiseTrajectoryCalc {
 								);
 						System.out.println("\n---------------------------DONE!-------------------------------");
 
-						tZeroAccelration = Amount.valueOf(t, SI.SECOND);
+						tZeroAcceleration = Amount.valueOf(t, SI.SECOND);
 						vClimb = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 						timeBreakPoints.add(t);
 
@@ -1229,10 +1239,10 @@ public class TakeOffNoiseTrajectoryCalc {
 								);
 					}
 					else if((times.get(i).doubleValue(SI.SECOND) > tEndHold.doubleValue(SI.SECOND))
-							&& (times.get(i).doubleValue(SI.SECOND) < tZeroAccelration.doubleValue(SI.SECOND))) {
+							&& (times.get(i).doubleValue(SI.SECOND) < tZeroAcceleration.doubleValue(SI.SECOND))) {
 						alphaDotList.add(alphaRed);
 					}
-					else if(times.get(i).doubleValue(SI.SECOND) > tZeroAccelration.doubleValue(SI.SECOND)) {
+					else if(times.get(i).doubleValue(SI.SECOND) > tZeroAcceleration.doubleValue(SI.SECOND)) {
 						double deltaAlpha = 
 								alphaList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
 								- alphaList.get(i-1).doubleValue(NonSI.DEGREE_ANGLE);
@@ -2348,7 +2358,7 @@ public class TakeOffNoiseTrajectoryCalc {
 								EngineOperatingConditionEnum.TAKE_OFF,
 								TakeOffNoiseTrajectoryCalc.this.getSfcCorrectionFactor()
 								)
-						*(0.224809)*(0.454/3600)
+						*(0.224809)*(0.454/3600) // Conversion from lb/lb*hr to kg/N*s 
 						*thrustList.get(i).doubleValue(SI.NEWTON)
 						);
 
@@ -2360,15 +2370,19 @@ public class TakeOffNoiseTrajectoryCalc {
 
 			double cD = MyMathUtils.getInterpolatedValue1DLinear(polarCLTakeOff, polarCDTakeOff, cL);
 
+			// FIXME: CALCULATE kGround until h/b=1, THEN USE kGround = 1 */
+			// FIXME: CHECK h/b FROM TESI STRISCIANTE */
 			double hb = (TakeOffNoiseTrajectoryCalc.this.getWingToGroundDistance().doubleValue(SI.METER) / TakeOffNoiseTrajectoryCalc.this.getSpan().doubleValue(SI.METER)) + altitude.doubleValue(SI.METER);
 			// Aerodynamics For Naval Aviators: (Hurt)
-			double kGround = 1- (-4.48276577 * Math.pow(hb, 5) 
-					+ 15.61174376 * Math.pow(hb, 4)
-					- 21.20171050 * Math.pow(hb, 3)
-					+ 14.39438721 * Math.pow(hb, 2)
-					- 5.20913465 * hb
-					+ 0.90793397);
-			
+			double kGround = 1.0;
+			if(hb < 1.1)
+				kGround = 1- (-4.48276577 * Math.pow(hb, 5) 
+						+ 15.61174376 * Math.pow(hb, 4)
+						- 21.20171050 * Math.pow(hb, 3)
+						+ 14.39438721 * Math.pow(hb, 2)
+						- 5.20913465 * hb
+						+ 0.90793397);
+
 			double cD0 = MyArrayUtils.getMin(polarCDTakeOff);
 			double cDi = (cD-cD0)*kGround;
 
@@ -2446,7 +2460,7 @@ public class TakeOffNoiseTrajectoryCalc {
 			}
 			else if((time.doubleValue(SI.SECOND) > tEndHold.doubleValue(SI.SECOND)) && (time.doubleValue(SI.SECOND) <= tClimb.doubleValue(SI.SECOND))) 
 				alphaDot = alphaRed;
-			else if((time.doubleValue(SI.SECOND) > tClimb.doubleValue(SI.SECOND)))
+			else if((time.doubleValue(SI.SECOND) > tZeroAcceleration.doubleValue(SI.SECOND)))
 				alphaDot = (TakeOffNoiseTrajectoryCalc.this.alpha.get(
 						TakeOffNoiseTrajectoryCalc.this.alpha.size()-1).doubleValue(NonSI.DEGREE_ANGLE)
 						- TakeOffNoiseTrajectoryCalc.this.alpha.get(
@@ -2463,7 +2477,7 @@ public class TakeOffNoiseTrajectoryCalc {
 			Amount<Angle> alpha = TakeOffNoiseTrajectoryCalc.this.getAlphaGround().to(NonSI.DEGREE_ANGLE);
 
 			if( time.doubleValue(SI.SECOND) > tRot.doubleValue(SI.SECOND) 
-					&& time.doubleValue(SI.SECOND) <= tZeroAccelration.doubleValue(SI.SECOND) 
+					&& time.doubleValue(SI.SECOND) <= tZeroAcceleration.doubleValue(SI.SECOND) 
 					)
 				alpha = Amount.valueOf(
 						TakeOffNoiseTrajectoryCalc.this.getAlpha().get(
@@ -2474,7 +2488,7 @@ public class TakeOffNoiseTrajectoryCalc {
 										TakeOffNoiseTrajectoryCalc.this.getTime().size()-2).doubleValue(SI.SECOND))),
 						NonSI.DEGREE_ANGLE
 						);
-			else if(time.doubleValue(SI.SECOND) > tZeroAccelration.doubleValue(SI.SECOND)) {
+			else if(time.doubleValue(SI.SECOND) > tZeroAcceleration.doubleValue(SI.SECOND)) {
 
 				int j=0;
 				
@@ -2489,7 +2503,7 @@ public class TakeOffNoiseTrajectoryCalc {
 //						).doubleValue(SI.METERS_PER_SQUARE_SECOND); 
 				double acceleration = 0.0; /* First guess value */
 				
-				int maxIterAlpha = 20; /* max alpha excursion +-2° */
+				int maxIterAlpha = 500; /* max alpha excursion +-2° */
 				do {
 					
 					Amount<Angle> alphaTemp = alphaList.get(alphaList.size()-1);
@@ -2528,10 +2542,18 @@ public class TakeOffNoiseTrajectoryCalc {
 //						System.out.println("\n");
 //					}
 					
-					if (acceleration > 0) 
-						alphaTemp = alphaTemp.plus(Amount.valueOf(0.1, NonSI.DEGREE_ANGLE));
-					else if (acceleration < 0) 
-						alphaTemp = alphaTemp.minus(Amount.valueOf(0.1, NonSI.DEGREE_ANGLE));
+					if(alphaTemp.doubleValue(NonSI.DEGREE_ANGLE) > 0.0 ) {
+						if (acceleration > 0) 
+							alphaTemp = alphaTemp.plus(Amount.valueOf(0.01, NonSI.DEGREE_ANGLE));
+						else if (acceleration < 0) 
+							alphaTemp = alphaTemp.minus(Amount.valueOf(0.01, NonSI.DEGREE_ANGLE));
+					}
+					else if(alphaTemp.doubleValue(NonSI.DEGREE_ANGLE) < 0.0 ) {
+						if (acceleration > 0) 
+							alphaTemp = alphaTemp.minus(Amount.valueOf(0.01, NonSI.DEGREE_ANGLE));
+						else if (acceleration < 0) 
+							alphaTemp = alphaTemp.plus(Amount.valueOf(0.01, NonSI.DEGREE_ANGLE));
+					}
 					
 					alphaList.add(alphaTemp);
 					
@@ -2949,11 +2971,11 @@ public class TakeOffNoiseTrajectoryCalc {
 	}
 
 	public Amount<Duration> gettZeroAccelration() {
-		return tZeroAccelration;
+		return tZeroAcceleration;
 	}
 
 	public void settZeroAccelration(Amount<Duration> tZeroAccelration) {
-		this.tZeroAccelration = tZeroAccelration;
+		this.tZeroAcceleration = tZeroAccelration;
 	}
 
 	public Amount<Length> getCutbackAltitude() {
