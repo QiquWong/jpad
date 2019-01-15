@@ -2321,16 +2321,16 @@ public class TakeOffCalc {
 		
 		public double cD(double cL, Amount<Length> altitude) {
 
-			// FIXME: CALCULATE kGround until h/b=1, THEN USE kGround = 1 */
-			// FIXME: CHECK h/b FROM TESI STRISCIANTE */
 			double hb = (TakeOffCalc.this.getWingToGroundDistance().doubleValue(SI.METER) / TakeOffCalc.this.getSpan().doubleValue(SI.METER)) + altitude.doubleValue(SI.METER);
 			// Aerodynamics For Naval Aviators: (Hurt)
-			kGround = 1- (-4.48276577 * Math.pow(hb, 5) 
-					+ 15.61174376 * Math.pow(hb, 4)
-					- 21.20171050 * Math.pow(hb, 3)
-					+ 14.39438721 * Math.pow(hb, 2)
-					- 5.20913465 * hb
-					+ 0.90793397);
+			double kGround = 1.0;
+			if(hb < 1.1)
+				kGround = 1- (-4.48276577 * Math.pow(hb, 5) 
+						+ 15.61174376 * Math.pow(hb, 4)
+						- 21.20171050 * Math.pow(hb, 3)
+						+ 14.39438721 * Math.pow(hb, 2)
+						- 5.20913465 * hb
+						+ 0.90793397);
 			
 			double cD = MyMathUtils
 					.getInterpolatedValue1DLinear(polarCLTakeOff, polarCDTakeOff, cL);
