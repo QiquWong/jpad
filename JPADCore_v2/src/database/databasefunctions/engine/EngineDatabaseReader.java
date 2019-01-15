@@ -230,7 +230,8 @@ public abstract class EngineDatabaseReader {
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
 			double throttleSetting, 
-			EngineOperatingConditionEnum flightCondition
+			EngineOperatingConditionEnum flightCondition,
+			double correctionFactor
 			);
 
 	/**
@@ -246,7 +247,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -262,7 +264,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -278,7 +281,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 
 	/**
@@ -294,7 +298,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -310,7 +315,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -326,7 +332,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -342,7 +349,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -360,7 +368,8 @@ public abstract class EngineDatabaseReader {
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
 			double throttleSetting, 
-			EngineOperatingConditionEnum flightCondition
+			EngineOperatingConditionEnum flightCondition,
+			double correctionFactor
 			);
 	
 	/**
@@ -376,7 +385,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -392,7 +402,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -408,7 +419,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -424,7 +436,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -440,7 +453,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -456,7 +470,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -472,7 +487,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -490,7 +506,8 @@ public abstract class EngineDatabaseReader {
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
 			double throttleSetting, 
-			EngineOperatingConditionEnum flightCondition
+			EngineOperatingConditionEnum flightCondition,
+			double correctionFactor
 			);
 	
 	/**
@@ -506,7 +523,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -522,7 +540,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -538,7 +557,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -554,7 +574,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -570,7 +591,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -586,7 +608,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -602,7 +625,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -620,7 +644,8 @@ public abstract class EngineDatabaseReader {
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
 			double throttleSetting, 
-			EngineOperatingConditionEnum flightCondition
+			EngineOperatingConditionEnum flightCondition,
+			double correctionFactor
 			);
 	
 	/**
@@ -636,7 +661,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -652,7 +678,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -668,7 +695,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -684,7 +712,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -700,7 +729,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -716,7 +746,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -732,7 +763,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -750,7 +782,8 @@ public abstract class EngineDatabaseReader {
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
 			double throttleSetting, 
-			EngineOperatingConditionEnum flightCondition
+			EngineOperatingConditionEnum flightCondition,
+			double correctionFactor
 			);
 	
 	/**
@@ -766,7 +799,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -782,7 +816,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -798,7 +833,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -814,7 +850,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -830,7 +867,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -846,7 +884,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -862,7 +901,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -880,7 +920,8 @@ public abstract class EngineDatabaseReader {
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
 			double throttleSetting, 
-			EngineOperatingConditionEnum flightCondition
+			EngineOperatingConditionEnum flightCondition,
+			double correctionFactor
 			);
 	
 	/**
@@ -896,7 +937,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -912,7 +954,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting, 
+			double correctionFactor
 			);
 	
 	/**
@@ -928,7 +971,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -944,7 +988,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -960,7 +1005,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -976,7 +1022,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -992,7 +1039,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1010,7 +1058,8 @@ public abstract class EngineDatabaseReader {
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
 			double throttleSetting, 
-			EngineOperatingConditionEnum flightCondition
+			EngineOperatingConditionEnum flightCondition,
+			double correctionFactor
 			);
 	
 	/**
@@ -1026,7 +1075,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1042,7 +1092,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1058,7 +1109,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1074,7 +1126,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1090,7 +1143,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1106,7 +1160,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1122,7 +1177,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 
 	/**
@@ -1140,7 +1196,8 @@ public abstract class EngineDatabaseReader {
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
 			double throttleSetting, 
-			EngineOperatingConditionEnum flightCondition
+			EngineOperatingConditionEnum flightCondition,
+			double correctionFactor
 			);
 	
 	/**
@@ -1156,7 +1213,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1172,7 +1230,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1188,7 +1247,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1204,7 +1264,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1220,7 +1281,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1236,7 +1298,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1252,7 +1315,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1270,7 +1334,8 @@ public abstract class EngineDatabaseReader {
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
 			double throttleSetting, 
-			EngineOperatingConditionEnum flightCondition
+			EngineOperatingConditionEnum flightCondition,
+			double correctionFactor
 			);
 	
 	/**
@@ -1286,7 +1351,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1302,7 +1368,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1318,7 +1385,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1334,7 +1402,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1350,7 +1419,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1366,7 +1436,8 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 	
 	/**
@@ -1382,6 +1453,7 @@ public abstract class EngineDatabaseReader {
 			double mach, 
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
-			double throttleSetting 
+			double throttleSetting,
+			double correctionFactor
 			);
 }

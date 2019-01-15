@@ -49,6 +49,9 @@ public class ClimbCalc {
 	private double[] _polarCDClimb;
 	private Amount<Velocity> _climbSpeed;
 	private double _dragDueToEnigneFailure;
+	private double _climbThrustCorrectionFactor;
+	private double _continuousThrustCorrectionFactor;
+	private double _climbSfcCorrectionFactor;
 	//............................................................................................
 	// Output:
 	private List<RCMap> _rcMapAEO;
@@ -89,7 +92,10 @@ public class ClimbCalc {
 			double[] polarCLClimb,
 			double[] polarCDClimb,
 			Amount<Velocity> climbSpeed,
-			double dragDueToEnigneFailure
+			double dragDueToEnigneFailure,
+			double climbThrustCorrectionFactor,
+			double continuousThrustCorrectionFactor,
+			double climbSfcCorrectionFactor
 			) {
 		
 		this._theAircraft = theAircraft;
@@ -99,6 +105,9 @@ public class ClimbCalc {
 		this._polarCDClimb = polarCDClimb;
 		this._climbSpeed = climbSpeed;
 		this._dragDueToEnigneFailure = dragDueToEnigneFailure;
+		this._climbThrustCorrectionFactor = climbThrustCorrectionFactor;
+		this._continuousThrustCorrectionFactor = continuousThrustCorrectionFactor;
+		this._climbSfcCorrectionFactor = climbSfcCorrectionFactor;
 		
 		this._rcMapAEO = new ArrayList<>();
 		this._rcMapOEI = new ArrayList<>();
@@ -195,7 +204,8 @@ public class ClimbCalc {
 							speedArrayAEO, 
 							EngineOperatingConditionEnum.CLIMB,
 							_theAircraft.getPowerPlant(),
-							false
+							false,
+							_climbThrustCorrectionFactor
 							)
 					);
 			//..................................................................................................
@@ -376,7 +386,8 @@ public class ClimbCalc {
 								speedArrayOEI,
 								EngineOperatingConditionEnum.CONTINUOUS,
 								_theAircraft.getPowerPlant(),
-								true
+								true,
+								_continuousThrustCorrectionFactor
 								)
 						);
 				//..................................................................................................
@@ -630,7 +641,8 @@ public class ClimbCalc {
 									_rcMapAEO.get(i).getAltitude(),
 									_theOperatingConditions.getDeltaTemperatureClimb(),
 									_theOperatingConditions.getThrottleClimb(),
-									EngineOperatingConditionEnum.CLIMB
+									EngineOperatingConditionEnum.CLIMB,
+									_climbSfcCorrectionFactor
 									)
 							);
 				_sfcList.add(sfcListTemp.stream().mapToDouble(sfc -> sfc).average().getAsDouble());
@@ -662,7 +674,8 @@ public class ClimbCalc {
 									_rcMapAEO.get(i).getAltitude(),
 									_theOperatingConditions.getDeltaTemperatureClimb(),
 									_theOperatingConditions.getThrottleClimb(),
-									EngineOperatingConditionEnum.CLIMB
+									EngineOperatingConditionEnum.CLIMB,
+									_climbSfcCorrectionFactor
 									)
 							);
 				_sfcList.add(sfcListTemp.stream().mapToDouble(sfc -> sfc).average().getAsDouble());
@@ -2327,6 +2340,30 @@ public class ClimbCalc {
 
 	public void setSFCList(List<Double> _sfcList) {
 		this._sfcList = _sfcList;
+	}
+
+	public double getClimbThrustCorrectionFactor() {
+		return _climbThrustCorrectionFactor;
+	}
+
+	public void setClimbThrustCorrectionFactor(double _climbThrustCorrectionFactor) {
+		this._climbThrustCorrectionFactor = _climbThrustCorrectionFactor;
+	}
+
+	public double getContinuousThrustCorrectionFactor() {
+		return _continuousThrustCorrectionFactor;
+	}
+
+	public void setContinuousThrustCorrectionFactor(double _continuousThrustCorrectionFactor) {
+		this._continuousThrustCorrectionFactor = _continuousThrustCorrectionFactor;
+	}
+
+	public double getClimbSfcCorrectionFactor() {
+		return _climbSfcCorrectionFactor;
+	}
+
+	public void setClimbSfcCorrectionFactor(double _climbSfcCorrectionFactor) {
+		this._climbSfcCorrectionFactor = _climbSfcCorrectionFactor;
 	}
 	
 }

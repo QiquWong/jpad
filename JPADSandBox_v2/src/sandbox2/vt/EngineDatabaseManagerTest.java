@@ -269,7 +269,8 @@ public class EngineDatabaseManagerTest {
 														Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 														Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 														inputList.get(3)[iThrottle],
-														engineOperatingCondition
+														engineOperatingCondition,
+														1.0 /* Calibration Factor */
 														)
 												) + "\t"
 												+ numberFormat.format(
@@ -278,7 +279,8 @@ public class EngineDatabaseManagerTest {
 																Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 																Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 																inputList.get(3)[iThrottle],
-																engineOperatingCondition
+																engineOperatingCondition,
+																1.0 /* Calibration Factor */
 																)
 														) + "\t"
 														+ numberFormat.format(
@@ -287,7 +289,8 @@ public class EngineDatabaseManagerTest {
 																		Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 																		Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 																		inputList.get(3)[iThrottle],
-																		engineOperatingCondition
+																		engineOperatingCondition,
+																		1.0 /* Calibration Factor */
 																		)
 																) + "\t"
 																+ numberFormat.format(
@@ -296,7 +299,8 @@ public class EngineDatabaseManagerTest {
 																				Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 																				Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 																				inputList.get(3)[iThrottle],
-																				engineOperatingCondition
+																				engineOperatingCondition,
+																				1.0 /* Calibration Factor */
 																				)
 																		) + "\t"
 																		+ numberFormat.format(
@@ -305,7 +309,8 @@ public class EngineDatabaseManagerTest {
 																						Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 																						Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 																						inputList.get(3)[iThrottle],
-																						engineOperatingCondition
+																						engineOperatingCondition,
+																						1.0 /* Calibration Factor */
 																						)
 																				) + "\t"
 																				+ numberFormat.format(
@@ -314,7 +319,8 @@ public class EngineDatabaseManagerTest {
 																								Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 																								Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 																								inputList.get(3)[iThrottle],
-																								engineOperatingCondition
+																								engineOperatingCondition,
+																								1.0 /* Calibration Factor */
 																								)
 																						) + "\t"
 																						+ numberFormat.format(
@@ -323,7 +329,8 @@ public class EngineDatabaseManagerTest {
 																										Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 																										Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 																										inputList.get(3)[iThrottle],
-																										engineOperatingCondition
+																										engineOperatingCondition,
+																										1.0 /* Calibration Factor */
 																										)
 																								) + "\t"
 																								+ numberFormat.format(
@@ -332,7 +339,8 @@ public class EngineDatabaseManagerTest {
 																												Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 																												Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 																												inputList.get(3)[iThrottle],
-																												engineOperatingCondition
+																												engineOperatingCondition,
+																												1.0 /* Calibration Factor */
 																												)
 																										) + "\t"
 																										+ numberFormat.format(
@@ -341,7 +349,8 @@ public class EngineDatabaseManagerTest {
 																														Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 																														Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 																														inputList.get(3)[iThrottle],
-																														engineOperatingCondition
+																														engineOperatingCondition,
+																														1.0 /* Calibration Factor */
 																														)
 																												) + "\t"
 								);
@@ -352,7 +361,8 @@ public class EngineDatabaseManagerTest {
 										Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 										Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 										inputList.get(3)[iThrottle],
-										engineOperatingCondition
+										engineOperatingCondition,
+										1.0 /* Calibration Factor */
 										)
 								);
 						sfcArray.add(
@@ -361,7 +371,8 @@ public class EngineDatabaseManagerTest {
 										Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 										Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 										inputList.get(3)[iThrottle],
-										engineOperatingCondition
+										engineOperatingCondition,
+										1.0 /* Calibration Factor */
 										)
 								);
 						emissionIndexNOxArray.add(
@@ -370,7 +381,8 @@ public class EngineDatabaseManagerTest {
 										Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 										Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 										inputList.get(3)[iThrottle],
-										engineOperatingCondition
+										engineOperatingCondition,
+										1.0 /* Calibration Factor */
 										)
 								);
 						emissionIndexCOArray.add(
@@ -379,7 +391,8 @@ public class EngineDatabaseManagerTest {
 										Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 										Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 										inputList.get(3)[iThrottle],
-										engineOperatingCondition
+										engineOperatingCondition,
+										1.0 /* Calibration Factor */
 										)
 								);
 						emissionIndexHCArray.add(
@@ -388,7 +401,8 @@ public class EngineDatabaseManagerTest {
 										Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 										Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 										inputList.get(3)[iThrottle],
-										engineOperatingCondition
+										engineOperatingCondition,
+										1.0 /* Calibration Factor */
 										)
 								);
 						emissionIndexSootArray.add(
@@ -397,7 +411,8 @@ public class EngineDatabaseManagerTest {
 										Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 										Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 										inputList.get(3)[iThrottle],
-										engineOperatingCondition
+										engineOperatingCondition,
+										1.0 /* Calibration Factor */
 										)
 								);
 						emissionIndexCO2Array.add(
@@ -406,7 +421,8 @@ public class EngineDatabaseManagerTest {
 										Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 										Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 										inputList.get(3)[iThrottle],
-										engineOperatingCondition
+										engineOperatingCondition,
+										1.0 /* Calibration Factor */
 										)
 								);
 						emissionIndexSOxArray.add(
@@ -415,7 +431,8 @@ public class EngineDatabaseManagerTest {
 										Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 										Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 										inputList.get(3)[iThrottle],
-										engineOperatingCondition
+										engineOperatingCondition,
+										1.0 /* Calibration Factor */
 										)
 								);
 						emissionIndexH2OArray.add(
@@ -424,7 +441,8 @@ public class EngineDatabaseManagerTest {
 										Amount.valueOf(inputList.get(0)[iAltitude], (Unit<Length>) Unit.valueOf(engineDatabaseManager.getAltitudeUnit())),
 										Amount.valueOf(inputList.get(2)[iDeltaTemp], (Unit<Temperature>) Unit.valueOf(engineDatabaseManager.getDeltaTemperatureUnit())),
 										inputList.get(3)[iThrottle],
-										engineOperatingCondition
+										engineOperatingCondition,
+										1.0 /* Calibration Factor */
 										)
 								);
 					}

@@ -91,7 +91,8 @@ public class TakeOffCalc {
 	private List<Amount<Length>> groundDistance, verticalDistance;
 	private List<Amount<Force>> weight;
 	private double kAlphaDot, kcLMax, kRot, phi, cLmaxTO, kGround, alphaDotInitial, 
-	alphaRed, cL0, cLground, kFailure;
+	alphaRed, cL0, cLground, kFailure, takeOffThrustCorrectionFactor, aprThrustCorrectionFactor, gidlThrustCorrectionFactor, 
+	takeOffSfcCorrectionFactor, aprSfcCorrectionFactor, gidlSfcCorrectionFactor;
 	private Amount<Velocity> vFailure;
 	private boolean isAborted;
 	private boolean isTailStrike;
@@ -147,7 +148,13 @@ public class TakeOffCalc {
 			Amount<Angle> iw,
 			double cLmaxTO,
 			double cLZeroTO,
-			double cLalphaFlap
+			double cLalphaFlap,
+			double takeOffThrustCorrectionFactor,
+			double aprThrustCorrectionFactor,
+			double gidlThrustCorrectionFactor,
+			double takeOffSfcCorrectionFactor,
+			double aprSfcCorrectionFactor,
+			double gidlSfcCorrectionFactor
 			) {
 
 		// Required data
@@ -181,6 +188,12 @@ public class TakeOffCalc {
 		this.cLalphaFlap = cLalphaFlap;
 		this.cL0 = cLZeroTO;
 		this.cLground = cLZeroTO + (cLalphaFlap*iw.doubleValue(NonSI.DEGREE_ANGLE));
+		this.takeOffThrustCorrectionFactor = takeOffThrustCorrectionFactor;
+		this.aprThrustCorrectionFactor = aprThrustCorrectionFactor;
+		this.gidlThrustCorrectionFactor = gidlThrustCorrectionFactor;
+		this.takeOffSfcCorrectionFactor = takeOffSfcCorrectionFactor;
+		this.aprSfcCorrectionFactor = aprSfcCorrectionFactor;
+		this.gidlSfcCorrectionFactor = gidlSfcCorrectionFactor;
 		
 		// Reference velocities definition
 		vSTakeOff = SpeedCalc.calculateSpeedStall(
@@ -2075,7 +2088,8 @@ public class TakeOffCalc {
 													)
 											),
 									deltaTemperature, 
-									TakeOffCalc.this.getPhi()
+									TakeOffCalc.this.getPhi(),
+									TakeOffCalc.this.getTakeOffThrustCorrectionFactor()
 									)
 							);
 			else {
@@ -2098,7 +2112,8 @@ public class TakeOffCalc {
 															)
 													),
 											deltaTemperature, 
-											TakeOffCalc.this.getPhi()
+											TakeOffCalc.this.getPhi(),
+											TakeOffCalc.this.getTakeOffThrustCorrectionFactor()
 											)
 									);
 					else {
@@ -2119,7 +2134,8 @@ public class TakeOffCalc {
 															)
 													),
 											deltaTemperature, 
-											TakeOffCalc.this.getPhi()
+											TakeOffCalc.this.getPhi(),
+											TakeOffCalc.this.getAprThrustCorrectionFactor()
 											)
 									);
 					}
@@ -2143,7 +2159,8 @@ public class TakeOffCalc {
 															)
 													),
 											deltaTemperature, 
-											TakeOffCalc.this.getPhi()
+											TakeOffCalc.this.getPhi(),
+											TakeOffCalc.this.getTakeOffThrustCorrectionFactor()
 											)
 									);
 					else
@@ -2164,7 +2181,8 @@ public class TakeOffCalc {
 															)
 													),
 											deltaTemperature, 
-											TakeOffCalc.this.getPhi()
+											TakeOffCalc.this.getPhi(),
+											TakeOffCalc.this.getGidlThrustCorrectionFactor()
 											)
 									);
 				}
@@ -2194,7 +2212,8 @@ public class TakeOffCalc {
 									altitude,
 									deltaTemperature,
 									TakeOffCalc.this.getPhi(),
-									EngineOperatingConditionEnum.TAKE_OFF
+									EngineOperatingConditionEnum.TAKE_OFF,
+									TakeOffCalc.this.getTakeOffSfcCorrectionFactor()
 									)
 							*(0.224809)*(0.454/3600)
 							*thrustList.get(i).doubleValue(SI.NEWTON)
@@ -2217,7 +2236,8 @@ public class TakeOffCalc {
 											altitude,
 											deltaTemperature,
 											TakeOffCalc.this.getPhi(),
-											EngineOperatingConditionEnum.TAKE_OFF
+											EngineOperatingConditionEnum.TAKE_OFF,
+											TakeOffCalc.this.getTakeOffSfcCorrectionFactor()
 											)
 									*(0.224809)*(0.454/3600)
 									*thrustList.get(i).doubleValue(SI.NEWTON)
@@ -2239,7 +2259,8 @@ public class TakeOffCalc {
 											altitude,
 											deltaTemperature,
 											TakeOffCalc.this.getPhi(),
-											EngineOperatingConditionEnum.APR
+											EngineOperatingConditionEnum.APR,
+											TakeOffCalc.this.getAprSfcCorrectionFactor()
 											)
 									*(0.224809)*(0.454/3600)
 									*thrustList.get(i).doubleValue(SI.NEWTON)
@@ -2263,7 +2284,8 @@ public class TakeOffCalc {
 											altitude,
 											deltaTemperature,
 											TakeOffCalc.this.getPhi(),
-											EngineOperatingConditionEnum.TAKE_OFF
+											EngineOperatingConditionEnum.TAKE_OFF,
+											TakeOffCalc.this.getTakeOffSfcCorrectionFactor()
 											)
 									*(0.224809)*(0.454/3600)
 									*thrustList.get(i).doubleValue(SI.NEWTON)
@@ -2284,7 +2306,8 @@ public class TakeOffCalc {
 											altitude,
 											deltaTemperature,
 											TakeOffCalc.this.getPhi(),
-											EngineOperatingConditionEnum.GIDL
+											EngineOperatingConditionEnum.GIDL,
+											TakeOffCalc.this.getGidlSfcCorrectionFactor()
 											)
 									*(0.224809)*(0.454/3600)
 									*thrustList.get(i).doubleValue(SI.NEWTON)
@@ -3101,6 +3124,54 @@ public class TakeOffCalc {
 
 	public void setWingToGroundDistance(Amount<Length> wingToGroundDistance) {
 		this.wingToGroundDistance = wingToGroundDistance;
+	}
+
+	public double getTakeOffThrustCorrectionFactor() {
+		return takeOffThrustCorrectionFactor;
+	}
+
+	public void setTakeOffThrustCorrectionFactor(double takeOffThrustCorrectionFactor) {
+		this.takeOffThrustCorrectionFactor = takeOffThrustCorrectionFactor;
+	}
+
+	public double getAprThrustCorrectionFactor() {
+		return aprThrustCorrectionFactor;
+	}
+
+	public void setAprThrustCorrectionFactor(double aprThrustCorrectionFactor) {
+		this.aprThrustCorrectionFactor = aprThrustCorrectionFactor;
+	}
+
+	public double getGidlThrustCorrectionFactor() {
+		return gidlThrustCorrectionFactor;
+	}
+
+	public void setGidlThrustCorrectionFactor(double gidlThrustCorrectionFactor) {
+		this.gidlThrustCorrectionFactor = gidlThrustCorrectionFactor;
+	}
+
+	public double getTakeOffSfcCorrectionFactor() {
+		return takeOffSfcCorrectionFactor;
+	}
+
+	public void setTakeOffSfcCorrectionFactor(double takeOffSfcCorrectionFactor) {
+		this.takeOffSfcCorrectionFactor = takeOffSfcCorrectionFactor;
+	}
+
+	public double getAprSfcCorrectionFactor() {
+		return aprSfcCorrectionFactor;
+	}
+
+	public void setAprSfcCorrectionFactor(double aprSfcCorrectionFactor) {
+		this.aprSfcCorrectionFactor = aprSfcCorrectionFactor;
+	}
+
+	public double getGidlSfcCorrectionFactor() {
+		return gidlSfcCorrectionFactor;
+	}
+
+	public void setGidlSfcCorrectionFactor(double gidlSfcCorrectionFactor) {
+		this.gidlSfcCorrectionFactor = gidlSfcCorrectionFactor;
 	}
 
 }

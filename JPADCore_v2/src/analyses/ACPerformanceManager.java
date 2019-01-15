@@ -4370,7 +4370,13 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getTheAircraft().getWing().getRiggingAngle(),
 							_thePerformanceInterface.getCLmaxTakeOff().get(xcg),
 							_thePerformanceInterface.getCLZeroTakeOff().get(xcg),
-							_thePerformanceInterface.getCLAlphaTakeOff().get(xcg).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+							_thePerformanceInterface.getCLAlphaTakeOff().get(xcg).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorThrust(),
+							_thePerformanceInterface.getAprCalibrationFactorThrust(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorSFC(),
+							_thePerformanceInterface.getAprCalibrationFactorSFC(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorSFC()
 							)
 					);
 			
@@ -4548,7 +4554,8 @@ public class ACPerformanceManager {
 					_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff(),
 					_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureTakeOff(),
 					_thePerformanceInterface.getTheOperatingConditions().getThrottleTakeOff(), 
-					true
+					true,
+					_thePerformanceInterface.getAprCalibrationFactorThrust()
 					);
 
 			List<Amount<Length>> enginesArms = new ArrayList<>();
@@ -4720,7 +4727,10 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getPolarCLClimb().get(xcg),
 							_thePerformanceInterface.getPolarCDClimb().get(xcg),
 							_thePerformanceInterface.getClimbSpeedCAS(),
-							_thePerformanceInterface.getDragDueToEngineFailure()
+							_thePerformanceInterface.getDragDueToEngineFailure(),
+							_thePerformanceInterface.getClimbCalibrationFactorThrust(),
+							_thePerformanceInterface.getContinuousCalibrationFactorThrust(),
+							_thePerformanceInterface.getClimbCalibrationFactorSFC()
 							)
 					);
 			
@@ -4839,7 +4849,8 @@ public class ACPerformanceManager {
 								MyArrayUtils.convertDoubleArrayToListOfAmount(speedArrayAltitudeParameterization, SI.METERS_PER_SECOND), 
 								EngineOperatingConditionEnum.CRUISE, 
 								_thePerformanceInterface.getTheAircraft().getPowerPlant(), 
-								false
+								false,
+								_thePerformanceInterface.getCruiseCalibrationFactorThrust()
 								)
 						);
 			}
@@ -5040,7 +5051,8 @@ public class ACPerformanceManager {
 									), 
 							EngineOperatingConditionEnum.CRUISE, 
 							_thePerformanceInterface.getTheAircraft().getPowerPlant(), 
-							false
+							false,
+							_thePerformanceInterface.getCruiseCalibrationFactorThrust()
 							)
 					);
 		}
@@ -5116,7 +5128,8 @@ public class ACPerformanceManager {
 							MyArrayUtils.convertDoubleArrayToListOfAmount(speedArray, SI.METERS_PER_SECOND), 
 							EngineOperatingConditionEnum.CRUISE, 
 							_thePerformanceInterface.getTheAircraft().getPowerPlant(), 
-							false
+							false,
+							_thePerformanceInterface.getCruiseCalibrationFactorThrust()
 							)
 					);
 			//..................................................................................................
@@ -5208,7 +5221,8 @@ public class ACPerformanceManager {
 								MyArrayUtils.convertDoubleArrayToListOfAmount(speedArray, SI.METERS_PER_SECOND), 
 								EngineOperatingConditionEnum.CRUISE, 
 								_thePerformanceInterface.getTheAircraft().getPowerPlant(), 
-								false
+								false,
+								_thePerformanceInterface.getCruiseCalibrationFactorThrust()
 								)
 						);
 				//..................................................................................................
@@ -5504,7 +5518,8 @@ public class ACPerformanceManager {
 							MyArrayUtils.convertDoubleArrayToListOfAmount(speedArrayWeightParameterization, SI.METERS_PER_SECOND), 
 							EngineOperatingConditionEnum.CRUISE, 
 							_thePerformanceInterface.getTheAircraft().getPowerPlant(), 
-							false
+							false,
+							_thePerformanceInterface.getCruiseCalibrationFactorThrust()
 							)
 					);
 			
@@ -5546,6 +5561,7 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise(), 
 							_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureCruise(), 
 							_thePerformanceInterface.getTheOperatingConditions().getThrottleCruise(), 
+							_thePerformanceInterface.getCruiseCalibrationFactorSFC(),
 							_thePerformanceInterface.getTheAircraft().getPowerPlant()
 							);
 
@@ -6385,7 +6401,11 @@ public class ACPerformanceManager {
 							endDescentAltitude,
 							initialDescentMass,
 							_thePerformanceInterface.getPolarCLCruise().get(xcg),
-							_thePerformanceInterface.getPolarCDCruise().get(xcg)
+							_thePerformanceInterface.getPolarCDCruise().get(xcg),
+							_thePerformanceInterface.getCruiseCalibrationFactorThrust(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorThrust(),
+							_thePerformanceInterface.getCruiseCalibrationFactorSFC(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorSFC()
 							)
 					);
 					
@@ -6454,7 +6474,9 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getCLAlphaLanding().get(xcg).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
 							_thePerformanceInterface.getFreeRollDuration(),
 							_thePerformanceInterface.getPolarCLLanding().get(xcg),
-							_thePerformanceInterface.getPolarCDLanding().get(xcg)
+							_thePerformanceInterface.getPolarCDLanding().get(xcg),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorSFC()
 							)
 					);
 			
@@ -6729,6 +6751,8 @@ public class ACPerformanceManager {
 					_thePerformanceInterface.getCLmaxTakeOff().get(xcg), 
 					_thePerformanceInterface.getCLZeroTakeOff().get(xcg), 
 					_thePerformanceInterface.getCLAlphaTakeOff().get(xcg),
+					_thePerformanceInterface.getTakeOffCalibrationFactorThrust(),
+					_thePerformanceInterface.getTakeOffCalibrationFactorSFC(),
 					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 					);
 
@@ -6796,6 +6820,12 @@ public class ACPerformanceManager {
 					_thePerformanceInterface.getCLZeroLanding().get(xcg),
 					_thePerformanceInterface.getCLAlphaLanding().get(xcg),
 					_thePerformanceInterface.getTheOperatingConditions().getThrottleLanding(),
+					_thePerformanceInterface.getCruiseCalibrationFactorThrust(),
+					_thePerformanceInterface.getFlightIdleCalibrationFactorThrust(),
+					_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
+					_thePerformanceInterface.getCruiseCalibrationFactorSFC(),
+					_thePerformanceInterface.getFlightIdleCalibrationFactorSFC(),
+					_thePerformanceInterface.getGroundIdleCalibrationFactorSFC(),
 					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 					);
 

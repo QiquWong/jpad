@@ -295,6 +295,9 @@ public class NoiseTrajectoryCalcTest extends Application {
 			Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 			Amount<Duration> dtLandingGearRetraction = Amount.valueOf(12, SI.SECOND);
 			Amount<Duration> dtThrustCutback = Amount.valueOf(4, SI.SECOND);
+			double takeOffThrustCalibrationFactor = 1.0;
+			double aprThrustCalibrationFactor = 1.0;
+			double takeOffSfcCalibrationFactor = 1.0;
 			double kcLMax = 0.8;
 			double kRot = 1.05;
 			double alphaDotInitial = 3.0; // (deg/s)
@@ -356,11 +359,21 @@ public class NoiseTrajectoryCalcTest extends Application {
 						cLmaxTO,
 						cLZeroTO,
 						cLalphaFlap,
+						takeOffThrustCalibrationFactor,
+						takeOffSfcCalibrationFactor,
 						createCSV
 						);
 
+				Amount<Velocity> vMC = calculateVMC(
+						xcgPosition,
+						maxTakeOffMass,
+						cLmaxTO,
+						tauRudder, 
+						veDSCDatabaseReader, 
+						theTakeOffNoiseTrajectoryCalculator.getvSTakeOff(), 
+						aprThrustCalibrationFactor
+						);
 				
-				Amount<Velocity> vMC = calculateVMC(xcgPosition, maxTakeOffMass, cLmaxTO, tauRudder, veDSCDatabaseReader, theTakeOffNoiseTrajectoryCalculator.getvSTakeOff());
 				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null, timeHistories,vMC);
 //				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null, timeHistories, vMC);
 
@@ -403,6 +416,12 @@ public class NoiseTrajectoryCalcTest extends Application {
 			double cLmaxLND = 3.1;
 			double cLZeroLND = 0.0888;
 			Amount<?> cLalphaLND = Amount.valueOf(0.1082, NonSI.DEGREE_ANGLE.inverse());
+			double cruiseThrustCalibrationFactor = 1.0;
+			double fidlThrustCalibrationFactor = 1.0;
+			double gidlThrustCalibrationFactor = 1.0;
+			double cruiseSfcCalibrationFactor = 1.0;
+			double fidlSfcCalibrationFactor = 1.0;
+			double gidlSfcCalibrationFactor = 1.0;
 			
 			MyInterpolatingFunction muBrake = new MyInterpolatingFunction();
 //			muBrake.interpolateLinear(
@@ -436,6 +455,12 @@ public class NoiseTrajectoryCalcTest extends Application {
 						cLZeroLND,
 						cLalphaLND,
 						theOperatingConditions.getThrottleLanding(),
+						cruiseThrustCalibrationFactor,
+						fidlThrustCalibrationFactor,
+						gidlThrustCalibrationFactor,
+						cruiseSfcCalibrationFactor,
+						fidlSfcCalibrationFactor,
+						gidlSfcCalibrationFactor,
 						createCSV
 						);
 
@@ -471,7 +496,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 			double cLMaxTakeOff,
 			MyInterpolatingFunction tauRudder,
 			VeDSCDatabaseReader veDSCDatabaseReader,
-			Amount<Velocity> vsTakeOff
+			Amount<Velocity> vsTakeOff,
+			double aprThrustCalibrationFactor
 			) {
 		
 		Amount<Length> dimensionalXcg = 
@@ -565,7 +591,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 				theOperatingConditions.getAltitudeTakeOff(), 
 				Amount.valueOf(10, SI.CELSIUS), 
 				theOperatingConditions.getThrottleTakeOff(), 
-				true
+				true,
+				aprThrustCalibrationFactor
 				);
 
 		List<Amount<Length>> enginesArms = new ArrayList<>();

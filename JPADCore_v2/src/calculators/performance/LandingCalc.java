@@ -78,7 +78,7 @@ public class LandingCalc {
 	private List<Amount<Length>> landingDistance, verticalDistance;
 	private List<Amount<Mass>> fuelUsed;
 	private List<Amount<Force>> weight; 
-	private double cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD;
+	private double cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD, thrustCorrectionFactor, sfcCorrectionFactor;
 	private MyInterpolatingFunction mu, muBrake;
 	private ContinuousOutputModel continuousOutputModel;
 	private FirstOrderIntegrator theIntegrator;
@@ -134,7 +134,9 @@ public class LandingCalc {
 			double cLalphaFlap,
 			Amount<Duration> nFreeRoll,
 			double[] polarCLLanding,
-			double[] polarCDLanding
+			double[] polarCDLanding,
+			double thrustCorrectionFactor,
+			double sfcCorrectionFactor
 			) {
 
 		// Required data
@@ -157,6 +159,8 @@ public class LandingCalc {
 		this.cLmaxLanding = cLmaxLanding;
 		this.cL0Landing = cL0Landing; 
 		this.nFreeRoll = nFreeRoll;
+		this.thrustCorrectionFactor = thrustCorrectionFactor;
+		this.sfcCorrectionFactor = sfcCorrectionFactor;
 		
 		this.cLground = cL0Landing + (cLalphaFlap*iw.getEstimatedValue());
 
@@ -894,7 +898,8 @@ public class LandingCalc {
 											)
 									),
 							LandingCalc.this.getTheConditions().getDeltaTemperatureLanding(), 
-							theConditions.getThrottleLanding()
+							theConditions.getThrottleLanding(),
+							LandingCalc.this.getThrustCorrectionFactor()
 							)
 					);
 
@@ -921,7 +926,8 @@ public class LandingCalc {
 								altitude,
 								LandingCalc.this.getTheConditions().getDeltaTemperatureLanding(),
 								theConditions.getThrottleLanding(),
-								EngineOperatingConditionEnum.GIDL
+								EngineOperatingConditionEnum.GIDL,
+								LandingCalc.this.getSfcCorrectionFactor()
 								)
 						*(0.224809)*(0.454/3600)
 						*thrustList.get(i).doubleValue(SI.NEWTON)
@@ -1277,5 +1283,21 @@ public class LandingCalc {
 
 	public void setTimeBreakPoint(List<Double> timeBreakPoint) {
 		this.timeBreakPoint = timeBreakPoint;
+	}
+
+	public double getThrustCorrectionFactor() {
+		return thrustCorrectionFactor;
+	}
+
+	public void setThrustCorrectionFactor(double thrustCorrectionFactor) {
+		this.thrustCorrectionFactor = thrustCorrectionFactor;
+	}
+
+	public double getSfcCorrectionFactor() {
+		return sfcCorrectionFactor;
+	}
+
+	public void setSfcCorrectionFactor(double sfcCorrectionFactor) {
+		this.sfcCorrectionFactor = sfcCorrectionFactor;
 	}
 }

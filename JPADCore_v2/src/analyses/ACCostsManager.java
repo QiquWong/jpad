@@ -205,6 +205,7 @@ public class ACCostsManager {
 		Amount<Length> range= null;
 		Amount<Mass> blockFuel = null;
 		Amount<Duration> flightTime = null;
+		double cruiseSfcCalibrationFactor = 1.0; /* default value */
 
 		/********************************************************************************************
 		 * If the boolean flag is true, the method reads from the xls file and ignores the assigned
@@ -245,7 +246,11 @@ public class ACCostsManager {
 										),
 								NonSI.MINUTE
 								);
-
+						
+						//---------------------------------------------------------------
+						// CRUISE SFC CALIBRATION FACTOR
+						cruiseSfcCalibrationFactor = theAircraft.getTheAnalysisManager().getThePerformance().getThePerformanceInterface().getCruiseCalibrationFactorSFC();
+						
 					}
 					else {
 						System.err.println("WARNING!! THE MISSION PROFILE ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");
@@ -281,6 +286,12 @@ public class ACCostsManager {
 			String flightTimeProperty = reader.getXMLPropertyByPath("//performance/flight_time");
 			if(flightTimeProperty != null)
 				flightTime = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//performance/flight_time");
+			
+			//---------------------------------------------------------------
+			// FLIGHT TIME
+			String cruiseSfcCalibrationFactorProperty = reader.getXMLPropertyByPath("//performance/cruise_sfc_calibration_factor");
+			if(cruiseSfcCalibrationFactorProperty != null)
+				cruiseSfcCalibrationFactor = Double.valueOf(cruiseSfcCalibrationFactorProperty);
 
 		}
 		
@@ -871,7 +882,8 @@ public class ACCostsManager {
 													theOperatingConditions.getAltitudeCruise(),
 													theOperatingConditions.getDeltaTemperatureCruise(),
 													theOperatingConditions.getThrottleCruise(),
-													EngineOperatingConditionEnum.CRUISE
+													EngineOperatingConditionEnum.CRUISE,
+													cruiseSfcCalibrationFactor
 													)
 											),
 									Currency.USD
@@ -988,6 +1000,7 @@ public class ACCostsManager {
 				.setRange(range)
 				.setBlockFuelMass(blockFuel)
 				.setFlightTime(flightTime)
+				.setCruiseSfcCalibrationFactor(cruiseSfcCalibrationFactor)
 				.setUtilization(utilization)
 				.setLifeSpan(lifeSpan)
 				.setResidualValue(residualValue)

@@ -82,7 +82,9 @@ public class LandingNoiseTrajectoryCalc {
 	private List<Amount<Duration>> time;
 	private List<Amount<Force>> thrust;
 	private List<Double> timeBreakPoints;
-	private double alphaDotFlare, cL0LND, cLmaxLND, kGround, phi;
+	private double alphaDotFlare, cL0LND, cLmaxLND, kGround, phi, 
+	cruiseThrustCorrectionFactor, fidlThrustCorrectionFactor, gidlThrustCorrectionFactor, 
+	cruiseSfcCorrectionFactor, fidlSfcCorrectionFactor, gidlSfcCorrectionFactor;
 	private Amount<?> cLalphaLND;
 	private MyInterpolatingFunction mu, muBrake, thrustFlareFunction;
 	private boolean createCSV;
@@ -131,6 +133,12 @@ public class LandingNoiseTrajectoryCalc {
 			double cLZeroLND,
 			Amount<?> cLalphaLND,
 			double phi,
+			double cruiseThrustCorrectionFactor,
+			double fidlThrustCorrectionFactor,
+			double gidlThrustCorrectionFactor,
+			double cruiseSfcCorrectionFactor,
+			double fidlSfcCorrectionFactor,
+			double gidlSfcCorrectionFactor,
 			boolean createCSV
 			) {
 
@@ -162,6 +170,12 @@ public class LandingNoiseTrajectoryCalc {
 		this.cLalphaLND = cLalphaLND;
 		this.cL0LND = cLZeroLND;
 		this.phi = phi;
+		this.cruiseThrustCorrectionFactor = cruiseThrustCorrectionFactor;
+		this.fidlThrustCorrectionFactor = fidlThrustCorrectionFactor;
+		this.gidlThrustCorrectionFactor = gidlThrustCorrectionFactor;
+		this.cruiseSfcCorrectionFactor = cruiseSfcCorrectionFactor;
+		this.fidlSfcCorrectionFactor = fidlSfcCorrectionFactor;
+		this.gidlSfcCorrectionFactor = gidlSfcCorrectionFactor;
 
 		// Reference velocities definition
 		vSLanding = SpeedCalc.calculateSpeedStall(
@@ -413,7 +427,8 @@ public class LandingNoiseTrajectoryCalc {
 													)
 											),
 									deltaTemperature, 
-									LandingNoiseTrajectoryCalc.this.getPhi()
+									LandingNoiseTrajectoryCalc.this.getPhi(),
+									LandingNoiseTrajectoryCalc.this.getGidlThrustCorrectionFactor()
 									)
 							);
 				
@@ -1788,7 +1803,8 @@ public class LandingNoiseTrajectoryCalc {
 													)
 											),
 									deltaTemperature, 
-									LandingNoiseTrajectoryCalc.this.getPhi()
+									LandingNoiseTrajectoryCalc.this.getPhi(),
+									LandingNoiseTrajectoryCalc.this.getGidlThrustCorrectionFactor()
 									)
 							);
 
@@ -1799,6 +1815,8 @@ public class LandingNoiseTrajectoryCalc {
 
 		public double fuelFlow(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Force> weight) {
 
+			/* FIXME: GIDL SETTING IS USED ONLY ON GROUND. FOR APPRAOCH USE THE DESCENT METHOD (WEIGHTNED AVARAGE BETWEEN CRUISE AND FIDL) */
+			
 			List<Double> fuelFlowList = new ArrayList<>();
 			List<Amount<Force>> thrustList = thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight); 
 
@@ -1817,7 +1835,8 @@ public class LandingNoiseTrajectoryCalc {
 								altitude,
 								deltaTemperature,
 								LandingNoiseTrajectoryCalc.this.getPhi(),
-								EngineOperatingConditionEnum.GIDL
+								EngineOperatingConditionEnum.GIDL,
+								LandingNoiseTrajectoryCalc.this.getGidlSfcCorrectionFactor()
 								)
 						*(0.224809)*(0.454/3600)
 						*thrustList.get(i).doubleValue(SI.NEWTON)
@@ -2587,6 +2606,54 @@ public class LandingNoiseTrajectoryCalc {
 
 	public void setWingToGroundDistance(Amount<Length> wingToGroundDistance) {
 		this.wingToGroundDistance = wingToGroundDistance;
+	}
+
+	public double getCruiseThrustCorrectionFactor() {
+		return cruiseThrustCorrectionFactor;
+	}
+
+	public void setCruiseThrustCorrectionFactor(double cruiseThrustCorrectionFactor) {
+		this.cruiseThrustCorrectionFactor = cruiseThrustCorrectionFactor;
+	}
+
+	public double getCruiseSfcCorrectionFactor() {
+		return cruiseSfcCorrectionFactor;
+	}
+
+	public void setCruiseSfcCorrectionFactor(double cruiseSfcCorrectionFactor) {
+		this.cruiseSfcCorrectionFactor = cruiseSfcCorrectionFactor;
+	}
+
+	public double getFidlThrustCorrectionFactor() {
+		return fidlThrustCorrectionFactor;
+	}
+
+	public void setFidlThrustCorrectionFactor(double fidlThrustCorrectionFactor) {
+		this.fidlThrustCorrectionFactor = fidlThrustCorrectionFactor;
+	}
+
+	public double getFidlSfcCorrectionFactor() {
+		return fidlSfcCorrectionFactor;
+	}
+
+	public void setFidlSfcCorrectionFactor(double fidlSfcCorrectionFactor) {
+		this.fidlSfcCorrectionFactor = fidlSfcCorrectionFactor;
+	}
+
+	public double getGidlThrustCorrectionFactor() {
+		return gidlThrustCorrectionFactor;
+	}
+
+	public void setGidlThrustCorrectionFactor(double gidlThrustCorrectionFactor) {
+		this.gidlThrustCorrectionFactor = gidlThrustCorrectionFactor;
+	}
+
+	public double getGidlSfcCorrectionFactor() {
+		return gidlSfcCorrectionFactor;
+	}
+
+	public void setGidlSfcCorrectionFactor(double gidlSfcCorrectionFactor) {
+		this.gidlSfcCorrectionFactor = gidlSfcCorrectionFactor;
 	}
 
 }

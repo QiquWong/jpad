@@ -97,7 +97,7 @@ public class TakeOffNoiseTrajectoryCalc {
 	private List<Amount<Force>> weight;
 	private List<Double> loadFactor, cL, timeBreakPoints;
 	private double kAlphaDot, kcLMax, kRot, phi, cLmaxTO, alphaDotInitial, deltaCD0LandingGear, deltaCD0OEI, 
-	alphaRed, cL0, phiCutback;
+	alphaRed, cL0, phiCutback, thrustCorrectionFactor, sfcCorrectionFactor;
 	private Amount<?> cLalphaFlap;
 	private MyInterpolatingFunction mu, deltaCD0LandingGearRetractionSlope, deltaThrustCutbackSlope;
 	
@@ -143,6 +143,8 @@ public class TakeOffNoiseTrajectoryCalc {
 			double cLmaxTO,
 			double cLZeroTO,
 			Amount<?> cLalphaFlap,
+			double thrustCorrectionFactor,
+			double sfcCorrectionFactor,
 			boolean createCSV
 			) {
 
@@ -182,6 +184,8 @@ public class TakeOffNoiseTrajectoryCalc {
 		this.cL0 = cLZeroTO;
 		this.deltaCD0LandingGearRetractionSlope = new MyInterpolatingFunction();
 		this.deltaThrustCutbackSlope = new MyInterpolatingFunction();
+		this.thrustCorrectionFactor = thrustCorrectionFactor;
+		this.sfcCorrectionFactor = sfcCorrectionFactor;
 
 		// Reference velocities definition
 		vSTakeOff = SpeedCalc.calculateSpeedStall(
@@ -639,7 +643,8 @@ public class TakeOffNoiseTrajectoryCalc {
 															)
 													),
 											Amount.valueOf(10, SI.CELSIUS), // ISA+10°C
-											TakeOffNoiseTrajectoryCalc.this.getPhi()
+											TakeOffNoiseTrajectoryCalc.this.getPhi(),
+											TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor()
 											).doubleValue(SI.NEWTON),
 									SI.NEWTON
 									);
@@ -2267,7 +2272,8 @@ public class TakeOffNoiseTrajectoryCalc {
 													)
 											),
 									deltaTemperature, 
-									TakeOffNoiseTrajectoryCalc.this.getPhi()
+									TakeOffNoiseTrajectoryCalc.this.getPhi(),
+									TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor()
 									)
 							);
 			else if(time.doubleValue(SI.SECOND) > tCutback.doubleValue(SI.SECOND) && time.doubleValue(SI.SECOND) <= tCutback.doubleValue(SI.SECOND)+dtThrustCutback.doubleValue(SI.SECOND) ) 
@@ -2288,7 +2294,8 @@ public class TakeOffNoiseTrajectoryCalc {
 													)
 											),
 									deltaTemperature, 
-									TakeOffNoiseTrajectoryCalc.this.getPhi()
+									TakeOffNoiseTrajectoryCalc.this.getPhi(),
+									TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor()
 									).times(deltaThrustCutbackSlope.value(time.doubleValue(SI.SECOND)))
 							);
 			else if(time.doubleValue(SI.SECOND) > tCutback.doubleValue(SI.SECOND)+dtThrustCutback.doubleValue(SI.SECOND)) 
@@ -2309,7 +2316,8 @@ public class TakeOffNoiseTrajectoryCalc {
 													)
 											),
 									deltaTemperature, 
-									TakeOffNoiseTrajectoryCalc.this.getPhi()
+									TakeOffNoiseTrajectoryCalc.this.getPhi(),
+									TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor()
 									).times(phiCutback)
 							);
 
@@ -2337,7 +2345,8 @@ public class TakeOffNoiseTrajectoryCalc {
 								altitude,
 								deltaTemperature,
 								TakeOffNoiseTrajectoryCalc.this.getPhi(),
-								EngineOperatingConditionEnum.TAKE_OFF
+								EngineOperatingConditionEnum.TAKE_OFF,
+								TakeOffNoiseTrajectoryCalc.this.getSfcCorrectionFactor()
 								)
 						*(0.224809)*(0.454/3600)
 						*thrustList.get(i).doubleValue(SI.NEWTON)
@@ -3193,6 +3202,22 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	public void setCreateCSV(boolean createCSV) {
 		this.createCSV = createCSV;
+	}
+
+	public double getThrustCorrectionFactor() {
+		return thrustCorrectionFactor;
+	}
+
+	public void setThrustCorrectionFactor(double thrustCorrectionFactor) {
+		this.thrustCorrectionFactor = thrustCorrectionFactor;
+	}
+
+	public double getSfcCorrectionFactor() {
+		return sfcCorrectionFactor;
+	}
+
+	public void setSfcCorrectionFactor(double sfcCorrectionFactor) {
+		this.sfcCorrectionFactor = sfcCorrectionFactor;
 	}
 
 }

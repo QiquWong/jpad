@@ -14,6 +14,7 @@
 				<range unit="nmi">400</range>				
 				<block_fuel unit="kg">1658</block_fuel>
 				<flight_time unit="min">75</flight_time>
+				<cruise_sfc_calibration_factor>1.0</cruise_sfc_calibration_factor>
 			</performance>
 			<global_data>
 				<utilization calculate="TRUE" method="AEA" unit="h/year"></utilization> <!-- Methods: AEA or SFORZA  -->

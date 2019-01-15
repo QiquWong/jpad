@@ -1,6 +1,5 @@
 package calculators.performance;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +11,10 @@ import javax.measure.unit.NonSI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.powerplant.PowerPlant;
-import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
-import configuration.enumerations.FoldersEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.atmosphere.SpeedCalc;
-import writers.JPADStaticWriteUtils;
 
 /**
  * Class that allows user to evaluate the specific range for different mach numbers.
@@ -59,6 +55,7 @@ public class SpecificRangeCalc {
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature,
 			double phi,
+			double sfcCorrectionFactor,
 			PowerPlant thePowerPlant
 			) {
 		
@@ -71,7 +68,8 @@ public class SpecificRangeCalc {
 					altitude,
 					deltaTemperature,
 					phi,
-					EngineOperatingConditionEnum.CRUISE
+					EngineOperatingConditionEnum.CRUISE,
+					sfcCorrectionFactor
 					);
 		}
 		return sfcMach;

@@ -44,6 +44,10 @@ public class DescentCalc {
 	private double[] _polarCLClean;
 	private double[] _polarCDClean;
 	private MyInterpolatingFunction _sfcFunctionDescent;
+	private double _cruiseThrustCorrectionFactor;
+	private double _cruiseSfcCorrectionFactor;
+	private double _fidlThrustCorrectionFactor;
+	private double _fidlSfcCorrectionFactor;
 
 	private final int maxIterationNumber = 50;
 	
@@ -83,7 +87,11 @@ public class DescentCalc {
 			Amount<Length> endDescentAltitude,
 			Amount<Mass> initialDescentMass,
 			double[] polarCLClean,
-			double[] polarCDClean
+			double[] polarCDClean,
+			double cruiseThrustCorrectionFactor,
+			double cruiseSfcCorrectionFactor,
+			double fidlThrustCorrectionFactor,
+			double fidlSfcCorrectionFactor
 			) {
 		
 		this._theAircraft = theAircraft;
@@ -95,6 +103,10 @@ public class DescentCalc {
 		this._initialDescentMass = initialDescentMass;
 		this._polarCLClean = polarCLClean;
 		this._polarCDClean = polarCDClean;
+		this._cruiseThrustCorrectionFactor = cruiseThrustCorrectionFactor;
+		this._fidlThrustCorrectionFactor = fidlThrustCorrectionFactor;
+		this._cruiseSfcCorrectionFactor = cruiseSfcCorrectionFactor;
+		this._fidlSfcCorrectionFactor = fidlSfcCorrectionFactor;
 		
 		this._descentAltitudes = new ArrayList<>();
 		this._descentLengths = new ArrayList<>();
@@ -241,7 +253,8 @@ public class DescentCalc {
 							_descentAltitudes.get(0), 
 							machList.get(0), 
 							_theOperatingConditions.getDeltaTemperatureCruise(), 
-							_theOperatingConditions.getThrottleCruise()
+							_theOperatingConditions.getThrottleCruise(),
+							_cruiseThrustCorrectionFactor
 							)
 					);
 
@@ -253,7 +266,8 @@ public class DescentCalc {
 							_descentAltitudes.get(0), 
 							machList.get(0), 
 							_theOperatingConditions.getDeltaTemperatureCruise(), 
-							_theOperatingConditions.getThrottleCruise()
+							_theOperatingConditions.getThrottleCruise(),
+							_fidlThrustCorrectionFactor
 							)
 					);
 		}
@@ -372,7 +386,8 @@ public class DescentCalc {
 							_descentAltitudes.get(0),
 							_theOperatingConditions.getDeltaTemperatureCruise(),
 							_theOperatingConditions.getThrottleCruise(),
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							_cruiseSfcCorrectionFactor
 							)
 					);
 			sfcFlightIdleList.add(
@@ -381,7 +396,8 @@ public class DescentCalc {
 							_descentAltitudes.get(0),
 							_theOperatingConditions.getDeltaTemperatureCruise(),
 							_theOperatingConditions.getThrottleCruise(),
-							EngineOperatingConditionEnum.FIDL
+							EngineOperatingConditionEnum.FIDL,
+							_fidlSfcCorrectionFactor
 							)
 					);
 		}
@@ -528,7 +544,8 @@ public class DescentCalc {
 								_descentAltitudes.get(i), 
 								machList.get(i), 
 								_theOperatingConditions.getDeltaTemperatureCruise(), 
-								_theOperatingConditions.getThrottleCruise()
+								_theOperatingConditions.getThrottleCruise(),
+								_cruiseThrustCorrectionFactor
 								)
 						);
 
@@ -540,7 +557,8 @@ public class DescentCalc {
 								_descentAltitudes.get(i), 
 								machList.get(i), 
 								_theOperatingConditions.getDeltaTemperatureCruise(), 
-								_theOperatingConditions.getThrottleCruise()
+								_theOperatingConditions.getThrottleCruise(),
+								_fidlThrustCorrectionFactor
 								)
 						);
 			}
@@ -662,7 +680,8 @@ public class DescentCalc {
 								_descentAltitudes.get(i),
 								_theOperatingConditions.getDeltaTemperatureCruise(),
 								_theOperatingConditions.getThrottleCruise(),
-								EngineOperatingConditionEnum.CRUISE
+								EngineOperatingConditionEnum.CRUISE,
+								_cruiseSfcCorrectionFactor
 								)
 						);
 				sfcFlightIdleList.add(
@@ -671,7 +690,8 @@ public class DescentCalc {
 								_descentAltitudes.get(i),
 								_theOperatingConditions.getDeltaTemperatureCruise(),
 								_theOperatingConditions.getThrottleCruise(),
-								EngineOperatingConditionEnum.FIDL
+								EngineOperatingConditionEnum.FIDL,
+								_fidlSfcCorrectionFactor
 								)
 						);
 			}
@@ -1093,5 +1113,37 @@ public class DescentCalc {
 
 	public void setTheOperatingConditions(OperatingConditions _theOperatingConditions) {
 		this._theOperatingConditions = _theOperatingConditions;
+	}
+
+	public double getCruiseThrustCorrectionFactor() {
+		return _cruiseThrustCorrectionFactor;
+	}
+
+	public void setCruiseThrustCorrectionFactor(double _cruiseThrustCorrectionFactor) {
+		this._cruiseThrustCorrectionFactor = _cruiseThrustCorrectionFactor;
+	}
+
+	public double getCruiseSfcCorrectionFactor() {
+		return _cruiseSfcCorrectionFactor;
+	}
+
+	public void setCruiseSfcCorrectionFactor(double _cruiseSfcCorrectionFactor) {
+		this._cruiseSfcCorrectionFactor = _cruiseSfcCorrectionFactor;
+	}
+
+	public double getFidlThrustCorrectionFactor() {
+		return _fidlThrustCorrectionFactor;
+	}
+
+	public void setFidlThrustCorrectionFactor(double _fidlThrustCorrectionFactor) {
+		this._fidlThrustCorrectionFactor = _fidlThrustCorrectionFactor;
+	}
+
+	public double getFidlSfcCorrectionFactor() {
+		return _fidlSfcCorrectionFactor;
+	}
+
+	public void setFidlSfcCorrectionFactor(double _fidlSfcCorrectionFactor) {
+		this._fidlSfcCorrectionFactor = _fidlSfcCorrectionFactor;
 	}
 }

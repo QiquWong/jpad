@@ -22,7 +22,6 @@ import calculators.performance.customdata.RCMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
-import configuration.enumerations.EngineTypeEnum;
 import database.databasefunctions.engine.EngineDatabaseReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.atmosphere.SpeedCalc;
@@ -142,7 +141,7 @@ public class RateOfClimbCalc {
 	 */
 	public static Amount<Velocity> calculateRC(
 			Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Velocity> speed, double phi, Amount<Mass> weight,
-			EngineOperatingConditionEnum flightCondition, EngineTypeEnum engineType,
+			EngineOperatingConditionEnum flightCondition, double thrustCorrectionFactor,
 			PowerPlant thePowerPlant,
 			Amount<Force> t0, 
 			EngineDatabaseReader engineDatabaseReader,
@@ -161,7 +160,8 @@ public class RateOfClimbCalc {
 							altitude,
 							SpeedCalc.calculateMach(altitude, deltaTemperature, speed), 
 							deltaTemperature, 
-							phi
+							phi,
+							thrustCorrectionFactor
 							).doubleValue(SI.NEWTON),
 					SI.NEWTON
 					);
