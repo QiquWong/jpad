@@ -6810,7 +6810,6 @@ public class ACPerformanceManager {
 					_thePerformanceInterface.getPolarCDLanding().get(xcg),
 					_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(), 
 					_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(),
-					Amount.valueOf(0.0, SI.SECOND), /* FIXME: COMPLETE THE LANDING SIMULATION THEN USE THE LANDING VALUE FOR dT_Flare */
 					_thePerformanceInterface.getFreeRollDuration(),
 					_thePerformanceInterface.getMuFunction(), 
 					_thePerformanceInterface.getMuBrakeFunction(),
