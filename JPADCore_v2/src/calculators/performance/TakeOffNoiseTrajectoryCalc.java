@@ -1386,17 +1386,6 @@ public class TakeOffNoiseTrajectoryCalc {
 								"Time", "Acceleration", "s", "m/(s^2)",
 								currentOutputFolder, "Acceleration_evolution_SI",true);
 
-						MyChartToFileUtils.plotNoLegend(
-								MyArrayUtils.convertListOfAmountTodoubleArray(timeMap.get(phi)),
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										accelerationMap.get(phi).stream()
-										.map(x -> x.to(MyUnits.FOOT_PER_SQUARE_MINUTE))
-										.collect(Collectors.toList())
-										),
-								0.0, null, null, null,
-								"Time", "Acceleration", "s", "ft/(min^2)",
-								currentOutputFolder, "Acceleration_evolution_IMPERIAL",true);
-
 						//.................................................................................
 						// acceleration v.s. ground distance
 						MyChartToFileUtils.plotNoLegend(
@@ -1412,13 +1401,9 @@ public class TakeOffNoiseTrajectoryCalc {
 										.map(x -> x.to(NonSI.FOOT))
 										.collect(Collectors.toList())
 										),
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										accelerationMap.get(phi).stream()
-										.map(x -> x.to(MyUnits.FOOT_PER_SQUARE_MINUTE))
-										.collect(Collectors.toList())
-										),
+								MyArrayUtils.convertListOfAmountTodoubleArray(accelerationMap.get(phi)),
 								0.0, null, null, null,
-								"Ground Distance", "Acceleration", "ft", "ft/(min^2)",
+								"Ground Distance", "Acceleration", "ft", "m/(s^2)",
 								currentOutputFolder, "Acceleration_vs_GroundDistance_IMPERIAL",true);
 
 						//.................................................................................

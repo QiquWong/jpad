@@ -280,8 +280,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 			//======================================================================
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			boolean timeHistories = true;
-			boolean takeOffSimulation = true;
-			boolean landingSimulation = false;
+			boolean takeOffSimulation = false;
+			boolean landingSimulation = true;
 			
 			//......................................................................
 			Amount<Length> xEndSimulation = Amount.valueOf(8000, SI.METER);
@@ -412,13 +412,14 @@ public class NoiseTrajectoryCalcTest extends Application {
 			Amount<Length> initialAltitude = Amount.valueOf(4000, NonSI.FOOT);
 			Amount<Angle> gammaDescent = Amount.valueOf(-3, NonSI.DEGREE_ANGLE);
 			Amount<Mass> maxLandingMass = Amount.valueOf(49656.6, SI.KILOGRAM);
-			double[] polarCLLanding = new double[] {1.852401952,1.899728566,1.946839305,1.993734167,2.040413155,2.086876267,2.133123503,2.179154864,2.22497035,2.27056996,2.315953694,2.361121553,2.406073536,2.450809644,2.495329877,2.539634234,2.583722715,2.627595321,2.671252052,2.714692907,2.757917886,2.800926991,2.843720219,2.886297572,2.92865905,2.970804652,3.012734378,3.054448229,3.095946205};
-			double[] polarCDLanding = new double[] {0.103156733,0.104489488,0.105998136,0.107684706,0.109551373,0.111600463,0.113834448,0.116255949,0.118867733,0.121672716,0.124673962,0.127874684,0.131278239,0.134888136,0.13870803,0.142741724,0.146993167,0.151466461,0.156165849,0.161095728,0.166260639,0.171665272,0.177314465,0.183213204,0.189366623,0.195780002,0.202458771,0.209408507,0.216634936};
-			Amount<Duration> dtFlare = Amount.valueOf(3, SI.SECOND);
+//			double[] polarCLLanding = new double[] {1.852401952,1.899728566,1.946839305,1.993734167,2.040413155,2.086876267,2.133123503,2.179154864,2.22497035,2.27056996,2.315953694,2.361121553,2.406073536,2.450809644,2.495329877,2.539634234,2.583722715,2.627595321,2.671252052,2.714692907,2.757917886,2.800926991,2.843720219,2.886297572,2.92865905,2.970804652,3.012734378,3.054448229,3.095946205};
+//			double[] polarCDLanding = new double[] {0.103156733,0.104489488,0.105998136,0.107684706,0.109551373,0.111600463,0.113834448,0.116255949,0.118867733,0.121672716,0.124673962,0.127874684,0.131278239,0.134888136,0.13870803,0.142741724,0.146993167,0.151466461,0.156165849,0.161095728,0.166260639,0.171665272,0.177314465,0.183213204,0.189366623,0.195780002,0.202458771,0.209408507,0.216634936};
+			double[] polarCLLanding = new double[] {0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2,2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9,3,3.1};
+			double[] polarCDLanding = new double[] {0.2804,0.260456,0.241704,0.224144,0.207776,0.1926,0.178616,0.165824,0.154224,0.143816,0.1346,0.126576,0.119744,0.114104,0.109656,0.1064,0.104336,0.103464,0.103784,0.105296,0.108,0.111896,0.116984,0.123264,0.130736,0.1394,0.149256,0.160304,0.172544,0.185976,0.2006,0.216416};
 			Amount<Duration> dtFreeRoll = Amount.valueOf(2, SI.SECOND);
 			double cLmaxLND = 3.1;
-			double cLZeroLND = 0.0888;
-			Amount<?> cLalphaLND = Amount.valueOf(0.1082, NonSI.DEGREE_ANGLE.inverse());
+			double cLZeroLND = 1.866;
+			Amount<?> cLalphaLND = Amount.valueOf(0.0888, NonSI.DEGREE_ANGLE.inverse());
 			double cruiseThrustCalibrationFactor = 1.0;
 			double fidlThrustCalibrationFactor = 1.0;
 			double gidlThrustCalibrationFactor = 1.0;
@@ -448,7 +449,6 @@ public class NoiseTrajectoryCalcTest extends Application {
 						polarCDLanding, 
 						theAircraft.getWing().getAspectRatio(),
 						theAircraft.getWing().getSurfacePlanform(),
-						dtFlare,
 						dtFreeRoll, 
 						mu, 
 						muBrake,
@@ -486,11 +486,11 @@ public class NoiseTrajectoryCalcTest extends Application {
 			DirectionalStabilityTest.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
-			return;
+			System.exit(1);
 		}	    
-
-		// JavaFX ... (if needed)
-		launch(args);
+		
+		System.exit(1);
+		
 	}
 
 	public static Amount<Velocity> calculateVMC(
