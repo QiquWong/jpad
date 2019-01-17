@@ -431,8 +431,10 @@ public class TakeOffNoiseTrajectoryCalc {
 				// Discrete event, switching function
 				@Override
 				public double g(double t, double[] x) {
-
-					return x[3] - obstacle.doubleValue(SI.METER);
+					if(t < tObstacle.doubleValue(SI.SECOND))
+						return x[3] - obstacle.doubleValue(SI.METER);
+					else
+						return 10.0; /* Generic positive value to trigger the event only one time */
 				}
 
 				@Override
@@ -503,7 +505,10 @@ public class TakeOffNoiseTrajectoryCalc {
 
 				@Override
 				public double g(double t, double[] x) {
-					return x[3] - obstacle.doubleValue(SI.METER);
+					if(t < tLandingGearRetractionStart.doubleValue(SI.SECOND))
+						return x[3] - obstacle.doubleValue(SI.METER);
+					else
+						return 10.0; /* Generic positive value to trigger the event only one time */
 				}
 
 				@Override
@@ -577,7 +582,10 @@ public class TakeOffNoiseTrajectoryCalc {
 
 				@Override
 				public double g(double t, double[] x) {
-					return x[3] - cutbackAltitude.doubleValue(SI.METER);					
+					if(t < tCutback.doubleValue(SI.SECOND))
+						return x[3] - cutbackAltitude.doubleValue(SI.METER);
+					else
+						return 10.0; /* Generic positive value to trigger the event only one time */
 				}
 
 				@Override
@@ -888,7 +896,7 @@ public class TakeOffNoiseTrajectoryCalc {
 			//##############################################################################################
 
 			double[] xAt0 = new double[] {0.0, 0.0, 0.0, 0.0, 0.0}; // initial state
-			theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
+			theIntegrator.integrate(ode, 0.0, xAt0, 70, xAt0); // now xAt0 contains final state
 
 			if (vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
 					<= (1.13 
@@ -1063,7 +1071,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				//========================================================================================
 				// PICKING UP ALL VARIABLES AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 				//----------------------------------------------------------------------------------------
-				Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
+				Amount<Duration> time = times.get(i);
 				Amount<Length> groundDistance = Amount.valueOf(x[0], SI.METER);
 				Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 				Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
@@ -2189,19 +2197,19 @@ public class TakeOffNoiseTrajectoryCalc {
 					);
 			Amount<Angle> alpha = alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 
-			if(time.doubleValue(SI.SECOND) > tCutback.doubleValue(SI.SECOND)) {
-				System.out.println("\tTime = " + time);
-				System.out.println("\tSpeed = " + speed);
-				System.out.println("\tAltitude = " + altitude);
-				System.out.println("\tGamma = " + gamma);
-				System.out.println("\tThrust = " + thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()*0.224809 + " lbf");
-				System.out.println("\tAcceleration = " + xDot[1] + " m/s^2");
-				System.out.println("\tGammaDot = " + xDot[2] + " °/s");
-				System.out.println("\tAlpha = " + alpha);
-				System.out.println("\tCL = " + cL(alpha));
-				System.out.println("\tCD = " + cD(cL(alpha), time, speed, altitude));
-				System.out.println("\n");
-			}
+//			if(time.doubleValue(SI.SECOND) > tCutback.doubleValue(SI.SECOND)) {
+//				System.out.println("\tTime = " + time);
+//				System.out.println("\tSpeed = " + speed);
+//				System.out.println("\tAltitude = " + altitude);
+//				System.out.println("\tGamma = " + gamma);
+//				System.out.println("\tThrust = " + thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()*0.224809 + " lbf");
+//				System.out.println("\tAcceleration = " + xDot[1] + " m/s^2");
+//				System.out.println("\tGammaDot = " + xDot[2] + " °/s");
+//				System.out.println("\tAlpha = " + alpha);
+//				System.out.println("\tCL = " + cL(alpha));
+//				System.out.println("\tCD = " + cD(cL(alpha), time, speed, altitude));
+//				System.out.println("\n");
+//			}
 			
 			if( t < tEndRot.doubleValue(SI.SECOND)) {
 				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);

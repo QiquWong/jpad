@@ -3112,10 +3112,20 @@ public class ACPerformanceManager {
 						+ "NOISE_TRAJECTORIES"
 						+ File.separator
 						);
+				String takeOffNoiseTrajectoriesFolderPath = JPADStaticWriteUtils.createNewFolder(
+						noiseTrajectoriesFolderPath 
+						+ "TAKE-OFF"
+						+ File.separator
+						);
+				String landingNoiseTrajectoriesFolderPath = JPADStaticWriteUtils.createNewFolder(
+						noiseTrajectoriesFolderPath 
+						+ "LANDING"
+						+ File.separator
+						);
 
 				CalcNoiseTrajectories calcNoiseTrajectories =  new CalcNoiseTrajectories();
-				calcNoiseTrajectories.calculateTakeOffNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), noiseTrajectoriesFolderPath);
-				calcNoiseTrajectories.calculateLandingNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), noiseTrajectoriesFolderPath);
+				calcNoiseTrajectories.calculateTakeOffNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), takeOffNoiseTrajectoriesFolderPath);
+				calcNoiseTrajectories.calculateLandingNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), landingNoiseTrajectoriesFolderPath);
 
 			}
 			
@@ -6830,10 +6840,17 @@ public class ACPerformanceManager {
 
 			theLandingNoiseTrajectoryCalculator.calculateNoiseLandingTrajectory(true);
 
-			try {
-				theLandingNoiseTrajectoryCalculator.createOutputCharts(noiseTrajectoriesFolderPath, true);
-			} catch (InstantiationException | IllegalAccessException e) {
-				e.printStackTrace();
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance().equals(Boolean.TRUE)) {
+				if(theLandingNoiseTrajectoryCalculator.isTargetRDandAltitudeFlag() == true)
+					try {
+						theLandingNoiseTrajectoryCalculator.createOutputCharts(noiseTrajectoriesFolderPath, true);
+					} catch (InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				else {
+					System.err.println("TERMINATING ... ");
+					System.exit(1);
+				}
 			}
 		}
 	}
