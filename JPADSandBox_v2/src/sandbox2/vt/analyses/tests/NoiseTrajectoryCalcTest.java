@@ -280,8 +280,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 			//======================================================================
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			boolean timeHistories = true;
-			boolean takeOffSimulation = true;
-			boolean landingSimulation = false;
+			boolean takeOffSimulation = false;
+			boolean landingSimulation = true;
 			
 			//......................................................................
 			Amount<Length> xEndSimulation = Amount.valueOf(8000, SI.METER);
@@ -377,20 +377,20 @@ public class NoiseTrajectoryCalcTest extends Application {
 						aprThrustCalibrationFactor
 						);
 				
-//				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null, timeHistories,vMC);
+				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null, timeHistories,vMC);
 				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null, timeHistories, vMC);
 
-//				double lowestPhiCutback = theTakeOffNoiseTrajectoryCalculator.getPhiCutback();
-//				double[] phiArray = MyArrayUtils.linspace( (lowestPhiCutback + 0.1), 0.9, numberOfThrustSettingCutback);
-//
-//				Arrays.stream(phiArray).forEach(
-//						throttle -> theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(
-//								true,
-//								throttle, 
-//								timeHistories,
-//								vMC
-//								)
-//						);
+				double lowestPhiCutback = theTakeOffNoiseTrajectoryCalculator.getPhiCutback();
+				double[] phiArray = MyArrayUtils.linspace( (lowestPhiCutback + 0.1), 0.9, numberOfThrustSettingCutback);
+
+				Arrays.stream(phiArray).forEach(
+						throttle -> theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(
+								true,
+								throttle, 
+								timeHistories,
+								vMC
+								)
+						);
 
 				if(theTakeOffNoiseTrajectoryCalculator.isTargetSpeedFlag() == true)
 					try {
@@ -469,16 +469,16 @@ public class NoiseTrajectoryCalcTest extends Application {
 
 				theLandingNoiseTrajectoryCalculator.calculateNoiseLandingTrajectory(timeHistories);
 
-				if(theLandingNoiseTrajectoryCalculator.isTargetRDandAltitudeFlag() == true)
+//				if(theLandingNoiseTrajectoryCalculator.isTargetRDandAltitudeFlag() == true)
 					try {
 						theLandingNoiseTrajectoryCalculator.createOutputCharts(outputFolderLanding, timeHistories);
 					} catch (InstantiationException | IllegalAccessException e) {
 						e.printStackTrace();
 					}
-				else {
-					System.err.println("TERMINATING ... ");
-					System.exit(1);
-				}
+//				else {
+//					System.err.println("TERMINATING ... ");
+//					System.exit(1);
+//				}
 				
 			}
 			//--------------------------------END-----------------------------------

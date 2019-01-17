@@ -46,11 +46,11 @@ import writers.JPADStaticWriteUtils;
  * This class have the purpose of calculating the landing trajectories for the noise certification
  * of a given aircraft assuming:
  *
- * - 3° of glide path
+ * - 3Â° of glide path
  * - V= 1.3*VsLND + 10kts
  * - full flaps configuration and landing gear down
  * - Maximum landing weight 
- * - ISA+10°C
+ * - ISA+10Â°C
  *
  * for each of them a step by step integration is used in solving the dynamic equation.
  *
@@ -179,7 +179,7 @@ public class LandingNoiseTrajectoryCalc {
 		// Reference velocities definition
 		vSLanding = SpeedCalc.calculateSpeedStall(
 				Amount.valueOf(0.0, SI.METER), // SEA LEVEL
-				Amount.valueOf(10, SI.CELSIUS), // ISA+10°C
+				Amount.valueOf(10, SI.CELSIUS), // ISA+10Â°C
 				maxLandingMass,
 				surface,
 				cLmaxLND
@@ -259,7 +259,7 @@ public class LandingNoiseTrajectoryCalc {
 				vDescent,
 				LandingNoiseTrajectoryCalc.this.getSurface(),
 				intialAltitude,
-				Amount.valueOf(10, SI.CELSIUS) // ISA+10°C
+				Amount.valueOf(10, SI.CELSIUS) // ISA+10Â°C
 				); 
 		alpha.add(
 				Amount.valueOf(
@@ -351,7 +351,7 @@ public class LandingNoiseTrajectoryCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[2] = gamma = " + x[2] + " Â°" +
 									"\n\tx[3] = altitude = " + x[3] + " m" +
 									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
@@ -392,12 +392,12 @@ public class LandingNoiseTrajectoryCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[2] = gamma = " + x[2] + " Â°" +
 									"\n\tx[3] = altitude = " + x[3] + " m" +
 									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
 
-					Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS); // ISA+10°C
+					Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS); // ISA+10Â°C
 					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
 					Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 					Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
@@ -496,7 +496,7 @@ public class LandingNoiseTrajectoryCalc {
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[2] = gamma = " + x[2] + " Â°" +
 									"\n\tx[3] = altitude = " + x[3] + " m" +
 									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
@@ -508,7 +508,7 @@ public class LandingNoiseTrajectoryCalc {
 							);
 					System.out.println("\nAltitude @ Flare Ending = " + altitudeAtFlareEnding);
 					System.out.println("\nRate of Descent @ Flare Ending = " + rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) + " ft/min");
-					System.out.println("\nFlare Angular Velocity = " + alphaDotFlare + " °/s");
+					System.out.println("\nFlare Angular Velocity = " + alphaDotFlare + " Â°/s");
 						
 					tTouchDown = Amount.valueOf(t, SI.SECOND);
 					timeBreakPoints.add(t);
@@ -539,7 +539,7 @@ public class LandingNoiseTrajectoryCalc {
 					double[] xDot = interpolator.getInterpolatedDerivatives();
 					double[] x = interpolator.getInterpolatedState();			
 
-					Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS); // ISA+10°C
+					Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS); // ISA+10Â°C
 					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
 					Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 					Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
@@ -572,13 +572,13 @@ public class LandingNoiseTrajectoryCalc {
 			};
 			theIntegrator.addStepHandler(stepHandler);
 
-			//##############################################################################################
+			//----------------------------------------------------------------------------------------------
 			// Use this handler for post-processing
 			System.out.println("=================================================");
-			System.out.println("Integration #" + (i+1) + "\n\n");
+			System.out.println("Integration " + (i+1) + "\n\n");
 			continuousOutputModel = new ContinuousOutputModel();
 			theIntegrator.addStepHandler(continuousOutputModel);
-			//##############################################################################################
+			//----------------------------------------------------------------------------------------------
 
 			// initial state
 			double[] xAt0 = new double[] {
@@ -639,7 +639,7 @@ public class LandingNoiseTrajectoryCalc {
 	 */
 	public void manageOutputData(double dt, boolean timeHistories, StepHandler handler) {
 
-		//#############################################################################
+		//-----------------------------------------------------------------------------
 		// Collect the array of times and associated state vector values according
 		// to the given dt and keeping the the discrete event-times (breakpoints)
 
@@ -683,7 +683,7 @@ public class LandingNoiseTrajectoryCalc {
 				double[] x = states.get(i);
 				double[] xDot = stateDerivatives.get(i);
 
-				Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS); // ISA+10°C
+				Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS); // ISA+10Â°C
 				Amount<Duration> time = timeList.get(i);
 				Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 				Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
@@ -1751,7 +1751,7 @@ public class LandingNoiseTrajectoryCalc {
 		public void computeDerivatives(double t, double[] x, double[] xDot)
 				throws MaxCountExceededException, DimensionMismatchException {
 
-			Amount<Temperature> deltaTemperature = Amount.valueOf(10.0, SI.CELSIUS); // ISA+10°C
+			Amount<Temperature> deltaTemperature = Amount.valueOf(10.0, SI.CELSIUS); // ISA+10Â°C
 			Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
 			Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 			Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
@@ -1771,7 +1771,7 @@ public class LandingNoiseTrajectoryCalc {
 //				System.out.println("\tThrust = " + thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()*0.224809 + " lbf");
 //				System.out.println("\tFuel Flow = " + fuelFlow(speed, time, alpha, gamma, altitude, deltaTemperature, weight) + " kg/s");
 //				System.out.println("\tAcceleration = " + xDot[1] + " m/s^2");
-//				System.out.println("\tGammaDot = " + xDot[2] + " °/s");
+//				System.out.println("\tGammaDot = " + xDot[2] + " Â°/s");
 //				System.out.println("\tCL = " + cL(alpha));
 //				System.out.println("\tCD = " + cD(cL(alpha), altitude));
 //				System.out.println("\n");
@@ -2161,9 +2161,25 @@ public class LandingNoiseTrajectoryCalc {
 
 			Amount<Angle> alpha = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 			
-			int maxIterAlpha = 500; /* max alpha excursion +-5° */
+			int maxIterAlpha = 500; /* max alpha excursion +-5Â° */
 			if(time.doubleValue(SI.SECOND) <= tObstacle.doubleValue(SI.SECOND)) {
 
+//				double qS = 0.5
+//						*surface.doubleValue(SI.SQUARE_METRE)
+//						*AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS))
+//						*(Math.pow(speed.doubleValue(SI.METERS_PER_SECOND) + (LandingNoiseTrajectoryCalc.this.getvWind().doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN))), 2)
+//								);
+//				double cL0 = LandingNoiseTrajectoryCalc.this.cL0LND;
+//				double cLalpha = LandingNoiseTrajectoryCalc.this.getcLalphaLND().to(SI.RADIAN.inverse()).getEstimatedValue();
+//				double totalThrust = thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+//						.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum();
+//				double wCosGamma = weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN));				
+//				
+//				alpha = Amount.valueOf(
+//						(wCosGamma - (qS*cL0))/((qS*cLalpha) + totalThrust),
+//						SI.RADIAN
+//						);
+				
 				int j=0;
 
 				alpha = LandingNoiseTrajectoryCalc.this.getAlpha().get(

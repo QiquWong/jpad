@@ -2,5 +2,6 @@ eclipse.preferences.version=1
 encoding//src/aircraft/components/cabinconfiguration/CabinConfiguration.java=UTF-8
 encoding//src/calculators/performance/AircraftPointMassPropagator.java=UTF-8
 encoding//src/calculators/performance/AircraftPointMassPropagator2.java=UTF-8
+encoding//src/calculators/performance/LandingNoiseTrajectoryCalc.java=UTF-8
 encoding//src/calculators/performance/TakeOffCalc.java=UTF-8
 encoding//src/calculators/performance/TakeOffNoiseTrajectoryCalc.java=UTF-8

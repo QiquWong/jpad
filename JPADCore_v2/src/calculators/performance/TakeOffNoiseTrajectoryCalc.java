@@ -336,8 +336,8 @@ public class TakeOffNoiseTrajectoryCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-8,
-					1e-8
+					1e-10,
+					1e-10
 					);
 			ode = new DynamicsEquationsTakeOffNoiseTrajectory();
 
@@ -896,7 +896,7 @@ public class TakeOffNoiseTrajectoryCalc {
 			//##############################################################################################
 
 			double[] xAt0 = new double[] {0.0, 0.0, 0.0, 0.0, 0.0}; // initial state
-			theIntegrator.integrate(ode, 0.0, xAt0, 70, xAt0); // now xAt0 contains final state
+			theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
 
 			if (vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
 					<= (1.13 
@@ -951,11 +951,11 @@ public class TakeOffNoiseTrajectoryCalc {
 		
 		if (targetSpeedFlag == true)
 			if(cutback==false && phiCutback==null)
-				manageOutputData(2.0, 1.0, timeHistories, continuousOutputModel);
+				manageOutputData(1.0, 1.0, timeHistories, continuousOutputModel);
 			else if(cutback==true && phiCutback==null)
-				manageOutputData(2.0, TakeOffNoiseTrajectoryCalc.this.getPhiCutback(), timeHistories, continuousOutputModel);
+				manageOutputData(1.0, TakeOffNoiseTrajectoryCalc.this.getPhiCutback(), timeHistories, continuousOutputModel);
 			else if(cutback==true && phiCutback!=null)
-				manageOutputData(2.0, phiCutback, timeHistories, continuousOutputModel);
+				manageOutputData(1.0, phiCutback, timeHistories, continuousOutputModel);
 
 		System.out.println("\n---------------------------END!!-------------------------------\n\n");
 	}
@@ -2410,9 +2410,9 @@ public class TakeOffNoiseTrajectoryCalc {
 			
 			double cL0 = TakeOffNoiseTrajectoryCalc.this.cL0;
 			double cLalpha = TakeOffNoiseTrajectoryCalc.this.getcLalphaFlap().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
-			double alphaWing = alpha.doubleValue(NonSI.DEGREE_ANGLE) + TakeOffNoiseTrajectoryCalc.this.getIw().doubleValue(NonSI.DEGREE_ANGLE);
+			double alphaBody = alpha.doubleValue(NonSI.DEGREE_ANGLE);
 
-			return cL0 + (cLalpha*alphaWing);
+			return cL0 + (cLalpha*alphaBody);
 
 		}
 
