@@ -2489,7 +2489,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				alphaList.add(alpha);
 				double acceleration = 0.0; /* First guess value */
 				
-				int maxIterAlpha = 500; /* max alpha excursion +-5° */
+				int maxIterAlpha = 300; /* max alpha excursion +-3° */
 				do {
 					
 					Amount<Angle> alphaTemp = alphaList.get(alphaList.size()-1);
@@ -2503,7 +2503,6 @@ public class TakeOffNoiseTrajectoryCalc {
 											*Math.sin(gamma.doubleValue(SI.RADIAN))
 											)
 									);
-					
 					if(alphaTemp.doubleValue(NonSI.DEGREE_ANGLE) > 0.0 ) {
 						if (acceleration > 0) 
 							alphaTemp = alphaTemp.plus(Amount.valueOf(0.01, NonSI.DEGREE_ANGLE));
@@ -2516,7 +2515,6 @@ public class TakeOffNoiseTrajectoryCalc {
 						else if (acceleration < 0) 
 							alphaTemp = alphaTemp.plus(Amount.valueOf(0.01, NonSI.DEGREE_ANGLE));
 					}
-					
 					alphaList.add(alphaTemp);
 					
 					if(j > maxIterAlpha)
