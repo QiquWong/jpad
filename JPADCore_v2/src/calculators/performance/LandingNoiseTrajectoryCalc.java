@@ -678,7 +678,7 @@ public class LandingNoiseTrajectoryCalc {
 		}
 
 		if(targetRDandAltitudeFlag == true)
-			manageOutputData(1.0, timeHistories, continuousOutputModel);
+			manageOutputData(0.25, timeHistories, continuousOutputModel);
 		else {
 			System.err.println("ERROR: TARGET RATE OF CLIMB AND/OR ALTITUDE ARE NOT REACHED " 
 					+ "\nRate of Descent current = "
@@ -690,7 +690,6 @@ public class LandingNoiseTrajectoryCalc {
 					+ "\nAltitude Target = "
 					+ 0.01 + " m"
 					);
-			manageOutputData(1.0, timeHistories, continuousOutputModel);
 		}
 		
 		System.out.println("\n---------------------------END!!-------------------------------\n\n");
@@ -711,7 +710,13 @@ public class LandingNoiseTrajectoryCalc {
 
 		List<double[]> states = new ArrayList<double[]>();
 		List<double[]> stateDerivatives = new ArrayList<double[]>();
-
+		
+		MyInterpolatingFunction alphaFunction = new MyInterpolatingFunction();
+		alphaFunction.interpolateLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.alpha)
+				);
+		
 		// There is only ONE ContinuousOutputModel handler, get it
 		if (handler instanceof ContinuousOutputModel) {
 			System.out.println("Found handler instanceof ContinuousOutputModel");
@@ -758,7 +763,9 @@ public class LandingNoiseTrajectoryCalc {
 						(maxLandingMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 						SI.NEWTON
 						);
-				Amount<Angle> alpha = ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
+				Amount<Angle> alpha = Amount.valueOf(
+						alphaFunction.value(timeList.get(i).doubleValue(SI.SECOND)),
+						NonSI.DEGREE_ANGLE);
 
 				if(time.doubleValue(SI.SECOND) >= tTouchDown.doubleValue(SI.SECOND))
 					gamma = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
@@ -1828,21 +1835,6 @@ public class LandingNoiseTrajectoryCalc {
 					);
 			Amount<Angle> alpha = alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 
-//			if(time.doubleValue(SI.SECOND) > tObstacle.doubleValue(SI.SECOND)) {
-//				System.out.println("\tTime = " + time);
-//				System.out.println("\tSpeed = " + speed);
-//				System.out.println("\tAltitude = " + altitude);
-//				System.out.println("\tGamma = " + gamma);
-//				System.out.println("\tAlpha = " + alpha);
-//				System.out.println("\tThrust = " + thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()*0.224809 + " lbf");
-//				System.out.println("\tFuel Flow = " + fuelFlow(speed, time, alpha, gamma, altitude, deltaTemperature, weight) + " kg/s");
-//				System.out.println("\tAcceleration = " + xDot[1] + " m/s^2");
-//				System.out.println("\tGammaDot = " + xDot[2] + " °/s");
-//				System.out.println("\tCL = " + cL(alpha));
-//				System.out.println("\tCD = " + cD(cL(alpha), altitude));
-//				System.out.println("\n");
-//			}
-			
 			if( t < tTouchDown.doubleValue(SI.SECOND)) {
 				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))*(
