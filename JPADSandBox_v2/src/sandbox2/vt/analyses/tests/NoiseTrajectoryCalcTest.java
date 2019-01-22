@@ -301,7 +301,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 			double takeOffThrustCalibrationFactor = 1.0;
 			double aprThrustCalibrationFactor = 1.0;
 			double takeOffSfcCalibrationFactor = 1.0;
-			double kcLMax = 0.8;
+			double kcLMaxTakeOff = 0.8;
 			double kRot = 1.05;
 			double alphaDotInitial = 3.0; // (deg/s)
 			double kAlphaDot = 0.06; // (1/deg)
@@ -353,7 +353,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 						dtHold, 
 						dtLandingGearRetraction, 
 						dtThrustCutback,
-						kcLMax,
+						kcLMaxTakeOff,
 						kRot,
 						alphaDotInitial,
 						kAlphaDot,
@@ -417,6 +417,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 			double[] polarCLLanding = new double[] {0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2,2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9,3,3.1};
 			double[] polarCDLanding = new double[] {0.2804,0.260456,0.241704,0.224144,0.207776,0.1926,0.178616,0.165824,0.154224,0.143816,0.1346,0.126576,0.119744,0.114104,0.109656,0.1064,0.104336,0.103464,0.103784,0.105296,0.108,0.111896,0.116984,0.123264,0.130736,0.1394,0.149256,0.160304,0.172544,0.185976,0.2006,0.216416};
 			Amount<Duration> dtFreeRoll = Amount.valueOf(2, SI.SECOND);
+			double kcLMaxLanding = 0.9;
 			double cLmaxLND = 3.1;
 			double cLZeroLND = 1.866;
 			Amount<?> cLalphaLND = Amount.valueOf(0.0888, NonSI.DEGREE_ANGLE.inverse());
@@ -454,6 +455,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 						muBrake,
 						theAircraft.getWing().getRiggingAngle(),
 						wingToGroundDistance,
+						kcLMaxLanding,
 						cLmaxLND,
 						cLZeroLND,
 						cLalphaLND,
