@@ -50,6 +50,7 @@ import calculators.performance.ClimbCalc;
 import calculators.performance.DescentCalc;
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import calculators.performance.LandingCalc;
+import calculators.performance.LandingCalcSemiempirical;
 import calculators.performance.LandingNoiseTrajectoryCalc;
 import calculators.performance.MissionProfileCalc;
 import calculators.performance.PayloadRangeCalcMissionProfile;
@@ -184,6 +185,7 @@ public class ACPerformanceManager {
 	private Map<Double, LandingCalc> _theLandingCalculatorMap;
 	private Map<Double, Amount<Length>> _landingDistanceMap;
 	private Map<Double, Amount<Length>> _landingDistanceFAR25Map;
+	private Map<Double, Amount<Length>> _totalDistanceMap;
 	private Map<Double, Amount<Length>> _groundRollDistanceLandingMap;
 	private Map<Double, Amount<Length>> _flareDistanceLandingMap;
 	private Map<Double, Amount<Length>> _airborneDistanceLandingMap;
@@ -192,6 +194,7 @@ public class ACPerformanceManager {
 	private Map<Double, Amount<Velocity>> _vFlareMap;
 	private Map<Double, Amount<Velocity>> _vTouchDownMap;
 	private Map<Double, Amount<Duration>> _landingDurationMap;
+	private Map<Double, Amount<Duration>> _totalDurationMap;
 	//..............................................................................
 	// Payload-Range
 	private Map<Double, PayloadRangeCalcMissionProfile> _thePayloadRangeCalculatorMap;
@@ -271,6 +274,20 @@ public class ACPerformanceManager {
 	private Map<Double, Amount<Mass>> _initialMissionMassMap;
 	private Map<Double, Amount<Mass>> _endMissionMassMap;
 	private Map<Double, Amount<Length>> _totalMissionRangeMap;
+	
+	//..............................................................................
+	// Noise trajectories
+	private Map<Double, TakeOffNoiseTrajectoryCalc> _theTakeOffNoiseTrajectoryCalculatorMap;
+	private Map<Double, LandingNoiseTrajectoryCalc> _theLandingNoiseTrajectoryCalculatorMap;
+	private Map<Double, List<Amount<Length>>> _certificationPointsLongitudinalDistanceMap;
+	private Map<Double, List<Amount<Length>>> _certificationPointsAltitudeMap;
+	private Map<Double, List<Amount<Velocity>>> _certificationPointsSpeedTASMap;
+	private Map<Double, List<Amount<Velocity>>> _certificationPointsSpeedCASMap;
+	private Map<Double, List<Amount<Angle>>> _certificationPointsGammaMap;
+	private Map<Double, List<Amount<Angle>>> _certificationPointsAlphaMap;
+	private Map<Double, List<Amount<Angle>>> _certificationPointsThetaMap;
+	private Map<Double, List<Amount<Force>>> _certificationPointsThrustMap;
+	
 	
 	//------------------------------------------------------------------------------
 	// METHODS:
@@ -358,6 +375,7 @@ public class ACPerformanceManager {
 		_theLandingCalculatorMap = new HashMap<>();
 		_landingDistanceMap = new HashMap<>();
 		_landingDistanceFAR25Map = new HashMap<>();
+		_totalDistanceMap = new HashMap<>();
 		_groundRollDistanceLandingMap = new HashMap<>();
 		_flareDistanceLandingMap = new HashMap<>();
 		_airborneDistanceLandingMap = new HashMap<>();
@@ -366,6 +384,7 @@ public class ACPerformanceManager {
 		_vFlareMap = new HashMap<>();
 		_vTouchDownMap = new HashMap<>();
 		_landingDurationMap = new HashMap<>();
+		_totalDurationMap = new HashMap<>();
 		//..............................................................................
 		// Payload-Range
 		_thePayloadRangeCalculatorMap = new HashMap<>();
@@ -1585,15 +1604,17 @@ public class ACPerformanceManager {
 		Amount<Length> obstacleTakeOff = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		double kRotation = 1.05;
 		double alphaDotRotation = 3.0;
-		double kCLmax = 0.9;
+		double kCLmaxTakeOff = 0.9;
 		double dragDueToEngineFailure = 0.0;
 		double kAlphaDot = 0.04;
 		
 		double kLandingWeight = 0.97;
+		Amount<Length> initialAltitudeLanding = Amount.valueOf(1500, NonSI.FOOT).to(SI.METER);
 		Amount<Length> obstacleLanding = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
-		Amount<Angle> thetaApproach = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> approachAngle = Amount.valueOf(-3.0, NonSI.DEGREE_ANGLE);
+		double kCLmaxLanding = 0.9;
 		double kApproach = 1.3;
-		double kFlare = 1.23;
+		double kFlare = 1.2;
 		double kTouchDown = 1.15;
 		Amount<Duration> freeRollDuration = Amount.valueOf(2.0, SI.SECOND);
 		
@@ -1696,10 +1717,10 @@ public class ACPerformanceManager {
 			alphaDotRotation = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/alpha_dot_rotation"));
 		
 		//...............................................................
-		// K CLmax
-		String kCLmaxProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/k_cLmax");
-		if(kCLmaxProperty != null)
-			kCLmax = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/k_cLmax"));
+		// K CLmax TAKE-OFF
+		String kCLmaxTakeOffProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/k_cLmax_take_off");
+		if(kCLmaxTakeOffProperty != null)
+			kCLmaxTakeOff = Double.valueOf(kCLmaxTakeOffProperty);
 		
 		//...............................................................
 		// DRAG DUE TO ENGINE FAILURE
@@ -1726,10 +1747,22 @@ public class ACPerformanceManager {
 			obstacleLanding = reader.getXMLAmountLengthByPath("//performance/takeoff_landing/obstacle_landing");		
 		
 		//...............................................................
-		// THETA APPROACH
-		String thetaApproachProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/theta_approach");
-		if(thetaApproachProperty != null)
-			thetaApproach = (Amount<Angle>) reader.getXMLAmountWithUnitByPath("//performance/takeoff_landing/theta_approach");		
+		// INITIAL ALTITUDE LANDING
+		String initialAltitudeLandingProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/initial_altitude_landing");
+		if(initialAltitudeLandingProperty != null)
+			initialAltitudeLanding = reader.getXMLAmountLengthByPath("//performance/takeoff_landing/initial_altitude_landing");
+		
+		//...............................................................
+		// APPROACH ANGLE
+		String approachAngleProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/approach_angle");
+		if(approachAngleProperty != null)
+			approachAngle = (Amount<Angle>) reader.getXMLAmountWithUnitByPath("//performance/takeoff_landing/approach_angle");		
+		
+		//...............................................................
+		// K CLmax LANDING
+		String kCLmaxLandingProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/k_cLmax_landing");
+		if(kCLmaxLandingProperty != null)
+			kCLmaxLanding = Double.valueOf(kCLmaxLandingProperty);
 		
 		//...............................................................
 		// K APPROACH
@@ -1861,13 +1894,13 @@ public class ACPerformanceManager {
 		
 		//===========================================================================================
 		// READING NOISE TRAJECTORIES DATA ...
-		Amount<Length> takeOffNoiseTrajectoryXEndSimulation = Amount.valueOf(0.0, SI.METER);
-		Amount<Length> takeOffNoiseTrajectoryCutbackAltitude = Amount.valueOf(0.0, SI.METER);
-		int takeOffNoiseTrajectoryNumberOfThrustSettingCutback = 0;
-		Amount<Duration> takeOffNoiseTrajectoryLandingGearRetractionTimeInterval = Amount.valueOf(0.0, SI.SECOND);
-		Amount<Duration> takeOffNoiseTrajectoryThrustReductionCutbackTimeInterval = Amount.valueOf(0.0, SI.SECOND);
-		Amount<Length> landingNoiseTrajectoryInitialAltitude = Amount.valueOf(0.0, SI.METER);
-		Amount<Angle> landingNoiseTrajectoryTrajectoryAngle = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Length> takeOffNoiseTrajectoryXEndSimulation = Amount.valueOf(8000.0, SI.METER);
+		Amount<Length> takeOffNoiseTrajectoryCutbackAltitude = Amount.valueOf(984.0, NonSI.FOOT);
+		int takeOffNoiseTrajectoryNumberOfThrustSettingCutback = 3;
+		Amount<Duration> takeOffNoiseTrajectoryLandingGearRetractionTimeInterval = Amount.valueOf(12.0, SI.SECOND);
+		Amount<Duration> takeOffNoiseTrajectoryThrustReductionCutbackTimeInterval = Amount.valueOf(4.0, SI.SECOND);
+		Amount<Length> landingNoiseTrajectoryInitialAltitude = Amount.valueOf(4000.0, NonSI.FOOT);
+		Amount<Angle> landingNoiseTrajectoryTrajectoryAngle = Amount.valueOf(-3.0, NonSI.DEGREE_ANGLE);
 		//...............................................................
 		// TAKE-OFF GROUND DISTANCE END SIMULATION
 		String takeOffNoiseTrajectoryXEndSimulationProperty = reader.getXMLPropertyByPath("//performance/noise_trajectories/take_off/ground_distance_end_simulation");
@@ -2114,7 +2147,7 @@ public class ACPerformanceManager {
 			takeOffMissionAltitude = reader.getXMLAmountLengthByPath("//performance/mission_profile_and_payload_range/take_off_mission_altitude"); 
 		}
 		
-		//===========================================================================================
+		//!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!==
 		// READING CALIBRATION FACTORS ...
 		//...............................................................
 		// Thrust
@@ -2127,31 +2160,31 @@ public class ACPerformanceManager {
 		double groundIdleCalibrationFactorThrust = 1.0;
 		
 		String takeOffCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/take_off_calibration_factor");
-		if(!takeOffCalibrationFactorThrustProperty.isEmpty()) {
+		if(takeOffCalibrationFactorThrustProperty != null) {
 			takeOffCalibrationFactorThrust = Double.valueOf(takeOffCalibrationFactorThrustProperty); 
 		}
 		String aprCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/apr_calibration_factor");
-		if(!aprCalibrationFactorThrustProperty.isEmpty()) {
+		if(aprCalibrationFactorThrustProperty != null) {
 			aprCalibrationFactorThrust = Double.valueOf(aprCalibrationFactorThrustProperty); 
 		}
 		String climbCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/climb_calibration_factor");
-		if(!climbCalibrationFactorThrustProperty.isEmpty()) {
+		if(climbCalibrationFactorThrustProperty != null) {
 			climbCalibrationFactorThrust = Double.valueOf(climbCalibrationFactorThrustProperty); 
 		}
 		String continuousCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/continuous_calibration_factor");
-		if(!continuousCalibrationFactorThrustProperty.isEmpty()) {
+		if(continuousCalibrationFactorThrustProperty != null) {
 			continuousCalibrationFactorThrust = Double.valueOf(continuousCalibrationFactorThrustProperty); 
 		}
 		String cruiseCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/cruise_calibration_factor");
-		if(!cruiseCalibrationFactorThrustProperty.isEmpty()) {
+		if(cruiseCalibrationFactorThrustProperty != null) {
 			cruiseCalibrationFactorThrust = Double.valueOf(cruiseCalibrationFactorThrustProperty); 
 		}
 		String flightIdleCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/flight_idle_calibration_factor");
-		if(!flightIdleCalibrationFactorThrustProperty.isEmpty()) {
+		if(flightIdleCalibrationFactorThrustProperty != null) {
 			flightIdleCalibrationFactorThrust = Double.valueOf(flightIdleCalibrationFactorThrustProperty); 
 		}
 		String groundIdleCalibrationFactorThrustProperty = reader.getXMLPropertyByPath("//calibrations/thrust/ground_idle_calibration_factor");
-		if(!groundIdleCalibrationFactorThrustProperty.isEmpty()) {
+		if(groundIdleCalibrationFactorThrustProperty != null) {
 			groundIdleCalibrationFactorThrust = Double.valueOf(groundIdleCalibrationFactorThrustProperty); 
 		}
 		//...............................................................
@@ -2165,31 +2198,31 @@ public class ACPerformanceManager {
 		double groundIdleCalibrationFactorSFC = 1.0;
 		
 		String takeOffCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/take_off_calibration_factor");
-		if(!takeOffCalibrationFactorSFCProperty.isEmpty()) {
+		if(takeOffCalibrationFactorSFCProperty != null) {
 			takeOffCalibrationFactorSFC = Double.valueOf(takeOffCalibrationFactorSFCProperty); 
 		}
 		String aprCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/apr_calibration_factor");
-		if(!aprCalibrationFactorSFCProperty.isEmpty()) {
+		if(aprCalibrationFactorSFCProperty != null) {
 			aprCalibrationFactorSFC = Double.valueOf(aprCalibrationFactorSFCProperty); 
 		}
 		String climbCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/climb_calibration_factor");
-		if(!climbCalibrationFactorSFCProperty.isEmpty()) {
+		if(climbCalibrationFactorSFCProperty != null) {
 			climbCalibrationFactorSFC = Double.valueOf(climbCalibrationFactorSFCProperty); 
 		}
 		String continuousCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/continuous_calibration_factor");
-		if(!continuousCalibrationFactorSFCProperty.isEmpty()) {
+		if(continuousCalibrationFactorSFCProperty != null) {
 			continuousCalibrationFactorSFC = Double.valueOf(continuousCalibrationFactorSFCProperty); 
 		}
 		String cruiseCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/cruise_calibration_factor");
-		if(!cruiseCalibrationFactorSFCProperty.isEmpty()) {
+		if(cruiseCalibrationFactorSFCProperty != null) {
 			cruiseCalibrationFactorSFC = Double.valueOf(cruiseCalibrationFactorSFCProperty); 
 		}
 		String flightIdleCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/flight_idle_calibration_factor");
-		if(!flightIdleCalibrationFactorSFCProperty.isEmpty()) {
+		if(flightIdleCalibrationFactorSFCProperty != null) {
 			flightIdleCalibrationFactorSFC = Double.valueOf(flightIdleCalibrationFactorSFCProperty); 
 		}
 		String groundIdleCalibrationFactorSFCProperty = reader.getXMLPropertyByPath("//calibrations/sfc/ground_idle_calibration_factor");
-		if(!groundIdleCalibrationFactorSFCProperty.isEmpty()) {
+		if(groundIdleCalibrationFactorSFCProperty != null) {
 			groundIdleCalibrationFactorSFC = Double.valueOf(groundIdleCalibrationFactorSFCProperty); 
 		}
 		
@@ -2204,31 +2237,31 @@ public class ACPerformanceManager {
 		double groundIdleCalibrationFactorEmissionIndexNOx = 1.0;
 		
 		String takeOffCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/take_off_calibration_factor");
-		if(!takeOffCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+		if(takeOffCalibrationFactorEmissionIndexNOxProperty != null) {
 			takeOffCalibrationFactorEmissionIndexNOx = Double.valueOf(takeOffCalibrationFactorEmissionIndexNOxProperty); 
 		}
 		String aprCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/apr_calibration_factor");
-		if(!aprCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+		if(aprCalibrationFactorEmissionIndexNOxProperty != null) {
 			aprCalibrationFactorEmissionIndexNOx = Double.valueOf(aprCalibrationFactorEmissionIndexNOxProperty); 
 		}
 		String climbCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/climb_calibration_factor");
-		if(!climbCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+		if(climbCalibrationFactorEmissionIndexNOxProperty != null) {
 			climbCalibrationFactorEmissionIndexNOx = Double.valueOf(climbCalibrationFactorEmissionIndexNOxProperty); 
 		}
 		String continuousCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/continuous_calibration_factor");
-		if(!continuousCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+		if(continuousCalibrationFactorEmissionIndexNOxProperty != null) {
 			continuousCalibrationFactorEmissionIndexNOx = Double.valueOf(continuousCalibrationFactorEmissionIndexNOxProperty); 
 		}
 		String cruiseCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/cruise_calibration_factor");
-		if(!cruiseCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+		if(cruiseCalibrationFactorEmissionIndexNOxProperty != null) {
 			cruiseCalibrationFactorEmissionIndexNOx = Double.valueOf(cruiseCalibrationFactorEmissionIndexNOxProperty); 
 		}
 		String flightIdleCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/flight_idle_calibration_factor");
-		if(!flightIdleCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+		if(flightIdleCalibrationFactorEmissionIndexNOxProperty != null) {
 			flightIdleCalibrationFactorEmissionIndexNOx = Double.valueOf(flightIdleCalibrationFactorEmissionIndexNOxProperty); 
 		}
 		String groundIdleCalibrationFactorEmissionIndexNOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_NOx/ground_idle_calibration_factor");
-		if(!groundIdleCalibrationFactorEmissionIndexNOxProperty.isEmpty()) {
+		if(groundIdleCalibrationFactorEmissionIndexNOxProperty != null) {
 			groundIdleCalibrationFactorEmissionIndexNOx = Double.valueOf(groundIdleCalibrationFactorEmissionIndexNOxProperty); 
 		}
 		
@@ -2243,31 +2276,31 @@ public class ACPerformanceManager {
 		double groundIdleCalibrationFactorEmissionIndexCO = 1.0;
 		
 		String takeOffCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/take_off_calibration_factor");
-		if(!takeOffCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+		if(takeOffCalibrationFactorEmissionIndexCOProperty != null) {
 			takeOffCalibrationFactorEmissionIndexCO = Double.valueOf(takeOffCalibrationFactorEmissionIndexCOProperty); 
 		}
 		String aprCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/apr_calibration_factor");
-		if(!aprCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+		if(aprCalibrationFactorEmissionIndexCOProperty != null) {
 			aprCalibrationFactorEmissionIndexCO = Double.valueOf(aprCalibrationFactorEmissionIndexCOProperty); 
 		}
 		String climbCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/climb_calibration_factor");
-		if(!climbCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+		if(climbCalibrationFactorEmissionIndexCOProperty != null) {
 			climbCalibrationFactorEmissionIndexCO = Double.valueOf(climbCalibrationFactorEmissionIndexCOProperty); 
 		}
 		String continuousCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/continuous_calibration_factor");
-		if(!continuousCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+		if(continuousCalibrationFactorEmissionIndexCOProperty != null) {
 			continuousCalibrationFactorEmissionIndexCO = Double.valueOf(continuousCalibrationFactorEmissionIndexCOProperty); 
 		}
 		String cruiseCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/cruise_calibration_factor");
-		if(!cruiseCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+		if(cruiseCalibrationFactorEmissionIndexCOProperty != null) {
 			cruiseCalibrationFactorEmissionIndexCO = Double.valueOf(cruiseCalibrationFactorEmissionIndexCOProperty); 
 		}
 		String flightIdleCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/flight_idle_calibration_factor");
-		if(!flightIdleCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+		if(flightIdleCalibrationFactorEmissionIndexCOProperty != null) {
 			flightIdleCalibrationFactorEmissionIndexCO = Double.valueOf(flightIdleCalibrationFactorEmissionIndexCOProperty); 
 		}
 		String groundIdleCalibrationFactorEmissionIndexCOProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_CO/ground_idle_calibration_factor");
-		if(!groundIdleCalibrationFactorEmissionIndexCOProperty.isEmpty()) {
+		if(groundIdleCalibrationFactorEmissionIndexCOProperty != null) {
 			groundIdleCalibrationFactorEmissionIndexCO = Double.valueOf(groundIdleCalibrationFactorEmissionIndexCOProperty); 
 		}
 		
@@ -2282,31 +2315,31 @@ public class ACPerformanceManager {
 		double groundIdleCalibrationFactorEmissionIndexHC = 1.0;
 		
 		String takeOffCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/take_off_calibration_factor");
-		if(!takeOffCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+		if(takeOffCalibrationFactorEmissionIndexHCProperty != null) {
 			takeOffCalibrationFactorEmissionIndexHC = Double.valueOf(takeOffCalibrationFactorEmissionIndexHCProperty); 
 		}
 		String aprCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/apr_calibration_factor");
-		if(!aprCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+		if(aprCalibrationFactorEmissionIndexHCProperty != null) {
 			aprCalibrationFactorEmissionIndexHC = Double.valueOf(aprCalibrationFactorEmissionIndexHCProperty); 
 		}
 		String climbCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/climb_calibration_factor");
-		if(!climbCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+		if(climbCalibrationFactorEmissionIndexHCProperty != null) {
 			climbCalibrationFactorEmissionIndexHC = Double.valueOf(climbCalibrationFactorEmissionIndexHCProperty); 
 		}
 		String continuousCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/continuous_calibration_factor");
-		if(!continuousCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+		if(continuousCalibrationFactorEmissionIndexHCProperty != null) {
 			continuousCalibrationFactorEmissionIndexHC = Double.valueOf(continuousCalibrationFactorEmissionIndexHCProperty); 
 		}
 		String cruiseCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/cruise_calibration_factor");
-		if(!cruiseCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+		if(cruiseCalibrationFactorEmissionIndexHCProperty != null) {
 			cruiseCalibrationFactorEmissionIndexHC = Double.valueOf(cruiseCalibrationFactorEmissionIndexHCProperty); 
 		}
 		String flightIdleCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/flight_idle_calibration_factor");
-		if(!flightIdleCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+		if(flightIdleCalibrationFactorEmissionIndexHCProperty != null) {
 			flightIdleCalibrationFactorEmissionIndexHC = Double.valueOf(flightIdleCalibrationFactorEmissionIndexHCProperty); 
 		}
 		String groundIdleCalibrationFactorEmissionIndexHCProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_HC/ground_idle_calibration_factor");
-		if(!groundIdleCalibrationFactorEmissionIndexHCProperty.isEmpty()) {
+		if(groundIdleCalibrationFactorEmissionIndexHCProperty != null) {
 			groundIdleCalibrationFactorEmissionIndexHC = Double.valueOf(groundIdleCalibrationFactorEmissionIndexHCProperty); 
 		}
 		
@@ -2321,31 +2354,31 @@ public class ACPerformanceManager {
 		double groundIdleCalibrationFactorEmissionIndexSoot = 1.0;
 		
 		String takeOffCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/take_off_calibration_factor");
-		if(!takeOffCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+		if(takeOffCalibrationFactorEmissionIndexSootProperty != null) {
 			takeOffCalibrationFactorEmissionIndexSoot = Double.valueOf(takeOffCalibrationFactorEmissionIndexSootProperty); 
 		}
 		String aprCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/apr_calibration_factor");
-		if(!aprCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+		if(aprCalibrationFactorEmissionIndexSootProperty != null) {
 			aprCalibrationFactorEmissionIndexSoot = Double.valueOf(aprCalibrationFactorEmissionIndexSootProperty); 
 		}
 		String climbCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/climb_calibration_factor");
-		if(!climbCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+		if(climbCalibrationFactorEmissionIndexSootProperty != null) {
 			climbCalibrationFactorEmissionIndexSoot = Double.valueOf(climbCalibrationFactorEmissionIndexSootProperty); 
 		}
 		String continuousCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/continuous_calibration_factor");
-		if(!continuousCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+		if(continuousCalibrationFactorEmissionIndexSootProperty != null) {
 			continuousCalibrationFactorEmissionIndexSoot = Double.valueOf(continuousCalibrationFactorEmissionIndexSootProperty); 
 		}
 		String cruiseCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/cruise_calibration_factor");
-		if(!cruiseCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+		if(cruiseCalibrationFactorEmissionIndexSootProperty != null) {
 			cruiseCalibrationFactorEmissionIndexSoot = Double.valueOf(cruiseCalibrationFactorEmissionIndexSootProperty); 
 		}
 		String flightIdleCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/flight_idle_calibration_factor");
-		if(!flightIdleCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+		if(flightIdleCalibrationFactorEmissionIndexSootProperty != null) {
 			flightIdleCalibrationFactorEmissionIndexSoot = Double.valueOf(flightIdleCalibrationFactorEmissionIndexSootProperty); 
 		}
 		String groundIdleCalibrationFactorEmissionIndexSootProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_Soot/ground_idle_calibration_factor");
-		if(!groundIdleCalibrationFactorEmissionIndexSootProperty.isEmpty()) {
+		if(groundIdleCalibrationFactorEmissionIndexSootProperty != null) {
 			groundIdleCalibrationFactorEmissionIndexSoot = Double.valueOf(groundIdleCalibrationFactorEmissionIndexSootProperty); 
 		}
 		
@@ -2360,31 +2393,31 @@ public class ACPerformanceManager {
 		double groundIdleCalibrationFactorEmissionIndexCO2 = 1.0;
 		
 		String takeOffCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/take_off_calibration_factor");
-		if(!takeOffCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+		if(takeOffCalibrationFactorEmissionIndexCO2Property != null) {
 			takeOffCalibrationFactorEmissionIndexCO2 = Double.valueOf(takeOffCalibrationFactorEmissionIndexCO2Property); 
 		}
 		String aprCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/apr_calibration_factor");
-		if(!aprCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+		if(aprCalibrationFactorEmissionIndexCO2Property != null) {
 			aprCalibrationFactorEmissionIndexCO2 = Double.valueOf(aprCalibrationFactorEmissionIndexCO2Property); 
 		}
 		String climbCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/climb_calibration_factor");
-		if(!climbCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+		if(climbCalibrationFactorEmissionIndexCO2Property != null) {
 			climbCalibrationFactorEmissionIndexCO2 = Double.valueOf(climbCalibrationFactorEmissionIndexCO2Property); 
 		}
 		String continuousCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/continuous_calibration_factor");
-		if(!continuousCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+		if(continuousCalibrationFactorEmissionIndexCO2Property != null) {
 			continuousCalibrationFactorEmissionIndexCO2 = Double.valueOf(continuousCalibrationFactorEmissionIndexCO2Property); 
 		}
 		String cruiseCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/cruise_calibration_factor");
-		if(!cruiseCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+		if(cruiseCalibrationFactorEmissionIndexCO2Property != null) {
 			cruiseCalibrationFactorEmissionIndexCO2 = Double.valueOf(cruiseCalibrationFactorEmissionIndexCO2Property); 
 		}
 		String flightIdleCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/flight_idle_calibration_factor");
-		if(!flightIdleCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+		if(flightIdleCalibrationFactorEmissionIndexCO2Property != null) {
 			flightIdleCalibrationFactorEmissionIndexCO2 = Double.valueOf(flightIdleCalibrationFactorEmissionIndexCO2Property); 
 		}
 		String groundIdleCalibrationFactorEmissionIndexCO2Property = reader.getXMLPropertyByPath("//calibrations/emission_index_CO2/ground_idle_calibration_factor");
-		if(!groundIdleCalibrationFactorEmissionIndexCO2Property.isEmpty()) {
+		if(groundIdleCalibrationFactorEmissionIndexCO2Property != null) {
 			groundIdleCalibrationFactorEmissionIndexCO2 = Double.valueOf(groundIdleCalibrationFactorEmissionIndexCO2Property); 
 		}
 		
@@ -2399,31 +2432,31 @@ public class ACPerformanceManager {
 		double groundIdleCalibrationFactorEmissionIndexSOx = 1.0;
 		
 		String takeOffCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/take_off_calibration_factor");
-		if(!takeOffCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+		if(takeOffCalibrationFactorEmissionIndexSOxProperty != null) {
 			takeOffCalibrationFactorEmissionIndexSOx = Double.valueOf(takeOffCalibrationFactorEmissionIndexSOxProperty); 
 		}
 		String aprCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/apr_calibration_factor");
-		if(!aprCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+		if(aprCalibrationFactorEmissionIndexSOxProperty != null) {
 			aprCalibrationFactorEmissionIndexSOx = Double.valueOf(aprCalibrationFactorEmissionIndexSOxProperty); 
 		}
 		String climbCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/climb_calibration_factor");
-		if(!climbCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+		if(climbCalibrationFactorEmissionIndexSOxProperty != null) {
 			climbCalibrationFactorEmissionIndexSOx = Double.valueOf(climbCalibrationFactorEmissionIndexSOxProperty); 
 		}
 		String continuousCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/continuous_calibration_factor");
-		if(!continuousCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+		if(continuousCalibrationFactorEmissionIndexSOxProperty != null) {
 			continuousCalibrationFactorEmissionIndexSOx = Double.valueOf(continuousCalibrationFactorEmissionIndexSOxProperty); 
 		}
 		String cruiseCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/cruise_calibration_factor");
-		if(!cruiseCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+		if(cruiseCalibrationFactorEmissionIndexSOxProperty != null) {
 			cruiseCalibrationFactorEmissionIndexSOx = Double.valueOf(cruiseCalibrationFactorEmissionIndexSOxProperty); 
 		}
 		String flightIdleCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/flight_idle_calibration_factor");
-		if(!flightIdleCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+		if(flightIdleCalibrationFactorEmissionIndexSOxProperty != null) {
 			flightIdleCalibrationFactorEmissionIndexSOx = Double.valueOf(flightIdleCalibrationFactorEmissionIndexSOxProperty); 
 		}
 		String groundIdleCalibrationFactorEmissionIndexSOxProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_SOx/ground_idle_calibration_factor");
-		if(!groundIdleCalibrationFactorEmissionIndexSOxProperty.isEmpty()) {
+		if(groundIdleCalibrationFactorEmissionIndexSOxProperty != null) {
 			groundIdleCalibrationFactorEmissionIndexSOx = Double.valueOf(groundIdleCalibrationFactorEmissionIndexSOxProperty); 
 		}
 		
@@ -2438,31 +2471,31 @@ public class ACPerformanceManager {
 		double groundIdleCalibrationFactorEmissionIndexH2O = 1.0;
 		
 		String takeOffCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/take_off_calibration_factor");
-		if(!takeOffCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+		if(takeOffCalibrationFactorEmissionIndexH2OProperty != null) {
 			takeOffCalibrationFactorEmissionIndexH2O = Double.valueOf(takeOffCalibrationFactorEmissionIndexH2OProperty); 
 		}
 		String aprCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/apr_calibration_factor");
-		if(!aprCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+		if(aprCalibrationFactorEmissionIndexH2OProperty != null) {
 			aprCalibrationFactorEmissionIndexH2O = Double.valueOf(aprCalibrationFactorEmissionIndexH2OProperty); 
 		}
 		String climbCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/climb_calibration_factor");
-		if(!climbCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+		if(climbCalibrationFactorEmissionIndexH2OProperty != null) {
 			climbCalibrationFactorEmissionIndexH2O = Double.valueOf(climbCalibrationFactorEmissionIndexH2OProperty); 
 		}
 		String continuousCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/continuous_calibration_factor");
-		if(!continuousCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+		if(continuousCalibrationFactorEmissionIndexH2OProperty != null) {
 			continuousCalibrationFactorEmissionIndexH2O = Double.valueOf(continuousCalibrationFactorEmissionIndexH2OProperty); 
 		}
 		String cruiseCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/cruise_calibration_factor");
-		if(!cruiseCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+		if(cruiseCalibrationFactorEmissionIndexH2OProperty != null) {
 			cruiseCalibrationFactorEmissionIndexH2O = Double.valueOf(cruiseCalibrationFactorEmissionIndexH2OProperty); 
 		}
 		String flightIdleCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/flight_idle_calibration_factor");
-		if(!flightIdleCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+		if(flightIdleCalibrationFactorEmissionIndexH2OProperty != null) {
 			flightIdleCalibrationFactorEmissionIndexH2O = Double.valueOf(flightIdleCalibrationFactorEmissionIndexH2OProperty); 
 		}
 		String groundIdleCalibrationFactorEmissionIndexH2OProperty = reader.getXMLPropertyByPath("//calibrations/emission_index_H2O/ground_idle_calibration_factor");
-		if(!groundIdleCalibrationFactorEmissionIndexH2OProperty.isEmpty()) {
+		if(groundIdleCalibrationFactorEmissionIndexH2OProperty != null) {
 			groundIdleCalibrationFactorEmissionIndexH2O = Double.valueOf(groundIdleCalibrationFactorEmissionIndexH2OProperty); 
 		}
 		
@@ -2796,12 +2829,14 @@ public class ACPerformanceManager {
 				.setObstacleTakeOff(obstacleTakeOff.to(SI.METER))
 				.setKRotation(kRotation)
 				.setAlphaDotRotation(alphaDotRotation)
-				.setKCLmax(kCLmax)
+				.setKCLmaxTakeOff(kCLmaxTakeOff)
 				.setDragDueToEngineFailure(dragDueToEngineFailure)
 				.setKAlphaDot(kAlphaDot)
 				.setKLandingWeight(kLandingWeight)
+				.setInitialALtitudeLanding(initialAltitudeLanding.to(SI.METER))
 				.setObstacleLanding(obstacleLanding.to(SI.METER))
-				.setThetaApproach(thetaApproach.to(NonSI.DEGREE_ANGLE))
+				.setApproachAngle(approachAngle.to(NonSI.DEGREE_ANGLE))
+				.setKCLmaxLanding(kCLmaxLanding)
 				.setKApproach(kApproach)
 				.setKFlare(kFlare)
 				.setKTouchDown(kTouchDown)
@@ -3468,12 +3503,14 @@ public class ACPerformanceManager {
         	dataListLanding.add(new Object[] {"Airborne distance","m", _airborneDistanceLandingMap.get(xcg).doubleValue(SI.METER)});
         	dataListLanding.add(new Object[] {"Landing distance","m", _landingDistanceMap.get(xcg).doubleValue(SI.METER)});
         	dataListLanding.add(new Object[] {"FAR-25 landing field length","m", _landingDistanceFAR25Map.get(xcg).doubleValue(SI.METER)});
+        	dataListLanding.add(new Object[] {"Total distance","m", _totalDistanceMap.get(xcg).doubleValue(SI.METER)});
         	dataListLanding.add(new Object[] {" "});
         	dataListLanding.add(new Object[] {"Ground roll distance","ft", _groundRollDistanceLandingMap.get(xcg).doubleValue(NonSI.FOOT)});
         	dataListLanding.add(new Object[] {"Flare distance","ft", _flareDistanceLandingMap.get(xcg).doubleValue(NonSI.FOOT)});
         	dataListLanding.add(new Object[] {"Airborne distance","ft", _airborneDistanceLandingMap.get(xcg).doubleValue(NonSI.FOOT)});
         	dataListLanding.add(new Object[] {"Landing distance","ft", _landingDistanceMap.get(xcg).doubleValue(NonSI.FOOT)});
         	dataListLanding.add(new Object[] {"FAR-25 landing field length","ft", _landingDistanceFAR25Map.get(xcg).doubleValue(NonSI.FOOT)});
+        	dataListLanding.add(new Object[] {"Total distance","ft", _totalDistanceMap.get(xcg).doubleValue(NonSI.FOOT)});
         	dataListLanding.add(new Object[] {" "});
         	dataListLanding.add(new Object[] {"Stall speed landing (VsLND)","m/s", _vStallLandingMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
         	dataListLanding.add(new Object[] {"Touchdown speed (V_TD)","m/s", _vTouchDownMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
@@ -3489,6 +3526,7 @@ public class ACPerformanceManager {
         	dataListLanding.add(new Object[] {"V_Flare/VsLND","", _vFlareMap.get(xcg).divide(_vStallLandingMap.get(xcg)).getEstimatedValue()});
         	dataListLanding.add(new Object[] {"V_A/VsLND","", _vApproachMap.get(xcg).divide(_vStallLandingMap.get(xcg)).getEstimatedValue()});
         	dataListLanding.add(new Object[] {" "});
+        	dataListLanding.add(new Object[] {"Total duration","s", _totalDurationMap.get(xcg).doubleValue(SI.SECOND)});
         	dataListLanding.add(new Object[] {"Landing duration","s", _landingDurationMap.get(xcg).doubleValue(SI.SECOND)});
 
         	Row rowLanding = sheetLanding.createRow(0);
@@ -4004,6 +4042,98 @@ public class ACPerformanceManager {
         	}
         }
         //--------------------------------------------------------------------------------
+        // NOISE TRAJECTORIES RESULTS:
+        //--------------------------------------------------------------------------------
+        if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.NOISE_TRAJECTORIES)) {
+        	Sheet sheetNoiseTrajectories = wb.createSheet("NOISE TRAJECTORIES");
+        	List<Object[]> dataListNoiseTrajectories = new ArrayList<>();
+
+        	dataListNoiseTrajectories.add(new Object[] {"Description","Unit","Value"});
+        	dataListNoiseTrajectories.add(new Object[] {"SIDELINE ( 100% MAX-TO )"});
+        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(0).doubleValue(SI.METER)});
+        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(0).doubleValue(NonSI.FOOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Altitude","m", _certificationPointsAltitudeMap.get(xcg).get(0).doubleValue(SI.METER)});
+        	dataListNoiseTrajectories.add(new Object[] {"Altitude","ft", _certificationPointsAltitudeMap.get(xcg).get(0).doubleValue(NonSI.FOOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","m/s", _certificationPointsSpeedTASMap.get(xcg).get(0).doubleValue(SI.METERS_PER_SECOND)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","kts", _certificationPointsSpeedTASMap.get(xcg).get(0).doubleValue(NonSI.KNOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","m/s", _certificationPointsSpeedCASMap.get(xcg).get(0).doubleValue(SI.METERS_PER_SECOND)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","kts", _certificationPointsSpeedCASMap.get(xcg).get(0).doubleValue(NonSI.KNOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust","N", _certificationPointsThrustMap.get(xcg).get(0).doubleValue(SI.NEWTON)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust","lbf", _certificationPointsThrustMap.get(xcg).get(0).doubleValue(NonSI.POUND_FORCE)});
+        	dataListNoiseTrajectories.add(new Object[] {" "});
+        	dataListNoiseTrajectories.add(new Object[] {"FLYOVER - CUTBACK ( " + _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getCutbackAltitude().doubleValue(NonSI.FOOT) + "ft, " + (_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback()*100) + "% )"});
+        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(1).doubleValue(SI.METER)});
+        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(1).doubleValue(NonSI.FOOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Altitude","m", _certificationPointsAltitudeMap.get(xcg).get(1).doubleValue(SI.METER)});
+        	dataListNoiseTrajectories.add(new Object[] {"Altitude","ft", _certificationPointsAltitudeMap.get(xcg).get(1).doubleValue(NonSI.FOOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","m/s", _certificationPointsSpeedTASMap.get(xcg).get(1).doubleValue(SI.METERS_PER_SECOND)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","kts", _certificationPointsSpeedTASMap.get(xcg).get(1).doubleValue(NonSI.KNOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","m/s", _certificationPointsSpeedCASMap.get(xcg).get(1).doubleValue(SI.METERS_PER_SECOND)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","kts", _certificationPointsSpeedCASMap.get(xcg).get(1).doubleValue(NonSI.KNOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust","N", _certificationPointsThrustMap.get(xcg).get(1).doubleValue(SI.NEWTON)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust","lbf", _certificationPointsThrustMap.get(xcg).get(1).doubleValue(NonSI.POUND_FORCE)});
+        	dataListNoiseTrajectories.add(new Object[] {" "});
+        	dataListNoiseTrajectories.add(new Object[] {"APPROACH"});
+        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(2).doubleValue(SI.METER)});
+        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(2).doubleValue(NonSI.FOOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Altitude","m", _certificationPointsAltitudeMap.get(xcg).get(2).doubleValue(SI.METER)});
+        	dataListNoiseTrajectories.add(new Object[] {"Altitude","ft", _certificationPointsAltitudeMap.get(xcg).get(2).doubleValue(NonSI.FOOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","m/s", _certificationPointsSpeedTASMap.get(xcg).get(2).doubleValue(SI.METERS_PER_SECOND)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","kts", _certificationPointsSpeedTASMap.get(xcg).get(2).doubleValue(NonSI.KNOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","m/s", _certificationPointsSpeedCASMap.get(xcg).get(2).doubleValue(SI.METERS_PER_SECOND)});
+        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","kts", _certificationPointsSpeedCASMap.get(xcg).get(2).doubleValue(NonSI.KNOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust","N", _certificationPointsThrustMap.get(xcg).get(2).doubleValue(SI.NEWTON)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust","lbf", _certificationPointsThrustMap.get(xcg).get(2).doubleValue(NonSI.POUND_FORCE)});
+
+        	Row rowNoiseTrajectories = sheetNoiseTrajectories.createRow(0);
+        	Object[] objArrNoiseTrajectories = dataListNoiseTrajectories.get(0);
+        	int cellnumNoiseTrajectories = 0;
+        	for (Object obj : objArrNoiseTrajectories) {
+        		Cell cell = rowNoiseTrajectories.createCell(cellnumNoiseTrajectories++);
+        		cell.setCellStyle(styleHead);
+        		if (obj instanceof Date) {
+        			cell.setCellValue((Date) obj);
+        		} else if (obj instanceof Boolean) {
+        			cell.setCellValue((Boolean) obj);
+        		} else if (obj instanceof String) {
+        			cell.setCellValue((String) obj);
+        		} else if (obj instanceof Double) {
+        			cell.setCellValue((Double) obj);
+        		}
+        		sheetNoiseTrajectories.setDefaultColumnWidth(35);
+        		sheetNoiseTrajectories.setColumnWidth(1, 2048);
+        		sheetNoiseTrajectories.setColumnWidth(2, 3840);
+        	}
+
+        	int rownumVnDiagram = 1;
+        	for (int i = 1; i < dataListNoiseTrajectories.size(); i++) {
+        		objArrNoiseTrajectories = dataListNoiseTrajectories.get(i);
+        		rowNoiseTrajectories = sheetNoiseTrajectories.createRow(rownumVnDiagram++);
+        		cellnumNoiseTrajectories = 0;
+        		for (Object obj : objArrNoiseTrajectories) {
+        			Cell cell = rowNoiseTrajectories.createCell(cellnumNoiseTrajectories++);
+        			if (obj instanceof Date) {
+        				cell.setCellValue((Date) obj);
+        			} else if (obj instanceof Boolean) {
+        				cell.setCellValue((Boolean) obj);
+        			} else if (obj instanceof String) {
+        				cell.setCellValue((String) obj);
+        			} else if (obj instanceof Double) {
+        				cell.setCellValue((Double) obj);
+        			}
+        		}
+        	}
+        }
+        //--------------------------------------------------------------------------------
         // V-n DIAGRAM ANALYSIS RESULTS:
         //--------------------------------------------------------------------------------
         if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.V_n_DIAGRAM)) {
@@ -4277,12 +4407,14 @@ public class ACPerformanceManager {
 				.append("\t\tAirborne distance = " + _airborneDistanceLandingMap.get(xcg).to(SI.METER) + "\n")
 				.append("\t\tLanding distance = " + _landingDistanceMap.get(xcg).to(SI.METER) + "\n")
 				.append("\t\tFAR-25 landing field length = " + _landingDistanceFAR25Map.get(xcg).to(SI.METER) + "\n")
+				.append("\t\tTotal distance = " + _totalDistanceMap.get(xcg).to(SI.METER) + "\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tGround roll distance = " + _groundRollDistanceLandingMap.get(xcg).to(NonSI.FOOT) + "\n")
 				.append("\t\tFlare distance = " + _flareDistanceLandingMap.get(xcg).to(NonSI.FOOT) + "\n")
 				.append("\t\tAirborne distance = " + _airborneDistanceLandingMap.get(xcg).to(NonSI.FOOT) + "\n")
 				.append("\t\tLanding distance = " + _landingDistanceMap.get(xcg).to(NonSI.FOOT) + "\n")
 				.append("\t\tFAR-25 landing field length = " + _landingDistanceFAR25Map.get(xcg).to(NonSI.FOOT) + "\n")
+				.append("\t\tTotal distance = " + _totalDistanceMap.get(xcg).to(NonSI.FOOT) + "\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tStall speed landing (VsLND)= " + _vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
 				.append("\t\tTouchdown speed (V_TD) = " + _vTouchDownMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
@@ -4298,7 +4430,8 @@ public class ACPerformanceManager {
 				.append("\t\tV_Flare/VsLND = " + _vFlareMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND)).getEstimatedValue() + "\n")
 				.append("\t\tV_Approach/VsLND = " + _vApproachMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND)).getEstimatedValue() + "\n")
 				.append("\t\t.....................................\n")
-				.append("\t\tLanding duration = " + _landingDurationMap.get(xcg) + "\n")
+				.append("\t\tLanding duration = " + _landingDurationMap.get(xcg).to(SI.SECOND) + "\n")
+				.append("\t\tTotal duration = " + _totalDurationMap.get(xcg).to(SI.SECOND) + "\n")
 				.append("\t-------------------------------------\n")
 				;
 			}
@@ -4315,6 +4448,41 @@ public class ACPerformanceManager {
 						&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtZeroPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
 						)
 				sb.append(_thePayloadRangeCalculatorMap.get(xcg).toString());
+			}
+			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.NOISE_TRAJECTORIES)) {
+				sb.append("\tNOISE TRAJECTORIES\n")
+				.append("\t-------------------------------------\n")
+				.append("\t\tSideline ( 100% MAX-TO )\n")
+				.append("\t\t\tGround Distance = " + _certificationPointsLongitudinalDistanceMap.get(xcg).get(0) + "\n")
+				.append("\t\t\tAltitude = " + _certificationPointsAltitudeMap.get(xcg).get(0) + "\n")
+				.append("\t\t\tSpeed (TAS) = " + _certificationPointsSpeedTASMap.get(xcg).get(0) + "\n")
+				.append("\t\t\tSpeed (CAS) = " + _certificationPointsSpeedCASMap.get(xcg).get(0) + "\n")
+				.append("\t\t\tAlpha = " + _certificationPointsAlphaMap.get(xcg).get(0) + "\n")
+				.append("\t\t\tGamma = " + _certificationPointsGammaMap.get(xcg).get(0) + "\n")
+				.append("\t\t\tTheta = " + _certificationPointsThetaMap.get(xcg).get(0) + "\n")
+				.append("\t\t\tThrust = " + _certificationPointsThrustMap.get(xcg).get(0) + "\n")
+				.append("\t\t.....................................\n")
+				.append("\t\tFlyover - Cutback ( " + _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getCutbackAltitude() + ", " + (_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback()*100) + "% )" + "\n")
+				.append("\t\t\tGround Distance = " + _certificationPointsLongitudinalDistanceMap.get(xcg).get(1) + "\n")
+				.append("\t\t\tAltitude = " + _certificationPointsAltitudeMap.get(xcg).get(1) + "\n")
+				.append("\t\t\tSpeed (TAS) = " + _certificationPointsSpeedTASMap.get(xcg).get(1) + "\n")
+				.append("\t\t\tSpeed (CAS) = " + _certificationPointsSpeedCASMap.get(xcg).get(1) + "\n")
+				.append("\t\t\tAlpha = " + _certificationPointsAlphaMap.get(xcg).get(1) + "\n")
+				.append("\t\t\tGamma = " + _certificationPointsGammaMap.get(xcg).get(1) + "\n")
+				.append("\t\t\tTheta = " + _certificationPointsThetaMap.get(xcg).get(1) + "\n")
+				.append("\t\t\tThrust = " + _certificationPointsThrustMap.get(xcg).get(1) + "\n")
+				.append("\t\t.....................................\n")
+				.append("\t\tApproach \n")
+				.append("\t\t\tGround Distance = " + _certificationPointsLongitudinalDistanceMap.get(xcg).get(2) + "\n")
+				.append("\t\t\tAltitude = " + _certificationPointsAltitudeMap.get(xcg).get(2) + "\n")
+				.append("\t\t\tSpeed (TAS) = " + _certificationPointsSpeedTASMap.get(xcg).get(2) + "\n")
+				.append("\t\t\tSpeed (CAS) = " + _certificationPointsSpeedCASMap.get(xcg).get(2) + "\n")
+				.append("\t\t\tAlpha = " + _certificationPointsAlphaMap.get(xcg).get(2) + "\n")
+				.append("\t\t\tGamma = " + _certificationPointsGammaMap.get(xcg).get(2) + "\n")
+				.append("\t\t\tTheta = " + _certificationPointsThetaMap.get(xcg).get(2) + "\n")
+				.append("\t\t\tThrust = " + _certificationPointsThrustMap.get(xcg).get(2) + "\n")
+				.append("\t-------------------------------------\n")
+				;
 			}
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.V_n_DIAGRAM)) {
 				sb.append("\tV-n DIAGRAM\n")
@@ -4365,7 +4533,7 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureTakeOff(), 
 							takeOffMass.to(SI.KILOGRAM),
 							_thePerformanceInterface.getDtHold(),
-							_thePerformanceInterface.getKCLmax(),
+							_thePerformanceInterface.getKCLmaxTakeOff(),
 							_thePerformanceInterface.getKRotation(),
 							_thePerformanceInterface.getAlphaDotRotation(),
 							_thePerformanceInterface.getDragDueToEngineFailure(),
@@ -4377,7 +4545,6 @@ public class ACPerformanceManager {
 							wingToGroundDistance,
 							_thePerformanceInterface.getWindSpeed(),
 							_thePerformanceInterface.getAlphaGround(),
-							_thePerformanceInterface.getTheAircraft().getWing().getRiggingAngle(),
 							_thePerformanceInterface.getCLmaxTakeOff().get(xcg),
 							_thePerformanceInterface.getCLZeroTakeOff().get(xcg),
 							_thePerformanceInterface.getCLAlphaTakeOff().get(xcg).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
@@ -6465,59 +6632,62 @@ public class ACPerformanceManager {
 			_theLandingCalculatorMap.put(
 					xcg, 
 					new LandingCalc(
-							_thePerformanceInterface.getTheAircraft(), 
-							_thePerformanceInterface.getTheOperatingConditions(),
-							landingMass,
-							_thePerformanceInterface.getKApproach(),
-							_thePerformanceInterface.getKFlare(),
-							_thePerformanceInterface.getKTouchDown(),
+							_thePerformanceInterface.getInitialALtitudeLanding(),
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeLanding(),
+							_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureLanding(),
+							_thePerformanceInterface.getApproachAngle(),
+							_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKLandingWeight()), 
+							_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+							_thePerformanceInterface.getPolarCLLanding().get(xcg),
+							_thePerformanceInterface.getPolarCDLanding().get(xcg), 
+							_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(),
+							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(), 
+							_thePerformanceInterface.getFreeRollDuration(),
 							_thePerformanceInterface.getMuFunction(),
-							_thePerformanceInterface.getMuBrakeFunction(),
-							_thePerformanceInterface.getObstacleLanding(), 
-							wingToGroundDistance,
-							_thePerformanceInterface.getWindSpeed(),
-							_thePerformanceInterface.getAlphaGround(),
-							_thePerformanceInterface.getTheAircraft().getWing().getRiggingAngle(),
-							_thePerformanceInterface.getThetaApproach(),
+							_thePerformanceInterface.getMuBrakeFunction(), 
+							wingToGroundDistance, 
+							_thePerformanceInterface.getKCLmaxLanding(),
 							_thePerformanceInterface.getCLmaxLanding().get(xcg),
 							_thePerformanceInterface.getCLZeroLanding().get(xcg),
-							_thePerformanceInterface.getCLAlphaLanding().get(xcg).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-							_thePerformanceInterface.getFreeRollDuration(),
-							_thePerformanceInterface.getPolarCLLanding().get(xcg),
-							_thePerformanceInterface.getPolarCDLanding().get(xcg),
+							_thePerformanceInterface.getCLAlphaLanding().get(xcg),
+							_thePerformanceInterface.getTheOperatingConditions().getThrottleLanding(),
+							_thePerformanceInterface.getCruiseCalibrationFactorThrust(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorThrust(),
 							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
-							_thePerformanceInterface.getGroundIdleCalibrationFactorSFC()
-							)
+							_thePerformanceInterface.getCruiseCalibrationFactorSFC(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorSFC(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorSFC(), 
+							true
+							)			
 					);
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theLandingCalculatorMap.get(xcg).calculateLandingDistance();
+			_theLandingCalculatorMap.get(xcg).calculateNoiseLandingTrajectory(true);
 			
 			// Distances:
 			_groundRollDistanceLandingMap.put(xcg, _theLandingCalculatorMap.get(xcg).getsGround());
 			_flareDistanceLandingMap.put(xcg, _theLandingCalculatorMap.get(xcg).getsFlare());
 			_airborneDistanceLandingMap.put(xcg, _theLandingCalculatorMap.get(xcg).getsApproach());
-			_landingDistanceMap.put(xcg, _theLandingCalculatorMap.get(xcg).getsTotal());
-			_landingDistanceFAR25Map.put(xcg, _theLandingCalculatorMap.get(xcg).getsTotal().divide(0.6));
+			_landingDistanceMap.put(xcg, _theLandingCalculatorMap.get(xcg).getsLanding());
+			_landingDistanceFAR25Map.put(xcg, _theLandingCalculatorMap.get(xcg).getsLanding().divide(0.6));
+			_totalDistanceMap.put(xcg, _theLandingCalculatorMap.get(xcg).getsTotal());
 			
 			// Velocities:
 			_vStallLandingMap.put(xcg, _theLandingCalculatorMap.get(xcg).getvSLanding());
-			_vTouchDownMap.put(xcg, _theLandingCalculatorMap.get(xcg).getvTD());
-			_vFlareMap.put(xcg, _theLandingCalculatorMap.get(xcg).getvFlare());
-			_vApproachMap.put(xcg, _theLandingCalculatorMap.get(xcg).getvA());
+			_vTouchDownMap.put(xcg, _theLandingCalculatorMap.get(xcg).getvTouchDownEffective());
+			_vFlareMap.put(xcg, _theLandingCalculatorMap.get(xcg).getvFlareEffective());
+			_vApproachMap.put(xcg, _theLandingCalculatorMap.get(xcg).getvApproach());
 			
 			// Duration:
-			_landingDurationMap.put(
-					xcg, 
-					_theLandingCalculatorMap.get(xcg).getTime().get(_theLandingCalculatorMap.get(xcg).getTime().size()-1)
-					);
+			_landingDurationMap.put(xcg, _theLandingCalculatorMap.get(xcg).getLandingTime());
+			_totalDurationMap.put(xcg, _theLandingCalculatorMap.get(xcg).getTotalTime());
 			
 		}
 		public void plotLandingPerformance(String landingFolderPath, Double xcg) {
 			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.LANDING_SIMULATIONS)) {
 				try {
-					_theLandingCalculatorMap.get(xcg).createLandingCharts(landingFolderPath);
+					_theLandingCalculatorMap.get(xcg).createOutputCharts(landingFolderPath);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -6752,12 +6922,11 @@ public class ACPerformanceManager {
 					_thePerformanceInterface.getDtHold(), 
 					_thePerformanceInterface.getTakeOffNoiseTrajectoryLandingGearRetractionTimeInterval(),
 					_thePerformanceInterface.getTakeOffNoiseTrajectoryThrustReductionCutbackTimeInterval(),
-					_thePerformanceInterface.getKCLmax(),
+					_thePerformanceInterface.getKCLmaxTakeOff(),
 					_thePerformanceInterface.getKRotation(), 
 					_thePerformanceInterface.getAlphaDotRotation(),
 					_thePerformanceInterface.getKAlphaDot(),
 					_thePerformanceInterface.getMuFunction(),
-					_thePerformanceInterface.getTheAircraft().getWing().getRiggingAngle(), 
 					_thePerformanceInterface.getCLmaxTakeOff().get(xcg), 
 					_thePerformanceInterface.getCLZeroTakeOff().get(xcg), 
 					_thePerformanceInterface.getCLAlphaTakeOff().get(xcg),
@@ -6781,6 +6950,8 @@ public class ACPerformanceManager {
 							)
 					);
 
+			// TODO: FILL ALL MAPS FOR toString() AND toXLS() METHODS...
+			
 			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance().equals(Boolean.TRUE)) {
 				if(theTakeOffNoiseTrajectoryCalculator.isTargetSpeedFlag() == true)
 					try {
@@ -6823,8 +6994,8 @@ public class ACPerformanceManager {
 					_thePerformanceInterface.getFreeRollDuration(),
 					_thePerformanceInterface.getMuFunction(), 
 					_thePerformanceInterface.getMuBrakeFunction(),
-					_thePerformanceInterface.getTheAircraft().getWing().getRiggingAngle(),
 					wingToGroundDistance,
+					_thePerformanceInterface.getKCLmaxLanding(),
 					_thePerformanceInterface.getCLmaxLanding().get(xcg),
 					_thePerformanceInterface.getCLZeroLanding().get(xcg),
 					_thePerformanceInterface.getCLAlphaLanding().get(xcg),
@@ -8132,6 +8303,102 @@ public class ACPerformanceManager {
 
 	public void setThrottleMissionListMap(Map<Double, List<Double>> _throttleMissionListMap) {
 		this._throttleMissionListMap = _throttleMissionListMap;
+	}
+
+	public Map<Double, Amount<Length>> getTotalDistanceMap() {
+		return _totalDistanceMap;
+	}
+
+	public void setTotalDistanceMap(Map<Double, Amount<Length>> _totalDistanceMap) {
+		this._totalDistanceMap = _totalDistanceMap;
+	}
+
+	public Map<Double, Amount<Duration>> getTotalDurationMap() {
+		return _totalDurationMap;
+	}
+
+	public void setTotalDurationMap(Map<Double, Amount<Duration>> _totalDurationMap) {
+		this._totalDurationMap = _totalDurationMap;
+	}
+
+	public Map<Double, List<Amount<Length>>> getCertificationPointsLongitudinalDistanceMap() {
+		return _certificationPointsLongitudinalDistanceMap;
+	}
+
+	public void setCertificationPointsLongitudinalDistanceMap(Map<Double, List<Amount<Length>>> _certificationPointsLongitudinalDistanceMap) {
+		this._certificationPointsLongitudinalDistanceMap = _certificationPointsLongitudinalDistanceMap;
+	}
+
+	public Map<Double, List<Amount<Length>>> getCertificationPointsAltitudeMap() {
+		return _certificationPointsAltitudeMap;
+	}
+
+	public void setCertificationPointsAltitudeMap(Map<Double, List<Amount<Length>>> _certificationPointsAltitudeMap) {
+		this._certificationPointsAltitudeMap = _certificationPointsAltitudeMap;
+	}
+
+	public Map<Double, List<Amount<Velocity>>> getCertificationPointsSpeedTASMap() {
+		return _certificationPointsSpeedTASMap;
+	}
+
+	public void setCertificationPointsSpeedTASMap(Map<Double, List<Amount<Velocity>>> _certificationPointsSpeedTASMap) {
+		this._certificationPointsSpeedTASMap = _certificationPointsSpeedTASMap;
+	}
+
+	public Map<Double, List<Amount<Velocity>>> getCertificationPointsSpeedCASMap() {
+		return _certificationPointsSpeedCASMap;
+	}
+
+	public void setCertificationPointsSpeedCASMap(Map<Double, List<Amount<Velocity>>> _certificationPointsSpeedCASMap) {
+		this._certificationPointsSpeedCASMap = _certificationPointsSpeedCASMap;
+	}
+
+	public Map<Double, List<Amount<Angle>>> getCertificationPointsGammaMap() {
+		return _certificationPointsGammaMap;
+	}
+
+	public void setCertificationPointsGammaMap(Map<Double, List<Amount<Angle>>> _certificationPointsGammaMap) {
+		this._certificationPointsGammaMap = _certificationPointsGammaMap;
+	}
+
+	public Map<Double, List<Amount<Angle>>> getCertificationPointsAlphaMap() {
+		return _certificationPointsAlphaMap;
+	}
+
+	public void setCertificationPointsAlphaMap(Map<Double, List<Amount<Angle>>> _certificationPointsAlphaMap) {
+		this._certificationPointsAlphaMap = _certificationPointsAlphaMap;
+	}
+
+	public Map<Double, List<Amount<Angle>>> getCertificationPointsThetaMap() {
+		return _certificationPointsThetaMap;
+	}
+
+	public void setCertificationPointsThetaMap(Map<Double, List<Amount<Angle>>> _certificationPointsThetaMap) {
+		this._certificationPointsThetaMap = _certificationPointsThetaMap;
+	}
+
+	public Map<Double, List<Amount<Force>>> getCertificationPointsThrustMap() {
+		return _certificationPointsThrustMap;
+	}
+
+	public void setCertificationPointsThrustMap(Map<Double, List<Amount<Force>>> _certificationPointsThrustMap) {
+		this._certificationPointsThrustMap = _certificationPointsThrustMap;
+	}
+
+	public Map<Double, TakeOffNoiseTrajectoryCalc> getTheTakeOffNoiseTrajectoryCalculatorMap() {
+		return _theTakeOffNoiseTrajectoryCalculatorMap;
+	}
+
+	public void setTheTakeOffNoiseTrajectoryCalculatorMap(Map<Double, TakeOffNoiseTrajectoryCalc> _theTakeOffNoiseTrajectoryCalculatorMap) {
+		this._theTakeOffNoiseTrajectoryCalculatorMap = _theTakeOffNoiseTrajectoryCalculatorMap;
+	}
+
+	public Map<Double, LandingNoiseTrajectoryCalc> getTheLandingNoiseTrajectoryCalculatorMap() {
+		return _theLandingNoiseTrajectoryCalculatorMap;
+	}
+
+	public void setTheLandingNoiseTrajectoryCalculatorMap(Map<Double, LandingNoiseTrajectoryCalc> _theLandingNoiseTrajectoryCalculatorMap) {
+		this._theLandingNoiseTrajectoryCalculatorMap = _theLandingNoiseTrajectoryCalculatorMap;
 	}
 
 }

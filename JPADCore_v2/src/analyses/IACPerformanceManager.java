@@ -67,13 +67,15 @@ public interface IACPerformanceManager {
 	Amount<Length> getObstacleTakeOff();
 	Double getKRotation();
 	Double getAlphaDotRotation();
-	Double getKCLmax();
+	Double getKCLmaxTakeOff();
 	Double getDragDueToEngineFailure();
 	Double getKAlphaDot();
 
 	Double getKLandingWeight();
+	Amount<Length> getInitialALtitudeLanding();
 	Amount<Length> getObstacleLanding();
-	Amount<Angle> getThetaApproach();
+	Amount<Angle> getApproachAngle();
+	Double getKCLmaxLanding();
 	Double getKApproach();
 	Double getKFlare();
 	Double getKTouchDown();

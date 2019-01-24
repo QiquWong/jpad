@@ -295,7 +295,7 @@ public class MissionProfileCalc {
 		DescentCalc theFirstDescentCalculator = null;
 		DescentCalc theSecondDescentCalculator = null;
 		DescentCalc theThirdDescentCalculator = null;
-		LandingCalc theLandingCalculator = null;
+		LandingCalcSemiempirical theLandingCalculator = null;
 		
 		//----------------------------------------------------------------------
 		// QUANTITES TO BE ADDED IN LISTS AT THE END OF THE ITERATION
@@ -2749,7 +2749,7 @@ public class MissionProfileCalc {
 							.minus(fuelHolding.to(SI.KILOGRAM))
 							.minus(fuelThirdDescent.to(SI.KILOGRAM));
 
-					theLandingCalculator = new LandingCalc(
+					theLandingCalculator = new LandingCalcSemiempirical(
 							_theAircraft, 
 							_theOperatingConditions,
 							aircraftMassAtLandingStart,

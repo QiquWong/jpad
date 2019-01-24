@@ -90,12 +90,12 @@ public class TakeOffNoiseTrajectoryCalc {
 	private Amount<Mass> maxTakeOffMass; 
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2, vClimb;
 	private Amount<Length> wingToGroundDistance, obstacle, xEndSimulation, cutbackAltitude;
-	private Amount<Angle> alphaGround, iw;
+	private Amount<Angle> alphaGround;
 	private List<Amount<Angle>> alpha;
 	private List<Amount<Duration>> time;
 	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Force>> weight;
-	private List<Double> loadFactor, cL, timeBreakPoints;
+	private List<Double> loadFactor, cL, cD, timeBreakPoints;
 	private double kAlphaDot, kcLMax, kRot, phi, cLmaxTO, alphaDotInitial, deltaCD0LandingGear, deltaCD0OEI, 
 	alphaRed, cL0, thrustCorrectionFactor, sfcCorrectionFactor;
 	private Double phiCutback;
@@ -116,7 +116,7 @@ public class TakeOffNoiseTrajectoryCalc {
 	private Map<Double, List<Amount<Duration>>> timeMap;
 	private Map<Double, List<Amount<Mass>>> fuelUsedMap;
 	private Map<Double, List<Amount<Force>>> weightMap;
-
+	
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
 
@@ -140,7 +140,6 @@ public class TakeOffNoiseTrajectoryCalc {
 			double alphaDotInitial,
 			double kAlphaDot,
 			MyInterpolatingFunction mu,
-			Amount<Angle> iw,
 			double cLmaxTO,
 			double cLZeroTO,
 			Amount<?> cLalphaFlap,
@@ -179,7 +178,6 @@ public class TakeOffNoiseTrajectoryCalc {
 		this.obstacle = Amount.valueOf(35, NonSI.FOOT);
 		this.vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		this.alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		this.iw = iw;
 		this.cLmaxTO = cLmaxTO;
 		this.cLalphaFlap = cLalphaFlap;
 		this.cL0 = cLZeroTO;
@@ -211,6 +209,7 @@ public class TakeOffNoiseTrajectoryCalc {
 		this.acceleration = new ArrayList<Amount<Acceleration>>();
 		this.loadFactor = new ArrayList<Double>();
 		this.cL = new ArrayList<Double>();
+		this.cD = new ArrayList<Double>();
 		this.weight = new ArrayList<Amount<Force>>();
 		this.timeBreakPoints = new ArrayList<Double>();
 
@@ -257,6 +256,7 @@ public class TakeOffNoiseTrajectoryCalc {
 		acceleration.clear();
 		loadFactor.clear();
 		cL.clear();
+		cD.clear();
 		weight.clear();
 		timeBreakPoints.clear();
 
@@ -334,7 +334,7 @@ public class TakeOffNoiseTrajectoryCalc {
 			initialize();
 
 			theIntegrator = new HighamHall54Integrator(
-					1e-10,
+					1e-20,
 					1,
 					1e-10,
 					1e-10
@@ -793,6 +793,15 @@ public class TakeOffNoiseTrajectoryCalc {
 							((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(alpha)
 							);
 					//----------------------------------------------------------------------------------------
+					// CD:				
+					TakeOffNoiseTrajectoryCalc.this.getcD().add(
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).cD(
+									((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(alpha),
+									time,
+									speed,
+									altitude)
+							);
+					//----------------------------------------------------------------------------------------
 					// ACCELERATION:
 					TakeOffNoiseTrajectoryCalc.this.getAcceleration().add(
 							Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND)
@@ -976,6 +985,7 @@ public class TakeOffNoiseTrajectoryCalc {
 		MyInterpolatingFunction loadFactorFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction accelerationFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction cLFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction cDFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction weightFunction = new MyInterpolatingFunction();
 
 		List<Amount<Velocity>> speedList = new ArrayList<Amount<Velocity>>();
@@ -1017,6 +1027,10 @@ public class TakeOffNoiseTrajectoryCalc {
 			cLFunction.interpolateLinear(
 					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
 					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cL))
+					);
+			cDFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cD))
 					);
 			weightFunction.interpolateLinear(
 					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
@@ -1275,19 +1289,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					cLList.add(cLFunction.value(times.get(i).doubleValue(SI.SECOND)));
 					//----------------------------------------------------------------------------------------
 					// CD:
-					cDList.add(
-							((DynamicsEquationsTakeOffNoiseTrajectory)ode).cD(
-									((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(
-											Amount.valueOf(
-													alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-													NonSI.DEGREE_ANGLE
-													)
-											),
-											times.get(i),
-											speed,
-											altitude
-									)
-							);
+					cDList.add(cDFunction.value(times.get(i).doubleValue(SI.SECOND)));
 
 					//----------------------------------------------------------------------------------------
 				}
@@ -2489,7 +2491,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				alphaList.add(alpha);
 				double acceleration = 0.0; /* First guess value */
 				
-				int maxIterAlpha = 300; /* max alpha excursion +-3° */
+				int maxIterAlpha = 500; /* max alpha excursion +-5° */
 				do {
 					
 					Amount<Angle> alphaTemp = alphaList.get(alphaList.size()-1);
@@ -2600,14 +2602,6 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	public void setAlphaGround(Amount<Angle> alphaGround) {
 		this.alphaGround = alphaGround;
-	}
-
-	public Amount<Angle> getIw() {
-		return iw;
-	}
-
-	public void setIw(Amount<Angle> iw) {
-		this.iw = iw;
 	}
 
 	public List<Amount<Angle>> getAlpha() {
@@ -3200,6 +3194,14 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	public void setSfcCorrectionFactor(double sfcCorrectionFactor) {
 		this.sfcCorrectionFactor = sfcCorrectionFactor;
+	}
+
+	public List<Double> getcD() {
+		return cD;
+	}
+
+	public void setcD(List<Double> cD) {
+		this.cD = cD;
 	}
 
 }
