@@ -32,6 +32,11 @@ public class AtmosphereCalc {
 	private static final StdAtmos1976 atmosphere = new StdAtmos1976(0.0, 0.0);
 
 	public static StdAtmos1976 getAtmosphere(double altitude, double deltaTemperature) {
+		if(altitude < 0.0) {
+//			System.err.println("WARNING: (ATMOSHERE - ALTITUDE) NEGATIVE ALTITUDE. SETTING 0.0 ... ");
+			altitude = 0.0;
+		}
+			
 		atmosphere.setAltitudeAndDeltaTemperature(altitude, deltaTemperature);
 		return atmosphere;
 	}

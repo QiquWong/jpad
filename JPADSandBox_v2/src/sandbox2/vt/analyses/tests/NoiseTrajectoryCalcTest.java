@@ -281,22 +281,27 @@ public class NoiseTrajectoryCalcTest extends Application {
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			boolean timeHistories = true;
 			boolean takeOffSimulation = true;
-			boolean landingSimulation = false;
+			boolean landingSimulation = true;
 			
 			//......................................................................
 			Amount<Length> xEndSimulation = Amount.valueOf(8000, SI.METER);
 			Amount<Length> cutbackAltitude = Amount.valueOf(984, NonSI.FOOT); //  also to be done at 1500ft and 2000ft
 			int numberOfThrustSettingCutback = 3;
 			Amount<Mass> maxTakeOffMass = Amount.valueOf(55174, SI.KILOGRAM);
-			double[] polarCLTakeOff = new double[] {1.683505301,1.727959984,1.774656575,1.823332257,1.873724213,1.925569626,1.978605681,2.032569559,2.087198445,2.142229523,2.197399974,2.252446983,2.307107733,2.361119408,2.41421919,2.466144263,2.516631811,2.565419016,2.612243063,2.656841134,2.698950412,2.738308082,2.774651327,2.807717329,2.837243272,2.86296634,2.884623715,2.901952582,2.914690124,2.922573523,2.925339964};
-			double[] polarCDTakeOff = new double[] {0.134322844,0.134490111,0.134824043,0.135326555,0.135999805,0.136846218,0.137868518,0.139069743,0.14045327,0.142022824,0.143782489,0.145736715,0.147890322,0.150248492,0.15281677,0.155601049,0.158607558,0.161842847,0.165313759,0.16902741,0.172991157,0.177212561,0.181699357,0.186459405,0.191500649,0.196831062,0.202458601,0.20839114,0.214636415,0.221201956,0.228095016};
+//			double[] polarCLTakeOff = new double[] {1.683505301,1.727959984,1.774656575,1.823332257,1.873724213,1.925569626,1.978605681,2.032569559,2.087198445,2.142229523,2.197399974,2.252446983,2.307107733,2.361119408,2.41421919,2.466144263,2.516631811,2.565419016,2.612243063,2.656841134,2.698950412,2.738308082,2.774651327,2.807717329,2.837243272,2.86296634,2.884623715,2.901952582,2.914690124,2.922573523,2.925339964};
+//			double[] polarCDTakeOff = new double[] {0.134322844,0.134490111,0.134824043,0.135326555,0.135999805,0.136846218,0.137868518,0.139069743,0.14045327,0.142022824,0.143782489,0.145736715,0.147890322,0.150248492,0.15281677,0.155601049,0.158607558,0.161842847,0.165313759,0.16902741,0.172991157,0.177212561,0.181699357,0.186459405,0.191500649,0.196831062,0.202458601,0.20839114,0.214636415,0.221201956,0.228095016};
+			double[] polarCLTakeOff = new double[] {0.399982396,0.407865795,0.420603337,0.437932204,0.459589579,0.485312647,0.51483859,0.547904592,0.584247837,0.623605507,0.665714785,0.710312856,0.757136903,0.805924108,0.856411656,0.908336729,0.961436511,1.015448186,1.070108936,1.125155945,1.180326396,1.235357474,1.28998636,1.343950238,1.396986293,1.448831706,1.499223662,1.547899344,1.594595935,1.639050618,1.683505301,1.727959984,1.774656575,1.823332257,1.873724213,1.925569626,1.978605681,2.032569559,2.087198445,2.142229523,2.197399974,2.252446983,2.307107733,2.361119408,2.41421919,2.466144263,2.516631811,2.565419016,2.612243063,2.656841134,2.698950412,2.738308082,2.774651327,2.807717329,2.837243272,2.86296634,2.884623715,2.901952582,2.914690124,2.922573523,2.925339964};
+			double[] polarCDTakeOff = new double[] {0.228095016,0.221201956,0.214636415,0.20839114,0.202458601,0.196831062,0.191500649,0.186459405,0.181699357,0.177212561,0.172991157,0.16902741,0.165313759,0.161842847,0.158607558,0.155601049,0.15281677,0.150248492,0.147890322,0.145736715,0.143782489,0.142022824,0.14045327,0.139069743,0.137868518,0.136846218,0.135999805,0.135326555,0.134824043,0.134490111,0.134322844,0.134490111,0.134824043,0.135326555,0.135999805,0.136846218,0.137868518,0.139069743,0.14045327,0.142022824,0.143782489,0.145736715,0.147890322,0.150248492,0.15281677,0.155601049,0.158607558,0.161842847,0.165313759,0.16902741,0.172991157,0.177212561,0.181699357,0.186459405,0.191500649,0.196831062,0.202458601,0.20839114,0.214636415,0.221201956,0.228095016};
 			double deltaCD0LandingGear = 0.015;
 			double deltaCD0OEI = 0.0050;
 			double xcgPosition = -0.22;
 			Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 			Amount<Duration> dtLandingGearRetraction = Amount.valueOf(12, SI.SECOND);
 			Amount<Duration> dtThrustCutback = Amount.valueOf(4, SI.SECOND);
-			double kcLMax = 0.8;
+			double takeOffThrustCalibrationFactor = 1.0;
+			double aprThrustCalibrationFactor = 1.0;
+			double takeOffSfcCalibrationFactor = 1.0;
+			double kcLMaxTakeOff = 0.8;
 			double kRot = 1.05;
 			double alphaDotInitial = 3.0; // (deg/s)
 			double kAlphaDot = 0.06; // (1/deg)
@@ -318,6 +323,20 @@ public class NoiseTrajectoryCalcTest extends Application {
 			boolean createCSV = true;
 			
 			//======================================================================
+			Amount<Length> wingToGroundDistance = 
+					theAircraft.getFuselage().getHeightFromGround()
+					.plus(theAircraft.getFuselage().getSectionCylinderHeight().divide(2))
+					.plus(theAircraft.getWing().getZApexConstructionAxes()
+							.plus(theAircraft.getWing().getSemiSpan()
+									.times(Math.sin(
+											theAircraft.getWing()	
+											.getDihedralMean()
+											.doubleValue(SI.RADIAN)
+											)
+											)
+									)
+							);
+			
 			if(takeOffSimulation) {
 				TakeOffNoiseTrajectoryCalc theTakeOffNoiseTrajectoryCalculator = new TakeOffNoiseTrajectoryCalc(
 						xEndSimulation,
@@ -326,7 +345,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 						theAircraft.getPowerPlant(),
 						polarCLTakeOff, 
 						polarCDTakeOff, 
-						theOperatingConditions.getAltitudeTakeOff(),
+						wingToGroundDistance,
 						deltaCD0LandingGear, 
 						deltaCD0OEI,
 						theAircraft.getWing().getAspectRatio(),
@@ -334,21 +353,29 @@ public class NoiseTrajectoryCalcTest extends Application {
 						dtHold, 
 						dtLandingGearRetraction, 
 						dtThrustCutback,
-						theOperatingConditions.getThrottleTakeOff(),
-						kcLMax,
+						kcLMaxTakeOff,
 						kRot,
 						alphaDotInitial,
 						kAlphaDot,
 						mu,
-						theAircraft.getWing().getRiggingAngle(),
 						cLmaxTO,
 						cLZeroTO,
 						cLalphaFlap,
+						takeOffThrustCalibrationFactor,
+						takeOffSfcCalibrationFactor,
 						createCSV
 						);
 
+				Amount<Velocity> vMC = calculateVMC(
+						xcgPosition,
+						maxTakeOffMass,
+						cLmaxTO,
+						tauRudder, 
+						veDSCDatabaseReader, 
+						theTakeOffNoiseTrajectoryCalculator.getvSTakeOff(), 
+						aprThrustCalibrationFactor
+						);
 				
-				Amount<Velocity> vMC = calculateVMC(xcgPosition, maxTakeOffMass, cLmaxTO, tauRudder, veDSCDatabaseReader, theTakeOffNoiseTrajectoryCalculator.getvSTakeOff());
 				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null, timeHistories,vMC);
 				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null, timeHistories, vMC);
 
@@ -384,13 +411,21 @@ public class NoiseTrajectoryCalcTest extends Application {
 			Amount<Length> initialAltitude = Amount.valueOf(4000, NonSI.FOOT);
 			Amount<Angle> gammaDescent = Amount.valueOf(-3, NonSI.DEGREE_ANGLE);
 			Amount<Mass> maxLandingMass = Amount.valueOf(49656.6, SI.KILOGRAM);
-			Double[] polarCLLanding = new Double[] {1.852401952,1.899728566,1.946839305,1.993734167,2.040413155,2.086876267,2.133123503,2.179154864,2.22497035,2.27056996,2.315953694,2.361121553,2.406073536,2.450809644,2.495329877,2.539634234,2.583722715,2.627595321,2.671252052,2.714692907,2.757917886,2.800926991,2.843720219,2.886297572,2.92865905,2.970804652,3.012734378,3.054448229,3.095946205};
-			Double[] polarCDLanding = new Double[] {0.103156733,0.104489488,0.105998136,0.107684706,0.109551373,0.111600463,0.113834448,0.116255949,0.118867733,0.121672716,0.124673962,0.127874684,0.131278239,0.134888136,0.13870803,0.142741724,0.146993167,0.151466461,0.156165849,0.161095728,0.166260639,0.171665272,0.177314465,0.183213204,0.189366623,0.195780002,0.202458771,0.209408507,0.216634936};
-			Amount<Duration> dtFlare = Amount.valueOf(3, SI.SECOND);
+//			double[] polarCLLanding = new double[] {1.852401952,1.899728566,1.946839305,1.993734167,2.040413155,2.086876267,2.133123503,2.179154864,2.22497035,2.27056996,2.315953694,2.361121553,2.406073536,2.450809644,2.495329877,2.539634234,2.583722715,2.627595321,2.671252052,2.714692907,2.757917886,2.800926991,2.843720219,2.886297572,2.92865905,2.970804652,3.012734378,3.054448229,3.095946205};
+//			double[] polarCDLanding = new double[] {0.103156733,0.104489488,0.105998136,0.107684706,0.109551373,0.111600463,0.113834448,0.116255949,0.118867733,0.121672716,0.124673962,0.127874684,0.131278239,0.134888136,0.13870803,0.142741724,0.146993167,0.151466461,0.156165849,0.161095728,0.166260639,0.171665272,0.177314465,0.183213204,0.189366623,0.195780002,0.202458771,0.209408507,0.216634936};
+			double[] polarCLLanding = new double[] {0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2,2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9,3,3.1};
+			double[] polarCDLanding = new double[] {0.2804,0.260456,0.241704,0.224144,0.207776,0.1926,0.178616,0.165824,0.154224,0.143816,0.1346,0.126576,0.119744,0.114104,0.109656,0.1064,0.104336,0.103464,0.103784,0.105296,0.108,0.111896,0.116984,0.123264,0.130736,0.1394,0.149256,0.160304,0.172544,0.185976,0.2006,0.216416};
 			Amount<Duration> dtFreeRoll = Amount.valueOf(2, SI.SECOND);
+			double kcLMaxLanding = 0.9;
 			double cLmaxLND = 3.1;
-			double cLZeroLND = 0.0888;
-			Amount<?> cLalphaLND = Amount.valueOf(0.1082, NonSI.DEGREE_ANGLE.inverse());
+			double cLZeroLND = 1.866;
+			Amount<?> cLalphaLND = Amount.valueOf(0.0888, NonSI.DEGREE_ANGLE.inverse());
+			double cruiseThrustCalibrationFactor = 1.0;
+			double fidlThrustCalibrationFactor = 1.0;
+			double gidlThrustCalibrationFactor = 1.0;
+			double cruiseSfcCalibrationFactor = 1.0;
+			double fidlSfcCalibrationFactor = 1.0;
+			double gidlSfcCalibrationFactor = 1.0;
 			
 			MyInterpolatingFunction muBrake = new MyInterpolatingFunction();
 //			muBrake.interpolateLinear(
@@ -414,25 +449,37 @@ public class NoiseTrajectoryCalcTest extends Application {
 						polarCDLanding, 
 						theAircraft.getWing().getAspectRatio(),
 						theAircraft.getWing().getSurfacePlanform(),
-						dtFlare,
 						dtFreeRoll, 
 						mu, 
 						muBrake,
-						theAircraft.getWing().getRiggingAngle(),
+						wingToGroundDistance,
+						kcLMaxLanding,
 						cLmaxLND,
 						cLZeroLND,
 						cLalphaLND,
 						theOperatingConditions.getThrottleLanding(),
+						cruiseThrustCalibrationFactor,
+						fidlThrustCalibrationFactor,
+						gidlThrustCalibrationFactor,
+						cruiseSfcCalibrationFactor,
+						fidlSfcCalibrationFactor,
+						gidlSfcCalibrationFactor,
 						createCSV
 						);
 
 				theLandingNoiseTrajectoryCalculator.calculateNoiseLandingTrajectory(timeHistories);
 
-				try {
-					theLandingNoiseTrajectoryCalculator.createOutputCharts(outputFolderLanding, timeHistories);
-				} catch (InstantiationException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
+//				if(theLandingNoiseTrajectoryCalculator.isTargetRDandAltitudeFlag() == true)
+					try {
+						theLandingNoiseTrajectoryCalculator.createOutputCharts(outputFolderLanding, timeHistories);
+					} catch (InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+//				else {
+//					System.err.println("TERMINATING ... ");
+//					System.exit(1);
+//				}
+				
 			}
 			//--------------------------------END-----------------------------------
 			long estimatedTime = System.currentTimeMillis() - startTime;
@@ -445,11 +492,11 @@ public class NoiseTrajectoryCalcTest extends Application {
 			DirectionalStabilityTest.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
-			return;
+			System.exit(1);
 		}	    
-
-		// JavaFX ... (if needed)
-		launch(args);
+		
+		System.exit(1);
+		
 	}
 
 	public static Amount<Velocity> calculateVMC(
@@ -458,7 +505,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 			double cLMaxTakeOff,
 			MyInterpolatingFunction tauRudder,
 			VeDSCDatabaseReader veDSCDatabaseReader,
-			Amount<Velocity> vsTakeOff
+			Amount<Velocity> vsTakeOff,
+			double aprThrustCalibrationFactor
 			) {
 		
 		Amount<Length> dimensionalXcg = 
@@ -552,7 +600,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 				theOperatingConditions.getAltitudeTakeOff(), 
 				Amount.valueOf(10, SI.CELSIUS), 
 				theOperatingConditions.getThrottleTakeOff(), 
-				true
+				true,
+				aprThrustCalibrationFactor
 				);
 
 		List<Amount<Length>> enginesArms = new ArrayList<>();

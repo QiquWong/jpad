@@ -14,8 +14,7 @@ import configuration.enumerations.ClassTypeEnum;
 public interface ICabinConfiguration {
 
 	String getId();
-	int getActualPassengerNumber();
-	int getMaximumPassengerNumber();
+	int getDesignPassengerNumber();
 	int getFlightCrewNumber();
 	int getClassesNumber();
 	List<ClassTypeEnum> getClassesType();

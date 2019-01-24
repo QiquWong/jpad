@@ -428,31 +428,31 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	
 	@Override
 	public double getThrustRatio(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			thrustRatio = getThrustRatioTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			thrustRatio = getThrustRatioAPR(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			thrustRatio = getThrustRatioClimb(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			thrustRatio = getThrustRatioContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			thrustRatio = getThrustRatioCruise(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			thrustRatio = getThrustRatioFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			thrustRatio = getThrustRatioGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -464,7 +464,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -517,13 +517,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -575,13 +575,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 				thrustRatio = super.aprThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 		}
 		
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -634,13 +634,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioContinuous(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -693,13 +693,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -752,14 +752,14 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 		
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioFlightIdle(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -812,13 +812,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioGroundIdle(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -871,36 +871,36 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@Override
 	public double getSfc(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 		
 		double sfc = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			sfc = getSfcTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			sfc = getSfcAPR(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			sfc = getSfcClimb(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			sfc = getSfcContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			sfc = getSfcCruise(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			sfc = getSfcFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			sfc = getSfcGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -912,7 +912,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -965,13 +965,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1024,13 +1024,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1083,13 +1083,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcContinuous(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1142,13 +1142,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1201,13 +1201,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcFlightIdle(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1260,13 +1260,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcGroundIdle(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1320,36 +1320,36 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@Override
 	public double getNOxEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexNOx = getNOxEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexNOx = getNOxEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexNOx = getNOxEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexNOx = getNOxEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexNOx = getNOxEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexNOx = getNOxEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexNOx = getNOxEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -1361,7 +1361,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1414,13 +1414,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1473,13 +1473,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1532,13 +1532,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1591,13 +1591,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1650,13 +1650,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1709,13 +1709,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1768,36 +1768,36 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@Override
 	public double getCOEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexCO = getCOEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexCO = getCOEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexCO = getCOEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexCO = getCOEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexCO = getCOEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexCO = getCOEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexCO = getCOEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -1809,7 +1809,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -1862,13 +1862,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -1921,13 +1921,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -1980,13 +1980,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 		
 		}
 		
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -2039,13 +2039,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -2098,13 +2098,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -2157,13 +2157,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -2216,36 +2216,36 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@Override
 	public double getHCEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexHC = getHCEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexHC = getHCEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexHC = getHCEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexHC = getHCEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexHC = getHCEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexHC = getHCEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexHC = getHCEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -2257,7 +2257,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2316,7 +2316,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2369,13 +2369,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexHC;
+		return emissionIndexHC*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2428,13 +2428,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexHC;
+		return emissionIndexHC*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2487,13 +2487,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexHC;
+		return emissionIndexHC*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2552,7 +2552,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2604,13 +2604,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
-		return emissionIndexHC;
+		return emissionIndexHC*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2663,36 +2663,36 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexHC;
+		return emissionIndexHC*correctionFactor;
 	}
 
 	@Override
 	public double getSootEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexSoot = getSootEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexSoot = getSootEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexSoot = getSootEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexSoot = getSootEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexSoot = getSootEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexSoot = getSootEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexSoot = getSootEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -2704,7 +2704,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -2757,13 +2757,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -2816,13 +2816,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -2875,13 +2875,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -2934,13 +2934,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -2993,13 +2993,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -3051,13 +3051,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -3110,36 +3110,36 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 	
 	@Override
 	public double getCO2EmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexCO2 = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexCO2 = getCO2EmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexCO2 = getCO2EmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexCO2 = getCO2EmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexCO2 = getCO2EmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexCO2 = getCO2EmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexCO2 = getCO2EmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexCO2 = getCO2EmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -3152,7 +3152,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3205,13 +3205,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3265,13 +3265,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3324,13 +3324,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3383,13 +3383,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3442,13 +3442,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3501,13 +3501,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3560,36 +3560,36 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@Override
 	public double getH2OEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexH2O = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexH2O = getH2OEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexH2O = getH2OEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexH2O = getH2OEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexH2O = getH2OEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexH2O = getH2OEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexH2O = getH2OEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexH2O = getH2OEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -3601,7 +3601,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3654,13 +3654,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3713,13 +3713,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3772,13 +3772,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 	
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3831,13 +3831,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3890,13 +3890,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3949,13 +3949,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -4008,36 +4008,36 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@Override
 	public double getSOxEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexSOx = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexSOx = getSOxEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexSOx = getSOxEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexSOx = getSOxEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexSOx = getSOxEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexSOx = getSOxEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexSOx = getSOxEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexSOx = getSOxEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -4049,7 +4049,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4102,13 +4102,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4161,13 +4161,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4220,13 +4220,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 		
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 	
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4279,13 +4279,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4338,13 +4338,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4397,13 +4397,13 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4456,7 +4456,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 	
 	public double getByPassRatio() {

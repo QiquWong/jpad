@@ -31,16 +31,17 @@ public interface IACCostsManager {
 	Amount<Length> getRange();
 	Amount<Mass> getBlockFuelMass();
 	Amount<Duration> getFlightTime();
+	double getCruiseSfcCalibrationFactor(); 
 	
 	Amount<?> getUtilization();
 	
 	Amount<Duration> getLifeSpan();
-	Double getResidualValue();
+	double getResidualValue();
 	Amount<Money> getAircraftPrice();
-	Double getAirframeRelativeSparesCosts();
-	Double getEnginesRelativeSparesCosts();
-	Double getInterestRate();
-	Double getInsuranceRate();
+	double getAirframeRelativeSparesCosts();
+	double getEnginesRelativeSparesCosts();
+	double getInterestRate();
+	double getInsuranceRate();
 	
 	Amount<?> getCabinLabourRate();
 	Amount<?> getCockpitLabourRate();

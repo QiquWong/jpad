@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 import it.unina.daf.jpadcad.CADManager.CADComponentEnum;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occfx.OCCFXMeshExtractor.FaceData;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Point3D;
+import javafx.geometry.Insets;
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
@@ -21,32 +21,37 @@ import javafx.scene.PointLight;
 import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.MeshView;
-import javafx.scene.shape.Sphere;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
+import opencascade.TopoDS_Edge;
 import opencascade.TopoDS_Face;
+import standaloneutils.MyArrayUtils;
 
 public class OCCFX3DView {
 	
 	// Observation point setting for 3D view
 	public static enum VantagePoint3DView {
 		BOTTOM("Bottom (Z+)"),
-		CORNER("Corner"),
 		FRONT("Front (X+)"),
 		TOP("Top (Z-)"),
 		BACK("Back (X-)"),
@@ -73,9 +78,11 @@ public class OCCFX3DView {
 	private static final double ROTATE_MULTIPLIER = 0.1;
 	private static final double TRANSLATE_MULTIPLIER = 0.05;
 	private static final double SCROLL_MULTIPLIER = 0.025;
+	
+	private static final double POINT_LIGHT_DISTANCE = 30000;
 
-	private double _axisLength = 1.0;
-	private double _axisThickness = 0.5;
+	private double _axesLength = 1.0;
+	private double _axesThickness = 0.1;
 	
 	private VantagePoint3DView _lastSelectedVantagePoint = VantagePoint3DView.FRONT;
 	
@@ -94,10 +101,7 @@ public class OCCFX3DView {
 	private AmbientLight _theAmbientLight = null;
 	private PointLight _thePointLight = null;
 	
-	private Group _theAxisGroup = new Group();
-	
-	private BoundingBox _theBoundingBoxInLocal = null;
-	private double _sceneDiameter = 0; // The max dimension of the object that need to be rendered inside the scene (wing span or fuselage length, for example)
+	private Group _theAxesGroup = new Group();
 	
 	private Transform _theCurrentRotate = null;
 	
@@ -118,8 +122,15 @@ public class OCCFX3DView {
 	private List<MeshView> _theWingFairingImportedMeshView = new ArrayList<>();
 	private List<MeshView> _theCanardFairingImportedMeshView = new ArrayList<>();
 	
+	private double maxLength = 0.0;
+	private double maxWidth = 0.0;
+	private double maxHeight = 0.0;
+	
 	private Group _theSceneRoot = new Group();
 	private Group _theSubSceneRoot = new Group();
+	
+	private HBox _theSubSceneControls = new HBox();
+	private VBox _theSubSceneWithControls = new VBox();
 	
 	private boolean _viewOnSubScene = false;
 	
@@ -128,21 +139,25 @@ public class OCCFX3DView {
 	private Map<CADComponentEnum, List<MeshView>> _theAircraftMeshViewMap = new HashMap<>();
 	
 	public OCCFX3DView(Map<CADComponentEnum, List<OCCShape>> aircraftSolidsMap) {
-		init(aircraftSolidsMap, false);
+		init(aircraftSolidsMap, 1024, 800, false);
 	}
 	
 	public OCCFX3DView(Map<CADComponentEnum, List<OCCShape>> aircraftSolidsMap, boolean viewOnSubScene) {			
-		init(aircraftSolidsMap, viewOnSubScene);
+		init(aircraftSolidsMap, 1024, 800, viewOnSubScene);
 	}
 	
-	private void init(Map<CADComponentEnum, List<OCCShape>> aircraftSolidsMap, boolean viewOnSubScene) {
+	public OCCFX3DView(Map<CADComponentEnum, List<OCCShape>> aircraftSolidsMap, double width, double height, boolean viewOnSubScene) {
+		init(aircraftSolidsMap, width, height, viewOnSubScene);
+	}
+	
+	private void init(Map<CADComponentEnum, List<OCCShape>> aircraftSolidsMap, double width, double height, boolean viewOnSubScene) {
 		
 		this._theAircraftSolidsMap = aircraftSolidsMap;
 		this._viewOnSubScene = viewOnSubScene;
 		
 		convertSolidsToMeshViews();
 		createBaseScene();
-		createScene(1024, 800, SceneAntialiasing.BALANCED);
+		createScene(width, height, SceneAntialiasing.BALANCED);
 		setVantagePoint(_lastSelectedVantagePoint);	
 	}
 	
@@ -156,9 +171,7 @@ public class OCCFX3DView {
 			if (solids.size() != 1) 
 				System.err.println("Warning: the number of solids found in " + comp.toString() + " shape list is incorrect!");
 			
-			boolean faceReversed = (comp.equals(CADComponentEnum.WING_FAIRING) || comp.equals(CADComponentEnum.CANARD_FAIRING)) ? false : true;
-			
-			List<TriangleMesh> mesh = extractMesh(solids.get(0), faceReversed);
+			List<TriangleMesh> mesh = extractMesh(solids.get(0), true);
 			List<MeshView> meshView = generateMeshView(mesh);
 			
 			_theAircraftMeshMap.put(comp, mesh);
@@ -232,10 +245,10 @@ public class OCCFX3DView {
 		_thePerspectiveCamera.setFieldOfView(44);
 		
 		// Light
-		_thePointLight = new PointLight(Color.WHITE);
-		_thePointLight.setTranslateZ(-20000);
+		_thePointLight = new PointLight(Color.LIGHTGREY);
+		_thePointLight.setTranslateZ(-POINT_LIGHT_DISTANCE);
 		
-		_theAmbientLight = new AmbientLight(Color.color(0.3, 0.3, 0.3));
+		_theAmbientLight = new AmbientLight(Color.color(0.1, 0.1, 0.1));
 		
 		// Set camera and lighting for the viewing group
 		_theViewingGroup = new Group(_thePerspectiveCamera, _thePointLight);
@@ -247,16 +260,13 @@ public class OCCFX3DView {
 		if (_viewOnSubScene) {
 			_theSubScene = new SubScene(_theSubSceneRoot, width, height, true, sceneAA);
 			
-//			_theSubScene.setFill(new RadialGradient(225, 225, 300, 300, 500, false,
-//	                CycleMethod.NO_CYCLE, new Stop[]
-//	                { new Stop(0f, Color.LIGHTSKYBLUE),
-//	                  new Stop(1f, Color.LIGHTBLUE) }));
 			_theSubScene.setFill(Color.TRANSPARENT);
 			
 			_theSubScene.setCamera(_thePerspectiveCamera);
 			_theSubSceneRoot.getChildren().addAll(_theViewingGroup, _theAmbientLight);
 			_theSubSceneRoot.getChildren().addAll(_theAircraftImportedMeshView);
 			
+			calculateMaxDimensions(_theSubSceneRoot);
 			buildAxes(_theSubSceneRoot);
 			
 			// Navigator on sub scene
@@ -313,13 +323,10 @@ public class OCCFX3DView {
 				public void handle(KeyEvent event) {
 					switch (event.getCode()) {
 					case A:
-						_theAxisGroup.setVisible(!_theAxisGroup.isVisible());
+						_theAxesGroup.setVisible(!_theAxesGroup.isVisible());
 						break;
 					case B:
 						setVantagePoint(VantagePoint3DView.BACK);
-						break;
-					case C:
-						setVantagePoint(VantagePoint3DView.CORNER);
 						break;
 					case D: 
 						setVantagePoint(VantagePoint3DView.BOTTOM);
@@ -357,6 +364,7 @@ public class OCCFX3DView {
 			_theSceneRoot.getChildren().addAll(_theViewingGroup, _theAmbientLight);
 			_theSceneRoot.getChildren().addAll(_theAircraftImportedMeshView);
 			
+			calculateMaxDimensions(_theSceneRoot);
 			buildAxes(_theSceneRoot);
 			
 			// Navigator on sub scene
@@ -413,13 +421,10 @@ public class OCCFX3DView {
 				public void handle(KeyEvent event) {
 					switch (event.getCode()) {
 					case A:
-						_theAxisGroup.setVisible(!_theAxisGroup.isVisible());
+						_theAxesGroup.setVisible(!_theAxesGroup.isVisible());
 						break;
 					case B:
 						setVantagePoint(VantagePoint3DView.BACK);
-						break;
-					case C:
-						setVantagePoint(VantagePoint3DView.CORNER);
 						break;
 					case D: 
 						setVantagePoint(VantagePoint3DView.BOTTOM);
@@ -447,6 +452,105 @@ public class OCCFX3DView {
 		}		
 	}
 	
+	private void createSubSceneControls() { 
+  
+//		Button frontView = new Button("", new ImageView(
+//				new Image(new FileInputStream("src\\it\\unina\\daf\\jpadcadsandbox\\img\\cad_icons\\frontview.png")))); 
+		Button frontView = new Button("FRONT");
+//		frontView.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+		frontView.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				setVantagePoint(VantagePoint3DView.FRONT);
+			}
+		});
+		
+//		Button backView = new Button("", new ImageView(
+//				new Image(new FileInputStream("src\\it\\unina\\daf\\jpadcadsandbox\\img\\cad_icons\\rearview.png"))));
+		Button backView = new Button("REAR");
+//		backView.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+		backView.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				setVantagePoint(VantagePoint3DView.BACK);
+			}
+		});
+		
+//		Button topView = new Button("", new ImageView(
+//				new Image(new FileInputStream("src\\it\\unina\\daf\\jpadcadsandbox\\img\\cad_icons\\topview.png"))));
+		Button topView = new Button("TOP");
+//		topView.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+		topView.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				setVantagePoint(VantagePoint3DView.TOP);
+			}
+		});
+		
+//		Button bottomView = new Button("", new ImageView(
+//				new Image(new FileInputStream("src\\it\\unina\\daf\\jpadcadsandbox\\img\\cad_icons\\bottomview.png"))));
+		Button bottomView = new Button("BOTTOM");
+//		bottomView.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+		bottomView.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				setVantagePoint(VantagePoint3DView.BOTTOM);
+			}
+		});
+		
+//		Button leftView = new Button("", new ImageView(
+//				new Image(new FileInputStream("src\\it\\unina\\daf\\jpadcadsandbox\\img\\cad_icons\\leftview.png"))));
+		Button leftView = new Button("LEFT");
+//		leftView.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+		leftView.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				setVantagePoint(VantagePoint3DView.LEFT);
+			}
+		});
+		
+//		Button rightView = new Button("", new ImageView(
+//				new Image(new FileInputStream("src\\it\\unina\\daf\\jpadcadsandbox\\img\\cad_icons\\rightview.png"))));
+		Button rightView = new Button("RIGHT"); 
+//		rightView.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+		rightView.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				setVantagePoint(VantagePoint3DView.RIGHT);
+			}
+		});
+		
+		CheckBox axesToggle = new CheckBox("Toggle axes");
+		axesToggle.selectedProperty().addListener(observable -> {
+			if (axesToggle.isSelected())
+				_theAxesGroup.setVisible(true);
+			else
+				_theAxesGroup.setVisible(false);
+		});
+		
+		_theSubSceneControls = new HBox(12, 
+				frontView,
+				backView,
+				topView,
+				bottomView,
+				leftView,
+				rightView,
+				axesToggle);
+		
+		_theSubSceneControls.setPadding(new Insets(12));
+		_theSubSceneControls.setBackground(new Background(
+				new BackgroundFill(
+						Color.LIGHTGRAY, 
+						null, null)));
+		
+	}
+	
+	private void calculateAxesLengths() {
+		
+		_axesLength = MyArrayUtils.getMax(new Double[] {maxLength, maxWidth, maxHeight})/2;
+		_axesThickness = 0.005*_axesLength;
+	}
+	
 	private void buildAxes(Group parentGroup) {
 	
 		final PhongMaterial redMaterial = new PhongMaterial();
@@ -461,18 +565,34 @@ public class OCCFX3DView {
 		blueMaterial.setDiffuseColor(Color.DARKBLUE);
 		blueMaterial.setSpecularColor(Color.BLUE);
 		
-		final Box xAxis = new Box(_axisLength, _axisThickness, _axisThickness);
-		final Box yAxis = new Box(_axisThickness, _axisLength, _axisThickness);
-		final Box zAxis = new Box(_axisThickness, _axisThickness, _axisLength);
+		calculateAxesLengths();
+		
+		final Box xAxis = new Box(_axesLength, _axesThickness, _axesThickness);
+		final Box yAxis = new Box(_axesThickness, _axesLength, _axesThickness);
+		final Box zAxis = new Box(_axesThickness, _axesThickness, _axesLength);
 		
 		xAxis.setMaterial(redMaterial);
 		yAxis.setMaterial(greenMaterial);
 		zAxis.setMaterial(blueMaterial);
 		
-		_theAxisGroup.getChildren().addAll(xAxis, yAxis, zAxis);
-		_theAxisGroup.setVisible(false);
-		parentGroup.getChildren().add(_theAxisGroup);
+		_theAxesGroup.getChildren().addAll(xAxis, yAxis, zAxis);
+		_theAxesGroup.setVisible(false);
+		parentGroup.getChildren().add(_theAxesGroup);
 		
+	}
+	
+	public void addControls() {
+		
+		if (_viewOnSubScene) {
+			
+			createSubSceneControls();
+			_theSubSceneWithControls = new VBox(_theSubSceneControls, _theSubScene);
+		}
+		
+		else {
+			
+			System.out.println("Controls cannot be added to the Scene, please generate a SubScene instead.");
+		}
 	}
 	
 	public Scene exchangeScene(final SceneAntialiasing sceneAA) {
@@ -505,56 +625,111 @@ public class OCCFX3DView {
 		return _theSubScene;
 	}
 	
+	private void calculateMaxDimensions(Group group) {
+		
+		maxLength = group.getBoundsInLocal().getWidth();
+		maxWidth = group.getBoundsInLocal().getHeight();
+		maxHeight = group.getBoundsInLocal().getDepth() - POINT_LIGHT_DISTANCE;
+		
+	}
+	
 	private void setVantagePoint(VantagePoint3DView vp) {
 
 		Transform rotate = null;
-
-		final double distance = distToSceneCenter(_sceneDiameter/2);
+		
+		double viewRadius = 0.0;
+		
+		double xTrans = 0.0;
+		double yTrans = 0.0;
+		double zTrans = 0.0;
 		
 		switch (vp) {
-		
+
 		case BOTTOM:
-			rotate = new Rotate(-90, Rotate.Z_AXIS);
+			rotate = new Rotate(0, Rotate.Z_AXIS);
+			
+			viewRadius = Math.max(maxWidth, maxLength)/2;
+			
+			xTrans = 0.0 - maxLength/2;
+			yTrans = 0.0;
+			zTrans = 0.0 + distToSceneCenter(viewRadius + viewRadius*0.10);
+			
 			break;
-		case CORNER:
-			Rotate rotateCorner1 = new Rotate( 90, Rotate.X_AXIS);
-			Rotate rotateCorner2 = new Rotate(-30, new Point3D(-1, -1, 0).normalize());
-			rotate = rotateCorner1.createConcatenation(rotateCorner2);
-			break;
+			
 		case FRONT:
 			Rotate rotateFront1 = new Rotate( 90, Rotate.Y_AXIS);
 			Rotate rotateFront2 = new Rotate(-90, Rotate.Z_AXIS);
 			rotate = rotateFront1.createConcatenation(rotateFront2);
+			
+			viewRadius = Math.max(maxWidth, maxHeight)/2;
+			
+			xTrans = 0.0;
+			yTrans = 0.0 + maxHeight/2;
+			zTrans = 0.0 + distToSceneCenter(viewRadius - viewRadius*0.10);
+			
 			break;
+			
 		case TOP:
-			Rotate rotateTop1 = new Rotate(-90, Rotate.Z_AXIS);
+			Rotate rotateTop1 = new Rotate(  0, Rotate.Z_AXIS);
 			Rotate rotateTop2 = new Rotate(180, Rotate.X_AXIS);
 			rotate = rotateTop1.createConcatenation(rotateTop2);
+			
+			viewRadius = Math.max(maxWidth, maxLength)/2;
+			
+			xTrans = 0.0 - maxLength/2;
+			yTrans = 0.0;
+			zTrans = 0.0 + distToSceneCenter(viewRadius + viewRadius*0.10);
+			
 			break;
+			
 		case BACK:
 			Rotate rotateBack1 = new Rotate(-90, Rotate.Y_AXIS);
 			Rotate rotateBack2 = new Rotate( 90, Rotate.Z_AXIS);
 			rotate = rotateBack1.createConcatenation(rotateBack2);
+			
+			viewRadius = Math.max(maxWidth, maxHeight)/2;
+			
+			xTrans = 0.0;
+			yTrans = 0.0 + maxHeight/2;
+			zTrans = 0.0 + maxLength + distToSceneCenter(viewRadius - viewRadius*0.10);
+			
 			break;
+			
 		case RIGHT:
 			Rotate rotateRight1 = new Rotate( 90, Rotate.X_AXIS);
 			Rotate rotateRight2 = new Rotate(180, Rotate.Z_AXIS);
 			rotate = rotateRight1.createConcatenation(rotateRight2);
+			
+			viewRadius = Math.max(maxLength, maxHeight)/2;
+			
+			xTrans = 0.0 + maxLength/2;
+			yTrans = 0.0 + maxHeight/2;
+			zTrans = 0.0 + distToSceneCenter(viewRadius - viewRadius*0.10);
+			
 			break;
+			
 		case LEFT:
 			Rotate rotateLeft1 = new Rotate(-90, Rotate.X_AXIS);
 			Rotate rotateLeft2 = new Rotate(  0, Rotate.Z_AXIS);
 			rotate = rotateLeft1.createConcatenation(rotateLeft2);
+			
+			viewRadius = Math.max(maxLength, maxHeight)/2;
+			
+			xTrans = 0.0 - maxLength/2;
+			yTrans = 0.0 + maxHeight/2;
+			zTrans = 0.0 + distToSceneCenter(viewRadius - viewRadius*0.10);
+			
 			break;
+			
 		}
 		
 		_lastSelectedVantagePoint = vp;
 		
 		_theViewingAffineRotate.setToTransform(rotate);
 		
-		_theViewingTranslate.setX(0.0);
-		_theViewingTranslate.setY(0.0);
-		_theViewingTranslate.setZ(-distance);
+		_theViewingTranslate.setX(-xTrans);
+		_theViewingTranslate.setY(-yTrans);
+		_theViewingTranslate.setZ(-zTrans);
 	}
 	
 	private double distToSceneCenter(double sceneRadius) {
@@ -708,16 +883,8 @@ public class OCCFX3DView {
 		return _theSceneRoot;
 	}
 	
-	public double getSceneDiameter() {
-		return _sceneDiameter;
-	}
-	
-	public void setSceneDiameter(double sceneDiameter) {
-		this._sceneDiameter = sceneDiameter;
-	}
-	
-	public Group getAxisGroup() {
-		return _theAxisGroup;
+	public Group getAxesGroup() {
+		return _theAxesGroup;
 	}
 	
 	public Group getViewingGroup() {
@@ -730,6 +897,10 @@ public class OCCFX3DView {
 	
 	public Translate getViewingTranslate() {
 		return _theViewingTranslate;
+	}
+	
+	public VBox getSubSceneWithControls() {
+		return _theSubSceneWithControls;
 	}
 	
 }

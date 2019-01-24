@@ -2,8 +2,7 @@
 <jpad_config>
     <configuration id="IRON Cabin Configuration">
 		<global_data>
-			<actual_passengers_number>130</actual_passengers_number>
-			<maximum_passengers_number>130</maximum_passengers_number>
+			<design_passengers_number>130</design_passengers_number>
 			<flight_crew_number>2</flight_crew_number>
 			<classes_number>1</classes_number>
 			<classes_type>ECONOMY</classes_type>

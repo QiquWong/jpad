@@ -25,7 +25,8 @@ public class ThrustCalc {
 			List<Amount<Velocity>> speed,
 			List<EngineOperatingConditionEnum> flightCondition,
 			PowerPlant thePowerPlant,
-			boolean isOEI
+			boolean isOEI,
+			double thrustCorrectionFactor
 			) {
 
 		List<ThrustMap> list = new ArrayList<ThrustMap>();
@@ -47,7 +48,8 @@ public class ThrustCalc {
 												altitude.get(i), 
 												deltaTemperature, 
 												phi.get(j),
-												isOEI
+												isOEI,
+												thrustCorrectionFactor
 												), 
 										speed, 
 										flightCondition.get(f)
@@ -67,7 +69,8 @@ public class ThrustCalc {
 			List<Amount<Velocity>> speed,
 			EngineOperatingConditionEnum flightCondition,
 			PowerPlant thePowerPlant,
-			boolean isOEI) {
+			boolean isOEI, double thrustCorrectionFactor
+			) {
 	
 		return new ThrustMap(
 				weight,
@@ -81,7 +84,8 @@ public class ThrustCalc {
 						altitude, 
 						deltaTemperature, 
 						phi,
-						isOEI
+						isOEI,
+						thrustCorrectionFactor
 						),
 				speed,
 				flightCondition
@@ -92,7 +96,8 @@ public class ThrustCalc {
 			Amount<Force> t0, 
 			EngineDatabaseReader engineDatabaseReader,
 			EngineOperatingConditionEnum flightCondition,
-			Amount<Length> altitude, double mach, Amount<Temperature> deltaTemperature, double phi
+			Amount<Length> altitude, double mach, Amount<Temperature> deltaTemperature, double phi,
+			double thrustCorrectionFactor
 			) {
 		
 		double thrustRatio = engineDatabaseReader.getThrustRatio(
@@ -100,7 +105,8 @@ public class ThrustCalc {
 				altitude,
 				deltaTemperature,
 				phi,
-				flightCondition
+				flightCondition,
+				thrustCorrectionFactor
 				); 
 		
 		return Amount.valueOf(
@@ -112,7 +118,9 @@ public class ThrustCalc {
 	public static List<Amount<Force>> calculateThrustVsSpeed(
 			EngineOperatingConditionEnum flightCondition,  
 			PowerPlant thePowerPlant, 
-			List<Amount<Velocity>> speed, Amount<Length> altitude, Amount<Temperature> deltaTemperature, double phi, boolean isOEI) {
+			List<Amount<Velocity>> speed, Amount<Length> altitude, Amount<Temperature> deltaTemperature, double phi, 
+			boolean isOEI, double thrustCorrectionFactor
+			) {
 	
 		List<Amount<Force>> thrust = new ArrayList<>();
 	
@@ -132,7 +140,8 @@ public class ThrustCalc {
 								altitude,
 								mach,
 								deltaTemperature,
-								phi
+								phi,
+								thrustCorrectionFactor
 								)
 						);
 			thrust.add(

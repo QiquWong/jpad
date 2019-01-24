@@ -2,8 +2,7 @@
 <jpad_config>
     <configuration id="JPAD Test Cabin Configuration DAF - 2016">
 		<global_data>
-			<actual_passengers_number>50</actual_passengers_number>
-			<maximum_passengers_number>90</maximum_passengers_number>
+			<design_passengers_number>50</design_passengers_number>
 			<flight_crew_number>2</flight_crew_number>
 			<classes_number>3</classes_number>
 			<classes_type>ECONOMY;BUSINESS;FIRST</classes_type>

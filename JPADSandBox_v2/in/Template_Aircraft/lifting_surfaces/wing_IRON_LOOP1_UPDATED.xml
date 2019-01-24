@@ -80,7 +80,7 @@
             </slat>
         </slats>		
         <asymmetric_flaps>
-            <asymmetric_flap id="Left aileron" type="PLAIN">
+            <asymmetric_flap id="1" type="PLAIN">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.78</inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.95</outer_station_spanwise_position>
                 <inner_chord_ratio>0.32</inner_chord_ratio>
@@ -88,6 +88,7 @@
                 <min_deflection unit="deg">-25.0</min_deflection>
 				<max_deflection unit="deg">25.0</max_deflection>
             </asymmetric_flap>
+			<!--
 			<asymmetric_flap id="Right aileron" type="PLAIN">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.78</inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.95</outer_station_spanwise_position>
@@ -96,6 +97,7 @@
                 <min_deflection unit="deg">-25.0</min_deflection>
 				<max_deflection unit="deg">25.0</max_deflection>
             </asymmetric_flap>
+			-->
         </asymmetric_flaps>
         <!-- SPOILERS DATA ARE NOT AVAILABLE YET
 		<spoilers>

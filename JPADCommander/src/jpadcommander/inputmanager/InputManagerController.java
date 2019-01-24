@@ -173,6 +173,8 @@ public class InputManagerController {
 	@FXML
 	private TabPane tabPaneWingSlats;
 	@FXML
+	private TabPane tabPaneWingAilerons;
+	@FXML
 	private TabPane tabPaneWingSpoilers;	
 	@FXML
 	private TabPane tabPaneWingViewAndAirfoils;	
@@ -272,6 +274,8 @@ public class InputManagerController {
 	@FXML
 	private Button wingAddSlatButton;
 	@FXML
+	private Button wingAddAileronButton;
+	@FXML
 	private Button wingAddSpoilerButton;
 	@FXML
 	private Button wingChooseInnerAirfoilPanel1Button;
@@ -331,6 +335,8 @@ public class InputManagerController {
 	private Button loadCADConfigurationFileButton;
 	@FXML
 	private Button updateCAD3DViewButton;
+	@FXML
+	private Button saveCADToFileButton;
 	
 	//...........................................................................................
 	// BUTTON MAP:
@@ -455,6 +461,7 @@ public class InputManagerController {
 	private FileChooser nacelleFileChooser;
 	private FileChooser landingGearsFileChooser;
 	private FileChooser cad3DViewFileChooser;
+	private FileChooser saveCADFileChooser;
 	
 	//...........................................................................................
 	// VALIDATIONS (ControlsFX):
@@ -944,8 +951,6 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldActualPassengersNumber;
 	@FXML
-	private TextField textFieldMaximumPassengersNumber;
-	@FXML
 	private TextField textFieldFlightCrewNumber;
 	@FXML
 	private TextField textFieldClassesNumber;
@@ -1106,33 +1111,19 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldWingMaximumDeflectionAngleSlat1;
 	@FXML
-	private ChoiceBox<String> wingLeftAileronTypeChoichBox;
+	private ChoiceBox<String> wingAileron1TypeChoiceBox;
 	@FXML
-	private TextField textFieldWingInnerPositionAileronLeft;
+	private TextField textFieldWingInnerPositionAileron1;
 	@FXML
-	private TextField textFieldWingOuterPositionAileronLeft;
+	private TextField textFieldWingOuterPositionAileron1;
 	@FXML
-	private TextField textFieldWingInnerChordRatioAileronLeft;
+	private TextField textFieldWingInnerChordRatioAileron1;
 	@FXML
-	private TextField textFieldWingOuterChordRatioAileronLeft;
+	private TextField textFieldWingOuterChordRatioAileron1;
 	@FXML
-	private TextField textFieldWingMinimumDeflectionAngleAileronLeft;
+	private TextField textFieldWingMinimumDeflectionAngleAileron1;
 	@FXML
-	private TextField textFieldWingMaximumDeflectionAngleAileronLeft;
-	@FXML
-	private ChoiceBox<String> wingRightAileronTypeChoichBox;
-	@FXML
-	private TextField textFieldWingInnerPositionAileronRight;
-	@FXML
-	private TextField textFieldWingOuterPositionAileronRight;
-	@FXML
-	private TextField textFieldWingInnerChordRatioAileronRight;
-	@FXML
-	private TextField textFieldWingOuterChordRatioAileronRight;
-	@FXML
-	private TextField textFieldWingMinimumDeflectionAngleAileronRight;
-	@FXML
-	private TextField textFieldWingMaximumDeflectionAngleAileronRight;
+	private TextField textFieldWingMaximumDeflectionAngleAileron1;
 	@FXML
 	private TextField textFieldWingInnerSpanwisePositionSpolier1;
 	@FXML
@@ -1192,6 +1183,17 @@ public class InputManagerController {
 	private List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleSlatUnitList;
 	private List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleSlatUnitList;
 	
+	// ailerons
+	private List<ChoiceBox<String>> choiceBoxWingAileronTypeList;
+	private List<TextField> textFieldWingInnerPositionAileronList;
+	private List<TextField> textFieldWingOuterPositionAileronList;
+	private List<TextField> textFieldWingInnerChordRatioAileronList;
+	private List<TextField> textFieldWingOuterChordRatioAileronList;
+	private List<TextField> textFieldWingMinimumDeflectionAngleAileronList;
+	private List<TextField> textFieldWingMaximumDeflectionAngleAileronList;
+	private List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleAileronUnitList;
+	private List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleAileronUnitList;
+	
 	// spoilers
 	private List<TextField> textFieldWingInnerSpanwisePositionSpoilerList;
 	private List<TextField> textFieldWingOuterSpanwisePositionSpoilerList;
@@ -1240,13 +1242,9 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> wingMaximumDeflectionAngleSlat1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> wingMinimumDeflectionAngleAileronLeftUnitChoiceBox;
+	private ChoiceBox<String> wingMinimumDeflectionAngleAileron1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> wingMaximumDeflectionAngleAileronLeftUnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMinimumDeflectionAngleAileronRightUnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMaximumDeflectionAngleAileronRightUnitChoiceBox;
+	private ChoiceBox<String> wingMaximumDeflectionAngleAileron1UnitChoiceBox;
 	@FXML
 	private ChoiceBox<String> wingMinimumDeflectionAngleSpoiler1UnitChoiceBox;
 	@FXML
@@ -1723,8 +1721,6 @@ public class InputManagerController {
 	
 	// CAD file export
 	@FXML
-	private CheckBox exportCADToFileCheckBox;
-	@FXML
 	private CheckBox exportCADWireframeCheckBox;
 	@FXML
 	private ChoiceBox<String> fileExtensionCADChoiceBox;
@@ -1934,6 +1930,7 @@ public class InputManagerController {
 		tabPaneWingPanels.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingFlaps.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingSlats.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingAilerons.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingSpoilers.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingViewAndAirfoils.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingViewAndAirfoils.getTabs().get(0).closableProperty().set(false);
@@ -1945,6 +1942,8 @@ public class InputManagerController {
 			inputManagerControllerSecondaryActionUtilities.removeContentOnFlapTabClose(tabPaneWingFlaps.getTabs().get(i), ComponentEnum.WING);
 		for(int i=0; i<tabPaneWingSlats.getTabs().size(); i++)
 			inputManagerControllerSecondaryActionUtilities.removeContentOnSlatTabClose(tabPaneWingSlats.getTabs().get(i));
+		for(int i=0; i<tabPaneWingAilerons.getTabs().size(); i++)
+			inputManagerControllerSecondaryActionUtilities.removeContentOnAileronTabClose(tabPaneWingAilerons.getTabs().get(i)); 
 		for(int i=0; i<tabPaneWingSpoilers.getTabs().size(); i++)
 			inputManagerControllerSecondaryActionUtilities.removeContentOnSpoilerTabClose(tabPaneWingSpoilers.getTabs().get(i), ComponentEnum.WING);
 		
@@ -2005,8 +2004,7 @@ public class InputManagerController {
 		vTailAdjustCriterionChoiceBox.setItems(liftingSurfaceAdjustCriteriaTypeList);
 		canardAdjustCriterionChoiceBox.setItems(liftingSurfaceAdjustCriteriaTypeList);
 		wingFlap1TypeChoichBox.setItems(flapTypeList);
-		wingLeftAileronTypeChoichBox.setItems(aileronTypeList);
-		wingRightAileronTypeChoichBox.setItems(aileronTypeList);
+		wingAileron1TypeChoiceBox.setItems(aileronTypeList);
 		hTailElevator1TypeChoiceBox.setItems(elevatorTypeList);
 		vTailRudder1TypeChoiceBox.setItems(rudderTypeList);
 		canardControlSurface1TypeChoiceBox.setItems(canardSurfaceTypeList);
@@ -2091,10 +2089,8 @@ public class InputManagerController {
 		wingMaximumDeflectionAngleFlap1UnitChoiceBox.setItems(angleUnitsList);
 		wingMinimumDeflectionAngleSlat1UnitChoiceBox.setItems(angleUnitsList);
 		wingMaximumDeflectionAngleSlat1UnitChoiceBox.setItems(angleUnitsList);
-		wingMinimumDeflectionAngleAileronLeftUnitChoiceBox.setItems(angleUnitsList);
-		wingMaximumDeflectionAngleAileronLeftUnitChoiceBox.setItems(angleUnitsList);
-		wingMinimumDeflectionAngleAileronRightUnitChoiceBox.setItems(angleUnitsList);
-		wingMaximumDeflectionAngleAileronRightUnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleAileron1UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleAileron1UnitChoiceBox.setItems(angleUnitsList);
 		wingMinimumDeflectionAngleSpoiler1UnitChoiceBox.setItems(angleUnitsList);
 		wingMaximumDeflectionAngleSpoiler1UnitChoiceBox.setItems(angleUnitsList);
 		hTailRoughnessUnitChoiceBox.setItems(lengthUnitsList);
@@ -2356,6 +2352,34 @@ public class InputManagerController {
 		
 		choiceBoxWingMaximumDeflectionAngleSlatUnitList = new ArrayList<>();
 		choiceBoxWingMaximumDeflectionAngleSlatUnitList.add(wingMaximumDeflectionAngleSlat1UnitChoiceBox);
+		
+		// ailerons
+		choiceBoxWingAileronTypeList= new ArrayList<>();
+		choiceBoxWingAileronTypeList.add(wingAileron1TypeChoiceBox);
+		
+		textFieldWingInnerPositionAileronList = new ArrayList<>();
+		textFieldWingInnerPositionAileronList.add(textFieldWingInnerPositionAileron1);
+		
+		textFieldWingOuterPositionAileronList = new ArrayList<>();
+		textFieldWingOuterPositionAileronList.add(textFieldWingOuterPositionAileron1);
+		
+		textFieldWingInnerChordRatioAileronList = new ArrayList<>();
+		textFieldWingInnerChordRatioAileronList.add(textFieldWingInnerChordRatioAileron1);
+		
+		textFieldWingOuterChordRatioAileronList = new ArrayList<>();
+		textFieldWingOuterChordRatioAileronList.add(textFieldWingOuterChordRatioAileron1);
+		
+		textFieldWingMinimumDeflectionAngleAileronList = new ArrayList<>();
+		textFieldWingMinimumDeflectionAngleAileronList.add(textFieldWingMinimumDeflectionAngleAileron1);
+		
+		textFieldWingMaximumDeflectionAngleAileronList = new ArrayList<>();
+		textFieldWingMaximumDeflectionAngleAileronList.add(textFieldWingMaximumDeflectionAngleAileron1);
+		
+		choiceBoxWingMinimumDeflectionAngleAileronUnitList = new ArrayList<>();
+		choiceBoxWingMinimumDeflectionAngleAileronUnitList.add(wingMinimumDeflectionAngleAileron1UnitChoiceBox);
+		
+		choiceBoxWingMaximumDeflectionAngleAileronUnitList = new ArrayList<>();
+		choiceBoxWingMaximumDeflectionAngleAileronUnitList.add(wingMaximumDeflectionAngleAileron1UnitChoiceBox);
 		
 		// spoilers
 		textFieldWingInnerSpanwisePositionSpoilerList = new ArrayList<>();
@@ -3671,6 +3695,134 @@ public class InputManagerController {
 		newSlatTab.setContent(contentPane);
 		tabPaneWingSlats.getTabs().add(newSlatTab);
 		
+	}
+	
+	@FXML
+	public void addAileron() {
+		
+		Tab newAileronTab = new Tab("Aileron " + (tabPaneWingAilerons.getTabs().size()+1));
+		Pane contentPane = new Pane();
+		
+		Label aileronTypeLabel = new Label("Type:");
+		aileronTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronTypeLabel.setLayoutX(6.0);
+		aileronTypeLabel.setLayoutY(0.0);
+		contentPane.getChildren().add(aileronTypeLabel);
+		
+		ChoiceBox<String> aileronTypeChoiceBox = new ChoiceBox<String>();
+		aileronTypeChoiceBox.setLayoutX(6.0);
+		aileronTypeChoiceBox.setLayoutY(21);
+		aileronTypeChoiceBox.setPrefWidth(340);
+		aileronTypeChoiceBox.setPrefHeight(31);
+		aileronTypeChoiceBox.setItems(aileronTypeList);
+		contentPane.getChildren().add(aileronTypeChoiceBox);
+		
+		Label aileronInnerPositionLabel = new Label("Inner position (% semispan):");
+		aileronInnerPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronInnerPositionLabel.setLayoutX(6.0);
+		aileronInnerPositionLabel.setLayoutY(50.0);
+		contentPane.getChildren().add(aileronInnerPositionLabel);
+		
+		TextField aileronInnerPositionTextField = new TextField();
+		aileronInnerPositionTextField.setLayoutX(6.0);
+		aileronInnerPositionTextField.setLayoutY(71);
+		aileronInnerPositionTextField.setPrefWidth(340);
+		aileronInnerPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronInnerPositionTextField);
+		
+		Label aileronOuterPositionLabel = new Label("Outer position (% semispan):");
+		aileronOuterPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronOuterPositionLabel.setLayoutX(6.0);
+		aileronOuterPositionLabel.setLayoutY(102.0);
+		contentPane.getChildren().add(aileronOuterPositionLabel);
+		
+		TextField aileronOuterPositionTextField = new TextField();
+		aileronOuterPositionTextField.setLayoutX(6.0);
+		aileronOuterPositionTextField.setLayoutY(123);
+		aileronOuterPositionTextField.setPrefWidth(340);
+		aileronOuterPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronOuterPositionTextField);
+		
+		Label aileronInnerChordRatioLabel = new Label("Inner chord ratio:");
+		aileronInnerChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronInnerChordRatioLabel.setLayoutX(6.0);
+		aileronInnerChordRatioLabel.setLayoutY(154.0);
+		contentPane.getChildren().add(aileronInnerChordRatioLabel);
+		
+		TextField aileronInnerChordRatioTextField = new TextField();
+		aileronInnerChordRatioTextField.setLayoutX(6.0);
+		aileronInnerChordRatioTextField.setLayoutY(175);
+		aileronInnerChordRatioTextField.setPrefWidth(340);
+		aileronInnerChordRatioTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronInnerChordRatioTextField);
+		
+		Label aileronOuterChordRatioLabel = new Label("Outer chord ratio:");
+		aileronOuterChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronOuterChordRatioLabel.setLayoutX(6.0);
+		aileronOuterChordRatioLabel.setLayoutY(206.0);
+		contentPane.getChildren().add(aileronOuterChordRatioLabel);
+		
+		TextField aileronOuterChordRatioTextField = new TextField();
+		aileronOuterChordRatioTextField.setLayoutX(6.0);
+		aileronOuterChordRatioTextField.setLayoutY(227);
+		aileronOuterChordRatioTextField.setPrefWidth(340);
+		aileronOuterChordRatioTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronOuterChordRatioTextField);
+		
+		Label aileronMinimumDeflectionLabel = new Label("Minimum deflection angle:");
+		aileronMinimumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronMinimumDeflectionLabel.setLayoutX(6.0);
+		aileronMinimumDeflectionLabel.setLayoutY(258.0);
+		contentPane.getChildren().add(aileronMinimumDeflectionLabel);
+		
+		TextField aileronMinimumDeflectionTextField = new TextField();
+		aileronMinimumDeflectionTextField.setLayoutX(6.0);
+		aileronMinimumDeflectionTextField.setLayoutY(279);
+		aileronMinimumDeflectionTextField.setPrefWidth(340);
+		aileronMinimumDeflectionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronMinimumDeflectionTextField);
+		
+		ChoiceBox<String> aileronMinimumDeflectionChoiceBox = new ChoiceBox<String>();
+		aileronMinimumDeflectionChoiceBox.setLayoutX(348.0);
+		aileronMinimumDeflectionChoiceBox.setLayoutY(279);
+		aileronMinimumDeflectionChoiceBox.setPrefWidth(47);
+		aileronMinimumDeflectionChoiceBox.setPrefHeight(30);
+		aileronMinimumDeflectionChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(aileronMinimumDeflectionChoiceBox);
+		
+		Label aileronMaximumDeflectionLabel = new Label("Maximum deflection angle:");
+		aileronMaximumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronMaximumDeflectionLabel.setLayoutX(6.0);
+		aileronMaximumDeflectionLabel.setLayoutY(310.0);
+		contentPane.getChildren().add(aileronMaximumDeflectionLabel);
+		
+		TextField aileronMaximumDeflectionTextField = new TextField();
+		aileronMaximumDeflectionTextField.setLayoutX(6.0);
+		aileronMaximumDeflectionTextField.setLayoutY(331);
+		aileronMaximumDeflectionTextField.setPrefWidth(331);
+		aileronMaximumDeflectionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronMaximumDeflectionTextField);
+		
+		ChoiceBox<String> aileronMaximumDeflectionChoiceBox = new ChoiceBox<String>();
+		aileronMaximumDeflectionChoiceBox.setLayoutX(348.0);
+		aileronMaximumDeflectionChoiceBox.setLayoutY(331);
+		aileronMaximumDeflectionChoiceBox.setPrefWidth(47);
+		aileronMaximumDeflectionChoiceBox.setPrefHeight(30);
+		aileronMaximumDeflectionChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(aileronMaximumDeflectionChoiceBox);
+		
+		choiceBoxWingAileronTypeList.add(aileronTypeChoiceBox);
+		textFieldWingInnerPositionAileronList.add(aileronInnerPositionTextField);
+		textFieldWingOuterPositionAileronList.add(aileronOuterPositionTextField);
+		textFieldWingInnerChordRatioAileronList.add(aileronInnerChordRatioTextField);
+		textFieldWingOuterChordRatioAileronList.add(aileronOuterChordRatioTextField);
+		textFieldWingMinimumDeflectionAngleAileronList.add(aileronMinimumDeflectionTextField);
+		textFieldWingMaximumDeflectionAngleAileronList.add(aileronMaximumDeflectionTextField);
+		choiceBoxWingMinimumDeflectionAngleAileronUnitList.add(aileronMinimumDeflectionChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleAileronUnitList.add(aileronMaximumDeflectionChoiceBox);
+		
+		newAileronTab.setContent(contentPane);
+		tabPaneWingAilerons.getTabs().add(newAileronTab);
 	}
 	
 	@FXML
@@ -5999,8 +6151,8 @@ public class InputManagerController {
 	private void chooseCADConfigurationFile() throws IOException {
 
 		cad3DViewFileChooser = new FileChooser();
-		cad3DViewFileChooser.setTitle("Open File");
-		cad3DViewFileChooser.setInitialDirectory(new File(Main.getInputDirectoryPath() + File.separator + "Template_Aircraft"));
+		cad3DViewFileChooser.setTitle("Open CAD Configuration File");
+		cad3DViewFileChooser.setInitialDirectory(new File(Main.getInputDirectoryPath() + File.separator + "Template_CADConfigs"));
 		File file = cad3DViewFileChooser.showOpenDialog(null);
 		if (file != null) {
 			// get full path and populate the text box
@@ -6093,6 +6245,12 @@ public class InputManagerController {
 	private void updateCAD3DView() {
 		
 		inputManagerControllerMainActionUtilities.updateCAD3DViewImplementation();
+	}
+	
+	@FXML
+	private void saveCADToFile() {
+		
+		inputManagerControllerMainActionUtilities.saveCADToFileImplementation();
 	}
 
 	@FXML
@@ -6787,6 +6945,14 @@ public class InputManagerController {
 
 	public void setTabPaneWingSlats(TabPane tabPaneWingSlats) {
 		this.tabPaneWingSlats = tabPaneWingSlats;
+	}
+
+	public TabPane getTabPaneWingAilerons() {
+		return tabPaneWingAilerons;
+	}
+
+	public void setTabPaneWingAilerons(TabPane tabPaneWingAilerons) {
+		this.tabPaneWingAilerons = tabPaneWingAilerons;
 	}
 
 	public TabPane getTabPaneWingSpoilers() {
@@ -9566,14 +9732,6 @@ public class InputManagerController {
 		this.textFieldActualPassengersNumber = textFieldActualPassengersNumber;
 	}
 
-	public TextField getTextFieldMaximumPassengersNumber() {
-		return textFieldMaximumPassengersNumber;
-	}
-
-	public void setTextFieldMaximumPassengersNumber(TextField textFieldMaximumPassengersNumber) {
-		this.textFieldMaximumPassengersNumber = textFieldMaximumPassengersNumber;
-	}
-
 	public TextField getTextFieldFlightCrewNumber() {
 		return textFieldFlightCrewNumber;
 	}
@@ -10193,120 +10351,62 @@ public class InputManagerController {
 		this.textFieldWingMaximumDeflectionAngleSlat1 = textFieldWingMaximumDeflectionAngleSlat1;
 	}
 
-	public ChoiceBox<String> getWingLeftAileronTypeChoichBox() {
-		return wingLeftAileronTypeChoichBox;
+	public ChoiceBox<String> getWingAileron1TypeChoiceBox() {
+		return wingAileron1TypeChoiceBox;
 	}
 
-	public void setWingLeftAileronTypeChoichBox(ChoiceBox<String> wingLeftAileronTypeChoichBox) {
-		this.wingLeftAileronTypeChoichBox = wingLeftAileronTypeChoichBox;
+	public void setWingAileron1TypeChoiceBox(ChoiceBox<String> wingAileron1TypeChoiceBox) {
+		this.wingAileron1TypeChoiceBox = wingAileron1TypeChoiceBox;
 	}
 
-	public TextField getTextFieldWingInnerPositionAileronLeft() {
-		return textFieldWingInnerPositionAileronLeft;
+	public TextField getTextFieldWingInnerPositionAileron1() {
+		return textFieldWingInnerPositionAileron1;
 	}
 
-	public void setTextFieldWingInnerPositionAileronLeft(TextField textFieldWingInnerPositionAileronLeft) {
-		this.textFieldWingInnerPositionAileronLeft = textFieldWingInnerPositionAileronLeft;
+	public void setTextFieldWingInnerPositionAileron1(TextField textFieldWingInnerPositionAileron1) {
+		this.textFieldWingInnerPositionAileron1 = textFieldWingInnerPositionAileron1;
 	}
 
-	public TextField getTextFieldWingOuterPositionAileronLeft() {
-		return textFieldWingOuterPositionAileronLeft;
+	public TextField getTextFieldWingOuterPositionAileron1() {
+		return textFieldWingOuterPositionAileron1;
 	}
 
-	public void setTextFieldWingOuterPositionAileronLeft(TextField textFieldWingOuterPositionAileronLeft) {
-		this.textFieldWingOuterPositionAileronLeft = textFieldWingOuterPositionAileronLeft;
+	public void setTextFieldWingOuterPositionAileron1(TextField textFieldWingOuterPositionAileron1) {
+		this.textFieldWingOuterPositionAileron1 = textFieldWingOuterPositionAileron1;
 	}
 
-	public TextField getTextFieldWingInnerChordRatioAileronLeft() {
-		return textFieldWingInnerChordRatioAileronLeft;
+	public TextField getTextFieldWingInnerChordRatioAileron1() {
+		return textFieldWingInnerChordRatioAileron1;
 	}
 
-	public void setTextFieldWingInnerChordRatioAileronLeft(TextField textFieldWingInnerChordRatioAileronLeft) {
-		this.textFieldWingInnerChordRatioAileronLeft = textFieldWingInnerChordRatioAileronLeft;
+	public void setTextFieldWingInnerChordRatioAileron1(TextField textFieldWingInnerChordRatioAileron1) {
+		this.textFieldWingInnerChordRatioAileron1 = textFieldWingInnerChordRatioAileron1;
 	}
 
-	public TextField getTextFieldWingOuterChordRatioAileronLeft() {
-		return textFieldWingOuterChordRatioAileronLeft;
+	public TextField getTextFieldWingOuterChordRatioAileron1() {
+		return textFieldWingOuterChordRatioAileron1;
 	}
 
-	public void setTextFieldWingOuterChordRatioAileronLeft(TextField textFieldWingOuterChordRatioAileronLeft) {
-		this.textFieldWingOuterChordRatioAileronLeft = textFieldWingOuterChordRatioAileronLeft;
+	public void setTextFieldWingOuterChordRatioAileron1(TextField textFieldWingOuterChordRatioAileron1) {
+		this.textFieldWingOuterChordRatioAileron1 = textFieldWingOuterChordRatioAileron1;
 	}
 
-	public TextField getTextFieldWingMinimumDeflectionAngleAileronLeft() {
-		return textFieldWingMinimumDeflectionAngleAileronLeft;
+	public TextField getTextFieldWingMinimumDeflectionAngleAileron1() {
+		return textFieldWingMinimumDeflectionAngleAileron1;
 	}
 
-	public void setTextFieldWingMinimumDeflectionAngleAileronLeft(
-			TextField textFieldWingMinimumDeflectionAngleAileronLeft) {
-		this.textFieldWingMinimumDeflectionAngleAileronLeft = textFieldWingMinimumDeflectionAngleAileronLeft;
+	public void setTextFieldWingMinimumDeflectionAngleAileron1(
+			TextField textFieldWingMinimumDeflectionAngleAileron1) {
+		this.textFieldWingMinimumDeflectionAngleAileron1 = textFieldWingMinimumDeflectionAngleAileron1;
 	}
 
-	public TextField getTextFieldWingMaximumDeflectionAngleAileronLeft() {
-		return textFieldWingMaximumDeflectionAngleAileronLeft;
+	public TextField getTextFieldWingMaximumDeflectionAngleAileron1() {
+		return textFieldWingMaximumDeflectionAngleAileron1;
 	}
 
-	public void setTextFieldWingMaximumDeflectionAngleAileronLeft(
-			TextField textFieldWingMaximumDeflectionAngleAileronLeft) {
-		this.textFieldWingMaximumDeflectionAngleAileronLeft = textFieldWingMaximumDeflectionAngleAileronLeft;
-	}
-
-	public ChoiceBox<String> getWingRightAileronTypeChoichBox() {
-		return wingRightAileronTypeChoichBox;
-	}
-
-	public void setWingRightAileronTypeChoichBox(ChoiceBox<String> wingRightAileronTypeChoichBox) {
-		this.wingRightAileronTypeChoichBox = wingRightAileronTypeChoichBox;
-	}
-
-	public TextField getTextFieldWingInnerPositionAileronRight() {
-		return textFieldWingInnerPositionAileronRight;
-	}
-
-	public void setTextFieldWingInnerPositionAileronRight(TextField textFieldWingInnerPositionAileronRight) {
-		this.textFieldWingInnerPositionAileronRight = textFieldWingInnerPositionAileronRight;
-	}
-
-	public TextField getTextFieldWingOuterPositionAileronRight() {
-		return textFieldWingOuterPositionAileronRight;
-	}
-
-	public void setTextFieldWingOuterPositionAileronRight(TextField textFieldWingOuterPositionAileronRight) {
-		this.textFieldWingOuterPositionAileronRight = textFieldWingOuterPositionAileronRight;
-	}
-
-	public TextField getTextFieldWingInnerChordRatioAileronRight() {
-		return textFieldWingInnerChordRatioAileronRight;
-	}
-
-	public void setTextFieldWingInnerChordRatioAileronRight(TextField textFieldWingInnerChordRatioAileronRight) {
-		this.textFieldWingInnerChordRatioAileronRight = textFieldWingInnerChordRatioAileronRight;
-	}
-
-	public TextField getTextFieldWingOuterChordRatioAileronRight() {
-		return textFieldWingOuterChordRatioAileronRight;
-	}
-
-	public void setTextFieldWingOuterChordRatioAileronRight(TextField textFieldWingOuterChordRatioAileronRight) {
-		this.textFieldWingOuterChordRatioAileronRight = textFieldWingOuterChordRatioAileronRight;
-	}
-
-	public TextField getTextFieldWingMinimumDeflectionAngleAileronRight() {
-		return textFieldWingMinimumDeflectionAngleAileronRight;
-	}
-
-	public void setTextFieldWingMinimumDeflectionAngleAileronRight(
-			TextField textFieldWingMinimumDeflectionAngleAileronRight) {
-		this.textFieldWingMinimumDeflectionAngleAileronRight = textFieldWingMinimumDeflectionAngleAileronRight;
-	}
-
-	public TextField getTextFieldWingMaximumDeflectionAngleAileronRight() {
-		return textFieldWingMaximumDeflectionAngleAileronRight;
-	}
-
-	public void setTextFieldWingMaximumDeflectionAngleAileronRight(
-			TextField textFieldWingMaximumDeflectionAngleAileronRight) {
-		this.textFieldWingMaximumDeflectionAngleAileronRight = textFieldWingMaximumDeflectionAngleAileronRight;
+	public void setTextFieldWingMaximumDeflectionAngleAileron1(
+			TextField textFieldWingMaximumDeflectionAngleAileron1) {
+		this.textFieldWingMaximumDeflectionAngleAileron1 = textFieldWingMaximumDeflectionAngleAileron1;
 	}
 
 	public TextField getTextFieldWingInnerSpanwisePositionSpolier1() {
@@ -10677,6 +10777,82 @@ public class InputManagerController {
 		this.choiceBoxWingMaximumDeflectionAngleSlatUnitList = choiceBoxWingMaximumDeflectionAngleSlatUnitList;
 	}
 
+	public List<ChoiceBox<String>> getChoiceBoxWingAileronTypeList() {
+		return choiceBoxWingAileronTypeList;
+	}
+
+	public void setChoiceBoxWingAileronTypeList(List<ChoiceBox<String>> choiceBoxWingAileronTypeList) {
+		this.choiceBoxWingAileronTypeList = choiceBoxWingAileronTypeList;
+	}
+
+	public List<TextField> getTextFieldWingInnerPositionAileronList() {
+		return textFieldWingInnerPositionAileronList;
+	}
+
+	public void setTextFieldWingInnerPositionAileronList(List<TextField> textFieldWingInnerPositionAileronList) {
+		this.textFieldWingInnerPositionAileronList = textFieldWingInnerPositionAileronList;
+	}
+
+	public List<TextField> getTextFieldWingOuterPositionAileronList() {
+		return textFieldWingOuterPositionAileronList;
+	}
+
+	public void setTextFieldWingOuterPositionAileronList(List<TextField> textFieldWingOuterPositionAileronList) {
+		this.textFieldWingOuterPositionAileronList = textFieldWingOuterPositionAileronList;
+	}
+
+	public List<TextField> getTextFieldWingInnerChordRatioAileronList() {
+		return textFieldWingInnerChordRatioAileronList;
+	}
+
+	public void setTextFieldWingInnerChordRatioAileronList(List<TextField> textFieldWingInnerChordRatioAileronList) {
+		this.textFieldWingInnerChordRatioAileronList = textFieldWingInnerChordRatioAileronList;
+	}
+
+	public List<TextField> getTextFieldWingOuterChordRatioAileronList() {
+		return textFieldWingOuterChordRatioAileronList;
+	}
+
+	public void setTextFieldWingOuterChordRatioAileronList(List<TextField> textFieldWingOuterChordRatioAileronList) {
+		this.textFieldWingOuterChordRatioAileronList = textFieldWingOuterChordRatioAileronList;
+	}
+
+	public List<TextField> getTextFieldWingMinimumDeflectionAngleAileronList() {
+		return textFieldWingMinimumDeflectionAngleAileronList;
+	}
+
+	public void setTextFieldWingMinimumDeflectionAngleAileronList(
+			List<TextField> textFieldWingMinimumDeflectionAngleAileronList) {
+		this.textFieldWingMinimumDeflectionAngleAileronList = textFieldWingMinimumDeflectionAngleAileronList;
+	}
+
+	public List<TextField> getTextFieldWingMaximumDeflectionAngleAileronList() {
+		return textFieldWingMaximumDeflectionAngleAileronList;
+	}
+
+	public void setTextFieldWingMaximumDeflectionAngleAileronList(
+			List<TextField> textFieldWingMaximumDeflectionAngleAileronList) {
+		this.textFieldWingMaximumDeflectionAngleAileronList = textFieldWingMaximumDeflectionAngleAileronList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingMinimumDeflectionAngleAileronUnitList() {
+		return choiceBoxWingMinimumDeflectionAngleAileronUnitList;
+	}
+
+	public void setChoiceBoxWingMinimumDeflectionAngleAileronUnitList(
+			List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleAileronUnitList) {
+		this.choiceBoxWingMinimumDeflectionAngleAileronUnitList = choiceBoxWingMinimumDeflectionAngleAileronUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingMaximumDeflectionAngleAileronUnitList() {
+		return choiceBoxWingMaximumDeflectionAngleAileronUnitList;
+	}
+
+	public void setChoiceBoxWingMaximumDeflectionAngleAileronUnitList(
+			List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleAileronUnitList) {
+		this.choiceBoxWingMaximumDeflectionAngleAileronUnitList = choiceBoxWingMaximumDeflectionAngleAileronUnitList;
+	}
+
 	public List<TextField> getTextFieldWingInnerSpanwisePositionSpoilerList() {
 		return textFieldWingInnerSpanwisePositionSpoilerList;
 	}
@@ -10891,40 +11067,22 @@ public class InputManagerController {
 		this.wingMaximumDeflectionAngleSlat1UnitChoiceBox = wingMaximumDeflectionAngleSlat1UnitChoiceBox;
 	}
 
-	public ChoiceBox<String> getWingMinimumDeflectionAngleAileronLeftUnitChoiceBox() {
-		return wingMinimumDeflectionAngleAileronLeftUnitChoiceBox;
+	public ChoiceBox<String> getWingMinimumDeflectionAngleAileron1UnitChoiceBox() {
+		return wingMinimumDeflectionAngleAileron1UnitChoiceBox;
 	}
 
-	public void setWingMinimumDeflectionAngleAileronLeftUnitChoiceBox(
-			ChoiceBox<String> wingMinimumDeflectionAngleAileronLeftUnitChoiceBox) {
-		this.wingMinimumDeflectionAngleAileronLeftUnitChoiceBox = wingMinimumDeflectionAngleAileronLeftUnitChoiceBox;
+	public void setWingMinimumDeflectionAngleAileron1UnitChoiceBox(
+			ChoiceBox<String> wingMinimumDeflectionAngleAileron1UnitChoiceBox) {
+		this.wingMinimumDeflectionAngleAileron1UnitChoiceBox = wingMinimumDeflectionAngleAileron1UnitChoiceBox;
 	}
 
-	public ChoiceBox<String> getWingMaximumDeflectionAngleAileronLeftUnitChoiceBox() {
-		return wingMaximumDeflectionAngleAileronLeftUnitChoiceBox;
+	public ChoiceBox<String> getWingMaximumDeflectionAngleAileron1UnitChoiceBox() {
+		return wingMaximumDeflectionAngleAileron1UnitChoiceBox;
 	}
 
-	public void setWingMaximumDeflectionAngleAileronLeftUnitChoiceBox(
-			ChoiceBox<String> wingMaximumDeflectionAngleAileronLeftUnitChoiceBox) {
-		this.wingMaximumDeflectionAngleAileronLeftUnitChoiceBox = wingMaximumDeflectionAngleAileronLeftUnitChoiceBox;
-	}
-
-	public ChoiceBox<String> getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox() {
-		return wingMinimumDeflectionAngleAileronRightUnitChoiceBox;
-	}
-
-	public void setWingMinimumDeflectionAngleAileronRigthUnitChoiceBox(
-			ChoiceBox<String> wingMinimumDeflectionAngleAileronRigthUnitChoiceBox) {
-		this.wingMinimumDeflectionAngleAileronRightUnitChoiceBox = wingMinimumDeflectionAngleAileronRigthUnitChoiceBox;
-	}
-
-	public ChoiceBox<String> getWingMaximumDeflectionAngleAileronRightUnitChoiceBox() {
-		return wingMaximumDeflectionAngleAileronRightUnitChoiceBox;
-	}
-
-	public void setWingMaximumDeflectionAngleAileronRightUnitChoiceBox(
-			ChoiceBox<String> wingMaximumDeflectionAngleAileronRightUnitChoiceBox) {
-		this.wingMaximumDeflectionAngleAileronRightUnitChoiceBox = wingMaximumDeflectionAngleAileronRightUnitChoiceBox;
+	public void setWingMaximumDeflectionAngleAileron1UnitChoiceBox(
+			ChoiceBox<String> wingMaximumDeflectionAngleAileron1UnitChoiceBox) {
+		this.wingMaximumDeflectionAngleAileron1UnitChoiceBox = wingMaximumDeflectionAngleAileron1UnitChoiceBox;
 	}
 
 	public ChoiceBox<String> getWingMinimumDeflectionAngleSpoiler1UnitChoiceBox() {
@@ -13364,12 +13522,28 @@ public class InputManagerController {
 		this.updateCAD3DViewButton = updateCAD3DViewButton;
 	}
 	
+	public Button getSaveCADToFileButton() {
+		return saveCADToFileButton;
+	}
+	
+	public void setSaveCADToFileButton(Button saveCADToFileButton) {
+		this.saveCADToFileButton = saveCADToFileButton;
+	}
+	
 	public FileChooser getCAD3DViewFileChooser() {
 		return cad3DViewFileChooser;
 	}
 	
 	public void setCAD3DViewFileChooser(FileChooser cad3DViewFileChooser) {
 		this.cad3DViewFileChooser = cad3DViewFileChooser;
+	}
+	
+	public FileChooser getSaveCADFileChooser() {
+		return saveCADFileChooser;
+	}
+	
+	public void setSaveCADFileChooser(FileChooser saveCADFileChooser) {
+		this.saveCADFileChooser = saveCADFileChooser;
 	}
 	
 	public ObservableList<String> getFuselageCADSpacingsList() {
@@ -13410,14 +13584,6 @@ public class InputManagerController {
 	
 	public void setFileExtensionCADChoiceBox(ChoiceBox<String> fileExtensionCADChoiceBox) {
 		this.fileExtensionCADChoiceBox = fileExtensionCADChoiceBox;
-	}
-	
-	public CheckBox getExportCADToFileCheckBox() {
-		return exportCADToFileCheckBox;
-	}
-	
-	public void setExportCADToFileCheckBox(CheckBox exportCADToFileCheckBox) {
-		this.exportCADToFileCheckBox = exportCADToFileCheckBox;
 	}
 	
 	public CheckBox getExportCADWireframeCheckBox() {

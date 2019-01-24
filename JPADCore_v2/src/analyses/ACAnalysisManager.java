@@ -1606,6 +1606,7 @@ public class ACAnalysisManager {
 					aircraft,
 					theOperatingConditions
 					);
+			System.setOut(originalOut);
 			calculatePerformances(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCE, true);
 			System.setOut(originalOut);

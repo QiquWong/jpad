@@ -45,8 +45,6 @@ public class CADManager {
 	private Aircraft _theAircraft;
 	private List<OCCShape> _theAircraftShapes = new ArrayList<>();
 	private Map<CADComponentEnum, List<OCCShape>> _theAircraftSolidsMap = new HashMap<>();
-	private double _importedPartsMaxDimension = 0.0; // TODO: calculate these values
-	private double _importedPartsGeometricCenter = 0.0;
 	
 	// ------- JavaFX material ---------- //
 	private Scene _theScene;
@@ -701,16 +699,23 @@ public class CADManager {
 	
 	public void exportCAD(String outputFolderPath) {
 		
+		exportCADImplementation(outputFolderPath + _theAircraft.getId().replaceAll("\\s", ""));	
+	}
+	
+	public void exportCAD(String outputFolderPath, String fileName) {
+		
+		exportCADImplementation(outputFolderPath + fileName);
+	}
+	
+	private void exportCADImplementation(String outputFileAbsolutePath) {
+		
 		//---------------------------------------------------------------
 		// GENERATE THE AIRCRAFT CAD FILE
 		//---------------------------------------------------------------	
-		String outputFileAbsolutePath = outputFolderPath + _theAircraft.getId().replaceAll("\\s", "");
-		
 		OCCUtils.write(
 				outputFileAbsolutePath, 
 				_theCADBuilderInterface.getFileExtension(), 
 				_theAircraftShapes);
-		
 	}
 	
 	public void generateScene() {
@@ -792,7 +797,7 @@ public class CADManager {
 		_theCamera.setFarClip(CAMERA_FAR_CLIP);
 		_theCamera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
 		_theCameraXform.ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
-		_theCameraXform.ry.setPivotX(_theAircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)/2.0); // TODO:
+		_theCameraXform.ry.setPivotX(_theAircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)/2.0);
 		_theCameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
 		_theCameraXform.rx.setPivotX(_theAircraft.getFuselage().getFuselageLength().doubleValue(SI.METER)/2.0);
 	}
@@ -933,14 +938,6 @@ public class CADManager {
 	
 	public void setTheAircraftShapes(List<OCCShape> theAircraftSolidParts) {
 		this._theAircraftShapes = theAircraftSolidParts;
-	}
-	
-	public double getImportedPartsMaxDimension() {
-		return _importedPartsMaxDimension;
-	}
-	
-	public double getImportedPartsGeometricCenter() {
-		return _importedPartsGeometricCenter;
 	}
 	
 	public Scene getTheFXScene() {

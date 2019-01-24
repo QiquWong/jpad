@@ -56,6 +56,7 @@ public interface IACWeightsManager {
 	Double getHoldingEfficiency();
 	
 	// CALIBRATION
+	double getMaxZeroFuelMassCalibrationFactor();
 	double getFuselageCalibrationFactor();
 	double getWingCalibrationFactor();
 	double getHTailCalibrationFactor();

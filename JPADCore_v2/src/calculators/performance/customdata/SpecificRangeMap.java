@@ -1,7 +1,5 @@
 package calculators.performance.customdata;
 
-import java.util.List;
-
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Temperature;
@@ -12,7 +10,7 @@ import configuration.enumerations.EngineOperatingConditionEnum;
 
 public class SpecificRangeMap extends PerformanceMap{
 
-	private List<Double> specificRange, mach, sfc, efficiency;
+	private double[] specificRange, mach, sfc, efficiency;
 
 	public SpecificRangeMap (
 			Amount<Length> altitude,
@@ -20,10 +18,10 @@ public class SpecificRangeMap extends PerformanceMap{
 			double phi,
 			Amount<Mass> weight,
 			EngineOperatingConditionEnum fligthCondition,
-			List<Double> specificRange,
-			List<Double> mach,
-			List<Double> efficiency,
-			List<Double> sfc
+			double[] specificRange,
+			double[] mach,
+			double[] efficiency,
+			double[] sfc
 			) {
 		
 		this.altitude = altitude;
@@ -37,61 +35,38 @@ public class SpecificRangeMap extends PerformanceMap{
 		this.sfc = sfc;
 	}
 
-	/**
-	 * @return the specificRange
-	 */
-	public List<Double> getSpecificRange() {
+	public double[] getSpecificRange() {
 		return specificRange;
 	}
 
-	/**
-	 * @param specificRange the specificRange to set
-	 */
-	public void setSpecificRange(List<Double> specificRange) {
+	public void setSpecificRange(double[] specificRange) {
 		this.specificRange = specificRange;
 	}
 
-	/**
-	 * @return the mach
-	 */
-	public List<Double> getMach() {
+	public double[] getMach() {
 		return mach;
 	}
 
-	/**
-	 * @param mach the mach to set
-	 */
-	public void setMach(List<Double> mach) {
+	public void setMach(double[] mach) {
 		this.mach = mach;
 	}
 
-	/**
-	 * @return the sfc
-	 */
-	public List<Double> getSfc() {
+	public double[] getSfc() {
 		return sfc;
 	}
 
-	/**
-	 * @param sfc the sfc to set
-	 */
-	public void setSfc(List<Double> sfc) {
+	public void setSfc(double[] sfc) {
 		this.sfc = sfc;
 	}
 
-	/**
-	 * @return the efficiency
-	 */
-	public List<Double> getEfficiency() {
+	public double[] getEfficiency() {
 		return efficiency;
 	}
 
-	/**
-	 * @param efficiency the efficiency to set
-	 */
-	public void setEfficiency(List<Double> efficiency) {
+	public void setEfficiency(double[] efficiency) {
 		this.efficiency = efficiency;
-	};
+	}
+
 	
 }
 

@@ -2711,12 +2711,7 @@ public class JPADStaticWriteUtils {
 
 		// global_data - actual_passengers_number
 		JPADStaticWriteUtils.writeSingleNode("actual_passengers_number", 
-				aircraft.getCabinConfiguration().getActualPassengerNumber(), 
-				globalDataElement, doc);
-		
-		// global_data - maximum_passengers_number
-		JPADStaticWriteUtils.writeSingleNode("maximum_passengers_number", 
-				aircraft.getCabinConfiguration().getMaximumPassengerNumber(), 
+				aircraft.getCabinConfiguration().getDesignPassengerNumber(), 
 				globalDataElement, doc);
 		
 		// global_data - flight_crew_number

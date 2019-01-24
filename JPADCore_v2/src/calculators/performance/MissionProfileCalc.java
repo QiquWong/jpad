@@ -48,7 +48,7 @@ public class MissionProfileCalc {
 	private Amount<Mass> _maximumTakeOffMass;
 	private Amount<Mass> _operatingEmptyMass;
 	private Amount<Mass> _singlePassengerMass;
-	private Integer _passengersNumber;
+	private int _passengersNumber;
 	private Amount<Mass> _firstGuessInitialFuelMass;
 	private Amount<Length> _missionRange;
 	private MyInterpolatingFunction _sfcFunctionCruise;
@@ -58,39 +58,39 @@ public class MissionProfileCalc {
 	private Amount<Length> _alternateCruiseAltitude;
 	private Amount<Duration> _holdingDuration;
 	private Amount<Length> _holdingAltitude;
-	private Double _holdingMachNumber;
-	private Double _landingFuelFlow;
-	private Double _fuelReserve;
-	private Double _cLmaxClean;
-	private Double _cLmaxTakeOff;
+	private double _holdingMachNumber;
+	private double _landingFuelFlow;
+	private double _fuelReserve;
+	private double _cLmaxClean;
+	private double _cLmaxTakeOff;
 	private Amount<?> _cLAlphaTakeOff;
-	private Double _cLZeroTakeOff;
-	private Double _cLmaxLanding;
-	private Double _cLZeroLanding;
-	private Double[] _polarCLTakeOff;
-	private Double[] _polarCDTakeOff;
-	private Double[] _polarCLClimb;
-	private Double[] _polarCDClimb;
-	private Double[] _polarCLCruise;
-	private Double[] _polarCDCruise;
-	private Double[] _polarCLLanding;
-	private Double[] _polarCDLanding;
+	private double _cLZeroTakeOff;
+	private double _cLmaxLanding;
+	private double _cLZeroLanding;
+	private double[] _polarCLTakeOff;
+	private double[] _polarCDTakeOff;
+	private double[] _polarCLClimb;
+	private double[] _polarCDClimb;
+	private double[] _polarCLCruise;
+	private double[] _polarCDCruise;
+	private double[] _polarCLLanding;
+	private double[] _polarCDLanding;
 	private Amount<Velocity> _windSpeed;
 	private MyInterpolatingFunction _mu;
 	private MyInterpolatingFunction _muBrake;
 	private Amount<Duration> _dtHold;
 	private Amount<Angle> _alphaGround;
 	private Amount<Length> _obstacleTakeOff;
-	private Double _kRotation;
-	private Double _kLiftOff;
-	private Double _kCLmax;
-	private Double _dragDueToEnigneFailure;
-	private Double _kAlphaDot;
+	private double _kRotation;
+	private double _kLiftOff;
+	private double _kCLmax;
+	private double _dragDueToEnigneFailure;
+	private double _kAlphaDot;
 	private Amount<Length> _obstacleLanding;
 	private Amount<Angle> _thetaApproach;
-	private Double _kApproach;
-	private Double _kFlare;
-	private Double _kTouchDown;
+	private double _kApproach;
+	private double _kFlare;
+	private double _kTouchDown;
 	private Amount<Duration> _freeRollDuration;
 	private Amount<Velocity> _climbSpeed;
 	private Amount<Velocity> _speedDescentCAS;
@@ -295,7 +295,7 @@ public class MissionProfileCalc {
 		DescentCalc theFirstDescentCalculator = null;
 		DescentCalc theSecondDescentCalculator = null;
 		DescentCalc theThirdDescentCalculator = null;
-		LandingCalc theLandingCalculator = null;
+		LandingCalcSemiempirical theLandingCalculator = null;
 		
 		//----------------------------------------------------------------------
 		// QUANTITES TO BE ADDED IN LISTS AT THE END OF THE ITERATION
@@ -2749,7 +2749,7 @@ public class MissionProfileCalc {
 							.minus(fuelHolding.to(SI.KILOGRAM))
 							.minus(fuelThirdDescent.to(SI.KILOGRAM));
 
-					theLandingCalculator = new LandingCalc(
+					theLandingCalculator = new LandingCalcSemiempirical(
 							_theAircraft, 
 							_theOperatingConditions,
 							aircraftMassAtLandingStart,
@@ -3621,7 +3621,7 @@ public class MissionProfileCalc {
 				.append("\t\tBlock fuel = " + _blockFuel + "\n")
 				.append("\t\tTotal fuel = " + _totalFuel + "\n")
 				.append("\t\tFuel reserve = " + _fuelReserve*100 + " %\n")
-				.append("\t\tDesign passengers number = " + _theAircraft.getCabinConfiguration().getActualPassengerNumber() + "\n")
+				.append("\t\tDesign passengers number = " + _theAircraft.getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\tPassengers number for this mission = " + _passengersNumber + "\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tTake-off range = " + _rangeList.get(1).to(NonSI.NAUTICAL_MILE) + " \n")

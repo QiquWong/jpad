@@ -1817,28 +1817,16 @@ public class InputManagerControllerLogUtilities {
 
 			//---------------------------------------------------------------------------------
 			// ACTUAL PASSENGERS NUMBER:
-			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()) != null) 
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()) != null) 
 				theController.getTextFieldActualPassengersNumber().setText(
 					Integer.toString(
 							Main.getTheAircraft()
 							.getCabinConfiguration()
-							.getActualPassengerNumber()
+							.getDesignPassengerNumber()
 							)
 					);
 			else
 				theController.getTextFieldActualPassengersNumber().setText("0");
-			//---------------------------------------------------------------------------------
-			// MAXIMUM PASSENGERS NUMBER:
-			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getMaximumPassengerNumber()) != null)
-				theController.getTextFieldMaximumPassengersNumber().setText(
-						Integer.toString(
-								Main.getTheAircraft()
-								.getCabinConfiguration()
-								.getMaximumPassengerNumber()
-								)
-						);
-			else
-				theController.getTextFieldMaximumPassengersNumber().setText("0");
 			//---------------------------------------------------------------------------------
 			// FLIGHT CREW NUMBER:
 			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getFlightCrewNumber()) != null)
@@ -3191,205 +3179,320 @@ public class InputManagerControllerLogUtilities {
 				
 			}
 			
+//			//---------------------------------------------------------------------------------
+//			// LEFT AILERONS:
+//
+//			AsymmetricFlapCreator leftAileron = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0);
+//
+//			//---------------------------------------------------------------------------------
+//			// TYPE:
+//			if(leftAileron.getType() != null) {
+//				if(leftAileron.getType().equals(FlapTypeEnum.PLAIN))
+//					theController.getWingAileron1TypeChoiceBox().getSelectionModel().select(0);
+//			}
+//			
+//			//---------------------------------------------------------------------------------
+//			// INNER POSITION:
+//			if(Double.valueOf(leftAileron.getInnerStationSpanwisePosition()) != null) {
+//				theController.getTextFieldWingInnerPositionAileron1().setText(
+//						String.valueOf(leftAileron.getInnerStationSpanwisePosition())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingInnerPositionAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// OUTER POSITION:
+//			if(Double.valueOf(leftAileron.getOuterStationSpanwisePosition()) != null) {
+//				theController.getTextFieldWingOuterPositionAileron1().setText(
+//						String.valueOf(leftAileron.getOuterStationSpanwisePosition())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingOuterPositionAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// INNER CHORD RATIO:
+//			if(Double.valueOf(leftAileron.getInnerChordRatio()) != null) {
+//				theController.getTextFieldWingInnerChordRatioAileron1().setText(
+//						String.valueOf(leftAileron.getInnerChordRatio())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingInnerChordRatioAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// OUTER CHORD RATIO:
+//			if(Double.valueOf(leftAileron.getOuterChordRatio()) != null) {
+//				theController.getTextFieldWingOuterChordRatioAileron1().setText(
+//						String.valueOf(leftAileron.getOuterChordRatio())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingOuterChordRatioAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// MINIMUM DEFLECTION:
+//			if(leftAileron.getMinimumDeflection() != null) {
+//
+//				theController.getTextFieldWingMinimumDeflectionAngleAileron1().setText(
+//						String.valueOf(leftAileron.getMinimumDeflection().getEstimatedValue())
+//						);
+//
+//				if(leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("�")
+//						|| leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+//					theController.getWingMinimumDeflectionAngleAileron1UnitChoiceBox().getSelectionModel().select(0);
+//				else if(leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+//					theController.getWingMinimumDeflectionAngleAileron1UnitChoiceBox().getSelectionModel().select(1);
+//
+//			}
+//			else
+//				theController.getTextFieldWingMinimumDeflectionAngleAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// MAXIMUM DEFLECTION:
+//			if(leftAileron.getMaximumDeflection() != null) {
+//
+//				theController.getTextFieldWingMaximumDeflectionAngleAileron1().setText(
+//						String.valueOf(leftAileron.getMaximumDeflection().getEstimatedValue())
+//						);
+//
+//				if(leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("�")
+//						|| leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+//					theController.getWingMaximumDeflectionAngleAileron1UnitChoiceBox().getSelectionModel().select(0);
+//				else if(leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+//					theController.getWingMaximumDeflectionAngleAileron1UnitChoiceBox().getSelectionModel().select(1);
+//
+//			}
+//			else
+//				theController.getTextFieldWingMaximumDeflectionAngleAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// RIGHT AILERONS:
+//
+//			AsymmetricFlapCreator rightAileron = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(1);
+//
+//			//---------------------------------------------------------------------------------
+//			// TYPE:
+//			if(rightAileron.getType() != null) {
+//				if(rightAileron.getType().equals(FlapTypeEnum.PLAIN))
+//					theController.getWingRightAileronTypeChoichBox().getSelectionModel().select(0);
+//			}
+//			
+//			//---------------------------------------------------------------------------------
+//			// INNER POSITION:
+//			if(Double.valueOf(rightAileron.getInnerStationSpanwisePosition()) != null) {
+//				theController.getTextFieldWingInnerPositionAileronRight().setText(
+//						String.valueOf(rightAileron.getInnerStationSpanwisePosition())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingInnerPositionAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// OUTER POSITION:
+//			if(Double.valueOf(rightAileron.getOuterStationSpanwisePosition()) != null) {
+//				theController.getTextFieldWingOuterPositionAileronRight().setText(
+//						String.valueOf(rightAileron.getOuterStationSpanwisePosition())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingOuterPositionAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// INNER CHORD RATIO:
+//			if(Double.valueOf(rightAileron.getInnerChordRatio()) != null) {
+//				theController.getTextFieldWingInnerChordRatioAileronRight().setText(
+//						String.valueOf(rightAileron.getInnerChordRatio())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingInnerChordRatioAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// OUTER CHORD RATIO:
+//			if(Double.valueOf(rightAileron.getOuterChordRatio()) != null) {
+//				theController.getTextFieldWingOuterChordRatioAileronRight().setText(
+//						String.valueOf(rightAileron.getOuterChordRatio())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingOuterChordRatioAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// MINIMUM DEFLECTION:
+//			if(rightAileron.getMinimumDeflection() != null) {
+//
+//				theController.getTextFieldWingMinimumDeflectionAngleAileronRight().setText(
+//						String.valueOf(rightAileron.getMinimumDeflection().getEstimatedValue())
+//						);
+//
+//				if(rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("�")
+//						|| rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+//					theController.getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox().getSelectionModel().select(0);
+//				else if(rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+//					theController.getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox().getSelectionModel().select(1);
+//
+//			}
+//			else
+//				theController.getTextFieldWingMinimumDeflectionAngleAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// MAXIMUM DEFLECTION:
+//			if(rightAileron.getMaximumDeflection() != null) {
+//
+//				theController.getTextFieldWingMaximumDeflectionAngleAileronRight().setText(
+//						String.valueOf(rightAileron.getMaximumDeflection().getEstimatedValue())
+//						);
+//
+//				if(rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("�")
+//						|| rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+//					theController.getWingMaximumDeflectionAngleAileronRightUnitChoiceBox().getSelectionModel().select(0);
+//				else if(rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+//					theController.getWingMaximumDeflectionAngleAileronRightUnitChoiceBox().getSelectionModel().select(1);
+//
+//			}
+//			else
+//				theController.getTextFieldWingMaximumDeflectionAngleAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+			
 			//---------------------------------------------------------------------------------
-			// LEFT AILERONS:
-
-			AsymmetricFlapCreator leftAileron = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0);
-
-			//---------------------------------------------------------------------------------
-			// TYPE:
-			if(leftAileron.getType() != null) {
-				if(leftAileron.getType().equals(FlapTypeEnum.PLAIN))
-					theController.getWingLeftAileronTypeChoichBox().getSelectionModel().select(0);
+			// AILERONS NUMBER CHECK:
+			if (Main.getTheAircraft().getWing().getAsymmetricFlaps().size() >= 
+					theController.getTabPaneWingAilerons().getTabs().size()) {
+				
+				int iStart = theController.getTabPaneWingAilerons().getTabs().size();
+				
+				for(int i=iStart; i<Main.getTheAircraft().getWing().getAsymmetricFlaps().size(); i++)
+					theController.addAileron();
+				
 			}
 			
 			//---------------------------------------------------------------------------------
-			// INNER POSITION:
-			if(Double.valueOf(leftAileron.getInnerStationSpanwisePosition()) != null) {
-				theController.getTextFieldWingInnerPositionAileronLeft().setText(
-						String.valueOf(leftAileron.getInnerStationSpanwisePosition())
-						);
+			// LOOP OVER AILERONS:
+			for (int i=0; i<Main.getTheAircraft().getWing().getAsymmetricFlaps().size(); i++) {
+				
+				AsymmetricFlapCreator currentAileron = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(i);
+				
+				//---------------------------------------------------------------------------------
+				// TYPE:
+				if(currentAileron.getType() != null) {					
+					if(currentAileron.getType().equals(FlapTypeEnum.PLAIN))
+						theController.getChoiceBoxWingAileronTypeList().get(i).getSelectionModel().select(0);					
+				}
+				
+				//---------------------------------------------------------------------------------
+				// INNER POSITION:
+				if(Double.valueOf(currentAileron.getInnerStationSpanwisePosition()) != null) {
+					theController.getTextFieldWingInnerPositionAileronList().get(i).setText(
+							String.valueOf(currentAileron.getInnerStationSpanwisePosition())
+							);
+				}
+				else
+					theController.getTextFieldWingInnerPositionAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// OUTER POSITION:
+				if(Double.valueOf(currentAileron.getOuterStationSpanwisePosition()) != null) {
+					theController.getTextFieldWingOuterPositionAileronList().get(i).setText(
+							String.valueOf(currentAileron.getOuterStationSpanwisePosition())
+							);
+				}
+				else
+					theController.getTextFieldWingOuterPositionAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// INNER CHORD RATIO:
+				if(Double.valueOf(currentAileron.getInnerChordRatio()) != null) {
+					theController.getTextFieldWingInnerChordRatioAileronList().get(i).setText(
+							String.valueOf(currentAileron.getInnerChordRatio())
+							);
+				}
+				else
+					theController.getTextFieldWingInnerChordRatioAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// OUTER CHORD RATIO:
+				if(Double.valueOf(currentAileron.getOuterChordRatio())!= null) {
+					theController.getTextFieldWingOuterChordRatioAileronList().get(i).setText(
+							String.valueOf(currentAileron.getOuterChordRatio())
+							);
+				}
+				else
+					theController.getTextFieldWingOuterChordRatioAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// MINIMUM DEFLECTION:
+				if(currentAileron.getMinimumDeflection() != null) {
+					
+					theController.getTextFieldWingMinimumDeflectionAngleAileronList().get(i).setText(
+							String.valueOf(currentAileron.getMinimumDeflection().getEstimatedValue())
+							);
+					
+					if(currentAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("�")
+							|| currentAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+						theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().get(i).getSelectionModel().select(0);
+					else if(currentAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+						theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().get(i).getSelectionModel().select(1);
+					
+				}
+				else
+					theController.getTextFieldWingMinimumDeflectionAngleAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// MAXIMUM DEFLECTION:
+				if(currentAileron.getMaximumDeflection() != null) {
+					
+					theController.getTextFieldWingMaximumDeflectionAngleAileronList().get(i).setText(
+							String.valueOf(currentAileron.getMaximumDeflection().getEstimatedValue())
+							);
+					
+					if(currentAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("�")
+							|| currentAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+						theController.getChoiceBoxWingMaximumDeflectionAngleAileronUnitList().get(i).getSelectionModel().select(0);
+					else if(currentAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+						theController.getChoiceBoxWingMaximumDeflectionAngleAileronUnitList().get(i).getSelectionModel().select(1);
+					
+				}
+				else
+					theController.getTextFieldWingMaximumDeflectionAngleAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
 			}
-			else
-				theController.getTextFieldWingInnerPositionAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// OUTER POSITION:
-			if(Double.valueOf(leftAileron.getOuterStationSpanwisePosition()) != null) {
-				theController.getTextFieldWingOuterPositionAileronLeft().setText(
-						String.valueOf(leftAileron.getOuterStationSpanwisePosition())
-						);
-			}
-			else
-				theController.getTextFieldWingOuterPositionAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// INNER CHORD RATIO:
-			if(Double.valueOf(leftAileron.getInnerChordRatio()) != null) {
-				theController.getTextFieldWingInnerChordRatioAileronLeft().setText(
-						String.valueOf(leftAileron.getInnerChordRatio())
-						);
-			}
-			else
-				theController.getTextFieldWingInnerChordRatioAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// OUTER CHORD RATIO:
-			if(Double.valueOf(leftAileron.getOuterChordRatio()) != null) {
-				theController.getTextFieldWingOuterChordRatioAileronLeft().setText(
-						String.valueOf(leftAileron.getOuterChordRatio())
-						);
-			}
-			else
-				theController.getTextFieldWingOuterChordRatioAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// MINIMUM DEFLECTION:
-			if(leftAileron.getMinimumDeflection() != null) {
-
-				theController.getTextFieldWingMinimumDeflectionAngleAileronLeft().setText(
-						String.valueOf(leftAileron.getMinimumDeflection().getEstimatedValue())
-						);
-
-				if(leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("�")
-						|| leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
-					theController.getWingMinimumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().select(0);
-				else if(leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
-					theController.getWingMinimumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().select(1);
-
-			}
-			else
-				theController.getTextFieldWingMinimumDeflectionAngleAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// MAXIMUM DEFLECTION:
-			if(leftAileron.getMaximumDeflection() != null) {
-
-				theController.getTextFieldWingMaximumDeflectionAngleAileronLeft().setText(
-						String.valueOf(leftAileron.getMaximumDeflection().getEstimatedValue())
-						);
-
-				if(leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("�")
-						|| leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
-					theController.getWingMaximumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().select(0);
-				else if(leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
-					theController.getWingMaximumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().select(1);
-
-			}
-			else
-				theController.getTextFieldWingMaximumDeflectionAngleAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// RIGHT AILERONS:
-
-			AsymmetricFlapCreator rightAileron = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(1);
-
-			//---------------------------------------------------------------------------------
-			// TYPE:
-			if(rightAileron.getType() != null) {
-				if(rightAileron.getType().equals(FlapTypeEnum.PLAIN))
-					theController.getWingRightAileronTypeChoichBox().getSelectionModel().select(0);
-			}
-			
-			//---------------------------------------------------------------------------------
-			// INNER POSITION:
-			if(Double.valueOf(rightAileron.getInnerStationSpanwisePosition()) != null) {
-				theController.getTextFieldWingInnerPositionAileronRight().setText(
-						String.valueOf(rightAileron.getInnerStationSpanwisePosition())
-						);
-			}
-			else
-				theController.getTextFieldWingInnerPositionAileronRight().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// OUTER POSITION:
-			if(Double.valueOf(rightAileron.getOuterStationSpanwisePosition()) != null) {
-				theController.getTextFieldWingOuterPositionAileronRight().setText(
-						String.valueOf(rightAileron.getOuterStationSpanwisePosition())
-						);
-			}
-			else
-				theController.getTextFieldWingOuterPositionAileronRight().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// INNER CHORD RATIO:
-			if(Double.valueOf(rightAileron.getInnerChordRatio()) != null) {
-				theController.getTextFieldWingInnerChordRatioAileronRight().setText(
-						String.valueOf(rightAileron.getInnerChordRatio())
-						);
-			}
-			else
-				theController.getTextFieldWingInnerChordRatioAileronRight().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// OUTER CHORD RATIO:
-			if(Double.valueOf(rightAileron.getOuterChordRatio()) != null) {
-				theController.getTextFieldWingOuterChordRatioAileronRight().setText(
-						String.valueOf(rightAileron.getOuterChordRatio())
-						);
-			}
-			else
-				theController.getTextFieldWingOuterChordRatioAileronRight().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// MINIMUM DEFLECTION:
-			if(rightAileron.getMinimumDeflection() != null) {
-
-				theController.getTextFieldWingMinimumDeflectionAngleAileronRight().setText(
-						String.valueOf(rightAileron.getMinimumDeflection().getEstimatedValue())
-						);
-
-				if(rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("�")
-						|| rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
-					theController.getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox().getSelectionModel().select(0);
-				else if(rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
-					theController.getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox().getSelectionModel().select(1);
-
-			}
-			else
-				theController.getTextFieldWingMinimumDeflectionAngleAileronRight().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// MAXIMUM DEFLECTION:
-			if(rightAileron.getMaximumDeflection() != null) {
-
-				theController.getTextFieldWingMaximumDeflectionAngleAileronRight().setText(
-						String.valueOf(rightAileron.getMaximumDeflection().getEstimatedValue())
-						);
-
-				if(rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("�")
-						|| rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
-					theController.getWingMaximumDeflectionAngleAileronRightUnitChoiceBox().getSelectionModel().select(0);
-				else if(rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
-					theController.getWingMaximumDeflectionAngleAileronRightUnitChoiceBox().getSelectionModel().select(1);
-
-			}
-			else
-				theController.getTextFieldWingMaximumDeflectionAngleAileronRight().setText(
-						"NOT INITIALIZED"
-						);
 			
 			//---------------------------------------------------------------------------------
 			// SPOILERS NUMBER CHECK:
@@ -5520,18 +5623,13 @@ public class InputManagerControllerLogUtilities {
 	
 	public void logCADConfigurationFromFileToInterface() {
 		
-		// print the CADManager toString() method inside the text area of the GUI ...
+		// Print the CADManager toString() method inside the text area of the GUI ...
 		theController.getTextAreaCAD3DViewConsoleOutput().setText(
 				Main.getTheCADManager().toString()
 				);
 		
 		//-------------------------------------------------------------------------
 		// CAD EXPORT OPTIONS
-		if (theController.getExportCADToFileCheckBox().isDisabled())
-			theController.getExportCADToFileCheckBox().setDisable(false);
-		theController.getExportCADToFileCheckBox().setSelected(
-				Main.getTheCADManager().getTheCADBuilderInterface().getExportToFile());
-		
 		if (theController.getExportCADWireframeCheckBox().isDisabled())
 			theController.getExportCADWireframeCheckBox().setDisable(false);
 		theController.getExportCADWireframeCheckBox().setSelected(
@@ -5589,6 +5687,14 @@ public class InputManagerControllerLogUtilities {
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeTailTrunk().equals(XSpacingType.HALFCOSINUS2))
 				theController.getFuselageCADTailSpacingChoiceBox().getSelectionModel().select(3);
 
+		} else {
+			
+			theController.getGenerateFuselageCADCheckBox().setDisable(true);
+			theController.getFuselageCADNumberNoseSectionsTextField().setDisable(true);
+			theController.getFuselageCADNoseSpacingChoiceBox().setDisable(true);
+			theController.getFuselageCADNumberTailSectionsTextField().setDisable(true);
+			theController.getFuselageCADTailSpacingChoiceBox().setDisable(true);
+			
 		}
 		
 		//-------------------------------------------------------------------------
@@ -5624,6 +5730,14 @@ public class InputManagerControllerLogUtilities {
 			theController.getWingletCADTaperRatioTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingletTaperRatio()));
 		
+		} else {
+			
+			theController.getGenerateWingCADCheckBox().setDisable(true);
+			theController.getWingCADTipTypeChoiceBox().setDisable(true);
+			theController.getWingletCADYOffsetFactorTextField().setDisable(true);
+			theController.getWingletCADXOffsetFactorTextField().setDisable(true);
+			theController.getWingletCADTaperRatioTextField().setDisable(true);
+			
 		}
 		
 		//-------------------------------------------------------------------------
@@ -5642,6 +5756,11 @@ public class InputManagerControllerLogUtilities {
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getHTailTipType().equals(WingTipType.ROUNDED))
 				theController.getHTailCADTipTypeChoiceBox().getSelectionModel().select(1);
 		
+		} else {
+			
+			theController.getGenerateHTailCADCheckBox().setDisable(true);
+			theController.getHTailCADTipTypeChoiceBox().setDisable(true);		
+			
 		}
 		
 		//-------------------------------------------------------------------------
@@ -5660,6 +5779,11 @@ public class InputManagerControllerLogUtilities {
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getVTailTipType().equals(WingTipType.ROUNDED))
 				theController.getVTailCADTipTypeChoiceBox().getSelectionModel().select(1);
 		
+		} else {
+			
+			theController.getGenerateVTailCADCheckBox().setDisable(true);
+			theController.getVTailCADTipTypeChoiceBox().setDisable(true);
+			
 		}
 		
 		//-------------------------------------------------------------------------
@@ -5678,6 +5802,11 @@ public class InputManagerControllerLogUtilities {
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getCanardTipType().equals(WingTipType.ROUNDED))
 				theController.getCanardCADTipTypeChoiceBox().getSelectionModel().select(1);
 		
+		} else {
+			
+			theController.getGenerateCanardCADCheckBox().setDisable(true);
+			theController.getCanardCADTipTypeChoiceBox().setDisable(true);
+			
 		}
 		
 		//-------------------------------------------------------------------------
@@ -5723,6 +5852,17 @@ public class InputManagerControllerLogUtilities {
 				theController.getWingFairingCADFilletRadiusFactorTextField().setDisable(false);
 			theController.getWingFairingCADFilletRadiusFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingFilletRadiusFactor()));
+			
+		} else {
+			
+			theController.getGenerateWingFairingCADCheckBox().setDisable(true);
+			theController.getWingFairingCADFrontLengthFactorTextField().setDisable(true);
+			theController.getWingFairingCADBackLengthFactorTextField().setDisable(true);
+			theController.getWingFairingCADWidthFactorTextField().setDisable(true);
+			theController.getWingFairingCADHeightFactorTextField().setDisable(true);
+			theController.getWingFairingCADHeightBelowReferenceFactorTextField().setDisable(true);
+			theController.getWingFairingCADHeightAboveReferenceFactorTextField().setDisable(true);
+			theController.getWingFairingCADFilletRadiusFactorTextField().setDisable(true);
 			
 		}
 		
@@ -5770,10 +5910,22 @@ public class InputManagerControllerLogUtilities {
 			theController.getCanardFairingCADFilletRadiusFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingFilletRadiusFactor()));
 			
+		} else {
+			
+			theController.getGenerateCanardFairingCADCheckBox().setDisable(true);
+			theController.getCanardFairingCADFrontLengthFactorTextField().setDisable(true);
+			theController.getCanardFairingCADBackLengthFactorTextField().setDisable(true);
+			theController.getCanardFairingCADWidthFactorTextField().setDisable(true);
+			theController.getCanardFairingCADHeightFactorTextField().setDisable(true);
+			theController.getCanardFairingCADHeightBelowReferenceFactorTextField().setDisable(true);
+			theController.getCanardFairingCADHeightAboveReferenceFactorTextField().setDisable(true);
+			theController.getCanardFairingCADFilletRadiusFactorTextField().setDisable(true);
+			
 		}
 		
 		if (theController.getUpdateCAD3DViewButton().isDisabled())
 			theController.getUpdateCAD3DViewButton().setDisable(false);
+		
 	}
 
 }

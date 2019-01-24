@@ -33,6 +33,7 @@
 				</holding_phase>
 			</mission_profile_data>
 			<calibration> <!-- IF LEFT BLANK, ALL CALIBRATION FACTORS ARE EQUAL TO 1.0 -->
+				<max_zero_fuel_mass_calibration_factor></max_zero_fuel_mass_calibration_factor>
 				<fuselage_calibration_factor>0.8</fuselage_calibration_factor>
 				<wing_calibration_factor></wing_calibration_factor>
 				<horizontal_tail_calibration_factor></horizontal_tail_calibration_factor>

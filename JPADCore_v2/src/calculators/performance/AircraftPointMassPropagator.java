@@ -1920,7 +1920,8 @@ public class AircraftPointMassPropagator {
 						Amount.valueOf(0.0, SI.CELSIUS), 
 						Amount.valueOf(airspeed, SI.METERS_PER_SECOND)), 
 				Amount.valueOf(0.0, SI.CELSIUS), 
-				1.0
+				1.0,
+				1.0 /* Thrust Correction Factor */
 				).doubleValue(SI.NEWTON);
 	}
 
@@ -2180,5 +2181,5 @@ public class AircraftPointMassPropagator {
 	public void setWindSpeedZE0(double windSpeedZE0) {
 		this.windSpeedZE0 = windSpeedZE0;
 	}
-	
+
 }

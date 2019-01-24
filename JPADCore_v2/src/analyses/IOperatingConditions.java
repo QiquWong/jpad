@@ -39,7 +39,7 @@ public interface IOperatingConditions {
 	double getThrottleTakeOff();
 	List<Amount<Angle>> getTakeOffFlapDefletctionList();
 	List<Amount<Angle>> getTakeOffSlatDefletctionList();
-	List<Amount<Angle>> getTakeOffCanardDefletction();
+	List<Amount<Angle>> getTakeOffCanardDefletctionList();
 	
 	// LANDING
 	Amount<Angle> getAlphaLanding();
@@ -50,7 +50,7 @@ public interface IOperatingConditions {
 	double getThrottleLanding();
 	List<Amount<Angle>> getLandingFlapDefletctionList();
 	List<Amount<Angle>> getLandingSlatDefletctionList();
-	List<Amount<Angle>> getLandingCanardDefletction();
+	List<Amount<Angle>> getLandingCanardDefletctionist();
 	
 	class Builder extends IOperatingConditions_Builder {
 		public Builder() {

@@ -85,7 +85,7 @@ public class DatabaseInterpolationUtils {
 			variableMatrixX1 = variableArrayList.get(0);
 			variableMatrixX2 = variableArrayList.get(1);
 			variableMatrixX3 = variableArrayList.get(2);
-			variableMatrixX4 = variableArrayList.get(2);
+			variableMatrixX4 = variableArrayList.get(3);
 			double[][][][] dataMatrix4 = new double [variableArrayList.get(0).length][variableArrayList.get(1).length][variableArrayList.get(2).length][variableArrayList.get(3).length];
 			
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
