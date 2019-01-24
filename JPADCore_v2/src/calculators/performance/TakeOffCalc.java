@@ -80,7 +80,7 @@ public class TakeOffCalc {
 	private Amount<Velocity> vSTakeOff, vRot, vMC, vLO, vWind, v1, v2;
 	private Amount<Length> wingToGroundDistance, altitude, obstacle, balancedFieldLength;
 	private Amount<Temperature> deltaTemperature;
-	private Amount<Angle> alphaGround, iw;
+	private Amount<Angle> alphaGround;
 	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, fuelFlow, timeBreakPoints;
 	private List<Amount<Angle>> alpha, theta, gamma;
 	private List<Amount<Duration>> time;
@@ -145,7 +145,6 @@ public class TakeOffCalc {
 			Amount<Length> wingToGroundDistance,
 			Amount<Velocity> vWind,
 			Amount<Angle> alphaGround,
-			Amount<Angle> iw,
 			double cLmaxTO,
 			double cLZeroTO,
 			double cLalphaFlap,
@@ -183,11 +182,10 @@ public class TakeOffCalc {
 		this.wingToGroundDistance = wingToGroundDistance;
 		this.vWind = vWind;
 		this.alphaGround = alphaGround;
-		this.iw = iw;
 		this.cLmaxTO = cLmaxTO;
 		this.cLalphaFlap = cLalphaFlap;
 		this.cL0 = cLZeroTO;
-		this.cLground = cLZeroTO + (cLalphaFlap*iw.doubleValue(NonSI.DEGREE_ANGLE));
+		this.cLground = cLZeroTO;
 		this.takeOffThrustCorrectionFactor = takeOffThrustCorrectionFactor;
 		this.aprThrustCorrectionFactor = aprThrustCorrectionFactor;
 		this.gidlThrustCorrectionFactor = gidlThrustCorrectionFactor;
@@ -2368,7 +2366,7 @@ public class TakeOffCalc {
 			if (time.doubleValue(SI.SECOND) < tClimb.doubleValue(SI.SECOND)) {
 				double cL0 = TakeOffCalc.this.cL0;
 				double cLalpha = TakeOffCalc.this.getcLalphaFlap();
-				double alphaWing = alpha.doubleValue(NonSI.DEGREE_ANGLE) + TakeOffCalc.this.getIw().doubleValue(NonSI.DEGREE_ANGLE);
+				double alphaWing = alpha.doubleValue(NonSI.DEGREE_ANGLE);
 
 				return cL0 + (cLalpha*alphaWing);
 				
@@ -2514,14 +2512,6 @@ public class TakeOffCalc {
 
 	public void setAlphaGround(Amount<Angle> alphaGround) {
 		this.alphaGround = alphaGround;
-	}
-
-	public Amount<Angle> getIw() {
-		return iw;
-	}
-
-	public void setIw(Amount<Angle> iw) {
-		this.iw = iw;
 	}
 
 	public List<Double> getAlphaDot() {

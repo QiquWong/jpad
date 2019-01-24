@@ -280,7 +280,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 			//======================================================================
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			boolean timeHistories = true;
-			boolean takeOffSimulation = false;
+			boolean takeOffSimulation = true;
 			boolean landingSimulation = true;
 			
 			//......................................................................
@@ -358,7 +358,6 @@ public class NoiseTrajectoryCalcTest extends Application {
 						alphaDotInitial,
 						kAlphaDot,
 						mu,
-						theAircraft.getWing().getRiggingAngle(),
 						cLmaxTO,
 						cLZeroTO,
 						cLalphaFlap,
@@ -453,7 +452,6 @@ public class NoiseTrajectoryCalcTest extends Application {
 						dtFreeRoll, 
 						mu, 
 						muBrake,
-						theAircraft.getWing().getRiggingAngle(),
 						wingToGroundDistance,
 						kcLMaxLanding,
 						cLmaxLND,

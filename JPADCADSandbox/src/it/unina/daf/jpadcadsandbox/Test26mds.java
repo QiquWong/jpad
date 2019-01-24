@@ -38,12 +38,12 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 
 public class Test26mds {
 	
-	public static final String workingFolderPath = "C:\\Users\\Mario\\Documents\\Tesi_Magistrale\\Test_Macro_Star";
-	public static final String jpadCADFolder = "C:\\Users\\Mario\\JPAD_PROJECT\\jpad\\JPADCADSandbox";
-	public static final String macroPath = "Users\\Mario\\eclipse-workspace\\STARCCM\\src\\test";
+	public static final String workingFolderPath = "C:\\Users\\giord\\Desktop\\STAR_WORKING_FOLDER";
+	public static final String jpadCADFolder = "D:\\JPAD\\jpad\\JPADCADSandbox";
+	public static final String macroPath = "D:\\eclipse\\STAR_MACRO\\src\\macro";
 	public static final String macroName = "Test_MultipleExecutes.java";
-	public static final String starExePath = "C:\\Program Files\\CD-adapco\\13.04.010-R8\\STAR-CCM+13.04.010-R8\\star\\bin\\starccm+.exe";
-	public static final String starOptions = "-cpubind -np 4 -rsh ssh";
+	public static final String starExePath = "C:\\Program Files\\CD-adapco\\12.04.011-R8\\STAR-CCM+12.04.011-R8\\star\\bin\\starccm+.exe";
+	public static final String starOptions = "-cpubind -power -podkey 2jHU+QkwqexqrAOdVZ6ZzQ -licpath 1999@flex.cd-adapco.com -np 4 -rsh ssh";
 
 	public static void main(String[] args) throws IOException {
 		System.out.println("-------------------");

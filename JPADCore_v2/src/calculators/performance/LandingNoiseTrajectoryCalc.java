@@ -43,11 +43,11 @@ import standaloneutils.atmosphere.SpeedCalc;
 import writers.JPADStaticWriteUtils;
 
 /**
- * This class have the purpose of calculating the landing trajectories for the noise certification
+ * This class have the purpose of calculating the landing trajectory for the noise certification
  * of a given aircraft assuming:
  *
  * - 3° of glide path
- * - V= 1.3*VsLND + 10kts
+ * - V= 1.23*VsLND + 10kts
  * - full flaps configuration and landing gear down
  * - Maximum landing weight 
  * - ISA+10°C
@@ -76,12 +76,14 @@ public class LandingNoiseTrajectoryCalc {
 	private Amount<Mass> maxLandingMass; 
 	private Amount<Velocity> vSLanding, vApproach, vFlare, vTouchDown, vWind, vDescent, rateOfDescentAtFlareEnding;
 	private Amount<Length> wingToGroundDistance, obstacle, intialAltitude, altitudeAtFlareEnding, hFlare;
-	private Amount<Angle> gammaDescent, iw, alphaGround;
+	private Amount<Angle> gammaDescent, alphaGround;
 	private Amount<Force> thrustAtFlareStart, thrustAtDescentStart;
 	private List<Amount<Angle>> alpha;
-	private List<Double> cL;
+	private List<Double> cL, cD;
 	private List<Amount<Duration>> time;
-	private List<Double> timeBreakPoints;
+	private List<Amount<Acceleration>> acceleration;
+	private List<Amount<Force>> weight;
+	private List<Double> timeBreakPoints, loadFactor;
 	private double alphaDotFlare, cL0LND, cLmaxLND, kGround, phi, kCLmax, 
 	cruiseThrustCorrectionFactor, fidlThrustCorrectionFactor, gidlThrustCorrectionFactor, 
 	cruiseSfcCorrectionFactor, fidlSfcCorrectionFactor, gidlSfcCorrectionFactor;
@@ -127,7 +129,6 @@ public class LandingNoiseTrajectoryCalc {
 			Amount<Duration> dtFreeRoll,
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
-			Amount<Angle> iw,
 			Amount<Length> wingToGroundDistance,
 			double kCLmax,
 			double cLmaxLND,
@@ -164,7 +165,6 @@ public class LandingNoiseTrajectoryCalc {
 		this.obstacle = Amount.valueOf(50, NonSI.FOOT);
 		this.wingToGroundDistance = wingToGroundDistance;
 		this.vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
-		this.iw = iw;
 		this.alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		this.kCLmax = kCLmax;
 		this.cLmaxLND = cLmaxLND;
@@ -213,6 +213,10 @@ public class LandingNoiseTrajectoryCalc {
 		this.alpha = new ArrayList<Amount<Angle>>();
 		this.timeBreakPoints = new ArrayList<Double>();
 		this.cL = new ArrayList<>();
+		this.cD = new ArrayList<>();
+		this.weight = new ArrayList<>();
+		this.acceleration = new ArrayList<>();
+		this.loadFactor = new ArrayList<>();
 
 		// Output maps initialization
 		this.timeList = new ArrayList<>();
@@ -255,6 +259,10 @@ public class LandingNoiseTrajectoryCalc {
 		time.clear();
 		alpha.clear();
 		cL.clear();
+		cD.clear();
+		loadFactor.clear();
+		acceleration.clear();
+		weight.clear();
 		timeBreakPoints.clear();
 
 		// values initialization
@@ -270,6 +278,7 @@ public class LandingNoiseTrajectoryCalc {
 				intialAltitude,
 				Amount.valueOf(10, SI.CELSIUS) // ISA+10°C
 				); 
+		double cDInitial = MyMathUtils.getInterpolatedValue1DLinear(polarCLLanding, polarCDLanding, cLInitial);
 		alpha.add(
 				Amount.valueOf(
 						((cLInitial - cL0LND)
@@ -278,6 +287,15 @@ public class LandingNoiseTrajectoryCalc {
 						)
 				);
 		cL.add(cLInitial);
+		cD.add(cDInitial);
+		acceleration.add(Amount.valueOf(0.0, SI.METERS_PER_SQUARE_SECOND));
+		weight.add(
+				Amount.valueOf(
+						maxLandingMass.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+						SI.NEWTON
+						)
+				);
+		loadFactor.add(1.0);
 		time.add(Amount.valueOf(0.0, SI.SECOND));
 		
 		thrustAtDescentStart = Amount.valueOf( 
@@ -322,7 +340,7 @@ public class LandingNoiseTrajectoryCalc {
 		int i=0;
 		int maxIter = 100;
 		dtFlare = Amount.valueOf(4.0, SI.SECOND); // First guess value
-		alphaDotFlare = 0.0; /* deg/s - First guess value */
+		alphaDotFlare = 1.0; /* deg/s - First guess value */
 		double newAlphaDotFlare = 0.0;
 		Amount<Velocity> targetRateOfDescent = Amount.valueOf(-100, MyUnits.FOOT_PER_MINUTE);
 
@@ -604,7 +622,8 @@ public class LandingNoiseTrajectoryCalc {
 				public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
 
 					double   t = interpolator.getCurrentTime();
-					double[] x = interpolator.getInterpolatedState();			
+					double[] x = interpolator.getInterpolatedState();
+					double[] xDot = interpolator.getInterpolatedDerivatives();
 
 					Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS); // ISA+10°C
 					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
@@ -628,6 +647,33 @@ public class LandingNoiseTrajectoryCalc {
 					LandingNoiseTrajectoryCalc.this.getcL().add(((DynamicsEquationsLandingNoiseTrajectory)ode).cL(alpha));
 					if(cL.get(cL.size()-1) > (kCLmax*cLmaxLND) ) 
 						maximumFlareCLFlag = true;
+					//----------------------------------------------------------------------------------------
+					// CD:
+					LandingNoiseTrajectoryCalc.this.getcD().add(
+							((DynamicsEquationsLandingNoiseTrajectory)ode).cD(
+									((DynamicsEquationsLandingNoiseTrajectory)ode).cL(alpha),
+									altitude
+									)
+							);
+					//----------------------------------------------------------------------------------------
+					// ACCELERATION:
+					LandingNoiseTrajectoryCalc.this.getAcceleration().add(
+							Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND)
+							);
+					//----------------------------------------------------------------------------------------
+					// WEIGHT:
+					LandingNoiseTrajectoryCalc.this.getWeight().add(weight);
+					//----------------------------------------------------------------------------------------
+					// LOAD FACTOR:
+					LandingNoiseTrajectoryCalc.this.getLoadFactor().add(
+							(  ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+									+ (  ((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+											.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+											*Math.sin(alpha.doubleValue(SI.RADIAN))
+											)
+									)
+							/ ( weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN))	)
+							);
 
 				}
 			};
@@ -678,7 +724,7 @@ public class LandingNoiseTrajectoryCalc {
 		}
 
 		if(targetRDandAltitudeFlag == true)
-			manageOutputData(0.25, timeHistories, continuousOutputModel);
+			manageOutputData(2.0, timeHistories, continuousOutputModel);
 		else {
 			System.err.println("ERROR: TARGET RATE OF CLIMB AND/OR ALTITUDE ARE NOT REACHED " 
 					+ "\nRate of Descent current = "
@@ -712,10 +758,39 @@ public class LandingNoiseTrajectoryCalc {
 		List<double[]> stateDerivatives = new ArrayList<double[]>();
 		
 		MyInterpolatingFunction alphaFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction loadFactorFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction accelerationFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction cLFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction cDFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction weightFunction = new MyInterpolatingFunction();
+		
 		alphaFunction.interpolateLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
 				MyArrayUtils.convertListOfAmountTodoubleArray(this.alpha)
 				);
+		
+		if(timeHistories) {
+			loadFactorFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.loadFactor))
+					);
+			accelerationFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.acceleration)
+					);
+			cLFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cL))
+					);
+			cDFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cD))
+					);
+			weightFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.weight)
+					);
+		}
 		
 		// There is only ONE ContinuousOutputModel handler, get it
 		if (handler instanceof ContinuousOutputModel) {
@@ -760,12 +835,13 @@ public class LandingNoiseTrajectoryCalc {
 				Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
 				Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
 				Amount<Force> weight = Amount.valueOf(
-						(maxLandingMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+						weightFunction.value(timeList.get(i).doubleValue(SI.SECOND)),
 						SI.NEWTON
 						);
 				Amount<Angle> alpha = Amount.valueOf(
 						alphaFunction.value(timeList.get(i).doubleValue(SI.SECOND)),
-						NonSI.DEGREE_ANGLE);
+						NonSI.DEGREE_ANGLE
+						);
 
 				if(time.doubleValue(SI.SECOND) >= tTouchDown.doubleValue(SI.SECOND))
 					gamma = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
@@ -865,17 +941,7 @@ public class LandingNoiseTrajectoryCalc {
 							);
 					//----------------------------------------------------------------------------------------
 					// LOAD FACTOR:
-					loadFactorList.add(
-							(((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
-									+ (((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
-											.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-											*Math.sin(alpha.doubleValue(SI.RADIAN))
-											)
-									)
-							/(weight.doubleValue(SI.NEWTON)
-									*Math.cos(gamma.doubleValue(SI.RADIAN))
-									)
-							);
+					loadFactorList.add(loadFactorFunction.value(time.doubleValue(SI.SECOND)));
 					//----------------------------------------------------------------------------------------
 					// RATE OF CLIMB:
 					rateOfClimbList.add(Amount.valueOf(
@@ -884,7 +950,10 @@ public class LandingNoiseTrajectoryCalc {
 							);
 					//----------------------------------------------------------------------------------------
 					// ACCELERATION:
-					accelerationList.add(Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND));
+					accelerationList.add(Amount.valueOf(
+							accelerationFunction.value(time.doubleValue(SI.SECOND)),
+							SI.METERS_PER_SQUARE_SECOND)
+							);
 					//----------------------------------------------------------------------------------------
 					// ALPHA:
 					alphaList.add(alpha);
@@ -910,15 +979,10 @@ public class LandingNoiseTrajectoryCalc {
 							);
 					//----------------------------------------------------------------------------------------
 					// CL:				
-					cLList.add(((DynamicsEquationsLandingNoiseTrajectory)ode).cL(alpha));
+					cLList.add(cLFunction.value(time.doubleValue(SI.SECOND)));
 					//----------------------------------------------------------------------------------------
 					// CD:
-					cDList.add(
-							((DynamicsEquationsLandingNoiseTrajectory)ode).cD(
-									((DynamicsEquationsLandingNoiseTrajectory)ode).cL(alpha),
-									altitude
-									)
-							);
+					cDList.add(cDFunction.value(time.doubleValue(SI.SECOND)));
 
 					//----------------------------------------------------------------------------------------
 				}
@@ -2353,10 +2417,6 @@ public class LandingNoiseTrajectoryCalc {
 		return gammaDescent;
 	}
 
-	public Amount<Angle> getIw() {
-		return iw;
-	}
-
 	public List<Amount<Angle>> getAlpha() {
 		return alpha;
 	}
@@ -2575,10 +2635,6 @@ public class LandingNoiseTrajectoryCalc {
 
 	public void setGammaDescent(Amount<Angle> gammaDescent) {
 		this.gammaDescent = gammaDescent;
-	}
-
-	public void setIw(Amount<Angle> iw) {
-		this.iw = iw;
 	}
 
 	public void setAlpha(List<Amount<Angle>> alpha) {
@@ -2911,6 +2967,38 @@ public class LandingNoiseTrajectoryCalc {
 
 	public void setThrustAtDescentStart(Amount<Force> thrustAtDescentStart) {
 		this.thrustAtDescentStart = thrustAtDescentStart;
+	}
+
+	public List<Amount<Acceleration>> getAcceleration() {
+		return acceleration;
+	}
+
+	public void setAcceleration(List<Amount<Acceleration>> acceleration) {
+		this.acceleration = acceleration;
+	}
+
+	public List<Amount<Force>> getWeight() {
+		return weight;
+	}
+
+	public void setWeight(List<Amount<Force>> weight) {
+		this.weight = weight;
+	}
+
+	public List<Double> getLoadFactor() {
+		return loadFactor;
+	}
+
+	public void setLoadFactor(List<Double> loadFactor) {
+		this.loadFactor = loadFactor;
+	}
+
+	public List<Double> getcD() {
+		return cD;
+	}
+
+	public void setcD(List<Double> cD) {
+		this.cD = cD;
 	}
 
 }
