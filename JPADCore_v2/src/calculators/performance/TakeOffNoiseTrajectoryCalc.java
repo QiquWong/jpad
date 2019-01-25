@@ -117,6 +117,15 @@ public class TakeOffNoiseTrajectoryCalc {
 	private Map<Double, List<Amount<Mass>>> fuelUsedMap;
 	private Map<Double, List<Amount<Force>>> weightMap;
 	
+	private Map<Double, Amount<Length>> certificationPointsGroundDistanceMap;
+	private Map<Double, Amount<Length>> certificationPointsAltitudeMap;
+	private Map<Double, Amount<Velocity>> certificationPointsSpeedTASMap;
+	private Map<Double, Amount<Velocity>> certificationPointsSpeedCASMap;
+	private Map<Double, Amount<Angle>> certificationPointsAlphaMap;
+	private Map<Double, Amount<Angle>> certificationPointsGammaMap;
+	private Map<Double, Amount<Angle>> certificationPointsThetaMap;	
+	private Map<Double, Amount<Force>> certificationPointsThrustMap; 
+	
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
 
@@ -237,6 +246,17 @@ public class TakeOffNoiseTrajectoryCalc {
 		this.verticalDistanceMap = new HashMap<>();
 		this.fuelUsedMap = new HashMap<>();
 		this.weightMap = new HashMap<>();
+		
+		this.certificationPointsGroundDistanceMap = new HashMap<>();
+		this.certificationPointsAltitudeMap = new HashMap<>();
+		this.certificationPointsSpeedTASMap = new HashMap<>();
+		this.certificationPointsSpeedCASMap = new HashMap<>();
+		this.certificationPointsAlphaMap = new HashMap<>();
+		this.certificationPointsGammaMap = new HashMap<>();
+		this.certificationPointsThetaMap = new HashMap<>();
+		this.certificationPointsThrustMap = new HashMap<>();
+		
+		
 
 	}
 	//-------------------------------------------------------------------------------------
@@ -271,7 +291,8 @@ public class TakeOffNoiseTrajectoryCalc {
 		tObstacle = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
 		tZeroAcceleration = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
 		
-		phiCutback = null; 
+		phiCutback = null;
+		
 	}
 
 	/***************************************************************************************
@@ -379,6 +400,152 @@ public class TakeOffNoiseTrajectoryCalc {
 					timeBreakPoints.add(t);
 					tRot = Amount.valueOf(t, SI.SECOND);
 
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					return Action.CONTINUE;
+				}
+			};
+			EventHandler ehCheckSidelineCertificationPoint = new EventHandler() {
+
+				@Override
+				public void init(double t0, double[] y0, double t) {
+
+				}
+
+				@Override
+				public void resetState(double t, double[] y) {
+
+				}
+
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
+					return x[3] - 650.0; // 650m sideline altitude
+				}
+
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tSIDELINE CERTIFICATION POINT REACHED :: COLLECTING RESULTS ");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[3] = altitude = " + x[3] + " m" +
+									"\n\tx[4] = fuel used = " + x[4] + " kg"
+							);
+
+					
+					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
+					Amount<Length> distance = Amount.valueOf(x[0], SI.METER);
+					Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+					Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
+					Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
+					Amount<Force> weight = Amount.valueOf( 
+							(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+							SI.NEWTON
+							);
+					Amount<Angle> alpha = ((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha(
+							time, 
+							speed,
+							altitude, 
+							Amount.valueOf(10.0, SI.CELSIUS), 
+							gamma, 
+							weight
+							);
+					Amount<Force> thrust = Amount.valueOf( 
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(
+									speed, 
+									time,
+									gamma,
+									altitude, 
+									Amount.valueOf(10.0, SI.CELSIUS)
+									).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+							SI.NEWTON
+							);
+					
+					certificationPointsGroundDistanceMap.put(1.0, distance);
+					certificationPointsAltitudeMap.put(1.0, altitude);
+					certificationPointsSpeedTASMap.put(1.0, speed);
+					certificationPointsSpeedCASMap.put(1.0, speed.times(AtmosphereCalc.getDensity(650.0, 10.0)/1.225));  // density at 650m and ISA+10°C
+					certificationPointsAlphaMap.put(1.0, alpha);
+					certificationPointsGammaMap.put(1.0, gamma);
+					certificationPointsThetaMap.put(1.0, alpha.to(NonSI.DEGREE_ANGLE).plus(gamma.to(NonSI.DEGREE_ANGLE)));
+					certificationPointsThrustMap.put(1.0, thrust);
+					
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					return Action.CONTINUE;
+				}
+			};
+			EventHandler ehCheckFlyoverCertificationPoint = new EventHandler() {
+
+				@Override
+				public void init(double t0, double[] y0, double t) {
+
+				}
+
+				@Override
+				public void resetState(double t, double[] y) {
+
+				}
+
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
+					return x[0] - 6500.0; // 6500m flyover microphone position
+				}
+
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tFLYOVER CERTIFICATION POINT REACHED :: COLLECTING RESULTS ");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[3] = altitude = " + x[3] + " m" +
+									"\n\tx[4] = fuel used = " + x[4] + " kg"
+							);
+
+					
+					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
+					Amount<Length> distance = Amount.valueOf(x[0], SI.METER);
+					Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+					Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
+					Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
+					Amount<Force> weight = Amount.valueOf( 
+							(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+							SI.NEWTON
+							);
+					Amount<Angle> alpha = ((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha(
+							time, 
+							speed,
+							altitude, 
+							Amount.valueOf(10.0, SI.CELSIUS), 
+							gamma, 
+							weight
+							);
+					Amount<Force> thrust = Amount.valueOf( 
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(
+									speed, 
+									time,
+									gamma,
+									altitude, 
+									Amount.valueOf(10.0, SI.CELSIUS)
+									).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+							SI.NEWTON
+							);
+					
+					certificationPointsGroundDistanceMap.put(TakeOffNoiseTrajectoryCalc.this.phiCutback, distance);
+					certificationPointsAltitudeMap.put(TakeOffNoiseTrajectoryCalc.this.phiCutback, altitude);
+					certificationPointsSpeedTASMap.put(TakeOffNoiseTrajectoryCalc.this.phiCutback, speed);
+					certificationPointsSpeedCASMap.put(TakeOffNoiseTrajectoryCalc.this.phiCutback, speed.times(AtmosphereCalc.getDensity(650.0, 10.0)/1.225));  // density at 650m and ISA+10°C
+					certificationPointsAlphaMap.put(TakeOffNoiseTrajectoryCalc.this.phiCutback, alpha);
+					certificationPointsGammaMap.put(TakeOffNoiseTrajectoryCalc.this.phiCutback, gamma);
+					certificationPointsThetaMap.put(TakeOffNoiseTrajectoryCalc.this.phiCutback, alpha.to(NonSI.DEGREE_ANGLE).plus(gamma.to(NonSI.DEGREE_ANGLE)));
+					certificationPointsThrustMap.put(TakeOffNoiseTrajectoryCalc.this.phiCutback, thrust);
+					
 					System.out.println("\n---------------------------DONE!-------------------------------");
 					return Action.CONTINUE;
 				}
@@ -732,6 +899,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				theIntegrator.addEventHandler(ehLandingGearRetractionStart, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehLandingGearRetractionEnd, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckXEndSimulation, 1.0, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckSidelineCertificationPoint, 1.0, 1e-3, 20);
 			}
 			else {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
@@ -741,6 +909,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				theIntegrator.addEventHandler(ehLandingGearRetractionEnd, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckXEndSimulation, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckCutbackAltitude, 1.0, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckFlyoverCertificationPoint, 1.0, 1e-3, 20);
 			}
 
 
@@ -2020,7 +2189,7 @@ public class TakeOffNoiseTrajectoryCalc {
 
 		MyChartToFileUtils.plot(
 				(List<Double[]>) groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
-				(List<Double[]>) verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+				(List<Double[]>) getVerticalDistanceMap().values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
 				"Take-off noise certification trajectories", "Ground distance", "Altitude",
 				0.0, null, 0.0, null,
 				"m", "m",
@@ -2033,7 +2202,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				(List<Double[]>) groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(
 						x.stream().map(xe -> xe.to(NonSI.FOOT)).collect(Collectors.toList())
 						)).collect(Collectors.toList()),
-				(List<Double[]>) verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
+				(List<Double[]>) getVerticalDistanceMap().values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
 						y.stream().map(ye -> ye.to(NonSI.FOOT)).collect(Collectors.toList())
 						)).collect(Collectors.toList()),
 				"Take-off noise certification trajectories", "Ground distance", "Altitude",
@@ -2048,7 +2217,7 @@ public class TakeOffNoiseTrajectoryCalc {
 
 		MyChartToFileUtils.plot(
 				(List<Double[]>) timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
-				(List<Double[]>) verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+				(List<Double[]>) getVerticalDistanceMap().values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
 				"Take-off noise certification trajectories", "Time", "Altitude",
 				0.0, null, 0.0, null,
 				"s", "m",
@@ -2059,7 +2228,7 @@ public class TakeOffNoiseTrajectoryCalc {
 
 		MyChartToFileUtils.plot(
 				(List<Double[]>) timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
-				(List<Double[]>) verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
+				(List<Double[]>) getVerticalDistanceMap().values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
 						y.stream().map(ye -> ye.to(NonSI.FOOT)).collect(Collectors.toList())
 						)).collect(Collectors.toList()),
 				"Take-off noise certification trajectories", "Time", "Altitude",
@@ -2199,20 +2368,6 @@ public class TakeOffNoiseTrajectoryCalc {
 					);
 			Amount<Angle> alpha = alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 
-//			if(time.doubleValue(SI.SECOND) > tCutback.doubleValue(SI.SECOND)) {
-//				System.out.println("\tTime = " + time);
-//				System.out.println("\tSpeed = " + speed);
-//				System.out.println("\tAltitude = " + altitude);
-//				System.out.println("\tGamma = " + gamma);
-//				System.out.println("\tThrust = " + thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()*0.224809 + " lbf");
-//				System.out.println("\tAcceleration = " + xDot[1] + " m/s^2");
-//				System.out.println("\tGammaDot = " + xDot[2] + " °/s");
-//				System.out.println("\tAlpha = " + alpha);
-//				System.out.println("\tCL = " + cL(alpha));
-//				System.out.println("\tCD = " + cD(cL(alpha), time, speed, altitude));
-//				System.out.println("\n");
-//			}
-			
 			if( t < tEndRot.doubleValue(SI.SECOND)) {
 				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))
@@ -3125,11 +3280,11 @@ public class TakeOffNoiseTrajectoryCalc {
 	}
 
 	public Map<Double, List<Amount<Length>>> getVerticalDistance() {
-		return verticalDistanceMap;
+		return getVerticalDistanceMap();
 	}
 
 	public void setVerticalDistance(Map<Double, List<Amount<Length>>> verticalDistanceMap) {
-		this.verticalDistanceMap = verticalDistanceMap;
+		this.setVerticalDistanceMap(verticalDistanceMap);
 	}
 
 	public Map<Double, List<Amount<Mass>>> getFuelUsed() {
@@ -3202,6 +3357,78 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	public void setcD(List<Double> cD) {
 		this.cD = cD;
+	}
+
+	public Map<Double, List<Amount<Length>>> getVerticalDistanceMap() {
+		return verticalDistanceMap;
+	}
+
+	public void setVerticalDistanceMap(Map<Double, List<Amount<Length>>> verticalDistanceMap) {
+		this.verticalDistanceMap = verticalDistanceMap;
+	}
+
+	public Map<Double, Amount<Length>> getCertificationPointsGroundDistanceMap() {
+		return certificationPointsGroundDistanceMap;
+	}
+
+	public void setCertificationPointsGroundDistanceMap(Map<Double, Amount<Length>> certificationPointsGroundDistanceMap) {
+		this.certificationPointsGroundDistanceMap = certificationPointsGroundDistanceMap;
+	}
+
+	public Map<Double, Amount<Length>> getCertificationPointsAltitudeMap() {
+		return certificationPointsAltitudeMap;
+	}
+
+	public void setCertificationPointsAltitudeMap(Map<Double, Amount<Length>> certificationPointsAltitudeMap) {
+		this.certificationPointsAltitudeMap = certificationPointsAltitudeMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getCertificationPointsSpeedTASMap() {
+		return certificationPointsSpeedTASMap;
+	}
+
+	public void setCertificationPointsSpeedTASMap(Map<Double, Amount<Velocity>> certificationPointsSpeedTASMap) {
+		this.certificationPointsSpeedTASMap = certificationPointsSpeedTASMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getCertificationPointsSpeedCASMap() {
+		return certificationPointsSpeedCASMap;
+	}
+
+	public void setCertificationPointsSpeedCASMap(Map<Double, Amount<Velocity>> certificationPointsSpeedCASMap) {
+		this.certificationPointsSpeedCASMap = certificationPointsSpeedCASMap;
+	}
+
+	public Map<Double, Amount<Angle>> getCertificationPointsAlphaMap() {
+		return certificationPointsAlphaMap;
+	}
+
+	public void setCertificationPointsAlphaMap(Map<Double, Amount<Angle>> certificationPointsAlphaMap) {
+		this.certificationPointsAlphaMap = certificationPointsAlphaMap;
+	}
+
+	public Map<Double, Amount<Angle>> getCertificationPointsGammaMap() {
+		return certificationPointsGammaMap;
+	}
+
+	public void setCertificationPointsGammaMap(Map<Double, Amount<Angle>> certificationPointsGammaMap) {
+		this.certificationPointsGammaMap = certificationPointsGammaMap;
+	}
+
+	public Map<Double, Amount<Angle>> getCertificationPointsThetaMap() {
+		return certificationPointsThetaMap;
+	}
+
+	public void setCertificationPointsThetaMap(Map<Double, Amount<Angle>> certificationPointsThetaMap) {
+		this.certificationPointsThetaMap = certificationPointsThetaMap;
+	}
+
+	public Map<Double, Amount<Force>> getCertificationPointsThrustMap() {
+		return certificationPointsThrustMap;
+	}
+
+	public void setCertificationPointsThrustMap(Map<Double, Amount<Force>> certificationPointsThrustMap) {
+		this.certificationPointsThrustMap = certificationPointsThrustMap;
 	}
 
 }

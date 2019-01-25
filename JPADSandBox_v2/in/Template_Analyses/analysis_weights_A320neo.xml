@@ -25,7 +25,7 @@
 					<efficiency>17</efficiency> 
 				</alternate_phase>
 				<holding_phase>
-					<duration unit="min">20</duration> 
+					<duration unit="min">30</duration> 
 					<altitude unit="ft">1500</altitude>
 					<mach>0.3</mach>
 					<sfc>0.35</sfc> 
