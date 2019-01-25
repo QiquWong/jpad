@@ -5,33 +5,33 @@
 		<numberNoseTrunkSections spacing="COSINUS">7</numberNoseTrunkSections>
 		<numberTailTrunkSections spacing="COSINUS">7</numberTailTrunkSections>
 	</fuselage>
-	<wing generate="TRUE" tipType="ROUNDED">
+	<wing generate="TRUE" tipType="WINGLET">
 		<wingletParams>
 			<yOffsetFactor>0.75</yOffsetFactor>
 			<xOffsetFactor>0.55</xOffsetFactor>
 			<taperRatio>0.25</taperRatio>
 		</wingletParams>
 	</wing>
-	<horizontal generate="TRUE" tipType="CUTOFF"></horizontal>
-	<vertical generate="TRUE" tipType="CUTOFF"></vertical>
+	<horizontal generate="TRUE" tipType="ROUNDED"></horizontal>
+	<vertical generate="TRUE" tipType="ROUNDED"></vertical>
 	<canard generate="TRUE" tipType="ROUNDED"></canard>
-	<wing_fairing generate="FALSE">
-		<frontLengthFactor>0.55</frontLengthFactor>
-		<backLengthFactor>0.55</backLengthFactor>
-		<widthFactor>1.08</widthFactor>
-		<heightFactor>0.10</heightFactor>
-		<heightBelowReferenceFactor>0.65</heightBelowReferenceFactor>
-		<heightAboveReferenceFactor>0.10</heightAboveReferenceFactor>
-		<filletRadiusFactor>0.95</filletRadiusFactor>
-	</wing_fairing>
-	<canard_fairing generate="FALSE">
-		<frontLengthFactor>0.45</frontLengthFactor>
-		<backLengthFactor>0.65</backLengthFactor>
-		<widthFactor>0.85</widthFactor>
+	<wing_fairing generate="TRUE">
+		<frontLengthFactor>0.85</frontLengthFactor>
+		<backLengthFactor>0.75</backLengthFactor>
+		<widthFactor>0.50</widthFactor>
 		<heightFactor>0.15</heightFactor>
+		<heightBelowReferenceFactor>0.85</heightBelowReferenceFactor>
+		<heightAboveReferenceFactor>0.10</heightAboveReferenceFactor>
+		<filletRadiusFactor>0.85</filletRadiusFactor>
+	</wing_fairing>
+	<canard_fairing generate="TRUE">
+		<frontLengthFactor>0.50</frontLengthFactor>
+		<backLengthFactor>0.85</backLengthFactor>
+		<widthFactor>0.65</widthFactor>
+		<heightFactor>0.00</heightFactor>
 		<heightBelowReferenceFactor>0.50</heightBelowReferenceFactor>
-		<heightAboveReferenceFactor>0.50</heightAboveReferenceFactor>
-		<filletRadiusFactor>0.75</filletRadiusFactor>
+		<heightAboveReferenceFactor>0.25</heightAboveReferenceFactor>
+		<filletRadiusFactor>0.85</filletRadiusFactor>
 	</canard_fairing>
 	<export_to_file value="TRUE" format="STEP" exportWireframe="FALSE"></export_to_file>
 </jpad_CAD_config>

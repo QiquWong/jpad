@@ -5,7 +5,7 @@
 			<main_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.2</main_spar_non_dimensional_position>
 			<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.6</secondary_spar_non_dimensional_position>
 			<roughness unit="m">0.405e-5</roughness>
-			<winglet_height unit="m">0.0</winglet_height>
+			<winglet_height unit="m">2.0</winglet_height>
 		</global_data>
 		<equivalent_wing>
 			<surface unit="m²"></surface>
