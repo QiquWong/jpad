@@ -106,6 +106,15 @@ public class LandingNoiseTrajectoryCalc {
 	private List<Amount<Duration>> timeList;
 	private List<Amount<Mass>> fuelUsedList;
 	private List<Amount<Force>> weightList;
+	
+	private Amount<Length> certificationPointsGroundDistance;
+	private Amount<Length> certificationPointsAltitude;
+	private Amount<Velocity> certificationPointsSpeedTAS;
+	private Amount<Velocity> certificationPointsSpeedCAS;
+	private Amount<Angle> certificationPointsAlpha;
+	private Amount<Angle> certificationPointsGamma;
+	private Amount<Angle> certificationPointsTheta;	
+	private Amount<Force> certificationPointsThrust; 
 
 	private final PrintStream originalOut = System.out;
 	private PrintStream filterStream = new PrintStream(new OutputStream() {
@@ -404,6 +413,83 @@ public class LandingNoiseTrajectoryCalc {
 					return  Action.STOP;
 				}
 			};
+			EventHandler ehCheckApproachCertificationPoint = new EventHandler() {
+
+				@Override
+				public void init(double t0, double[] y0, double t) {
+
+				}
+
+				@Override
+				public void resetState(double t, double[] y) {
+
+				}
+
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
+					if(t < tObstacle.doubleValue(SI.SECOND))
+						return x[3] - 120.0; // certification point at 120m from ground 
+					else
+						return -10.0; /* Generic negative value to trigger the event only one time */
+				}
+
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tAPPROACH CERTIFICATION POINT REACHED :: COLLECTING RESULTS ");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[3] = altitude = " + x[3] + " m" +
+									"\n\tx[4] = fuel used = " + x[4] + " kg"
+							);
+
+					
+					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
+					Amount<Length> distance = Amount.valueOf(x[0], SI.METER);
+					Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+					Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
+					Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
+					Amount<Force> weight = Amount.valueOf( 
+							(maxLandingMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+							SI.NEWTON
+							);
+					Amount<Angle> alpha = ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha(
+							time, 
+							speed,
+							altitude, 
+							Amount.valueOf(10.0, SI.CELSIUS), 
+							gamma, 
+							weight
+							);
+					Amount<Force> thrust = Amount.valueOf( 
+							((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
+									speed, 
+									time,
+									alpha,
+									gamma, 
+									altitude,
+									Amount.valueOf(10.0, SI.CELSIUS), 
+									weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+							SI.NEWTON
+							);
+					
+					certificationPointsGroundDistance = distance;
+					certificationPointsAltitude = altitude;
+					certificationPointsSpeedTAS = speed;
+					certificationPointsSpeedCAS = speed.times(AtmosphereCalc.getDensity(120.0, 10.0)/1.225);  // density at 120m and ISA+10°C
+					certificationPointsAlpha = alpha;
+					certificationPointsGamma = gamma;
+					certificationPointsTheta = alpha.to(NonSI.DEGREE_ANGLE).plus(gamma.to(NonSI.DEGREE_ANGLE));
+					certificationPointsThrust = thrust;
+					
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					return Action.CONTINUE;
+				}
+			};
 			EventHandler ehCheckObstacle = new EventHandler() {
 
 				@Override
@@ -596,6 +682,11 @@ public class LandingNoiseTrajectoryCalc {
 					System.out.println("\nFlare Angular Velocity = " + alphaDotFlare + " °/s");
 						
 					tTouchDown = Amount.valueOf(t, SI.SECOND);
+					double temporaryCertificationPointsGroundDistance = certificationPointsGroundDistance.doubleValue(SI.METER);
+					certificationPointsGroundDistance = Amount.valueOf(
+							x[0] - temporaryCertificationPointsGroundDistance,
+							SI.METER
+							);
 					timeBreakPoints.add(t);
 					System.out.println("\n---------------------------DONE!-------------------------------");
 					Action action = Action.CONTINUE;
@@ -607,6 +698,7 @@ public class LandingNoiseTrajectoryCalc {
 				}
 			};
 
+			theIntegrator.addEventHandler(ehCheckApproachCertificationPoint, 1.0, 1e-3, 20);
 			theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
 			theIntegrator.addEventHandler(ehCheckFlareAltitude, 1.0, 1e-3, 20);
 			theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-3, 20);
@@ -2999,6 +3091,70 @@ public class LandingNoiseTrajectoryCalc {
 
 	public void setcD(List<Double> cD) {
 		this.cD = cD;
+	}
+
+	public Amount<Length> getCertificationPointsGroundDistance() {
+		return certificationPointsGroundDistance;
+	}
+
+	public void setCertificationPointsGroundDistance(Amount<Length> certificationPointsGroundDistance) {
+		this.certificationPointsGroundDistance = certificationPointsGroundDistance;
+	}
+
+	public Amount<Length> getCertificationPointsAltitude() {
+		return certificationPointsAltitude;
+	}
+
+	public void setCertificationPointsAltitude(Amount<Length> certificationPointsAltitude) {
+		this.certificationPointsAltitude = certificationPointsAltitude;
+	}
+
+	public Amount<Velocity> getCertificationPointsSpeedTAS() {
+		return certificationPointsSpeedTAS;
+	}
+
+	public void setCertificationPointsSpeedTAS(Amount<Velocity> certificationPointsSpeedTAS) {
+		this.certificationPointsSpeedTAS = certificationPointsSpeedTAS;
+	}
+
+	public Amount<Velocity> getCertificationPointsSpeedCAS() {
+		return certificationPointsSpeedCAS;
+	}
+
+	public void setCertificationPointsSpeedCAS(Amount<Velocity> certificationPointsSpeedCAS) {
+		this.certificationPointsSpeedCAS = certificationPointsSpeedCAS;
+	}
+
+	public Amount<Angle> getCertificationPointsAlpha() {
+		return certificationPointsAlpha;
+	}
+
+	public void setCertificationPointsAlpha(Amount<Angle> certificationPointsAlpha) {
+		this.certificationPointsAlpha = certificationPointsAlpha;
+	}
+
+	public Amount<Angle> getCertificationPointsGamma() {
+		return certificationPointsGamma;
+	}
+
+	public void setCertificationPointsGamma(Amount<Angle> certificationPointsGamma) {
+		this.certificationPointsGamma = certificationPointsGamma;
+	}
+
+	public Amount<Angle> getCertificationPointsTheta() {
+		return certificationPointsTheta;
+	}
+
+	public void setCertificationPointsTheta(Amount<Angle> certificationPointsTheta) {
+		this.certificationPointsTheta = certificationPointsTheta;
+	}
+
+	public Amount<Force> getCertificationPointsThrust() {
+		return certificationPointsThrust;
+	}
+
+	public void setCertificationPointsThrust(Amount<Force> certificationPointsThrust) {
+		this.certificationPointsThrust = certificationPointsThrust;
 	}
 
 }

@@ -50,7 +50,6 @@ import calculators.performance.ClimbCalc;
 import calculators.performance.DescentCalc;
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import calculators.performance.LandingCalc;
-import calculators.performance.LandingCalcSemiempirical;
 import calculators.performance.LandingNoiseTrajectoryCalc;
 import calculators.performance.MissionProfileCalc;
 import calculators.performance.PayloadRangeCalcMissionProfile;
@@ -296,143 +295,143 @@ public class ACPerformanceManager {
 		
 		//..............................................................................
 		// Take-Off
-		_theTakeOffCalculatorMap = new HashMap<>();
-		_takeOffDistanceAEOMap = new HashMap<>();
-		_balancedFieldLengthMap = new HashMap<>();
-		_takeOffDistanceFAR25Map = new HashMap<>();
-		_groundRollDistanceTakeOffMap = new HashMap<>();
-		_rotationDistanceTakeOffMap = new HashMap<>();
-		_airborneDistanceTakeOffMap = new HashMap<>();
-		_vStallTakeOffMap = new HashMap<>();
-		_vMCMap = new HashMap<>();
-		_vRotationMap = new HashMap<>();
-		_vLiftOffMap = new HashMap<>();
-		_v1Map = new HashMap<>();
-		_v2Map = new HashMap<>();
-		_takeOffDurationMap = new HashMap<>();
-		_thrustMomentOEIMap = new HashMap<>();
-		_yawingMomentOEIMap = new HashMap<>();
+		this._theTakeOffCalculatorMap = new HashMap<>();
+		this._takeOffDistanceAEOMap = new HashMap<>();
+		this._balancedFieldLengthMap = new HashMap<>();
+		this._takeOffDistanceFAR25Map = new HashMap<>();
+		this._groundRollDistanceTakeOffMap = new HashMap<>();
+		this._rotationDistanceTakeOffMap = new HashMap<>();
+		this._airborneDistanceTakeOffMap = new HashMap<>();
+		this._vStallTakeOffMap = new HashMap<>();
+		this._vMCMap = new HashMap<>();
+		this._vRotationMap = new HashMap<>();
+		this._vLiftOffMap = new HashMap<>();
+		this._v1Map = new HashMap<>();
+		this._v2Map = new HashMap<>();
+		this._takeOffDurationMap = new HashMap<>();
+		this._thrustMomentOEIMap = new HashMap<>();
+		this._yawingMomentOEIMap = new HashMap<>();
 		//..............................................................................
 		// Climb
-		_theClimbCalculatorMap = new HashMap<>();
-		_rcAEOMap = new HashMap<>();
-		_rcOEIMap = new HashMap<>();
-		_ceilingAEOMap = new HashMap<>();
-		_ceilingOEIMap = new HashMap<>();
-		_dragListAEOMap = new HashMap<>();
-		_thrustListAEOMap = new HashMap<>();
-		_dragListOEIMap = new HashMap<>();
-		_thrustListOEIMap = new HashMap<>();
-		_efficiencyAltitudeAEOMap = new HashMap<>();
-		_efficiencyAltitudeOEIMap = new HashMap<>();
+		this._theClimbCalculatorMap = new HashMap<>();
+		this._rcAEOMap = new HashMap<>();
+		this._rcOEIMap = new HashMap<>();
+		this._ceilingAEOMap = new HashMap<>();
+		this._ceilingOEIMap = new HashMap<>();
+		this._dragListAEOMap = new HashMap<>();
+		this._thrustListAEOMap = new HashMap<>();
+		this._dragListOEIMap = new HashMap<>();
+		this._thrustListOEIMap = new HashMap<>();
+		this._efficiencyAltitudeAEOMap = new HashMap<>();
+		this._efficiencyAltitudeOEIMap = new HashMap<>();
 		
-		_absoluteCeilingAEOMap = new HashMap<>();
-		_serviceCeilingAEOMap = new HashMap<>();
-		_minimumClimbTimeAEOMap = new HashMap<>();
-		_climbTimeAtSpecificClimbSpeedAEOMap = new HashMap<>();
-		_fuelUsedDuringClimbMap = new HashMap<>();
+		this._absoluteCeilingAEOMap = new HashMap<>();
+		this._serviceCeilingAEOMap = new HashMap<>();
+		this._minimumClimbTimeAEOMap = new HashMap<>();
+		this._climbTimeAtSpecificClimbSpeedAEOMap = new HashMap<>();
+		this._fuelUsedDuringClimbMap = new HashMap<>();
 		
-		_absoluteCeilingOEIMap = new HashMap<>();
-		_serviceCeilingOEIMap = new HashMap<>();
+		this._absoluteCeilingOEIMap = new HashMap<>();
+		this._serviceCeilingOEIMap = new HashMap<>();
 		//..............................................................................
 		// Cruise
-		_dragListAltitudeParameterizationMap = new HashMap<>();
-		_thrustListAltitudeParameterizationMap = new HashMap<>();
-		_dragListWeightParameterizationMap = new HashMap<>();
-		_thrustListWeightParameterizationMap = new HashMap<>();
-		_weightListCruiseMap = new HashMap<>();
+		this._dragListAltitudeParameterizationMap = new HashMap<>();
+		this._thrustListAltitudeParameterizationMap = new HashMap<>();
+		this._dragListWeightParameterizationMap = new HashMap<>();
+		this._thrustListWeightParameterizationMap = new HashMap<>();
+		this._weightListCruiseMap = new HashMap<>();
 		
-		_intersectionListMap = new HashMap<>();
-		_cruiseEnvelopeListMap = new HashMap<>();
+		this._intersectionListMap = new HashMap<>();
+		this._cruiseEnvelopeListMap = new HashMap<>();
 		
-		_efficiencyAltitudeMap = new HashMap<>();
-		_efficiencyWeightMap = new HashMap<>();
+		this._efficiencyAltitudeMap = new HashMap<>();
+		this._efficiencyWeightMap = new HashMap<>();
 		
-		_specificRangeMap = new HashMap<>();
+		this._specificRangeMap = new HashMap<>();
 		
-		_maxSpeesTASAtCruiseAltitudeMap = new HashMap<>();
-		_minSpeesTASAtCruiseAltitudeMap = new HashMap<>();
-		_maxSpeesCASAtCruiseAltitudeMap = new HashMap<>();
-		_minSpeesCASAtCruiseAltitudeMap = new HashMap<>();
-		_maxMachAtCruiseAltitudeMap = new HashMap<>();
-		_minMachAtCruiseAltitudeMap = new HashMap<>();
-		_efficiencyAtCruiseAltitudeAndMachMap = new HashMap<>();
-		_thrustAtCruiseAltitudeAndMachMap = new HashMap<>();
-		_dragAtCruiseAltitudeAndMachMap = new HashMap<>();
-		_powerAvailableAtCruiseAltitudeAndMachMap = new HashMap<>();
-		_powerNeededAtCruiseAltitudeAndMachMap = new HashMap<>();
+		this._maxSpeesTASAtCruiseAltitudeMap = new HashMap<>();
+		this._minSpeesTASAtCruiseAltitudeMap = new HashMap<>();
+		this._maxSpeesCASAtCruiseAltitudeMap = new HashMap<>();
+		this._minSpeesCASAtCruiseAltitudeMap = new HashMap<>();
+		this._maxMachAtCruiseAltitudeMap = new HashMap<>();
+		this._minMachAtCruiseAltitudeMap = new HashMap<>();
+		this._efficiencyAtCruiseAltitudeAndMachMap = new HashMap<>();
+		this._thrustAtCruiseAltitudeAndMachMap = new HashMap<>();
+		this._dragAtCruiseAltitudeAndMachMap = new HashMap<>();
+		this._powerAvailableAtCruiseAltitudeAndMachMap = new HashMap<>();
+		this._powerNeededAtCruiseAltitudeAndMachMap = new HashMap<>();
 		//.............................................................................
 		// Descent
-		_theDescentCalculatorMap = new HashMap<>();
-		_descentLengthsMap = new HashMap<>();
-		_descentTimesMap = new HashMap<>();
-		_descentAnglesMap = new HashMap<>();
-		_totalDescentLengthMap = new HashMap<>();
-		_totalDescentTimeMap = new HashMap<>();
-		_totalDescentFuelUsedMap = new HashMap<>();
+		this._theDescentCalculatorMap = new HashMap<>();
+		this._descentLengthsMap = new HashMap<>();
+		this._descentTimesMap = new HashMap<>();
+		this._descentAnglesMap = new HashMap<>();
+		this._totalDescentLengthMap = new HashMap<>();
+		this._totalDescentTimeMap = new HashMap<>();
+		this._totalDescentFuelUsedMap = new HashMap<>();
 		//..............................................................................
 		// Landing
-		_theLandingCalculatorMap = new HashMap<>();
-		_landingDistanceMap = new HashMap<>();
-		_landingDistanceFAR25Map = new HashMap<>();
-		_totalDistanceMap = new HashMap<>();
-		_groundRollDistanceLandingMap = new HashMap<>();
-		_flareDistanceLandingMap = new HashMap<>();
-		_airborneDistanceLandingMap = new HashMap<>();
-		_vStallLandingMap = new HashMap<>();
-		_vApproachMap = new HashMap<>();
-		_vFlareMap = new HashMap<>();
-		_vTouchDownMap = new HashMap<>();
-		_landingDurationMap = new HashMap<>();
-		_totalDurationMap = new HashMap<>();
+		this._theLandingCalculatorMap = new HashMap<>();
+		this._landingDistanceMap = new HashMap<>();
+		this._landingDistanceFAR25Map = new HashMap<>();
+		this._totalDistanceMap = new HashMap<>();
+		this._groundRollDistanceLandingMap = new HashMap<>();
+		this._flareDistanceLandingMap = new HashMap<>();
+		this._airborneDistanceLandingMap = new HashMap<>();
+		this._vStallLandingMap = new HashMap<>();
+		this._vApproachMap = new HashMap<>();
+		this._vFlareMap = new HashMap<>();
+		this._vTouchDownMap = new HashMap<>();
+		this._landingDurationMap = new HashMap<>();
+		this._totalDurationMap = new HashMap<>();
 		//..............................................................................
 		// Payload-Range
-		_thePayloadRangeCalculatorMap = new HashMap<>();
+		this._thePayloadRangeCalculatorMap = new HashMap<>();
 		
-		_rangeAtMaxPayloadMap = new HashMap<>();
-		_rangeAtDesignPayloadMap = new HashMap<>();
-		_rangeAtMaxFuelMap = new HashMap<>();	
-		_rangeAtZeroPayloadMap = new HashMap<>();
-		_takeOffMassAtZeroPayloadMap = new HashMap<>();
-		_maxPayloadMap = new HashMap<>();
-		_designPayloadMap = new HashMap<>();
-		_payloadAtMaxFuelMap = new HashMap<>();
-		_passengersNumberAtMaxPayloadMap = new HashMap<>();
-		_passengersNumberAtDesignPayloadMap = new HashMap<>();
-		_passengersNumberAtMaxFuelMap = new HashMap<>();
-		_requiredMassAtMaxPayloadMap = new HashMap<>();
-		_requiredMassAtDesignPayloadMap = new HashMap<>();
+		this._rangeAtMaxPayloadMap = new HashMap<>();
+		this._rangeAtDesignPayloadMap = new HashMap<>();
+		this._rangeAtMaxFuelMap = new HashMap<>();	
+		this._rangeAtZeroPayloadMap = new HashMap<>();
+		this._takeOffMassAtZeroPayloadMap = new HashMap<>();
+		this._maxPayloadMap = new HashMap<>();
+		this._designPayloadMap = new HashMap<>();
+		this._payloadAtMaxFuelMap = new HashMap<>();
+		this._passengersNumberAtMaxPayloadMap = new HashMap<>();
+		this._passengersNumberAtDesignPayloadMap = new HashMap<>();
+		this._passengersNumberAtMaxFuelMap = new HashMap<>();
+		this._requiredMassAtMaxPayloadMap = new HashMap<>();
+		this._requiredMassAtDesignPayloadMap = new HashMap<>();
 		
-		_rangeArrayMap = new HashMap<>();
-		_payloadArrayMap = new HashMap<>();
+		this._rangeArrayMap = new HashMap<>();
+		this._payloadArrayMap = new HashMap<>();
 		
-		_rangeMatrixMap = new HashMap<>();
-		_payloadMatrixMap = new HashMap<>();
+		this._rangeMatrixMap = new HashMap<>();
+		this._payloadMatrixMap = new HashMap<>();
 		//..............................................................................
 		// Maneuvering and Gust Flight Envelope 
-		_theEnvelopeCalculatorMap = new HashMap<>();
-		_stallSpeedFullFlapMap = new HashMap<>();
-		_stallSpeedCleanMap = new HashMap<>();
-		_stallSpeedInvertedMap = new HashMap<>();
-		_maneuveringSpeedMap = new HashMap<>();
-		_maneuveringFlapSpeedMap = new HashMap<>();
-		_maneuveringSpeedInvertedMap = new HashMap<>();
-		_designFlapSpeedMap = new HashMap<>();
-		_positiveLoadFactorManeuveringSpeedMap = new HashMap<>();
-		_positiveLoadFactorCruisingSpeedMap = new HashMap<>();
-		_positiveLoadFactorDiveSpeedMap = new HashMap<>();
-		_positiveLoadFactorDesignFlapSpeedMap = new HashMap<>();
-		_negativeLoadFactorManeuveringSpeedInvertedMap = new HashMap<>();
-		_negativeLoadFactorCruisingSpeedMap = new HashMap<>();
-		_negativeLoadFactorDiveSpeedMap = new HashMap<>();
-		_positiveLoadFactorManeuveringSpeedWithGustMap = new HashMap<>();
-		_positiveLoadFactorCruisingSpeedWithGustMap = new HashMap<>();
-		_positiveLoadFactorDiveSpeedWithGustMap = new HashMap<>();
-		_positiveLoadFactorDesignFlapSpeedWithGustMap = new HashMap<>();
-		_negativeLoadFactorManeuveringSpeedInvertedWithGustMap = new HashMap<>();
-		_negativeLoadFactorCruisingSpeedWithGustMap = new HashMap<>();
-		_negativeLoadFactorDiveSpeedWithGustMap = new HashMap<>();
-		_negativeLoadFactorDesignFlapSpeedWithGustMap = new HashMap<>();
+		this._theEnvelopeCalculatorMap = new HashMap<>();
+		this._stallSpeedFullFlapMap = new HashMap<>();
+		this._stallSpeedCleanMap = new HashMap<>();
+		this._stallSpeedInvertedMap = new HashMap<>();
+		this._maneuveringSpeedMap = new HashMap<>();
+		this._maneuveringFlapSpeedMap = new HashMap<>();
+		this._maneuveringSpeedInvertedMap = new HashMap<>();
+		this._designFlapSpeedMap = new HashMap<>();
+		this._positiveLoadFactorManeuveringSpeedMap = new HashMap<>();
+		this._positiveLoadFactorCruisingSpeedMap = new HashMap<>();
+		this._positiveLoadFactorDiveSpeedMap = new HashMap<>();
+		this._positiveLoadFactorDesignFlapSpeedMap = new HashMap<>();
+		this._negativeLoadFactorManeuveringSpeedInvertedMap = new HashMap<>();
+		this._negativeLoadFactorCruisingSpeedMap = new HashMap<>();
+		this._negativeLoadFactorDiveSpeedMap = new HashMap<>();
+		this._positiveLoadFactorManeuveringSpeedWithGustMap = new HashMap<>();
+		this._positiveLoadFactorCruisingSpeedWithGustMap = new HashMap<>();
+		this._positiveLoadFactorDiveSpeedWithGustMap = new HashMap<>();
+		this._positiveLoadFactorDesignFlapSpeedWithGustMap = new HashMap<>();
+		this._negativeLoadFactorManeuveringSpeedInvertedWithGustMap = new HashMap<>();
+		this._negativeLoadFactorCruisingSpeedWithGustMap = new HashMap<>();
+		this._negativeLoadFactorDiveSpeedWithGustMap = new HashMap<>();
+		this._negativeLoadFactorDesignFlapSpeedWithGustMap = new HashMap<>();
 		//..............................................................................
 		// Mission profile
 		this._theMissionProfileCalculatorMap= new HashMap<>();
@@ -463,6 +462,19 @@ public class ACPerformanceManager {
 		this._initialMissionMassMap= new HashMap<>();
 		this._endMissionMassMap= new HashMap<>();
 		this._totalMissionRangeMap= new HashMap<>();
+		
+		//..............................................................................
+		// Mission profile
+		this._theTakeOffNoiseTrajectoryCalculatorMap = new HashMap<>();
+		this._theLandingNoiseTrajectoryCalculatorMap = new HashMap<>();
+		this._certificationPointsLongitudinalDistanceMap = new HashMap<>();
+		this._certificationPointsAltitudeMap = new HashMap<>();
+		this._certificationPointsSpeedTASMap = new HashMap<>();
+		this._certificationPointsSpeedCASMap = new HashMap<>();
+		this._certificationPointsGammaMap = new HashMap<>();
+		this._certificationPointsAlphaMap = new HashMap<>();
+		this._certificationPointsThetaMap = new HashMap<>();
+		this._certificationPointsThrustMap = new HashMap<>();
 		
 	}
 	
@@ -3161,6 +3173,59 @@ public class ACPerformanceManager {
 				CalcNoiseTrajectories calcNoiseTrajectories =  new CalcNoiseTrajectories();
 				calcNoiseTrajectories.calculateTakeOffNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), takeOffNoiseTrajectoriesFolderPath);
 				calcNoiseTrajectories.calculateLandingNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), landingNoiseTrajectoriesFolderPath);
+				
+				List<Amount<Length>> groundDistanceList = new ArrayList<>();
+				List<Amount<Length>> altitudeList = new ArrayList<>();
+				List<Amount<Velocity>> speedTASList = new ArrayList<>();
+				List<Amount<Velocity>> speedCASList = new ArrayList<>();
+				List<Amount<Angle>> alphaList = new ArrayList<>();
+				List<Amount<Angle>> gammaList = new ArrayList<>();
+				List<Amount<Angle>> thetaList = new ArrayList<>();
+				List<Amount<Force>> thrustList = new ArrayList<>();
+				
+				//---------------------------------------------------------------------------------------------------------------------------------------------------
+				// SIDELINE VALUES - index (0)
+				groundDistanceList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGroundDistanceMap().get(1.0));
+				altitudeList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAltitudeMap().get(1.0));
+				speedTASList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedTASMap().get(1.0));
+				speedCASList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedCASMap().get(1.0));
+				alphaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAlphaMap().get(1.0));
+				gammaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGammaMap().get(1.0));
+				thetaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThetaMap().get(1.0));
+				thrustList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThrustMap().get(1.0).divide(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()));
+				
+				//---------------------------------------------------------------------------------------------------------------------------------------------------
+				// FLYOVER VALUES with CUTBACK - index (1)
+				double phiCutback = _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getPhiCutback();
+				
+				groundDistanceList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGroundDistanceMap().get(phiCutback));
+				altitudeList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAltitudeMap().get(phiCutback));
+				speedTASList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedTASMap().get(phiCutback));
+				speedCASList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedCASMap().get(phiCutback));
+				alphaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAlphaMap().get(phiCutback));
+				gammaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGammaMap().get(phiCutback));
+				thetaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThetaMap().get(phiCutback));
+				thrustList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThrustMap().get(phiCutback).divide(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()));
+				
+				//---------------------------------------------------------------------------------------------------------------------------------------------------
+				// APPROACH VALUES - index (2)
+				groundDistanceList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGroundDistance());
+				altitudeList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAltitude());
+				speedTASList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedTAS());
+				speedCASList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedCAS());
+				alphaList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAlpha());
+				gammaList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGamma());
+				thetaList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsTheta());
+				thrustList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThrust().divide(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()));
+				
+				_certificationPointsLongitudinalDistanceMap.put(_thePerformanceInterface.getXcgPositionList().get(i), groundDistanceList);
+				_certificationPointsAltitudeMap.put(_thePerformanceInterface.getXcgPositionList().get(i), altitudeList);
+				_certificationPointsSpeedTASMap.put(_thePerformanceInterface.getXcgPositionList().get(i), speedTASList);
+				_certificationPointsSpeedCASMap.put(_thePerformanceInterface.getXcgPositionList().get(i), speedCASList);
+				_certificationPointsAlphaMap.put(_thePerformanceInterface.getXcgPositionList().get(i), alphaList);
+				_certificationPointsGammaMap.put(_thePerformanceInterface.getXcgPositionList().get(i), gammaList);
+				_certificationPointsThetaMap.put(_thePerformanceInterface.getXcgPositionList().get(i), thetaList);
+				_certificationPointsThrustMap.put(_thePerformanceInterface.getXcgPositionList().get(i), thrustList);
 
 			}
 			
@@ -4061,10 +4126,10 @@ public class ACPerformanceManager {
         	dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
         	dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
         	dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust","N", _certificationPointsThrustMap.get(xcg).get(0).doubleValue(SI.NEWTON)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust","lbf", _certificationPointsThrustMap.get(xcg).get(0).doubleValue(NonSI.POUND_FORCE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","N", _certificationPointsThrustMap.get(xcg).get(0).doubleValue(SI.NEWTON)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","lbf", _certificationPointsThrustMap.get(xcg).get(0).doubleValue(NonSI.POUND_FORCE)});
         	dataListNoiseTrajectories.add(new Object[] {" "});
-        	dataListNoiseTrajectories.add(new Object[] {"FLYOVER - CUTBACK ( " + _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getCutbackAltitude().doubleValue(NonSI.FOOT) + "ft, " + (_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback()*100) + "% )"});
+        	dataListNoiseTrajectories.add(new Object[] {"FLYOVER - CUTBACK ( " + _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getCutbackAltitude().doubleValue(NonSI.FOOT) + "ft, " + Math.round((_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback()*100)) + "% MAX-TO )"});
         	dataListNoiseTrajectories.add(new Object[] {"Ground distance","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(1).doubleValue(SI.METER)});
         	dataListNoiseTrajectories.add(new Object[] {"Ground distance","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(1).doubleValue(NonSI.FOOT)});
         	dataListNoiseTrajectories.add(new Object[] {"Altitude","m", _certificationPointsAltitudeMap.get(xcg).get(1).doubleValue(SI.METER)});
@@ -4076,12 +4141,12 @@ public class ACPerformanceManager {
         	dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
         	dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
         	dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust","N", _certificationPointsThrustMap.get(xcg).get(1).doubleValue(SI.NEWTON)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust","lbf", _certificationPointsThrustMap.get(xcg).get(1).doubleValue(NonSI.POUND_FORCE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","N", _certificationPointsThrustMap.get(xcg).get(1).doubleValue(SI.NEWTON)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","lbf", _certificationPointsThrustMap.get(xcg).get(1).doubleValue(NonSI.POUND_FORCE)});
         	dataListNoiseTrajectories.add(new Object[] {" "});
         	dataListNoiseTrajectories.add(new Object[] {"APPROACH"});
-        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(2).doubleValue(SI.METER)});
-        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(2).doubleValue(NonSI.FOOT)});
+        	dataListNoiseTrajectories.add(new Object[] {"Ground distance (from touch-down)","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(2).doubleValue(SI.METER)});
+        	dataListNoiseTrajectories.add(new Object[] {"Ground distance (from touch-down)","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(2).doubleValue(NonSI.FOOT)});
         	dataListNoiseTrajectories.add(new Object[] {"Altitude","m", _certificationPointsAltitudeMap.get(xcg).get(2).doubleValue(SI.METER)});
         	dataListNoiseTrajectories.add(new Object[] {"Altitude","ft", _certificationPointsAltitudeMap.get(xcg).get(2).doubleValue(NonSI.FOOT)});
         	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","m/s", _certificationPointsSpeedTASMap.get(xcg).get(2).doubleValue(SI.METERS_PER_SECOND)});
@@ -4091,8 +4156,8 @@ public class ACPerformanceManager {
         	dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
         	dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
         	dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust","N", _certificationPointsThrustMap.get(xcg).get(2).doubleValue(SI.NEWTON)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust","lbf", _certificationPointsThrustMap.get(xcg).get(2).doubleValue(NonSI.POUND_FORCE)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","N", _certificationPointsThrustMap.get(xcg).get(2).doubleValue(SI.NEWTON)});
+        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","lbf", _certificationPointsThrustMap.get(xcg).get(2).doubleValue(NonSI.POUND_FORCE)});
 
         	Row rowNoiseTrajectories = sheetNoiseTrajectories.createRow(0);
         	Object[] objArrNoiseTrajectories = dataListNoiseTrajectories.get(0);
@@ -4460,9 +4525,9 @@ public class ACPerformanceManager {
 				.append("\t\t\tAlpha = " + _certificationPointsAlphaMap.get(xcg).get(0) + "\n")
 				.append("\t\t\tGamma = " + _certificationPointsGammaMap.get(xcg).get(0) + "\n")
 				.append("\t\t\tTheta = " + _certificationPointsThetaMap.get(xcg).get(0) + "\n")
-				.append("\t\t\tThrust = " + _certificationPointsThrustMap.get(xcg).get(0) + "\n")
+				.append("\t\t\tThrust (x1 eng.) = " + _certificationPointsThrustMap.get(xcg).get(0) + "\n")
 				.append("\t\t.....................................\n")
-				.append("\t\tFlyover - Cutback ( " + _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getCutbackAltitude() + ", " + (_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback()*100) + "% )" + "\n")
+				.append("\t\tFlyover - Cutback ( " + _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getCutbackAltitude() + ", " + Math.round((_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback()*100)) + "% MAX-TO )" + "\n")
 				.append("\t\t\tGround Distance = " + _certificationPointsLongitudinalDistanceMap.get(xcg).get(1) + "\n")
 				.append("\t\t\tAltitude = " + _certificationPointsAltitudeMap.get(xcg).get(1) + "\n")
 				.append("\t\t\tSpeed (TAS) = " + _certificationPointsSpeedTASMap.get(xcg).get(1) + "\n")
@@ -4470,17 +4535,17 @@ public class ACPerformanceManager {
 				.append("\t\t\tAlpha = " + _certificationPointsAlphaMap.get(xcg).get(1) + "\n")
 				.append("\t\t\tGamma = " + _certificationPointsGammaMap.get(xcg).get(1) + "\n")
 				.append("\t\t\tTheta = " + _certificationPointsThetaMap.get(xcg).get(1) + "\n")
-				.append("\t\t\tThrust = " + _certificationPointsThrustMap.get(xcg).get(1) + "\n")
+				.append("\t\t\tThrust (x1 eng.) = " + _certificationPointsThrustMap.get(xcg).get(1) + "\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tApproach \n")
-				.append("\t\t\tGround Distance = " + _certificationPointsLongitudinalDistanceMap.get(xcg).get(2) + "\n")
+				.append("\t\t\tGround Distance (from touch-down) = " + _certificationPointsLongitudinalDistanceMap.get(xcg).get(2) + "\n")
 				.append("\t\t\tAltitude = " + _certificationPointsAltitudeMap.get(xcg).get(2) + "\n")
 				.append("\t\t\tSpeed (TAS) = " + _certificationPointsSpeedTASMap.get(xcg).get(2) + "\n")
 				.append("\t\t\tSpeed (CAS) = " + _certificationPointsSpeedCASMap.get(xcg).get(2) + "\n")
 				.append("\t\t\tAlpha = " + _certificationPointsAlphaMap.get(xcg).get(2) + "\n")
 				.append("\t\t\tGamma = " + _certificationPointsGammaMap.get(xcg).get(2) + "\n")
 				.append("\t\t\tTheta = " + _certificationPointsThetaMap.get(xcg).get(2) + "\n")
-				.append("\t\t\tThrust = " + _certificationPointsThrustMap.get(xcg).get(2) + "\n")
+				.append("\t\t\tThrust (x1 eng.) = " + _certificationPointsThrustMap.get(xcg).get(2) + "\n")
 				.append("\t-------------------------------------\n")
 				;
 			}
@@ -6901,61 +6966,66 @@ public class ACPerformanceManager {
 											)
 									)
 							);
-			
+
 			if(_vMCMap.get(xcg) == null) {
 				CalcTakeOff calcTakeOff = new CalcTakeOff();
 				calcTakeOff.calculateVMC(xcg);
 			}
-			
-			TakeOffNoiseTrajectoryCalc theTakeOffNoiseTrajectoryCalculator = new TakeOffNoiseTrajectoryCalc(
-					_thePerformanceInterface.getTakeOffNoiseTrajectoryXEndSimulation(),
-					_thePerformanceInterface.getTakeOffNoiseTrajectoryCutbackAltitude(),
-					_thePerformanceInterface.getMaximumTakeOffMass(),
-					_thePerformanceInterface.getTheAircraft().getPowerPlant(),
-					_thePerformanceInterface.getPolarCLTakeOff().get(xcg),
-					_thePerformanceInterface.getPolarCDTakeOff().get(xcg), 
-					wingToGroundDistance, 
-					_thePerformanceInterface.getDeltaCD0LandingGears().get(xcg),
-					_thePerformanceInterface.getDragDueToEngineFailure(),
-					_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(),
-					_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(), 
-					_thePerformanceInterface.getDtHold(), 
-					_thePerformanceInterface.getTakeOffNoiseTrajectoryLandingGearRetractionTimeInterval(),
-					_thePerformanceInterface.getTakeOffNoiseTrajectoryThrustReductionCutbackTimeInterval(),
-					_thePerformanceInterface.getKCLmaxTakeOff(),
-					_thePerformanceInterface.getKRotation(), 
-					_thePerformanceInterface.getAlphaDotRotation(),
-					_thePerformanceInterface.getKAlphaDot(),
-					_thePerformanceInterface.getMuFunction(),
-					_thePerformanceInterface.getCLmaxTakeOff().get(xcg), 
-					_thePerformanceInterface.getCLZeroTakeOff().get(xcg), 
-					_thePerformanceInterface.getCLAlphaTakeOff().get(xcg),
-					_thePerformanceInterface.getTakeOffCalibrationFactorThrust(),
-					_thePerformanceInterface.getTakeOffCalibrationFactorSFC(),
-					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-					);
 
-			theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null, true, _vMCMap.get(xcg));
-			theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null, true, _vMCMap.get(xcg));
-
-			double lowestPhiCutback = theTakeOffNoiseTrajectoryCalculator.getPhiCutback();
-			double[] phiArray = MyArrayUtils.linspace( (lowestPhiCutback + 0.1), 0.9, _thePerformanceInterface.getTakeOffNoiseTrajectoryNumberOfThrustSettingCutback());
-
-			Arrays.stream(phiArray).forEach(
-					throttle -> theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(
-							true,
-							throttle, 
-							true,
-							 _vMCMap.get(xcg)
+			_theTakeOffNoiseTrajectoryCalculatorMap.put(
+					xcg,
+					new TakeOffNoiseTrajectoryCalc(
+							_thePerformanceInterface.getTakeOffNoiseTrajectoryXEndSimulation(),
+							_thePerformanceInterface.getTakeOffNoiseTrajectoryCutbackAltitude(),
+							_thePerformanceInterface.getMaximumTakeOffMass(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+							_thePerformanceInterface.getPolarCLTakeOff().get(xcg),
+							_thePerformanceInterface.getPolarCDTakeOff().get(xcg), 
+							wingToGroundDistance, 
+							_thePerformanceInterface.getDeltaCD0LandingGears().get(xcg),
+							_thePerformanceInterface.getDragDueToEngineFailure(),
+							_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(),
+							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(), 
+							_thePerformanceInterface.getDtHold(), 
+							_thePerformanceInterface.getTakeOffNoiseTrajectoryLandingGearRetractionTimeInterval(),
+							_thePerformanceInterface.getTakeOffNoiseTrajectoryThrustReductionCutbackTimeInterval(),
+							_thePerformanceInterface.getKCLmaxTakeOff(),
+							_thePerformanceInterface.getKRotation(), 
+							_thePerformanceInterface.getAlphaDotRotation(),
+							_thePerformanceInterface.getKAlphaDot(),
+							_thePerformanceInterface.getMuFunction(),
+							_thePerformanceInterface.getCLmaxTakeOff().get(xcg), 
+							_thePerformanceInterface.getCLZeroTakeOff().get(xcg), 
+							_thePerformanceInterface.getCLAlphaTakeOff().get(xcg),
+							_thePerformanceInterface.getTakeOffCalibrationFactorThrust(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorSFC(),
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							)
 					);
 
-			// TODO: FILL ALL MAPS FOR toString() AND toXLS() METHODS...
+			_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(false, null, true, _vMCMap.get(xcg));
+			_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(true, null, true, _vMCMap.get(xcg));
+
+			double lowestPhiCutback = _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback();
+			if(_thePerformanceInterface.getTakeOffNoiseTrajectoryNumberOfThrustSettingCutback() != 0) {
+				
+				double[] phiArray = MyArrayUtils.linspace( (lowestPhiCutback + 0.1), 0.9, _thePerformanceInterface.getTakeOffNoiseTrajectoryNumberOfThrustSettingCutback());
+
+				Arrays.stream(phiArray).forEach(
+						throttle -> _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(
+								true,
+								throttle, 
+								true,
+								_vMCMap.get(xcg)
+								)
+						);
+				
+			}
 			
 			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance().equals(Boolean.TRUE)) {
-				if(theTakeOffNoiseTrajectoryCalculator.isTargetSpeedFlag() == true)
+				if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTargetSpeedFlag() == true)
 					try {
-						theTakeOffNoiseTrajectoryCalculator.createOutputCharts(noiseTrajectoriesFolderPath, true);
+						_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).createOutputCharts(noiseTrajectoriesFolderPath, true);
 					} catch (InstantiationException | IllegalAccessException e) {
 						e.printStackTrace();
 					}
@@ -6981,40 +7051,43 @@ public class ACPerformanceManager {
 											)
 									)
 							);
-			
-			LandingNoiseTrajectoryCalc theLandingNoiseTrajectoryCalculator = new LandingNoiseTrajectoryCalc(
-					_thePerformanceInterface.getLandingNoiseTrajectoryInitialAltitude(),
-					_thePerformanceInterface.getLandingNoiseTrajectoryTrajectoryAngle(),
-					_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKLandingWeight()),
-					_thePerformanceInterface.getTheAircraft().getPowerPlant(),
-					_thePerformanceInterface.getPolarCLLanding().get(xcg),
-					_thePerformanceInterface.getPolarCDLanding().get(xcg),
-					_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(), 
-					_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(),
-					_thePerformanceInterface.getFreeRollDuration(),
-					_thePerformanceInterface.getMuFunction(), 
-					_thePerformanceInterface.getMuBrakeFunction(),
-					wingToGroundDistance,
-					_thePerformanceInterface.getKCLmaxLanding(),
-					_thePerformanceInterface.getCLmaxLanding().get(xcg),
-					_thePerformanceInterface.getCLZeroLanding().get(xcg),
-					_thePerformanceInterface.getCLAlphaLanding().get(xcg),
-					_thePerformanceInterface.getTheOperatingConditions().getThrottleLanding(),
-					_thePerformanceInterface.getCruiseCalibrationFactorThrust(),
-					_thePerformanceInterface.getFlightIdleCalibrationFactorThrust(),
-					_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
-					_thePerformanceInterface.getCruiseCalibrationFactorSFC(),
-					_thePerformanceInterface.getFlightIdleCalibrationFactorSFC(),
-					_thePerformanceInterface.getGroundIdleCalibrationFactorSFC(),
-					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+
+			_theLandingNoiseTrajectoryCalculatorMap.put(
+					xcg,
+					new LandingNoiseTrajectoryCalc(
+							_thePerformanceInterface.getLandingNoiseTrajectoryInitialAltitude(),
+							_thePerformanceInterface.getLandingNoiseTrajectoryTrajectoryAngle(),
+							_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKLandingWeight()),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+							_thePerformanceInterface.getPolarCLLanding().get(xcg),
+							_thePerformanceInterface.getPolarCDLanding().get(xcg),
+							_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(), 
+							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(),
+							_thePerformanceInterface.getFreeRollDuration(),
+							_thePerformanceInterface.getMuFunction(), 
+							_thePerformanceInterface.getMuBrakeFunction(),
+							wingToGroundDistance,
+							_thePerformanceInterface.getKCLmaxLanding(),
+							_thePerformanceInterface.getCLmaxLanding().get(xcg),
+							_thePerformanceInterface.getCLZeroLanding().get(xcg),
+							_thePerformanceInterface.getCLAlphaLanding().get(xcg),
+							_thePerformanceInterface.getTheOperatingConditions().getThrottleLanding(),
+							_thePerformanceInterface.getCruiseCalibrationFactorThrust(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorThrust(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
+							_thePerformanceInterface.getCruiseCalibrationFactorSFC(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorSFC(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorSFC(),
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+							)
 					);
 
-			theLandingNoiseTrajectoryCalculator.calculateNoiseLandingTrajectory(true);
+			_theLandingNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseLandingTrajectory(true);
 
 			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance().equals(Boolean.TRUE)) {
-				if(theLandingNoiseTrajectoryCalculator.isTargetRDandAltitudeFlag() == true)
+				if(_theLandingNoiseTrajectoryCalculatorMap.get(xcg).isTargetRDandAltitudeFlag() == true)
 					try {
-						theLandingNoiseTrajectoryCalculator.createOutputCharts(noiseTrajectoriesFolderPath, true);
+						_theLandingNoiseTrajectoryCalculatorMap.get(xcg).createOutputCharts(noiseTrajectoriesFolderPath, true);
 					} catch (InstantiationException | IllegalAccessException e) {
 						e.printStackTrace();
 					}

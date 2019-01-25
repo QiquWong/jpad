@@ -82,12 +82,12 @@ public class MissionProfileCalc {
 	private Amount<Angle> _alphaGround;
 	private Amount<Length> _obstacleTakeOff;
 	private double _kRotation;
-	private double _kLiftOff;
-	private double _kCLmax;
+	private double _kCLmaxTakeOff;
 	private double _dragDueToEnigneFailure;
 	private double _kAlphaDot;
 	private Amount<Length> _obstacleLanding;
-	private Amount<Angle> _thetaApproach;
+	private Amount<Angle> _approachAngle;
+	private double _kCLmaxLanding;
 	private double _kApproach;
 	private double _kFlare;
 	private double _kTouchDown;
@@ -154,39 +154,40 @@ public class MissionProfileCalc {
 			Amount<Length> alternateCruiseAltitude,
 			Amount<Duration> holdingDuration,
 			Amount<Length> holdingAltitude,
-			Double holdingMachNumber,
-			Double landingFuelFlow,
-			Double fuelReserve,
-			Double cLmaxClean,
-			Double cLmaxTakeOff,
+			double holdingMachNumber,
+			double landingFuelFlow,
+			double fuelReserve,
+			double cLmaxClean,
+			double cLmaxTakeOff,
 			Amount<?> cLAlphaTakeOff,
-			Double cLZeroTakeOff,
-			Double cLmaxLanding,
-			Double cLZeroLanding,
-			Double[] polarCLTakeOff,
-			Double[] polarCDTakeOff,
-			Double[] polarCLClimb,
-			Double[] polarCDClimb,
-			Double[] polarCLCruise,
-			Double[] polarCDCruise,
-			Double[] polarCLLanding,
-			Double[] polarCDLanding,
+			double cLZeroTakeOff,
+			double cLmaxLanding,
+			double cLZeroLanding,
+			double[] polarCLTakeOff,
+			double[] polarCDTakeOff,
+			double[] polarCLClimb,
+			double[] polarCDClimb,
+			double[] polarCLCruise,
+			double[] polarCDCruise,
+			double[] polarCLLanding,
+			double[] polarCDLanding,
 			Amount<Velocity> windSpeed,
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
 			Amount<Duration> dtHold,
 			Amount<Angle> alphaGround,
 			Amount<Length> obstacleTakeOff,
-			Double kRotation,
-			Double kLiftOff,
-			Double kCLmax,
-			Double dragDueToEnigneFailure,
-			Double kAlphaDot,
+			double kRotation,
+			double kLiftOff,
+			double kCLmaxTakeOff,
+			double dragDueToEnigneFailure,
+			double kAlphaDot,
 			Amount<Length> obstacleLanding,
-			Amount<Angle> thetaApproach,
-			Double kApproach,
-			Double kFlare,
-			Double kTouchDown,
+			Amount<Angle> approachAngle,
+			double kCLmaxLanding,
+			double kApproach,
+			double kFlare,
+			double kTouchDown,
 			Amount<Duration> freeRollDuration,
 			Amount<Velocity> climbSpeed,
 			Amount<Velocity> speedDescentCAS,
@@ -236,12 +237,12 @@ public class MissionProfileCalc {
 		this._alphaGround = alphaGround;
 		this._obstacleTakeOff = obstacleTakeOff;
 		this._kRotation = kRotation;
-		this._kLiftOff = kLiftOff;
-		this._kCLmax = kCLmax;
+		this._kCLmaxTakeOff = kCLmaxTakeOff;
 		this._dragDueToEnigneFailure = dragDueToEnigneFailure;
 		this._kAlphaDot = kAlphaDot;
 		this._obstacleLanding = obstacleLanding;
-		this._thetaApproach = thetaApproach;
+		this._approachAngle = approachAngle;
+		this._kCLmaxLanding = kCLmaxLanding;
 		this._kApproach = kApproach;
 		this._kFlare = kFlare;
 		this._kTouchDown = kTouchDown;
@@ -294,8 +295,7 @@ public class MissionProfileCalc {
 		ClimbCalc theSecondClimbCalculator = null;
 		DescentCalc theFirstDescentCalculator = null;
 		DescentCalc theSecondDescentCalculator = null;
-		DescentCalc theThirdDescentCalculator = null;
-		LandingCalcSemiempirical theLandingCalculator = null;
+		LandingCalc theLandingCalculator = null;
 		
 		//----------------------------------------------------------------------
 		// QUANTITES TO BE ADDED IN LISTS AT THE END OF THE ITERATION
@@ -4018,27 +4018,27 @@ public class MissionProfileCalc {
 		this._holdingAltitude = _holdingAltitude;
 	}
 
-	public Double getFuelReserve() {
+	public double getFuelReserve() {
 		return _fuelReserve;
 	}
 
-	public void setFuelReserve(Double _fuelReserve) {
+	public void setFuelReserve(double _fuelReserve) {
 		this._fuelReserve = _fuelReserve;
 	}
 
-	public Double getCLmaxClean() {
+	public double getCLmaxClean() {
 		return _cLmaxClean;
 	}
 
-	public void setCLmaxClean(Double _cLmaxClean) {
+	public void setCLmaxClean(double _cLmaxClean) {
 		this._cLmaxClean = _cLmaxClean;
 	}
 
-	public Double getCLmaxTakeOff() {
+	public double getCLmaxTakeOff() {
 		return _cLmaxTakeOff;
 	}
 
-	public void setCLmaxTakeOff(Double _cLmaxTakeOff) {
+	public void setCLmaxTakeOff(double _cLmaxTakeOff) {
 		this._cLmaxTakeOff = _cLmaxTakeOff;
 	}
 
@@ -4050,43 +4050,43 @@ public class MissionProfileCalc {
 		this._cLAlphaTakeOff = _cLAlphaTakeOff;
 	}
 
-	public Double getCLZeroTakeOff() {
+	public double getCLZeroTakeOff() {
 		return _cLZeroTakeOff;
 	}
 
-	public void setCLZeroTakeOff(Double _cLZeroTakeOff) {
+	public void setCLZeroTakeOff(double _cLZeroTakeOff) {
 		this._cLZeroTakeOff = _cLZeroTakeOff;
 	}
 
-	public Double getCLmaxLanding() {
+	public double getCLmaxLanding() {
 		return _cLmaxLanding;
 	}
 
-	public void setCLmaxLanding(Double _cLmaxLanding) {
+	public void setCLmaxLanding(double _cLmaxLanding) {
 		this._cLmaxLanding = _cLmaxLanding;
 	}
 
-	public Double getCLZeroLanding() {
+	public double getCLZeroLanding() {
 		return _cLZeroLanding;
 	}
 
-	public void setCLZeroLanding(Double _cLZeroLanding) {
+	public void setCLZeroLanding(double _cLZeroLanding) {
 		this._cLZeroLanding = _cLZeroLanding;
 	}
 
-	public Double[] getPolarCLClimb() {
+	public double[] getPolarCLClimb() {
 		return _polarCLClimb;
 	}
 
-	public void setPolarCLClimb(Double[] _polarCLClimb) {
+	public void setPolarCLClimb(double[] _polarCLClimb) {
 		this._polarCLClimb = _polarCLClimb;
 	}
 
-	public Double[] getPolarCDClimb() {
+	public double[] getPolarCDClimb() {
 		return _polarCDClimb;
 	}
 
-	public void setPolarCDClimb(Double[] _polarCDClimb) {
+	public void setPolarCDClimb(double[] _polarCDClimb) {
 		this._polarCDClimb = _polarCDClimb;
 	}
 
@@ -4138,43 +4138,43 @@ public class MissionProfileCalc {
 		this._obstacleTakeOff = _obstacleTakeOff;
 	}
 
-	public Double getKRotation() {
+	public double getKRotation() {
 		return _kRotation;
 	}
 
-	public void setKRotation(Double _kRotation) {
+	public void setKRotation(double _kRotation) {
 		this._kRotation = _kRotation;
 	}
 
-	public Double getKLiftOff() {
-		return _kLiftOff;
+	public double getKCLmaxTakeOff() {
+		return _kCLmaxTakeOff;
 	}
 
-	public void setKLiftOff(Double _kLiftOff) {
-		this._kLiftOff = _kLiftOff;
+	public void setKCLmaxTakeOff(double _kCLmaxTakeOff) {
+		this._kCLmaxTakeOff = _kCLmaxTakeOff;
+	}
+	
+	public double getKCLmaxLanding() {
+		return _kCLmaxTakeOff;
 	}
 
-	public Double getKCLmax() {
-		return _kCLmax;
+	public void setKCLmaxLanding(double _kCLmaxLanding) {
+		this._kCLmaxLanding = _kCLmaxLanding;
 	}
 
-	public void setKCLmax(Double _kCLmax) {
-		this._kCLmax = _kCLmax;
-	}
-
-	public Double getDragDueToEnigneFailure() {
+	public double getDragDueToEnigneFailure() {
 		return _dragDueToEnigneFailure;
 	}
 
-	public void setDragDueToEnigneFailure(Double _dragDueToEnigneFailure) {
+	public void setDragDueToEnigneFailure(double _dragDueToEnigneFailure) {
 		this._dragDueToEnigneFailure = _dragDueToEnigneFailure;
 	}
 
-	public Double getKAlphaDot() {
+	public double getKAlphaDot() {
 		return _kAlphaDot;
 	}
 
-	public void setKAlphaDot(Double _kAlphaDot) {
+	public void setKAlphaDot(double _kAlphaDot) {
 		this._kAlphaDot = _kAlphaDot;
 	}
 
@@ -4186,35 +4186,35 @@ public class MissionProfileCalc {
 		this._obstacleLanding = _obstacleLanding;
 	}
 
-	public Amount<Angle> getThetaApproach() {
-		return _thetaApproach;
+	public Amount<Angle> getApproachAngle() {
+		return _approachAngle;
 	}
 
-	public void setThetaApproach(Amount<Angle> _thetaApproach) {
-		this._thetaApproach = _thetaApproach;
+	public void setApproachAngle(Amount<Angle> _thetaApproach) {
+		this._approachAngle = _thetaApproach;
 	}
 
-	public Double getKApproach() {
+	public double getKApproach() {
 		return _kApproach;
 	}
 
-	public void setKApproach(Double _kApproach) {
+	public void setKApproach(double _kApproach) {
 		this._kApproach = _kApproach;
 	}
 
-	public Double getKFlare() {
+	public double getKFlare() {
 		return _kFlare;
 	}
 
-	public void setKFlare(Double _kFlare) {
+	public void setKFlare(double _kFlare) {
 		this._kFlare = _kFlare;
 	}
 
-	public Double getKTouchDown() {
+	public double getKTouchDown() {
 		return _kTouchDown;
 	}
 
-	public void setKTouchDown(Double _kTouchDown) {
+	public void setKTouchDown(double _kTouchDown) {
 		this._kTouchDown = _kTouchDown;
 	}
 
@@ -4346,19 +4346,19 @@ public class MissionProfileCalc {
 		this._takeOffMissionAltitude = _takeOffMissionAltitude;
 	}
 
-	public Double getHoldingMachNumber() {
+	public double getHoldingMachNumber() {
 		return _holdingMachNumber;
 	}
 
-	public void setHoldingMachNumber(Double _holdingMachNumber) {
+	public void setHoldingMachNumber(double _holdingMachNumber) {
 		this._holdingMachNumber = _holdingMachNumber;
 	}
 
-	public Double getLandingFuelFlow() {
+	public double getLandingFuelFlow() {
 		return _landingFuelFlow;
 	}
 
-	public void setLandingFuelFlow(Double _landingFuelFlow) {
+	public void setLandingFuelFlow(double _landingFuelFlow) {
 		this._landingFuelFlow = _landingFuelFlow;
 	}
 
@@ -4418,19 +4418,19 @@ public class MissionProfileCalc {
 		this._missionRange = _missionRange;
 	}
 
-	public Double[] getPolarCLCruise() {
+	public double[] getPolarCLCruise() {
 		return _polarCLCruise;
 	}
 
-	public void setPolarCLCruise(Double[] _polarCLCruise) {
+	public void setPolarCLCruise(double[] _polarCLCruise) {
 		this._polarCLCruise = _polarCLCruise;
 	}
 
-	public Double[] getPolarCDCruise() {
+	public double[] getPolarCDCruise() {
 		return _polarCDCruise;
 	}
 
-	public void setPolarCDCruise(Double[] _polarCDCruise) {
+	public void setPolarCDCruise(double[] _polarCDCruise) {
 		this._polarCDCruise = _polarCDCruise;
 	}
 
@@ -4530,35 +4530,35 @@ public class MissionProfileCalc {
 		this._dragMissionList = _dragMissionList;
 	}
 
-	public Double[] getPolarCLTakeOff() {
+	public double[] getPolarCLTakeOff() {
 		return _polarCLTakeOff;
 	}
 
-	public void setPolarCLTakeOff(Double[] _polarCLTakeOff) {
+	public void setPolarCLTakeOff(double[] _polarCLTakeOff) {
 		this._polarCLTakeOff = _polarCLTakeOff;
 	}
 
-	public Double[] getPolarCDTakeOff() {
+	public double[] getPolarCDTakeOff() {
 		return _polarCDTakeOff;
 	}
 
-	public void setPolarCDTakeOff(Double[] _polarCDTakeOff) {
+	public void setPolarCDTakeOff(double[] _polarCDTakeOff) {
 		this._polarCDTakeOff = _polarCDTakeOff;
 	}
 
-	public Double[] getPolarCLLanding() {
+	public double[] getPolarCLLanding() {
 		return _polarCLLanding;
 	}
 
-	public void setPolarCLLanding(Double[] _polarCLLanding) {
+	public void setPolarCLLanding(double[] _polarCLLanding) {
 		this._polarCLLanding = _polarCLLanding;
 	}
 
-	public Double[] getPolarCDLanding() {
+	public double[] getPolarCDLanding() {
 		return _polarCDLanding;
 	}
 
-	public void setPolarCDLanding(Double[] _polarCDLanding) {
+	public void setPolarCDLanding(double[] _polarCDLanding) {
 		this._polarCDLanding = _polarCDLanding;
 	}
 
