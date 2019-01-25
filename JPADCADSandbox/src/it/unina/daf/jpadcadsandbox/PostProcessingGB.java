@@ -47,7 +47,7 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 
 public class PostProcessingGB {
 	public static BufferedWriter bwoutu = null; 
-
+	public static BufferedWriter bwoutr = null;
 	public static BufferedWriter bwoutd = null;
 
 	//TODO
@@ -72,6 +72,7 @@ public class PostProcessingGB {
 
 
 		List<Double> alphaVec = new ArrayList<>();
+		List<String> caseFolderPaths = new ArrayList<>();
 
 
 
@@ -121,6 +122,14 @@ public class PostProcessingGB {
 
 		List<List<Double>> cCl_y_wing = new ArrayList<>(n_cases);
 		List<List<Double>> cl_y_wing = new ArrayList<>(n_cases);
+
+		//total
+		List<Double> cd_total = new ArrayList<>();
+		List<Double> cy_total = new ArrayList<>();
+		List<Double> cl_total = new ArrayList<>();
+		List<Double> croll_total = new ArrayList<>();
+		List<Double> cm_total = new ArrayList<>();
+		List<Double> cn_total = new ArrayList<>();
 
 		//wing geometric parameters
 		List<Double> y_wing = new ArrayList<>();
@@ -242,6 +251,10 @@ public class PostProcessingGB {
 													if (result0[1].contains("WING"))
 														type = "WING";
 													coefficient = result0[0];
+
+//													if (result0[1].equals("total"))
+//														type = "Total";
+//													coefficient = result0[0];
 												}
 
 												switch(type) {
@@ -313,6 +326,38 @@ public class PostProcessingGB {
 
 													break;
 
+
+												case "Total":
+
+													String[] result = result0[1].split(",");
+													value = Double.valueOf(result[result.length - 1]);
+
+													if(coefficient.equals("CD"))
+														cd_total.add(value);
+
+													if(coefficient.equals("CY"))
+														cy_total.add(value);
+
+
+													if(coefficient.equals("CL"))
+														cl_total.add(value);
+
+
+													if(coefficient.equals("CRoll"))
+														croll_total.add(value);
+
+
+													if(coefficient.equals("CM"))
+														cm_total.add(value);
+
+
+													if(coefficient.equals("CN"))
+														cn_total.add(value);
+
+
+													break;
+
+
 												default:
 													break;
 
@@ -356,6 +401,8 @@ public class PostProcessingGB {
 														if (result0[1].contains("WING"))
 															type = "WING";
 														coefficient = result0[0];
+
+
 													}
 
 
@@ -421,6 +468,7 @@ public class PostProcessingGB {
 
 
 														break;
+
 
 													default:
 														break;
@@ -655,22 +703,63 @@ public class PostProcessingGB {
 										}
 
 										regression_coefficients = linearRegression(alphaVec.size(), upwash_i, alphaVec);
-                                        upwash_da.add(regression_coefficients[1]);
+										upwash_da.add(regression_coefficients[1]);
 									}
 
 
 									//WRITE RESULTS
 
-									bwoutd = new BufferedWriter(new FileWriter((casesFolderPath
-											+ "\\RESULTS"+ File.separator+
+
+									String destFolder = casesFolderPath+"\\RESULTS"+ File.separator + "Case_" + c1 + "_" + c2 + "_" + c3 + "_" + c4 + "_" + c5 + "_" + c6 + "_" + countm ;
+									caseFolderPaths.add(destFolder);
+									File directory = new File(destFolder);
+									directory.mkdir();
+
+									bwoutr = new BufferedWriter(new FileWriter((destFolder + File.separator+
+											"/CANARD_WING_"+ c1 +"_"+ c2 +"_"+ c3 + "_" + c4 + "_" + c5 + "_" + c6 + "_" + countm +"_resume.csv")));
+									bwoutr.write("Aerodynamic Coefficients \n");
+
+									String[] aerodynamicCoeff = new String[] {"CD","CL","CM"};
+
+									for(String coeff : aerodynamicCoeff) {
+
+										bwoutr.write(coeff + "\n");
+										bwoutr.write("Alpha,Wing,Wing(Canard),Canard,Canard(Wing),Total \n");
+
+										switch(coeff) {
+
+										case "CD":
+
+											for(int a =0; a < alphaVec.size(); a++) {
+												bwoutr.write(alphaVec.get(a)+","+cd_wing.get(a)+","+cd_wing_c.get(a)+","+cd_canard.get(a)+","+cd_canard_w.get(a)+/*","+cd_total.get(a)+*/"\n");
+											}
+											break;
+
+										case "CL":
+											for(int a =0; a < alphaVec.size(); a++) {
+												bwoutr.write(alphaVec.get(a)+","+cl_wing.get(a)+","+cl_wing_c.get(a)+","+cl_canard.get(a)+","+cl_canard_w.get(a)+/*","+cl_total.get(a)+*/"\n");
+											}
+											break;
+
+										case "CM":
+											for(int a =0; a < alphaVec.size(); a++) {
+												bwoutr.write(alphaVec.get(a)+","+cm_wing.get(a)+","+cm_wing_c.get(a)+","+cm_canard.get(a)+","+cm_canard_w.get(a)+/*","+cm_total.get(a)+*/"\n");
+											}
+											break;
+										}
+
+									}
+
+									bwoutr.close();
+
+									bwoutd = new BufferedWriter(new FileWriter((destFolder + File.separator +
 											"/CANARD_WING_"+ c1 +"_"+ c2 +"_"+ c3 + "_" + c4 + "_" + c5 + "_" + c6 + "_" + countm +"_Downwash.csv")));
 									bwoutd.write("Integral Downwash \n");
 									bwoutd.write(downwash_int+ "\n");
 									bwoutd.write(" \n");
 
 
-									bwoutu = new BufferedWriter(new FileWriter((casesFolderPath
-											+ "\\RESULTS"+ File.separator+
+									bwoutu = new BufferedWriter(new FileWriter((destFolder + File.separator +
 											"/CANARD_WING_"+ c1 +"_"+ c2 +"_"+ c3 + "_" + c4 + "_" + c5 + "_" + c6 + "_" + countm +"_Upwash.csv")));
 									bwoutu.write("Integral Upwash \n");
 									bwoutu.write(upwash_int+ "\n");

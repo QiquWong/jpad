@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <configuration id="IRON Cabin Configuration">
+		<global_data>
+			<design_passengers_number>130</design_passengers_number>
+			<flight_crew_number>2</flight_crew_number>
+			<classes_number>1</classes_number>
+			<classes_type>ECONOMY</classes_type>
+			<aisles_number>1</aisles_number>
+			<x_coordinates_first_row unit="m">7.8</x_coordinates_first_row>
+		</global_data>
+		<detailed_data>
+			<number_of_breaks_economy_class>2</number_of_breaks_economy_class>
+			<number_of_breaks_business_class></number_of_breaks_business_class>
+			<number_of_breaks_first_class></number_of_breaks_first_class>
+			<number_of_rows_economy_class>26</number_of_rows_economy_class>
+			<number_of_rows_business_class></number_of_rows_business_class>
+			<number_of_rows_first_class></number_of_rows_first_class>
+			<number_of_columns_economy_class>3;2</number_of_columns_economy_class>
+			<number_of_columns_business_class></number_of_columns_business_class>
+			<number_of_columns_first_class></number_of_columns_first_class>
+			<pitch_economy_class unit="m">0.82</pitch_economy_class>
+			<pitch_business_class unit="m"></pitch_business_class>
+			<pitch_first_class unit="m"></pitch_first_class>
+			<width_economy_class unit="m">0.47</width_economy_class>
+			<width_business_class unit="m"></width_business_class>
+			<width_first_class unit="m"></width_first_class>
+			<distance_from_wall_economy_class unit="m">0.1</distance_from_wall_economy_class>
+			<distance_from_wall_business_class unit="m"></distance_from_wall_business_class>
+			<distance_from_wall_first_class unit="m"></distance_from_wall_first_class>
+		</detailed_data>
+    </configuration>
+</jpad_config>
