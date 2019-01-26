@@ -10,7 +10,7 @@
 <mapEntry key="Path" value="${JPAD_ROOT}\libraries\hdf"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.debug.ui.ATTR_CAPTURE_IN_FILE" value="${JPAD_ROOT}\JPADSandBox_v2\out\IRON_CANARD_LOOP2_FINAL.log"/>
-<stringAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING" value="UTF-8"/>
+<stringAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING" value="ISO-8859-1"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox2.vt.analyses.CompleteAnalysisTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i in/Template_Aircraft/aircraft_IRON_CANARD_LOOP2_FINAL.xml &#13;&#10;-ia in\Template_Analyses\analysis_IRON_CANARD_LOOP2_FINAL.xml &#13;&#10;-ioc in\Template_Analyses\operating_conditions_IRON_CANARD_LOOP2_FINAL.xml &#13;&#10;-da in/Template_Aircraft/lifting_surfaces/airfoils &#13;&#10;-df in/Template_Aircraft/fuselages &#13;&#10;-dls in/Template_Aircraft/lifting_surfaces &#13;&#10;-de in/Template_Aircraft/engines &#13;&#10;-dn in/Template_Aircraft/nacelles &#13;&#10;-dlg in/Template_Aircraft/landing_gears &#13;&#10;-dcc in/Template_Aircraft/cabin_configurations"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADSandBox_v2"/>

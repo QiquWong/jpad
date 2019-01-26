@@ -507,11 +507,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.takeOffThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.takeOffThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.takeOffThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.takeOffThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3)  
-				thrustRatio = super.takeOffThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.takeOffThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4)  
 				thrustRatio = super.takeOffThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -566,11 +566,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.aprThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.aprThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.aprThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.aprThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.aprThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.aprThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.aprThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 		}
@@ -624,11 +624,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.climbThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.climbThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.climbThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.climbThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.climbThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.climbThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.climbThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -683,11 +683,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.continuousThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.continuousThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.continuousThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.continuousThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.continuousThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.continuousThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.continuousThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -742,11 +742,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.cruiseThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.cruiseThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.cruiseThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.cruiseThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.cruiseThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.cruiseThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.cruiseThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -802,11 +802,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.flightIdleThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.flightIdleThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.flightIdleThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.flightIdleThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.flightIdleThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.flightIdleThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.flightIdleThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -861,11 +861,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.groundIdleThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.groundIdleThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.groundIdleThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.groundIdleThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.groundIdleThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.groundIdleThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.groundIdleThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -955,11 +955,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				sfc = super.takeOffSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.takeOffSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.takeOffSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.takeOffSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.takeOffSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.takeOffSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.takeOffSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1014,11 +1014,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				sfc = super.aprSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.aprSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.aprSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.aprSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.aprSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.aprSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.aprSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1073,11 +1073,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				sfc = super.climbSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.climbSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.climbSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.climbSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.climbSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.climbSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.climbSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1132,11 +1132,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				sfc = super.continuousSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.continuousSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.continuousSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.continuousSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.continuousSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.continuousSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.continuousSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1191,11 +1191,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				sfc = super.cruiseSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.cruiseSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.cruiseSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.cruiseSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.cruiseSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.cruiseSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.cruiseSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1250,11 +1250,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				sfc = super.flightIdleSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.flightIdleSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.flightIdleSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.flightIdleSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.flightIdleSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.flightIdleSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.flightIdleSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1310,11 +1310,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		
 			if(numberOfReducedInput == 1) 
-				sfc = super.groundIdleSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.groundIdleSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.groundIdleSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.groundIdleSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.groundIdleSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.groundIdleSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.groundIdleSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1404,11 +1404,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1463,11 +1463,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.aprNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1522,11 +1522,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.climbNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1581,11 +1581,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1640,11 +1640,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1699,11 +1699,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1758,11 +1758,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1852,11 +1852,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.takeOffCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1911,11 +1911,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.aprCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.aprCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.aprCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.aprCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.aprCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.aprCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.aprCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -1970,11 +1970,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.climbCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.climbCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.climbCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.climbCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.climbCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.climbCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.climbCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 		
@@ -2029,11 +2029,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.continuousCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2088,11 +2088,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.cruiseCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2147,11 +2147,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2206,11 +2206,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2300,11 +2300,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.takeOffHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2359,11 +2359,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.aprHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.aprHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.aprHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.aprHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.aprHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.aprHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.aprHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2418,11 +2418,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.climbHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.climbHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.climbHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.climbHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.climbHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.climbHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.climbHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2477,11 +2477,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.continuousHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2536,11 +2536,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.cruiseHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2595,11 +2595,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2653,11 +2653,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2747,11 +2747,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2806,11 +2806,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.aprSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2865,11 +2865,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.climbSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2924,11 +2924,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.continuousSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2983,11 +2983,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3042,11 +3042,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3100,11 +3100,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3195,11 +3195,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3255,11 +3255,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3314,11 +3314,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3373,11 +3373,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3432,11 +3432,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3491,11 +3491,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3550,11 +3550,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3644,11 +3644,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3703,11 +3703,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.aprH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3762,11 +3762,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.climbH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3821,11 +3821,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3880,11 +3880,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3939,11 +3939,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -3998,11 +3998,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -4092,11 +4092,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -4151,11 +4151,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.aprSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -4210,11 +4210,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.climbSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -4269,11 +4269,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -4328,11 +4328,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -4387,11 +4387,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -4446,11 +4446,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 

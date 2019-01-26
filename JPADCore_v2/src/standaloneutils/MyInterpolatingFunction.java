@@ -128,12 +128,91 @@ public class MyInterpolatingFunction {
 		return psf.value(x);
 	}
 
+	public double valueAtIndex(double input, int index) {
+		
+		double value = 0.0;
+		
+		switch (index) {
+		case 0:
+			if (input < xMin) input = xMin;
+			if (input > xMax) input = xMax;
+			value = psf.value(input);
+			break;
+		case 1:
+			if (input < yMin) input = yMin;
+			if (input > yMax) input = yMax;
+			value = psf.value(input);
+			break;
+		case 2:
+			if (input < zMin) input = zMin;
+			if (input > zMax) input = zMax;
+			value = psf.value(input);
+			break;
+		case 3:
+			if (input < kMin) input = kMin;
+			if (input > kMax) input = kMax;
+			value = psf.value(input);
+			break;
+		default:
+			break;
+		}
+		
+		return value;
+	}
+	
 	public double valueBilinear(double x, double y) {
 		if (x < xMin) x = xMin;
 		if (x > xMax) x = xMax;
 		if (y < yMin) y = yMin;
 		if (y > yMax) y = yMax;
 		return bif.value(x,y);
+	}
+	
+	public double valueBilinearAtIndex(double input1, double input2, int index1, int index2) {
+		
+		switch (index1) {
+		case 0:
+			if (input1 < xMin) input1 = xMin;
+			if (input1 > xMax) input1 = xMax;
+			break;
+		case 1:
+			if (input1 < yMin) input1 = yMin;
+			if (input1 > yMax) input1 = yMax;
+			break;
+		case 2:
+			if (input1 < zMin) input1 = zMin;
+			if (input1 > zMax) input1 = zMax;
+			break;
+		case 3:
+			if (input1 < kMin) input1 = kMin;
+			if (input1 > kMax) input1 = kMax;
+			break;
+		default:
+			break;
+		}
+		
+		switch (index2) {
+		case 0:
+			if (input2 < xMin) input2 = xMin;
+			if (input2 > xMax) input2 = xMax;
+			break;
+		case 1:
+			if (input2 < yMin) input2 = yMin;
+			if (input2 > yMax) input2 = yMax;
+			break;
+		case 2:
+			if (input2 < zMin) input2 = zMin;
+			if (input2 > zMax) input2 = zMax;
+			break;
+		case 3:
+			if (input2 < kMin) input2 = kMin;
+			if (input2 > kMax) input2 = kMax;
+			break;
+		default:
+			break;
+		}
+		
+		return bif.value(input1, input2);
 	}
 	
 	public double value(double x, double y) {
@@ -152,6 +231,74 @@ public class MyInterpolatingFunction {
 		if (z < zMin) z = zMin;
 		if (z > zMax) z = zMax;
 		return tif.value(x,y,z);
+	}
+	
+	public double valueTrilinearAtIndex(double input1, double input2, double input3, int index1, int index2, int index3) {
+		
+		switch (index1) {
+		case 0:
+			if (input1 < xMin) input1 = xMin;
+			if (input1 > xMax) input1 = xMax;
+			break;
+		case 1:
+			if (input1 < yMin) input1 = yMin;
+			if (input1 > yMax) input1 = yMax;
+			break;
+		case 2:
+			if (input1 < zMin) input1 = zMin;
+			if (input1 > zMax) input1 = zMax;
+			break;
+		case 3:
+			if (input1 < kMin) input1 = kMin;
+			if (input1 > kMax) input1 = kMax;
+			break;
+		default:
+			break;
+		}
+		
+		switch (index2) {
+		case 0:
+			if (input2 < xMin) input2 = xMin;
+			if (input2 > xMax) input2 = xMax;
+			break;
+		case 1:
+			if (input2 < yMin) input2 = yMin;
+			if (input2 > yMax) input2 = yMax;
+			break;
+		case 2:
+			if (input2 < zMin) input2 = zMin;
+			if (input2 > zMax) input2 = zMax;
+			break;
+		case 3:
+			if (input2 < kMin) input2 = kMin;
+			if (input2 > kMax) input2 = kMax;
+			break;
+		default:
+			break;
+		}
+		
+		switch (index3) {
+		case 0:
+			if (input3 < xMin) input3 = xMin;
+			if (input3 > xMax) input3 = xMax;
+			break;
+		case 1:
+			if (input3 < yMin) input3 = yMin;
+			if (input3 > yMax) input3 = yMax;
+			break;
+		case 2:
+			if (input3 < zMin) input3 = zMin;
+			if (input3 > zMax) input3 = zMax;
+			break;
+		case 3:
+			if (input3 < kMin) input3 = kMin;
+			if (input3 > kMax) input3 = kMax;
+			break;
+		default:
+			break;
+		}
+		
+		return tif.value(input1, input2, input3);
 	}
 	
 	public double value(double x, double y, double z) {

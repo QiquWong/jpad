@@ -72,11 +72,11 @@
 			climb="FALSE"
 			cruise="FALSE"
 			descent="FALSE"
-			landing="FALSE"
+			landing="TRUE"
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
 			noise_trajectories="FALSE"
-			mission_profile="TRUE"
+			mission_profile="FALSE"
 	/>
 	<!--
  	<costs 
