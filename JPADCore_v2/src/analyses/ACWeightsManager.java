@@ -1563,7 +1563,7 @@ public class ACWeightsManager {
 		FileOutputStream fileOut = new FileOutputStream(filenameWithPathAndExt + ".xlsx");
 		wb.write(fileOut);
 		fileOut.close();
-		System.out.println("Your excel file has been generated!");
+		System.out.println("\n\tWeights results Excel file has been generated!\n");
 	}
 
 	public void plotWeightBreakdown(String weightsFolderPath) {

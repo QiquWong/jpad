@@ -2235,7 +2235,7 @@ public class ACBalanceManager {
 		FileOutputStream fileOut = new FileOutputStream(filenameWithPathAndExt + ".xlsx");
 		wb.write(fileOut);
 		fileOut.close();
-		System.out.println("Your excel file has been generated!");
+		System.out.println("\n\tBalance results Excel file has been generated!\n");
 	}
 	
 	private void initializeData() {

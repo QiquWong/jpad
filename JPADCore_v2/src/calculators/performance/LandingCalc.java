@@ -344,7 +344,7 @@ public class LandingCalc {
 		StepHandler continuousOutputModel = null;
 
 		int i=0;
-		int maxIter = 100;
+		int maxIter = 200;
 		dtFlare = Amount.valueOf(4.0, SI.SECOND); // First guess value
 		alphaDotFlare = 1.0; /* deg/s - First guess value */
 		double newAlphaDotFlare = 0.0;
@@ -717,9 +717,15 @@ public class LandingCalc {
 			}
 			
 			if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
-				newAlphaDotFlare = alphaDotFlare + 0.1;
+				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 50.0)
+					newAlphaDotFlare = alphaDotFlare + 0.02;
+				else
+					newAlphaDotFlare = alphaDotFlare + 0.1;
 			else
-				newAlphaDotFlare = alphaDotFlare - 0.1;
+				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 50.0)
+					newAlphaDotFlare = alphaDotFlare - 0.02;
+				else
+					newAlphaDotFlare = alphaDotFlare - 0.1;
 
 			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) < 1 
 					&& Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) < Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -2333,7 +2339,7 @@ public class LandingCalc {
 
 			Amount<Angle> alpha = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 			
-			int maxIterAlpha = 200; /* max alpha excursion +-2° */
+			int maxIterAlpha = 100; /* max alpha excursion +-1° */
 			if(time.doubleValue(SI.SECOND) <= tFlareAltitude.doubleValue(SI.SECOND)) {
 
 				int j=0;

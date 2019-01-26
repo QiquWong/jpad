@@ -8184,7 +8184,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			FileOutputStream fileOut = new FileOutputStream(filenameWithPathAndExt + ".xlsx");
 			wb.write(fileOut);
 			fileOut.close();
-			System.out.println("Your excel file has been generated!");
+			System.out.println("\n\tAerodynamic and Stability results Excel file has been generated!\n");
 	        
 		}
 

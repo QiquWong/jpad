@@ -1623,7 +1623,7 @@ public class ACCostsManager {
 		FileOutputStream fileOut = new FileOutputStream(filenameWithPathAndExt + ".xlsx");
 		wb.write(fileOut);
 		fileOut.close();
-		System.out.println("Your excel file has been generated!");
+		System.out.println("\n\tCosts results Excel file has been generated!\n");
 		
 	}
 	
