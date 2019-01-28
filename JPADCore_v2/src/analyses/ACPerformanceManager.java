@@ -121,6 +121,14 @@ public class ACPerformanceManager {
 	private Map<Double, Amount<Duration>> _takeOffDurationMap;
 	private Map<Double, double[]> _thrustMomentOEIMap;
 	private Map<Double, double[]> _yawingMomentOEIMap;
+	private Map<Double, Amount<Mass>>_takeOffFuelMap;
+	private Map<Double, Amount<Mass>>_takeOffNOxEmissionsMap;
+	private Map<Double, Amount<Mass>>_takeOffCOEmissionsMap;
+	private Map<Double, Amount<Mass>>_takeOffHCEmissionsMap;
+	private Map<Double, Amount<Mass>>_takeOffSootEmissionsMap;
+	private Map<Double, Amount<Mass>>_takeOffCO2EmissionsMap;
+	private Map<Double, Amount<Mass>>_takeOffSOxEmissionsMap;
+	private Map<Double, Amount<Mass>>_takeOffH2OEmissionsMap;
 	//..............................................................................
 	// Climb
 	private Map<Double, ClimbCalc> _theClimbCalculatorMap;
@@ -311,6 +319,14 @@ public class ACPerformanceManager {
 		this._takeOffDurationMap = new HashMap<>();
 		this._thrustMomentOEIMap = new HashMap<>();
 		this._yawingMomentOEIMap = new HashMap<>();
+		this._takeOffFuelMap = new HashMap<>();
+		this._takeOffNOxEmissionsMap = new HashMap<>();
+		this._takeOffCOEmissionsMap= new HashMap<>();
+		this._takeOffHCEmissionsMap = new HashMap<>();
+		this._takeOffSootEmissionsMap = new HashMap<>();
+		this._takeOffCO2EmissionsMap = new HashMap<>();
+		this._takeOffSOxEmissionsMap = new HashMap<>();
+		this._takeOffH2OEmissionsMap = new HashMap<>();
 		//..............................................................................
 		// Climb
 		this._theClimbCalculatorMap = new HashMap<>();
@@ -478,6 +494,7 @@ public class ACPerformanceManager {
 		
 	}
 	
+	// TODO: READ NEW DATA FROM PERFORMANCE FILE (CUSTOMIZED OPERTAING CONDITIONS) AND USE THEM IN ALL CALCULATORS
 	@SuppressWarnings({ "unchecked" })
 	public static ACPerformanceManager importFromXML (
 			String pathToXML,
@@ -3329,6 +3346,16 @@ public class ACPerformanceManager {
         	dataListTakeOff.add(new Object[] {"V2/VsTO","", _v2Map.get(xcg).divide(_vStallTakeOffMap.get(xcg)).getEstimatedValue()});
         	dataListTakeOff.add(new Object[] {" "});
         	dataListTakeOff.add(new Object[] {"Take-off duration","s", _takeOffDurationMap.get(xcg).doubleValue(SI.SECOND)});
+        	dataListTakeOff.add(new Object[] {" "});
+        	dataListTakeOff.add(new Object[] {"Take-off fuel used","kg", _takeOffFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        	dataListTakeOff.add(new Object[] {" "});
+        	dataListTakeOff.add(new Object[] {"Take-off NOx emissions","g", _takeOffNOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListTakeOff.add(new Object[] {"Take-off CO emissions","g", _takeOffCOEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListTakeOff.add(new Object[] {"Take-off HC emissions","g", _takeOffHCEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListTakeOff.add(new Object[] {"Take-off Soot emissions","g", _takeOffSootEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListTakeOff.add(new Object[] {"Take-off CO2 emissions","g", _takeOffCO2EmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListTakeOff.add(new Object[] {"Take-off SOx emissions","g", _takeOffSOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListTakeOff.add(new Object[] {"Take-off H2O emissions","g", _takeOffH2OEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
 
         	Row rowTakeOff = sheet.createRow(0);
         	Object[] objArrTakeOff = dataListTakeOff.get(0);
@@ -3654,7 +3681,7 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Total fuel used","kg", _totalFuelUsedMap.get(xcg).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Fuel reserve","%", _thePerformanceInterface.getFuelReserve()*100});
         		dataListMissionProfile.add(new Object[] {"Design passengers number","", Integer.valueOf(_thePerformanceInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()).doubleValue()});
-        		dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", _theMissionProfileCalculatorMap.get(xcg).getPassengersNumber().doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", _theMissionProfileCalculatorMap.get(xcg).getDeisngPassengersNumber()});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {"Take-off range","nmi", _rangeListMap.get(xcg).get(1).doubleValue(NonSI.NAUTICAL_MILE)});
         		dataListMissionProfile.add(new Object[] {"Climb range","nmi", _rangeListMap.get(xcg).get(2).to(NonSI.NAUTICAL_MILE).minus(_rangeListMap.get(xcg).get(1).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
@@ -4396,6 +4423,16 @@ public class ACPerformanceManager {
 				.append("\t\tV2/VsTO = " + _v2Map.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND)) + "\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tTake-off duration = " + _takeOffDurationMap.get(xcg) + "\n")
+				.append("\t\t.....................................\n")
+				.append("\t\tTake-off fuel used = " + _takeOffFuelMap.get(xcg) + "\n")
+				.append("\t\t.....................................\n")
+				.append("\t\tTake-off NOx emissions = " + _takeOffNOxEmissionsMap.get(xcg) + "\n")
+				.append("\t\tTake-off CO emissions = " + _takeOffCOEmissionsMap.get(xcg) + "\n")
+				.append("\t\tTake-off HC emissions = " + _takeOffHCEmissionsMap.get(xcg) + "\n")
+				.append("\t\tTake-off Soot emissions = " + _takeOffSootEmissionsMap.get(xcg) + "\n")
+				.append("\t\tTake-off CO2 emissions = " + _takeOffCO2EmissionsMap.get(xcg) + "\n")
+				.append("\t\tTake-off SOx emissions = " + _takeOffSOxEmissionsMap.get(xcg) + "\n")
+				.append("\t\tTake-off H2O emissions = " + _takeOffH2OEmissionsMap.get(xcg) + "\n")
 				.append("\t-------------------------------------\n")
 				;
 			}
@@ -4618,7 +4655,28 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
 							_thePerformanceInterface.getTakeOffCalibrationFactorSFC(),
 							_thePerformanceInterface.getAprCalibrationFactorSFC(),
-							_thePerformanceInterface.getGroundIdleCalibrationFactorSFC()
+							_thePerformanceInterface.getGroundIdleCalibrationFactorSFC(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexH2O(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexH2O(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexH2O()
 							)
 					);
 			
@@ -4673,6 +4731,94 @@ public class ACPerformanceManager {
 			_takeOffDurationMap.put(
 					xcg,
 					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getTime().get(2)
+					);
+			
+			// Fuel used:
+			_takeOffFuelMap.put(
+					xcg,
+					Amount.valueOf(
+							_theTakeOffCalculatorMap.get(xcg).getFuelUsed().stream()
+							.mapToDouble(f -> f.doubleValue(SI.KILOGRAM))
+							.sum(),
+							SI.KILOGRAM
+							)
+					);
+			
+			// Emission NOx:
+			_takeOffNOxEmissionsMap.put(
+					xcg,
+					Amount.valueOf(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsNOx().stream()
+							.mapToDouble(e -> e.doubleValue(SI.GRAM))
+							.sum(),
+							SI.GRAM
+							)
+					);
+			
+			// Emission CO:
+			_takeOffCOEmissionsMap.put(
+					xcg,
+					Amount.valueOf(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsCO().stream()
+							.mapToDouble(e -> e.doubleValue(SI.GRAM))
+							.sum(),
+							SI.GRAM
+							)
+					);
+			
+			// Emission HC:
+			_takeOffHCEmissionsMap.put(
+					xcg,
+					Amount.valueOf(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsHC().stream()
+							.mapToDouble(e -> e.doubleValue(SI.GRAM))
+							.sum(),
+							SI.GRAM
+							)
+					);
+			
+			// Emission Soot:
+			_takeOffSootEmissionsMap.put(
+					xcg,
+					Amount.valueOf(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsSoot().stream()
+							.mapToDouble(e -> e.doubleValue(SI.GRAM))
+							.sum(),
+							SI.GRAM
+							)
+					);
+			
+			// Emission CO2:
+			_takeOffCO2EmissionsMap.put(
+					xcg,
+					Amount.valueOf(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsCO2().stream()
+							.mapToDouble(e -> e.doubleValue(SI.GRAM))
+							.sum(),
+							SI.GRAM
+							)
+					);
+			
+			// Emission SOx:
+			_takeOffSOxEmissionsMap.put(
+					xcg,
+					Amount.valueOf(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsSOx().stream()
+							.mapToDouble(e -> e.doubleValue(SI.GRAM))
+							.sum(),
+							SI.GRAM
+							)
+					);
+
+			// Emission H2O:
+			_takeOffH2OEmissionsMap.put(
+					xcg,
+					Amount.valueOf(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsH2O().stream()
+							.mapToDouble(e -> e.doubleValue(SI.GRAM))
+							.sum(),
+							SI.GRAM
+							)
 					);
 			
 		}
@@ -8472,6 +8618,70 @@ public class ACPerformanceManager {
 
 	public void setTheLandingNoiseTrajectoryCalculatorMap(Map<Double, LandingNoiseTrajectoryCalc> _theLandingNoiseTrajectoryCalculatorMap) {
 		this._theLandingNoiseTrajectoryCalculatorMap = _theLandingNoiseTrajectoryCalculatorMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTakeOffFuelMap() {
+		return _takeOffFuelMap;
+	}
+
+	public void setTakeOffFuelMap(Map<Double, Amount<Mass>> _takeOffFuelMap) {
+		this._takeOffFuelMap = _takeOffFuelMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTakeOffNOxEmissionsMap() {
+		return _takeOffNOxEmissionsMap;
+	}
+
+	public void setTakeOffNOxEmissionsMap(Map<Double, Amount<Mass>> _takeOffNOxEmissionsMap) {
+		this._takeOffNOxEmissionsMap = _takeOffNOxEmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTakeOffCOEmissionsMap() {
+		return _takeOffCOEmissionsMap;
+	}
+
+	public void setTakeOffCOEmissionsMap(Map<Double, Amount<Mass>> _takeOffCOEmissionsMap) {
+		this._takeOffCOEmissionsMap = _takeOffCOEmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTakeOffHCEmissionsMap() {
+		return _takeOffHCEmissionsMap;
+	}
+
+	public void setTakeOffHCEmissionsMap(Map<Double, Amount<Mass>> _takeOffHCEmissionsMap) {
+		this._takeOffHCEmissionsMap = _takeOffHCEmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTakeOffSootEmissionsMap() {
+		return _takeOffSootEmissionsMap;
+	}
+
+	public void setTakeOffSootEmissionsMap(Map<Double, Amount<Mass>> _takeOffSootEmissionsMap) {
+		this._takeOffSootEmissionsMap = _takeOffSootEmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTakeOffCO2EmissionsMap() {
+		return _takeOffCO2EmissionsMap;
+	}
+
+	public void setTakeOffCO2EmissionsMap(Map<Double, Amount<Mass>> _takeOffCO2EmissionsMap) {
+		this._takeOffCO2EmissionsMap = _takeOffCO2EmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTakeOffSOxEmissionsMap() {
+		return _takeOffSOxEmissionsMap;
+	}
+
+	public void setTakeOffSOxEmissionsMap(Map<Double, Amount<Mass>> _takeOffSOxEmissionsMap) {
+		this._takeOffSOxEmissionsMap = _takeOffSOxEmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTakeOffH2OEmissionsMap() {
+		return _takeOffH2OEmissionsMap;
+	}
+
+	public void setTakeOffH2OEmissionsMap(Map<Double, Amount<Mass>> _takeOffH2OEmissionsMap) {
+		this._takeOffH2OEmissionsMap = _takeOffH2OEmissionsMap;
 	}
 
 }

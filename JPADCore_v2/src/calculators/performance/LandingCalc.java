@@ -887,7 +887,7 @@ public class LandingCalc {
 						SI.NEWTON)
 						);
 				//--------------------------------------------------------------------------------
-				// FUEL USED (kg/s):
+				// FUEL USED (kg):
 				fuelUsedList.add(Amount.valueOf(x[4], SI.KILOGRAM));
 				//----------------------------------------------------------------------------------------
 				if(timeHistories) {
