@@ -33,8 +33,8 @@ public class LoadAndRunSimGB {
 									for(int counta=0; counta<n_cases-2; counta++) {
 
 
-										//String simName = "CANARD_WING_"+ c1 +"_"+ c2 +"_"+ c3 +"_"+ c4 +"_"+ c5 +"_"+ c6 +"_"+ countm +"_"+ counta+".sim";
-										String simName = "WING_"+ c1 +"_"+ c2 +"_"+ c3 +"_"+ c4 +"_"+ c5 +"_"+ c6 +"_"+ countm +"_"+ counta+".sim";
+										String simName = "CANARD_"+ c1 +"_"+ c2 +"_"+ c3 +"_"+ c4 +"_"+ c5 +"_"+ c6 +"_"+ countm +"_"+ counta+".sim";
+										//String simName = "WING_"+ c1 +"_"+ c2 +"_"+ c3 +"_"+ c4 +"_"+ c5 +"_"+ c6 +"_"+ countm +"_"+ counta+".sim";
 										
 										try {
 											Runtime runtime = Runtime.getRuntime();

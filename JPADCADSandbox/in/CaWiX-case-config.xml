@@ -7,13 +7,13 @@
 	<star_exe_path value="C:\\Program Files\\CD-adapco\\12.04.011-R8\\STAR-CCM+12.04.011-R8\\star\\bin\\starccm+.exe" />
 	<star_options value="-cpubind -power -podkey 2jHU+QkwqexqrAOdVZ6ZzQ -licpath 1999@flex.cd-adapco.com -np 8 -rsh ssh" />
 	<cases>
-		<x_canard_pos_pct_var>[0.0, -0.15, 0.15]</x_canard_pos_pct_var>
-		<z_canard_pos unit="m">[0.0, -3.08, -6.16]</z_canard_pos>
-		<span_canard_pct_var>[0.0, -0.15, 0.15]</span_canard_pct_var>
-		<sweep_canard_angle unit="°">[0.0, -10.0, -20.0]</sweep_canard_angle>
-		<dihedral_canard_angle unit="°">[0.0, -6.0, 6.0]</dihedral_canard_angle>
-		<rigging_canard_angle unit="°">[0.0, -1.0, -2.0]</rigging_canard_angle>
 		<mach>[0.2]</mach>
-		<alpha unit="°">[-2.0, 0.0, 4.0]</alpha>
+		<alpha unit="°">[-2.0,0.0,4.0]</alpha>
+		<x_canard_pos_pct_var>[0.0]</x_canard_pos_pct_var>
+		<z_canard_pos unit="m">[0.0]</z_canard_pos>
+		<span_canard_pct_var>[0.0]</span_canard_pct_var>
+		<sweep_canard_angle unit="°">[0.0]</sweep_canard_angle>
+		<dihedral_canard_angle unit="°">[0.0]</dihedral_canard_angle>
+		<rigging_canard_angle unit="°">[0.0]</rigging_canard_angle>
 	</cases>
 </cawix_config>

@@ -46,8 +46,6 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 
 public class CreateCasesGB {
 
-
-
 	private String workingFolderPath;
 	private String jpadCADFolderPath;
 	private String starTempFolderPath;
@@ -68,7 +66,7 @@ public class CreateCasesGB {
 	private Aircraft theAircraft = null;
 
 	private CaWiXUtils caseManager = null; 
-	
+
 
 	public static void main(String[] args) throws IOException {
 		System.out.println("-------------------");
@@ -156,7 +154,6 @@ public class CreateCasesGB {
 
 		// Acquiring original Wing data
 
-
 		Amount<Length> xApexWing = ((LiftingSurface) aeroMap.get(AeroComponents.WING).get(0))
 				.getXApexConstructionAxes().to(SI.METER);
 
@@ -176,9 +173,7 @@ public class CreateCasesGB {
 				.getRiggingAngle().to(NonSI.DEGREE_ANGLE);
 
 
-
 		// Acquiring original Canard Data
-
 
 		Amount<Length> xApexCanard = ((LiftingSurface) aeroMap.get(AeroComponents.CANARD).get(0))
 				.getXApexConstructionAxes();
@@ -186,35 +181,20 @@ public class CreateCasesGB {
 		Amount<Length> zApexCanard =  ((LiftingSurface) aeroMap.get(AeroComponents.CANARD).get(0))
 				.getZApexConstructionAxes();
 
-//		Amount<Length> spanCanard = ((LiftingSurface) aeroMap.get(AeroComponents.CANARD).get(0))
-//				.getEquivalentWing().getPanels().get(0).getSpan().times(2);
-//
-//		Amount<Angle> sweepLECanard = ((LiftingSurface) aeroMap.get(AeroComponents.CANARD).get(0))
-//				.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE);
-//
-//		Amount<Angle> dihedralCanard = ((LiftingSurface) aeroMap.get(AeroComponents.CANARD).get(0))
-//				.getEquivalentWing().getPanels().get(0).getDihedral().to(NonSI.DEGREE_ANGLE);
+		//		Amount<Length> spanCanard = ((LiftingSurface) aeroMap.get(AeroComponents.CANARD).get(0))
+		//				.getEquivalentWing().getPanels().get(0).getSpan().times(2);
+		//
+		//		Amount<Angle> sweepLECanard = ((LiftingSurface) aeroMap.get(AeroComponents.CANARD).get(0))
+		//				.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE);
+		//
+		//		Amount<Angle> dihedralCanard = ((LiftingSurface) aeroMap.get(AeroComponents.CANARD).get(0))
+		//				.getEquivalentWing().getPanels().get(0).getDihedral().to(NonSI.DEGREE_ANGLE);
 
 
 		Amount<Angle> riggingAngleCanard = ((LiftingSurface) aeroMap.get(AeroComponents.CANARD).get(0))
 				.getRiggingAngle().to(NonSI.DEGREE_ANGLE);
 
-
-
-
-		//variation factors
-		//
-		//		double xPosCanardFactor=15.0; //enter a percentage value
-		//		//double zPosCanardFactor=15; //enter a percentage value
-		//		double spanFactor=15.0;       //enter a percentage value
-		//		//double d_sweepFactor=15; //enter an angular value
-		//		double d_dihedralFactor=6.0; //enter an angular value
-		//		//double d_riggingFactor=15; //enter an angular value
-		//
-		//		//modified geometric parameters' vectors
-
-		//double[] xPosCanardVector = new double[] {0};//,-xApexCanard.doubleValue(SI.METER)*(xPosCanardFactor/100),
-		//+xApexWing.doubleValue(SI.METER)*(xPosCanardFactor/100)};
+		//Vectors for canard's modification
 
 		double[] xPosCanardVector = MyArrayUtils.convertToDoublePrimitive(
 				MyArrayUtils.convertListOfDoubleToDoubleArray(theApp.getXPosCanardPcntVarList()));
@@ -224,14 +204,11 @@ public class CreateCasesGB {
 		double[] zPosCanardVector = MyArrayUtils.convertToDoublePrimitive(
 				MyArrayUtils.convertListOfAmountToDoubleArray(theApp.getZPosCanardList()));
 
-
 		double[] spanCanardVector = MyArrayUtils.convertToDoublePrimitive(
 				MyArrayUtils.convertListOfDoubleToDoubleArray(theApp.getSpanCanardPcntVarList()));
 
-
 		double[] sweepCanardVector = MyArrayUtils.convertToDoublePrimitive(
 				MyArrayUtils.convertListOfAmountToDoubleArray(theApp.getSweepCanardList()));
-
 
 		double[] dihedralCanardVector = MyArrayUtils.convertToDoublePrimitive(
 				MyArrayUtils.convertListOfAmountToDoubleArray(theApp.getDihedralCanardList()));
@@ -241,15 +218,13 @@ public class CreateCasesGB {
 		double[] riggingAngleCanardVector = MyArrayUtils.convertToDoublePrimitive(
 				MyArrayUtils.convertListOfAmountToDoubleArray(theApp.getRiggingAngleCanardList()));
 
-		//iterations
+		double[] machNumberVector = MyArrayUtils.convertToDoublePrimitive(
+				MyArrayUtils.convertListOfDoubleToDoubleArray(theApp.getMachList()));
 
-		List<String> caseFolderPaths = new ArrayList<>();
+		double[] alphaVector = MyArrayUtils.convertToDoublePrimitive(
+				MyArrayUtils.convertListOfAmountToDoubleArray(theApp.getAlphaList()));
 
-
-		//TODO MACH NUMBER
-
-		double[] machNumberVector=new double[] {0.17};
-		//{0.4,0.6};
+		//Cases' loop
 
 		for(int countm = 0; countm < machNumberVector.length; countm++) {
 
@@ -324,7 +299,6 @@ public class CreateCasesGB {
 
 										if(2 == c4) {
 											modDihedralCanard=modDihedralCanard.plus(Amount.valueOf(0.1, NonSI.DEGREE_ANGLE));
-											////									        modTipTwistCanard=modTipTwistCanard.plus(Amount.valueOf(1.0, NonSI.DEGREE_ANGLE)); 
 										}
 
 										modComponent.adjustDimensions(
@@ -337,7 +311,6 @@ public class CreateCasesGB {
 												WingAdjustCriteriaEnum.SPAN_AREA_TAPER
 												);
 
-
 										modComponent.setAirfoilList(originalComponent.getAirfoilList());	
 										modComponent.setXApexConstructionAxes(xApexCanard.
 												plus(Amount.valueOf(xPosCanardVector[c1],SI.METER)));
@@ -345,11 +318,8 @@ public class CreateCasesGB {
 												plus(Amount.valueOf(zPosCanardVector[c2], SI.METER)));
 										modComponent.setRiggingAngle(riggingAngleCanard.plus(Amount.valueOf(riggingAngleCanardVector[c6], NonSI.DEGREE_ANGLE)));
 
-
 										aeroMap.get(modComponentEnum).remove(0);
 										aeroMap.get(modComponentEnum).add(modComponent);		
-
-
 
 										// Define geometric data
 
@@ -359,7 +329,6 @@ public class CreateCasesGB {
 
 										double fuselageLength = (aeroMap.containsKey(AeroComponents.FUSELAGE)) ? 
 												((Fuselage) aeroMap.get(AeroComponents.FUSELAGE).get(0)).getFuselageLength().doubleValue(SI.METER) : 0;
-
 
 												double eqWingRootChord;
 												double eqWingTaperRatio;
@@ -429,8 +398,6 @@ public class CreateCasesGB {
 												//											System.out.println("eqRootChord_c " +eqCanardRootChord);
 												//											System.out.println("eqTaper_c " +eqCanardTaperRatio);
 
-
-
 												GeometricData geometricData = new GeometricData(
 														new GeometricDataBuilder(
 																cadUnits, 
@@ -458,7 +425,7 @@ public class CreateCasesGB {
 																rigging_Angle_Canard
 																));
 
-												// Create aircraft CAD files
+												// Create CAD files
 
 												List<String> cadNames = new ArrayList<>();
 
@@ -474,11 +441,6 @@ public class CreateCasesGB {
 															cadNames.add(cadName);
 															OCCUtils.write(cadName, FileExtension.STEP, AircraftCADUtils.getFuselageCAD(
 																	(Fuselage) aeroMap.get(component).get(i), 7, 7, false, false, true));
-															////														AircraftUtils.getAircraftSolidFile(
-															//////																AircraftUtils.getFuselageCAD(
-															//////																		(Fuselage) aeroMap.get(component).get(i), 7, 7, true, true, false), 
-															//////																cadName, 
-															//////																FileExtension.STEP);
 														}
 														break;
 
@@ -489,11 +451,6 @@ public class CreateCasesGB {
 															cadNames.add(cadName);
 															OCCUtils.write(cadName, FileExtension.STEP,AircraftCADUtils.getLiftingSurfaceCAD(
 																	(LiftingSurface) aeroMap.get(component).get(i), WingTipType.ROUNDED, false, false, true));
-															//////														AircraftUtils.getAircraftSolidFile(
-															//////																AircraftUtils.getLiftingSurfaceCAD(
-															//////																		(LiftingSurface) aeroMap.get(component).get(i), ComponentEnum.WING, 1e-3, false, true, false), 
-															//////																cadName, 
-															//////																FileExtension.STEP);
 														}
 														break;
 
@@ -504,11 +461,6 @@ public class CreateCasesGB {
 															cadNames.add(cadName);
 															OCCUtils.write(cadName, FileExtension.STEP,AircraftCADUtils.getLiftingSurfaceCAD(
 																	(LiftingSurface) aeroMap.get(component).get(i), WingTipType.ROUNDED, false, false, true));
-															//////														AircraftUtils.getAircraftSolidFile(
-															//////																AircraftUtils.getLiftingSurfaceCAD(
-															//////																		(LiftingSurface) aeroMap.get(component).get(i), ComponentEnum.HORIZONTAL_TAIL, 1e-3, false, true, false), 
-															//////																cadName, 
-															//////																FileExtension.STEP);
 														}
 														break;	
 
@@ -519,28 +471,18 @@ public class CreateCasesGB {
 															cadNames.add(cadName);
 															OCCUtils.write(cadName, FileExtension.STEP,AircraftCADUtils.getLiftingSurfaceCAD(
 																	(LiftingSurface) aeroMap.get(component).get(i), WingTipType.ROUNDED, false, false, true));
-															//////														AircraftUtils.getAircraftSolidFile(
-															//////																AircraftUtils.getLiftingSurfaceCAD(
-															//////																		(LiftingSurface) aeroMap.get(component).get(i), ComponentEnum.VERTICAL_TAIL, 1e-3, false, true, false), 
-															//////																cadName, 
-															//////																FileExtension.STEP);
 														}
 														break;	
 
-														//													case "CANARD":
-														//														int nCnd = aeroMap.get(component).size();				 
-														//														for(int i = 0; i < nCnd; i++) {
-														//															String cadName = (nCnd > 1) ? ("CANARD_" + (i + 1)) : "CANARD";
-														//															cadNames.add(cadName);
-														//															OCCUtils.write(cadName, FileExtension.STEP,AircraftCADUtils.getLiftingSurfaceCAD(
-														//																	(LiftingSurface) aeroMap.get(component).get(i), WingTipType.ROUNDED, false, false, true));
-														//															////////														AircraftUtils.getAircraftSolidFile(
-														//															////////																AircraftUtils.getLiftingSurfaceCAD(
-														//															////////																		(LiftingSurface) aeroMap.get(component).get(i), ComponentEnum.CANARD, 1e-3, false, true, false), 
-														//															////////																cadName, 
-														//															////////																FileExtension.STEP);
-														//														}
-														//														break;	
+													case "CANARD":
+														int nCnd = aeroMap.get(component).size();				 
+														for(int i = 0; i < nCnd; i++) {
+															String cadName = (nCnd > 1) ? ("CANARD_" + (i + 1)) : "CANARD";
+															cadNames.add(cadName);
+															OCCUtils.write(cadName, FileExtension.STEP,AircraftCADUtils.getLiftingSurfaceCAD(
+																	(LiftingSurface) aeroMap.get(component).get(i), WingTipType.ROUNDED, false, false, true));
+														}
+														break;	
 
 													default:
 
@@ -548,24 +490,17 @@ public class CreateCasesGB {
 													}
 												}
 
-
-												//TODO 
-												double[] alphaVector=new double[] {0};//,0,4};
-
-												//iterations
-
 												for(int counta=0; counta < alphaVector.length; counta++){
 
 													// Define operating conditions
 
 													double angleOfAttack = alphaVector[counta];
 													double sideslipAngle = 0.0;
-													double machNumber = machNumberVector[countm];
-													//TODO		
+													double machNumber = machNumberVector[countm];	
 													double altitude = 0.0; //ft
-													double deltaTemperature = 0.0;
+													//double deltaTemperature = 0.0;
 													double altitudeM = Amount.valueOf(altitude, NonSI.FOOT).doubleValue(SI.METER);
-													double deltaTemperatureM = Amount.valueOf(deltaTemperature, SI.CELSIUS).doubleValue(SI.CELSIUS);
+													//double deltaTemperatureM = Amount.valueOf(deltaTemperature, SI.CELSIUS).doubleValue(SI.CELSIUS);
 
 													//StdAtmos1976 atmosphere = AtmosphereCalc.getAtmosphere(altitudeM, deltaTemperatureM);
 													StdAtmos1976 atmosphere = AtmosphereCalc.getAtmosphere(altitudeM);
@@ -608,7 +543,6 @@ public class CreateCasesGB {
 													int machCase=countm;
 													int alphaCase=counta;
 
-
 													SimulationParameters simulationParameters = new SimulationParameters(
 															new SimulationParametersBuilder(
 																	simType, 
@@ -625,7 +559,7 @@ public class CreateCasesGB {
 																	)
 															);
 
-													// Create the data file
+													// Create the data files
 
 													DataWriter writer = new DataWriter(
 															operatingConditions, 
@@ -633,9 +567,9 @@ public class CreateCasesGB {
 															simulationParameters			
 															);
 
-
 													// Clean working folders 
 
+													List <String> caseFolderPaths = new ArrayList<>();
 													String destFolder = theApp.getWorkingFolderPath();/*+ "\\CANARD_ALONE"+File.separator + "Case_" + c1 + "_" + c2 + "_" + c3 + "_" + c4 + "_" + c5 + "_" + c6 + "_" + countm + "_" +  counta;*/
 													caseFolderPaths.add(destFolder);
 													File directory = new File(destFolder);
@@ -665,12 +599,11 @@ public class CreateCasesGB {
 														}
 													});
 
-
-
 													writer.write(destFolder + File.separator + "Data_"+c1+"_"+c2+"_"+c3+"_"+c4+"_"+c5+"_"+c6+"_"+countm+"_"+counta+".xml");
 													writer.write(theApp.getStarTempFolderPath() + File.separator + "Data_"+c1+"_"+c2+"_"+c3+"_"+c4+"_"+c5+"_"+c6+"_"+countm+"_"+counta+".xml");
 
-													//TODO												// Run STARCCM+ simulation using macro.java
+													// Run STARCCM+ simulation using macro.java
+
 													try {
 														Runtime runtime = Runtime.getRuntime();
 
@@ -897,7 +830,7 @@ public class CreateCasesGB {
 	}
 
 	public CaWiXUtils getCaseManager() {
-		return caseManager;
+		return this.caseManager;
 	}
 
 	public void setCaseManager(CaWiXUtils caseManager) {

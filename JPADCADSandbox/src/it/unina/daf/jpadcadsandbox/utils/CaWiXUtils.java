@@ -61,12 +61,23 @@ public final class CaWiXUtils {
 			
 			createCasesGB.setAlphaList(reader.readArrayofAmountFromXML("//cases/alpha"));
 			createCasesGB.setMachList(reader.readArrayDoubleFromXML("//cases/mach"));
+			
+			//createCasesGB.setComponentList(reader.readArrayFromXML("//component_to_be_modified"));
+					
 			createCasesGB.setRiggingAngleCanardList(reader.readArrayofAmountFromXML("//cases/rigging_canard_angle"));
 			createCasesGB.setDihedralCanardList(reader.readArrayofAmountFromXML("//cases/dihedral_canard_angle"));
 			createCasesGB.setSweepCanardList(reader.readArrayofAmountFromXML("//cases/sweep_canard_angle"));
 			createCasesGB.setSpanCanardPcntVarList(reader.readArrayDoubleFromXML("//cases/span_canard_pct_var"));
 			createCasesGB.setZPosCanardList(reader.readArrayofAmountFromXML("//cases/z_canard_pos"));
 			createCasesGB.setXPosCanardPcntVarList(reader.readArrayDoubleFromXML("//cases/x_canard_pos_pct_var"));
+			
+//			createCasesGB.setRiggingAngleWingList(reader.readArrayofAmountFromXML("//cases/rigging_wing_angle"));
+//			createCasesGB.setDihedralWingList(reader.readArrayofAmountFromXML("//cases/dihedral_wing_angle"));
+//			createCasesGB.setSweepWingList(reader.readArrayofAmountFromXML("//cases/sweep_wing_angle"));
+//			createCasesGB.setSpanWingPcntVarList(reader.readArrayDoubleFromXML("//cases/span_wing_pct_var"));
+//			createCasesGB.setZPosWingList(reader.readArrayofAmountFromXML("//cases/z_wing_pos"));
+//			createCasesGB.setXPosWingPcntVarList(reader.readArrayDoubleFromXML("//cases/x_wing_pos_pct_var"));
+			
 			
 			System.out.println(args.length);
 			createCasesGB.setAircraft(importAircraft(this.va));

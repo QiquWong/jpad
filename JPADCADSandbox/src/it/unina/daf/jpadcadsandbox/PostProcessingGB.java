@@ -71,8 +71,11 @@ public class PostProcessingGB {
 		int n_cases=3;
 
 
-		List<Double> alphaVec = new ArrayList<>();
+		List<Double> alphaList = new ArrayList<>();
+		List<Double> machList = new ArrayList<>();
+		List<Double> reynoldsList = new ArrayList<>();
 		List<String> caseFolderPaths = new ArrayList<>();
+		
 
 
 
@@ -182,14 +185,14 @@ public class PostProcessingGB {
 		Double downwash_int = 0.0;
 		Double upwash_int = 0.0;
 
-		for(int countm=0; countm<n_cases-2; countm++) {
-			for(int c1=0; c1<n_cases-2; c1++) {
-				for(int c2=0; c2<n_cases-2; c2++) {
-					for(int c3=0; c3<n_cases-2; c3++) {
-						for(int c4=0; c4<n_cases-2; c4++) {
-							for(int c5=0; c5<n_cases-2; c5++) {
-								for(int c6=0; c6<n_cases-2; c6++) {
-									for(int counta=0; counta<n_cases; counta++) {
+		for(int countm=0; countm < n_cases-2; countm++) {
+			for(int c1=0; c1 < n_cases-2; c1++) {
+				for(int c2=0; c2 < n_cases-2; c2++) {
+					for(int c3=0; c3 < n_cases-2; c3++) {
+						for(int c4=0; c4 < n_cases-2; c4++) {
+							for(int c5=0; c5 < n_cases-2; c5++) {
+								for(int c6=0; c6 < n_cases-2; c6++) {
+									for(int counta=0; counta < n_cases; counta++) {
 
 										//Post Process the Simulation
 										String runsimName = "CANARD_WING_"+ c1 +"_"+ c2 +"_"+ c3 +"_"+ c4 +"_"+ c5 +"_"+ c6 +"_"+ countm +"_"+ counta+"_run.sim";
@@ -240,10 +243,13 @@ public class PostProcessingGB {
 													continue;
 
 
-												if (result0[0].equals("Angle")) 
+												if (result0[0].equals("Angle")) { 
 													type = "Angle";
-
-												else {
+											}else if (result0[0].equals("Mach")) { 
+												type = "Mach";
+											}else if (result0[0].equals("Reynolds")) { 
+												type = "Reynolds";
+											}else {
 													if (result0[1].contains("CANARD")) 
 														type = "CANARD";
 													coefficient = result0[0];
@@ -262,7 +268,20 @@ public class PostProcessingGB {
 												case "Angle":
 													String[] resulta = result0[2].split(",");
 													value = Double.valueOf(resulta[resulta.length - 1]);
-													alphaVec.add(value);
+													alphaList.add(value);
+													break;
+													
+												case "Mach":
+													String[] resultm = result0[1].split(",");
+													value = Double.valueOf(resultm[resultm.length - 1]);
+													machList.add(value);
+													break;
+												
+													
+												case "Reynolds":
+													String[] resultr = result0[1].split(",");
+													value = Double.valueOf(resultr[resultr.length - 1]);
+													reynoldsList.add(value);
 													break;
 
 												case "CANARD":
@@ -629,17 +648,17 @@ public class PostProcessingGB {
 
 									//INTEGRAL DOWNWASH AND UPWASH CALCULATION
 
-									double[] regression_coefficients = linearRegression(alphaVec.size(), cl_wing, alphaVec);
+									double[] regression_coefficients = linearRegression(alphaList.size(), cl_wing, alphaList);
 									Double cla_wing = regression_coefficients[1];
-									regression_coefficients = linearRegression(alphaVec.size(), cl_canard, alphaVec);
+									regression_coefficients = linearRegression(alphaList.size(), cl_canard, alphaList);
 									Double cla_canard = regression_coefficients[1];
-									regression_coefficients = linearRegression(alphaVec.size(), cl_wing_c, alphaVec);
+									regression_coefficients = linearRegression(alphaList.size(), cl_wing_c, alphaList);
 									Double cla_wing_c = regression_coefficients[1];
-									regression_coefficients = linearRegression(alphaVec.size(), cl_canard_w, alphaVec);
+									regression_coefficients = linearRegression(alphaList.size(), cl_canard_w, alphaList);
 									Double cla_canard_w = regression_coefficients[1];
 
 									//TODO
-									downwash_int =1- (cla_wing_c/cla_wing);  //de/da integrale positivo
+									downwash_int = (cla_wing/cla_wing_c)-1;  //de/da integrale positivo
 									upwash_int = (cla_canard_w/cla_canard)-1; 
 
 									//SPANWISE DOWNWASH AND UPWASH CALCULATION
@@ -683,26 +702,26 @@ public class PostProcessingGB {
 
 									for(int i=0; i < y_wing.size(); i++) {
 
-										for(int a =0; a < alphaVec.size(); a++) {
+										for(int a =0; a < alphaList.size(); a++) {
 
 
 											downwash_i.add(downwash_y.get(a).get(i)); 
 										}
 
-										regression_coefficients = linearRegression(alphaVec.size(), downwash_i, alphaVec);
+										regression_coefficients = linearRegression(alphaList.size(), downwash_i, alphaList);
 										downwash_da.add(regression_coefficients[1]);
 
 									}
 
 									for(int i=0; i < y_canard.size(); i++) {
 
-										for(int a =0; a < alphaVec.size(); a++) {
+										for(int a =0; a < alphaList.size(); a++) {
 
 
 											upwash_i.add(upwash_y.get(a).get(i)); 
 										}
 
-										regression_coefficients = linearRegression(alphaVec.size(), upwash_i, alphaVec);
+										regression_coefficients = linearRegression(alphaList.size(), upwash_i, alphaList);
 										upwash_da.add(regression_coefficients[1]);
 									}
 
@@ -723,6 +742,9 @@ public class PostProcessingGB {
 
 									for(String coeff : aerodynamicCoeff) {
 
+										for(int c=0; c < machList.size(); c++) {
+											
+										bwoutr.write("Canard-Wing Analysis at Mach:"+machList.get(c)+"and"+reynoldsList.get(c)+"\n");
 										bwoutr.write(coeff + "\n");
 										bwoutr.write("Alpha,Wing,Wing(Canard),Canard,Canard(Wing),Total \n");
 
@@ -730,59 +752,64 @@ public class PostProcessingGB {
 
 										case "CD":
 
-											for(int a =0; a < alphaVec.size(); a++) {
-												bwoutr.write(alphaVec.get(a)+","+cd_wing.get(a)+","+cd_wing_c.get(a)+","+cd_canard.get(a)+","+cd_canard_w.get(a)+/*","+cd_total.get(a)+*/"\n");
+											for(int a =0; a < alphaList.size(); a++) {
+												bwoutr.write(alphaList.get(a)+","+cd_wing.get(a)+","+cd_wing_c.get(a)+","+cd_canard.get(a)+","+cd_canard_w.get(a)+/*","+cd_total.get(a)+*/"\n");
 											}
 											break;
 
 										case "CL":
-											for(int a =0; a < alphaVec.size(); a++) {
-												bwoutr.write(alphaVec.get(a)+","+cl_wing.get(a)+","+cl_wing_c.get(a)+","+cl_canard.get(a)+","+cl_canard_w.get(a)+/*","+cl_total.get(a)+*/"\n");
+											for(int a =0; a < alphaList.size(); a++) {
+												bwoutr.write(alphaList.get(a)+","+cl_wing.get(a)+","+cl_wing_c.get(a)+","+cl_canard.get(a)+","+cl_canard_w.get(a)+/*","+cl_total.get(a)+*/"\n");
 											}
 											break;
 
 										case "CM":
-											for(int a =0; a < alphaVec.size(); a++) {
-												bwoutr.write(alphaVec.get(a)+","+cm_wing.get(a)+","+cm_wing_c.get(a)+","+cm_canard.get(a)+","+cm_canard_w.get(a)+/*","+cm_total.get(a)+*/"\n");
+											for(int a =0; a < alphaList.size(); a++) {
+												bwoutr.write(alphaList.get(a)+","+cm_wing.get(a)+","+cm_wing_c.get(a)+","+cm_canard.get(a)+","+cm_canard_w.get(a)+/*","+cm_total.get(a)+*/"\n");
 											}
 											break;
 										}
 
+									}
 									}
 
 									bwoutr.close();
 
 									bwoutd = new BufferedWriter(new FileWriter((destFolder + File.separator +
 											"/CANARD_WING_"+ c1 +"_"+ c2 +"_"+ c3 + "_" + c4 + "_" + c5 + "_" + c6 + "_" + countm +"_Downwash.csv")));
-									bwoutd.write("Integral Downwash \n");
+									bwoutd.write("Integral Downwash (de/da) \n");
 									bwoutd.write(downwash_int+ "\n");
 									bwoutd.write(" \n");
 
 
 									bwoutu = new BufferedWriter(new FileWriter((destFolder + File.separator +
 											"/CANARD_WING_"+ c1 +"_"+ c2 +"_"+ c3 + "_" + c4 + "_" + c5 + "_" + c6 + "_" + countm +"_Upwash.csv")));
-									bwoutu.write("Integral Upwash \n");
+									bwoutu.write("Integral Upwash (de/da) \n");
 									bwoutu.write(upwash_int+ "\n");
 									bwoutu.write(" \n");
 
 									for(int a=0; a < n_cases; a++) {
 
-										bwoutd.write("Wing Spanwise Downwash at Alpha = "+alphaVec.get(a)+ "\n");
-										bwoutd.write("eta,Downwash(eta) \n");
+										bwoutd.write("Alpha = "+alphaList.get(a)+" \n");
+										bwoutd.write("Wing Spanwise Downwash,Wing_Canard Spanwise cl,Wing Alone Spanwise cl");
+										bwoutd.write("eta,Downwash(eta),cl(eta) \n");
 
-										bwoutu.write("Canard Spanwise Upwash at Alpha = "+alphaVec.get(a)+ "\n");
-										bwoutu.write("eta,Upwash(eta) \n");
+										bwoutu.write("Alpha = "+alphaList.get(a)+ "\n");
+										bwoutu.write("Canard Spanwise Downwash,Canard_Wing Spanwise cl,Canard Alone Spanwise cl");
+										bwoutu.write("eta,Upwash(eta),cl(eta) \n");
 
 
 										for(int i=0; i < y_wing.size(); i++) {
 
-											bwoutd.write(eta_wing.get(i)+","+downwash_y.get(a).get(i)+"\n");
+											bwoutd.write(eta_wing.get(i)+","+downwash_y.get(a).get(i)+","+
+														cl_y_wing_c.get(a).get(i)+","+cl_y_wing.get(a).get(i)+" \n");
 
 										}
 
 										for(int i=0; i < y_canard.size(); i++) {
 
-											bwoutu.write(eta_canard.get(i)+","+upwash_y.get(a).get(i)+"\n");
+											bwoutu.write(eta_canard.get(i)+","+upwash_y.get(a).get(i)+","+
+														cl_y_canard_w.get(a).get(i)+","+cl_y_canard.get(a).get(i)+" \n");
 
 										}
 									}

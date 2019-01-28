@@ -43,8 +43,6 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 
 public class CreateCasesGB {
 
-
-
 	private String workingFolderPath;
 	private String jpadCADFolderPath;
 	private String starTempFolderPath;
@@ -52,7 +50,7 @@ public class CreateCasesGB {
 	private String macroName;
 	private String starExePath; 
 	private String starOptions; 
-
+	
 	private List<Double> xPosCanardPcntVarList = new ArrayList<>();
 	private List<Amount<Length>> zPosCanardList = new ArrayList<>();
 	private List<Double> spanCanardPcntVarList = new ArrayList<>();
@@ -238,15 +236,15 @@ public class CreateCasesGB {
 		double[] riggingAngleCanardVector = MyArrayUtils.convertToDoublePrimitive(
 				MyArrayUtils.convertListOfAmountToDoubleArray(theApp.getRiggingAngleCanardList()));
 
+		double[] machNumberVector = MyArrayUtils.convertToDoublePrimitive(
+				MyArrayUtils.convertListOfDoubleToDoubleArray(theApp.getMachList()));
+		
+		double[] alphaVector = MyArrayUtils.convertToDoublePrimitive(
+				MyArrayUtils.convertListOfAmountToDoubleArray(theApp.getAlphaList()));
+		
+		
 		//iterations
 
-		List<String> caseFolderPaths = new ArrayList<>();
-
-
-		//TODO MACH NUMBER
-
-		double[] machNumberVector=new double[] {0.17};
-		//{0.4,0.6};
 
 		for(int countm = 0; countm < machNumberVector.length; countm++) {
 
@@ -479,20 +477,20 @@ public class CreateCasesGB {
 														}
 														break;
 
-													case "WING":
-														int nWng = aeroMap.get(component).size();				 
-														for(int i = 0; i < nWng; i++) {
-															String cadName = (nWng > 1) ? ("WING_" + (i + 1)) : "WING";
-															cadNames.add(cadName);
-															OCCUtils.write(cadName, FileExtension.STEP,AircraftCADUtils.getLiftingSurfaceCAD(
-																	(LiftingSurface) aeroMap.get(component).get(i), WingTipType.ROUNDED, false, false, true));
-															//////														AircraftUtils.getAircraftSolidFile(
-															//////																AircraftUtils.getLiftingSurfaceCAD(
-															//////																		(LiftingSurface) aeroMap.get(component).get(i), ComponentEnum.WING, 1e-3, false, true, false), 
-															//////																cadName, 
-															//////																FileExtension.STEP);
-														}
-														break;
+//													case "WING":
+//														int nWng = aeroMap.get(component).size();				 
+//														for(int i = 0; i < nWng; i++) {
+//															String cadName = (nWng > 1) ? ("WING_" + (i + 1)) : "WING";
+//															cadNames.add(cadName);
+//															OCCUtils.write(cadName, FileExtension.STEP,AircraftCADUtils.getLiftingSurfaceCAD(
+//																	(LiftingSurface) aeroMap.get(component).get(i), WingTipType.ROUNDED, false, false, true));
+//															//////														AircraftUtils.getAircraftSolidFile(
+//															//////																AircraftUtils.getLiftingSurfaceCAD(
+//															//////																		(LiftingSurface) aeroMap.get(component).get(i), ComponentEnum.WING, 1e-3, false, true, false), 
+//															//////																cadName, 
+//															//////																FileExtension.STEP);
+//														}
+//														break;
 
 													case "HORIZONTAL":
 														int nHtl = aeroMap.get(component).size();				 
@@ -524,30 +522,26 @@ public class CreateCasesGB {
 														}
 														break;	
 
-														//													case "CANARD":
-														//														int nCnd = aeroMap.get(component).size();				 
-														//														for(int i = 0; i < nCnd; i++) {
-														//															String cadName = (nCnd > 1) ? ("CANARD_" + (i + 1)) : "CANARD";
-														//															cadNames.add(cadName);
-														//															OCCUtils.write(cadName, FileExtension.STEP,AircraftCADUtils.getLiftingSurfaceCAD(
-														//																	(LiftingSurface) aeroMap.get(component).get(i), WingTipType.ROUNDED, false, false, true));
-														//															////////														AircraftUtils.getAircraftSolidFile(
-														//															////////																AircraftUtils.getLiftingSurfaceCAD(
-														//															////////																		(LiftingSurface) aeroMap.get(component).get(i), ComponentEnum.CANARD, 1e-3, false, true, false), 
-														//															////////																cadName, 
-														//															////////																FileExtension.STEP);
-														//														}
-														//														break;	
+													case "CANARD":
+														int nCnd = aeroMap.get(component).size();				 
+														for(int i = 0; i < nCnd; i++) {
+															String cadName = (nCnd > 1) ? ("CANARD_" + (i + 1)) : "CANARD";
+															cadNames.add(cadName);
+															OCCUtils.write(cadName, FileExtension.STEP,AircraftCADUtils.getLiftingSurfaceCAD(
+																	(LiftingSurface) aeroMap.get(component).get(i), WingTipType.ROUNDED, false, false, true));
+															////////														AircraftUtils.getAircraftSolidFile(
+															////////																AircraftUtils.getLiftingSurfaceCAD(
+															////////																		(LiftingSurface) aeroMap.get(component).get(i), ComponentEnum.CANARD, 1e-3, false, true, false), 
+															////////																cadName, 
+															////////																FileExtension.STEP);
+														}
+														break;	
 
 													default:
 
 														break;					
 													}
 												}
-
-
-												//TODO 
-												double[] alphaVector=new double[] {0};//,0,4};
 
 												//iterations
 
@@ -630,8 +624,8 @@ public class CreateCasesGB {
 
 
 													// Clean working folders 
-
-													String destFolder = theApp.getWorkingFolderPath();/*+ "\\CANARD_ALONE"+File.separator + "Case_" + c1 + "_" + c2 + "_" + c3 + "_" + c4 + "_" + c5 + "_" + c6 + "_" + countm + "_" +  counta;*/
+													List<String> caseFolderPaths = new ArrayList<>();
+													String destFolder = theApp.getWorkingFolderPath()+"//CANARD_ALONE"+File.separator + "Case_" + c1 + "_" + c2 + "_" + c3 + "_" + c4 + "_" + c5 + "_" + c6 + "_" + countm + "_" +  counta;
 													caseFolderPaths.add(destFolder);
 													File directory = new File(destFolder);
 													directory.mkdir();
