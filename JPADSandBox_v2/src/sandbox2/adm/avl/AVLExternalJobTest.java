@@ -69,12 +69,9 @@ public class AVLExternalJobTest {
 			
 			System.out.println("--------------------------------------------- Prepared AVL job:");
 
-			System.out.println(theAircraft.toString());
+			//System.out.println(theAircraft.toString());
 			System.out.println(theOperatingConditions.toString());
 			
-
-			
-
 			System.out.println("\n\n\tDone!! \n\n");
 			
 			
