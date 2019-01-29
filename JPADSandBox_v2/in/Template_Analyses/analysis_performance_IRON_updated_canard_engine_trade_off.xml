@@ -5,7 +5,6 @@
 			id="IRON - PERFORMANCE" 
 			weights_from_previous_file="false" 
 			aerodynamics_from_previous_file="false" 
-			use_customized_operating_conditions="TRUE"
 			> 
 			<weights>
 				<!-- MTOM -->
@@ -72,35 +71,6 @@
 					</tau_rudder_function>
 				</xcg>
 			</aerodynamics>
-			<!-- The following data will be used only id the 'use_customized_operating_conditions' is TRUE. -->
-			<!-- WARNING: THESE DATA MUST COMPLY WITH ALL AERODYNAMIC DATA ALTITUDES AND DELTA TEMPERATURES!!
-			<!-- In case of 'use_customized_operating_conditions'=FALSE, the following default settings will be used: --> 
-			<!-- take_off_field_altituide = from OperatingConditions -->
-			<!-- take_off_delta_temperature = from OperatingConditions -->
-			<!-- climb_delta_temperature = from OperatingConditions -->
-			<!-- cruise_delta_temperature = from OperatingConditions -->
-			<!-- cruise_target_Mach_number = from OperatingConditions -->
-			<!-- first_descent_delta_temperature = cruise_delta_temperature -->			
-			<!-- second_climb_delta_temperature = climb_delta_temperature -->			
-			<!-- alternate_cruise_delta_temperature = cruise_delta_temperature -->
-			<!-- second_descent_delta_temperature = cruise_delta_temperature -->						
-			<!-- holding_delta_temperature = cruise_delta_temperature -->
-			<!-- landing_field_altituide = from OperatingConditions -->
-			<!-- landing_delta_temperature = from OperatingConditions -->
-			<customized_operating_conditions>
-				<take_off_field_altituide unit="ft"></take_off_field_altituide> <!-- (default = 0.0 ft - SEA LEVEL) -->
-				<take_off_delta_temperature unit="°C"></take_off_delta_temperature> <!-- (default = 0.0°C - ISA CONDITIONS) -->
-				<climb_delta_temperature unit="°C"></climb_delta_temperature> <!-- (default = 0.0°C - ISA CONDITIONS) -->
-				<cruise_delta_temperature unit="°C"></cruise_delta_temperature> <!-- (default = 0.0°C - ISA CONDITIONS) -->
-				<cruise_target_Mach_number></cruise_target_Mach_number>
-				<first_descent_delta_temperature unit="°C"></first_descent_delta_temperature> <!-- (default = 0.0°C - ISA CONDITIONS) -->
-				<second_climb_delta_temperature unit="°C"></second_climb_delta_temperature> <!-- (default = 0.0°C - ISA CONDITIONS) -->
-				<alternate_cruise_delta_temperature unit="°C"></alternate_cruise_delta_temperature> <!-- (default = 0.0°C - ISA CONDITIONS) -->
-				<second_descent_delta_temperature unit="°C"></second_descent_delta_temperature> <!-- (default = 0.0°C - ISA CONDITIONS) -->
-				<holding_delta_temperature unit="°C"></holding_delta_temperature> <!-- (default = 0.0°C - ISA CONDITIONS) -->
-				<landing_field_altituide unit="ft"></landing_field_altituide> <!-- (default = 0.0 ft - SEA LEVEL) -->
-				<landing_delta_temperature unit="°C"></landing_delta_temperature> <!-- (default = 0.0°C - ISA CONDITIONS) -->
-			</customized_operating_conditions>
 			<!-- the following data can be assigned between tags, or not. If not, default values are used -->
 			<takeoff_landing>
 				<!-- general data -->
@@ -178,7 +148,6 @@
 			<mission_profile_and_payload_range compute_emissions="TRUE" use_customized_operating_conditions="FALSE">
 				<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
 				<mission_range unit="nmi">1600</mission_range> 
-				<mission_cruise_altitude unit="ft">30000</mission_cruise_altitude>
 				<alternate_cruise_range unit="nmi">100</alternate_cruise_range> <!-- (default = 0.0) -->
 				<alternate_cruise_altitude unit="ft">15000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->

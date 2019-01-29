@@ -148,6 +148,13 @@ public class ACPerformanceManager {
 	private Map<Double, Amount<Duration>> _minimumClimbTimeAEOMap;
 	private Map<Double, Amount<Duration>> _climbTimeAtSpecificClimbSpeedAEOMap;
 	private Map<Double, Amount<Mass>> _fuelUsedDuringClimbMap;
+	private Map<Double, Amount<Mass>> _emissionsNOxDuringClimbMap;
+	private Map<Double, Amount<Mass>> _emissionsCODuringClimbMap;
+	private Map<Double, Amount<Mass>> _emissionsHCDuringClimbMap;
+	private Map<Double, Amount<Mass>> _emissionsSootDuringClimbMap;
+	private Map<Double, Amount<Mass>> _emissionsCO2DuringClimbMap;
+	private Map<Double, Amount<Mass>> _emissionsSOxDuringClimbMap;
+	private Map<Double, Amount<Mass>> _emissionsH2ODuringClimbMap;
 	
 	private Map<Double, Amount<Length>> _absoluteCeilingOEIMap;
 	private Map<Double, Amount<Length>> _serviceCeilingOEIMap;
@@ -346,6 +353,13 @@ public class ACPerformanceManager {
 		this._minimumClimbTimeAEOMap = new HashMap<>();
 		this._climbTimeAtSpecificClimbSpeedAEOMap = new HashMap<>();
 		this._fuelUsedDuringClimbMap = new HashMap<>();
+		this._emissionsNOxDuringClimbMap = new HashMap<>();
+		this._emissionsCODuringClimbMap = new HashMap<>();
+		this._emissionsHCDuringClimbMap = new HashMap<>();
+		this._emissionsSootDuringClimbMap = new HashMap<>();
+		this._emissionsCO2DuringClimbMap = new HashMap<>();
+		this._emissionsSOxDuringClimbMap = new HashMap<>();
+		this._emissionsH2ODuringClimbMap = new HashMap<>();
 		
 		this._absoluteCeilingOEIMap = new HashMap<>();
 		this._serviceCeilingOEIMap = new HashMap<>();
@@ -494,7 +508,6 @@ public class ACPerformanceManager {
 		
 	}
 	
-	// TODO: READ NEW DATA FROM PERFORMANCE FILE (CUSTOMIZED OPERTAING CONDITIONS) AND USE THEM IN ALL CALCULATORS
 	@SuppressWarnings({ "unchecked" })
 	public static ACPerformanceManager importFromXML (
 			String pathToXML,
@@ -1975,16 +1988,6 @@ public class ACPerformanceManager {
 		Amount<Length> holdingAltitude = Amount.valueOf(15.24, SI.METER);
 		double holdingMachNumber = 0.01; // default value but != 0.0
 		double fuelReserve = 0.0;
-		boolean calculateSfcCruise = false;
-		List<Double> sfcCruiseList = new ArrayList<>();
-		List<Double> throttleList = new ArrayList<>();
-		boolean calculateSfcAlternateCruise = false;
-		List<Double> sfcAlternateCruiseList = new ArrayList<>();
-		List<Double> throttleAlternateCruiseList = new ArrayList<>();
-		boolean calculateSfcHolding = false;
-		List<Double> sfcHoldingList = new ArrayList<>();
-		List<Double> throttleHoldingList = new ArrayList<>();
-		Amount<Length> takeOffMissionAltitude = null;
 		
 		//...............................................................
 		// MISSION RANGE
@@ -2028,155 +2031,8 @@ public class ACPerformanceManager {
 		if(!fuelReserveProperty.isEmpty()) {
 			fuelReserve = Double.valueOf(reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/fuel_reserve")); 
 		}
-		//...............................................................
-		// SFC FUNCTION CRUISE
-		String sfcFunctionCruiseCalculateProperty = MyXMLReaderUtils.getXMLPropertyByPath(
-				reader.getXmlDoc(), reader.getXpath(),
-				"//performance/mission_profile_and_payload_range/cruise_sfc_function/@calculate"
-				);
-		MyInterpolatingFunction sfcCruiseFunction = new MyInterpolatingFunction();
 		
-		if(sfcFunctionCruiseCalculateProperty != null) {
-			
-			if(sfcFunctionCruiseCalculateProperty.equalsIgnoreCase("TRUE")) 
-				calculateSfcCruise = Boolean.TRUE;
-				
-			else if(sfcFunctionCruiseCalculateProperty.equalsIgnoreCase("FALSE")) {
-				
-				calculateSfcCruise = Boolean.FALSE;
-				
-				String sfcFunctionCruiseProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/cruise_sfc_function/sfc");
-				if(sfcFunctionCruiseProperty != null)
-					sfcCruiseList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/cruise_sfc_function/sfc"); 
-				String throttleFunctionProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/cruise_sfc_function/throttle");
-				if(throttleFunctionProperty != null)
-					throttleList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/cruise_sfc_function/throttle");
-				
-				if(sfcCruiseList.size() > 1)
-					if(sfcCruiseList.size() != throttleList.size())
-					{
-						System.err.println("SFC ARRAY AND THE RELATED THROTTLE ARRAY MUST HAVE THE SAME LENGTH !");
-						System.exit(1);
-					}
-				if(sfcCruiseList.size() == 1) {
-					sfcCruiseList.add(sfcCruiseList.get(0));
-					throttleList.add(0.0);
-					throttleList.add(1.0);
-				}
-				
-				sfcCruiseFunction.interpolateLinear(
-						MyArrayUtils.convertToDoublePrimitive(throttleList),
-						MyArrayUtils.convertToDoublePrimitive(sfcCruiseList)
-						);
-			}
-			else {
-				System.err.println("SFC CRUISE CALCULATE ATTRIBUTTE HAS TO BE 'TRUE' OR 'FALSE' !!");
-				System.exit(1);
-			}
-		}
-		
-		//...............................................................
-		// SFC FUNCTION ALTERNATE CRUISE
-		String sfcFunctionAlternateCruiseCalculateProperty = MyXMLReaderUtils.getXMLPropertyByPath(
-				reader.getXmlDoc(), reader.getXpath(),
-				"//performance/mission_profile_and_payload_range/alternate_cruise_sfc_function/@calculate"
-				);
-		MyInterpolatingFunction sfcAlternateCruiseFunction = new MyInterpolatingFunction();
-		
-		if(sfcFunctionAlternateCruiseCalculateProperty != null) {
-			
-			if(sfcFunctionAlternateCruiseCalculateProperty.equalsIgnoreCase("TRUE")) 
-				calculateSfcAlternateCruise = Boolean.TRUE;
-				
-			else if(sfcFunctionCruiseCalculateProperty.equalsIgnoreCase("FALSE")) {
-				
-				calculateSfcAlternateCruise = Boolean.FALSE;
-				
-				String sfcFunctionAlternateCruiseProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/alternate_cruise_sfc_function/sfc");
-				if(sfcFunctionAlternateCruiseProperty != null)
-					sfcAlternateCruiseList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/alternate_cruise_sfc_function/sfc"); 
-				String throttleAlternateCruiseFunctionProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/alternate_cruise_sfc_function/throttle");
-				if(throttleAlternateCruiseFunctionProperty != null)
-					throttleAlternateCruiseList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/alternate_cruise_sfc_function/throttle");
-				
-				if(sfcAlternateCruiseList.size() > 1)
-					if(sfcAlternateCruiseList.size() != throttleAlternateCruiseList.size())
-					{
-						System.err.println("SFC ARRAY AND THE RELATED THROTTLE ARRAY MUST HAVE THE SAME LENGTH !");
-						System.exit(1);
-					}
-				if(sfcAlternateCruiseList.size() == 1) {
-					sfcAlternateCruiseList.add(sfcAlternateCruiseList.get(0));
-					throttleAlternateCruiseList.add(0.0);
-					throttleAlternateCruiseList.add(1.0);
-				}
-				
-				sfcAlternateCruiseFunction.interpolateLinear(
-						MyArrayUtils.convertToDoublePrimitive(throttleAlternateCruiseList),
-						MyArrayUtils.convertToDoublePrimitive(sfcAlternateCruiseList)
-						);
-			}
-			else {
-				System.err.println("SFC CRUISE CALCULATE ATTRIBUTTE HAS TO BE 'TRUE' OR 'FALSE' !!");
-				System.exit(1);
-			}
-		}
-
-		//...............................................................
-		// SFC FUNCTION HOLDING
-		String sfcFunctionHoldingCalculateProperty = MyXMLReaderUtils.getXMLPropertyByPath(
-				reader.getXmlDoc(), reader.getXpath(),
-				"//performance/mission_profile_and_payload_range/holding_sfc_function/@calculate"
-				);
-		MyInterpolatingFunction sfcHoldingFunction = new MyInterpolatingFunction();
-		
-		if(sfcFunctionHoldingCalculateProperty != null) {
-			
-			if(sfcFunctionHoldingCalculateProperty.equalsIgnoreCase("TRUE")) 
-				calculateSfcHolding = Boolean.TRUE;
-				
-			else if(sfcFunctionHoldingCalculateProperty.equalsIgnoreCase("FALSE")) {
-				
-				calculateSfcHolding = Boolean.FALSE;
-				
-				String sfcFunctionHoldingProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/holding_sfc_function/sfc");
-				if(sfcFunctionHoldingProperty != null)
-					sfcHoldingList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/holding_sfc_function/sfc"); 
-				String throttleHoldingFunctionProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/holding_sfc_function/throttle");
-				if(throttleHoldingFunctionProperty != null)
-					throttleHoldingList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/holding_sfc_function/throttle");
-				
-				if(sfcHoldingList.size() > 1)
-					if(sfcHoldingList.size() != throttleHoldingList.size())
-					{
-						System.err.println("SFC ARRAY AND THE RELATED THROTTLE ARRAY MUST HAVE THE SAME LENGTH !");
-						System.exit(1);
-					}
-				if(sfcHoldingList.size() == 1) {
-					sfcHoldingList.add(sfcHoldingList.get(0));
-					throttleHoldingList.add(0.0);
-					throttleHoldingList.add(1.0);
-				}
-				
-				sfcHoldingFunction.interpolateLinear(
-						MyArrayUtils.convertToDoublePrimitive(throttleHoldingList),
-						MyArrayUtils.convertToDoublePrimitive(sfcHoldingList)
-						);
-			}
-			else {
-				System.err.println("SFC CRUISE CALCULATE ATTRIBUTTE HAS TO BE 'TRUE' OR 'FALSE' !!");
-				System.exit(1);
-			}
-		}
-
-		//...............................................................
-		// TAKE OFF MISSION ALITUDE
-		List<String> takeOffMissionAltitudeProperty = reader.getXMLPropertiesByPath("//performance/mission_profile_and_payload_range/take_off_mission_altitude");
-		if(!takeOffMissionAltitudeProperty.isEmpty()) {
-			takeOffMissionAltitude = reader.getXMLAmountLengthByPath("//performance/mission_profile_and_payload_range/take_off_mission_altitude"); 
-		}
-		
-		//!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!=!==
+		//---------------------------------------------------------------
 		// READING CALIBRATION FACTORS ...
 		//...............................................................
 		// Thrust
@@ -2898,14 +2754,6 @@ public class ACPerformanceManager {
 				.setHoldingMachNumber(holdingMachNumber)
 				.setFuelReserve(fuelReserve)
 				.setFirstGuessCruiseLength(missionRange.to(SI.METER).divide(3)) // first guess value equal to 1/3 of the total mission range
-				.setCalculateSFCCruise(calculateSfcCruise)
-				.setCalculateSFCAlternateCruise(calculateSfcAlternateCruise)
-				.setCalculateSFCHolding(calculateSfcHolding)
-				.setSfcFunctionCruise(sfcCruiseFunction)
-				.setSfcFunctionAlternateCruise(sfcAlternateCruiseFunction)
-				.setSfcFunctionHolding(sfcHoldingFunction)
-				.setFirstGuessInitialMissionFuelMass(maximumFuelMass.to(SI.KILOGRAM).divide(2)) // first guess value equal to 1/2 of the maximum fuel
-				.setTakeOffMissionAltitude(takeOffMissionAltitude.to(SI.METER))
 				.setTakeOffCalibrationFactorThrust(takeOffCalibrationFactorThrust)
 				.setAprCalibrationFactorThrust(aprCalibrationFactorThrust)
 				.setClimbCalibrationFactorThrust(climbCalibrationFactorThrust)
@@ -3412,6 +3260,13 @@ public class ACPerformanceManager {
         	if(_climbTimeAtSpecificClimbSpeedAEOMap.get(xcg) != null)
         		dataListClimb.add(new Object[] {"Time to climb at given climb speed AEO","min", _climbTimeAtSpecificClimbSpeedAEOMap.get(xcg).doubleValue(NonSI.MINUTE)});
         	dataListClimb.add(new Object[] {"Fuel used during climb AEO","kg", _fuelUsedDuringClimbMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        	dataListClimb.add(new Object[] {"Total NOx emissions during climb AEO","g", _emissionsNOxDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListClimb.add(new Object[] {"Total CO emissions during climb AEO","g", _emissionsCODuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListClimb.add(new Object[] {"Total HC emissions during climb AEO","g", _emissionsHCDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListClimb.add(new Object[] {"Total Soot emissions during climb AEO","g", _emissionsSootDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListClimb.add(new Object[] {"Total CO2 emissions during climb AEO","g", _emissionsCO2DuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListClimb.add(new Object[] {"Total SOx emissions during climb AEO","g", _emissionsSOxDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListClimb.add(new Object[] {"Total H2O emissions during climb AEO","g", _emissionsH2ODuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
         	dataListClimb.add(new Object[] {" "});
         	dataListClimb.add(new Object[] {"Absolute ceiling OEI","m", _absoluteCeilingOEIMap.get(xcg).doubleValue(SI.METER)});
         	dataListClimb.add(new Object[] {"Absolute ceiling OEI","ft", _absoluteCeilingOEIMap.get(xcg).doubleValue(NonSI.FOOT)});
@@ -4448,6 +4303,13 @@ public class ACPerformanceManager {
 				if(_climbTimeAtSpecificClimbSpeedAEOMap.get(xcg) != null)
 					sb.append("\t\tTime to climb at given climb speed AEO = " + _climbTimeAtSpecificClimbSpeedAEOMap.get(xcg).to(NonSI.MINUTE) + "\n");
 				sb.append("\t\tFuel used durign climb AEO = " + _fuelUsedDuringClimbMap.get(xcg).to(SI.KILOGRAM) + "\n")
+				.append("\t\tTotal NOx Emissions AEO = " + _emissionsNOxDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tTotal CO Emissions AEO = " + _emissionsCODuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tTotal HC Emissions AEO = " + _emissionsHCDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tTotal Soot Emissions AEO = " + _emissionsSootDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tTotal CO2 Emissions AEO = " + _emissionsCO2DuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tTotal SOx Emissions AEO = " + _emissionsSOxDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tTotal H2O Emissions AEO = " + _emissionsH2ODuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEIMap.get(xcg).to(SI.METER) + "\n")
 				.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEIMap.get(xcg).to(NonSI.FOOT) + "\n")
@@ -5118,7 +4980,14 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getDragDueToEngineFailure(),
 							_thePerformanceInterface.getClimbCalibrationFactorThrust(),
 							_thePerformanceInterface.getContinuousCalibrationFactorThrust(),
-							_thePerformanceInterface.getClimbCalibrationFactorSFC()
+							_thePerformanceInterface.getClimbCalibrationFactorSFC(),
+							_thePerformanceInterface.getClimbCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getClimbCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getClimbCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getClimbCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getClimbCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getClimbCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getClimbCalibrationFactorEmissionIndexH2O()
 							)
 					);
 			
@@ -5145,6 +5014,13 @@ public class ACPerformanceManager {
 			_minimumClimbTimeAEOMap.put(xcg, _theClimbCalculatorMap.get(xcg).getMinimumClimbTimeAEO());
 			_climbTimeAtSpecificClimbSpeedAEOMap.put(xcg, _theClimbCalculatorMap.get(xcg).getClimbTimeAtSpecificClimbSpeedAEO());
 			_fuelUsedDuringClimbMap.put(xcg, _theClimbCalculatorMap.get(xcg).getClimbTotalFuelUsed());
+			_emissionsNOxDuringClimbMap.put(xcg, _theClimbCalculatorMap.get(xcg).getClimbTotalEmissionsNOx());
+			_emissionsCODuringClimbMap.put(xcg, _theClimbCalculatorMap.get(xcg).getClimbTotalEmissionsCO());
+			_emissionsHCDuringClimbMap.put(xcg, _theClimbCalculatorMap.get(xcg).getClimbTotalEmissionsHC());
+			_emissionsSootDuringClimbMap.put(xcg, _theClimbCalculatorMap.get(xcg).getClimbTotalEmissionsSoot());
+			_emissionsCO2DuringClimbMap.put(xcg, _theClimbCalculatorMap.get(xcg).getClimbTotalEmissionsCO2());
+			_emissionsSOxDuringClimbMap.put(xcg, _theClimbCalculatorMap.get(xcg).getClimbTotalEmissionsSOx());
+			_emissionsH2ODuringClimbMap.put(xcg, _theClimbCalculatorMap.get(xcg).getClimbTotalEmissionsH2O());
 			
 			_absoluteCeilingOEIMap.put(xcg, _theClimbCalculatorMap.get(xcg).getAbsoluteCeilingOEI());
 			_serviceCeilingOEIMap.put(xcg, _theClimbCalculatorMap.get(xcg).getServiceCeilingOEI());
@@ -8682,6 +8558,62 @@ public class ACPerformanceManager {
 
 	public void setTakeOffH2OEmissionsMap(Map<Double, Amount<Mass>> _takeOffH2OEmissionsMap) {
 		this._takeOffH2OEmissionsMap = _takeOffH2OEmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getEmissionsNOxDuringClimbMap() {
+		return _emissionsNOxDuringClimbMap;
+	}
+
+	public void setEmissionsNOxDuringClimbMap(Map<Double, Amount<Mass>> _emissionsNOxDuringClimbMap) {
+		this._emissionsNOxDuringClimbMap = _emissionsNOxDuringClimbMap;
+	}
+
+	public Map<Double, Amount<Mass>> getEmissionsCODuringClimbMap() {
+		return _emissionsCODuringClimbMap;
+	}
+
+	public void setEmissionsCODuringClimbMap(Map<Double, Amount<Mass>> _emissionsCODuringClimbMap) {
+		this._emissionsCODuringClimbMap = _emissionsCODuringClimbMap;
+	}
+
+	public Map<Double, Amount<Mass>> getEmissionsHCDuringClimbMap() {
+		return _emissionsHCDuringClimbMap;
+	}
+
+	public void setEmissionsHCDuringClimbMap(Map<Double, Amount<Mass>> _emissionsHCDuringClimbMap) {
+		this._emissionsHCDuringClimbMap = _emissionsHCDuringClimbMap;
+	}
+
+	public Map<Double, Amount<Mass>> getEmissionsSootDuringClimbMap() {
+		return _emissionsSootDuringClimbMap;
+	}
+
+	public void setEmissionsSootDuringClimbMap(Map<Double, Amount<Mass>> _emissionsSootDuringClimbMap) {
+		this._emissionsSootDuringClimbMap = _emissionsSootDuringClimbMap;
+	}
+
+	public Map<Double, Amount<Mass>> getEmissionsCO2DuringClimbMap() {
+		return _emissionsCO2DuringClimbMap;
+	}
+
+	public void setEmissionsCO2DuringClimbMap(Map<Double, Amount<Mass>> _emissionsCO2DuringClimbMap) {
+		this._emissionsCO2DuringClimbMap = _emissionsCO2DuringClimbMap;
+	}
+
+	public Map<Double, Amount<Mass>> getEmissionsSOxDuringClimbMap() {
+		return _emissionsSOxDuringClimbMap;
+	}
+
+	public void setEmissionsSOxDuringClimbMap(Map<Double, Amount<Mass>> _emissionsSOxDuringClimbMap) {
+		this._emissionsSOxDuringClimbMap = _emissionsSOxDuringClimbMap;
+	}
+
+	public Map<Double, Amount<Mass>> getEmissionsH2ODuringClimbMap() {
+		return _emissionsH2ODuringClimbMap;
+	}
+
+	public void setEmissionsH2ODuringClimbMap(Map<Double, Amount<Mass>> _emissionsH2ODuringClimbMap) {
+		this._emissionsH2ODuringClimbMap = _emissionsH2ODuringClimbMap;
 	}
 
 }

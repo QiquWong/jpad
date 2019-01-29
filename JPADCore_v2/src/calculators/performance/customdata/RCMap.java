@@ -19,7 +19,7 @@ import standaloneutils.atmosphere.SpeedCalc;
 
 public class RCMap extends PerformanceMap{
 
-	private Amount<Velocity> rcMax, rcMaxHorizontalSpeed; 
+	private Amount<Velocity> rcMax, rcMaxSpeed; 
 	private double rcMaxMach;
 	private Amount<Angle> climbAngle;
 	private List<Amount<Power>> powerRequired, powerAvailable;
@@ -39,7 +39,7 @@ public class RCMap extends PerformanceMap{
 		this.rcMax = rcMax;
 		this.weight = weight;
 		this.speedList = speed;
-		this.rcMaxHorizontalSpeed = rcMaxSpeed;
+		this.rcMaxSpeed = rcMaxSpeed;
 		this.rcMaxMach = SpeedCalc.calculateMach(altitude, deltaTemperature, rcMaxSpeed);
 		
 		this.climbAngle = Amount.valueOf(Math.asin(rcMax.doubleValue(SI.METERS_PER_SECOND)/rcMaxSpeed.doubleValue(SI.METERS_PER_SECOND)), SI.RADIAN).to(NonSI.DEGREE_ANGLE);
@@ -62,12 +62,12 @@ public class RCMap extends PerformanceMap{
 		this.rcMax = rcMax;
 	}
 
-	public Amount<Velocity> getRCMaxHorizontalSpeed() {
-		return rcMaxHorizontalSpeed;
+	public Amount<Velocity> getRCMaxSpeed() {
+		return rcMaxSpeed;
 	}
 
-	public void setRCMaxHorizontalSpeed(Amount<Velocity> rcMaxSpeed) {
-		this.rcMaxHorizontalSpeed = rcMaxSpeed;
+	public void setRCMaxSpeed(Amount<Velocity> rcMaxSpeed) {
+		this.rcMaxSpeed = rcMaxSpeed;
 	}
 
 	public double getRCMaxMach() {

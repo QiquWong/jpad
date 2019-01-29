@@ -120,14 +120,7 @@ public interface IACPerformanceManager {
 	double getHoldingMachNumber();
 	double getFuelReserve();
 	Amount<Length> getFirstGuessCruiseLength();
-	boolean getCalculateSFCCruise();
-	boolean getCalculateSFCAlternateCruise();
-	boolean getCalculateSFCHolding();
-	MyInterpolatingFunction getSfcFunctionCruise();
-	MyInterpolatingFunction getSfcFunctionAlternateCruise();
-	MyInterpolatingFunction getSfcFunctionHolding();
 	Amount<Mass> getFirstGuessInitialMissionFuelMass();
-	Amount<Length> getTakeOffMissionAltitude();
 	//..............................................................................
 	// Calibration factors:
 	

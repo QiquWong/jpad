@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
@@ -48,10 +49,10 @@ public class ClimbCalc {
 	private double[] _polarCLClimb;
 	private double[] _polarCDClimb;
 	private Amount<Velocity> _climbSpeed;
-	private double _dragDueToEnigneFailure;
-	private double _climbThrustCorrectionFactor;
-	private double _continuousThrustCorrectionFactor;
-	private double _climbSfcCorrectionFactor;
+	private double _dragDueToEnigneFailure, _climbThrustCorrectionFactor, _continuousThrustCorrectionFactor, 
+	_climbSfcCorrectionFactor, _climbCalibrationFactorEmissionIndexNOx, _climbCalibrationFactorEmissionIndexCO, 
+	_climbCalibrationFactorEmissionIndexHC, _climbCalibrationFactorEmissionIndexSoot, _climbCalibrationFactorEmissionIndexCO2, 
+	_climbCalibrationFactorEmissionIndexSOx, _climbCalibrationFactorEmissionIndexH2O;
 	//............................................................................................
 	// Output:
 	private List<RCMap> _rcMapAEO;
@@ -66,22 +67,48 @@ public class ClimbCalc {
 	private Map<String, List<Double>> _efficiencyMapAltitudeOEI;
 	private List<Amount<Duration>> _climbTimeListAEO;
 	private List<Amount<Duration>> _climbTimeListRCmax;
-	private List<Amount<Mass>> _fuelUsedList;
-	private List<Double> _fuelFlowList;
-	private List<Double> _sfcList;
 	private Amount<Length> _absoluteCeilingAEO;
 	private Amount<Length> _serviceCeilingAEO;
 	private Amount<Duration> _minimumClimbTimeAEO;
 	private Amount<Duration> _climbTimeAtSpecificClimbSpeedAEO;
-	private Amount<Force> _thrustAtClimbStart;
-	private Amount<Force> _thrustAtClimbEnding;
-	private Amount<Force> _dragAtClimbStart;
-	private Amount<Force> _dragAtClimbEnding;
 	
 	private Amount<Length> _absoluteCeilingOEI;
 	private Amount<Length> _serviceCeilingOEI;
 	private Amount<Length> _climbTotalRange;
 	private Amount<Mass> _climbTotalFuelUsed;
+	private Amount<Mass> _climbTotalEmissionsNOx;
+	private Amount<Mass> _climbTotalEmissionsCO;
+	private Amount<Mass> _climbTotalEmissionsHC;
+	private Amount<Mass> _climbTotalEmissionsSoot;
+	private Amount<Mass> _climbTotalEmissionsCO2;
+	private Amount<Mass> _climbTotalEmissionsSOx;
+	private Amount<Mass> _climbTotalEmissionsH2O;
+	
+	/* Time histories of all mission-realted quantities */
+	private List<Amount<Length>> _rangeClimb;
+	private List<Amount<Length>> _altitudeClimb;
+	private List<Amount<Duration>> _timeClimb;
+	private List<Amount<Mass>> _fuelUsedClimb;
+	private List<Amount<Mass>> _aircraftMassClimb;
+	private List<Amount<Mass>> _emissionNOxClimb;
+	private List<Amount<Mass>> _emissionCOClimb;
+	private List<Amount<Mass>> _emissionHCClimb;
+	private List<Amount<Mass>> _emissionSootClimb;
+	private List<Amount<Mass>> _emissionCO2Climb;
+	private List<Amount<Mass>> _emissionSOxClimb;
+	private List<Amount<Mass>> _emissionH2OClimb;
+	private List<Amount<Velocity>> _speedTASClimb;
+	private List<Amount<Velocity>> _speedCASClimb;
+	private List<Double> _machClimb;
+	private List<Double> _cLClimb;
+	private List<Double> _cDClimb;
+	private List<Double> _efficiencyClimb;		
+	private List<Amount<Force>> _dragClimb;
+	private List<Amount<Force>> _totalThrustClimb;
+	private List<Double> _sfcClimb;
+	private List<Double> _fuelFlowClimb;
+	private List<Amount<Velocity>> _rateOfClimbClimb;
+	private List<Amount<Angle>> _climbAngleClimb;
 	
 	//--------------------------------------------------------------------------------------------
 	// BUILDER:
@@ -95,7 +122,14 @@ public class ClimbCalc {
 			double dragDueToEnigneFailure,
 			double climbThrustCorrectionFactor,
 			double continuousThrustCorrectionFactor,
-			double climbSfcCorrectionFactor
+			double climbSfcCorrectionFactor,
+			double climbCalibrationFactorEmissionIndexNOx, 
+			double climbCalibrationFactorEmissionIndexCO, 
+			double climbCalibrationFactorEmissionIndexHC, 
+			double climbCalibrationFactorEmissionIndexSoot, 
+			double climbCalibrationFactorEmissionIndexCO2, 
+			double climbCalibrationFactorEmissionIndexSOx, 
+			double climbCalibrationFactorEmissionIndexH2O
 			) {
 		
 		this._theAircraft = theAircraft;
@@ -108,6 +142,13 @@ public class ClimbCalc {
 		this._climbThrustCorrectionFactor = climbThrustCorrectionFactor;
 		this._continuousThrustCorrectionFactor = continuousThrustCorrectionFactor;
 		this._climbSfcCorrectionFactor = climbSfcCorrectionFactor;
+		this._climbCalibrationFactorEmissionIndexNOx = climbCalibrationFactorEmissionIndexNOx;
+		this._climbCalibrationFactorEmissionIndexCO = climbCalibrationFactorEmissionIndexCO;
+		this._climbCalibrationFactorEmissionIndexHC = climbCalibrationFactorEmissionIndexHC;
+		this._climbCalibrationFactorEmissionIndexSoot = climbCalibrationFactorEmissionIndexSoot;
+		this._climbCalibrationFactorEmissionIndexCO2 = climbCalibrationFactorEmissionIndexCO2;
+		this._climbCalibrationFactorEmissionIndexSOx = climbCalibrationFactorEmissionIndexSOx;
+		this._climbCalibrationFactorEmissionIndexH2O = climbCalibrationFactorEmissionIndexH2O;
 		
 		this._rcMapAEO = new ArrayList<>();
 		this._rcMapOEI = new ArrayList<>();
@@ -115,7 +156,32 @@ public class ClimbCalc {
 		this._thrustListAEO = new ArrayList<>();
 		this._dragListOEI = new ArrayList<>();
 		this._thrustListOEI = new ArrayList<>();
-		this._fuelUsedList = new ArrayList<>();
+//		this._fuelUsedList = new ArrayList<>();
+		
+		this._rangeClimb = new ArrayList<>();
+		this._altitudeClimb = new ArrayList<>();
+		this._timeClimb = new ArrayList<>();
+		this._fuelUsedClimb = new ArrayList<>();
+		this._aircraftMassClimb = new ArrayList<>();
+		this._emissionNOxClimb = new ArrayList<>();
+		this._emissionCOClimb = new ArrayList<>();
+		this._emissionHCClimb = new ArrayList<>();
+		this._emissionSootClimb = new ArrayList<>();
+		this._emissionCO2Climb = new ArrayList<>();
+		this._emissionSOxClimb = new ArrayList<>();
+		this._emissionH2OClimb = new ArrayList<>();
+		this._speedTASClimb = new ArrayList<>();
+		this._speedCASClimb = new ArrayList<>();
+		this._machClimb = new ArrayList<>();
+		this._cLClimb = new ArrayList<>();
+		this._cDClimb = new ArrayList<>();
+		this._efficiencyClimb = new ArrayList<>();		
+		this._dragClimb = new ArrayList<>();
+		this._totalThrustClimb = new ArrayList<>();
+		this._sfcClimb = new ArrayList<>();
+		this._fuelFlowClimb = new ArrayList<>();
+		this._rateOfClimbClimb = new ArrayList<>();
+		this._climbAngleClimb = new ArrayList<>();
 		
 	}
 	
@@ -208,88 +274,7 @@ public class ClimbCalc {
 							_climbThrustCorrectionFactor
 							)
 					);
-			//..................................................................................................
-			List<Amount<Force>> liftAltitudeParameterization = new ArrayList<>();
-			List<Double> efficiencyListCurrentAltitude = new ArrayList<>();
-			for(int j=0; j<_dragListAEO.get(i).getSpeed().size(); j++) {
-				liftAltitudeParameterization.add(
-						LiftCalc.calculateLiftAtSpeed(
-								_dragListAEO.get(i).getAltitude(),
-								_theOperatingConditions.getDeltaTemperatureClimb(),
-								_theAircraft.getWing().getSurfacePlanform(),
-								_dragListAEO.get(i).getSpeed().get(j),
-								LiftCalc.calculateLiftCoeff(
-										Amount.valueOf(startClimbMassAEO.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND), SI.NEWTON),
-										_dragListAEO.get(i).getSpeed().get(j), 
-										_theAircraft.getWing().getSurfacePlanform(),
-										_dragListAEO.get(i).getAltitude(),
-										_theOperatingConditions.getDeltaTemperatureClimb()
-										)
-								)
-						);
-				efficiencyListCurrentAltitude.add(
-						liftAltitudeParameterization.get(j).doubleValue(SI.NEWTON)
-						/_dragListAEO.get(i).getDrag().get(j).doubleValue(SI.NEWTON)
-						);
-			}
-			_efficiencyMapAltitudeAEO.put(
-					"Altitude = " + _dragListAEO.get(i).getAltitude(),
-					efficiencyListCurrentAltitude
-					);
 		}
-		
-		_thrustAtClimbStart = 
-				Amount.valueOf(
-						MyMathUtils.getInterpolatedValue1DLinear(
-								_thrustListAEO.get(0).getSpeed().stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray(),
-								_thrustListAEO.get(0).getThrust().stream().mapToDouble(x -> x.doubleValue(SI.NEWTON)).toArray(),
-								SpeedCalc.calculateTAS(
-										_climbSpeed.to(SI.METERS_PER_SECOND),
-										altitudeArray.get(0),
-										_theOperatingConditions.getDeltaTemperatureClimb()
-										).doubleValue(SI.METERS_PER_SECOND)
-								),
-						SI.NEWTON
-						).to(NonSI.POUND_FORCE);
-		_thrustAtClimbEnding = 
-				Amount.valueOf(
-						MyMathUtils.getInterpolatedValue1DLinear(
-								_thrustListAEO.get(_thrustListAEO.size()-1).getSpeed().stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray(),
-								_thrustListAEO.get(_thrustListAEO.size()-1).getThrust().stream().mapToDouble(x -> x.doubleValue(SI.NEWTON)).toArray(),
-								SpeedCalc.calculateTAS(
-										_climbSpeed.to(SI.METERS_PER_SECOND),
-										altitudeArray.get(altitudeArray.size()-1),
-										_theOperatingConditions.getDeltaTemperatureClimb()
-										).doubleValue(SI.METERS_PER_SECOND)
-								),
-						SI.NEWTON
-						).to(NonSI.POUND_FORCE);
-		_dragAtClimbStart = 
-				Amount.valueOf(
-						MyMathUtils.getInterpolatedValue1DLinear(
-								_dragListAEO.get(0).getSpeed().stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray(),
-								_dragListAEO.get(0).getDrag().stream().mapToDouble(x -> x.doubleValue(SI.NEWTON)).toArray(),
-								SpeedCalc.calculateTAS(
-										_climbSpeed.to(SI.METERS_PER_SECOND),
-										altitudeArray.get(0),
-										_theOperatingConditions.getDeltaTemperatureClimb()
-										).doubleValue(SI.METERS_PER_SECOND)
-								),
-						SI.NEWTON
-						).to(NonSI.POUND_FORCE);
-		_dragAtClimbEnding = 
-				Amount.valueOf(
-						MyMathUtils.getInterpolatedValue1DLinear(
-								_dragListAEO.get(_dragListAEO.size()-1).getSpeed().stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray(),
-								_dragListAEO.get(_dragListAEO.size()-1).getDrag().stream().mapToDouble(x -> x.doubleValue(SI.NEWTON)).toArray(),
-								SpeedCalc.calculateTAS(
-										_climbSpeed.to(SI.METERS_PER_SECOND),
-										altitudeArray.get(altitudeArray.size()-1),
-										_theOperatingConditions.getDeltaTemperatureClimb()
-										).doubleValue(SI.METERS_PER_SECOND)
-								),
-						SI.NEWTON
-						).to(NonSI.POUND_FORCE);
 		
 		//..................................................................................................
 		List<Double> phiArrayAEO = new ArrayList<>();
@@ -312,6 +297,52 @@ public class ClimbCalc {
 						_thrustListAEO
 						)
 				);
+		
+		//..................................................................................................
+		for(int i=0; i<altitudeArray.size(); i++) {
+			List<Amount<Force>> liftAltitudeParameterization = new ArrayList<>();
+			List<Double> efficiencyListCurrentAltitude = new ArrayList<>();
+			for(int j=0; j<_dragListAEO.get(i).getSpeed().size(); j++) {
+				liftAltitudeParameterization.add(
+						LiftCalc.calculateLiftAtSpeed(
+								_dragListAEO.get(i).getAltitude(),
+								_theOperatingConditions.getDeltaTemperatureClimb(),
+								_theAircraft.getWing().getSurfacePlanform(),
+								_dragListAEO.get(i).getSpeed().get(j),
+								LiftCalc.calculateLiftCoeff(
+										Amount.valueOf(
+												startClimbMassAEO.doubleValue(SI.KILOGRAM)
+												*Math.cos(
+														MyMathUtils.getInterpolatedValue1DLinear(
+																MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()
+																		.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+																		),
+																MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getClimbAngleList()
+																		.stream().map(ca -> ca.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+																		),
+																_dragListAEO.get(i).getSpeed().get(j).doubleValue(SI.METERS_PER_SECOND)
+																)
+														)
+												*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+												SI.NEWTON
+												),
+										_dragListAEO.get(i).getSpeed().get(j), 
+										_theAircraft.getWing().getSurfacePlanform(),
+										_dragListAEO.get(i).getAltitude(),
+										_theOperatingConditions.getDeltaTemperatureClimb()
+										)
+								)
+						);
+				efficiencyListCurrentAltitude.add(
+						liftAltitudeParameterization.get(j).doubleValue(SI.NEWTON)
+						/_dragListAEO.get(i).getDrag().get(j).doubleValue(SI.NEWTON)
+						);
+			}
+			_efficiencyMapAltitudeAEO.put(
+					"Altitude = " + _dragListAEO.get(i).getAltitude(),
+					efficiencyListCurrentAltitude
+					);
+		}
 		//..................................................................................................
 		if(performCeilings == true) {
 			
@@ -390,34 +421,6 @@ public class ClimbCalc {
 								_continuousThrustCorrectionFactor
 								)
 						);
-				//..................................................................................................
-				List<Amount<Force>> liftAltitudeParameterization = new ArrayList<>();
-				List<Double> efficiencyListCurrentAltitude = new ArrayList<>();
-				for(int j=0; j<_dragListOEI.get(i).getSpeed().size(); j++) {
-					liftAltitudeParameterization.add(
-							LiftCalc.calculateLiftAtSpeed(
-									_dragListOEI.get(i).getAltitude(),
-									_theOperatingConditions.getDeltaTemperatureClimb(),
-									_theAircraft.getWing().getSurfacePlanform(), 
-									_dragListOEI.get(i).getSpeed().get(j), 
-									LiftCalc.calculateLiftCoeff(
-											Amount.valueOf(startClimbMassOEI.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND), SI.NEWTON),
-											_dragListOEI.get(i).getSpeed().get(j),
-											_theAircraft.getWing().getSurfacePlanform(),
-											_dragListOEI.get(i).getAltitude(),
-											_theOperatingConditions.getDeltaTemperatureClimb()
-											)
-									)
-							);
-					efficiencyListCurrentAltitude.add(
-							liftAltitudeParameterization.get(j).doubleValue(SI.NEWTON)
-							/ _dragListOEI.get(i).getDrag().get(j).doubleValue(SI.NEWTON)
-							);
-				}
-				_efficiencyMapAltitudeOEI.put(
-						"Altitude = " + _dragListOEI.get(i).getAltitude(),
-						efficiencyListCurrentAltitude
-						);
 			}
 			//..................................................................................................
 			List<Double> phiArrayOEI = new ArrayList<>();
@@ -440,6 +443,52 @@ public class ClimbCalc {
 							_thrustListOEI
 							)
 					);
+			
+			//..................................................................................................
+			for(int i=0; i<altitudeArray.size(); i++) {
+				List<Amount<Force>> liftAltitudeParameterization = new ArrayList<>();
+				List<Double> efficiencyListCurrentAltitude = new ArrayList<>();
+				for(int j=0; j<_dragListOEI.get(i).getSpeed().size(); j++) {
+					liftAltitudeParameterization.add(
+							LiftCalc.calculateLiftAtSpeed(
+									_dragListOEI.get(i).getAltitude(),
+									_theOperatingConditions.getDeltaTemperatureClimb(),
+									_theAircraft.getWing().getSurfacePlanform(), 
+									_dragListOEI.get(i).getSpeed().get(j), 
+									LiftCalc.calculateLiftCoeff(
+											Amount.valueOf(
+													startClimbMassOEI.doubleValue(SI.KILOGRAM)
+													*Math.cos(
+															MyMathUtils.getInterpolatedValue1DLinear(
+																	MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapOEI.get(i).getSpeedList()
+																			.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+																			),
+																	MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapOEI.get(i).getClimbAngleList()
+																			.stream().map(ca -> ca.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+																			),
+																	_dragListOEI.get(i).getSpeed().get(j).doubleValue(SI.METERS_PER_SECOND)
+																	)
+															)
+													*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+													SI.NEWTON
+													),
+											_dragListOEI.get(i).getSpeed().get(j),
+											_theAircraft.getWing().getSurfacePlanform(),
+											_dragListOEI.get(i).getAltitude(),
+											_theOperatingConditions.getDeltaTemperatureClimb()
+											)
+									)
+							);
+					efficiencyListCurrentAltitude.add(
+							liftAltitudeParameterization.get(j).doubleValue(SI.NEWTON)
+							/ _dragListOEI.get(i).getDrag().get(j).doubleValue(SI.NEWTON)
+							);
+				}
+				_efficiencyMapAltitudeOEI.put(
+						"Altitude = " + _dragListOEI.get(i).getAltitude(),
+						efficiencyListCurrentAltitude
+						);
+			}
 			//..................................................................................................
 			if(performCeilings == true) {
 
@@ -484,8 +533,7 @@ public class ClimbCalc {
 		// TIME AT Climb Speed
 		_climbTimeListAEO = new ArrayList<>();
 		_climbTimeListAEO.add(Amount.valueOf(0.0, SI.SECOND));
-		List<Amount<Velocity>> rcAtClimbSpeed = new ArrayList<>();
-		List<Amount<Velocity>> climbSpeedTAS = new ArrayList<>();
+		List<Amount<Velocity>> rateOfClimbAtClimbSpeed = new ArrayList<>();
 		
 		for(int i=0; i<_rcMapAEO.size(); i++) {
 			if(_climbSpeed != null) {
@@ -495,17 +543,20 @@ public class ClimbCalc {
 						_theOperatingConditions.getDeltaTemperatureClimb().doubleValue(SI.CELSIUS)
 						).getDensityRatio();
 				
-				rcAtClimbSpeed.add(
+				rateOfClimbAtClimbSpeed.add(
 						Amount.valueOf(
 								MyMathUtils.getInterpolatedValue1DLinear(
-										MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()),
-										MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getRCList()),
-										_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
+										MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()
+												.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+												),
+										MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getRCList()
+												.stream().map(rc -> rc.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+												),
+										_climbSpeed.divide(Math.sqrt(sigma)).doubleValue(SI.METERS_PER_SECOND)
 										),
 								SI.METERS_PER_SECOND
 								)
 						);
-				climbSpeedTAS.add(_climbSpeed.divide(Math.sqrt(sigma)));
 			}
 		}
 		
@@ -520,8 +571,8 @@ public class ClimbCalc {
 													_rcMapAEO.get(i).getAltitude().doubleValue(SI.METER)
 											},
 											new double[] {
-													1/rcAtClimbSpeed.get(i-1).doubleValue(SI.METERS_PER_SECOND),
-													1/rcAtClimbSpeed.get(i).doubleValue(SI.METERS_PER_SECOND)
+													1/rateOfClimbAtClimbSpeed.get(i-1).doubleValue(SI.METERS_PER_SECOND),
+													1/rateOfClimbAtClimbSpeed.get(i).doubleValue(SI.METERS_PER_SECOND)
 											}
 											),
 									SI.SECOND
@@ -536,180 +587,508 @@ public class ClimbCalc {
 			_climbTimeAtSpecificClimbSpeedAEO = _climbTimeListAEO.get(_climbTimeListAEO.size()-1);
 		
 		//----------------------------------------------------------------------------------
-		// SFC, TIME AND RANGE IN AEO CONDITION (for the mission profile)
-		_fuelFlowList = new ArrayList<>();
-		_sfcList = new ArrayList<>();
-		List<Amount<Duration>> climbTimeListAEO = new ArrayList<>();
-		List<Amount<Length>> rangeArrayClimb = new ArrayList<>();
+		// MISSION PROFILE RELATED QUANTITIES
 		
-		climbTimeListAEO.add(Amount.valueOf(0.0, SI.SECOND));
-		rangeArrayClimb.add(Amount.valueOf(0.0, SI.METER));
+		//...........................................................................................
+		// initialization of density ratio and speed of sound at sea level
+		double sigma = OperatingConditions.getAtmosphere(
+				_rcMapAEO.get(0).getAltitude().doubleValue(SI.METER),
+				_theOperatingConditions.getDeltaTemperatureClimb().doubleValue(SI.CELSIUS)
+				).getDensityRatio();
+		double speedOfSound = OperatingConditions.getAtmosphere(
+				_rcMapAEO.get(0).getAltitude().doubleValue(SI.METER),
+				_theOperatingConditions.getDeltaTemperatureClimb().doubleValue(SI.CELSIUS)
+				).getSpeedOfSound();
 		
-		for(int i=1; i<_rcMapAEO.size(); i++) {
-			
-			if(_climbSpeed == null) {
-				climbTimeListAEO.add(
-						climbTimeListAEO.get(climbTimeListAEO.size()-1)
-						.plus(
-								Amount.valueOf(
-										MyMathUtils.integrate1DSimpsonSpline(
-												new double[] { 
-														_rcMapAEO.get(i-1).getAltitude().doubleValue(SI.METER),
-														_rcMapAEO.get(i).getAltitude().doubleValue(SI.METER)
-												},
-												new double[] {
-														1/_rcMapAEO.get(i-1).getRCMax().doubleValue(SI.METERS_PER_SECOND),
-														1/_rcMapAEO.get(i).getRCMax().doubleValue(SI.METERS_PER_SECOND)
-												}
-												),
-										SI.SECOND
-										)
-								)
-						);
-
-				rangeArrayClimb.add(
-						rangeArrayClimb.get(rangeArrayClimb.size()-1)
-						.plus(
-								Amount.valueOf(
-										((_rcMapAEO.get(i-1).getRCMaxHorizontalSpeed().doubleValue(SI.METERS_PER_SECOND) 
-												+ _rcMapAEO.get(i).getRCMaxHorizontalSpeed().doubleValue(SI.METERS_PER_SECOND) )
-												/2
-												)
-										*(climbTimeListAEO.get(i).minus(climbTimeListAEO.get(i-1)).doubleValue(SI.SECOND))
-										*Math.cos(((_rcMapAEO.get(i-1).getClimbAngle().doubleValue(SI.RADIAN) 
-												+ _rcMapAEO.get(i).getClimbAngle().doubleValue(SI.RADIAN) )
-												/2)
-												),
-										SI.METER
-										)
-								)
-						);
-			}
-			else {
-				climbTimeListAEO.add(
-						climbTimeListAEO.get(climbTimeListAEO.size()-1)
-						.plus(
-								Amount.valueOf(
-										MyMathUtils.integrate1DSimpsonSpline(
-												new double[] { 
-														_rcMapAEO.get(i-1).getAltitude().doubleValue(SI.METER),
-														_rcMapAEO.get(i).getAltitude().doubleValue(SI.METER)
-												},
-												new double[] {
-														1/rcAtClimbSpeed.get(i-1).doubleValue(SI.METERS_PER_SECOND),
-														1/rcAtClimbSpeed.get(i).doubleValue(SI.METERS_PER_SECOND)
-												}
-												),
-										SI.SECOND
-										)
-								)
-						);
-
-				rangeArrayClimb.add(
-						rangeArrayClimb.get(rangeArrayClimb.size()-1)
-						.plus(
-								Amount.valueOf(
-										((climbSpeedTAS.get(i-1).plus(climbSpeedTAS.get(i))).divide(2)).getEstimatedValue()
-										*(climbTimeListAEO.get(i).minus(climbTimeListAEO.get(i-1)).doubleValue(SI.SECOND))
-										*Math.cos(((_rcMapAEO.get(i-1).getClimbAngle().doubleValue(SI.RADIAN)
-												+ _rcMapAEO.get(i).getClimbAngle().doubleValue(SI.RADIAN) )
-												/2)
-												),
-										SI.METER
-										)
-								)
-						);
-			}
-			
+		//...........................................................................................
+		// initialization of the first step
+		_rangeClimb.add(Amount.valueOf(0.0, SI.METER));
+		_altitudeClimb.add(initialClimbAltitude.to(SI.METER));
+		_timeClimb.add(Amount.valueOf(0.0, SI.SECOND));
+		_fuelUsedClimb.add(Amount.valueOf(0.0, SI.KILOGRAM));
+		_aircraftMassClimb.add(startClimbMassAEO.to(SI.KILOGRAM));
+		_emissionNOxClimb.add(Amount.valueOf(0.0, SI.GRAM));
+		_emissionCOClimb.add(Amount.valueOf(0.0, SI.GRAM));
+		_emissionHCClimb.add(Amount.valueOf(0.0, SI.GRAM));
+		_emissionSootClimb.add(Amount.valueOf(0.0, SI.GRAM));
+		_emissionCO2Climb.add(Amount.valueOf(0.0, SI.GRAM));
+		_emissionSOxClimb.add(Amount.valueOf(0.0, SI.GRAM));
+		_emissionH2OClimb.add(Amount.valueOf(0.0, SI.GRAM));
+		
+		if(_climbSpeed != null) {
+			_speedTASClimb.add(_climbSpeed.to(SI.METERS_PER_SECOND).divide(Math.sqrt(sigma)));
+			_speedCASClimb.add(_climbSpeed.to(SI.METERS_PER_SECOND));
+			_machClimb.add(_speedTASClimb.get(0).doubleValue(SI.METERS_PER_SECOND)/speedOfSound);
+		}
+		else {
+			_speedTASClimb.add(_rcMapAEO.get(0).getRCMaxSpeed());
+			_speedCASClimb.add(_rcMapAEO.get(0).getRCMaxSpeed().times(Math.sqrt(sigma)));
+			_machClimb.add(_speedTASClimb.get(0).doubleValue(SI.METERS_PER_SECOND)/speedOfSound);
 		}
 		
-		_climbTotalRange = rangeArrayClimb.get(rangeArrayClimb.size()-1);
-		
-		for(int i=0; i<_rcMapAEO.size(); i++) {
-
-			List<Double> sfcListTemp = new ArrayList<>();
-			
-			if(_climbSpeed == null) {
-				for(int ieng=0; ieng<_theAircraft.getPowerPlant().getEngineNumber(); ieng++)
-					sfcListTemp.add(
-							_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
-									SpeedCalc.calculateMach(
-											_rcMapAEO.get(i).getAltitude(),
-											_theOperatingConditions.getDeltaTemperatureClimb(),
-											_rcMapAEO.get(i).getRCMaxHorizontalSpeed()
-											),
-									_rcMapAEO.get(i).getAltitude(),
-									_theOperatingConditions.getDeltaTemperatureClimb(),
-									_theOperatingConditions.getThrottleClimb(),
-									EngineOperatingConditionEnum.CLIMB,
-									_climbSfcCorrectionFactor
-									)
-							);
-				_sfcList.add(sfcListTemp.stream().mapToDouble(sfc -> sfc).average().getAsDouble());
-				_fuelFlowList.add(
+		_totalThrustClimb.add(
+				Amount.valueOf(
 						MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(_thrustListAEO.get(i).getSpeed()),
-								MyArrayUtils.convertListOfAmountTodoubleArray(_thrustListAEO.get(i).getThrust()),
-								_rcMapAEO.get(i).getRCMaxHorizontalSpeed().doubleValue(SI.METERS_PER_SECOND)
-								)
-						*(0.224809)*(0.454/60)
-						*_sfcList.get(i)
-						);
-				_fuelUsedList.add(
-						Amount.valueOf(
-								_fuelFlowList.get(i)*_climbTimeListRCmax.get(i).doubleValue(NonSI.MINUTE),
-								SI.KILOGRAM
-								)
-						);
-			}
-			else {
-				for(int ieng=0; ieng<_theAircraft.getPowerPlant().getEngineNumber(); ieng++)
-					sfcListTemp.add(
-							_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
-									SpeedCalc.calculateMach(
-											_rcMapAEO.get(i).getAltitude(),
-											_theOperatingConditions.getDeltaTemperatureClimb(),
-											climbSpeedTAS.get(i)
-											),
-									_rcMapAEO.get(i).getAltitude(),
-									_theOperatingConditions.getDeltaTemperatureClimb(),
-									_theOperatingConditions.getThrottleClimb(),
-									EngineOperatingConditionEnum.CLIMB,
-									_climbSfcCorrectionFactor
-									)
-							);
-				_sfcList.add(sfcListTemp.stream().mapToDouble(sfc -> sfc).average().getAsDouble());
-				_fuelFlowList.add(
-						MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(_thrustListAEO.get(i).getSpeed()),
-								MyArrayUtils.convertListOfAmountTodoubleArray(_thrustListAEO.get(i).getThrust()),
-								climbSpeedTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
-								)
-						*(0.224809)*(0.454/60)
-						*_sfcList.get(i)
-						);
-				_fuelUsedList.add(
-						Amount.valueOf(
-								_fuelFlowList.get(i)*_climbTimeListAEO.get(i).doubleValue(NonSI.MINUTE),
-								SI.KILOGRAM
-								)
-						);
-			}
-		}
-
-		_climbTotalFuelUsed = Amount.valueOf(
-				MyMathUtils.integrate1DSimpsonSpline(
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								climbTimeListAEO.stream()
-									.map(t -> t.to(NonSI.MINUTE))
-										.collect(Collectors.toList()
-												)
+								MyArrayUtils.convertListOfAmountTodoubleArray(_thrustListAEO.get(0).getSpeed()
+										.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
 										),
-						MyArrayUtils.convertToDoublePrimitive(_fuelFlowList)
-						),
-				SI.KILOGRAM					
+								MyArrayUtils.convertListOfAmountTodoubleArray(_thrustListAEO.get(0).getThrust()
+										.stream().map(t -> t.to(SI.NEWTON)).collect(Collectors.toList())
+										),
+								_speedTASClimb.get(0).doubleValue(SI.METERS_PER_SECOND)
+								),
+						SI.NEWTON
+						)
+				);
+		_dragClimb.add(
+				Amount.valueOf(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertListOfAmountTodoubleArray(_dragListAEO.get(0).getSpeed()
+										.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+										),
+								MyArrayUtils.convertListOfAmountTodoubleArray(_dragListAEO.get(0).getDrag()
+										.stream().map(d -> d.to(SI.NEWTON)).collect(Collectors.toList())
+										),
+								_speedTASClimb.get(0).doubleValue(SI.METERS_PER_SECOND)
+								),
+						SI.NEWTON
+						)
+				);
+		_rateOfClimbClimb.add(
+				Amount.valueOf(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(0).getSpeedList()
+										.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+										),
+								MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(0).getRCList()
+										.stream().map(rc -> rc.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+										),
+								_speedTASClimb.get(0).doubleValue(SI.METERS_PER_SECOND)
+								),
+						SI.METERS_PER_SECOND
+						)
+				);
+		_climbAngleClimb.add(
+				Amount.valueOf(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(0).getSpeedList()
+										.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+										),
+								MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(0).getClimbAngleList()
+										.stream().map(ca -> ca.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+										),
+								_speedTASClimb.get(0).doubleValue(SI.METERS_PER_SECOND)
+								),
+						NonSI.DEGREE_ANGLE
+						)
+				);
+		_cLClimb.add(
+				LiftCalc.calculateLiftCoeff(
+						Amount.valueOf(
+								startClimbMassAEO.doubleValue(SI.KILOGRAM)
+								*Math.cos(_climbAngleClimb.get(0).doubleValue(SI.RADIAN))
+								*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+								SI.NEWTON
+								),
+						_speedTASClimb.get(0),
+						_theAircraft.getWing().getSurfacePlanform(),
+						_altitudeClimb.get(0),
+						_theOperatingConditions.getDeltaTemperatureClimb()
+						)
+				);
+		_cDClimb.add(MyMathUtils.getInterpolatedValue1DLinear(_polarCLClimb, _polarCDClimb, _cLClimb.get(0)));
+		_efficiencyClimb.add(_cLClimb.get(0)/_cDClimb.get(0));
+		
+		List<Double> sfcListTemp = new ArrayList<>();
+		for(int ieng=0; ieng<_theAircraft.getPowerPlant().getEngineNumber(); ieng++)
+			sfcListTemp.add(
+					_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
+							SpeedCalc.calculateMach(
+									_altitudeClimb.get(0),
+									_theOperatingConditions.getDeltaTemperatureClimb(),
+									_speedTASClimb.get(0)
+									),
+							_altitudeClimb.get(0),
+							_theOperatingConditions.getDeltaTemperatureClimb(),
+							_theOperatingConditions.getThrottleClimb(),
+							EngineOperatingConditionEnum.CLIMB,
+							_climbSfcCorrectionFactor
+							)
+					);
+		_sfcClimb.add(sfcListTemp.stream().mapToDouble(sfc -> sfc).average().getAsDouble());
+		_fuelFlowClimb.add(
+				_totalThrustClimb.get(0).doubleValue(SI.NEWTON)
+				*(0.224809)*(0.454/60)
+				*_sfcClimb.get(0)
 				);
 		
+		//...........................................................................................
+		// step by step calculation
+		for(int i=1; i<_rcMapAEO.size(); i++) {
+			
+			// update of density ratio and speed of sound
+			sigma = OperatingConditions.getAtmosphere(
+					_rcMapAEO.get(i).getAltitude().doubleValue(SI.METER),
+					_theOperatingConditions.getDeltaTemperatureClimb().doubleValue(SI.CELSIUS)
+					).getDensityRatio();
+			speedOfSound = OperatingConditions.getAtmosphere(
+					_rcMapAEO.get(i).getAltitude().doubleValue(SI.METER),
+					_theOperatingConditions.getDeltaTemperatureClimb().doubleValue(SI.CELSIUS)
+					).getSpeedOfSound();
+			
+			// calculation of mission-related quantities
+			_altitudeClimb.add(_rcMapAEO.get(i).getAltitude());
+			
+			if(_climbSpeed != null) {
+				_speedTASClimb.add(_climbSpeed.to(SI.METERS_PER_SECOND).divide(Math.sqrt(sigma)));
+				_speedCASClimb.add(_climbSpeed.to(SI.METERS_PER_SECOND));
+				_machClimb.add(_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)/speedOfSound);
+				
+			}
+			else {
+				_speedTASClimb.add(_rcMapAEO.get(i).getRCMaxSpeed());
+				_speedCASClimb.add(_rcMapAEO.get(i).getRCMaxSpeed().times(Math.sqrt(sigma)));
+				_machClimb.add(_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)/speedOfSound);
+			}
+			
+			_timeClimb.add(
+					_timeClimb.get(_timeClimb.size()-1)
+					.plus(
+							Amount.valueOf(
+									MyMathUtils.integrate1DSimpsonSpline(
+											new double[] { 
+													_altitudeClimb.get(i-1).doubleValue(SI.METER),
+													_altitudeClimb.get(i).doubleValue(SI.METER)
+											},
+											new double[] {
+													1/_rateOfClimbClimb.get(i-1).doubleValue(SI.METERS_PER_SECOND),
+													1/_rateOfClimbClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
+											}
+											),
+									SI.SECOND
+									)
+							)
+					);
+			_rangeClimb.add(
+					_rangeClimb.get(_rangeClimb.size()-1)
+					.plus(
+							Amount.valueOf(
+									( (_speedTASClimb.get(i-1).doubleValue(SI.METERS_PER_SECOND) 
+											+ _speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND) )
+											/2
+											)
+									*(_timeClimb.get(i).minus(_timeClimb.get(i-1)).doubleValue(SI.SECOND))
+									*Math.cos( ( ( _climbAngleClimb.get(i-1).doubleValue(SI.RADIAN) 
+											+ _climbAngleClimb.get(i).doubleValue(SI.RADIAN) )
+											/2)
+											),
+									SI.METER
+									)
+							)
+					);
+			_totalThrustClimb.add(
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(_thrustListAEO.get(i).getSpeed()
+											.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+											),
+									MyArrayUtils.convertListOfAmountTodoubleArray(_thrustListAEO.get(i).getThrust()
+											.stream().map(t -> t.to(SI.NEWTON)).collect(Collectors.toList())
+											),
+									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
+									),
+							SI.NEWTON
+							)
+					);
+			_dragClimb.add(
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(_dragListAEO.get(i).getSpeed()
+											.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+											),
+									MyArrayUtils.convertListOfAmountTodoubleArray(_dragListAEO.get(i).getDrag()
+											.stream().map(d -> d.to(SI.NEWTON)).collect(Collectors.toList())
+											),
+									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
+									),
+							SI.NEWTON
+							)
+					);
+			_rateOfClimbClimb.add(
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()
+											.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+											),
+									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getRCList()
+											.stream().map(rc -> rc.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+											),
+									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
+									),
+							SI.METERS_PER_SECOND
+							)
+					);
+			_climbAngleClimb.add(
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()
+											.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+											),
+									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getClimbAngleList()
+											.stream().map(ca -> ca.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+											),
+									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
+									),
+							NonSI.DEGREE_ANGLE
+							)
+					);
+			
+			sfcListTemp = new ArrayList<>();
+			for(int ieng=0; ieng<_theAircraft.getPowerPlant().getEngineNumber(); ieng++)
+				sfcListTemp.add(
+						_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
+								SpeedCalc.calculateMach(
+										_altitudeClimb.get(i),
+										_theOperatingConditions.getDeltaTemperatureClimb(),
+										_speedTASClimb.get(i)
+										),
+								_altitudeClimb.get(i),
+								_theOperatingConditions.getDeltaTemperatureClimb(),
+								_theOperatingConditions.getThrottleClimb(),
+								EngineOperatingConditionEnum.CLIMB,
+								_climbSfcCorrectionFactor
+								)
+						);
+			_sfcClimb.add(sfcListTemp.stream().mapToDouble(sfc -> sfc).average().getAsDouble());
+			_fuelFlowClimb.add(
+					_totalThrustClimb.get(i).doubleValue(SI.NEWTON)
+					*(0.224809)*(0.454/60)
+					*_sfcClimb.get(i)
+					);
+			_fuelUsedClimb.add(
+					Amount.valueOf(
+							_fuelUsedClimb.get(_fuelUsedClimb.size()-1).doubleValue(SI.KILOGRAM)
+							+ (_fuelFlowClimb.get(i)*_timeClimb.get(i).doubleValue(NonSI.MINUTE)),
+							SI.KILOGRAM
+							)
+					);
+			
+			List<Amount<Mass>> emissionNOxListTemp = new ArrayList<>();
+			List<Amount<Mass>> emissionCOListTemp = new ArrayList<>();
+			List<Amount<Mass>> emissionHCListTemp = new ArrayList<>();
+			List<Amount<Mass>> emissionSootListTemp = new ArrayList<>();
+			List<Amount<Mass>> emissionCO2ListTemp = new ArrayList<>();
+			List<Amount<Mass>> emissionSOxListTemp = new ArrayList<>();
+			List<Amount<Mass>> emissionH2OListTemp = new ArrayList<>();
+			for(int ieng=0; ieng<_theAircraft.getPowerPlant().getEngineNumber(); ieng++) {
+				emissionNOxListTemp.add(
+						Amount.valueOf(
+								_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getNOxEmissionIndex(
+										SpeedCalc.calculateMach(
+												_altitudeClimb.get(i),
+												_theOperatingConditions.getDeltaTemperatureClimb(),
+												_speedTASClimb.get(i)
+												),
+										_altitudeClimb.get(i),
+										_theOperatingConditions.getDeltaTemperatureClimb(),
+										_theOperatingConditions.getThrottleClimb(),
+										EngineOperatingConditionEnum.CLIMB,
+										_climbCalibrationFactorEmissionIndexNOx
+										)
+								*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM),
+								SI.GRAM)
+						);
+				emissionCOListTemp.add(
+						Amount.valueOf(
+								_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getCOEmissionIndex(
+										SpeedCalc.calculateMach(
+												_altitudeClimb.get(i),
+												_theOperatingConditions.getDeltaTemperatureClimb(),
+												_speedTASClimb.get(i)
+												),
+										_altitudeClimb.get(i),
+										_theOperatingConditions.getDeltaTemperatureClimb(),
+										_theOperatingConditions.getThrottleClimb(),
+										EngineOperatingConditionEnum.CLIMB,
+										_climbCalibrationFactorEmissionIndexCO
+										)
+								*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM),
+								SI.GRAM)
+						);
+				emissionHCListTemp.add(
+						Amount.valueOf(
+								_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getHCEmissionIndex(
+										SpeedCalc.calculateMach(
+												_altitudeClimb.get(i),
+												_theOperatingConditions.getDeltaTemperatureClimb(),
+												_speedTASClimb.get(i)
+												),
+										_altitudeClimb.get(i),
+										_theOperatingConditions.getDeltaTemperatureClimb(),
+										_theOperatingConditions.getThrottleClimb(),
+										EngineOperatingConditionEnum.CLIMB,
+										_climbCalibrationFactorEmissionIndexHC
+										)
+								*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM),
+								SI.GRAM)
+						);
+				emissionSootListTemp.add(
+						Amount.valueOf(
+								_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSootEmissionIndex(
+										SpeedCalc.calculateMach(
+												_altitudeClimb.get(i),
+												_theOperatingConditions.getDeltaTemperatureClimb(),
+												_speedTASClimb.get(i)
+												),
+										_altitudeClimb.get(i),
+										_theOperatingConditions.getDeltaTemperatureClimb(),
+										_theOperatingConditions.getThrottleClimb(),
+										EngineOperatingConditionEnum.CLIMB,
+										_climbCalibrationFactorEmissionIndexSoot
+										)
+								*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM),
+								SI.GRAM)
+						);
+				emissionCO2ListTemp.add(
+						Amount.valueOf(
+								_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getCO2EmissionIndex(
+										SpeedCalc.calculateMach(
+												_altitudeClimb.get(i),
+												_theOperatingConditions.getDeltaTemperatureClimb(),
+												_speedTASClimb.get(i)
+												),
+										_altitudeClimb.get(i),
+										_theOperatingConditions.getDeltaTemperatureClimb(),
+										_theOperatingConditions.getThrottleClimb(),
+										EngineOperatingConditionEnum.CLIMB,
+										_climbCalibrationFactorEmissionIndexCO2
+										)
+								*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM),
+								SI.GRAM)
+						);
+				emissionSOxListTemp.add(
+						Amount.valueOf(
+								_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSOxEmissionIndex(
+										SpeedCalc.calculateMach(
+												_altitudeClimb.get(i),
+												_theOperatingConditions.getDeltaTemperatureClimb(),
+												_speedTASClimb.get(i)
+												),
+										_altitudeClimb.get(i),
+										_theOperatingConditions.getDeltaTemperatureClimb(),
+										_theOperatingConditions.getThrottleClimb(),
+										EngineOperatingConditionEnum.CLIMB,
+										_climbCalibrationFactorEmissionIndexSOx
+										)
+								*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM),
+								SI.GRAM)
+						);
+				emissionH2OListTemp.add(
+						Amount.valueOf(
+								_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getH2OEmissionIndex(
+										SpeedCalc.calculateMach(
+												_altitudeClimb.get(i),
+												_theOperatingConditions.getDeltaTemperatureClimb(),
+												_speedTASClimb.get(i)
+												),
+										_altitudeClimb.get(i),
+										_theOperatingConditions.getDeltaTemperatureClimb(),
+										_theOperatingConditions.getThrottleClimb(),
+										EngineOperatingConditionEnum.CLIMB,
+										_climbCalibrationFactorEmissionIndexH2O
+										)
+								*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM),
+								SI.GRAM)
+						);
+			}
+			_emissionNOxClimb.add(
+					Amount.valueOf(
+							_emissionNOxClimb.get(_emissionNOxClimb.size()-1).doubleValue(SI.GRAM)
+							+ emissionNOxListTemp.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(),
+							SI.GRAM
+							)
+					);
+			_emissionCOClimb.add(
+					Amount.valueOf(
+							_emissionCOClimb.get(_emissionCOClimb.size()-1).doubleValue(SI.GRAM)
+							+ emissionCOListTemp.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(),
+							SI.GRAM
+							)
+					);
+			_emissionHCClimb.add(
+					Amount.valueOf(
+							_emissionHCClimb.get(_emissionHCClimb.size()-1).doubleValue(SI.GRAM)
+							+ emissionHCListTemp.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(),
+							SI.GRAM
+							)
+					);
+			_emissionSootClimb.add(
+					Amount.valueOf(
+							_emissionSootClimb.get(_emissionSootClimb.size()-1).doubleValue(SI.GRAM)
+							+ emissionSootListTemp.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(),
+							SI.GRAM
+							)
+					);
+			_emissionCO2Climb.add(
+					Amount.valueOf(
+							_emissionCO2Climb.get(_emissionCO2Climb.size()-1).doubleValue(SI.GRAM)
+							+ emissionCO2ListTemp.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(),
+							SI.GRAM
+							)
+					);
+			_emissionSOxClimb.add(
+					Amount.valueOf(
+							_emissionSOxClimb.get(_emissionSOxClimb.size()-1).doubleValue(SI.GRAM)
+							+ emissionSOxListTemp.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(),
+							SI.GRAM
+							)
+					);
+			_emissionH2OClimb.add(
+					Amount.valueOf(
+							_emissionH2OClimb.get(_emissionH2OClimb.size()-1).doubleValue(SI.GRAM)
+							+ emissionH2OListTemp.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(),
+							SI.GRAM
+							)
+					);
+			
+			_aircraftMassClimb.add(
+					Amount.valueOf(
+							_aircraftMassClimb.get(_aircraftMassClimb.size()-1).doubleValue(SI.KILOGRAM)
+							- _fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM),
+							SI.KILOGRAM
+							)
+					);
+			_cLClimb.add(
+					LiftCalc.calculateLiftCoeff(
+							Amount.valueOf(
+									_aircraftMassClimb.get(i).doubleValue(SI.KILOGRAM)
+									*Math.cos(_climbAngleClimb.get(i).doubleValue(SI.RADIAN))
+									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+									SI.NEWTON
+									),
+							_speedTASClimb.get(i),
+							_theAircraft.getWing().getSurfacePlanform(),
+							_altitudeClimb.get(i),
+							_theOperatingConditions.getDeltaTemperatureClimb()
+							)
+					);
+			_cDClimb.add(MyMathUtils.getInterpolatedValue1DLinear(_polarCLClimb, _polarCDClimb, _cLClimb.get(i)));
+			_efficiencyClimb.add(_cLClimb.get(i)/_cDClimb.get(i));
+			
+		}
+		
+		//...........................................................................................
+		// total quantites calculation
+		_climbTotalRange = _rangeClimb.get(_rangeClimb.size()-1);
+		_climbTotalFuelUsed = _fuelUsedClimb.get(_fuelUsedClimb.size()-1);
+		_climbTotalEmissionsNOx = _emissionNOxClimb.get(_emissionNOxClimb.size()-1);
+		_climbTotalEmissionsCO = _emissionCOClimb.get(_emissionCOClimb.size()-1);
+		_climbTotalEmissionsHC = _emissionHCClimb.get(_emissionHCClimb.size()-1);
+		_climbTotalEmissionsSoot = _emissionSootClimb.get(_emissionSootClimb.size()-1);
+		_climbTotalEmissionsCO2 = _emissionCO2Climb.get(_emissionCO2Climb.size()-1);
+		_climbTotalEmissionsSOx = _emissionSOxClimb.get(_emissionSOxClimb.size()-1);
+		_climbTotalEmissionsH2O = _emissionH2OClimb.get(_emissionH2OClimb.size()-1);
+			
 	}
 	
 	public void plotClimbPerformance(List<PerformancePlotEnum> plotList, String climbFolderPath) {
@@ -2002,7 +2381,7 @@ public class ClimbCalc {
 			for(int i=0; i<_rcMapAEO.size(); i++) {
 				altitudeList_SI.add(_rcMapAEO.get(i).getAltitude().doubleValue(SI.METER));	
 				altitudeList_Imperial.add(_rcMapAEO.get(i).getAltitude().doubleValue(NonSI.FOOT));
-				fuelUsedList.add(_fuelUsedList.get(i).doubleValue(SI.KILOGRAM));
+				fuelUsedList.add(_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM));
 			}
 			
 			MyChartToFileUtils.plotNoLegend(
@@ -2270,38 +2649,6 @@ public class ClimbCalc {
 		this._efficiencyMapAltitudeOEI = _efficiencyMapAltitudeOEI;
 	}
 
-	public Amount<Force> getDragAtClimbEnding() {
-		return _dragAtClimbEnding;
-	}
-
-	public void setDragAtClimbEnding(Amount<Force> _dragAtClimbEnding) {
-		this._dragAtClimbEnding = _dragAtClimbEnding;
-	}
-
-	public Amount<Force> getDragAtClimbStart() {
-		return _dragAtClimbStart;
-	}
-
-	public void setDragAtClimbStart(Amount<Force> _dragAtClimbStart) {
-		this._dragAtClimbStart = _dragAtClimbStart;
-	}
-
-	public Amount<Force> getThrustAtClimbEnding() {
-		return _thrustAtClimbEnding;
-	}
-
-	public void setThrustAtClimbEnding(Amount<Force> _thrustAtClimbEnding) {
-		this._thrustAtClimbEnding = _thrustAtClimbEnding;
-	}
-
-	public Amount<Force> getThrustAtClimbStart() {
-		return _thrustAtClimbStart;
-	}
-
-	public void setThrustAtClimbStart(Amount<Force> _thrustAtClimbStart) {
-		this._thrustAtClimbStart = _thrustAtClimbStart;
-	}
-
 	public List<Amount<Duration>> getClimbTimeListAEO() {
 		return _climbTimeListAEO;
 	}
@@ -2316,30 +2663,6 @@ public class ClimbCalc {
 
 	public void setClimbTimeListRCmax(List<Amount<Duration>> _climbTimeListRCmax) {
 		this._climbTimeListRCmax = _climbTimeListRCmax;
-	}
-
-	public List<Amount<Mass>> getFuelUsedList() {
-		return _fuelUsedList;
-	}
-
-	public void setFuelUsedList(List<Amount<Mass>> _fuelUsedList) {
-		this._fuelUsedList = _fuelUsedList;
-	}
-
-	public List<Double> getFuelFlowList() {
-		return _fuelFlowList;
-	}
-
-	public void setFuelFlowList(List<Double> _fuelFlowList) {
-		this._fuelFlowList = _fuelFlowList;
-	}
-
-	public List<Double> getSFCList() {
-		return _sfcList;
-	}
-
-	public void setSFCList(List<Double> _sfcList) {
-		this._sfcList = _sfcList;
 	}
 
 	public double getClimbThrustCorrectionFactor() {
@@ -2364,6 +2687,310 @@ public class ClimbCalc {
 
 	public void setClimbSfcCorrectionFactor(double _climbSfcCorrectionFactor) {
 		this._climbSfcCorrectionFactor = _climbSfcCorrectionFactor;
+	}
+
+	public double getClimbCalibrationFactorEmissionIndexNOx() {
+		return _climbCalibrationFactorEmissionIndexNOx;
+	}
+
+	public void setClimbCalibrationFactorEmissionIndexNOx(double _climbCalibrationFactorEmissionIndexNOx) {
+		this._climbCalibrationFactorEmissionIndexNOx = _climbCalibrationFactorEmissionIndexNOx;
+	}
+
+	public double getClimbCalibrationFactorEmissionIndexCO() {
+		return _climbCalibrationFactorEmissionIndexCO;
+	}
+
+	public void setClimbCalibrationFactorEmissionIndexCO(double _climbCalibrationFactorEmissionIndexCO) {
+		this._climbCalibrationFactorEmissionIndexCO = _climbCalibrationFactorEmissionIndexCO;
+	}
+
+	public double getClimbCalibrationFactorEmissionIndexHC() {
+		return _climbCalibrationFactorEmissionIndexHC;
+	}
+
+	public void setClimbCalibrationFactorEmissionIndexHC(double _climbCalibrationFactorEmissionIndexHC) {
+		this._climbCalibrationFactorEmissionIndexHC = _climbCalibrationFactorEmissionIndexHC;
+	}
+
+	public double getClimbCalibrationFactorEmissionIndexSoot() {
+		return _climbCalibrationFactorEmissionIndexSoot;
+	}
+
+	public void setClimbCalibrationFactorEmissionIndexSoot(double _climbCalibrationFactorEmissionIndexSoot) {
+		this._climbCalibrationFactorEmissionIndexSoot = _climbCalibrationFactorEmissionIndexSoot;
+	}
+
+	public double getClimbCalibrationFactorEmissionIndexCO2() {
+		return _climbCalibrationFactorEmissionIndexCO2;
+	}
+
+	public void setClimbCalibrationFactorEmissionIndexCO2(double _climbCalibrationFactorEmissionIndexCO2) {
+		this._climbCalibrationFactorEmissionIndexCO2 = _climbCalibrationFactorEmissionIndexCO2;
+	}
+
+	public double getClimbCalibrationFactorEmissionIndexSOx() {
+		return _climbCalibrationFactorEmissionIndexSOx;
+	}
+
+	public void setClimbCalibrationFactorEmissionIndexSOx(double _climbCalibrationFactorEmissionIndexSOx) {
+		this._climbCalibrationFactorEmissionIndexSOx = _climbCalibrationFactorEmissionIndexSOx;
+	}
+
+	public double getClimbCalibrationFactorEmissionIndexH2O() {
+		return _climbCalibrationFactorEmissionIndexH2O;
+	}
+
+	public void setClimbCalibrationFactorEmissionIndexH2O(double _climbCalibrationFactorEmissionIndexH2O) {
+		this._climbCalibrationFactorEmissionIndexH2O = _climbCalibrationFactorEmissionIndexH2O;
+	}
+
+	public List<Amount<Length>> getRangeClimb() {
+		return _rangeClimb;
+	}
+
+	public void setRangeClimb(List<Amount<Length>> _rangeClimb) {
+		this._rangeClimb = _rangeClimb;
+	}
+
+	public List<Amount<Length>> getAltitudeClimb() {
+		return _altitudeClimb;
+	}
+
+	public void setAltitudeClimb(List<Amount<Length>> _altitudeClimb) {
+		this._altitudeClimb = _altitudeClimb;
+	}
+
+	public List<Amount<Duration>> getTimeClimb() {
+		return _timeClimb;
+	}
+
+	public void setTimeClimb(List<Amount<Duration>> _timeClimb) {
+		this._timeClimb = _timeClimb;
+	}
+
+	public List<Amount<Mass>> getFuelUsedClimb() {
+		return _fuelUsedClimb;
+	}
+
+	public void setFuelUsedClimb(List<Amount<Mass>> _fuelUsedClimb) {
+		this._fuelUsedClimb = _fuelUsedClimb;
+	}
+
+	public List<Amount<Mass>> getAircraftMassClimb() {
+		return _aircraftMassClimb;
+	}
+
+	public void setAircraftMassClimb(List<Amount<Mass>> _aircraftMassClimb) {
+		this._aircraftMassClimb = _aircraftMassClimb;
+	}
+
+	public List<Amount<Mass>> getEmissionNOxClimb() {
+		return _emissionNOxClimb;
+	}
+
+	public void setEmissionNOxClimb(List<Amount<Mass>> _emissionNOxClimb) {
+		this._emissionNOxClimb = _emissionNOxClimb;
+	}
+
+	public List<Amount<Mass>> getEmissionCOClimb() {
+		return _emissionCOClimb;
+	}
+
+	public void setEmissionCOClimb(List<Amount<Mass>> _emissionCOClimb) {
+		this._emissionCOClimb = _emissionCOClimb;
+	}
+
+	public List<Amount<Mass>> getEmissionHCClimb() {
+		return _emissionHCClimb;
+	}
+
+	public void setEmissionHCClimb(List<Amount<Mass>> _emissionHCClimb) {
+		this._emissionHCClimb = _emissionHCClimb;
+	}
+
+	public List<Amount<Mass>> getEmissionSootClimb() {
+		return _emissionSootClimb;
+	}
+
+	public void setEmissionSootClimb(List<Amount<Mass>> _emissionSootClimb) {
+		this._emissionSootClimb = _emissionSootClimb;
+	}
+
+	public List<Amount<Mass>> getEmissionCO2Climb() {
+		return _emissionCO2Climb;
+	}
+
+	public void setEmissionCO2Climb(List<Amount<Mass>> _emissionCO2Climb) {
+		this._emissionCO2Climb = _emissionCO2Climb;
+	}
+
+	public List<Amount<Mass>> getEmissionSOxClimb() {
+		return _emissionSOxClimb;
+	}
+
+	public void setEmissionSOxClimb(List<Amount<Mass>> _emissionSOxClimb) {
+		this._emissionSOxClimb = _emissionSOxClimb;
+	}
+
+	public List<Amount<Mass>> getEmissionH2OClimb() {
+		return _emissionH2OClimb;
+	}
+
+	public void setEmissionH2OClimb(List<Amount<Mass>> _emissionH2OClimb) {
+		this._emissionH2OClimb = _emissionH2OClimb;
+	}
+
+	public List<Amount<Velocity>> getSpeedTASClimb() {
+		return _speedTASClimb;
+	}
+
+	public void setSpeedTASClimb(List<Amount<Velocity>> _speedTASClimb) {
+		this._speedTASClimb = _speedTASClimb;
+	}
+
+	public List<Amount<Velocity>> getSpeedCASClimb() {
+		return _speedCASClimb;
+	}
+
+	public void setSpeedCASClimb(List<Amount<Velocity>> _speedCASClimb) {
+		this._speedCASClimb = _speedCASClimb;
+	}
+
+	public List<Double> getMachClimb() {
+		return _machClimb;
+	}
+
+	public void setMachClimb(List<Double> _machClimb) {
+		this._machClimb = _machClimb;
+	}
+
+	public List<Double> getCLClimb() {
+		return _cLClimb;
+	}
+
+	public void setCLClimb(List<Double> _cLClimb) {
+		this._cLClimb = _cLClimb;
+	}
+
+	public List<Double> getCDClimb() {
+		return _cDClimb;
+	}
+
+	public void setCDClimb(List<Double> _cDClimb) {
+		this._cDClimb = _cDClimb;
+	}
+
+	public List<Double> getEfficiencyClimb() {
+		return _efficiencyClimb;
+	}
+
+	public void setEfficiencyClimb(List<Double> _efficiencyClimb) {
+		this._efficiencyClimb = _efficiencyClimb;
+	}
+
+	public List<Amount<Force>> getDragClimb() {
+		return _dragClimb;
+	}
+
+	public void setDragClimb(List<Amount<Force>> _dragClimb) {
+		this._dragClimb = _dragClimb;
+	}
+
+	public List<Amount<Force>> getTotalThrustClimb() {
+		return _totalThrustClimb;
+	}
+
+	public void setTotalThrustClimb(List<Amount<Force>> _totalThrustClimb) {
+		this._totalThrustClimb = _totalThrustClimb;
+	}
+
+	public List<Double> getSfcClimb() {
+		return _sfcClimb;
+	}
+
+	public void setSfcClimb(List<Double> _sfcClimb) {
+		this._sfcClimb = _sfcClimb;
+	}
+
+	public List<Double> getFuelFlowClimb() {
+		return _fuelFlowClimb;
+	}
+
+	public void setFuelFlowClimb(List<Double> _fuelFlowClimb) {
+		this._fuelFlowClimb = _fuelFlowClimb;
+	}
+
+	public List<Amount<Velocity>> getRateOfClimbClimb() {
+		return _rateOfClimbClimb;
+	}
+
+	public void setRateOfClimbClimb(List<Amount<Velocity>> _rateOfClimbClimb) {
+		this._rateOfClimbClimb = _rateOfClimbClimb;
+	}
+
+	public List<Amount<Angle>> getClimbAngleClimb() {
+		return _climbAngleClimb;
+	}
+
+	public void setClimbAngleClimb(List<Amount<Angle>> _climbAngleClimb) {
+		this._climbAngleClimb = _climbAngleClimb;
+	}
+
+	public Amount<Mass> getClimbTotalEmissionsNOx() {
+		return _climbTotalEmissionsNOx;
+	}
+
+	public void setClimbTotalEmissionsNOx(Amount<Mass> _climbTotalEmissionsNOx) {
+		this._climbTotalEmissionsNOx = _climbTotalEmissionsNOx;
+	}
+
+	public Amount<Mass> getClimbTotalEmissionsCO() {
+		return _climbTotalEmissionsCO;
+	}
+
+	public void setClimbTotalEmissionsCO(Amount<Mass> _climbTotalEmissionsCO) {
+		this._climbTotalEmissionsCO = _climbTotalEmissionsCO;
+	}
+
+	public Amount<Mass> getClimbTotalEmissionsHC() {
+		return _climbTotalEmissionsHC;
+	}
+
+	public void setClimbTotalEmissionsHC(Amount<Mass> _climbTotalEmissionsHC) {
+		this._climbTotalEmissionsHC = _climbTotalEmissionsHC;
+	}
+
+	public Amount<Mass> getClimbTotalEmissionsSoot() {
+		return _climbTotalEmissionsSoot;
+	}
+
+	public void setClimbTotalEmissionsSoot(Amount<Mass> _climbTotalEmissionsSoot) {
+		this._climbTotalEmissionsSoot = _climbTotalEmissionsSoot;
+	}
+
+	public Amount<Mass> getClimbTotalEmissionsCO2() {
+		return _climbTotalEmissionsCO2;
+	}
+
+	public void setClimbTotalEmissionsCO2(Amount<Mass> _climbTotalEmissionsCO2) {
+		this._climbTotalEmissionsCO2 = _climbTotalEmissionsCO2;
+	}
+
+	public Amount<Mass> getClimbTotalEmissionsSOx() {
+		return _climbTotalEmissionsSOx;
+	}
+
+	public void setClimbTotalEmissionsSOx(Amount<Mass> _climbTotalEmissionsSOx) {
+		this._climbTotalEmissionsSOx = _climbTotalEmissionsSOx;
+	}
+
+	public Amount<Mass> getClimbTotalEmissionsH2O() {
+		return _climbTotalEmissionsH2O;
+	}
+
+	public void setClimbTotalEmissionsH2O(Amount<Mass> _climbTotalEmissionsH2O) {
+		this._climbTotalEmissionsH2O = _climbTotalEmissionsH2O;
 	}
 	
 }
