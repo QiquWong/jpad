@@ -947,6 +947,39 @@ public class InputManagerControllerSecondaryActionUtilities {
         });
 	}
 	
+	public void cadConfigurationLoadButtonDisableCheck() {
+		
+		//.......................................................................................
+		// CHECK IF THE CAD CONFIGURATION FILE TEXT FIELD IS NOT EMPTY
+		theController.getLoadCADConfigurationFileButton().disableProperty().bind(
+				Bindings.isEmpty(theController.getCADConfigurationInputFileTextField().textProperty())
+				);
+		
+		// CHECK IF THE FILE IN TEXTFIELD IS A CAD CONFIGURATION FILE
+		final Tooltip warning = new Tooltip("WARNING : The selected file is not a CAD configuration file !!");
+		theController.getLoadCADConfigurationFileButton().setOnMouseEntered(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+				Point2D p = theController.getLoadCADConfigurationFileButton()
+						.localToScreen(
+								-2.5*theController.getLoadCADConfigurationFileButton().getLayoutBounds().getMaxX(), 
+								1.2*theController.getLoadCADConfigurationFileButton().getLayoutBounds().getMaxY()
+								);
+				if (!isCADConfigurationFile(theController.getCADConfigurationInputFileTextField().getText())) {
+					warning.show(theController.getLoadCADConfigurationFileButton(), p.getX(), p.getY());
+				}
+			}
+		});
+		theController.getLoadCADConfigurationFileButton().setOnMouseExited(new EventHandler<MouseEvent>() {
+			
+			@Override
+			public void handle(MouseEvent event) {
+				warning.hide();
+			}
+		});
+	}
+	
 	public void checkCabinConfigurationClassesNumber() {
 		
 		theController.getValidation().registerValidator(

@@ -5923,9 +5923,6 @@ public class InputManagerControllerLogUtilities {
 			
 		}
 		
-		if (theController.getUpdateCAD3DViewButton().isDisabled())
-			theController.getUpdateCAD3DViewButton().setDisable(false);
-		
 	}
 
 }

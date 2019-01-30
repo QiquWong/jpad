@@ -36,6 +36,7 @@ import opencascade.Geom_Geometry;
 import opencascade.Geom_TrimmedCurve;
 import opencascade.IGESControl_Controller;
 import opencascade.IGESControl_Writer;
+import opencascade.Interface_Static;
 import opencascade.STEPControl_StepModelType;
 import opencascade.STEPControl_Writer;
 import opencascade.ShapeAnalysis_FreeBounds;
@@ -155,6 +156,8 @@ public final class OCCUtils {
 		case STEP:
 			shapes.forEach(s -> builder.Add(compound, s.getShape()));
 			STEPControl_Writer stepWriter = new STEPControl_Writer();
+			Interface_Static.SetCVal("write.step.product.name", "Aircraft");
+			Interface_Static.SetCVal("write.step.unit", "M");
 			stepWriter.Transfer(compound, STEPControl_StepModelType.STEPControl_AsIs);
 			stepWriter.Write(fileNameComplete);	
 			

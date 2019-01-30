@@ -19,6 +19,7 @@ import aircraft.Aircraft;
 import aircraft.components.powerplant.Engine;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
+import it.unina.daf.jpadcad.CADManager;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -1883,6 +1884,7 @@ public class InputManagerController {
 		actionButtonToolbar.getItems().add(new Label("<- Update Components Using Files"));
 		
 		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
+		ObjectProperty<CADManager> cadManager = new SimpleObjectProperty<>();
 		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
 
 		try {
@@ -1913,6 +1915,23 @@ public class InputManagerController {
 					);
 		} catch (Exception e) {
 			newAircraftButton.setDisable(true);
+		}
+		
+		try {
+			cadManager.set(Main.getTheCADManager());
+			chooseCADConfigurationFileButton.disableProperty().bind(
+					Bindings.isNull(aircraft).or(Bindings.isNull(cadManager))
+					);
+			updateCAD3DViewButton.disableProperty().bind(
+					Bindings.isNull(aircraft).or(Bindings.isNull(cadManager))
+					);
+			saveCADToFileButton.disableProperty().bind(
+					Bindings.isNull(aircraft).or(Bindings.isNull(cadManager))
+					);		
+		} catch (Exception e) {
+			chooseCADConfigurationFileButton.setDisable(true);
+			updateCAD3DViewButton.setDisable(true);
+			saveCADToFileButton.setDisable(true);
 		}
 		
 		tabPaneFuselageSpoilers.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
@@ -2134,7 +2153,7 @@ public class InputManagerController {
 		landingGearsRearWheelsWidthUnitChoiceBox.setItems(lengthUnitsList);
 		
 		//.......................................................................................
-		// ADJUST CRITERIA CHOICE BOXES INITIALIZATION TODO: eventually move this initialization elsewhere
+		// ADJUST CRITERIA CHOICE BOXES INITIALIZATION
 		fuselageAdjustCriterionChoiceBox.getSelectionModel().select(0);
 		wingAdjustCriterionChoiceBox.getSelectionModel().select(0);
 		hTailAdjustCriterionChoiceBox.getSelectionModel().select(0);
@@ -2846,7 +2865,7 @@ public class InputManagerController {
 		inputManagerControllerSecondaryActionUtilities.setShowEngineDataAction(powerPlantJetRadioButton1, 0, EngineTypeEnum.TURBOFAN);
 		inputManagerControllerSecondaryActionUtilities.setShowEngineDataAction(powerPlantTurbopropRadioButton1, 0, EngineTypeEnum.TURBOPROP);
 		inputManagerControllerSecondaryActionUtilities.setShowEngineDataAction(powerPlantPistonRadioButton1, 0, EngineTypeEnum.PISTON);
-		
+		inputManagerControllerSecondaryActionUtilities.cadConfigurationLoadButtonDisableCheck();	
 	}
 	
 	@FXML
@@ -6160,9 +6179,6 @@ public class InputManagerController {
 			Main.setCADConfigurationFileAbsolutePath(file.getAbsolutePath());
 			chooseCADConfigurationFileButton.setStyle("");
 			
-			if (loadCADConfigurationFileButton.isDisabled() == true)
-				loadCADConfigurationFileButton.setDisable(false);
-			
 			loadCADConfigurationFileButton.setStyle(buttonSuggestedActionStyle);
 		}		
 	}
@@ -6223,6 +6239,7 @@ public class InputManagerController {
 				loadAircraftButton.setStyle("");
 				saveAircraftButton.setStyle(buttonSuggestedActionStyle);
 				updateAircraftDataButton.setStyle(buttonSuggestedActionStyle);
+				chooseCADConfigurationFileButton.setStyle(buttonSuggestedActionStyle);
 			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -6245,6 +6262,8 @@ public class InputManagerController {
 	private void updateCAD3DView() {
 		
 		inputManagerControllerMainActionUtilities.updateCAD3DViewImplementation();
+		
+		saveCADToFileButton.setStyle(buttonSuggestedActionStyle);
 	}
 	
 	@FXML

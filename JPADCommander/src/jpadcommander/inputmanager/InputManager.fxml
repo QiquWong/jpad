@@ -3255,7 +3255,7 @@
                                                                </font>
                                                             </Label>
                                                             <CheckBox fx:id="generateWingFairingCADCheckBox" layoutX="223.0" layoutY="998.0" mnemonicParsing="false" />
-                                                            <Button id="updateAllButton" fx:id="updateCAD3DViewButton" disable="true" layoutX="5.0" layoutY="6.0" mnemonicParsing="false" onAction="#updateCAD3DView" text="Update 3D Model" />
+                                                            <Button id="updateAllButton" fx:id="updateCAD3DViewButton" layoutX="5.0" layoutY="6.0" mnemonicParsing="false" onAction="#updateCAD3DView" text="Update 3D Model" />
                                                             <Separator layoutX="-8.0" layoutY="45.0" prefHeight="0.0" prefWidth="1345.0" />
                                                             <Label layoutX="5.0" layoutY="447.0" text="Tip type:">
                                                                <font>
@@ -3349,7 +3349,7 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <Button id="updateAllButton" fx:id="saveCADToFileButton" disable="true" layoutX="152.0" layoutY="6.0" mnemonicParsing="false" onAction="#saveCADToFile" prefHeight="31.0" prefWidth="96.0" text="Save CAD" />
+                                                            <Button id="updateAllButton" fx:id="saveCADToFileButton" layoutX="152.0" layoutY="6.0" mnemonicParsing="false" onAction="#saveCADToFile" prefHeight="31.0" prefWidth="96.0" text="Save CAD" />
                                                          </children>
                                                       </AnchorPane>
                                                    </content>
@@ -3415,8 +3415,8 @@
                                        </padding>
                                     </Label>
                                     <TextField id="cadConfigurationInputFileTextField" fx:id="cadConfigurationInputFileTextField" prefHeight="31.0" prefWidth="741.0" />
-                                    <Button fx:id="chooseCADConfigurationFileButton" disable="true" mnemonicParsing="false" onAction="#chooseCADConfigurationFile" text="..." />
-                                    <Button id="loadButton" fx:id="loadCADConfigurationFileButton" disable="true" mnemonicParsing="false" onAction="#loadCADConfigurationFile" text="Load" />
+                                    <Button fx:id="chooseCADConfigurationFileButton" mnemonicParsing="false" onAction="#chooseCADConfigurationFile" text="..." />
+                                    <Button id="loadButton" fx:id="loadCADConfigurationFileButton" mnemonicParsing="false" onAction="#loadCADConfigurationFile" text="Load" />
                                  </items>
                               </ToolBar>
                            </top>
