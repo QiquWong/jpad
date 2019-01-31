@@ -2680,12 +2680,33 @@ public class TakeOffCalc {
 		
 		public Amount<Mass> emissionNOx(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> fuelUsed) {
 
-			List<Amount<Mass>> emissionNOxList = new ArrayList<>();
+			List<Double> emissionIndexNOxList = new ArrayList<>();
 			
 			if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND))
 				for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber(); i++) 
-					emissionNOxList.add(
-							Amount.valueOf(
+					emissionIndexNOxList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getNOxEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									TakeOffCalc.this.getPhi(),
+									EngineOperatingConditionEnum.TAKE_OFF,
+									TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexNOx()
+									)
+							);
+			else {
+				if(isAborted == false) {
+					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
+							emissionIndexNOxList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getNOxEmissionIndex(
 											SpeedCalc.calculateMach(
 													altitude,
@@ -2702,58 +2723,25 @@ public class TakeOffCalc {
 											EngineOperatingConditionEnum.TAKE_OFF,
 											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexNOx()
 											)
-									*fuelUsed.doubleValue(SI.KILOGRAM),
-									SI.GRAM
-									)
-							);
-			else {
-				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
-						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
-							emissionNOxList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getNOxEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
-													altitude,
-													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexNOx()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
-											)
 									);
 					else {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionNOxList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getNOxEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexNOxList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getNOxEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.APR,
-													TakeOffCalc.this.getAprCalibrationFactorEmissionIndexNOx()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.APR,
+											TakeOffCalc.this.getAprCalibrationFactorEmissionIndexNOx()
 											)
 									);
 					}
@@ -2761,67 +2749,84 @@ public class TakeOffCalc {
 				else {
 					if(time.doubleValue(SI.SECOND) < tRec.doubleValue(SI.SECOND))
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionNOxList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getNOxEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexNOxList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getNOxEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexNOx()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.TAKE_OFF,
+											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexNOx()
 											)
 									);
 					else
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionNOxList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getNOxEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexNOxList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getNOxEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.GIDL,
-													TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexNOx()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.GIDL,
+											TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexNOx()
 											)
 									);
 				}
 			}
 			
-			return Amount.valueOf(emissionNOxList.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(), SI.GRAM);
+			return Amount.valueOf(
+					emissionIndexNOxList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+					*fuelUsed.doubleValue(SI.KILOGRAM),
+					SI.GRAM
+					);
 
 		}
 		
 		public Amount<Mass> emissionCO(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> fuelUsed) {
 
-			List<Amount<Mass>> emissionCOList = new ArrayList<>();
+			List<Double> emissionIndexCOList = new ArrayList<>();
 			
 			if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND))
 				for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber(); i++) 
-					emissionCOList.add(
-							Amount.valueOf(
+					emissionIndexCOList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getCOEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									TakeOffCalc.this.getPhi(),
+									EngineOperatingConditionEnum.TAKE_OFF,
+									TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexCO()
+									)
+							);
+			else {
+				if(isAborted == false) {
+					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
+							emissionIndexCOList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getCOEmissionIndex(
 											SpeedCalc.calculateMach(
 													altitude,
@@ -2838,58 +2843,25 @@ public class TakeOffCalc {
 											EngineOperatingConditionEnum.TAKE_OFF,
 											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexCO()
 											)
-									*fuelUsed.doubleValue(SI.KILOGRAM),
-									SI.GRAM
-									)
-							);
-			else {
-				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
-						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
-							emissionCOList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getCOEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
-													altitude,
-													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexCO()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
-											)
 									);
 					else {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionCOList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getCOEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexCOList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getCOEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.APR,
-													TakeOffCalc.this.getAprCalibrationFactorEmissionIndexCO()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.APR,
+											TakeOffCalc.this.getAprCalibrationFactorEmissionIndexCO()
 											)
 									);
 					}
@@ -2897,67 +2869,84 @@ public class TakeOffCalc {
 				else {
 					if(time.doubleValue(SI.SECOND) < tRec.doubleValue(SI.SECOND))
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionCOList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getCOEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexCOList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getCOEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexCO()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.TAKE_OFF,
+											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexCO()
 											)
 									);
 					else
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionCOList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getCOEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexCOList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getCOEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.GIDL,
-													TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexCO()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.GIDL,
+											TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexCO()
 											)
 									);
 				}
 			}
 			
-			return Amount.valueOf(emissionCOList.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(), SI.GRAM);
+			return Amount.valueOf(
+					emissionIndexCOList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+					*fuelUsed.doubleValue(SI.KILOGRAM),
+					SI.GRAM
+					);
 
 		}
-		
+
 		public Amount<Mass> emissionHC(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> fuelUsed) {
 
-			List<Amount<Mass>> emissionHCList = new ArrayList<>();
+			List<Double> emissionIndexHCList = new ArrayList<>();
 			
 			if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND))
 				for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber(); i++) 
-					emissionHCList.add(
-							Amount.valueOf(
+					emissionIndexHCList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getHCEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									TakeOffCalc.this.getPhi(),
+									EngineOperatingConditionEnum.TAKE_OFF,
+									TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexHC()
+									)
+							);
+			else {
+				if(isAborted == false) {
+					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
+							emissionIndexHCList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getHCEmissionIndex(
 											SpeedCalc.calculateMach(
 													altitude,
@@ -2974,58 +2963,25 @@ public class TakeOffCalc {
 											EngineOperatingConditionEnum.TAKE_OFF,
 											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexHC()
 											)
-									*fuelUsed.doubleValue(SI.KILOGRAM),
-									SI.GRAM
-									)
-							);
-			else {
-				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
-						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
-							emissionHCList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getHCEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
-													altitude,
-													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexHC()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
-											)
 									);
 					else {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionHCList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getHCEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexHCList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getHCEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.APR,
-													TakeOffCalc.this.getAprCalibrationFactorEmissionIndexHC()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.APR,
+											TakeOffCalc.this.getAprCalibrationFactorEmissionIndexHC()
 											)
 									);
 					}
@@ -3033,67 +2989,84 @@ public class TakeOffCalc {
 				else {
 					if(time.doubleValue(SI.SECOND) < tRec.doubleValue(SI.SECOND))
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionHCList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getHCEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexHCList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getHCEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexHC()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.TAKE_OFF,
+											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexHC()
 											)
 									);
 					else
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionHCList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getHCEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexHCList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getHCEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.GIDL,
-													TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexHC()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.GIDL,
+											TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexHC()
 											)
 									);
 				}
 			}
 			
-			return Amount.valueOf(emissionHCList.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(), SI.GRAM);
+			return Amount.valueOf(
+					emissionIndexHCList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+					*fuelUsed.doubleValue(SI.KILOGRAM),
+					SI.GRAM
+					);
 
 		}
 		
 		public Amount<Mass> emissionSoot(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> fuelUsed) {
 
-			List<Amount<Mass>> emissionSootList = new ArrayList<>();
+			List<Double> emissionIndexSootList = new ArrayList<>();
 			
 			if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND))
 				for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber(); i++) 
-					emissionSootList.add(
-							Amount.valueOf(
+					emissionIndexSootList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getSootEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									TakeOffCalc.this.getPhi(),
+									EngineOperatingConditionEnum.TAKE_OFF,
+									TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexSoot()
+									)
+							);
+			else {
+				if(isAborted == false) {
+					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
+							emissionIndexSootList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getSootEmissionIndex(
 											SpeedCalc.calculateMach(
 													altitude,
@@ -3110,58 +3083,25 @@ public class TakeOffCalc {
 											EngineOperatingConditionEnum.TAKE_OFF,
 											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexSoot()
 											)
-									*fuelUsed.doubleValue(SI.KILOGRAM),
-									SI.GRAM
-									)
-							);
-			else {
-				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
-						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
-							emissionSootList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getSootEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
-													altitude,
-													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexSoot()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
-											)
 									);
 					else {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionSootList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getSootEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexSootList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getSootEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.APR,
-													TakeOffCalc.this.getAprCalibrationFactorEmissionIndexSoot()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.APR,
+											TakeOffCalc.this.getAprCalibrationFactorEmissionIndexSoot()
 											)
 									);
 					}
@@ -3169,67 +3109,84 @@ public class TakeOffCalc {
 				else {
 					if(time.doubleValue(SI.SECOND) < tRec.doubleValue(SI.SECOND))
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionSootList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getSootEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexSootList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getSootEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexSoot()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.TAKE_OFF,
+											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexSoot()
 											)
 									);
 					else
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionSootList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getSootEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexSootList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getSootEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.GIDL,
-													TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexSoot()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.GIDL,
+											TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexSoot()
 											)
 									);
 				}
 			}
 			
-			return Amount.valueOf(emissionSootList.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(), SI.GRAM);
+			return Amount.valueOf(
+					emissionIndexSootList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+					*fuelUsed.doubleValue(SI.KILOGRAM),
+					SI.GRAM
+					);
 
 		}
 		
 		public Amount<Mass> emissionCO2(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> fuelUsed) {
 
-			List<Amount<Mass>> emissionCO2List = new ArrayList<>();
+			List<Double> emissionIndexCO2List = new ArrayList<>();
 			
 			if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND))
 				for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber(); i++) 
-					emissionCO2List.add(
-							Amount.valueOf(
+					emissionIndexCO2List.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getCO2EmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									TakeOffCalc.this.getPhi(),
+									EngineOperatingConditionEnum.TAKE_OFF,
+									TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexCO2()
+									)
+							);
+			else {
+				if(isAborted == false) {
+					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
+							emissionIndexCO2List.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getCO2EmissionIndex(
 											SpeedCalc.calculateMach(
 													altitude,
@@ -3246,58 +3203,25 @@ public class TakeOffCalc {
 											EngineOperatingConditionEnum.TAKE_OFF,
 											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexCO2()
 											)
-									*fuelUsed.doubleValue(SI.KILOGRAM),
-									SI.GRAM
-									)
-							);
-			else {
-				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
-						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
-							emissionCO2List.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getCO2EmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
-													altitude,
-													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexCO2()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
-											)
 									);
 					else {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionCO2List.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getCO2EmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexCO2List.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getCO2EmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.APR,
-													TakeOffCalc.this.getAprCalibrationFactorEmissionIndexCO2()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.APR,
+											TakeOffCalc.this.getAprCalibrationFactorEmissionIndexCO2()
 											)
 									);
 					}
@@ -3305,67 +3229,84 @@ public class TakeOffCalc {
 				else {
 					if(time.doubleValue(SI.SECOND) < tRec.doubleValue(SI.SECOND))
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionCO2List.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getCO2EmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexCO2List.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getCO2EmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexCO2()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.TAKE_OFF,
+											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexCO2()
 											)
 									);
 					else
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionCO2List.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getCO2EmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexCO2List.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getCO2EmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.GIDL,
-													TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexCO2()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.GIDL,
+											TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexCO2()
 											)
 									);
 				}
 			}
 			
-			return Amount.valueOf(emissionCO2List.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(), SI.GRAM);
+			return Amount.valueOf(
+					emissionIndexCO2List.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+					*fuelUsed.doubleValue(SI.KILOGRAM),
+					SI.GRAM
+					);
 
 		}
-
+		
 		public Amount<Mass> emissionSOx(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> fuelUsed) {
 
-			List<Amount<Mass>> emissionSOxList = new ArrayList<>();
+			List<Double> emissionIndexSOxList = new ArrayList<>();
 			
 			if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND))
 				for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber(); i++) 
-					emissionSOxList.add(
-							Amount.valueOf(
+					emissionIndexSOxList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getSOxEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									TakeOffCalc.this.getPhi(),
+									EngineOperatingConditionEnum.TAKE_OFF,
+									TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexSOx()
+									)
+							);
+			else {
+				if(isAborted == false) {
+					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
+							emissionIndexSOxList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getSOxEmissionIndex(
 											SpeedCalc.calculateMach(
 													altitude,
@@ -3382,58 +3323,25 @@ public class TakeOffCalc {
 											EngineOperatingConditionEnum.TAKE_OFF,
 											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexSOx()
 											)
-									*fuelUsed.doubleValue(SI.KILOGRAM),
-									SI.GRAM
-									)
-							);
-			else {
-				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
-						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
-							emissionSOxList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getSOxEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
-													altitude,
-													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexSOx()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
-											)
 									);
 					else {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionSOxList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getSOxEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexSOxList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getSOxEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.APR,
-													TakeOffCalc.this.getAprCalibrationFactorEmissionIndexSOx()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.APR,
+											TakeOffCalc.this.getAprCalibrationFactorEmissionIndexSOx()
 											)
 									);
 					}
@@ -3441,67 +3349,84 @@ public class TakeOffCalc {
 				else {
 					if(time.doubleValue(SI.SECOND) < tRec.doubleValue(SI.SECOND))
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionSOxList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getSOxEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexSOxList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getSOxEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexSOx()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.TAKE_OFF,
+											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexSOx()
 											)
 									);
 					else
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionSOxList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getSOxEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexSOxList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getSOxEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.GIDL,
-													TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexSOx()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.GIDL,
+											TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexSOx()
 											)
 									);
 				}
 			}
 			
-			return Amount.valueOf(emissionSOxList.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(), SI.GRAM);
+			return Amount.valueOf(
+					emissionIndexSOxList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+					*fuelUsed.doubleValue(SI.KILOGRAM),
+					SI.GRAM
+					);
 
 		}
 		
 		public Amount<Mass> emissionH2O(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> fuelUsed) {
 
-			List<Amount<Mass>> emissionH2OList = new ArrayList<>();
+			List<Double> emissionIndexH2OList = new ArrayList<>();
 			
 			if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND))
 				for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber(); i++) 
-					emissionH2OList.add(
-							Amount.valueOf(
+					emissionIndexH2OList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getH2OEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									TakeOffCalc.this.getPhi(),
+									EngineOperatingConditionEnum.TAKE_OFF,
+									TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexH2O()
+									)
+							);
+			else {
+				if(isAborted == false) {
+					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
+							emissionIndexH2OList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getH2OEmissionIndex(
 											SpeedCalc.calculateMach(
 													altitude,
@@ -3518,58 +3443,25 @@ public class TakeOffCalc {
 											EngineOperatingConditionEnum.TAKE_OFF,
 											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexH2O()
 											)
-									*fuelUsed.doubleValue(SI.KILOGRAM),
-									SI.GRAM
-									)
-							);
-			else {
-				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
-						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
-							emissionH2OList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getH2OEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
-													altitude,
-													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexH2O()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
-											)
 									);
 					else {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionH2OList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getH2OEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexH2OList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getH2OEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.APR,
-													TakeOffCalc.this.getAprCalibrationFactorEmissionIndexH2O()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.APR,
+											TakeOffCalc.this.getAprCalibrationFactorEmissionIndexH2O()
 											)
 									);
 					}
@@ -3577,56 +3469,52 @@ public class TakeOffCalc {
 				else {
 					if(time.doubleValue(SI.SECOND) < tRec.doubleValue(SI.SECOND))
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionH2OList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getH2OEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexH2OList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getH2OEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.TAKE_OFF,
-													TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexH2O()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.TAKE_OFF,
+											TakeOffCalc.this.getTakeOffCalibrationFactorEmissionIndexH2O()
 											)
 									);
 					else
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
-							emissionH2OList.add(
-									Amount.valueOf(
-											thePowerPlant.getEngineDatabaseReaderList().get(i).getH2OEmissionIndex(
-													SpeedCalc.calculateMach(
-															altitude,
-															deltaTemperature,
-															Amount.valueOf(
-																	speed.doubleValue(SI.METERS_PER_SECOND) 
-																	+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
-																	SI.METERS_PER_SECOND
-																	)
-															),
+							emissionIndexH2OList.add(
+									thePowerPlant.getEngineDatabaseReaderList().get(i).getH2OEmissionIndex(
+											SpeedCalc.calculateMach(
 													altitude,
 													deltaTemperature,
-													TakeOffCalc.this.getPhi(),
-													EngineOperatingConditionEnum.GIDL,
-													TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexH2O()
-													)
-											*fuelUsed.doubleValue(SI.KILOGRAM),
-											SI.GRAM
+													Amount.valueOf(
+															speed.doubleValue(SI.METERS_PER_SECOND) 
+															+ TakeOffCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+															SI.METERS_PER_SECOND
+															)
+													),
+											altitude,
+											deltaTemperature,
+											TakeOffCalc.this.getPhi(),
+											EngineOperatingConditionEnum.GIDL,
+											TakeOffCalc.this.getGidlCalibrationFactorEmissionIndexH2O()
 											)
 									);
 				}
 			}
 			
-			return Amount.valueOf(emissionH2OList.stream().mapToDouble(e -> e.doubleValue(SI.GRAM)).sum(), SI.GRAM);
+			return Amount.valueOf(
+					emissionIndexH2OList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+					*fuelUsed.doubleValue(SI.KILOGRAM),
+					SI.GRAM
+					);
 
 		}
 		

@@ -16,9 +16,12 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
+import aircraft.components.liftingSurface.airfoils.Airfoil;
 import analyses.OperatingConditions;
+import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
+import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -44,10 +47,12 @@ public class DescentCalc {
 	private double[] _polarCLClean;
 	private double[] _polarCDClean;
 	private MyInterpolatingFunction _sfcFunctionDescent;
-	private double _cruiseThrustCorrectionFactor;
-	private double _cruiseSfcCorrectionFactor;
-	private double _fidlThrustCorrectionFactor;
-	private double _fidlSfcCorrectionFactor;
+	private double _cruiseThrustCorrectionFactor, _cruiseSfcCorrectionFactor, _fidlThrustCorrectionFactor, _fidlSfcCorrectionFactor,
+	_cruiseCalibrationFactorEmissionIndexNOx, _cruiseCalibrationFactorEmissionIndexCO, _cruiseCalibrationFactorEmissionIndexHC, 
+	_cruiseCalibrationFactorEmissionIndexSoot, _cruiseCalibrationFactorEmissionIndexCO2, _cruiseCalibrationFactorEmissionIndexSOx, 
+	_cruiseCalibrationFactorEmissionIndexH2O, _fidlCalibrationFactorEmissionIndexNOx, _fidlCalibrationFactorEmissionIndexCO, 
+	_fidlCalibrationFactorEmissionIndexHC, _fidlCalibrationFactorEmissionIndexSoot, _fidlCalibrationFactorEmissionIndexCO2, 
+	_fidlCalibrationFactorEmissionIndexSOx, _fidlCalibrationFactorEmissionIndexH2O;
 
 	private final int maxIterationNumber = 50;
 	
@@ -56,22 +61,45 @@ public class DescentCalc {
 	private List<Amount<Length>> _descentAltitudes;
 	private List<Amount<Length>> _descentLengths;
 	private List<Amount<Duration>> _descentTimes;
-	private List<Amount<Angle>> _descentAngles;
 	private List<Amount<Velocity>> _speedListTAS;
+	private List<Amount<Velocity>> _speedListCAS;
+	private List<Double> _machList;
 	private List<Amount<Velocity>> _rateOfDescentList;
+	private List<Amount<Angle>> _descentAngles;
 	private List<Double> _cLSteps;
+	private List<Double> _cDSteps;
+	private List<Double> _efficiencyPerStep;		
 	private List<Amount<Force>> _cruiseThrustFromDatabase;
 	private List<Amount<Force>> _flightIdleThrustFromDatabase;
 	private List<Amount<Force>> _thrustPerStep;
+	private List<Double> _throttlePerStep;
 	private List<Amount<Force>> _dragPerStep;
 	private List<Double> _fuelFlowCruiseList;
 	private List<Double> _fuelFlowFlightIdleList;
 	private List<Double> _interpolatedFuelFlowList;
+	private List<Double> _sfcCruiseList;
+	private List<Double> _sfcFlightIdleList;
+	private List<Double> _interpolatedSFCList;
 	private List<Amount<Mass>> _fuelUsedPerStep;
+	private List<Amount<Mass>> _emissionNOxPerStep;
+	private List<Amount<Mass>> _emissionCOPerStep;
+	private List<Amount<Mass>> _emissionHCPerStep;
+	private List<Amount<Mass>> _emissionSootPerStep;
+	private List<Amount<Mass>> _emissionCO2PerStep;
+	private List<Amount<Mass>> _emissionSOxPerStep;
+	private List<Amount<Mass>> _emissionH2OPerStep;
+	private List<Amount<Mass>> _aircraftMassPerStep;
 	private Amount<Length> _totalDescentLength;
 	private Amount<Duration> _totalDescentTime;
 	private Amount<Mass> _totalDescentFuelUsed;
-
+	private Amount<Mass> _totalDescentNOxEmissions;
+	private Amount<Mass> _totalDescentCOEmissions;
+	private Amount<Mass> _totalDescentHCEmissions;
+	private Amount<Mass> _totalDescentSootEmissions;
+	private Amount<Mass> _totalDescentCO2Emissions;
+	private Amount<Mass> _totalDescentSOxEmissions;
+	private Amount<Mass> _totalDescentH2OEmissions;
+	
 	//............................................................................................
 	// ERROR FLAGS:
 	private boolean _descentMaxIterationErrorFlag;
@@ -91,7 +119,21 @@ public class DescentCalc {
 			double cruiseThrustCorrectionFactor,
 			double cruiseSfcCorrectionFactor,
 			double fidlThrustCorrectionFactor,
-			double fidlSfcCorrectionFactor
+			double fidlSfcCorrectionFactor,
+			double cruiseCalibrationFactorEmissionIndexNOx, 
+			double cruiseCalibrationFactorEmissionIndexCO, 
+			double cruiseCalibrationFactorEmissionIndexHC, 
+			double cruiseCalibrationFactorEmissionIndexSoot, 
+			double cruiseCalibrationFactorEmissionIndexCO2, 
+			double cruiseCalibrationFactorEmissionIndexSOx, 
+			double cruiseCalibrationFactorEmissionIndexH2O, 
+			double fidlCalibrationFactorEmissionIndexNOx, 
+			double fidlCalibrationFactorEmissionIndexCO, 
+			double fidlCalibrationFactorEmissionIndexHC, 
+			double fidlCalibrationFactorEmissionIndexSoot, 
+			double fidlCalibrationFactorEmissionIndexCO2, 
+			double fidlCalibrationFactorEmissionIndexSOx, 
+			double fidlCalibrationFactorEmissionIndexH2O
 			) {
 		
 		this._theAircraft = theAircraft;
@@ -107,25 +149,54 @@ public class DescentCalc {
 		this._fidlThrustCorrectionFactor = fidlThrustCorrectionFactor;
 		this._cruiseSfcCorrectionFactor = cruiseSfcCorrectionFactor;
 		this._fidlSfcCorrectionFactor = fidlSfcCorrectionFactor;
+		this._cruiseCalibrationFactorEmissionIndexNOx = cruiseCalibrationFactorEmissionIndexNOx;
+		this._cruiseCalibrationFactorEmissionIndexCO = cruiseCalibrationFactorEmissionIndexCO; 
+		this._cruiseCalibrationFactorEmissionIndexHC = cruiseCalibrationFactorEmissionIndexHC;
+		this._cruiseCalibrationFactorEmissionIndexSoot = cruiseCalibrationFactorEmissionIndexSoot; 
+		this._cruiseCalibrationFactorEmissionIndexCO2 = cruiseCalibrationFactorEmissionIndexCO2; 
+		this._cruiseCalibrationFactorEmissionIndexSOx = cruiseCalibrationFactorEmissionIndexSOx; 
+		this._cruiseCalibrationFactorEmissionIndexH2O = cruiseCalibrationFactorEmissionIndexH2O; 
+		this._fidlCalibrationFactorEmissionIndexNOx = fidlCalibrationFactorEmissionIndexNOx; 
+		this._fidlCalibrationFactorEmissionIndexCO = fidlCalibrationFactorEmissionIndexCO; 
+		this._fidlCalibrationFactorEmissionIndexHC = fidlCalibrationFactorEmissionIndexHC; 
+		this._fidlCalibrationFactorEmissionIndexSoot = fidlCalibrationFactorEmissionIndexSoot; 
+		this._fidlCalibrationFactorEmissionIndexCO2 = fidlCalibrationFactorEmissionIndexCO2; 
+		this._fidlCalibrationFactorEmissionIndexSOx = fidlCalibrationFactorEmissionIndexSOx; 
+		this._fidlCalibrationFactorEmissionIndexH2O = fidlCalibrationFactorEmissionIndexH2O;
 		
 		this._descentAltitudes = new ArrayList<>();
 		this._descentLengths = new ArrayList<>();
 		this._descentTimes = new ArrayList<>();
-		this._descentAngles = new ArrayList<>();
 		this._speedListTAS = new ArrayList<>();
+		this._speedListCAS = new ArrayList<>();
+		this._machList = new ArrayList<>();
+		this._rateOfDescentList = new ArrayList<>();
+		this._descentAngles = new ArrayList<>();
 		this._cLSteps = new ArrayList<>();
+		this._cDSteps = new ArrayList<>();
+		this._efficiencyPerStep = new ArrayList<>();		
 		this._cruiseThrustFromDatabase = new ArrayList<>();
 		this._flightIdleThrustFromDatabase = new ArrayList<>();
 		this._thrustPerStep = new ArrayList<>();
+		this._throttlePerStep = new ArrayList<>();
 		this._dragPerStep = new ArrayList<>();
 		this._fuelFlowCruiseList = new ArrayList<>();
 		this._fuelFlowFlightIdleList = new ArrayList<>();
 		this._interpolatedFuelFlowList = new ArrayList<>();
+		this._sfcCruiseList = new ArrayList<>();
+		this._sfcFlightIdleList = new ArrayList<>();
+		this._interpolatedSFCList = new ArrayList<>();
 		this._fuelUsedPerStep = new ArrayList<>();
-		this._rateOfDescentList = new ArrayList<>();
-		this._interpolatedFuelFlowList = new ArrayList<>();
+		this._emissionNOxPerStep = new ArrayList<>();
+		this._emissionCOPerStep = new ArrayList<>();
+		this._emissionHCPerStep = new ArrayList<>();
+		this._emissionSootPerStep = new ArrayList<>();
+		this._emissionCO2PerStep = new ArrayList<>();
+		this._emissionSOxPerStep = new ArrayList<>();
+		this._emissionH2OPerStep = new ArrayList<>();
+		this._aircraftMassPerStep = new ArrayList<>();
 		
-		this.setDescentMaxIterationErrorFlag(false);
+		this._descentMaxIterationErrorFlag = false;
 	}
 	
 	//--------------------------------------------------------------------------------------------
@@ -135,33 +206,34 @@ public class DescentCalc {
 		
 		List<Double> sigmaList = new ArrayList<>();
 		List<Amount<Velocity>> horizontalSpeedListTAS = new ArrayList<>();
-		List<Double> machList = new ArrayList<>();
-		List<Amount<Mass>> aircraftMassPerStep = new ArrayList<>();
-		List<Double> cDSteps = new ArrayList<>();
-		List<Double> efficiencyPerStep = new ArrayList<>();
 		List<Amount<Force>> interpolatedThrustList = new ArrayList<>();
 		List<Double> weightCruise = new ArrayList<>();
 		List<Double> weightFlightIdle = new ArrayList<>();
+		
+		Airfoil meanAirfoil = LSGeometryCalc.calculateMeanAirfoil(_theAircraft.getWing());
 		
 		_descentAltitudes =
 				MyArrayUtils.convertDoubleArrayToListOfAmount(
 						MyArrayUtils.linspace(
 								_initialDescentAltitude.doubleValue(SI.METER),
 								_endDescentAltitude.doubleValue(SI.METER),
-								5
+								10
 								),
 						SI.METER
 						);
 		
-		sigmaList.add(OperatingConditions.getAtmosphere(
-				_initialDescentAltitude.doubleValue(SI.METER))
-				.getDensity()*1000
-				/1.225
+		/* Initialization of the first step */
+		sigmaList.add(
+				OperatingConditions.getAtmosphere(
+						_initialDescentAltitude.doubleValue(SI.METER),
+						_theOperatingConditions.getDeltaTemperatureCruise().doubleValue(SI.CELSIUS)
+						).getDensityRatio()
 				);
 		_speedListTAS.add(
 				_speedDescentCAS.to(SI.METERS_PER_SECOND)
 				.divide(Math.sqrt(sigmaList.get(0))));
-		machList.add(
+		_speedListCAS.add(_speedDescentCAS.to(SI.METERS_PER_SECOND));
+		_machList.add(
 				SpeedCalc.calculateMach(
 						_initialDescentAltitude,
 						_theOperatingConditions.getDeltaTemperatureCruise(),
@@ -186,31 +258,15 @@ public class DescentCalc {
 						SI.METERS_PER_SECOND
 						)
 				);
-		_descentTimes.add(
-				Amount.valueOf(
-						(_descentAltitudes.get(0).doubleValue(SI.METER)
-								- _descentAltitudes.get(1).doubleValue(SI.METER))
-						*1/_rateOfDescent.doubleValue(SI.METERS_PER_SECOND),
-						SI.SECOND
-						)
-				.to(NonSI.MINUTE)
-				);
-		_descentLengths.add(
-						Amount.valueOf(
-								horizontalSpeedListTAS.get(0)
-								.times(_descentTimes.get(0).to(SI.SECOND))
-								.getEstimatedValue(),
-								SI.METER
-								)
-						.to(NonSI.NAUTICAL_MILE)
-				);
-		aircraftMassPerStep.add(_initialDescentMass);
+		_descentTimes.add(Amount.valueOf(0.0, SI.SECOND));
+		_descentLengths.add(Amount.valueOf(0.0, SI.METER));
+		_aircraftMassPerStep.add(_initialDescentMass);
 		_cLSteps.add(
 				LiftCalc.calculateLiftCoeff(
 						Amount.valueOf(
 								Math.cos(
 										_descentAngles.get(0).doubleValue(SI.RADIAN))
-								*aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
+								*_aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
 								*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 								SI.NEWTON
 								),
@@ -220,23 +276,30 @@ public class DescentCalc {
 						_theOperatingConditions.getDeltaTemperatureCruise()
 						)
 				);
-		cDSteps.add(
+		_cDSteps.add(
 				MyMathUtils.getInterpolatedValue1DLinear(
 						_polarCLClean,
 						_polarCDClean,
 						_cLSteps.get(0))
+				+ DragCalc.calculateCDWaveLockKorn(
+						_cLSteps.get(0), 
+						_machList.get(0), 
+						AerodynamicCalc.calculateMachCriticalKornMason(
+								_cLSteps.get(0), 
+								_theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepHalfChord(),
+								meanAirfoil.getThicknessToChordRatio(), 
+								meanAirfoil.getType()
+								)
+						)
 				);
-		efficiencyPerStep.add(
-				_cLSteps.get(0)
-				/cDSteps.get(0)
-				);
+		_efficiencyPerStep.add(_cLSteps.get(0)/_cDSteps.get(0));
 		_dragPerStep.add(
 				DragCalc.calculateDragAtSpeed(
 						_descentAltitudes.get(0), 
 						_theOperatingConditions.getDeltaTemperatureCruise(),
 						_theAircraft.getWing().getSurfacePlanform(), 
 						_speedListTAS.get(0), 
-						cDSteps.get(0)
+						_cDSteps.get(0)
 						)
 				);
 		
@@ -251,7 +314,7 @@ public class DescentCalc {
 							_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng),
 							EngineOperatingConditionEnum.CRUISE, 
 							_descentAltitudes.get(0), 
-							machList.get(0), 
+							_machList.get(0), 
 							_theOperatingConditions.getDeltaTemperatureCruise(), 
 							_theOperatingConditions.getThrottleCruise(),
 							_cruiseThrustCorrectionFactor
@@ -264,7 +327,7 @@ public class DescentCalc {
 							_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng),
 							EngineOperatingConditionEnum.FIDL, 
 							_descentAltitudes.get(0), 
-							machList.get(0), 
+							_machList.get(0), 
 							_theOperatingConditions.getDeltaTemperatureCruise(), 
 							_theOperatingConditions.getThrottleCruise(),
 							_fidlThrustCorrectionFactor
@@ -298,14 +361,12 @@ public class DescentCalc {
 
 		_rateOfDescentList.add(
 				Amount.valueOf(
-						(interpolatedThrustList.get(0).to(SI.NEWTON)
-								.minus(_dragPerStep.get(0).to(SI.NEWTON)))
-						.times(_speedListTAS.get(0).to(SI.METERS_PER_SECOND))
-						.divide(aircraftMassPerStep.get(0).to(SI.KILOGRAM)
-								.times(AtmosphereCalc.g0.to(SI.METERS_PER_SQUARE_SECOND))
-								.getEstimatedValue()
-								)
-						.getEstimatedValue(),
+						( (interpolatedThrustList.get(0).doubleValue(SI.NEWTON)
+								- _dragPerStep.get(0).doubleValue(SI.NEWTON))
+						*_speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND) )
+						/ (_aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
+								*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)
+								),
 						SI.METERS_PER_SECOND
 						)
 				);
@@ -323,8 +384,8 @@ public class DescentCalc {
 				) {
 			
 			if(iter > maxIterationNumber) {
-				if (getDescentMaxIterationErrorFlag() == false ) {
-				setDescentMaxIterationErrorFlag(true);
+				if (_descentMaxIterationErrorFlag == false ) {
+				_descentMaxIterationErrorFlag = true;
 				break;
 				}
 			}
@@ -353,19 +414,19 @@ public class DescentCalc {
 			
 			interpolatedThrustList.remove(0);
 			interpolatedThrustList.add( 
-					(_cruiseThrustFromDatabase.get(0).times(weightCruise.get(0)))
-					.plus(_flightIdleThrustFromDatabase.get(0).times(weightFlightIdle.get(0)))
+					(_cruiseThrustFromDatabase.get(0).to(SI.NEWTON).times(weightCruise.get(0)))
+					.plus(_flightIdleThrustFromDatabase.get(0).to(SI.NEWTON).times(weightFlightIdle.get(0)))
 					);
 			
 			_rateOfDescentList.remove(0);
 			_rateOfDescentList.add(
 					Amount.valueOf(
-							(interpolatedThrustList.get(0).to(SI.NEWTON)
+							((interpolatedThrustList.get(0).to(SI.NEWTON)
 							.minus(_dragPerStep.get(0).to(SI.NEWTON)))
-							.times(_speedListTAS.get(0).to(SI.METERS_PER_SECOND))
-							.divide(aircraftMassPerStep.get(0).to(SI.KILOGRAM)
-									.times(AtmosphereCalc.g0.to(SI.METERS_PER_SQUARE_SECOND))
-									.getEstimatedValue()
+							.times(_speedListTAS.get(0).to(SI.METERS_PER_SECOND)))
+							.divide(_aircraftMassPerStep.get(0)
+									.times(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+									.doubleValue(SI.KILOGRAM)
 									)
 							.getEstimatedValue(),
 							SI.METERS_PER_SECOND
@@ -382,7 +443,7 @@ public class DescentCalc {
 		for(int ieng=0; ieng<_theAircraft.getPowerPlant().getEngineNumber(); ieng++) {
 			sfcCruiseList.add(
 					_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
-							machList.get(0),
+							_machList.get(0),
 							_descentAltitudes.get(0),
 							_theOperatingConditions.getDeltaTemperatureCruise(),
 							_theOperatingConditions.getThrottleCruise(),
@@ -392,7 +453,7 @@ public class DescentCalc {
 					);
 			sfcFlightIdleList.add(
 					_theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
-							machList.get(0),
+							_machList.get(0),
 							_descentAltitudes.get(0),
 							_theOperatingConditions.getDeltaTemperatureCruise(),
 							_theOperatingConditions.getThrottleCruise(),
@@ -404,6 +465,13 @@ public class DescentCalc {
 		
 		double sfcCruise = sfcCruiseList.stream().mapToDouble(s -> s).average().getAsDouble();
 		double sfcFlightIdle = sfcFlightIdleList.stream().mapToDouble(s -> s).average().getAsDouble();
+		
+		_sfcCruiseList.add(sfcCruise);
+		_sfcFlightIdleList.add(sfcFlightIdle);
+		_interpolatedSFCList.add(
+				(_sfcCruiseList.get(0)*weightCruise.get(0))
+				+ (_sfcFlightIdleList.get(0)*weightFlightIdle.get(0))
+				);
 		
 		_fuelFlowCruiseList.add(
 				_cruiseThrustFromDatabase.get(0).doubleValue(SI.NEWTON)
@@ -427,14 +495,11 @@ public class DescentCalc {
 				);
 		
 		//---------------------------------------------------------------------------------------
-		_fuelUsedPerStep.add(
-				Amount.valueOf(
-						_interpolatedFuelFlowList.get(0)
-						*_descentTimes.get(0).doubleValue(NonSI.MINUTE),
-						SI.KILOGRAM
-						)
-				);
+		_fuelUsedPerStep.add(Amount.valueOf(0.0, SI.KILOGRAM));
 		
+		/* TODO: CONTINUE FROM HERE FOLLOWING ClimbCalc APPROACH (REMEBER TO INSERT EMISSIONS)
+		
+		/* Step by step calculation */
 		for(int i=1; i<_descentAltitudes.size()-1; i++) {
 			sigmaList.add(OperatingConditions.getAtmosphere(
 					_descentAltitudes.get(i).doubleValue(SI.METER))
@@ -1007,6 +1072,22 @@ public class DescentCalc {
 		this._speedListTAS = _speedListTAS;
 	}
 
+	public List<Amount<Velocity>> getSpeedListCAS() {
+		return _speedListCAS;
+	}
+
+	public void setSpeedListCAS(List<Amount<Velocity>> _speedListCAS) {
+		this._speedListCAS = _speedListCAS;
+	}
+
+	public List<Double> getMachList() {
+		return _machList;
+	}
+
+	public void setMachList(List<Double> _machList) {
+		this._machList = _machList;
+	}
+
 	public List<Double> getCLSteps() {
 		return _cLSteps;
 	}
@@ -1015,12 +1096,36 @@ public class DescentCalc {
 		this._cLSteps = _cLSteps;
 	}
 
+	public List<Double> getCDSteps() {
+		return _cDSteps;
+	}
+
+	public void setCDSteps(List<Double> _cDSteps) {
+		this._cDSteps = _cDSteps;
+	}
+
+	public List<Double> getEfficiencyPerStep() {
+		return _efficiencyPerStep;
+	}
+
+	public void setEfficiencyPerStep(List<Double> _efficiencyPerStep) {
+		this._efficiencyPerStep = _efficiencyPerStep;
+	}
+
 	public List<Amount<Force>> getThrustPerStep() {
 		return _thrustPerStep;
 	}
 
 	public void setThrustPerStep(List<Amount<Force>> _thrustPerStep) {
 		this._thrustPerStep = _thrustPerStep;
+	}
+
+	public List<Double> getThrottlePerStep() {
+		return _throttlePerStep;
+	}
+
+	public void setThrottlePerStep(List<Double> _throttlePerStep) {
+		this._throttlePerStep = _throttlePerStep;
 	}
 
 	public List<Amount<Force>> getDragPerStep() {
@@ -1047,12 +1152,84 @@ public class DescentCalc {
 		this._fuelUsedPerStep = _fuelUsedPerStep;
 	}
 
+	public List<Amount<Mass>> getEmissionNOxPerStep() {
+		return _emissionNOxPerStep;
+	}
+
+	public void setEmissionNOxPerStep(List<Amount<Mass>> _emissionNOxPerStep) {
+		this._emissionNOxPerStep = _emissionNOxPerStep;
+	}
+
+	public List<Amount<Mass>> getEmissionCOPerStep() {
+		return _emissionCOPerStep;
+	}
+
+	public void setEmissionCOPerStep(List<Amount<Mass>> _emissionCOPerStep) {
+		this._emissionCOPerStep = _emissionCOPerStep;
+	}
+
+	public List<Amount<Mass>> getEmissionHCPerStep() {
+		return _emissionHCPerStep;
+	}
+
+	public void setEmissionHCPerStep(List<Amount<Mass>> _emissionHCPerStep) {
+		this._emissionHCPerStep = _emissionHCPerStep;
+	}
+
+	public List<Amount<Mass>> getEmissionSootPerStep() {
+		return _emissionSootPerStep;
+	}
+
+	public void setEmissionSootPerStep(List<Amount<Mass>> _emissionSootPerStep) {
+		this._emissionSootPerStep = _emissionSootPerStep;
+	}
+
+	public List<Amount<Mass>> getEmissionCO2PerStep() {
+		return _emissionCO2PerStep;
+	}
+
+	public void setEmissionCO2PerStep(List<Amount<Mass>> _emissionCO2PerStep) {
+		this._emissionCO2PerStep = _emissionCO2PerStep;
+	}
+
+	public List<Amount<Mass>> getEmissionSOxPerStep() {
+		return _emissionSOxPerStep;
+	}
+
+	public void setEmissionSOxPerStep(List<Amount<Mass>> _emissionSOxPerStep) {
+		this._emissionSOxPerStep = _emissionSOxPerStep;
+	}
+
+	public List<Amount<Mass>> getEmissionH2OPerStep() {
+		return _emissionH2OPerStep;
+	}
+
+	public void setEmissionH2OPerStep(List<Amount<Mass>> _emissionH2OPerStep) {
+		this._emissionH2OPerStep = _emissionH2OPerStep;
+	}
+
+	public List<Amount<Mass>> getAircraftMassPerStep() {
+		return _aircraftMassPerStep;
+	}
+
+	public void setAircraftMassPerStep(List<Amount<Mass>> _aircraftMassPerStep) {
+		this._aircraftMassPerStep = _aircraftMassPerStep;
+	}
+
 	public List<Double> getInterpolatedFuelFlowList() {
 		return _interpolatedFuelFlowList;
 	}
 
 	public void setInterpolatedFuelFlowList(List<Double> _interpolatedFuelFlowList) {
 		this._interpolatedFuelFlowList = _interpolatedFuelFlowList;
+	}
+
+	public List<Double> getInterpolatedSFCList() {
+		return _interpolatedSFCList;
+	}
+
+	public void setInterpolatedSFCList(List<Double> _interpolatedSFCList) {
+		this._interpolatedSFCList = _interpolatedSFCList;
 	}
 
 	public List<Amount<Force>> getFlightIdleThrustFromDatabase() {
@@ -1079,12 +1256,28 @@ public class DescentCalc {
 		this._fuelFlowCruiseList = _fuelFlowCruiseList;
 	}
 
+	public List<Double> getSfcCruiseList() {
+		return _sfcCruiseList;
+	}
+
+	public void setSfcCruiseList(List<Double> _sfcCruiseList) {
+		this._sfcCruiseList = _sfcCruiseList;
+	}
+
 	public List<Double> getFuelFlowFlightIdleList() {
 		return _fuelFlowFlightIdleList;
 	}
 
 	public void setFuelFlowFlightIdleList(List<Double> _fuelFlowFlightIdleList) {
 		this._fuelFlowFlightIdleList = _fuelFlowFlightIdleList;
+	}
+
+	public List<Double> getSfcFlightIdleList() {
+		return _sfcFlightIdleList;
+	}
+
+	public void setSfcFlightIdleList(List<Double> _sfcFlightIdleList) {
+		this._sfcFlightIdleList = _sfcFlightIdleList;
 	}
 
 	public int getMaxIterationNumber() {
@@ -1145,5 +1338,173 @@ public class DescentCalc {
 
 	public void setFidlSfcCorrectionFactor(double _fidlSfcCorrectionFactor) {
 		this._fidlSfcCorrectionFactor = _fidlSfcCorrectionFactor;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexNOx() {
+		return _cruiseCalibrationFactorEmissionIndexNOx;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexNOx(double _cruiseCalibrationFactorEmissionIndexNOx) {
+		this._cruiseCalibrationFactorEmissionIndexNOx = _cruiseCalibrationFactorEmissionIndexNOx;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexCO() {
+		return _cruiseCalibrationFactorEmissionIndexCO;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexCO(double _cruiseCalibrationFactorEmissionIndexCO) {
+		this._cruiseCalibrationFactorEmissionIndexCO = _cruiseCalibrationFactorEmissionIndexCO;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexHC() {
+		return _cruiseCalibrationFactorEmissionIndexHC;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexHC(double _cruiseCalibrationFactorEmissionIndexHC) {
+		this._cruiseCalibrationFactorEmissionIndexHC = _cruiseCalibrationFactorEmissionIndexHC;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexSoot() {
+		return _cruiseCalibrationFactorEmissionIndexSoot;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexSoot(double _cruiseCalibrationFactorEmissionIndexSoot) {
+		this._cruiseCalibrationFactorEmissionIndexSoot = _cruiseCalibrationFactorEmissionIndexSoot;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexCO2() {
+		return _cruiseCalibrationFactorEmissionIndexCO2;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexCO2(double _cruiseCalibrationFactorEmissionIndexCO2) {
+		this._cruiseCalibrationFactorEmissionIndexCO2 = _cruiseCalibrationFactorEmissionIndexCO2;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexSOx() {
+		return _cruiseCalibrationFactorEmissionIndexSOx;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexSOx(double _cruiseCalibrationFactorEmissionIndexSOx) {
+		this._cruiseCalibrationFactorEmissionIndexSOx = _cruiseCalibrationFactorEmissionIndexSOx;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexH2O() {
+		return _cruiseCalibrationFactorEmissionIndexH2O;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexH2O(double _cruiseCalibrationFactorEmissionIndexH2O) {
+		this._cruiseCalibrationFactorEmissionIndexH2O = _cruiseCalibrationFactorEmissionIndexH2O;
+	}
+
+	public double getFidlCalibrationFactorEmissionIndexNOx() {
+		return _fidlCalibrationFactorEmissionIndexNOx;
+	}
+
+	public void setFidlCalibrationFactorEmissionIndexNOx(double _fidlCalibrationFactorEmissionIndexNOx) {
+		this._fidlCalibrationFactorEmissionIndexNOx = _fidlCalibrationFactorEmissionIndexNOx;
+	}
+
+	public double getFidlCalibrationFactorEmissionIndexCO() {
+		return _fidlCalibrationFactorEmissionIndexCO;
+	}
+
+	public void setFidlCalibrationFactorEmissionIndexCO(double _fidlCalibrationFactorEmissionIndexCO) {
+		this._fidlCalibrationFactorEmissionIndexCO = _fidlCalibrationFactorEmissionIndexCO;
+	}
+
+	public double getFidlCalibrationFactorEmissionIndexHC() {
+		return _fidlCalibrationFactorEmissionIndexHC;
+	}
+
+	public void setFidlCalibrationFactorEmissionIndexHC(double _fidlCalibrationFactorEmissionIndexHC) {
+		this._fidlCalibrationFactorEmissionIndexHC = _fidlCalibrationFactorEmissionIndexHC;
+	}
+
+	public double getFidlCalibrationFactorEmissionIndexSoot() {
+		return _fidlCalibrationFactorEmissionIndexSoot;
+	}
+
+	public void setFidlCalibrationFactorEmissionIndexSoot(double _fidlCalibrationFactorEmissionIndexSoot) {
+		this._fidlCalibrationFactorEmissionIndexSoot = _fidlCalibrationFactorEmissionIndexSoot;
+	}
+
+	public double getFidlCalibrationFactorEmissionIndexCO2() {
+		return _fidlCalibrationFactorEmissionIndexCO2;
+	}
+
+	public void setFidlCalibrationFactorEmissionIndexCO2(double _fidlCalibrationFactorEmissionIndexCO2) {
+		this._fidlCalibrationFactorEmissionIndexCO2 = _fidlCalibrationFactorEmissionIndexCO2;
+	}
+
+	public double getFidlCalibrationFactorEmissionIndexSOx() {
+		return _fidlCalibrationFactorEmissionIndexSOx;
+	}
+
+	public void setFidlCalibrationFactorEmissionIndexSOx(double _fidlCalibrationFactorEmissionIndexSOx) {
+		this._fidlCalibrationFactorEmissionIndexSOx = _fidlCalibrationFactorEmissionIndexSOx;
+	}
+
+	public double getFidlCalibrationFactorEmissionIndexH2O() {
+		return _fidlCalibrationFactorEmissionIndexH2O;
+	}
+
+	public void setFidlCalibrationFactorEmissionIndexH2O(double _fidlCalibrationFactorEmissionIndexH2O) {
+		this._fidlCalibrationFactorEmissionIndexH2O = _fidlCalibrationFactorEmissionIndexH2O;
+	}
+
+	public Amount<Mass> getTotalDescentNOxEmissions() {
+		return _totalDescentNOxEmissions;
+	}
+
+	public void setTotalDescentNOxEmissions(Amount<Mass> _totalDescentNOxEmissions) {
+		this._totalDescentNOxEmissions = _totalDescentNOxEmissions;
+	}
+
+	public Amount<Mass> getTotalDescentCOEmissions() {
+		return _totalDescentCOEmissions;
+	}
+
+	public void setTotalDescentCOEmissions(Amount<Mass> _totalDescentCOEmissions) {
+		this._totalDescentCOEmissions = _totalDescentCOEmissions;
+	}
+
+	public Amount<Mass> getTotalDescentHCEmissions() {
+		return _totalDescentHCEmissions;
+	}
+
+	public void setTotalDescentHCEmissions(Amount<Mass> _totalDescentHCEmissions) {
+		this._totalDescentHCEmissions = _totalDescentHCEmissions;
+	}
+
+	public Amount<Mass> getTotalDescentSootEmissions() {
+		return _totalDescentSootEmissions;
+	}
+
+	public void setTotalDescentSootEmissions(Amount<Mass> _totalDescentSootEmissions) {
+		this._totalDescentSootEmissions = _totalDescentSootEmissions;
+	}
+
+	public Amount<Mass> getTotalDescentCO2Emissions() {
+		return _totalDescentCO2Emissions;
+	}
+
+	public void setTotalDescentCO2Emissions(Amount<Mass> _totalDescentCO2Emissions) {
+		this._totalDescentCO2Emissions = _totalDescentCO2Emissions;
+	}
+
+	public Amount<Mass> getTotalDescentSOxEmissions() {
+		return _totalDescentSOxEmissions;
+	}
+
+	public void setTotalDescentSOxEmissions(Amount<Mass> _totalDescentSOxEmissions) {
+		this._totalDescentSOxEmissions = _totalDescentSOxEmissions;
+	}
+
+	public Amount<Mass> getTotalDescentH2OEmissions() {
+		return _totalDescentH2OEmissions;
+	}
+
+	public void setTotalDescentH2OEmissions(Amount<Mass> _totalDescentH2OEmissions) {
+		this._totalDescentH2OEmissions = _totalDescentH2OEmissions;
 	}
 }

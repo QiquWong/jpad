@@ -194,6 +194,13 @@ public class ACPerformanceManager {
 	private Map<Double, Amount<Length>> _totalDescentLengthMap;
 	private Map<Double, Amount<Duration>> _totalDescentTimeMap;
 	private Map<Double, Amount<Mass>> _totalDescentFuelUsedMap;
+	private Map<Double, Amount<Mass>> _totalDescentEmissionsNOxMap;
+	private Map<Double, Amount<Mass>> _totalDescentEmissionsCOMap;
+	private Map<Double, Amount<Mass>> _totalDescentEmissionsHCMap;
+	private Map<Double, Amount<Mass>> _totalDescentEmissionsSootMap;
+	private Map<Double, Amount<Mass>> _totalDescentEmissionsCO2Map;
+	private Map<Double, Amount<Mass>> _totalDescentEmissionsSOxMap;
+	private Map<Double, Amount<Mass>> _totalDescentEmissionsH2OMap;
 	//..............................................................................
 	// Landing
 	private Map<Double, LandingCalc> _theLandingCalculatorMap;
@@ -399,6 +406,13 @@ public class ACPerformanceManager {
 		this._totalDescentLengthMap = new HashMap<>();
 		this._totalDescentTimeMap = new HashMap<>();
 		this._totalDescentFuelUsedMap = new HashMap<>();
+		this._totalDescentEmissionsNOxMap = new HashMap<>();
+		this._totalDescentEmissionsCOMap = new HashMap<>();
+		this._totalDescentEmissionsHCMap = new HashMap<>();
+		this._totalDescentEmissionsSootMap = new HashMap<>();
+		this._totalDescentEmissionsCO2Map = new HashMap<>();
+		this._totalDescentEmissionsSOxMap = new HashMap<>();
+		this._totalDescentEmissionsH2OMap = new HashMap<>();
 		//..............................................................................
 		// Landing
 		this._theLandingCalculatorMap = new HashMap<>();
@@ -3397,6 +3411,13 @@ public class ACPerformanceManager {
         	dataListDescent.add(new Object[] {"Descent length","km", _totalDescentLengthMap.get(xcg).doubleValue(SI.KILOMETER)});
         	dataListDescent.add(new Object[] {"Descent duration","min", _totalDescentTimeMap.get(xcg).doubleValue(NonSI.MINUTE)});
         	dataListDescent.add(new Object[] {"Fuel used during descent","kg", _totalDescentFuelUsedMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        	dataListDescent.add(new Object[] {"NOx emissions during descent","g", _totalDescentEmissionsNOxMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListDescent.add(new Object[] {"CO emissions during descent","g", _totalDescentEmissionsCOMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListDescent.add(new Object[] {"HC emissions during descent","g", _totalDescentEmissionsHCMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListDescent.add(new Object[] {"Soot emissions during descent","g", _totalDescentEmissionsSootMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListDescent.add(new Object[] {"CO2 emissions during descent","g", _totalDescentEmissionsCO2Map.get(xcg).doubleValue(SI.GRAM)});
+        	dataListDescent.add(new Object[] {"SOx emissions during descent","g", _totalDescentEmissionsSOxMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListDescent.add(new Object[] {"H2O emissions during descent","g", _totalDescentEmissionsH2OMap.get(xcg).doubleValue(SI.GRAM)});
 
         	Row rowDescent = sheetDescent.createRow(0);
         	Object[] objArrDescent = dataListDescent.get(0);
@@ -4358,6 +4379,13 @@ public class ACPerformanceManager {
 				.append("\t\tDescent length = " + _totalDescentLengthMap.get(xcg).to(NonSI.NAUTICAL_MILE) + "\n")
 				.append("\t\tDescent duration = " + _totalDescentTimeMap.get(xcg).to(NonSI.MINUTE) + "\n")
 				.append("\t\tFuel used during descent = " + _totalDescentFuelUsedMap.get(xcg).to(SI.KILOGRAM) + "\n")
+				.append("\t\tNOx emissions during descent = " + _totalDescentEmissionsNOxMap.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tCO emissions during descent = " + _totalDescentEmissionsCOMap.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tHC emissions during descent = " + _totalDescentEmissionsHCMap.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tSoot emissions during descent = " + _totalDescentEmissionsSootMap.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tCO2 emissions during descent = " + _totalDescentEmissionsCO2Map.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tSOx emissions during descent = " + _totalDescentEmissionsSOxMap.get(xcg).to(SI.GRAM) + "\n")
+				.append("\t\tH2O emissions during descent = " + _totalDescentEmissionsH2OMap.get(xcg).to(SI.GRAM) + "\n")
 				.append("\t-------------------------------------\n");
 				;
 
@@ -6669,7 +6697,21 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getCruiseCalibrationFactorThrust(),
 							_thePerformanceInterface.getFlightIdleCalibrationFactorThrust(),
 							_thePerformanceInterface.getCruiseCalibrationFactorSFC(),
-							_thePerformanceInterface.getFlightIdleCalibrationFactorSFC()
+							_thePerformanceInterface.getFlightIdleCalibrationFactorSFC(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexH2O(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexH2O()
 							)
 					);
 					
@@ -6681,6 +6723,13 @@ public class ACPerformanceManager {
 			_totalDescentLengthMap.put(xcg, _theDescentCalculatorMap.get(xcg).getTotalDescentLength());
 			_totalDescentTimeMap.put(xcg, _theDescentCalculatorMap.get(xcg).getTotalDescentTime());
 			_totalDescentFuelUsedMap.put(xcg, _theDescentCalculatorMap.get(xcg).getTotalDescentFuelUsed());
+			_totalDescentEmissionsNOxMap.put(xcg, _theDescentCalculatorMap.get(xcg).getTotalDescentNOxEmissions());
+			_totalDescentEmissionsCOMap.put(xcg, _theDescentCalculatorMap.get(xcg).getTotalDescentCOEmissions());
+			_totalDescentEmissionsHCMap.put(xcg, _theDescentCalculatorMap.get(xcg).getTotalDescentHCEmissions());
+			_totalDescentEmissionsSootMap.put(xcg, _theDescentCalculatorMap.get(xcg).getTotalDescentSootEmissions());
+			_totalDescentEmissionsCO2Map.put(xcg, _theDescentCalculatorMap.get(xcg).getTotalDescentCO2Emissions());
+			_totalDescentEmissionsSOxMap.put(xcg, _theDescentCalculatorMap.get(xcg).getTotalDescentSOxEmissions());
+			_totalDescentEmissionsH2OMap.put(xcg, _theDescentCalculatorMap.get(xcg).getTotalDescentH2OEmissions());
 		}
 		
 		public void plotDescentPerformance(String descentFolderPath, Double xcg) {
@@ -8614,6 +8663,62 @@ public class ACPerformanceManager {
 
 	public void setEmissionsH2ODuringClimbMap(Map<Double, Amount<Mass>> _emissionsH2ODuringClimbMap) {
 		this._emissionsH2ODuringClimbMap = _emissionsH2ODuringClimbMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalDescentEmissionsNOxMap() {
+		return _totalDescentEmissionsNOxMap;
+	}
+
+	public void setTotalDescentEmissionsNOxMap(Map<Double, Amount<Mass>> _totalDescentEmissionsNOxMap) {
+		this._totalDescentEmissionsNOxMap = _totalDescentEmissionsNOxMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalDescentEmissionsCOMap() {
+		return _totalDescentEmissionsCOMap;
+	}
+
+	public void setTotalDescentEmissionsCOMap(Map<Double, Amount<Mass>> _totalDescentEmissionsCOMap) {
+		this._totalDescentEmissionsCOMap = _totalDescentEmissionsCOMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalDescentEmissionsHCMap() {
+		return _totalDescentEmissionsHCMap;
+	}
+
+	public void setTotalDescentEmissionsHCMap(Map<Double, Amount<Mass>> _totalDescentEmissionsHCMap) {
+		this._totalDescentEmissionsHCMap = _totalDescentEmissionsHCMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalDescentEmissionsSootMap() {
+		return _totalDescentEmissionsSootMap;
+	}
+
+	public void setTotalDescentEmissionsSootMap(Map<Double, Amount<Mass>> _totalDescentEmissionsSootMap) {
+		this._totalDescentEmissionsSootMap = _totalDescentEmissionsSootMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalDescentEmissionsCO2Map() {
+		return _totalDescentEmissionsCO2Map;
+	}
+
+	public void setTotalDescentEmissionsCO2Map(Map<Double, Amount<Mass>> _totalDescentEmissionsCO2Map) {
+		this._totalDescentEmissionsCO2Map = _totalDescentEmissionsCO2Map;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalDescentEmissionsSOxMap() {
+		return _totalDescentEmissionsSOxMap;
+	}
+
+	public void setTotalDescentEmissionsSOxMap(Map<Double, Amount<Mass>> _totalDescentEmissionsSOxMap) {
+		this._totalDescentEmissionsSOxMap = _totalDescentEmissionsSOxMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalDescentEmissionsH2OMap() {
+		return _totalDescentEmissionsH2OMap;
+	}
+
+	public void setTotalDescentEmissionsH2OMap(Map<Double, Amount<Mass>> _totalDescentEmissionsH2OMap) {
+		this._totalDescentEmissionsH2OMap = _totalDescentEmissionsH2OMap;
 	}
 
 }
