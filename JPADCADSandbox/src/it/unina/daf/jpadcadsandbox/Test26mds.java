@@ -212,18 +212,18 @@ public class Test26mds {
 			return;
 		}
 
-		GeometricData geometricData = new GeometricData(
-				new GeometricDataBuilder(
-						cadUnits, 
-						aeroComponents, 
-						componentsNumber, 
-						fuselageLength, 
-						wingMAC, 
-						wingS, 
-						wingSpan, 
-						momentPoleXCoord
-						)
-				);
+//		GeometricData geometricData = new GeometricData(
+//				new GeometricDataBuilder(
+//						cadUnits, 
+//						aeroComponents, 
+//						componentsNumber, 
+//						fuselageLength, 
+//						wingMAC, 
+//						wingS, 
+//						wingSpan, 
+//						momentPoleXCoord
+//						)
+//				);
 		
 		// Define operating conditions
 		double angleOfAttack = 2.0;
@@ -243,41 +243,41 @@ public class Test26mds {
 		double velocity = speedOfSound*machNumber;
 		double reynoldsNumber = density*velocity*wingMAC/dynamicViscosity;
 		
-		OperatingConditions operatingConditions = new OperatingConditions(
-				new OperatingConditionsBuilder(
-						angleOfAttack, 
-						sideslipAngle, 
-						machNumber, 
-						reynoldsNumber, 
-						altitude, 
-						pressure, 
-						density, 
-						temperature, 
-						speedOfSound, 
-						dynamicViscosity, 
-						velocity
-						)
-				);
+//		OperatingConditions operatingConditions = new OperatingConditions(
+//				new OperatingConditionsBuilder(
+//						angleOfAttack, 
+//						sideslipAngle, 
+//						machNumber, 
+//						reynoldsNumber, 
+//						altitude, 
+//						pressure, 
+//						density, 
+//						temperature, 
+//						speedOfSound, 
+//						dynamicViscosity, 
+//						velocity
+//						)
+//				);
 		
 		// Define simulation parameters
 		String simType = "EULER";
 		boolean symmetricalSim = true;
 		boolean executeAutomesh = false;
 		
-		SimulationParameters simulationParameters = new SimulationParameters(
-				new SimulationParametersBuilder(
-						simType, 
-						symmetricalSim, 
-						executeAutomesh
-						)
-				);
+//		SimulationParameters simulationParameters = new SimulationParameters(
+//				new SimulationParametersBuilder(
+//						simType, 
+//						symmetricalSim, 
+//						executeAutomesh
+//						)
+//				);
 
 		// Create the data file
-		DataWriter writer = new DataWriter(
-				operatingConditions, 
-				geometricData, 
-				simulationParameters			
-				);
+//		DataWriter writer = new DataWriter(
+//				operatingConditions, 
+//				geometricData, 
+//				simulationParameters			
+//				);
 		
 		// Create aircraft CAD files
 		List<String> cadNames = new ArrayList<>();
@@ -379,7 +379,7 @@ public class Test26mds {
 			}
 		});
 		
-		writer.write(workingFolderPath + "\\Data.xml");
+//		writer.write(workingFolderPath + "\\Data.xml");
 		
 		// Run STARCCM+ simulation using macro.java
 		try {

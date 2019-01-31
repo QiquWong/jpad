@@ -20,6 +20,7 @@ import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShapeFactory;
 import it.unina.daf.jpadcad.occ.OCCShell;
+import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCVertex;
 import opencascade.BRepGProp;
 import opencascade.BRepOffsetAPI_MakeFilling;
@@ -137,8 +138,8 @@ public class Test05as {
 		List<CADGeomCurve3D> cadCurves = new ArrayList<CADGeomCurve3D>();
 		cadCurves.add(firstCurve);
 		cadCurves.add(secondCurve);
-
-		CADShell cadShell = factory.newShell(cadCurves);
+		
+		CADShell cadShell = (CADShell) OCCUtils.makePatchThruCurveSections(cadCurves);
 		BRepOffsetAPI_MakeFilling _filled = new BRepOffsetAPI_MakeFilling();
 		TopExp_Explorer _faceExplorer = new TopExp_Explorer(((OCCShape)cadShell).getShape(), TopAbs_ShapeEnum.TopAbs_FACE);
 		TopoDS_Face _loftFace = TopoDS.ToFace(_faceExplorer.Current());
