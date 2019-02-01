@@ -12,6 +12,8 @@ import javax.measure.quantity.Velocity;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
+import com.sun.istack.internal.Nullable;
+
 import aircraft.Aircraft;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
@@ -120,6 +122,7 @@ public interface IACPerformanceManager {
 	double getHoldingMachNumber();
 	double getFuelReserve();
 	Amount<Length> getFirstGuessCruiseLength();
+	@Nullable
 	Amount<Mass> getFirstGuessInitialMissionFuelMass();
 	//..............................................................................
 	// Calibration factors:

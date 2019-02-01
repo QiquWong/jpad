@@ -1214,7 +1214,7 @@ public class MissionProfileCalc {
 				List<Double> phi = new ArrayList<>();
 				try {
 				phi.add(dragPerStep.get(0).doubleValue(SI.NEWTON)
-						/ thrustFormDatabaseList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+						/ theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)
 						);
 				} catch (ArithmeticException e) {
 					System.err.println("WARNING: (CRUISE - MISSION PROFILE) THRUST FROM DATABASE = 0.0, CANNOT DIVIDE BY 0.0! RETURNING ... ");
@@ -1282,19 +1282,25 @@ public class MissionProfileCalc {
 				for (int j=1; j<cruiseSteps.size(); j++) {
 
 					times.add(
-							Amount.valueOf(
-									(cruiseSteps.get(j).doubleValue(SI.METER)
-											- cruiseSteps.get(j-1).doubleValue(SI.METER))
-									/ cruiseSpeedList.get(j-1).doubleValue(SI.METERS_PER_SECOND),
-									SI.SECOND
-									).to(NonSI.MINUTE)
+							times.get(times.size()-1)
+							.plus(
+									Amount.valueOf(
+											(cruiseSteps.get(j).doubleValue(SI.METER)
+													- cruiseSteps.get(j-1).doubleValue(SI.METER))
+											/ cruiseSpeedList.get(j-1).doubleValue(SI.METERS_PER_SECOND),
+											SI.SECOND
+											).to(NonSI.MINUTE)
+									)
 							);
 					
 					fuelUsedPerStep.add(
-							Amount.valueOf(
-									fuelFlows.get(j-1)
-									*times.get(j).doubleValue(NonSI.MINUTE),
-									SI.KILOGRAM
+							fuelUsedPerStep.get(fuelUsedPerStep.size()-1)
+							.plus(
+									Amount.valueOf(
+											fuelFlows.get(j-1)
+											* (times.get(j).doubleValue(NonSI.MINUTE) - times.get(j-1).doubleValue(SI.SECOND)),
+											SI.KILOGRAM
+											)
 									)
 							);
 					
@@ -1378,51 +1384,77 @@ public class MissionProfileCalc {
 								);
 					}
 					emissionNOxCruise.add(
-							Amount.valueOf(
-									emissionIndexNOxList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
-									*fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM),
-									SI.GRAM)
+							emissionNOxCruise.get(emissionNOxCruise.size()-1)
+							.plus(
+									Amount.valueOf(
+											emissionIndexNOxList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+											*(fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM) - fuelUsedPerStep.get(j-1).doubleValue(SI.KILOGRAM)),
+											SI.GRAM)
+									)
 							);
 					emissionCOCruise.add(
-							Amount.valueOf(
-									emissionIndexCOList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
-									*fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM),
-									SI.GRAM)
+							emissionCOCruise.get(emissionCOCruise.size()-1)
+							.plus(
+									Amount.valueOf(
+											emissionIndexCOList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+											*(fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM) - fuelUsedPerStep.get(j-1).doubleValue(SI.KILOGRAM)),
+											SI.GRAM)
+									)
 							);
 					emissionHCCruise.add(
-							Amount.valueOf(
-									emissionIndexHCList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
-									*fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM),
-									SI.GRAM)
+							emissionHCCruise.get(emissionHCCruise.size()-1)
+							.plus(
+									Amount.valueOf(
+											emissionIndexHCList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+											*(fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM) - fuelUsedPerStep.get(j-1).doubleValue(SI.KILOGRAM)),
+											SI.GRAM)
+									)
 							);
 					emissionSootCruise.add(
-							Amount.valueOf(
-									emissionIndexSootList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
-									*fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM),
-									SI.GRAM)
+							emissionSootCruise.get(emissionSootCruise.size()-1)
+							.plus(
+									Amount.valueOf(
+											emissionIndexSootList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+											*(fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM) - fuelUsedPerStep.get(j-1).doubleValue(SI.KILOGRAM)),
+											SI.GRAM)
+									)
 							);
 					emissionCO2Cruise.add(
-							Amount.valueOf(
-									emissionIndexCO2List.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
-									*fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM),
-									SI.GRAM)
+							emissionCO2Cruise.get(emissionCO2Cruise.size()-1)
+							.plus(
+									Amount.valueOf(
+											emissionIndexCO2List.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+											*(fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM) - fuelUsedPerStep.get(j-1).doubleValue(SI.KILOGRAM)),
+											SI.GRAM)
+									)
 							);
 					emissionSOxCruise.add(
-							Amount.valueOf(
-									emissionIndexSOxList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
-									*fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM),
-									SI.GRAM)
+							emissionSOxCruise.get(emissionSOxCruise.size()-1)
+							.plus(
+									Amount.valueOf(
+											emissionIndexSOxList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+											*(fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM) - fuelUsedPerStep.get(j-1).doubleValue(SI.KILOGRAM)),
+											SI.GRAM)
+									)
 							);
 					emissionH2OCruise.add(
-							Amount.valueOf(
-									emissionIndexH2OList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
-									*fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM),
-									SI.GRAM)
+							emissionH2OCruise.get(emissionH2OCruise.size()-1)
+							.plus(
+									Amount.valueOf(
+											emissionIndexH2OList.stream().mapToDouble(e -> e.doubleValue()).average().getAsDouble()
+											*(fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM) - fuelUsedPerStep.get(j-1).doubleValue(SI.KILOGRAM)),
+											SI.GRAM)
+									)
 							);
 					
 					aircraftMassPerStep.add(
 							aircraftMassPerStep.get(j-1).to(SI.KILOGRAM)
-							.minus(fuelUsedPerStep.get(j).to(SI.KILOGRAM))
+							.minus(
+									Amount.valueOf(
+											fuelUsedPerStep.get(j).doubleValue(SI.KILOGRAM) - fuelUsedPerStep.get(j-1).doubleValue(SI.KILOGRAM),
+											SI.KILOGRAM
+											)
+									)
 							);
 
 					dragList.add(
@@ -1560,7 +1592,7 @@ public class MissionProfileCalc {
 					
 					try {
 						phi.add(dragPerStep.get(j).doubleValue(SI.NEWTON)
-								/ thrustFormDatabaseList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+								/ theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)
 								);
 						} catch (ArithmeticException e) {
 							System.err.println("WARNING: (CRUISE - MISSION PROFILE) THRUST FROM DATABASE = 0.0, CANNOT DIVIDE BY 0.0! RETURNING ... ");
@@ -1732,125 +1764,94 @@ public class MissionProfileCalc {
 				
 				//--------------------------------------------------------------------
 				// SECOND CLIMB (up to ALTERNATE altitude)
-				theSecondClimbCalculator = new ClimbCalc(
-						_theAircraft,
-						_theOperatingConditions,
-						_cLmaxClean, 
-						_polarCLClimb,
-						_polarCDClimb,
-						_climbSpeed, 
-						_dragDueToEnigneFailure 
+				Amount<Mass> initialMassSecondClimb = Amount.valueOf(
+						initialMissionMass.doubleValue(SI.KILOGRAM)
+						- theTakeOffCalculator.getFuelUsed().stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
+						- theClimbCalculator.getFuelUsedClimb().stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
+						- fuelUsedPerStep.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
+						- theFirstDescentCalculator.getFuelUsedPerStep().stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum(),
+						SI.KILOGRAM
 						);
-
-				aircraftMassAtSecondClimbStart = _initialMissionMass
-						.minus(fuelTakeOff.to(SI.KILOGRAM))
-						.minus(fuelClimb.to(SI.KILOGRAM))
-						.minus(fuelCruise.to(SI.KILOGRAM))
-						.minus(fuelFirstDescent.to(SI.KILOGRAM));
-
+				
+				theSecondClimbCalculator = new ClimbCalc(
+						theAircraft,
+						theOperatingConditions,
+						cLmaxClean, 
+						polarCLClimb,
+						polarCDClimb,
+						climbSpeed,
+						dragDueToEnigneFailure,
+						climbCalibrationFactorThrust,
+						continuousCalibrationFactorThrust,
+						climbCalibrationFactorSFC,
+						climbCalibrationFactorEmissionIndexNOx,
+						climbCalibrationFactorEmissionIndexCO,
+						climbCalibrationFactorEmissionIndexHC,
+						climbCalibrationFactorEmissionIndexSoot,
+						climbCalibrationFactorEmissionIndexCO2,
+						climbCalibrationFactorEmissionIndexSOx,
+						climbCalibrationFactorEmissionIndexH2O
+						);
+				 
 				theSecondClimbCalculator.calculateClimbPerformance(
-						aircraftMassAtSecondClimbStart,
-						aircraftMassAtSecondClimbStart,
-						_holdingAltitude.to(SI.METER),
-						_alternateCruiseAltitude.to(SI.METER),
+						initialMassSecondClimb,
+						initialMassSecondClimb,
+						holdingAltitude.to(SI.METER),
+						alternateCruiseAltitude.to(SI.METER),
 						false,
 						false
 						);
 
-				rangeSecondClimb = theSecondClimbCalculator.getClimbTotalRange();
-				timeSecondClimb = null;
-				if(_climbSpeed != null)
-					timeSecondClimb = theSecondClimbCalculator.getClimbTimeAtSpecificClimbSpeedAEO();
-				else
-					timeSecondClimb = theSecondClimbCalculator.getMinimumClimbTimeAEO();
-				fuelSecondClimb = theSecondClimbCalculator.getClimbTotalFuelUsed();
-
-				aircraftMassAtSecondClimbEnding = aircraftMassAtSecondClimbStart.to(SI.KILOGRAM).minus(fuelSecondClimb.to(SI.KILOGRAM));
-
-				if (_alternateCruiseAltitude.doubleValue(SI.METER) != 15.24) {
-					speedTASAtSecondClimbStart = theSecondClimbCalculator.getClimbSpeed().to(NonSI.KNOT)
-							.divide(
-									Math.sqrt(
-											OperatingConditions.getAtmosphere(_obstacleLanding.doubleValue(SI.METER))
-											.getDensityRatio()
-											)
-									);
-					speedCASAtSecondClimbStart = theSecondClimbCalculator.getClimbSpeed().to(NonSI.KNOT);
-					speedTASAtSecondClimbEnding = theSecondClimbCalculator.getClimbSpeed().to(NonSI.KNOT)
-							.divide(
-									Math.sqrt(
-											OperatingConditions.getAtmosphere(
-													_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
-													)
-											.getDensityRatio()
-											)
-									);
-					speedCASAtSecondClimbEnding = theSecondClimbCalculator.getClimbSpeed().to(NonSI.KNOT);
-
-					cLAtSecondClimbStart = LiftCalc.calculateLiftCoeff(
-							aircraftMassAtSecondClimbStart.times(AtmosphereCalc.g0).getEstimatedValue(),
-							speedTASAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND),					
-							_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-							0.0
+				rangeSecondClimb.addAll(theSecondClimbCalculator.getRangeClimb());			
+				altitudeSecondClimb.addAll(theSecondClimbCalculator.getAltitudeClimb());
+				timeSecondClimb.addAll(theSecondClimbCalculator.getTimeClimb());
+				fuelUsedSecondClimb.addAll(theSecondClimbCalculator.getFuelUsedClimb());
+				aircraftMassSecondClimb.addAll(theSecondClimbCalculator.getAircraftMassClimb());
+				emissionNOxSecondClimb.addAll(theSecondClimbCalculator.getEmissionNOxClimb());
+				emissionCOSecondClimb.addAll(theSecondClimbCalculator.getEmissionCOClimb());
+				emissionHCSecondClimb.addAll(theSecondClimbCalculator.getEmissionHCClimb());
+				emissionSootSecondClimb.addAll(theSecondClimbCalculator.getEmissionSootClimb());
+				emissionCO2SecondClimb.addAll(theSecondClimbCalculator.getEmissionCO2Climb());
+				emissionSOxSecondClimb.addAll(theSecondClimbCalculator.getEmissionSOxClimb());
+				emissionH2OSecondClimb.addAll(theSecondClimbCalculator.getEmissionH2OClimb());
+				speedTASSecondClimb.addAll(theSecondClimbCalculator.getSpeedTASClimb());
+				speedCASSecondClimb.addAll(theSecondClimbCalculator.getSpeedCASClimb());
+				machSecondClimb.addAll(theSecondClimbCalculator.getMachClimb());
+				cLSecondClimb.addAll(theSecondClimbCalculator.getCLClimb());
+				cDSecondClimb.addAll(theSecondClimbCalculator.getCDClimb());
+				efficiencySecondClimb.addAll(theSecondClimbCalculator.getEfficiencyClimb());
+				dragSecondClimb.addAll(theSecondClimbCalculator.getDragClimb());
+				totalThrustSecondClimb.addAll(theSecondClimbCalculator.getTotalThrustClimb());
+				throttleSecondClimb.addAll(timeClimb.stream().map(t -> theOperatingConditions.getThrottleClimb()).collect(Collectors.toList()));
+				fuelFlowSecondClimb.addAll(theSecondClimbCalculator.getFuelFlowClimb());
+				sfcSecondClimb.addAll(theSecondClimbCalculator.getSfcClimb());
+				rateOfClimbSecondClimb.addAll(theSecondClimbCalculator.getRateOfClimbClimb());
+				climbAngleSecondClimb.addAll(theSecondClimbCalculator.getClimbAngleClimb());
+				
+				for(int iSecondClimb=0; iSecondClimb<timeSecondClimb.size(); iSecondClimb++) {
+					fuelPowerSecondClimb.add(
+							Amount.valueOf(
+									totalThrustSecondClimb.get(iSecondClimb).doubleValue(SI.NEWTON)
+									* speedTASSecondClimb.get(iSecondClimb).doubleValue(SI.METERS_PER_SECOND),
+									SI.WATT
+									)
 							);
-					cLAtSecondClimbEnding = LiftCalc.calculateLiftCoeff(
-							aircraftMassAtSecondClimbEnding
-							.times(AtmosphereCalc.g0)
-							.getEstimatedValue(),
-							speedTASAtSecondClimbEnding.doubleValue(SI.METERS_PER_SECOND),					
-							_theAircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
-							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+					batteryPowerSecondClimb.add(Amount.valueOf(0.0, SI.WATT));
+					fuelEnergySecondClimb.add(
+							Amount.valueOf(
+									fuelPowerSecondClimb.get(iSecondClimb).doubleValue(SI.WATT)
+									* timeSecondClimb.get(iSecondClimb).doubleValue(SI.SECOND),
+									SI.JOULE
+									)
 							);
-					cDAtSecondClimbStart = MyMathUtils.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
-							MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
-							cLAtSecondClimbStart
-							);
-					cDAtSecondClimbEnding = MyMathUtils.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
-							MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
-							cLAtSecondClimbEnding
-							);
-					thrustAtSecondClimbStart = theSecondClimbCalculator.getThrustAtClimbStart().to(NonSI.POUND_FORCE);
-					thrustAtSecondClimbEnding = theSecondClimbCalculator.getThrustAtClimbEnding().to(NonSI.POUND_FORCE);
-					dragAtSecondClimbStart = theSecondClimbCalculator.getDragAtClimbStart().to(NonSI.POUND_FORCE);
-					dragAtSecondClimbEnding = theSecondClimbCalculator.getDragAtClimbEnding().to(NonSI.POUND_FORCE);
-					rateOfClimbAtSecondClimbStart = Amount.valueOf(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									theSecondClimbCalculator.getRCMapAEO().get(0).getSpeedList(), 
-									theSecondClimbCalculator.getRCMapAEO().get(0).getRC(),
-									speedTASAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND)
-									),
-							SI.METERS_PER_SECOND).to(MyUnits.FOOT_PER_MINUTE);
-					rateOfClimbAtSecondClimbEnding = Amount.valueOf(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getSpeedList(), 
-									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getRC(),
-									speedTASAtSecondClimbEnding.doubleValue(SI.METERS_PER_SECOND)
-									),
-							SI.METERS_PER_SECOND).to(MyUnits.FOOT_PER_MINUTE);
-					climbAngleAtSecondClimbStart = Amount.valueOf(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									theSecondClimbCalculator.getRCMapAEO().get(0).getSpeedList(), 
-									theSecondClimbCalculator.getRCMapAEO().get(0).getClimbAngleList(),
-									speedTASAtSecondClimbStart.doubleValue(SI.METERS_PER_SECOND)
-									),
-							SI.RADIAN).to(NonSI.DEGREE_ANGLE);
-					climbAngleAtSecondClimbStart = Amount.valueOf(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getSpeedList(), 
-									theSecondClimbCalculator.getRCMapAEO().get(theSecondClimbCalculator.getRCMapAEO().size()-1).getClimbAngleList(),
-									speedTASAtSecondClimbEnding.doubleValue(SI.METERS_PER_SECOND)
-									),
-							SI.RADIAN).to(NonSI.DEGREE_ANGLE);
-					fuelFlowAtSecondClimbStart = theSecondClimbCalculator.getFuelFlowList().get(0)*2.20462/0.016667;
-					fuelFlowAtSecondClimbEnding = theSecondClimbCalculator.getFuelFlowList().get(theSecondClimbCalculator.getFuelFlowList().size()-1)*2.20462/0.016667;
-					sfcAtSecondClimbStart = theSecondClimbCalculator.getSFCList().get(0);
-					sfcAtSecondClimbEnding = theSecondClimbCalculator.getSFCList().get(theSecondClimbCalculator.getSFCList().size()-1);
+					batteryEnergySecondClimb.add(Amount.valueOf(0.0, SI.JOULE));
 				}
-
+				
 				//--------------------------------------------------------------------
 				// ALTERNATE CRUISE (AT MAX EFFICIENCY)
+				
+				/* TODO: CONTINUE FROM HERE */
+				
 				aircraftMassAtAlternateCruiseStart = 
 						_initialMissionMass
 						.minus(fuelTakeOff.to(SI.KILOGRAM))

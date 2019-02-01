@@ -906,6 +906,20 @@ public class ClimbCalc {
 									)
 							)
 					);
+			_climbAngleClimb.add(
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()
+											.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+											),
+									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getClimbAngleList()
+											.stream().map(ca -> ca.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+											),
+									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
+									),
+							NonSI.DEGREE_ANGLE
+							)
+					);
 			_rangeClimb.add(
 					_rangeClimb.get(_rangeClimb.size()-1)
 					.plus(
@@ -963,20 +977,6 @@ public class ClimbCalc {
 									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
 									),
 							SI.METERS_PER_SECOND
-							)
-					);
-			_climbAngleClimb.add(
-					Amount.valueOf(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()
-											.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
-											),
-									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getClimbAngleList()
-											.stream().map(ca -> ca.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
-											),
-									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
-									),
-							NonSI.DEGREE_ANGLE
 							)
 					);
 			
@@ -1132,7 +1132,7 @@ public class ClimbCalc {
 					Amount.valueOf(
 							_emissionNOxClimb.get(_emissionNOxClimb.size()-1).doubleValue(SI.GRAM)
 							+ (	((emissionIndexNOxList.get(i) + emissionIndexNOxList.get(i-1))/2)
-									*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM)
+									*(_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM) - _fuelUsedClimb.get(i-1).doubleValue(SI.KILOGRAM))
 									),
 							SI.GRAM
 							)
@@ -1141,7 +1141,7 @@ public class ClimbCalc {
 					Amount.valueOf(
 							_emissionCOClimb.get(_emissionCOClimb.size()-1).doubleValue(SI.GRAM)
 							+ (	((emissionIndexCOList.get(i) + emissionIndexCOList.get(i-1))/2)
-									*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM)
+									*(_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM) - _fuelUsedClimb.get(i-1).doubleValue(SI.KILOGRAM))
 									),
 							SI.GRAM
 							)
@@ -1150,7 +1150,7 @@ public class ClimbCalc {
 					Amount.valueOf(
 							_emissionHCClimb.get(_emissionHCClimb.size()-1).doubleValue(SI.GRAM)
 							+ (	((emissionIndexHCList.get(i) + emissionIndexHCList.get(i-1))/2)
-									*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM)
+									*(_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM) - _fuelUsedClimb.get(i-1).doubleValue(SI.KILOGRAM))
 									),
 							SI.GRAM
 							)
@@ -1159,7 +1159,7 @@ public class ClimbCalc {
 					Amount.valueOf(
 							_emissionSootClimb.get(_emissionSootClimb.size()-1).doubleValue(SI.GRAM)
 							+ (	((emissionIndexSootList.get(i) + emissionIndexSootList.get(i-1))/2)
-									*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM)
+									*(_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM) - _fuelUsedClimb.get(i-1).doubleValue(SI.KILOGRAM))
 									),
 							SI.GRAM
 							)
@@ -1168,7 +1168,7 @@ public class ClimbCalc {
 					Amount.valueOf(
 							_emissionCO2Climb.get(_emissionCO2Climb.size()-1).doubleValue(SI.GRAM)
 							+ (	((emissionIndexCO2List.get(i) + emissionIndexCO2List.get(i-1))/2)
-									*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM)
+									*(_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM) - _fuelUsedClimb.get(i-1).doubleValue(SI.KILOGRAM))
 									),
 							SI.GRAM
 							)
@@ -1177,7 +1177,7 @@ public class ClimbCalc {
 					Amount.valueOf(
 							_emissionSOxClimb.get(_emissionSOxClimb.size()-1).doubleValue(SI.GRAM)
 							+ (	((emissionIndexSOxList.get(i) + emissionIndexSOxList.get(i-1))/2)
-									*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM)
+									*(_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM) - _fuelUsedClimb.get(i-1).doubleValue(SI.KILOGRAM))
 									),
 							SI.GRAM
 							)
@@ -1186,7 +1186,7 @@ public class ClimbCalc {
 					Amount.valueOf(
 							_emissionH2OClimb.get(_emissionH2OClimb.size()-1).doubleValue(SI.GRAM)
 							+ (	((emissionIndexH2OList.get(i) + emissionIndexH2OList.get(i-1))/2)
-									*_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM)
+									*(_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM) - _fuelUsedClimb.get(i-1).doubleValue(SI.KILOGRAM))
 									),
 							SI.GRAM
 							)
@@ -1195,7 +1195,7 @@ public class ClimbCalc {
 			_aircraftMassClimb.add(
 					Amount.valueOf(
 							_aircraftMassClimb.get(_aircraftMassClimb.size()-1).doubleValue(SI.KILOGRAM)
-							- _fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM),
+							- (_fuelUsedClimb.get(i).doubleValue(SI.KILOGRAM) - _fuelUsedClimb.get(i-1).doubleValue(SI.KILOGRAM)),
 							SI.KILOGRAM
 							)
 					);
