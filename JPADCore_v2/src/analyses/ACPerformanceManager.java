@@ -6793,13 +6793,34 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getCruiseCalibrationFactorSFC(),
 							_thePerformanceInterface.getFlightIdleCalibrationFactorSFC(),
 							_thePerformanceInterface.getGroundIdleCalibrationFactorSFC(), 
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getCruiseCalibrationFactorEmissionIndexH2O(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getFlightIdleCalibrationFactorEmissionIndexH2O(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexH2O(),
 							true
 							)			
 					);
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theLandingCalculatorMap.get(xcg).calculateNoiseLandingTrajectory(true);
+			_theLandingCalculatorMap.get(xcg).calculateLanding(true);
 			
 			// Distances:
 			_groundRollDistanceLandingMap.put(xcg, _theLandingCalculatorMap.get(xcg).getsGround());

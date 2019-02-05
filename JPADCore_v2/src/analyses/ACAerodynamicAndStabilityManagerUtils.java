@@ -2015,6 +2015,33 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								aerodynamicAndStabilityManager.getAlphaWingList(),
 								true)
 						);
+				//canard
+				_momentTemporaryMap.put(
+						ComponentEnum.CANARD, 
+						MomentCalc.calculateCMWingCurveWithBalanceEquation(
+								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getMeanAerodynamicChord().doubleValue(SI.METER))+
+										_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
+										_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getMeanAerodynamicChord().doubleValue(SI.METER))
+//										+_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER)
+										,
+										SI.METER),
+								aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers()
+								.get(ComponentEnum.CANARD)
+								.getXacLRF()
+								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.CANARD)
+										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getXApexConstructionAxes()), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getZApexConstructionAxes(), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getMeanAerodynamicChord(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getSurfacePlanform(), 
+								aerodynamicAndStabilityManager.getCurrent3DCanardLiftCurve(),
+								aerodynamicAndStabilityManager.getCurrent3DCanardMomentCurve(),
+								aerodynamicAndStabilityManager.getAlphaCanardList(),
+								true)
+						);
+				
 				// htail
 				_momentTemporaryMap.put(
 						ComponentEnum.HORIZONTAL_TAIL, 

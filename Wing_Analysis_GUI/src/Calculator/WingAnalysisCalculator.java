@@ -254,7 +254,10 @@ public class WingAnalysisCalculator {
 			xleDistributionMeter [i] = theInputOutputTree.getxLEDistributionSemiSpan().get(i).doubleValue(SI.METER);
 		}
 		
-//		theInputOutputTree.initializeData();
+		List<Amount<Angle>> alphaZeroLiftAmount = MyArrayUtils.convertDoubleArrayToListOfAmount(alphaZeroLiftDistributionRadians, SI.RADIAN);
+		List<Amount<Angle>> twistAmount = MyArrayUtils.convertDoubleArrayToListOfAmount(twistDistributionRadians, SI.RADIAN);
+
+		//		theInputOutputTree.initializeData();
 		
 		theNasaBlackwellCalculator = new  NasaBlackwell(
 				theInputOutputTree.getSemiSpan().doubleValue(SI.METER), 
@@ -387,18 +390,19 @@ public class WingAnalysisCalculator {
 		
 		double cLMax = LiftCalc.calculateCLMax(
 				MyArrayUtils.convertToDoublePrimitive(theInputOutputTree.getMaximumliftCoefficientDistributionSemiSpan()),
-				theInputOutputTree.getSemiSpan().doubleValue(SI.METER),
-				theInputOutputTree.getSurface().doubleValue(SI.SQUARE_METRE), 
+				theInputOutputTree.getSemiSpan(),
+				theInputOutputTree.getSurface(),
 				yDistributionMeter,
 				chordDistributionMeter,
 				xleDistributionMeter,
 				dihedralDistributionRadians, 
-				twistDistributionRadians, 
-				alphaZeroLiftDistributionRadians,
+				twistAmount, 
+				alphaZeroLiftAmount,
 				vortexSemiSpanToSemiSpanRatio,
-				0.0,
+				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 				theInputOutputTree.getMachNumber(), 
-				theInputOutputTree.getAltitude().doubleValue(SI.METER)
+				theInputOutputTree.getAltitude(),
+				Amount.valueOf(0.0,SI.CELSIUS)
 				);
 				
 				theInputOutputTree.setcLMax(cLMax);

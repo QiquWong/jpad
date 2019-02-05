@@ -55,5 +55,9 @@
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.text_3.5.400.v20150505-1044.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.ui.forms_3.6.200.v20150506-2029.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.ui.workbench_3.107.1.v20160120-2131.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/JPADCore_v2_20012019.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/JPADConfigs_v_05122018.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/libhdf5.lib"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/hdf-java-2.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
