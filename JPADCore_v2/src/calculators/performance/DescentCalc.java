@@ -1357,7 +1357,7 @@ public class DescentCalc {
 						.plus(
 								Amount.valueOf(
 										((_interpolatedFuelFlowList.get(i) + _interpolatedFuelFlowList.get(i-1)) /2)
-										*(_descentTimes.get(i).doubleValue(NonSI.MINUTE) - _descentTimes.get(i-1).doubleValue(SI.SECOND)),
+										*(_descentTimes.get(i).doubleValue(NonSI.MINUTE) - _descentTimes.get(i-1).doubleValue(NonSI.MINUTE)),
 										SI.KILOGRAM
 										)
 								)

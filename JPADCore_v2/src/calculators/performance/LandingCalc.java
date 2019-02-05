@@ -86,7 +86,14 @@ public class LandingCalc {
 	private List<Double> timeBreakPoints, loadFactor;
 	private double alphaDotFlare, cL0LND, cLmaxLND, kGround, phi, kCLmax, 
 	cruiseThrustCorrectionFactor, fidlThrustCorrectionFactor, gidlThrustCorrectionFactor, 
-	cruiseSfcCorrectionFactor, fidlSfcCorrectionFactor, gidlSfcCorrectionFactor;
+	cruiseSfcCorrectionFactor, fidlSfcCorrectionFactor, gidlSfcCorrectionFactor,
+	cruiseCalibrationFactorEmissionIndexNOx, cruiseCalibrationFactorEmissionIndexCO, cruiseCalibrationFactorEmissionIndexHC,
+	cruiseCalibrationFactorEmissionIndexSoot, cruiseCalibrationFactorEmissionIndexCO2, cruiseCalibrationFactorEmissionIndexSOx,
+	cruiseCalibrationFactorEmissionIndexH2O, flightIdleCalibrationFactorEmissionIndexNOx, flightIdleCalibrationFactorEmissionIndexCO,
+	flightIdleCalibrationFactorEmissionIndexHC, flightIdleCalibrationFactorEmissionIndexSoot, flightIdleCalibrationFactorEmissionIndexCO2,
+	flightIdleCalibrationFactorEmissionIndexSOx, flightIdleCalibrationFactorEmissionIndexH2O, groundIdleCalibrationFactorEmissionIndexNOx,
+	groundIdleCalibrationFactorEmissionIndexCO, groundIdleCalibrationFactorEmissionIndexHC, groundIdleCalibrationFactorEmissionIndexSoot,
+	groundIdleCalibrationFactorEmissionIndexCO2, groundIdleCalibrationFactorEmissionIndexSOx, groundIdleCalibrationFactorEmissionIndexH2O;
 	private Amount<?> cLalphaLND;
 	private MyInterpolatingFunction mu, muBrake, thrustFlareFunction;
 	private boolean targetRDandAltitudeFlag, maximumFlareCLFlag;
@@ -96,15 +103,16 @@ public class LandingCalc {
 	private FirstOrderDifferentialEquations ode;
 
 	//OUTPUT:
-	private List<Amount<Velocity>> speedList, rateOfClimbList;
+	private List<Amount<Velocity>> speedTASList, speedCASList, rateOfClimbList;
 	private List<Amount<Force>> thrustList, thrustHorizontalList, thrustVerticalList,
 	liftList, dragList, totalForceList, frictionList;
 	private List<Amount<Angle>> alphaList, gammaList, thetaList;
-	private List<Double> alphaDotList, gammaDotList, cLList, loadFactorList, cDList;
+	private List<Double> alphaDotList, gammaDotList, cLList, loadFactorList, cDList, machList, fuelFlowList;
 	private List<Amount<Acceleration>> accelerationList;
 	private List<Amount<Length>> groundDistanceList, verticalDistanceList;
 	private List<Amount<Duration>> timeList;
-	private List<Amount<Mass>> fuelUsedList;
+	private List<Amount<Mass>> fuelUsedList, emissionNOxList, emissionCOList, emissionHCList, emissionSootList, 
+	emissionCO2List, emissionSOxList, emissionH2OList;
 	private List<Amount<Force>> weightList;
 	private Amount<Length> sDescent, sApproach, sFlare, sGround, sLanding, sTotal;
 	private Amount<Velocity> vFlareEffective, vTouchDownEffective;
@@ -146,6 +154,27 @@ public class LandingCalc {
 			double cruiseSfcCorrectionFactor,
 			double fidlSfcCorrectionFactor,
 			double gidlSfcCorrectionFactor,
+			double cruiseCalibrationFactorEmissionIndexNOx,
+			double cruiseCalibrationFactorEmissionIndexCO,
+			double cruiseCalibrationFactorEmissionIndexHC,
+			double cruiseCalibrationFactorEmissionIndexSoot,
+			double cruiseCalibrationFactorEmissionIndexCO2,
+			double cruiseCalibrationFactorEmissionIndexSOx,
+			double cruiseCalibrationFactorEmissionIndexH2O,
+			double flightIdleCalibrationFactorEmissionIndexNOx,
+			double flightIdleCalibrationFactorEmissionIndexCO,
+			double flightIdleCalibrationFactorEmissionIndexHC,
+			double flightIdleCalibrationFactorEmissionIndexSoot,
+			double flightIdleCalibrationFactorEmissionIndexCO2,
+			double flightIdleCalibrationFactorEmissionIndexSOx,
+			double flightIdleCalibrationFactorEmissionIndexH2O,
+			double groundIdleCalibrationFactorEmissionIndexNOx,
+			double groundIdleCalibrationFactorEmissionIndexCO,
+			double groundIdleCalibrationFactorEmissionIndexHC,
+			double groundIdleCalibrationFactorEmissionIndexSoot,
+			double groundIdleCalibrationFactorEmissionIndexCO2,
+			double groundIdleCalibrationFactorEmissionIndexSOx,
+			double groundIdleCalibrationFactorEmissionIndexH2O,
 			boolean createCSV
 			) {
 
@@ -184,7 +213,28 @@ public class LandingCalc {
 		this.cruiseSfcCorrectionFactor = cruiseSfcCorrectionFactor;
 		this.fidlSfcCorrectionFactor = fidlSfcCorrectionFactor;
 		this.gidlSfcCorrectionFactor = gidlSfcCorrectionFactor;
-
+		this.cruiseCalibrationFactorEmissionIndexNOx = cruiseCalibrationFactorEmissionIndexNOx;
+		this.cruiseCalibrationFactorEmissionIndexCO = cruiseCalibrationFactorEmissionIndexCO;
+		this.cruiseCalibrationFactorEmissionIndexHC = cruiseCalibrationFactorEmissionIndexHC;
+		this.cruiseCalibrationFactorEmissionIndexSoot = cruiseCalibrationFactorEmissionIndexSoot;
+		this.cruiseCalibrationFactorEmissionIndexCO2 = cruiseCalibrationFactorEmissionIndexCO2;
+		this.cruiseCalibrationFactorEmissionIndexSOx = cruiseCalibrationFactorEmissionIndexSOx;
+		this.cruiseCalibrationFactorEmissionIndexH2O = cruiseCalibrationFactorEmissionIndexH2O;
+		this.flightIdleCalibrationFactorEmissionIndexNOx = flightIdleCalibrationFactorEmissionIndexNOx;
+		this.flightIdleCalibrationFactorEmissionIndexCO = flightIdleCalibrationFactorEmissionIndexCO;
+		this.flightIdleCalibrationFactorEmissionIndexHC = flightIdleCalibrationFactorEmissionIndexHC;
+		this.flightIdleCalibrationFactorEmissionIndexSoot = flightIdleCalibrationFactorEmissionIndexSoot;
+		this.flightIdleCalibrationFactorEmissionIndexCO2 = flightIdleCalibrationFactorEmissionIndexCO2;
+		this.flightIdleCalibrationFactorEmissionIndexSOx = flightIdleCalibrationFactorEmissionIndexSOx;
+		this.flightIdleCalibrationFactorEmissionIndexH2O = flightIdleCalibrationFactorEmissionIndexH2O;
+		this.groundIdleCalibrationFactorEmissionIndexNOx = groundIdleCalibrationFactorEmissionIndexNOx;
+		this.groundIdleCalibrationFactorEmissionIndexCO = groundIdleCalibrationFactorEmissionIndexCO;
+		this.groundIdleCalibrationFactorEmissionIndexHC = groundIdleCalibrationFactorEmissionIndexHC;
+		this.groundIdleCalibrationFactorEmissionIndexSoot = groundIdleCalibrationFactorEmissionIndexSoot;
+		this.groundIdleCalibrationFactorEmissionIndexCO2 = groundIdleCalibrationFactorEmissionIndexCO2;
+		this.groundIdleCalibrationFactorEmissionIndexSOx = groundIdleCalibrationFactorEmissionIndexSOx;
+		this.groundIdleCalibrationFactorEmissionIndexH2O = groundIdleCalibrationFactorEmissionIndexH2O;
+		
 		// Reference velocities definition
 		vSLanding = SpeedCalc.calculateSpeedStall(
 				fieldAltitude,
@@ -225,28 +275,38 @@ public class LandingCalc {
 		this.loadFactor = new ArrayList<>();
 
 		// Output maps initialization
-		this.timeList = new ArrayList<>();
-		this.speedList = new ArrayList<>();
+		this.speedTASList = new ArrayList<>();
+		this.speedCASList = new ArrayList<>(); 
+		this.rateOfClimbList = new ArrayList<>();
 		this.thrustList = new ArrayList<>();
-		this.thrustHorizontalList = new ArrayList<>();
+		this.thrustHorizontalList  = new ArrayList<>();
 		this.thrustVerticalList = new ArrayList<>();
-		this.alphaList = new ArrayList<>();
-		this.alphaDotList = new ArrayList<>();
-		this.gammaList = new ArrayList<>();
-		this.gammaDotList = new ArrayList<>();
-		this.thetaList = new ArrayList<>();
-		this.cLList = new ArrayList<>();
 		this.liftList = new ArrayList<>();
+		this.dragList = new ArrayList<>(); 
+		this.totalForceList = new ArrayList<>();
+		this.frictionList = new ArrayList<>();
+		this.alphaList = new ArrayList<>(); 
+		this.gammaList = new ArrayList<>();
+		this.thetaList = new ArrayList<>();
+		this.alphaDotList = new ArrayList<>();
+		this.gammaDotList = new ArrayList<>();
+		this.cLList = new ArrayList<>();
 		this.loadFactorList = new ArrayList<>();
 		this.cDList = new ArrayList<>();
-		this.dragList = new ArrayList<>();
-		this.frictionList = new ArrayList<>();
-		this.totalForceList = new ArrayList<>();
+		this.machList = new ArrayList<>();
+		this.fuelFlowList = new ArrayList<>();
 		this.accelerationList = new ArrayList<>();
-		this.rateOfClimbList = new ArrayList<>();
 		this.groundDistanceList = new ArrayList<>();
 		this.verticalDistanceList = new ArrayList<>();
+		this.timeList = new ArrayList<>();
 		this.fuelUsedList = new ArrayList<>();
+		this.emissionNOxList = new ArrayList<>();
+		this.emissionCOList = new ArrayList<>();
+		this.emissionHCList = new ArrayList<>();
+		this.emissionSootList = new ArrayList<>(); 
+		this.emissionCO2List = new ArrayList<>();
+		this.emissionSOxList = new ArrayList<>();
+		this.emissionH2OList = new ArrayList<>();
 		this.weightList = new ArrayList<>();
 
 	}
@@ -306,7 +366,7 @@ public class LandingCalc {
 		
 		thrustAtDescentStart = Amount.valueOf( 
 				gammaDescent.doubleValue(SI.RADIAN)*(maxLandingMass.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)) 
-				+ ((DynamicsEquationsLandingNoiseTrajectory)ode).drag(
+				+ ((DynamicsEquationsLanding)ode).drag(
 						vApproach, 
 						alpha.get(0),
 						gammaDescent,
@@ -335,7 +395,7 @@ public class LandingCalc {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void calculateNoiseLandingTrajectory(boolean timeHistories) {
+	public void calculateLanding(boolean timeHistories) {
 
 		System.out.println("---------------------------------------------------");
 		System.out.println("NoiseTrajectoryCalc :: LANDING ODE integration\n\n");
@@ -368,7 +428,7 @@ public class LandingCalc {
 					1e-10,
 					1e-10
 					);
-			ode = new DynamicsEquationsLandingNoiseTrajectory();
+			ode = new DynamicsEquationsLanding();
 			
 			initialize();
 
@@ -502,7 +562,7 @@ public class LandingCalc {
 							(maxLandingMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 							SI.NEWTON
 							);
-					Amount<Angle> alpha = ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
+					Amount<Angle> alpha = ((DynamicsEquationsLanding)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 
 					tFlareAltitude = Amount.valueOf(t, SI.SECOND);
 					timeBreakPoints.add(t);
@@ -510,7 +570,7 @@ public class LandingCalc {
 					vFlareEffective = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 					thrustAtFlareStart = 
 							Amount.valueOf( 
-									((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
+									((DynamicsEquationsLanding)ode).thrust(
 											speed,
 											time,
 											alpha,
@@ -648,24 +708,24 @@ public class LandingCalc {
 							(maxLandingMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 							SI.NEWTON
 							);
-					Amount<Angle> alpha = ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
+					Amount<Angle> alpha = ((DynamicsEquationsLanding)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 
 					//----------------------------------------------------------------------------------------
 					// TIME:
 					LandingCalc.this.getTime().add(Amount.valueOf(t, SI.SECOND));
 					//----------------------------------------------------------------------------------------
 					// ALPHA:
-					LandingCalc.this.getAlpha().add(((DynamicsEquationsLandingNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight));
+					LandingCalc.this.getAlpha().add(((DynamicsEquationsLanding)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight));
 					//----------------------------------------------------------------------------------------
 					// CL:
-					LandingCalc.this.getcL().add(((DynamicsEquationsLandingNoiseTrajectory)ode).cL(alpha));
+					LandingCalc.this.getcL().add(((DynamicsEquationsLanding)ode).cL(alpha));
 					if(cL.get(cL.size()-1) > (kCLmax*cLmaxLND) ) 
 						maximumFlareCLFlag = true;
 					//----------------------------------------------------------------------------------------
 					// CD:
 					LandingCalc.this.getcD().add(
-							((DynamicsEquationsLandingNoiseTrajectory)ode).cD(
-									((DynamicsEquationsLandingNoiseTrajectory)ode).cL(alpha),
+							((DynamicsEquationsLanding)ode).cD(
+									((DynamicsEquationsLanding)ode).cL(alpha),
 									altitude
 									)
 							);
@@ -680,8 +740,8 @@ public class LandingCalc {
 					//----------------------------------------------------------------------------------------
 					// LOAD FACTOR:
 					LandingCalc.this.getLoadFactor().add(
-							(  ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
-									+ (  ((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+							(  ((DynamicsEquationsLanding)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+									+ (  ((DynamicsEquationsLanding)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
 											.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 											*Math.sin(alpha.doubleValue(SI.RADIAN))
 											)
@@ -869,89 +929,100 @@ public class LandingCalc {
 				// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 				//----------------------------------------------------------------------------------------
 				// GROUND DISTANCE:
-				groundDistanceList.add(Amount.valueOf(
+				this.groundDistanceList.add(Amount.valueOf(
 						x[0],
 						SI.METER)
 						);
 				//----------------------------------------------------------------------------------------
 				// VERTICAL DISTANCE:
-				verticalDistanceList.add(Amount.valueOf(
+				this.verticalDistanceList.add(Amount.valueOf(
 						x[3],
 						SI.METER)
 						);
 				//----------------------------------------------------------------------------------------
 				// THRUST:
-				thrustList.add(Amount.valueOf(
-						((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+				this.thrustList.add(Amount.valueOf(
+						((DynamicsEquationsLanding)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
 						.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
 						SI.NEWTON)
 						);
 				//--------------------------------------------------------------------------------
 				// FUEL USED (kg):
-				fuelUsedList.add(Amount.valueOf(x[4], SI.KILOGRAM));
+				this.fuelUsedList.add(Amount.valueOf(x[4], SI.KILOGRAM));
+				//-----------------------------------------------------------
+				// FUEL FLOW (kg/s):
+				this.fuelFlowList.add(xDot[4]);
 				//----------------------------------------------------------------------------------------
 				if(timeHistories) {
 					//----------------------------------------------------------------------------------------
 					// WEIGHT:
-					weightList.add(weight);
+					this.weightList.add(weight);
 					//----------------------------------------------------------------------------------------
-					// SPEED:
-					speedList.add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+					// SPEED TAS:
+					this.speedTASList.add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+					//----------------------------------------------------------------------------------------
+					// SPEED CAS:
+					double sigma = AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)/1.225);
+					this.speedCASList.add(speed.times(Math.sqrt(sigma)));
+					//----------------------------------------------------------------------------------------
+					// MACH:
+					double speedOfSound = AtmosphereCalc.getSpeedOfSound(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS));
+					this.machList.add(speed.doubleValue(SI.METERS_PER_SECOND) / speedOfSound);
 					//----------------------------------------------------------------------------------------
 					// THRUST HORIZONTAL:
-					thrustHorizontalList.add(Amount.valueOf(
-							((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+					this.thrustHorizontalList.add(Amount.valueOf(
+							((DynamicsEquationsLanding)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
 							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 							*Math.cos(alpha.doubleValue(SI.RADIAN)),
 							SI.NEWTON)
 							);
 					//----------------------------------------------------------------------------------------
 					// THRUST VERTICAL:
-					thrustVerticalList.add(Amount.valueOf(
-							((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+					this.thrustVerticalList.add(Amount.valueOf(
+							((DynamicsEquationsLanding)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
 							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 							*Math.sin(alpha.doubleValue(SI.RADIAN)),
 							SI.NEWTON)
 							);
 					//--------------------------------------------------------------------------------
 					// FRICTION:
-					if(timeList.get(i).doubleValue(SI.SECOND) >= tTouchDown.doubleValue(SI.SECOND))
-						frictionList.add(Amount.valueOf(
-								((DynamicsEquationsLandingNoiseTrajectory)ode).mu(speed)
+					if(this.timeList.get(i).doubleValue(SI.SECOND) >= this.tTouchDown.doubleValue(SI.SECOND))
+						this.frictionList.add(Amount.valueOf(
+								((DynamicsEquationsLanding)ode).mu(speed)
 								*(weight.doubleValue(SI.NEWTON)
-										- ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+										- ((DynamicsEquationsLanding)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
 										),
 								SI.NEWTON)
 								);
-					else if(timeList.get(i).doubleValue(SI.SECOND) >= 
-							tTouchDown.to(SI.SECOND).plus(dtFreeRoll.to(SI.SECOND)).doubleValue(SI.SECOND)
+					else if(this.timeList.get(i).doubleValue(SI.SECOND) >= 
+							this.tTouchDown.to(SI.SECOND).plus(this.dtFreeRoll.to(SI.SECOND)).doubleValue(SI.SECOND)
 							)
-						frictionList.add(Amount.valueOf(
-								((DynamicsEquationsLandingNoiseTrajectory)ode).muBrake(speed)
+						this.frictionList.add(Amount.valueOf(
+								((DynamicsEquationsLanding)ode).muBrake(speed)
 								*(weight.doubleValue(SI.NEWTON)
-										- ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+										- ((DynamicsEquationsLanding)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
 										),
 								SI.NEWTON)
 								);
 					else
-						frictionList.add(Amount.valueOf(0.0, SI.NEWTON));
+						this.frictionList.add(Amount.valueOf(0.0, SI.NEWTON));
 					//----------------------------------------------------------------------------------------
 					// LIFT:
-					liftList.add(((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature));
+					this.liftList.add(((DynamicsEquationsLanding)ode).lift(speed, alpha, gamma, altitude, deltaTemperature));
 					//----------------------------------------------------------------------------------------
 					// DRAG:
-					dragList.add(((DynamicsEquationsLandingNoiseTrajectory)ode).drag(speed, alpha, gamma, altitude, deltaTemperature));
+					this.dragList.add(((DynamicsEquationsLanding)ode).drag(speed, alpha, gamma, altitude, deltaTemperature));
 					//----------------------------------------------------------------------------------------
 					// TOTAL FORCE:
-					totalForceList.add(Amount.valueOf(
-							(((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+					this.totalForceList.add(Amount.valueOf(
+							(((DynamicsEquationsLanding)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
 									.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 									*Math.cos(alpha.doubleValue(SI.RADIAN))
 									)
-							- ((DynamicsEquationsLandingNoiseTrajectory)ode).drag(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
-							- (((DynamicsEquationsLandingNoiseTrajectory)ode).mu(speed)
+							- ((DynamicsEquationsLanding)ode).drag(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+							- (((DynamicsEquationsLanding)ode).mu(speed)
 									*(weight.doubleValue(SI.NEWTON)
-											- ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+											- ((DynamicsEquationsLanding)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
 											)
 									)
 							- (weight.doubleValue(SI.NEWTON)*Math.sin(gamma.doubleValue(SI.RADIAN))
@@ -960,50 +1031,74 @@ public class LandingCalc {
 							);
 					//----------------------------------------------------------------------------------------
 					// LOAD FACTOR:
-					loadFactorList.add(loadFactorFunction.value(time.doubleValue(SI.SECOND)));
+					this.loadFactorList.add(loadFactorFunction.value(time.doubleValue(SI.SECOND)));
 					//----------------------------------------------------------------------------------------
 					// RATE OF CLIMB:
-					rateOfClimbList.add(Amount.valueOf(
+					this.rateOfClimbList.add(Amount.valueOf(
 							xDot[3],
 							SI.METERS_PER_SECOND)
 							);
 					//----------------------------------------------------------------------------------------
 					// ACCELERATION:
-					accelerationList.add(Amount.valueOf(
+					this.accelerationList.add(Amount.valueOf(
 							accelerationFunction.value(time.doubleValue(SI.SECOND)),
 							SI.METERS_PER_SQUARE_SECOND)
 							);
 					//----------------------------------------------------------------------------------------
 					// ALPHA:
-					alphaList.add(alpha);
+					this.alphaList.add(alpha);
 					//----------------------------------------------------------------------------------------
 					// GAMMA:
-					gammaList.add(gamma);
+					this.gammaList.add(gamma);
 					//----------------------------------------------------------------------------------------
 					// ALPHA DOT:
-					if(timeList.get(i).doubleValue(SI.SECOND) > tFlareAltitude.doubleValue(SI.SECOND) 
-							&& timeList.get(i).doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)
+					if(this.timeList.get(i).doubleValue(SI.SECOND) > this.tFlareAltitude.doubleValue(SI.SECOND) 
+							&& this.timeList.get(i).doubleValue(SI.SECOND) <= this.tTouchDown.doubleValue(SI.SECOND)
 							) 
-						alphaDotList.add(alphaDotFlare);
+						this.alphaDotList.add(this.alphaDotFlare);
 					else
-						alphaDotList.add(0.0);
+						this.alphaDotList.add(0.0);
 					//----------------------------------------------------------------------------------------
 					// GAMMA DOT:
-					gammaDotList.add(xDot[2]);
+					this.gammaDotList.add(xDot[2]);
 					//----------------------------------------------------------------------------------------
 					// THETA:
-					thetaList.add(Amount.valueOf(
+					this.thetaList.add(Amount.valueOf(
 							alpha.doubleValue(NonSI.DEGREE_ANGLE) + gamma.doubleValue(NonSI.DEGREE_ANGLE),
 							NonSI.DEGREE_ANGLE)
 							);
 					//----------------------------------------------------------------------------------------
 					// CL:				
-					cLList.add(cLFunction.value(time.doubleValue(SI.SECOND)));
+					this.cLList.add(cLFunction.value(time.doubleValue(SI.SECOND)));
 					//----------------------------------------------------------------------------------------
 					// CD:
-					cDList.add(cDFunction.value(time.doubleValue(SI.SECOND)));
-
+					this.cDList.add(cDFunction.value(time.doubleValue(SI.SECOND)));
 					//----------------------------------------------------------------------------------------
+					// EMISSIONS:
+					for(int iEng=0; iEng < thePowerPlant.getEngineNumber(); i++) {
+						
+						//----------------------------------------------------------------------------------------
+						// EMISSIONS NOx:
+						this.emissionNOxList.add(((DynamicsEquationsLanding)ode).emissionNOx(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+						//----------------------------------------------------------------------------------------
+						// EMISSIONS CO:
+						this.emissionCOList.add(((DynamicsEquationsLanding)ode).emissionCO(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+						//----------------------------------------------------------------------------------------
+						// EMISSIONS HC:
+						this.emissionHCList.add(((DynamicsEquationsLanding)ode).emissionHC(speed, time, gamma, alpha, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+						//----------------------------------------------------------------------------------------
+						// EMISSIONS Soot:
+						this.emissionSootList.add(((DynamicsEquationsLanding)ode).emissionSoot(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+						//----------------------------------------------------------------------------------------
+						// EMISSIONS CO2:
+						this.emissionCO2List.add(((DynamicsEquationsLanding)ode).emissionCO2(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+						//----------------------------------------------------------------------------------------
+						// EMISSIONS SOx:
+						this.emissionSOxList.add(((DynamicsEquationsLanding)ode).emissionSOx(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+						//----------------------------------------------------------------------------------------
+						// EMISSIONS H2O:
+						this.emissionH2OList.add(((DynamicsEquationsLanding)ode).emissionH2O(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					}
 				}
 			}
 		}
@@ -1032,7 +1127,7 @@ public class LandingCalc {
 
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-				MyArrayUtils.convertListOfAmountTodoubleArray(speedList),
+				MyArrayUtils.convertListOfAmountTodoubleArray(speedTASList),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "m/s",
 				simulationDetailsOutputFolder, "Speed_evolution_SI",true);
@@ -1042,7 +1137,7 @@ public class LandingCalc {
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
 				MyArrayUtils.convertListOfAmountTodoubleArray(
-						speedList.stream()
+						speedTASList.stream()
 						.map(x -> x.to(NonSI.KNOT))
 						.collect(Collectors.toList())
 						),
@@ -1055,7 +1150,7 @@ public class LandingCalc {
 
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
-				MyArrayUtils.convertListOfAmountTodoubleArray(speedList),
+				MyArrayUtils.convertListOfAmountTodoubleArray(speedTASList),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "m", "m/s",
 				simulationDetailsOutputFolder, "Speed_vs_GroundDistance_SI",true);
@@ -1068,7 +1163,7 @@ public class LandingCalc {
 						.collect(Collectors.toList())
 						),
 				MyArrayUtils.convertListOfAmountTodoubleArray(
-						speedList.stream()
+						speedTASList.stream()
 						.map(x -> x.to(NonSI.KNOT))
 						.collect(Collectors.toList())
 						),
@@ -1932,11 +2027,11 @@ public class LandingCalc {
 	// ODE integration
 	// see: https://commons.apache.org/proper/commons-math/userguide/ode.html
 
-	public class DynamicsEquationsLandingNoiseTrajectory implements FirstOrderDifferentialEquations {
+	public class DynamicsEquationsLanding implements FirstOrderDifferentialEquations {
 
 		double g0 = AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
 
-		public DynamicsEquationsLandingNoiseTrajectory() {
+		public DynamicsEquationsLanding() {
 
 		}
 
@@ -2255,6 +2350,1294 @@ public class LandingCalc {
 			
 		}
 
+		public Amount<Mass> emissionNOx(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Force> weight, Amount<Mass> fuelUsed) {
+
+			double emissionIndexNOx = 0.0;
+			
+			if (time.doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)) {
+				
+				List<Amount<Force>> thrustList = thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
+				List<Amount<Force>> cruiseThrustDatabaseTemp = new ArrayList<>();
+				List<Amount<Force>> flightIdleThrustDatabaseTemp = new ArrayList<>();
+				List<Double> cruiseEmissionIndexNOxList = new ArrayList<>();
+				List<Double> flightIdleEmissionIndexNOxList = new ArrayList<>();
+				
+				Amount<Force> totalThrust = Amount.valueOf( 
+						thrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+						SI.NEWTON
+						);
+				
+				for(int ieng=0; ieng<LandingCalc.this.getThePowerPlant().getEngineNumber(); ieng++) {
+					cruiseThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.CRUISE, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									)
+							);
+
+					flightIdleThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.FIDL, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getFidlThrustCorrectionFactor()
+									)
+							);
+					cruiseEmissionIndexNOxList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getNOxEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.CRUISE,
+									LandingCalc.this.getCruiseCalibrationFactorEmissionIndexNOx()
+									)
+							);
+					flightIdleEmissionIndexNOxList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getNOxEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.FIDL,
+									LandingCalc.this.getFlightIdleCalibrationFactorEmissionIndexNOx()
+									)
+							);
+				}
+				
+				Amount<Force> cruiseThrustFromDatabase = Amount.valueOf(
+								cruiseThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				Amount<Force> flightIdleThrustFromDatabase = Amount.valueOf(
+								flightIdleThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				double cruiseEmissionIndexNOxFromDatabase = cruiseEmissionIndexNOxList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				double flightIdleEmissionIndexNOxFromDatabase = flightIdleEmissionIndexNOxList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				
+				// first guess values
+				double weightCruise = 0.5;
+				double weightFlightIdle = 0.5;
+
+				Amount<Force> interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+				emissionIndexNOx = (cruiseEmissionIndexNOxFromDatabase*weightCruise)
+						+ (flightIdleEmissionIndexNOxFromDatabase*weightFlightIdle);
+				
+				int iter = 0;
+				int maxIter = 50;
+				// iterative loop for the definition of the cruise and flight idle weights
+				while (
+						(Math.abs(
+								(totalThrust.doubleValue(SI.NEWTON)
+										- interpolatedThrust.doubleValue(SI.NEWTON))
+								) 
+								/ totalThrust.doubleValue(SI.NEWTON)
+								)
+						> 0.01
+						) {
+					
+					if(iter > maxIter) 
+						break;
+					
+					double thrustRatio = interpolatedThrust.doubleValue(SI.NEWTON)/totalThrust.doubleValue(SI.NEWTON);
+					
+					/* Increase or decrease flight idle weight to make the interpolatedThrust similar to the target totalThrust */
+					double weightFlightIdleTemp = weightFlightIdle;
+					weightFlightIdle = weightFlightIdleTemp*thrustRatio;
+					weightCruise = 1-weightFlightIdle;
+					
+					/* Calculate new interpolatedThrust */
+					interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+					emissionIndexNOx = (cruiseEmissionIndexNOxFromDatabase*weightCruise)
+							+ (flightIdleEmissionIndexNOxFromDatabase*weightFlightIdle);
+					
+					iter++;
+					
+				}
+			}
+			else if (time.doubleValue(SI.SECOND) > tTouchDown.doubleValue(SI.SECOND))  {
+				
+				List<Double> emissionIndexNOxList = new ArrayList<>();
+				for (int i=0; i<LandingCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+					emissionIndexNOxList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getNOxEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.GIDL,
+									LandingCalc.this.getGroundIdleCalibrationFactorEmissionIndexNOx()
+									)
+							);
+
+				emissionIndexNOx = emissionIndexNOxList.stream().mapToDouble(ff -> ff).average().getAsDouble();
+			}
+
+			return Amount.valueOf(emissionIndexNOx*fuelUsed.doubleValue(SI.KILOGRAM), SI.GRAM);
+			
+		}
+		
+		public Amount<Mass> emissionCO(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Force> weight, Amount<Mass> fuelUsed) {
+
+			double emissionIndexCO = 0.0;
+			
+			if (time.doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)) {
+				
+				List<Amount<Force>> thrustList = thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
+				List<Amount<Force>> cruiseThrustDatabaseTemp = new ArrayList<>();
+				List<Amount<Force>> flightIdleThrustDatabaseTemp = new ArrayList<>();
+				List<Double> cruiseEmissionIndexCOList = new ArrayList<>();
+				List<Double> flightIdleEmissionIndexCOList = new ArrayList<>();
+				
+				Amount<Force> totalThrust = Amount.valueOf( 
+						thrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+						SI.NEWTON
+						);
+				
+				for(int ieng=0; ieng<LandingCalc.this.getThePowerPlant().getEngineNumber(); ieng++) {
+					cruiseThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.CRUISE, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									)
+							);
+
+					flightIdleThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.FIDL, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getFidlThrustCorrectionFactor()
+									)
+							);
+					cruiseEmissionIndexCOList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getCOEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.CRUISE,
+									LandingCalc.this.getCruiseCalibrationFactorEmissionIndexCO()
+									)
+							);
+					flightIdleEmissionIndexCOList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getCOEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.FIDL,
+									LandingCalc.this.getFlightIdleCalibrationFactorEmissionIndexCO()
+									)
+							);
+				}
+				
+				Amount<Force> cruiseThrustFromDatabase = Amount.valueOf(
+								cruiseThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				Amount<Force> flightIdleThrustFromDatabase = Amount.valueOf(
+								flightIdleThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				double cruiseEmissionIndexCOFromDatabase = cruiseEmissionIndexCOList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				double flightIdleEmissionIndexCOFromDatabase = flightIdleEmissionIndexCOList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				
+				// first guess values
+				double weightCruise = 0.5;
+				double weightFlightIdle = 0.5;
+
+				Amount<Force> interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+				emissionIndexCO = (cruiseEmissionIndexCOFromDatabase*weightCruise)
+						+ (flightIdleEmissionIndexCOFromDatabase*weightFlightIdle);
+				
+				int iter = 0;
+				int maxIter = 50;
+				// iterative loop for the definition of the cruise and flight idle weights
+				while (
+						(Math.abs(
+								(totalThrust.doubleValue(SI.NEWTON)
+										- interpolatedThrust.doubleValue(SI.NEWTON))
+								) 
+								/ totalThrust.doubleValue(SI.NEWTON)
+								)
+						> 0.01
+						) {
+					
+					if(iter > maxIter) 
+						break;
+					
+					double thrustRatio = interpolatedThrust.doubleValue(SI.NEWTON)/totalThrust.doubleValue(SI.NEWTON);
+					
+					/* Increase or decrease flight idle weight to make the interpolatedThrust similar to the target totalThrust */
+					double weightFlightIdleTemp = weightFlightIdle;
+					weightFlightIdle = weightFlightIdleTemp*thrustRatio;
+					weightCruise = 1-weightFlightIdle;
+					
+					/* Calculate new interpolatedThrust */
+					interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+					emissionIndexCO = (cruiseEmissionIndexCOFromDatabase*weightCruise)
+							+ (flightIdleEmissionIndexCOFromDatabase*weightFlightIdle);
+					
+					iter++;
+					
+				}
+			}
+			else if (time.doubleValue(SI.SECOND) > tTouchDown.doubleValue(SI.SECOND))  {
+				
+				List<Double> emissionIndexCOList = new ArrayList<>();
+				for (int i=0; i<LandingCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+					emissionIndexCOList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getCOEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.GIDL,
+									LandingCalc.this.getGroundIdleCalibrationFactorEmissionIndexCO()
+									)
+							);
+
+				emissionIndexCO = emissionIndexCOList.stream().mapToDouble(ff -> ff).average().getAsDouble();
+			}
+
+			return Amount.valueOf(emissionIndexCO*fuelUsed.doubleValue(SI.KILOGRAM), SI.GRAM);
+			
+		}
+		
+		public Amount<Mass> emissionHC(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Force> weight, Amount<Mass> fuelUsed) {
+
+			double emissionIndexHC = 0.0;
+			
+			if (time.doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)) {
+				
+				List<Amount<Force>> thrustList = thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
+				List<Amount<Force>> cruiseThrustDatabaseTemp = new ArrayList<>();
+				List<Amount<Force>> flightIdleThrustDatabaseTemp = new ArrayList<>();
+				List<Double> cruiseEmissionIndexHCList = new ArrayList<>();
+				List<Double> flightIdleEmissionIndexHCList = new ArrayList<>();
+				
+				Amount<Force> totalThrust = Amount.valueOf( 
+						thrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+						SI.NEWTON
+						);
+				
+				for(int ieng=0; ieng<LandingCalc.this.getThePowerPlant().getEngineNumber(); ieng++) {
+					cruiseThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.CRUISE, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									)
+							);
+
+					flightIdleThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.FIDL, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getFidlThrustCorrectionFactor()
+									)
+							);
+					cruiseEmissionIndexHCList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getHCEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.CRUISE,
+									LandingCalc.this.getCruiseCalibrationFactorEmissionIndexHC()
+									)
+							);
+					flightIdleEmissionIndexHCList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getHCEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.FIDL,
+									LandingCalc.this.getFlightIdleCalibrationFactorEmissionIndexHC()
+									)
+							);
+				}
+				
+				Amount<Force> cruiseThrustFromDatabase = Amount.valueOf(
+								cruiseThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				Amount<Force> flightIdleThrustFromDatabase = Amount.valueOf(
+								flightIdleThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				double cruiseEmissionIndexHCFromDatabase = cruiseEmissionIndexHCList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				double flightIdleEmissionIndexHCFromDatabase = flightIdleEmissionIndexHCList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				
+				// first guess values
+				double weightCruise = 0.5;
+				double weightFlightIdle = 0.5;
+
+				Amount<Force> interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+				emissionIndexHC = (cruiseEmissionIndexHCFromDatabase*weightCruise)
+						+ (flightIdleEmissionIndexHCFromDatabase*weightFlightIdle);
+				
+				int iter = 0;
+				int maxIter = 50;
+				// iterative loop for the definition of the cruise and flight idle weights
+				while (
+						(Math.abs(
+								(totalThrust.doubleValue(SI.NEWTON)
+										- interpolatedThrust.doubleValue(SI.NEWTON))
+								) 
+								/ totalThrust.doubleValue(SI.NEWTON)
+								)
+						> 0.01
+						) {
+					
+					if(iter > maxIter) 
+						break;
+					
+					double thrustRatio = interpolatedThrust.doubleValue(SI.NEWTON)/totalThrust.doubleValue(SI.NEWTON);
+					
+					/* Increase or decrease flight idle weight to make the interpolatedThrust similar to the target totalThrust */
+					double weightFlightIdleTemp = weightFlightIdle;
+					weightFlightIdle = weightFlightIdleTemp*thrustRatio;
+					weightCruise = 1-weightFlightIdle;
+					
+					/* Calculate new interpolatedThrust */
+					interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+					emissionIndexHC = (cruiseEmissionIndexHCFromDatabase*weightCruise)
+							+ (flightIdleEmissionIndexHCFromDatabase*weightFlightIdle);
+					
+					iter++;
+					
+				}
+			}
+			else if (time.doubleValue(SI.SECOND) > tTouchDown.doubleValue(SI.SECOND))  {
+				
+				List<Double> emissionIndexHCList = new ArrayList<>();
+				for (int i=0; i<LandingCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+					emissionIndexHCList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getHCEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.GIDL,
+									LandingCalc.this.getGroundIdleCalibrationFactorEmissionIndexHC()
+									)
+							);
+
+				emissionIndexHC = emissionIndexHCList.stream().mapToDouble(ff -> ff).average().getAsDouble();
+			}
+
+			return Amount.valueOf(emissionIndexHC*fuelUsed.doubleValue(SI.KILOGRAM), SI.GRAM);
+			
+		}
+		
+		public Amount<Mass> emissionSoot(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Force> weight, Amount<Mass> fuelUsed) {
+
+			double emissionIndexSoot = 0.0;
+			
+			if (time.doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)) {
+				
+				List<Amount<Force>> thrustList = thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
+				List<Amount<Force>> cruiseThrustDatabaseTemp = new ArrayList<>();
+				List<Amount<Force>> flightIdleThrustDatabaseTemp = new ArrayList<>();
+				List<Double> cruiseEmissionIndexSootList = new ArrayList<>();
+				List<Double> flightIdleEmissionIndexSootList = new ArrayList<>();
+				
+				Amount<Force> totalThrust = Amount.valueOf( 
+						thrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+						SI.NEWTON
+						);
+				
+				for(int ieng=0; ieng<LandingCalc.this.getThePowerPlant().getEngineNumber(); ieng++) {
+					cruiseThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.CRUISE, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									)
+							);
+
+					flightIdleThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.FIDL, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getFidlThrustCorrectionFactor()
+									)
+							);
+					cruiseEmissionIndexSootList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getSootEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.CRUISE,
+									LandingCalc.this.getCruiseCalibrationFactorEmissionIndexSoot()
+									)
+							);
+					flightIdleEmissionIndexSootList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getSootEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.FIDL,
+									LandingCalc.this.getFlightIdleCalibrationFactorEmissionIndexSoot()
+									)
+							);
+				}
+				
+				Amount<Force> cruiseThrustFromDatabase = Amount.valueOf(
+								cruiseThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				Amount<Force> flightIdleThrustFromDatabase = Amount.valueOf(
+								flightIdleThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				double cruiseEmissionIndexSootFromDatabase = cruiseEmissionIndexSootList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				double flightIdleEmissionIndexSootFromDatabase = flightIdleEmissionIndexSootList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				
+				// first guess values
+				double weightCruise = 0.5;
+				double weightFlightIdle = 0.5;
+
+				Amount<Force> interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+				emissionIndexSoot = (cruiseEmissionIndexSootFromDatabase*weightCruise)
+						+ (flightIdleEmissionIndexSootFromDatabase*weightFlightIdle);
+				
+				int iter = 0;
+				int maxIter = 50;
+				// iterative loop for the definition of the cruise and flight idle weights
+				while (
+						(Math.abs(
+								(totalThrust.doubleValue(SI.NEWTON)
+										- interpolatedThrust.doubleValue(SI.NEWTON))
+								) 
+								/ totalThrust.doubleValue(SI.NEWTON)
+								)
+						> 0.01
+						) {
+					
+					if(iter > maxIter) 
+						break;
+					
+					double thrustRatio = interpolatedThrust.doubleValue(SI.NEWTON)/totalThrust.doubleValue(SI.NEWTON);
+					
+					/* Increase or decrease flight idle weight to make the interpolatedThrust similar to the target totalThrust */
+					double weightFlightIdleTemp = weightFlightIdle;
+					weightFlightIdle = weightFlightIdleTemp*thrustRatio;
+					weightCruise = 1-weightFlightIdle;
+					
+					/* Calculate new interpolatedThrust */
+					interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+					emissionIndexSoot = (cruiseEmissionIndexSootFromDatabase*weightCruise)
+							+ (flightIdleEmissionIndexSootFromDatabase*weightFlightIdle);
+					
+					iter++;
+					
+				}
+			}
+			else if (time.doubleValue(SI.SECOND) > tTouchDown.doubleValue(SI.SECOND))  {
+				
+				List<Double> emissionIndexSootList = new ArrayList<>();
+				for (int i=0; i<LandingCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+					emissionIndexSootList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getSootEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.GIDL,
+									LandingCalc.this.getGroundIdleCalibrationFactorEmissionIndexSoot()
+									)
+							);
+
+				emissionIndexSoot = emissionIndexSootList.stream().mapToDouble(ff -> ff).average().getAsDouble();
+			}
+
+			return Amount.valueOf(emissionIndexSoot*fuelUsed.doubleValue(SI.KILOGRAM), SI.GRAM);
+			
+		}
+		
+		public Amount<Mass> emissionCO2(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Force> weight, Amount<Mass> fuelUsed) {
+
+			double emissionIndexCO2 = 0.0;
+			
+			if (time.doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)) {
+				
+				List<Amount<Force>> thrustList = thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
+				List<Amount<Force>> cruiseThrustDatabaseTemp = new ArrayList<>();
+				List<Amount<Force>> flightIdleThrustDatabaseTemp = new ArrayList<>();
+				List<Double> cruiseEmissionIndexCO2List = new ArrayList<>();
+				List<Double> flightIdleEmissionIndexCO2List = new ArrayList<>();
+				
+				Amount<Force> totalThrust = Amount.valueOf( 
+						thrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+						SI.NEWTON
+						);
+				
+				for(int ieng=0; ieng<LandingCalc.this.getThePowerPlant().getEngineNumber(); ieng++) {
+					cruiseThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.CRUISE, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									)
+							);
+
+					flightIdleThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.FIDL, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getFidlThrustCorrectionFactor()
+									)
+							);
+					cruiseEmissionIndexCO2List.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getCO2EmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.CRUISE,
+									LandingCalc.this.getCruiseCalibrationFactorEmissionIndexCO2()
+									)
+							);
+					flightIdleEmissionIndexCO2List.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getCO2EmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.FIDL,
+									LandingCalc.this.getFlightIdleCalibrationFactorEmissionIndexCO2()
+									)
+							);
+				}
+				
+				Amount<Force> cruiseThrustFromDatabase = Amount.valueOf(
+								cruiseThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				Amount<Force> flightIdleThrustFromDatabase = Amount.valueOf(
+								flightIdleThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				double cruiseEmissionIndexCO2FromDatabase = cruiseEmissionIndexCO2List.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				double flightIdleEmissionIndexCO2FromDatabase = flightIdleEmissionIndexCO2List.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				
+				// first guess values
+				double weightCruise = 0.5;
+				double weightFlightIdle = 0.5;
+
+				Amount<Force> interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+				emissionIndexCO2 = (cruiseEmissionIndexCO2FromDatabase*weightCruise)
+						+ (flightIdleEmissionIndexCO2FromDatabase*weightFlightIdle);
+				
+				int iter = 0;
+				int maxIter = 50;
+				// iterative loop for the definition of the cruise and flight idle weights
+				while (
+						(Math.abs(
+								(totalThrust.doubleValue(SI.NEWTON)
+										- interpolatedThrust.doubleValue(SI.NEWTON))
+								) 
+								/ totalThrust.doubleValue(SI.NEWTON)
+								)
+						> 0.01
+						) {
+					
+					if(iter > maxIter) 
+						break;
+					
+					double thrustRatio = interpolatedThrust.doubleValue(SI.NEWTON)/totalThrust.doubleValue(SI.NEWTON);
+					
+					/* Increase or decrease flight idle weight to make the interpolatedThrust similar to the target totalThrust */
+					double weightFlightIdleTemp = weightFlightIdle;
+					weightFlightIdle = weightFlightIdleTemp*thrustRatio;
+					weightCruise = 1-weightFlightIdle;
+					
+					/* Calculate new interpolatedThrust */
+					interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+					emissionIndexCO2 = (cruiseEmissionIndexCO2FromDatabase*weightCruise)
+							+ (flightIdleEmissionIndexCO2FromDatabase*weightFlightIdle);
+					
+					iter++;
+					
+				}
+			}
+			else if (time.doubleValue(SI.SECOND) > tTouchDown.doubleValue(SI.SECOND))  {
+				
+				List<Double> emissionIndexCO2List = new ArrayList<>();
+				for (int i=0; i<LandingCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+					emissionIndexCO2List.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getCO2EmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.GIDL,
+									LandingCalc.this.getGroundIdleCalibrationFactorEmissionIndexCO2()
+									)
+							);
+
+				emissionIndexCO2 = emissionIndexCO2List.stream().mapToDouble(ff -> ff).average().getAsDouble();
+			}
+
+			return Amount.valueOf(emissionIndexCO2*fuelUsed.doubleValue(SI.KILOGRAM), SI.GRAM);
+			
+		}
+		
+		public Amount<Mass> emissionSOx(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Force> weight, Amount<Mass> fuelUsed) {
+
+			double emissionIndexSOx = 0.0;
+			
+			if (time.doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)) {
+				
+				List<Amount<Force>> thrustList = thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
+				List<Amount<Force>> cruiseThrustDatabaseTemp = new ArrayList<>();
+				List<Amount<Force>> flightIdleThrustDatabaseTemp = new ArrayList<>();
+				List<Double> cruiseEmissionIndexSOxList = new ArrayList<>();
+				List<Double> flightIdleEmissionIndexSOxList = new ArrayList<>();
+				
+				Amount<Force> totalThrust = Amount.valueOf( 
+						thrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+						SI.NEWTON
+						);
+				
+				for(int ieng=0; ieng<LandingCalc.this.getThePowerPlant().getEngineNumber(); ieng++) {
+					cruiseThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.CRUISE, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									)
+							);
+
+					flightIdleThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.FIDL, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getFidlThrustCorrectionFactor()
+									)
+							);
+					cruiseEmissionIndexSOxList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getSOxEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.CRUISE,
+									LandingCalc.this.getCruiseCalibrationFactorEmissionIndexSOx()
+									)
+							);
+					flightIdleEmissionIndexSOxList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getSOxEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.FIDL,
+									LandingCalc.this.getFlightIdleCalibrationFactorEmissionIndexSOx()
+									)
+							);
+				}
+				
+				Amount<Force> cruiseThrustFromDatabase = Amount.valueOf(
+								cruiseThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				Amount<Force> flightIdleThrustFromDatabase = Amount.valueOf(
+								flightIdleThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				double cruiseEmissionIndexSOxFromDatabase = cruiseEmissionIndexSOxList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				double flightIdleEmissionIndexSOxFromDatabase = flightIdleEmissionIndexSOxList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				
+				// first guess values
+				double weightCruise = 0.5;
+				double weightFlightIdle = 0.5;
+
+				Amount<Force> interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+				emissionIndexSOx = (cruiseEmissionIndexSOxFromDatabase*weightCruise)
+						+ (flightIdleEmissionIndexSOxFromDatabase*weightFlightIdle);
+				
+				int iter = 0;
+				int maxIter = 50;
+				// iterative loop for the definition of the cruise and flight idle weights
+				while (
+						(Math.abs(
+								(totalThrust.doubleValue(SI.NEWTON)
+										- interpolatedThrust.doubleValue(SI.NEWTON))
+								) 
+								/ totalThrust.doubleValue(SI.NEWTON)
+								)
+						> 0.01
+						) {
+					
+					if(iter > maxIter) 
+						break;
+					
+					double thrustRatio = interpolatedThrust.doubleValue(SI.NEWTON)/totalThrust.doubleValue(SI.NEWTON);
+					
+					/* Increase or decrease flight idle weight to make the interpolatedThrust similar to the target totalThrust */
+					double weightFlightIdleTemp = weightFlightIdle;
+					weightFlightIdle = weightFlightIdleTemp*thrustRatio;
+					weightCruise = 1-weightFlightIdle;
+					
+					/* Calculate new interpolatedThrust */
+					interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+					emissionIndexSOx = (cruiseEmissionIndexSOxFromDatabase*weightCruise)
+							+ (flightIdleEmissionIndexSOxFromDatabase*weightFlightIdle);
+					
+					iter++;
+					
+				}
+			}
+			else if (time.doubleValue(SI.SECOND) > tTouchDown.doubleValue(SI.SECOND))  {
+				
+				List<Double> emissionIndexSOxList = new ArrayList<>();
+				for (int i=0; i<LandingCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+					emissionIndexSOxList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getSOxEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.GIDL,
+									LandingCalc.this.getGroundIdleCalibrationFactorEmissionIndexSOx()
+									)
+							);
+
+				emissionIndexSOx = emissionIndexSOxList.stream().mapToDouble(ff -> ff).average().getAsDouble();
+			}
+
+			return Amount.valueOf(emissionIndexSOx*fuelUsed.doubleValue(SI.KILOGRAM), SI.GRAM);
+			
+		}
+		
+		public Amount<Mass> emissionH2O(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Force> weight, Amount<Mass> fuelUsed) {
+
+			double emissionIndexH2O = 0.0;
+			
+			if (time.doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)) {
+				
+				List<Amount<Force>> thrustList = thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
+				List<Amount<Force>> cruiseThrustDatabaseTemp = new ArrayList<>();
+				List<Amount<Force>> flightIdleThrustDatabaseTemp = new ArrayList<>();
+				List<Double> cruiseEmissionIndexH2OList = new ArrayList<>();
+				List<Double> flightIdleEmissionIndexH2OList = new ArrayList<>();
+				
+				Amount<Force> totalThrust = Amount.valueOf( 
+						thrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+						SI.NEWTON
+						);
+				
+				for(int ieng=0; ieng<LandingCalc.this.getThePowerPlant().getEngineNumber(); ieng++) {
+					cruiseThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.CRUISE, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									)
+							);
+
+					flightIdleThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.FIDL, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingCalc.this.getFidlThrustCorrectionFactor()
+									)
+							);
+					cruiseEmissionIndexH2OList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getH2OEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.CRUISE,
+									LandingCalc.this.getCruiseCalibrationFactorEmissionIndexH2O()
+									)
+							);
+					flightIdleEmissionIndexH2OList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(ieng).getH2OEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.FIDL,
+									LandingCalc.this.getFlightIdleCalibrationFactorEmissionIndexH2O()
+									)
+							);
+				}
+				
+				Amount<Force> cruiseThrustFromDatabase = Amount.valueOf(
+								cruiseThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				Amount<Force> flightIdleThrustFromDatabase = Amount.valueOf(
+								flightIdleThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				double cruiseEmissionIndexH2OFromDatabase = cruiseEmissionIndexH2OList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				double flightIdleEmissionIndexH2OFromDatabase = flightIdleEmissionIndexH2OList.stream().mapToDouble(cthr -> cthr.doubleValue()).average().getAsDouble();
+				
+				// first guess values
+				double weightCruise = 0.5;
+				double weightFlightIdle = 0.5;
+
+				Amount<Force> interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+				emissionIndexH2O = (cruiseEmissionIndexH2OFromDatabase*weightCruise)
+						+ (flightIdleEmissionIndexH2OFromDatabase*weightFlightIdle);
+				
+				int iter = 0;
+				int maxIter = 50;
+				// iterative loop for the definition of the cruise and flight idle weights
+				while (
+						(Math.abs(
+								(totalThrust.doubleValue(SI.NEWTON)
+										- interpolatedThrust.doubleValue(SI.NEWTON))
+								) 
+								/ totalThrust.doubleValue(SI.NEWTON)
+								)
+						> 0.01
+						) {
+					
+					if(iter > maxIter) 
+						break;
+					
+					double thrustRatio = interpolatedThrust.doubleValue(SI.NEWTON)/totalThrust.doubleValue(SI.NEWTON);
+					
+					/* Increase or decrease flight idle weight to make the interpolatedThrust similar to the target totalThrust */
+					double weightFlightIdleTemp = weightFlightIdle;
+					weightFlightIdle = weightFlightIdleTemp*thrustRatio;
+					weightCruise = 1-weightFlightIdle;
+					
+					/* Calculate new interpolatedThrust */
+					interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+					emissionIndexH2O = (cruiseEmissionIndexH2OFromDatabase*weightCruise)
+							+ (flightIdleEmissionIndexH2OFromDatabase*weightFlightIdle);
+					
+					iter++;
+					
+				}
+			}
+			else if (time.doubleValue(SI.SECOND) > tTouchDown.doubleValue(SI.SECOND))  {
+				
+				List<Double> emissionIndexH2OList = new ArrayList<>();
+				for (int i=0; i<LandingCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+					emissionIndexH2OList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getH2OEmissionIndex(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingCalc.this.getPhi(),
+									EngineOperatingConditionEnum.GIDL,
+									LandingCalc.this.getGroundIdleCalibrationFactorEmissionIndexH2O()
+									)
+							);
+
+				emissionIndexH2O = emissionIndexH2OList.stream().mapToDouble(ff -> ff).average().getAsDouble();
+			}
+
+			return Amount.valueOf(emissionIndexH2O*fuelUsed.doubleValue(SI.KILOGRAM), SI.GRAM);
+			
+		}
+		
 		public double cD(double cL, Amount<Length> altitude) {
 
 			double hb = (LandingCalc.this.getWingToGroundDistance().doubleValue(SI.METER) / LandingCalc.this.getSpan().doubleValue(SI.METER)) + altitude.doubleValue(SI.METER);
@@ -2517,8 +3900,8 @@ public class LandingCalc {
 		return ode;
 	}
 
-	public List<Amount<Velocity>> getSpeedList() {
-		return speedList;
+	public List<Amount<Velocity>> getSpeedTASList() {
+		return speedTASList;
 	}
 
 	public List<Amount<Velocity>> getRateOfClimbList() {
@@ -2733,8 +4116,8 @@ public class LandingCalc {
 		this.ode = ode;
 	}
 
-	public void setSpeedList(List<Amount<Velocity>> speedList) {
-		this.speedList = speedList;
+	public void setSpeedTASList(List<Amount<Velocity>> speedList) {
+		this.speedTASList = speedList;
 	}
 
 	public void setRateOfClimbList(List<Amount<Velocity>> rateOfClimbList) {
@@ -3147,6 +4530,254 @@ public class LandingCalc {
 
 	public void setsLanding(Amount<Length> sLanding) {
 		this.sLanding = sLanding;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexNOx() {
+		return cruiseCalibrationFactorEmissionIndexNOx;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexNOx(double cruiseCalibrationFactorEmissionIndexNOx) {
+		this.cruiseCalibrationFactorEmissionIndexNOx = cruiseCalibrationFactorEmissionIndexNOx;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexCO() {
+		return cruiseCalibrationFactorEmissionIndexCO;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexCO(double cruiseCalibrationFactorEmissionIndexCO) {
+		this.cruiseCalibrationFactorEmissionIndexCO = cruiseCalibrationFactorEmissionIndexCO;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexHC() {
+		return cruiseCalibrationFactorEmissionIndexHC;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexHC(double cruiseCalibrationFactorEmissionIndexHC) {
+		this.cruiseCalibrationFactorEmissionIndexHC = cruiseCalibrationFactorEmissionIndexHC;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexSoot() {
+		return cruiseCalibrationFactorEmissionIndexSoot;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexSoot(double cruiseCalibrationFactorEmissionIndexSoot) {
+		this.cruiseCalibrationFactorEmissionIndexSoot = cruiseCalibrationFactorEmissionIndexSoot;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexCO2() {
+		return cruiseCalibrationFactorEmissionIndexCO2;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexCO2(double cruiseCalibrationFactorEmissionIndexCO2) {
+		this.cruiseCalibrationFactorEmissionIndexCO2 = cruiseCalibrationFactorEmissionIndexCO2;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexSOx() {
+		return cruiseCalibrationFactorEmissionIndexSOx;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexSOx(double cruiseCalibrationFactorEmissionIndexSOx) {
+		this.cruiseCalibrationFactorEmissionIndexSOx = cruiseCalibrationFactorEmissionIndexSOx;
+	}
+
+	public double getCruiseCalibrationFactorEmissionIndexH2O() {
+		return cruiseCalibrationFactorEmissionIndexH2O;
+	}
+
+	public void setCruiseCalibrationFactorEmissionIndexH2O(double cruiseCalibrationFactorEmissionIndexH2O) {
+		this.cruiseCalibrationFactorEmissionIndexH2O = cruiseCalibrationFactorEmissionIndexH2O;
+	}
+
+	public double getFlightIdleCalibrationFactorEmissionIndexNOx() {
+		return flightIdleCalibrationFactorEmissionIndexNOx;
+	}
+
+	public void setFlightIdleCalibrationFactorEmissionIndexNOx(double flightIdleCalibrationFactorEmissionIndexNOx) {
+		this.flightIdleCalibrationFactorEmissionIndexNOx = flightIdleCalibrationFactorEmissionIndexNOx;
+	}
+
+	public double getFlightIdleCalibrationFactorEmissionIndexCO() {
+		return flightIdleCalibrationFactorEmissionIndexCO;
+	}
+
+	public void setFlightIdleCalibrationFactorEmissionIndexCO(double flightIdleCalibrationFactorEmissionIndexCO) {
+		this.flightIdleCalibrationFactorEmissionIndexCO = flightIdleCalibrationFactorEmissionIndexCO;
+	}
+
+	public double getFlightIdleCalibrationFactorEmissionIndexHC() {
+		return flightIdleCalibrationFactorEmissionIndexHC;
+	}
+
+	public void setFlightIdleCalibrationFactorEmissionIndexHC(double flightIdleCalibrationFactorEmissionIndexHC) {
+		this.flightIdleCalibrationFactorEmissionIndexHC = flightIdleCalibrationFactorEmissionIndexHC;
+	}
+
+	public double getFlightIdleCalibrationFactorEmissionIndexSoot() {
+		return flightIdleCalibrationFactorEmissionIndexSoot;
+	}
+
+	public void setFlightIdleCalibrationFactorEmissionIndexSoot(double flightIdleCalibrationFactorEmissionIndexSoot) {
+		this.flightIdleCalibrationFactorEmissionIndexSoot = flightIdleCalibrationFactorEmissionIndexSoot;
+	}
+
+	public double getFlightIdleCalibrationFactorEmissionIndexCO2() {
+		return flightIdleCalibrationFactorEmissionIndexCO2;
+	}
+
+	public void setFlightIdleCalibrationFactorEmissionIndexCO2(double flightIdleCalibrationFactorEmissionIndexCO2) {
+		this.flightIdleCalibrationFactorEmissionIndexCO2 = flightIdleCalibrationFactorEmissionIndexCO2;
+	}
+
+	public double getFlightIdleCalibrationFactorEmissionIndexSOx() {
+		return flightIdleCalibrationFactorEmissionIndexSOx;
+	}
+
+	public void setFlightIdleCalibrationFactorEmissionIndexSOx(double flightIdleCalibrationFactorEmissionIndexSOx) {
+		this.flightIdleCalibrationFactorEmissionIndexSOx = flightIdleCalibrationFactorEmissionIndexSOx;
+	}
+
+	public double getFlightIdleCalibrationFactorEmissionIndexH2O() {
+		return flightIdleCalibrationFactorEmissionIndexH2O;
+	}
+
+	public void setFlightIdleCalibrationFactorEmissionIndexH2O(double flightIdleCalibrationFactorEmissionIndexH2O) {
+		this.flightIdleCalibrationFactorEmissionIndexH2O = flightIdleCalibrationFactorEmissionIndexH2O;
+	}
+
+	public double getGroundIdleCalibrationFactorEmissionIndexNOx() {
+		return groundIdleCalibrationFactorEmissionIndexNOx;
+	}
+
+	public void setGroundIdleCalibrationFactorEmissionIndexNOx(double groundIdleCalibrationFactorEmissionIndexNOx) {
+		this.groundIdleCalibrationFactorEmissionIndexNOx = groundIdleCalibrationFactorEmissionIndexNOx;
+	}
+
+	public double getGroundIdleCalibrationFactorEmissionIndexCO() {
+		return groundIdleCalibrationFactorEmissionIndexCO;
+	}
+
+	public void setGroundIdleCalibrationFactorEmissionIndexCO(double groundIdleCalibrationFactorEmissionIndexCO) {
+		this.groundIdleCalibrationFactorEmissionIndexCO = groundIdleCalibrationFactorEmissionIndexCO;
+	}
+
+	public double getGroundIdleCalibrationFactorEmissionIndexHC() {
+		return groundIdleCalibrationFactorEmissionIndexHC;
+	}
+
+	public void setGroundIdleCalibrationFactorEmissionIndexHC(double groundIdleCalibrationFactorEmissionIndexHC) {
+		this.groundIdleCalibrationFactorEmissionIndexHC = groundIdleCalibrationFactorEmissionIndexHC;
+	}
+
+	public double getGroundIdleCalibrationFactorEmissionIndexSoot() {
+		return groundIdleCalibrationFactorEmissionIndexSoot;
+	}
+
+	public void setGroundIdleCalibrationFactorEmissionIndexSoot(double groundIdleCalibrationFactorEmissionIndexSoot) {
+		this.groundIdleCalibrationFactorEmissionIndexSoot = groundIdleCalibrationFactorEmissionIndexSoot;
+	}
+
+	public double getGroundIdleCalibrationFactorEmissionIndexCO2() {
+		return groundIdleCalibrationFactorEmissionIndexCO2;
+	}
+
+	public void setGroundIdleCalibrationFactorEmissionIndexCO2(double groundIdleCalibrationFactorEmissionIndexCO2) {
+		this.groundIdleCalibrationFactorEmissionIndexCO2 = groundIdleCalibrationFactorEmissionIndexCO2;
+	}
+
+	public double getGroundIdleCalibrationFactorEmissionIndexSOx() {
+		return groundIdleCalibrationFactorEmissionIndexSOx;
+	}
+
+	public void setGroundIdleCalibrationFactorEmissionIndexSOx(double groundIdleCalibrationFactorEmissionIndexSOx) {
+		this.groundIdleCalibrationFactorEmissionIndexSOx = groundIdleCalibrationFactorEmissionIndexSOx;
+	}
+
+	public double getGroundIdleCalibrationFactorEmissionIndexH2O() {
+		return groundIdleCalibrationFactorEmissionIndexH2O;
+	}
+
+	public void setGroundIdleCalibrationFactorEmissionIndexH2O(double groundIdleCalibrationFactorEmissionIndexH2O) {
+		this.groundIdleCalibrationFactorEmissionIndexH2O = groundIdleCalibrationFactorEmissionIndexH2O;
+	}
+
+	public List<Amount<Velocity>> getSpeedCASList() {
+		return speedCASList;
+	}
+
+	public void setSpeedCASList(List<Amount<Velocity>> speedCASList) {
+		this.speedCASList = speedCASList;
+	}
+
+	public List<Double> getMachList() {
+		return machList;
+	}
+
+	public void setMachList(List<Double> machList) {
+		this.machList = machList;
+	}
+
+	public List<Double> getFuelFlowList() {
+		return fuelFlowList;
+	}
+
+	public void setFuelFlowList(List<Double> fuelFlowList) {
+		this.fuelFlowList = fuelFlowList;
+	}
+
+	public List<Amount<Mass>> getEmissionNOxList() {
+		return emissionNOxList;
+	}
+
+	public void setEmissionNOxList(List<Amount<Mass>> emissionNOxList) {
+		this.emissionNOxList = emissionNOxList;
+	}
+
+	public List<Amount<Mass>> getEmissionCOList() {
+		return emissionCOList;
+	}
+
+	public void setEmissionCOList(List<Amount<Mass>> emissionCOList) {
+		this.emissionCOList = emissionCOList;
+	}
+
+	public List<Amount<Mass>> getEmissionHCList() {
+		return emissionHCList;
+	}
+
+	public void setEmissionHCList(List<Amount<Mass>> emissionHCList) {
+		this.emissionHCList = emissionHCList;
+	}
+
+	public List<Amount<Mass>> getEmissionSootList() {
+		return emissionSootList;
+	}
+
+	public void setEmissionSootList(List<Amount<Mass>> emissionSootList) {
+		this.emissionSootList = emissionSootList;
+	}
+
+	public List<Amount<Mass>> getEmissionCO2List() {
+		return emissionCO2List;
+	}
+
+	public void setEmissionCO2List(List<Amount<Mass>> emissionCO2List) {
+		this.emissionCO2List = emissionCO2List;
+	}
+
+	public List<Amount<Mass>> getEmissionSOxList() {
+		return emissionSOxList;
+	}
+
+	public void setEmissionSOxList(List<Amount<Mass>> emissionSOxList) {
+		this.emissionSOxList = emissionSOxList;
+	}
+
+	public List<Amount<Mass>> getEmissionH2OList() {
+		return emissionH2OList;
+	}
+
+	public void setEmissionH2OList(List<Amount<Mass>> emissionH2OList) {
+		this.emissionH2OList = emissionH2OList;
 	}
 
 }

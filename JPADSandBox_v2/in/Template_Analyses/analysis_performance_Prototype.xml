@@ -257,6 +257,20 @@
 			<time_profile perform="TRUE"/>
 			<fuel_used_profile perform="TRUE"/>
 			<weight_profile perform="TRUE"/>
+			<emissions_profile perform="TRUE"/>
+			<speed_profile perform="TRUE"/>
+			<mach_proifle perform="TRUE"/>
+			<cL_proifle perform="TRUE"/>
+			<cD_proifle perform="TRUE"/>
+			<efficiency_proifle perform="TRUE"/>
+			<drag_thrust_proifle perform="TRUE"/>
+			<engines_throttle_proifle perform="TRUE"/>
+			<fuel_flow_proifle perform="TRUE"/>
+			<sfc_proifle perform="TRUE"/>
+			<rate_of_climb_proifle perform="TRUE"/>
+			<climb_angle_proifle perform="TRUE"/>
+			<power_profile perform="TRUE"/>
+			<energy_profile perform="TRUE"/>
 		</mission_profile>
 	</plot>
 </jpad_config>

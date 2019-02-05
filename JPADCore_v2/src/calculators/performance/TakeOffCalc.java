@@ -1086,7 +1086,7 @@ public class TakeOffCalc {
 				//----------------------------------------------------------------------------------------
 				// MACH:
 				double speedOfSound = AtmosphereCalc.getSpeedOfSound(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS));
-				this.speedCAS.add(speed.divide(speedOfSound));
+				this.mach.add(speed.doubleValue(SI.METERS_PER_SECOND) / speedOfSound);
 				//----------------------------------------------------------------------------------------
 				// THRUST HORIZONTAL:
 				this.thrustHorizontal.add(Amount.valueOf(

@@ -928,7 +928,7 @@ public class ClimbCalc {
 											+ _speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND) )
 											/2
 											)
-									*(_timeClimb.get(i).minus(_timeClimb.get(i-1)).doubleValue(SI.SECOND))
+									*(_timeClimb.get(i).to(SI.SECOND).minus(_timeClimb.get(i-1).to(SI.SECOND)).doubleValue(SI.SECOND))
 									*Math.cos( ( ( _climbAngleClimb.get(i-1).doubleValue(SI.RADIAN) 
 											+ _climbAngleClimb.get(i).doubleValue(SI.RADIAN) )
 											/2)
@@ -1007,7 +1007,7 @@ public class ClimbCalc {
 							_fuelUsedClimb.get(_fuelUsedClimb.size()-1).doubleValue(SI.KILOGRAM)
 							+ (
 									((_fuelFlowClimb.get(i) + _fuelFlowClimb.get(i-1))/2)
-									*(_timeClimb.get(i).minus(_timeClimb.get(i-1)).doubleValue(SI.SECOND))
+									*(_timeClimb.get(i).minus(_timeClimb.get(i-1)).doubleValue(NonSI.MINUTE))
 									),
 							SI.KILOGRAM
 							)
